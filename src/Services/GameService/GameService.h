@@ -4,6 +4,7 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/AccountInterface.h"
 #include "Interface/SoundSystemInterface.h"
+#include "Interface/AnalyticsEventProviderInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/BaseEventation.h"
@@ -15,6 +16,7 @@ namespace Mengine
     class GameService
         : public ServiceBase<GameServiceInterface>
         , protected BaseEventation
+        , public AnalyticsEventProviderInterface
     {
         DECLARE_EVENTABLE();
 
@@ -87,6 +89,9 @@ namespace Mengine
         void oniOSApplicationWillResignActive_();
         void oniOSApplicationWillTerminate_();
 #endif
+
+    protected:
+        void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;
 
     protected:
         ConstString m_currentPackName;

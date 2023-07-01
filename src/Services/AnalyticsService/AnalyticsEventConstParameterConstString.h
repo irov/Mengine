@@ -21,7 +21,7 @@ namespace Mengine
         EAnalyticsEventParameterType getType() const override;
 
     public:
-        AnalyticsEventParameterInterfacePtr resolveParameter() const override;
+        AnalyticsEventParameterInterfacePtr resolveParameter( const DocumentPtr & _doc ) const override;
 
     protected:
         const ConstString & resolveValue() const override;

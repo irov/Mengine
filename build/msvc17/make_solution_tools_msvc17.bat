@@ -1,25 +1,18 @@
 @echo off
 
-if ["%~1"]==[""] (
-  @echo invalid arguments, please select configuration
-  goto end
-)
-
-set "CONFIGURATION=%1"
-
-@echo Starting make solution tools %CONFIGURATION% configuration...
-
 set "VERSION=17"
 set "YEAR=2022"
 
-@pushd %~dp0..
-@call vcvarsall_msvc%VERSION%.bat
-@popd
+set "SOLUTION_NAME=solution_tools_msvc%VERSION%"
+set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Tools_Win32"
+set "GENERATOR=Visual Studio %VERSION% %YEAR%"
+set "ARCHITECTURE=Win32"
+set "BUILD_PUBLISH=OFF"
 
-@pushd %~dp0..
-@call make_solution.bat "SOLUTION_NAME=solution_tools_msvc%VERSION%" "SOURCE_DIRECTORY=%CD%\..\cmake\Tools_Win32" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "ARCHITECTURE=Win32"
-@popd
+@call %~dp0../vcvarsall_msvc%VERSION%.bat
 
-:end
+@echo Starting make %SOLUTION_NAME% configuration...
 
-exit /b %errorlevel%
+@call %~dp0../make_solution.bat %* "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%" "BUILD_PUBLISH=%BUILD_PUBLISH%" "ARCHITECTURE=%ARCHITECTURE%"
+
+@exit /b %errorlevel%

@@ -31,8 +31,10 @@ namespace Mengine
         return EAEPT_DOUBLE;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventParameterInterfacePtr AnalyticsEventGetterParameterDouble::resolveParameter() const
+    AnalyticsEventParameterInterfacePtr AnalyticsEventGetterParameterDouble::resolveParameter( const DocumentPtr & _doc ) const
     {
+        MENGINE_UNUSED( _doc );
+
         return AnalyticsEventParameterInterfacePtr::from( this );
     }
     //////////////////////////////////////////////////////////////////////////

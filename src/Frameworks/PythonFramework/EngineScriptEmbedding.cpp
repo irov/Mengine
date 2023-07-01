@@ -36,8 +36,11 @@
 #include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
+
 #include "Services/SecureService/SecureUnsignedValue.h"
 #include "Services/SecureService/SecureStringValue.h"
+
+#include "Services/AnalyticsService/AnalyticsContext.h"
 
 #include "ScriptHolder.h"
 
@@ -1688,10 +1691,112 @@ namespace Mengine
                 return camera;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_analyticsCustomEvent( const ConstString & _eventName, const pybind::dict & _parameters )
+            void s_AnalyticsContext_addParameterBoolean( AnalyticsContextInterface * _context, const ConstString & _name, bool _value )
+            {
+                _context->addParameterBoolean( _name, _value, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_AnalyticsContext_addParameterInteger( AnalyticsContextInterface * _context, const ConstString & _name, int64_t _value )
+            {
+                _context->addParameterInteger( _name, _value, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_AnalyticsContext_addParameterDouble( AnalyticsContextInterface * _context, const ConstString & _name, double _value )
+            {
+                _context->addParameterDouble( _name, _value, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_AnalyticsContext_addParameterString( AnalyticsContextInterface * _context, const ConstString & _name, const ConstString & _value )
+            {
+                _context->addParameterConstString( _name, _value, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_AnalyticsContext_addParameterGetterBoolean( AnalyticsContextInterface * _context, const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
+            {
+                _context->addParameterGetterBoolean( _name, [_cb, _args]()
+                {
+                    bool value = _cb.call( _args );
+
+                    return value;
+                }, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_AnalyticsContext_addParameterGetterInteger( AnalyticsContextInterface * _context, const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
+            {
+                _context->addParameterGetterInteger( _name, [_cb, _args]()
+                {
+                    int64_t value = _cb.call( _args );
+
+                    return value;
+                }, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_AnalyticsContext_addParameterGetterDouble( AnalyticsContextInterface * _context, const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
+            {
+                _context->addParameterGetterDouble( _name, [_cb, _args]()
+                {
+                    double value = _cb.call( _args );
+
+                    return value;
+                }, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_AnalyticsContext_addParameterGetterString( AnalyticsContextInterface * _context, const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
+            {
+                _context->addParameterGetterConstString( _name, [_cb, _args]()
+                {
+                    ConstString value = _cb.call( _args );
+
+                    return value;
+                }, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            AnalyticsContextInterfacePtr s_analyticsMakeContext()
+            {
+                AnalyticsContextInterfacePtr context = ANALYTICS_SERVICE()
+                    ->makeContext( MENGINE_DOCUMENT_PYBIND );
+
+                return context;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_addAnalyticsGlobalContextParameterBoolean( const ConstString & _name, bool _value )
+            {
+                const AnalyticsContextInterfacePtr & analyticsGlobalContext = ANALYTICS_SERVICE()
+                    ->getGlobalContext();
+
+                analyticsGlobalContext->addParameterBoolean( _name, _value, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_addAnalyticsGlobalContextParameterString( const ConstString & _name, const ConstString & _value )
+            {
+                const AnalyticsContextInterfacePtr & analyticsGlobalContext = ANALYTICS_SERVICE()
+                    ->getGlobalContext();
+
+                analyticsGlobalContext->addParameterConstString( _name, _value, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_addAnalyticsGlobalContextParameterInteger( const ConstString & _name, int64_t _value )
+            {
+                const AnalyticsContextInterfacePtr & analyticsGlobalContext = ANALYTICS_SERVICE()
+                    ->getGlobalContext();
+
+                analyticsGlobalContext->addParameterInteger( _name, _value, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_addAnalyticsGlobalContextParameterDouble( const ConstString & _name, double _value )
+            {
+                const AnalyticsContextInterfacePtr & analyticsGlobalContext = ANALYTICS_SERVICE()
+                    ->getGlobalContext();
+
+                analyticsGlobalContext->addParameterDouble( _name, _value, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsCustomEvent( const ConstString & _eventName, const AnalyticsContextInterfacePtr & _context, const pybind::dict & _parameters )
             {
                 AnalyticsEventBuilderInterfacePtr builder = ANALYTICS_SERVICE()
-                    ->buildEvent( _eventName );
+                    ->buildEvent( _eventName, MENGINE_DOCUMENT_PYBIND );
+
+                builder->setLocalContext( _context );
 
                 for( pybind::dict::iterator
                     it = _parameters.begin(),
@@ -1739,7 +1844,61 @@ namespace Mengine
                 }
 
                 builder->log();
-            }           
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsEarnVirtualCurrencyEvent( const ConstString & _currencyName, double _value )
+            {
+                ANALYTICS_SERVICE()
+                    ->logEarnVirtualCurrency( _currencyName, _value, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsSpendVirtualCurrencyEvent( const ConstString & _itemName, const ConstString & _currencyName, double _value )
+            {
+                ANALYTICS_SERVICE()
+                    ->logSpendVirtualCurrency( _itemName, _currencyName, _value, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsUnlockAchievementEvent( const ConstString & _achievementId )
+            {
+                ANALYTICS_SERVICE()
+                    ->logUnlockAchievement( _achievementId, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsLevelUp( const ConstString & _character, int64_t _level )
+            {
+                ANALYTICS_SERVICE()
+                    ->logLevelUp( _character, _level, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsLevelStart( const ConstString & _name )
+            {
+                ANALYTICS_SERVICE()
+                    ->logLevelStart( _name, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsLevelEnd( const ConstString & _name, bool _successful )
+            {
+                ANALYTICS_SERVICE()
+                    ->logLevelEnd( _name, _successful, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsSelectItem( const ConstString & _category, const ConstString & _itemId )
+            {
+                ANALYTICS_SERVICE()
+                    ->logSelectItem( _category, _itemId, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsTutorialBegin()
+            {
+                ANALYTICS_SERVICE()
+                    ->logTutorialBegin( MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_analyticsTutorialComplete()
+            {
+                ANALYTICS_SERVICE()
+                    ->logTutorialComplete( MENGINE_DOCUMENT_PYBIND );
+            }
             //////////////////////////////////////////////////////////////////////////
             bool s_mountResourcePackage( const ConstString & _fileGroupName
                 , const ConstString & _name
@@ -4403,17 +4562,54 @@ namespace Mengine
         pybind::def_functor( _kernel, "getDefaultRenderViewport2D", nodeScriptMethod, &EngineScriptMethod::s_getDefaultRenderViewport2D );
         pybind::def_functor( _kernel, "getDefaultArrowRenderCamera2D", nodeScriptMethod, &EngineScriptMethod::s_getDefaultArrowRenderCamera2D );
 
+        pybind::enum_<EAnalyticsEventParameterType>( _kernel, "EAnalyticsEventParameterType" )
+            .def( "EAEPT_BOOLEAN", EAEPT_BOOLEAN )
+            .def( "EAEPT_INTEGER", EAEPT_INTEGER )
+            .def( "EAEPT_DOUBLE", EAEPT_DOUBLE )
+            .def( "EAEPT_STRING", EAEPT_STRING )
+            .def( "EAEPT_CONSTSTRING", EAEPT_CONSTSTRING )
+            ;
+
+        pybind::enum_<EAnalyticsEventType>( _kernel, "EAnalyticsEventType" )
+            .def( "EAET_CUSTOM", EAET_CUSTOM )
+            .def( "EAET_EARN_VIRTUAL_CURRENCY", EAET_EARN_VIRTUAL_CURRENCY )
+            .def( "EAET_SPEND_VIRTUAL_CURRENCY", EAET_SPEND_VIRTUAL_CURRENCY )
+            .def( "EAET_UNLOCK_ACHIEVEMENT", EAET_UNLOCK_ACHIEVEMENT )
+            .def( "EAET_LEVEL_UP", EAET_LEVEL_UP )
+            .def( "EAET_LEVEL_START", EAET_LEVEL_START )
+            .def( "EAET_LEVEL_END", EAET_LEVEL_END )
+            .def( "EAET_SELECT_ITEM", EAET_SELECT_ITEM )
+            .def( "EAET_TUTORIAL_BEGIN", EAET_TUTORIAL_BEGIN )
+            .def( "EAET_TUTORIAL_COMPLETE", EAET_TUTORIAL_COMPLETE )
+            ;
+
+        pybind::interface_<AnalyticsContextInterface, pybind::bases<ServantInterface>>( _kernel, "AnalyticsContextInterface" )
+            .def_proxy_static( "addParameterBoolean", nodeScriptMethod, &EngineScriptMethod::s_AnalyticsContext_addParameterBoolean )
+            .def_proxy_static( "addParameterInteger", nodeScriptMethod, &EngineScriptMethod::s_AnalyticsContext_addParameterInteger )
+            .def_proxy_static( "addParameterDouble", nodeScriptMethod, &EngineScriptMethod::s_AnalyticsContext_addParameterDouble )
+            .def_proxy_static( "addParameterString", nodeScriptMethod, &EngineScriptMethod::s_AnalyticsContext_addParameterString )
+            .def_proxy_static_args( "addParameterGetterBoolean", nodeScriptMethod, &EngineScriptMethod::s_AnalyticsContext_addParameterGetterBoolean )
+            .def_proxy_static_args( "addParameterGetterInteger", nodeScriptMethod, &EngineScriptMethod::s_AnalyticsContext_addParameterGetterInteger )
+            .def_proxy_static_args( "addParameterGetterDouble", nodeScriptMethod, &EngineScriptMethod::s_AnalyticsContext_addParameterGetterDouble )
+            .def_proxy_static_args( "addParameterGetterString", nodeScriptMethod, &EngineScriptMethod::s_AnalyticsContext_addParameterGetterString )
+            ;
+
+        pybind::def_functor( _kernel, "analyticsMakeContext", nodeScriptMethod, &EngineScriptMethod::s_analyticsMakeContext );
+        pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterBoolean", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterBoolean );
+        pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterString", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterString );
+        pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterInteger", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterInteger );
+        pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterDouble", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterDouble );
         pybind::def_functor_deprecated( _kernel, "analyticsEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCustomEvent, "use 'analyticsCustomEvent'" );
         pybind::def_functor( _kernel, "analyticsCustomEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCustomEvent );
-        pybind::def_functor( _kernel, "analyticsEarnVirtualCurrencyEvent", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logEarnVirtualCurrency );
-        pybind::def_functor( _kernel, "analyticsSpendVirtualCurrencyEvent", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logSpendVirtualCurrency );
-        pybind::def_functor( _kernel, "analyticsUnlockAchievementEvent", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logUnlockAchievement );
-        pybind::def_functor( _kernel, "analyticsLevelUp", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logLevelUp );
-        pybind::def_functor( _kernel, "analyticsLevelStart", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logLevelStart );
-        pybind::def_functor( _kernel, "analyticsLevelEnd", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logLevelEnd );
-        pybind::def_functor( _kernel, "analyticsSelectItem", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logSelectItem );
-        pybind::def_functor( _kernel, "analyticsTutorialBegin", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logTutorialBegin );
-        pybind::def_functor( _kernel, "analyticsTutorialComplete", ANALYTICS_SERVICE(), &AnalyticsServiceInterface::logTutorialComplete );
+        pybind::def_functor( _kernel, "analyticsEarnVirtualCurrencyEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEarnVirtualCurrencyEvent );
+        pybind::def_functor( _kernel, "analyticsSpendVirtualCurrencyEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsSpendVirtualCurrencyEvent );
+        pybind::def_functor( _kernel, "analyticsUnlockAchievementEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsUnlockAchievementEvent );
+        pybind::def_functor( _kernel, "analyticsLevelUp", nodeScriptMethod, &EngineScriptMethod::s_analyticsLevelUp );
+        pybind::def_functor( _kernel, "analyticsLevelStart", nodeScriptMethod, &EngineScriptMethod::s_analyticsLevelStart );
+        pybind::def_functor( _kernel, "analyticsLevelEnd", nodeScriptMethod, &EngineScriptMethod::s_analyticsLevelEnd );
+        pybind::def_functor( _kernel, "analyticsSelectItem", nodeScriptMethod, &EngineScriptMethod::s_analyticsSelectItem );
+        pybind::def_functor( _kernel, "analyticsTutorialBegin", nodeScriptMethod, &EngineScriptMethod::s_analyticsTutorialBegin );
+        pybind::def_functor( _kernel, "analyticsTutorialComplete", nodeScriptMethod, &EngineScriptMethod::s_analyticsTutorialComplete );
 
         pybind::def_functor_deprecated( _kernel, "mountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePackage, "use 'mountResourcePackage'" );
         pybind::def_functor_deprecated( _kernel, "unmountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePackage, "use 'unmountResourcePackage'" );

@@ -77,6 +77,8 @@ namespace Mengine
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationWillResignActive" ), EVENT_GAME_IOS_APPLICATION_WILL_RESIGN_ACTIVE, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationWillTerminate" ), EVENT_GAME_IOS_APPLICATION_WILL_TERMINATE, _doc );
 #endif
+
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onAnalyticsEvent" ), EVENT_GAME_ANALYTICS_EVENT, _doc );
         }
     }
     //////////////////////////////////////////////////////////////////////////

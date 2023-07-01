@@ -30,29 +30,22 @@ namespace Mengine
         if( m_analyticsFactory->initialize() == false )
         {
             return false;
-        }
+        }        
 
-        m_factoryAnalyticsEventBuilder = Helper::makeFactoryPool<AnalyticsEventBuilder, 16>( MENGINE_DOCUMENT_FACTORABLE );
-
-        m_analyticsGlobalContext = m_analyticsFactory->makeAnalyticsContext();
+        m_analyticsGlobalContext = m_analyticsFactory->makeContext( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AnalyticsService::_finalizeService()
     {
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_eventProviders );
+        m_eventProviders.clear();
+
         m_analyticsGlobalContext = nullptr;
 
         m_analyticsFactory->finalize();
         m_analyticsFactory = nullptr;
-
-        MENGINE_ASSERTION_CONTAINER_EMPTY( m_eventProviders );
-
-        m_eventProviders.clear();
-
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAnalyticsEventBuilder );
-
-        m_factoryAnalyticsEventBuilder = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void AnalyticsService::addEventProvider( const AnalyticsEventProviderInterfacePtr & _provider )
@@ -77,9 +70,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsService::logEarnVirtualCurrency( const ConstString & _currencyName, double _value )
+    void AnalyticsService::logEarnVirtualCurrency( const ConstString & _currencyName, double _value, const DocumentPtr & _doc )
     {
-        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        AnalyticsEventBuilderPtr builder = m_analyticsFactory->makeEventBuilder( _doc );
+
+        AnalyticsContextInterfacePtr context = m_analyticsFactory->makeContext( _doc );
 
         builder->setAnalyticsFactory( m_analyticsFactory );
         builder->setGlobalContext( m_analyticsGlobalContext );
@@ -91,9 +86,9 @@ namespace Mengine
         builder->log();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsService::logSpendVirtualCurrency( const ConstString & _itemName, const ConstString & _currencyName, double _value )
+    void AnalyticsService::logSpendVirtualCurrency( const ConstString & _itemName, const ConstString & _currencyName, double _value, const DocumentPtr & _doc )
     {
-        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        AnalyticsEventBuilderPtr builder = m_analyticsFactory->makeEventBuilder( _doc );
 
         builder->setAnalyticsFactory( m_analyticsFactory );
         builder->setGlobalContext( m_analyticsGlobalContext );
@@ -106,9 +101,9 @@ namespace Mengine
         builder->log();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsService::logUnlockAchievement( const ConstString & _achievementId )
+    void AnalyticsService::logUnlockAchievement( const ConstString & _achievementId, const DocumentPtr & _doc )
     {
-        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        AnalyticsEventBuilderPtr builder = m_analyticsFactory->makeEventBuilder( _doc );
 
         builder->setAnalyticsFactory( m_analyticsFactory );
         builder->setGlobalContext( m_analyticsGlobalContext );
@@ -119,9 +114,9 @@ namespace Mengine
         builder->log();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsService::logLevelUp( const ConstString & _character, int64_t _level )
+    void AnalyticsService::logLevelUp( const ConstString & _character, int64_t _level, const DocumentPtr & _doc )
     {
-        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        AnalyticsEventBuilderPtr builder = m_analyticsFactory->makeEventBuilder( _doc );
 
         builder->setAnalyticsFactory( m_analyticsFactory );
         builder->setGlobalContext( m_analyticsGlobalContext );
@@ -133,9 +128,9 @@ namespace Mengine
         builder->log();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsService::logLevelStart( const ConstString & _name )
+    void AnalyticsService::logLevelStart( const ConstString & _name, const DocumentPtr & _doc )
     {
-        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        AnalyticsEventBuilderPtr builder = m_analyticsFactory->makeEventBuilder( _doc );
 
         builder->setAnalyticsFactory( m_analyticsFactory );
         builder->setGlobalContext( m_analyticsGlobalContext );
@@ -146,9 +141,9 @@ namespace Mengine
         builder->log();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsService::logLevelEnd( const ConstString & _name, bool _successful )
+    void AnalyticsService::logLevelEnd( const ConstString & _name, bool _successful, const DocumentPtr & _doc )
     {
-        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        AnalyticsEventBuilderPtr builder = m_analyticsFactory->makeEventBuilder( _doc );
 
         builder->setAnalyticsFactory( m_analyticsFactory );
         builder->setGlobalContext( m_analyticsGlobalContext );
@@ -160,9 +155,9 @@ namespace Mengine
         builder->log();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsService::logSelectItem( const ConstString & _category, const ConstString & _itemId )
+    void AnalyticsService::logSelectItem( const ConstString & _category, const ConstString & _itemId, const DocumentPtr & _doc )
     {
-        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        AnalyticsEventBuilderPtr builder = m_analyticsFactory->makeEventBuilder( _doc );
 
         builder->setAnalyticsFactory( m_analyticsFactory );
         builder->setGlobalContext( m_analyticsGlobalContext );
@@ -174,9 +169,9 @@ namespace Mengine
         builder->log();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsService::logTutorialBegin()
+    void AnalyticsService::logTutorialBegin( const DocumentPtr & _doc )
     {
-        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        AnalyticsEventBuilderPtr builder = m_analyticsFactory->makeEventBuilder( _doc );
 
         builder->setAnalyticsFactory( m_analyticsFactory );
         builder->setGlobalContext( m_analyticsGlobalContext );
@@ -185,9 +180,9 @@ namespace Mengine
         builder->log();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AnalyticsService::logTutorialComplete()
+    void AnalyticsService::logTutorialComplete( const DocumentPtr & _doc )
     {
-        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        AnalyticsEventBuilderPtr builder = m_analyticsFactory->makeEventBuilder( _doc );
 
         builder->setAnalyticsFactory( m_analyticsFactory );
         builder->setGlobalContext( m_analyticsGlobalContext );
@@ -196,9 +191,9 @@ namespace Mengine
         builder->log();
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventBuilderInterfacePtr AnalyticsService::buildEvent( const ConstString & _eventName )
+    AnalyticsEventBuilderInterfacePtr AnalyticsService::buildEvent( const ConstString & _eventName, const DocumentPtr & _doc )
     {
-        AnalyticsEventBuilderPtr builder = m_factoryAnalyticsEventBuilder->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        AnalyticsEventBuilderPtr builder = m_analyticsFactory->makeEventBuilder( _doc );
 
         builder->setAnalyticsFactory( m_analyticsFactory );
         builder->setGlobalContext( m_analyticsGlobalContext );
@@ -206,6 +201,13 @@ namespace Mengine
         builder->setEventName( _eventName );
 
         return builder;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    AnalyticsContextInterfacePtr AnalyticsService::makeContext( const DocumentPtr & _doc )
+    {
+        AnalyticsContextInterfacePtr analyticsContext = m_analyticsFactory->makeContext( _doc );
+
+        return analyticsContext;
     }
     //////////////////////////////////////////////////////////////////////////
     const AnalyticsContextInterfacePtr & AnalyticsService::getGlobalContext() const

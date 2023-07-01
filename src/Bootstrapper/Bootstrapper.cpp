@@ -431,7 +431,7 @@ namespace Mengine
         }
 
         Timestamp mengine_run_timestamp = ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_run_start" ) )
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_run_start" ), MENGINE_DOCUMENT_FACTORABLE )
             ->log();
 
         LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority plugins" );
@@ -558,7 +558,7 @@ namespace Mengine
             ->clearHistory();
 
         ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_run_completed" ) )
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_run_completed" ), MENGINE_DOCUMENT_FACTORABLE )
             ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getDurationTimestamp( mengine_run_timestamp ) )
             ->log();
 
@@ -921,7 +921,7 @@ namespace Mengine
 #endif
 
         Timestamp mengine_initialize_services_timestamp = ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_services_start" ) )
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_services_start" ), MENGINE_DOCUMENT_FACTORABLE )
             ->log();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
@@ -1030,7 +1030,7 @@ namespace Mengine
 #undef BOOTSTRAPPER_SERVICE_CREATE
 
         ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_services_completed" ) )
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_services_completed" ), MENGINE_DOCUMENT_FACTORABLE )
             ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getDurationTimestamp( mengine_initialize_services_timestamp ) )
             ->log();
 
@@ -1512,7 +1512,7 @@ namespace Mengine
         LOGGER_INFO( "bootstrapper", "create application..." );
 
         Timestamp mengine_create_application_timestamp = ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_create_application_start" ) )
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_create_application_start" ), MENGINE_DOCUMENT_FACTORABLE )
             ->log();
 
         if( SERVICE_CREATE_SAFE( Application, MENGINE_DOCUMENT_FACTORABLE ) == false )
@@ -1523,7 +1523,7 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
 
         ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_create_application_completed" ) )
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_create_application_completed" ), MENGINE_DOCUMENT_FACTORABLE )
             ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getDurationTimestamp( mengine_create_application_timestamp ) )
             ->log();
 

@@ -125,7 +125,7 @@ namespace Mengine
             , info->ssl_version
         );
 
-        uint32_t cURLService_ThreadCount = CONFIG_VALUE( "cURLPlugin", "ThreadCount", 4 );
+        uint32_t cURLService_ThreadCount = CONFIG_VALUE( "cURLPlugin", "ThreadCount", 8 );
 
         ThreadQueueInterfacePtr threadQueue = THREAD_SERVICE()
             ->createTaskQueue( 1, MENGINE_DOCUMENT_FACTORABLE );

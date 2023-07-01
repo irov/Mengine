@@ -59,9 +59,9 @@ int main( int argc, char * argv[] )
     size_t ansi_secure_size = ansi_secure.size();
 
     uint64_t sequreHash;
-    Mengine::Helper::makeSHA1u64( ansi_secure_str, ansi_secure_size, &sequreHash );
+    Mengine::Helper::makeSHA1( ansi_secure_str, ansi_secure_size, reinterpret_cast<uint8_t *>(&sequreHash), sizeof( sequreHash ) );
 
-    Mengine::Helper::ravingcode( sequreHash, memory_buffer, memory_size, memory_buffer );
+    Mengine::Helper::ravingcode( &sequreHash, 1, memory_buffer, memory_size, memory_buffer );
 
     size_t write_size;
     bool result = write_file_memory( out.c_str(), "RGCD", memory_buffer, memory_size, &write_size );

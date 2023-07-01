@@ -1,5 +1,6 @@
 #include "AnalyticsEventBuilder.h"
 
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/TimestampHelper.h"
 
 namespace Mengine
@@ -22,6 +23,16 @@ namespace Mengine
     const AnalyticsFactoryInterfacePtr & AnalyticsEventBuilder::getAnalyticsFactory() const
     {
         return m_analyticsFactory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AnalyticsEventBuilder::setContext( const AnalyticsContextInterfacePtr & _context )
+    {
+        m_context = _context;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const AnalyticsContextInterfacePtr & AnalyticsEventBuilder::getContext() const
+    {
+        return m_context;
     }
     //////////////////////////////////////////////////////////////////////////
     void AnalyticsEventBuilder::setGlobalContext( const AnalyticsContextInterfacePtr & _globalContext )
@@ -54,83 +65,73 @@ namespace Mengine
         return m_eventName;
     }
     //////////////////////////////////////////////////////////////////////////
+    void AnalyticsEventBuilder::setLocalContext( const AnalyticsContextInterfacePtr & _localContext )
+    {
+        m_localContext = _localContext;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const AnalyticsContextInterfacePtr & AnalyticsEventBuilder::getLocalContext() const
+    {
+        return m_localContext;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AnalyticsEventBuilder::addParameter( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
     {
-        AnalyticsEventParameterDesc desc;
-        desc.name = _name;
-        desc.parameter = _parameter;
-
-        m_parameters.emplace_back( desc );
+        m_context->addParameter( _name, _parameter );
     }
     //////////////////////////////////////////////////////////////////////////
     AnalyticsEventBuilderInterface * AnalyticsEventBuilder::addParameterBoolean( const ConstString & _name, bool _value )
     {
-        AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventConstParameterBoolean( _value );
-
-        this->addParameter( _name, parameter );
+        m_context->addParameterBoolean( _name, _value, MENGINE_DOCUMENT_FACTORABLE );
 
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
     AnalyticsEventBuilderInterface * AnalyticsEventBuilder::addParameterConstString( const ConstString & _name, const ConstString & _value )
     {
-        AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventConstParameterConstString( _value );
-
-        this->addParameter( _name, parameter );
+        m_context->addParameterConstString( _name, _value, MENGINE_DOCUMENT_FACTORABLE );
 
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
     AnalyticsEventBuilderInterface * AnalyticsEventBuilder::addParameterString( const ConstString & _name, const String & _value )
     {
-        AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventConstParameterString( _value );
-
-        this->addParameter( _name, parameter );
+        m_context->addParameterString( _name, _value, MENGINE_DOCUMENT_FACTORABLE );
 
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
     AnalyticsEventBuilderInterface * AnalyticsEventBuilder::addParameterInteger( const ConstString & _name, int64_t _value )
     {
-        AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventConstParameterInteger( _value );
-
-        this->addParameter( _name, parameter );
+        m_context->addParameterInteger( _name, _value, MENGINE_DOCUMENT_FACTORABLE );
 
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
     AnalyticsEventBuilderInterface * AnalyticsEventBuilder::addParameterDouble( const ConstString & _name, double _value )
     {
-        AnalyticsEventParameterInterfacePtr parameter = m_analyticsFactory->makeAnalyticsEventConstParameterDouble( _value );
-
-        this->addParameter( _name, parameter );
+        m_context->addParameterDouble( _name, _value, MENGINE_DOCUMENT_FACTORABLE );
 
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
     Timestamp AnalyticsEventBuilder::log()
     {
-        AnalyticsEventInterfacePtr event = m_analyticsFactory->makeAnalyticsEvent( m_eventType, m_eventName );
+        AnalyticsEventInterfacePtr event = m_analyticsFactory->makeEvent( m_eventType, m_eventName, MENGINE_DOCUMENT_FACTORABLE );
 
-        for( const AnalyticsEventParameterDesc & desc : m_parameters )
+        event->setContext( m_context );
+
+        AnalyticsContextInterfacePtr resolve_globalContext = m_globalContext->resolveContext( MENGINE_DOCUMENT_FACTORABLE );
+        event->setGlobalContext( resolve_globalContext );
+
+        if( m_localContext != nullptr )
         {
-            const ConstString & name = desc.name;
-            const AnalyticsEventParameterInterfacePtr & parameter = desc.parameter;
-
-            event->addParameter( name, parameter );
+            AnalyticsContextInterfacePtr resolve_localContext = m_localContext->resolveContext( MENGINE_DOCUMENT_FACTORABLE );
+            event->setLocalContext( resolve_localContext );
         }
-
-        m_parameters.clear();
-
-        AnalyticsContextInterfacePtr resolve_context = m_globalContext->resolveContext();
-
-        event->setContext( resolve_context );
 
         Timestamp timestamp = Helper::getTimestamp();
         event->setTimestamp( timestamp );
-
-        m_analyticsFactory = nullptr;
-        m_globalContext = nullptr;
 
         ANALYTICS_SERVICE()
             ->logEvent( event );

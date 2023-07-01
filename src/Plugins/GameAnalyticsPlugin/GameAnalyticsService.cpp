@@ -132,6 +132,15 @@ namespace Mengine
                     json += parameter_value;
                     json += "\"";
                 }break;
+            case EAEPT_CONSTSTRING:
+                {
+                    AnalyticsEventParameterConstStringInterfacePtr parameter_string = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
+                    const ConstString & parameter_value = parameter_string->resolveValue();
+
+                    json += "\"";
+                    json += parameter_value.c_str();
+                    json += "\"";
+                }break;
             }
 
             json += ",";

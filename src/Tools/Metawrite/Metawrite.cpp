@@ -65,7 +65,8 @@ SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( NotificationService );
 SERVICE_EXTERN( VocabularyService );
-SERVICE_EXTERN( Platform );
+SERVICE_EXTERN( PlatformSystem );
+SERVICE_EXTERN( PlatformService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -80,6 +81,7 @@ namespace Mengine
         SERVICE_CREATE( StringizeService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
 
+        SERVICE_CREATE( PlatformSystem, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
@@ -105,7 +107,7 @@ namespace Mengine
         SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( PluginService, MENGINE_DOCUMENT_FUNCTION );
 
-        SERVICE_CREATE( Platform, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( PlatformService, MENGINE_DOCUMENT_FUNCTION );
         
         SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );

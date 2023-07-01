@@ -74,7 +74,8 @@ SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AllocatorSystem );
 SERVICE_EXTERN( DocumentService );
-SERVICE_EXTERN( Platform );
+SERVICE_EXTERN( PlatformSystem );
+SERVICE_EXTERN( PlatformService );
 SERVICE_EXTERN( NotificationService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( FactoryService );
@@ -173,6 +174,7 @@ namespace Mengine
         SERVICE_CREATE( StringizeService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
         
+        SERVICE_CREATE( PlatformSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
@@ -207,7 +209,7 @@ namespace Mengine
         SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( VocabularyService, MENGINE_DOCUMENT_FUNCTION );
 
-        SERVICE_CREATE( Platform, MENGINE_DOCUMENT_FUNCTION );        
+        SERVICE_CREATE( PlatformService, MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
@@ -567,17 +569,22 @@ namespace Mengine
         }
 
     public:
-        void write( const char * _msg, size_t _size )
+        void write( const char * _data, size_t _size )
         {
-            LoggerMessage message;
-            message.level = LM_ERROR;
-            message.filter = 0;
-            message.color = LCOLOR_NONE;
-            message.data = _msg;
-            message.size = _size;
+            LoggerMessage msg;
+            msg.category = "python";
+            msg.dateTime = PlatformDateTime();
+            msg.level = LM_ERROR;
+            msg.flag = 0;
+            msg.filter = 0;
+            msg.color = LCOLOR_NONE;
+            msg.file = nullptr;
+            msg.line = 0;
+            msg.data = _data;
+            msg.size = _size;
 
             LOGGER_SERVICE()
-                ->logMessage( message );
+                ->logMessage( msg );
         }
 
     public:

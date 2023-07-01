@@ -1,182 +1,19 @@
 #pragma once
 
-#include "Interface/Interface.h"
-#include "Interface/ServantInterface.h"
 #include "Interface/ServiceInterface.h"
+#include "Interface/AnalyticsEventProviderInterface.h"
+#include "Interface/AnalyticsEventBuilderInterface.h"
+#include "Interface/AnalyticsEventInterface.h"
+#include "Interface/AnalyticsContextInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
+#include "Kernel/Document.h"
 
 #include "Config/Timestamp.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    enum EAnalyticsEventParameterType
-    {
-        EAEPT_BOOLEAN,
-        EAEPT_INTEGER,
-        EAEPT_DOUBLE,
-        EAEPT_CONSTSTRING,
-        EAEPT_STRING
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class AnalyticsEventParameterInterface> AnalyticsEventParameterInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class AnalyticsEventParameterInterface
-        : public ServantInterface
-    {
-    public:
-        virtual EAnalyticsEventParameterType getType() const = 0;
-
-    public:
-        virtual AnalyticsEventParameterInterfacePtr resolveParameter() const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AnalyticsEventParameterInterface> AnalyticsEventParameterInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class AnalyticsEventParameterBooleanInterface
-        : public AnalyticsEventParameterInterface
-    {
-    public:
-        virtual bool resolveValue() const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AnalyticsEventParameterBooleanInterface, AnalyticsEventParameterInterface> AnalyticsEventParameterBooleanInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class AnalyticsEventParameterConstStringInterface
-        : public AnalyticsEventParameterInterface
-    {
-    public:
-        virtual const ConstString & resolveValue() const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AnalyticsEventParameterConstStringInterface, AnalyticsEventParameterInterface> AnalyticsEventParameterConstStringInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class AnalyticsEventParameterStringInterface
-        : public AnalyticsEventParameterInterface
-    {
-    public:
-        virtual const String & resolveValue() const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AnalyticsEventParameterStringInterface, AnalyticsEventParameterInterface> AnalyticsEventParameterStringInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class AnalyticsEventParameterIntegerInterface
-        : public AnalyticsEventParameterInterface
-    {
-    public:
-        virtual int64_t resolveValue() const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AnalyticsEventParameterIntegerInterface, AnalyticsEventParameterInterface> AnalyticsEventParameterIntegerInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class AnalyticsEventParameterDoubleInterface
-        : public AnalyticsEventParameterInterface
-    {
-    public:
-        virtual double resolveValue() const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AnalyticsEventParameterDoubleInterface, AnalyticsEventParameterInterface> AnalyticsEventParameterDoubleInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class AnalyticsContextInterface> AnalyticsContextInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<bool()> LambdaAnalyticsParameterGetterBoolean;
-    typedef Lambda<ConstString()> LambdaAnalyticsParameterGetterConstString;
-    typedef Lambda<void( String * const )> LambdaAnalyticsParameterGetterString;
-    typedef Lambda<int64_t()> LambdaAnalyticsParameterGetterInteger;
-    typedef Lambda<double()> LambdaAnalyticsParameterGetterDouble;
-    //////////////////////////////////////////////////////////////////////////
-    class AnalyticsContextInterface
-        : public ServantInterface
-    {
-    public:
-        virtual void addParameter( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter ) = 0;
-        virtual const AnalyticsEventParameterInterfacePtr & getParameter( const ConstString & _name ) const = 0;
-
-    public:
-        virtual void addParameterBoolean( const ConstString & _name, bool _value ) = 0;
-        virtual void addParameterString( const ConstString & _name, const String & _value ) = 0;
-        virtual void addParameterInteger( const ConstString & _name, int64_t _value ) = 0;
-        virtual void addParameterDouble( const ConstString & _name, double _value ) = 0;
-
-    public:
-        virtual void addParameterGetterBoolean( const ConstString & _name, const LambdaAnalyticsParameterGetterBoolean & _lambda ) = 0;
-        virtual void addParameterGetterString( const ConstString & _name, const LambdaAnalyticsParameterGetterString & _lambda ) = 0;
-        virtual void addParameterGetterInteger( const ConstString & _name, const LambdaAnalyticsParameterGetterInteger & _lambda ) = 0;
-        virtual void addParameterGetterDouble( const ConstString & _name, const LambdaAnalyticsParameterGetterDouble & _lambda ) = 0;
-
-    public:
-        virtual AnalyticsContextInterfacePtr resolveContext() const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AnalyticsContextInterface> AnalyticsContextInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    enum EAnalyticsEventType
-    {
-        EAET_CUSTOM = 0,
-        EAET_EARN_VIRTUAL_CURRENCY = 1,
-        EAET_SPEND_VIRTUAL_CURRENCY = 2,
-        EAET_UNLOCK_ACHIEVEMENT = 3,
-        EAET_LEVEL_UP = 4,
-        EAET_LEVEL_START = 5,
-        EAET_LEVEL_END = 6,
-        EAET_SELECT_ITEM = 7,
-        EAET_TUTORIAL_BEGIN = 8,
-        EAET_TUTORIAL_COMPLETE = 9
-    };
-    //////////////////////////////////////////////////////////////////////////
-    class AnalyticsEventInterface
-        : public ServantInterface
-    {
-    public:
-        virtual EAnalyticsEventType getType() const = 0;
-        virtual const ConstString & getName() const = 0;
-
-    public:
-        virtual void setContext( const AnalyticsContextInterfacePtr & _context ) = 0;
-        virtual const AnalyticsContextInterfacePtr & getContext() const = 0;
-
-    public:
-        virtual void setTimestamp( Timestamp _time ) = 0;
-        virtual Timestamp getTimestamp() const = 0;
-
-    public:
-        virtual void addParameter( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter ) = 0;
-
-        virtual uint32_t getCountParameters() const = 0;
-
-        typedef Lambda<void( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )> LambdaEventParameter;
-        virtual void foreachParameters( const LambdaEventParameter & _lambda ) const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AnalyticsEventInterface> AnalyticsEventInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class AnalyticsEventProviderInterface
-        : public Interface
-    {
-    public:
-        virtual void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AnalyticsEventProviderInterface> AnalyticsEventProviderInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class AnalyticsEventBuilderInterface
-        : public ServantInterface
-    {
-    public:
-        virtual AnalyticsEventBuilderInterface * addParameterBoolean( const ConstString & _name, bool _value ) = 0;
-        virtual AnalyticsEventBuilderInterface * addParameterInteger( const ConstString & _name, int64_t _value ) = 0;
-        virtual AnalyticsEventBuilderInterface * addParameterDouble( const ConstString & _name, double _value ) = 0;
-        virtual AnalyticsEventBuilderInterface * addParameterString( const ConstString & _name, const String & _value ) = 0;
-        virtual AnalyticsEventBuilderInterface * addParameterConstString( const ConstString & _name, const ConstString & _value ) = 0;
-
-    public:
-        virtual Timestamp log() = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AnalyticsEventBuilderInterface> AnalyticsEventBuilderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AnalyticsServiceInterface
         : public ServiceInterface
@@ -191,18 +28,21 @@ namespace Mengine
         virtual void logEvent( const AnalyticsEventInterfacePtr & _event ) = 0;
 
     public:
-        virtual void logEarnVirtualCurrency( const ConstString & _currencyName, double _value ) = 0;
-        virtual void logSpendVirtualCurrency( const ConstString & _itemName, const ConstString & _currencyName, double _value ) = 0;
-        virtual void logUnlockAchievement( const ConstString & _achievementId ) = 0;
-        virtual void logLevelUp( const ConstString & _character, int64_t _level ) = 0;
-        virtual void logLevelStart( const ConstString & _name ) = 0;
-        virtual void logLevelEnd( const ConstString & _name, bool _successful ) = 0;
-        virtual void logSelectItem( const ConstString & _category, const ConstString & _itemId ) = 0;
-        virtual void logTutorialBegin() = 0;
-        virtual void logTutorialComplete() = 0;
+        virtual void logEarnVirtualCurrency( const ConstString & _currencyName, double _value, const DocumentPtr & _doc ) = 0;
+        virtual void logSpendVirtualCurrency( const ConstString & _itemName, const ConstString & _currencyName, double _value, const DocumentPtr & _doc ) = 0;
+        virtual void logUnlockAchievement( const ConstString & _achievementId, const DocumentPtr & _doc ) = 0;
+        virtual void logLevelUp( const ConstString & _character, int64_t _level, const DocumentPtr & _doc ) = 0;
+        virtual void logLevelStart( const ConstString & _name, const DocumentPtr & _doc ) = 0;
+        virtual void logLevelEnd( const ConstString & _name, bool _successful, const DocumentPtr & _doc ) = 0;
+        virtual void logSelectItem( const ConstString & _category, const ConstString & _itemId, const DocumentPtr & _doc ) = 0;
+        virtual void logTutorialBegin( const DocumentPtr & _doc ) = 0;
+        virtual void logTutorialComplete( const DocumentPtr & _doc ) = 0;
 
     public:
-        virtual AnalyticsEventBuilderInterfacePtr buildEvent( const ConstString & _eventName ) = 0;
+        virtual AnalyticsEventBuilderInterfacePtr buildEvent( const ConstString & _eventName, const DocumentPtr & _doc ) = 0;
+
+    public:
+        virtual AnalyticsContextInterfacePtr makeContext( const DocumentPtr & _doc ) = 0;
     
     public:
         virtual const AnalyticsContextInterfacePtr & getGlobalContext() const = 0;

@@ -20,24 +20,26 @@ namespace Mengine
         void finalize() override;
 
     public:
-        AnalyticsEventInterfacePtr makeAnalyticsEvent( EAnalyticsEventType _type, const ConstString & _name ) override;
+        AnalyticsEventBuilderInterfacePtr makeEventBuilder( const DocumentPtr & _doc ) override;
+        AnalyticsEventInterfacePtr makeEvent( EAnalyticsEventType _type, const ConstString & _name, const DocumentPtr & _doc ) override;
 
-        AnalyticsEventParameterBooleanInterfacePtr makeAnalyticsEventConstParameterBoolean( bool _value ) override;
-        AnalyticsEventParameterConstStringInterfacePtr makeAnalyticsEventConstParameterConstString( const ConstString & _value ) override;
-        AnalyticsEventParameterStringInterfacePtr makeAnalyticsEventConstParameterString( const String & _value ) override;
-        AnalyticsEventParameterIntegerInterfacePtr makeAnalyticsEventConstParameterInteger( int64_t _value ) override;
-        AnalyticsEventParameterDoubleInterfacePtr makeAnalyticsEventConstParameterDouble( double _value ) override;
+        AnalyticsEventParameterBooleanInterfacePtr makeEventConstParameterBoolean( bool _value, const DocumentPtr & _doc ) override;
+        AnalyticsEventParameterConstStringInterfacePtr makeEventConstParameterConstString( const ConstString & _value, const DocumentPtr & _doc ) override;
+        AnalyticsEventParameterStringInterfacePtr makeEventConstParameterString( const String & _value, const DocumentPtr & _doc ) override;
+        AnalyticsEventParameterIntegerInterfacePtr makeEventConstParameterInteger( int64_t _value, const DocumentPtr & _doc ) override;
+        AnalyticsEventParameterDoubleInterfacePtr makeEventConstParameterDouble( double _value, const DocumentPtr & _doc ) override;
 
-        AnalyticsEventParameterBooleanInterfacePtr makeAnalyticsEventGetterParameterBoolean( const LambdaAnalyticsParameterGetterBoolean & _lambda ) override;
-        AnalyticsEventParameterConstStringInterfacePtr makeAnalyticsEventGetterParameterConstString( const LambdaAnalyticsParameterGetterConstString & _lambda ) override;
-        AnalyticsEventParameterStringInterfacePtr makeAnalyticsEventGetterParameterString( const LambdaAnalyticsParameterGetterString & _lambda ) override;
-        AnalyticsEventParameterIntegerInterfacePtr makeAnalyticsEventGetterParameterInteger( const LambdaAnalyticsParameterGetterInteger & _lambda ) override;
-        AnalyticsEventParameterDoubleInterfacePtr makeAnalyticsEventGetterParameterDouble( const LambdaAnalyticsParameterGetterDouble & _lambda ) override;
+        AnalyticsEventParameterBooleanInterfacePtr makeEventGetterParameterBoolean( const LambdaAnalyticsParameterGetterBoolean & _lambda, const DocumentPtr & _doc ) override;
+        AnalyticsEventParameterConstStringInterfacePtr makeEventGetterParameterConstString( const LambdaAnalyticsParameterGetterConstString & _lambda, const DocumentPtr & _doc ) override;
+        AnalyticsEventParameterStringInterfacePtr makeEventGetterParameterString( const LambdaAnalyticsParameterGetterString & _lambda, const DocumentPtr & _doc ) override;
+        AnalyticsEventParameterIntegerInterfacePtr makeEventGetterParameterInteger( const LambdaAnalyticsParameterGetterInteger & _lambda, const DocumentPtr & _doc ) override;
+        AnalyticsEventParameterDoubleInterfacePtr makeEventGetterParameterDouble( const LambdaAnalyticsParameterGetterDouble & _lambda, const DocumentPtr & _doc ) override;
 
     public:
-        AnalyticsContextInterfacePtr makeAnalyticsContext() override;
+        AnalyticsContextInterfacePtr makeContext( const DocumentPtr & _doc ) override;
 
     protected:
+        FactoryInterfacePtr m_factoryAnalyticsEventBuilder;
         FactoryInterfacePtr m_factoryAnalyticsEvent;
 
         FactoryInterfacePtr m_factoryAnalyticsEventConstParameterBoolean;

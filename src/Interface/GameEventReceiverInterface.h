@@ -2,6 +2,7 @@
 
 #include "Interface/EventationInterface.h"
 #include "Interface/InputHandlerInterface.h"
+#include "Interface/AnalyticsServiceInterface.h"
 
 #include "Kernel/Params.h"
 #include "Kernel/KeyCode.h"
@@ -63,6 +64,7 @@ namespace Mengine
         EVENT_GAME_IOS_APPLICATION_WILL_RESIGN_ACTIVE,
         EVENT_GAME_IOS_APPLICATION_WILL_TERMINATE,
 #endif
+        EVENT_GAME_ANALYTICS_EVENT,
 
         __EVENT_GAME_LAST__
     };
@@ -118,6 +120,7 @@ namespace Mengine
         virtual void onGameiOSApplicationWillResignActive() = 0;
         virtual void onGameiOSApplicationWillTerminate() = 0;
 #endif
+        virtual void onGameAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FULLSCREEN );
@@ -167,5 +170,6 @@ namespace Mengine
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_IOS_APPLICATION_WILL_RESIGN_ACTIVE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_IOS_APPLICATION_WILL_TERMINATE );
 #endif
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ANALYTICS_EVENT );
     //////////////////////////////////////////////////////////////////////////
 }

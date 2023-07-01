@@ -7,6 +7,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class PythonValueFollower
         : public Affector
         , public Scriptable

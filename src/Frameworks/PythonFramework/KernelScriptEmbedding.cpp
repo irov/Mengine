@@ -2205,16 +2205,15 @@ namespace Mengine
             return false;
         }
 
-        pybind::interface_<ServantInterface>( _kernel, "ServantInterface", true )
-            .def_smart_pointer()
-            ;
-
-        pybind::interface_<Factorable>( _kernel, "Factorable", true )
-            .def( "getType", &Factorable::getType )
-            ;
-
         pybind::interface_<Mixin>( _kernel, "Mixin", true )
             .def_smart_pointer()
+            ;
+
+        pybind::interface_<ServantInterface, pybind::bases<Mixin>>( _kernel, "ServantInterface", true )
+            ;
+
+        pybind::interface_<Factorable, pybind::bases<Mixin>>( _kernel, "Factorable", true )
+            .def( "getType", &Factorable::getType )
             ;
 
         pybind::interface_<Scriptable, pybind::bases<Mixin>>( _kernel, "Scriptable" )

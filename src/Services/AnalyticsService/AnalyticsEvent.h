@@ -26,15 +26,22 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        void setContext( const AnalyticsContextInterfacePtr & _context ) override;
-        const AnalyticsContextInterfacePtr & getContext() const override;
-
-    public:
         void setTimestamp( Timestamp _timestamp ) override;
         Timestamp getTimestamp() const override;
 
     public:
-        void addParameter( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter ) override;
+        void setContext( const AnalyticsContextInterfacePtr & _context ) override;
+        const AnalyticsContextInterfacePtr & getContext() const override;
+
+    public:
+        void setLocalContext( const AnalyticsContextInterfacePtr & _localContext ) override;
+        const AnalyticsContextInterfacePtr & getLocalContext() const override;
+
+    public:
+        void setGlobalContext( const AnalyticsContextInterfacePtr & _globalContext ) override;
+        const AnalyticsContextInterfacePtr & getGlobalContext() const override;
+
+    public:
         uint32_t getCountParameters() const override;
         void foreachParameters( const LambdaEventParameter & _lambda ) const override;
 
@@ -42,18 +49,11 @@ namespace Mengine
         EAnalyticsEventType m_type;
         ConstString m_name;
 
-        AnalyticsContextInterfacePtr m_context;
-
         Timestamp m_timestamp;
 
-        struct AnalyticsEventParameterDesc
-        {
-            ConstString name;
-            AnalyticsEventParameterInterfacePtr parameter;
-        };
-
-        typedef Vector<AnalyticsEventParameterDesc> VectorAnalyticsEventParameter;
-        VectorAnalyticsEventParameter m_parameters;
+        AnalyticsContextInterfacePtr m_context;
+        AnalyticsContextInterfacePtr m_localContext;
+        AnalyticsContextInterfacePtr m_globalContext;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AnalyticsEvent, AnalyticsEventInterface> AnalyticsEventPtr;

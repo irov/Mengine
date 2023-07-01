@@ -129,7 +129,6 @@ Common
     DocumentServiceInterface.h
     AffectorHubInterface.h
     DebuggerBoundingBoxInterface.h
-    AnalyticsServiceInterface.h
     SecureValueInterface.h
     ExecutorInterface.h
     StatisticInterface.h
@@ -141,9 +140,20 @@ Common
 
 ADD_FILTER(
 Environment
-        AndroidEnvironmentServiceInterface.h
-        AppleEnvironmentServiceInterface.h
+    AndroidEnvironmentServiceInterface.h
+    AppleEnvironmentServiceInterface.h
 )
+
+ADD_FILTER(
+Analytics
+    AnalyticsContextInterface.h
+    AnalyticsEventBuilderInterface.h
+    AnalyticsEventInterface.h
+    AnalyticsEventParameterInterface.h
+    AnalyticsEventProviderInterface.h
+    AnalyticsServiceInterface.h
+)
+
 
 ADD_FILTER(
 Profiler

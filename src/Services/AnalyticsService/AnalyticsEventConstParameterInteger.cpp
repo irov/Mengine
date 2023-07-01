@@ -22,8 +22,10 @@ namespace Mengine
         return EAEPT_INTEGER;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventParameterInterfacePtr AnalyticsEventConstParameterInteger::resolveParameter() const
+    AnalyticsEventParameterInterfacePtr AnalyticsEventConstParameterInteger::resolveParameter( const DocumentPtr & _doc ) const
     {
+        MENGINE_UNUSED( _doc );
+
         return AnalyticsEventParameterInterfacePtr::from( this );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -878,7 +878,7 @@ namespace Mengine
     bool Application::initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths, const VectorFilePath & _settingsPaths )
     {
         Timestamp mengine_initialize_game_timestamp = ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_game_start" ) )
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_game_start" ), MENGINE_DOCUMENT_FACTORABLE )
             ->log();
 
         for( const FilePath & packagePath : _packagesPaths )
@@ -933,7 +933,7 @@ namespace Mengine
         }
 
         ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_game_completed" ) )
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_game_completed" ), MENGINE_DOCUMENT_FACTORABLE )
             ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getDurationTimestamp( mengine_initialize_game_timestamp ) )
             ->log();
 

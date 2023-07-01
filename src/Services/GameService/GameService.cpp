@@ -372,6 +372,9 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_TERMINATE, &GameService::oniOSApplicationWillTerminate_, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+        ANALYTICS_SERVICE()
+            ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -386,6 +389,9 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_RESIGN_ACTIVE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_TERMINATE );
 #endif
+
+        ANALYTICS_SERVICE()
+            ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
 
         this->removeEvents();
 
@@ -559,5 +565,11 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
 #endif
+    //////////////////////////////////////////////////////////////////////////
+    void GameService::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
+    {
+        EVENTABLE_METHOD( EVENT_GAME_ANALYTICS_EVENT )
+            ->onGameAnalyticsEvent( _event );
+    }
     //////////////////////////////////////////////////////////////////////////
 }

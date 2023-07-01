@@ -58,6 +58,7 @@ namespace Mengine
         bool onGameClose() override;
         void onGameOverFillrate( double _fillrate, double _limit ) override;
         void onGameFrameEnd() override;
+
 #if defined(MENGINE_PLATFORM_IOS)
         void onGameiOSApplicationDidBecomeActive() override;
         void onGameiOSApplicationWillEnterForeground() override;
@@ -65,5 +66,7 @@ namespace Mengine
         void onGameiOSApplicationWillResignActive() override;
         void onGameiOSApplicationWillTerminate() override;
 #endif
+
+        void onGameAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;
     };
 }

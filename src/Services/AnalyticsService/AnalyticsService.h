@@ -29,18 +29,21 @@ namespace Mengine
         void logEvent( const AnalyticsEventInterfacePtr & _event ) override;
 
     public:
-        void logEarnVirtualCurrency( const ConstString & _currencyName, double _value ) override;
-        void logSpendVirtualCurrency( const ConstString & _itemName, const ConstString & _currencyName, double _value ) override;
-        void logUnlockAchievement( const ConstString & _achievementId ) override;
-        void logLevelUp( const ConstString & _character, int64_t _level ) override;
-        void logLevelStart( const ConstString & _name ) override;
-        void logLevelEnd( const ConstString & _name, bool _successful ) override;
-        void logSelectItem( const ConstString & _category, const ConstString & _itemId ) override;
-        void logTutorialBegin() override;
-        void logTutorialComplete() override;
+        void logEarnVirtualCurrency( const ConstString & _currencyName, double _value, const DocumentPtr & _doc ) override;
+        void logSpendVirtualCurrency( const ConstString & _itemName, const ConstString & _currencyName, double _value, const DocumentPtr & _doc ) override;
+        void logUnlockAchievement( const ConstString & _achievementId, const DocumentPtr & _doc ) override;
+        void logLevelUp( const ConstString & _character, int64_t _level, const DocumentPtr & _doc ) override;
+        void logLevelStart( const ConstString & _name, const DocumentPtr & _doc ) override;
+        void logLevelEnd( const ConstString & _name, bool _successful, const DocumentPtr & _doc ) override;
+        void logSelectItem( const ConstString & _category, const ConstString & _itemId, const DocumentPtr & _doc ) override;
+        void logTutorialBegin( const DocumentPtr & _doc ) override;
+        void logTutorialComplete( const DocumentPtr & _doc ) override;
 
     public:
-        AnalyticsEventBuilderInterfacePtr buildEvent( const ConstString & _eventName ) override;
+        AnalyticsEventBuilderInterfacePtr buildEvent( const ConstString & _eventName, const DocumentPtr & _doc ) override;
+
+    public:
+        AnalyticsContextInterfacePtr makeContext( const DocumentPtr & _doc ) override;
 
     public:
         const AnalyticsContextInterfacePtr & getGlobalContext() const override;
@@ -52,7 +55,5 @@ namespace Mengine
         AnalyticsFactoryInterfacePtr m_analyticsFactory;
 
         AnalyticsContextInterfacePtr m_analyticsGlobalContext;
-
-        FactoryInterfacePtr m_factoryAnalyticsEventBuilder;
     };
 }

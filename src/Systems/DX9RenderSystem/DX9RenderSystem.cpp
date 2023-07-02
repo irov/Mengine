@@ -185,11 +185,11 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "render", "D3D Adapter Driver: %s", AdapterId.Driver );
-        LOGGER_INFO( "render", "D3D Adapter Description: %s", AdapterId.Description );
-        LOGGER_INFO( "render", "D3D Adapter DeviceName: %s", AdapterId.DeviceName );
+        LOGGER_MESSAGE( "D3D Adapter Driver: %s", AdapterId.Driver );
+        LOGGER_MESSAGE( "D3D Adapter Description: %s", AdapterId.Description );
+        LOGGER_MESSAGE( "D3D Adapter DeviceName: %s", AdapterId.DeviceName );
 
-        LOGGER_INFO( "render", "D3D Adapter Version: %hu.%hu.%hu.%hu"
+        LOGGER_MESSAGE( "D3D Adapter Version: %hu.%hu.%hu.%hu"
             , HIWORD( AdapterId.DriverVersion.HighPart )
             , LOWORD( AdapterId.DriverVersion.HighPart )
             , HIWORD( AdapterId.DriverVersion.LowPart )

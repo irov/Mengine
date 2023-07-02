@@ -119,7 +119,7 @@ namespace Mengine
 
         MENGINE_UNUSED( info );
 
-        LOGGER_INFO( "curl", "cURL version: %s host: %s ssl: %s"
+        LOGGER_MESSAGE( "cURL version: %s host: %s ssl: %s"
             , info->version
             , info->host
             , info->ssl_version

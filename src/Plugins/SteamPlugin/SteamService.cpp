@@ -115,6 +115,10 @@ namespace Mengine
 
         ISteamClient * client = SteamClient();
 
+        LOGGER_INFO( "steam", "Steam client API version: %s"
+            , STEAMCLIENT_INTERFACE_VERSION
+        );
+
         if( client == nullptr )
         {
             LOGGER_ERROR( "[steam] invalid SteamClient" );
@@ -138,6 +142,10 @@ namespace Mengine
 
             return false;
         }
+
+        LOGGER_INFO( "steam", "Steam user API version: %s"
+            , STEAMUSER_INTERFACE_VERSION
+        );
 
         if( user->BLoggedOn() == false )
         {
@@ -164,6 +172,10 @@ namespace Mengine
 
             return false;
         }
+
+        LOGGER_INFO( "steam", "Steam user stats API version: %s"
+            , STEAMUSERSTATS_INTERFACE_VERSION
+        );
 
         m_userStats = userStats;
 

@@ -21,23 +21,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAdjustService::_initializeService()
     {
-        LOGGER_INFO( "adjust", "adid: %s"
+        LOGGER_MESSAGE( "adid: %s"
             , [[Adjust adid] UTF8String]
         );
         
         [Adjust requestTrackingAuthorizationWithCompletionHandler:^(NSUInteger status) {
             switch (status) {
                 case 0:
-                    LOGGER_INFO( "adjust", "ATTrackingManagerAuthorizationStatusNotDetermined" );
+                    LOGGER_MESSAGE( "ATTrackingManagerAuthorizationStatusNotDetermined" );
                     break;
                 case 1:
-                    LOGGER_INFO( "adjust", "ATTrackingManagerAuthorizationStatusRestricted" );
+                    LOGGER_MESSAGE( "ATTrackingManagerAuthorizationStatusRestricted" );
                     break;
                 case 2:
-                    LOGGER_INFO( "adjust", "ATTrackingManagerAuthorizationStatusDenied" );
+                    LOGGER_MESSAGE( "ATTrackingManagerAuthorizationStatusDenied" );
                     break;
                 case 3:
-                    LOGGER_INFO( "adjust", "ATTrackingManagerAuthorizationStatusAuthorized" );
+                    LOGGER_MESSAGE( "ATTrackingManagerAuthorizationStatusAuthorized" );
                     break;
             }
         }];

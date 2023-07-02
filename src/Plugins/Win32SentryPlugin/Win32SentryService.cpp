@@ -101,7 +101,7 @@ namespace Mengine
         }
 #endif
 
-        LOGGER_INFO( "sentry", "Sentry version: %s"
+        LOGGER_MESSAGE( "Sentry version: %s"
             , SENTRY_SDK_USER_AGENT
         );
 

@@ -14,7 +14,7 @@
     
     MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovinPlugin_AmazoneAppKey, "" ) == 0 );
 
-    LOGGER_INFO("applovin", "Amazon AppKey '%s'"
+    LOGGER_MESSAGE( "Amazon AppKey '%s'"
         , AppLovinPlugin_AmazoneAppKey
     );
         
@@ -49,8 +49,8 @@
     }
         
     NSString * amazonBannerSlotId = [NSString stringWithUTF8String:AppLovinPlugin_AmazonBannerSlotId];
-        
-    LOGGER_INFO("applovin", "Interstitial Amazon AdUnit '%s'"
+
+    LOGGER_MESSAGE( "Interstitial Amazon AdUnit '%s'"
         , AppLovinPlugin_AmazonBannerSlotId
     );
     
@@ -65,8 +65,8 @@
     }
     
     NSString * amazonInterstitialSlotId = [NSString stringWithUTF8String:AppLovinPlugin_AmazonInterstitialSlotId];
-        
-    LOGGER_INFO("applovin", "Interstitial Amazon AdUnit '%s'"
+
+    LOGGER_MESSAGE( "Interstitial Amazon AdUnit '%s'"
         , AppLovinPlugin_AmazonInterstitialSlotId
     );
     
@@ -81,8 +81,8 @@
     }
      
     NSString * amazonRewardedSlotId = [NSString stringWithUTF8String:AppLovinPlugin_AmazonRewardedSlotId];
-        
-    LOGGER_INFO("applovin", "Rewarded Amazon AdUnit '%s'"
+
+    LOGGER_MESSAGE( "Rewarded Amazon AdUnit '%s'"
         , AppLovinPlugin_AmazonRewardedSlotId
     );
     

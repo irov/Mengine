@@ -172,7 +172,7 @@ namespace Mengine
         const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));
         MENGINE_GLERRORCHECK();
 
-        LOGGER_INFO( "openal", "OpenGL version: %s"
+        LOGGER_MESSAGE( "OpenGL version: %s"
             , versionStr 
         );
 

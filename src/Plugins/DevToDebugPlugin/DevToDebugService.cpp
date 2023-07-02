@@ -156,7 +156,7 @@ namespace Mengine
 
         m_dsn = DevToDebug_DSN;
 
-        LOGGER_INFO( "devtodebug", "DevToDebug DSN: %s"
+        LOGGER_MESSAGE( "DevToDebug DSN: %s"
             , m_dsn.c_str()
         );
 

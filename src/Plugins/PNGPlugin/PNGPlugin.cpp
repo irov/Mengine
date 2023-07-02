@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PNGPlugin::_initializePlugin()
     {
-        LOGGER_INFO( "png", "PNG version: %s"
+        LOGGER_MESSAGE( "PNG version: %s"
             , PNG_HEADER_VERSION_STRING 
         );
 

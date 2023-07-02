@@ -76,7 +76,7 @@ namespace Mengine
         }
 #endif
 
-        LOGGER_INFO( "astralax", "Astralax version: %s"
+        LOGGER_MESSAGE( "Astralax version: %s"
             , version
         );
 

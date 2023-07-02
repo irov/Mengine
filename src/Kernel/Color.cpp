@@ -7,7 +7,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Color::updateRGBA_() const
     {
-        m_argb = Helper::makeRGBAF( m_r, m_g, m_b, m_a );
+        uint8_t r8 = Helper::makeColorChannelF( m_r );
+        uint8_t g8 = Helper::makeColorChannelF( m_g );
+        uint8_t b8 = Helper::makeColorChannelF( m_b );
+        uint8_t a8 = Helper::makeColorChannelF( m_a );
+
+        m_argb = MENGINE_FOURCC( r8, g8, b8, a8 );
 
         if( m_argb == Detail::COLOR_IDENTITY_VALUE )
         {

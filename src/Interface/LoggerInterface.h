@@ -11,7 +11,7 @@
 #include "Config/Char.h"
 
 #ifndef MENGINE_LOGGER_MAX_MESSAGE
-#define MENGINE_LOGGER_MAX_MESSAGE 8192
+#define MENGINE_LOGGER_MAX_MESSAGE 16384
 #endif
 
 namespace Mengine

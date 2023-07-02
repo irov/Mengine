@@ -67,9 +67,9 @@ namespace Mengine
 
         if( HAS_OPTION( "tracescriptlog" ) == true )
         {
-            Char function[256] = {'\0'};
+            Char function[MENGINE_MAX_PATH] = {'\0'};
             uint32_t lineno = 0;
-            _kernel->get_traceback_function( function, 256, &lineno );
+            _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
             LOGGER_VERBOSE_LEVEL( "python", level, LFILTER_NONE, color, function, lineno, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )( "%s", message );
         }

@@ -146,7 +146,6 @@ namespace Mengine
     {
         return m_params;
     }
-
     //////////////////////////////////////////////////////////////////////////
     float FontBase::getLineOffset() const
     {

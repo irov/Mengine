@@ -1155,8 +1155,8 @@ namespace Mengine
             return;
         }
 
-        Char traceback[8192] = {'\0'};
-        if( m_kernel->get_traceback( traceback, 8192 ) == false )
+        Char traceback[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        if( m_kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE ) == false )
         {
             return;
         }

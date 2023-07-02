@@ -415,18 +415,32 @@ namespace Mengine
             {
                 if( _kernel->tuple_size( _obj ) == 4 )
                 {
+#if defined(MENGINE_RENDER_TEXTURE_RGBA)
+                    float b = pybind::tuple_getitem_t( _kernel, _obj, 0 );
+                    float g = pybind::tuple_getitem_t( _kernel, _obj, 1 );
+                    float r = pybind::tuple_getitem_t( _kernel, _obj, 2 );
+#else
                     float r = pybind::tuple_getitem_t( _kernel, _obj, 0 );
                     float g = pybind::tuple_getitem_t( _kernel, _obj, 1 );
-                    float b = pybind::tuple_getitem_t( _kernel, _obj, 2 );
+                    float b = pybind::tuple_getitem_t( _kernel, _obj, 2 );                    
+#endif
+
                     float a = pybind::tuple_getitem_t( _kernel, _obj, 3 );
 
                     _place->setRGBA( r, g, b, a );
                 }
                 else if( _kernel->tuple_size( _obj ) == 3 )
                 {
+#if defined(MENGINE_RENDER_TEXTURE_RGBA)
+                    float b = pybind::tuple_getitem_t( _kernel, _obj, 0 );
+                    float g = pybind::tuple_getitem_t( _kernel, _obj, 1 );
+                    float r = pybind::tuple_getitem_t( _kernel, _obj, 2 );                    
+#else
                     float r = pybind::tuple_getitem_t( _kernel, _obj, 0 );
                     float g = pybind::tuple_getitem_t( _kernel, _obj, 1 );
-                    float b = pybind::tuple_getitem_t( _kernel, _obj, 2 );
+                    float b = pybind::tuple_getitem_t( _kernel, _obj, 2 );                    
+#endif
+
                     float a = 1.f;
 
                     _place->setRGBA( r, g, b, a );
@@ -442,18 +456,32 @@ namespace Mengine
             {
                 if( _kernel->list_size( _obj ) == 4 )
                 {
+#if defined(MENGINE_RENDER_TEXTURE_RGBA)
+                    float b = pybind::list_getitem_t( _kernel, _obj, 0 );
+                    float g = pybind::list_getitem_t( _kernel, _obj, 1 );
+                    float r = pybind::list_getitem_t( _kernel, _obj, 2 );
+#else
                     float r = pybind::list_getitem_t( _kernel, _obj, 0 );
                     float g = pybind::list_getitem_t( _kernel, _obj, 1 );
-                    float b = pybind::list_getitem_t( _kernel, _obj, 2 );
+                    float b = pybind::list_getitem_t( _kernel, _obj, 2 );                    
+#endif
+
                     float a = pybind::list_getitem_t( _kernel, _obj, 3 );
 
                     _place->setRGBA( r, g, b, a );
                 }
                 else if( _kernel->list_size( _obj ) == 3 )
                 {
+#if defined(MENGINE_RENDER_TEXTURE_RGBA)
                     float r = pybind::list_getitem_t( _kernel, _obj, 0 );
                     float g = pybind::list_getitem_t( _kernel, _obj, 1 );
                     float b = pybind::list_getitem_t( _kernel, _obj, 2 );
+#else
+                    float b = pybind::list_getitem_t( _kernel, _obj, 0 );
+                    float g = pybind::list_getitem_t( _kernel, _obj, 1 );
+                    float r = pybind::list_getitem_t( _kernel, _obj, 2 );
+#endif
+
                     float a = 1.f;
 
                     _place->setRGBA( r, g, b, a );

@@ -70,10 +70,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         ColorValue_ARGB makeRGBAF( float _r, float _g, float _b, float _a )
         {
-            uint8_t r8 = makeColorChannelF( _r );
-            uint8_t g8 = makeColorChannelF( _g );
-            uint8_t b8 = makeColorChannelF( _b );
-            uint8_t a8 = makeColorChannelF( _a );
+            uint8_t r8 = Helper::makeColorChannelF( _r );
+            uint8_t g8 = Helper::makeColorChannelF( _g );
+            uint8_t b8 = Helper::makeColorChannelF( _b );
+            uint8_t a8 = Helper::makeColorChannelF( _a );
 
             ColorValue_ARGB argb = Helper::makeRGBA8( r8, g8, b8, a8 );
 

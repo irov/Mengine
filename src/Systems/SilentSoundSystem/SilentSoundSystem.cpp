@@ -55,7 +55,7 @@ namespace Mengine
         MENGINE_UNUSED( _turn );
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundSourceInterfacePtr SilentSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, const DocumentPtr & _doc )
+    SoundSourceInterfacePtr SilentSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, const DocumentInterfacePtr & _doc )
     {
         SilentSoundSourcePtr soundSource = m_factorySilentSoundSource->createObject( _doc );
 
@@ -67,7 +67,7 @@ namespace Mengine
         return soundSource;
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundBufferInterfacePtr SilentSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable, const DocumentPtr & _doc )
+    SoundBufferInterfacePtr SilentSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable, const DocumentInterfacePtr & _doc )
     {
         SilentSoundBufferPtr buffer = m_factorySilentSoundBuffer->createObject( _doc );
 

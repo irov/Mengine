@@ -27,7 +27,7 @@ namespace Mengine
         const Tags & getPlatformTags() const override;
 
     public:
-        bool load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) override;
+        bool load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc ) override;
         void unload() override;
 
     public:

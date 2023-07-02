@@ -81,7 +81,7 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId Scheduler::event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc )
+    UniqueId Scheduler::event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -120,7 +120,7 @@ namespace Mengine
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId Scheduler::timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timer, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc )
+    UniqueId Scheduler::timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timer, const SchedulerEventInterfacePtr & _event, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

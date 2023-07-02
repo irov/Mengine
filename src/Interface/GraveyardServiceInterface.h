@@ -21,7 +21,7 @@ namespace Mengine
 
     public:
         virtual bool buryTexture( RenderTextureInterface * _texture ) = 0;
-        virtual RenderTextureInterfacePtr resurrectTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc ) = 0;
+        virtual RenderTextureInterfacePtr resurrectTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

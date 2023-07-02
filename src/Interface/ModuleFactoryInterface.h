@@ -16,7 +16,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual ModuleInterfacePtr createModule( const DocumentPtr & _doc ) = 0;
+        virtual ModuleInterfacePtr createModule( const DocumentInterfacePtr & _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ModuleFactoryInterface> ModuleFactoryInterfacePtr;

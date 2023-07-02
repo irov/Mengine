@@ -43,7 +43,7 @@ namespace Mengine
         }
 
     protected:
-        ConverterInterfacePtr createConverter( const DocumentPtr & _doc ) override
+        ConverterInterfacePtr createConverter( const DocumentInterfacePtr & _doc ) override
         {
             IntrusivePtr<T> converter = m_converterFactory->createObject( _doc );
 
@@ -58,7 +58,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        MENGINE_INLINE ConverterFactoryInterfacePtr registerConverter( const Char * _type, const DocumentPtr & _doc )
+        MENGINE_INLINE ConverterFactoryInterfacePtr registerConverter( const Char * _type, const DocumentInterfacePtr & _doc )
         {
             ConverterFactoryInterfacePtr converter = Helper::makeFactorableUnique<ConverterFactory<T>>( _doc );
 

@@ -82,7 +82,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr DataflowDZZ::create( const DocumentPtr & _doc )
+    DataInterfacePtr DataflowDZZ::create( const DocumentInterfacePtr & _doc )
     {
         DazzleDataPtr data = m_factoryDazzleData->createObject( _doc );
 
@@ -93,7 +93,7 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DataflowDZZ::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+    MemoryInterfacePtr DataflowDZZ::load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
     {
         MemoryInterfacePtr memory = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ), _doc );
 
@@ -102,7 +102,7 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowDZZ::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
+    bool DataflowDZZ::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );

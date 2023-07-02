@@ -25,7 +25,7 @@ namespace Mengine
         void finalize();
 
     public:
-        void addObserver( Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentPtr & _doc );
+        void addObserver( Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentInterfacePtr & _doc );
         void removeObserver( Observable * _observer );
 
     public:
@@ -35,7 +35,7 @@ namespace Mengine
         bool foreachObservers( const NotificationServiceInterface::LambdaObserver & _lambda );
 
     protected:
-        void addObserver_( Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentPtr & _doc );
+        void addObserver_( Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentInterfacePtr & _doc );
         void removeObserver_( Observable * _observer );
 
     protected:
@@ -53,7 +53,7 @@ namespace Mengine
             ObserverCallableInterfacePtr callable;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 

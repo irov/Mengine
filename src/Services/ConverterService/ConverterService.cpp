@@ -38,7 +38,7 @@ namespace Mengine
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "ConverterFactory" ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    ConverterInterfacePtr ConverterService::createConverter( const ConstString & _type, const DocumentPtr & _doc )
+    ConverterInterfacePtr ConverterService::createConverter( const ConstString & _type, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "convert", "create converter '%s'"
             , _type.c_str()
@@ -68,7 +68,7 @@ namespace Mengine
         return converter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConverterService::convert( const ConstString & _converterType, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath * const _out, const DocumentPtr & _doc )
+    bool ConverterService::convert( const ConstString & _converterType, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath * const _out, const DocumentInterfacePtr & _doc )
     {
         if( _converterType.empty() == true )
         {

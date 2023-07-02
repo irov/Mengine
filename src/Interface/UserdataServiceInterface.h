@@ -20,12 +20,12 @@ namespace Mengine
         SERVICE_DECLARE( "UserdataService" );
 
     public:
-        virtual bool addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & path, const DocumentPtr & _doc ) = 0;
+        virtual bool addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & path, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool removeUserdata( const ConstString & _name ) = 0;
         virtual bool hasUserdata( const ConstString & _name ) const = 0;
 
     public:
-        virtual MemoryInterfacePtr loadUserdata( const ConstString & _name, const DocumentPtr & _doc ) const = 0;
+        virtual MemoryInterfacePtr loadUserdata( const ConstString & _name, const DocumentInterfacePtr & _doc ) const = 0;
         virtual bool writeUserdata( const ConstString & _name, const void * _data, size_t _size ) const = 0;
     };
 }

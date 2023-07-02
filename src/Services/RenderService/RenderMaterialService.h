@@ -34,16 +34,16 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t elementSize, const DocumentPtr & _doc ) override;
+        RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t elementSize, const DocumentInterfacePtr & _doc ) override;
         RenderVertexAttributeInterfacePtr removeVertexAttribute( const ConstString & _name ) override;
 
-        RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentPtr & _doc ) override;
+        RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentInterfacePtr & _doc ) override;
         RenderVertexShaderInterfacePtr removeVertexShader( const ConstString & _name ) override;
 
-        RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentPtr & _doc ) override;
+        RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentInterfacePtr & _doc ) override;
         RenderFragmentShaderInterfacePtr removeFragmentShader( const ConstString & _name ) override;
 
-        RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc ) override;
+        RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentInterfacePtr & _doc ) override;
         RenderProgramInterfacePtr removeProgram( const ConstString & _name ) override;
 
     protected:
@@ -57,11 +57,11 @@ namespace Mengine
         void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) override;
 
     public:
-        const RenderMaterialStage * createMaterialStage( const ConstString & _name, const RenderMaterialStage & _stage, const DocumentPtr & _doc ) override;
+        const RenderMaterialStage * createMaterialStage( const ConstString & _name, const RenderMaterialStage & _stage, const DocumentInterfacePtr & _doc ) override;
         const RenderMaterialStage * removeMaterialStage( const ConstString & _name ) override;
 
         const RenderMaterialStage * getMaterialStage( const ConstString & _name ) const override;
-        const RenderMaterialStage * cacheMaterialStage( const RenderMaterialStage & _other, const DocumentPtr & _doc ) override;
+        const RenderMaterialStage * cacheMaterialStage( const RenderMaterialStage & _other, const DocumentInterfacePtr & _doc ) override;
         void uncacheMaterialStage( const RenderMaterialStage * _stage ) override;
 
     public:
@@ -71,18 +71,18 @@ namespace Mengine
         RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
             , EPrimitiveType _primitiveType
             , const RenderTextureInterfacePtr * _textures
-            , uint32_t _textureCount, const DocumentPtr & _doc ) override;
+            , uint32_t _textureCount, const DocumentInterfacePtr & _doc ) override;
 
         RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
             , const RenderMaterialStage * _stage
             , EPrimitiveType _primitiveType
             , const RenderTextureInterfacePtr * _textures
-            , uint32_t _textureCount, const DocumentPtr & _doc ) override;
+            , uint32_t _textureCount, const DocumentInterfacePtr & _doc ) override;
 
         RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
             , EPrimitiveType _primitiveType
             , const RenderTextureInterfacePtr * _textures
-            , uint32_t _textureCount, const DocumentPtr & _doc ) override;
+            , uint32_t _textureCount, const DocumentInterfacePtr & _doc ) override;
 
     public:
         const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode, bool _premultiply ) const override;

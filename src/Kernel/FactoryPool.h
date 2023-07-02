@@ -45,7 +45,7 @@ namespace Mengine
     namespace Helper
     {
         template<class Type, uint32_t Count, class F = Factory>
-        IntrusivePtr<F> makeFactoryPool( const DocumentPtr & _doc )
+        IntrusivePtr<F> makeFactoryPool( const DocumentInterfacePtr & _doc )
         {
             IntrusivePtr<F> factory = Helper::makeFactorableUnique<FactoryPool<Type, Count, F>>( _doc );
 

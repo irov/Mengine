@@ -30,7 +30,7 @@ namespace Mengine
         }
 
     public:
-        static FactorablePointer createObject( const DocumentPtr & _doc )
+        static FactorablePointer createObject( const DocumentInterfacePtr & _doc )
         {
             FactorablePointer p = m_factory->createObject( _doc );
 

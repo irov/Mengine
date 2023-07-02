@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Interface/Interface.h"
+#include "Interface/DocumentInterface.h"
 
-#include "Kernel/Document.h"
 #include "Kernel/FactorablePointer.h"
+#include "Kernel/ConstString.h"
 
 #if defined(MENGINE_DEBUG)
 #   include "Config/Lambda.h"
@@ -19,7 +20,7 @@ namespace Mengine
         virtual const ConstString & getType() const = 0;
 
     public:
-        virtual FactorablePointer createObject( const DocumentPtr & _doc ) = 0;
+        virtual FactorablePointer createObject( const DocumentInterfacePtr & _doc ) = 0;
         virtual void destroyObject( Factorable * _object ) = 0;
 
     public:

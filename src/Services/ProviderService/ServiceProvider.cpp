@@ -31,7 +31,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ServiceInterfacePtr ServiceProvider::generateService_( FServiceProviderGenerator _generator, const DocumentPtr & _doc )
+    ServiceInterfacePtr ServiceProvider::generateService_( FServiceProviderGenerator _generator, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -55,7 +55,7 @@ namespace Mengine
         return ServiceInterfacePtr::from( service );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ServiceProvider::createService( FServiceProviderGenerator _generator, bool _safe, const DocumentPtr & _doc )
+    bool ServiceProvider::createService( FServiceProviderGenerator _generator, bool _safe, const DocumentInterfacePtr & _doc )
     {
         MENGINE_RELEASE_UNUSED( _safe );
 
@@ -151,7 +151,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ServiceProvider::initializeService_( ServiceDesc & _desc, const DocumentPtr & _doc, bool * const _result )
+    void ServiceProvider::initializeService_( ServiceDesc & _desc, const DocumentInterfacePtr & _doc, bool * const _result )
     {
         const ServiceInterfacePtr & service = _desc.service;
 
@@ -550,7 +550,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ServiceProvider::deferredRequiredInitialize_( const DocumentPtr & _doc, bool * const _result )
+    void ServiceProvider::deferredRequiredInitialize_( const DocumentInterfacePtr & _doc, bool * const _result )
     {
         for( uint32_t index_service = 0; index_service != m_servicesCount; ++index_service )
         {

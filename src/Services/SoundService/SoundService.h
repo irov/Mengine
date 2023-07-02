@@ -48,13 +48,13 @@ namespace Mengine
         void onTurnSound( bool _turn ) override;
 
     public:
-        SoundIdentityInterfacePtr createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceCategory _category, bool _streamable, const DocumentPtr & _doc ) override;
+        SoundIdentityInterfacePtr createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceCategory _category, bool _streamable, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        SoundBufferInterfacePtr createSoundBufferFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable, const DocumentPtr & _doc ) override;
+        SoundBufferInterfacePtr createSoundBufferFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable, const DocumentInterfacePtr & _doc ) override;
 
     protected:
-        SoundDecoderInterfacePtr createSoundDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable, const DocumentPtr & _doc );
+        SoundDecoderInterfacePtr createSoundDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable, const DocumentInterfacePtr & _doc );
 
     public:
         void setSoundVolume( const ConstString & _type, float _volume, float _default ) override;

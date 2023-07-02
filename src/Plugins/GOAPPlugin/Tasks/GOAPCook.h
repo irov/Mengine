@@ -28,7 +28,7 @@ namespace Mengine
 
         void addAnimatablePause( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
         void addAnimatablePlay( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
-        void addAnimatablePlayWait( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable, const EventablePtr & _eventable, const DocumentPtr & _doc );
+        void addAnimatablePlayWait( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable, const EventablePtr & _eventable, const DocumentInterfacePtr & _doc );
         void addAnimatableResume( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
         void addAnimatableRewind( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
         void addAnimatableStop( const GOAP::SourceInterfacePtr & _source, const AnimatablePtr & _animatable );
@@ -37,34 +37,34 @@ namespace Mengine
         void addNodeEnable( const GOAP::SourceInterfacePtr & _source, const NodePtr & _node );
 
         typedef Lambda<bool( const InputMouseButtonEvent &, bool * )> LambdaPickerMouseButtonEvent;
-        void addPickerableMouseButton( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, EMouseButtonCode _button, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter, const DocumentPtr & _doc );
+        void addPickerableMouseButton( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, EMouseButtonCode _button, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter, const DocumentInterfacePtr & _doc );
 
         typedef Lambda<bool( const InputMouseEnterEvent &, bool * )> LambdaPickerMouseEnterEvent;
-        void addPickerableMouseEnter( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter, const DocumentPtr & _doc );
+        void addPickerableMouseEnter( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter, const DocumentInterfacePtr & _doc );
 
         typedef Lambda<bool( const InputMouseLeaveEvent & )> LambdaPickerMouseLeaveEvent;
-        void addPickerableMouseLeave( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseLeaveEvent & _filter, const DocumentPtr & _doc );
+        void addPickerableMouseLeave( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseLeaveEvent & _filter, const DocumentInterfacePtr & _doc );
 
-        void addTransformationRotateX( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc );
-        void addTransformationRotateY( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc );
-        void addTransformationRotateZ( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentPtr & _doc );
-        void addTransformationRotateXTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc );
-        void addTransformationRotateYTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc );
-        void addTransformationRotateZTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentPtr & _doc );
-        void addTransformationScaleTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags, const DocumentPtr & _doc );
-        void addTransformationTranslate( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _speed, const DocumentPtr & _doc );
-        void addTransformationTranslateTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc );
-        void addTransformationTranslateTimeWithSkip( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentPtr & _doc );
+        void addTransformationRotateX( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentInterfacePtr & _doc );
+        void addTransformationRotateY( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentInterfacePtr & _doc );
+        void addTransformationRotateZ( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentInterfacePtr & _doc );
+        void addTransformationRotateXTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentInterfacePtr & _doc );
+        void addTransformationRotateYTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentInterfacePtr & _doc );
+        void addTransformationRotateZTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, ETransformationRotateMode _mode, const DocumentInterfacePtr & _doc );
+        void addTransformationScaleTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags, const DocumentInterfacePtr & _doc );
+        void addTransformationTranslate( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _speed, const DocumentInterfacePtr & _doc );
+        void addTransformationTranslateTime( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentInterfacePtr & _doc );
+        void addTransformationTranslateTimeWithSkip( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentInterfacePtr & _doc );
 
-        void addColorableAlphaTime( const GOAP::SourceInterfacePtr & _source, const ColorablePtr & _colorable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const float _to, float _time, const DocumentPtr & _doc );
-        void addRenderableAlphaTime( const GOAP::SourceInterfacePtr & _source, const RenderablePtr & _renderable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const float _to, float _time, const DocumentPtr & _doc );
+        void addColorableAlphaTime( const GOAP::SourceInterfacePtr & _source, const ColorablePtr & _colorable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const float _to, float _time, const DocumentInterfacePtr & _doc );
+        void addRenderableAlphaTime( const GOAP::SourceInterfacePtr & _source, const RenderablePtr & _renderable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const float _to, float _time, const DocumentInterfacePtr & _doc );
 
         void addPrint( const GOAP::SourceInterfacePtr & _source, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
         void addReleasePrint( const GOAP::SourceInterfacePtr & _source, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
 
-        void addDelay( const GOAP::SourceInterfacePtr & _source, const SchedulerInterfacePtr & _scheduler, float _time, const DocumentPtr & _doc );
-        void addGlobalDelay( const GOAP::SourceInterfacePtr & _source, float _time, const DocumentPtr & _doc );
-        void addLocalDelay( const GOAP::SourceInterfacePtr & _source, float _time, const DocumentPtr & _doc );
+        void addDelay( const GOAP::SourceInterfacePtr & _source, const SchedulerInterfacePtr & _scheduler, float _time, const DocumentInterfacePtr & _doc );
+        void addGlobalDelay( const GOAP::SourceInterfacePtr & _source, float _time, const DocumentInterfacePtr & _doc );
+        void addLocalDelay( const GOAP::SourceInterfacePtr & _source, float _time, const DocumentInterfacePtr & _doc );
         //////////////////////////////////////////////////////////////////////////
         template<class ID, class ... Args>
         void addNotify( const GOAP::SourceInterfacePtr & _source, Args && ... _args )
@@ -79,16 +79,16 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         typedef Lambda<bool( const InputKeyEvent & )> LambdaInputKeyEvent;
-        void addGlobalKeyPress( const GOAP::SourceInterfacePtr & _source, EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter, const DocumentPtr & _doc );
+        void addGlobalKeyPress( const GOAP::SourceInterfacePtr & _source, EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter, const DocumentInterfacePtr & _doc );
         //////////////////////////////////////////////////////////////////////////
         typedef Lambda<bool( const InputMouseButtonEvent & )> LambdaInputMouseButtonEvent;
-        void addGlobalMouseButton( const GOAP::SourceInterfacePtr & _source, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentPtr & _doc );
+        void addGlobalMouseButton( const GOAP::SourceInterfacePtr & _source, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentInterfacePtr & _doc );
         //////////////////////////////////////////////////////////////////////////
         typedef Lambda<bool( const InputMouseMoveEvent & )> LambdaInputMouseMoveEvent;
-        void addGlobalMouseMove( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseMoveEvent & _filter, const DocumentPtr & _doc );
+        void addGlobalMouseMove( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseMoveEvent & _filter, const DocumentInterfacePtr & _doc );
         //////////////////////////////////////////////////////////////////////////
         typedef Lambda<bool( const InputMouseWheelEvent & )> LambdaInputMouseWheelEvent;
-        void addGlobalMouseWheel( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseWheelEvent & _filter, const DocumentPtr & _doc );
+        void addGlobalMouseWheel( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseWheelEvent & _filter, const DocumentInterfacePtr & _doc );
         //////////////////////////////////////////////////////////////////////////
         using GOAP::Cook::addFunction;
         //////////////////////////////////////////////////////////////////////////

@@ -19,7 +19,7 @@ namespace Mengine
         const dz_service_t * getDazzleService() const;
 
     protected:
-        FactorablePointer generate( const DocumentPtr & _doc ) override;
+        FactorablePointer generate( const DocumentInterfacePtr & _doc ) override;
 
     protected:
         const dz_service_t * m_service;

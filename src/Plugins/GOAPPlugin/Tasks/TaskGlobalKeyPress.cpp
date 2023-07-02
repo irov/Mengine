@@ -9,7 +9,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskGlobalKeyPress::TaskGlobalKeyPress( GOAP::Allocator * _allocator, EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter, const DocumentPtr & _doc )
+    TaskGlobalKeyPress::TaskGlobalKeyPress( GOAP::Allocator * _allocator, EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter, const DocumentInterfacePtr & _doc )
         : GOAP::TaskInterface( _allocator )
         , m_code( _code )
         , m_isDown( _isDown )

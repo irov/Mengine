@@ -30,41 +30,41 @@ namespace Mengine
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
             , uint32_t _vertexCount, uint32_t _indexCount
-            , uint32_t _baseVertexIndex, uint32_t _startIndex, const DocumentPtr & _doc ) = 0;
+            , uint32_t _baseVertexIndex, uint32_t _startIndex, const DocumentInterfacePtr & _doc ) = 0;
 
         virtual void addRenderObject( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const RenderIndex * _indices, uint32_t _indexCount
-            , const mt::box2f * _bb, bool _debug, const DocumentPtr & _doc ) = 0;
+            , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc ) = 0;
 
         virtual void addRenderQuad( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug, const DocumentPtr & _doc ) = 0;
+            , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc ) = 0;
 
         virtual void addRenderLine( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug, const DocumentPtr & _doc ) = 0;
+            , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual void addRenderExternal( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderExternalInterfacePtr & _external
-            , const DocumentPtr & _doc ) = 0;
+            , const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual void addDebugRenderObject( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const RenderIndex * _indices, uint32_t _indexCount, const DocumentPtr & _doc ) = 0;
+            , const RenderIndex * _indices, uint32_t _indexCount, const DocumentInterfacePtr & _doc ) = 0;
 
         virtual void addDebugRenderQuad( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount, const DocumentPtr & _doc ) = 0;
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual void endDebugLimitRenderObjects() = 0;

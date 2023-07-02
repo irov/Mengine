@@ -58,7 +58,7 @@ namespace Mengine
         m_factorySocket = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    SocketInterfacePtr SDLSocketSystem::createSocket( const DocumentPtr & _doc )
+    SocketInterfacePtr SDLSocketSystem::createSocket( const DocumentInterfacePtr & _doc )
     {
         SocketInterfacePtr socket = m_factorySocket->createObject( _doc );
 

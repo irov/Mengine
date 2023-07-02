@@ -788,8 +788,6 @@ Core
     
     HttpCode.h
     
-    Document.h
-    Document.cpp
     DocumentHelper.h
     
     Ravingcode.h

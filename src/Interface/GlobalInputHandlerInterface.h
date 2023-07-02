@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Interface/InputHandlerInterface.h"
-
-#include "Kernel/Document.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Config/Lambda.h"
 #include "Config/UniqueId.h"
@@ -18,12 +17,12 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual UniqueId addGlobalHandler( const InputHandlerInterfacePtr & _handler, const DocumentPtr & _doc ) = 0;
+        virtual UniqueId addGlobalHandler( const InputHandlerInterfacePtr & _handler, const DocumentInterfacePtr & _doc ) = 0;
         virtual InputHandlerInterfacePtr removeGlobalHandler( UniqueId _id ) = 0;
 
     public:
         typedef Lambda<void( const InputKeyEvent & _event )> LambdaKeyHandler;
-        virtual UniqueId addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const DocumentPtr & _doc ) = 0;
+        virtual UniqueId addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual bool enableGlobalHandler( UniqueId _id, bool _value ) = 0;

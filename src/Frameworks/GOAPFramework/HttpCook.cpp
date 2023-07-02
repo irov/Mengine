@@ -38,21 +38,21 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
-        void addHttpGet( const GOAP::SourceInterfacePtr & _source, const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const LambdaTaskReceiver & _lambda, const DocumentPtr & _doc )
+        void addHttpGet( const GOAP::SourceInterfacePtr & _source, const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const LambdaTaskReceiver & _lambda, const DocumentInterfacePtr & _doc )
         {
             HttpTaskReceiverInterfacePtr receiver = Helper::makeFactorableUnique<Detail::HttpTaskReceiverF>( _doc, _lambda );
 
             Cook::addTask<TaskHttpGet>( _source, _url, _headers, _timeout, _receiveHeaders, receiver );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addHttpHeaderData( const GOAP::SourceInterfacePtr & _source, const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const LambdaTaskReceiver & _lambda, const DocumentPtr & _doc )
+        void addHttpHeaderData( const GOAP::SourceInterfacePtr & _source, const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const LambdaTaskReceiver & _lambda, const DocumentInterfacePtr & _doc )
         {
             HttpTaskReceiverInterfacePtr receiver = Helper::makeFactorableUnique<Detail::HttpTaskReceiverF>( _doc, _lambda );
 
             Cook::addTask<TaskHttpHeaderData>( _source, _url, _headers, _timeout, _receiveHeaders, _data, receiver );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addHttpPost( const GOAP::SourceInterfacePtr & _source, const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpRequestPostParams & _params, const LambdaTaskReceiver & _lambda, const DocumentPtr & _doc )
+        void addHttpPost( const GOAP::SourceInterfacePtr & _source, const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpRequestPostParams & _params, const LambdaTaskReceiver & _lambda, const DocumentInterfacePtr & _doc )
         {
             HttpTaskReceiverInterfacePtr receiver = Helper::makeFactorableUnique<Detail::HttpTaskReceiverF>( _doc, _lambda );
 

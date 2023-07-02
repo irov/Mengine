@@ -50,7 +50,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr DataflowAEK::create( const DocumentPtr & _doc )
+    DataInterfacePtr DataflowAEK::create( const DocumentInterfacePtr & _doc )
     {
         MovieFramePackPtr data = m_factoryMovieFramePack->createObject( _doc );
 
@@ -59,7 +59,7 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DataflowAEK::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+    MemoryInterfacePtr DataflowAEK::load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
     {
         MemoryInterfacePtr memory = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), _doc );
 
@@ -68,7 +68,7 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowAEK::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
+    bool DataflowAEK::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );

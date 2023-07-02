@@ -97,7 +97,7 @@ namespace Mengine
         m_factoryMemoryConfig = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConfigInterfacePtr ConfigService::createMemoryConfig( const DocumentPtr & _doc )
+    ConfigInterfacePtr ConfigService::createMemoryConfig( const DocumentInterfacePtr & _doc )
     {
         MemoryConfigPtr config = m_factoryMemoryConfig->createObject( _doc );
 
@@ -111,7 +111,7 @@ namespace Mengine
         return config;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConfigInterfacePtr ConfigService::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentPtr & _doc )
+    ConfigInterfacePtr ConfigService::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "config", "load config '%s' (doc: %s)"
             , Helper::getFileGroupFullPath( _fileGroup, _filePath )
@@ -155,7 +155,7 @@ namespace Mengine
         return config;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConfigService::loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentPtr & _doc )
+    bool ConfigService::loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "config", "load default config '%s'"
             , Helper::getFileGroupFullPath( _fileGroup, _filePath )

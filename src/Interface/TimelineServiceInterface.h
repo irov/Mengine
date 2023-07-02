@@ -12,7 +12,7 @@ namespace Mengine
         SERVICE_DECLARE( "TimelineService" )
 
     public:
-        virtual void beginOffset( float _offset, const DocumentPtr & _doc ) = 0;
+        virtual void beginOffset( float _offset, const DocumentInterfacePtr & _doc ) = 0;
         virtual float getOffset() const = 0;
         virtual void endOffset() = 0;
 

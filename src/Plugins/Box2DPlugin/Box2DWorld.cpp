@@ -90,7 +90,7 @@ namespace Mengine
         m_positionIterations = _positionIterations;
     }
     //////////////////////////////////////////////////////////////////////////
-    Box2DBodyInterfacePtr Box2DWorld::createBody( bool _static, const mt::vec2f & _pos, float _angle, float _linearDamping, float _angularDamping, bool _allowSleep, bool _isBullet, bool _fixedRotation, const DocumentPtr & _doc )
+    Box2DBodyInterfacePtr Box2DWorld::createBody( bool _static, const mt::vec2f & _pos, float _angle, float _linearDamping, float _angularDamping, bool _allowSleep, bool _isBullet, bool _fixedRotation, const DocumentInterfacePtr & _doc )
     {
         b2BodyDef bodyDef;
 
@@ -271,7 +271,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Box2DJointInterfacePtr Box2DWorld::createDistanceJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
         , const mt::vec2f & _offsetBody1, const mt::vec2f & _offsetBody2
-        , bool _collideBodies, const DocumentPtr & _doc )
+        , bool _collideBodies, const DocumentInterfacePtr & _doc )
     {
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
@@ -300,7 +300,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Box2DJointInterfacePtr Box2DWorld::createHingeJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
         , const mt::vec2f & _offsetBody1, const mt::vec2f & _limits
-        , bool _collideBodies, const DocumentPtr & _doc )
+        , bool _collideBodies, const DocumentInterfacePtr & _doc )
     {
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
@@ -334,7 +334,7 @@ namespace Mengine
     Box2DJointInterfacePtr Box2DWorld::createPrismaticJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
         , const mt::vec2f & _unitsWorldAxis, bool _collideConnected
         , bool _enableLimit, const mt::vec2f & _translation
-        , bool _enableMotor, float _maxMotorForce, float _motorSpeed, const DocumentPtr & _doc )
+        , bool _enableMotor, float _maxMotorForce, float _motorSpeed, const DocumentInterfacePtr & _doc )
     {
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
@@ -375,7 +375,7 @@ namespace Mengine
     Box2DJointInterfacePtr Box2DWorld::createPulleyJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
         , const mt::vec2f & _offsetBody1, const mt::vec2f & _offsetBody2
         , const mt::vec2f & _offsetGroundBody1, const mt::vec2f & _offsetGroundBody2
-        , float _ratio, bool _collideConnected, const DocumentPtr & _doc )
+        , float _ratio, bool _collideConnected, const DocumentInterfacePtr & _doc )
     {
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
@@ -407,7 +407,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Box2DJointInterfacePtr Box2DWorld::createGearJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
         , const Box2DJointInterfacePtr & _joint1, const Box2DJointInterfacePtr & _joint2
-        , float _ratio, bool _collideConnected, const DocumentPtr & _doc )
+        , float _ratio, bool _collideConnected, const DocumentInterfacePtr & _doc )
     {
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
@@ -436,7 +436,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Box2DJointInterfacePtr Box2DWorld::createRopeJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
         , const mt::vec2f & _offsetBody1, const mt::vec2f & _offsetBody2, float _maxlength
-        , bool _collideConnected, const DocumentPtr & _doc )
+        , bool _collideConnected, const DocumentInterfacePtr & _doc )
     {
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
@@ -463,7 +463,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Box2DJointInterfacePtr Box2DWorld::createWheelJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
         , const mt::vec2f & _offsetBody, const mt::vec2f & _localAxis, bool _collideConnected
-        , bool _enableLimit, float _lowerTranslation, float _upperTranslation, float _maxMotorTorque, bool _enableMotor, float _motorSpeed, float _stiffness, float _damping, const DocumentPtr & _doc )
+        , bool _enableLimit, float _lowerTranslation, float _upperTranslation, float _maxMotorTorque, bool _enableMotor, float _motorSpeed, float _stiffness, float _damping, const DocumentInterfacePtr & _doc )
     {
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
@@ -500,7 +500,7 @@ namespace Mengine
         , const mt::vec2f & _localAnchor
         , bool _enableLimit, float _lowerAngle, float _upperAngle
         , bool _enableMotor, float _motorSpeed, float _maxMotorTorque
-        , const DocumentPtr & _doc )
+        , const DocumentInterfacePtr & _doc )
     {
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
@@ -526,7 +526,7 @@ namespace Mengine
         return joint;
     }
     //////////////////////////////////////////////////////////////////////////
-    Box2DJointInterfacePtr Box2DWorld::createJoint_( const b2JointDef * _jointDef, const DocumentPtr & _doc )
+    Box2DJointInterfacePtr Box2DWorld::createJoint_( const b2JointDef * _jointDef, const DocumentInterfacePtr & _doc )
     {
         Box2DJointPtr join = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DJoint" ), _doc );

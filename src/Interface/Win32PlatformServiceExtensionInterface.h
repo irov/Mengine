@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Interface/UnknownInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
-
-#include "Kernel/Document.h"
 
 #include "Config/Typedef.h"
 #include "Config/Lambda.h"
@@ -23,7 +22,7 @@ namespace Mengine
 
     public:
         typedef Lambda<LRESULT( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, BOOL * const pHandled )> LambdaWin32ProcessHandler;
-        virtual UniqueId addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentPtr & _doc ) = 0;
+        virtual UniqueId addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentInterfacePtr & _doc ) = 0;
         virtual void removeWin32ProcessHandler( UniqueId _id ) = 0;
 
     public:

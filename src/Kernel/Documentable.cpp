@@ -1,5 +1,4 @@
 #include "Kernel/Documentable.h"
-#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -14,12 +13,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_DOCUMENT_ENABLE)
     //////////////////////////////////////////////////////////////////////////
-    void Documentable::setDocument( const DocumentPtr & _document )
+    void Documentable::setDocument( const DocumentInterfacePtr & _document )
     {
         m_document = _document;
     }
     //////////////////////////////////////////////////////////////////////////
-    const DocumentPtr & Documentable::getDocument() const
+    const DocumentInterfacePtr & Documentable::getDocument() const
     {
         return m_document;
     }

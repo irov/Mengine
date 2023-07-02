@@ -1,6 +1,7 @@
 #include "AreaOfInterestScriptEmbedding.h"
 
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
@@ -11,7 +12,6 @@
 #include "NodeAreaOfInterestTrigger.h"
 #include "NodeAreaOfInterestActor.h"
 
-#include "Kernel/Document.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FactoryPool.h"

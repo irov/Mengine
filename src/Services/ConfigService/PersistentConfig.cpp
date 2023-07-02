@@ -39,7 +39,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static bool hasValueT( const Char * _section, const Char * _key, T _default, T * const _value, const DocumentPtr & _doc )
+        static bool hasValueT( const Char * _section, const Char * _key, T _default, T * const _value, const DocumentInterfacePtr & _doc )
         {
             FileGroupInterfacePtr userFileGroup;
             if( FILE_SERVICE()
@@ -90,7 +90,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static bool setValueT( const Char * _section, const Char * _key, T _value, const DocumentPtr & _doc )
+        static bool setValueT( const Char * _section, const Char * _key, T _value, const DocumentInterfacePtr & _doc )
         {
             FileGroupInterfacePtr userFileGroup;
             if( FILE_SERVICE()
@@ -180,7 +180,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PersistentConfig::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+    bool PersistentConfig::load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _stream );
         MENGINE_UNUSED( _doc );

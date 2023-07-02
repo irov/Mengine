@@ -6,13 +6,13 @@
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 #include "Kernel/Affectorable.h"
 #include "Kernel/AffectorHelper.h"
 #include "Kernel/AssertionFactory.h"
@@ -176,7 +176,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factorySoundNodeListener;
             //////////////////////////////////////////////////////////////////////////
-            SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cb, const pybind::args & _args, const DocumentPtr & _doc )
+            SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cb, const pybind::args & _args, const DocumentInterfacePtr & _doc )
             {
                 MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( _resourceName, ResourceSoundPtr, nullptr, "resource '%s' type does not match 'ResourceSound'"
                     , _resourceName.c_str()

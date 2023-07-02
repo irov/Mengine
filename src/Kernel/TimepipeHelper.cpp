@@ -36,7 +36,7 @@ namespace Mengine
             };
         }
         //////////////////////////////////////////////////////////////////////////
-        UniqueId addTimepipe( const LambdaTimepipe & _lambda, const DocumentPtr & _doc )
+        UniqueId addTimepipe( const LambdaTimepipe & _lambda, const DocumentInterfacePtr & _doc )
         {
             TimepipeInterfacePtr timepipe = Helper::makeFactorableUnique<Detail::MyTimepipe>( _doc, _lambda );
 

@@ -46,7 +46,7 @@ namespace Mengine
         bool isNoSeek() const override;
 
     public:
-        VideoDecoderInterfacePtr createVideoDecoder( const DocumentPtr & _doc );
+        VideoDecoderInterfacePtr createVideoDecoder( const DocumentInterfacePtr & _doc );
         void destroyVideoDecoder( const VideoDecoderInterfacePtr & _decoder );
 
     protected:

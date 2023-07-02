@@ -29,13 +29,13 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        ConfigInterfacePtr createMemoryConfig( const DocumentPtr & _doc ) override;
+        ConfigInterfacePtr createMemoryConfig( const DocumentInterfacePtr & _doc ) override;
 
     public:
-        ConfigInterfacePtr loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentPtr & _doc ) override;
+        ConfigInterfacePtr loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        bool loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentPtr & _doc ) override;
+        bool loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentInterfacePtr & _doc ) override;
 
     public:
         const ConfigInterfacePtr & getDefaultConfig() const override;

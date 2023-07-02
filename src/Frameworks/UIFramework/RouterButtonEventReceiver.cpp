@@ -135,7 +135,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        RouterButtonEventReceiverPtr makeRouterButtonEventReceiver( const ButtonPtr & _button, const DocumentPtr & _doc )
+        RouterButtonEventReceiverPtr makeRouterButtonEventReceiver( const ButtonPtr & _button, const DocumentInterfacePtr & _doc )
         {
             RouterButtonEventReceiverPtr router = Helper::makeFactorableUnique<RouterButtonEventReceiver>( _doc );
 

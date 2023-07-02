@@ -15,7 +15,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual ConverterInterfacePtr createConverter( const DocumentPtr & _doc ) = 0;
+        virtual ConverterInterfacePtr createConverter( const DocumentInterfacePtr & _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ConverterFactoryInterface> ConverterFactoryInterfacePtr;

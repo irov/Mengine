@@ -932,6 +932,12 @@ namespace Mengine
             return false;
         }
 
+        if( GAME_SERVICE()
+            ->preparation() == false )
+        {
+            return false;
+        }
+
         ANALYTICS_SERVICE()
             ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_game_completed" ), MENGINE_DOCUMENT_FACTORABLE )
             ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getDurationTimestamp( mengine_initialize_game_timestamp ) )

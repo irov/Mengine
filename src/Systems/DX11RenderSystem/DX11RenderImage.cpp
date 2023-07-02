@@ -6,7 +6,6 @@
 #include "DX11RenderEnum.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TextureHelper.h"
 #include "Kernel/PixelFormatHelper.h"

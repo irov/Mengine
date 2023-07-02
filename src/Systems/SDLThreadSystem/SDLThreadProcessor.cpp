@@ -71,18 +71,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadProcessor::initialize( EThreadPriority _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc )
+    bool SDLThreadProcessor::initialize( EThreadPriority _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex )
     {
-        MENGINE_UNUSED( _doc );
-
         m_priority = _priority;
         m_name = _name;
 
         m_mutex = _mutex;
-
-#if defined(MENGINE_DEBUG)
-        m_doc = _doc;
-#endif
 
         SDL_mutex * taskLock = SDL_CreateMutex();
 
@@ -167,10 +161,6 @@ namespace Mengine
 
         m_thread = nullptr;
         m_mutex = nullptr;
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-        m_doc = nullptr;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadProcessor::main()

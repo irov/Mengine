@@ -11,7 +11,6 @@
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 #include "Kernel/ConfigHelper.h"
 
 #include "Config/StdString.h"
@@ -119,7 +118,7 @@ namespace Mengine
         m_renderFragmentShaderCache.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterContainerInterfacePtr AstralaxService::createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
+    AstralaxEmitterContainerInterfacePtr AstralaxService::createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
     {
         AstralaxEmitterContainerPtr container = m_factoryPoolAstralaxEmitterContainer->createObject( _doc );
 
@@ -188,7 +187,7 @@ namespace Mengine
         return new_container;
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterInterfacePtr AstralaxService::createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentPtr & _doc )
+    AstralaxEmitterInterfacePtr AstralaxService::createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentInterfacePtr & _doc )
     {
         AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter->createObject( _doc );
 

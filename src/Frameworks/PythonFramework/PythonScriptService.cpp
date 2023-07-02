@@ -14,6 +14,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
@@ -34,7 +35,6 @@
 #include "Kernel/EntityEventable.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
-#include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/BuildMode.h"

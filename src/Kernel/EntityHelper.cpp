@@ -11,7 +11,7 @@ namespace Mengine
 {
     namespace Helper
     {
-        EntityPtr generateEntity( const EntityEventReceiverInterfacePtr & _eventReceiver, const DocumentPtr & _doc )
+        EntityPtr generateEntity( const EntityEventReceiverInterfacePtr & _eventReceiver, const DocumentInterfacePtr & _doc )
         {
             EntityPtr entity = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none(), _doc );

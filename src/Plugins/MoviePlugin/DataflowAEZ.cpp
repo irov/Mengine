@@ -255,7 +255,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr DataflowAEZ::create( const DocumentPtr & _doc )
+    DataInterfacePtr DataflowAEZ::create( const DocumentInterfacePtr & _doc )
     {
         Movie2DataPtr data = m_factoryMovieData->createObject( _doc );
 
@@ -264,7 +264,7 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DataflowAEZ::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+    MemoryInterfacePtr DataflowAEZ::load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
     {
         MemoryInterfacePtr memory = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), _doc );
 
@@ -273,7 +273,7 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowAEZ::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
+    bool DataflowAEZ::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );

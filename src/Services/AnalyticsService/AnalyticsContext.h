@@ -31,21 +31,21 @@ namespace Mengine
         void foreachParameters( const LambdaForeachParameters & _lambda ) const override;
 
     public:
-        void addParameterBoolean( const ConstString & _name, bool _value, const DocumentPtr & _doc ) override;
-        void addParameterInteger( const ConstString & _name, int64_t _value, const DocumentPtr & _doc ) override;
-        void addParameterDouble( const ConstString & _name, double _value, const DocumentPtr & _doc ) override;
-        void addParameterString( const ConstString & _name, const String & _value, const DocumentPtr & _doc ) override;
-        void addParameterConstString( const ConstString & _name, const ConstString & _value, const DocumentPtr & _doc ) override;
+        void addParameterBoolean( const ConstString & _name, bool _value, const DocumentInterfacePtr & _doc ) override;
+        void addParameterInteger( const ConstString & _name, int64_t _value, const DocumentInterfacePtr & _doc ) override;
+        void addParameterDouble( const ConstString & _name, double _value, const DocumentInterfacePtr & _doc ) override;
+        void addParameterString( const ConstString & _name, const String & _value, const DocumentInterfacePtr & _doc ) override;
+        void addParameterConstString( const ConstString & _name, const ConstString & _value, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        void addParameterGetterBoolean( const ConstString & _name, const LambdaAnalyticsParameterGetterBoolean & _lambda, const DocumentPtr & _doc ) override;
-        void addParameterGetterInteger( const ConstString & _name, const LambdaAnalyticsParameterGetterInteger & _lambda, const DocumentPtr & _doc ) override;
-        void addParameterGetterDouble( const ConstString & _name, const LambdaAnalyticsParameterGetterDouble & _lambda, const DocumentPtr & _doc ) override;
-        void addParameterGetterString( const ConstString & _name, const LambdaAnalyticsParameterGetterString & _lambda, const DocumentPtr & _doc ) override;
-        void addParameterGetterConstString( const ConstString & _name, const LambdaAnalyticsParameterGetterConstString & _lambda, const DocumentPtr & _doc ) override;
+        void addParameterGetterBoolean( const ConstString & _name, const LambdaAnalyticsParameterGetterBoolean & _lambda, const DocumentInterfacePtr & _doc ) override;
+        void addParameterGetterInteger( const ConstString & _name, const LambdaAnalyticsParameterGetterInteger & _lambda, const DocumentInterfacePtr & _doc ) override;
+        void addParameterGetterDouble( const ConstString & _name, const LambdaAnalyticsParameterGetterDouble & _lambda, const DocumentInterfacePtr & _doc ) override;
+        void addParameterGetterString( const ConstString & _name, const LambdaAnalyticsParameterGetterString & _lambda, const DocumentInterfacePtr & _doc ) override;
+        void addParameterGetterConstString( const ConstString & _name, const LambdaAnalyticsParameterGetterConstString & _lambda, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        AnalyticsContextInterfacePtr resolveContext( const DocumentPtr & _doc ) const override;
+        AnalyticsContextInterfacePtr resolveContext( const DocumentInterfacePtr & _doc ) const override;
 
     protected:
         AnalyticsFactoryInterfacePtr m_analyticsFactory;

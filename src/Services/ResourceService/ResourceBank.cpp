@@ -142,7 +142,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourcePointer ResourceBank::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _keep, Resource ** const _override, const DocumentPtr & _doc )
+    ResourcePointer ResourceBank::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _keep, Resource ** const _override, const DocumentInterfacePtr & _doc )
     {
         MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::createResource" );
 

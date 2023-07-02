@@ -89,7 +89,7 @@ namespace Mengine
     class TextService::TextManagerLoadSaxCallback
     {
     public:
-        TextManagerLoadSaxCallback( TextService * _textManager, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
+        TextManagerLoadSaxCallback( TextService * _textManager, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
             : m_textService( _textManager )
             , m_fileGroup( _fileGroup )
             , m_filePath( _filePath )
@@ -447,7 +447,7 @@ namespace Mengine
         bool m_successful;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-        DocumentPtr m_doc;
+        DocumentInterfacePtr m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
@@ -593,7 +593,7 @@ namespace Mengine
         , ETextVerticalAlign _verticalAlign
         , float _scale
         , uint32_t _params
-        , const DocumentPtr & _doc )
+        , const DocumentInterfacePtr & _doc )
     {
         TextEntryPtr textEntry = m_factoryTextEntry->createObject( _doc );
 
@@ -626,7 +626,7 @@ namespace Mengine
         , uint32_t _params
         , bool _isOverride
         , bool * const _isDublicate
-        , const DocumentPtr & _doc )
+        , const DocumentInterfacePtr & _doc )
     {
         if( _isDublicate != nullptr )
         {

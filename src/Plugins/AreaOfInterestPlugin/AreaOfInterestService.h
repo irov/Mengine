@@ -24,7 +24,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        AreaOfInterestZoneInterfacePtr createZone( const DocumentPtr & _doc ) override;
+        AreaOfInterestZoneInterfacePtr createZone( const DocumentInterfacePtr & _doc ) override;
         void removeZone( const AreaOfInterestZoneInterfacePtr & _zone ) override;
 
     public:

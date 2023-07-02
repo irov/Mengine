@@ -20,7 +20,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void addObserver( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentPtr & _doc ) override;
+        void addObserver( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentInterfacePtr & _doc ) override;
         void removeObserver( uint32_t _id, Observable * _observer ) override;
 
     public:

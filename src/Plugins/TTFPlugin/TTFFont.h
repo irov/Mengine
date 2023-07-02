@@ -76,7 +76,7 @@ namespace Mengine
 
     protected:
         bool _validateGlyphes( const U32String & _codes ) const override;
-        bool _prepareGlyph( GlyphCode _code, const DocumentPtr & _doc ) override;
+        bool _prepareGlyph( GlyphCode _code, const DocumentInterfacePtr & _doc ) override;
 
     protected:
         bool loadFaceGlyph_( GlyphCode _code, FT_Face * const _face ) const;

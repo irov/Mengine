@@ -3,8 +3,7 @@
 #include "GOAP/TaskInterface.h"
 
 #include "Interface/InputHandlerInterface.h"
-
-#include "Kernel/Document.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Config/Lambda.h"
 #include "Config/UniqueId.h"
@@ -18,7 +17,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskGlobalMouseMove( GOAP::Allocator * _allocator, const LambdaInputMouseMoveEvent & _filter, const DocumentPtr & _doc );
+        TaskGlobalMouseMove( GOAP::Allocator * _allocator, const LambdaInputMouseMoveEvent & _filter, const DocumentInterfacePtr & _doc );
         ~TaskGlobalMouseMove() override;
 
     protected:
@@ -29,7 +28,7 @@ namespace Mengine
         LambdaInputMouseMoveEvent m_filter;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-        DocumentPtr m_doc;
+        DocumentInterfacePtr m_doc;
 #endif
 
         UniqueId m_id;

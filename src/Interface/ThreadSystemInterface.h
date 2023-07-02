@@ -18,9 +18,9 @@ namespace Mengine
         SERVICE_DECLARE( "ThreadSystem" )
 
     public:        
-        virtual ThreadIdentityInterfacePtr createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc ) = 0;
-        virtual ThreadProcessorInterfacePtr createThreadProcessor( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc ) = 0;
-        virtual ThreadMutexInterfacePtr createMutex( const DocumentPtr & _doc ) = 0;
+        virtual ThreadIdentityInterfacePtr createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) = 0;
+        virtual ThreadProcessorInterfacePtr createThreadProcessor( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) = 0;
+        virtual ThreadMutexInterfacePtr createMutex( const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual void sleep( uint32_t _ms ) = 0;

@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer EntityPrototypeGenerator::generate( const DocumentPtr & _doc )
+    FactorablePointer EntityPrototypeGenerator::generate( const DocumentInterfacePtr & _doc )
     {
         EntityPtr entity = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Entity" ), _doc );

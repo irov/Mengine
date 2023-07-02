@@ -25,7 +25,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SocketInterfacePtr MockupSocketSystem::createSocket( const DocumentPtr & _doc )
+    SocketInterfacePtr MockupSocketSystem::createSocket( const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

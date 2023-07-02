@@ -28,7 +28,6 @@
 #include "Kernel/Scene.h"
 #include "Kernel/NodeHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"

@@ -130,7 +130,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr Win32FileMapped::createInputStream( const DocumentPtr & _doc )
+    InputStreamInterfacePtr Win32FileMapped::createInputStream( const DocumentInterfacePtr & _doc )
     {
         Win32FileMappedInputStreamPtr stream = m_factoryFileMappedInputStream->createObject( _doc );
 

@@ -30,7 +30,7 @@ namespace Mengine
         return m_mutex;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer FactoryWithMutex::createObject( const DocumentPtr & _doc )
+    FactorablePointer FactoryWithMutex::createObject( const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

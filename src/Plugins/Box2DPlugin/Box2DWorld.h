@@ -50,7 +50,7 @@ namespace Mengine
             , bool _allowSleep
             , bool _isBullet
             , bool _fixedRotation
-            , const DocumentPtr & _doc ) override;
+            , const DocumentInterfacePtr & _doc ) override;
 
     public:
         Box2DJointInterfacePtr createDistanceJoint( const Box2DBodyInterfacePtr & _body1
@@ -58,14 +58,14 @@ namespace Mengine
             , const mt::vec2f & _offsetBody1
             , const mt::vec2f & _offsetBody2
             , bool _collideBodies
-            , const DocumentPtr & _doc ) override;
+            , const DocumentInterfacePtr & _doc ) override;
 
         Box2DJointInterfacePtr createHingeJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
             , const mt::vec2f & _offsetBody1
             , const mt::vec2f & _limits
             , bool _collideBodies
-            , const DocumentPtr & _doc ) override;
+            , const DocumentInterfacePtr & _doc ) override;
 
         Box2DJointInterfacePtr createPrismaticJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
@@ -76,7 +76,7 @@ namespace Mengine
             , bool _enableMotor
             , float _maxMotorForce
             , float _motorSpeed 
-            , const DocumentPtr & _doc ) override;
+            , const DocumentInterfacePtr & _doc ) override;
 
         Box2DJointInterfacePtr createPulleyJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
@@ -86,7 +86,7 @@ namespace Mengine
             , const mt::vec2f & _offsetGroundBody2
             , float _ratio
             , bool _collideConnected
-            , const DocumentPtr & _doc ) override;
+            , const DocumentInterfacePtr & _doc ) override;
 
         Box2DJointInterfacePtr createGearJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
@@ -94,7 +94,7 @@ namespace Mengine
             , const Box2DJointInterfacePtr & _joint2
             , float _ratio
             , bool _collideConnected
-            , const DocumentPtr & _doc ) override;
+            , const DocumentInterfacePtr & _doc ) override;
 
         Box2DJointInterfacePtr createRopeJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
@@ -102,7 +102,7 @@ namespace Mengine
             , const mt::vec2f & _offsetBody2
             , float _maxlength
             , bool _collideConnected
-            , const DocumentPtr & _doc ) override;
+            , const DocumentInterfacePtr & _doc ) override;
 
 
         Box2DJointInterfacePtr createWheelJoint( const Box2DBodyInterfacePtr & _body1
@@ -118,7 +118,7 @@ namespace Mengine
             , float _motorSpeed
             , float _stiffness
             , float _damping
-            , const DocumentPtr & _doc ) override;
+            , const DocumentInterfacePtr & _doc ) override;
 
         Box2DJointInterfacePtr createRevoluteJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
@@ -129,7 +129,7 @@ namespace Mengine
             , bool _enableMotor
             , float _motorSpeed
             , float _maxMotorTorque
-            , const DocumentPtr & _doc ) override;
+            , const DocumentInterfacePtr & _doc ) override;
 
     public:
         void rayCast( const mt::vec2f & _point1, const mt::vec2f & _point2, const Box2DRayCastInterfacePtr & _response ) const override;
@@ -148,7 +148,7 @@ namespace Mengine
         void PostSolve( b2Contact * contact, const b2ContactImpulse * impulse ) override;
 
     protected:
-        Box2DJointInterfacePtr createJoint_( const b2JointDef * _jointDef, const DocumentPtr & _doc );
+        Box2DJointInterfacePtr createJoint_( const b2JointDef * _jointDef, const DocumentInterfacePtr & _doc );
 
     protected:
         uint32_t m_timepipeId;

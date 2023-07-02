@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Interface/ThreadIdentityInterface.h"
-
-#include "Kernel/Document.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Config/Timestamp.h"
 #include "Config/Char.h"
@@ -13,7 +12,7 @@ namespace Mengine
     class TimeoutGuardScope
     {
     public:
-        TimeoutGuardScope( Timestamp _timeout, const DocumentPtr & _doc, const Char * _format, ... );
+        TimeoutGuardScope( Timestamp _timeout, const DocumentInterfacePtr & _doc, const Char * _format, ... );
         ~TimeoutGuardScope();
 
     public:

@@ -44,7 +44,7 @@ namespace Mengine
         GOAP::NodeInterfacePtr m_node;
     };
     //////////////////////////////////////////////////////////////////////////
-    TaskDelay::TaskDelay( GOAP::Allocator * _allocator, const SchedulerInterfacePtr & _scheduler, float _time, const DocumentPtr & _doc )
+    TaskDelay::TaskDelay( GOAP::Allocator * _allocator, const SchedulerInterfacePtr & _scheduler, float _time, const DocumentInterfacePtr & _doc )
         : GOAP::TaskInterface( _allocator )
         , m_scheduler( _scheduler )
         , m_time( _time )

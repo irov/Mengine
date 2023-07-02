@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/DocumentInterface.h"
+
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
 #include "Kernel/ScriptablePrototypeGenerator.h"
 #else
@@ -8,7 +10,6 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Document.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/EnumeratorHelper.h"
@@ -33,7 +34,7 @@ namespace Mengine
         }
 
     protected:
-        FactorablePointer generate( const DocumentPtr & _doc ) override
+        FactorablePointer generate( const DocumentInterfacePtr & _doc ) override
         {
             const FactoryInterfacePtr & factory = this->getPrototypeFactory();
 
@@ -50,7 +51,7 @@ namespace Mengine
             node->setUniqueIdentity( uniqueIdentity );
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Node type '%s' uid '%u'"
+            DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "Node type '%s' uid '%u'"
                 , node->getType().c_str()
                 , uniqueIdentity
             );
@@ -71,7 +72,7 @@ namespace Mengine
     namespace Helper
     {
         template<class Type, uint32_t Count>
-        FactoryPrototypeGeneratorPtr makeNodePrototypeGenerator( const DocumentPtr & _doc )
+        FactoryPrototypeGeneratorPtr makeNodePrototypeGenerator( const DocumentInterfacePtr & _doc )
         {
             FactoryPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<NodePrototypeGenerator<Type, Count>>( _doc );
 

@@ -35,7 +35,7 @@ namespace Mengine
         const FileGroupInterfacePtr & getFileGroup() const override;
 
     public:
-        bool load( const DocumentPtr & _doc ) override;
+        bool load( const DocumentInterfacePtr & _doc ) override;
         bool enable() override;
         bool disable() override;
 
@@ -44,7 +44,7 @@ namespace Mengine
         bool isEnable() const override;
 
     protected:
-        bool mountFileGroup_( const DocumentPtr & _doc );
+        bool mountFileGroup_( const DocumentInterfacePtr & _doc );
         void unmountFileGroup_();
         bool loadPackage_();
 

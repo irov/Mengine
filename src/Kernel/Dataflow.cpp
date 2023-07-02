@@ -14,7 +14,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        DataInterfacePointer getDataflow( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const DataflowContext * _context, const DocumentPtr & _doc )
+        DataInterfacePointer getDataflow( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const DataflowContext * _context, const DocumentInterfacePtr & _doc )
         {
             DataInterfacePtr prefetch_data;
             if( PREFETCHER_SERVICE()
@@ -41,7 +41,7 @@ namespace Mengine
             return data;
         }
         //////////////////////////////////////////////////////////////////////////
-        DataInterfacePointer popDataflow( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const DataflowContext * _context, const DocumentPtr & _doc )
+        DataInterfacePointer popDataflow( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const DataflowContext * _context, const DocumentInterfacePtr & _doc )
         {
             DataInterfacePtr prefetch_data;
             if( PREFETCHER_SERVICE()

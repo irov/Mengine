@@ -65,7 +65,7 @@ namespace Mengine
         virtual bool validCursorPosition( float _x, float _y, float * const _vx, float * const _vy ) const = 0;
 
     public:
-        virtual UniqueId addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentPtr & _doc ) = 0;
+        virtual UniqueId addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc ) = 0;
         virtual void removeMousePositionProvider( UniqueId _id ) = 0;
 
     public:

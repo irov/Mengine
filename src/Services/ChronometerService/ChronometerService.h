@@ -5,10 +5,6 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
 
-#if defined(MENGINE_DEBUG)
-#   include "Kernel/Document.h"
-#endif
-
 #include "Config/Timestamp.h"
 
 namespace Mengine
@@ -28,7 +24,7 @@ namespace Mengine
         void update() override;
 
     public:
-        UniqueId addChronometer( const LambdaChronometer & _lambda, const DocumentPtr & _doc ) override;
+        UniqueId addChronometer( const LambdaChronometer & _lambda, const DocumentInterfacePtr & _doc ) override;
         bool removeChronometer( UniqueId _id ) override;
 
     protected:
@@ -40,7 +36,7 @@ namespace Mengine
             LambdaChronometer lambda;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 

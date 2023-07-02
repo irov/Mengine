@@ -21,10 +21,10 @@ namespace Mengine
         SERVICE_DECLARE( "CodecService" )
 
     public:
-        virtual DecoderInterfacePointer createDecoder( const ConstString & _type, const DocumentPtr & _doc ) = 0;
+        virtual DecoderInterfacePointer createDecoder( const ConstString & _type, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual EncoderInterfacePointer createEncoder( const ConstString & _type, const DocumentPtr & _doc ) = 0;
+        virtual EncoderInterfacePointer createEncoder( const ConstString & _type, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual bool registerCodecExt( const ConstString & _ext, const ConstString & _codecType ) = 0;

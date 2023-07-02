@@ -26,15 +26,15 @@ namespace Mengine
         void _stopService() override;
 
     protected:
-        HttpRequestId getMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentPtr & _doc ) override;
-        HttpRequestId postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpRequestPostParams & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentPtr & _doc ) override;
-        HttpRequestId deleteMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentPtr & _doc ) override;
+        HttpRequestId getMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
+        HttpRequestId postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpRequestPostParams & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
+        HttpRequestId deleteMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
 
     protected:
-        HttpRequestId headerData( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const HttpReceiverInterfacePtr & _receiver, const DocumentPtr & _doc ) override;
+        HttpRequestId headerData( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
 
     protected:
-        HttpRequestId downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const HttpReceiverInterfacePtr & _receiver, const DocumentPtr & _doc ) override;
+        HttpRequestId downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
 
     protected:
         bool cancelRequest( HttpRequestId _id ) override;
@@ -70,7 +70,7 @@ namespace Mengine
             HttpReceiverInterfacePtr receiver;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 

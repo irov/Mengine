@@ -19,7 +19,7 @@ namespace Mengine
         const ThreadMutexInterfacePtr & getMutex() const;
 
     public:
-        FactorablePointer createObject( const DocumentPtr & _doc ) override;
+        FactorablePointer createObject( const DocumentInterfacePtr & _doc ) override;
         void destroyObject( Factorable * _object ) override;
 
     protected:

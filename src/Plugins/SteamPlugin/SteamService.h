@@ -3,6 +3,8 @@
 #include "SteamServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/String.h"
+#include "Kernel/ConstString.h"
 #include "Kernel/Map.h"
 
 #include "steam/steam_api.h"

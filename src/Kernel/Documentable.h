@@ -1,11 +1,11 @@
 #pragma once
 
+#include "Interface/DocumentInterface.h"
+
 #include "Kernel/Mixin.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Document> DocumentPtr;
     //////////////////////////////////////////////////////////////////////////
     class Documentable
         : public Mixin
@@ -16,11 +16,11 @@ namespace Mengine
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
     public:
-        void setDocument( const DocumentPtr & _document );
-        const DocumentPtr & getDocument() const;
+        void setDocument( const DocumentInterfacePtr & _document );
+        const DocumentInterfacePtr & getDocument() const;
 
     protected:
-        DocumentPtr m_document;
+        DocumentInterfacePtr m_document;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

@@ -38,7 +38,7 @@ namespace Mengine
         void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha ) override;
 
     public:
-        SchedulerInterfacePtr createScheduler( const ConstString & _name, const DocumentPtr & _doc ) override;
+        SchedulerInterfacePtr createScheduler( const ConstString & _name, const DocumentInterfacePtr & _doc ) override;
         bool destroyScheduler( const SchedulerInterfacePtr & _scheduler ) override;
 
     public:

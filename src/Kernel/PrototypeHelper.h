@@ -14,7 +14,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T, uint32_t Count>
-        bool addDefaultPrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
+        bool addDefaultPrototype( const ConstString & _category, const ConstString & _prototype, const DocumentInterfacePtr & _doc )
         {
             PrototypeGeneratorInterfacePtr generator = Helper::makeDefaultPrototypeGenerator<T, Count>( _doc );
 
@@ -25,7 +25,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, uint32_t Count>
-        bool addObjectPrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
+        bool addObjectPrototype( const ConstString & _category, const ConstString & _prototype, const DocumentInterfacePtr & _doc )
         {
             PrototypeGeneratorInterfacePtr generator = Helper::makeObjectPrototypeGenerator<T, Count>( _doc );
 
@@ -36,7 +36,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, uint32_t Count>
-        bool addIdentityPrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
+        bool addIdentityPrototype( const ConstString & _category, const ConstString & _prototype, const DocumentInterfacePtr & _doc )
         {
             PrototypeGeneratorInterfacePtr generator = Helper::makeIdentityPrototypeGenerator<T, Count>( _doc );
 
@@ -47,7 +47,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, uint32_t Count>
-        bool addNodePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
+        bool addNodePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentInterfacePtr & _doc )
         {
             PrototypeGeneratorInterfacePtr generator = Helper::makeNodePrototypeGenerator<T, Count>( _doc );
 
@@ -58,7 +58,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, uint32_t Count>
-        bool addResourcePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
+        bool addResourcePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentInterfacePtr & _doc )
         {
             PrototypeGeneratorInterfacePtr generator = Helper::makeResourcePrototypeGenerator<T, Count>( _doc );
 

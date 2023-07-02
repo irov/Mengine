@@ -26,7 +26,7 @@ namespace Mengine
 #endif
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool threadWorkerAdd( ThreadJobWorkerDesc & desc, const ThreadWorkerInterfacePtr & _worker, UniqueId _id, const DocumentPtr & _doc )
+        static bool threadWorkerAdd( ThreadJobWorkerDesc & desc, const ThreadWorkerInterfacePtr & _worker, UniqueId _id, const DocumentInterfacePtr & _doc )
         {
             MENGINE_UNUSED( _doc );
 
@@ -277,29 +277,23 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadJob::initialize( uint32_t _sleep, const DocumentPtr & _doc )
+    bool ThreadJob::initialize( uint32_t _sleep )
     {
-        MENGINE_UNUSED( _doc );
-
         m_sleep = _sleep;
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-        m_doc = _doc;
-#endif
 
         for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
         {
             ThreadJobWorkerDesc & desc = m_workers[i];
 
             ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-                ->createMutex( _doc );
+                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 
             desc.mutex = mutex;
 
             ThreadMutexInterfacePtr mutex_progress = THREAD_SYSTEM()
-                ->createMutex( _doc );
+                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( mutex_progress );
 
@@ -329,13 +323,9 @@ namespace Mengine
 
             desc.worker = nullptr;
         }
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-        m_doc = nullptr;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker, const DocumentPtr & _doc )
+    UniqueId ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

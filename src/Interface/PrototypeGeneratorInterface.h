@@ -1,11 +1,10 @@
 #pragma once
 
 #include "Interface/Interface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Kernel/FactorablePointer.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Document.h"
-
 
 namespace Mengine
 {
@@ -25,7 +24,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual FactorablePointer generate( const DocumentPtr & _doc ) = 0;
+        virtual FactorablePointer generate( const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual uint32_t count() const = 0;

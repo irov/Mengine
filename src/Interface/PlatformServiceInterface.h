@@ -48,12 +48,12 @@ namespace Mengine
 
     public:
         typedef Lambda<void( UniqueId _id )> LambdaUpdate;
-        virtual UniqueId addUpdate( const LambdaUpdate & _update, const DocumentPtr & _doc ) = 0;
+        virtual UniqueId addUpdate( const LambdaUpdate & _update, const DocumentInterfacePtr & _doc ) = 0;
         virtual void removeUpdate( UniqueId _id ) = 0;
 
     public:
         typedef Lambda<void( UniqueId _id )> LambdaTimer;
-        virtual UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) = 0;
+        virtual UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) = 0;
         virtual void removeTimer( UniqueId _id ) = 0;
 
     public:
@@ -82,7 +82,7 @@ namespace Mengine
         virtual bool hasTouchpad() const = 0;
 
     public:
-        virtual DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc ) = 0;
+        virtual DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual bool getDesktopResolution( Resolution * const _resolution ) const = 0;

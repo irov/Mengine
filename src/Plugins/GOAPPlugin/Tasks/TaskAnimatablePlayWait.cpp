@@ -11,7 +11,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskAnimatablePlayWait::TaskAnimatablePlayWait( GOAP::Allocator * _allocator, const AnimatablePtr & _animatable, const EventablePtr & _eventable, const DocumentPtr & _doc )
+    TaskAnimatablePlayWait::TaskAnimatablePlayWait( GOAP::Allocator * _allocator, const AnimatablePtr & _animatable, const EventablePtr & _eventable, const DocumentInterfacePtr & _doc )
         : GOAP::TaskInterface( _allocator )
         , m_animatable( _animatable )
         , m_eventable( _eventable )

@@ -48,7 +48,7 @@ namespace Mengine
         void changeWindowMode( const Resolution & _windowResolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
 
     public:
-        const RenderBatchInterfacePtr & requestRenderBatch( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount, const DocumentPtr & _doc ) override;
+        const RenderBatchInterfacePtr & requestRenderBatch( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount, const DocumentInterfacePtr & _doc ) override;
 
     public:
         VectorRenderVertex2D & getDebugRenderVertex2D( uint32_t _count ) override;

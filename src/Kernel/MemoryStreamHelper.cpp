@@ -12,7 +12,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+        MemoryInterfacePtr createMemoryStream( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
         {
             size_t stream_size = _stream->size();
 
@@ -23,7 +23,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const DocumentPtr & _doc )
+        MemoryInterfacePtr createMemoryStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const DocumentInterfacePtr & _doc )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryBuffer( _doc );
@@ -44,7 +44,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryStreamExtraSize( const InputStreamInterfacePtr & _stream, size_t _extraSize, const DocumentPtr & _doc )
+        MemoryInterfacePtr createMemoryStreamExtraSize( const InputStreamInterfacePtr & _stream, size_t _extraSize, const DocumentInterfacePtr & _doc )
         {
             size_t stream_size = _stream->size();
 
@@ -66,7 +66,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryStreamString( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+        MemoryInterfacePtr createMemoryStreamString( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
         {
             size_t stream_size = _stream->size();
 
@@ -91,7 +91,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const DocumentPtr & _doc )
+        MemoryInterfacePtr createMemoryFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const DocumentInterfacePtr & _doc )
         {
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, _doc );
 
@@ -106,7 +106,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryContent( const ContentInterfacePtr & _content, bool _stream, bool _share, const DocumentPtr & _doc )
+        MemoryInterfacePtr createMemoryContent( const ContentInterfacePtr & _content, bool _stream, bool _share, const DocumentInterfacePtr & _doc )
         {
             const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
             const FilePath & filePath = _content->getFilePath();
@@ -116,7 +116,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryBuffer( size_t _size, const DocumentPtr & _doc )
+        MemoryInterfacePtr createMemoryBuffer( size_t _size, const DocumentInterfacePtr & _doc )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryBuffer( _doc );
@@ -131,7 +131,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheBuffer( size_t _size, const DocumentPtr & _doc )
+        MemoryInterfacePtr createMemoryCacheBuffer( size_t _size, const DocumentInterfacePtr & _doc )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryCacheBuffer( _doc );
@@ -146,7 +146,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const DocumentPtr & _doc )
+        MemoryInterfacePtr createMemoryCacheStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const DocumentInterfacePtr & _doc )
         {
             MemoryInterfacePtr cache = Helper::createMemoryCacheBuffer( _size, _doc );
 
@@ -164,7 +164,7 @@ namespace Mengine
             return cache;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheStreamExtraSize( const InputStreamInterfacePtr & _stream, size_t _extraSize, const DocumentPtr & _doc )
+        MemoryInterfacePtr createMemoryCacheStreamExtraSize( const InputStreamInterfacePtr & _stream, size_t _extraSize, const DocumentInterfacePtr & _doc )
         {
             size_t stream_size = _stream->size();
 
@@ -186,7 +186,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+        MemoryInterfacePtr createMemoryCacheStream( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
         {
             size_t size = _stream->size();
 
@@ -197,7 +197,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const DocumentPtr & _doc )
+        MemoryInterfacePtr createMemoryCacheFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const DocumentInterfacePtr & _doc )
         {
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, _doc );
 
@@ -210,7 +210,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheFileString( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const DocumentPtr & _doc )
+        MemoryInterfacePtr createMemoryCacheFileString( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const DocumentInterfacePtr & _doc )
         {
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, _doc );
 

@@ -90,7 +90,7 @@ namespace Mengine
             };
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t schedulerEvent( const SchedulerInterfacePtr & _scheduler, float _delay, const LambdaScheduleEvent & _event, const DocumentPtr & _doc )
+        uint32_t schedulerEvent( const SchedulerInterfacePtr & _scheduler, float _delay, const LambdaScheduleEvent & _event, const DocumentInterfacePtr & _doc )
         {
             SchedulerEventInterfacePtr event = Helper::makeFactorableUnique<Detail::HelperScheduleEvent>( _doc, _event );
 
@@ -99,7 +99,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t schedulerTiming( const SchedulerInterfacePtr & _scheduler, const LambdaSchedulePipe & _pipe, const LambdaScheduleTiming & _timing, const LambdaScheduleEvent & _event, const DocumentPtr & _doc )
+        uint32_t schedulerTiming( const SchedulerInterfacePtr & _scheduler, const LambdaSchedulePipe & _pipe, const LambdaScheduleTiming & _timing, const LambdaScheduleEvent & _event, const DocumentInterfacePtr & _doc )
         {
             SchedulerPipeInterfacePtr pipe = Helper::makeFactorableUnique<Detail::HelperSchedulePipe>( _doc, _pipe );
             SchedulerTimingInterfacePtr timing = Helper::makeFactorableUnique<Detail::HelperScheduleTiming>( _doc, _timing );

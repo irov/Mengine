@@ -14,7 +14,6 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/MemoryCopy.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 #include "Kernel/MemoryCopy.h"
 
 #include "Config/Algorithm.h"

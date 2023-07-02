@@ -3,7 +3,6 @@
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/MemoryStreamHelper.h"
-#include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
 #include "Kernel/PixelFormatHelper.h"

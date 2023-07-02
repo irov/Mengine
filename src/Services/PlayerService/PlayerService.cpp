@@ -310,7 +310,7 @@ namespace Mengine
         Helper::screenToWorldDelta( &m_renderContext, _screenDeltha, _worldDeltha );
     }
     //////////////////////////////////////////////////////////////////////////
-    SchedulerInterfacePtr PlayerService::createScheduler( const ConstString & _name, const DocumentPtr & _doc )
+    SchedulerInterfacePtr PlayerService::createScheduler( const ConstString & _name, const DocumentInterfacePtr & _doc )
     {
         SchedulerPtr sm = m_factoryScheduleManager->createObject( _doc );
 

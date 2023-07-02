@@ -77,7 +77,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundBufferInterfacePtr ResourceSound::createSoundBuffer( const DocumentPtr & _doc ) const
+    SoundBufferInterfacePtr ResourceSound::createSoundBuffer( const DocumentInterfacePtr & _doc ) const
     {
         if( m_isStreamable == false && m_soundBufferNoStreamableCache != nullptr )
         {

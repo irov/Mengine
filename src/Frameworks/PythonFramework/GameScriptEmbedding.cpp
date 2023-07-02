@@ -11,6 +11,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/BuildMode.h"
 
 namespace Mengine
 {
@@ -18,67 +19,67 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void registerGameEventMethods( pybind::kernel_interface * _kernel, const ScriptModuleInterfacePtr & _module, const DocumentPtr & _doc )
+        static void registerGameEventMethods( pybind::kernel_interface * _kernel, const ScriptModuleInterfacePtr & _module, const DocumentInterfacePtr & _doc )
         {
-            const pybind::module & base_module = _module->getModule();
-
             GameServiceInterface * game = GAME_SERVICE();
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onFullscreen" ), EVENT_GAME_FULLSCREEN, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onFixedContentResolution" ), EVENT_GAME_FIXED_CONTENT_RESOLUTION, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onFixedDisplayResolution" ), EVENT_GAME_FIXED_DISPLAY_RESOLUTION, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onRenderViewport" ), EVENT_GAME_RENDER_VIEWPORT, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onGameViewport" ), EVENT_GAME_VIEWPORT, _doc );
+            const pybind::module & py_module = _module->getModule();
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onHandleKeyEvent" ), EVENT_GAME_KEY, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onHandleTextEvent" ), EVENT_GAME_TEXT, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onHandleMouseButtonEvent" ), EVENT_GAME_MOUSE_BUTTON, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onHandleMouseButtonEventBegin" ), EVENT_GAME_MOUSE_BUTTON_BEGIN, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onHandleMouseButtonEventEnd" ), EVENT_GAME_MOUSE_BUTTON_END, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onHandleMouseMove" ), EVENT_GAME_MOUSE_MOVE, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onHandleMouseWheel" ), EVENT_GAME_MOUSE_WHEEL, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onFullscreen" ), EVENT_GAME_FULLSCREEN, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onFixedContentResolution" ), EVENT_GAME_FIXED_CONTENT_RESOLUTION, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onFixedDisplayResolution" ), EVENT_GAME_FIXED_DISPLAY_RESOLUTION, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onRenderViewport" ), EVENT_GAME_RENDER_VIEWPORT, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onGameViewport" ), EVENT_GAME_VIEWPORT, _doc );
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onAppMouseEnter" ), EVENT_GAME_APP_MOUSE_ENTER, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onAppMouseLeave" ), EVENT_GAME_APP_MOUSE_LEAVE, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onTimeFactor" ), EVENT_GAME_ON_TIME_FACTOR, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onHandleKeyEvent" ), EVENT_GAME_KEY, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onHandleTextEvent" ), EVENT_GAME_TEXT, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onHandleMouseButtonEvent" ), EVENT_GAME_MOUSE_BUTTON, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onHandleMouseButtonEventBegin" ), EVENT_GAME_MOUSE_BUTTON_BEGIN, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onHandleMouseButtonEventEnd" ), EVENT_GAME_MOUSE_BUTTON_END, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onHandleMouseMove" ), EVENT_GAME_MOUSE_MOVE, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onHandleMouseWheel" ), EVENT_GAME_MOUSE_WHEEL, _doc );
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onPreparation" ), EVENT_GAME_PREPARATION, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onRun" ), EVENT_GAME_RUN, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onInterruption" ), EVENT_GAME_INTERRUPTION, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onStop" ), EVENT_GAME_STOP, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onInitialize" ), EVENT_GAME_INITIALIZE, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onInitializeRenderResources" ), EVENT_GAME_INITIALIZE_RENDER_RESOURCES, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onFinalizeRenderResources" ), EVENT_GAME_FINALIZE_RENDER_RESOURCES, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onAccountFinalize" ), EVENT_GAME_ACCOUNT_FINALIZE, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onFinalize" ), EVENT_GAME_FINALIZE, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onDestroy" ), EVENT_GAME_DESTROY, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onAppMouseEnter" ), EVENT_GAME_APP_MOUSE_ENTER, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onAppMouseLeave" ), EVENT_GAME_APP_MOUSE_LEAVE, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onTimeFactor" ), EVENT_GAME_ON_TIME_FACTOR, _doc );
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onFocus" ), EVENT_GAME_FOCUS, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onCreateDefaultAccount" ), EVENT_GAME_CREATE_DEFAULT_ACCOUNT, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onCreateGlobalAccount" ), EVENT_GAME_CREATE_GLOBAL_ACCOUNT, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onLoadAccounts" ), EVENT_GAME_LOAD_ACCOUNTS, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onPreparation" ), EVENT_GAME_PREPARATION, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onRun" ), EVENT_GAME_RUN, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onInterruption" ), EVENT_GAME_INTERRUPTION, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onStop" ), EVENT_GAME_STOP, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onInitialize" ), EVENT_GAME_INITIALIZE, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onInitializeRenderResources" ), EVENT_GAME_INITIALIZE_RENDER_RESOURCES, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onFinalizeRenderResources" ), EVENT_GAME_FINALIZE_RENDER_RESOURCES, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onAccountFinalize" ), EVENT_GAME_ACCOUNT_FINALIZE, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onFinalize" ), EVENT_GAME_FINALIZE, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onDestroy" ), EVENT_GAME_DESTROY, _doc );
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onCreateAccount" ), EVENT_GAME_CREATE_ACCOUNT, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onDeleteAccount" ), EVENT_GAME_DELETE_ACCOUNT, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onSelectAccount" ), EVENT_GAME_SELECT_ACCOUNT, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onUnselectAccount" ), EVENT_GAME_UNSELECT_ACCOUNT, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onFocus" ), EVENT_GAME_FOCUS, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onCreateDefaultAccount" ), EVENT_GAME_CREATE_DEFAULT_ACCOUNT, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onCreateGlobalAccount" ), EVENT_GAME_CREATE_GLOBAL_ACCOUNT, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onLoadAccounts" ), EVENT_GAME_LOAD_ACCOUNTS, _doc );
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onChangeSoundVolume" ), EVENT_GAME_CHANGE_SOUND_VOLUME, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onCursorMode" ), EVENT_GAME_CURSOR_MODE, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onUserEvent" ), EVENT_GAME_USER, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onCloseWindow" ), EVENT_GAME_CLOSE, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onOverFillrate" ), EVENT_GAME_OVER_FILLRATE, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onFrameEnd" ), EVENT_GAME_FRAME_END, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onCreateAccount" ), EVENT_GAME_CREATE_ACCOUNT, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onDeleteAccount" ), EVENT_GAME_DELETE_ACCOUNT, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onSelectAccount" ), EVENT_GAME_SELECT_ACCOUNT, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onUnselectAccount" ), EVENT_GAME_UNSELECT_ACCOUNT, _doc );
+
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onChangeSoundVolume" ), EVENT_GAME_CHANGE_SOUND_VOLUME, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onCursorMode" ), EVENT_GAME_CURSOR_MODE, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onUserEvent" ), EVENT_GAME_USER, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onCloseWindow" ), EVENT_GAME_CLOSE, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onOverFillrate" ), EVENT_GAME_OVER_FILLRATE, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onFrameEnd" ), EVENT_GAME_FRAME_END, _doc );
 
 #if defined(MENGINE_PLATFORM_IOS)
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationDidBecomeActive" ), EVENT_GAME_IOS_APPLICATION_DID_BECOME_ACTIVE, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationWillEnterForeground" ), EVENT_GAME_IOS_APPLICATION_WILL_ENTER_FOREGROUND, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationDidEnterBackground" ), EVENT_GAME_IOS_APPLICATION_DID_ENTER_BACKGROUD, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationWillResignActive" ), EVENT_GAME_IOS_APPLICATION_WILL_RESIGN_ACTIVE, _doc );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationWillTerminate" ), EVENT_GAME_IOS_APPLICATION_WILL_TERMINATE, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationDidBecomeActive" ), EVENT_GAME_IOS_APPLICATION_DID_BECOME_ACTIVE, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationWillEnterForeground" ), EVENT_GAME_IOS_APPLICATION_WILL_ENTER_FOREGROUND, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationDidEnterBackground" ), EVENT_GAME_IOS_APPLICATION_DID_ENTER_BACKGROUD, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationWillResignActive" ), EVENT_GAME_IOS_APPLICATION_WILL_RESIGN_ACTIVE, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "oniOSApplicationWillTerminate" ), EVENT_GAME_IOS_APPLICATION_WILL_TERMINATE, _doc );
 #endif
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, base_module, game, STRINGIZE_STRING_LOCAL( "onAnalyticsEvent" ), EVENT_GAME_ANALYTICS_EVENT, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onAnalyticsEvent" ), EVENT_GAME_ANALYTICS_EVENT, _doc );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -2,6 +2,7 @@
 
 #include "Interface/ServantInterface.h"
 #include "Interface/FrameworkInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Config/Char.h"
 
@@ -15,7 +16,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual FrameworkInterfacePtr createFramework( const DocumentPtr & _doc ) = 0;
+        virtual FrameworkInterfacePtr createFramework( const DocumentInterfacePtr & _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FrameworkFactoryInterface> FrameworkFactoryInterfacePtr;

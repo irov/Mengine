@@ -21,7 +21,7 @@ namespace Mengine
         return EAEPT_CONSTSTRING;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventParameterInterfacePtr AnalyticsEventConstParameterConstString::resolveParameter( const DocumentPtr & _doc ) const
+    AnalyticsEventParameterInterfacePtr AnalyticsEventConstParameterConstString::resolveParameter( const DocumentInterfacePtr & _doc ) const
     {
         MENGINE_UNUSED( _doc );
 

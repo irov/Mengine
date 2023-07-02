@@ -4,8 +4,8 @@
 #include "Interface/ServantInterface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/EventReceiverInterface.h"
+#include "Interface/DocumentInterface.h"
 
-#include "Kernel/Document.h"
 #include "Kernel/Polygon.h"
 
 #include "math/vec2.h"
@@ -173,7 +173,7 @@ namespace Mengine
             , bool _allowSleep
             , bool _isBullet
             , bool _fixedRotation
-            , const DocumentPtr & _doc ) = 0;
+            , const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual Box2DJointInterfacePtr createDistanceJoint( const Box2DBodyInterfacePtr & _body1
@@ -181,14 +181,14 @@ namespace Mengine
             , const mt::vec2f & _offsetBody1
             , const mt::vec2f & _offsetBody2
             , bool _collideBodies
-            , const DocumentPtr & _doc ) = 0;
+            , const DocumentInterfacePtr & _doc ) = 0;
 
         virtual Box2DJointInterfacePtr createHingeJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
             , const mt::vec2f & _offsetBody1
             , const mt::vec2f & _limits
             , bool _collideBodies
-            , const DocumentPtr & _doc ) = 0;
+            , const DocumentInterfacePtr & _doc ) = 0;
 
         virtual Box2DJointInterfacePtr createPrismaticJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
@@ -199,7 +199,7 @@ namespace Mengine
             , bool _enableMotor
             , float _maxMotorForce
             , float _motorSpeed
-            , const DocumentPtr & _doc ) = 0;
+            , const DocumentInterfacePtr & _doc ) = 0;
 
         virtual Box2DJointInterfacePtr createPulleyJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
@@ -209,7 +209,7 @@ namespace Mengine
             , const mt::vec2f & _offsetGroundBody2
             , float _ratio
             , bool _collideConnected
-            , const DocumentPtr & _doc ) = 0;
+            , const DocumentInterfacePtr & _doc ) = 0;
 
         virtual Box2DJointInterfacePtr createGearJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
@@ -217,7 +217,7 @@ namespace Mengine
             , const Box2DJointInterfacePtr & _joint2
             , float _ratio
             , bool _collideConnected
-            , const DocumentPtr & _doc ) = 0;
+            , const DocumentInterfacePtr & _doc ) = 0;
 
         virtual Box2DJointInterfacePtr createRopeJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
@@ -225,7 +225,7 @@ namespace Mengine
             , const mt::vec2f & _offsetBody2
             , float _maxlength
             , bool _collideConnected
-            , const DocumentPtr & _doc ) = 0;
+            , const DocumentInterfacePtr & _doc ) = 0;
 
 
         virtual Box2DJointInterfacePtr createWheelJoint( const Box2DBodyInterfacePtr & _body1
@@ -241,7 +241,7 @@ namespace Mengine
             , float _motorSpeed
             , float _stiffness
             , float _damping
-            , const DocumentPtr & _doc ) = 0;
+            , const DocumentInterfacePtr & _doc ) = 0;
 
         virtual Box2DJointInterfacePtr createRevoluteJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
@@ -252,7 +252,7 @@ namespace Mengine
             , bool _enableMotor
             , float _motorSpeed
             , float _maxMotorTorque
-            , const DocumentPtr & _doc ) = 0;
+            , const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual void rayCast( const mt::vec2f & _point1, const mt::vec2f & _point2, const Box2DRayCastInterfacePtr & _response ) const = 0;
@@ -266,7 +266,7 @@ namespace Mengine
         SERVICE_DECLARE( "Box2DService" );
 
     public:
-        virtual Box2DWorldInterfacePtr createWorld( const mt::vec2f & _gravity, float _scaler, const DocumentPtr & _doc ) = 0;
+        virtual Box2DWorldInterfacePtr createWorld( const mt::vec2f & _gravity, float _scaler, const DocumentInterfacePtr & _doc ) = 0;
         virtual void destroyWorld( const Box2DWorldInterfacePtr & _world ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////

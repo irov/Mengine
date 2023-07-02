@@ -393,7 +393,7 @@ namespace Mengine
         return stage;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialStage * RenderMaterialService::cacheMaterialStage( const RenderMaterialStage & _stage, const DocumentPtr & _doc )
+    const RenderMaterialStage * RenderMaterialService::cacheMaterialStage( const RenderMaterialStage & _stage, const DocumentInterfacePtr & _doc )
     {
         for( uint32_t it = 0; it != m_stageCount; ++it )
         {
@@ -458,7 +458,7 @@ namespace Mengine
     RenderMaterialInterfacePtr RenderMaterialService::getMaterial( const ConstString & _materialName
         , EPrimitiveType _primitiveType
         , const RenderTextureInterfacePtr * _textures
-        , uint32_t _textureCount, const DocumentPtr & _doc )
+        , uint32_t _textureCount, const DocumentInterfacePtr & _doc )
     {
         const RenderMaterialStage * stage = m_materialStageIndexer.find( _materialName );
 
@@ -495,7 +495,7 @@ namespace Mengine
         , const RenderMaterialStage * _stage
         , EPrimitiveType _primitiveType
         , const RenderTextureInterfacePtr * _textures
-        , uint32_t _textureCount, const DocumentPtr & _doc )
+        , uint32_t _textureCount, const DocumentInterfacePtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stage, "invalid get stage for material '%s'"
             , _materialName.c_str()
@@ -539,7 +539,7 @@ namespace Mengine
     RenderMaterialInterfacePtr RenderMaterialService::getMaterial3( EMaterial _materialId
         , EPrimitiveType _primitiveType
         , const RenderTextureInterfacePtr * _textures
-        , uint32_t _textureCount, const DocumentPtr & _doc )
+        , uint32_t _textureCount, const DocumentInterfacePtr & _doc )
     {
         const RenderMaterialStage * stage = m_defaultStages[_materialId];
 
@@ -632,7 +632,7 @@ namespace Mengine
         m_materialEnumerators.emplace_back( materialId );
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialStage * RenderMaterialService::createMaterialStage( const ConstString & _name, const RenderMaterialStage & _stage, const DocumentPtr & _doc )
+    const RenderMaterialStage * RenderMaterialService::createMaterialStage( const ConstString & _name, const RenderMaterialStage & _stage, const DocumentInterfacePtr & _doc )
     {
         MENGINE_ASSERTION_FATAL( m_materialStageIndexer.find( _name ) == nullptr, "'%s' is already created"
             , _name.c_str()
@@ -687,7 +687,7 @@ namespace Mengine
         return material_hash;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexAttributeInterfacePtr RenderMaterialService::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentPtr & _doc )
+    RenderVertexAttributeInterfacePtr RenderMaterialService::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentInterfacePtr & _doc )
     {
         MENGINE_ASSERTION_FATAL( m_vertexAttributes.exist( _name ) == false, "already has vertex attribute '%s' (doc: %s)"
             , _name.c_str()
@@ -715,7 +715,7 @@ namespace Mengine
         return vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr RenderMaterialService::createVertexShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentPtr & _doc )
+    RenderVertexShaderInterfacePtr RenderMaterialService::createVertexShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _converterType );
 
@@ -760,7 +760,7 @@ namespace Mengine
         return vertexShader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr RenderMaterialService::createFragmentShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentPtr & _doc )
+    RenderFragmentShaderInterfacePtr RenderMaterialService::createFragmentShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _converterType );
 
@@ -805,7 +805,7 @@ namespace Mengine
         return fragmentShader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramInterfacePtr RenderMaterialService::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc )
+    RenderProgramInterfacePtr RenderMaterialService::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentInterfacePtr & _doc )
     {
         MENGINE_ASSERTION_FATAL( m_programs.exist( _name ) == false, "already has program '%s' (doc: %s)"
             , _name.c_str()

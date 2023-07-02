@@ -3,10 +3,10 @@
 #include "GOAP/TaskInterface.h"
 
 #include "Interface/EventReceiverInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Kernel/Animatable.h"
 #include "Kernel/Eventable.h"
-#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -14,7 +14,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskAnimatablePlayWait( GOAP::Allocator * _allocator, const AnimatablePtr & _animatable, const EventablePtr & _eventable, const DocumentPtr & _doc );
+        TaskAnimatablePlayWait( GOAP::Allocator * _allocator, const AnimatablePtr & _animatable, const EventablePtr & _eventable, const DocumentInterfacePtr & _doc );
         ~TaskAnimatablePlayWait() override;
 
     protected:
@@ -28,7 +28,7 @@ namespace Mengine
         EventablePtr m_eventable;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-        DocumentPtr m_doc;
+        DocumentInterfacePtr m_doc;
 #endif
 
         EventReceiverInterfacePtr m_receiver;

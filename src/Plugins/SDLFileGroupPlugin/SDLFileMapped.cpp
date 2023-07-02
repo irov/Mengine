@@ -35,7 +35,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr SDLFileMapped::createInputStream( const DocumentPtr & _doc )
+    InputStreamInterfacePtr SDLFileMapped::createInputStream( const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

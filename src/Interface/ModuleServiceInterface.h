@@ -19,7 +19,7 @@ namespace Mengine
 
     public:
         virtual bool hasModule( const ConstString & _name ) const = 0;
-        virtual bool runModule( const ConstString & _name, const DocumentPtr & _doc ) = 0;
+        virtual bool runModule( const ConstString & _name, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool stopModule( const ConstString & _name ) = 0;
         virtual bool isRunModule( const ConstString & _name ) const = 0;
 

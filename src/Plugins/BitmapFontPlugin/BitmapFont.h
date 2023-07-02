@@ -52,7 +52,7 @@ namespace Mengine
 
     protected:
         bool _validateGlyphes( const U32String & _codes ) const override;
-        bool _prepareGlyph( GlyphCode _code, const DocumentPtr & _doc ) override;
+        bool _prepareGlyph( GlyphCode _code, const DocumentInterfacePtr & _doc ) override;
 
     protected:
         BitmapGlyphPtr m_glyph;

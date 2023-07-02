@@ -37,7 +37,7 @@ namespace Mengine
     namespace Helper
     {
         template<class Type>
-        IntrusivePtr<FactorableGeneric<Type>> makeFactorableGeneric( const DocumentPtr & _doc, Type _value )
+        IntrusivePtr<FactorableGeneric<Type>> makeFactorableGeneric( const DocumentInterfacePtr & _doc, Type _value )
         {
             MENGINE_UNUSED( _doc );
 

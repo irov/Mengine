@@ -48,10 +48,10 @@ namespace Mengine
 		: public ServantInterface
 	{
     public:
-        virtual AreaOfInterestTriggerInterfacePtr createTrigger( const AreaOfInterestTriggerProviderInterfacePtr & _provider, const DocumentPtr & _doc ) = 0;
+        virtual AreaOfInterestTriggerInterfacePtr createTrigger( const AreaOfInterestTriggerProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc ) = 0;
         virtual void removeTriger( const AreaOfInterestTriggerInterfacePtr & _trigger ) = 0;
 
-        virtual AreaOfInterestActorInterfacePtr createActor( const AreaOfInterestActorProviderInterfacePtr & _provider, const DocumentPtr & _doc ) = 0;
+        virtual AreaOfInterestActorInterfacePtr createActor( const AreaOfInterestActorProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc ) = 0;
         virtual void removeActor( const AreaOfInterestActorInterfacePtr & _actor ) = 0;
 
     public:
@@ -67,7 +67,7 @@ namespace Mengine
         SERVICE_DECLARE( "AreaOfInterestService" )
 
 	public:
-		virtual AreaOfInterestZoneInterfacePtr createZone( const DocumentPtr & _doc ) = 0;
+		virtual AreaOfInterestZoneInterfacePtr createZone( const DocumentInterfacePtr & _doc ) = 0;
         virtual void removeZone( const AreaOfInterestZoneInterfacePtr & _zone ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////

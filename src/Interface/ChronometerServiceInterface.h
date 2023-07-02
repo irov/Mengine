@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-
-#include "Kernel/Document.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Config/Lambda.h"
 #include "Config/UniqueId.h"
@@ -22,7 +21,7 @@ namespace Mengine
     public:
         typedef Lambda<void( UniqueId _id, Timestamp _milliseconds )> LambdaChronometer;
 
-        virtual UniqueId addChronometer( const LambdaChronometer & _lambda, const DocumentPtr & _doc ) = 0;
+        virtual UniqueId addChronometer( const LambdaChronometer & _lambda, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool removeChronometer( UniqueId _id ) = 0;
     };
 }

@@ -1,20 +1,21 @@
 #pragma once
 
+#include "Interface/DocumentInterface.h"
+
 #include "Kernel/Node.h"
-#include "Kernel/Document.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     namespace Helper
     {
-        NodePtr generateNode( const DocumentPtr & _doc );
+        NodePtr generateNode( const DocumentInterfacePtr & _doc );
     }
 }
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_NODE_GENERATE(X)\
     namespace Mengine{typedef IntrusiveNodePtr<class X> X ## Ptr;}\
-    namespace Mengine::Helper{X ## Ptr generate ## X( const DocumentPtr & _doc );}
+    namespace Mengine::Helper{X ## Ptr generate ## X( const DocumentInterfacePtr & _doc );}
 //////////////////////////////////////////////////////////////////////////
 MENGINE_NODE_GENERATE( Interender )
 MENGINE_NODE_GENERATE( Isometric )

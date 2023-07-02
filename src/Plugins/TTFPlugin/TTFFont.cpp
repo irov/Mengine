@@ -215,7 +215,7 @@ namespace Mengine
             ->unfetch( fileGroup, filePath );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::_prepareGlyph( GlyphCode _code, const DocumentPtr & _doc )
+    bool TTFFont::_prepareGlyph( GlyphCode _code, const DocumentInterfacePtr & _doc )
     {
         MENGINE_PROFILER_CATEGORY();
 

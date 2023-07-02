@@ -3,7 +3,6 @@
 #include "Interface/FileServiceInterface.h"
 
 #include "Kernel/MemoryStreamHelper.h"
-#include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
 

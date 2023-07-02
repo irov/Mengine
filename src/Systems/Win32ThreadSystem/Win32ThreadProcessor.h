@@ -7,8 +7,6 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Document.h"
-#include "Kernel/DocumentHelper.h"
 
 #include "Config/Char.h"
 #include "Config/Atomic.h"
@@ -27,7 +25,7 @@ namespace Mengine
         ~Win32ThreadProcessor() override;
 
     public:
-        bool initialize( const ConstString & _name, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc );
+        bool initialize( const ConstString & _name, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex );
         void finalize();
 
     public:
@@ -65,10 +63,6 @@ namespace Mengine
 
         ThreadTaskInterface * m_task;
         AtomicBool m_exit;
-
-#ifdef MENGINE_DOCUMENT_ENABLE
-        DocumentPtr m_doc;
-#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32ThreadProcessor, ThreadProcessorInterface> Win32ThreadProcessorPtr;

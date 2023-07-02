@@ -142,7 +142,7 @@ namespace Mengine
         return generator;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer PrototypeService::generatePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
+    FactorablePointer PrototypeService::generatePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentInterfacePtr & _doc )
     {
         const PrototypeGeneratorInterfacePtr & generator = m_generators.find( _category, _prototype );
 

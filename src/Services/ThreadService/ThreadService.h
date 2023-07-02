@@ -27,28 +27,28 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        ThreadJobPtr createJob( uint32_t _sleep, const DocumentPtr & _doc ) override;
+        ThreadJobPtr createJob( uint32_t _sleep, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        bool createThreadProcessor( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc ) override;
+        bool createThreadProcessor( const ConstString & _threadName, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) override;
         bool destroyThreadProcessor( const ConstString & _threadName ) override;
 
     public:
-        ThreadIdentityInterfacePtr createThreadIdentity( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc ) override;
+        ThreadIdentityInterfacePtr createThreadIdentity( const ConstString & _threadName, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) override;
         bool destroyThreadIdentity( const ThreadIdentityInterfacePtr & _threadIdentity ) override;
 
     public:
         bool hasThreadProcessor( const ConstString & _threadName ) const override;
 
     public:
-        bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentPtr & _doc ) override;
+        bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentInterfacePtr & _doc ) override;
         bool joinTask( const ThreadTaskInterfacePtr & _task ) override;
 
     public:
         void stopTasks() override;
 
     public:
-        ThreadQueueInterfacePtr createTaskQueue( uint32_t _packetSize, const DocumentPtr & _doc ) override;
+        ThreadQueueInterfacePtr createTaskQueue( uint32_t _packetSize, const DocumentInterfacePtr & _doc ) override;
         void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) override;
 
     public:
@@ -77,7 +77,7 @@ namespace Mengine
             bool complete;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 

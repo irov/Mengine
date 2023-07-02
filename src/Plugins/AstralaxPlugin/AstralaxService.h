@@ -2,6 +2,7 @@
 
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/FactoryInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "AstralaxInterface.h"
 #include "AstralaxIncluder.h"
@@ -29,10 +30,10 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc ) override;
+        AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentPtr & _doc ) override;
+        AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentInterfacePtr & _doc ) override;
 
     public:
         const RenderMaterialInterfacePtr & getMaterial( const AstralaxMesh & _mesh ) const override;
@@ -74,7 +75,7 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 

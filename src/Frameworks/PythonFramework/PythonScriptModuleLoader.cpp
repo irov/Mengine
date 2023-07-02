@@ -3,7 +3,6 @@
 #include "Interface/ScriptCodeDataInterface.h"
 
 #include "Kernel/Dataflow.h"
-#include "Kernel/Document.h"
 
 namespace Mengine
 {

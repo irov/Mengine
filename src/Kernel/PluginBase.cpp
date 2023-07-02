@@ -196,7 +196,7 @@ namespace Mengine
 
         if( dynamicLoad == true )
         {
-            typedef Vector<DocumentPtr> VectorDocuments;
+            typedef Vector<DocumentInterfacePtr> VectorDocuments;
             VectorDocuments leakObjects;
 
             FACTORY_SERVICE()
@@ -205,7 +205,7 @@ namespace Mengine
                 MENGINE_UNUSED( _factory );
                 MENGINE_UNUSED( _factorable );
 
-                const DocumentPtr & doc = _factorable->getDocument();
+                const DocumentInterfacePtr & doc = _factorable->getDocument();
 
                 if( doc == nullptr )
                 {
@@ -229,7 +229,7 @@ namespace Mengine
                     , leakObjects.size()
                 );
 
-                for( const DocumentPtr & doc : leakObjects )
+                for( const DocumentInterfacePtr & doc : leakObjects )
                 {
                     LOGGER_MESSAGE_RELEASE( "-- %s"
                         , MENGINE_DOCUMENT_STR( doc )
@@ -257,7 +257,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginBase::addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory, const DocumentPtr & _doc )
+    bool PluginBase::addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory, const DocumentInterfacePtr & _doc )
     {
         VOCABULARY_SET( ModuleFactoryInterface, STRINGIZE_STRING_LOCAL( "Module" ), _name, _factory, _doc );
 

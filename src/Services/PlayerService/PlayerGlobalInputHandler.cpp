@@ -241,7 +241,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId PlayerGlobalInputHandler::addGlobalHandler( const InputHandlerInterfacePtr & _handler, const DocumentPtr & _doc )
+    UniqueId PlayerGlobalInputHandler::addGlobalHandler( const InputHandlerInterfacePtr & _handler, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -409,7 +409,7 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId PlayerGlobalInputHandler::addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const DocumentPtr & _doc )
+    UniqueId PlayerGlobalInputHandler::addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const DocumentInterfacePtr & _doc )
     {
         InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalKeyHandler>( _doc, _code, _lambda );
 

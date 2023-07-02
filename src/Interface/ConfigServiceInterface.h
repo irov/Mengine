@@ -13,13 +13,13 @@ namespace Mengine
         SERVICE_DECLARE( "ConfigService" );
 
     public:
-        virtual ConfigInterfacePtr createMemoryConfig( const DocumentPtr & _doc ) = 0;
+        virtual ConfigInterfacePtr createMemoryConfig( const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual ConfigInterfacePtr loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentPtr & _doc ) = 0;
+        virtual ConfigInterfacePtr loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual bool loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentPtr & _doc ) = 0;
+        virtual bool loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual const ConfigInterfacePtr & getDefaultConfig() const = 0;

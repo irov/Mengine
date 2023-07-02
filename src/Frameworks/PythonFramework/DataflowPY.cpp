@@ -50,7 +50,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr DataflowPY::create( const DocumentPtr & _doc )
+    DataInterfacePtr DataflowPY::create( const DocumentInterfacePtr & _doc )
     {
         ScriptCodeDataPtr data = m_factoryScriptCodeData->createObject( _doc );
 
@@ -59,7 +59,7 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DataflowPY::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+    MemoryInterfacePtr DataflowPY::load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
     {
         MemoryInterfacePtr memory = Helper::createMemoryCacheStreamExtraSize( _stream, 2, _doc );
 
@@ -77,7 +77,7 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowPY::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
+    bool DataflowPY::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );

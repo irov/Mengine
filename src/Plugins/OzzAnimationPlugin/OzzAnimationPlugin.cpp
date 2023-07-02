@@ -19,7 +19,6 @@
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ObjectPrototypeGenerator.h"
 #include "Kernel/AssertionAllocator.h"
-#include "Kernel/Document.h"
 #include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"

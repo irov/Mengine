@@ -5,7 +5,6 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
-#include "Kernel/Document.h"
 
 #include "Config/Atomic.h"
 
@@ -26,7 +25,7 @@ namespace Mengine
         ~SDLThreadIdentity() override;
 
     public:
-        bool initialize( EThreadPriority _priority, const ConstString & _name, const DocumentPtr & _doc );
+        bool initialize( EThreadPriority _priority, const ConstString & _name );
         void finalize();
 
     public:
@@ -57,10 +56,6 @@ namespace Mengine
         SDL_threadID m_threadId;
 
         SDL_Thread * m_thread;
-
-#if defined(MENGINE_DEBUG)
-        DocumentPtr m_doc;
-#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLThreadIdentity, ThreadIdentityInterface> SDLThreadIdentityPtr;

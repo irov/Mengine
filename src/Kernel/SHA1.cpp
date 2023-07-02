@@ -124,11 +124,11 @@ namespace Mengine
                 MENGINE_MEMCPY( &context->buffer[j], &data[i], (len - i) * sizeof( uint8_t ) );
             }
             //////////////////////////////////////////////////////////////////////////
-            static void SHA1_Final( SHA1_CTX * context, uint8_t * const digest, uint32_t _size )
+            static void SHA1_Final( SHA1_CTX * context, uint8_t * const digest, size_t _size )
             {
                 uint8_t finalcount[8];
 
-                for( uint32_t i = 0; i != 8; i++ )
+                for( size_t i = 0; i != 8; i++ )
                 {
                     finalcount[i] = (unsigned char)((context->count[(i >= 4 ? 0 : 1)] >> ((3 - (i & 3)) * 8)) & 255);
                 }
@@ -142,7 +142,7 @@ namespace Mengine
 
                 SHA1_Update( context, finalcount, 8 );
 
-                for( uint32_t i = 0; i != _size; i++ )
+                for( size_t i = 0; i != _size; i++ )
                 {
                     digest[i] = (uint8_t)((context->state[(i >> 2) % 5] >> ((3 - (i & 3)) * 8)) & 255);
                 }

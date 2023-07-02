@@ -46,7 +46,7 @@ namespace Mengine
         m_timepipeAdd.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId TimepipeService::addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentPtr & _doc )
+    UniqueId TimepipeService::addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

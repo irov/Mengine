@@ -24,9 +24,9 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        ThreadIdentityInterfacePtr createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc ) override;
-        ThreadProcessorInterfacePtr createThreadProcessor( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc ) override;
-        ThreadMutexInterfacePtr createMutex( const DocumentPtr & _doc ) override;
+        ThreadIdentityInterfacePtr createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) override;
+        ThreadProcessorInterfacePtr createThreadProcessor( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) override;
+        ThreadMutexInterfacePtr createMutex( const DocumentInterfacePtr & _doc ) override;
 
     public:
         void sleep( uint32_t _ms ) override;

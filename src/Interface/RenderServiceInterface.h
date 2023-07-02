@@ -70,7 +70,7 @@ namespace Mengine
         virtual const Viewport & getRenderViewport() const = 0;
 
     public:
-        virtual const RenderBatchInterfacePtr & requestRenderBatch( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount, const DocumentPtr & _doc ) = 0;
+        virtual const RenderBatchInterfacePtr & requestRenderBatch( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual bool beginScene( const RenderPipelineInterfacePtr & _renderPipeline ) = 0;

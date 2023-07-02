@@ -75,7 +75,7 @@ namespace Mengine
 
         uint32_t leakcount = 0;
 
-        typedef Vector<DocumentPtr> VectorDocuments;
+        typedef Vector<DocumentInterfacePtr> VectorDocuments;
         typedef Map<const FactoryInterface *, VectorDocuments> MapObjectLeaks;
         MapObjectLeaks objectLeaks;
         this->debugFactoryForeachLeakObjects( 0, [&leakcount, &objectLeaks]( const FactoryInterface * _factory, const Factorable * _factorable )
@@ -83,7 +83,7 @@ namespace Mengine
             MENGINE_UNUSED( _factory );
             MENGINE_UNUSED( _factorable );
 
-            const DocumentPtr & doc = _factorable->getDocument();
+            const DocumentInterfacePtr & doc = _factorable->getDocument();
 
             if( doc == nullptr )
             {
@@ -129,7 +129,7 @@ namespace Mengine
 
                     ::fwrite( factory_delimiter, MENGINE_STRLEN( factory_delimiter ), 1, f );
 
-                    for( const DocumentPtr & obj : objects )
+                    for( const DocumentInterfacePtr & obj : objects )
                     {
                         const Char * obj_delimiter = "**********************************************************\n";
                         ::fwrite( obj_delimiter, MENGINE_STRLEN( obj_delimiter ), 1, f );

@@ -165,7 +165,7 @@ namespace Mengine
         this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr MockupRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderImageInterfacePtr MockupRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "render", "texture normal created %ux%u format %x"
             , _width
@@ -180,7 +180,7 @@ namespace Mengine
         return dxTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr MockupRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderTargetInterfacePtr MockupRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc )
     {
         MockupRenderTargetTexturePtr target = m_factoryRenderTargetTexture->createObject( _doc );
 
@@ -206,7 +206,7 @@ namespace Mengine
         return target;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr MockupRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentPtr & _doc )
+    RenderTargetInterfacePtr MockupRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc )
     {
         MockupRenderTargetOffscreenPtr target = m_factoryRenderTargetOffscreen->createObject( _doc );
 
@@ -232,7 +232,7 @@ namespace Mengine
         return target;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr MockupRenderSystem::createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc )
+    RenderImageInterfacePtr MockupRenderSystem::createRenderImageTarget( const RenderTargetInterfacePtr & _renderTarget, const DocumentInterfacePtr & _doc )
     {
         MockupRenderTargetTexturePtr targetTexture = MockupRenderTargetTexturePtr::from( _renderTarget );
 
@@ -245,7 +245,7 @@ namespace Mengine
         return imageTarget;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderMaterialStageCacheInterfacePtr MockupRenderSystem::createRenderMaterialStageCache( const RenderMaterialStage * _stage, const DocumentPtr & _doc )
+    RenderMaterialStageCacheInterfacePtr MockupRenderSystem::createRenderMaterialStageCache( const RenderMaterialStage * _stage, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _stage );
         MENGINE_UNUSED( _doc );
@@ -425,7 +425,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexBufferInterfacePtr MockupRenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const DocumentPtr & _doc )
+    RenderVertexBufferInterfacePtr MockupRenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const DocumentInterfacePtr & _doc )
     {
         MockupRenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject( _doc );
 
@@ -458,7 +458,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderIndexBufferInterfacePtr MockupRenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType, const DocumentPtr & _doc )
+    RenderIndexBufferInterfacePtr MockupRenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType, const DocumentInterfacePtr & _doc )
     {
         MockupRenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject( _doc );
 
@@ -633,7 +633,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexAttributeInterfacePtr MockupRenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentPtr & _doc )
+    RenderVertexAttributeInterfacePtr MockupRenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentInterfacePtr & _doc )
     {
         MockupRenderVertexAttributePtr attribute = m_factoryRenderVertexAttribute->createObject( _doc );
 
@@ -653,7 +653,7 @@ namespace Mengine
         return attribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr MockupRenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentPtr & _doc )
+    RenderFragmentShaderInterfacePtr MockupRenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentInterfacePtr & _doc )
     {
         MockupRenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
 
@@ -673,7 +673,7 @@ namespace Mengine
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr MockupRenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentPtr & _doc )
+    RenderVertexShaderInterfacePtr MockupRenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentInterfacePtr & _doc )
     {
         MockupRenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
 
@@ -693,7 +693,7 @@ namespace Mengine
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramInterfacePtr MockupRenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc )
+    RenderProgramInterfacePtr MockupRenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _samplerCount );
 
@@ -729,7 +729,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramVariableInterfacePtr MockupRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentPtr & _doc )
+    RenderProgramVariableInterfacePtr MockupRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
     {
         MockupRenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
@@ -770,7 +770,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    MockupRenderImagePtr MockupRenderSystem::createRenderImage_( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, EPixelFormat _hwPixelFormat, const DocumentPtr & _doc )
+    MockupRenderImagePtr MockupRenderSystem::createRenderImage_( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, EPixelFormat _hwPixelFormat, const DocumentInterfacePtr & _doc )
     {
         MockupRenderImagePtr dx9RenderImage = m_factoryRenderImage->createObject( _doc );
 

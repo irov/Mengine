@@ -60,7 +60,7 @@ namespace Mengine
         m_fileGroups.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    FileGroupInterfacePtr FileService::createFileGroup( const ConstString & _type, const DocumentPtr & _doc )
+    FileGroupInterfacePtr FileService::createFileGroup( const ConstString & _type, const DocumentInterfacePtr & _doc )
     {
         FactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), _type );
 
@@ -77,7 +77,7 @@ namespace Mengine
         return fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * const _outFileGroup, bool _create, const DocumentPtr & _doc )
+    bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * const _outFileGroup, bool _create, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "file", "mount file group '%s' path '%s' type '%s'"
             , _name.c_str()

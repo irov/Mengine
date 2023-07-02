@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Kernel/Mixin.h"
 #include "Kernel/MixinPointer.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Document.h"
 
 #include "Config/Lambda.h"
 
@@ -18,7 +18,7 @@ namespace Mengine
         SERVICE_DECLARE( "VocabularyService" )
 
     public:
-        virtual void setFactorable( const ConstString & _category, const ConstString & _prototype, const MixinPtr & _factorable, const DocumentPtr & _doc ) = 0;
+        virtual void setFactorable( const ConstString & _category, const ConstString & _prototype, const MixinPtr & _factorable, const DocumentInterfacePtr & _doc ) = 0;
         virtual MixinPointer removeFactorable( const ConstString & _category, const ConstString & _prototype ) = 0;
         virtual MixinPointer getFactorable( const ConstString & _category, const ConstString & _prototype ) const = 0;
         virtual bool hasFactorable( const ConstString & _category, const ConstString & _prototype ) const = 0;

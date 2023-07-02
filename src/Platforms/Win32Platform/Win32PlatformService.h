@@ -36,11 +36,11 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        UniqueId addUpdate( const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
+        UniqueId addUpdate( const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) override;
         void removeUpdate( UniqueId _id ) override;
 
     public:
-        UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
+        UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) override;
         void removeTimer( UniqueId _id ) override;
 
     public:
@@ -81,7 +81,7 @@ namespace Mengine
         bool hasTouchpad() const override;
 
     public:
-        DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc ) override;
+        DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc ) override;
 
     public:
         bool getDesktopResolution( Resolution * const _resolution ) const override;
@@ -209,7 +209,7 @@ namespace Mengine
         HWND getWindowHandle() const override;
 
     protected:
-        UniqueId addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentPtr & _doc ) override;
+        UniqueId addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentInterfacePtr & _doc ) override;
         void removeWin32ProcessHandler( UniqueId _id ) override;
 
     protected:
@@ -254,7 +254,7 @@ namespace Mengine
             LambdaWin32ProcessHandler lambda;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 
@@ -269,7 +269,7 @@ namespace Mengine
             LambdaTimer lambda;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 
@@ -282,7 +282,7 @@ namespace Mengine
             LambdaUpdate lambda;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 

@@ -13,7 +13,7 @@
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_SURFACE_GENERATE(X)\
 namespace Mengine::Helper{\
-        X ## Ptr generate ## X( const DocumentPtr & _doc ){\
+        X ## Ptr generate ## X( const DocumentInterfacePtr & _doc ){\
             X ## Ptr text = PROTOTYPE_SERVICE()->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( #X ), _doc );\
             return text;\
         }}

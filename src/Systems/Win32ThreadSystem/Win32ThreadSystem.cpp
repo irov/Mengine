@@ -49,13 +49,13 @@ namespace Mengine
         m_factoryWin32ThreadMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityInterfacePtr Win32ThreadSystem::createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc )
+    ThreadIdentityInterfacePtr Win32ThreadSystem::createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
         Win32ThreadIdentityPtr threadIdentity = m_factoryWin32ThreadIdentity->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( threadIdentity, "invalid create identity" );
 
-        if( threadIdentity->initialize( _name, _priority, _doc ) == false )
+        if( threadIdentity->initialize( _name, _priority ) == false )
         {
             LOGGER_ERROR( "invalid thread identity initialize (doc: %s)"
                 , MENGINE_DOCUMENT_STR( _doc )
@@ -67,7 +67,7 @@ namespace Mengine
         return threadIdentity;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadProcessorInterfacePtr Win32ThreadSystem::createThreadProcessor( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc )
+    ThreadProcessorInterfacePtr Win32ThreadSystem::createThreadProcessor( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
         Win32ThreadProcessorPtr threadProcessor = m_factoryWin32ThreadProcessor->createObject( _doc );
 
@@ -77,7 +77,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex" );
 
-        if( threadProcessor->initialize( _name, _priority, mutex, _doc ) == false )
+        if( threadProcessor->initialize( _name, _priority, mutex ) == false )
         {
             LOGGER_ERROR( "invalid thread processor initialize (doc: %s)"
                 , MENGINE_DOCUMENT_STR( _doc )
@@ -89,13 +89,13 @@ namespace Mengine
         return threadProcessor;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const DocumentPtr & _doc )
+    ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const DocumentInterfacePtr & _doc )
     {
         Win32ThreadMutexPtr mutex = m_factoryWin32ThreadMutex->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex" );
 
-        if( mutex->initialize( _doc ) == false )
+        if( mutex->initialize() == false )
         {
             LOGGER_ERROR( "invalid initialize mutex (doc %s)"
                 , MENGINE_DOCUMENT_STR( _doc )

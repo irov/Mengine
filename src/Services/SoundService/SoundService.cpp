@@ -322,7 +322,7 @@ namespace Mengine
             ->onTurnSound( m_turnSound );
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundIdentityInterfacePtr SoundService::createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceCategory _category, bool _streamable, const DocumentPtr & _doc )
+    SoundIdentityInterfacePtr SoundService::createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceCategory _category, bool _streamable, const DocumentInterfacePtr & _doc )
     {
         if( m_supportStream == false && _streamable == true )
         {
@@ -364,10 +364,6 @@ namespace Mengine
         identity->streamable = _streamable;
         identity->looped = false;
         identity->turn = _streamable ? m_turnStream : m_turnSound;
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-        identity->doc = _doc;
-#endif
 
         if( identity->initialize() == false )
         {
@@ -453,7 +449,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundDecoderInterfacePtr SoundService::createSoundDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable, const DocumentPtr & _doc )
+    SoundDecoderInterfacePtr SoundService::createSoundDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable, const DocumentInterfacePtr & _doc )
     {
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _streamable, false, _doc );
 
@@ -480,7 +476,7 @@ namespace Mengine
         return soundDecoder;
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundBufferInterfacePtr SoundService::createSoundBufferFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable, const DocumentPtr & _doc )
+    SoundBufferInterfacePtr SoundService::createSoundBufferFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable, const DocumentInterfacePtr & _doc )
     {
         if( m_supportStream == false && _streamable == true )
         {
@@ -903,7 +899,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
                     , identity->state
-                    , MENGINE_DOCUMENT_STR( identity->doc )
+                    , MENGINE_DOCUMENT_STR( identity->getDocument() )
                 );
 #endif
 
@@ -960,7 +956,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
                     , identity->state
-                    , MENGINE_DOCUMENT_STR( identity->doc )
+                    , MENGINE_DOCUMENT_STR( identity->getDocument() )
                 );
 #endif
 
@@ -1031,7 +1027,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
                     , identity->state
-                    , MENGINE_DOCUMENT_STR( identity->doc )
+                    , MENGINE_DOCUMENT_STR( identity->getDocument() )
                 );
 #endif
 
@@ -1090,7 +1086,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
                     , identity->state
-                    , MENGINE_DOCUMENT_STR( identity->doc )
+                    , MENGINE_DOCUMENT_STR( identity->getDocument() )
                 );
 #endif
 
@@ -1529,7 +1525,7 @@ namespace Mengine
 
                 LOGGER_ERROR( "sound: %s [%s] "
                     , identity->streamable == true ? "streamable" : "instance"
-                    , MENGINE_DOCUMENT_STR( identity->doc )
+                    , MENGINE_DOCUMENT_STR( identity->getDocument() )
                 );
             }
 #endif

@@ -19,16 +19,16 @@ namespace Mengine
         SERVICE_DECLARE( "RenderMaterialService" )
 
     public:
-        virtual RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t elementSize, const DocumentPtr & _doc ) = 0;
+        virtual RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t elementSize, const DocumentInterfacePtr & _doc ) = 0;
         virtual RenderVertexAttributeInterfacePtr removeVertexAttribute( const ConstString & _name ) = 0;
 
-        virtual RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentPtr & _doc ) = 0;
+        virtual RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentInterfacePtr & _doc ) = 0;
         virtual RenderVertexShaderInterfacePtr removeVertexShader( const ConstString & _name ) = 0;
 
-        virtual RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentPtr & _doc ) = 0;
+        virtual RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentInterfacePtr & _doc ) = 0;
         virtual RenderFragmentShaderInterfacePtr removeFragmentShader( const ConstString & _name ) = 0;
 
-        virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc ) = 0;
+        virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentInterfacePtr & _doc ) = 0;
         virtual RenderProgramInterfacePtr removeProgram( const ConstString & _name ) = 0;
 
     public:
@@ -41,11 +41,11 @@ namespace Mengine
         virtual void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) = 0;
 
     public:
-        virtual const RenderMaterialStage * createMaterialStage( const ConstString & _materialName, const RenderMaterialStage & _stage, const DocumentPtr & _doc ) = 0;
+        virtual const RenderMaterialStage * createMaterialStage( const ConstString & _materialName, const RenderMaterialStage & _stage, const DocumentInterfacePtr & _doc ) = 0;
         virtual const RenderMaterialStage * removeMaterialStage( const ConstString & _materialName ) = 0;
 
         virtual const RenderMaterialStage * getMaterialStage( const ConstString & _materialName ) const = 0;
-        virtual const RenderMaterialStage * cacheMaterialStage( const RenderMaterialStage & _other, const DocumentPtr & _doc ) = 0;
+        virtual const RenderMaterialStage * cacheMaterialStage( const RenderMaterialStage & _other, const DocumentInterfacePtr & _doc ) = 0;
         virtual void uncacheMaterialStage( const RenderMaterialStage * _stage ) = 0;
 
     public:
@@ -55,18 +55,18 @@ namespace Mengine
         virtual RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
             , EPrimitiveType _primitiveType
             , const RenderTextureInterfacePtr * _textures
-            , uint32_t _textureCount, const DocumentPtr & _doc ) = 0;
+            , uint32_t _textureCount, const DocumentInterfacePtr & _doc ) = 0;
 
         virtual RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
             , const RenderMaterialStage * _stage
             , EPrimitiveType _primitiveType
             , const RenderTextureInterfacePtr * _textures
-            , uint32_t _textureCount, const DocumentPtr & _doc ) = 0;
+            , uint32_t _textureCount, const DocumentInterfacePtr & _doc ) = 0;
 
         virtual RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
             , EPrimitiveType _primitiveType
             , const RenderTextureInterfacePtr * _textures
-            , uint32_t _textureCount, const DocumentPtr & _doc ) = 0;
+            , uint32_t _textureCount, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode, bool _premultiply ) const = 0;

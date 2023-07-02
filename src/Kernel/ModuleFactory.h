@@ -46,7 +46,7 @@ namespace Mengine
         }
 
     public:
-        ModuleInterfacePtr createModule( const DocumentPtr & _doc ) override
+        ModuleInterfacePtr createModule( const DocumentInterfacePtr & _doc ) override
         {
             IntrusivePtr<Type> module = m_factory->createObject( _doc );
 
@@ -60,7 +60,7 @@ namespace Mengine
     namespace Helper
     {
         template<class T>
-        ModuleFactoryInterfacePtr makeModuleFactory( const DocumentPtr & _doc )
+        ModuleFactoryInterfacePtr makeModuleFactory( const DocumentInterfacePtr & _doc )
         {
             MENGINE_UNUSED( _doc );
 

@@ -129,12 +129,12 @@ namespace Mengine
         SERVICE_DECLARE( "NotificationService" )
 
     public:
-        virtual void addObserver( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentPtr & _doc ) = 0;
+        virtual void addObserver( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentInterfacePtr & _doc ) = 0;
         virtual void removeObserver( uint32_t _id, Observable * _observer ) = 0;
 
     public:
         template<uint32_t ID, class C, class L>
-        void addObserverLambda( C * _self, const L & _lambda, const DocumentPtr & _doc )
+        void addObserverLambda( C * _self, const L & _lambda, const DocumentInterfacePtr & _doc )
         {
             ObserverCallableInterfacePtr callable( Helper::makeFactorableUnique<LambdaObserverCallable<ID, L>>( _doc, _lambda ) );
 
@@ -143,7 +143,7 @@ namespace Mengine
 
     public:
         template<uint32_t ID, class C, class M>
-        void addObserverMethod( C * _self, M _method, const DocumentPtr & _doc )
+        void addObserverMethod( C * _self, M _method, const DocumentInterfacePtr & _doc )
         {
             ObserverCallableInterfacePtr callable( Helper::makeFactorableUnique<GeneratorMethodObserverCallable<ID, M>>( _doc, _self, _method ) );
 

@@ -120,7 +120,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        void registerScriptWrapping( pybind::kernel_interface * _kernel, const ConstString & _type, const DocumentPtr & _doc )
+        void registerScriptWrapping( pybind::kernel_interface * _kernel, const ConstString & _type, const DocumentInterfacePtr & _doc )
         {
             VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ScriptWrapping" ), _type, Helper::makeFactorableUnique<PythonScriptWrapper<T>>( _doc, _kernel ), _doc );
         }

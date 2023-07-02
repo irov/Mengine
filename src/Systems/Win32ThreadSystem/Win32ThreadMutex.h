@@ -5,7 +5,6 @@
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/Document.h"
 
 #include "Config/Char.h"
 
@@ -23,7 +22,7 @@ namespace Mengine
         ~Win32ThreadMutex() override;
 
     public:
-        bool initialize( const DocumentPtr & _doc );
+        bool initialize();
         void finalize();
 
     protected:
@@ -38,10 +37,6 @@ namespace Mengine
 
     protected:
         CRITICAL_SECTION m_cs;
-
-#ifdef MENGINE_DOCUMENT_ENABLE
-        DocumentPtr m_doc;
-#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32ThreadMutex, ThreadMutexInterface> Win32ThreadMutexPtr;

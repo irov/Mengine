@@ -44,7 +44,7 @@ namespace Mengine
         }
 
     protected:
-        DecoderInterfacePtr createDecoder( const DocumentPtr & _doc ) override
+        DecoderInterfacePtr createDecoder( const DocumentInterfacePtr & _doc ) override
         {
             IntrusivePtr<T> decoder = m_factory->createObject( _doc );
 
@@ -59,7 +59,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        MENGINE_INLINE DecoderFactoryInterfacePtr registerDecoder( const ConstString & _type, const DocumentPtr & _doc )
+        MENGINE_INLINE DecoderFactoryInterfacePtr registerDecoder( const ConstString & _type, const DocumentInterfacePtr & _doc )
         {
             DecoderFactoryInterfacePtr factory = Helper::makeFactorableUnique<DecoderFactory<T>>( _doc );
 

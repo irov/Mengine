@@ -22,6 +22,7 @@ namespace Mengine
         SERVICE_DECLARE( "GameService" )
 
     public:
+        virtual bool preparation() = 0;
         virtual void run() = 0;
         virtual void interruption() = 0;
         virtual void stop() = 0;

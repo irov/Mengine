@@ -35,7 +35,7 @@ namespace Mengine
         m_factoryAreaOfInterestTriggers = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    AreaOfInterestTriggerInterfacePtr AreaOfInterestZone::createTrigger( const AreaOfInterestTriggerProviderInterfacePtr & _provider, const DocumentPtr & _doc )
+    AreaOfInterestTriggerInterfacePtr AreaOfInterestZone::createTrigger( const AreaOfInterestTriggerProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc )
     {
         AreaOfInterestTriggerPtr trigger = m_factoryAreaOfInterestTriggers->createObject( _doc );
 
@@ -85,7 +85,7 @@ namespace Mengine
         trigger->setProvider( nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    AreaOfInterestActorInterfacePtr AreaOfInterestZone::createActor( const AreaOfInterestActorProviderInterfacePtr & _provider, const DocumentPtr & _doc )
+    AreaOfInterestActorInterfacePtr AreaOfInterestZone::createActor( const AreaOfInterestActorProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc )
     {
         AreaOfInterestActorPtr actor = m_factoryAreaOfInterestActors->createObject( _doc );
 

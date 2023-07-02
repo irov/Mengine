@@ -183,7 +183,7 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFont::_prepareGlyph( uint32_t _code, const DocumentPtr & _doc )
+    bool BitmapFont::_prepareGlyph( uint32_t _code, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _code );
         MENGINE_UNUSED( _doc );

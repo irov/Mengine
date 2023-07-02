@@ -39,7 +39,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr FEDataflow::create( const DocumentPtr & _doc )
+    DataInterfacePtr FEDataflow::create( const DocumentInterfacePtr & _doc )
     {
         FEDataPtr data = m_factoryFEData->createObject( _doc );
 
@@ -48,7 +48,7 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr FEDataflow::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+    MemoryInterfacePtr FEDataflow::load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
     {
         MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, _doc );
 
@@ -57,7 +57,7 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FEDataflow::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
+    bool FEDataflow::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );

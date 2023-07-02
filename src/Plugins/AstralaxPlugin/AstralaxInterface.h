@@ -166,10 +166,10 @@ namespace Mengine
         SERVICE_DECLARE( "AstralaxService" )
 
     public:
-        virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const DocumentPtr & _doc ) = 0;
+        virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentPtr & _doc ) = 0;
+        virtual AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual const RenderMaterialInterfacePtr & getMaterial( const AstralaxMesh & _mesh ) const = 0;

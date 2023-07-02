@@ -182,7 +182,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
+    InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _streaming );
@@ -240,7 +240,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr Win32FileGroupDirectory::createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
+    InputStreamInterfacePtr Win32FileGroupDirectory::createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc )
     {
         if( m_parentFileGroup != nullptr )
         {
@@ -297,7 +297,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile( const DocumentPtr & _doc )
+    OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile( const DocumentInterfacePtr & _doc )
     {
         Win32FileOutputStreamPtr stream = m_factoryOutputStreamFile->createObject( _doc );
 
@@ -342,7 +342,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MappedInterfacePtr Win32FileGroupDirectory::createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
+    MappedInterfacePtr Win32FileGroupDirectory::createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _filePath );
 

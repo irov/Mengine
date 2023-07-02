@@ -2,8 +2,8 @@
 
 #include "Interface/ServantInterface.h"
 #include "Interface/InputStreamInterface.h"
+#include "Interface/DocumentInterface.h"
 
-#include "Kernel/Document.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/VectorConstString.h"
@@ -27,7 +27,7 @@ namespace Mengine
         virtual const Tags & getPlatformTags() const = 0;
 
     public:
-        virtual bool load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) = 0;
+        virtual bool load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc ) = 0;
         virtual void unload() = 0;
 
     public:

@@ -24,11 +24,11 @@ namespace Mengine
         void finalize() override;
 
     public:
-        UniqueId addGlobalHandler( const InputHandlerInterfacePtr & _handler, const DocumentPtr & _doc ) override;
+        UniqueId addGlobalHandler( const InputHandlerInterfacePtr & _handler, const DocumentInterfacePtr & _doc ) override;
         InputHandlerInterfacePtr removeGlobalHandler( UniqueId _id ) override;
 
     public:
-        UniqueId addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const DocumentPtr & _doc ) override;
+        UniqueId addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const DocumentInterfacePtr & _doc ) override;
 
     public:
         bool enableGlobalHandler( UniqueId _id, bool _value ) override;
@@ -61,7 +61,7 @@ namespace Mengine
             bool dead;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 

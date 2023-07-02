@@ -153,7 +153,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DecoderRenderImageLoader::getMemory( uint32_t _codecFlags, const DocumentPtr & _doc ) const
+    MemoryInterfacePtr DecoderRenderImageLoader::getMemory( uint32_t _codecFlags, const DocumentInterfacePtr & _doc ) const
     {
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryBuffer( _doc );

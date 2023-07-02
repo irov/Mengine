@@ -31,22 +31,22 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        UniqueId lockBuffer( size_t _size, void ** const _memory, const DocumentPtr & _doc );
+        UniqueId lockBuffer( size_t _size, void ** const _memory, const DocumentInterfacePtr & _doc );
         void unlockBuffer( UniqueId _bufferId );
 
     public:
         void clearCacheBuffers() override;
 
     public:
-        MemoryBufferInterfacePtr createMemoryBuffer( const DocumentPtr & _doc ) override;
-        MemoryProxyInterfacePtr createMemoryProxy( const DocumentPtr & _doc ) override;
-        MemoryBufferInterfacePtr createMemoryCacheBuffer( const DocumentPtr & _doc ) override;
-        MemoryCacheInputInterfacePtr createMemoryCacheInput( const DocumentPtr & _doc ) override;
-        MemoryProxyInputInterfacePtr createMemoryProxyInput( const DocumentPtr & _doc ) override;
-        MemoryInputInterfacePtr createMemoryInput( const DocumentPtr & _doc ) override;
+        MemoryBufferInterfacePtr createMemoryBuffer( const DocumentInterfacePtr & _doc ) override;
+        MemoryProxyInterfacePtr createMemoryProxy( const DocumentInterfacePtr & _doc ) override;
+        MemoryBufferInterfacePtr createMemoryCacheBuffer( const DocumentInterfacePtr & _doc ) override;
+        MemoryCacheInputInterfacePtr createMemoryCacheInput( const DocumentInterfacePtr & _doc ) override;
+        MemoryProxyInputInterfacePtr createMemoryProxyInput( const DocumentInterfacePtr & _doc ) override;
+        MemoryInputInterfacePtr createMemoryInput( const DocumentInterfacePtr & _doc ) override;
 
     protected:
-        UniqueId lockBufferNoMutex_( size_t _size, void ** const _memory, const DocumentPtr & _doc );
+        UniqueId lockBufferNoMutex_( size_t _size, void ** const _memory, const DocumentInterfacePtr & _doc );
 
     protected:
         struct CacheBufferMemory
@@ -57,7 +57,7 @@ namespace Mengine
             bool lock;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 

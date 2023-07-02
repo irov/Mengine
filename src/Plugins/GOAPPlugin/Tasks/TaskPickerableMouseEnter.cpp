@@ -157,7 +157,7 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskPickerableMouseEnter::TaskPickerableMouseEnter( GOAP::Allocator * _allocator, const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter, const DocumentPtr & _doc )
+    TaskPickerableMouseEnter::TaskPickerableMouseEnter( GOAP::Allocator * _allocator, const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter, const DocumentInterfacePtr & _doc )
         : GOAP::TaskInterface( _allocator )
         , m_pickerable( _pickerable )
         , m_filter( _filter )

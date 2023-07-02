@@ -8,7 +8,6 @@
 #include "OpenGLRenderEnum.h"
 
 #include "Kernel/MemoryAllocator.h"
-#include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine

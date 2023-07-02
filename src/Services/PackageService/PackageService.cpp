@@ -80,7 +80,7 @@ namespace Mengine
         m_factoryPackage = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
+    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "package", "load packages... %s"
             , Helper::getFileGroupFullPath( _fileGroup, _filePath )
@@ -211,7 +211,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PackageService::addPackage( const PackageDesc & _desc, const DocumentPtr & _doc )
+    bool PackageService::addPackage( const PackageDesc & _desc, const DocumentInterfacePtr & _doc )
     {
         bool developmentMode = Helper::isDevelopmentMode();
 

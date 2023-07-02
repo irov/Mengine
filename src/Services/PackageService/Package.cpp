@@ -81,7 +81,7 @@ namespace Mengine
         return m_fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::load( const DocumentPtr & _doc )
+    bool Package::load( const DocumentInterfacePtr & _doc )
     {
         if( this->mountFileGroup_( _doc ) == false )
         {
@@ -103,7 +103,7 @@ namespace Mengine
         return m_load;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::mountFileGroup_( const DocumentPtr & _doc )
+    bool Package::mountFileGroup_( const DocumentInterfacePtr & _doc )
     {
         const PackageInterfacePtr & parentPackage = this->getParent();
         const FileGroupInterfacePtr & parentFileGroup = (parentPackage == nullptr) ? FileGroupInterfacePtr::none() : parentPackage->getFileGroup();

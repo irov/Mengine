@@ -2,6 +2,7 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
@@ -12,7 +13,6 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
@@ -107,7 +107,7 @@ namespace Mengine
         return m_type;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer PythonEntityPrototypeGenerator::generate( const DocumentPtr & _doc )
+    FactorablePointer PythonEntityPrototypeGenerator::generate( const DocumentInterfacePtr & _doc )
     {
         const pybind::object & py_type = this->getPythonType();
 

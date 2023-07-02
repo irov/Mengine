@@ -11,7 +11,7 @@ namespace Mengine
         SERVICE_DECLARE( "FontService" )
 
     public:
-        virtual FontInterfacePtr createFont( const ConstString & _fontName, const ConstString & _fontType, const DocumentPtr & _doc ) = 0;
+        virtual FontInterfacePtr createFont( const ConstString & _fontName, const ConstString & _fontType, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool removeFont( const ConstString & _fontName ) = 0;
         virtual bool loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
         virtual bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;

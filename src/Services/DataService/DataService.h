@@ -18,6 +18,6 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        DataInterfacePointer dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream, const DataflowContext * _context, const DocumentPtr & _doc ) override;
+        DataInterfacePointer dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream, const DataflowContext * _context, const DocumentInterfacePtr & _doc ) override;
     };
 }

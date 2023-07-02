@@ -43,7 +43,7 @@ namespace Mengine
         m_settings.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SettingsService::loadSetting( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
+    bool SettingsService::loadSetting( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
     {
         ConstString filePathExt = Helper::getFilePathExt( _filePath );
 
@@ -88,7 +88,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SettingsService::loadSettings( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
+    bool SettingsService::loadSettings( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "settings", "load settings... '%s'"
             , Helper::getFileGroupFullPath( _fileGroup, _filePath )

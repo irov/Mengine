@@ -49,7 +49,7 @@ namespace Mengine
         virtual void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha ) = 0;
 
     public:
-        virtual SchedulerInterfacePtr createScheduler( const ConstString & _name, const DocumentPtr & _doc ) = 0;
+        virtual SchedulerInterfacePtr createScheduler( const ConstString & _name, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool destroyScheduler( const SchedulerInterfacePtr & _scheduler ) = 0;
 
     public:

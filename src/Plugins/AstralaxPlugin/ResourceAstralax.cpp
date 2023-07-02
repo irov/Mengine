@@ -3,7 +3,6 @@
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
@@ -102,7 +101,7 @@ namespace Mengine
         m_container = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterInterfacePtr ResourceAstralax::createEmitter( const DocumentPtr & _doc )
+    AstralaxEmitterInterfacePtr ResourceAstralax::createEmitter( const DocumentInterfacePtr & _doc )
     {
         if( this->isCompile() == false )
         {

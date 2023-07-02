@@ -16,12 +16,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Document::setParent( const DocumentPtr & _parent )
+    void Document::setParent( const DocumentInterfacePtr & _parent )
     {
         m_parent = _parent;
     }
     //////////////////////////////////////////////////////////////////////////
-    const DocumentPtr & Document::getParent() const
+    const DocumentInterfacePtr & Document::getParent() const
     {
         return m_parent;
     }

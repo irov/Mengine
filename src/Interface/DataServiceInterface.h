@@ -18,7 +18,7 @@ namespace Mengine
         SERVICE_DECLARE( "DataService" )
 
     public:
-        virtual DataInterfacePointer dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream, const DataflowContext * _context, const DocumentPtr & _doc ) = 0;
+        virtual DataInterfacePointer dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream, const DataflowContext * _context, const DocumentInterfacePtr & _doc ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/DocumentInterface.h"
+
 #include "AstralaxInterface.h"
 
 #include "Kernel/Resource.h"
@@ -27,7 +29,7 @@ namespace Mengine
         const ResourceImagePtr & getResourceImage( uint32_t _index ) const;
 
     public:
-        AstralaxEmitterInterfacePtr createEmitter( const DocumentPtr & _doc );
+        AstralaxEmitterInterfacePtr createEmitter( const DocumentInterfacePtr & _doc );
 
     protected:
         bool _compile() override;

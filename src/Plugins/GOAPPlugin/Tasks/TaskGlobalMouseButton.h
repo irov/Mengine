@@ -3,9 +3,9 @@
 #include "GOAP/TaskInterface.h"
 
 #include "Interface/InputHandlerInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Kernel/MouseButtonCode.h"
-#include "Kernel/Document.h"
 
 #include "Config/UniqueId.h"
 #include "Config/Lambda.h"
@@ -19,7 +19,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskGlobalMouseButton( GOAP::Allocator * _allocator, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentPtr & _doc );
+        TaskGlobalMouseButton( GOAP::Allocator * _allocator, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentInterfacePtr & _doc );
         ~TaskGlobalMouseButton() override;
 
     protected:
@@ -33,7 +33,7 @@ namespace Mengine
         LambdaInputMouseButtonEvent m_filter;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-        DocumentPtr m_doc;
+        DocumentInterfacePtr m_doc;
 #endif
 
         UniqueId m_id;

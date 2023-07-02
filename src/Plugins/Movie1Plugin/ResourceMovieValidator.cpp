@@ -12,7 +12,6 @@
 
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/ConfigHelper.h"

@@ -1,5 +1,6 @@
-#include "Kernel/DocumentableHelper.h"
-#include "Kernel/Document.h"
+#include "DocumentableHelper.h"
+
+#include "Interface/DocumentInterface.h"
 
 #include "Config/StdString.h"
 
@@ -10,9 +11,9 @@ namespace Mengine
 {
     namespace Detail
     {
-        static size_t getParentDocumentableMessage( const DocumentPtr & _document, Char * const _message, size_t _capacity )
+        static size_t getParentDocumentableMessage( const DocumentInterfacePtr & _document, Char * const _message, size_t _capacity )
         {
-            const DocumentPtr & parent = _document->getParent();
+            const DocumentInterfacePtr & parent = _document->getParent();
 
             if( parent == nullptr )
             {
@@ -40,7 +41,7 @@ namespace Mengine
         {
             MENGINE_STRNCPY( _message, "", _capacity );
 
-            const DocumentPtr & document = _documentable->getDocument();
+            const DocumentInterfacePtr & document = _documentable->getDocument();
 
             if( document == nullptr )
             {

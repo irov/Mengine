@@ -14,21 +14,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadMutex::initialize( const DocumentPtr & _doc )
+    bool SDLThreadMutex::initialize()
     {
-        MENGINE_UNUSED( _doc );
-
-#if defined(MENGINE_DEBUG)
-        m_doc = _doc;
-#endif
-
         SDL_mutex * cs = SDL_CreateMutex();
 
         if( cs == nullptr )
         {
             LOGGER_ERROR( "invalid create mutex error: %s (doc: %s)"
                 , SDL_GetError()
-                , MENGINE_DOCUMENT_STR( m_doc )
+                , MENGINE_DOCUMENT_STR( this->getDocument() )
             );
 
             return false;
@@ -46,10 +40,6 @@ namespace Mengine
             SDL_DestroyMutex( m_cs );
             m_cs = nullptr;
         }
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-        m_doc = nullptr;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadMutex::lock()
@@ -58,7 +48,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid lock error: %s (doc: %s)"
                 , SDL_GetError()
-                , MENGINE_DOCUMENT_STR( m_doc )
+                , MENGINE_DOCUMENT_STR( this->getDocument() )
             );
         }
     }
@@ -69,7 +59,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid unlock error: %s (doc: %s)"
                 , SDL_GetError()
-                , MENGINE_DOCUMENT_STR( m_doc )
+                , MENGINE_DOCUMENT_STR( this->getDocument() )
             );
         }
     }
@@ -86,7 +76,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid try lock error: %s (doc: %s)"
                 , SDL_GetError()
-                , MENGINE_DOCUMENT_STR( m_doc )
+                , MENGINE_DOCUMENT_STR( this->getDocument() )
             );
         }
 

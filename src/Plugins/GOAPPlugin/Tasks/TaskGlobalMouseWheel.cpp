@@ -9,7 +9,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskGlobalMouseWheel::TaskGlobalMouseWheel( GOAP::Allocator * _allocator, const LambdaInputMouseWheelEvent & _filter, const DocumentPtr & _doc )
+    TaskGlobalMouseWheel::TaskGlobalMouseWheel( GOAP::Allocator * _allocator, const LambdaInputMouseWheelEvent & _filter, const DocumentInterfacePtr & _doc )
         : GOAP::TaskInterface( _allocator )
         , m_filter( _filter )
 #if defined(MENGINE_DOCUMENT_ENABLE)

@@ -12,7 +12,7 @@ namespace Mengine
         : public CodecFactoryInterface
     {
     public:
-        virtual EncoderInterfacePtr createEncoder( const DocumentPtr & _doc ) = 0;
+        virtual EncoderInterfacePtr createEncoder( const DocumentInterfacePtr & _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<EncoderFactoryInterface> EncoderFactoryInterfacePtr;

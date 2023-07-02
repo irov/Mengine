@@ -2,9 +2,9 @@
 
 #include "Interface/ThreadMutexInterface.h"
 #include "Interface/ThreadWorkerInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Kernel/ThreadTask.h"
-#include "Kernel/Document.h"
 
 #include "Config/Atomic.h"
 #include "Config/Char.h"
@@ -38,7 +38,7 @@ namespace Mengine
         AtomicBool remove;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-        DocumentPtr doc;
+        DocumentInterfacePtr doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
@@ -52,11 +52,11 @@ namespace Mengine
         ~ThreadJob() override;
 
     public:
-        bool initialize( uint32_t _sleep, const DocumentPtr & _doc );
+        bool initialize( uint32_t _sleep );
         void finalize();
 
     public:
-        UniqueId addWorker( const ThreadWorkerInterfacePtr & _worker, const DocumentPtr & _doc );
+        UniqueId addWorker( const ThreadWorkerInterfacePtr & _worker, const DocumentInterfacePtr & _doc );
         bool removeWorker( UniqueId _id );
         bool pauseWorker( UniqueId _id );
         bool resumeWorker( UniqueId _id );
@@ -70,10 +70,6 @@ namespace Mengine
         uint32_t m_sleep;
 
         ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-        DocumentPtr m_doc;
-#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadJob, ThreadTaskInterface> ThreadJobPtr;

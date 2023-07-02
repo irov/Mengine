@@ -30,10 +30,10 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        ResourceBankInterfacePtr createResourceBank( uint32_t _reserved, const DocumentPtr & _doc ) override;
+        ResourceBankInterfacePtr createResourceBank( uint32_t _reserved, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        ResourcePointer createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const DocumentPtr & _doc ) override;
+        ResourcePointer createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const DocumentInterfacePtr & _doc ) override;
         void removeResource( const ResourcePtr & _resource ) override;
 
     public:

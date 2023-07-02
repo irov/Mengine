@@ -33,7 +33,7 @@ namespace Mengine
         m_ftlibrary = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer TTFPrototypeGenerator::generate( const DocumentPtr & _doc )
+    FactorablePointer TTFPrototypeGenerator::generate( const DocumentInterfacePtr & _doc )
     {
         const FactoryInterfacePtr & factory = this->getPrototypeFactory();
 
@@ -42,7 +42,7 @@ namespace Mengine
         font->setFTLibrary( m_ftlibrary );
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-        DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Sprite '%s' type '%s' create '%s'"
+        DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "Sprite '%s' type '%s' create '%s'"
             , font->getName().c_str()
             , font->getType().c_str()
             , MENGINE_DOCUMENT_STR( _doc )

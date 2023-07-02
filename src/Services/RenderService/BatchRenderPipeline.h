@@ -79,41 +79,41 @@ namespace Mengine
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
             , uint32_t _vertexCount, uint32_t _indexCount
-            , uint32_t _baseVertexIndex, uint32_t _startIndex, const DocumentPtr & _doc ) override;
+            , uint32_t _baseVertexIndex, uint32_t _startIndex, const DocumentInterfacePtr & _doc ) override;
 
         void addRenderObject( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const RenderIndex * _indices, uint32_t _indexCount
-            , const mt::box2f * _bb, bool _debug, const DocumentPtr & _doc ) override;
+            , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc ) override;
 
         void addRenderQuad( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug, const DocumentPtr & _doc ) override;
+            , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc ) override;
 
         void addRenderLine( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug, const DocumentPtr & _doc ) override;
+            , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc ) override;
 
     public:
         void addRenderExternal( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderExternalInterfacePtr & _external
-            , const DocumentPtr & _doc ) override;
+            , const DocumentInterfacePtr & _doc ) override;
 
     public:
         void addDebugRenderObject( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const RenderIndex * _indices, uint32_t _indexCount, const DocumentPtr & _doc ) override;
+            , const RenderIndex * _indices, uint32_t _indexCount, const DocumentInterfacePtr & _doc ) override;
 
         void addDebugRenderQuad( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount, const DocumentPtr & _doc ) override;
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount, const DocumentInterfacePtr & _doc ) override;
 
     public:
         void endDebugLimitRenderObjects() override;
@@ -182,7 +182,7 @@ namespace Mengine
             uint32_t indexCount;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 

@@ -1,7 +1,8 @@
 #pragma once
 
+#include "Interface/DocumentInterface.h"
+
 #include "Kernel/IntrusivePtr.h"
-#include "Kernel/Document.h"
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
@@ -35,7 +36,7 @@ namespace Mengine
     namespace Helper
     {
         template<class Type, class ... Args>
-        IntrusivePtr<Type> makeFactorableUnique( const DocumentPtr & _doc, Args && ... _args )
+        IntrusivePtr<Type> makeFactorableUnique( const DocumentInterfacePtr & _doc, Args && ... _args )
         {
             MENGINE_UNUSED( _doc );
 

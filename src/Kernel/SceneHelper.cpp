@@ -13,7 +13,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        ScenePtr makeScene( const SceneEventReceiverInterfacePtr & _eventReceiver, const DocumentPtr & _doc )
+        ScenePtr makeScene( const SceneEventReceiverInterfacePtr & _eventReceiver, const DocumentInterfacePtr & _doc )
         {
             ScenePtr scene = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none(), _doc );

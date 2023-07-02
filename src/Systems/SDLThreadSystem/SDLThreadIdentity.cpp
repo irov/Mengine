@@ -70,16 +70,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadIdentity::initialize( EThreadPriority _priority, const ConstString & _name, const DocumentPtr & _doc )
+    bool SDLThreadIdentity::initialize( EThreadPriority _priority, const ConstString & _name )
     {
-        MENGINE_UNUSED( _doc );
-
         m_priority = _priority;
         m_name = _name;
-
-#if defined(MENGINE_DEBUG)
-        m_doc = _doc;
-#endif
 
         return true;
     }
@@ -88,10 +82,6 @@ namespace Mengine
     {
         m_thread = nullptr;
         m_runner = nullptr;
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-        m_doc = nullptr;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadIdentityRunnerInterfacePtr SDLThreadIdentity::run( const LambdaThreadRunner & _lambda )

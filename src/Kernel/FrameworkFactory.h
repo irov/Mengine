@@ -46,7 +46,7 @@ namespace Mengine
         }
 
     public:
-        FrameworkInterfacePtr createFramework( const DocumentPtr & _doc ) override
+        FrameworkInterfacePtr createFramework( const DocumentInterfacePtr & _doc ) override
         {
             IntrusivePtr<Type> module = m_factory->createObject( _doc );
 
@@ -60,7 +60,7 @@ namespace Mengine
     namespace Helper
     {
         template<class T>
-        FrameworkFactoryInterfacePtr makeFrameworkFactory( const DocumentPtr & _doc )
+        FrameworkFactoryInterfacePtr makeFrameworkFactory( const DocumentInterfacePtr & _doc )
         {
             FrameworkFactoryInterfacePtr factory = Helper::makeFactorableUnique<FrameworkFactory<T>>( _doc );
 

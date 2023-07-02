@@ -109,7 +109,7 @@ namespace Mengine
         m_accountProvider = _accountProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::createAccount( const DocumentPtr & _doc )
+    AccountInterfacePtr AccountService::createAccount( const DocumentInterfacePtr & _doc )
     {
         uint32_t new_playerId = ++m_playerEnumerator;
 
@@ -130,7 +130,7 @@ namespace Mengine
         return account;
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::createGlobalAccount( const DocumentPtr & _doc )
+    AccountInterfacePtr AccountService::createGlobalAccount( const DocumentInterfacePtr & _doc )
     {
         uint32_t new_playerId = ++m_playerEnumerator;
 
@@ -152,7 +152,7 @@ namespace Mengine
         return account;
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::createAccount_( const ConstString & _accountId, const DocumentPtr & _doc )
+    AccountInterfacePtr AccountService::createAccount_( const ConstString & _accountId, const DocumentInterfacePtr & _doc )
     {
         MENGINE_ASSERTION_FATAL( m_accounts.find( _accountId ) == nullptr, "account with ID '%s' already exist. Account not created"
             , _accountId.c_str()
@@ -185,7 +185,7 @@ namespace Mengine
         return newAccount;
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::createGlobalAccount_( const ConstString & _accountId, const DocumentPtr & _doc )
+    AccountInterfacePtr AccountService::createGlobalAccount_( const ConstString & _accountId, const DocumentInterfacePtr & _doc )
     {
 #if defined(MENGINE_DEBUG)
         AccountInterfacePtr account = m_accounts.find( _accountId );
@@ -235,7 +235,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::newAccount_( const ConstString & _accountId, const DocumentPtr & _doc )
+    AccountInterfacePtr AccountService::newAccount_( const ConstString & _accountId, const DocumentInterfacePtr & _doc )
     {
         PathString accountString;
         accountString.append( _accountId );

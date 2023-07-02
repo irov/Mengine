@@ -45,7 +45,7 @@ namespace Mengine
         GOAP::NodeInterfacePtr m_node;
     };
     //////////////////////////////////////////////////////////////////////////
-    TaskGlobalDelay::TaskGlobalDelay( GOAP::Allocator * _allocator, float _time, const DocumentPtr & _doc )
+    TaskGlobalDelay::TaskGlobalDelay( GOAP::Allocator * _allocator, float _time, const DocumentInterfacePtr & _doc )
         : GOAP::TaskInterface( _allocator )
         , m_time( _time )
 #if defined(MENGINE_DOCUMENT_ENABLE)

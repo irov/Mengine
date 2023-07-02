@@ -11,6 +11,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/DocumentHelper.h"
 
 #include <process.h>
 
@@ -59,16 +60,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::initialize( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc )
+    bool Win32ThreadIdentity::initialize( const ConstString & _name, EThreadPriority _priority )
     {
-        MENGINE_UNUSED( _doc );
-
         m_name = _name;
         m_priority = _priority;
-
-#ifdef MENGINE_DOCUMENT_ENABLE
-        m_doc = _doc;
-#endif
 
         return true;
     }
@@ -82,10 +77,6 @@ namespace Mengine
         }
 
         m_runner = nullptr;
-
-#ifdef MENGINE_DOCUMENT_ENABLE
-        m_doc = nullptr;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadIdentityRunnerInterfacePtr Win32ThreadIdentity::run( const LambdaThreadRunner & _lambda )

@@ -7,8 +7,6 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Document.h"
-#include "Kernel/DocumentHelper.h"
 
 #include "Config/Char.h"
 #include "Config/Atomic.h"
@@ -27,7 +25,7 @@ namespace Mengine
         ~Win32ThreadIdentity() override;
 
     public:
-        bool initialize( const ConstString & _name, EThreadPriority _priority, const DocumentPtr & _doc );
+        bool initialize( const ConstString & _name, EThreadPriority _priority );
         void finalize();
 
     public:
@@ -54,10 +52,6 @@ namespace Mengine
 
         HANDLE m_thread;
         DWORD m_threadId;
-
-#ifdef MENGINE_DOCUMENT_ENABLE
-        DocumentPtr m_doc;
-#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32ThreadIdentity, ThreadIdentityInterface> Win32ThreadIdentityPtr;

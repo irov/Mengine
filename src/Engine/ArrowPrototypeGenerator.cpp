@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer ArrowPrototypeGenerator::generate( const DocumentPtr & _doc )
+    FactorablePointer ArrowPrototypeGenerator::generate( const DocumentInterfacePtr & _doc )
     {
         ArrowPtr arrow = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Arrow" ), _doc );

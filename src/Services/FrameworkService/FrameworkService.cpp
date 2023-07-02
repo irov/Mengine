@@ -52,7 +52,7 @@ namespace Mengine
         return exist;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FrameworkService::initializeFramework( const ConstString & _name, const DocumentPtr & _doc )
+    bool FrameworkService::initializeFramework( const ConstString & _name, const DocumentInterfacePtr & _doc )
     {
         FrameworkFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Framework" ), _name );
 

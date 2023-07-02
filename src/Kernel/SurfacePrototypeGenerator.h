@@ -29,7 +29,7 @@ namespace Mengine
         }
 
     protected:
-        FactorablePointer generate( const DocumentPtr & _doc ) override
+        FactorablePointer generate( const DocumentInterfacePtr & _doc ) override
         {
             const FactoryInterfacePtr & factory = this->getPrototypeFactory();
 
@@ -46,7 +46,7 @@ namespace Mengine
             surface->setUniqueIdentity( uniqueIdentity );
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Surface '%s' type '%s' create '%s'"
+            DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "Surface '%s' type '%s' create '%s'"
                 , surface->getName().c_str()
                 , surface->getType().c_str()
                 , MENGINE_DOCUMENT_STR( _doc )

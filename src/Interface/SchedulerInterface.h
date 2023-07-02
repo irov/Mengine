@@ -52,10 +52,10 @@ namespace Mengine
         virtual const ConstString & getName() const = 0;
 
     public:
-        virtual UniqueId event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc ) = 0;
+        virtual UniqueId event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual UniqueId timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timing, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc ) = 0;
+        virtual UniqueId timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timing, const SchedulerEventInterfacePtr & _event, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual bool refresh( UniqueId _id ) = 0;

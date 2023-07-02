@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_SURFACE_GENERATE(X)\
     namespace Mengine{typedef IntrusiveSurfacePtr<class X> X ## Ptr;}\
-    namespace Mengine::Helper{X ## Ptr generate ## X( const DocumentPtr & _doc );}
+    namespace Mengine::Helper{X ## Ptr generate ## X( const DocumentInterfacePtr & _doc );}
 //////////////////////////////////////////////////////////////////////////
 MENGINE_SURFACE_GENERATE( SurfaceImage )
 MENGINE_SURFACE_GENERATE( SurfaceImageSequence )

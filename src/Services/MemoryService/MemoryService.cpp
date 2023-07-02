@@ -95,7 +95,7 @@ namespace Mengine
         this->clearCacheBuffers();
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId MemoryService::lockBuffer( size_t _size, void ** const _memory, const DocumentPtr & _doc )
+    UniqueId MemoryService::lockBuffer( size_t _size, void ** const _memory, const DocumentInterfacePtr & _doc )
     {        
         MENGINE_THREAD_MUTEX_SCOPE( m_memoryCacheMutex );
 
@@ -105,7 +105,7 @@ namespace Mengine
         return buffer_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId MemoryService::lockBufferNoMutex_( size_t _size, void ** const _memory, const DocumentPtr & _doc )
+    UniqueId MemoryService::lockBufferNoMutex_( size_t _size, void ** const _memory, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -245,7 +245,7 @@ namespace Mengine
         } ), m_buffers.end() );
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryBufferInterfacePtr MemoryService::createMemoryCacheBuffer( const DocumentPtr & _doc )
+    MemoryBufferInterfacePtr MemoryService::createMemoryCacheBuffer( const DocumentInterfacePtr & _doc )
     {
         MemoryCacheBufferPtr memoryBuffer = m_factoryMemoryCacheBuffer->createObject( _doc );
 
@@ -256,7 +256,7 @@ namespace Mengine
         return memoryBuffer;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryCacheInputInterfacePtr MemoryService::createMemoryCacheInput( const DocumentPtr & _doc )
+    MemoryCacheInputInterfacePtr MemoryService::createMemoryCacheInput( const DocumentInterfacePtr & _doc )
     {
         MemoryCacheInputPtr memoryCache = m_factoryMemoryCacheInput->createObject( _doc );
 
@@ -267,7 +267,7 @@ namespace Mengine
         return memoryCache;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryProxyInputInterfacePtr MemoryService::createMemoryProxyInput( const DocumentPtr & _doc )
+    MemoryProxyInputInterfacePtr MemoryService::createMemoryProxyInput( const DocumentInterfacePtr & _doc )
     {
         MemoryProxyInputPtr memoryProxy = m_factoryMemoryProxyInput->createObject( _doc );
 
@@ -276,7 +276,7 @@ namespace Mengine
         return memoryProxy;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInputInterfacePtr MemoryService::createMemoryInput( const DocumentPtr & _doc )
+    MemoryInputInterfacePtr MemoryService::createMemoryInput( const DocumentInterfacePtr & _doc )
     {
         MemoryInputPtr memory = m_factoryMemoryInput->createObject( _doc );
 
@@ -285,7 +285,7 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryBufferInterfacePtr MemoryService::createMemoryBuffer( const DocumentPtr & _doc )
+    MemoryBufferInterfacePtr MemoryService::createMemoryBuffer( const DocumentInterfacePtr & _doc )
     {
         MemoryPtr memory = m_factoryMemoryBuffer->createObject( _doc );
 
@@ -294,7 +294,7 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryProxyInterfacePtr MemoryService::createMemoryProxy( const DocumentPtr & _doc )
+    MemoryProxyInterfacePtr MemoryService::createMemoryProxy( const DocumentInterfacePtr & _doc )
     {
         MemoryProxyPtr memory = m_factoryMemoryProxy->createObject( _doc );
 

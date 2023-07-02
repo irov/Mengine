@@ -46,7 +46,7 @@ namespace Mengine
         const ServiceInterfacePtr & getService( const Char * _name ) const override;
 
     protected:
-        bool createService( FServiceProviderGenerator _generator, bool _safe, const DocumentPtr & _doc ) override;
+        bool createService( FServiceProviderGenerator _generator, bool _safe, const DocumentInterfacePtr & _doc ) override;
         bool finalizeService( const Char * _name ) override;
 
         bool destroyService( const Char * _name ) override;
@@ -64,7 +64,7 @@ namespace Mengine
         void destroy() override;
 
     protected:
-        ServiceInterfacePtr generateService_( FServiceProviderGenerator _generator, const DocumentPtr & _doc );
+        ServiceInterfacePtr generateService_( FServiceProviderGenerator _generator, const DocumentInterfacePtr & _doc );
         void removeDependency_( const ServiceInterfacePtr & _service );
         bool checkWaits_( const ServiceInterfacePtr & _service );
 
@@ -124,7 +124,7 @@ namespace Mengine
 
     protected:
         bool isRequired_( const ServiceDesc & _desc );
-        void initializeService_( ServiceDesc & _desc, const DocumentPtr & _doc, bool * const _result );
-        void deferredRequiredInitialize_( const DocumentPtr & _doc, bool * const _result );
+        void initializeService_( ServiceDesc & _desc, const DocumentInterfacePtr & _doc, bool * const _result );
+        void deferredRequiredInitialize_( const DocumentInterfacePtr & _doc, bool * const _result );
     };
 }

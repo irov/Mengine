@@ -33,10 +33,10 @@ namespace Mengine
         void finalize();
 
     public:
-        AreaOfInterestTriggerInterfacePtr createTrigger( const AreaOfInterestTriggerProviderInterfacePtr & _provider, const DocumentPtr & _doc ) override;
+        AreaOfInterestTriggerInterfacePtr createTrigger( const AreaOfInterestTriggerProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc ) override;
         void removeTriger( const AreaOfInterestTriggerInterfacePtr & _trigger ) override;
 
-        AreaOfInterestActorInterfacePtr createActor( const AreaOfInterestActorProviderInterfacePtr & _provider, const DocumentPtr & _doc ) override;
+        AreaOfInterestActorInterfacePtr createActor( const AreaOfInterestActorProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc ) override;
         void removeActor( const AreaOfInterestActorInterfacePtr & _actor ) override;
 
     public:

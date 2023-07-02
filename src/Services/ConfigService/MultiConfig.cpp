@@ -75,7 +75,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MultiConfig::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+    bool MultiConfig::load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 

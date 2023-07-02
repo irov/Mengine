@@ -103,11 +103,11 @@ namespace Mengine
         m_factoryThreadJob = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadJobPtr ThreadService::createJob( uint32_t _sleep, const DocumentPtr & _doc )
+    ThreadJobPtr ThreadService::createJob( uint32_t _sleep, const DocumentInterfacePtr & _doc )
     {
         ThreadJobPtr threadJob = m_factoryThreadJob->createObject( _doc );
 
-        if( threadJob->initialize( _sleep, _doc ) == false )
+        if( threadJob->initialize( _sleep ) == false )
         {
             LOGGER_ERROR( "invalid create" );
 
@@ -117,7 +117,7 @@ namespace Mengine
         return threadJob;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::createThreadProcessor( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc )
+    bool ThreadService::createThreadProcessor( const ConstString & _threadName, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
         MENGINE_ASSERTION_FATAL( this->hasThreadProcessor( _threadName ) == false, "thread '%s' already exist"
             , _threadName.c_str()
@@ -167,7 +167,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityInterfacePtr ThreadService::createThreadIdentity( const ConstString & _threadName, EThreadPriority _priority, const DocumentPtr & _doc )
+    ThreadIdentityInterfacePtr ThreadService::createThreadIdentity( const ConstString & _threadName, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexThreads );
 
@@ -213,7 +213,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentPtr & _doc )
+    bool ThreadService::addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -328,7 +328,7 @@ namespace Mengine
         m_threadProcessors.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadQueueInterfacePtr ThreadService::createTaskQueue( uint32_t _packetSize, const DocumentPtr & _doc )
+    ThreadQueueInterfacePtr ThreadService::createTaskQueue( uint32_t _packetSize, const DocumentInterfacePtr & _doc )
     {
         ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject( _doc );
 

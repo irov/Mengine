@@ -29,6 +29,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
+        bool preparation() override;
         void run() override;
         void interruption() override;
         void stop() override;

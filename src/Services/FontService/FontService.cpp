@@ -70,7 +70,7 @@ namespace Mengine
         m_defaultFont = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    FontInterfacePtr FontService::createFont( const ConstString & _fontName, const ConstString & _fontType, const DocumentPtr & _doc )
+    FontInterfacePtr FontService::createFont( const ConstString & _fontName, const ConstString & _fontType, const DocumentInterfacePtr & _doc )
     {
         MENGINE_ASSERTION_FATAL( m_fonts.find( _fontName ) == nullptr, "already exist font '%s'"
             , _fontName.c_str()

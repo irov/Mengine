@@ -23,7 +23,7 @@ namespace Mengine
 
     public:
         bool hasFramework( const ConstString & _name ) const override;
-        bool initializeFramework( const ConstString & _name, const DocumentPtr & _doc ) override;
+        bool initializeFramework( const ConstString & _name, const DocumentInterfacePtr & _doc ) override;
         bool finalizeFramework( const ConstString & _name ) override;
         bool isInitializeFramework( const ConstString & _name ) const override;
 

@@ -2,9 +2,9 @@
 
 #include "Interface/ServantInterface.h"
 #include "Interface/ThreadMutexInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Kernel/ConstString.h"
-#include "Kernel/Document.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Pointer.h"
@@ -31,7 +31,7 @@ namespace Mengine
             , const ConstString & _type
             , bool _keep
             , Resource ** const _prev
-            , const DocumentPtr & _doc ) = 0;
+            , const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual void removeResource( const ResourcePtr & _resource ) = 0;

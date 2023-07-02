@@ -336,7 +336,7 @@ namespace Mengine
         return pressure;
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId InputService::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentPtr & _doc )
+    UniqueId InputService::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

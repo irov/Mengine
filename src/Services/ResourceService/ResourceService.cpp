@@ -90,7 +90,7 @@ namespace Mengine
         m_globalBank->finalizeKeepResource();
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceBankInterfacePtr ResourceService::createResourceBank( uint32_t _reserved, const DocumentPtr & _doc )
+    ResourceBankInterfacePtr ResourceService::createResourceBank( uint32_t _reserved, const DocumentInterfacePtr & _doc )
     {
         ResourceBankPtr bank = m_factoryResourceBank->createObject( _doc );
 
@@ -104,7 +104,7 @@ namespace Mengine
         return bank;
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourcePointer ResourceService::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const DocumentPtr & _doc )
+    ResourcePointer ResourceService::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const DocumentInterfacePtr & _doc )
     {
         MENGINE_ASSERTION_FATAL( !(_name.empty() == true && _groupCache == true) );
 

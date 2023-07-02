@@ -195,7 +195,7 @@ namespace Mengine
                 , const AffectorCallbackInterfacePtr & _cb
                 , const LambdaType & _lambda
                 , const T & _pos, const T & _dir, float _speed
-                , const DocumentPtr & _doc )
+                , const DocumentInterfacePtr & _doc )
             {
                 AffectorTypePtr affector = m_factory->createObject( _doc );
 
@@ -254,7 +254,7 @@ namespace Mengine
                 , const AffectorCallbackInterfacePtr & _cb
                 , const LambdaSettuper & _lambda
                 , const T & _start, const T & _end, float _time
-                , const DocumentPtr & _doc )
+                , const DocumentInterfacePtr & _doc )
             {
                 AffectorTypePtr affector = m_factory->createObject( _doc );
 
@@ -314,7 +314,7 @@ namespace Mengine
                 , const AffectorCallbackInterfacePtr & _cb
                 , const LambdaSettuper & _lambda
                 , const T & _start, const T & _end, const T & _v0, float _time
-                , const DocumentPtr & _doc )
+                , const DocumentInterfacePtr & _doc )
             {
                 AffectorTypePtr affector = m_factory->createObject( _doc );
 
@@ -376,7 +376,7 @@ namespace Mengine
                 , const AffectorCallbackInterfacePtr & _cb
                 , const LambdaSettuper & _settuper, const LambdaGetter & _getterFrom, const LambdaGetter & _getterTo, const LambdaPoints & _points
                 , float _time
-                , const DocumentPtr & _doc )
+                , const DocumentInterfacePtr & _doc )
             {
                 AffectorTypePtr affector = m_factory->createObject( _doc );
 

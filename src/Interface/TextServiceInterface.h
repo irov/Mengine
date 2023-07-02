@@ -30,7 +30,7 @@ namespace Mengine
             , ETextVerticalAlign _verticalAlign
             , float _scale
             , uint32_t _params
-            , const DocumentPtr & _doc ) = 0;
+            , const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual bool addTextEntry( const ConstString & _key
@@ -48,7 +48,7 @@ namespace Mengine
             , uint32_t _params
             , bool _isOverride
             , bool * const _isDublicate
-            , const DocumentPtr & _doc ) = 0;
+            , const DocumentInterfacePtr & _doc ) = 0;
 
         virtual bool removeTextEntry( const ConstString & _key ) = 0;
         virtual void removeTextEntries( const Tags & _tag ) = 0;

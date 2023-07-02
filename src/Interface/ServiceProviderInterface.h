@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Interface/DocumentInterface.h"
+
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/Holder.h"
 #include "Kernel/Exception.h"
-#include "Kernel/Document.h"
 #include "Kernel/Typename.h"
 
 #include "Config/Typedef.h"
@@ -37,7 +38,7 @@ namespace Mengine
         virtual const ServiceInterfacePtr & getService( const Char * _name ) const = 0;
 
     public:
-        virtual bool createService( FServiceProviderGenerator _generator, bool _safe, const DocumentPtr & _doc ) = 0;
+        virtual bool createService( FServiceProviderGenerator _generator, bool _safe, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool finalizeService( const Char * _name ) = 0;
         virtual bool destroyService( const Char * _name ) = 0;
 

@@ -1070,7 +1070,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderBatchInterfacePtr & RenderService::requestRenderBatch( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount, const DocumentPtr & _doc )
+    const RenderBatchInterfacePtr & RenderService::requestRenderBatch( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount, const DocumentInterfacePtr & _doc )
     {
         for( const RenderBatchPtr & batch : m_renderBatches )
         {

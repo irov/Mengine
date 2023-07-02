@@ -48,7 +48,7 @@ namespace Mengine
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "EncoderFactory" ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    DecoderInterfacePointer CodecService::createDecoder( const ConstString & _type, const DocumentPtr & _doc )
+    DecoderInterfacePointer CodecService::createDecoder( const ConstString & _type, const DocumentInterfacePtr & _doc )
     {
         DecoderFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "DecoderFactory" ), _type );
 
@@ -74,7 +74,7 @@ namespace Mengine
         return decoder;
     }
     //////////////////////////////////////////////////////////////////////////
-    EncoderInterfacePointer CodecService::createEncoder( const ConstString & _type, const DocumentPtr & _doc )
+    EncoderInterfacePointer CodecService::createEncoder( const ConstString & _type, const DocumentInterfacePtr & _doc )
     {
         EncoderFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "EncoderFactory" ), _type );
 

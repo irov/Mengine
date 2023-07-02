@@ -2,11 +2,12 @@
 
 #include "GOAP/TaskInterface.h"
 
+#include "Interface/DocumentInterface.h"
+
 #include "TaskEnum.h"
 
 #include "Kernel/Transformable.h"
 #include "Kernel/Affectorable.h"
-#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -14,7 +15,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskTransformationScaleTime( GOAP::Allocator * _allocator, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags, const DocumentPtr & _doc );
+        TaskTransformationScaleTime( GOAP::Allocator * _allocator, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, uint32_t _flags, const DocumentInterfacePtr & _doc );
         ~TaskTransformationScaleTime() override;
 
     protected:
@@ -33,7 +34,7 @@ namespace Mengine
         uint32_t m_flags;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-        DocumentPtr m_doc;
+        DocumentInterfacePtr m_doc;
 #endif
 
         uint32_t m_id;

@@ -5,10 +5,10 @@
 #include "Interface/OutputStreamInterface.h"
 #include "Interface/MappedInterface.h"
 #include "Interface/ThreadMutexInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Document.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/LambdaFilePath.h"
 
@@ -61,17 +61,17 @@ namespace Mengine
         virtual bool findFiles( const FilePath & _folderPath, const Char * _mask, const LambdaFilePath & _lambda ) const = 0;
 
     public:
-        virtual InputStreamInterfacePtr createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc ) = 0;
+        virtual InputStreamInterfacePtr createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming, bool _share ) = 0;
         virtual bool closeInputFile( const InputStreamInterfacePtr & _stream ) = 0;
 
     public:
-        virtual InputStreamInterfacePtr createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc ) = 0;
+        virtual InputStreamInterfacePtr createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool openInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size ) = 0;
         virtual bool closeInputMutexFile( const InputStreamInterfacePtr & _stream ) = 0;
 
     public:
-        virtual OutputStreamInterfacePtr createOutputFile( const DocumentPtr & _doc ) = 0;
+        virtual OutputStreamInterfacePtr createOutputFile( const DocumentInterfacePtr & _doc ) = 0;
         virtual bool openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream, bool _withTemp ) = 0;
         virtual bool closeOutputFile( const OutputStreamInterfacePtr & _stream ) = 0;
 
@@ -79,7 +79,7 @@ namespace Mengine
         virtual bool isAvailableMappedFile() const = 0;
 
     public:
-        virtual MappedInterfacePtr createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc ) = 0;
+        virtual MappedInterfacePtr createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool openMappedFile( const FilePath & _filePath, const MappedInterfacePtr & _stream, bool _shared ) = 0;
         virtual bool closeMappedFile( const MappedInterfacePtr & _stream ) = 0;
     };

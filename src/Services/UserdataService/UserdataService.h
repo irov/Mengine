@@ -21,12 +21,12 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc ) override;
+        bool addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc ) override;
         bool removeUserdata( const ConstString & _name ) override;
         bool hasUserdata( const ConstString & _name ) const override;
 
     public:
-        MemoryInterfacePtr loadUserdata( const ConstString & _name, const DocumentPtr & _doc ) const override;
+        MemoryInterfacePtr loadUserdata( const ConstString & _name, const DocumentInterfacePtr & _doc ) const override;
         bool writeUserdata( const ConstString & _name, const void * _data, size_t _size ) const override;
 
     protected:
@@ -38,7 +38,7 @@ namespace Mengine
             FilePath path;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 

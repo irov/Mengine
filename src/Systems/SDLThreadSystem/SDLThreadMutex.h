@@ -21,7 +21,7 @@ namespace Mengine
         ~SDLThreadMutex() override;
 
     public:
-        bool initialize( const DocumentPtr & _doc );
+        bool initialize();
         void finalize();
 
     protected:
@@ -36,10 +36,6 @@ namespace Mengine
 
     protected:
         SDL_mutex * m_cs;
-
-#if defined(MENGINE_DEBUG)
-        DocumentPtr m_doc;
-#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLThreadMutex, ThreadMutexInterface> SDLThreadMutexPtr;

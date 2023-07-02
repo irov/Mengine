@@ -307,7 +307,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FontBase::prepareGlyph( const U32String & _text, const DocumentPtr & _doc )
+    bool FontBase::prepareGlyph( const U32String & _text, const DocumentInterfacePtr & _doc )
     {
         for( Char32 code : _text )
         {

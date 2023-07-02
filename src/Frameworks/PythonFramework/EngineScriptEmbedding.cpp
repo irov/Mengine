@@ -29,6 +29,7 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
 #include "Interface/PersistentSystemInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
@@ -111,7 +112,6 @@
 #include "Kernel/Entity.h"
 #include "Kernel/Layer.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 #include "Kernel/Identity.h"
 #include "Kernel/Affector.h"
 #include "Kernel/ThreadTask.h"
@@ -2943,7 +2943,7 @@ namespace Mengine
                 }
 
             public:
-                AffectorFollowerPtr create( const AffectorablePtr & _affectorable, const T_Setter & _setter, const T_Getter & _getter, const T_Value & _value, const T_Value & _target, float _speed, const DocumentPtr & _doc )
+                AffectorFollowerPtr create( const AffectorablePtr & _affectorable, const T_Setter & _setter, const T_Getter & _getter, const T_Value & _value, const T_Value & _target, float _speed, const DocumentInterfacePtr & _doc )
                 {
                     TAffectorNodeFollowerMethodPtr affector = m_affectorFactory->createObject( _doc );
 

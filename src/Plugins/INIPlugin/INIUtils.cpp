@@ -25,7 +25,7 @@ namespace Mengine
     namespace INIUtils
     {
         //////////////////////////////////////////////////////////////////////////
-        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
+        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
         {
             tinyini_initialize( &_ini.ini );
 
@@ -42,7 +42,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+        bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
         {
             tinyini_initialize( &_ini.ini );
 

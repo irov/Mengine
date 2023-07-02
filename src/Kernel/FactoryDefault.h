@@ -37,7 +37,7 @@ namespace Mengine
     namespace Helper
     {
         template<class Type>
-        FactoryInterfacePtr makeFactoryDefault( const DocumentPtr & _doc )
+        FactoryInterfacePtr makeFactoryDefault( const DocumentInterfacePtr & _doc )
         {
             MENGINE_UNUSED( _doc );
 

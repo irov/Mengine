@@ -21,7 +21,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, const TTFTextureGlyphProviderInterface * _provider, mt::uv4f * const _uv, const DocumentPtr & _doc ) override;
+        RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, const TTFTextureGlyphProviderInterface * _provider, mt::uv4f * const _uv, const DocumentInterfacePtr & _doc ) override;
 
     protected:
         void clearAtlasess_();
@@ -52,6 +52,6 @@ namespace Mengine
         uint32_t m_maxAtlasWidth;
 
     protected:
-        TTFAtlas * getAtlas_( uint32_t _width, uint32_t _height, uint32_t _channel, const DocumentPtr & _doc );
+        TTFAtlas * getAtlas_( uint32_t _width, uint32_t _height, uint32_t _channel, const DocumentInterfacePtr & _doc );
     };
 }

@@ -37,7 +37,7 @@ namespace Mengine
         m_offsets.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TimelineService::beginOffset( float _offset, const DocumentPtr & _doc )
+    void TimelineService::beginOffset( float _offset, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

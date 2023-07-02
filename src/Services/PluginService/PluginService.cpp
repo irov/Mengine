@@ -45,7 +45,7 @@ namespace Mengine
         this->unloadPlugins();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::loadPlugin( const Char * _dynamicLibraryName, const DocumentPtr & _doc )
+    bool PluginService::loadPlugin( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )
     {
         DynamicLibraryInterfacePtr dynamicLibrary = PLATFORM_SERVICE()
             ->loadDynamicLibrary( _dynamicLibraryName, _doc );
@@ -87,7 +87,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic, const DocumentPtr & _doc )
+    bool PluginService::createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

@@ -19,7 +19,7 @@ namespace Mengine
         bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath ) override;
 
     public:
-        InputStreamInterfacePtr createFileStream( const DocumentPtr & _doc ) override;
+        InputStreamInterfacePtr createFileStream( const DocumentInterfacePtr & _doc ) override;
         bool openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** const _memory ) override;
     };
     //////////////////////////////////////////////////////////////////////////

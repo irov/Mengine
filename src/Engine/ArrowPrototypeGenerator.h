@@ -13,7 +13,7 @@ namespace Mengine
         ~ArrowPrototypeGenerator() override;
 
     protected:
-        FactorablePointer generate( const DocumentPtr & _doc ) override;
+        FactorablePointer generate( const DocumentInterfacePtr & _doc ) override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ArrowPrototypeGenerator, PrototypeGeneratorInterface> ArrowPrototypeGeneratorPtr;

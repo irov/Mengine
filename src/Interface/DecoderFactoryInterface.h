@@ -2,8 +2,7 @@
 
 #include "Interface/CodecFactoryInterface.h"
 #include "Interface/DecoderInterface.h"
-
-#include "Kernel/Document.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Config/Char.h"
 
@@ -14,7 +13,7 @@ namespace Mengine
         : public CodecFactoryInterface
     {
     public:
-        virtual DecoderInterfacePtr createDecoder( const DocumentPtr & _doc ) = 0;
+        virtual DecoderInterfacePtr createDecoder( const DocumentInterfacePtr & _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DecoderFactoryInterface> DecoderFactoryInterfacePtr;

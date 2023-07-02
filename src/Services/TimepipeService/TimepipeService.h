@@ -21,7 +21,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        UniqueId addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentPtr & _doc ) override;
+        UniqueId addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentInterfacePtr & _doc ) override;
         TimepipeInterfacePtr removeTimepipe( UniqueId _id ) override;
 
     public:
@@ -34,7 +34,7 @@ namespace Mengine
             TimepipeInterfacePtr timepipe;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 

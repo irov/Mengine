@@ -19,7 +19,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void beginOffset( float _offset, const DocumentPtr & _doc ) override;
+        void beginOffset( float _offset, const DocumentInterfacePtr & _doc ) override;
         float getOffset() const override;
         void endOffset() override;
 

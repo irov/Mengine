@@ -11,7 +11,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void nodeDebugRenderLine( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const VectorRenderVertex2D & _vertices, const DocumentPtr & _doc )
+        void nodeDebugRenderLine( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const VectorRenderVertex2D & _vertices, const DocumentInterfacePtr & _doc )
         {
             const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
                 ->getDebugLineMaterial();
@@ -24,7 +24,7 @@ namespace Mengine
                     , true, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void nodeDebugRenderLineByToPoints( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, const mt::vec2f & _startPoint, const mt::vec2f & _finishPoint, ColorValue_ARGB _color, const DocumentPtr & _doc )
+        void nodeDebugRenderLineByToPoints( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, const mt::vec2f & _startPoint, const mt::vec2f & _finishPoint, ColorValue_ARGB _color, const DocumentInterfacePtr & _doc )
         {
             VectorRenderVertex2D & vertices = RENDER_SERVICE()
                 ->getDebugRenderVertex2D( 4 );
@@ -44,7 +44,7 @@ namespace Mengine
             Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void nodeDebugRenderCircle( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, float _radius, uint32_t _count, ColorValue_ARGB _color, const DocumentPtr & _doc )
+        void nodeDebugRenderCircle( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, float _radius, uint32_t _count, ColorValue_ARGB _color, const DocumentInterfacePtr & _doc )
         {
             uint32_t numpoints = _count;
             uint32_t vertexCount = numpoints * 2;
@@ -100,7 +100,7 @@ namespace Mengine
             Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void nodeDebugRenderPolygon( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, const Polygon & _polygon, ColorValue_ARGB _color, const DocumentPtr & _doc )
+        void nodeDebugRenderPolygon( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, const Polygon & _polygon, ColorValue_ARGB _color, const DocumentInterfacePtr & _doc )
         {
             uint32_t numpoints = _polygon.size();
 
@@ -154,7 +154,7 @@ namespace Mengine
             Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void nodeDebugRenderPoint( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, const mt::vec2f & _point, ColorValue_ARGB _color, float _length, const DocumentPtr & _doc )
+        void nodeDebugRenderPoint( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, const mt::vec2f & _point, ColorValue_ARGB _color, float _length, const DocumentInterfacePtr & _doc )
         {
             VectorRenderVertex2D & vertices = RENDER_SERVICE()
                 ->getDebugRenderVertex2D( 4 );

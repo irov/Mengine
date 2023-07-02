@@ -51,7 +51,7 @@ namespace Mengine
         m_type.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer Factory::createObject( const DocumentPtr & _doc )
+    FactorablePointer Factory::createObject( const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -101,7 +101,7 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-        DocumentPtr doc = _object->getDocument();
+        DocumentInterfacePtr doc = _object->getDocument();
         MENGINE_UNUSED( doc );
 
         _object->setDocument( nullptr );

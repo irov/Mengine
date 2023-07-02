@@ -21,7 +21,7 @@ namespace Mengine
                 size_t capacity;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-                DocumentPtr doc;
+                DocumentInterfacePtr doc;
 #endif
             };
             //////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
-        jpp::object loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
+        jpp::object loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
         {
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
@@ -95,7 +95,7 @@ namespace Mengine
             return j;
         }
         //////////////////////////////////////////////////////////////////////////
-        jpp::object loadJSONStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+        jpp::object loadJSONStream( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _stream );
 
@@ -108,7 +108,7 @@ namespace Mengine
             return j;
         }
         //////////////////////////////////////////////////////////////////////////
-        jpp::object loadJSONStreamFromMemory( const MemoryInterfacePtr & _memory, const DocumentPtr & _doc )
+        jpp::object loadJSONStreamFromMemory( const MemoryInterfacePtr & _memory, const DocumentInterfacePtr & _doc )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _memory );
 
@@ -120,7 +120,7 @@ namespace Mengine
             return j;
         }
         //////////////////////////////////////////////////////////////////////////
-        jpp::object loadJSONStreamFromString( const String & _value, const DocumentPtr & _doc )
+        jpp::object loadJSONStreamFromString( const String & _value, const DocumentInterfacePtr & _doc )
         {
             const String::value_type * value_buffer = _value.c_str();
             String::size_type value_size = _value.size();
@@ -130,7 +130,7 @@ namespace Mengine
             return j;
         }
         //////////////////////////////////////////////////////////////////////////
-        jpp::object loadJSONStreamFromBuffer( const void * _buffer, size_t _size, const DocumentPtr & _doc )
+        jpp::object loadJSONStreamFromBuffer( const void * _buffer, size_t _size, const DocumentInterfacePtr & _doc )
         {
             MENGINE_UNUSED( _doc );
 
@@ -153,7 +153,7 @@ namespace Mengine
             return json;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool writeJSONFile( const jpp::object & _j, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const DocumentPtr & _doc )
+        bool writeJSONFile( const jpp::object & _j, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const DocumentInterfacePtr & _doc )
         {
             OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, _withTemp, _doc );
 
@@ -175,7 +175,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool writeJSONFileCompact( const jpp::object & _j, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const DocumentPtr & _doc )
+        bool writeJSONFileCompact( const jpp::object & _j, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const DocumentInterfacePtr & _doc )
         {
             OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, _withTemp, _doc );
 

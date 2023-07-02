@@ -81,7 +81,7 @@ namespace Mengine
         m_factoryAreaOfInterestZones = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    AreaOfInterestZoneInterfacePtr AreaOfInterestService::createZone( const DocumentPtr & _doc )
+    AreaOfInterestZoneInterfacePtr AreaOfInterestService::createZone( const DocumentInterfacePtr & _doc )
     {
         AreaOfInterestZonePtr zone = m_factoryAreaOfInterestZones->createObject( _doc );
 

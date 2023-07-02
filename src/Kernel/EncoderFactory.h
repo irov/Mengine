@@ -41,7 +41,7 @@ namespace Mengine
         }
 
     protected:
-        EncoderInterfacePtr createEncoder( const DocumentPtr & _doc ) override
+        EncoderInterfacePtr createEncoder( const DocumentInterfacePtr & _doc ) override
         {
             IntrusivePtr<T> encoder = m_factory->createObject( _doc );
 
@@ -56,7 +56,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        MENGINE_INLINE EncoderFactoryInterfacePtr registerEncoder( const ConstString & _type, const DocumentPtr & _doc )
+        MENGINE_INLINE EncoderFactoryInterfacePtr registerEncoder( const ConstString & _type, const DocumentInterfacePtr & _doc )
         {
             EncoderFactoryInterfacePtr factory = Helper::makeFactorableUnique<EncoderFactory<T>>( _doc );
 

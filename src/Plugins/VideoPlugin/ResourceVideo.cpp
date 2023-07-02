@@ -7,7 +7,6 @@
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
@@ -100,7 +99,7 @@ namespace Mengine
         m_videoDecoderCacher.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    VideoDecoderInterfacePtr ResourceVideo::createVideoDecoder( const DocumentPtr & _doc )
+    VideoDecoderInterfacePtr ResourceVideo::createVideoDecoder( const DocumentInterfacePtr & _doc )
     {
         const VideoDecoderInterfacePtr & cacheVideoDecoder = m_videoDecoderCacher.findCache( nullptr );
 

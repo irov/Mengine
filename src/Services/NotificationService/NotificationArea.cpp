@@ -70,7 +70,7 @@ namespace Mengine
         m_observers.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationArea::addObserver( Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentPtr & _doc )
+    void NotificationArea::addObserver( Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentInterfacePtr & _doc )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
@@ -250,7 +250,7 @@ namespace Mengine
         --m_visiting;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationArea::addObserver_( Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentPtr & _doc )
+    void NotificationArea::addObserver_( Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

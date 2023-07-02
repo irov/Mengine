@@ -29,7 +29,7 @@ namespace Mengine
         }
 
     protected:
-        FactorablePointer generate( const DocumentPtr & _doc ) override
+        FactorablePointer generate( const DocumentInterfacePtr & _doc ) override
         {
             const FactoryInterfacePtr & factory = this->getPrototypeFactory();
 
@@ -42,7 +42,7 @@ namespace Mengine
             );
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Object type '%s' create '%s'"
+            DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "Object type '%s' create '%s'"
                 , object->getType().c_str()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
@@ -61,7 +61,7 @@ namespace Mengine
     namespace Helper
     {
         template<class Type, uint32_t Count>
-        FactoryPrototypeGeneratorPtr makeObjectPrototypeGenerator( const DocumentPtr & _doc )
+        FactoryPrototypeGeneratorPtr makeObjectPrototypeGenerator( const DocumentInterfacePtr & _doc )
         {
             FactoryPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<ObjectPrototypeGenerator<Type, Count>>( _doc );
 

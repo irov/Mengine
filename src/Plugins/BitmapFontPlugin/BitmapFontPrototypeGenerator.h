@@ -16,6 +16,6 @@ namespace Mengine
         void _finalizeFactory() override;
 
     public:
-        FactorablePointer generate( const DocumentPtr & _doc ) override;
+        FactorablePointer generate( const DocumentInterfacePtr & _doc ) override;
     };
 }

@@ -833,7 +833,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId Win32PlatformService::addUpdate( const LambdaTimer & _lambda, const DocumentPtr & _doc )
+    UniqueId Win32PlatformService::addUpdate( const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -869,7 +869,7 @@ namespace Mengine
         desc.lambda = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId Win32PlatformService::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
+    UniqueId Win32PlatformService::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -4528,7 +4528,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    DynamicLibraryInterfacePtr Win32PlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc )
+    DynamicLibraryInterfacePtr Win32PlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "platform", "load dynamic library '%s'"
             , _dynamicLibraryName
@@ -5131,7 +5131,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId Win32PlatformService::addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentPtr & _doc )
+    UniqueId Win32PlatformService::addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

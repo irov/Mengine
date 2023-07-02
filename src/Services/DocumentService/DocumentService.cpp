@@ -2,6 +2,8 @@
 
 #include "Interface/ThreadSystemInterface.h"
 
+#include "Document.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionFactory.h"
@@ -30,9 +32,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DocumentService::_initializeService()
     {
-        FactoryWithMutexPtr factoryDocument = Helper::makeFactoryPool<Document, 1024, FactoryWithMutex>( nullptr );
-
-        m_factoryDocument = factoryDocument;
+        m_factoryDocument = Helper::makeFactoryPool<Document, 1024, FactoryWithMutex>( nullptr );
 
         SERVICE_WAIT( ThreadSystemInterface, [this]()
         {
@@ -58,7 +58,7 @@ namespace Mengine
         m_factoryDocument = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    DocumentPtr DocumentService::createDocument( const DocumentPtr & _parent, const Char * _modulePath, const Char * _file, const Char * _function, uint32_t _line, const Char * _format, ... )
+    DocumentInterfacePtr DocumentService::createDocument( const DocumentInterfacePtr & _parent, const Char * _modulePath, const Char * _file, const Char * _function, uint32_t _line, const Char * _format, ... )
     {
         DocumentPtr document = m_factoryDocument->createObject( nullptr );
 

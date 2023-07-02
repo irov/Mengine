@@ -44,7 +44,7 @@ namespace Mengine
         m_mixins.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void VocabularyService::setFactorable( const ConstString & _category, const ConstString & _type, const MixinPtr & _factorable, const DocumentPtr & _document )
+    void VocabularyService::setFactorable( const ConstString & _category, const ConstString & _type, const MixinPtr & _factorable, const DocumentInterfacePtr & _document )
     {
         MENGINE_UNUSED( _document );
 

@@ -5,7 +5,6 @@
 #include "Interface/PrefetcherServiceInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 #include "Kernel/Stream.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/FactoryPool.h"

@@ -570,7 +570,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        ConfigInterfacePtr loadApplicationConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
+        ConfigInterfacePtr loadApplicationConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
         {
             if( _fileGroup->existFile( _filePath, true ) == false )
             {

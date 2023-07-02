@@ -58,15 +58,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadProcessor::initialize( const ConstString & _name, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc )
+    bool Win32ThreadProcessor::initialize( const ConstString & _name, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex )
     {
-        MENGINE_UNUSED( _doc );
-
         m_name = _name;
-
-#ifdef MENGINE_DOCUMENT_ENABLE
-        m_doc = _doc;
-#endif
 
         m_mutex = _mutex;
 
@@ -152,10 +146,6 @@ namespace Mengine
 #endif
 
         m_mutex = nullptr;
-
-#ifdef MENGINE_DOCUMENT_ENABLE
-        m_doc = nullptr;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadProcessor::main()

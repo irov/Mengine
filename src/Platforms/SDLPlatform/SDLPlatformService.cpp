@@ -47,7 +47,6 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/BuildMode.h"
@@ -1302,7 +1301,7 @@ namespace Mengine
         this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId SDLPlatformService::addUpdate( const LambdaTimer & _lambda, const DocumentPtr & _doc )
+    UniqueId SDLPlatformService::addUpdate( const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -1339,7 +1338,7 @@ namespace Mengine
         desc.lambda = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t SDLPlatformService::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
+    uint32_t SDLPlatformService::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -1748,7 +1747,7 @@ namespace Mengine
         return m_touchpad;
     }
     //////////////////////////////////////////////////////////////////////////
-    DynamicLibraryInterfacePtr SDLPlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc )
+    DynamicLibraryInterfacePtr SDLPlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "platform", "load dynamic library '%s'"
             , _dynamicLibraryName

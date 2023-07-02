@@ -213,7 +213,7 @@ namespace Mengine
         return m_platformTags;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool JSONConfig::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+    bool JSONConfig::load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "invalid stream config" );
 

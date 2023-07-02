@@ -21,7 +21,7 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        Box2DWorldInterfacePtr createWorld( const mt::vec2f & _gravity, float _scaler, const DocumentPtr & _doc ) override;
+        Box2DWorldInterfacePtr createWorld( const mt::vec2f & _gravity, float _scaler, const DocumentInterfacePtr & _doc ) override;
         void destroyWorld( const Box2DWorldInterfacePtr & _world ) override;
 
     protected:

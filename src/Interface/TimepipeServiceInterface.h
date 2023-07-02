@@ -2,8 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/TimepipeInterface.h"
-
-#include "Kernel/Document.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Config/UniqueId.h"
 
@@ -15,7 +14,7 @@ namespace Mengine
         SERVICE_DECLARE( "TimepipeService" )
 
     public:
-        virtual UniqueId addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentPtr & _doc ) = 0;
+        virtual UniqueId addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentInterfacePtr & _doc ) = 0;
         virtual TimepipeInterfacePtr removeTimepipe( UniqueId _id ) = 0;
 
     public:

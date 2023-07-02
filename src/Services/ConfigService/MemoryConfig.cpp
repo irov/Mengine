@@ -244,7 +244,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryConfig::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
+    bool MemoryConfig::load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _stream );
         MENGINE_UNUSED( _doc );

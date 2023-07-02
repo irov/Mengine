@@ -21,11 +21,11 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc ) override;
+        bool loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc ) override;
 
     public:
         bool hasPackage( const ConstString & _name ) const override;
-        bool addPackage( const PackageDesc & _desc, const DocumentPtr & _doc ) override;
+        bool addPackage( const PackageDesc & _desc, const DocumentInterfacePtr & _doc ) override;
         bool removePackage( const ConstString & _name ) override;
         const PackageInterfacePtr & getPackage( const ConstString & _name ) const override;
 

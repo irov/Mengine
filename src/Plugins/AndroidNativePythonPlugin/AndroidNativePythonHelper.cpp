@@ -18,7 +18,7 @@ namespace Mengine
 {
     namespace Helper
     {
-        PyObject * androidNativePythonMakePyObject( pybind::kernel_interface * _kernel, JNIEnv * _jenv, jobject _obj, const DocumentPtr & _doc )
+        PyObject * androidNativePythonMakePyObject( pybind::kernel_interface * _kernel, JNIEnv * _jenv, jobject _obj, const DocumentInterfacePtr & _doc )
         {
             PyObject * py_value = nullptr;
 

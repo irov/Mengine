@@ -59,11 +59,11 @@ namespace Mengine
         void stopPlatform()	override;
 
     public:
-        UniqueId addUpdate( const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
+        UniqueId addUpdate( const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) override;
         void removeUpdate( UniqueId _id ) override;
 
     public:
-        uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
+        uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) override;
         void removeTimer( uint32_t _id ) override;
 
     public:
@@ -93,7 +93,7 @@ namespace Mengine
         bool hasTouchpad() const override;
 
     public:
-        DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc ) override;
+        DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc ) override;
 
     public:
         bool getDesktopResolution( Resolution * const _resolution ) const override;
@@ -255,7 +255,7 @@ namespace Mengine
             LambdaTimer lambda;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 
@@ -268,7 +268,7 @@ namespace Mengine
             LambdaUpdate lambda;
 
 #if defined(MENGINE_DEBUG)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 

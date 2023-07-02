@@ -4,6 +4,7 @@
 
 #include "Kernel/Stringstream.h"
 #include "Kernel/StringCopy.h"
+#include "Kernel/String.h"
 #include "Kernel/DocumentHelper.h"
 
 #include "Config/StdString.h"

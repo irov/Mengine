@@ -40,7 +40,7 @@ namespace Mengine
         m_chronometers.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId ChronometerService::addChronometer( const LambdaChronometer & _lambda, const DocumentPtr & _doc )
+    UniqueId ChronometerService::addChronometer( const LambdaChronometer & _lambda, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

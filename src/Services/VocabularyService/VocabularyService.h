@@ -21,7 +21,7 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        void setFactorable( const ConstString & _category, const ConstString & _type, const MixinPtr & _factorable, const DocumentPtr & _document ) override;
+        void setFactorable( const ConstString & _category, const ConstString & _type, const MixinPtr & _factorable, const DocumentInterfacePtr & _document ) override;
         MixinPointer removeFactorable( const ConstString & _category, const ConstString & _type ) override;
         MixinPointer getFactorable( const ConstString & _category, const ConstString & _type ) const override;
         bool hasFactorable( const ConstString & _category, const ConstString & _type ) const override;

@@ -26,7 +26,7 @@ namespace Mengine
         return m_service;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer DazzleEffectPrototypeGenerator::generate( const DocumentPtr & _doc )
+    FactorablePointer DazzleEffectPrototypeGenerator::generate( const DocumentInterfacePtr & _doc )
     {
         DazzleEffectPtr dazzleEffect = NodePrototypeGenerator<DazzleEffect, 32>::generate( _doc );
 

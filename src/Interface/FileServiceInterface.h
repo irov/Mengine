@@ -14,7 +14,7 @@ namespace Mengine
         SERVICE_DECLARE( "FileService" )
 
     public:
-        virtual bool mountFileGroup( const ConstString & _fileGroupName, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * const _outFileGroup, bool _create, const DocumentPtr & _doc ) = 0;
+        virtual bool mountFileGroup( const ConstString & _fileGroupName, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * const _outFileGroup, bool _create, const DocumentInterfacePtr & _doc ) = 0;
         virtual void unmountFileGroup( const ConstString & _fileGroupName ) = 0;
 
     public:

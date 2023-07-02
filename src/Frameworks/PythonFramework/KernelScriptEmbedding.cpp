@@ -686,7 +686,7 @@ namespace Mengine
                 AffectorPtr create( EAffectorType _type
                     , const EasingInterfacePtr & _easing
                     , const AffectorCallbackInterfacePtr & _cb
-                    , const NodePtr & _node, const mt::vec3f & _velocity, float _time, const DocumentPtr & _doc )
+                    , const NodePtr & _node, const mt::vec3f & _velocity, float _time, const DocumentInterfacePtr & _doc )
                 {
                     AffectorVelocity2Ptr affector = m_affectorFactory->createObject( _doc );
 
@@ -1282,7 +1282,7 @@ namespace Mengine
                 AffectorPtr create( EAffectorType _type
                     , const EasingInterfacePtr & _easing
                     , const AffectorCallbackInterfacePtr & _cb
-                    , const NodePtr & _node, const mt::vec3f & _end, const mt::vec3f & _v0, float _time, const DocumentPtr & _doc )
+                    , const NodePtr & _node, const mt::vec3f & _end, const mt::vec3f & _v0, float _time, const DocumentInterfacePtr & _doc )
                 {
                     AffectorCreatorInterpolateParabolicPtr affector = m_affectorFactory->createObject( _doc );
 
@@ -1537,7 +1537,7 @@ namespace Mengine
                     , const AffectorCallbackInterfacePtr & _cb
                     , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit
                     , bool _rotate
-                    , float _rotationSpeed, float _rotationAcceleration, float _rotationLimit, const DocumentPtr & _doc )
+                    , float _rotationSpeed, float _rotationAcceleration, float _rotationLimit, const DocumentInterfacePtr & _doc )
                 {
                     AffectorCreatorFollowToPtr affector = m_affectorFactory->createObject( _doc );
 
@@ -1752,7 +1752,7 @@ namespace Mengine
                     , const EasingInterfacePtr & _easing
                     , const AffectorCallbackInterfacePtr & _cb
                     , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset
-                    , float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, const DocumentPtr & _doc )
+                    , float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, const DocumentInterfacePtr & _doc )
                 {
                     AffectorCreatorFollowToWPtr affector = m_affectorFactory->createObject( _doc );
 

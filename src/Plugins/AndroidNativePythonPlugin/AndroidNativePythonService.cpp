@@ -8,7 +8,6 @@
 #include "Interface/AndroidEnvironmentServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/Document.h"
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/Error.h"

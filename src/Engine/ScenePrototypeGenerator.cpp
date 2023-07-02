@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer ScenePrototypeGenerator::generate( const DocumentPtr & _doc )
+    FactorablePointer ScenePrototypeGenerator::generate( const DocumentInterfacePtr & _doc )
     {
         ScenePtr scene = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), _doc );

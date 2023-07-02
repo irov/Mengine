@@ -34,10 +34,10 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        UniqueId event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc ) override;
+        UniqueId event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        UniqueId timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timing, const SchedulerEventInterfacePtr & _event, const DocumentPtr & _doc ) override;
+        UniqueId timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timing, const SchedulerEventInterfacePtr & _event, const DocumentInterfacePtr & _doc ) override;
 
     public:
         bool refresh( UniqueId _id ) override;
@@ -101,7 +101,7 @@ namespace Mengine
             bool iterate_invalid;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 

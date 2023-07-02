@@ -8,7 +8,6 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 
 namespace Mengine
 {

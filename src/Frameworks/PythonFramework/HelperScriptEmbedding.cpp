@@ -22,6 +22,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/StatisticServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Interface/AndroidEnvironmentServiceInterface.h"
@@ -50,7 +51,6 @@
 #include "Kernel/Polygon.h"
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/Color.h"
-#include "Kernel/Document.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/UID.h"
 #include "Kernel/VectorRenderIndex.h"

@@ -30,6 +30,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/StatisticHelper.h"
+#include "Kernel/BuildMode.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( GameService, Mengine::GameService );
@@ -43,6 +44,60 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     GameService::~GameService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GameService::_initializeService()
+    {
+        GameAccountProviderPtr accountProvider = Helper::makeFactorableUnique<GameServiceAccountProvider>( MENGINE_DOCUMENT_FACTORABLE );
+        accountProvider->setEventable( EventablePtr( this ) );
+
+        ACCOUNT_SERVICE()
+            ->setAccountProvider( accountProvider );
+
+        GameSoundVolumeProviderPtr soundVolumeProvider = Helper::makeFactorableUnique<GameServiceSoundVolumeProvider>( MENGINE_DOCUMENT_FACTORABLE );
+        soundVolumeProvider->setEventable( EventablePtr( this ) );
+
+        SOUND_SERVICE()
+            ->addSoundVolumeProvider( soundVolumeProvider );
+
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE, &GameService::onTimeFactorChange_, MENGINE_DOCUMENT_FACTORABLE );
+
+#if defined(MENGINE_PLATFORM_IOS)
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_DID_BECOME_ACTIVE, &GameService::oniOSApplicationDidBecomeActive_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_ENTER_FOREGROUND, &GameService::oniOSApplicationWillEnterForeground_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_DID_ENTER_BACKGROUD, &GameService::oniOSApplicationDidEnterBackground_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_RESIGN_ACTIVE, &GameService::oniOSApplicationWillResignActive_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_TERMINATE, &GameService::oniOSApplicationWillTerminate_, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+        ANALYTICS_SERVICE()
+            ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GameService::_finalizeService()
+    {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE );
+
+#if defined(MENGINE_PLATFORM_IOS)
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_DID_BECOME_ACTIVE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_ENTER_FOREGROUND );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_DID_ENTER_BACKGROUD );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_RESIGN_ACTIVE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_TERMINATE );
+#endif
+
+        ANALYTICS_SERVICE()
+            ->removeEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
+
+        this->removeEvents();
+
+        m_userEventsAdd.clear();
+        m_userEvents.clear();
+
+        m_iconPath.clear();
+        m_currentPackName.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool GameService::handleKeyEvent( const InputKeyEvent & _event )
@@ -240,24 +295,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GameService::loadPersonality()
     {
-#if defined(MENGINE_DEBUG)
-        bool is_debug = true;
-#else
-        bool is_debug = false;
-#endif
-
-        LOGGER_MESSAGE( "personality preparation [%s]"
-            , is_debug == true ? "debug" : "release"
-        );
-
-        bool result = EVENTABLE_METHODR( EVENT_GAME_PREPARATION, true )
-            ->onGamePreparation( is_debug );
-
-        if( result == false )
-        {
-            return false;
-        }
-
         if( SERVICE_IS_INITIALIZE( ScriptServiceInterface ) == true )
         {
             if( SCRIPT_SERVICE()
@@ -348,58 +385,23 @@ namespace Mengine
             ->onGameDestroy();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GameService::_initializeService()
+    bool GameService::preparation()
     {
-        GameAccountProviderPtr accountProvider = Helper::makeFactorableUnique<GameServiceAccountProvider>( MENGINE_DOCUMENT_FACTORABLE );
-        accountProvider->setEventable( EventablePtr( this ) );
+        bool is_debug = Helper::isDebugMode();
 
-        ACCOUNT_SERVICE()
-            ->setAccountProvider( accountProvider );
+        bool result = EVENTABLE_METHODR( EVENT_GAME_PREPARATION, true )
+            ->onGamePreparation( is_debug );
 
-        GameSoundVolumeProviderPtr soundVolumeProvider = Helper::makeFactorableUnique<GameServiceSoundVolumeProvider>( MENGINE_DOCUMENT_FACTORABLE );
-        soundVolumeProvider->setEventable( EventablePtr( this ) );
+        if( result == false )
+        {
+            return false;
+        }
 
-        SOUND_SERVICE()
-            ->addSoundVolumeProvider( soundVolumeProvider );
-
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE, &GameService::onTimeFactorChange_, MENGINE_DOCUMENT_FACTORABLE );
-
-#if defined(MENGINE_PLATFORM_IOS)
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_DID_BECOME_ACTIVE, &GameService::oniOSApplicationDidBecomeActive_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_ENTER_FOREGROUND, &GameService::oniOSApplicationWillEnterForeground_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_DID_ENTER_BACKGROUD, &GameService::oniOSApplicationDidEnterBackground_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_RESIGN_ACTIVE, &GameService::oniOSApplicationWillResignActive_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_TERMINATE, &GameService::oniOSApplicationWillTerminate_, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-        ANALYTICS_SERVICE()
-            ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
+        LOGGER_MESSAGE( "personality preparation [%s]"
+            , is_debug == true ? "debug" : "release"
+        );
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void GameService::_finalizeService()
-    {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE );
-
-#if defined(MENGINE_PLATFORM_IOS)
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_DID_BECOME_ACTIVE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_ENTER_FOREGROUND );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_DID_ENTER_BACKGROUD );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_RESIGN_ACTIVE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_TERMINATE );
-#endif
-
-        ANALYTICS_SERVICE()
-            ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
-
-        this->removeEvents();
-
-        m_userEventsAdd.clear();
-        m_userEvents.clear();
-
-        m_iconPath.clear();
-        m_currentPackName.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::run()

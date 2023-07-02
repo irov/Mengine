@@ -79,7 +79,7 @@ namespace Mengine
         m_factoryAnalyticsContext = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventBuilderInterfacePtr AnalyticsFactory::makeEventBuilder( const DocumentPtr & _doc )
+    AnalyticsEventBuilderInterfacePtr AnalyticsFactory::makeEventBuilder( const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventBuilderPtr eventBuilder = m_factoryAnalyticsEventBuilder->createObject( _doc );
 
@@ -90,7 +90,7 @@ namespace Mengine
         return eventBuilder;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventInterfacePtr AnalyticsFactory::makeEvent( EAnalyticsEventType _type, const ConstString & _name, const DocumentPtr & _doc )
+    AnalyticsEventInterfacePtr AnalyticsFactory::makeEvent( EAnalyticsEventType _type, const ConstString & _name, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventPtr event = m_factoryAnalyticsEvent->createObject( _doc );
 
@@ -100,7 +100,7 @@ namespace Mengine
         return event;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventParameterBooleanInterfacePtr AnalyticsFactory::makeEventConstParameterBoolean( bool _value, const DocumentPtr & _doc )
+    AnalyticsEventParameterBooleanInterfacePtr AnalyticsFactory::makeEventConstParameterBoolean( bool _value, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventConstParameterBooleanPtr parameter = m_factoryAnalyticsEventConstParameterBoolean->createObject( _doc );
 
@@ -109,7 +109,7 @@ namespace Mengine
         return parameter;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventParameterConstStringInterfacePtr AnalyticsFactory::makeEventConstParameterConstString( const ConstString & _value, const DocumentPtr & _doc )
+    AnalyticsEventParameterConstStringInterfacePtr AnalyticsFactory::makeEventConstParameterConstString( const ConstString & _value, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventConstParameterConstStringPtr parameter = m_factoryAnalyticsEventConstParameterConstString->createObject( _doc );
 
@@ -118,7 +118,7 @@ namespace Mengine
         return parameter;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventParameterStringInterfacePtr AnalyticsFactory::makeEventConstParameterString( const String & _value, const DocumentPtr & _doc )
+    AnalyticsEventParameterStringInterfacePtr AnalyticsFactory::makeEventConstParameterString( const String & _value, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventConstParameterStringPtr parameter = m_factoryAnalyticsEventConstParameterString->createObject( _doc );
 
@@ -127,7 +127,7 @@ namespace Mengine
         return parameter;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventParameterIntegerInterfacePtr AnalyticsFactory::makeEventConstParameterInteger( int64_t _value, const DocumentPtr & _doc )
+    AnalyticsEventParameterIntegerInterfacePtr AnalyticsFactory::makeEventConstParameterInteger( int64_t _value, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventConstParameterIntegerPtr parameter = m_factoryAnalyticsEventConstParameterInteger->createObject( _doc );
 
@@ -136,7 +136,7 @@ namespace Mengine
         return parameter;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventParameterDoubleInterfacePtr AnalyticsFactory::makeEventConstParameterDouble( double _value, const DocumentPtr & _doc )
+    AnalyticsEventParameterDoubleInterfacePtr AnalyticsFactory::makeEventConstParameterDouble( double _value, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventConstParameterDoublePtr parameter = m_factoryAnalyticsEventConstParameterDouble->createObject( _doc );
 
@@ -145,7 +145,7 @@ namespace Mengine
         return parameter;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventParameterBooleanInterfacePtr AnalyticsFactory::makeEventGetterParameterBoolean( const LambdaAnalyticsParameterGetterBoolean & _lambda, const DocumentPtr & _doc )
+    AnalyticsEventParameterBooleanInterfacePtr AnalyticsFactory::makeEventGetterParameterBoolean( const LambdaAnalyticsParameterGetterBoolean & _lambda, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventGetterParameterBooleanPtr parameter = m_factoryAnalyticsEventGetterParameterBoolean->createObject( _doc );
 
@@ -156,7 +156,7 @@ namespace Mengine
         return parameter;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventParameterConstStringInterfacePtr AnalyticsFactory::makeEventGetterParameterConstString( const LambdaAnalyticsParameterGetterConstString & _lambda, const DocumentPtr & _doc )
+    AnalyticsEventParameterConstStringInterfacePtr AnalyticsFactory::makeEventGetterParameterConstString( const LambdaAnalyticsParameterGetterConstString & _lambda, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventGetterParameterConstStringPtr parameter = m_factoryAnalyticsEventGetterParameterConstString->createObject( _doc );
 
@@ -167,7 +167,7 @@ namespace Mengine
         return parameter;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventParameterStringInterfacePtr AnalyticsFactory::makeEventGetterParameterString( const LambdaAnalyticsParameterGetterString & _lambda, const DocumentPtr & _doc )
+    AnalyticsEventParameterStringInterfacePtr AnalyticsFactory::makeEventGetterParameterString( const LambdaAnalyticsParameterGetterString & _lambda, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventGetterParameterStringPtr parameter = m_factoryAnalyticsEventGetterParameterString->createObject( _doc );
 
@@ -178,7 +178,7 @@ namespace Mengine
         return parameter;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventParameterIntegerInterfacePtr AnalyticsFactory::makeEventGetterParameterInteger( const LambdaAnalyticsParameterGetterInteger & _lambda, const DocumentPtr & _doc )
+    AnalyticsEventParameterIntegerInterfacePtr AnalyticsFactory::makeEventGetterParameterInteger( const LambdaAnalyticsParameterGetterInteger & _lambda, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventGetterParameterIntegerPtr parameter = m_factoryAnalyticsEventGetterParameterInteger->createObject( _doc );
 
@@ -189,7 +189,7 @@ namespace Mengine
         return parameter;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventParameterDoubleInterfacePtr AnalyticsFactory::makeEventGetterParameterDouble( const LambdaAnalyticsParameterGetterDouble & _lambda, const DocumentPtr & _doc )
+    AnalyticsEventParameterDoubleInterfacePtr AnalyticsFactory::makeEventGetterParameterDouble( const LambdaAnalyticsParameterGetterDouble & _lambda, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventGetterParameterDoublePtr parameter = m_factoryAnalyticsEventGetterParameterDouble->createObject( _doc );
 
@@ -200,7 +200,7 @@ namespace Mengine
         return parameter;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsContextInterfacePtr AnalyticsFactory::makeContext( const DocumentPtr & _doc )
+    AnalyticsContextInterfacePtr AnalyticsFactory::makeContext( const DocumentInterfacePtr & _doc )
     {
         AnalyticsContextPtr context = m_factoryAnalyticsContext->createObject( _doc );
 

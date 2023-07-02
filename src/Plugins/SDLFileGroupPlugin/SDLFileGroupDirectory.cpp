@@ -196,7 +196,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
+    InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc )
     {
         if( m_parentFileGroup != nullptr )
         {
@@ -251,7 +251,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr SDLFileGroupDirectory::createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
+    InputStreamInterfacePtr SDLFileGroupDirectory::createInputMutexFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, const ThreadMutexInterfacePtr & _mutex, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc )
     {
         if( m_parentFileGroup != nullptr )
         {
@@ -308,7 +308,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterfacePtr SDLFileGroupDirectory::createOutputFile( const DocumentPtr & _doc )
+    OutputStreamInterfacePtr SDLFileGroupDirectory::createOutputFile( const DocumentInterfacePtr & _doc )
     {
         SDLFileOutputStreamPtr stream = m_factoryOutputStreamFile->createObject( _doc );
 
@@ -353,7 +353,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    MappedInterfacePtr SDLFileGroupDirectory::createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentPtr & _doc )
+    MappedInterfacePtr SDLFileGroupDirectory::createMappedFile( const FilePath & _filePath, FileGroupInterface ** const _fileGroup, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _fileGroup );

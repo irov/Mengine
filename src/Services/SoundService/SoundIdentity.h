@@ -63,10 +63,6 @@ namespace Mengine
         bool streamable;
         bool looped;
         bool turn;
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-        DocumentPtr doc;
-#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SoundIdentity, SoundIdentityInterface> SoundIdentityPtr;

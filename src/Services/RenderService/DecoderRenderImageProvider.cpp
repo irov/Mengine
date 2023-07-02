@@ -29,7 +29,7 @@ namespace Mengine
         m_codecFlags = _codecFlags;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageLoaderInterfacePtr DecoderRenderImageProvider::getLoader( const DocumentPtr & _doc ) const
+    RenderImageLoaderInterfacePtr DecoderRenderImageProvider::getLoader( const DocumentInterfacePtr & _doc ) const
     {
         RenderImageLoaderInterfacePtr loader = RENDERTEXTURE_SERVICE()
             ->createDecoderRenderImageLoader( m_fileGroup, m_filePath, m_codecType, m_codecFlags, _doc );

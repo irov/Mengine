@@ -1552,7 +1552,7 @@ namespace Mengine
 
         payloadNode.append_attribute( "Generation" ).set_value( generation - 1 );
 
-        typedef Vector<DocumentPtr> VectorDocuments;
+        typedef Vector<DocumentInterfacePtr> VectorDocuments;
         typedef Map<const FactoryInterface *, VectorDocuments> MapObjectLeaks;
         MapObjectLeaks objectLeaks;
         FACTORY_SERVICE()
@@ -1561,7 +1561,7 @@ namespace Mengine
             MENGINE_UNUSED( _factory );
             MENGINE_UNUSED( _factorable );
 
-            const DocumentPtr & doc = _factorable->getDocument();
+            const DocumentInterfacePtr & doc = _factorable->getDocument();
 
             if( doc == nullptr )
             {
@@ -1581,7 +1581,7 @@ namespace Mengine
 
             xml_objects.append_attribute( "Factory" ).set_value( factoryType.c_str() );
 
-            for( const DocumentPtr & doc : objects )
+            for( const DocumentInterfacePtr & doc : objects )
             {
                 pugi::xml_node xml_object = xml_objects.append_child( "Object" );
 
@@ -1590,7 +1590,7 @@ namespace Mengine
                 xml_object.append_attribute( "Line" ).set_value( doc->getLine() );
                 xml_object.append_attribute( "Message" ).set_value( MENGINE_DOCUMENT_STR( doc ) );
 
-                DocumentPtr doc_parent = doc->getParent();
+                DocumentInterfacePtr doc_parent = doc->getParent();
 
                 while( doc_parent != nullptr )
                 {

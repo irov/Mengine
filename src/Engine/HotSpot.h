@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/Node.h"
+#include "Interface/DocumentInterface.h"
 
 #include "HotSpotEventReceiverInterface.h"
 
@@ -8,7 +8,7 @@
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BasePicker.h"
 #include "Kernel/BaseTransformation.h"
-#include "Kernel/Document.h"
+#include "Kernel/Node.h"
 
 namespace Mengine
 {
@@ -49,7 +49,7 @@ namespace Mengine
         bool isMousePickerOver() const;
 
     public:
-        void addInputHandler( const InputHandlerInterfacePtr & _inputHandler, const DocumentPtr & _doc );
+        void addInputHandler( const InputHandlerInterfacePtr & _inputHandler, const DocumentInterfacePtr & _doc );
         void removeInputHandler( const InputHandlerInterfacePtr & _inputHandler );
 
     public:
@@ -111,7 +111,7 @@ namespace Mengine
             InputHandlerInterfacePtr handler;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentPtr doc;
+            DocumentInterfacePtr doc;
 #endif
         };
 

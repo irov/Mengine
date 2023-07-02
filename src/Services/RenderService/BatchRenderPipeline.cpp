@@ -135,7 +135,7 @@ namespace Mengine
         , const RenderVertexBufferInterfacePtr & _vertexBuffer
         , const RenderIndexBufferInterfacePtr & _indexBuffer
         , uint32_t _vertexCount, uint32_t _indexCount
-        , uint32_t _baseVertexIndex, uint32_t _startIndex, const DocumentPtr & _doc )
+        , uint32_t _baseVertexIndex, uint32_t _startIndex, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -216,7 +216,7 @@ namespace Mengine
         , const RenderProgramVariableInterfacePtr & _programVariable
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const RenderIndex * _indices, uint32_t _indexCount
-        , const mt::box2f * _bb, bool _debug, const DocumentPtr & _doc )
+        , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -399,7 +399,7 @@ namespace Mengine
         , const RenderMaterialInterfacePtr & _material
         , const RenderProgramVariableInterfacePtr & _programVariable
         , const RenderExternalInterfacePtr & _external
-        , const DocumentPtr & _doc )
+        , const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -461,7 +461,7 @@ namespace Mengine
     void BatchRenderPipeline::addDebugRenderObject( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const RenderIndex * _indices, uint32_t _indexCount, const DocumentPtr & _doc )
+        , const RenderIndex * _indices, uint32_t _indexCount, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -508,7 +508,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::addDebugRenderQuad( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
-        , const RenderVertex2D * _vertices, uint32_t _vertexCount, const DocumentPtr & _doc )
+        , const RenderVertex2D * _vertices, uint32_t _vertexCount, const DocumentInterfacePtr & _doc )
     {
         uint32_t indicesCount = (_vertexCount / 4) * 6;
 
@@ -530,7 +530,7 @@ namespace Mengine
     void BatchRenderPipeline::addRenderQuad( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const mt::box2f * _bb, bool _debug, const DocumentPtr & _doc )
+        , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc )
     {
         uint32_t indicesCount = (_vertexCount / 4) * 6;
 
@@ -552,7 +552,7 @@ namespace Mengine
     void BatchRenderPipeline::addRenderLine( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const mt::box2f * _bb, bool _debug, const DocumentPtr & _doc )
+        , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc )
     {
         uint32_t indicesCount = _vertexCount;
 

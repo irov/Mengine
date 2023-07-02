@@ -229,7 +229,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId cURLHttpSystem::getMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentPtr & _doc )
+    HttpRequestId cURLHttpSystem::getMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -291,7 +291,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId cURLHttpSystem::postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpRequestPostParams & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentPtr & _doc )
+    HttpRequestId cURLHttpSystem::postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpRequestPostParams & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -353,7 +353,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId cURLHttpSystem::deleteMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentPtr & _doc )
+    HttpRequestId cURLHttpSystem::deleteMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -415,7 +415,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId cURLHttpSystem::headerData( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const HttpReceiverInterfacePtr & _receiver, const DocumentPtr & _doc )
+    HttpRequestId cURLHttpSystem::headerData( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -477,7 +477,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId cURLHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const HttpReceiverInterfacePtr & _receiver, const DocumentPtr & _doc )
+    HttpRequestId cURLHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {

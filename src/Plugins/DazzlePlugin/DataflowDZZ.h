@@ -37,11 +37,11 @@ namespace Mengine
         bool isThreadFlow() const override;
 
     public:
-        DataInterfacePtr create( const DocumentPtr & _doc ) override;
+        DataInterfacePtr create( const DocumentInterfacePtr & _doc ) override;
 
     public:
-        MemoryInterfacePtr load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) override;
-        bool flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc ) override;
+        MemoryInterfacePtr load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc ) override;
+        bool flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentInterfacePtr & _doc ) override;
 
     protected:
         const dz_service_t * m_service;

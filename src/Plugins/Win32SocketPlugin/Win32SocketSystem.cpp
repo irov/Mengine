@@ -51,7 +51,7 @@ namespace Mengine
         m_factoryWin32Socket = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    SocketInterfacePtr Win32SocketSystem::createSocket( const DocumentPtr & _doc )
+    SocketInterfacePtr Win32SocketSystem::createSocket( const DocumentInterfacePtr & _doc )
     {
         Win32SocketPtr socket = m_factoryWin32Socket->createObject( _doc );
 

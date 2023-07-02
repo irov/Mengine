@@ -126,6 +126,7 @@ Common
     ResourceBankInterface.h
     SettingInterface.h
     SettingsServiceInterface.h
+    DocumentInterface.h
     DocumentServiceInterface.h
     AffectorHubInterface.h
     DebuggerBoundingBoxInterface.h

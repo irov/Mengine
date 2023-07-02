@@ -26,7 +26,7 @@ namespace Mengine
         virtual EAnalyticsEventParameterType getType() const = 0;
 
     public:
-        virtual AnalyticsEventParameterInterfacePtr resolveParameter( const DocumentPtr & _doc ) const = 0;
+        virtual AnalyticsEventParameterInterfacePtr resolveParameter( const DocumentInterfacePtr & _doc ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AnalyticsEventParameterInterface> AnalyticsEventParameterInterfacePtr;

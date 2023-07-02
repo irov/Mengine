@@ -3,8 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/DynamicLibraryInterface.h"
-
-#include "Kernel/Document.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Config/Export.h"
 
@@ -20,8 +19,8 @@ namespace Mengine
         SERVICE_DECLARE( "PluginService" )
 
     public:
-        virtual bool loadPlugin( const Char * _dynamicLibraryName, const DocumentPtr & _doc ) = 0;
-        virtual bool createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic, const DocumentPtr & _doc ) = 0;
+        virtual bool loadPlugin( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic, const DocumentInterfacePtr & _doc ) = 0;
         virtual void unloadPlugins() = 0;
 
     public:

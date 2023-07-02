@@ -2,11 +2,11 @@
 
 #include "Interface/InputHandlerInterface.h"
 #include "Interface/EventationInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "GOAP/TaskInterface.h"
 
 #include "Kernel/Pickerable.h"
-#include "Kernel/Document.h"
 
 #include "Config/Lambda.h"
 
@@ -19,7 +19,7 @@ namespace Mengine
         : public GOAP::TaskInterface
     {
     public:
-        TaskPickerableMouseButton( GOAP::Allocator * _allocator, const PickerablePtr & _pickerable, EMouseButtonCode _button, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter, const DocumentPtr & _doc );
+        TaskPickerableMouseButton( GOAP::Allocator * _allocator, const PickerablePtr & _pickerable, EMouseButtonCode _button, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter, const DocumentInterfacePtr & _doc );
         ~TaskPickerableMouseButton() override;
 
     protected:
@@ -36,7 +36,7 @@ namespace Mengine
         LambdaPickerMouseButtonEvent m_filter;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
-        DocumentPtr m_doc;
+        DocumentInterfacePtr m_doc;
 #endif
 
         EventReceiverInterfacePtr m_receiver;

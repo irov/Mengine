@@ -154,6 +154,10 @@ extern "C"
         fileLog->flush();
         fileLog = nullptr;
 
+        LOGGER_MESSAGE( "write logger history to file '%s'"
+            , filePath.c_str()
+        );
+
         return JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -388,7 +392,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return false;
         }
@@ -404,7 +408,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return false;
         }
@@ -533,7 +537,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return 0;
         }
@@ -559,7 +563,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return 0;
         }
@@ -585,7 +589,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return 0;
         }
@@ -637,7 +641,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return 0;
         }
@@ -653,7 +657,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return 0;
         }
@@ -669,7 +673,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return 0;
         }
@@ -701,7 +705,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return;
         }
@@ -744,7 +748,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return;
         }
@@ -845,7 +849,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return;
         }
@@ -863,7 +867,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return;
         }
@@ -881,7 +885,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return;
         }
@@ -909,7 +913,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return;
         }
@@ -927,7 +931,7 @@ namespace Mengine
 
         if( jenv == nullptr )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
 
             return;
         }

@@ -7,6 +7,8 @@
 
 #include "OpenGLRenderResourceHandler.h"
 
+#include "Kernel/Factorable.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

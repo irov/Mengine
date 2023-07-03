@@ -89,17 +89,10 @@ namespace Mengine
                 return Color();
             }
 
-#if defined(MENGINE_RENDER_COLOR_RGBA)
-            uint8_t b8 = _r;
-            uint8_t g8 = _g;
-            uint8_t r8 = _b;
-            uint8_t a8 = _a;
-#else
             uint8_t r8 = _r;
             uint8_t g8 = _g;
             uint8_t b8 = _b;
             uint8_t a8 = _a;
-#endif
 
             float rf = one_div_255[r8];
             float gf = one_div_255[g8];

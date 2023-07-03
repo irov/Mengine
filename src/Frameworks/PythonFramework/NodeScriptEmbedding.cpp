@@ -151,48 +151,6 @@ namespace Mengine
 
         public:
             //////////////////////////////////////////////////////////////////////////
-            void s_ResourceImage_setColor( ResourceImage * _resourceImage, const Color & _color )
-            {
-                _resourceImage->setColor( _color );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            Color s_ResourceImage_getColor( ResourceImage * _resourceImage )
-            {
-                const Color & color = _resourceImage->getColor();
-
-#if defined(MENGINE_RENDER_TEXTURE_RGBA)
-                float r = color.getR();
-                float g = color.getG();
-                float b = color.getB();
-                float a = color.getA();
-
-                return Color( b, g, r, a );
-#else
-                return color;
-#endif
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_FontInterface_setFontColor( FontInterface * _font, const Color & _color )
-            {
-                _font->setFontColor( _color );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            Color s_FontInterface_getFontColor( FontInterface * _font )
-            {
-                const Color & color = _font->getFontColor();
-
-#if defined(MENGINE_RENDER_TEXTURE_RGBA)
-                float r = color.getR();
-                float g = color.getG();
-                float b = color.getB();
-                float a = color.getA();
-
-                return Color( b, g, r, a );
-#else
-                return color;
-#endif
-            }
-            //////////////////////////////////////////////////////////////////////////
             VectorString cache_args;
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_TextField_setTextFormatArgs( pybind::kernel_interface * _kernel, TextField * _textField, PyObject * _args, PyObject * _kwds )
@@ -301,27 +259,6 @@ namespace Mengine
                 const ConstString & fontName = font->getName();
 
                 return fontName;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_TextField_setFontColor( TextField * _textField, const Color & _color )
-            {
-                _textField->setFontColor( _color );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            Color s_TextField_getFontColor( TextField * _textField )
-            {
-                const Color & color = _textField->getFontColor();
-
-#if defined(MENGINE_RENDER_TEXTURE_RGBA)
-                float r = color.getR();
-                float g = color.getG();
-                float b = color.getB();
-                float a = color.getA();
-
-                return Color( b, g, r, a );
-#else
-                return color;
-#endif
             }
             //////////////////////////////////////////////////////////////////////////
             mt::box2f s_BoundingBox_getBoundingBox( BoundingBox * _boundingBox )
@@ -732,8 +669,8 @@ namespace Mengine
             .def( "isPremultiply", &ResourceImage::isPremultiply )
             .def( "setPow2", &ResourceImage::setPow2 )
             .def( "isPow2", &ResourceImage::isPow2 )
-            .def_proxy_static( "setColor", nodeScriptMethod, &NodeScriptMethod::s_ResourceImage_setColor )
-            .def_proxy_static( "getColor", nodeScriptMethod, &NodeScriptMethod::s_ResourceImage_getColor )
+            .def( "setColor", &ResourceImage::setColor )
+            .def( "getColor", &ResourceImage::getColor )
             ;
 
         pybind::interface_<ResourceImageData, pybind::bases<Resource>>( _kernel, "ResourceImageData", false )
@@ -896,8 +833,8 @@ namespace Mengine
                 .def( "getType", &FontInterface::getType )
                 .def( "setHeight", &FontInterface::setHeight )
                 .def( "getHeight", &FontInterface::getHeight )
-                .def_proxy_static( "setFontColor", nodeScriptMethod, &NodeScriptMethod::s_FontInterface_setFontColor )
-                .def_proxy_static( "getFontColor", nodeScriptMethod, &NodeScriptMethod::s_FontInterface_getFontColor )
+                .def( "setFontColor", &FontInterface::setFontColor )
+                .def( "getFontColor", &FontInterface::getFontColor )
                 .def( "setLineOffset", &FontInterface::setLineOffset )
                 .def( "getLineOffset", &FontInterface::getLineOffset )
                 .def( "setCharOffset", &FontInterface::setCharOffset )
@@ -938,8 +875,8 @@ namespace Mengine
                 .def( "setWrap", &TextField::setWrap )
                 .def( "getWrap", &TextField::getWrap )
 
-                .def_proxy_static( "setFontColor", nodeScriptMethod, &NodeScriptMethod::s_TextField_setFontColor )
-                .def_proxy_static( "getFontColor", nodeScriptMethod, &NodeScriptMethod::s_TextField_getFontColor )
+                .def( "setFontColor", &TextField::setFontColor )
+                .def( "getFontColor", &TextField::getFontColor )
 
                 .def( "setLineOffset", &TextField::setLineOffset )
                 .def( "getLineOffset", &TextField::getLineOffset )

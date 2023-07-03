@@ -44,17 +44,10 @@ namespace Mengine
         {
             ColorValue_ARGB argb = _color.getAsARGB();
 
-#if defined(MENGINE_RENDER_COLOR_RGBA)
-            uint8_t a8 = (argb >> 24) & 0xFF;
-            uint8_t b8 = (argb >> 16) & 0xFF;
-            uint8_t g8 = (argb >> 8) & 0xFF;
-            uint8_t r8 = (argb >> 0) & 0xFF;
-#else
             uint8_t a8 = (argb >> 24) & 0xFF;
             uint8_t r8 = (argb >> 16) & 0xFF;
             uint8_t g8 = (argb >> 8) & 0xFF;
             uint8_t b8 = (argb >> 0) & 0xFF;
-#endif
 
             uint16_t aa = _in[0] * a8 / 255;
             uint16_t rr = _in[1] * r8 / 255;

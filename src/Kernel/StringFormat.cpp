@@ -123,12 +123,12 @@ namespace Mengine
             {
                 StringRegex r( regex_format );
                 StringMatchResults match;
-                while( std::regex_search( text_value, match, r ) == true )
+                while( Regex::regex_search( text_value, match, r ) == true )
                 {
                     match_value.assign( match[1].first, match[1].second );
 
-                    const std::sub_match<String::const_iterator> & match_prefix = match.prefix();
-                    const std::sub_match<String::const_iterator> & match_suffix = match.suffix();
+                    const Regex::sub_match<String::const_iterator> & match_prefix = match.prefix();
+                    const Regex::sub_match<String::const_iterator> & match_suffix = match.suffix();
 
                     if( _lambda( match_value, &tag_value ) == false )
                     {

@@ -2,7 +2,8 @@
 
 #include "Interface/RandomizerInterface.h"
 
-#include <utility>
+#include "Config/Algorithm.h"
+#include "Config/Utility.h"
 
 namespace Mengine
 {
@@ -39,7 +40,7 @@ namespace Mengine
             {
                 uint32_t random_index = _randomizer->getRandom( size );
 
-                std::swap( _vector[index], _vector[random_index] );
+                Algorithm::swap( _vector[index], _vector[random_index] );
             }
         }
         //////////////////////////////////////////////////////////////////////////

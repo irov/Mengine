@@ -9,6 +9,8 @@
 
 #include "Kernel/Logger.h"
 
+#include "Config/Algorithm.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -92,7 +94,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::removeInputHandler( const InputHandlerInterfacePtr & _inputHandler )
     {
-        VectorInputHandlers::iterator it_found = std::find_if( m_inputHandlers.begin(), m_inputHandlers.end(), [_inputHandler]( const InputHandlerDesc & _desc )
+        VectorInputHandlers::iterator it_found = Algorithm::find_if( m_inputHandlers.begin(), m_inputHandlers.end(), [_inputHandler]( const InputHandlerDesc & _desc )
         {
             return _desc.handler == _inputHandler;
         } );

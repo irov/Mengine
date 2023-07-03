@@ -21,6 +21,7 @@
 #include "Kernel/NotificationHelper.h"
 
 #include "Config/Algorithm.h"
+#include "Config/Utility.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ResourceService, Mengine::ResourceService );
@@ -129,7 +130,7 @@ namespace Mengine
 
                 if( it_cache_found == m_resourcesCache.end() )
                 {
-                    it_cache_found = m_resourcesCache.insert( it_cache_found, std::make_pair( _groupName, VectorResources() ) );
+                    it_cache_found = m_resourcesCache.insert( it_cache_found, Utility::make_pair( _groupName, VectorResources() ) );
                 }
 
                 VectorResources & cahce_resources = it_cache_found->second;

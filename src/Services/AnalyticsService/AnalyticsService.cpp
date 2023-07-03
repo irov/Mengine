@@ -9,6 +9,8 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionContainer.h"
 
+#include "Config/Algorithm.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AnalyticsService, Mengine::AnalyticsService );
 //////////////////////////////////////////////////////////////////////////
@@ -55,7 +57,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AnalyticsService::removeEventProvider( const AnalyticsEventProviderInterfacePtr & _provider )
     {
-        VectorAnalyticsEventProvider::iterator it_found = std::find( m_eventProviders.begin(), m_eventProviders.end(), _provider );
+        VectorAnalyticsEventProvider::iterator it_found = Algorithm::find( m_eventProviders.begin(), m_eventProviders.end(), _provider );
 
         MENGINE_ASSERTION( it_found != m_eventProviders.end() );
 

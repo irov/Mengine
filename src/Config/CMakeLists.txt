@@ -100,6 +100,7 @@ src
     Timestamp.h
     Thread.h
     Switch.h
+    Utility.h
     ${CMAKE_BINARY_DIR}/Definitions.h
 )
 

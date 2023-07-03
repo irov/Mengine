@@ -1,12 +1,10 @@
 #pragma once
 
-#include "Config/Config.h"
+#include "Config/Utility.h"
 
 #if defined(MENGINE_DEBUG)
 #include "stdex/mpl.h"
 #endif
-
-#include <utility>
 
 namespace Mengine
 {

@@ -30,6 +30,7 @@
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 #include "Config/Algorithm.h"
+#include "Config/Utility.h"
 
 #include "xmlsax/xmlsax.hpp"
 
@@ -750,7 +751,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextService::setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString & _key )
     {
-        PairAliasKey key = std::make_pair( _environment, _alias );
+        PairAliasKey key = Utility::make_pair( _environment, _alias );
 
         m_aliases[key] = _key;
 
@@ -759,7 +760,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextService::removeTextAlias( const ConstString & _environment, const ConstString & _alias )
     {
-        PairAliasKey key = std::make_pair( _environment, _alias );
+        PairAliasKey key = Utility::make_pair( _environment, _alias );
 
         m_aliases.erase( key );
     }
@@ -783,7 +784,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::hasTextAlias( const ConstString & _environment, const ConstString & _alias ) const
     {
-        PairAliasKey key = std::make_pair( _environment, _alias );
+        PairAliasKey key = Utility::make_pair( _environment, _alias );
 
         MapTextAliases::const_iterator it_found = m_aliases.find( key );
 
@@ -797,7 +798,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ConstString & TextService::getTextAlias( const ConstString & _environment, const ConstString & _alias ) const
     {
-        PairAliasKey key = std::make_pair( _environment, _alias );
+        PairAliasKey key = Utility::make_pair( _environment, _alias );
 
         MapTextAliases::const_iterator it_found = m_aliases.find( key );
 
@@ -818,7 +819,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextService::setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorString & _arguments )
     {
-        PairAliasKey key = std::make_pair( _environment, _alias );
+        PairAliasKey key = Utility::make_pair( _environment, _alias );
 
         m_aliasesArguments[key] = _arguments;
 
@@ -827,14 +828,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextService::removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias )
     {
-        PairAliasKey key = std::make_pair( _environment, _alias );
+        PairAliasKey key = Utility::make_pair( _environment, _alias );
 
         m_aliasesArguments.erase( key );
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextService::getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString * const _arguments ) const
     {
-        PairAliasKey key = std::make_pair( _environment, _alias );
+        PairAliasKey key = Utility::make_pair( _environment, _alias );
 
         MapTextAliasesArguments::const_iterator it_found = m_aliasesArguments.find( key );
 

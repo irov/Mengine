@@ -8,6 +8,8 @@
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/NotificationHelper.h"
 
+#include "Config/Utility.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TTFAtlasService, Mengine::TTFAtlasService );
 //////////////////////////////////////////////////////////////////////////
@@ -136,7 +138,7 @@ namespace Mengine
 
         uint32_t unpow_channel = unpow_channel_mask[_channel];
 
-        AtlasKey key = std::make_pair( hw_width, hw_height );
+        AtlasKey key = Utility::make_pair( hw_width, hw_height );
 
         VectorAtlases & atlases = m_atlasess[unpow_channel][key];
 

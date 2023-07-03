@@ -23,6 +23,7 @@
 #include "AndroidNativePythonScriptEmbedding.h"
 
 #include "Config/StdString.h"
+#include "Config/Utility.h"
 
 //////////////////////////////////////////////////////////////////////////
 static Mengine::AndroidNativePythonService * s_androidNativePythonService = nullptr;
@@ -242,10 +243,10 @@ namespace Mengine
         LOGGER_INFO( "android", "call python plugin '%s' method '%s' [%s]"
             , _plugin.c_str()
             , _method.c_str()
-            , (m_callbacks.find( Helper::makePair( plugin_c, method_c ) ) != m_callbacks.end() ? "Found" : "NOT-FOUND")
+            , (m_callbacks.find( Utility::make_pair( plugin_c, method_c ) ) != m_callbacks.end() ? "Found" : "NOT-FOUND")
         );
 
-        MapAndroidCallbacks::const_iterator it_found = m_callbacks.find( Helper::makePair( plugin_c, method_c ) );
+        MapAndroidCallbacks::const_iterator it_found = m_callbacks.find( Utility::make_pair( plugin_c, method_c ) );
 
         if( it_found == m_callbacks.end() )
         {
@@ -322,13 +323,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
     {
-        MapAndroidCallbacks::iterator it_found = m_callbacks.find( Helper::makePair( _plugin, _method ) );
+        MapAndroidCallbacks::iterator it_found = m_callbacks.find( Utility::make_pair( _plugin, _method ) );
 
         if( it_found == m_callbacks.end() )
         {
             VectorAndroidPythonCallbacks new_callbacks;
 
-            it_found = m_callbacks.emplace( Helper::makePair( Helper::makePair( _plugin, _method ), new_callbacks ) ).first;
+            it_found = m_callbacks.emplace( Utility::make_pair( Utility::make_pair( _plugin, _method ), new_callbacks ) ).first;
         }
 
         VectorAndroidPythonCallbacks & callbacks = it_found->second;
@@ -342,7 +343,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::removeAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb )
     {
-        MapAndroidCallbacks::iterator it_found = m_callbacks.find( Helper::makePair( _plugin, _method ) );
+        MapAndroidCallbacks::iterator it_found = m_callbacks.find( Utility::make_pair( _plugin, _method ) );
 
         if( it_found == m_callbacks.end() )
         {

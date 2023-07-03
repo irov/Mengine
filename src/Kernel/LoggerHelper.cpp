@@ -62,10 +62,10 @@ namespace Mengine
             StringRegex regex_lambda_remove( "::<lambda_.*>::operator \\(\\)" );
 
             StringMatchResults match_lambda_remove;
-            while( std::regex_search( str_function, match_lambda_remove, regex_lambda_remove ) == true )
+            while( Regex::regex_search( str_function, match_lambda_remove, regex_lambda_remove ) == true )
             {
-                const std::sub_match<String::const_iterator> & lambda_remove_prefix = match_lambda_remove.prefix();
-                const std::sub_match<String::const_iterator> & lambda_remove_suffix = match_lambda_remove.suffix();
+                const Regex::sub_match<String::const_iterator> & lambda_remove_prefix = match_lambda_remove.prefix();
+                const Regex::sub_match<String::const_iterator> & lambda_remove_suffix = match_lambda_remove.suffix();
 
                 str_function = String( lambda_remove_prefix.first, lambda_remove_prefix.second ) + String( lambda_remove_suffix.first, lambda_remove_suffix.second );
             }
@@ -73,10 +73,10 @@ namespace Mengine
             StringRegex regex_engine_remove( "Mengine::" );
 
             StringMatchResults match_engine_remove;
-            if( std::regex_search( str_function, match_engine_remove, regex_engine_remove ) == true )
+            if( Regex::regex_search( str_function, match_engine_remove, regex_engine_remove ) == true )
             {
-                const std::sub_match<String::const_iterator> & engine_remove_prefix = match_engine_remove.prefix();
-                const std::sub_match<String::const_iterator> & engine_remove_suffix = match_engine_remove.suffix();
+                const Regex::sub_match<String::const_iterator> & engine_remove_prefix = match_engine_remove.prefix();
+                const Regex::sub_match<String::const_iterator> & engine_remove_suffix = match_engine_remove.suffix();
 
                 str_function = String( engine_remove_prefix.first, engine_remove_prefix.second ) + String( engine_remove_suffix.first, engine_remove_suffix.second );
             }

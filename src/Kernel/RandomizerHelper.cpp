@@ -18,7 +18,7 @@ namespace Mengine
             {
                 uint32_t rnd_index = _randomizer->getRandom( _count );
 
-                std::swap( _indices[index], _indices[rnd_index] );
+                Algorithm::swap( _indices[index], _indices[rnd_index] );
             }
         }
     }

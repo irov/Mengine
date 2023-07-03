@@ -2,10 +2,14 @@ package org.Mengine.Base;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.net.Uri;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+
+import androidx.core.content.FileProvider;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -20,6 +24,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class MengineUtils {
+    public static final String TAG = "MengineUtils";
+
     public static Class<?> getClazz(String TAG, String name, boolean required) {
         ClassLoader cl = MengineActivity.class.getClassLoader();
 
@@ -219,10 +225,6 @@ public class MengineUtils {
     }
 
     private static void zipFile(ZipOutputStream out, File file, int basePathLength) throws IOException {
-        MengineLog.logInfo("MengineUtils", "zip file: %s"
-            , file.getPath()
-        );
-
         final int BUFFER = 2048;
 
         byte data[] = new byte[BUFFER];
@@ -244,10 +246,6 @@ public class MengineUtils {
     }
 
     private static void zipSubFolder(ZipOutputStream out, File folder, int basePathLength) throws IOException {
-        MengineLog.logInfo("MengineUtils", "zip folder: %s"
-            , folder.getPath()
-        );
-
         File[] fileList = folder.listFiles();
 
         if (fileList == null) {
@@ -266,7 +264,7 @@ public class MengineUtils {
     }
 
     public static boolean zipFiles(File sourceFile, File toLocation) {
-        MengineLog.logInfo("MengineUtils", "zip source '%s' to: %s"
+        MengineLog.logInfo(TAG, "zip source '%s' to: %s"
             , sourceFile.getPath()
             , toLocation.getPath()
         );
@@ -293,7 +291,7 @@ public class MengineUtils {
 
             out.close();
         } catch (Exception e) {
-            MengineLog.logError("MengineUtils", "zipFiles exception: %s"
+            MengineLog.logError(TAG, "zipFiles exception: %s"
                 , e.getLocalizedMessage()
             );
 
@@ -313,5 +311,53 @@ public class MengineUtils {
         String lastPathComponent = segments[segments.length - 1];
 
         return lastPathComponent;
+    }
+
+    public static File createTempFile(Context context, String prefix, String suffix) {
+        File cacheDir = context.getCacheDir();
+
+        String cacheDirPath;
+
+        try {
+            cacheDirPath = cacheDir.getCanonicalPath();
+        } catch (IOException e) {
+            MengineLog.logError(TAG, "failed create temp file %s***%s invalid cache dir exception: %s"
+                , prefix
+                , suffix
+                , e.getLocalizedMessage()
+            );
+
+            return null;
+        }
+
+        File tempFile = null;
+
+        try {
+            tempFile = File.createTempFile(prefix, suffix, cacheDir);
+        } catch (IOException e) {
+            MengineLog.logError(TAG, "failed create temp file %s***%s in dir: %s exception: %s"
+                , prefix
+                , suffix
+                , cacheDirPath
+                , e.getLocalizedMessage()
+            );
+
+            return null;
+        }
+
+        MengineLog.logInfo(TAG, "create temp file: %s in dir: %s"
+            , tempFile.getAbsolutePath()
+            , cacheDirPath
+        );
+
+        return tempFile;
+    }
+
+    public static Uri getUriForFile(Context context, File file) {
+        String packageName = context.getPackageName();
+
+        Uri uri = FileProvider.getUriForFile(context, packageName + ".fileprovider", file);
+
+        return uri;
     }
 }

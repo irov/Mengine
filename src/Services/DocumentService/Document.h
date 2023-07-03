@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/DocumentInterface.h"
+
 #include "Kernel/Factorable.h"
 #include "Kernel/String.h"
 #include "Kernel/PathString.h"

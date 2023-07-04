@@ -21,9 +21,6 @@ namespace Mengine
 
     protected:
         void log( const LoggerMessage & _message ) override;
-
-    protected:
-        Char m_loggerMessage[MENGINE_LOGGER_MAX_MESSAGE];
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AndroidProxyLogger, LoggerInterface> AndroidProxyLoggerPtr;

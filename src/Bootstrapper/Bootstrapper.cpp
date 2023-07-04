@@ -551,12 +551,6 @@ namespace Mengine
 
         LOGGER_INFO( "bootstrapper", "bootstrapper run" );
 
-        LOGGER_SERVICE()
-            ->setHistorically( false );
-
-        LOGGER_SERVICE()
-            ->clearHistory();
-
         ANALYTICS_SERVICE()
             ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_run_completed" ), MENGINE_DOCUMENT_FACTORABLE )
             ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getDurationTimestamp( mengine_run_timestamp ) )

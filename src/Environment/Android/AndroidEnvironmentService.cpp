@@ -22,8 +22,9 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
 #include "Kernel/NotificationHelper.h"
-#include "Kernel/FileLogger.h"
+#include "Kernel/ProxyLogger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/LoggerHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"
@@ -131,32 +132,94 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1writeLoggerHistoryToFile )(JNIEnv * env, jclass cls, jstring _filePath)
+    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1writeLoggerHistoryToFile )(JNIEnv * env, jclass cls, jobject _writer)
     {
-        Mengine::FileLoggerPtr fileLog = Mengine::Helper::makeFactorableUnique<Mengine::FileLogger>( MENGINE_DOCUMENT_FUNCTION );
+        Mengine::ProxyLoggerPtr proxyLog = Mengine::Helper::makeFactorableUnique<Mengine::ProxyLogger>( MENGINE_DOCUMENT_FUNCTION );
 
-        const Mengine::FileGroupInterfacePtr & fileGroupGlobal = FILE_SERVICE()
-            ->getGlobalFileGroup();
-
-        fileLog->setFileGroup( fileGroupGlobal );
-
-        Mengine::FilePath filePath = Mengine::Helper::makeFilePathFromJString( env, _filePath );
-        fileLog->setFilePath( filePath );
-
-        if( fileLog->initializeLogger() == false )
+        if( proxyLog->initializeLogger() == false )
         {
             return JNI_FALSE;
         }
 
+        proxyLog->setLambda([env, _writer]( const Mengine::LoggerMessage & _message ) {
+            jclass jclass_Writer = env->GetObjectClass( _writer );
+            jmethodID jmethodID_Writer_write_String = env->GetMethodID( jclass_Writer, "write", "(Ljava/lang/String;)V" );
+            jmethodID jmethodID_Writer_write_Char = env->GetMethodID( jclass_Writer, "write", "(I)V" );
+
+            if( _message.flag & Mengine::LFLAG_FUNCTIONSTAMP )
+            {
+                Mengine::Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+                Mengine::Helper::makeLoggerFunctionStamp( _message.file, _message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+
+                jstring jvalue = env->NewStringUTF( functionstamp );
+                env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
+                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ' ' );
+                env->DeleteLocalRef( jvalue );
+            }
+
+            if( _message.flag & Mengine::LFLAG_TIMESTAMP )
+            {
+                Mengine::Char timestamp[256] = {'\0'};
+                Mengine::Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
+
+                jstring jvalue = env->NewStringUTF( timestamp );
+                env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
+                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ' ' );
+                env->DeleteLocalRef( jvalue );
+            }
+
+            if( _message.flag & Mengine::LFLAG_THREADSTAMP )
+            {
+                Mengine::Char threadstamp[256] = {'\0'};
+                Mengine::Helper::makeLoggerThreadStamp( "|%s|", threadstamp, 0, 256 );
+
+                jstring jvalue = env->NewStringUTF( threadstamp );
+                env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
+                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ' ' );
+                env->DeleteLocalRef( jvalue );
+            }
+
+            if( _message.flag & Mengine::LFLAG_SYMBOLSTAMP )
+            {
+                Mengine::ELoggerLevel level = _message.level;
+
+                Mengine::Char symbol = Mengine::Helper::getLoggerLevelSymbol( level );
+
+                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, symbol );
+                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ' ' );
+            }
+
+            if( _message.flag & Mengine::LFLAG_CATEGORYSTAMP )
+            {
+                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, '[' );
+                jstring jvalue = env->NewStringUTF( _message.category );
+                env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
+                env->DeleteLocalRef( jvalue );
+                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ']' );
+                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ' ' );
+            }
+
+            const Mengine::Char * data_value = _message.data;
+            size_t data_size = _message.size;
+
+            Mengine::Char msg[MENGINE_LOGGER_MAX_MESSAGE];
+            MENGINE_MEMCPY( msg, data_value, data_size * sizeof(Mengine::Char) );
+            msg[data_size] = '\0';
+
+            jstring jvalue = env->NewStringUTF( msg );
+            env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
+            env->DeleteLocalRef( jvalue );
+
+            env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, '\n' );
+
+            env->DeleteLocalRef( jclass_Writer );
+        });
+
         LOGGER_SERVICE()
-            ->writeHistory( fileLog );
+            ->writeHistory( proxyLog );
 
-        fileLog->flush();
-        fileLog = nullptr;
-
-        LOGGER_MESSAGE( "write logger history to file '%s'"
-            , filePath.c_str()
-        );
+        proxyLog->flush();
+        proxyLog = nullptr;
 
         return JNI_TRUE;
     }

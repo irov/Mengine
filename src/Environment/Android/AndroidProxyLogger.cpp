@@ -60,10 +60,11 @@ namespace Mengine
         const Char * data_value = _message.data;
         size_t data_size = _message.size;
 
-        MENGINE_MEMCPY( m_loggerMessage, data_value, data_size * sizeof(Char) );
-        m_loggerMessage[data_size] = '\0';
+        Char msg[MENGINE_LOGGER_MAX_MESSAGE];
+        MENGINE_MEMCPY( msg, data_value, data_size * sizeof(Char) );
+        msg[data_size] = '\0';
 
-        jstring data_jstring = jenv->NewStringUTF( m_loggerMessage );
+        jstring data_jstring = jenv->NewStringUTF( msg );
 
         ANDROID_ENVIRONMENT_SERVICE()
                 ->callVoidApplicationMethod(jenv, jmethodID_onMengineLogger, category_jstring, level, filter, color, data_jstring);

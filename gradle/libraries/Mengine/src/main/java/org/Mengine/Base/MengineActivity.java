@@ -4,8 +4,11 @@ import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -32,7 +35,7 @@ public class MengineActivity extends SDLActivity {
     private static native String AndroidEnvironmentService_getExtraPreferencesFolderName();
     private static native boolean AndroidEnvironmentService_hasCurrentAccount();
     private static native String AndroidEnvironmentService_getCurrentAccountFolderName();
-    private static native boolean AndroidEnvironmentService_writeLoggerHistoryToFile(String filePath);
+    private static native boolean AndroidEnvironmentService_writeLoggerHistoryToFile(Writer writer);
     private static native int AndroidEnvironmentService_getProjectVersion();
     private static native boolean AndroidEnvironmentService_isDebugMode();
     private static native boolean AndroidEnvironmentService_isDevelopmentMode();
@@ -905,9 +908,12 @@ public class MengineActivity extends SDLActivity {
                     return false;
                 }
 
-                String logFilePath = logFile.getCanonicalPath();
+                OutputStreamWriter logFileStream = new OutputStreamWriter(new FileOutputStream(logFile));
 
-                if (AndroidEnvironmentService_writeLoggerHistoryToFile(logFilePath) == true) {
+                if (AndroidEnvironmentService_writeLoggerHistoryToFile(logFileStream) == true) {
+                    logFileStream.flush();
+                    logFileStream.close();
+
                     File logZipFile = MengineUtils.createTempFile(context, "mng_log_", ".zip");
 
                     if (MengineUtils.zipFiles(logFile, logZipFile) == true) {

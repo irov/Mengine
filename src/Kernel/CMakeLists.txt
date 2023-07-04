@@ -569,6 +569,9 @@ Core
     FileLogger.cpp
     FileLogger.h
     
+    ProxyLogger.cpp
+    ProxyLogger.h
+    
     PlatformLogFormat.cpp
     PlatformLogFormat.h
     

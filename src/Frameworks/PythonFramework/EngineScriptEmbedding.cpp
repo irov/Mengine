@@ -1813,7 +1813,13 @@ namespace Mengine
 
                         builder->addParameterBoolean( k, value );
                     }
-                    else if( v.is_integer() == true || v.is_long() == true )
+                    else if( v.is_integer() == true )
+                    {
+                        int64_t value = v.extract();
+
+                        builder->addParameterInteger( k, value );
+                    }
+                    else if( v.is_long() == true )
                     {
                         int64_t value = v.extract();
 
@@ -1826,6 +1832,12 @@ namespace Mengine
                         builder->addParameterDouble( k, value );
                     }
                     else if( v.is_string() == true )
+                    {
+                        ConstString value = v.extract();
+
+                        builder->addParameterConstString( k, value );
+                    }
+                    else if( v.is_embedded_type<ConstString>() == true )
                     {
                         ConstString value = v.extract();
 
@@ -4599,7 +4611,6 @@ namespace Mengine
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterString", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterString );
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterInteger", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterInteger );
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterDouble", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterDouble );
-        pybind::def_functor_deprecated( _kernel, "analyticsEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCustomEvent, "use 'analyticsCustomEvent'" );
         pybind::def_functor( _kernel, "analyticsCustomEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCustomEvent );
         pybind::def_functor( _kernel, "analyticsEarnVirtualCurrencyEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEarnVirtualCurrencyEvent );
         pybind::def_functor( _kernel, "analyticsSpendVirtualCurrencyEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsSpendVirtualCurrencyEvent );

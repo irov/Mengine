@@ -565,8 +565,6 @@ namespace Mengine
 
                 for( const pybind::object & py_obj : _args )
                 {
-                    //PyObject * py_string = pybind::tuple_getitem( _args, it );
-
                     if( py_obj.is_string() == true )
                     {
                         String key = py_obj.extract();

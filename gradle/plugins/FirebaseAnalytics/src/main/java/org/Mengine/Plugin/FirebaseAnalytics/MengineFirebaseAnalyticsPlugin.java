@@ -122,7 +122,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putDouble(FirebaseAnalytics.Param.VALUE, VALUE);
 
                 this.logInfo("logEvent [EARN_VIRTUAL_CURRENCY] eventName: %s params: %s"
-                    , eventName
+                    , FirebaseAnalytics.Event.EARN_VIRTUAL_CURRENCY
                     , params
                 );
 
@@ -140,7 +140,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putDouble(FirebaseAnalytics.Param.VALUE, VALUE);
 
                 this.logInfo("logEvent [SPEND_VIRTUAL_CURRENCY] eventName: %s params: %s"
-                    , eventName
+                    , FirebaseAnalytics.Event.SPEND_VIRTUAL_CURRENCY
                     , params
                 );
 
@@ -154,7 +154,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putString(FirebaseAnalytics.Param.ACHIEVEMENT_ID, ACHIEVEMENT_ID);
 
                 this.logInfo("logEvent [UNLOCK_ACHIEVEMENT] eventName: %s params: %s"
-                    , eventName
+                    , FirebaseAnalytics.Event.UNLOCK_ACHIEVEMENT
                     , params
                 );
 
@@ -170,7 +170,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putLong(FirebaseAnalytics.Param.LEVEL, LEVEL);
 
                 this.logInfo("logEvent [LEVEL_UP] eventName: %s params: %s"
-                    , eventName
+                    , FirebaseAnalytics.Event.LEVEL_UP
                     , params
                 );
 
@@ -184,7 +184,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putString(FirebaseAnalytics.Param.LEVEL_NAME, LEVEL_NAME);
 
                 this.logInfo("logEvent [LEVEL_START] eventName: %s params: %s"
-                    , eventName
+                    , FirebaseAnalytics.Event.LEVEL_START
                     , params
                 );
 
@@ -200,7 +200,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putBoolean(FirebaseAnalytics.Param.SUCCESS, SUCCESS);
 
                 this.logInfo("logEvent [LEVEL_END] eventName: %s params: %s"
-                    , eventName
+                    , FirebaseAnalytics.Event.LEVEL_END
                     , params
                 );
 
@@ -216,7 +216,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, ITEM_LIST_NAME);
 
                 this.logInfo("logEvent [SELECT_ITEM] eventName: %s params: %s"
-                    , eventName
+                    , FirebaseAnalytics.Event.SELECT_ITEM
                     , params
                 );
 
@@ -236,7 +236,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 Bundle params = new Bundle();
 
                 this.logInfo("logEvent [TUTORIAL_COMPLETE] eventName: %s params: %s"
-                    , eventName
+                    , FirebaseAnalytics.Event.TUTORIAL_COMPLETE
                     , params
                 );
 

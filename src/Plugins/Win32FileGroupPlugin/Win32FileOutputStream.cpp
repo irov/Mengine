@@ -43,7 +43,7 @@ namespace Mengine
 
             MENGINE_UNUSED( fullPathTempLen );
 
-            MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePathTemp '%s':'%s'"
+            MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePathTemp '%s:%s'"
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
             );
@@ -54,7 +54,7 @@ namespace Mengine
 
             MENGINE_UNUSED( fullPathTempLen );
 
-            MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePathTemp '%s':'%s'"
+            MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePathTemp '%s:%s'"
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
             );
@@ -102,7 +102,7 @@ namespace Mengine
 
             MENGINE_UNUSED( fullPathTempLen );
 
-            MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePathTemp '%s':'%s'"
+            MENGINE_ASSERTION_FATAL( fullPathTempLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePathTemp '%s:%s'"
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
             );
@@ -112,7 +112,7 @@ namespace Mengine
 
             MENGINE_UNUSED( fullPathLen );
 
-            MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePath '%s':'%s'"
+            MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePath '%s:%s'"
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
             );
@@ -137,8 +137,10 @@ namespace Mengine
         DWORD bytesWritten = 0;
         if( ::WriteFile( m_hFile, _data, (DWORD)_size, &bytesWritten, NULL ) == FALSE )
         {
-            LOGGER_ERROR( "invalid write %zu get error %ls"
+            LOGGER_ERROR( "invalid write %zu filePath '%s:%s' get error %ls"
                 , _size
+                , m_folderPath.c_str()
+                , m_filePath.c_str()
                 , Helper::Win32GetLastErrorMessage()
             );
 
@@ -161,7 +163,9 @@ namespace Mengine
     {
         if( ::FlushFileBuffers( m_hFile ) == FALSE )
         {
-            LOGGER_ERROR( "invalid FlushFileBuffers get error %ls"
+            LOGGER_ERROR( "invalid FlushFileBuffers filePath '%s:%s' get error %ls"
+                , m_folderPath.c_str()
+                , m_filePath.c_str()
                 , Helper::Win32GetLastErrorMessage()
             );
 

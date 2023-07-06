@@ -72,7 +72,7 @@ namespace Mengine
 
         if( proc == nullptr )
         {
-            LOGGER_ERROR( "'%s' failed get symbol '%s': %s"
+            LOGGER_ERROR( "'%s' failed get symbol '%s' error: %s"
                 , this->getName()
                 , _name
                 , SDL_GetError()

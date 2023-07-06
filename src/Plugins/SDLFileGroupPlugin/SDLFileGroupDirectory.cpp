@@ -177,7 +177,7 @@ namespace Mengine
         Char utf8_base[MENGINE_MAX_PATH] = {'\0'};
         if( Helper::concatenateFilePath( m_relationPath, m_folderPath, FilePath::none(), utf8_base, MENGINE_MAX_PATH - 1 ) == false )
         {
-            LOGGER_ERROR( "invalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
             );
@@ -228,7 +228,7 @@ namespace Mengine
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming, _share );
         
-        MENGINE_ASSERTION( result == true, "failed open input file '%s':'%s'"
+        MENGINE_ASSERTION( result == true, "failed open input file '%s:%s'"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );
@@ -285,7 +285,7 @@ namespace Mengine
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, false, false );
 
-        MENGINE_ASSERTION( result == true, "failed open input mutex file '%s':'%s'"
+        MENGINE_ASSERTION( result == true, "failed open input mutex file '%s:%s'"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );
@@ -325,7 +325,7 @@ namespace Mengine
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath, _withTemp );
         
-        MENGINE_ASSERTION( result == true, "failed open output file '%s':'%s'"
+        MENGINE_ASSERTION( result == true, "failed open output file '%s:%s'"
             , m_folderPath.c_str()
             , _filePath.c_str()
         );

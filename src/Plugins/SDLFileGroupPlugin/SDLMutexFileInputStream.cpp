@@ -280,7 +280,7 @@ namespace Mengine
         Char filePath[MENGINE_MAX_PATH] = {'\0'};
         if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH - 1 ) == false )
         {
-            LOGGER_ERROR( "invalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
             );

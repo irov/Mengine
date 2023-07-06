@@ -36,7 +36,7 @@ namespace Mengine
         {
             if( Helper::concatenateFilePathTemp( m_relationPath, m_folderPath, m_filePath, concatenatePath, MENGINE_MAX_PATH - 1 ) == false )
             {
-                LOGGER_ERROR( "invalid concatenate filePath '%s':'%s' [temp]"
+                LOGGER_ERROR( "invalid concatenate filePath '%s:%s' [temp]"
                     , m_folderPath.c_str()
                     , m_filePath.c_str()
                 );
@@ -48,7 +48,7 @@ namespace Mengine
         {
             if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, concatenatePath, MENGINE_MAX_PATH - 1 ) == false )
             {
-                LOGGER_ERROR( "invalid concatenate filePath '%s':'%s'"
+                LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
                     , m_folderPath.c_str()
                     , m_filePath.c_str()
                 );
@@ -59,7 +59,7 @@ namespace Mengine
 #else
         if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, concatenatePath, MENGINE_MAX_PATH - 1 ) == false )
         {
-            LOGGER_ERROR( "invalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
             );
@@ -72,7 +72,7 @@ namespace Mengine
 
         if( rwops == nullptr )
         {
-            LOGGER_ERROR( "%s invalid open error '%s'"
+            LOGGER_ERROR( "file %s invalid open error '%s'"
                 , concatenatePath
                 , SDL_GetError()
             );
@@ -103,7 +103,7 @@ namespace Mengine
             Char fullPathTemp[MENGINE_MAX_PATH] = {'\0'};
             if( Helper::concatenateFilePathTemp( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH - 1 ) == false )
             {
-                LOGGER_ERROR( "invalid concatenate filePath '%s':'%s'"
+                LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
                     , m_folderPath.c_str()
                     , m_filePath.c_str()
                 );
@@ -114,7 +114,7 @@ namespace Mengine
             Char fullPath[MENGINE_MAX_PATH] = {'\0'};
             if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, fullPath, MENGINE_MAX_PATH - 1 ) == false )
             {
-                LOGGER_ERROR( "invalid concatenate filePath '%s':'%s'"
+                LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
                     , m_folderPath.c_str()
                     , m_filePath.c_str()
                 );
@@ -139,7 +139,8 @@ namespace Mengine
 
         if( written != _size )
         {
-            LOGGER_ERROR( "invalid write file '%s' size %zu [error: %s]"
+            LOGGER_ERROR( "invalid write file '%s:%s' size %zu [error: %s]"
+                , m_folderPath.c_str()
                 , m_filePath.c_str()
                 , _size
                 , SDL_GetError()

@@ -55,8 +55,9 @@ namespace Mengine
 
         if( 0 > size )
         {
-            LOGGER_ERROR( "invalid file size '%s' [error: %s]"
+            LOGGER_ERROR( "invalid file '%s' size %d [error: %s]"
                 , fullPath
+                , size
                 , SDL_GetError()
             );
 
@@ -98,7 +99,8 @@ namespace Mengine
 
             if( 0 > result )
             {
-                LOGGER_ERROR( "seek offset %zu size %zu get [error: %s]"
+                LOGGER_ERROR( "file '%s' seek offset %zu size %zu get [error: %s]"
+                    , fullPath
                     , m_offset
                     , m_size
                     , SDL_GetError()
@@ -115,7 +117,7 @@ namespace Mengine
     {
         if( Helper::concatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR( "invalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
                 , _folderPath.c_str()
                 , _filePath.c_str()
             );
@@ -127,7 +129,7 @@ namespace Mengine
 
         if( rwops == nullptr )
         {
-            LOGGER_ERROR( "invalid open '%s' error '%s'"
+            LOGGER_ERROR( "invalid open file '%s' error '%s'"
                 , _fullPath
                 , SDL_GetError()
             );
@@ -166,7 +168,8 @@ namespace Mengine
 
         if( error != 0 )
         {
-            LOGGER_ERROR( "invalid close '%s' get error: %s"
+            LOGGER_ERROR( "invalid close file '%s:%s' get error: %s"
+                , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
                 , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
                 , SDL_GetError()
             );
@@ -313,7 +316,9 @@ namespace Mengine
 
             if( result < 0 )
             {
-                LOGGER_ERROR( "seek %zu:%zu get [error: %s]"
+                LOGGER_ERROR( "file '%s:%s' seek %zu:%zu get [error: %s]"
+                    , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
+                    , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
                     , _pos
                     , m_size
                     , SDL_GetError()
@@ -371,7 +376,7 @@ namespace Mengine
         Char filePath[MENGINE_MAX_PATH] = {'\0'};
         if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH - 1 ) == false )
         {
-            LOGGER_ERROR( "invalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
             );

@@ -94,7 +94,7 @@ namespace Mengine
         if( CONVERTER_SERVICE()
             ->convert( converterType, fileGroup, filePath, &newFilePath, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' can't convert '%s':'%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' can't file '%s' convert '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFilePath().c_str()

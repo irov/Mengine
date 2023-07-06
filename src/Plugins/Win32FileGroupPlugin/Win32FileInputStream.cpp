@@ -109,7 +109,8 @@ namespace Mengine
             LARGE_INTEGER dwPtr;
             if( ::SetFilePointerEx( m_hFile, liDistanceToMove, &dwPtr, FILE_BEGIN ) == FALSE )
             {
-                LOGGER_ERROR( "seek offset %zu size %zu get error %ls"
+                LOGGER_ERROR( "seek file '%ls' offset %zu  size %zu get error %ls"
+                    , fullPath
                     , m_offset
                     , m_size
                     , Helper::Win32GetLastErrorMessage()
@@ -143,7 +144,7 @@ namespace Mengine
 
         if( successful == FALSE )
         {
-            LOGGER_ERROR( "invalid close '%s:%s' handle get error %ls"
+            LOGGER_ERROR( "invalid close file '%s:%s' handle get error %ls"
                 , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
                 , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
                 , Helper::Win32GetLastErrorMessage()
@@ -159,7 +160,7 @@ namespace Mengine
 
         MENGINE_UNUSED( fullPathLen );
 
-        MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePath '%s':'%s'"
+        MENGINE_ASSERTION_FATAL( fullPathLen != MENGINE_PATH_INVALID_LENGTH, "invlalid concatenate filePath '%s:%s'"
             , _folderPath.c_str()
             , _filePath.c_str()
         );
@@ -280,7 +281,9 @@ namespace Mengine
         DWORD bytesRead = 0;
         if( ::ReadFile( m_hFile, buf_offset, static_cast<DWORD>(_size), &bytesRead, NULL ) == FALSE )
         {
-            LOGGER_ERROR( "read offset %zu size %zu:%zu get error %ls"
+            LOGGER_ERROR( "read file '%s:%s' offset %zu size %zu:%zu get error %ls"
+                , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
+                , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
                 , _offset
                 , _size
                 , m_size
@@ -336,7 +339,9 @@ namespace Mengine
             LARGE_INTEGER dwPtr;
             if( ::SetFilePointerEx( m_hFile, liDistanceToMove, &dwPtr, FILE_BEGIN ) == FALSE )
             {
-                LOGGER_ERROR( "seek %zu:%zu get error %ls"
+                LOGGER_ERROR( "seek file '%s:%s' %zu:%zu get error %ls"
+                    , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
+                    , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
                     , _pos
                     , m_size
                     , Helper::Win32GetLastErrorMessage()
@@ -401,7 +406,9 @@ namespace Mengine
 
         if( ::GetFileTime( m_hFile, &creation, &access, &write ) == FALSE )
         {
-            LOGGER_ERROR( "invalid get file time get error %ls"
+            LOGGER_ERROR( "invalid get file '%s:%s' time get error %ls"
+                , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
+                , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
                 , Helper::Win32GetLastErrorMessage()
             );
 

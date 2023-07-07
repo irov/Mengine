@@ -21,7 +21,7 @@ namespace Mengine
         MENGINE_INLINE BasePicker * getRelationPicker() const override;
 
     public:
-        bool emptyPickerChildren() const override;
+        bool isEmptyPickerChildren() const override;
         void clearPickerChildren() override;
 
     public:

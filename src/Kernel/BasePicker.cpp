@@ -62,9 +62,11 @@ namespace Mengine
         m_relationPicker = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BasePicker::emptyPickerChildren() const
+    bool BasePicker::isEmptyPickerChildren() const
     {
-        return m_pickerChildren.empty();
+        bool result = m_pickerChildren.empty();
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::clearPickerChildren()

@@ -50,7 +50,7 @@ namespace Mengine
         NodePtr getSiblingPrev() const;
         NodePtr getSiblingNext() const;
 
-        bool emptyChildren() const;
+        bool isEmptyChildren() const;
 
     public:
         typedef Lambda<bool( const NodePtr & )> LambdaFindChild;
@@ -87,6 +87,9 @@ namespace Mengine
         bool foreachChildrenSlugBreak( const LambdaHierarchyBreak & _lambda ) const;
         bool foreachChildrenUnslugBreak( const LambdaHierarchyBreak & _lambda ) const;
         bool foreachChildrenReverseBreak( const LambdaHierarchyBreak & _lambda ) const;
+
+    public:
+        void foreachThree( const LambdaHierarchy & _lambda ) const;
 
     protected:
         virtual void _hierarchySetParent( Node * _newParent, EHierarchyInsert _hint ) = 0;

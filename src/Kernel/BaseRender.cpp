@@ -143,9 +143,11 @@ namespace Mengine
         this->invalidateRendering();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseRender::emptyRenderChildren() const
+    bool BaseRender::isEmptyRenderChildren() const
     {
-        return m_renderChildren.empty();
+        bool result = m_renderChildren.empty();
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::clearRenderChildren()

@@ -283,6 +283,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Hierarchy::foreachThree( const LambdaHierarchy & _lambda ) const
+    {
+        this->foreachChildrenSlug( [_lambda]( const NodePtr & _child )
+        {
+            _lambda( _child );
+
+            _child->foreachChildren( _lambda );
+        } );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Hierarchy::removeChild( const NodePtr & _node )
     {
         MENGINE_ASSERTION_FATAL( stdex::helper::intrusive_has( m_children.begin(), m_children.end(), NodePtr::from( _node ) ) == true, "node '%s' not found children '%s'"
@@ -549,7 +559,7 @@ namespace Mengine
         return next_node;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Hierarchy::emptyChildren() const
+    bool Hierarchy::isEmptyChildren() const
     {
         bool result = m_children.empty();
 

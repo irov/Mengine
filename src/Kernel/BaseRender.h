@@ -35,7 +35,7 @@ namespace Mengine
         MENGINE_INLINE BaseRender * getTotalRelationRender() const override;
 
     public:
-        bool emptyRenderChildren() const override;
+        bool isEmptyRenderChildren() const override;
         void clearRenderChildren() override;
 
     public:

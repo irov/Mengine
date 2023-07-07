@@ -556,20 +556,18 @@ namespace Mengine
         this->foreachChildrenSlug( [_visitor]( const NodePtr & _child )
         {
             _child->visit( _visitor );
-
-            _child->visitChildren( _visitor );
         } );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::foreachChildren( const LambdaChildren & _lambda )
+    void Node::visitThree( const VisitorPtr & _visitor )
     {
         IntrusivePtrScope ankh( this );
 
-        this->foreachChildrenSlug( [_lambda]( const NodePtr & _child )
+        this->foreachChildrenSlug( [_visitor]( const NodePtr & _child )
         {
-            _lambda( _child );
+            _child->visit( _visitor );
 
-            _child->foreachChildren( _lambda );
+            _child->visitChildren( _visitor );
         } );
     }
     //////////////////////////////////////////////////////////////////////////

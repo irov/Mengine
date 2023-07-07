@@ -89,9 +89,8 @@ namespace Mengine
         void foreachPickerReverseCloseChildren_( const LambdaPickerCloseChildren & _lambda );
 
     public:
-        typedef Lambda<void( const NodePtr & )> LambdaChildren;
-        void foreachChildren( const LambdaChildren & _lambda );
         void visitChildren( const VisitorPtr & _visitor );
+        void visitThree( const VisitorPtr & _visitor );
 
     public:
         void dispose();

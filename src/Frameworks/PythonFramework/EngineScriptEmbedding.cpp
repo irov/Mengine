@@ -1354,7 +1354,7 @@ namespace Mengine
 
                 HotSpotVisitorPtr visitor = Helper::makeFactorableUnique<HotSpotVisitor>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
 
-                _scene->visitChildren( visitor );
+                _scene->visitThree( visitor );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_renderOneFrame()

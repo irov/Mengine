@@ -39,7 +39,7 @@ namespace Mengine
         virtual RenderInterface * getTotalRelationRender() const = 0;
 
     public:
-        virtual bool emptyRenderChildren() const = 0;
+        virtual bool isEmptyRenderChildren() const = 0;
         virtual void clearRenderChildren() = 0;
 
     public:

@@ -1188,7 +1188,7 @@ namespace Mengine
 
         this->serializeNodeSingle( _node, xmlNode );
 
-        if( _node->emptyChildren() == false )
+        if( _node->isEmptyChildren() == false )
         {
             pugi::xml_node xmlChildrenContainer = xmlNode.append_child( "Children" );
 
@@ -1264,7 +1264,7 @@ namespace Mengine
             this->serializeNodeSingle( NodePtr::from( nodeChild ), xmlNode );
         }
 
-        if( _picker->emptyPickerChildren() == false )
+        if( _picker->isEmptyPickerChildren() == false )
         {
             pugi::xml_node xmlChildrenContainer = xmlNode.append_child( "Children" );
 
@@ -1288,7 +1288,7 @@ namespace Mengine
             this->serializeNodeSingle( NodePtr::from( nodeChild ), xmlNode );
         }
 
-        if( _render->emptyRenderChildren() == false )
+        if( _render->isEmptyRenderChildren() == false )
         {
             pugi::xml_node xmlChildrenContainer = xmlNode.append_child( "Children" );
 

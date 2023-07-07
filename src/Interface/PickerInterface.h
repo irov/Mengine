@@ -34,7 +34,7 @@ namespace Mengine
         virtual PickerInterface * getRelationPicker() const = 0;
 
     public:
-        virtual bool emptyPickerChildren() const = 0;
+        virtual bool isEmptyPickerChildren() const = 0;
         virtual void clearPickerChildren() = 0;
 
     public:

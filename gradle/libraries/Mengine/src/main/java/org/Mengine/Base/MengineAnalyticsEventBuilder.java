@@ -1,5 +1,6 @@
 package org.Mengine.Base;
 
+import java.util.Locale;
 import java.util.Map;
 
 public class MengineAnalyticsEventBuilder {
@@ -20,14 +21,14 @@ public class MengineAnalyticsEventBuilder {
 
     private void assertContext(String key) {
         if (m_context.containsKey(key)) {
-            String msg = String.format("event builder '%s' parameter '%s' already exist in context", m_name, key);
+            String msg = String.format(Locale.US, "event builder '%s' parameter '%s' already exist in context", m_name, key);
             throw new AssertionError(msg);
         }
     }
 
     private void assertParameters(String key) {
         if (m_parameters.containsKey(key)) {
-            String msg = String.format("event builder '%s' parameter '%s' already exist in parameters", m_name, key);
+            String msg = String.format(Locale.US, "event builder '%s' parameter '%s' already exist in parameters", m_name, key);
             throw new AssertionError(msg);
         }
     }

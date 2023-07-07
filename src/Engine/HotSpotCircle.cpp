@@ -3,6 +3,7 @@
 #include "Interface/RenderCameraInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "math/angle.h"
 
@@ -140,6 +141,87 @@ namespace Mengine
         bool test = this->testPoint( _context, _contentResolution, _point );
 
         return test;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool HotSpotCircle::testBounds( const RenderContext * _context, const Resolution & _contentResolution, float _left, float _right, float _top, float _bottom ) const
+    {
+        if( m_global == true )
+        {
+            return !m_outward;
+        }
+
+        mt::box2f bb;
+        this->getScreenBoundingBox( _context, _contentResolution, &bb );
+
+        if( bb.minimum.x < _left )
+        {
+            return m_outward;
+        }
+
+        if( bb.maximum.x > _right )
+        {
+            return m_outward;
+        }
+
+        if( bb.minimum.y < _top )
+        {
+            return m_outward;
+        }
+
+        if( bb.maximum.y > _bottom )
+        {
+            return m_outward;
+        }
+
+        return !m_outward;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HotSpotCircle::getScreenBoundingBox( const RenderContext * _context, const Resolution & _contentResolution, mt::box2f * const _bb ) const
+    {
+        MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera nullptr" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport, "invalid viewport nullptr" );
+
+        if( _bb != nullptr )
+        {
+            mt::insideout_box( _bb );
+        }
+
+        const mt::mat4f & wm = this->getWorldMatrix();
+
+        const mt::mat4f & vpm = _context->camera->getCameraViewProjectionMatrix();
+
+        mt::mat4f wvpm;
+        mt::mul_m4_m4( &wvpm, wm, vpm );
+
+        const Viewport & vp = _context->viewport->getViewport();
+
+        mt::vec2f vp_size;
+        vp.calcSize( &vp_size );
+
+        mt::vec2f contentResolutionInvSize;
+        _contentResolution.calcInvSize( &contentResolutionInvSize );
+
+        float radius = this->getRadius();
+        float ellipse = this->getEllipse();
+
+        mt::vec2f points[] = {mt::vec2f( radius, 0.f ), mt::vec2f( -radius, 0.f ), mt::vec2f( 0.f, radius / ellipse ), mt::vec2f( 0.f, -radius / ellipse )};
+
+        for( const mt::vec2f & v : points )
+        {
+            mt::vec2f v_wvp;
+            mt::mul_v2_v2_m4_homogenize( &v_wvp, v, wvpm );
+
+            mt::vec2f v_wvpn;
+            v_wvpn.x = (1.f + v_wvp.x) * 0.5f;
+            v_wvpn.y = (1.f - v_wvp.y) * 0.5f;
+
+            mt::vec2f v_screen = (vp.begin + v_wvpn * vp_size) * contentResolutionInvSize;
+
+            if( _bb != nullptr )
+            {
+                mt::add_internal_point( _bb, v_screen );
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

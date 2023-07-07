@@ -296,95 +296,35 @@ namespace Mengine
 
             if( m_showDebugText == 2 )
             {
-                class CompileResourceVisitor
-                    : public Visitor
-                    , public Factorable
-                    , public ConcreteVisitor<Resource>
-                {
-                public:
-                    CompileResourceVisitor()
-                        : m_count( 0 )
-                    {
-                    }
-
-                    ~CompileResourceVisitor() override
-                    {
-                    }
-
-                public:
-                    uint32_t getCount() const
-                    {
-                        return m_count;
-                    }
-
-                protected:
-                    void accept( Resource * _resource ) override
-                    {
-                        if( _resource->isCompile() == false )
-                        {
-                            return;
-                        }
-
-                        ++m_count;
-                    }
-
-                protected:
-                    uint32_t m_count;
-                };
-
-                typedef IntrusivePtr<CompileResourceVisitor> CompileResourceVisitorPtr;
-
-                CompileResourceVisitorPtr crv = Helper::makeFactorableUnique<CompileResourceVisitor>( MENGINE_DOCUMENT_FACTORABLE );
+                uint32_t resourceCount = 0;
 
                 RESOURCE_SERVICE()
-                    ->visitResources( crv );
-
-                ss << "Resources: " << crv->getCount() << std::endl;
-
-                class CompleteThreadTaskVisitor
-                    : public Visitor
-                    , public Factorable
-                    , public ConcreteVisitor<ThreadTask>
+                    ->foreachResources( [&resourceCount]( const ResourcePtr & _resource )
                 {
-                public:
-                    CompleteThreadTaskVisitor()
-                        : m_count( 0 )
+                    if( _resource->isCompile() == false )
                     {
+                        return;
                     }
 
-                    ~CompleteThreadTaskVisitor()
-                    {
-                    }
+                    ++resourceCount;
+                } );
 
-                public:
-                    uint32_t getCount() const
-                    {
-                        return m_count;
-                    }
+                ss << "Resources: " << resourceCount << std::endl;
 
-                protected:
-                    void accept( ThreadTask * _task ) override 
-                    {
-                        if( _task->isComplete() == false )
-                        {
-                            return;
-                        }
-
-                        ++m_count;
-                    }
-
-                protected:
-                    uint32_t m_count;
-                };
-
-                typedef IntrusivePtr<CompleteThreadTaskVisitor> CompleteThreadTaskVisitorPtr;
-
-                CompleteThreadTaskVisitorPtr cttv = Helper::makeFactorableUnique<CompleteThreadTaskVisitor>( MENGINE_DOCUMENT_FACTORABLE );
+                uint32_t prefetchCount = 0;
 
                 PREFETCHER_SERVICE()
-                    ->visitPrefetches( cttv );
+                    ->foreachPrefetches( [&prefetchCount]( const ThreadTaskPtr & _prefetcher )
+                {
+                    if( _prefetcher->isComplete() == false )
+                    {
+                        return;
+                    }
 
-                ss << "Prefetcher " << cttv->getCount() << std::endl;
+                    ++prefetchCount;
+                } );
+
+                ss << "Prefetcher " << prefetchCount << std::endl;
             }
             else if( m_showDebugText == 3 )
             {

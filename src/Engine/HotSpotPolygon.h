@@ -25,6 +25,9 @@ namespace Mengine
         bool testPolygon( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const override;
 
     public:
+        bool testBounds( const RenderContext * _context, const Resolution & _contentResolution, float _left, float _right, float _top, float _bottom ) const override;
+
+    public:
         void clearPoints();
 
     public:

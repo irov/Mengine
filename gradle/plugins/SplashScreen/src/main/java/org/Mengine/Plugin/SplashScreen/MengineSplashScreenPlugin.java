@@ -1,13 +1,9 @@
 package org.Mengine.Plugin.SplashScreen;
 
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -16,9 +12,11 @@ import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
+
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineSplashScreenPlugin extends MenginePlugin {
     public static final String PLUGIN_NAME = "SplashScreen";
@@ -26,17 +24,10 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
 
     protected ImageView m_image;
 
-    @SuppressWarnings("deprecation")
     private Drawable getDrawableSplashScreen(Context context) {
         Resources resources = context.getResources();
-
-        Drawable drawable;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Resources.Theme theme = context.getTheme();
-            drawable = resources.getDrawable(R.drawable.mengine_splashscreen, theme);
-        } else {
-            drawable = resources.getDrawable(R.drawable.mengine_splashscreen);
-        }
+        Resources.Theme theme = context.getTheme();
+        Drawable drawable = resources.getDrawable(R.drawable.mengine_splashscreen, theme);
 
         return drawable;
     }

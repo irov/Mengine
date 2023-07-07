@@ -45,7 +45,6 @@
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/HotSpotGlobal.h"
 #include "Engine/HotSpotCircle.h"
-#include "Engine/HotSpotBubbles.h"
 #include "Engine/HotSpotImage.h"
 #include "Engine/HotSpotResourceShape.h"
 #include "Engine/HotSpotSurface.h"
@@ -972,6 +971,9 @@ namespace Mengine
 
             pybind::interface_<HotSpot, pybind::bases<Node>>( _kernel, "HotSpot", false )
                 .def( "testPoint", &HotSpot::testPoint )
+                .def( "testRadius", &HotSpot::testRadius )
+                .def( "testPolygon", &HotSpot::testPolygon )
+                .def( "testBounds", &HotSpot::testBounds )
                 .def( "setOutward", &HotSpot::setOutward )
                 .def( "getOutward", &HotSpot::getOutward )
                 .def( "setGlobal", &HotSpot::setGlobal )
@@ -1025,14 +1027,9 @@ namespace Mengine
                 .def( "getEllipse", &HotSpotCircle::getEllipse )
                 ;
 
-            pybind::interface_<HotSpotBubbles, pybind::bases<HotSpot>>( _kernel, "HotSpotBubbles", false )
-                .def( "addBubble", &HotSpotBubbles::addBubble )
-                ;
-
             pybind::interface_<Shape, pybind::bases<Node>>( _kernel, "Shape", false )
                 .def( "setSurface", &Shape::setSurface )
                 .def( "getSurface", &Shape::getSurface )
-
                 .def_proxy_static( "getSurfaceSize", nodeScriptMethod, &NodeScriptMethod::s_Shape_getSurfaceSize )
                 .def_proxy_static( "getLocalImageCenter", nodeScriptMethod, &NodeScriptMethod::s_Shape_getLocalImageCenter )
                 .def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::s_Shape_getWorldImageCenter )
@@ -1142,7 +1139,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( HotSpotPolygon );
         SCRIPT_CLASS_WRAPPING( HotSpotGlobal );
         SCRIPT_CLASS_WRAPPING( HotSpotCircle );
-        SCRIPT_CLASS_WRAPPING( HotSpotBubbles );
         SCRIPT_CLASS_WRAPPING( HotSpotImage );
         SCRIPT_CLASS_WRAPPING( HotSpotResourceShape );
         SCRIPT_CLASS_WRAPPING( HotSpotSurface );
@@ -1224,7 +1220,6 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( HotSpotPolygon );
         UNSCRIPT_CLASS_WRAPPING( HotSpotGlobal );
         UNSCRIPT_CLASS_WRAPPING( HotSpotCircle );
-        UNSCRIPT_CLASS_WRAPPING( HotSpotBubbles );
         UNSCRIPT_CLASS_WRAPPING( HotSpotImage );
         UNSCRIPT_CLASS_WRAPPING( HotSpotResourceShape );
         UNSCRIPT_CLASS_WRAPPING( HotSpotSurface );

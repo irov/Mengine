@@ -38,7 +38,6 @@
 #include "HotSpotPolygon.h"
 #include "HotSpotGlobal.h"
 #include "HotSpotCircle.h"
-#include "HotSpotBubbles.h"
 #include "HotSpotImage.h"
 #include "HotSpotResourceShape.h"
 #include "HotSpotSurface.h"
@@ -546,7 +545,6 @@ namespace Mengine
         NODE_FACTORY( HotSpotPolygon );
         NODE_FACTORY( HotSpotGlobal );
         NODE_FACTORY( HotSpotCircle );
-        NODE_FACTORY( HotSpotBubbles );
         NODE_FACTORY( HotSpotImage );
         NODE_FACTORY( HotSpotResourceShape );
         NODE_FACTORY( HotSpotSurface );
@@ -608,7 +606,6 @@ namespace Mengine
         NODE_FACTORY( HotSpotPolygon );
         NODE_FACTORY( HotSpotGlobal );
         NODE_FACTORY( HotSpotCircle );
-        NODE_FACTORY( HotSpotBubbles );
         NODE_FACTORY( HotSpotImage );
         NODE_FACTORY( HotSpotResourceShape );
         NODE_FACTORY( HotSpotSurface );

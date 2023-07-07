@@ -513,6 +513,21 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void PrefetcherService::foreachPrefetches( const LambdaPrefetchTask & _lambda ) const
+    {
+        if( this->isAvailableService() == false )
+        {
+            return;
+        }
+
+        for( const HashtablePrefetchReceiver::value_type & value : m_prefetchReceivers )
+        {
+            const ThreadTaskPrefetchPtr & prefetcher = value.element->getPrefetcher();
+
+            _lambda( prefetcher );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PrefetcherService::visitPrefetches( const VisitorPtr & _visitor ) const
     {
         if( this->isAvailableService() == false )

@@ -38,6 +38,7 @@ namespace Mengine
         void logSelectItem( const ConstString & _category, const ConstString & _itemId, const DocumentInterfacePtr & _doc ) override;
         void logTutorialBegin( const DocumentInterfacePtr & _doc ) override;
         void logTutorialComplete( const DocumentInterfacePtr & _doc ) override;
+        void logScreenView( const ConstString & _screenClass, const ConstString & _screenName, const DocumentInterfacePtr & _doc ) override;
 
     public:
         AnalyticsEventBuilderInterfacePtr buildEvent( const ConstString & _eventName, const DocumentInterfacePtr & _doc ) override;

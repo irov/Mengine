@@ -1,5 +1,3 @@
-import com.Mengine.Utils
-
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/Firebase/firebase.gradle'
 
@@ -8,5 +6,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.firebase:firebase-perf:20.3.2'
+    implementation 'com.google.firebase:firebase-perf:20.3.3'
 }

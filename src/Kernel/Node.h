@@ -74,7 +74,7 @@ namespace Mengine
         void removeRenderRelation_();
 
     protected:
-        typedef const Lambda<void( RenderInterface * )> LambdaRenderCloseChildren;
+        typedef Lambda<void( RenderInterface * )> LambdaRenderCloseChildren;
         void foreachRenderCloseChildren_( const LambdaRenderCloseChildren & _lambda );
         void foreachRenderReverseCloseChildren_( const LambdaRenderCloseChildren & _lambda );
 
@@ -84,11 +84,13 @@ namespace Mengine
         void removePickerRelation_();
 
     protected:
-        typedef const Lambda<void( PickerInterface * )> LambdaPickerCloseChildren;
+        typedef Lambda<void( PickerInterface * )> LambdaPickerCloseChildren;
         void foreachPickerCloseChildren_( const LambdaPickerCloseChildren & _lambda );
         void foreachPickerReverseCloseChildren_( const LambdaPickerCloseChildren & _lambda );
 
-    protected:
+    public:
+        typedef Lambda<void( const NodePtr & )> LambdaChildren;
+        void foreachChildren( const LambdaChildren & _lambda );
         void visitChildren( const VisitorPtr & _visitor );
 
     public:

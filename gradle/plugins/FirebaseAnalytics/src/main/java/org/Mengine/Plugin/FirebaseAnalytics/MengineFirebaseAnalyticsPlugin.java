@@ -1,6 +1,5 @@
 package org.Mengine.Plugin.FirebaseAnalytics;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,10 +7,10 @@ import androidx.annotation.Nullable;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import org.Mengine.Base.MengineEvent;
-import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
@@ -241,6 +240,22 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 );
 
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_COMPLETE, params);
+            } break;
+            case EAET_SCREEN_VIEW: {
+                Bundle params = new Bundle();
+
+                String SCREEN_CLASS = (String)parameters.get("@SCREEN_CLASS");
+                String SCREEN_NAME = (String)parameters.get("@SCREEN_NAME");
+
+                params.putString(FirebaseAnalytics.Param.SCREEN_CLASS, SCREEN_CLASS);
+                params.putString(FirebaseAnalytics.Param.SCREEN_NAME, SCREEN_NAME);
+
+                this.logInfo("logEvent [EAET_SCREEN_VIEW] eventName: %s params: %s"
+                    , FirebaseAnalytics.Event.SCREEN_VIEW
+                    , params
+                );
+
+                m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, params);
             } break;
             default: {
                 this.logWarning("event: %s unknown type: %d"

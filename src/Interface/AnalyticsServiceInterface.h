@@ -37,6 +37,7 @@ namespace Mengine
         virtual void logSelectItem( const ConstString & _category, const ConstString & _itemId, const DocumentInterfacePtr & _doc ) = 0;
         virtual void logTutorialBegin( const DocumentInterfacePtr & _doc ) = 0;
         virtual void logTutorialComplete( const DocumentInterfacePtr & _doc ) = 0;
+        virtual void logScreenView( const ConstString & _screenClass, const ConstString & _screenName, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual AnalyticsEventBuilderInterfacePtr buildEvent( const ConstString & _eventName, const DocumentInterfacePtr & _doc ) = 0;

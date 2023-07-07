@@ -62,7 +62,6 @@
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/HotSpotCircle.h"
-#include "Engine/HotSpotBubbles.h"
 #include "Engine/HotSpotImage.h"
 #include "Engine/HotSpotResourceShape.h"
 #include "Engine/HotSpotSurface.h"
@@ -1326,6 +1325,38 @@ namespace Mengine
                     ->getFixedDisplayResolution();
             }
             //////////////////////////////////////////////////////////////////////////
+            void s_foreachSceneHotspot( const ScenePtr & _scene, const pybind::object & _cb, const pybind::args & _args )
+            {
+                class HotSpotVisitor
+                    : public Visitor
+                    , public Factorable
+                    , public ConcreteVisitor<HotSpot>
+                {
+                public:
+                    HotSpotVisitor( const pybind::object & _cb, const pybind::args & _args )
+                        : m_cb( _cb )
+                        , m_args( _args )
+                    {
+                    }
+                    
+                public:
+                    void accept( HotSpot * _hotspot ) override
+                    {
+                        m_cb.call( _hotspot, m_args );
+                    }
+
+                protected:
+                    pybind::object m_cb;
+                    pybind::args m_args;
+                };
+
+                typedef IntrusivePtr<HotSpotVisitor> HotSpotVisitorPtr;
+
+                HotSpotVisitorPtr visitor = Helper::makeFactorableUnique<HotSpotVisitor>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
+
+                _scene->visitChildren( visitor );
+            }
+            //////////////////////////////////////////////////////////////////////////
             void s_renderOneFrame()
             {
             }
@@ -1912,6 +1943,12 @@ namespace Mengine
                     ->logTutorialComplete( MENGINE_DOCUMENT_PYBIND );
             }
             //////////////////////////////////////////////////////////////////////////
+            void s_analyticsScreenView( const ConstString & _screenClass, const ConstString & _screenName )
+            {
+                ANALYTICS_SERVICE()
+                    ->logScreenView( _screenClass, _screenName, MENGINE_DOCUMENT_PYBIND );
+            }
+            //////////////////////////////////////////////////////////////////////////
             bool s_mountResourcePackage( const ConstString & _fileGroupName
                 , const ConstString & _name
                 , const ConstString & _type
@@ -2123,98 +2160,32 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            class CacheResourceVisitor
-                : public Visitor
-                , public Factorable
-                , public ConcreteVisitor<Resource>
+            void s_cacheResources( const ConstString & _groupName )
             {
-            public:
-                CacheResourceVisitor()
-                {
-                }
-
-                ~CacheResourceVisitor() override
-                {
-                }
-
-            protected:
-                bool filterResource( Resource * _resource ) const
+                RESOURCE_SERVICE()
+                    ->foreachGroupResources( _groupName, []( const ResourcePtr & _resource )
                 {
                     if( _resource->isCompile() == false )
-                    {
-                        return false;
-                    }
-
-                    return true;
-                }
-
-            protected:
-                void accept( Resource * _resource ) override
-                {
-                    if( this->filterResource( _resource ) == false )
                     {
                         return;
                     }
 
                     _resource->cache();
-                }
-            };
-            //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<CacheResourceVisitor> CacheResourceVisitorPtr;
-            //////////////////////////////////////////////////////////////////////////
-            void s_cacheResources( const ConstString & _groupName )
-            {
-                CacheResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<CacheResourceVisitor>( MENGINE_DOCUMENT_PYBIND );
-
-                RESOURCE_SERVICE()
-                    ->visitGroupResources( _groupName, rv_gac );
+                } );
             }
             //////////////////////////////////////////////////////////////////////////
-            class UncacheResourceVisitor
-                : public Visitor
-                , public Factorable
-                , public ConcreteVisitor<Resource>
+            void s_uncacheResources( const ConstString & _groupName )
             {
-            public:
-                UncacheResourceVisitor()
+                RESOURCE_SERVICE()
+                    ->foreachGroupResources( _groupName, []( const ResourcePtr & _resource )
                 {
-                }
-
-                ~UncacheResourceVisitor() override
-                {
-                }
-
-            protected:
-                bool filterResource( Resource * _resource ) const
-                {
-                    if( _resource->isCache() == false )
-                    {
-                        return false;
-                    }
-
-                    return true;
-                }
-
-            protected:
-                void accept( Resource * _resource ) override
-                {
-                    if( this->filterResource( _resource ) == false )
+                    if( _resource->isCompile() == false )
                     {
                         return;
                     }
 
                     _resource->uncache();
-                }
-            };
-            //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<UncacheResourceVisitor> UncacheResourceVisitorPtr;
-            //////////////////////////////////////////////////////////////////////////
-            void s_uncacheResources( const ConstString & _groupName )
-            {
-                UncacheResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<UncacheResourceVisitor>( MENGINE_DOCUMENT_PYBIND );
-
-                RESOURCE_SERVICE()
-                    ->visitGroupResources( _groupName, rv_gac );
+                } );
             }
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_rotateToTrimetric( const mt::vec2f & _dir, const mt::vec2f & _vx, const mt::vec2f & _vy )
@@ -4164,79 +4135,27 @@ namespace Mengine
                 } );
             }
             //////////////////////////////////////////////////////////////////////////
-            class ResourceVisitorGetAlreadyCompiled
-                : public Visitor
-                , public Factorable
-                , public ConcreteVisitor<Resource>
+            void s_visitCompiledResources( const ConstString & _groupName, const pybind::object & _cb )
             {
-            public:
-                explicit ResourceVisitorGetAlreadyCompiled( const pybind::object & _cb )
-                    : m_cb( _cb )
-                {
-                }
-
-                ~ResourceVisitorGetAlreadyCompiled() override
-                {
-                }
-
-            protected:
-                void accept( Resource * _resource ) override
+                RESOURCE_SERVICE()
+                    ->foreachGroupResources( _groupName, [_cb]( const ResourcePtr & _resource )
                 {
                     if( _resource->isCompile() == false )
                     {
                         return;
                     }
 
-                    m_cb.call( _resource );
-                }
-
-            protected:
-                pybind::object m_cb;
-            };
-            //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<ResourceVisitorGetAlreadyCompiled> ResourceVisitorGetAlreadyCompiledPtr;
-            //////////////////////////////////////////////////////////////////////////
-            void s_visitCompiledResources( const ConstString & _groupName, const pybind::object & _cb )
-            {
-                ResourceVisitorGetAlreadyCompiledPtr rv_gac = Helper::makeFactorableUnique<ResourceVisitorGetAlreadyCompiled>( MENGINE_DOCUMENT_PYBIND, _cb );
-
-                RESOURCE_SERVICE()
-                    ->visitGroupResources( _groupName, rv_gac );
+                    _cb.call( _resource );
+                } );
             }
-            //////////////////////////////////////////////////////////////////////////
-            class MyResourceVisitor
-                : public Visitor
-                , public Factorable
-                , public ConcreteVisitor<Resource>
-            {
-            public:
-                explicit MyResourceVisitor( const pybind::object & _cb )
-                    : m_cb( _cb )
-                {
-                }
-
-                ~MyResourceVisitor() override
-                {
-                }
-
-            protected:
-                void accept( Resource * _resource ) override
-                {
-                    m_cb.call( _resource );
-                }
-
-            protected:
-                pybind::object m_cb;
-            };
-            //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<MyResourceVisitor> MyResourceVisitorPtr;
             //////////////////////////////////////////////////////////////////////////
             void s_visitResources( const ConstString & _groupName, const pybind::object & _cb )
             {
-                MyResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<MyResourceVisitor>( MENGINE_DOCUMENT_PYBIND, _cb );
-
                 RESOURCE_SERVICE()
-                    ->visitGroupResources( _groupName, rv_gac );
+                    ->foreachGroupResources( _groupName, [_cb]( const ResourcePtr & _resource )
+                {
+                    _cb.call( _resource );
+                } );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_incrementResources( const ConstString & _groupName )
@@ -4289,53 +4208,15 @@ namespace Mengine
                 } );
             }
             //////////////////////////////////////////////////////////////////////////
-            class GetResourceVisitor
-                : public Visitor
-                , public Factorable
-                , public ConcreteVisitor<Resource>
-            {
-            public:
-                explicit GetResourceVisitor( pybind::kernel_interface * _kernel )
-                    : m_kernel( _kernel )
-                    , m_l( _kernel )
-                {
-                    m_scope = m_kernel->get_class_type_scope_t<Resource>();
-                }
-
-                ~GetResourceVisitor() override
-                {
-                }
-
-            public:
-                const pybind::list & getResult() const
-                {
-                    return m_l;
-                }
-
-            protected:
-                void accept( Resource * _resource ) override
-                {
-                    PyObject * py_obj = m_scope->create_holder( (void *)_resource );
-
-                    m_l.append( py_obj );
-                }
-
-            protected:
-                pybind::kernel_interface * m_kernel;
-                pybind::class_type_scope_interface_ptr m_scope;
-                pybind::list m_l;
-            };
-            //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<GetResourceVisitor> GetResourceVisitorPtr;
-            //////////////////////////////////////////////////////////////////////////
             pybind::list s_getResources( pybind::kernel_interface * _kernel, const ConstString & _groupName )
             {
-                GetResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<GetResourceVisitor>( MENGINE_DOCUMENT_PYBIND, _kernel );
+                pybind::list l( _kernel );
 
                 RESOURCE_SERVICE()
-                    ->visitGroupResources( _groupName, rv_gac );
-
-                const pybind::list & l = rv_gac->getResult();
+                    ->foreachGroupResources( _groupName, [&l]( const ResourcePtr & _resouce )
+                {
+                    l.append( _resouce );
+                });
 
                 return l;
             }
@@ -4461,6 +4342,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "getFixedContentResolution", nodeScriptMethod, &EngineScriptMethod::s_getFixedContentResolution );
         pybind::def_functor( _kernel, "setFixedDisplayResolution", nodeScriptMethod, &EngineScriptMethod::s_setFixedDisplayResolution );
         pybind::def_functor( _kernel, "getFixedDisplayResolution", nodeScriptMethod, &EngineScriptMethod::s_getFixedDisplayResolution );
+
+        pybind::def_functor_args( _kernel, "foreachSceneHotspot", nodeScriptMethod, &EngineScriptMethod::s_foreachSceneHotspot );
 
 
         pybind::def_functor_deprecated( _kernel, "renderOneFrame", nodeScriptMethod, &EngineScriptMethod::s_renderOneFrame, "don't use" );
@@ -4593,6 +4476,7 @@ namespace Mengine
             .def( "EAET_SELECT_ITEM", EAET_SELECT_ITEM )
             .def( "EAET_TUTORIAL_BEGIN", EAET_TUTORIAL_BEGIN )
             .def( "EAET_TUTORIAL_COMPLETE", EAET_TUTORIAL_COMPLETE )
+            .def( "EAET_SCREEN_VIEW", EAET_SCREEN_VIEW )
             ;
 
         pybind::interface_<AnalyticsContextInterface, pybind::bases<ServantInterface>>( _kernel, "AnalyticsContextInterface" )
@@ -4621,6 +4505,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "analyticsSelectItem", nodeScriptMethod, &EngineScriptMethod::s_analyticsSelectItem );
         pybind::def_functor( _kernel, "analyticsTutorialBegin", nodeScriptMethod, &EngineScriptMethod::s_analyticsTutorialBegin );
         pybind::def_functor( _kernel, "analyticsTutorialComplete", nodeScriptMethod, &EngineScriptMethod::s_analyticsTutorialComplete );
+        pybind::def_functor( _kernel, "analyticsScreenView", nodeScriptMethod, &EngineScriptMethod::s_analyticsScreenView );
 
         pybind::def_functor_deprecated( _kernel, "mountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePackage, "use 'mountResourcePackage'" );
         pybind::def_functor_deprecated( _kernel, "unmountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePackage, "use 'unmountResourcePackage'" );

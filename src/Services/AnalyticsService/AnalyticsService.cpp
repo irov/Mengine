@@ -193,6 +193,20 @@ namespace Mengine
         builder->log();
     }
     //////////////////////////////////////////////////////////////////////////
+    void AnalyticsService::logScreenView( const ConstString & _screenClass, const ConstString & _screenName, const DocumentInterfacePtr & _doc )
+    {
+        AnalyticsEventBuilderPtr builder = m_analyticsFactory->makeEventBuilder( _doc );
+
+        builder->setAnalyticsFactory( m_analyticsFactory );
+        builder->setGlobalContext( m_analyticsGlobalContext );
+        builder->setEventType( EAET_SCREEN_VIEW );
+
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@SCREEN_CLASS" ), _screenClass );
+        builder->addParameterConstString( STRINGIZE_STRING_LOCAL( "@SCREEN_NAME" ), _screenName );
+
+        builder->log();
+    }
+    //////////////////////////////////////////////////////////////////////////
     AnalyticsEventBuilderInterfacePtr AnalyticsService::buildEvent( const ConstString & _eventName, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventBuilderPtr builder = m_analyticsFactory->makeEventBuilder( _doc );

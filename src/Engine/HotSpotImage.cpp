@@ -126,8 +126,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotImage::testPoint( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point ) const
     {
-        MENGINE_UNUSED( _contentResolution );
-
         if( m_global == true )
         {
             return !m_outward;
@@ -183,9 +181,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotImage::testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
     {
-        MENGINE_UNUSED( _contentResolution );
-        MENGINE_UNUSED( _context );
-
         if( m_global == true )
         {
             return !m_outward;
@@ -244,9 +239,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotImage::testPolygon( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
     {
-        MENGINE_UNUSED( _contentResolution );
-        MENGINE_UNUSED( _context );
-
         if( m_global == true )
         {
             return !m_outward;
@@ -269,6 +261,39 @@ namespace Mengine
         mt::transpose_box( &bb_polygon_screen, _point );
 
         if( mt::is_intersect( bb_screen, bb_polygon_screen ) == false )
+        {
+            return m_outward;
+        }
+
+        return !m_outward;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool HotSpotImage::testBounds( const RenderContext * _context, const Resolution & _contentResolution, float _left, float _right, float _top, float _bottom ) const
+    {
+        if( m_global == true )
+        {
+            return !m_outward;
+        }
+
+        mt::box2f bb;
+        this->getScreenBoundingBox( _context, _contentResolution, &bb );
+
+        if( bb.minimum.x < _left )
+        {
+            return m_outward;
+        }
+
+        if( bb.maximum.x > _right )
+        {
+            return m_outward;
+        }
+
+        if( bb.minimum.y < _top )
+        {
+            return m_outward;
+        }
+
+        if( bb.maximum.y > _bottom )
         {
             return m_outward;
         }

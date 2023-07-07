@@ -117,9 +117,9 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         m_adView.loadAd();
     }
 
-    public void bannerVisible(boolean show) {
+    public boolean bannerVisible(boolean show) {
         if(m_adView == null) {
-            return;
+            return false;
         }
 
         String adUnitId = m_adView.getAdUnitId();
@@ -136,6 +136,8 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             m_adView.stopAutoRefresh();
             m_adView.setVisibility(View.GONE);
         }
+
+        return true;
     }
 
     @Override

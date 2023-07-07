@@ -13,6 +13,7 @@ public interface MenginePluginAnalyticsListener extends MenginePluginInterface {
     int EAET_SELECT_ITEM = MengineAnalytics.EAET_SELECT_ITEM;
     int EAET_TUTORIAL_BEGIN = MengineAnalytics.EAET_TUTORIAL_BEGIN;
     int EAET_TUTORIAL_COMPLETE = MengineAnalytics.EAET_TUTORIAL_COMPLETE;
+    int EAET_SCREEN_VIEW = MengineAnalytics.EAET_SCREEN_VIEW;
 
     void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> context, Map<String, Object> parameters);
 }

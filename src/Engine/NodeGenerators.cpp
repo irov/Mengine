@@ -14,7 +14,6 @@
 #include "Isometric.h"
 #include "Grid2D.h"
 #include "Gyroscope.h"
-#include "HotSpotBubbles.h"
 #include "HotSpotCircle.h"
 #include "HotSpotGlobal.h"
 #include "HotSpotImage.h"
@@ -66,7 +65,6 @@ MENGINE_NODE_GENERATE( RenderViewport )
 MENGINE_NODE_GENERATE( RenderScissor )
 MENGINE_NODE_GENERATE( Grid2D )
 MENGINE_NODE_GENERATE( Gyroscope )
-MENGINE_NODE_GENERATE( HotSpotBubbles )
 MENGINE_NODE_GENERATE( HotSpotCircle )
 MENGINE_NODE_GENERATE( HotSpotGlobal )
 MENGINE_NODE_GENERATE( HotSpotImage )

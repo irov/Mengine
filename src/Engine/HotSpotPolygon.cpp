@@ -134,6 +134,44 @@ namespace Mengine
         return !m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool HotSpotPolygon::testBounds( const RenderContext * _context, const Resolution & _contentResolution, float _left, float _right, float _top, float _bottom ) const
+    {
+        if( m_global == true )
+        {
+            return !m_outward;
+        }
+
+        if( m_polygon.empty() == true )
+        {
+            return m_outward;
+        }
+
+        mt::box2f bb;
+        this->getScreenPolygon( _context, _contentResolution, &bb, nullptr );
+
+        if( bb.minimum.x < _left )
+        {
+            return m_outward;
+        }
+
+        if( bb.maximum.x > _right )
+        {
+            return m_outward;
+        }
+
+        if( bb.minimum.y < _top )
+        {
+            return m_outward;
+        }
+
+        if( bb.maximum.y > _bottom )
+        {
+            return m_outward;
+        }
+
+        return !m_outward;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void HotSpotPolygon::getScreenPolygon( const RenderContext * _context, const Resolution & _contentResolution, mt::box2f * const _bb, Polygon * const _screen ) const
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera nullptr" );

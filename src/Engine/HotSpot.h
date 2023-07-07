@@ -57,6 +57,9 @@ namespace Mengine
         virtual bool testRadius( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const = 0;
         virtual bool testPolygon( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const = 0;
 
+    public:
+        virtual bool testBounds( const RenderContext * _context, const Resolution & _contentResolution, float _left, float _right, float _up, float _bottom ) const = 0;
+
     protected:
         bool _activate() override;
         bool _afterActivate() override;

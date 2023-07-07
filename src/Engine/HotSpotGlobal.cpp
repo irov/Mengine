@@ -44,4 +44,16 @@ namespace Mengine
         return !m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool HotSpotGlobal::testBounds( const RenderContext * _context, const Resolution & _contentResolution, float _left, float _right, float _top, float _bottom ) const
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _contentResolution );
+        MENGINE_UNUSED( _left );
+        MENGINE_UNUSED( _right );
+        MENGINE_UNUSED( _top );
+        MENGINE_UNUSED( _bottom );
+
+        return !m_outward;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MenginePlugin implements MenginePluginInterface {
     private MengineApplication m_application;
@@ -96,7 +97,7 @@ public class MenginePlugin implements MenginePluginInterface {
     }
 
     public void assertionError(String format, Object ... args) {
-        String msg = String.format(format, args);
+        String msg = String.format(Locale.US, format, args);
 
         throw new AssertionError("[" + m_pluginName + "] " + msg);
     }

@@ -21,7 +21,8 @@ namespace Mengine
         EAET_LEVEL_END = 6,
         EAET_SELECT_ITEM = 7,
         EAET_TUTORIAL_BEGIN = 8,
-        EAET_TUTORIAL_COMPLETE = 9
+        EAET_TUTORIAL_COMPLETE = 9,
+        EAET_SCREEN_VIEW = 10
     };
     //////////////////////////////////////////////////////////////////////////
     class AnalyticsEventInterface

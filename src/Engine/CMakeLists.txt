@@ -54,8 +54,6 @@ Object\\\\HotSpot
     HotSpotPolygon.h
     HotSpotImage.cpp
     HotSpotImage.h
-    HotSpotBubbles.cpp
-    HotSpotBubbles.h
     HotSpotResourceShape.cpp
     HotSpotResourceShape.h
     HotSpotSurface.cpp

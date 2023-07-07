@@ -46,6 +46,7 @@ namespace Mengine
         bool unfetch( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
 
     public:
+        void foreachPrefetches( const LambdaPrefetchTask & _lambda ) const override;
         void visitPrefetches( const VisitorPtr & _visitor ) const override;
 
     protected:

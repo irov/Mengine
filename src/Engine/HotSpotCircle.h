@@ -28,6 +28,12 @@ namespace Mengine
         bool testPolygon( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const override;
 
     protected:
+        bool testBounds( const RenderContext * _context, const Resolution & _contentResolution, float _left, float _right, float _top, float _bottom ) const override;
+
+    protected:
+        void getScreenBoundingBox( const RenderContext * _context, const Resolution & _contentResolution, mt::box2f * const _bb ) const;
+
+    protected:
         float m_radius;
         float m_ellipse;
     };

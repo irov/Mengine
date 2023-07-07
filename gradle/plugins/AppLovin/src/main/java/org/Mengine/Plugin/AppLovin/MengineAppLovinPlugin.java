@@ -1,5 +1,13 @@
 package org.Mengine.Plugin.AppLovin;
 
+import android.content.Context;
+import android.os.Bundle;
+
+import com.applovin.mediation.MaxAd;
+import com.applovin.sdk.AppLovinPrivacySettings;
+import com.applovin.sdk.AppLovinSdk;
+import com.applovin.sdk.AppLovinSdkConfiguration;
+
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
@@ -7,15 +15,6 @@ import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginExtension;
 import org.Mengine.Base.MenginePluginExtensionListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
-
-import com.applovin.mediation.MaxAd;
-
-import com.applovin.sdk.AppLovinPrivacySettings;
-import com.applovin.sdk.AppLovinSdk;
-import com.applovin.sdk.AppLovinSdkConfiguration;
-
-import android.content.Context;
-import android.os.Bundle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -203,12 +202,6 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         return m_mediationAmazon;
     }
 
-    private void assertBanner(String adUnitId) {
-        if (m_banners.containsKey(adUnitId) == false) {
-            this.assertionError("not found banner: %s", adUnitId);
-        }
-    }
-
     public void initBanner(String adUnitId) {
         if (m_banners.containsKey(adUnitId) == false) {
             this.assertionError("already exist banner: %s", adUnitId);
@@ -219,18 +212,20 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         m_banners.put(adUnitId, banner);
     }
 
-    public void bannerVisible(String adUnitId, boolean show) {
-        this.assertBanner(adUnitId);
-
+    public boolean bannerVisible(String adUnitId, boolean show) {
         MengineAppLovinBanner banner = m_banners.get(adUnitId);
 
-        banner.bannerVisible(show);
-    }
+        if (banner == null) {
+            this.assertionError("not found banner: %s", adUnitId);
 
-    private void assertInterstitial(String adUnitId) {
-        if (m_interstitials.containsKey(adUnitId) == false) {
-            this.assertionError("not found interstitial: %s", adUnitId);
+            return false;
         }
+
+        if (banner.bannerVisible(show) == false) {
+            return false;
+        }
+
+        return true;
     }
 
     public void initInterstitial(String adUnitId) {
@@ -244,23 +239,35 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     }
 
     public boolean canYouShowInterstitial(String adUnitId) {
-        this.assertInterstitial(adUnitId);
-
         MengineAppLovinInterstitial interstitial = m_interstitials.get(adUnitId);
 
-        boolean result = interstitial.canYouShowInterstitial();
+        if (interstitial == null) {
+            this.assertionError("not found interstitial: %s", adUnitId);
 
-        return result;
+            return false;
+        }
+
+        if (interstitial.canYouShowInterstitial() == false) {
+            return false;
+        }
+
+        return true;
     }
 
     public boolean showInterstitial(String adUnitId) {
-        this.assertInterstitial(adUnitId);
-
         MengineAppLovinInterstitial interstitial = m_interstitials.get(adUnitId);
 
-        boolean result = interstitial.showInterstitial();
+        if (interstitial == null) {
+            this.assertionError("not found interstitial: %s", adUnitId);
 
-        return result;
+            return false;
+        }
+
+        if (interstitial.showInterstitial() == false) {
+            return false;
+        }
+
+        return true;
     }
 
     public void initRewarded(String adUnitId) {
@@ -273,40 +280,52 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         m_rewardeds.put(adUnitId, rewarded);
     }
 
-    private void assertRewarded(String adUnitId) {
-        if (m_rewardeds.containsKey(adUnitId) == false) {
-            this.assertionError("not found rewarded: %s", adUnitId);
-        }
-    }
-
     public boolean canOfferRewarded(String adUnitId) {
-        this.assertRewarded(adUnitId);
-
         MengineAppLovinRewarded rewarded = m_rewardeds.get(adUnitId);
 
-        boolean result = rewarded.canOfferRewarded();
+        if (rewarded == null) {
+            this.assertionError("not found rewarded: %s", adUnitId);
 
-        return result;
+            return false;
+        }
+
+        if (rewarded.canOfferRewarded() == false) {
+            return false;
+        }
+
+        return true;
     }
 
     public boolean canYouShowRewarded(String adUnitId) {
-        this.assertRewarded(adUnitId);
-
         MengineAppLovinRewarded rewarded = m_rewardeds.get(adUnitId);
 
-        boolean result = rewarded.canYouShowRewarded();
+        if (rewarded == null) {
+            this.assertionError("not found rewarded: %s", adUnitId);
 
-        return result;
+            return false;
+        }
+
+        if (rewarded.canYouShowRewarded() == false) {
+            return false;
+        }
+
+        return true;
     }
 
     public boolean showRewarded(String adUnitId) {
-        this.assertRewarded(adUnitId);
-
         MengineAppLovinRewarded rewarded = m_rewardeds.get(adUnitId);
 
-        boolean result = rewarded.showRewarded();
+        if (rewarded == null) {
+            this.assertionError("not found rewarded: %s", adUnitId);
 
-        return result;
+            return false;
+        }
+
+        if (rewarded.showRewarded() == false) {
+            return false;
+        }
+
+        return true;
     }
 
     public void onEventRevenuePaid(MaxAd ad) {

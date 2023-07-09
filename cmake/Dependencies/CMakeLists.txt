@@ -494,9 +494,6 @@ endif()
 if(MENGINE_DEPENDENCE_CURL)
     message("================curl================")
     
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/curl/CMakeLists.txt ${THIRDPARTY_DIR}/curl/CMakeLists.txt COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/curl/lib_CMakeLists.txt ${THIRDPARTY_DIR}/curl/lib/CMakeLists.txt COPYONLY)
-    
     set(LIBCURL_OUTPUT_NAME curl CACHE STRING "Basename of the curl library" FORCE)
     set(BUILD_CURL_EXE OFF CACHE BOOL "Set to ON to build curl executable." FORCE)
     if(MENGINE_TOOLCHAIN_MSVC)

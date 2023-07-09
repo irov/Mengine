@@ -37,8 +37,16 @@
 #include "Kernel/TimestampHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_APPLICATION_JSON_PATH
-#define MENGINE_APPLICATION_JSON_PATH "application.json"
+#ifndef MENGINE_BOOTSTRAPPER_LOAD_CONFIG
+#define MENGINE_BOOTSTRAPPER_LOAD_CONFIG 1
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if MENGINE_BOOTSTRAPPER_LOAD_CONFIG == 1
+#   define MENGINE_BOOTSTRAPPER_LOAD_CONFIG_ENABLE
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_BOOTSTRAPPER_CONFIG_PATH
+#define MENGINE_BOOTSTRAPPER_CONFIG_PATH "application.json"
 #endif
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( SecureService );
@@ -585,56 +593,56 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::loadApplicationConfig_()
     {
-        FilePath applicationJsonPath = Helper::stringizeFilePath( MENGINE_APPLICATION_JSON_PATH );
+        FilePath applicationConfigPath = Helper::stringizeFilePath( MENGINE_BOOTSTRAPPER_CONFIG_PATH );
 
         const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        ConfigInterfacePtr applicationConfig = Detail::loadApplicationConfig( defaultFileGroup, applicationJsonPath, MENGINE_DOCUMENT_FACTORABLE );
+        ConfigInterfacePtr applicationConfig = Detail::loadApplicationConfig( defaultFileGroup, applicationConfigPath, MENGINE_DOCUMENT_FACTORABLE );
 
-        if( applicationConfig != nullptr )
+        if( applicationConfig == nullptr )
         {
-            VectorFilePath configsPaths;
-            applicationConfig->getValues( "Configs", "Path", &configsPaths );
-
-            for( const FilePath & filePath : configsPaths )
-            {
-                if( CONFIG_SERVICE()
-                    ->loadDefaultConfig( defaultFileGroup, filePath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
-                {
-                    LOGGER_ERROR( "invalid load config '%s'"
-                        , filePath.c_str()
-                    );
-
-                    return false;
-                }
-            }
-
-            VectorFilePath credentialsPaths;
-            applicationConfig->getValues( "Credentials", "Path", &credentialsPaths );
-
-            for( const FilePath & filePath : credentialsPaths )
-            {
-                if( CONFIG_SERVICE()
-                    ->loadDefaultConfig( defaultFileGroup, filePath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
-                {
-                    LOGGER_ERROR( "invalid load credential '%s'"
-                        , filePath.c_str()
-                    );
-
-                    return false;
-                }
-            }
-
-            applicationConfig->getValues( "Packages", "Path", &m_packagesPaths );
-            applicationConfig->getValues( "Settings", "Path", &m_settingsPaths );
-        }
-        else
-        {
-            LOGGER_INFO( "bootstrapper", "not exist application config '%s'"
-                , applicationJsonPath.c_str()
+            LOGGER_ERROR( "invalid load application config '%s'"
+                , applicationConfigPath.c_str()
             );
+
+            return false;
         }
+
+        VectorFilePath configsPaths;
+        applicationConfig->getValues( "Configs", "Path", &configsPaths );
+
+        for( const FilePath & filePath : configsPaths )
+        {
+            if( CONFIG_SERVICE()
+                ->loadDefaultConfig( defaultFileGroup, filePath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+            {
+                LOGGER_ERROR( "invalid load include config '%s'"
+                    , filePath.c_str()
+                );
+
+                return false;
+            }
+        }
+
+        VectorFilePath credentialsPaths;
+        applicationConfig->getValues( "Credentials", "Path", &credentialsPaths );
+
+        for( const FilePath & filePath : credentialsPaths )
+        {
+            if( CONFIG_SERVICE()
+                ->loadDefaultConfig( defaultFileGroup, filePath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+            {
+                LOGGER_ERROR( "invalid load credential '%s'"
+                    , filePath.c_str()
+                );
+
+                return false;
+            }
+        }
+
+        applicationConfig->getValues( "Packages", "Path", &m_packagesPaths );
+        applicationConfig->getValues( "Settings", "Path", &m_settingsPaths );
 
         const Char * option_config = GET_OPTION_VALUE( "config", nullptr );
 
@@ -643,7 +651,7 @@ namespace Mengine
             if( CONFIG_SERVICE()
                 ->loadDefaultConfig( defaultFileGroup, Helper::stringizeFilePath( option_config ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_ERROR( "invalid load config '%s'"
+                LOGGER_ERROR( "invalid load option config '%s'"
                     , option_config
                 );
 
@@ -885,7 +893,8 @@ namespace Mengine
             , currentPath
         );
 
-        LOGGER_INFO( "bootstrapper", "bootstrapper load application ini" );
+#ifdef MENGINE_BOOTSTRAPPER_LOAD_CONFIG_ENABLE
+        LOGGER_INFO( "bootstrapper", "bootstrapper load application config" );
 
         if( this->loadApplicationConfig_() == false )
         {
@@ -893,6 +902,7 @@ namespace Mengine
 
             return false;
         }
+#endif
 
         bool OPTION_assertion = HAS_OPTION( "assertion" );
         bool Engine_AssertionDebugBreak = CONFIG_VALUE( "Engine", "AssertionDebugBreak", false );

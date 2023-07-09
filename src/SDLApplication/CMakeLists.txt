@@ -127,12 +127,11 @@ if(MENGINE_TARGET_UWP)
                 file(RELATIVE_PATH RELPATH ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_VISUAL_ASSETS} ${DATA})
                 get_filename_component(RES_LOC ${RELPATH} PATH)
                 
+                set_source_files_properties(${DATA} PROPERTIES VS_DEPLOYMENT_CONTENT 1)
+                
                 string(REPLACE "/" "\\" ide_group_name "AppXVisualAssets/${RES_LOC}")
                 source_group(${ide_group_name} FILES ${DATA})
             endforeach()
-            
-            set_source_files_properties(${APPX_VISUAL_ASSETS} PROPERTY VS_DEPLOYMENT_CONTENT 1)
-            set_source_files_properties(${APPX_VISUAL_ASSETS} PROPERTY VS_DEPLOYMENT_LOCATION "Assets")
             
             SET(SRC_FILES ${SRC_FILES} ${APPX_VISUAL_ASSETS})
         endif()
@@ -144,12 +143,12 @@ if(MENGINE_TARGET_UWP)
                 file(RELATIVE_PATH RELPATH ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA} ${DATA})
                 get_filename_component(RES_LOC ${RELPATH} PATH)
                 
+                set_source_files_properties(${DATA} PROPERTIES VS_DEPLOYMENT_CONTENT 1)
+                set_source_files_properties(${DATA} PROPERTIES VS_DEPLOYMENT_LOCATION "${RES_LOC}")
+                
                 string(REPLACE "/" "\\" ide_group_name "AppXData/${RES_LOC}")
                 source_group(${ide_group_name} FILES ${DATA})
             endforeach()
-            
-            set_source_files_properties(${APPX_DATA} PROPERTY VS_DEPLOYMENT_CONTENT 1)
-            set_source_files_properties(${APPX_DATA} PROPERTY VS_DEPLOYMENT_LOCATION "Data")
 
             SET(SRC_FILES ${SRC_FILES} ${APPX_DATA})
         endif()

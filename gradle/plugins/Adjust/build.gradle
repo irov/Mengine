@@ -20,6 +20,8 @@ android {
     namespace "org.Mengine.Plugin.Adjust"
 }
 
+Utils.logAvailable("Adjust add Firebase Messaging extension", MENGINE_APP_PLUGIN_FIREBASE_MESSAGING)
+
 if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
     android.ext.extensions += 'org.Mengine.Plugin.Adjust.MengineAdjustExtensionFirebaseMessaging'
 
@@ -33,3 +35,5 @@ if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
 dependencies {
     implementation 'com.adjust.sdk:adjust-android:4.33.4'
 }
+
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

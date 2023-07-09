@@ -73,32 +73,38 @@ subprojects {
 }
 
 android {
-    sourceSets {
-        main {
-            if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
-                println "Plugin [AppLovin] add extension 'firebaseAnalytics'"
-                
-                java.srcDirs += ['firebaseAnalytics']
-            }
-
-            if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
-                println "Plugin [AppLovin] add extension 'mediationAmazon'"
-            
-                java.srcDirs += ['mediationAmazon']
-            }
-        }
-    }
-
     namespace "org.Mengine.Plugin.AppLovin"
 }
 
+Utils.logAvailable("AppLovin add Firebase Analytics extension", MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS)
+
 if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
-    android.ext.extensions += 'org.Mengine.Plugin.AppLovin.MengineAppLovinExtensionFirebaseAnalytics'
+    android {
+        ext.extensions += 'org.Mengine.Plugin.AppLovin.MengineAppLovinExtensionFirebaseAnalytics'
+
+        sourceSets {
+            main {
+                java.srcDirs += ['firebaseAnalytics']
+            }
+        }
+    }
 
     dependencies {
         implementation project(path: ':plugins:FirebaseAnalytics')
 
         implementation 'com.google.firebase:firebase-analytics'
+    }
+}
+
+Utils.logAvailable("AppLovin add Mediation Amazon extension", MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON)
+
+if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
+    android {
+        sourceSets {
+            main {
+                java.srcDirs += ['mediationAmazon']
+            }
+        }
     }
 }
 
@@ -110,8 +116,8 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
-        implementation 'com.applovin.mediation:amazon-tam-adapter:9.8.2.0'
-        implementation 'com.amazon.android:aps-sdk:9.8.2'
+        implementation 'com.applovin.mediation:amazon-tam-adapter:9.8.3.0'
+        implementation 'com.amazon.android:aps-sdk:9.8.3'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE == true) {
@@ -123,7 +129,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CRITEO == true) {
-        implementation 'com.applovin.mediation:criteo-adapter:4.9.2.0'
+        implementation 'com.applovin.mediation:criteo-adapter:5.0.1.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_DTEXCHANGE == true) {
@@ -131,11 +137,11 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_GOOGLEADMANAGER == true) {
-        implementation 'com.applovin.mediation:google-ad-manager-adapter:22.1.0.3'
+        implementation 'com.applovin.mediation:google-ad-manager-adapter:22.2.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADMOB == true) {
-        implementation 'com.applovin.mediation:google-adapter:22.1.0.4'
+        implementation 'com.applovin.mediation:google-adapter:22.2.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_HYPRMX == true) {
@@ -148,7 +154,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE == true) {
-        implementation 'com.applovin.mediation:ironsource-adapter:7.3.1.0.0'
+        implementation 'com.applovin.mediation:ironsource-adapter:7.3.1.1.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LIFTOFF == true) {
@@ -168,7 +174,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL == true) {
-        implementation 'com.applovin.mediation:mintegral-adapter:16.4.61.0'
+        implementation 'com.applovin.mediation:mintegral-adapter:16.4.71.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MOBILEFUSE == true) {
@@ -176,7 +182,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MYTARGET == true) {
-        implementation 'com.applovin.mediation:mytarget-adapter:5.16.5.0'
+        implementation 'com.applovin.mediation:mytarget-adapter:5.17.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_NEND == true) {
@@ -184,11 +190,11 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY == true) {
-        implementation 'com.applovin.mediation:ogury-presage-adapter:5.5.0.2'
+        implementation 'com.applovin.mediation:ogury-presage-adapter:5.6.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE == true) {
-        implementation 'com.applovin.mediation:bytedance-adapter:5.2.0.7.0'
+        implementation 'com.applovin.mediation:bytedance-adapter:5.3.0.4.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO == true) {
@@ -196,11 +202,11 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_TAPJOY == true) {
-        implementation 'com.applovin.mediation:tapjoy-adapter:13.0.1.0'
+        implementation 'com.applovin.mediation:tapjoy-adapter:13.1.1.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS == true) {
-        implementation 'com.applovin.mediation:unityads-adapter:4.7.1.0'
+        implementation 'com.applovin.mediation:unityads-adapter:4.8.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE == true) {
@@ -208,6 +214,8 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YANDEX == true) {
-        implementation 'com.applovin.mediation:yandex-adapter:5.9.0.0'
+        implementation 'com.applovin.mediation:yandex-adapter:5.9.0.1'
     }
 }
+
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

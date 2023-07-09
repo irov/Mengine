@@ -9,3 +9,5 @@ android {
 dependencies {
     implementation 'com.amazon.android:aps-sdk:9.8.1'
 }
+
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

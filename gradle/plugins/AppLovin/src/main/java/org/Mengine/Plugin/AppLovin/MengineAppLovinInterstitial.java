@@ -1,14 +1,14 @@
 package org.Mengine.Plugin.AppLovin;
 
-import org.Mengine.Base.MengineUtils;
-import org.Mengine.Base.MengineActivity;
-
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxAdRequestListener;
 import com.applovin.mediation.MaxAdRevenueListener;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxInterstitialAd;
+
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -167,7 +167,6 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
-            .addParameterString("unit_id", adUnitId)
             .log();
 
         m_plugin.setState("applovin.interstitial." + adUnitId, "request_started");

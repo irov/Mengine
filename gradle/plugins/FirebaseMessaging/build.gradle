@@ -10,3 +10,5 @@ android {
 dependencies {
     implementation 'com.google.firebase:firebase-messaging:23.1.2'
 }
+
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

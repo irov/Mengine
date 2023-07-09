@@ -45,3 +45,5 @@ android {
 dependencies {
     implementation fileTree(dir: '../../../dependencies/marsdk-android/jar/libs', include: ['marsdk3.jar', 'marsdksimplesdk.jar'])
 }
+
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

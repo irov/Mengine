@@ -1,8 +1,5 @@
 package org.Mengine.Plugin.AppLovin;
 
-import org.Mengine.Base.MengineUtils;
-import org.Mengine.Base.MengineActivity;
-
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdRequestListener;
 import com.applovin.mediation.MaxAdRevenueListener;
@@ -10,6 +7,9 @@ import com.applovin.mediation.MaxError;
 import com.applovin.mediation.MaxReward;
 import com.applovin.mediation.MaxRewardedAdListener;
 import com.applovin.mediation.ads.MaxRewardedAd;
+
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -198,7 +198,6 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
-            .addParameterString("unit_ad", adUnitId)
             .log();
 
         m_plugin.setState("applovin.rewarded." + adUnitId, "request_started");
@@ -326,7 +325,6 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
-            .addParameterString("unit_id", adUnitId)
             .addParameterString("error", this.getMaxErrorParams(error))
             .addParameterLong( "error_code", error.getCode())
             .log();

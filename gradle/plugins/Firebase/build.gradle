@@ -8,3 +8,5 @@ android {
 dependencies {
     implementation 'com.google.firebase:firebase-common:20.3.3'
 }
+
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

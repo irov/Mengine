@@ -7,3 +7,5 @@ android {
 dependencies {
     implementation 'com.android.billingclient:billing:6.0.1'
 }
+
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

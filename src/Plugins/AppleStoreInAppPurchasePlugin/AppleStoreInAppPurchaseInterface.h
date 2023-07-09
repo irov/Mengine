@@ -5,6 +5,7 @@
 #include "Interface/ServantInterface.h"
 
 #include "Kernel/VectorConstString.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {

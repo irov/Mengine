@@ -58,7 +58,7 @@
     
     if( ready == NO )
     {
-        [AppleAnalytics name:@"ad_interstitial_show" params:@{
+        [AppleAnalytics event:@"mng_ad_interstitial_show" params:@{
             @"request_id": @(self.m_requestId),
             @"attempt": @(self.m_retryAttempt),
             @"ready": @(NO)
@@ -79,7 +79,7 @@
         , self.m_retryAttempt
         );
     
-    [AppleAnalytics name:@"ad_interstitial_show" params:@{
+    [AppleAnalytics event:@"mng_ad_interstitial_show" params:@{
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
         @"ready": @(ready)
@@ -108,7 +108,7 @@
         , self.m_retryAttempt
     );
     
-    [AppleAnalytics name:@"ad_interstitial_load" params:@{
+    [AppleAnalytics event:@"mng_ad_interstitial_load" params:@{
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt)
     }];
@@ -125,7 +125,7 @@
         , self.m_retryAttempt
     );
     
-    [AppleAnalytics name:@"ad_interstitial_request_started" params:@{
+    [AppleAnalytics event:@"mng_ad_interstitial_request_started" params:@{
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
         @"unit_id": adUnitIdentifier
@@ -141,7 +141,7 @@
         , self.m_retryAttempt
     );
     
-    [AppleAnalytics name:@"ad_interstitial_loaded" params:@{
+    [AppleAnalytics event:@"mng_ad_interstitial_loaded" params:@{
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
         @"ad": [self getMAAdParams:ad]
@@ -158,7 +158,7 @@
         , [[self getMAErrorParams:error] UTF8String]
     );
     
-    [AppleAnalytics name:@"ad_interstitial_load_failed" params:@{
+    [AppleAnalytics event:@"mng_ad_interstitial_load_failed" params:@{
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
         @"unit_id": adUnitIdentifier,
@@ -181,7 +181,7 @@
         , self.m_requestId
     );
     
-    [AppleAnalytics name:@"ad_interstitial_displayed" params:@{
+    [AppleAnalytics event:@"mng_ad_interstitial_displayed" params:@{
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -193,7 +193,7 @@
         , self.m_requestId
     );
     
-    [AppleAnalytics name:@"ad_interstitial_clicked" params:@{
+    [AppleAnalytics event:@"mng_ad_interstitial_clicked" params:@{
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -205,7 +205,7 @@
         , self.m_requestId
     );
     
-    [AppleAnalytics name:@"ad_interstitial_hidden" params:@{
+    [AppleAnalytics event:@"mng_ad_interstitial_hidden" params:@{
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -220,7 +220,7 @@
         , [[self getMAErrorParams:error] UTF8String]
     );
     
-    [AppleAnalytics name:@"ad_interstitial_display_failed" params:@{
+    [AppleAnalytics event:@"mng_ad_interstitial_display_failed" params:@{
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -236,7 +236,7 @@
         , self.m_requestId
     );
     
-    [AppleAnalytics name:@"ad_interstitial_revenue_paid" params:@{
+    [AppleAnalytics event:@"mng_ad_interstitial_revenue_paid" params:@{
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];

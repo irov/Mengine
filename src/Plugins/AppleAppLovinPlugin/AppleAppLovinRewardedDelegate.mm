@@ -54,7 +54,7 @@
         , self.m_retryAttempt
         );
     
-    [AppleAnalytics name:@"ad_rewarded_offer" params:@{
+    [AppleAnalytics event:@"mng_ad_rewarded_offer" params:@{
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
         @"ready": @(ready)
@@ -74,7 +74,7 @@
 
     if( ready == NO )
     {
-        [AppleAnalytics name:@"ad_rewarded_show" params:@{
+        [AppleAnalytics event:@"mng_ad_rewarded_show" params:@{
             @"request_id": @(self.m_requestId),
             @"attempt": @(self.m_retryAttempt),
             @"ready": @(NO)
@@ -95,7 +95,7 @@
         , self.m_retryAttempt
     );
     
-    [AppleAnalytics name:@"ad_rewarded_show" params:@{
+    [AppleAnalytics event:@"mng_ad_rewarded_show" params:@{
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
         @"ready": @(ready)
@@ -124,7 +124,7 @@
         , self.m_retryAttempt
     );
     
-    [AppleAnalytics name:@"ad_rewarded_load" params:@{
+    [AppleAnalytics event:@"mng_ad_rewarded_load" params:@{
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt)
     }];
@@ -141,7 +141,7 @@
         , self.m_retryAttempt
     );
     
-    [AppleAnalytics name:@"ad_rewarded_request_started" params:@{
+    [AppleAnalytics event:@"mng_ad_rewarded_request_started" params:@{
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
         @"unit_id": adUnitIdentifier
@@ -158,7 +158,7 @@
         , self.m_retryAttempt
     );
     
-    [AppleAnalytics name:@"ad_interstitial_loaded" params:@{
+    [AppleAnalytics event:@"mng_ad_interstitial_loaded" params:@{
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
         @"ad": [self getMAAdParams:ad]
@@ -175,7 +175,7 @@
         , [[self getMAErrorParams:error] UTF8String]
     );
     
-    [AppleAnalytics name:@"ad_rewarded_load_failed" params:@{
+    [AppleAnalytics event:@"mng_ad_rewarded_load_failed" params:@{
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
         @"unit_id": adUnitIdentifier,
@@ -198,7 +198,7 @@
         , self.m_requestId
     );
     
-    [AppleAnalytics name:@"ad_rewarded_displayed" params:@{
+    [AppleAnalytics event:@"mng_ad_rewarded_displayed" params:@{
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -210,7 +210,7 @@
         , self.m_requestId
     );
     
-    [AppleAnalytics name:@"ad_rewarded_clicked" params:@{
+    [AppleAnalytics event:@"mng_ad_rewarded_clicked" params:@{
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -222,7 +222,7 @@
         , self.m_requestId
     );
     
-    [AppleAnalytics name:@"ad_rewarded_hidden" params:@{
+    [AppleAnalytics event:@"mng_ad_rewarded_hidden" params:@{
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -237,7 +237,7 @@
         , [[self getMAErrorParams:error] UTF8String]
     );
     
-    [AppleAnalytics name:@"ad_rewarded_display_failed" params:@{
+    [AppleAnalytics event:@"mng_ad_rewarded_display_failed" params:@{
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -268,7 +268,7 @@
         , self.m_requestId
     );
     
-    [AppleAnalytics name:@"ad_rewarded_reward_user" params:@{
+    [AppleAnalytics event:@"mng_ad_rewarded_reward_user" params:@{
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad],
         @"label": reward.label,
@@ -284,7 +284,7 @@
         , self.m_requestId
     );
     
-    [AppleAnalytics name:@"ad_rewarded_revenue_paid" params:@{
+    [AppleAnalytics event:@"mng_ad_rewarded_revenue_paid" params:@{
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];

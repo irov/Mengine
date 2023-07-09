@@ -20,22 +20,22 @@ namespace Mengine
         virtual void _finalize() = 0;
 
     public:
-        void setName( const ConstString & _name ) override;
-        const ConstString & getName() const override;
+        void setName( const ConstString & _name ) override final;
+        const ConstString & getName() const override final;
 
     public:
-        void setBaseFileGroup( const FileGroupInterfacePtr & _baseFileGroup ) override;
-        const FileGroupInterfacePtr & getBaseFileGroup() const override;
+        void setBaseFileGroup( const FileGroupInterfacePtr & _baseFileGroup ) override final;
+        const FileGroupInterfacePtr & getBaseFileGroup() const override final;
 
-        void setParentFileGroup( const FileGroupInterfacePtr & _parentFileGroup ) override;
-        const FileGroupInterfacePtr & getParentFileGroup() const override;
+        void setParentFileGroup( const FileGroupInterfacePtr & _parentFileGroup ) override final;
+        const FileGroupInterfacePtr & getParentFileGroup() const override final;
 
     public:
-        void setRelationPath( const FilePath & _relationPath ) override;
-        const FilePath & getRelationPath() const override;
+        void setRelationPath( const FilePath & _relationPath ) override final;
+        const FilePath & getRelationPath() const override final;
 
-        void setFolderPath( const FilePath & _folderPath ) override;
-        const FilePath & getFolderPath() const override;
+        void setFolderPath( const FilePath & _folderPath ) override final;
+        const FilePath & getFolderPath() const override final;
 
     protected:
         ConstString m_name;

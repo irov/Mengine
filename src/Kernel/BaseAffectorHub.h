@@ -23,26 +23,26 @@ namespace Mengine
         ~BaseAffectorHub() override;
 
     public:
-        void setAffectorHubProvider( const AffectorHubProviderInterface * _provider ) override;
-        const AffectorHubProviderInterface * getAffectorHubProvider() const override;
+        void setAffectorHubProvider( const AffectorHubProviderInterface * _provider ) override final;
+        const AffectorHubProviderInterface * getAffectorHubProvider() const override final;
 
     public:
-        UniqueId addAffector( const AffectorPtr & _affector ) override;
-        bool hasAffector( UniqueId _id ) const override;
-        bool stopAffector( UniqueId _id ) override;
+        UniqueId addAffector( const AffectorPtr & _affector ) override final;
+        bool hasAffector( UniqueId _id ) const override final;
+        bool stopAffector( UniqueId _id ) override final;
 
     public:
-        void stopAffectors( EAffectorType _type ) override;
+        void stopAffectors( EAffectorType _type ) override final;
 
     public:
-        void stopAllAffectors() override;
+        void stopAllAffectors() override final;
 
     public:
-        void setAngularSpeed( float _angular ) override;
-        float getAngularSpeed() const override;
+        void setAngularSpeed( float _angular ) override final;
+        float getAngularSpeed() const override final;
 
-        void setLinearSpeed( const mt::vec3f & _linearSpeed ) override;
-        const mt::vec3f & getLinearSpeed() const override;
+        void setLinearSpeed( const mt::vec3f & _linearSpeed ) override final;
+        const mt::vec3f & getLinearSpeed() const override final;
 
     protected:
         const AffectorHubProviderInterface * m_provider;

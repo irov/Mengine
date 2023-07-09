@@ -15,71 +15,71 @@ namespace Mengine
         ~BaseAnimation() override;
 
     public:
-        void setRelationAnimation( const AnimationInterface * _relationAnimation ) override;
-        const AnimationInterface * getRelationAnimation() const override;
+        void setRelationAnimation( const AnimationInterface * _relationAnimation ) override final;
+        const AnimationInterface * getRelationAnimation() const override final;
 
-        void setRelationIncessantly( bool _relationIncessantly ) override;
-        bool getRelationIncessantly() const override;
-
-    public:
-        void setLoop( bool _value ) override;
-        bool isLoop() const override;
-
-        void setAnimationSpeedFactor( float _factor ) override;
-        float getAnimationSpeedFactor() const override;
-
-        void setIntervalStart( float _startInterval ) override;
-        float getIntervalStart() const override;
-
-        void setInterval( float _begin, float _end ) override;
-        float getIntervalBegin() const override;
-        float getIntervalEnd() const override;
-
-        void setFirstFrame() override;
-        void setLastFrame() override;
-
-        float getAdaptTime( float _time ) const override;
-
-        void setTime( float _time ) override;
-        float getTime() const override;
-
-        float getDuration() const override;
-
-        void setPlayCount( uint32_t _count ) override;
-        uint32_t getPlayCount() const override;
-
-        uint32_t getPlayIterator() const override;
-
-        void setAutoPlay( bool _autoPlay ) override;
-        bool isAutoPlay() const override;
-
-        void setStretch( float _stretch ) override;
-        float getStretch() const override;
+        void setRelationIncessantly( bool _relationIncessantly ) override final;
+        bool getRelationIncessantly() const override final;
 
     public:
-        UniqueId play( float _time ) override;
-        bool stop() override;
-        bool pause() override;
-        void resume( float _time ) override;
-        bool interrupt() override;
-        void end() override;
+        void setLoop( bool _value ) override final;
+        bool isLoop() const override final;
+
+        void setAnimationSpeedFactor( float _factor ) override final;
+        float getAnimationSpeedFactor() const override final;
+
+        void setIntervalStart( float _startInterval ) override final;
+        float getIntervalStart() const override final;
+
+        void setInterval( float _begin, float _end ) override final;
+        float getIntervalBegin() const override final;
+        float getIntervalEnd() const override final;
+
+        void setFirstFrame() override final;
+        void setLastFrame() override final;
+
+        float getAdaptTime( float _time ) const override final;
+
+        void setTime( float _time ) override final;
+        float getTime() const override final;
+
+        float getDuration() const override final;
+
+        void setPlayCount( uint32_t _count ) override final;
+        uint32_t getPlayCount() const override final;
+
+        uint32_t getPlayIterator() const override final;
+
+        void setAutoPlay( bool _autoPlay ) override final;
+        bool isAutoPlay() const override final;
+
+        void setStretch( float _stretch ) override final;
+        float getStretch() const override final;
 
     public:
-        bool isPlay() const override;
-        bool isPause() const override;
+        UniqueId play( float _time ) override final;
+        bool stop() override final;
+        bool pause() override final;
+        void resume( float _time ) override final;
+        bool interrupt() override final;
+        void end() override final;
 
     public:
-        bool isInterrupt() const override;
+        bool isPlay() const override final;
+        bool isPause() const override final;
 
     public:
-        bool isLastCicle() const override;
+        bool isInterrupt() const override final;
 
     public:
-        UniqueId getPlayId() const override;
-        float getPlayTime() const override;
+        bool isLastCicle() const override final;
 
     public:
-        bool calcTotalLoop() const override;
+        UniqueId getPlayId() const override final;
+        float getPlayTime() const override final;
+
+    public:
+        bool calcTotalLoop() const override final;
 
     protected:
         float calcTotalTime( const UpdateContext * _context ) const;        

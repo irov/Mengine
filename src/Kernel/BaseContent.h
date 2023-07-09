@@ -13,28 +13,28 @@ namespace Mengine
         ~BaseContent() override;
 
     public:
-        void setFileGroup( const FileGroupInterfacePtr & _fileGroup ) override;
-        const FileGroupInterfacePtr & getFileGroup() const override;
+        void setFileGroup( const FileGroupInterfacePtr & _fileGroup ) override final;
+        const FileGroupInterfacePtr & getFileGroup() const override final;
 
-        void setFilePath( const FilePath & _filePath ) override;
-        const FilePath & getFilePath() const override;
-
-    public:
-        void setCodecType( const ConstString & _codecType ) override;
-        const ConstString & getCodecType() const override;
-
-        void setConverterType( const ConstString & _converterType ) override;
-        const ConstString & getConverterType() const override;
-
-        void setDataflow( const DataflowInterfacePtr & _dataflow ) override;
-        const DataflowInterfacePtr & getDataflow() const override;
+        void setFilePath( const FilePath & _filePath ) override final;
+        const FilePath & getFilePath() const override final;
 
     public:
-        void setValidNoExist( bool _valid ) override;
-        bool isValidNoExist() const override;
+        void setCodecType( const ConstString & _codecType ) override final;
+        const ConstString & getCodecType() const override final;
+
+        void setConverterType( const ConstString & _converterType ) override final;
+        const ConstString & getConverterType() const override final;
+
+        void setDataflow( const DataflowInterfacePtr & _dataflow ) override final;
+        const DataflowInterfacePtr & getDataflow() const override final;
 
     public:
-        bool existContent() const override;
+        void setValidNoExist( bool _valid ) override final;
+        bool isValidNoExist() const override final;
+
+    public:
+        bool existContent() const override final;
 
     protected:
         FileGroupInterfacePtr m_fileGroup;

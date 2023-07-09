@@ -55,9 +55,9 @@ namespace Mengine
 
         if( 0 > size )
         {
-            LOGGER_ERROR( "invalid file '%s' size %d [error: %s]"
+            LOGGER_ERROR( "invalid file '%s' size %zu [error: %s]"
                 , fullPath
-                , size
+                , (size_t)size
                 , SDL_GetError()
             );
 

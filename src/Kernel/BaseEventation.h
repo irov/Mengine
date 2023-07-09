@@ -17,20 +17,20 @@ namespace Mengine
         ~BaseEventation() noexcept override;
 
     public:
-        void setReceiver( uint64_t _receiverMask, const EventReceiverInterfacePtr & _receiver ) override;
-        const EventReceiverInterfacePtr & getReceiver() const override;
+        void setReceiver( uint64_t _receiverMask, const EventReceiverInterfacePtr & _receiver ) override final;
+        const EventReceiverInterfacePtr & getReceiver() const override final;
 
     public:
-        EventReceiverInterfacePtr addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver ) override;
-        EventReceiverInterfacePtr removeEventReceiver( uint32_t _event ) override;
+        EventReceiverInterfacePtr addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver ) override final;
+        EventReceiverInterfacePtr removeEventReceiver( uint32_t _event ) override final;
 
     public:
-        const EventReceiverInterfacePtr & getEventReceiver( uint32_t _event ) const override;
-        bool hasEventReceiver( uint32_t _event ) const override;
+        const EventReceiverInterfacePtr & getEventReceiver( uint32_t _event ) const override final;
+        bool hasEventReceiver( uint32_t _event ) const override final;
 
     public:
-        void foreachEventReceivers( const LambdaEventReceivers & _lambda ) const override;
-        void removeEvents() noexcept override;
+        void foreachEventReceivers( const LambdaEventReceivers & _lambda ) const override final;
+        void removeEvents() noexcept override final;
 
     protected:
         EventReceiverInterfacePtr m_receiver;
@@ -48,6 +48,6 @@ namespace Mengine
         uint64_t m_receiversMask;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<BaseEventation> BaseEventPtr;
+    typedef IntrusivePtr<BaseEventation, EventationInterface> BaseEventPtr;
     //////////////////////////////////////////////////////////////////////////
 }

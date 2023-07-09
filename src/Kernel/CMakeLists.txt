@@ -253,7 +253,7 @@ Identity
 )
 
 ADD_FILTER(
-Transformation
+BaseTransformation
     Transformable.h
     BaseTransformation.cpp
     BaseTransformation.h
@@ -266,7 +266,7 @@ Hierarchy
 )
 
 ADD_FILTER(
-Animation
+BaseAnimation
     AnimationEventReceiver.h
     BaseAnimation.h
     BaseAnimation.cpp

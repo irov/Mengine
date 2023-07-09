@@ -19,11 +19,11 @@ namespace Mengine
         ~BaseTransformation();
 
     public:
-        void setRelationTransformation( TransformationInterface * _relationTransformation ) override;
-        BaseTransformation * getRelationTransformation() const override;
+        void setRelationTransformation( TransformationInterface * _relationTransformation ) override final;
+        BaseTransformation * getRelationTransformation() const override final;
 
     public:
-        void removeRelationTransformation() override;
+        void removeRelationTransformation() override final;
 
     protected:
         void addRelationTransformationChild_( BaseTransformation * _childTransformation );
@@ -37,91 +37,91 @@ namespace Mengine
         MENGINE_INLINE bool isIdentityWorldMatrix() const override;
 
     public:
-        MENGINE_INLINE const mt::mat4f & getLocalMatrix() const override;
+        MENGINE_INLINE const mt::mat4f & getLocalMatrix() const override final;
 
     public:
-        void setLocalPosition( const mt::vec3f & _position ) override;
-        MENGINE_INLINE const mt::vec3f & getLocalPosition() const override;
+        void setLocalPosition( const mt::vec3f & _position ) override final;
+        MENGINE_INLINE const mt::vec3f & getLocalPosition() const override final;
 
     public:
-        void setLocalPositionX( float _x ) override;
-        float getLocalPositionX() const override;
-        void setLocalPositionY( float _y ) override;
-        float getLocalPositionY() const override;
-        void setLocalPositionZ( float _z ) override;
-        float getLocalPositionZ() const override;
+        void setLocalPositionX( float _x ) override final;
+        float getLocalPositionX() const override final;
+        void setLocalPositionY( float _y ) override final;
+        float getLocalPositionY() const override final;
+        void setLocalPositionZ( float _z ) override final;
+        float getLocalPositionZ() const override final;
 
     public:
-        bool isIdentityPosition() const override;
+        bool isIdentityPosition() const override final;
 
     public:
-        void setLocalOrigin( const mt::vec3f & _origin ) override;
-        MENGINE_INLINE const mt::vec3f & getLocalOrigin() const override;
+        void setLocalOrigin( const mt::vec3f & _origin ) override final;
+        MENGINE_INLINE const mt::vec3f & getLocalOrigin() const override final;
 
-        void setLocalScale( const mt::vec3f & _scale ) override;
-        MENGINE_INLINE const mt::vec3f & getLocalScale() const override;
+        void setLocalScale( const mt::vec3f & _scale ) override final;
+        MENGINE_INLINE const mt::vec3f & getLocalScale() const override final;
 
-        void setLocalSkew( const mt::vec2f & _skew ) override;
-        MENGINE_INLINE const mt::vec2f & getLocalSkew() const override;
+        void setLocalSkew( const mt::vec2f & _skew ) override final;
+        MENGINE_INLINE const mt::vec2f & getLocalSkew() const override final;
 
-        void setLocalOrientationX( float _angle ) override;
-        MENGINE_INLINE float getLocalOrientationX() const override;
+        void setLocalOrientationX( float _angle ) override final;
+        MENGINE_INLINE float getLocalOrientationX() const override final;
 
-        void setLocalOrientationY( float _angle ) override;
-        MENGINE_INLINE float getLocalOrientationY() const override;
+        void setLocalOrientationY( float _angle ) override final;
+        MENGINE_INLINE float getLocalOrientationY() const override final;
 
-        void setLocalOrientationZ( float _angle ) override;
-        MENGINE_INLINE float getLocalOrientationZ() const override;
+        void setLocalOrientationZ( float _angle ) override final;
+        MENGINE_INLINE float getLocalOrientationZ() const override final;
 
-        void setLocalOrientation( const mt::vec3f & _orientation ) override;
-        MENGINE_INLINE const mt::vec3f & getLocalOrientation() const override;
+        void setLocalOrientation( const mt::vec3f & _orientation ) override final;
+        MENGINE_INLINE const mt::vec3f & getLocalOrientation() const override final;
 
-        bool isIdentityOrientation() const override;
-
-    public:
-        void setDirection( const mt::vec3f & _direction, const mt::vec3f & _up ) override;
-        void setBillboard( const mt::vec3f & _direction, const mt::vec3f & _normal ) override;
-        void setAxes( const mt::vec3f & _direction, const mt::vec3f & _left, const mt::vec3f & _up ) override;
-        void billboardAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _normal ) override;
-        void lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up ) override;
+        bool isIdentityOrientation() const override final;
 
     public:
-        mt::vec3f getAxisDirection() const override;
-        mt::vec3f getAxisLeft() const override;
-        mt::vec3f getAxisUp() const override;
+        void setDirection( const mt::vec3f & _direction, const mt::vec3f & _up ) override final;
+        void setBillboard( const mt::vec3f & _direction, const mt::vec3f & _normal ) override final;
+        void setAxes( const mt::vec3f & _direction, const mt::vec3f & _left, const mt::vec3f & _up ) override final;
+        void billboardAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _normal ) override final;
+        void lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up ) override final;
 
     public:
-        void setWorldPosition( const mt::vec3f & _pos ) override;
+        mt::vec3f getAxisDirection() const override final;
+        mt::vec3f getAxisLeft() const override final;
+        mt::vec3f getAxisUp() const override final;
 
     public:
-        mt::vec3f getWorldPosition() const override;
-        mt::vec3f getWorldScale() const override;
-        mt::vec3f getWorldOrientation() const override;
+        void setWorldPosition( const mt::vec3f & _pos ) override final;
 
     public:
-        void setTransformationData( uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) override;
-        void getTransformationData( uint8_t * const _transformationFlag, mt::vec3f * const _position, mt::vec3f * const _origin, mt::vec3f * const _scale, mt::vec2f * const _skew, mt::vec3f * const _orientation ) const override;
+        mt::vec3f getWorldPosition() const override final;
+        mt::vec3f getWorldScale() const override final;
+        mt::vec3f getWorldOrientation() const override final;
 
     public:
-        void resetTransformation() override;
+        void setTransformationData( uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) override final;
+        void getTransformationData( uint8_t * const _transformationFlag, mt::vec3f * const _position, mt::vec3f * const _origin, mt::vec3f * const _scale, mt::vec2f * const _skew, mt::vec3f * const _orientation ) const override final;
 
     public:
-        virtual void calcWorldMatrix( mt::mat4f * const _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) const override;
+        void resetTransformation() override final;
 
     public:
-        void translate( const mt::vec3f & _delta ) override;
-        void rotate( const mt::vec3f & _euler ) override;
-        void coordinate( const mt::vec3f & _delta ) override;
+        void calcWorldMatrix( mt::mat4f * const _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) const override;
+
+    public:
+        void translate( const mt::vec3f & _delta ) override final;
+        void rotate( const mt::vec3f & _euler ) override final;
+        void coordinate( const mt::vec3f & _delta ) override final;
 
     protected:
-        void invalidateWorldMatrix() const override;
-        MENGINE_INLINE bool isInvalidateWorldMatrix() const override;
+        void invalidateWorldMatrix() const override final;
+        MENGINE_INLINE bool isInvalidateWorldMatrix() const override final;
 
     protected:
         virtual void _invalidateWorldMatrix() const;
 
     public:
-        void invalidateLocalMatrix() const override;
+        void invalidateLocalMatrix() const override final;
 
     public:
         virtual void updateLocalMatrix() const;

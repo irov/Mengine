@@ -21,38 +21,38 @@ namespace Mengine
         ~BaseRender() override;
 
     public:
-        void setRelationRender( RenderInterface * _relationRender ) override;
-        void setRelationRenderFront( RenderInterface * _relationRender ) override;
-        void removeRelationRender() override;
-        MENGINE_INLINE BaseRender * getRelationRender() const override;
+        void setRelationRender( RenderInterface * _relationRender ) override final;
+        void setRelationRenderFront( RenderInterface * _relationRender ) override final;
+        void removeRelationRender() override final;
+        MENGINE_INLINE BaseRender * getRelationRender() const override final;
 
     public:
-        void setExtraRelationRender( RenderInterface * _relationRender ) override;
-        void removeExtraRelationRender() override;
-        MENGINE_INLINE BaseRender * getExtraRelationRender() const override;
+        void setExtraRelationRender( RenderInterface * _relationRender ) override final;
+        void removeExtraRelationRender() override final;
+        MENGINE_INLINE BaseRender * getExtraRelationRender() const override final;
 
     public:
-        MENGINE_INLINE BaseRender * getTotalRelationRender() const override;
+        MENGINE_INLINE BaseRender * getTotalRelationRender() const override final;
 
     public:
-        bool isEmptyRenderChildren() const override;
-        void clearRenderChildren() override;
+        bool isEmptyRenderChildren() const override final;
+        void clearRenderChildren() override final;
 
     public:
-        void foreachRenderChildren( const LambdaRender & _lambda ) override;
-        void foreachRenderChildrenEnabled( const LambdaRender & _lambda ) override;
+        void foreachRenderChildren( const LambdaRender & _lambda ) override final;
+        void foreachRenderChildrenEnabled( const LambdaRender & _lambda ) override final;
 
     public:
-        void setRenderEnable( bool _enable ) override;
-        MENGINE_INLINE bool isRenderEnable() const override;
+        void setRenderEnable( bool _enable ) override final;
+        MENGINE_INLINE bool isRenderEnable() const override final;
 
     public:
-        void setHide( bool _hide ) override;
-        MENGINE_INLINE bool isHide() const override;
+        void setHide( bool _hide ) override final;
+        MENGINE_INLINE bool isHide() const override final;
 
     public:
-        void setLocalHide( bool _localHide ) override;
-        MENGINE_INLINE bool isLocalHide() const override;
+        void setLocalHide( bool _localHide ) override final;
+        MENGINE_INLINE bool isLocalHide() const override final;
 
     protected:
         virtual void _setHide( bool _hide );
@@ -64,36 +64,36 @@ namespace Mengine
         void removeRelationRenderChildren_( BaseRender * _childRender );
 
     public:
-        void setRenderViewport( const RenderViewportInterfacePtr & _renderViewport ) override;
-        const RenderViewportInterfacePtr & getRenderViewport() const override;
+        void setRenderViewport( const RenderViewportInterfacePtr & _renderViewport ) override final;
+        const RenderViewportInterfacePtr & getRenderViewport() const override final;
 
     public:
-        void setRenderCamera( const RenderCameraInterfacePtr & _renderCamera ) override;
-        const RenderCameraInterfacePtr & getRenderCamera() const override;
+        void setRenderCamera( const RenderCameraInterfacePtr & _renderCamera ) override final;
+        const RenderCameraInterfacePtr & getRenderCamera() const override final;
 
     public:
-        void setRenderTransformation( const RenderTransformationInterfacePtr & _renderTransformation ) override;
-        const RenderTransformationInterfacePtr & getRenderTransformation() const override;
+        void setRenderTransformation( const RenderTransformationInterfacePtr & _renderTransformation ) override final;
+        const RenderTransformationInterfacePtr & getRenderTransformation() const override final;
 
     public:
-        void setRenderScissor( const RenderScissorInterfacePtr & _renderScissor ) override;
-        const RenderScissorInterfacePtr & getRenderScissor() const override;
+        void setRenderScissor( const RenderScissorInterfacePtr & _renderScissor ) override final;
+        const RenderScissorInterfacePtr & getRenderScissor() const override final;
 
     public:
-        void setRenderTarget( const RenderTargetInterfacePtr & _renderTarget ) override;
-        const RenderTargetInterfacePtr & getRenderTarget() const override;
+        void setRenderTarget( const RenderTargetInterfacePtr & _renderTarget ) override final;
+        const RenderTargetInterfacePtr & getRenderTarget() const override final;
 
     public:
-        void setZGroup( ZGroupType _zGroup ) override;
-        ZGroupType getZGroup() const override;
+        void setZGroup( ZGroupType _zGroup ) override final;
+        ZGroupType getZGroup() const override final;
 
     public:
-        void setZIndex( ZIndexType _zIndex ) override;
-        ZIndexType getZIndex() const override;
+        void setZIndex( ZIndexType _zIndex ) override final;
+        ZIndexType getZIndex() const override final;
 
     public:
-        void mergeRenderContext( const RenderContext * _in, RenderContext * const _out ) const override;
-        void makeRenderContext( RenderContext * const _renderContext ) const override;
+        void mergeRenderContext( const RenderContext * _in, RenderContext * const _out ) const override final;
+        void makeRenderContext( RenderContext * const _renderContext ) const override final;
 
     public:
         void renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const override;
@@ -102,16 +102,16 @@ namespace Mengine
         const RenderInterfacePtr & makeTargetRender( const RenderContext * _context ) const override;
 
     public:
-        void setExternalRender( bool _externalRender ) override;
-        MENGINE_INLINE bool isExternalRender() const override;
+        void setExternalRender( bool _externalRender ) override final;
+        MENGINE_INLINE bool isExternalRender() const override final;
 
     protected:
         virtual void _setExternalRender( bool _externalRender );
 
     protected:
-        const Color & getWorldColor() const override;
-        void calcTotalColor( Color * const _color ) const override;
-        bool isSolidColor() const override;
+        const Color & getWorldColor() const override final;
+        void calcTotalColor( Color * const _color ) const override final;
+        bool isSolidColor() const override final;
 
     protected:
         void invalidateColor() const override;

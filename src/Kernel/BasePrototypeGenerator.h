@@ -16,11 +16,11 @@ namespace Mengine
         ~BasePrototypeGenerator() override;
 
     public:
-        void setCategory( const ConstString & _category ) override;
-        MENGINE_INLINE const ConstString & getCategory() const override;
+        void setCategory( const ConstString & _category ) override final;
+        MENGINE_INLINE const ConstString & getCategory() const override final;
 
-        void setPrototype( const ConstString & _prototype ) override;
-        MENGINE_INLINE const ConstString & getPrototype() const override;
+        void setPrototype( const ConstString & _prototype ) override final;
+        MENGINE_INLINE const ConstString & getPrototype() const override final;
 
     protected:
         bool initialize() override;

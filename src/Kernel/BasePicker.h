@@ -15,25 +15,25 @@ namespace Mengine
         ~BasePicker() override;
 
     public:
-        void setRelationPicker( PickerInterface * _relationPicker ) override;
-        void setRelationPickerFront( PickerInterface * _relationPicker ) override;
-        void removeRelationPicker() override;
-        MENGINE_INLINE BasePicker * getRelationPicker() const override;
+        void setRelationPicker( PickerInterface * _relationPicker ) override final;
+        void setRelationPickerFront( PickerInterface * _relationPicker ) override final;
+        void removeRelationPicker() override final;
+        MENGINE_INLINE BasePicker * getRelationPicker() const override final;
 
     public:
-        bool isEmptyPickerChildren() const override;
-        void clearPickerChildren() override;
+        bool isEmptyPickerChildren() const override final;
+        void clearPickerChildren() override final;
 
     public:
-        void foreachPickerChildren( const LambdaPicker & _lambda ) override;
-        void foreachPickerChildrenEnabled( const LambdaPicker & _lambda ) override;
+        void foreachPickerChildren( const LambdaPicker & _lambda ) override final;
+        void foreachPickerChildrenEnabled( const LambdaPicker & _lambda ) override final;
 
     public:
-        void updatePickers() override;
+        void updatePickers() override final;
 
     public:
-        void setPickerEnable( bool _enable ) override;
-        MENGINE_INLINE bool isPickerEnable() const override;
+        void setPickerEnable( bool _enable ) override final;
+        MENGINE_INLINE bool isPickerEnable() const override final;
 
     public:
         virtual void _setPickerEnable( bool _enable );
@@ -42,14 +42,14 @@ namespace Mengine
         MENGINE_INLINE bool isPickerDummy() const override;
 
     public:
-        void setPickerPicked( bool _picked ) override;
-        MENGINE_INLINE bool isPickerPicked() const override;
-        void setPickerPressed( bool _pressed ) override;
-        MENGINE_INLINE bool isPickerPressed() const override;
-        void setPickerHandle( bool _handle ) override;
-        MENGINE_INLINE bool isPickerHandle() const override;
-        void setPickerExclusive( bool _exclusive ) override;
-        MENGINE_INLINE bool isPickerExclusive() const override;
+        void setPickerPicked( bool _picked ) override final;
+        MENGINE_INLINE bool isPickerPicked() const override final;
+        void setPickerPressed( bool _pressed ) override final;
+        MENGINE_INLINE bool isPickerPressed() const override final;
+        void setPickerHandle( bool _handle ) override final;
+        MENGINE_INLINE bool isPickerHandle() const override final;
+        void setPickerExclusive( bool _exclusive ) override final;
+        MENGINE_INLINE bool isPickerExclusive() const override final;
 
     protected:
         const RenderViewportInterfacePtr & getPickerViewport() const override;

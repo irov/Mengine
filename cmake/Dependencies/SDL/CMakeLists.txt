@@ -2990,7 +2990,7 @@ configure_file("${SDL2_SOURCE_DIR}/include/SDL_config.h.cmake"
   "${THIRDPARTY_CONFIG_DIR}/SDL/SDL_config.h.intermediate")
 # 2. Create the "include-config-${CMAKE_BUILD_TYPE}" folder (fails on older CMake versions when it does not exist)
 string(TOLOWER "${CMAKE_BUILD_TYPE}" lower_build_type)
-execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/include-config-${lower_build_type}")
+execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory "${THIRDPARTY_CONFIG_DIR}/SDL/include-config-${lower_build_type}")
 # 3. generate SDL_config in an build_type-dependent folder (which should be first in the include search path)
 file(GENERATE
     OUTPUT "${THIRDPARTY_CONFIG_DIR}/SDL/include-config-$<LOWER_CASE:$<CONFIG>>/SDL2/SDL_config.h"
@@ -3500,13 +3500,16 @@ if(NOT SDL2_DISABLE_INSTALL)
     set(LICENSES_PREFIX "${CMAKE_INSTALL_DATAROOTDIR}/licenses/${PROJECT_NAME}")
   endif ()
   set(SDL_INSTALL_CMAKEDIR "${SDL_INSTALL_CMAKEDIR_DEFAULT}" CACHE STRING "Location where to install SDL2Config.cmake")
+  message("SDL_INSTALL_CMAKEDIR: ${SDL_INSTALL_CMAKEDIR}")
 
   include(CMakePackageConfigHelpers)
-  configure_package_config_file(SDL2Config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/SDL2Config.cmake"
+  configure_file(${SDL2_SOURCE_DIR}/cmake/sdlfind.cmake ${THIRDPARTY_CONFIG_DIR}/SDL/sdlfind.cmake COPYONLY)
+  
+  configure_package_config_file(SDL2Config.cmake.in "${THIRDPARTY_CONFIG_DIR}/SDL/SDL2Config.cmake"
     PATH_VARS CMAKE_INSTALL_PREFIX CMAKE_INSTALL_FULL_BINDIR CMAKE_INSTALL_FULL_INCLUDEDIR CMAKE_INSTALL_FULL_LIBDIR
     INSTALL_DESTINATION "${SDL_INSTALL_CMAKEDIR}"
   )
-  write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/SDL2ConfigVersion.cmake"
+  write_basic_package_version_file("${THIRDPARTY_CONFIG_DIR}/SDL/SDL2ConfigVersion.cmake"
     VERSION ${SDL_VERSION}
     COMPATIBILITY AnyNewerVersion
   )
@@ -3561,8 +3564,8 @@ if(NOT SDL2_DISABLE_INSTALL)
 
   install(
     FILES
-      ${CMAKE_CURRENT_BINARY_DIR}/SDL2Config.cmake
-      ${CMAKE_CURRENT_BINARY_DIR}/SDL2ConfigVersion.cmake
+      ${THIRDPARTY_CONFIG_DIR}/SDL/SDL2Config.cmake
+      ${THIRDPARTY_CONFIG_DIR}/SDL/SDL2ConfigVersion.cmake
       ${SDL2_SOURCE_DIR}/cmake/sdlfind.cmake
     DESTINATION "${SDL_INSTALL_CMAKEDIR}"
     COMPONENT Devel
@@ -3614,11 +3617,11 @@ if(NOT SDL2_DISABLE_UNINSTALL)
   if(NOT TARGET uninstall)
     configure_file(
         "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+        "${THIRDPARTY_CONFIG_DIR}/SDL/cmake_uninstall.cmake"
         IMMEDIATE @ONLY)
 
     add_custom_target(uninstall
-        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+        COMMAND ${CMAKE_COMMAND} -P ${THIRDPARTY_CONFIG_DIR}/SDL/cmake_uninstall.cmake)
   endif()
 endif()
 

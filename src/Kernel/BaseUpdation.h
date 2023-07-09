@@ -14,9 +14,9 @@ namespace Mengine
         ~BaseUpdation() override;
 
     public:
-        bool activate( EUpdateMode _mode, uint32_t _deep ) override;
-        void deactivate() override;
-        void replace( uint32_t _deep ) override;
+        bool activate( EUpdateMode _mode, uint32_t _deep ) override final;
+        void deactivate() override final;
+        void replace( uint32_t _deep ) override final;
 
     protected:
         uint32_t m_updatableProxyId;

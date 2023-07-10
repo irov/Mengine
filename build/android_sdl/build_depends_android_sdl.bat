@@ -10,7 +10,7 @@ call :setESC
 
 set CONFIGURATION=%1
 
-@echo Starting dependencies build %CONFIGURATION% configuration...
+@echo Starting android dependencies build %CONFIGURATION% configuration...
 
 set ANDROID_NDK_VERSION=25.1.8937393
 set ANDROID_CMAKE_VERSION=3.22.1
@@ -31,7 +31,7 @@ for %%A in (x86 x86_64 armeabi-v7a arm64-v8a) do (
     @mkdir %BUILD_TEMP_DIR%\%CONFIGURATION%\%%A
     @pushd %BUILD_TEMP_DIR%\%CONFIGURATION%\%%A
 
-    %CMAKE_EXE% -G %CMAKE_GENERATOR% ^
+    @call %CMAKE_EXE% -G %CMAKE_GENERATOR% ^
         -DANDROID_PLATFORM=%ANDROID_PLATFORM% ^
         -DANDROID_ARM_NEON=TRUE ^
         -DANDROID_ABI=%%A ^
@@ -44,8 +44,30 @@ for %%A in (x86 x86_64 armeabi-v7a arm64-v8a) do (
         -DCMAKE_TOOLCHAIN_FILE=%CMAKE_TOOLCHAIN_FILE% ^
         -S %CMAKELIST_PATH%
         
-    %CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j8
-
+    if %errorlevel% NEQ 0 (
+        @echo %ESC%[91m*****************************************%ESC%[0m
+        @echo %ESC%[91m***************  Failure  ***************%ESC%[0m
+        @echo %ESC%[91m*****************************************%ESC%[0m
+        goto end
+    ) else (
+        @echo %ESC%[92m=========================================%ESC%[0m
+        @echo %ESC%[92m=============  Successful  ==============%ESC%[0m
+        @echo %ESC%[92m=========================================%ESC%[0m
+    )
+    
+    @call %CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j8
+    
+    if %errorlevel% NEQ 0 (
+        @echo %ESC%[91m*****************************************%ESC%[0m
+        @echo %ESC%[91m***************  Failure  ***************%ESC%[0m
+        @echo %ESC%[91m*****************************************%ESC%[0m
+        goto end
+    ) else (
+        @echo %ESC%[92m=========================================%ESC%[0m
+        @echo %ESC%[92m=============  Successful  ==============%ESC%[0m
+        @echo %ESC%[92m=========================================%ESC%[0m
+    )
+    
     @popd
 )
 

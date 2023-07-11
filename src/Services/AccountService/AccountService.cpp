@@ -192,7 +192,7 @@ namespace Mengine
 
         if( account != nullptr )
         {
-            LOGGER_ERROR( "Account with ID '%s' already exist. Account not created"
+            LOGGER_ERROR( "account with ID '%s' already exist. Account not created"
                 , _accountId.c_str()
             );
 
@@ -245,7 +245,7 @@ namespace Mengine
 
         if( m_fileGroup->createDirectory( accountPath ) == false )
         {
-            LOGGER_ERROR( "Account '%s' failed create directory '%s'"
+            LOGGER_ERROR( "account with ID '%s' failed create directory '%s'"
                 , _accountId.c_str()
                 , accountPath.c_str()
             );
@@ -260,7 +260,7 @@ namespace Mengine
 
         if( newAccount->initialize( _accountId, m_archivator, m_fileGroup, accountPath, projectVersion ) == false )
         {
-            LOGGER_ERROR( "Account '%s' invalid initialize"
+            LOGGER_ERROR( "account with ID '%s' invalid initialize"
                 , _accountId.c_str()
             );
 

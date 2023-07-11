@@ -72,7 +72,8 @@ namespace Mengine
 
         if( skeletonData == nullptr )
         {
-            LOGGER_ERROR( "invalid read skeleton data, file path '%s'"
+            LOGGER_ERROR( "resource spine skeleton '%s' invalid read skeleton data, file path '%s'"
+                , this->getName().c_str()
                 , filePath.c_str()
             );
             return false;

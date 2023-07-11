@@ -137,7 +137,7 @@ namespace Mengine
         {
             if( m_resourceImage->compile() == false )
             {
-                LOGGER_ERROR( "'%s' image resource '%s' not compile"
+                LOGGER_ERROR( "grid2d '%s' image resource '%s' not compile"
                     , this->getName().c_str()
                     , m_resourceImage->getName().c_str()
                 );
@@ -148,7 +148,7 @@ namespace Mengine
 
         if( m_countX < 2 || m_countY < 2 )
         {
-            LOGGER_ERROR( "'%s' count X|Y not setup %u:%u"
+            LOGGER_ERROR( "grid2d '%s' count X|Y not setup %u:%u"
                 , this->getName().c_str()
                 , m_countX
                 , m_countY

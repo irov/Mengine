@@ -313,6 +313,8 @@ Resource
     ResourceCacher.h
     Resource.cpp
     Resource.h
+    ResourcePacket.cpp
+    ResourcePacket.h
     ResourcePtrView.h
     ResourceHelper.cpp
     ResourceHelper.h

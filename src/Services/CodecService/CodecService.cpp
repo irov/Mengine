@@ -36,7 +36,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         for( auto && [key, value] : m_codecExts )
         {
-            LOGGER_ERROR( "Codec exts '%s' not clear"
+            LOGGER_ASSERTION( "codec exts '%s' not clear"
                 , key.c_str()
             );
         }

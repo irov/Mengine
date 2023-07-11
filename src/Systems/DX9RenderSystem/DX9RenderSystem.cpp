@@ -279,7 +279,7 @@ namespace Mengine
 
             if( FAILED( hr_checkDeviceMultiSampleType ) )
             {
-                LOGGER_ERROR( "can't support multi sample count '%u' error [%ld]"
+                LOGGER_ASSERTION( "can't support multi sample count '%u' error [%ld]"
                     , testMultiSampleType
                     , hr_checkDeviceMultiSampleType
                 );
@@ -432,7 +432,7 @@ namespace Mengine
 
         if( (d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 || d3dCaps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) )
         {
-            LOGGER_ERROR( "can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE" );
+            LOGGER_ASSERTION( "can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE" );
 
             hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, windowHandle
                 , D3DCREATE_SOFTWARE_VERTEXPROCESSING
@@ -448,7 +448,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_ERROR( "force set D3DCREATE_SOFTWARE_VERTEXPROCESSING" );
+                LOGGER_ASSERTION( "force set D3DCREATE_SOFTWARE_VERTEXPROCESSING" );
 
                 device_flags |= D3DCREATE_SOFTWARE_VERTEXPROCESSING;
             }
@@ -461,7 +461,7 @@ namespace Mengine
             {
                 const Char * message = Helper::getDX9ErrorMessage( hr );
 
-                LOGGER_ERROR( "can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
+                LOGGER_ASSERTION( "can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
                     , message
                     , (uint32_t)hr
                 );
@@ -477,7 +477,7 @@ namespace Mengine
             {
                 const Char * message = Helper::getDX9ErrorMessage( hr );
 
-                LOGGER_ERROR( "can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING error: %s (hr:%x) Try another"
+                LOGGER_ASSERTION( "can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING error: %s (hr:%x) Try another"
                     , message
                     , (uint32_t)hr
                 );
@@ -493,7 +493,7 @@ namespace Mengine
             {
                 const Char * message = Helper::getDX9ErrorMessage( hr );
 
-                LOGGER_ERROR( "can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
+                LOGGER_ASSERTION( "can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
                     , message
                     , (uint32_t)hr
                 );
@@ -509,7 +509,7 @@ namespace Mengine
             {
                 const Char * message = Helper::getDX9ErrorMessage( hr );
 
-                LOGGER_ERROR( "can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING error: %s (hr:%x) Try another"
+                LOGGER_ASSERTION( "can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING error: %s (hr:%x) Try another"
                     , message
                     , (uint32_t)hr
                 );
@@ -525,7 +525,7 @@ namespace Mengine
             {
                 const Char * message = Helper::getDX9ErrorMessage( hr );
 
-                LOGGER_ERROR( "can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
+                LOGGER_ASSERTION( "can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE error: %s (hr:%x) Try another"
                     , message
                     , (uint32_t)hr
                 );
@@ -541,7 +541,7 @@ namespace Mengine
             {
                 const Char * message = Helper::getDX9ErrorMessage( hr );
 
-                LOGGER_ERROR( "can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING error: %s (hr:%x) Try another"
+                LOGGER_ASSERTION( "can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING error: %s (hr:%x) Try another"
                     , message
                     , (uint32_t)hr
                 );
@@ -862,7 +862,7 @@ namespace Mengine
 
             if( Mode.Format == D3DFMT_UNKNOWN )
             {
-                LOGGER_ERROR( "can't determine desktop video mode D3DFMT_UNKNOWN" );
+                LOGGER_ASSERTION( "can't determine desktop video mode D3DFMT_UNKNOWN" );
 
                 return false;
             }
@@ -872,7 +872,7 @@ namespace Mengine
 
         if( this->restore_() == false )
         {
-            LOGGER_ERROR( "restore failed" );
+            LOGGER_ASSERTION( "restore failed" );
 
             return false;
         }
@@ -909,13 +909,13 @@ namespace Mengine
         }
         else if( FAILED( cooperativeLevel ) )
         {
-            LOGGER_ERROR( "invalid TestCooperativeLevel [%ld]"
+            LOGGER_ASSERTION( "invalid TestCooperativeLevel [%ld]"
                 , cooperativeLevel
             );
 
             if( this->releaseResources_() == false )
             {
-                LOGGER_ERROR( "release resources" );
+                LOGGER_ASSERTION( "release resources" );
             }
 
             return false;
@@ -971,11 +971,11 @@ namespace Mengine
         {
             m_lostDevice = true;
 
-            LOGGER_ERROR( "device lost [present]" );
+            LOGGER_ASSERTION( "device lost [present]" );
         }
         else if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "failed to swap buffers [%ld]"
+            LOGGER_ASSERTION( "failed to swap buffers [%ld]"
                 , cooperativeLevel
             );
         }
@@ -1080,7 +1080,7 @@ namespace Mengine
 
         MENGINE_IF_DXCALL( m_pD3DDevice, SetViewport, (&VP) )
         {
-            LOGGER_ERROR( "failed viewport (%lu, %lu, %lu, %lu)"
+            LOGGER_ASSERTION( "failed viewport (%lu, %lu, %lu, %lu)"
                 , VP.X
                 , VP.Y
                 , VP.X + VP.Width
@@ -1112,7 +1112,7 @@ namespace Mengine
 
         if( this->restore_() == false )
         {
-            LOGGER_ERROR( "Graphics change mode failed" );
+            LOGGER_ASSERTION( "graphics change mode failed" );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1213,7 +1213,7 @@ namespace Mengine
 
         if( _stage >= MaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %u (max %u)"
+            LOGGER_ASSERTION( "no support stage %u (max %u)"
                 , _stage
                 , MaxCombinedTextureImageUnits
             );
@@ -1244,7 +1244,7 @@ namespace Mengine
 
             MENGINE_IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, NULL, 0, 0) )
             {
-                LOGGER_ERROR( "stream source not reset" );
+                LOGGER_ASSERTION( "stream source not reset" );
             }
         }
 
@@ -1254,7 +1254,7 @@ namespace Mengine
 
             MENGINE_IF_DXCALL( m_pD3DDevice, SetIndices, (NULL) )
             {
-                LOGGER_ERROR( "indices not reset" );
+                LOGGER_ASSERTION( "indices not reset" );
             }
         }
 
@@ -1269,7 +1269,7 @@ namespace Mengine
 
             MENGINE_IF_DXCALL( m_pD3DDevice, SetTexture, (i, NULL) )
             {
-                LOGGER_ERROR( "texture [%u] not reset"
+                LOGGER_ASSERTION( "texture [%u] not reset"
                     , i
                 );
             }
@@ -1305,7 +1305,7 @@ namespace Mengine
 
         if( this->releaseResources_() == false )
         {
-            LOGGER_ERROR( "release resources" );
+            LOGGER_ASSERTION( "release resources" );
 
             return false;
         }
@@ -1345,7 +1345,7 @@ namespace Mengine
         {
             const Char * message = Helper::getDX9ErrorMessage( cooperativeLevel );
 
-            LOGGER_ERROR( "failed to reset device: %s (hr:%x)"
+            LOGGER_ASSERTION( "failed to reset device: %s (hr:%x)"
                 , message
                 , (uint32_t)cooperativeLevel
             );
@@ -1378,7 +1378,7 @@ namespace Mengine
         {
             if( this->releaseResources_() == false )
             {
-                LOGGER_ERROR( "invalid release resource" );
+                LOGGER_ASSERTION( "invalid release resource" );
 
                 return;
             }
@@ -1535,7 +1535,7 @@ namespace Mengine
 
         if( _stage >= MaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %u (max %u)"
+            LOGGER_ASSERTION( "no support stage %u (max %u)"
                 , _stage
                 , MaxCombinedTextureImageUnits
             );
@@ -1597,7 +1597,7 @@ namespace Mengine
 
         if( _stage >= MaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %u (max %u)"
+            LOGGER_ASSERTION( "no support stage %u (max %u)"
                 , _stage
                 , MaxCombinedTextureImageUnits
             );
@@ -1713,7 +1713,7 @@ namespace Mengine
 
         if( _stage >= MaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage %u (max %u)"
+            LOGGER_ASSERTION( "no support stage %u (max %u)"
                 , _stage
                 , MaxCombinedTextureImageUnits
             );
@@ -1943,8 +1943,7 @@ namespace Mengine
 
         if( this->restore_() == false )
         {
-            LOGGER_ERROR( "Graphics change mode failed"
-            );
+            LOGGER_ASSERTION( "graphics change mode failed" );
         }
     }
     //////////////////////////////////////////////////////////////////////////

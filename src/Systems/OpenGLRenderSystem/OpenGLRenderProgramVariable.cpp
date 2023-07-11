@@ -91,7 +91,7 @@ namespace Mengine
 
                 if( location == -1 )
                 {
-                    LOGGER_ERROR( "program '%s' not found uniform sampler '%s'"
+                    LOGGER_ASSERTION( "program '%s' not found uniform sampler '%s'"
                         , openglProgram->getName().c_str()
                         , v.uniform
                     );
@@ -151,7 +151,7 @@ namespace Mengine
 
                 if( location == -1 )
                 {
-                    LOGGER_ERROR( "program '%s' not found uniform sampler '%s'"
+                    LOGGER_ASSERTION( "program '%s' not found uniform sampler '%s'"
                         , openglProgram->getName().c_str()
                         , v.uniform
                     );

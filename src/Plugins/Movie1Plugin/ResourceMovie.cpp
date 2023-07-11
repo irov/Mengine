@@ -210,7 +210,7 @@ namespace Mengine
 
         if( filePath.empty() == true )
         {
-            LOGGER_ERROR( "'%s' group '%s' don`t have Key Frames Pack Path"
+            LOGGER_ERROR( "resource movie '%s' group '%s' don`t have Key Frames Pack Path"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
             );
@@ -250,7 +250,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' not compile"
+            LOGGER_ERROR( "resource movie '%s' group '%s' not compile"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
             );

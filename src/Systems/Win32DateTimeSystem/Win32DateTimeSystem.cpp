@@ -108,7 +108,7 @@ namespace Mengine
             }break;
         case TIME_ZONE_ID_INVALID:
             {
-                LOGGER_ERROR( "GetTimeZoneInformation get error %ls"
+                LOGGER_ASSERTION( "GetTimeZoneInformation get error %ls"
                     , Helper::Win32GetLastErrorMessage()
                 );
 
@@ -116,7 +116,7 @@ namespace Mengine
             }break;
         }
 
-        LOGGER_ERROR( "GetTimeZoneInformation unknown zone ID [%lu]"
+        LOGGER_ASSERTION( "GetTimeZoneInformation unknown zone ID [%lu]"
             , zoneId
         );
 

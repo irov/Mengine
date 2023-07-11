@@ -295,7 +295,8 @@ namespace Mengine
 
             if( resourceImage->initialize() == false )
             {
-                LOGGER_ERROR( "sub resource '%s' type '%s' invalid initialize"
+                LOGGER_ERROR( "resource texturepacker '%s' sub resource '%s' type '%s' invalid initialize"
+                    , this->getName().c_str()
                     , resourceImage->getName().c_str()
                     , resourceImage->getType().c_str()
                 );
@@ -425,7 +426,8 @@ namespace Mengine
 
             if( resourceImage->initialize() == false )
             {
-                LOGGER_ERROR( "frame resource '%s' type '%s' invalid initialize"
+                LOGGER_ERROR( "resource texturepacker '%s' frame resource '%s' type '%s' invalid initialize"
+                    , this->getName().c_str()
                     , resourceImage->getName().c_str()
                     , resourceImage->getType().c_str()
                 );

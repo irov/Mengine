@@ -34,7 +34,7 @@ namespace Mengine
             const ConstString & category = value.key1;
             const ConstString & type = value.key2;
 
-            LOGGER_ERROR( "Vocabulary category '%s' key '%s' not clear"
+            LOGGER_ASSERTION( "Vocabulary category '%s' key '%s' not clear"
                 , category.c_str()
                 , type.c_str()
             );

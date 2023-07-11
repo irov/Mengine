@@ -191,7 +191,9 @@ namespace Mengine
 
         if( this->createRenderTarget_() == false )
         {
-            LOGGER_ERROR( "invalid create render target" );
+            LOGGER_ERROR( "layer2d '%s' invalid create render target"
+                , this->getName().c_str()
+            );
 
             m_resourceImageMask = nullptr;
 
@@ -255,7 +257,7 @@ namespace Mengine
 
         if( m_resourceImageMask->compile() == false )
         {
-            LOGGER_ERROR( "'%s' invalid compile resource image mask '%s'"
+            LOGGER_ERROR( "layer2d '%s' invalid compile resource image mask '%s'"
                 , this->getName().c_str()
                 , m_resourceImageMask->getName().c_str()
             );

@@ -168,7 +168,7 @@ namespace Mengine
 
         if( buffer == nullptr )
         {
-            LOGGER_ERROR( "can't load sample '%s'"
+            LOGGER_ASSERTION( "amplifier can't load sample '%s'"
                 , filePath.c_str()
             );
 
@@ -193,7 +193,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->setSourceVolume( soundIdentity, volume, 0.f, false ) == false )
         {
-            LOGGER_ERROR( "can't set sound '%s' volume '%f'"
+            LOGGER_ASSERTION( "amplifier can't set sound '%s' volume '%f'"
                 , filePath.c_str()
                 , volume
             );
@@ -204,7 +204,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->setPosMs( soundIdentity, _pos ) == false )
         {
-            LOGGER_ERROR( "can't set sound '%s' pos '%f'"
+            LOGGER_ASSERTION( "amplifier can't set sound '%s' pos '%f'"
                 , filePath.c_str()
                 , _pos
             );
@@ -215,7 +215,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->setLoop( soundIdentity, _looped ) == false )
         {
-            LOGGER_ERROR( "can't set sound '%s' loop [%u]"
+            LOGGER_ASSERTION( "amplifier can't set sound '%s' loop [%u]"
                 , filePath.c_str()
                 , _looped
             );
@@ -226,7 +226,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->playEmitter( soundIdentity ) == false )
         {
-            LOGGER_ERROR( "sound emitter '%s' invalid play [%u]"
+            LOGGER_ASSERTION( "amplifier sound emitter '%s' invalid play [%u]"
                 , filePath.c_str()
                 , soundIdentity->getId()
             );

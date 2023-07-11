@@ -56,7 +56,7 @@ namespace Mengine
             FilePath ttfPath;
             if( _config->hasValue( name.c_str(), "Path", FilePath::none(), &ttfPath ) == false )
             {
-                LOGGER_ERROR( "invalid font '%s' don't setup Glyph"
+                LOGGER_ERROR( "ttf font '%s' don't setup Glyph"
                     , name.c_str()
                 );
 
@@ -76,7 +76,7 @@ namespace Mengine
             const Char * ttfName = nullptr;
             if( _config->hasValue( name.c_str(), "Name", "", & ttfName) == false )
             {
-                LOGGER_ERROR( "invalid font '%s' don't setup Name"
+                LOGGER_ERROR( "ttf font '%s' don't setup Name"
                     , name.c_str()
                 );
 
@@ -88,7 +88,7 @@ namespace Mengine
             if( PLATFORM_SERVICE()
                 ->getSystemFontPath( &groupName, ttfName, utf8_ttfPath ) == MENGINE_UNKNOWN_SIZE )
             {
-                LOGGER_ERROR( "invalid font '%s' don't found '%s' path"
+                LOGGER_ERROR( "ttf font '%s' don't found '%s' path"
                     , name.c_str()
                     , ttfName
                 );
@@ -113,7 +113,7 @@ namespace Mengine
         uint32_t height;
         if( _config->hasValue( name.c_str(), "Height", 0u, &height ) == false )
         {
-            LOGGER_ERROR( "invalid font '%s' don't setup Height"
+            LOGGER_ERROR( "ttf font '%s' don't setup Height"
                 , name.c_str()
             );
 
@@ -141,7 +141,7 @@ namespace Mengine
             ConstString FEName;
             if( _config->hasValue( name.c_str(), "FEName", ConstString::none(), &FEName ) == false )
             {
-                LOGGER_ERROR( "invalid font '%s' don't setup FEName"
+                LOGGER_ERROR( "ttf font '%s' don't setup FEName"
                     , name.c_str()
                 );
 

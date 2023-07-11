@@ -17,7 +17,7 @@ namespace Mengine
     {
         if( ResourceImage::_compile() == false )
         {
-            LOGGER_ERROR( "'%s' invalid compile base ResourceImage class"
+            LOGGER_ERROR( "resource image solid '%s' invalid compile base ResourceImage class"
                 , this->getName().c_str()
             );
 

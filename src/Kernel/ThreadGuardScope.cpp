@@ -27,7 +27,7 @@ namespace Mengine
             const ConstString & currentThreadName = THREAD_SERVICE()
                 ->findThreadNameById( currentThreadId );
 
-            LOGGER_ERROR( "thread safe issue: [%s] current thread '%s' lock thread '%s'"
+            LOGGER_ASSERTION( "thread safe issue: [%s] current thread '%s' lock thread '%s'"
                 , _doc
                 , currentThreadName.c_str()
                 , lockThreadName.c_str()
@@ -52,7 +52,7 @@ namespace Mengine
             const ConstString & currentThreadName = THREAD_SERVICE()
                 ->findThreadNameById( currentThreadId );
 
-            LOGGER_ERROR( "thread safe issue: [%s] current thread '%s' lock thread '%s'"
+            LOGGER_ASSERTION( "thread safe issue: [%s] current thread '%s' lock thread '%s'"
                 , m_doc
                 , currentThreadName.c_str()
                 , lockThreadName.c_str()

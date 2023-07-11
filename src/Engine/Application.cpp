@@ -783,7 +783,7 @@ namespace Mengine
         Resolution currentResolution;
         if( this->calcWindowResolution( fullscreen, &currentResolution ) == false )
         {
-            LOGGER_ERROR( "Invalid calc window resolution" );
+            LOGGER_ERROR( "invalid calc window resolution" );
 
             return false;
         }
@@ -901,7 +901,7 @@ namespace Mengine
         if( PACKAGE_SERVICE()
             ->enablePackages( m_locale, platformTags ) == false )
         {
-            LOGGER_ERROR( "invalid enable for locale '%s' platform '%s'!"
+            LOGGER_ERROR( "invalid enable packages for locale '%s' platform '%s'!"
                 , m_locale.c_str()
                 , Helper::tagsToString( platformTags ).c_str()
             );

@@ -67,7 +67,7 @@ namespace Mengine
 #if !defined(MENGINE_TOOLCHAIN_MINGW64) && !defined(MENGINE_PLATFORM_APPLE)
         if( MENGINE_STRSTR( version, MAGIC_API ) == nullptr )
         {
-            LOGGER_ERROR( "Astralax Magic Particles Version: '%s' but need '%s'"
+            LOGGER_ASSERTION( "Astralax Magic Particles Version: '%s' but need '%s'"
                 , version
                 , MAGIC_API
             );

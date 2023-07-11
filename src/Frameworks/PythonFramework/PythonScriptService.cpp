@@ -354,7 +354,6 @@ namespace Mengine
 
         m_loggerWarning = Helper::makeFactorableUnique<PythonScriptLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_loggerWarning->setVerboseLevel( LM_WARNING );
         m_loggerWarning->setColor( LCOLOR_RED | LCOLOR_GREEN );
 
         pybind::object py_logger = pybind::make_object_t( m_kernel, m_loggerWarning );
@@ -362,7 +361,6 @@ namespace Mengine
 
         m_loggerError = Helper::makeFactorableUnique<PythonScriptLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_loggerError->setVerboseLevel( LM_ERROR );
         m_loggerError->setColor( LCOLOR_RED );
 
         pybind::object py_loggerError = pybind::make_object_t( m_kernel, m_loggerError );

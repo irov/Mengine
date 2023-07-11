@@ -47,7 +47,7 @@ namespace Mengine
         FilePath glyphPath;
         if( _config->hasValue( name.c_str(), "Glyph", FilePath::none(), &glyphPath ) == false )
         {
-            LOGGER_ERROR( "invalid font '%s' don't setup Glyph"
+            LOGGER_ERROR( "bitmap font '%s' don't setup Glyph"
                 , name.c_str()
             );
 
@@ -71,7 +71,7 @@ namespace Mengine
         FilePath pathFontImage;
         if( _config->hasValue( name.c_str(), "Image", FilePath::none(), &pathFontImage ) == false )
         {
-            LOGGER_ERROR( "invalid font '%s' dont setup Image"
+            LOGGER_ERROR( "bitmap font '%s' dont setup Image"
                 , name.c_str()
             );
 

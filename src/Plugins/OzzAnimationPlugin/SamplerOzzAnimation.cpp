@@ -171,7 +171,7 @@ namespace Mengine
         // Samples animation.
         if( sampling_job.Run() == false )
         {
-            LOGGER_ERROR( "ozz sampler '%s' invalid sampling job"
+            LOGGER_ERROR( "sampler ozz animation '%s' invalid sampling job"
                 , this->getName().c_str()
             );
 

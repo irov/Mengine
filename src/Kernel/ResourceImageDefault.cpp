@@ -34,7 +34,7 @@ namespace Mengine
     {
         if( ResourceImage::_compile() == false )
         {
-            LOGGER_ERROR( "'%s' invalid compile base ResourceImage class"
+            LOGGER_ERROR( "resource image '%s' invalid compile base ResourceImage class"
                 , this->getName().c_str()
             );
 

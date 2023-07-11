@@ -169,11 +169,11 @@ namespace Mengine
         Char stack_msg[8096] = {'\0'};
         if( extension->getCallstack( mainThreadId, stack_msg, 8095, nullptr ) == false )
         {
-            LOGGER_ERROR( "Antifreeze monitor invalid callstack" );
+            LOGGER_ERROR( "antifreeze monitor invalid callstack" );
         }
         else
         {
-            LOGGER_ERROR( "Antifreeze monitor callstack:\n%s"
+            LOGGER_ERROR( "antifreeze monitor callstack:\n%s"
                 , stack_msg
             );
         }
@@ -197,7 +197,7 @@ namespace Mengine
         if( PLATFORM_SERVICE()
             ->createProcessDump( processDumpPath.c_str(), nullptr, true ) == false )
         {
-            LOGGER_ERROR( "Antifreeze monitor invalid create process dump '%s'"
+            LOGGER_ERROR( "antifreeze monitor invalid create process dump '%s'"
                 , processDumpPath.c_str()
             );
         }

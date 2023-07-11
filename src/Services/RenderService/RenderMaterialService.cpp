@@ -146,22 +146,32 @@ namespace Mengine
 
         if( Engine_DefaultTextureFilterMipmap >= __MAX_TEXTURE_FILTER__ )
         {
-            LOGGER_ERROR( "[DefaultTextureFilterMipmap] undefined great %u current '%u'"
+            LOGGER_ASSERTION( "[DefaultTextureFilterMipmap] undefined great %u current '%u'"
                 , __MAX_TEXTURE_FILTER__
                 , Engine_DefaultTextureFilterMipmap
             );
 
-            return false;
+            Engine_DefaultTextureFilterMipmap = 0;
         }
 
         if( Engine_DefaultTextureFilterMagnification >= __MAX_TEXTURE_FILTER__ )
         {
-            LOGGER_ERROR( "[DefaultTextureFilterMagnification] undefined great %u current '%u'"
+            LOGGER_ASSERTION( "[DefaultTextureFilterMagnification] undefined great %u current '%u'"
                 , __MAX_TEXTURE_FILTER__
                 , Engine_DefaultTextureFilterMagnification
             );
 
-            return false;
+            Engine_DefaultTextureFilterMagnification = 2;
+        }
+
+        if( Engine_DefaultTextureFilterMinification >= __MAX_TEXTURE_FILTER__ )
+        {
+            LOGGER_ASSERTION( "[DefaultTextureFilterMinification] undefined great %u current '%u'"
+                , __MAX_TEXTURE_FILTER__
+                , Engine_DefaultTextureFilterMinification
+            );
+
+            Engine_DefaultTextureFilterMinification = 2;
         }
 
         m_defaultTextureFilterMipmap = Detail::parseConfigTextureFilterValue( Engine_DefaultTextureFilterMipmap );

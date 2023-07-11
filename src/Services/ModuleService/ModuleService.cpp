@@ -37,7 +37,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         for( const ModuleInterfacePtr & module : m_modules )
         {
-            LOGGER_ERROR( "was forgotten stop module '%s'"
+            LOGGER_ASSERTION( "was forgotten stop module '%s'"
                 , module->getName().c_str()
             );
         }

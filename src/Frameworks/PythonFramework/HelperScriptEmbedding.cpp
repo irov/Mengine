@@ -820,16 +820,80 @@ namespace Mengine
                     ->addGlobalModule( _name, _module );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_logger( ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _message )
+            void s_logInfo( const Char * _message )
             {
                 LoggerMessage msg;
 
                 msg.category = "python";
                 DATETIME_SYSTEM()
                     ->getLocalDateTime( &msg.dateTime );
-                msg.level = _level;
-                msg.filter = _filter;
-                msg.color = _color;
+
+                msg.level = LM_INFO;
+                msg.filter = LFILTER_NONE;
+                msg.color = LCOLOR_NONE;
+                msg.flag = LFLAG_SHORT;
+                msg.file = "";
+                msg.line = 0;
+                msg.data = _message;
+                msg.size = MENGINE_STRLEN( _message );
+
+                LOGGER_SERVICE()
+                    ->logMessage( msg );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_logMessage( const Char * _message )
+            {
+                LoggerMessage msg;
+
+                msg.category = "python";
+                DATETIME_SYSTEM()
+                    ->getLocalDateTime( &msg.dateTime );
+
+                msg.level = LM_MESSAGE;
+                msg.filter = LFILTER_NONE;
+                msg.color = LCOLOR_NONE;
+                msg.flag = LFLAG_SHORT;
+                msg.file = "";
+                msg.line = 0;
+                msg.data = _message;
+                msg.size = MENGINE_STRLEN( _message );
+
+                LOGGER_SERVICE()
+                    ->logMessage( msg );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_logWarning( const Char * _message )
+            {
+                LoggerMessage msg;
+
+                msg.category = "python";
+                DATETIME_SYSTEM()
+                    ->getLocalDateTime( &msg.dateTime );
+
+                msg.level = LM_WARNING;
+                msg.filter = LFILTER_NONE;
+                msg.color = LCOLOR_NONE;
+                msg.flag = LFLAG_SHORT;
+                msg.file = "";
+                msg.line = 0;
+                msg.data = _message;
+                msg.size = MENGINE_STRLEN( _message );
+
+                LOGGER_SERVICE()
+                    ->logMessage( msg );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_logError( const Char * _message )
+            {
+                LoggerMessage msg;
+
+                msg.category = "python";
+                DATETIME_SYSTEM()
+                    ->getLocalDateTime( &msg.dateTime );
+
+                msg.level = LM_ERROR;
+                msg.filter = LFILTER_NONE;
+                msg.color = LCOLOR_NONE;
                 msg.flag = LFLAG_SHORT;
                 msg.file = "";
                 msg.line = 0;
@@ -3857,7 +3921,10 @@ namespace Mengine
 
         HelperScriptMethodPtr helperScriptMethod = Helper::makeFactorableUnique<HelperScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
 
-        pybind::def_functor( _kernel, "logger", helperScriptMethod, &HelperScriptMethod::s_logger );
+        pybind::def_functor( _kernel, "logInfo", helperScriptMethod, &HelperScriptMethod::s_logInfo );
+        pybind::def_functor( _kernel, "logMessage", helperScriptMethod, &HelperScriptMethod::s_logMessage );
+        pybind::def_functor( _kernel, "logWarning", helperScriptMethod, &HelperScriptMethod::s_logWarning );
+        pybind::def_functor( _kernel, "logError", helperScriptMethod, &HelperScriptMethod::s_logError );
 
         pybind::def_functor( _kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
         pybind::def_functor( _kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::s_enumerator );

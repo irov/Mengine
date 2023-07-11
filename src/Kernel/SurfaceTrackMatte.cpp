@@ -176,7 +176,7 @@ namespace Mengine
 
         if( m_resourceImage->compile() == false )
         {
-            LOGGER_ERROR( "'%s' resource '%s' is not compile"
+            LOGGER_ERROR( "surface track matte '%s' resource '%s' is not compile"
                 , this->getName().c_str()
                 , m_resourceImage->getName().c_str()
             );
@@ -190,7 +190,7 @@ namespace Mengine
 
         if( m_resourceTrackMatteImage->compile() == false )
         {
-            LOGGER_ERROR( "'%s' resource '%s' is not compile"
+            LOGGER_ERROR( "surface track matte '%s' resource '%s' is not compile"
                 , this->getName().c_str()
                 , m_resourceTrackMatteImage->getName().c_str()
             );
@@ -264,7 +264,7 @@ namespace Mengine
                         }break;
                     default:
                         {
-                            LOGGER_ERROR( "'%s' track matte mode [%u] invalid support blend mode [%u]"
+                            LOGGER_ERROR( "surface track matte '%s' mode [%u] invalid support blend mode [%u]"
                                 , this->getName().c_str()
                                 , m_trackMatteMode
                                 , blendMode
@@ -302,7 +302,7 @@ namespace Mengine
                         }break;
                     default:
                         {
-                            LOGGER_ERROR( "'%s' track matte mode [%u] invalid support blend mode [%u]"
+                            LOGGER_ERROR( "surface track matte '%s' mode [%u] invalid support blend mode [%u]"
                                 , this->getName().c_str()
                                 , m_trackMatteMode
                                 , blendMode
@@ -314,7 +314,7 @@ namespace Mengine
                 }break;
             default:
                 {
-                    LOGGER_ERROR( "'%s' invalid support track matte mode [%u]"
+                    LOGGER_ERROR( "surface track matte '%s' invalid support mode [%u]"
                         , this->getName().c_str()
                         , m_trackMatteMode
                     );
@@ -373,7 +373,7 @@ namespace Mengine
                         }break;
                     default:
                         {
-                            LOGGER_ERROR( "'%s' track matte mode [%u] invalid support blend mode [%u]"
+                            LOGGER_ERROR( "surface track matte '%s' mode [%u] invalid support blend mode [%u]"
                                 , this->getName().c_str()
                                 , m_trackMatteMode
                                 , blendMode
@@ -411,7 +411,7 @@ namespace Mengine
                         }break;
                     default:
                         {
-                            LOGGER_ERROR( "'%s' track matte mode [%u] invalid support blend mode [%u]"
+                            LOGGER_ERROR( "surface track matte '%s' mode [%u] invalid support blend mode [%u]"
                                 , this->getName().c_str()
                                 , m_trackMatteMode
                                 , blendMode
@@ -423,7 +423,7 @@ namespace Mengine
                 }break;
             default:
                 {
-                    LOGGER_ERROR( "'%s' invalid support track matte mode [%u]"
+                    LOGGER_ERROR( "surface track matte '%s' invalid support mode [%u]"
                         , this->getName().c_str()
                         , m_trackMatteMode
                     );

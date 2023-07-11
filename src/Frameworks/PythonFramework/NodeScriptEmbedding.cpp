@@ -170,7 +170,7 @@ namespace Mengine
                         String key;
                         if( pybind::extract_value( _kernel, py_string, key, false ) == false )
                         {
-                            LOGGER_ERROR( "'%s' invalid get str '%s'"
+                            LOGGER_ERROR( "text field '%s' invalid get str '%s'"
                                 , _textField->getName().c_str()
                                 , _kernel->object_repr( py_string ).c_str()
                             );
@@ -185,7 +185,7 @@ namespace Mengine
                         WString key;
                         if( pybind::extract_value( _kernel, py_string, key, false ) == false )
                         {
-                            LOGGER_ERROR( "'%s' invalid get unicode '%s'"
+                            LOGGER_ERROR( "text field '%s' invalid get unicode '%s'"
                                 , _textField->getName().c_str()
                                 , _kernel->object_repr( py_string ).c_str()
                             );
@@ -204,7 +204,7 @@ namespace Mengine
 
                         if( py_value_str.is_invalid() == true )
                         {
-                            LOGGER_ERROR( "'%s' not suport arg '%s'"
+                            LOGGER_ERROR( "text field '%s' not suport arg '%s'"
                                 , _textField->getName().c_str()
                                 , _kernel->object_repr( py_string ).c_str()
                             );

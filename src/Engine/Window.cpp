@@ -68,7 +68,7 @@ namespace Mengine
 
         if( m_resourceWindow->compile() == false )
         {
-            LOGGER_ERROR( "'%s' resource '%s' invalid compile"
+            LOGGER_ERROR( "window '%s' resource '%s' invalid compile"
                 , this->getName().c_str()
                 , m_resourceWindow->getName().c_str()
             );
@@ -465,7 +465,7 @@ namespace Mengine
     {
         if( this->hasBackground() == false )
         {
-            LOGGER_ERROR( "'%s' background not exist"
+            LOGGER_ERROR( "window '%s' background not exist"
                 , this->getName().c_str()
             );
 
@@ -505,7 +505,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "'%s' not compiled"
+            LOGGER_ERROR( "window '%s' not compiled"
                 , this->getName().c_str()
             );
 
@@ -549,7 +549,7 @@ namespace Mengine
 
         if( this->hasBackground() == false )
         {
-            LOGGER_ERROR( "'%s' background not exist"
+            LOGGER_ERROR( "window '%s' background not exist"
                 , this->getName().c_str()
             );
 

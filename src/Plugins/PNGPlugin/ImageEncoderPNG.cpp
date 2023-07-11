@@ -17,7 +17,7 @@ namespace Mengine
             MENGINE_UNUSED( _png_ptr );
             MENGINE_UNUSED( _error );
 
-            LOGGER_ERROR( "%s"
+            LOGGER_ASSERTION( "%s"
                 , _error
             );
         }

@@ -48,7 +48,7 @@ namespace Mengine
 
             (*_cinfo->err->format_message)(_cinfo, buffer);
 
-            LOGGER_ERROR( "jpeg '%s' error: %s"
+            LOGGER_ASSERTION( "jpeg '%s' error: %s"
                 , Detail::jpeg_get_debug_filepath( _cinfo ).c_str()
                 , buffer
             );
@@ -65,7 +65,7 @@ namespace Mengine
 
             (*_cinfo->err->format_message)(_cinfo, buffer);
 
-            LOGGER_ERROR( "jpeg '%s' message: %s"
+            LOGGER_ASSERTION( "jpeg '%s' message: %s"
                 , Detail::jpeg_get_debug_filepath( _cinfo ).c_str()
                 , buffer
             );

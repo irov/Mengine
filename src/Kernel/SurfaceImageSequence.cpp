@@ -127,7 +127,7 @@ namespace Mengine
 
         if( m_resourceImageSequence->compile() == false )
         {
-            LOGGER_ERROR( "'%s' resource '%s' is not compile"
+            LOGGER_ERROR( "surface image sequence '%s' resource '%s' is not compile"
                 , this->getName().c_str()
                 , m_resourceImageSequence->getName().c_str()
             );
@@ -212,7 +212,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "'%s' stop not activate"
+            LOGGER_ERROR( "surface image sequence '%s' stop not activate"
                 , getName().c_str()
             );
 
@@ -229,7 +229,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "'%s' end not activate"
+            LOGGER_ERROR( "surface image sequence '%s' end not activate"
                 , getName().c_str()
             );
 
@@ -313,7 +313,7 @@ namespace Mengine
 
             if( _frame >= sequenceCount )
             {
-                LOGGER_ERROR( "invalid '%s' set frame %u >= %u"
+                LOGGER_ERROR( "surface image sequence '%s' invalid set frame %u >= %u"
                     , this->getName().c_str()
                     , _frame
                     , sequenceCount

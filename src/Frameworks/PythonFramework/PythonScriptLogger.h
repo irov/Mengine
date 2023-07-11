@@ -26,10 +26,16 @@ namespace Mengine
         void setSoftspace( int32_t _softspace );
         int32_t getSoftspace() const;
 
+    public:
+        void setColor( uint32_t _color );
+        uint32_t getColor() const;
+
     protected:
         void log( const LoggerMessage & _loggerMessage ) override;
 
     protected:
+        uint32_t m_color;
+
         String m_messageCache;
 
         int32_t m_softspace;

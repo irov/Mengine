@@ -127,7 +127,7 @@ namespace Mengine
 
         if( opcall_err < 0 )
         {
-            LOGGER_ERROR( "invalid ov_open_callbacks [error: %s (%d)]"
+            LOGGER_ASSERTION( "invalid ov_open_callbacks [error: %s (%d)]"
                 , Detail::errorInfo( opcall_err )
                 , opcall_err
             );
@@ -206,7 +206,7 @@ namespace Mengine
 
             if( decodeSize == OV_HOLE )
             {
-                LOGGER_ERROR( "ov_read return OV_HOLE [size %ld]"
+                LOGGER_ASSERTION( "ov_read return OV_HOLE [size %ld]"
                     , decodeSize
                 );
 
@@ -216,7 +216,7 @@ namespace Mengine
 
             if( decodeSize < 0 )
             {
-                LOGGER_ERROR( "invalid ov_read [error: %s (%ld)]"
+                LOGGER_ASSERTION( "invalid ov_read [error: %s (%ld)]"
                     , Detail::errorInfo( (int32_t)decodeSize )
                     , decodeSize
                 );
@@ -246,7 +246,7 @@ namespace Mengine
     {
         if( _time >= m_dataInfo.length )
         {
-            LOGGER_ERROR( "time %f > total %f"
+            LOGGER_ASSERTION( "time %f > total %f"
                 , _time
                 , m_dataInfo.length
             );
@@ -271,8 +271,7 @@ namespace Mengine
 
         if( seek_err != 0 )
         {
-            //OV_ENOSEEK
-            LOGGER_ERROR( "time %f is %f [error: %s (%d)]"
+            LOGGER_ASSERTION( "time %f is %f [error: %s (%d)]"
                 , _time
                 , m_dataInfo.length
                 , Detail::errorInfo( seek_err )

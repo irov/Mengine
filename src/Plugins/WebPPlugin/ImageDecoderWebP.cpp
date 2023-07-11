@@ -72,7 +72,7 @@ namespace Mengine
 
         if( status != VP8_STATUS_OK )
         {
-            LOGGER_ERROR( "invalid WebPGetFeatures [%u]"
+            LOGGER_ERROR( "image decoder WebP invalid WebPGetFeatures [%u]"
                 , status
             );
 
@@ -187,7 +187,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_ERROR( "not support for in %u and out %u channels"
+            LOGGER_ERROR( "image decoder WebP not support for in %u and out %u channels"
                 , dataChannels
                 , optionChannels
             );

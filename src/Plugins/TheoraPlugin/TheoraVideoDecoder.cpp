@@ -95,7 +95,7 @@ namespace Mengine
         {
             if( this->read_buffer_data_() == 0 )
             {
-                LOGGER_ERROR( "bad file" );
+                LOGGER_ERROR( "theora video decoder bad file" );
 
                 return false;
             }
@@ -107,7 +107,7 @@ namespace Mengine
                 {
                     if( ogg_stream_pagein( &m_oggStreamState, &page ) == -1 )
                     {
-                        LOGGER_ERROR( "bad page in" );
+                        LOGGER_ERROR( "theora video decoder bad page in" );
 
                         return false;
                     }
@@ -122,14 +122,14 @@ namespace Mengine
                 int32_t serialno = ogg_page_serialno( &page );
                 if( ogg_stream_init( &oggStreamStateTest, serialno ) != 0 )
                 {
-                    LOGGER_ERROR( "error during ogg_stream_init" );
+                    LOGGER_ERROR( "theora video decoder error during ogg_stream_init" );
 
                     return false;
                 }
 
                 if( ogg_stream_pagein( &oggStreamStateTest, &page ) != 0 )
                 {
-                    LOGGER_ERROR( "error during ogg_stream_pagein" );
+                    LOGGER_ERROR( "theora video decoder error during ogg_stream_pagein" );
 
                     return false;
                 }
@@ -137,7 +137,7 @@ namespace Mengine
                 ogg_packet packet;
                 if( ogg_stream_packetout( &oggStreamStateTest, &packet ) == -1 )
                 {
-                    LOGGER_ERROR( "error during ogg_stream_packetout" );
+                    LOGGER_ERROR( "theora video decoder error during ogg_stream_packetout" );
 
                     return false;
                 }
@@ -171,7 +171,7 @@ namespace Mengine
 
                 if( result < 0 )
                 {
-                    LOGGER_ERROR( "error during ogg_stream_packetout %d"
+                    LOGGER_ERROR( "theora video decoder error during ogg_stream_packetout %d"
                         , result
                     );
 
@@ -187,7 +187,7 @@ namespace Mengine
 
                 if( result2 < 0 )
                 {
-                    LOGGER_ERROR( "error during theora_decode_header (corrupt stream) %d"
+                    LOGGER_ERROR( "theora video decoder error during theora_decode_header (corrupt stream) %d"
                         , result2
                     );
 
@@ -202,7 +202,7 @@ namespace Mengine
             {
                 if( ogg_stream_pagein( &m_oggStreamState, &page ) == -1 )
                 {
-                    LOGGER_ERROR( "invalid page..." );
+                    LOGGER_ERROR( "theora video decoder invalid page..." );
 
                     return false;
                 }
@@ -213,7 +213,7 @@ namespace Mengine
 
                 if( ret == 0 )
                 {
-                    LOGGER_ERROR( "eof searched. terminate..." );
+                    LOGGER_ERROR( "theora video decoder eof searched. terminate..." );
 
                     return false;
                 }
@@ -317,7 +317,7 @@ namespace Mengine
 
         if( error_code < 0 )
         {
-            LOGGER_ERROR( "error during theora_decode_YUVout '%d'"
+            LOGGER_ERROR( "theora video decoder error during theora_decode_YUVout '%d'"
                 , error_code
             );
 
@@ -640,7 +640,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_ERROR( "unsupport format" );
+            LOGGER_ERROR( "theora video decoder unsupport format" );
 
             return false;
         }

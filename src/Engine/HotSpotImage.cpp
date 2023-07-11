@@ -58,7 +58,7 @@ namespace Mengine
     {
         if( m_resourceTestPick == nullptr )
         {
-            LOGGER_ERROR( "'%s' not compiled"
+            LOGGER_ERROR( "hotspot image '%s' not compiled"
                 , this->getName().c_str()
             );
 
@@ -74,7 +74,7 @@ namespace Mengine
     {
         if( m_resourceTestPick == nullptr )
         {
-            LOGGER_ERROR( "'%s' not compiled"
+            LOGGER_ERROR( "hotspot image '%s' not compiled"
                 , this->getName().c_str()
             );
 
@@ -99,7 +99,7 @@ namespace Mengine
 
         if( m_resourceTestPick->compile() == false )
         {
-            LOGGER_ERROR( "'%s' can't compile HIT resource '%s'"
+            LOGGER_ERROR( "hotspot image '%s' can't compile HIT resource '%s'"
                 , this->getName().c_str()
                 , m_resourceTestPick->getName().c_str()
             );

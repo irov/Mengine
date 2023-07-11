@@ -36,7 +36,7 @@ namespace Mengine
 #if defined(MENGINE_DOCUMENT_ENABLE)
         for( const TimepipeDesc & desc : m_timepipe )
         {
-            LOGGER_ERROR( "Not remove timepipe '%s'"
+            LOGGER_ASSERTION( "was forgotten remove timepipe '%s'"
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );
         }

@@ -48,7 +48,7 @@ namespace Mengine
 
         if( m_surfaceSound->compile() == false )
         {
-            LOGGER_ERROR( "'%s' can`t compile sound surface '%s'"
+            LOGGER_ERROR( "sound emitter '%s' can`t compile sound surface '%s'"
                 , this->getName().c_str()
                 , m_surfaceSound->getName().c_str()
             );

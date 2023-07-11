@@ -308,7 +308,7 @@ namespace Mengine
                 if( AMPLIFIER_SERVICE()
                     ->playMusic( _resourceMusic, _pos, _isLooped, cb ) == false )
                 {
-                    LOGGER_ERROR( "invalid play music '%s' "
+                    LOGGER_ASSERTION( "invalid play music '%s' "
                         , _resourceMusic.c_str()
                     );
 

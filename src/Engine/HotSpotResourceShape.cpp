@@ -25,7 +25,7 @@ namespace Mengine
 
         if( m_resourceShape->compile() == false )
         {
-            LOGGER_ERROR( "'%s' resource '%s' not compile"
+            LOGGER_ERROR( "hotspot resource shape '%s' resource '%s' not compile"
                 , this->getName().c_str()
                 , m_resourceShape->getName().c_str()
             );

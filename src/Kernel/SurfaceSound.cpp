@@ -36,7 +36,7 @@ namespace Mengine
 
         if( m_resourceSound->compile() == false )
         {
-            LOGGER_ERROR( "sound '%s' resource '%s' not compile"
+            LOGGER_ERROR( "surface sound '%s' resource '%s' not compile"
                 , this->getName().c_str()
                 , m_resourceSound->getName().c_str()
             );
@@ -50,7 +50,7 @@ namespace Mengine
         {
             m_resourceSound->release();
 
-            LOGGER_ERROR( "sound '%s' resource '%s' failed create buffer"
+            LOGGER_ERROR( "surface sound '%s' resource '%s' failed create buffer"
                 , this->getName().c_str()
                 , m_resourceSound->getName().c_str()
             );
@@ -104,7 +104,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->releaseSoundSource( m_soundIdentity ) == false )
         {
-            LOGGER_ERROR( "'%s' emitter invalid release sound %u"
+            LOGGER_ERROR( "surface sound '%s' emitter invalid release sound %u"
                 , this->getName().c_str()
                 , m_soundIdentity->getId()
             );
@@ -208,7 +208,7 @@ namespace Mengine
 
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "sound '%s' not compile"
+            LOGGER_ERROR( "surface sound '%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -224,7 +224,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->playEmitter( m_soundIdentity ) == false )
         {
-            LOGGER_ERROR( "'%s' invalid play [%u] resource '%s'"
+            LOGGER_ERROR( "surface sound '%s' invalid play [%u] resource '%s'"
                 , this->getName().c_str()
                 , m_soundIdentity->getId()
                 , m_resourceSound->getName().c_str()
@@ -252,7 +252,7 @@ namespace Mengine
 
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "'%s' not compile"
+            LOGGER_ERROR( "surface sound '%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -270,7 +270,7 @@ namespace Mengine
 
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "'%s' not compile"
+            LOGGER_ERROR( "surface sound '%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -340,7 +340,8 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->setSourceVolume( m_soundIdentity, m_volume, m_volume, forceVolume ) == false )
         {
-            LOGGER_ERROR( "invalid %s:%u %f"
+            LOGGER_ERROR( "surface sound '%s' resource '%s' identity [%u] invalid set source volume %f"
+                , this->getName().c_str()
                 , m_resourceSound->getName().c_str()
                 , m_soundIdentity->getId()
                 , m_volume
@@ -368,7 +369,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "'%s' not compile"
+            LOGGER_ERROR( "surface sound '%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -392,7 +393,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "'%s' not compile"
+            LOGGER_ERROR( "surface sound '%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -416,7 +417,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "'%s' not compile"
+            LOGGER_ERROR( "surface sound '%s' not compile"
                 , this->getName().c_str()
             );
 

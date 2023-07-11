@@ -38,19 +38,19 @@ namespace Mengine
 
         if( device == nullptr )
         {
-            LOGGER_ERROR( "failed to open 'default' sound device" );
+            LOGGER_ASSERTION( "failed to open 'default' sound device" );
 
             device = alcOpenDevice( "Generic Software" );
 
             if( device == nullptr )
             {
-                LOGGER_ERROR( "failed to open 'Generic Software' sound device" );
+                LOGGER_ASSERTION( "failed to open 'Generic Software' sound device" );
 
                 device = alcOpenDevice( "Generic Hardware" );
 
                 if( device == nullptr )
                 {
-                    LOGGER_ERROR( "failed to open 'Generic Hardware' sound device" );
+                    LOGGER_ASSERTION( "failed to open 'Generic Hardware' sound device" );
 
                     return false;
                 }
@@ -63,7 +63,7 @@ namespace Mengine
 
         if( context == nullptr )
         {
-            LOGGER_ERROR( "failed to create context" );
+            LOGGER_ASSERTION( "failed to create context" );
 
             MENGINE_OPENAL_CALL( alcCloseDevice, (m_device) );
             m_device = nullptr;
@@ -77,7 +77,7 @@ namespace Mengine
 
         if( currentResult == ALC_FALSE )
         {
-            LOGGER_ERROR( "failed to make context current" );
+            LOGGER_ASSERTION( "failed to make context current" );
 
             MENGINE_OPENAL_CALL( alcDestroyContext, (m_context) );
             m_context = nullptr;
@@ -210,7 +210,7 @@ namespace Mengine
 
         if( soundSource->initialize() == false )
         {
-            LOGGER_ERROR( "invalid sound source initialize" );
+            LOGGER_ASSERTION( "invalid sound source initialize" );
 
             return nullptr;
         }
@@ -245,7 +245,7 @@ namespace Mengine
 
         if( base->load( _soundDecoder ) == false )
         {
-            LOGGER_ERROR( "Failed to create sound buffer from stream" );
+            LOGGER_ASSERTION( "failed to create sound buffer from stream" );
 
             return nullptr;
         }

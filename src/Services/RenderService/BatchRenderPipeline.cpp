@@ -148,7 +148,7 @@ namespace Mengine
 
         if( m_renderObjects.full() == true )
         {
-            LOGGER_ERROR( "max render objects %u"
+            LOGGER_ASSERTION( "max render objects %u"
                 , m_renderObjects.size()
             );
 
@@ -229,7 +229,7 @@ namespace Mengine
 
         if( _vertexCount >= MENGINE_RENDER_VERTEX_MAX_BATCH )
         {
-            LOGGER_ERROR( "_vertexCount(%u) >= MENGINE_RENDER_VERTEX_MAX_BATCH(%u)"
+            LOGGER_ASSERTION( "_vertexCount(%u) >= MENGINE_RENDER_VERTEX_MAX_BATCH(%u)"
                 , _vertexCount
                 , MENGINE_RENDER_VERTEX_MAX_BATCH
             );
@@ -239,7 +239,7 @@ namespace Mengine
 
         if( m_renderObjects.full() == true )
         {
-            LOGGER_ERROR( "max render objects '%u'"
+            LOGGER_ASSERTION( "max render objects '%u'"
                 , m_renderObjects.size()
             );
 
@@ -411,7 +411,7 @@ namespace Mengine
 
         if( m_renderObjects.full() == true )
         {
-            LOGGER_ERROR( "max render objects %u"
+            LOGGER_ASSERTION( "max render objects %u"
                 , m_renderObjects.size()
             );
 
@@ -474,7 +474,7 @@ namespace Mengine
 
         if( _vertexCount >= MENGINE_RENDER_VERTEX_MAX_BATCH )
         {
-            LOGGER_ERROR( "_vertexCount(%u) >= MENGINE_RENDER_VERTEX_MAX_BATCH(%u)"
+            LOGGER_ASSERTION( "_vertexCount(%u) >= MENGINE_RENDER_VERTEX_MAX_BATCH(%u)"
                 , _vertexCount
                 , MENGINE_RENDER_VERTEX_MAX_BATCH
             );
@@ -514,7 +514,7 @@ namespace Mengine
 
         if( indicesCount >= m_indicesQuad.size() )
         {
-            LOGGER_ERROR( "count [%u] > max count [%u]"
+            LOGGER_ASSERTION( "count [%u] > max count [%u]"
                 , indicesCount
                 , m_indicesQuad.size()
             );
@@ -536,7 +536,7 @@ namespace Mengine
 
         if( indicesCount >= m_indicesQuad.size() )
         {
-            LOGGER_ERROR( "count [%u] > max count [%u]"
+            LOGGER_ASSERTION( "count [%u] > max count [%u]"
                 , indicesCount
                 , m_indicesQuad.size()
             );
@@ -558,7 +558,7 @@ namespace Mengine
 
         if( indicesCount >= m_indicesLine.size() )
         {
-            LOGGER_ERROR( "count [%u] > max count [%u]"
+            LOGGER_ASSERTION( "count [%u] > max count [%u]"
                 , indicesCount
                 , m_indicesLine.size()
             );
@@ -961,7 +961,7 @@ namespace Mengine
 
         if( vertexBufferOffset + vertexCountSize > vertexBufferSize )
         {
-            LOGGER_ERROR( "vertex buffer overrlow!" );
+            LOGGER_ASSERTION( "vertex buffer overrlow!" );
 
             return false;
         }
@@ -974,7 +974,7 @@ namespace Mengine
 
         if( indexBufferOffset + indexCountSize > indexBufferSize )
         {
-            LOGGER_ERROR( "index buffer overrlow!" );
+            LOGGER_ASSERTION( "index buffer overrlow!" );
 
             return false;
         }

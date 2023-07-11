@@ -11,7 +11,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PythonScriptLogger::PythonScriptLogger()
-        : m_softspace( 0 )
+        : m_color( LCOLOR_NONE )
+        , m_softspace( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -62,7 +63,6 @@ namespace Mengine
 
         const Char * message = m_messageCache.c_str();
 
-        ELoggerLevel level = this->getVerboseLevel();
         uint32_t color = this->getColor();
 
         if( HAS_OPTION( "tracescriptlog" ) == true )
@@ -71,11 +71,11 @@ namespace Mengine
             uint32_t lineno = 0;
             _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
-            LOGGER_VERBOSE_LEVEL( "python", level, LFILTER_NONE, color, function, lineno, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )( "%s", message );
+            LOGGER_VERBOSE_LEVEL( "python", LM_WARNING, LFILTER_NONE, color, function, lineno, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )( "%s", message );
         }
         else
         {
-            LOGGER_VERBOSE_LEVEL( "python", level, LFILTER_NONE, color, nullptr, 0, LFLAG_SHORT )( "%s", message );
+            LOGGER_VERBOSE_LEVEL( "python", LM_WARNING, LFILTER_NONE, color, nullptr, 0, LFLAG_SHORT )( "%s", message );
         }
 
         m_messageCache.clear();
@@ -91,6 +91,16 @@ namespace Mengine
     int32_t PythonScriptLogger::getSoftspace() const
     {
         return m_softspace;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonScriptLogger::setColor( uint32_t _color )
+    {
+        m_color = _color;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t PythonScriptLogger::getColor() const
+    {
+        return m_color;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptLogger::log( const LoggerMessage & _loggerMessage )

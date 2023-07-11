@@ -57,7 +57,7 @@ namespace Mengine
 
         if( m_propagate->getRender() == nullptr )
         {
-            LOGGER_ERROR( "'%s' propagate node '%s' type '%s' is not Renderable!"
+            LOGGER_ERROR( "movie scene effect '%s' propagate node '%s' type '%s' is not Renderable!"
                 , this->getName().c_str()
                 , m_propagate->getName().c_str()
                 , m_propagate->getType().c_str()

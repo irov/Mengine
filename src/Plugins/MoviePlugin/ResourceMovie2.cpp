@@ -108,7 +108,7 @@ namespace Mengine
 
         if( compositionData == nullptr )
         {
-            LOGGER_ERROR( "resource '%s' file '%s' not found composition data '%s'"
+            LOGGER_ERROR( "resource movie2 '%s' file '%s' not found composition data '%s'"
                 , this->getName().c_str()
                 , this->getContent()->getFilePath().c_str()
                 , _compositionName.c_str()
@@ -145,7 +145,7 @@ namespace Mengine
 
         if( it_found == m_compositions.end() )
         {
-            LOGGER_ERROR( "resource '%s' path '%s' invalid get composition name '%s'"
+            LOGGER_ERROR( "resource movie2 '%s' path '%s' invalid get composition name '%s'"
                 , this->getName().c_str()
                 , this->getContent()->getFilePath().c_str()
                 , _compositionName.c_str()
@@ -185,7 +185,7 @@ namespace Mengine
 
         if( filePath.empty() == true )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' don`t set file path"
+            LOGGER_ERROR( "resource movie2 '%s' group '%s' don`t set file path"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
             );

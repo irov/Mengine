@@ -50,7 +50,7 @@ namespace Mengine
 
         if( m_resourceImage->compile() == false )
         {
-            LOGGER_ERROR( "'%s' resource '%s' is not compile"
+            LOGGER_ERROR( "surface image '%s' resource '%s' is not compile"
                 , this->getName().c_str()
                 , m_resourceImage->getName().c_str()
             );

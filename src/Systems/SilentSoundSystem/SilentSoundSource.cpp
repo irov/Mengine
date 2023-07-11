@@ -41,7 +41,7 @@ namespace Mengine
 
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR( "invalid sound buffer" );
+            LOGGER_ASSERTION( "invalid sound buffer" );
 
             return false;
         }
@@ -82,7 +82,7 @@ namespace Mengine
 
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR( "invalid sound buffer" );
+            LOGGER_ASSERTION( "invalid sound buffer" );
 
             return;
         }
@@ -109,7 +109,7 @@ namespace Mengine
 
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR( "invalid sound buffer" );
+            LOGGER_ASSERTION( "invalid sound buffer" );
 
             return false;
         }
@@ -183,7 +183,7 @@ namespace Mengine
     {
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR( "invalid sound buffer" );
+            LOGGER_ASSERTION( "invalid sound buffer" );
 
             return 0.f;
         }
@@ -197,7 +197,7 @@ namespace Mengine
     {
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR( "invalid sound buffer" );
+            LOGGER_ASSERTION( "invalid sound buffer" );
 
             return 0.f;
         }

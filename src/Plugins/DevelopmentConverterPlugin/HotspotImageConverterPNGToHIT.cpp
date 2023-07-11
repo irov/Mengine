@@ -92,7 +92,7 @@ namespace Mengine
 
         if( imageDecoder->prepareData( input_stream ) == false )
         {
-            LOGGER_ERROR( "Image initialize for file '%s' was not found"
+            LOGGER_ERROR( "image initialize for file '%s' was not found"
                 , m_options.inputFilePath.c_str()
             );
 

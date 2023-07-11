@@ -68,7 +68,7 @@ namespace Mengine
 
         if( m_resourceAstralax->compile() == false )
         {
-            LOGGER_ERROR( "emitter '%s' resource '%s' not compile"
+            LOGGER_ERROR( "astralax emitter '%s' resource '%s' not compile"
                 , this->getName().c_str()
                 , m_resourceAstralax->getName().c_str()
             );
@@ -115,7 +115,7 @@ namespace Mengine
         {
             if( emitter->setPositionProvider( AstralaxPositionProviderInterfacePtr::from( this ) ) == false )
             {
-                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceAstralax->getGroupName().c_str()
                     , m_resourceAstralax->getName().c_str()
@@ -128,7 +128,7 @@ namespace Mengine
         {
             if( emitter->setPositionProvider( nullptr ) == false )
             {
-                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceAstralax->getGroupName().c_str()
                     , m_resourceAstralax->getName().c_str()
@@ -142,7 +142,7 @@ namespace Mengine
         {
             if( emitter->setCameraProvider( AstralaxCameraProviderInterfacePtr::from( this ) ) == false )
             {
-                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceAstralax->getGroupName().c_str()
                     , m_resourceAstralax->getName().c_str()
@@ -155,7 +155,7 @@ namespace Mengine
         {
             if( emitter->setCameraProvider( nullptr ) == false )
             {
-                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceAstralax->getGroupName().c_str()
                     , m_resourceAstralax->getName().c_str()
@@ -282,7 +282,7 @@ namespace Mengine
 
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "emitter '%s' can't compile"
+            LOGGER_ERROR( "astralax emitter '%s' can't compile"
                 , this->getName().c_str()
             );
 
@@ -504,7 +504,7 @@ namespace Mengine
         {
             if( m_emitter->setPositionProvider( AstralaxPositionProviderInterfacePtr( this ) ) == false )
             {
-                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceAstralax->getGroupName().c_str()
                     , m_resourceAstralax->getName().c_str()
@@ -517,7 +517,7 @@ namespace Mengine
         {
             if( m_emitter->setPositionProvider( nullptr ) == false )
             {
-                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceAstralax->getGroupName().c_str()
                     , m_resourceAstralax->getName().c_str()
@@ -541,7 +541,7 @@ namespace Mengine
         {
             if( m_emitter->setCameraProvider( AstralaxCameraProviderInterfacePtr( this ) ) == false )
             {
-                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceAstralax->getGroupName().c_str()
                     , m_resourceAstralax->getName().c_str()
@@ -554,7 +554,7 @@ namespace Mengine
         {
             if( m_emitter->setCameraProvider( nullptr ) == false )
             {
-                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceAstralax->getGroupName().c_str()
                     , m_resourceAstralax->getName().c_str()
@@ -620,7 +620,7 @@ namespace Mengine
 
         if( _emitter->changeEmitterImage( alphaWidth, alphaHeight, alphaBuffer, 1 ) == false )
         {
-            LOGGER_ERROR( "emitter '%s' changeEmitterImage Error image '%s'"
+            LOGGER_ERROR( "astralax emitter '%s' changeEmitterImage Error image '%s'"
                 , this->getName().c_str()
                 , m_emitterResourceImage->getName().c_str()
             );
@@ -664,7 +664,7 @@ namespace Mengine
         VectorPoints points;
         if( Helper::triangulate( m_polygon, &points ) == false )
         {
-            LOGGER_ERROR( "emitter '%s' wrong polygon"
+            LOGGER_ERROR( "astralax emitter '%s' wrong polygon"
                 , this->getName().c_str()
             );
 
@@ -673,7 +673,7 @@ namespace Mengine
 
         if( points.empty() == true )
         {
-            LOGGER_ERROR( "emitter '%s' empty points"
+            LOGGER_ERROR( "astralax emitter '%s' empty points"
                 , this->getName().c_str()
             );
 
@@ -685,7 +685,7 @@ namespace Mengine
 
         if( _emitter->changeEmitterModel( triangles_ptr, (uint32_t)triangles_size ) == false )
         {
-            LOGGER_ERROR( "emitter '%s' changeEmitterModel Error polygon"
+            LOGGER_ERROR( "astralax emitter '%s' changeEmitterModel Error polygon"
                 , this->getName().c_str()
             );
 
@@ -720,7 +720,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "emitter '%s' can't compile"
+            LOGGER_ERROR( "astralax emitter '%s' can't compile"
                 , this->getName().c_str()
             );
 

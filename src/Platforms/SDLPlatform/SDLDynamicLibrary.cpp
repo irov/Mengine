@@ -42,7 +42,7 @@ namespace Mengine
 
         if( instance == nullptr )
         {
-            LOGGER_ERROR( "'%s' failed load object: %s"
+            LOGGER_ERROR( "dynamic library '%s' failed load object: %s"
                 , this->getName()
                 , SDL_GetError()
             );
@@ -72,7 +72,7 @@ namespace Mengine
 
         if( proc == nullptr )
         {
-            LOGGER_ERROR( "'%s' failed get symbol '%s' error: %s"
+            LOGGER_ERROR( "dynamic library '%s' failed get symbol '%s' error: %s"
                 , this->getName()
                 , _name
                 , SDL_GetError()

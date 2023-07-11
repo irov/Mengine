@@ -48,7 +48,7 @@ namespace Mengine
 
         if( m_surface->compile() == false )
         {
-            LOGGER_ERROR( "'%s' surface '%s' not compile"
+            LOGGER_ERROR( "hotspot surface '%s' surface '%s' not compile"
                 , this->getName().c_str()
                 , m_surface->getName().c_str()
             );

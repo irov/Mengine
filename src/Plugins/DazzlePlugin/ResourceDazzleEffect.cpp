@@ -28,7 +28,7 @@ namespace Mengine
 
         if( filePath.empty() == true )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' don`t set file path"
+            LOGGER_ERROR( "dazzle effect resource '%s' group '%s' don`t set file path"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
             );

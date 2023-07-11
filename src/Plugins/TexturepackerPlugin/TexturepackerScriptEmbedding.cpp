@@ -26,7 +26,7 @@ namespace Mengine
             ResourceImagePtr resource;
             if( _texturepacker->findFrame( _name, &resource ) == false )
             {
-                LOGGER_ERROR( "'%s' not found frame '%s'"
+                LOGGER_ERROR( "resource texturepacker '%s' not found frame '%s'"
                     , _texturepacker->getName().c_str()
                     , _name.c_str()
                 );

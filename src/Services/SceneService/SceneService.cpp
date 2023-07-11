@@ -334,7 +334,7 @@ namespace Mengine
         {
             if( m_currentScene == m_globalScene )
             {
-                LOGGER_ERROR( "block delete global scene" );
+                LOGGER_ASSERTION( "block delete global scene" );
 
                 return;
             }

@@ -47,7 +47,7 @@ namespace Mengine
 
         if( Helper::magicTest4( header.ChunkID, "RIFF" ) == false )
         {
-            LOGGER_ERROR( "invalid chunk id 'RIFF'" );
+            LOGGER_ERROR( "sound decoder WAV invalid chunk id 'RIFF'" );
 
             return false;
         }
@@ -58,7 +58,7 @@ namespace Mengine
 
         if( Helper::magicTest4( header.Format, "WAVE" ) == false )
         {
-            LOGGER_ERROR( "invalid format 'WAVE'" );
+            LOGGER_ERROR( "sound decoder WAV invalid format 'WAVE'" );
 
             return false;
         }
@@ -67,7 +67,7 @@ namespace Mengine
 
         if( Helper::magicTest4( header.Subchunk1ID, "fmt " ) == false )
         {
-            LOGGER_ERROR( "invalid subchunk id 'fmt '" );
+            LOGGER_ERROR( "sound decoder WAV invalid subchunk id 'fmt '" );
 
             return false;
         }
@@ -78,7 +78,7 @@ namespace Mengine
 
         if( header.AudioFormat != 1 )
         {
-            LOGGER_ERROR( "invalid AudioFormat %u"
+            LOGGER_ERROR( "sound decoder WAV invalid AudioFormat %u"
                 , header.AudioFormat
             );
 
@@ -93,7 +93,7 @@ namespace Mengine
 
         if( (header.BitsPerSample != 16) && (header.BitsPerSample != 8) )
         {
-            LOGGER_ERROR( "invalid bits per sample %u"
+            LOGGER_ERROR( "sound decoder WAV invalid bits per sample %u"
                 , header.BitsPerSample
             );
 
@@ -105,7 +105,7 @@ namespace Mengine
         size_t chunkDataSize;
         if( this->findChunkData_( stream, &chunkDataSize ) == false )
         {
-            LOGGER_ERROR( "invalid find chunk data [bps %u]"
+            LOGGER_ERROR( "sound decoder WAV invalid find chunk data [bps %u]"
                 , header.BitsPerSample
             );
 
@@ -168,7 +168,7 @@ namespace Mengine
     {
         if( _time > m_dataInfo.length && mt::equal_f_f_e( _time, m_dataInfo.length, 0.01f ) == false )
         {
-            LOGGER_ERROR( "timing %f > total %f"
+            LOGGER_ERROR( "sound decoder WAV timing %f > total %f"
                 , _time
                 , m_dataInfo.length
             );

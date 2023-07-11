@@ -739,7 +739,7 @@ namespace Mengine
         String utf8_logFilename;
         if( Helper::unicodeToUtf8( unicode_logFilename, &utf8_logFilename ) == false )
         {
-            LOGGER_ERROR( "failed log directory '%ls' convert to ut8f"
+            LOGGER_ASSERTION( "failed log directory '%ls' convert to ut8f"
                 , unicode_logFilename.c_str()
             );
 
@@ -761,7 +761,7 @@ namespace Mengine
         if( LOGGER_SERVICE()
             ->registerLogger( fileLog ) == false )
         {
-            LOGGER_ERROR( "invalid register file logger '%s'"
+            LOGGER_ASSERTION( "invalid register file logger '%s'"
                 , logFilename.c_str()
             );
         }
@@ -898,7 +898,7 @@ namespace Mengine
 
         if( this->loadApplicationConfig_() == false )
         {
-            LOGGER_ERROR( "invalid load application ini" );
+            LOGGER_ERROR( "invalid load application config" );
 
             return false;
         }
@@ -934,7 +934,7 @@ namespace Mengine
 
         if( this->initializeFileLogger_() == false )
         {
-            LOGGER_ERROR( "invalid initalize file logger" );
+            LOGGER_ASSERTION( "invalid initalize file logger" );
 
             return false;
         }
@@ -1026,7 +1026,7 @@ namespace Mengine
 
         if( this->createDynamicSystemDevPlugins_() == false )
         {
-            LOGGER_ERROR( "invalid create dynamic priority dev plugins" );
+            LOGGER_ASSERTION( "invalid create dynamic priority dev plugins" );
 
             return false;
         }
@@ -1618,7 +1618,7 @@ namespace Mengine
                 if( MODULE_SERVICE()
                     ->hasModule( moduleName ) == false )
                 {
-                    LOGGER_ERROR( "not exist dev module '%s'"
+                    LOGGER_ASSERTION( "not exist dev module '%s'"
                         , moduleName.c_str()
                     );
 
@@ -1632,7 +1632,7 @@ namespace Mengine
                 if( MODULE_SERVICE()
                     ->runModule( moduleName, MENGINE_DOCUMENT_FACTORABLE ) == false )
                 {
-                    LOGGER_ERROR( "failed to run dev module '%s'"
+                    LOGGER_ASSERTION( "failed to run dev module '%s'"
                         , moduleName.c_str()
                     );
                 }
@@ -1734,7 +1734,7 @@ namespace Mengine
                 if( MODULE_SERVICE()
                     ->hasModule( moduleName ) == false )
                 {
-                    LOGGER_ERROR( "not exist dev module '%s'"
+                    LOGGER_ASSERTION( "not exist dev module '%s'"
                         , moduleName.c_str()
                     );
 
@@ -1744,7 +1744,7 @@ namespace Mengine
                 if( MODULE_SERVICE()
                     ->isRunModule( moduleName ) == false )
                 {
-                    LOGGER_ERROR( "not run dev module '%s'"
+                    LOGGER_ASSERTION( "not run dev module '%s'"
                         , moduleName.c_str()
                     );
 
@@ -1758,7 +1758,7 @@ namespace Mengine
                 if( MODULE_SERVICE()
                     ->stopModule( moduleName ) == false )
                 {
-                    LOGGER_ERROR( "failed to stop dev module '%s'"
+                    LOGGER_ASSERTION( "failed to stop dev module '%s'"
                         , moduleName.c_str()
                     );
                 }

@@ -28,7 +28,7 @@ namespace Mengine
 
         if( m_surface->compile() == false )
         {
-            LOGGER_ERROR( "'%s' can`t compile surface '%s'"
+            LOGGER_ERROR( "meshget '%s' can`t compile surface '%s'"
                 , this->getName().c_str()
                 , m_surface->getName().c_str()
             );

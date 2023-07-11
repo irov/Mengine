@@ -233,7 +233,7 @@ namespace Mengine
     {
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "service is stop" );
+            LOGGER_ERROR( "curl service is stop" );
 
             return MENGINE_HTTP_REQUEST_INVALID;
         }
@@ -295,7 +295,7 @@ namespace Mengine
     {
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "service is stop" );
+            LOGGER_ERROR( "curl service is stop" );
 
             return MENGINE_HTTP_REQUEST_INVALID;
         }
@@ -357,7 +357,7 @@ namespace Mengine
     {
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "service is stop" );
+            LOGGER_ERROR( "curl service is stop" );
 
             return MENGINE_HTTP_REQUEST_INVALID;
         }
@@ -419,7 +419,7 @@ namespace Mengine
     {
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "service is stop" );
+            LOGGER_ERROR( "curl service is stop" );
 
             return MENGINE_HTTP_REQUEST_INVALID;
         }
@@ -481,7 +481,7 @@ namespace Mengine
     {
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "service is stop" );
+            LOGGER_ERROR( "curl service is stop" );
 
             return 0;
         }
@@ -554,7 +554,7 @@ namespace Mengine
     {
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "service is stop" );
+            LOGGER_ERROR( "curl service is stop" );
 
             return false;
         }
@@ -575,7 +575,7 @@ namespace Mengine
             return true;
         }
 
-        LOGGER_ERROR( "request [%u] not found"
+        LOGGER_ERROR( "curl request [%u] not found"
             , _id
         );
 
@@ -625,7 +625,7 @@ namespace Mengine
 
         m_mutex->unlock();
 
-        LOGGER_ERROR( "invalid request '%u' %s (status [%u] error '%.2048s' response '%.2048s' code [%u])"
+        LOGGER_ERROR( "curl invalid request '%u' %s (status [%u] error '%.2048s' response '%.2048s' code [%u])"
             , _response->getRequestId()
             , _response->isSuccessful() ? "complete" : "failure"
             , _response->getStatus()

@@ -57,7 +57,7 @@ namespace Mengine
 
         if( decoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "name '%s' - hit file '%s' invalid initialize decoder '%s'"
+            LOGGER_ERROR( "resource HIT '%s' file '%s' invalid initialize decoder '%s'"
                 , this->getName().c_str()
                 , this->getContent()->getFilePath().c_str()
                 , this->getContent()->getCodecType().c_str()
@@ -100,7 +100,7 @@ namespace Mengine
 
         if( test_mipmapsize != mipmapsize )
         {
-            LOGGER_ERROR( "name '%s' invalid decode hit '%s' size %u (%zu)"
+            LOGGER_ERROR( "resource HIT '%s' invalid decode hit '%s' size %u (%zu)"
                 , this->getName().c_str()
                 , this->getContent()->getFilePath().c_str()
                 , m_mipmapsize
@@ -254,7 +254,7 @@ namespace Mengine
 
         if( bufferOffset >= m_mipmapsize )
         {
-            LOGGER_ERROR( "'%s' hit file '%s' invalid get level buffer %u:%u"
+            LOGGER_ERROR( "resource HIT '%s' file '%s' invalid get level buffer %u:%u"
                 , this->getName().c_str()
                 , this->getContent()->getFilePath().c_str()
                 , _level

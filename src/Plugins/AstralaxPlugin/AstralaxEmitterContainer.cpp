@@ -53,7 +53,7 @@ namespace Mengine
         HM_FILE mf;
         if( this->loadContainer_( binary_memory, binary_size, &mf ) == false )
         {
-            LOGGER_ERROR( "invalid initialize astralax container '%s'"
+            LOGGER_ERROR( "astralax emitter container '%s' invalid initialize "
                 , Helper::getFileGroupFullPath( _fileGroup, _filePath )
             );
 
@@ -99,7 +99,7 @@ namespace Mengine
     {
         if( Magic_HasTextures( m_mf ) == true )
         {
-            LOGGER_ERROR( "astralax particle textures are stored within the file" );
+            LOGGER_ERROR( "astralax emitter container particle textures are stored within the file" );
 
             return false;
         }
@@ -163,7 +163,7 @@ namespace Mengine
             return image;
         }
 
-        LOGGER_ERROR( "not found atlas '%s'"
+        LOGGER_ERROR( "astralax emitter container not found atlas '%s'"
             , _file
         );
 
@@ -178,14 +178,14 @@ namespace Mengine
 
         if( mf == MAGIC_ERROR )
         {
-            LOGGER_ERROR( "invalid open file in memory (already open)" );
+            LOGGER_ERROR( "astralax emitter container invalid open file in memory (already open)" );
 
             return false;
         }
 
         if( mf == MAGIC_UNKNOWN )
         {
-            LOGGER_ERROR( "invalid open file in memory (invalid format or version)" );
+            LOGGER_ERROR( "astralax emitter container invalid open file in memory (invalid format or version)" );
 
             return false;
         }
@@ -212,7 +212,7 @@ namespace Mengine
                 }
                 catch( const std::exception & _ex )
                 {
-                    LOGGER_ERROR( "invalid load emitter '%s' (catch exception '%s')"
+                    LOGGER_ERROR( "astralax emitter container invalid load emitter '%s' (catch exception '%s')"
                         , magicName
                         , _ex.what()
                     );
@@ -222,7 +222,7 @@ namespace Mengine
 
                 if( id == 0 )
                 {
-                    LOGGER_ERROR( "invalid load emitter '%s'"
+                    LOGGER_ERROR( "astralax emitter container invalid load emitter '%s'"
                         , magicName
                     );
 
@@ -249,7 +249,7 @@ namespace Mengine
             magicName = Magic_FindNext( m_mf, &find );
         }
 
-        LOGGER_ERROR( "not found emitter" );
+        LOGGER_ERROR( "astralax emitter container not found emitter" );
 
         return 0;
     }

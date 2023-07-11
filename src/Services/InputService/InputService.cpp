@@ -47,7 +47,7 @@ namespace Mengine
 #if defined(MENGINE_DOCUMENT_ENABLE)
         for( const InputMousePositionProviderDesc & desc : m_mousePositionProviders )
         {
-            LOGGER_ERROR( "forgot remove input mouse position provider (doc: %s)"
+            LOGGER_ASSERTION( "forgot remove input mouse position provider (doc: %s)"
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );
         }

@@ -62,7 +62,7 @@ namespace Mengine
 
         if( m_resourceInternalObject->compile() == false )
         {
-            LOGGER_ERROR( "'%s' resource '%s' not compile"
+            LOGGER_ERROR( "movie internal object '%s' resource '%s' not compile"
                 , this->getName().c_str()
                 , m_resourceInternalObject->getName().c_str()
             );
@@ -78,7 +78,7 @@ namespace Mengine
 
         if( py_object.is_invalid() == true )
         {
-            LOGGER_ERROR( "'%s' resource '%s' can't find internal object internal group '%s' name '%s'"
+            LOGGER_ERROR( "movie internal object '%s' resource '%s' can't find internal object internal group '%s' name '%s'"
                 , this->getName().c_str()
                 , m_resourceInternalObject->getName().c_str()
                 , internalGroup.c_str()

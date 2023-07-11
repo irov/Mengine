@@ -313,8 +313,7 @@ namespace Mengine
 
         if( this->restore_() == false )
         {
-            LOGGER_ERROR( "Graphics change mode failed"
-            );
+            LOGGER_ASSERTION( "graphics change mode failed" );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -370,7 +369,7 @@ namespace Mengine
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage [%u] (max %u)"
+            LOGGER_ASSERTION( "no support stage [%u] (max %u)"
                 , _stage
                 , m_dxMaxCombinedTextureImageUnits
             );
@@ -396,8 +395,7 @@ namespace Mengine
     {
         if( this->releaseResources_() == false )
         {
-            LOGGER_ERROR( "release resources"
-            );
+            LOGGER_ASSERTION( "release resources" );
 
             return false;
         }
@@ -418,8 +416,7 @@ namespace Mengine
     {
         if( this->releaseResources_() == false )
         {
-            LOGGER_ERROR( "invalid release resource"
-            );
+            LOGGER_ASSERTION( "invalid release resource" );
 
             return;
         }
@@ -505,7 +502,7 @@ namespace Mengine
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage [%u] (max %u)"
+            LOGGER_ASSERTION( "no support stage [%u] (max %u)"
                 , _stage
                 , m_dxMaxCombinedTextureImageUnits
             );
@@ -544,7 +541,7 @@ namespace Mengine
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage [%u] (max %u)"
+            LOGGER_ASSERTION( "no support stage [%u] (max %u)"
                 , _stage
                 , m_dxMaxCombinedTextureImageUnits
             );
@@ -622,7 +619,7 @@ namespace Mengine
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "no support stage [%u] (max %u)"
+            LOGGER_ASSERTION( "no support stage [%u] (max %u)"
                 , _stage
                 , m_dxMaxCombinedTextureImageUnits
             );
@@ -765,8 +762,7 @@ namespace Mengine
 
         if( this->restore_() == false )
         {
-            LOGGER_ERROR( "Graphics change mode failed"
-            );
+            LOGGER_ASSERTION( "graphics change mode failed" );
         }
     }
     //////////////////////////////////////////////////////////////////////////

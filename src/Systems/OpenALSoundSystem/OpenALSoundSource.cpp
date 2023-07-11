@@ -62,7 +62,7 @@ namespace Mengine
 
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR( "invalid sound buffer" );
+            LOGGER_ASSERTION( "invalid sound buffer" );
 
             return false;
         }
@@ -80,7 +80,7 @@ namespace Mengine
 
             if( m_soundBuffer->playSource( m_sourceId, m_loop, m_time ) == false )
             {
-                LOGGER_ERROR( "invalid buffer play [%u] loop [%u] time [%f]"
+                LOGGER_ASSERTION( "invalid buffer play [%u] loop [%u] time [%f]"
                     , m_sourceId
                     , m_loop
                     , m_time
@@ -114,7 +114,7 @@ namespace Mengine
 
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR( "invalid sound buffer" );
+            LOGGER_ASSERTION( "invalid sound buffer" );
 
             return;
         }
@@ -144,7 +144,7 @@ namespace Mengine
 
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR( "invalid sound buffer" );
+            LOGGER_ASSERTION( "invalid sound buffer" );
 
             return false;
         }
@@ -212,7 +212,7 @@ namespace Mengine
     {
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR( "invalid sound buffer" );
+            LOGGER_ASSERTION( "invalid sound buffer" );
 
             return 0.f;
         }
@@ -242,7 +242,7 @@ namespace Mengine
 
         if( posmc > total )
         {
-            LOGGER_ERROR( "pos %f total %f"
+            LOGGER_ASSERTION( "pos %f total %f"
                 , posmc
                 , total
             );
@@ -252,7 +252,7 @@ namespace Mengine
 
         if( posmc < 0.f )
         {
-            LOGGER_ERROR( "pos %f less zero"
+            LOGGER_ASSERTION( "pos %f less zero"
                 , posmc
             );
 
@@ -261,7 +261,7 @@ namespace Mengine
 
         if( m_soundBuffer->setTimePos( m_sourceId, posmc ) == false )
         {
-            LOGGER_ERROR( "invalid set time pos [%u] time [%f] (play %u)"
+            LOGGER_ASSERTION( "invalid set time pos [%u] time [%f] (play %u)"
                 , m_sourceId
                 , posmc
                 , m_playing
@@ -277,7 +277,7 @@ namespace Mengine
     {
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR( "invalid sound buffer" );
+            LOGGER_ASSERTION( "invalid sound buffer" );
 
             return 0.f;
         }
@@ -295,7 +295,7 @@ namespace Mengine
         float posms = 0.f;
         if( m_soundBuffer->getTimePos( m_sourceId, &posms ) == false )
         {
-            LOGGER_ERROR( "invalid get time pos [%u] (play %u)"
+            LOGGER_ASSERTION( "invalid get time pos [%u] (play %u)"
                 , m_sourceId
                 , m_playing
             );

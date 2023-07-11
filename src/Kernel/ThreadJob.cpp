@@ -350,7 +350,7 @@ namespace Mengine
             return new_id;
         }
 
-        LOGGER_ERROR( "overworkers more [%u]"
+        LOGGER_ASSERTION( "overworkers more [%u]"
             , MENGINE_THREAD_JOB_WORK_COUNT
         );
 

@@ -121,7 +121,7 @@ namespace Mengine
             }break;
         default:
             {
-                LOGGER_ERROR( "invalid thread priority [%u]"
+                LOGGER_ASSERTION( "invalid thread priority [%u]"
                     , _priority
                 );
             }break;
@@ -237,7 +237,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_ERROR( "invalid run" );
+                LOGGER_ASSERTION( "invalid run" );
             }
 
 #ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA

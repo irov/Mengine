@@ -114,7 +114,7 @@ namespace Mengine
 
         if( m_resourceVideo->compile() == false )
         {
-            LOGGER_ERROR( "'%s' resource '%s' is not compile"
+            LOGGER_ERROR( "surface mockup video '%s' resource '%s' is not compile"
                 , this->getName().c_str()
                 , m_resourceVideo->getName().c_str()
             );
@@ -261,7 +261,7 @@ namespace Mengine
 
         //if( m_decoderVideo->rewind() == false )
         //{
-        //    LOGGER_ERROR( "video '%s' resource '%s' invalid rewind"
+        //    LOGGER_ERROR( "surface video '%s' resource '%s' invalid rewind"
         //        , this->getName().c_str()
         //        , m_resourceVideo->getName().c_str()
         //    );
@@ -283,7 +283,7 @@ namespace Mengine
 
         if( m_decoderVideo->rewind() == false )
         {
-            LOGGER_ERROR( "video '%s' resource '%s' invalid rewind"
+            LOGGER_ERROR( "surface video '%s' resource '%s' invalid rewind"
                 , this->getName().c_str()
                 , m_resourceVideo->getName().c_str()
             );
@@ -312,7 +312,7 @@ namespace Mengine
         {
             if( this->fillVideoBuffer_() == false )
             {
-                LOGGER_ERROR( "video '%s' resource '%s' invalid fill video buffer"
+                LOGGER_ERROR( "surface video '%s' resource '%s' invalid fill video buffer"
                     , this->getName().c_str()
                     , m_resourceVideo->getName().c_str()
                 );
@@ -380,7 +380,7 @@ namespace Mengine
 
                     if( m_decoderVideo->seek( time ) == false )
                     {
-                        LOGGER_ERROR( "video '%s' resource '%s' invalid seek to '%f'"
+                        LOGGER_ERROR( "surface video '%s' resource '%s' invalid seek to '%f'"
                             , this->getName().c_str()
                             , m_resourceVideo->getName().c_str()
                             , time
@@ -390,7 +390,7 @@ namespace Mengine
             }
             else if( state == VDRS_FAILURE )
             {
-                LOGGER_ERROR( "video '%s' error reading frame timing '%4.2f' total timing '%4.2f'"
+                LOGGER_ERROR( "surface video '%s' error reading frame timing '%4.2f' total timing '%4.2f'"
                     , this->getName().c_str()
                     , _time
                     , m_time
@@ -416,7 +416,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "video '%s' resource '%s' not compile"
+            LOGGER_ERROR( "surface video '%s' resource '%s' not compile"
                 , this->getName().c_str()
                 , this->getResourceVideo()->getName().c_str()
             );
@@ -454,7 +454,7 @@ namespace Mengine
 
         if( m_decoderVideo->seek( seek_time ) == false )
         {
-            LOGGER_ERROR( "video '%s' resource '%s' invalid seek to '%f'"
+            LOGGER_ERROR( "surface video '%s' resource '%s' invalid seek to '%f'"
                 , this->getName().c_str()
                 , m_resourceVideo->getName().c_str()
                 , seek_time

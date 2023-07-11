@@ -33,7 +33,7 @@ namespace Mengine
 
                 MENGINE_UNUSED( jd );
 
-                LOGGER_ERROR( "jpp error: %s\nline: %d\n column: %d\nposition: %d\nsource: %s\ndoc: %s"
+                LOGGER_ASSERTION( "jpp error: %s\nline: %d\n column: %d\nposition: %d\nsource: %s\ndoc: %s"
                     , _text
                     , _line
                     , _column

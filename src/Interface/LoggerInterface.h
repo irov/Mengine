@@ -29,10 +29,6 @@ namespace Mengine
         virtual bool getWriteHistory() const = 0;
 
     public:
-        virtual void setColor( uint32_t _color ) = 0;
-        virtual uint32_t getColor() const = 0;
-
-    public:
         virtual void setVerboseLevel( ELoggerLevel _level ) = 0;
         virtual ELoggerLevel getVerboseLevel() const = 0;
 

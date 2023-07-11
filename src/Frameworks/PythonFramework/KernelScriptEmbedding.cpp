@@ -85,6 +85,7 @@
 #include "Kernel/ResourceImageSequence.h"
 #include "Kernel/ResourceImageSolid.h"
 #include "Kernel/ResourceImageDefault.h"
+#include "Kernel/ResourcePacket.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdMath.h"
@@ -2338,6 +2339,9 @@ namespace Mengine
             .def( "getLocale", &Resource::getLocale )
             .def( "cache", &Resource::cache )
             .def( "uncache", &Resource::uncache )
+            ;
+
+        pybind::interface_<ResourcePacket, pybind::bases<Factorable>>( _kernel, "ResourcePacket" )
             ;
 
         pybind::interface_<UpdationInterface, pybind::bases<Mixin>>( _kernel, "Updation" )

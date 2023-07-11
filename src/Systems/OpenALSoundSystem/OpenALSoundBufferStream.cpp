@@ -94,8 +94,7 @@ namespace Mengine
 
             if( id == 0 )
             {
-                // TODO: report in case of error
-                LOGGER_ERROR( "invalid gen %u buffer ID"
+                LOGGER_ASSERTION( "invalid gen %u buffer ID"
                     , i
                 );
 
@@ -175,7 +174,7 @@ namespace Mengine
 
         if( _pos > m_length )
         {
-            LOGGER_ERROR( "pos %f > length %f"
+            LOGGER_ASSERTION( "pos %f > length %f"
                 , _pos
                 , m_length
             );
@@ -188,7 +187,7 @@ namespace Mengine
 
         if( state != AL_STOPPED && state != AL_INITIAL )
         {
-            LOGGER_ERROR( "source [%u] invalid state [%u]"
+            LOGGER_ASSERTION( "source [%u] invalid state [%u]"
                 , m_sourceId
                 , state
             );
@@ -202,7 +201,7 @@ namespace Mengine
 
         if( m_soundDecoder->seek( _pos ) == false )
         {
-            LOGGER_ERROR( "invalid seek '%f'"
+            LOGGER_ASSERTION( "invalid seek '%f'"
                 , _pos
             );
 
@@ -291,7 +290,7 @@ namespace Mengine
 
         if( timeTell > m_length )
         {
-            LOGGER_ERROR( "get tell %f > length %f"
+            LOGGER_ASSERTION( "get tell %f > length %f"
                 , timeTell
                 , m_length
             );
@@ -402,7 +401,7 @@ namespace Mengine
         ALsizei al_frequency = (ALsizei)m_frequency;
         MENGINE_IF_OPENAL_CALL( alBufferData, (_alBufferId, m_format, dataBuffer, al_bytesWritten, al_frequency) )
         {
-            LOGGER_ERROR( "invalid alBufferData buffer [%u] id [%u] format [%u] bytes [%zu] frequency [%u]"
+            LOGGER_ASSERTION( "invalid alBufferData buffer [%u] id [%u] format [%u] bytes [%zu] frequency [%u]"
                 , _alBufferId
                 , m_sourceId
                 , m_format

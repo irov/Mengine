@@ -59,7 +59,7 @@ namespace Mengine
     {
         if( SteamAPI_Init() == false )
         {
-            LOGGER_ERROR( "[steam] invalid SteamAPI_Init" );
+            LOGGER_ERROR( "invalid SteamAPI_Init" );
 
 #if defined(MENGINE_DEBUG)
             return true;
@@ -121,7 +121,7 @@ namespace Mengine
 
         if( client == nullptr )
         {
-            LOGGER_ERROR( "[steam] invalid SteamClient" );
+            LOGGER_ERROR( "invalid SteamClient" );
 
             return false;
         }
@@ -138,7 +138,7 @@ namespace Mengine
 
         if( user == nullptr )
         {
-            LOGGER_ERROR( "[steam] invalid SteamUser" );
+            LOGGER_ERROR( "invalid SteamUser" );
 
             return false;
         }
@@ -149,7 +149,7 @@ namespace Mengine
 
         if( user->BLoggedOn() == false )
         {
-            LOGGER_ERROR( "[steam] user is not logged in" );
+            LOGGER_ERROR( "user is not logged in" );
 
             return false;
         }

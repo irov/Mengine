@@ -37,7 +37,7 @@ namespace Mengine
 
         if( ResourceImage::_compile() == false )
         {
-            LOGGER_ERROR( "'%s' group '%s' invalid compile base ResourceImage class"
+            LOGGER_ERROR( "resource image substract '%s' group '%s' invalid compile base ResourceImage class"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
             );
@@ -47,7 +47,7 @@ namespace Mengine
 
         if( m_resourceImage->compile() == false )
         {
-            LOGGER_ERROR( "'%s' invalid compile resource image '%s'"
+            LOGGER_ERROR( "resource image substract '%s' invalid compile resource image '%s'"
                 , this->getName().c_str()
                 , m_resourceImage->getName().c_str()
             );

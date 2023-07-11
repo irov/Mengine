@@ -32,7 +32,7 @@ namespace Mengine
     {
         if( m_images.empty() == true )
         {
-            LOGGER_ERROR( "landscape '%s' images is empty"
+            LOGGER_ERROR( "landscape2d '%s' images is empty"
                 , this->getName().c_str()
             );
 
@@ -41,7 +41,7 @@ namespace Mengine
 
         if( m_elementCountX == 0 || m_elementCountY == 0 )
         {
-            LOGGER_ERROR( "landscape '%s' count X|Y not setup [%u:%u]"
+            LOGGER_ERROR( "landscape2d '%s' count X|Y not setup [%u:%u]"
                 , this->getName().c_str()
                 , m_elementCountX
                 , m_elementCountY
@@ -120,7 +120,7 @@ namespace Mengine
                 {
                     if( el.image->compile() == false )
                     {
-                        LOGGER_ERROR( "'%s' image resource '%s' not compile"
+                        LOGGER_ERROR( "landscape2d '%s' image resource '%s' not compile"
                             , this->getName().c_str()
                             , el.image->getName().c_str()
                         );

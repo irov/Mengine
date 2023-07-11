@@ -38,7 +38,7 @@ namespace Mengine
             const ConstString & category = value.key1;
             const ConstString & prototype = value.key1;
 
-            LOGGER_ERROR( "forgot remove '%s' generator '%s'"
+            LOGGER_ASSERTION( "forgot remove '%s' generator '%s'"
                 , category.c_str()
                 , prototype.c_str()
             );

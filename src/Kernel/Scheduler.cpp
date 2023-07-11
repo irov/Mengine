@@ -59,7 +59,7 @@ namespace Mengine
 
         for( const SchedulerEventDesc & desc : m_schedulers )
         {
-            LOGGER_ERROR( "forgot remove event '%u' from scheduler '%s' (doc: %s)"
+            LOGGER_ASSERTION( "forgot remove event '%u' from scheduler '%s' (doc: %s)"
                 , desc.id
                 , this->getName().c_str()
                 , MENGINE_DOCUMENT_STR( desc.doc )

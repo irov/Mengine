@@ -905,7 +905,7 @@ namespace Mengine
         DWORD UserNameLen = UNLEN + 1;
         if( ::GetUserName( UserNameBuffer, &UserNameLen ) == FALSE )
         {
-            LOGGER_ERROR( "invalid GetUserName %s"
+            LOGGER_ASSERTION( "invalid GetUserName %s"
                 , Helper::Win32GetLastErrorMessage()
             );
         }
@@ -914,7 +914,7 @@ namespace Mengine
         DWORD ComputerNameLen = MAX_COMPUTERNAME_LENGTH + 1;
         if( ::GetComputerName( ComputerNameBuffer, &ComputerNameLen ) == FALSE )
         {
-            LOGGER_ERROR( "invalid GetComputerName %s"
+            LOGGER_ASSERTION( "invalid GetComputerName %s"
                 , Helper::Win32GetLastErrorMessage()
             );
         }
@@ -998,7 +998,7 @@ namespace Mengine
                 continue;
             }
 
-            LOGGER_ERROR( "forgot remove platform timer (doc: %s)"
+            LOGGER_ASSERTION( "was forgotten remove platform timer (doc: %s)"
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );
         }
@@ -1014,7 +1014,7 @@ namespace Mengine
                 continue;
             }
 
-            LOGGER_ERROR( "forgot remove platform update (doc: %s)"
+            LOGGER_ASSERTION( "was forgotten remove platform update (doc: %s)"
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );
         }
@@ -2325,7 +2325,7 @@ namespace Mengine
             {
                 const char * msg = ::strerror( errno );
 
-                LOGGER_ERROR( "invalid remove new move file from '%s' to '%s' error '%s' [%u]"
+                LOGGER_ASSERTION( "invalid remove new move file from '%s' to '%s' error '%s' [%u]"
                     , _oldFilePath
                     , _newFilePath
                     , msg
@@ -2340,7 +2340,7 @@ namespace Mengine
         {
             const char * msg = ::strerror( errno );
 
-            LOGGER_ERROR( "invalid move file from '%s' to '%s' error '%s' [%u]"
+            LOGGER_ASSERTION( "invalid move file from '%s' to '%s' error '%s' [%u]"
                 , _oldFilePath
                 , _newFilePath
                 , msg
@@ -2671,7 +2671,7 @@ namespace Mengine
         Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
         if( Helper::MacOSGetPicturesDirectory( path_pictures ) == false )
         {
-            LOGGER_ERROR( "invalid get Pictures directory" );
+            LOGGER_ERROR( "invalid get pictures directory" );
             
             return false;
         }
@@ -2705,7 +2705,7 @@ namespace Mengine
         Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
         if( Helper::MacOSGetPicturesDirectory( path_pictures ) == false )
         {
-            LOGGER_ERROR( "invalid get Pictures directory" );
+            LOGGER_ERROR( "invalid get pictures directory" );
             
             return false;
         }
@@ -2768,7 +2768,7 @@ namespace Mengine
         Char path_music[MENGINE_MAX_PATH] = {'\0'};
         if( Helper::MacOSGetMusicDirectory( path_music ) == false )
         {
-            LOGGER_ERROR( "invalid get Music directory" );
+            LOGGER_ERROR( "invalid get music directory" );
             
             return false;
         }

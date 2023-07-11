@@ -55,7 +55,7 @@ namespace Mengine
 
         if( alBufferId == 0 )
         {
-            LOGGER_ERROR( "invalid gen buffer" );
+            LOGGER_ASSERTION( "invalid gen buffer" );
 
             return false;
         }
@@ -88,7 +88,7 @@ namespace Mengine
         {
             m_soundSystem->releaseBufferId( alBufferId );
 
-            LOGGER_ERROR( "invalid sound %u decode %zu"
+            LOGGER_ASSERTION( "invalid sound %u decode %zu"
                 , alBufferId
                 , size
             );
@@ -114,7 +114,7 @@ namespace Mengine
             {
                 m_soundSystem->releaseBufferId( alBufferId );
 
-                LOGGER_ERROR( "invliad format channels [%u]"
+                LOGGER_ASSERTION( "invalid format channels [%u]"
                     , m_channels
                 );
 

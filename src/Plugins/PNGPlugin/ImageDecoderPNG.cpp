@@ -28,7 +28,7 @@ namespace Mengine
 
             ImageDecoderPNG * decoder = reinterpret_cast<ImageDecoderPNG *>(error_ptr);
 
-            LOGGER_ERROR( "png [%s] error: '%s'"
+            LOGGER_ASSERTION( "png [%s] error: '%s'"
                 , Helper::getInputStreamDebugFilePath( decoder->getStream() ).c_str()
                 , _error
             );
@@ -100,7 +100,7 @@ namespace Mengine
 
         if( info_ptr == nullptr )
         {
-            LOGGER_ERROR( "can't create info structure" );
+            LOGGER_ERROR( "can't create png info structure" );
 
             png_destroy_write_struct( &m_png_ptr, nullptr );
 
@@ -152,7 +152,7 @@ namespace Mengine
 #endif 
         if( setjmp( png_jmpbuf( m_png_ptr ) ) )
         {
-            LOGGER_ERROR( "jmp" );
+            LOGGER_ASSERTION( "jmp" );
 
             return false;
         }

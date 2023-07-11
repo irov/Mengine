@@ -49,7 +49,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         for( const HashtableFileGroups::value_type & value : m_fileGroups )
         {
-            LOGGER_ERROR( "was forgotten unmount '%s'"
+            LOGGER_ASSERTION( "was forgotten unmount '%s'"
                 , value.key.c_str()
             );
         }

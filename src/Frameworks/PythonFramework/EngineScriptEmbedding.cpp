@@ -128,6 +128,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ColorHelper.h"
+#include "Kernel/ResourcePacket.h"
 
 #include "Config/StdString.h"
 #include "Config/Lambda.h"
@@ -2160,32 +2161,29 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_cacheResources( const ConstString & _groupName )
+            ResourcePacketPtr s_cacheResources( const ConstString & _groupName )
             {
+                ResourcePacketPtr resourcePacket = Helper::makeFactorableUnique<ResourcePacket>( MENGINE_DOCUMENT_PYBIND );
+
                 RESOURCE_SERVICE()
-                    ->foreachGroupResources( _groupName, []( const ResourcePtr & _resource )
+                    ->foreachGroupResources( _groupName, [resourcePacket]( const ResourcePtr & _resource )
                 {
                     if( _resource->isCompile() == false )
                     {
                         return;
                     }
 
-                    _resource->cache();
+                    resourcePacket->addResource( _resource );                    
                 } );
+
+                resourcePacket->cache();
+
+                return resourcePacket;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_uncacheResources( const ConstString & _groupName )
+            void s_uncacheResources( const ResourcePacketPtr & _resourcePacket )
             {
-                RESOURCE_SERVICE()
-                    ->foreachGroupResources( _groupName, []( const ResourcePtr & _resource )
-                {
-                    if( _resource->isCache() == false )
-                    {
-                        return;
-                    }
-
-                    _resource->uncache();
-                } );
+                _resourcePacket->uncache();
             }
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_rotateToTrimetric( const mt::vec2f & _dir, const mt::vec2f & _vx, const mt::vec2f & _vy )

@@ -22,7 +22,7 @@ namespace Mengine
     {
         if( m_sequence.empty() == true )
         {
-            LOGGER_ERROR( "'%s' sequence count is empty"
+            LOGGER_ERROR( "resource image sequence '%s' sequence count is empty"
                 , this->getName().c_str()
             );
 
@@ -33,7 +33,7 @@ namespace Mengine
         {
             if( sequence.resourceImage->compile() == false )
             {
-                LOGGER_ERROR( "resource sequence '%s' not compile image resource '%s'"
+                LOGGER_ERROR( "resource image sequence '%s' not compile image resource '%s'"
                     , this->getName().c_str()
                     , sequence.resourceImage->getName().c_str()
                 );
@@ -65,7 +65,7 @@ namespace Mengine
 
         if( _index >= sequenceCount )
         {
-            LOGGER_ERROR( "'%s' sequence '%u' out of range '%u'"
+            LOGGER_ERROR( "resource image sequence '%s' sequence '%u' out of range '%u'"
                 , this->getName().c_str()
                 , _index
                 , sequenceCount
@@ -89,7 +89,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         if( sequenceCount == 0 )
         {
-            LOGGER_ERROR( "'%s' invalid get last frame on empty sequences"
+            LOGGER_ERROR( "resource image sequence '%s' invalid get last frame on empty sequences"
                 , this->getName().c_str()
             );
 

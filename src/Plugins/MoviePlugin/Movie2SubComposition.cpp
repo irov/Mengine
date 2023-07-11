@@ -115,7 +115,7 @@ namespace Mengine
     {
         if( m_composition == nullptr )
         {
-            LOGGER_ERROR( "subcomposition '%s' is not initialized"
+            LOGGER_ERROR( "movie2 subcomposition '%s' is not initialized"
                 , this->getName().c_str()
             );
 

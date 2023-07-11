@@ -232,7 +232,7 @@ namespace Mengine
                 continue;
             }
 
-            LOGGER_ERROR( "compile error '%s' the provided mesh doesn't match skeleton (joint count mismatch)."
+            LOGGER_ERROR( "node ozz animation '%s' compile error the provided mesh doesn't match skeleton (joint count mismatch)."
                 , this->getName().c_str()
             );
 
@@ -388,7 +388,7 @@ namespace Mengine
         // Blends.
         if( blend_job.Run() == false )
         {
-            LOGGER_ERROR( "ozz node '%s' invalid blend job"
+            LOGGER_ERROR( "node ozz animation '%s' invalid blend job"
                 , this->getName().c_str()
             );
 
@@ -404,7 +404,7 @@ namespace Mengine
         // Run ltm job.
         if( ltm_job.Run() == false )
         {
-            LOGGER_ERROR( "ozz node '%s' invalid local to model job"
+            LOGGER_ERROR( "node ozz animation '%s' invalid local to model job"
                 , this->getName().c_str()
             );
 
@@ -535,7 +535,7 @@ namespace Mengine
                 // Execute the job, which should succeed unless a parameter is invalid.
                 if( skinning_job.Run() == false )
                 {
-                    LOGGER_ERROR( "ozz node '%s' invalid skinning job"
+                    LOGGER_ERROR( "node ozz animation '%s' invalid skinning job"
                         , this->getName().c_str()
                     );
 

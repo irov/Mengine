@@ -63,7 +63,7 @@ namespace Mengine
         {
             if( resourceImage->compile() == false )
             {
-                LOGGER_ERROR( "resource '%s' file '%s' can't invalid compile resource image '%s'"
+                LOGGER_ERROR( "resource astralax '%s' file '%s' can't invalid compile resource image '%s'"
                     , this->getName().c_str()
                     , this->getContent()->getFilePath().c_str()
                     , resourceImage->getName().c_str()
@@ -74,7 +74,7 @@ namespace Mengine
 
             if( container->setAtlasResourceImage( iterator, resourceImage ) == false )
             {
-                LOGGER_ERROR( "resource '%s' file '%s' invalid set atlas resource image '%s'"
+                LOGGER_ERROR( "resource astralax '%s' file '%s' invalid set atlas resource image '%s'"
                     , this->getName().c_str()
                     , this->getContent()->getFilePath().c_str()
                     , resourceImage->getName().c_str()
@@ -105,7 +105,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "resource '%s' not compile"
+            LOGGER_ERROR( "resource astralax '%s' not compile"
                 , this->getName().c_str()
             );
 

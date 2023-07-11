@@ -110,7 +110,7 @@ namespace Mengine
                     {
                         uint32_t id = _emitter->getId();
 
-                        LOGGER_ERROR( "'%s' emitter invalid release sound '%u'"
+                        LOGGER_ERROR( "resource sound '%s' emitter invalid release sound '%u'"
                             , m_resource->getName().c_str()
                             , id
                         );
@@ -132,7 +132,7 @@ namespace Mengine
                     {
                         uint32_t id = _emitter->getId();
 
-                        LOGGER_ERROR( "'%s' emitter invalid release sound '%u'"
+                        LOGGER_ERROR( "resource sound '%s' emitter invalid release sound '%u'"
                             , m_resource->getName().c_str()
                             , id
                         );
@@ -189,7 +189,7 @@ namespace Mengine
 
                 if( resource->compile() == false )
                 {
-                    LOGGER_ERROR( "resource '%s' type '%s' is not compile!"
+                    LOGGER_ERROR( "resource sound '%s' type '%s' is not compile!"
                         , resource->getName().c_str()
                         , resource->getType().c_str()
                     );
@@ -215,7 +215,7 @@ namespace Mengine
 
                 if( soundIdentity == nullptr )
                 {
-                    LOGGER_ERROR( "sound '%s' invalid create identity"
+                    LOGGER_ERROR( "resource sound '%s' invalid create identity"
                         , _resourceName.c_str()
                     );
 
@@ -237,7 +237,7 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->setSourceVolume( soundIdentity, volume, volume, true ) == false )
                 {
-                    LOGGER_ERROR( "sound '%s' invalid set volume %f"
+                    LOGGER_ERROR( "resource sound '%s' invalid set volume %f"
                         , _resourceName.c_str()
                         , volume
                     );
@@ -338,7 +338,7 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->setPosMs( sourceEmitter, _position ) == false )
                 {
-                    LOGGER_ERROR( "set pos '%s' '%f'"
+                    LOGGER_ERROR( "resource sound '%s' invalid set pos '%f'"
                         , _resourceName.c_str()
                         , _position
                     );
@@ -356,7 +356,7 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->playEmitter( sourceEmitter ) == false )
                 {
-                    LOGGER_ERROR( "play '%s' '%f'"
+                    LOGGER_ERROR( "resource sound '%s' invalid play '%f'"
                         , _resourceName.c_str()
                         , _position
                     );
@@ -489,7 +489,7 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )
                 {
-                    LOGGER_ERROR( "invalid play '%s'"
+                    LOGGER_ERROR( "resource sound '%s' invalid play"
                         , _resourceName.c_str()
                     );
 
@@ -563,7 +563,7 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )
                 {
-                    LOGGER_ERROR( "invalid play '%s'"
+                    LOGGER_ERROR( "resource sound '%s' invalid play"
                         , _resourceName.c_str()
                     );
 
@@ -646,7 +646,7 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->setSourceVolume( _emitter, _volume, _volume, true ) == false )
                 {
-                    LOGGER_ERROR( "invalid source [%u] volume [%f]"
+                    LOGGER_ERROR( "sound emitter [%u] invalid set source volume [%f]"
                         , _emitter->getId()
                         , _volume
                     );

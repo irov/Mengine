@@ -42,7 +42,7 @@ namespace Mengine
 
             (*mErr->pub.format_message)(_cinfo, buffer);
 
-            LOGGER_ERROR( "%s"
+            LOGGER_ASSERTION( "%s"
                 , buffer
             );
 
@@ -64,7 +64,7 @@ namespace Mengine
 
             (*mErr->pub.format_message)(_cinfo, buffer);
 
-            LOGGER_ERROR( "%s"
+            LOGGER_ASSERTION( "%s"
                 , buffer
             );
         }
@@ -152,7 +152,7 @@ namespace Mengine
 #endif 
         if( setjmp( errorMgr.setjmp_buffer ) )
         {
-            LOGGER_ERROR( "jmp" );
+            LOGGER_ASSERTION( "jmp" );
 
             return 0;
         }

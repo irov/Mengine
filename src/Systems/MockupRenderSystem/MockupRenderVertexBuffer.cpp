@@ -67,7 +67,7 @@ namespace Mengine
     {
         if( _offset + _count > m_vertexCount )
         {
-            LOGGER_ERROR( "offset %u count %u more max size %u"
+            LOGGER_ASSERTION( "offset %u count %u more max size %u"
                 , _offset
                 , _count                
                 , m_vertexCount

@@ -27,10 +27,6 @@ namespace Mengine
         bool getWriteHistory() const override;
 
     public:
-        void setColor( uint32_t _color ) override;
-        uint32_t getColor() const override;
-
-    public:
         void setVerboseLevel( ELoggerLevel _level ) override;
         ELoggerLevel getVerboseLevel() const override;
 
@@ -44,8 +40,6 @@ namespace Mengine
         void flush() override;
 
     protected:
-        uint32_t m_color;
-
         ELoggerLevel m_verboseLevel;
         uint32_t m_verboseFilter;
 

@@ -240,7 +240,7 @@ namespace Mengine
 
         if( m_resourceSpineSkeleton->compile() == false )
         {
-            LOGGER_ERROR( "'%s' resource '%s' is not compile"
+            LOGGER_ERROR( "spine '%s' resource '%s' is not compile"
                 , this->getName().c_str()
                 , m_resourceSpineSkeleton->getName().c_str()
             );

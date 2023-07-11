@@ -467,7 +467,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "'%s' not compile"
+            LOGGER_ERROR( "text field '%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -1001,7 +1001,7 @@ namespace Mengine
         VectorTextLinesLayout layouts;
         for( const VectorTextLineChunks & textChunks : _textLines )
         {
-            VectorTextLines2 textLine2;
+            VectorTextLines2 textLines2;
             for( const TextLineChunk & textChunk : textChunks )
             {
                 const CacheFont & cache = m_cacheFonts[textChunk.fontId];
@@ -1010,13 +1010,13 @@ namespace Mengine
 
                 uint32_t layoutCount = chunkFont->getLayoutCount();
 
-                VectorTextLines textLine;
+                VectorTextLines textLines;
                 for( uint32_t layoutIndex = 0; layoutIndex != layoutCount; ++layoutIndex )
                 {
                     TextLine tl( layoutIndex, charOffset );
                     if( tl.initialize( textChunk.fontId, chunkFont, textChunk.value ) == false )
                     {
-                        LOGGER_ERROR( "'%s' textId '%s' text '%s' invalid setup line"
+                        LOGGER_ERROR( "text field '%s' textId '%s' text '%s' invalid setup line"
                             , this->getName().c_str()
                             , m_textId.c_str()
                             , m_text.c_str()
@@ -1025,13 +1025,13 @@ namespace Mengine
                         return false;
                     }
 
-                    textLine.emplace_back( tl );
+                    textLines.emplace_back( tl );
                 }
 
-                textLine2.emplace_back( textLine );
+                textLines2.emplace_back( textLines );
             }
 
-            layouts.emplace_back( textLine2 );
+            layouts.emplace_back( textLines2 );
         }
 
         if( layouts.empty() == true )
@@ -1131,7 +1131,7 @@ namespace Mengine
 
         if( this->updateTextCache_( &m_cacheText ) == false )
         {
-            LOGGER_ERROR( "font '%s' invalid update text cache id '%s' text '%s'"
+            LOGGER_ERROR( "text field '%s' invalid update text cache id '%s' text '%s'"
                 , this->getName().c_str()
                 , m_textId.c_str()
                 , m_text.c_str()
@@ -1255,7 +1255,7 @@ namespace Mengine
                     TextLine tl( layoutIndex, charOffset );
                     if( tl.initialize( fontId, chunkFont, textChunk.value ) == false )
                     {
-                        LOGGER_ERROR( "'%s' textId '%s' text '%s' invalid setup line"
+                        LOGGER_ERROR( "text field '%s' textId '%s' text '%s' invalid setup line"
                             , this->getName().c_str()
                             , m_textId.c_str()
                             , m_text.c_str()
@@ -1297,7 +1297,7 @@ namespace Mengine
 
         if( font == nullptr )
         {
-            LOGGER_ERROR( "font '%s' invalid set font (no default?)"
+            LOGGER_ERROR( "text field '%s' invalid set font (no default?)"
                 , this->getName().c_str()
             );
 
@@ -1306,7 +1306,7 @@ namespace Mengine
 
         if( font->compileFont() == false )
         {
-            LOGGER_ERROR( "font '%s' invalid compile font '%s'"
+            LOGGER_ERROR( "text field '%s' invalid compile font '%s'"
                 , this->getName().c_str()
                 , font->getName().c_str()
             );
@@ -1852,7 +1852,7 @@ namespace Mengine
 
         if( size_vsnprintf < 0 )
         {
-            LOGGER_ERROR( "'%s' invalid set text format '%s'"
+            LOGGER_ERROR( "text field '%s' invalid set text format '%s'"
                 , this->getName().c_str()
                 , _format
             );
@@ -1917,7 +1917,8 @@ namespace Mengine
 
             for( const String & arg : m_textFormatArgs )
             {
-                LOGGER_ERROR( "arg: %s"
+                LOGGER_ERROR( "text field '%s' arg: %s"
+                    , this->getName().c_str()
                     , arg.c_str()
                 );
             }
@@ -2069,7 +2070,7 @@ namespace Mengine
         }
         catch( const std::exception & _ex )
         {
-            LOGGER_ERROR( "'%s' textId '%s' text '%s' except error '%s'"
+            LOGGER_ERROR( "text field '%s' textId '%s' text '%s' except error '%s'"
                 , this->getName().c_str()
                 , this->getTotalTextId().c_str()
                 , m_text.c_str()

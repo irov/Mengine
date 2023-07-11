@@ -34,7 +34,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         for( const FrameworkInterfacePtr & framework : m_frameworks )
         {
-            LOGGER_ERROR( "was forgotten stop framework '%s'"
+            LOGGER_ASSERTION( "was forgotten stop framework '%s'"
                 , framework->getName().c_str()
             );
         }

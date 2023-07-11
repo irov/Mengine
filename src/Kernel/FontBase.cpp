@@ -173,7 +173,8 @@ namespace Mengine
             uint32_t code;
             if( Helper::Utf8NextCode( &text_it, text_end, &code ) == false )
             {
-                LOGGER_ERROR( "text '%s' have invalid utf8 symbol '%s'"
+                LOGGER_ERROR( "font '%s' text '%s' have invalid utf8 symbol '%s'"
+                    , this->getName().c_str()
                     , _text
                     , text_it 
                 );
@@ -242,9 +243,9 @@ namespace Mengine
 
         if( this->_validateGlyphes( ttf_codes ) == false )
         {
-            LOGGER_ERROR( "text '%s' fontName '%s' invalid"
-                , _key.c_str()
+            LOGGER_ERROR( "font '%s' text '%s' invalid glyphes"
                 , this->getName().c_str()
+                , _key.c_str()
             );
 
             return false;
@@ -267,7 +268,8 @@ namespace Mengine
             uint32_t code;
             if( Helper::Utf8NextCode( &text_it, text_end, &code ) == false )
             {
-                LOGGER_ERROR( "text '%.*s' invalid utf8"
+                LOGGER_ERROR( "font '%s' text '%.*s' invalid utf8"
+                    , this->getName().c_str()
                     , (int32_t)_size
                     , _text
                 );

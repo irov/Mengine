@@ -171,7 +171,7 @@ namespace Mengine
 
         if( this->loadHeaders_() == false )
         {
-            LOGGER_ERROR( "can't load header '%s'"
+            LOGGER_ERROR( "file group zip can't load header '%s'"
                 , m_folderPath.c_str()
             );
 
@@ -225,7 +225,7 @@ namespace Mengine
 
             if( enumerator == 0 )
             {
-                LOGGER_ERROR( "format path '%s' can't find any zip"
+                LOGGER_ERROR( "file group zip format path '%s' can't find any zip"
                     , m_folderPath.c_str()
                 );
 
@@ -671,7 +671,8 @@ namespace Mengine
             {
                 if( m_baseFileGroup->openInputMutexFile( fi.zip->folderPath, _stream, file_offset, file_size ) == false )
                 {
-                    LOGGER_ERROR( "zip '%s' file '%s' invalid open range %zu:%zu"
+                    LOGGER_ERROR( "file group zip '%s' zip '%s' file '%s' invalid open range %zu:%zu"
+                        , m_folderPath.c_str()
                         , fi.zip->folderPath.c_str()
                         , _filePath.c_str()
                         , fi.seek_pos
@@ -743,7 +744,8 @@ namespace Mengine
 
             if( Detail::zip_inflate_memory( buffer, fi.unz_size, compress_memory, fi.file_size ) == false )
             {
-                LOGGER_ERROR( "zip '%s' file '%s' failed inflate"
+                LOGGER_ERROR( "file group zip '%s' zip '%s' file '%s' failed inflate"
+                    , m_folderPath.c_str()
                     , fi.zip->folderPath.c_str()
                     , _filePath.c_str()
                 );

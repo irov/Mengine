@@ -31,7 +31,7 @@ namespace Mengine
         if( dataInfo->frameWidth % Limit_VideoSizeDiv != 0 ||
             dataInfo->frameHeight % Limit_VideoSizeDiv != 0 )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' path '%s' invalid width or heigth [%u:%u] need [%u:%u] maybe div [%u]"
+            LOGGER_ERROR( "resource video '%s' group '%s' path '%s' invalid width or heigth [%u:%u] need [%u:%u] maybe div [%u]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getContent()->getFilePath().c_str()
@@ -50,7 +50,7 @@ namespace Mengine
 
         if( dataInfo->width > Limit_VideoWidth || dataInfo->height > Limit_VideoHeight )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' path '%s' override size [%u:%u] limit [%u:%u]"
+            LOGGER_ERROR( "resource video '%s' group '%s' path '%s' override size [%u:%u] limit [%u:%u]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getContent()->getFilePath().c_str()
@@ -69,7 +69,7 @@ namespace Mengine
 
         if( frameRate > Limit_VideoFrameRate && Limit_VideoFrameRate != 0.f )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' path '%s' override frame rate %f more that %f"
+            LOGGER_ERROR( "resource video '%s' group '%s' path '%s' override frame rate %f more that %f"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getContent()->getFilePath().c_str()
@@ -102,7 +102,7 @@ namespace Mengine
 
         if( videoFillrate > resolutionFillrate * Limit_VideoContentFillrateCoeff )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' path '%s' override fillrate %f [coeff %f]"
+            LOGGER_ERROR( "resource video '%s' group '%s' path '%s' override fillrate %f [coeff %f]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getContent()->getFilePath().c_str()

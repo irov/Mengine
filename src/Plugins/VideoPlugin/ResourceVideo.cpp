@@ -107,9 +107,9 @@ namespace Mengine
         {
             if( cacheVideoDecoder->rewind() == false )
             {
-                LOGGER_ERROR( "group '%s' name '%s' invalid rewind cache video decoder for file '%s'"
-                    , this->getGroupName().c_str()
+                LOGGER_ERROR( "resource video '%s' group '%s' invalid rewind cache video decoder for file '%s'"
                     , this->getName().c_str()
+                    , this->getGroupName().c_str()                    
                     , this->getContent()->getFilePath().c_str()
                 );
 
@@ -145,9 +145,9 @@ namespace Mengine
 
         if( videoDecoder->prepareData( videoStream ) == false )
         {
-            LOGGER_ERROR( "group '%s' name '%s' can't initialize video decoder for file '%s'"
-                , this->getGroupName().c_str()
+            LOGGER_ERROR( "resource video '%s' group '%s' can't initialize video decoder for file '%s'"
                 , this->getName().c_str()
+                , this->getGroupName().c_str()                
                 , this->getContent()->getFilePath().c_str()
             );
 

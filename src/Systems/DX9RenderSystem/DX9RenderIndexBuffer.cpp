@@ -133,7 +133,7 @@ namespace Mengine
     {
         if( _offset + _count > m_indexCount )
         {
-            LOGGER_ERROR( "lock count %u offset %u more max size %u (doc '%s')"
+            LOGGER_ASSERTION( "lock count %u offset %u more max size %u (doc '%s')"
                 , _count
                 , _offset
                 , m_indexCount
@@ -164,7 +164,7 @@ namespace Mengine
         void * lock_memory = nullptr;
         MENGINE_IF_DXCALL( m_pD3DIndexBuffer, Lock, (offsetSize, lockSize, &lock_memory, d3d_flag) )
         {
-            LOGGER_ERROR( "invalid lock count %u offset %u (doc '%s')"
+            LOGGER_ASSERTION( "invalid lock count %u offset %u (doc '%s')"
                 , _count
                 , _offset
                 , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
@@ -187,7 +187,7 @@ namespace Mengine
 
         MENGINE_IF_DXCALL( m_pD3DIndexBuffer, Unlock, () )
         {
-            LOGGER_ERROR( "invalid unlock (doc: %s)"
+            LOGGER_ASSERTION( "invalid unlock (doc: %s)"
                 , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
             );
 
@@ -201,7 +201,7 @@ namespace Mengine
     {
         if( _offset + _count > m_indexCapacity )
         {
-            LOGGER_ERROR( "draw count %u offset %u more capacity %u (doc '%s')"
+            LOGGER_ASSERTION( "draw count %u offset %u more capacity %u (doc '%s')"
                 , _count
                 , _offset
                 , m_indexCapacity
@@ -217,7 +217,7 @@ namespace Mengine
         void * lock_memory = nullptr;
         MENGINE_IF_DXCALL( m_pD3DIndexBuffer, Lock, (offsetToLock, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
         {
-            LOGGER_ERROR( "invalid lock offset %u size %u (doc '%s')"
+            LOGGER_ASSERTION( "invalid lock offset %u size %u (doc '%s')"
                 , offsetToLock
                 , sizeToLock
                 , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
@@ -230,7 +230,7 @@ namespace Mengine
 
         MENGINE_IF_DXCALL( m_pD3DIndexBuffer, Unlock, () )
         {
-            LOGGER_ERROR( "invalid unlock (doc: %s)"
+            LOGGER_ASSERTION( "invalid unlock (doc: %s)"
                 , MENGINE_DOCUMENTABLE_STR( this, "DX9RenderIndexBuffer" )
             );
 

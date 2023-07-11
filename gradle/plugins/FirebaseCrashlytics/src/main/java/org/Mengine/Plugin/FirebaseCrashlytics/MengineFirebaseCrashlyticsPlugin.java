@@ -1,6 +1,5 @@
 package org.Mengine.Plugin.FirebaseCrashlytics;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -12,10 +11,10 @@ import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineLog;
+import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginLoggerListener;
-import org.Mengine.Base.MenginePlugin;
 
 public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "FirebaseCrashlytics";
@@ -116,6 +115,6 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
             return;
         }
 
-        FirebaseCrashlytics.getInstance().log("[" + category + "]" + msg);
+        FirebaseCrashlytics.getInstance().log("[" + category + "] " + msg);
     }
 }

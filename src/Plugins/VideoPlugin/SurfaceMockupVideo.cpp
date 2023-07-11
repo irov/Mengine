@@ -212,7 +212,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "video '%s' resource '%s' not compile"
+            LOGGER_ERROR( "surface mockup video '%s' resource '%s' not compile"
                 , this->getName().c_str()
                 , this->getResourceVideo()->getName().c_str()
             );

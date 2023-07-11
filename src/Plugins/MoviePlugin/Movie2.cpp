@@ -404,7 +404,7 @@ namespace Mengine
                 ss << _name.c_str() << ", ";
             } );
 
-            LOGGER_ERROR( "name '%s' resource '%s' path '%s' invalid get composition name '%s' in [%s]"
+            LOGGER_ERROR( "movie2 '%s' resource '%s' path '%s' invalid get composition name '%s' in [%s]"
                 , this->getName().c_str()
                 , this->getResourceMovie2()->getName().c_str()
                 , m_resourceMovie2->getContent()->getFilePath().c_str()
@@ -766,7 +766,7 @@ namespace Mengine
     {
         if( m_composition == nullptr )
         {
-            LOGGER_ERROR( "name '%s' not compile"
+            LOGGER_ERROR( "movie2 '%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -836,7 +836,7 @@ namespace Mengine
     {
         if( m_composition == nullptr )
         {
-            LOGGER_ERROR( "name '%s' invalid get layer '%s' not compile"
+            LOGGER_ERROR( "movie2 '%s' invalid get layer '%s' not compile"
                 , this->getName().c_str()
                 , _name.c_str()
             );
@@ -847,7 +847,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
         {
-            LOGGER_ERROR( "name '%s' layer '%s' not found"
+            LOGGER_ERROR( "movie2 '%s' layer '%s' not found"
                 , this->getName().c_str()
                 , _name.c_str()
             );
@@ -865,7 +865,7 @@ namespace Mengine
 
         if( m_composition == nullptr )
         {
-            LOGGER_ERROR( "name '%s' invalid get layer '%s' not compile"
+            LOGGER_ERROR( "movie2 '%s' invalid get layer '%s' not compile"
                 , this->getName().c_str()
                 , _name.c_str()
             );
@@ -876,7 +876,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
         {
-            LOGGER_ERROR( "name '%s' layer '%s' not found"
+            LOGGER_ERROR( "movie2 '%s' layer '%s' not found"
                 , this->getName().c_str()
                 , _name.c_str()
             );
@@ -971,7 +971,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "name '%s' is not compile"
+            LOGGER_ERROR( "movie2 '%s' is not compile"
                 , this->getName().c_str()
             );
 
@@ -998,7 +998,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "name '%s' is not compile"
+            LOGGER_ERROR( "movie2 '%s' is not compile"
                 , this->getName().c_str()
             );
 
@@ -1015,7 +1015,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "name '%s' is not compile"
+            LOGGER_ERROR( "movie2 '%s' is not compile"
                 , this->getName().c_str()
             );
 
@@ -1032,7 +1032,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "name '%s' is not compile"
+            LOGGER_ERROR( "movie2 '%s' is not compile"
                 , this->getName().c_str()
             );
 
@@ -1057,7 +1057,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "name '%s' is not compile"
+            LOGGER_ERROR( "movie2 '%s' is not compile"
                 , this->getName().c_str()
             );
 
@@ -2027,7 +2027,7 @@ namespace Mengine
             {
                 if( m2->interruptElements_() == false )
                 {
-                    LOGGER_ERROR( "name '%s' invalid interrupt elements"
+                    LOGGER_ERROR( "movie2 '%s' invalid interrupt elements"
                         , m2->getName().c_str()
                     );
                 }
@@ -2249,7 +2249,7 @@ namespace Mengine
 
         if( m_resourceMovie2->compile() == false )
         {
-            LOGGER_ERROR( "name '%s' resource '%s' not compile"
+            LOGGER_ERROR( "movie2 '%s' resource '%s' not compile"
                 , this->getName().c_str()
                 , m_resourceMovie2->getName().c_str()
             );
@@ -2269,7 +2269,7 @@ namespace Mengine
 
         if( data->acquireCompositionData( compositionData ) == false )
         {
-            LOGGER_ERROR( "name '%s' resource '%s' not acquire composition"
+            LOGGER_ERROR( "movie2 '%s' resource '%s' not acquire composition"
                 , this->getName().c_str()
                 , m_resourceMovie2->getName().c_str()
             );
@@ -2492,7 +2492,7 @@ namespace Mengine
 
             if( this->play( time ) == 0 )
             {
-                LOGGER_ERROR( "name '%s' resource '%s' auto play return 0"
+                LOGGER_ERROR( "movie2 '%s' resource '%s' auto play return 0"
                     , this->getName().c_str()
                     , this->m_resourceMovie2->getName().c_str()
                 );
@@ -2888,7 +2888,8 @@ namespace Mengine
                                     }break;
                                 default:
                                     {
-                                        LOGGER_ERROR( "invalid support shader material blend mode [%u] (Normal)"
+                                        LOGGER_ERROR( "movie2 '%s' invalid support shader material blend mode [%u] (Normal)"
+                                            , this->getName().c_str()
                                             , blend_mode
                                         );
 
@@ -2906,7 +2907,8 @@ namespace Mengine
                                     }break;
                                 default:
                                     {
-                                        LOGGER_ERROR( "invalid support shader material blend mode [%u] (ExternalAlpha)"
+                                        LOGGER_ERROR( "movie2 '%s' invalid support shader material blend mode [%u] (ExternalAlpha)"
+                                            , this->getName().c_str()
                                             , blend_mode
                                         );
 

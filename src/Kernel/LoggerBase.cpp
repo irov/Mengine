@@ -6,8 +6,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     LoggerBase::LoggerBase()
-        : m_color( LCOLOR_NONE )
-        , m_verboseLevel( LM_VERBOSE )
+        : m_verboseLevel( LM_VERBOSE )
         , m_verboseFilter( 0xFFFFFFFF )
         , m_writeHistory( false )
     {
@@ -58,16 +57,6 @@ namespace Mengine
     bool LoggerBase::getWriteHistory() const
     {
         return m_writeHistory;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void LoggerBase::setColor( uint32_t _color )
-    {
-        m_color = _color;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t LoggerBase::getColor() const
-    {
-        return m_color;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerBase::setVerboseLevel( ELoggerLevel _level )

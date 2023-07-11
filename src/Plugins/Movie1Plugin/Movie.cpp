@@ -83,7 +83,7 @@ namespace Mengine
 
             if( this->createLayers_() == false )
             {
-                LOGGER_ERROR( "'%s' resource '%s' can't create layers"
+                LOGGER_ERROR( "movie '%s' resource '%s' can't create layers"
                     , this->getName().c_str()
                     , m_resourceMovie->getName().c_str()
                 );
@@ -167,7 +167,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "'%s' not activate"
+            LOGGER_ERROR( "movie '%s' not activate"
                 , this->getName().c_str()
             );
 
@@ -230,13 +230,13 @@ namespace Mengine
         {
             if( this->hasParent() == false )
             {
-                LOGGER_ERROR( "'%s' is homeless"
+                LOGGER_ERROR( "movie '%s' is homeless"
                     , this->getName().c_str()
                 );
             }
             else
             {
-                LOGGER_ERROR( "'%s' play not activate"
+                LOGGER_ERROR( "movie '%s' play not activate"
                     , this->getName().c_str()
                 );
             }
@@ -306,7 +306,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
             if( MovieMesh2DPtr::dynamic_from( _node ) == nullptr )
             {
-                LOGGER_ERROR( "'%s' resource '%s' layer '%s' is Mesh2D but node is not Mesh2D name '%s' type '%s'"
+                LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' is Mesh2D but node is not Mesh2D name '%s' type '%s'"
                     , this->getName().c_str()
                     , this->getResourceMovieName().c_str()
                     , _layer.name.c_str()
@@ -401,7 +401,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "'%s' not activate"
+            LOGGER_ERROR( "movie '%s' not activate"
                 , this->getName().c_str()
             );
 
@@ -415,7 +415,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "'%s' not activate"
+            LOGGER_ERROR( "movie '%s' not activate"
                 , this->getName().c_str()
             );
 
@@ -509,7 +509,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "'%s' invalid not compile"
+            LOGGER_ERROR( "movie '%s' invalid not compile"
                 , this->getName().c_str()
             );
 
@@ -552,7 +552,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "'%s' resource '%s' invalid not compile '%s' type '%s'"
+            LOGGER_ERROR( "movie '%s' resource '%s' invalid not compile '%s' type '%s'"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()
@@ -594,7 +594,7 @@ namespace Mengine
             }
         }
 
-        LOGGER_ERROR( "'%s' resource '%s' not found node '%s' type '%s'"
+        LOGGER_ERROR( "movie '%s' resource '%s' not found node '%s' type '%s'"
             , this->getName().c_str()
             , this->getResourceMovieName().c_str()
             , _name.c_str()
@@ -608,7 +608,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "'%s' resource '%s' invalid not compile name '%s' type '%s'"
+            LOGGER_ERROR( "movie '%s' resource '%s' invalid not compile name '%s' type '%s'"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()
@@ -657,7 +657,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "'%s' resource '%s' invalid get layer '%s' not compile"
+            LOGGER_ERROR( "movie '%s' resource '%s' invalid get layer '%s' not compile"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()
@@ -734,7 +734,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "'%s' resource '%s' invalid get layer '%s' not compile"
+            LOGGER_ERROR( "movie '%s' resource '%s' invalid get layer '%s' not compile"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()
@@ -772,7 +772,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "'%s' resource '%s' invalid get layer '%s' not compile"
+            LOGGER_ERROR( "movie '%s' resource '%s' invalid get layer '%s' not compile"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()
@@ -808,7 +808,7 @@ namespace Mengine
             return true;
         }
 
-        LOGGER_ERROR( "'%s' resource '%s' not found layer '%s'"
+        LOGGER_ERROR( "movie '%s' resource '%s' not found layer '%s'"
             , this->getName().c_str()
             , this->getResourceMovieName().c_str()
             , _name.c_str()
@@ -821,7 +821,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "'%s' resource '%s' invalid get layer '%s' not compile"
+            LOGGER_ERROR( "movie '%s' resource '%s' invalid get layer '%s' not compile"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()
@@ -857,7 +857,7 @@ namespace Mengine
             return true;
         }
 
-        LOGGER_ERROR( "'%s' resource '%s' not found layer '%s'"
+        LOGGER_ERROR( "movie '%s' resource '%s' not found layer '%s'"
             , this->getName().c_str()
             , this->getResourceMovieName().c_str()
             , _name.c_str()
@@ -870,7 +870,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "'%s' resource '%s' invalid get layer '%s' not compile"
+            LOGGER_ERROR( "movie '%s' resource '%s' invalid get layer '%s' not compile"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()
@@ -907,7 +907,7 @@ namespace Mengine
             return true;
         }
 
-        LOGGER_ERROR( "'%s' resource '%s' not found layer '%s'"
+        LOGGER_ERROR( "movie '%s' resource '%s' not found layer '%s'"
             , this->getName().c_str()
             , this->getResourceMovieName().c_str()
             , _name.c_str()
@@ -1089,7 +1089,7 @@ namespace Mengine
 #endif
             else
             {
-                LOGGER_ERROR( "'%s' resource '%s' can't create layer_node '%s' type '%s'"
+                LOGGER_ERROR( "movie '%s' resource '%s' can't create layer_node '%s' type '%s'"
                     , this->getName().c_str()
                     , this->getResourceMovieName().c_str()
                     , layer.source.c_str()
@@ -2171,7 +2171,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "'%s' is not compile"
+            LOGGER_ERROR( "movie '%s' is not compile"
                 , this->getName().c_str()
             );
 
@@ -2212,7 +2212,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "'%s' is not compile"
+            LOGGER_ERROR( "movie '%s' is not compile"
                 , this->getName().c_str()
             );
 
@@ -2318,7 +2318,7 @@ namespace Mengine
 
             if( this->play( time ) == 0 )
             {
-                LOGGER_ERROR( "'%s' resource '%s' auto play return 0"
+                LOGGER_ERROR( "movie '%s' resource '%s' auto play return 0"
                     , this->getName().c_str()
                     , this->m_resourceMovie->getName().c_str()
                 );
@@ -2492,7 +2492,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
                 if( MovieNodeExtraPtr::dynamic_from( node ) == nullptr )
                 {
-                    LOGGER_ERROR( "'%s' layer '%s' must be 'MovieNodeExtra' but node is '%s' type '%s'"
+                    LOGGER_ERROR( "movie '%s' layer '%s' must be 'MovieNodeExtra' but node is '%s' type '%s'"
                         , this->getName().c_str()
                         , layer.name.c_str()
                         , node->getName().c_str()
@@ -3016,7 +3016,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_ERROR( "'%s' resource '%s' layer '%s' blending mode not supported '%s'"
+            LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' blending mode not supported '%s'"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _layer.name.c_str()

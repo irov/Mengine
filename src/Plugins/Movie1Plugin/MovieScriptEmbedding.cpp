@@ -390,7 +390,7 @@ namespace Mengine
             MoviePtr sub_movie;
             if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
             {
-                LOGGER_ERROR( "'%s' not found layer '%s'"
+                LOGGER_ERROR( "movie '%s' not found layer '%s'"
                     , _movie->getName().c_str()
                     , _name.c_str()
                 );
@@ -440,7 +440,7 @@ namespace Mengine
             MoviePtr sub_movie;
             if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
             {
-                LOGGER_ERROR( "'%s' not found layer '%s'"
+                LOGGER_ERROR( "movie '%s' not found layer '%s'"
                     , _movie->getName().c_str()
                     , _name.c_str()
                 );
@@ -493,7 +493,7 @@ namespace Mengine
             MoviePtr sub_movie;
             if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
             {
-                LOGGER_ERROR( "'%s' not found layer '%s'"
+                LOGGER_ERROR( "movie '%s' not found layer '%s'"
                     , _movie->getName().c_str()
                     , _name.c_str()
                 );
@@ -545,7 +545,7 @@ namespace Mengine
             MoviePtr sub_movie;
             if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
             {
-                LOGGER_ERROR( "'%s' not found layer '%s'"
+                LOGGER_ERROR( "movie '%s' not found layer '%s'"
                     , _movie->getName().c_str()
                     , _name.c_str()
                 );
@@ -566,7 +566,7 @@ namespace Mengine
             {
                 if( resourceMovie->compile() == false )
                 {
-                    LOGGER_ERROR( "'%s' invalid compile"
+                    LOGGER_ERROR( "movie '%s' invalid compile"
                         , _movie->getName().c_str()
                     );
 
@@ -609,7 +609,7 @@ namespace Mengine
             MoviePtr sub_movie;
             if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
             {
-                LOGGER_ERROR( "'%s' not found layer '%s'"
+                LOGGER_ERROR( "movie '%s' not found layer '%s'"
                     , _movie->getName().c_str()
                     , _name.c_str()
                 );
@@ -630,7 +630,7 @@ namespace Mengine
             {
                 if( resourceMovie->compile() == false )
                 {
-                    LOGGER_ERROR( "'%s' invalid compile"
+                    LOGGER_ERROR( "movie '%s' invalid compile"
                         , _movie->getName().c_str()
                     );
 
@@ -671,7 +671,7 @@ namespace Mengine
             MoviePtr submovie;
             if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
             {
-                LOGGER_ERROR( "'%s' not found slot '%s'"
+                LOGGER_ERROR( "movie '%s' not found slot '%s'"
                     , _movie->getName().c_str()
                     , _slotName.c_str()
                 );
@@ -692,7 +692,7 @@ namespace Mengine
             MoviePtr submovie;
             if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
             {
-                LOGGER_ERROR( "'%s' not found slot '%s'"
+                LOGGER_ERROR( "movie '%s' not found slot '%s'"
                     , _movie->getName().c_str()
                     , _slotName.c_str()
                 );
@@ -730,7 +730,7 @@ namespace Mengine
             MoviePtr submovie;
             if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
             {
-                LOGGER_ERROR( "'%s' not found slot '%s'"
+                LOGGER_ERROR( "movie '%s' not found slot '%s'"
                     , _movie->getName().c_str()
                     , _slotName.c_str()
                 );
@@ -749,7 +749,7 @@ namespace Mengine
             MoviePtr submovie;
             if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
             {
-                LOGGER_ERROR( "'%s' not found slot '%s'"
+                LOGGER_ERROR( "movie '%s' not found slot '%s'"
                     , _movie->getName().c_str()
                     , _slotName.c_str()
                 );
@@ -833,7 +833,7 @@ namespace Mengine
 
             if( successful == false )
             {
-                LOGGER_ERROR( "'%s' not found layer '%s'"
+                LOGGER_ERROR( "resource movie '%s' not found layer '%s'"
                     , _movie->getName().c_str()
                     , _name.c_str()
                 );
@@ -851,7 +851,7 @@ namespace Mengine
 
             if( successful == false )
             {
-                LOGGER_ERROR( "'%s' not found layer '%s'"
+                LOGGER_ERROR( "resource movie '%s' not found layer '%s'"
                     , _movie->getName().c_str()
                     , _name.c_str()
                 );
@@ -869,7 +869,8 @@ namespace Mengine
 
             if( _movie1->enable() == false )
             {
-                LOGGER_ERROR( "movie1 invalid compile"
+                LOGGER_ERROR( "movie1 '%s' invalid compile"
+                    , _movie1->getName().c_str()
                 );
 
                 return false;
@@ -877,7 +878,8 @@ namespace Mengine
 
             if( _movie2->enable() == false )
             {
-                LOGGER_ERROR( "movie2 invalid compile"
+                LOGGER_ERROR( "movie2 '%s' invalid compile"
+                    , _movie2->getName().c_str()
                 );
 
                 return false;
@@ -972,13 +974,14 @@ namespace Mengine
             return intersect;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_intersectMoviesHotspotVsPolygon( const MoviePtr & _movie, const ConstString & _socket, const Polygon & _polygon )
+        static bool s_intersectMoviesHotspotVsPolygon( Movie * _movie, const ConstString & _socket, const Polygon & _polygon )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _movie, "movie is nullptr" );
 
             if( _movie->enable() == false )
             {
-                LOGGER_ERROR( "movie invalid compile"
+                LOGGER_ERROR( "movie '%s' invalid compile"
+                    , _movie->getName().c_str()
                 );
 
                 return false;
@@ -1044,7 +1047,7 @@ namespace Mengine
             if( RESOURCE_SERVICE()
                 ->hasResource( _groupName, resourceMovieName, false, &resource ) == false )
             {
-                LOGGER_ERROR( "not found resource movie '%s'"
+                LOGGER_ERROR( "resource movie '%s' not found"
                     , resourceMovieName.c_str()
                 );
 
@@ -1085,7 +1088,7 @@ namespace Mengine
             if( RESOURCE_SERVICE()
                 ->hasResource( _groupName, resourceMovieName, false, &resource ) == false )
             {
-                LOGGER_ERROR( "not found resource movie '%s'"
+                LOGGER_ERROR( "resource movie '%s' not found"
                     , resourceMovieName.c_str()
                 );
 
@@ -1121,7 +1124,7 @@ namespace Mengine
 
             if( resourceMovie->compile() == false )
             {
-                LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
+                LOGGER_ERROR( "resource movie '%s' type '%s' invalid compile"
                     , resourceMovie->getName().c_str()
                     , resourceMovie->getType().c_str()
                 );
@@ -1193,7 +1196,7 @@ namespace Mengine
 
             if( resource->compile() == false )
             {
-                LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
+                LOGGER_ERROR( "resource movie '%s' type '%s' invalid compile"
                     , resource->getName().c_str()
                     , resource->getType().c_str()
                 );

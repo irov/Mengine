@@ -68,7 +68,7 @@ namespace Mengine
     {
         if( _offset + _count > m_indexCount )
         {
-            LOGGER_ERROR( "lock offset %u count %u more max size %u (doc: %s)"
+            LOGGER_ASSERTION( "lock offset %u count %u more max size %u (doc: %s)"
                 , _offset
                 , _count
                 , m_indexCount

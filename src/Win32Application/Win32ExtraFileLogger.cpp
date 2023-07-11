@@ -34,7 +34,7 @@ namespace Mengine
 
         if( hLogFile == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR( "invalid create setuplog '%ls'"
+            LOGGER_ASSERTION( "invalid create setuplog '%ls'"
                 , UNICODE_setuplog
             );
 

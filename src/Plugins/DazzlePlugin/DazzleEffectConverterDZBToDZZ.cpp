@@ -73,7 +73,7 @@ namespace Mengine
 
         if( Helper::writeStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ), false, data_memory, data_size, EAC_BEST ) == false )
         {
-            LOGGER_ERROR( "invalid write '%s'"
+            LOGGER_ERROR( "dazzle converter invalid write '%s'"
                 , full_outputFilePath.c_str()
             );
 
@@ -82,7 +82,7 @@ namespace Mengine
 
         if( Helper::closeOutputStreamFile( m_fileGroup, stream ) == false )
         {
-            LOGGER_ERROR( "invalid close '%s'"
+            LOGGER_ERROR( "dazzle converter invalid close '%s'"
                 , full_outputFilePath.c_str()
             );
 
@@ -96,7 +96,7 @@ namespace Mengine
     {
         if( Helper::loadStreamMagicHeader( _stream, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ) ) == false )
         {
-            LOGGER_ERROR( "invalid magic header" );
+            LOGGER_ERROR( "dazzle converter invalid magic header" );
 
             return false;
         }

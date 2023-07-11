@@ -47,7 +47,7 @@ namespace Mengine
 
         if( shaderId == 0 )
         {
-            LOGGER_ERROR( "'%s' invalid create fragment shader"
+            LOGGER_ERROR( "invalid create fragment shader '%s'"
                 , m_name.c_str()
             );
 

@@ -40,7 +40,7 @@ namespace Mengine
 
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
-            LOGGER_ERROR( "Forgot remove player global input handler [%u] (doc: %s)"
+            LOGGER_ASSERTION( "was forgotten remove player global input handler [%u] (doc: %s)"
                 , desc.id
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );

@@ -132,7 +132,7 @@ namespace Mengine
             }break;
         default:
             {
-                LOGGER_ERROR( "invalid thread priority [%u]"
+                LOGGER_ASSERTION( "invalid thread priority [%u]"
                     , m_priority
                 );
             }break;

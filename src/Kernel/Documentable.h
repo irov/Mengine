@@ -14,14 +14,12 @@ namespace Mengine
         Documentable();
         ~Documentable() override;
 
-#if defined(MENGINE_DOCUMENT_ENABLE)
     public:
         void setDocument( const DocumentInterfacePtr & _document );
         const DocumentInterfacePtr & getDocument() const;
 
     protected:
         DocumentInterfacePtr m_document;
-#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Documentable> DocumentablePtr;

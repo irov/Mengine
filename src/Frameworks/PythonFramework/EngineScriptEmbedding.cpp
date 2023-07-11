@@ -2179,7 +2179,7 @@ namespace Mengine
                 RESOURCE_SERVICE()
                     ->foreachGroupResources( _groupName, []( const ResourcePtr & _resource )
                 {
-                    if( _resource->isCompile() == false )
+                    if( _resource->isCache() == false )
                     {
                         return;
                     }

@@ -1,9 +1,7 @@
 package org.Mengine.Plugin.FirebaseCrashlytics;
 
-import android.os.Handler;
-import android.os.Looper;
-
-import androidx.annotation.NonNull;
+import android.content.Context;
+import android.widget.Toast;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
@@ -15,6 +13,7 @@ import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginLoggerListener;
+import org.Mengine.Base.MengineUtils;
 
 public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "FirebaseCrashlytics";
@@ -29,22 +28,14 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         if (BuildConfig.DEBUG == true) {
-            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+            if (FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution() == true) {
+                MengineUtils.performOnMainThreadDelayed(() -> {
+                    Context applicatonContext = application.getApplicationContext();
 
-            Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-                @Override
-                public void uncaughtException(@NonNull Thread thread, @NonNull Throwable throwable) {
-                    MengineFirebaseCrashlyticsPlugin.this.logError("app crash -> %s", throwable.getMessage());
-                    throwable.printStackTrace();
-
-                    FirebaseCrashlytics.getInstance().recordException(throwable);
-
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                        System.exit(0);
-                    }, 1000L);
-                }
-            });
+                    Toast text = Toast.makeText(applicatonContext, "Last launch ended in a crash", Toast.LENGTH_LONG);
+                    text.show();
+                }, 5000L);
+            }
         }
     }
 

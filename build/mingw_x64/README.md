@@ -12,3 +12,5 @@ pacman -S mingw-w64-x86_64-lld
 pacman -S mingw-w64-x86_64-ninja
 pacman -S mingw-w64-x86_64-cmake
 pacman -S mingw-w64-x86_64-gdb
+pacman -S mingw-w64-x86_64-python-jinja
+pacman -S mingw-w64-x86_64-python-requests

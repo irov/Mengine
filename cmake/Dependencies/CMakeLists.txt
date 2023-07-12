@@ -795,8 +795,12 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
         SET(ALSOFT_CPUEXT_SSE4_1 OFF CACHE BOOL "Enable SSE4.1 support" FORCE)
         SET(OPENAL_SHARED OFF CACHE BOOL "OPENAL_SHARED" FORCE)
         
-        if(WIN32)
+        if(MENGINE_TOOLCHAIN_MSVC)
             SET(ALSOFT_STATIC_WINPTHREAD ON CACHE BOOL "Static link libwinpthread" FORCE)
+        endif()
+
+        if(MENGINE_TOOLCHAIN_MINGW)
+            SET(ALSOFT_STATIC_WINPTHREAD OFF CACHE BOOL "Static link libwinpthread" FORCE)
         endif()
         
         if(MENGINE_TARGET_UWP)

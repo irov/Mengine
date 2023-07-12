@@ -436,7 +436,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         for( const Win32ProcessDesc & desc : m_win32ProcessHandlers )
         {
-            LOGGER_ERROR( "forgot remove win32 process handler (doc: %s)"
+            LOGGER_ASSERTION( "forgot remove win32 process handler (doc: %s)"
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );
         }
@@ -452,7 +452,7 @@ namespace Mengine
                 continue;
             }
 
-            LOGGER_ERROR( "forgot remove platform timer (doc: %s)"
+            LOGGER_ASSERTION( "forgot remove platform timer (doc: %s)"
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );
         }
@@ -468,7 +468,7 @@ namespace Mengine
                 continue;
             }
 
-            LOGGER_ERROR( "forgot remove platform update (doc: %s)"
+            LOGGER_ASSERTION( "forgot remove platform update (doc: %s)"
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );
         }

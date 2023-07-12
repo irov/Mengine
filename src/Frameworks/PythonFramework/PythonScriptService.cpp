@@ -589,7 +589,7 @@ namespace Mengine
         {
             const ScriptEmbeddingInterfacePtr & embedding = desc.embedding;
 
-            LOGGER_ERROR( "was forgotten ejecting '%s'"
+            LOGGER_ASSERTION( "was forgotten ejecting '%s'"
                 , desc.name.c_str()
             );
 

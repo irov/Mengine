@@ -1,7 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <meta-data android:name="mengine.sentry.dsn" android:value="@string/mengine_sentry_dsn" />
+        <meta-data android:name="mengine.sentry.enable_uncaught_exception_handler" android:value="@bool/mengine_sentry_enable_uncaught_exception_handler" />
 
+        <meta-data android:name="io.sentry.integrations" android:value="false" />
         <meta-data android:name="io.sentry.ndk.enable" android:value="false" />
         <meta-data android:name="io.sentry.auto-init" android:value="false"/>
     </application>

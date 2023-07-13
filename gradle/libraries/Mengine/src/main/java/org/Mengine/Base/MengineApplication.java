@@ -645,6 +645,10 @@ public class MengineApplication extends Application {
 
         this.setState("application.init", "plugins_prepare");
 
+        if (m_sessionId.isEmpty() == false) {
+            this.sendEvent(MengineEvent.EVENT_SESSION_ID, m_sessionId);
+        }
+
         MengineAnalytics.addContextParameterString("install_key", this.m_installKey);
         MengineAnalytics.addContextParameterLong("install_key_timestamp", this.m_installKeyTimestamp);
         MengineAnalytics.addContextParameterLong("install_rnd", this.m_installRND);

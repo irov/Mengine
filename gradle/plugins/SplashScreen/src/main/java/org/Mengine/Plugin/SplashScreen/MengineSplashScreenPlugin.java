@@ -34,7 +34,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        this.setState("splashscreen", "init");
+        this.setState("splashscreen.state", "init");
 
         ImageView image = new ImageView(activity);
         Context context = MengineActivity.getContext();
@@ -58,7 +58,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
     }
 
     private void showSplash(@NonNull MengineActivity activity) {
-        this.setState("splashscreen", "show");
+        this.setState("splashscreen.state", "show");
 
         AlphaAnimation showAnimation = new AlphaAnimation(0.f, 1.f);
         long durationMillis = MengineActivity.getContext().getResources().getInteger(R.integer.mengine_splashscreen_show_duration);
@@ -85,7 +85,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
     }
 
     private void hideSplash(@NonNull MengineActivity activity) {
-        this.setState("splashscreen", "hide");
+        this.setState("splashscreen.state", "hide");
 
         Animation showAnimation = m_image.getAnimation();
 
@@ -131,6 +131,6 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
 
         m_image = null;
 
-        this.setState("splashscreen", "remove");
+        this.setState("splashscreen.state", "remove");
     }
 }

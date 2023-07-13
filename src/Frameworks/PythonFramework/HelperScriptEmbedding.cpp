@@ -830,7 +830,7 @@ namespace Mengine
 
                 msg.level = LM_INFO;
                 msg.filter = LFILTER_NONE;
-                msg.color = LCOLOR_NONE;
+                msg.color = LCOLOR_GREEN | LCOLOR_BLUE;
                 msg.flag = LFLAG_SHORT;
                 msg.file = "";
                 msg.line = 0;
@@ -851,7 +851,7 @@ namespace Mengine
 
                 msg.level = LM_MESSAGE;
                 msg.filter = LFILTER_NONE;
-                msg.color = LCOLOR_NONE;
+                msg.color = LCOLOR_RED | LCOLOR_BLUE;
                 msg.flag = LFLAG_SHORT;
                 msg.file = "";
                 msg.line = 0;
@@ -872,7 +872,7 @@ namespace Mengine
 
                 msg.level = LM_WARNING;
                 msg.filter = LFILTER_NONE;
-                msg.color = LCOLOR_NONE;
+                msg.color = LCOLOR_RED | LCOLOR_GREEN;
                 msg.flag = LFLAG_SHORT;
                 msg.file = "";
                 msg.line = 0;
@@ -893,7 +893,7 @@ namespace Mengine
 
                 msg.level = LM_ERROR;
                 msg.filter = LFILTER_NONE;
-                msg.color = LCOLOR_NONE;
+                msg.color = LCOLOR_RED;
                 msg.flag = LFLAG_SHORT;
                 msg.file = "";
                 msg.line = 0;

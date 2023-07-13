@@ -41,7 +41,12 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
 
     @Override
     public void onMengineCurrentSceneChange(MengineActivity activity, String name) {
-        FirebaseCrashlytics.getInstance().setCustomKey("current.scene", name);
+        this.setCustomKey("current.scene", name);
+    }
+
+    @Override
+    public void onMengineCaughtException(MengineApplication activity, Throwable throwable) {
+        this.recordException(throwable);
     }
 
     @Override
@@ -53,6 +58,8 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
         this.logMessage("recordException throwable: %s"
             , throwable.getLocalizedMessage()
         );
+
+        throwable.printStackTrace(System.err);
 
         FirebaseCrashlytics.getInstance().recordException(throwable);
     }
@@ -95,14 +102,14 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     public void testCrash() {
         this.logMessage("testCrash");
 
-        FirebaseCrashlytics.getInstance().setCustomKey("TestCrash", true);
+        this.setCustomKey("test.crash", true);
 
         throw new RuntimeException("Firebase Crashlytics Test Crash");
     }
 
     @Override
     public void onMengineLogger(MengineApplication application, String category, int level, int filter, int color, String msg) {
-        if (level > MengineLog.LM_ERROR) {
+        if (level != MengineLog.LM_ERROR || level != MengineLog.LM_FATAL) {
             return;
         }
 

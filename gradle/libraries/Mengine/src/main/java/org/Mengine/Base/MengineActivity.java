@@ -1,5 +1,13 @@
 package org.Mengine.Base;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.View;
+
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
 
@@ -10,25 +18,16 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
-
-import android.content.*;
-import android.content.res.Configuration;
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.View;
-
-import androidx.core.content.FileProvider;
 
 public class MengineActivity extends SDLActivity {
     public static final String TAG = "MengineActivity";
 
-    private static native void AndroidEnvironmentService_setMengineAndroidActivityJNI(Object activity);
-    private static native void AndroidEnvironmentService_removeMengineAndroidActivityJNI();
+    private static native void AndroidEnv_setMengineAndroidActivityJNI(Object activity);
+    private static native void AndroidEnv_removeMengineAndroidActivityJNI();
+
     private static native void AndroidEnvironmentService_quitMengineAndroidActivityJNI();
     private static native String AndroidEnvironmentService_getCompanyName();
     private static native String AndroidEnvironmentService_getProjectName();
@@ -259,7 +258,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        AndroidEnvironmentService_setMengineAndroidActivityJNI(this);
+        AndroidEnv_setMengineAndroidActivityJNI(this);
 
         ArrayList<MenginePlugin> plugins = this.getPlugins();
 
@@ -391,7 +390,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     public void onMengineCurrentSceneChange(String name) {
-        MengineLog.logInfo(TAG, "onMengineCurrentSceneChange [%s]"
+        MengineLog.logInfo(TAG, "onMengineCurrentSceneChange: %s"
             , name
         );
 
@@ -574,7 +573,7 @@ public class MengineActivity extends SDLActivity {
         m_semaphores = null;
         m_requestCodes = null;
 
-        AndroidEnvironmentService_removeMengineAndroidActivityJNI();
+        AndroidEnv_removeMengineAndroidActivityJNI();
 
         super.onDestroy();
     }

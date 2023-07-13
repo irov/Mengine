@@ -29,8 +29,8 @@ import java.util.Map;
 public class MengineApplication extends Application {
     private static final String TAG = "MengineApplication";
 
-    private static native void AndroidEnvironmentService_setMengineAndroidApplicationJNI(Object activity);
-    private static native void AndroidEnvironmentService_removeMengineAndroidApplicationJNI();
+    private static native void AndroidEnv_setMengineAndroidApplicationJNI(Object activity);
+    private static native void AndroidEnv_removeMengineAndroidApplicationJNI();
 
     private String m_androidId;
     private String m_installKey;
@@ -449,6 +449,18 @@ public class MengineApplication extends Application {
         return extension;
     }
 
+    public void onMengineCaughtException(Throwable throwable) {
+        MengineLog.logInfo(TAG, "onMengineCaughtException: %s"
+            , throwable.getLocalizedMessage()
+        );
+
+        ArrayList<MenginePlugin> plugins = this.getPlugins();
+
+        for (MenginePlugin p : plugins) {
+            p.onMengineCaughtException(this, throwable);
+        }
+    }
+
     public void onMengineInitializeBaseServices(MengineActivity activity) {
         m_activityLifecycle = new MengineActivityLifecycle(this, activity);
 
@@ -559,7 +571,7 @@ public class MengineApplication extends Application {
 
         this.setState("application.init", "sdl_init");
 
-        AndroidEnvironmentService_setMengineAndroidApplicationJNI(this);
+        AndroidEnv_setMengineAndroidApplicationJNI(this);
 
         MengineLog.setMengineApplication(this);
         MengineAnalytics.setMengineApplication(this);
@@ -694,7 +706,7 @@ public class MengineApplication extends Application {
         m_applicationListeners = null;
         m_extensionListeners = null;
 
-        AndroidEnvironmentService_removeMengineAndroidApplicationJNI();
+        AndroidEnv_removeMengineAndroidApplicationJNI();
 
         super.onTerminate();
     }

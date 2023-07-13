@@ -64,15 +64,13 @@ namespace Mengine
             {
             case ERROR_LEVEL_MESSAGE:
                 {
-                    //Empty
+                    Helper::debuggerBreak();
                 }break;
             case ERROR_LEVEL_FATAL:
                 {
                     Helper::abort( message_info );
                 }break;
-            }
-
-            Helper::debuggerBreak();
+            }            
         }
         //////////////////////////////////////////////////////////////////////////
     }

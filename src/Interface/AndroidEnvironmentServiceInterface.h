@@ -18,14 +18,15 @@ namespace Mengine
         virtual jclass getJClass( JNIEnv * _jenv, const Char * _signature ) const = 0;
 
     public:
-        virtual jmethodID getActivityMethodID(JNIEnv * _jenv, const Char * _name, const Char * _signature ) const = 0;
-        virtual void callVoidActivityMethod(JNIEnv * _jenv, jmethodID _method, ... ) const = 0;
-        virtual jobject callObjectActivityMethod(JNIEnv * _jenv, jmethodID _method, ... ) const = 0;
+        virtual void callVoidActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
+        virtual jobject callObjectActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
+        virtual jboolean callBooleanActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
+        virtual jint callIntActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
+        virtual jlong callLongActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
 
     public:
-        virtual jmethodID getApplicationMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const = 0;
-        virtual void callVoidApplicationMethod( JNIEnv * _jenv, jmethodID _method, ... ) const = 0;
-        virtual jobject callObjectApplicationMethod( JNIEnv * _jenv, jmethodID _method, ... ) const = 0;
+        virtual void callVoidApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
+        virtual jobject callObjectApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
 
     public:
         virtual size_t getAndroidId( Char * _androidId, size_t _capacity ) const = 0;
@@ -44,7 +45,7 @@ namespace Mengine
         virtual int32_t androidOpenAssetFile( const Char * _path ) = 0;
         virtual int32_t androidAvailableAssetFile( int32_t _fileId ) = 0;
         virtual int32_t androidReadAssetFile( int32_t _fileId, int32_t _offset, int32_t _size, void * const _buffer ) = 0;
-        virtual int32_t androidSkipAssetFile( int32_t _fileId, int32_t _offset ) = 0;
+        virtual int64_t androidSkipAssetFile( int32_t _fileId, int32_t _offset ) = 0;
         virtual void androidResetAssetFile( int32_t _fileId ) = 0;
         virtual void androidCloseAssetFile( int32_t _fileId ) = 0;
 

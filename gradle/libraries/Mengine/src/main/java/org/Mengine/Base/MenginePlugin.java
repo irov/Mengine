@@ -267,6 +267,10 @@ public class MenginePlugin implements MenginePluginInterface {
         //Empty
     }
 
+    public void onMengineCaughtException(MengineApplication activity, Throwable e) {
+        //Empty
+    }
+
     public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
         //Empty
     }

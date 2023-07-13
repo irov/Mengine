@@ -27,19 +27,22 @@ namespace Mengine
     public:
         jclass getJClass( JNIEnv * _jenv, const Char * _signature ) const override;
 
-    public:
-        jmethodID getActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const override;
+    protected:
+        jmethodID getActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const;
 
     public:
-        void callVoidActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const override;
-        jobject callObjectActivityMethod( JNIEnv * _jenv, jmethodID _method, ... ) const override;
+        void callVoidActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
+        jobject callObjectActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
+        jboolean callBooleanActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
+        jint callIntActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
+        jlong callLongActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
+
+    protected:
+        jmethodID getApplicationMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const;
 
     public:
-        jmethodID getApplicationMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const override;
-
-    public:
-        void callVoidApplicationMethod( JNIEnv * _jenv, jmethodID _method, ... ) const override;
-        jobject callObjectApplicationMethod( JNIEnv * _jenv, jmethodID _method, ... ) const override;
+        void callVoidApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
+        jobject callObjectApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
 
     public:
         size_t getAndroidId( Char * _androidId, size_t _capacity ) const override;
@@ -58,7 +61,7 @@ namespace Mengine
         int32_t androidOpenAssetFile( const Char * _path ) override;
         int32_t androidAvailableAssetFile( int32_t _fileId ) override;
         int32_t androidReadAssetFile( int32_t _fileId, int32_t _offset, int32_t _size, void * const _buffer ) override;
-        int32_t androidSkipAssetFile( int32_t _fileId, int32_t _offset ) override;
+        int64_t androidSkipAssetFile( int32_t _fileId, int32_t _offset ) override;
         void androidResetAssetFile( int32_t _fileId ) override;
         void androidCloseAssetFile( int32_t _fileId ) override;
 
@@ -78,9 +81,6 @@ namespace Mengine
         void notifyApplicationEndUpdate_();
         void notifyBootstrapperInitializeBaseServices_();
         void notifyBootstrapperCreateApplication_();
-
-    protected:
-        void exceptionCheck( JNIEnv * _jenv ) const;
 
     protected:
         AndroidEventationHubPtr m_androidEventationHub;

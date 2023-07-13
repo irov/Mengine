@@ -45,7 +45,7 @@ public class MengineLog {
                 Log.wtf(tag, totalMsg);
                 break;
             case LM_MESSAGE_RELEASE:
-                Log.e(tag, totalMsg);
+                Log.w(tag, totalMsg);
                 break;
             case LM_ERROR:
                 Log.e(tag, totalMsg);

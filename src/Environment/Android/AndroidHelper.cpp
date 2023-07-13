@@ -2,9 +2,11 @@
 
 #include "Interface/AndroidEnvironmentServiceInterface.h"
 
+#include "AndroidEnv.h"
+
 #include "Kernel/Assertion.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/Logger.h"
+#include "Kernel/Error.h"
 
 #include "Config/StdIntTypes.h"
 
@@ -438,23 +440,17 @@ namespace Mengine
                 return;
             }
 
-            jthrowable jExcept = _jenv->ExceptionOccurred();
+            jthrowable jThrowable = _jenv->ExceptionOccurred();
 
             _jenv->ExceptionClear();
 
-            jclass jExceptClass = _jenv->GetObjectClass( jExcept );
-            jmethodID jMessageMethod = _jenv->GetMethodID( jExceptClass, "getMessage", "()Ljava/lang/String;" );
-            jstring jMessage = (jstring)( _jenv->CallObjectMethod( jExcept, jMessageMethod ) );
-            const Char * pszMessage = _jenv->GetStringUTFChars( jMessage, NULL );
+            jclass jclassMengineApplication = Mengine_JNI_GetJClassMengineApplication();
+            jobject jobjectMengineApplication = Mengine_JNI_GetJObjectMengineApplication();
 
-            LOGGER_ERROR( "Java threw an exception: %s"
-                , pszMessage
-            );
+            jmethodID jmethodID_MengineApplication_onMengineCaughtException = _jenv->GetMethodID( jclassMengineApplication, "onMengineCaughtException", "(Ljava/lang/Throwable;)V" );
+            _jenv->CallVoidMethod( jobjectMengineApplication, jmethodID_MengineApplication_onMengineCaughtException, jThrowable );
 
-            _jenv->ReleaseStringUTFChars( jMessage, pszMessage );
-            _jenv->DeleteLocalRef( jMessage );
-            _jenv->DeleteLocalRef( jExceptClass );
-            _jenv->DeleteLocalRef( jExcept );
+            _jenv->DeleteLocalRef( jThrowable );
         }
         //////////////////////////////////////////////////////////////////////////
     }

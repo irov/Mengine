@@ -9,12 +9,8 @@ src
     AndroidEventationHub.cpp
     AndroidEnv.h
     AndroidEnv.cpp
-    AndroidAssetFile.h
-    AndroidAssetFile.cpp
     AndroidHelper.h
     AndroidHelper.cpp
-    AndroidUtils.h
-    AndroidUtils.cpp
 
     AndroidEnvironmentService.h
     AndroidEnvironmentService.cpp

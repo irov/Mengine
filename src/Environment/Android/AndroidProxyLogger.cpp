@@ -48,9 +48,6 @@ namespace Mengine
             return;
         }
 
-        jmethodID jmethodID_onMengineLogger = ANDROID_ENVIRONMENT_SERVICE()
-            ->getApplicationMethodID( jenv, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V" );
-
         jstring category_jstring = jenv->NewStringUTF( _message.category );
 
         ELoggerLevel level = _message.level;
@@ -67,7 +64,7 @@ namespace Mengine
         jstring data_jstring = jenv->NewStringUTF( msg );
 
         ANDROID_ENVIRONMENT_SERVICE()
-                ->callVoidApplicationMethod(jenv, jmethodID_onMengineLogger, category_jstring, level, filter, color, data_jstring);
+                ->callVoidApplicationMethod(jenv, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V", category_jstring, level, filter, color, data_jstring);
 
         jenv->DeleteLocalRef( category_jstring );
         jenv->DeleteLocalRef( data_jstring );

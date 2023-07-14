@@ -190,7 +190,7 @@ public class MengineApplication extends Application {
     }
 
     public void setSessionId(String sessionId) {
-        if (m_sessionId == sessionId) {
+        if (m_sessionId.equals(sessionId) == true) {
             return;
         }
 

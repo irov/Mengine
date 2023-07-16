@@ -335,7 +335,8 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     }
 
     public void showMediationDebugger() {
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
+
         final Context context = activity.getBaseContext();
 
         AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(context);

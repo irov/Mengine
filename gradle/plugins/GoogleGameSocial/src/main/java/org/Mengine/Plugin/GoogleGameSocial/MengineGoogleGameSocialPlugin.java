@@ -1,13 +1,9 @@
 package org.Mengine.Plugin.GoogleGameSocial;
 
-import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
-
 import android.content.Intent;
 import android.content.IntentSender;
-import android.os.Bundle;
 import android.net.Uri;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
@@ -27,6 +23,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     public static final String PLUGIN_NAME = "GoogleGameSocial";
@@ -99,7 +99,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     public void startSignInIntent() {
         this.logMessage("startSignInIntent");
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         Intent intent = m_signInClient.getSignInIntent();
 
@@ -109,7 +109,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     public void signOut() {
         this.logMessage("signOut");
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         m_signInClient.signOut()
             .addOnCompleteListener(activity, new OnCompleteListener<Void>() {
@@ -209,7 +209,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
             return;
         }
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         m_achievementsClient = Games.getAchievementsClient(activity, account);
 
@@ -238,7 +238,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     public void signInSilently() {
         this.logMessage("signInSilently");
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         GoogleSignInOptions signInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN;
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(activity);
@@ -300,7 +300,9 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialShowAchievementSuccess");
 
-                    MengineGoogleGameSocialPlugin.this.getActivity().startActivityForResult(intent, RC_UNUSED);
+                    MengineActivity activity = MengineGoogleGameSocialPlugin.this.getMengineActivity();
+
+                    activity.startActivityForResult(intent, RC_UNUSED);
                 }
             })
             .addOnFailureListener(new OnFailureListener() {

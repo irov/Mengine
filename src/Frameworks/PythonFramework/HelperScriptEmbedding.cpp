@@ -703,7 +703,15 @@ namespace Mengine
                 return r;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_getOptionUInt32( const Char * _option )
+            int32_t s_getOptionInt32( const Char * _option )
+            {
+                uint32_t value = OPTIONS_SERVICE()
+                    ->getOptionInt32( _option, 0U );
+
+                return value;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            uint32_t s_getOptionUInt32( const Char * _option )
             {
                 uint32_t value = OPTIONS_SERVICE()
                     ->getOptionUInt32( _option, 0U );
@@ -4222,6 +4230,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "hasOption", helperScriptMethod, &HelperScriptMethod::s_hasOption );
         pybind::def_functor( _kernel, "getOptionValue", helperScriptMethod, &HelperScriptMethod::s_getOptionValue );
         pybind::def_functor_kernel( _kernel, "getOptionValues", helperScriptMethod, &HelperScriptMethod::s_getOptionValues );
+        pybind::def_functor( _kernel, "getOptionInt32", helperScriptMethod, &HelperScriptMethod::s_getOptionInt32 );
         pybind::def_functor( _kernel, "getOptionUInt32", helperScriptMethod, &HelperScriptMethod::s_getOptionUInt32 );
 
         pybind::def_functor( _kernel, "crashEngine", helperScriptMethod, &HelperScriptMethod::s_crashEngine );

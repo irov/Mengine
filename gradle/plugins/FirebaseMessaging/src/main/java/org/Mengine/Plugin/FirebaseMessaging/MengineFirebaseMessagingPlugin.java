@@ -55,7 +55,7 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin implements Men
                             , token
                         );
 
-                        activity.sendEvent(MengineEvent.EVENT_PUSH_TOKEN, token);
+                        MengineFirebaseMessagingPlugin.this.sendEvent(MengineEvent.EVENT_PUSH_TOKEN, token);
                     }
                 });
         }

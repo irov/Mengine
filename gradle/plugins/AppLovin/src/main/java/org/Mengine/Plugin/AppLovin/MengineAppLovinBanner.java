@@ -1,6 +1,9 @@
 package org.Mengine.Plugin.AppLovin;
 
-import org.Mengine.Base.MengineActivity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.FrameLayout;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdRequestListener;
@@ -8,14 +11,10 @@ import com.applovin.mediation.MaxAdRevenueListener;
 import com.applovin.mediation.MaxAdViewAdListener;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxAdView;
-
 import com.applovin.sdk.AppLovinAdSize;
 import com.applovin.sdk.AppLovinSdkUtils;
 
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.FrameLayout;
+import org.Mengine.Base.MengineActivity;
 
 public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener {
     private MaxAdView m_adView;
@@ -29,7 +28,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         m_enumeratorRequest = 0;
         m_requestId = 0;
 
-        MengineActivity activity = plugin.getActivity();
+        MengineActivity activity = plugin.getMengineActivity();
 
         MaxAdView adView = new MaxAdView(adUnitId, activity);
 

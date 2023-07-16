@@ -33,8 +33,8 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, jobjectArray _args)
     {
-        Mengine::String plugin = Mengine::Helper::makeStringFromJString( env, _plugin );
-        Mengine::String method = Mengine::Helper::makeStringFromJString( env, _method );
+        Mengine::ConstString plugin = Mengine::Helper::makeConstStringFromJString( env, _plugin );
+        Mengine::ConstString method = Mengine::Helper::makeConstStringFromJString( env, _method );
 
         if( s_androidNativePythonService == nullptr )
         {
@@ -56,7 +56,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1addPlugin )(JNIEnv * env, jclass cls, jstring _name, jobject _plugin)
     {
-        Mengine::String name = Mengine::Helper::makeStringFromJString( env, _name );
+        Mengine::ConstString name = Mengine::Helper::makeConstStringFromJString( env, _name );
 
         if( s_androidNativePythonService == nullptr )
         {
@@ -77,7 +77,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1activateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
     {
-        Mengine::String name = Mengine::Helper::makeStringFromJString( env, _name );
+        Mengine::ConstString name = Mengine::Helper::makeConstStringFromJString( env, _name );
 
         if( s_androidNativePythonService == nullptr )
         {
@@ -220,7 +220,7 @@ namespace Mengine
         m_eventation->addCommand( _command );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::pythonMethod( const String & _plugin, const String & _method, jobjectArray _args )
+    void AndroidNativePythonService::pythonMethod( const ConstString & _plugin, const ConstString & _method, jobjectArray _args )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -231,16 +231,13 @@ namespace Mengine
             return;
         }
 
-        ConstString plugin_c = Helper::stringizeString( _plugin );
-        ConstString method_c = Helper::stringizeString( _method );
-
         LOGGER_INFO( "android", "call python plugin '%s' method '%s' [%s]"
             , _plugin.c_str()
             , _method.c_str()
-            , (m_callbacks.find( Utility::make_pair( plugin_c, method_c ) ) != m_callbacks.end() ? "Found" : "NOT-FOUND")
+            , (m_callbacks.find( Utility::make_pair( _plugin, _method ) ) != m_callbacks.end() ? "Found" : "NOT-FOUND")
         );
 
-        MapAndroidCallbacks::const_iterator it_found = m_callbacks.find( Utility::make_pair( plugin_c, method_c ) );
+        MapAndroidCallbacks::const_iterator it_found = m_callbacks.find( Utility::make_pair( _plugin, _method ) );
 
         if( it_found == m_callbacks.end() )
         {
@@ -303,7 +300,7 @@ namespace Mengine
         jenv->DeleteGlobalRef( _args );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::addPlugin( const String & _name, jobject _plugin )
+    void AndroidNativePythonService::addPlugin( const ConstString & _name, jobject _plugin )
     {
         MENGINE_ASSERTION_FATAL( m_plugins.find( Helper::stringizeString( _name ) ) == m_plugins.end(), "invalid add plugin '%s' [double]"
             , _name.c_str()
@@ -312,7 +309,7 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( _name.c_str(), true );
 
-        m_plugins.emplace( Helper::stringizeString( _name ), _plugin );
+        m_plugins.emplace( _name, _plugin );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
@@ -979,7 +976,7 @@ namespace Mengine
             ->invokeAndroidEventations();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::activateSemaphore( const String & _name )
+    void AndroidNativePythonService::activateSemaphore( const ConstString & _name )
     {
         for( const AndroidSemaphoreListenerDesc & desc : m_semaphoreListeners )
         {

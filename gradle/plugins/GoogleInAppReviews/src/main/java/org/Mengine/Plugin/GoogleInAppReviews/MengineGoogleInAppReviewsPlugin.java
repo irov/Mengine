@@ -67,7 +67,7 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
         this.buildEvent("mng_inapp_review")
             .log();
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         Task<Void> flow = m_manager.launchReviewFlow(activity, m_reviewInfo);
 

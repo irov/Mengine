@@ -28,7 +28,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         m_enumeratorRequest = 0;
         m_requestId = 0;
 
-        MengineActivity activity = m_plugin.getActivity();
+        MengineActivity activity = m_plugin.getMengineActivity();
 
         MaxRewardedAd rewardedAd = MaxRewardedAd.getInstance(adUnitId, activity);
 

@@ -38,9 +38,9 @@ namespace Mengine
         void addCommand( const LambdaPythonEventHandler & _command );
 
     public:
-        void pythonMethod( const String & _plugin, const String & _method, jobjectArray _args ) override;
-        void addPlugin( const String & _name, jobject _plugin ) override;
-        void activateSemaphore( const String & _name ) override;
+        void pythonMethod( const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) override;
+        void addPlugin( const ConstString & _name, jobject _plugin ) override;
+        void activateSemaphore( const ConstString & _name ) override;
 
     public:
         void addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args ) override;

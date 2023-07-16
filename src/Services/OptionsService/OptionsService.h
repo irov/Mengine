@@ -37,6 +37,7 @@ namespace Mengine
         bool setOptionValue( const Char * _key, const Char * _value ) override;
         const Char * getOptionValue( const Char * _key, const Char * _default ) const override;
         bool getOptionValues( const Char * _key, const Char ** _values, uint32_t * const _count ) const override;
+        int32_t getOptionInt32( const Char * _key, int32_t _default ) const override;
         uint32_t getOptionUInt32( const Char * _key, uint32_t _default ) const override;
         bool testOptionValue( const Char * _key, const Char * _value ) const override;
 

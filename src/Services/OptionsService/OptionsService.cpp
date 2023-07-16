@@ -263,6 +263,34 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    int32_t OptionsService::getOptionInt32( const Char * _key, int32_t _default ) const
+    {
+        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, MENGINE_STRLEN( _key ) );
+
+        for( const Option & op : m_options )
+        {
+            if( op.key.compare( _key ) != 0 )
+            {
+                continue;
+            }
+
+            int32_t value_int32;
+            if( Helper::stringalized( op.value[0].c_str(), &value_int32 ) == false )
+            {
+                LOGGER_ERROR( "option '%s' invalid cast to int32_t value '%s'"
+                    , _key
+                    , op.value[0].c_str()
+                );
+
+                return 0;
+            }
+
+            return value_int32;
+        }
+
+        return _default;
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t OptionsService::getOptionUInt32( const Char * _key, uint32_t _default ) const
     {
         MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, MENGINE_STRLEN( _key ) );
@@ -282,7 +310,7 @@ namespace Mengine
                     , op.value[0].c_str()
                 );
 
-                return 0;
+                return 0U;
             }
 
             return value_uint32;

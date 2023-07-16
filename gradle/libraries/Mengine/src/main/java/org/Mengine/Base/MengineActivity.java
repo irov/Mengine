@@ -184,16 +184,6 @@ public class MengineActivity extends SDLActivity {
         app.setState(name, value);
     }
 
-    public void sendEvent(MengineEvent event, Object ... args) {
-        if (m_destroy == true) {
-            return;
-        }
-
-        MengineApplication application = this.getMengineApplication();
-
-        application.sendEvent(event, args);
-    }
-
     public boolean hasMetaData(String name) {
         MengineApplication application = this.getMengineApplication();
 

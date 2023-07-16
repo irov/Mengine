@@ -1,23 +1,29 @@
 package org.Mengine.Plugin.FirebaseRemoteConfig;
 
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.ConfigUpdate;
+import com.google.firebase.remoteconfig.ConfigUpdateListener;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigException;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
+
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
-
-import android.os.Bundle;
-import androidx.annotation.NonNull;
 
 public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "FirebaseRemoteConfig";
@@ -52,11 +58,14 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
                     if (task.isSuccessful() == true) {
                         boolean updated = task.getResult();
 
-                        MengineFirebaseRemoteConfigPlugin.this.logMessage("remote config successful fetch and activate params: %d"
-                            , updated
+                        MengineFirebaseRemoteConfigPlugin.this.logMessage("remote config successful fetch and activate params: %s [%s]"
+                            , remoteConfig.getAll()
+                            , updated == true ? "updated" : "not updated"
                         );
 
                         MengineFirebaseRemoteConfigPlugin.this.activateSemaphore("FirebaseRemoteConfigFetchSuccessful");
+
+                        MengineFirebaseRemoteConfigPlugin.this.sendEvent(MengineEvent.EVENT_REMOTE_CONFIG_FETCH, updated);
                     } else {
                         Exception e = task.getException();
 
@@ -66,6 +75,27 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
                     }
                 }
             });
+
+        remoteConfig.addOnConfigUpdateListener(new ConfigUpdateListener() {
+            @Override
+            public void onUpdate(ConfigUpdate configUpdate) {
+                Set<String> keys = configUpdate.getUpdatedKeys();
+
+                MengineFirebaseRemoteConfigPlugin.this.logMessage("remote config successful updated keys: %s"
+                    , keys
+                );
+
+                MengineFirebaseRemoteConfigPlugin.this.sendEvent(MengineEvent.EVENT_REMOTE_CONFIG_UPDATE, keys);
+            }
+
+            @Override
+            public void onError(FirebaseRemoteConfigException error) {
+                MengineFirebaseRemoteConfigPlugin.this.logWarning("remote config error updated keys: %s [code: %d]"
+                    , error.getLocalizedMessage()
+                    , error.getCode()
+                );
+            }
+        });
     }
 
     public Map<String, String> getRemoteConfig() {
@@ -90,5 +120,37 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
         }
 
         return correctValues;
+    }
+
+    public String getRemoteConfigValueString(String key) {
+        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+
+        String value = remoteConfig.getString(key);
+
+        return value;
+    }
+
+    public boolean getRemoteConfigValueBoolean(String key) {
+        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+
+        boolean value = remoteConfig.getBoolean(key);
+
+        return value;
+    }
+
+    public double getRemoteConfigValueDouble(String key) {
+        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+
+        double value = remoteConfig.getDouble(key);
+
+        return value;
+    }
+
+    public long getRemoteConfigValueLong(String key) {
+        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+
+        long value = remoteConfig.getLong(key);
+
+        return value;
     }
 }

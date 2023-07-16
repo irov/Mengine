@@ -15,11 +15,11 @@ public class MenginePlugin implements MenginePluginInterface {
     private ArrayList<MenginePluginExtension> m_extensions = new ArrayList<>();
     private String m_pluginName;
 
-    public MengineApplication getApplication() {
+    public MengineApplication getMengineApplication() {
         return m_application;
     }
 
-    public MengineActivity getActivity() {
+    public MengineActivity getMengineActivity() {
         return m_activity;
     }
 
@@ -74,6 +74,12 @@ public class MenginePlugin implements MenginePluginInterface {
         MengineLog.logFatal(m_pluginName, format, args);
 
         throw new MenginePluginInvalidInitializeException(m_pluginName);
+    }
+
+    public void sendEvent(MengineEvent event, Object ... args) {
+        MengineApplication application = this.getMengineApplication();
+
+        application.sendEvent(event, args);
     }
 
     public void setState(String name, Object value) {

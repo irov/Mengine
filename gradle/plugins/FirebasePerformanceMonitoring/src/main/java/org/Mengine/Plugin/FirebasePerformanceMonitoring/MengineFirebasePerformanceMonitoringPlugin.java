@@ -21,6 +21,8 @@ public class MengineFirebasePerformanceMonitoringPlugin extends MenginePlugin im
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         m_startupTrace = FirebasePerformance.getInstance()
             .newTrace(STARTUP_TRACE);
+
+        m_startupTrace.start();
     }
 
     @Override

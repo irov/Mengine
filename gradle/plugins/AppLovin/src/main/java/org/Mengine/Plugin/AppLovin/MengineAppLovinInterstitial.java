@@ -27,7 +27,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         m_enumeratorRequest = 0;
         m_requestId = 0;
 
-        MengineActivity activity = m_plugin.getActivity();
+        MengineActivity activity = m_plugin.getMengineActivity();
 
         MaxInterstitialAd interstitialAd = new MaxInterstitialAd(adUnitId, activity);
 

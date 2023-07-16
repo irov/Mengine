@@ -12,9 +12,9 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void pythonMethod( const String & _plugin, const String & _method, jobjectArray _args ) = 0;
-        virtual void addPlugin( const String & _name, jobject _plugin ) = 0;
-        virtual void activateSemaphore( const String & _name ) = 0;
+        virtual void pythonMethod( const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) = 0;
+        virtual void addPlugin( const ConstString & _name, jobject _plugin ) = 0;
+        virtual void activateSemaphore( const ConstString & _name ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AndroidNativePythonEventHandlerInterface> AndroidNativePythonEventHandlerInterfacePtr;

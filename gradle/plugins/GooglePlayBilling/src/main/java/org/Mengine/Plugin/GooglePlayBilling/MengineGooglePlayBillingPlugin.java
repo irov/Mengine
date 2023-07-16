@@ -383,7 +383,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             .setProductDetailsParamsList(productDetailsParamsList)
             .build();
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         BillingResult billingResult = m_billingClient.launchBillingFlow(activity, flowParams);
 

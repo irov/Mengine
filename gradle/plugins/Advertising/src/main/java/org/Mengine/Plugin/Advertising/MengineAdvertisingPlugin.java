@@ -1,12 +1,5 @@
 package org.Mengine.Plugin.Advertising;
 
-import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MenginePlugin;
-
 import android.content.Context;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -14,6 +7,13 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineEvent;
+import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginApplicationListener;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import java.io.IOException;
 import java.util.concurrent.CancellationException;
@@ -94,10 +94,10 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
 
         m_advertisingFuture = null;
 
-        this.postAdInfo(activity, adInfo);
+        this.postAdInfo(adInfo);
     }
 
-    public void postAdInfo(MengineActivity activity, AdvertisingIdClient.Info adInfo) {
+    public void postAdInfo(AdvertisingIdClient.Info adInfo) {
         String advertisingId;
         boolean advertisingLimitTrackingEnabled;
 
@@ -124,6 +124,6 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
             , advertisingLimitTrackingEnabled == true ? "true" : "false"
         );
 
-        activity.sendEvent(MengineEvent.EVENT_ADVERTISING_ID, advertisingId, advertisingLimitTrackingEnabled);
+        this.sendEvent(MengineEvent.EVENT_ADVERTISING_ID, advertisingId, advertisingLimitTrackingEnabled);
     }
 }

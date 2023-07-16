@@ -201,6 +201,8 @@ public class MengineApplication extends Application {
         editor.putString("session_id", m_sessionId);
         editor.apply();
 
+        this.setState("user.session_id", m_sessionId);
+
         this.sendEvent(MengineEvent.EVENT_SESSION_ID, m_sessionId);
     }
 
@@ -551,6 +553,8 @@ public class MengineApplication extends Application {
 
     @Override
     public void onCreate() {
+        this.setState("build.debug", BuildConfig.DEBUG);
+
         this.setState("application.init", "started");
 
         super.onCreate();
@@ -628,6 +632,12 @@ public class MengineApplication extends Application {
         m_installRND = installRND;
         m_sessionIndex = sessionIndex;
         m_sessionId = sessionId;
+
+        this.setState("user.install_key", m_installKey);
+        this.setState("user.install_key_timestamp", m_installKeyTimestamp);
+        this.setState("user.install_rnd", m_installRND);
+        this.setState("user.session_index", m_sessionIndex);
+        this.setState("user.session_id", m_sessionId);
 
         this.setState("application.init", "load");
 

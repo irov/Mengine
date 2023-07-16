@@ -618,3 +618,11 @@ android {
         buildConfigField "boolean", "MENGINE_APP_BUILD_PUBLISH", ANDROID_APP_BUILD_PUBLISH.toString()
     }
 }
+
+if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
+    tasks.all { task ->
+        if (task.name.startsWith('generateCrashlyticsSymbolFile')) {
+            task.dependsOn 'merge' + (task.name =~ /^generateCrashlyticsSymbolFile(.+)$/)[0][1] + 'NativeLibs'
+        }
+    }
+}

@@ -7,7 +7,7 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
 #include "Kernel/List.h"
-#include "Kernel/String.h"
+#include "Kernel/VectorChar.h"
 
 namespace Mengine
 {
@@ -68,6 +68,7 @@ namespace Mengine
         bool hasVerbose( const Char * _category ) const;
 
     protected:
+        void logMessage_( const LoggerMessage & _message );
         void logHistory_( const LoggerMessage & _message );
 
     protected:
@@ -85,7 +86,8 @@ namespace Mengine
         typedef Vector<LoggerInterfacePtr> VectorLoggers;
         VectorLoggers m_loggers;
 
-        ThreadMutexInterfacePtr m_mutex;
+        ThreadMutexInterfacePtr m_mutexLogger;
+        ThreadMutexInterfacePtr m_mutexHistory;
 
         uint32_t m_countMessage[LOGGER_LEVEL_COUNT];
 
@@ -99,7 +101,7 @@ namespace Mengine
             uint32_t color;
             const Char * file;
             int32_t line;
-            String data;
+            VectorChar data;
         };
 
         bool m_historically;

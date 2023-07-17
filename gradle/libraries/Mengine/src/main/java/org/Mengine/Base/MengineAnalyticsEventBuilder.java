@@ -6,16 +6,14 @@ import java.util.Map;
 public class MengineAnalyticsEventBuilder {
     private MengineApplication m_application;
 
-    private Object m_lock;
     private String m_name;
     private Map<String, Object> m_context;
     private Map<String, Object> m_parameters;
 
-    MengineAnalyticsEventBuilder(MengineApplication application, Map<String, Object> context, Map<String, Object> parameters, Object lock, String name) {
+    MengineAnalyticsEventBuilder(MengineApplication application, Map<String, Object> context, Map<String, Object> parameters, String name) {
         m_application = application;
         m_context = context;
         m_parameters = parameters;
-        m_lock = lock;
         m_name = name;
     }
 
@@ -72,9 +70,7 @@ public class MengineAnalyticsEventBuilder {
     public long log() {
         long log_timestamp = MengineUtils.getTimestamp();
 
-        synchronized (this.m_lock) {
-            m_application.onMengineAnalyticsEvent(MengineAnalytics.EAET_CUSTOM, m_name, log_timestamp, m_context, m_parameters);
-        }
+        m_application.onMengineAnalyticsEvent(MengineAnalytics.EAET_CUSTOM, m_name, log_timestamp, m_context, m_parameters);
 
         return log_timestamp;
     }

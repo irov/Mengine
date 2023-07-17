@@ -1339,7 +1339,7 @@ namespace Mengine
                         , m_args( _args )
                     {
                     }
-                    
+
                 public:
                     void accept( HotSpot * _hotspot ) override
                     {
@@ -2173,7 +2173,7 @@ namespace Mengine
                         return;
                     }
 
-                    resourcePacket->addResource( _resource );                    
+                    resourcePacket->addResource( _resource );
                 } );
 
                 resourcePacket->cache();
@@ -4214,7 +4214,7 @@ namespace Mengine
                     ->foreachGroupResources( _groupName, [&l]( const ResourcePtr & _resouce )
                 {
                     l.append( _resouce );
-                });
+                } );
 
                 return l;
             }

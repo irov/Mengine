@@ -312,7 +312,7 @@ namespace Mengine
                     , engineGitURL
                     , engineGitSHA1
                     , engineGitBranch
-                    , engineGitDate 
+                    , engineGitDate
                 );
         }
 
@@ -347,7 +347,7 @@ namespace Mengine
                     , buildUserName
                     , buildTimestamp
                     , buildProjectName
-                    , buildNumber 
+                    , buildNumber
                 );
         }
 
@@ -357,7 +357,7 @@ namespace Mengine
             , buildUserName
             , buildTimestamp
             , buildProjectName
-            , buildNumber 
+            , buildNumber
         );
 
         bool Debug_ShowHotspots = CONFIG_VALUE( "Debug", "ShowHotspots", false );
@@ -1577,17 +1577,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::notifyDebugResourceCompile_( Resource * _resource )
     {
-        LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("compile %s type %s"
+        LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("compile %s type %s [%s]"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
+            , _resource->getGroupName().c_str()
             );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::notifyDebugResourceRelease_( Resource * _resource )
     {
-        LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("release %s type %s"
+        LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("release %s type %s [%s]"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
+            , _resource->getGroupName().c_str()
             );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2052,7 +2054,7 @@ namespace Mengine
         float height = _resolution.getHeightF();
 
         float r_aspect = _resolution.getAspectRatio();
-        
+
         bool fixedDisplayResolution = this->getFixedDisplayResolution();
 
         if( fixedDisplayResolution == true )
@@ -2365,7 +2367,7 @@ namespace Mengine
         LOGGER_INFO( "system", "set fixed display resolution: %d"
             , _fixedDisplayResolution
         );
-        
+
         m_fixedDisplayResolution = _fixedDisplayResolution;
 
         this->invalidateWindow_();

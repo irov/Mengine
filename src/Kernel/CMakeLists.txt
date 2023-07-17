@@ -12,7 +12,10 @@ Containers
     Blobject.h
     String.h
     StringRegex.h
+    VectorChar.h
     VectorString.h
+    VectorConstString.h
+    VectorFilePath.h
     Stringstream.h
     Vector.h
     Floats.h
@@ -549,7 +552,6 @@ Core
     FilePathProxy.h
     FilePathHelper.h
     FilePathHelper.cpp
-    VectorFilePath.h
     LambdaFilePath.h
     
     Histogram.h
@@ -672,7 +674,6 @@ Core
     ConstStringHolderLocalString.h
     ConstStringHolderLocalString.cpp
     ConstStringProxy.h
-    VectorConstString.h
     
     VectorResourceImages.h
     

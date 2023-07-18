@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void StdioLogger::log( const LoggerMessage & _message )
+    void StdioLogger::_log( const LoggerMessage & _message )
     {
         if( _message.flag & LFLAG_FUNCTIONSTAMP )
         {
@@ -69,7 +69,7 @@ namespace Mengine
         std::cout.write( "\n", 1 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void StdioLogger::flush()
+    void StdioLogger::_flush()
     {
         std::cout.flush();
     }

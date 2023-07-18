@@ -2,7 +2,7 @@
 
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/LoggerInterface.h"
-#include "Interface/ThreadMutexInterface.h"
+#include "Interface/ThreadSharedMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
@@ -62,7 +62,7 @@ namespace Mengine
 
     public:
         bool registerLogger( const LoggerInterfacePtr & _logger ) override;
-        bool unregisterLogger( const LoggerInterfacePtr & _logger ) override;
+        void unregisterLogger( const LoggerInterfacePtr & _logger ) override;
 
     protected:
         bool hasVerbose( const Char * _category ) const;
@@ -86,8 +86,10 @@ namespace Mengine
         typedef Vector<LoggerInterfacePtr> VectorLoggers;
         VectorLoggers m_loggers;
 
-        ThreadMutexInterfacePtr m_mutexLogger;
-        ThreadMutexInterfacePtr m_mutexHistory;
+        ThreadSharedMutexInterfacePtr m_mutexLogger;
+        ThreadSharedMutexInterfacePtr m_mutexHistory;
+
+        ThreadMutexInterfacePtr m_mutexMessageBlock;
 
         uint32_t m_countMessage[LOGGER_LEVEL_COUNT];
 

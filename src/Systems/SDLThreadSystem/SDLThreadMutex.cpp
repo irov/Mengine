@@ -64,7 +64,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadMutex::try_lock()
+    bool SDLThreadMutex::tryLock()
     {
         int err = SDL_TryLockMutex( m_cs );
 

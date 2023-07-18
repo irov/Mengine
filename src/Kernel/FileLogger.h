@@ -30,10 +30,10 @@ namespace Mengine
         const OutputStreamInterfacePtr & getStream() const;
 
     public:
-        void log( const LoggerMessage & _message ) override;
+        void _log( const LoggerMessage & _message ) override;
 
     public:
-        void flush() override;
+        void _flush() override;
 
     protected:
         FileGroupInterfacePtr m_fileGroup;

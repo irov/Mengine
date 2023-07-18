@@ -3,6 +3,7 @@
 #include "SDLThreadIdentity.h"
 #include "SDLThreadProcessor.h"
 #include "SDLThreadMutex.h"
+#include "SDLThreadSharedMutex.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -29,6 +30,7 @@ namespace Mengine
         m_factoryThreadIdentity = Helper::makeFactoryPool<SDLThreadIdentity, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryThreadProcessor = Helper::makeFactoryPool<SDLThreadProcessor, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryThreadMutex = Helper::makeFactoryPool<SDLThreadMutex, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadSharedMutex = Helper::makeFactoryPool<SDLThreadSharedMutex, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -38,17 +40,19 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadIdentity );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadProcessor );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadMutex );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadSharedMutex );
 
         m_factoryThreadIdentity = nullptr;
         m_factoryThreadProcessor = nullptr;
         m_factoryThreadMutex = nullptr;
+        m_factoryThreadSharedMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadIdentityInterfacePtr SDLThreadSystem::createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
         SDLThreadIdentityPtr identity = m_factoryThreadIdentity->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( identity, "invalid create thread '%s' (doc: %s)"
+        MENGINE_ASSERTION_MEMORY_PANIC( identity, "invalid create thread identity '%s' (doc: %s)"
             , _name.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
@@ -70,7 +74,7 @@ namespace Mengine
     {
         SDLThreadProcessorPtr identity = m_factoryThreadProcessor->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( identity, "invalid create thread '%s' (doc: %s)"
+        MENGINE_ASSERTION_MEMORY_PANIC( identity, "invalid create thread processor '%s' (doc: %s)"
             , _name.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
@@ -101,13 +105,33 @@ namespace Mengine
     {
         SDLThreadMutexPtr mutex = m_factoryThreadMutex->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create (doc: '%s')"
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex (doc: '%s')"
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
         if( mutex->initialize() == false )
         {
-            LOGGER_ERROR( "invalid initialize (doc: '%s')"
+            LOGGER_ERROR( "invalid initialize mutex (doc: '%s')"
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            return nullptr;
+        }
+
+        return mutex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ThreadSharedMutexInterfacePtr SDLThreadSystem::createSharedMutex( const DocumentInterfacePtr & _doc )
+    {
+        SDLThreadSharedMutexPtr mutex = m_factoryThreadSharedMutex->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create shared mutex (doc: '%s')"
+            , MENGINE_DOCUMENT_STR( _doc )
+        );
+
+        if( mutex->initialize() == false )
+        {
+            LOGGER_ERROR( "invalid initialize shared mutex (doc: '%s')"
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 

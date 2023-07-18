@@ -22,7 +22,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidLogger::log( const LoggerMessage & _message )
+    void AndroidLogger::_log( const LoggerMessage & _message )
     {
         android_LogPriority prio = ANDROID_LOG_UNKNOWN;
 
@@ -140,7 +140,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidLogger::flush()
+    void AndroidLogger::_flush()
     {
         //Empty
     }

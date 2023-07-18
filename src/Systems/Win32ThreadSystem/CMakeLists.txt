@@ -14,6 +14,8 @@ src
     Win32ThreadProcessor.h
     Win32ThreadMutex.cpp
     Win32ThreadMutex.h
+    Win32ThreadSharedMutex.cpp
+    Win32ThreadSharedMutex.h
 )
 
 ADD_MENGINE_LIBRARY(Systems)

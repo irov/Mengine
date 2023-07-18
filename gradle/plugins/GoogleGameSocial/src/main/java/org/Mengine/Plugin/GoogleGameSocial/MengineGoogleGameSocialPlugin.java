@@ -189,7 +189,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                     }
                 }break;
                 default: {
-                    this.logError("google game social signIn failed status error message: %s code: %d"
+                    this.logWarning("google game social signIn failed status error message: %s code: %d"
                         , status.getStatusMessage()
                         , status.getStatusCode()
                     );

@@ -12,7 +12,7 @@ namespace Mengine
         ~AndroidLogger() override;
 
     public:
-        void log( const LoggerMessage & _message ) override;
-        void flush() override;
+        void _log( const LoggerMessage & _message ) override;
+        void _flush() override;
     };
 }

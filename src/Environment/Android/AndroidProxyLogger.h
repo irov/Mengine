@@ -20,7 +20,7 @@ namespace Mengine
         void _finalizeLogger() override;
 
     protected:
-        void log( const LoggerMessage & _message ) override;
+        void _log( const LoggerMessage & _message ) override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AndroidProxyLogger, LoggerInterface> AndroidProxyLoggerPtr;

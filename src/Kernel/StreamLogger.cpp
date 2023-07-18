@@ -46,7 +46,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void StreamLogger::log( const LoggerMessage & _message )
+    void StreamLogger::_log( const LoggerMessage & _message )
     {
         if( _message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
@@ -95,7 +95,7 @@ namespace Mengine
         m_stream->write( "\n", 1 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void StreamLogger::flush()
+    void StreamLogger::_flush()
     {
         m_stream->flush();
     }

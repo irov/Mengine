@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/String.h"
@@ -14,7 +14,7 @@ namespace Mengine
         : public ThreadMutexInterface
         , public Factorable
     {
-        DECLARE_FACTORABLE( SDLFileOutputStream );
+        DECLARE_FACTORABLE( SDLThreadMutex );
 
     public:
         SDLThreadMutex();
@@ -27,9 +27,7 @@ namespace Mengine
     protected:
         void lock() override;
         void unlock() override;
-
-    protected:
-        bool try_lock() override;
+        bool tryLock() override;
 
     protected:
         void _destroy() override;

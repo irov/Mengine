@@ -67,7 +67,7 @@ namespace Mengine
         m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugLogger::log( const LoggerMessage & _message )
+    void DevToDebugLogger::_log( const LoggerMessage & _message )
     {
         const Char * data = _message.data;
         size_t size = _message.size;
@@ -136,7 +136,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugLogger::flush()
+    void DevToDebugLogger::_flush()
     {
         //Empty
     }

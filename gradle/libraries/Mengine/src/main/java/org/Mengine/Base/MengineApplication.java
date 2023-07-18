@@ -52,6 +52,9 @@ public class MengineApplication extends Application {
 
     private MengineActivityLifecycle m_activityLifecycle;
 
+    private Object m_syncEvent = new Object();
+    private Object m_syncState = new Object();
+
     public String[] getGradleAndroidPlugins() {
         String[] plugins = {};
 
@@ -267,12 +270,14 @@ public class MengineApplication extends Application {
     }
 
     public void setState(String name, Object value) {
-        m_states.put(name, value);
+        synchronized (m_syncState) {
+            m_states.put(name, value);
 
-        ArrayList<MenginePlugin> plugins = this.getPlugins();
+            ArrayList<MenginePlugin> plugins = this.getPlugins();
 
-        for (MenginePlugin p : plugins) {
-            p.onState(this, name, value);
+            for (MenginePlugin p : plugins) {
+                p.onState(this, name, value);
+            }
         }
     }
 
@@ -546,8 +551,10 @@ public class MengineApplication extends Application {
     public void sendEvent(MengineEvent event, Object ... args) {
         ArrayList<MenginePlugin> plugins = this.getPlugins();
 
-        for (MenginePlugin p : plugins) {
-            p.onEvent(this, event, args);
+        synchronized (m_syncEvent) {
+            for (MenginePlugin p : plugins) {
+                p.onEvent(this, event, args);
+            }
         }
     }
 

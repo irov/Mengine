@@ -1,6 +1,11 @@
 #include "LoggerBase.h"
 
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
+
+#include "Kernel/DocumentHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ThreadMutexScope.h"
 
 namespace Mengine
 {
@@ -29,12 +34,21 @@ namespace Mengine
                 ->writeHistory( LoggerInterfacePtr::from( this ) );
         }
 
+        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+
+        m_mutex = mutex;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerBase::finalizeLogger()
     {
         this->_finalizeLogger();
+
+        m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool LoggerBase::_initializeLogger()
@@ -99,7 +113,21 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void LoggerBase::log( const LoggerMessage & _message )
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+        
+        this->_log( _message );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void LoggerBase::flush()
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        this->_flush();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerBase::_flush()
     {
         //Empty
     }

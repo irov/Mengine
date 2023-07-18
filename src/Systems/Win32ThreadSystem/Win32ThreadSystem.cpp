@@ -3,6 +3,7 @@
 #include "Win32ThreadIdentity.h"
 #include "Win32ThreadProcessor.h"
 #include "Win32ThreadMutex.h"
+#include "Win32ThreadSharedMutex.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -34,6 +35,7 @@ namespace Mengine
         m_factoryWin32ThreadIdentity = Helper::makeFactoryPool<Win32ThreadIdentity, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryWin32ThreadProcessor = Helper::makeFactoryPool<Win32ThreadProcessor, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryWin32ThreadMutex = Helper::makeFactoryPool<Win32ThreadMutex, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryWin32ThreadSharedMutex = Helper::makeFactoryPool<Win32ThreadSharedMutex, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -43,10 +45,12 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadIdentity );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadProcessor );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadMutex );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadSharedMutex );
 
         m_factoryWin32ThreadIdentity = nullptr;
         m_factoryWin32ThreadProcessor = nullptr;
         m_factoryWin32ThreadMutex = nullptr;
+        m_factoryWin32ThreadSharedMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadIdentityInterfacePtr Win32ThreadSystem::createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
@@ -98,6 +102,24 @@ namespace Mengine
         if( mutex->initialize() == false )
         {
             LOGGER_ERROR( "invalid initialize mutex (doc %s)"
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            return nullptr;
+        }
+
+        return mutex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ThreadSharedMutexInterfacePtr Win32ThreadSystem::createSharedMutex( const DocumentInterfacePtr & _doc )
+    {
+        Win32ThreadSharedMutexPtr mutex = m_factoryWin32ThreadSharedMutex->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create shared mutex" );
+
+        if( mutex->initialize() == false )
+        {
+            LOGGER_ERROR( "invalid initialize shared mutex (doc %s)"
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 

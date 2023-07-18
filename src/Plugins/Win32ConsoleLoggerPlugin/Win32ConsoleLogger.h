@@ -19,8 +19,8 @@ namespace Mengine
         void _finalizeLogger() override;
 
     public:
-        void log( const LoggerMessage & _message ) override;
-        void flush() override;
+        void _log( const LoggerMessage & _message ) override;
+        void _flush() override;
 
     protected:
         bool createConsole_();

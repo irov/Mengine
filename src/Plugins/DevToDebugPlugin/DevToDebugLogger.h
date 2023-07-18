@@ -33,13 +33,13 @@ namespace Mengine
         void _finalizeLogger() override;
 
     protected:
-        void log( const LoggerMessage & _message ) override;
+        void _log( const LoggerMessage & _message ) override;
 
     protected:
         bool validMessage( const LoggerMessage & _message ) const override;
 
     protected:
-        void flush() override;
+        void _flush() override;
 
     protected:
         void process();

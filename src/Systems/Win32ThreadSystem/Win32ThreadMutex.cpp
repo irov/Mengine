@@ -20,6 +20,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadMutex::finalize()
     {
+        ::DeleteCriticalSection( &m_cs );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadMutex::lock()
@@ -32,7 +33,7 @@ namespace Mengine
         ::LeaveCriticalSection( &m_cs );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadMutex::try_lock()
+    bool Win32ThreadMutex::tryLock()
     {
         if( ::TryEnterCriticalSection( &m_cs ) == FALSE )
         {
@@ -44,7 +45,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadMutex::_destroy()
     {
-        ::DeleteCriticalSection( &m_cs );
+        this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
 }

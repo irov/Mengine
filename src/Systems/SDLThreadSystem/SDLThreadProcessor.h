@@ -18,7 +18,7 @@ namespace Mengine
         : public ThreadProcessorInterface
         , public Factorable
     {
-        DECLARE_FACTORABLE( SDLFileOutputStream );
+        DECLARE_FACTORABLE( SDLThreadProcessor );
 
     public:
         SDLThreadProcessor();

@@ -44,12 +44,12 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
                 Exception exception = task.getException();
 
                 if (exception != null) {
-                    MengineGoogleInAppReviewsPlugin.this.logError("requestReviewFlow error message: %s trace: %s"
+                    MengineGoogleInAppReviewsPlugin.this.logWarning("requestReviewFlow error message: %s trace: %s"
                         , task.getException().getMessage()
                         , task.getException().fillInStackTrace()
                     );
                 } else {
-                    MengineGoogleInAppReviewsPlugin.this.logError("requestReviewFlow unknown error");
+                    MengineGoogleInAppReviewsPlugin.this.logWarning("requestReviewFlow unknown error");
                 }
             }
         });

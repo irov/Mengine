@@ -2,23 +2,18 @@
 
 #include "Interface/ThreadMutexInterface.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class ThreadMutexDummy
+    class ThreadSharedMutexInterface
         : public ThreadMutexInterface
-        , public Factorable
     {
-    protected:
-        void lock() override;
-        void unlock() override;
-
-    protected:
-        bool tryLock() override;
+    public:
+        virtual void lockShared() = 0;
+        virtual void unlockShared() = 0;
+        virtual bool tryLockShared() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ThreadMutexDummy> ThreadMutexDummyPtr;
+    typedef IntrusivePtr<ThreadSharedMutexInterface, ThreadMutexInterface> ThreadSharedMutexInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

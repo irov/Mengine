@@ -769,6 +769,9 @@ Core
     
     ThreadMutexScope.h
     ThreadMutexScope.cpp
+
+    ThreadSharedMutexScope.h
+    ThreadSharedMutexScope.cpp
     
     Dataflow.h
     Dataflow.cpp

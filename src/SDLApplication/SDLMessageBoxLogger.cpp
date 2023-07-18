@@ -17,12 +17,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLMessageBoxLogger::log( const LoggerMessage & _message )
+    void SDLMessageBoxLogger::_log( const LoggerMessage & _message )
     {
         const Char * data = _message.data;
         size_t size = _message.size;
 
-        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'0'};
+        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
         MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s"
             , (int32_t)size
             , data

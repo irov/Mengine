@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/LoggerInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/Factorable.h"
 
@@ -37,9 +38,16 @@ namespace Mengine
         bool validMessage( const LoggerMessage & _message ) const override;
 
     public:
-        void flush() override;
+        void log( const LoggerMessage & _message ) override final;
+        void flush() override final;
 
     protected:
+        virtual void _log( const LoggerMessage & _message ) = 0;
+        virtual void _flush();
+
+    protected:
+        ThreadMutexInterfacePtr m_mutex;
+
         ELoggerLevel m_verboseLevel;
         uint32_t m_verboseFilter;
 

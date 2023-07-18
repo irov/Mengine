@@ -34,7 +34,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidProxyLogger::log( const LoggerMessage & _message )
+    void AndroidProxyLogger::_log( const LoggerMessage & _message )
     {
         MENGINE_ASSERTION_VALIDATE_UTF8( _message.category, MENGINE_UNKNOWN_SIZE );
         MENGINE_ASSERTION_VALIDATE_UTF8( _message.data, _message.size );

@@ -52,7 +52,7 @@ namespace Mengine
         m_hLogFile = INVALID_HANDLE_VALUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ExtraFileLogger::log( const LoggerMessage & _message )
+    void Win32ExtraFileLogger::_log( const LoggerMessage & _message )
     {
         if( _message.flag & LFLAG_FUNCTIONSTAMP )
         {
@@ -109,7 +109,7 @@ namespace Mengine
         this->writeMessage_( "\n" );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ExtraFileLogger::flush()
+    void Win32ExtraFileLogger::_flush()
     {
         ::FlushFileBuffers( m_hLogFile );
     }

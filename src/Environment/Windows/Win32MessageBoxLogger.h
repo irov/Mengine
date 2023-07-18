@@ -13,7 +13,7 @@ namespace Mengine
         ~Win32MessageBoxLogger() override;
 
     public:
-        void log( const LoggerMessage & _message ) override;
+        void _log( const LoggerMessage & _message ) override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32MessageBoxLogger, LoggerInterface> Win32MessageBoxLoggerPtr;

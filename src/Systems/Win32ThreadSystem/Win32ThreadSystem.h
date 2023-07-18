@@ -27,6 +27,7 @@ namespace Mengine
         ThreadIdentityInterfacePtr createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) override;
         ThreadProcessorInterfacePtr createThreadProcessor( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) override;
         ThreadMutexInterfacePtr createMutex( const DocumentInterfacePtr & _doc ) override;
+        ThreadSharedMutexInterfacePtr createSharedMutex( const DocumentInterfacePtr & _doc ) override;
 
     public:
         void sleep( uint32_t _ms ) override;
@@ -38,5 +39,6 @@ namespace Mengine
         FactoryInterfacePtr m_factoryWin32ThreadIdentity;
         FactoryInterfacePtr m_factoryWin32ThreadProcessor;
         FactoryInterfacePtr m_factoryWin32ThreadMutex;
+        FactoryInterfacePtr m_factoryWin32ThreadSharedMutex;
     };
 }

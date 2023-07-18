@@ -13,7 +13,7 @@ namespace Mengine
         virtual void unlock() = 0;
 
     public:
-        virtual bool try_lock() = 0;
+        virtual bool tryLock() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadMutexInterface> ThreadMutexInterfacePtr;

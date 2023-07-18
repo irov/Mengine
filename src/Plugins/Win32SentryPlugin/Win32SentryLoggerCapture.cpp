@@ -32,7 +32,7 @@ namespace Mengine
         m_message.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32SentryLoggerCapture::log( const LoggerMessage & _message )
+    void Win32SentryLoggerCapture::_log( const LoggerMessage & _message )
     {
         Char timestamp[256] = {'\0'};
         size_t timestampSize = Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );

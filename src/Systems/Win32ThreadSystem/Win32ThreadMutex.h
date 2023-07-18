@@ -28,9 +28,7 @@ namespace Mengine
     protected:
         void lock() override;
         void unlock() override;
-
-    protected:
-        bool try_lock() override;
+        bool tryLock() override;
 
     protected:
         void _destroy() override;

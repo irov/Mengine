@@ -191,6 +191,7 @@ Thread
     ThreadWorkerInterface.h
     ThreadTaskInterface.h
     ThreadMutexInterface.h
+    ThreadSharedMutexInterface.h
     ThreadServiceInterface.h
     ThreadSystemInterface.h
 )

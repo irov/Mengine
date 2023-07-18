@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 public class MengineSplashScreenPlugin extends MenginePlugin {
     public static final String PLUGIN_NAME = "SplashScreen";
@@ -54,7 +55,9 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
 
     @Override
     public void onMenginePlatformReady(MengineActivity activity) {
-        this.hideSplash(activity);
+        MengineUtils.performOnMainThread(() -> {
+            this.hideSplash(activity);
+        });
     }
 
     private void showSplash(@NonNull MengineActivity activity) {

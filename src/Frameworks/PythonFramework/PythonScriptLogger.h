@@ -31,7 +31,7 @@ namespace Mengine
         uint32_t getColor() const;
 
     protected:
-        void log( const LoggerMessage & _loggerMessage ) override;
+        void _log( const LoggerMessage & _loggerMessage ) override;
 
     protected:
         uint32_t m_color;

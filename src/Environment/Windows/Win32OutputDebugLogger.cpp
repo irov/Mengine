@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32OutputDebugLogger::log( const LoggerMessage & _message )
+    void Win32OutputDebugLogger::_log( const LoggerMessage & _message )
     {
         if( _message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {

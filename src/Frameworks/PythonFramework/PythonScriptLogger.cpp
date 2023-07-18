@@ -103,7 +103,7 @@ namespace Mengine
         return m_color;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptLogger::log( const LoggerMessage & _loggerMessage )
+    void PythonScriptLogger::_log( const LoggerMessage & _loggerMessage )
     {
         MENGINE_UNUSED( _loggerMessage );
 

@@ -158,7 +158,7 @@ namespace Mengine
         m_createConsole = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ConsoleLogger::log( const LoggerMessage & _message )
+    void Win32ConsoleLogger::_log( const LoggerMessage & _message )
     {
         HANDLE output_handle = ::GetStdHandle( STD_OUTPUT_HANDLE );
 
@@ -248,7 +248,7 @@ namespace Mengine
         ::SetConsoleTextAttribute( output_handle, consoleInfo.wAttributes );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ConsoleLogger::flush()
+    void Win32ConsoleLogger::_flush()
     {
         //Empty
     }

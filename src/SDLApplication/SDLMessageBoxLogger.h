@@ -13,7 +13,7 @@ namespace Mengine
         ~SDLMessageBoxLogger() override;
 
     public:
-        void log( const LoggerMessage & _message ) override;
+        void _log( const LoggerMessage & _message ) override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLMessageBoxLogger, LoggerInterface> SDLMessageBoxLoggerPtr;

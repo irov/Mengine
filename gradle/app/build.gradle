@@ -158,8 +158,6 @@ android {
 
         println "versionCode: $versionCode"
         println "versionName: $versionName"
-
-        multiDexEnabled true
     }
 
     buildTypes {

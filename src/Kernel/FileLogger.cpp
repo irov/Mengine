@@ -79,7 +79,7 @@ namespace Mengine
         m_fileGroup = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FileLogger::log( const LoggerMessage & _message )
+    void FileLogger::_log( const LoggerMessage & _message )
     {
         if( _message.flag & LFLAG_FUNCTIONSTAMP )
         {
@@ -131,7 +131,7 @@ namespace Mengine
         m_stream->write( "\n", 1 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void FileLogger::flush()
+    void FileLogger::_flush()
     {
         m_stream->flush();
     }

@@ -51,7 +51,7 @@ namespace Mengine
 
     public:
         virtual bool registerLogger( const LoggerInterfacePtr & _logger ) = 0;
-        virtual bool unregisterLogger( const LoggerInterfacePtr & _logger ) = 0;
+        virtual void unregisterLogger( const LoggerInterfacePtr & _logger ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

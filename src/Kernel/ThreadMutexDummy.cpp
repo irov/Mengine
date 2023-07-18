@@ -13,7 +13,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadMutexDummy::try_lock()
+    bool ThreadMutexDummy::tryLock()
     {
         //Empty
 

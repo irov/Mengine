@@ -10,8 +10,10 @@ src
     SDLThreadIdentityRunner.h
     SDLThreadProcessor.cpp
     SDLThreadProcessor.h
-    SDLThreadMutex.h
     SDLThreadMutex.cpp
+    SDLThreadMutex.h
+    SDLThreadSharedMutex.cpp
+    SDLThreadSharedMutex.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL/include/include-config-$<LOWER_CASE:$<CONFIG>>)

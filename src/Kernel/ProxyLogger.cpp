@@ -21,7 +21,7 @@ namespace Mengine
         return m_lambda;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ProxyLogger::log( const LoggerMessage & _message )
+    void ProxyLogger::_log( const LoggerMessage & _message )
     {
         m_lambda( _message );
     }

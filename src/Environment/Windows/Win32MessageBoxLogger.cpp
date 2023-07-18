@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32MessageBoxLogger::log( const LoggerMessage & _message )
+    void Win32MessageBoxLogger::_log( const LoggerMessage & _message )
     {
         const Char * data = _message.data;
         size_t size = _message.size;

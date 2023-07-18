@@ -18,7 +18,7 @@ namespace Mengine
         : public ThreadIdentityInterface
         , public Factorable
     {
-        DECLARE_FACTORABLE( SDLFileOutputStream );
+        DECLARE_FACTORABLE( SDLThreadIdentity );
 
     public:
         SDLThreadIdentity();

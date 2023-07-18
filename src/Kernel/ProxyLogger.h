@@ -21,7 +21,7 @@ namespace Mengine
         const LambdaLoggerMessage & getLambda() const;
 
     public:
-        void log( const LoggerMessage & _message ) override;
+        void _log( const LoggerMessage & _message ) override;
 
     protected:
         LambdaLoggerMessage m_lambda;

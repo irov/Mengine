@@ -4,7 +4,6 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.BatteryManager;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -316,20 +315,6 @@ public class MengineUtils {
     public static File createTempFile(Context context, String prefix, String suffix) {
         File cacheDir = context.getCacheDir();
 
-        String cacheDirPath;
-
-        try {
-            cacheDirPath = cacheDir.getCanonicalPath();
-        } catch (IOException e) {
-            MengineLog.logError(TAG, "failed create temp file %s***%s invalid cache dir exception: %s"
-                , prefix
-                , suffix
-                , e.getLocalizedMessage()
-            );
-
-            return null;
-        }
-
         File tempFile = null;
 
         try {
@@ -338,7 +323,7 @@ public class MengineUtils {
             MengineLog.logError(TAG, "failed create temp file %s***%s in dir: %s exception: %s"
                 , prefix
                 , suffix
-                , cacheDirPath
+                , cacheDir.getPath()
                 , e.getLocalizedMessage()
             );
 
@@ -347,7 +332,7 @@ public class MengineUtils {
 
         MengineLog.logInfo(TAG, "create temp file: %s in dir: %s"
             , tempFile.getAbsolutePath()
-            , cacheDirPath
+            , cacheDir.getPath()
         );
 
         return tempFile;

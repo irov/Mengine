@@ -19,6 +19,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -231,6 +232,7 @@ public class MengineActivity extends SDLActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.setState("activity.lifecycle", "create");
+
         this.setState("activity.init", "start");
 
         long activity_init_start_timestamp = MengineAnalytics.buildEvent("mng_activity_init_start")
@@ -243,7 +245,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onCreate");
 
         if (mBrokenLibraries == true) {
-            MengineLog.logError(TAG, "onCreate: broken libraries");
+            MengineLog.logWarning(TAG, "onCreate: broken libraries");
 
             return;
         }
@@ -264,7 +266,7 @@ public class MengineActivity extends SDLActivity {
             try {
                 p.onCreate(this, savedInstanceState);
             } catch (MenginePluginInvalidInitializeException e) {
-                MengineLog.logError(TAG, "invalid onCreate plugin: %s"
+                MengineLog.logError(TAG, "invalid plugin %s callback onCreate"
                     , e.getPluginName()
                 );
 
@@ -283,7 +285,7 @@ public class MengineActivity extends SDLActivity {
             try {
                 p.onExtensionInitialize(this);
             } catch (MenginePluginInvalidInitializeException e) {
-                MengineLog.logError(TAG, "invalid onExtensionInitialize plugin: %s"
+                MengineLog.logError(TAG, "invalid plugin %s callback onExtensionInitialize"
                     , e.getPluginName()
                 );
 
@@ -395,10 +397,13 @@ public class MengineActivity extends SDLActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        MengineLog.logInfo(TAG, "onActivityResult");
+        MengineLog.logInfo(TAG, "onActivityResult request: %d result: %d"
+            , requestCode
+            , resultCode
+        );
 
         if (mBrokenLibraries == true) {
-            MengineLog.logError(TAG, "onStart: broken libraries");
+            MengineLog.logWarning(TAG, "onStart: broken libraries");
 
             return;
         }
@@ -419,7 +424,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onStart");
 
         if (mBrokenLibraries == true) {
-            MengineLog.logError(TAG, "onStart: broken libraries");
+            MengineLog.logWarning(TAG, "onStart: broken libraries");
 
             return;
         }
@@ -444,7 +449,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onStop");
 
         if (mBrokenLibraries == true) {
-            MengineLog.logError(TAG, "onStop: broken libraries");
+            MengineLog.logWarning(TAG, "onStop: broken libraries");
 
             return;
         }
@@ -469,7 +474,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onPause");
 
         if (mBrokenLibraries == true) {
-            MengineLog.logError(TAG, "onPause: broken libraries");
+            MengineLog.logWarning(TAG, "onPause: broken libraries");
 
             return;
         }
@@ -494,7 +499,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onResume");
 
         if (mBrokenLibraries == true) {
-            MengineLog.logError(TAG, "onResume: broken libraries");
+            MengineLog.logWarning(TAG, "onResume: broken libraries");
 
             return;
         }
@@ -514,10 +519,10 @@ public class MengineActivity extends SDLActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        MengineLog.logInfo(TAG, "onNewIntent");
+        MengineLog.logInfo(TAG, "onNewIntent intent: %s", intent);
 
         if (mBrokenLibraries == true) {
-            MengineLog.logError(TAG, "onNewIntent: broken libraries");
+            MengineLog.logWarning(TAG, "onNewIntent: broken libraries");
 
             return;
         }
@@ -536,7 +541,7 @@ public class MengineActivity extends SDLActivity {
         this.setState("activity.lifecycle", "destroy");
 
         if (mBrokenLibraries == true) {
-            MengineLog.logError(TAG, "onDestroy: broken libraries");
+            MengineLog.logWarning(TAG, "onDestroy: broken libraries");
 
             super.onDestroy();
 
@@ -577,7 +582,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logInfo(TAG, "onRestart");
 
         if (mBrokenLibraries == true) {
-            MengineLog.logError(TAG, "onRestart: broken libraries");
+            MengineLog.logWarning(TAG, "onRestart: broken libraries");
 
             return;
         }
@@ -597,12 +602,12 @@ public class MengineActivity extends SDLActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        MengineLog.logInfo(TAG, "onConfigurationChanged: %s"
+        MengineLog.logInfo(TAG, "onConfigurationChanged config: %s"
             , newConfig.toString()
         );
 
         if (mBrokenLibraries == true) {
-            MengineLog.logError(TAG, "onConfigurationChanged: broken libraries");
+            MengineLog.logWarning(TAG, "onConfigurationChanged: broken libraries");
 
             return;
         }
@@ -618,10 +623,14 @@ public class MengineActivity extends SDLActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        MengineLog.logInfo(TAG, "onRequestPermissionsResult");
+        MengineLog.logInfo(TAG, "onRequestPermissionsResult request: %d permissions: %s grantResults: %s"
+            , requestCode
+            , Arrays.toString(permissions)
+            , Arrays.toString(grantResults)
+        );
 
         if (mBrokenLibraries == true) {
-            MengineLog.logError(TAG, "onRequestPermissionsResult: broken libraries");
+            MengineLog.logWarning(TAG, "onRequestPermissionsResult: broken libraries");
 
             return;
         }
@@ -635,13 +644,14 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        MengineLog.logInfo(TAG, "dispatchKeyEvent action: %d code: %d"
+        MengineLog.logInfo(TAG, "dispatchKeyEvent action: %d key code: %d scan code: %d"
             , event.getAction()
             , event.getKeyCode()
+            , event.getScanCode()
         );
 
         if (mBrokenLibraries == true) {
-            MengineLog.logError(TAG, "dispatchKeyEvent: broken libraries");
+            MengineLog.logWarning(TAG, "dispatchKeyEvent: broken libraries");
 
             return super.dispatchKeyEvent(event);
         }
@@ -723,7 +733,7 @@ public class MengineActivity extends SDLActivity {
 
     public void pythonCall(String plugin, String method, Object ... args) {
         if (m_initializePython == false) {
-            MengineLog.logError(TAG,"invalid python plugin [%s] method [%s] args [%s] call before embedding"
+            MengineLog.logWarning(TAG,"invalid python plugin [%s] method [%s] args [%s] call before embedding"
                 , plugin
                 , method
                 , args
@@ -866,7 +876,7 @@ public class MengineActivity extends SDLActivity {
                 File accountZipFile = MengineUtils.createTempFile(context, "mng_account_", ".zip");
 
                 if (accountZipFile == null) {
-                    MengineLog.logError(TAG, "linking open mail [%s] subject [%s] invalid create temp file 'mng_account_***.zip'"
+                    MengineLog.logWarning(TAG, "linking open mail [%s] subject [%s] invalid create temp file 'mng_account_***.zip'"
                         , email
                         , subject
                     );
@@ -889,7 +899,7 @@ public class MengineActivity extends SDLActivity {
                 File logFile = MengineUtils.createTempFile(context, "mng_log_", ".log");
 
                 if (logFile == null) {
-                    MengineLog.logError(TAG, "linking open mail [%s] subject [%s] invalid create temp file 'mng_log_***.log'"
+                    MengineLog.logWarning(TAG, "linking open mail [%s] subject [%s] invalid create temp file 'mng_log_***.log'"
                         , email
                         , subject
                     );

@@ -350,7 +350,7 @@ public class MengineApplication extends Application {
         MenginePlugin plugin = MengineUtils.newInstance(TAG, type, true);
 
         if (plugin == null) {
-            MengineLog.logError(TAG, "not found plugin: %s"
+            MengineLog.logError(TAG, "invalid create instance plugin: %s"
                 , type
             );
 

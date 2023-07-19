@@ -4,6 +4,8 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/LoggerHelper.h"
 
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -15,63 +17,33 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleSentryLoggerCapture::_initializeLogger()
+    void AppleSentryLoggerCapture::_log( const LoggerMessage & _message )
     {
-        //Empty
+        ELoggerLevel level = _message.level;
+        
+        if( level != LM_ERROR || level != LM_FATAL )
+        {
+            return;
+        }
+        
+        MENGINE_STRCPY( m_buffer, "" );
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleSentryLoggerCapture::_finalizeLogger()
-    {
-        m_message.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AppleSentryLoggerCapture::log( const LoggerMessage & _message )
-    {
         Char timestamp[256] = {'\0'};
         size_t timestampSize = Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
-        m_message.append( timestamp, timestampSize );
-        m_message.append( " ", 1 );
+        MENGINE_STRNCAT( m_buffer, timestamp, timestampSize );
+        MENGINE_STRNCAT( m_buffer, " ", 1 );
 
-        m_message.append( _message.category );
-        m_message.append( " ", 1 );
+        MENGINE_STRNCAT( m_buffer, "[", 1 );
+        MENGINE_STRCAT( m_buffer, _message.category );
+        MENGINE_STRNCAT( m_buffer, "]", 1 );
+        MENGINE_STRNCAT( m_buffer, " ", 1 );
         
         const Char * data_str = _message.data;
         size_t data_size = _message.size;
-         
-        m_message.append( data_str, data_size );
-        m_message.append( "\n", 1 );
 
-        uint32_t Sentry_MaxLogSize = CONFIG_VALUE( "AppleSentryPlugin", "MaxLogSize", 9240 );
-
-        String::size_type message_size = m_message.size();
-
-        if( message_size < Sentry_MaxLogSize )
-        {
-            const Char * message_str = m_message.c_str();
-
-            Helper::appleSentrySetExtraString( "Log", message_str );
-        }
-        else
-        {
-            String begin_message = m_message.substr( 0, Sentry_MaxLogSize * 60 / 100 );
-            String end_message = m_message.substr( message_size - Sentry_MaxLogSize * 40 / 100 );
-	
-            String total_message;
-            total_message += begin_message;
-            total_message += "\n";
-            
-            total_message += "...\n";
-            total_message += "...\n";
-            total_message += "...\n";
-            total_message += "\n";
-            total_message += end_message;
-
-            const Char * total_message_str = total_message.c_str();
-
-            Helper::appleSentrySetExtraString( "Log", total_message_str );
-        }
+        MENGINE_STRNCAT( m_buffer, data_str, data_size );
+        
+        Helper::appleSentryMessageCapture( m_buffer );
     }
     //////////////////////////////////////////////////////////////////////////
 }

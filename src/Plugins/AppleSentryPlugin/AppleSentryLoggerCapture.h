@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Kernel/LoggerBase.h"
-#include "Kernel/String.h"
+
+#include "Config/Char.h"
 
 namespace Mengine
 {
@@ -14,14 +15,10 @@ namespace Mengine
         ~AppleSentryLoggerCapture() override;
 
     protected:
-        bool _initializeLogger() override;
-        void _finalizeLogger() override;
+        void _log( const LoggerMessage & _message ) override;
 
     protected:
-        void log( const LoggerMessage & _message ) override;
-
-    protected:
-        String m_message;
+        Char m_buffer[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleSentryLoggerCapture, LoggerInterface> AppleSentryLoggerCapturePtr;

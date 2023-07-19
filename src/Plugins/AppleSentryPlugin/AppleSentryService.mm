@@ -19,6 +19,7 @@
 #include "Kernel/BuildMode.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/GitSHA1.h"
 #include "Config/BuildInfo.h"
@@ -48,22 +49,24 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &AppleSentryService::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_STOP, &AppleSentryService::notifyEngineStop_, MENGINE_DOCUMENT_FACTORABLE );
 
-        AppleSentryLoggerCapturePtr loggerCapture = Helper::makeFactorableUnique<AppleSentryLoggerCapture>( MENGINE_DOCUMENT_FACTORABLE );
+        BOOL AppleSentryPlugin_LoggerCapture = Helper::AppleGetBundlePluginConfigBoolean( @("MengineAppleSentryPlugin"), @("LoggerCapture"), MENGINE_MASTER_RELEASE_VALUE( YES, NO ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( loggerCapture );
-
-        loggerCapture->setVerboseLevel( LM_ERROR );
-
-        uint32_t loggerFilter = ~0u & ~(LFILTER_PROTECTED);
-
-        loggerCapture->setVerboseFilter( loggerFilter );
-
-        loggerCapture->setWriteHistory( true );
-
-        LOGGER_SERVICE()
-            ->registerLogger( loggerCapture );
-
-        m_loggerCapture = loggerCapture;
+        if( AppleSentryPlugin_LoggerCapture == YES )
+        {
+            AppleSentryLoggerCapturePtr loggerCapture = Helper::makeFactorableUnique<AppleSentryLoggerCapture>( MENGINE_DOCUMENT_FACTORABLE );
+            
+            MENGINE_ASSERTION_MEMORY_PANIC( loggerCapture );
+            
+            uint32_t loggerFilter = ~0u & ~(LFILTER_PROTECTED);
+            loggerCapture->setVerboseFilter( loggerFilter );
+            loggerCapture->setVerboseLevel( LM_ERROR );
+            loggerCapture->setWriteHistory( true );
+            
+            LOGGER_SERVICE()
+                ->registerLogger( loggerCapture );
+            
+            m_loggerCapture = loggerCapture;
+        }
         
         return true;
     }
@@ -233,8 +236,6 @@ namespace Mengine
             
             Helper::appleSentrySetExtraString( "Crash UID", message_uid );
 
-            Helper::appleSentryCapture( "Mengine test sentry crash", 0 );
-
             Helper::crash( "sentrycrash" );
         }
     }
@@ -252,7 +253,7 @@ namespace Mengine
         Helper::appleSentrySetExtraString( "Assetion Function", _file );
         Helper::appleSentrySetExtraInteger( "Assetion Line", _line );
 
-        Helper::appleSentryCapture( _message, 0 );
+        Helper::appleSentryErrorCapture( _message, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleSentryService::notifyError_( const Char * _category, EErrorLevel _level, const Char * _file, int32_t _line, const Char * _message )
@@ -263,7 +264,7 @@ namespace Mengine
         Helper::appleSentrySetExtraString( "Error Function", _file );
         Helper::appleSentrySetExtraInteger( "Error Line", _line );
 
-        Helper::appleSentryCapture( _message, 0 );
+        Helper::appleSentryErrorCapture( _message, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleSentryService::notifyEngineStop_()

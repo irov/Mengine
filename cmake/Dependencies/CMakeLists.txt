@@ -580,7 +580,7 @@ if(MENGINE_DEPENDENCE_CURL)
     message("CURL_LIBRARIES: ${CURL_LIBRARIES}")
     message("CURL_INCLUDE_DIRS: ${CURL_INCLUDE_DIRS}")
     
-    add_dependencies(libcurl ssl crypto zlib)
+    add_dependencies(libcurl zlib)
 endif()
 
 if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_UNIX)

@@ -7,10 +7,15 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void appleSentryCapture( const Char * _msg, int32_t _code )
+        void appleSentryErrorCapture( const Char * _msg, int32_t _code )
         {
             NSError *error = [NSError errorWithDomain:@(_msg) code:_code userInfo: nil];
             [SentrySDK captureError:error];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void appleSentryMessageCapture( const Char * _msg )
+        {
+            [SentrySDK captureMessage:@(_msg)];
         }
         //////////////////////////////////////////////////////////////////////////
         void appleSentrySetExtraBoolean( const Char * _key, int32_t _value )

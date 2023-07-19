@@ -41,11 +41,6 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "image", "load texture name '%s' file '%s'"
-            , this->getName().c_str()
-            , this->getContent()->getFilePath().c_str()
-        );
-
         const ContentInterfacePtr & content = this->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();

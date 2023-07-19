@@ -174,10 +174,11 @@ namespace Mengine
             return true;
         }
 
-        LOGGER_INFO( "resource", "compile type '%s' name '%s' group '%s'"
+        LOGGER_INFO( "resource", "compile [%s] name '%s' group '%s' file '%s'"
             , this->getType().c_str()
             , this->getName().c_str()
             , this->getGroupName().c_str()
+            , this->getContent()->getFilePath().c_str()
         );
 
         if( Compilable::compile() == false )
@@ -206,10 +207,11 @@ namespace Mengine
             return;
         }
 
-        LOGGER_INFO( "resource", "release type '%s' name '%s' group '%s'"
+        LOGGER_INFO( "resource", "release [%s] name '%s' group '%s' file '%s'"
             , this->getType().c_str()
             , this->getName().c_str()
             , this->getGroupName().c_str()
+            , this->getContent()->getFilePath().c_str()
         );
 
         Compilable::release();

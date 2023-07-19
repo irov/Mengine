@@ -3,11 +3,9 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/LoggerHelper.h"
 
-#include "sentry.h"
+#include "Config/StdString.h"
 
-#ifndef MENGINE_SENTRY_MAX_LOG_SIZE
-#define MENGINE_SENTRY_MAX_LOG_SIZE 4096
-#endif
+#include "sentry.h"
 
 namespace Mengine
 {
@@ -20,71 +18,42 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32SentryLoggerCapture::_initializeLogger()
-    {
-        //Empty
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32SentryLoggerCapture::_finalizeLogger()
-    {
-        m_message.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Win32SentryLoggerCapture::_log( const LoggerMessage & _message )
     {
+        sentry_level_t sentry_level;
+
+        switch( _message.level )
+        {
+        case Mengine::LM_FATAL:
+            sentry_level = SENTRY_LEVEL_FATAL;
+            break;
+        case Mengine::LM_ERROR:
+            sentry_level = SENTRY_LEVEL_ERROR;
+            break;
+        default:
+            return;
+        }
+
+        MENGINE_STRCPY( m_buffer, "" );
+
         Char timestamp[256] = {'\0'};
         size_t timestampSize = Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
-        m_message.append( timestamp, timestampSize );
-        m_message.append( " ", 1 );
+        MENGINE_STRNCAT( m_buffer, timestamp, timestampSize );
+        MENGINE_STRNCAT( m_buffer, " ", 1 );
 
-        ELoggerLevel level = _message.level;
-
-        Char symbol = Helper::getLoggerLevelSymbol( level );
-        m_message.append( &symbol, 1 );
-        m_message.append( " " );
-
-        m_message.append( "[", 1 );
-        m_message.append( _message.category );
-        m_message.append( "]", 1 );
-        m_message.append( " ", 1 );
+        MENGINE_STRNCAT( m_buffer, "[", 1 );
+        MENGINE_STRCAT( m_buffer, _message.category );
+        MENGINE_STRNCAT( m_buffer, "]", 1 );
+        MENGINE_STRNCAT( m_buffer, " ", 1 );
         
         const Char * data_str = _message.data;
         size_t data_size = _message.size;
 
-        m_message.append( data_str, data_size );
-        m_message.append( "\n", 1 );
+        MENGINE_STRNCAT( m_buffer, data_str, data_size );
 
-        uint32_t Sentry_MaxLogSize = CONFIG_VALUE( "Win32SentryPlugin", "MaxLogSize", MENGINE_SENTRY_MAX_LOG_SIZE );
+        sentry_value_t event = sentry_value_new_message_event( sentry_level, "Logger", m_buffer );
 
-        String::size_type message_size = m_message.size();
-
-        if( message_size < Sentry_MaxLogSize )
-        {
-            const Char * message_str = m_message.c_str();
-
-            sentry_set_extra( "Log", sentry_value_new_string( message_str ) );
-        }
-        else
-        {
-            String begin_message = m_message.substr( 0, Sentry_MaxLogSize * 60 / 100 );
-            String end_message = m_message.substr( message_size - Sentry_MaxLogSize * 40 / 100 );
-
-            String total_message;
-            total_message += begin_message;
-            total_message += "\n";
-            total_message += "\n";
-            total_message += "...\n";
-            total_message += "...\n";
-            total_message += "...\n";
-            total_message += "\n";
-            total_message += end_message;
-
-            const Char * total_message_str = total_message.c_str();
-
-            sentry_set_extra( "Log", sentry_value_new_string( total_message_str ) );
-        }
+        sentry_capture_event( event );
     }
     //////////////////////////////////////////////////////////////////////////
 }

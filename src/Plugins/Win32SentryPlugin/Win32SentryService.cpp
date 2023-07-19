@@ -224,20 +224,24 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &Win32SentryService::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_STOP, &Win32SentryService::notifyEngineStop_, MENGINE_DOCUMENT_FACTORABLE );
 
-        Win32SentryLoggerCapturePtr loggerCapture = Helper::makeFactorableUnique<Win32SentryLoggerCapture>( MENGINE_DOCUMENT_FACTORABLE );
+        bool Win32SentryPlugin_LoggerCapture = CONFIG_VALUE( "Win32SentryPlugin", "LoggerCapture", MENGINE_MASTER_RELEASE_VALUE( true, false ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( loggerCapture );
+        if( OPTION_sentrydebug == true || Win32SentryPlugin_LoggerCapture == true )
+        {
+            Win32SentryLoggerCapturePtr loggerCapture = Helper::makeFactorableUnique<Win32SentryLoggerCapture>( MENGINE_DOCUMENT_FACTORABLE );
 
-        uint32_t loggerFilter = ~0u & ~(LFILTER_PROTECTED);
-        loggerCapture->setVerboseFilter( loggerFilter );
+            MENGINE_ASSERTION_MEMORY_PANIC( loggerCapture );
 
-        loggerCapture->setVerboseLevel( LM_ERROR );
-        loggerCapture->setWriteHistory( true );
+            uint32_t loggerFilter = ~0u & ~(LFILTER_PROTECTED);
+            loggerCapture->setVerboseFilter( loggerFilter );
+            loggerCapture->setVerboseLevel( LM_ERROR );
+            loggerCapture->setWriteHistory( true );
 
-        LOGGER_SERVICE()
-            ->registerLogger( loggerCapture );
+            LOGGER_SERVICE()
+                ->registerLogger( loggerCapture );
 
-        m_loggerCapture = loggerCapture;
+            m_loggerCapture = loggerCapture;
+        }
 
         return true;
     }

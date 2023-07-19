@@ -3,6 +3,7 @@
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/DocumentHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ChronometerService, Mengine::ChronometerService );

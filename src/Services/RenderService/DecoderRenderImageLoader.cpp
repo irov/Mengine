@@ -111,8 +111,6 @@ namespace Mengine
 
         if( m_decoder->decode( &data ) == 0 )
         {
-            LOGGER_ERROR( "invalid decode for" );
-
             _image->unlock( locked, 0, false );
 
             return false;
@@ -179,8 +177,6 @@ namespace Mengine
 
         if( m_decoder->decode( &data ) == 0 )
         {
-            LOGGER_ERROR( "invalid decode for" );
-
             return nullptr;
         }
 

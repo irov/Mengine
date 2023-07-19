@@ -13,6 +13,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "Config/Typeinfo.h"
 

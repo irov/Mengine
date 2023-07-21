@@ -23,14 +23,18 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
     public static final String PLUGIN_NAME = "DevToDev";
     public static final boolean PLUGIN_EMBEDDING = true;
 
+    public static final String PLUGIN_METADATA_SITE = "mengine.datadog.site";
+    public static final String PLUGIN_METADATA_CLIENT_TOKEN = "mengine.datadog.client_token";
+    public static final String PLUGIN_METADATA_SERVICE_NAME = "mengine.datadog.service_name";
+
     private Logger m_loggerDataDog;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        String MengineDataDogPlugin_Site = activity.getMetaDataString("mengine.datadog.site");
+        String MengineDataDogPlugin_Site = activity.getMetaDataString(PLUGIN_METADATA_SITE);
 
         if (MengineDataDogPlugin_Site == null) {
-            this.invalidInitialize("initialize unsetup [mengine.datadog.site]");
+            this.invalidInitialize("initialize unsetup [%s]", PLUGIN_METADATA_SITE);
 
             return;
         }
@@ -55,10 +59,10 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
             return;
         }
 
-        String MengineDataDogPlugin_ClientToken = activity.getMetaDataString("mengine.datadog.client_token");
+        String MengineDataDogPlugin_ClientToken = activity.getMetaDataString(PLUGIN_METADATA_CLIENT_TOKEN);
 
         if (MengineDataDogPlugin_ClientToken == null) {
-            this.invalidInitialize("initialize unsetup [mengine.datadog.client_token]");
+            this.invalidInitialize("initialize unsetup [%s]", PLUGIN_METADATA_CLIENT_TOKEN);
 
             return;
         }
@@ -72,7 +76,7 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
             .useSite(site)
             .build();
 
-        String MengineDataDogPlugin_ServiceName = activity.getMetaDataString("mengine.datadog.service_name");
+        String MengineDataDogPlugin_ServiceName = activity.getMetaDataString(PLUGIN_METADATA_SERVICE_NAME);
 
         String clientToken = MengineDataDogPlugin_ClientToken;
         String envName = "production";

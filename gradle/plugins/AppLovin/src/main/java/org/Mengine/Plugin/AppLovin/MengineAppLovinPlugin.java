@@ -153,6 +153,12 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         AppLovinPrivacySettings.setDoNotSell(MengineAppLovinPlugin_CCPA, context);
 
+        if (BuildConfig.DEBUG == true) {
+            appLovinSdk.getSettings().setCreativeDebuggerEnabled(true);
+        } else {
+            appLovinSdk.getSettings().setCreativeDebuggerEnabled(false);
+        }
+
         AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
@@ -332,6 +338,15 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         for (MengineAppLovinAnalyticsListener analytic : m_analytics) {
             analytic.onEventRevenuePaid(this, ad);
         }
+    }
+
+    public void showCreativeDebugger() {
+        MengineActivity activity = this.getMengineActivity();
+
+        final Context context = activity.getBaseContext();
+
+        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(context);
+        appLovinSdk.showCreativeDebugger();
     }
 
     public void showMediationDebugger() {

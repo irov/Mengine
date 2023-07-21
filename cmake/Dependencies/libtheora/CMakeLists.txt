@@ -14,7 +14,7 @@ set( sources
     ${SOURCE_DIR}/lib/analyze.c
     ${SOURCE_DIR}/lib/apiwrapper.c
     ${SOURCE_DIR}/lib/bitpack.c
-	${SOURCE_DIR}/lib/cpu.c
+    ${SOURCE_DIR}/lib/cpu.c
     ${SOURCE_DIR}/lib/decapiwrapper.c
     ${SOURCE_DIR}/lib/decinfo.c
     ${SOURCE_DIR}/lib/decode.c

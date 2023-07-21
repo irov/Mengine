@@ -1,9 +1,10 @@
 package org.Mengine.Plugin.Facebook;
 
-import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MengineActivity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -19,19 +20,17 @@ import com.facebook.LoginStatusCallback;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsConstants;
+import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.facebook.appevents.AppEventsLogger;
 
-import android.net.Uri;
-import android.content.Intent;
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineEvent;
+import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.json.JSONException;
@@ -185,7 +184,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         });
 
         try {
-            MengineApplication application = this.getApplication();
+            MengineApplication application = this.getMengineApplication();
             AppEventsLogger.activateApp(application);
         } catch (Exception ex) {
             MengineFacebookPlugin.this.logError("activateApp catch exception: %s"
@@ -329,7 +328,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             , permissions
         );
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
     }
@@ -415,7 +414,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             .addParameterString("quote", quote)
             .log();
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         ShareDialog shareDialog = new ShareDialog(activity);
         shareDialog.registerCallback(m_facebookCallbackManager, new FacebookCallback<Sharer.Result>() {

@@ -20,6 +20,8 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     public static final String PLUGIN_NAME = "Adjust";
     public static final boolean PLUGIN_EMBEDDING = true;
 
+    public static final String PLUGIN_METADATA_APP_TOKEN = "mengine.adjust.app_token";
+
     /**
      * событие
      * void eventTraking(String token)
@@ -46,10 +48,10 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
             environment = AdjustConfig.ENVIRONMENT_SANDBOX;
         }
 
-        String MengineAdjustPlugin_AppToken = application.getMetaDataString("mengine.adjust.app_token");
+        String MengineAdjustPlugin_AppToken = application.getMetaDataString(PLUGIN_METADATA_APP_TOKEN);
 
         if (MengineAdjustPlugin_AppToken == null) {
-            this.invalidInitialize("invalid setup meta data [mengine.adjust.app_token]");
+            this.invalidInitialize("invalid setup meta data [%s]", PLUGIN_METADATA_APP_TOKEN);
 
             return;
         }

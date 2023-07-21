@@ -10,12 +10,14 @@ import org.Mengine.Base.MenginePluginInvalidInitializeException;
 public class MengineOneSignalPlugin extends MenginePlugin implements MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "OneSignal";
 
+    public static final String PLUGIN_METADATA_APP_ID = "mengine.onesignal.app_id";
+
     @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String MengineOneSignalPlugin_AppId = application.getMetaDataString("mengine.onesignal.app_id");
+        String MengineOneSignalPlugin_AppId = application.getMetaDataString(PLUGIN_METADATA_APP_ID);
 
         if (MengineOneSignalPlugin_AppId == null) {
-            this.invalidInitialize("invalid setup meta data [mengine.onesignal.app_id]");
+            this.invalidInitialize("invalid setup meta data [%s]", PLUGIN_METADATA_APP_ID);
 
             return;
         }

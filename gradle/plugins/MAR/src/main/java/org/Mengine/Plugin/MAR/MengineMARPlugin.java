@@ -1,21 +1,14 @@
 package org.Mengine.Plugin.MAR;
 
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MenginePluginKeyListener;
-
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.KeyEvent;
 
 import com.mar.sdk.MARCloudCallBack;
 import com.mar.sdk.MARCode;
@@ -30,10 +23,14 @@ import com.mar.sdk.platform.MARPlatform;
 import com.mar.sdk.verify.UGameArchive;
 import com.mar.sdk.verify.UToken;
 
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginApplicationListener;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MenginePluginKeyListener;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.view.KeyEvent;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -84,7 +81,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     public void login() {
         this.logMessage("login");
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         MARPlatform.getInstance().login(activity);
     }
@@ -94,7 +91,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
             , loginType
         );
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         MARPlatform.getInstance().loginCustom(activity, loginType);
     }
@@ -169,7 +166,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
             , params
         );
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
         MARPlatform.getInstance().pay(activity, params);
 
         return true;

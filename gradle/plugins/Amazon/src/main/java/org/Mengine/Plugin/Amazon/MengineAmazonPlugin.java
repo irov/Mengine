@@ -17,12 +17,16 @@ import org.Mengine.Base.MenginePluginInvalidInitializeException;
 public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "Amazon";
 
+    public static final String PLUGIN_METADATA_APP_ID = "mengine.amazon.app_id";
+    public static final String PLUGIN_METADATA_ENABLE_TESTING = "mengine.amazon.enable_testing";
+    public static final String PLUGIN_METADATA_ENABLE_LOGGING = "mengine.amazon.enable_logging";
+
     @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String MengineAmazonPlugin_AppId = application.getMetaDataString("mengine.amazon.appId");
+        String MengineAmazonPlugin_AppId = application.getMetaDataString(PLUGIN_METADATA_APP_ID);
 
         if (MengineAmazonPlugin_AppId == null) {
-            this.invalidInitialize("invalid setup meta data [mengine.amazon.appId]");
+            this.invalidInitialize("invalid setup meta data [%s]", PLUGIN_METADATA_APP_ID);
 
             return;
         }
@@ -42,13 +46,13 @@ public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginA
         AdRegistration.setMRAIDSupportedVersions(new String[]{"1.0", "2.0", "3.0"});
         AdRegistration.setMRAIDPolicy(MRAIDPolicy.CUSTOM);
 
-        boolean MengineAmazonPlugin_EnableTesting = application.getMetaDataBoolean("mengine.amazon.enable_testing", false);
+        boolean MengineAmazonPlugin_EnableTesting = application.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_TESTING, false);
 
         if (MengineAmazonPlugin_EnableTesting == true) {
             AdRegistration.enableTesting(true);
         }
 
-        boolean MengineAmazonPlugin_EnableLogging = application.getMetaDataBoolean("mengine.amazon.enable_logging", BuildConfig.DEBUG);
+        boolean MengineAmazonPlugin_EnableLogging = application.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_LOGGING, BuildConfig.DEBUG);
 
         if (MengineAmazonPlugin_EnableLogging == true) {
             AdRegistration.enableLogging(true);

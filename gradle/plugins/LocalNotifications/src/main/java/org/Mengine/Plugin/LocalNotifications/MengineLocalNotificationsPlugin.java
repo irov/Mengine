@@ -66,7 +66,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
             , delay
         );
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
         
         Intent notificationIntent = new Intent(activity, NotificationPublisher.class);
 
@@ -91,7 +91,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
             , id
         );
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
         
         NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(id, notification);
@@ -100,7 +100,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
     public void run() {
         this.logMessage("run");
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
         
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -130,7 +130,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
     public void cancelAll() {
         this.logMessage("cancelAll");
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
         
         NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
@@ -170,7 +170,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin {
     private void scheduleJobNotification(long delayMillis, PersistableBundle bundle){
         this.logMessage("schedule notification with delay: %d", delayMillis);
         
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         int jobId = (int)SystemClock.elapsedRealtime();
         ComponentName jobService = new ComponentName(activity, NotificationJobService.class);

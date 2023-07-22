@@ -1,18 +1,18 @@
 package org.Mengine.Plugin.AppLovin;
 
-import org.Mengine.Base.MengineActivity;
-
-import com.applovin.mediation.ads.MaxAdView;
-import com.applovin.mediation.ads.MaxInterstitialAd;
-import com.applovin.mediation.ads.MaxRewardedAd;
+import androidx.annotation.NonNull;
 
 import com.amazon.device.ads.AdError;
 import com.amazon.device.ads.DTBAdCallback;
 import com.amazon.device.ads.DTBAdRequest;
 import com.amazon.device.ads.DTBAdResponse;
 import com.amazon.device.ads.DTBAdSize;
+import com.applovin.mediation.ads.MaxAdView;
+import com.applovin.mediation.ads.MaxInterstitialAd;
+import com.applovin.mediation.ads.MaxRewardedAd;
 
-import androidx.annotation.NonNull;
+import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineLog;
 
 public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationInterface {
     public static final String MEDIATION_METADATA_BANNER_SLOT_ID = "mengine.applovin.amazon.banner_slot_id";
@@ -48,7 +48,9 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
         String MengineAppLovinPlugin_AmazonBannerSlotId = activity.getMetaDataString(MEDIATION_METADATA_BANNER_SLOT_ID);
 
         if (MengineAppLovinPlugin_AmazonBannerSlotId == null) {
-            throw new RuntimeException("MengineAppLovinMediationAmazon need to add config value for [%s]", MEDIATION_METADATA_BANNER_SLOT_ID);
+            String message = MengineLog.buildTotalMsg("MengineAppLovinMediationAmazon need to add config value for [%s]", MEDIATION_METADATA_BANNER_SLOT_ID);
+
+            throw new RuntimeException(message);
         }
 
         int width = activity.getWindow().getDecorView().getWidth();
@@ -111,7 +113,9 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
                 String MengineAppLovinPlugin_AmazonInterstitialSlotId = activity.getMetaDataString(MEDIATION_METADATA_INTERSTITIAL_SLOT_ID);
 
                 if (MengineAppLovinPlugin_AmazonInterstitialSlotId == null) {
-                    throw new RuntimeException("MengineAppLovinMediationAmazon need to add config value for [%s]", MEDIATION_METADATA_INTERSTITIAL_SLOT_ID);
+                    String message = MengineLog.buildTotalMsg("MengineAppLovinMediationAmazon need to add config value for [%s]", MEDIATION_METADATA_INTERSTITIAL_SLOT_ID);
+
+                    throw new RuntimeException(message);
                 }
 
                 m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_PROCESS;
@@ -175,7 +179,9 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
                 String MengineAppLovinPlugin_AmazonRewardedSlotId = activity.getMetaDataString(MEDIATION_METADATA_REWARDED_SLOT_ID);
 
                 if (MengineAppLovinPlugin_AmazonRewardedSlotId == null) {
-                    throw new RuntimeException("MengineAppLovinMediationAmazon need to add config value for [%s]", MEDIATION_METADATA_REWARDED_SLOT_ID);
+                    String message = MengineLog.buildTotalMsg("MengineAppLovinMediationAmazon need to add config value for [%s]", MEDIATION_METADATA_REWARDED_SLOT_ID);
+
+                    throw new RuntimeException(message);
                 }
 
                 m_loadRewardedStatus = ELoadAdStatus.ADLOAD_PROCESS;

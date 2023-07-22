@@ -82,7 +82,8 @@ if(WEBP_BUILD_WEBP_JS)
   set(WEBP_USE_THREAD OFF)
 
   if(WEBP_ENABLE_SIMD)
-    message("wasm2js does not support SIMD, disabling webp.js generation.")
+    message(NOTICE
+            "wasm2js does not support SIMD, disabling webp.js generation.")
   endif()
 endif()
 
@@ -98,10 +99,20 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Include dependencies.
+if(WEBP_BUILD_ANIM_UTILS
+   OR WEBP_BUILD_CWEBP
+   OR WEBP_BUILD_DWEBP
+   OR WEBP_BUILD_EXTRAS
+   OR WEBP_BUILD_GIF2WEBP
+   OR WEBP_BUILD_IMG2WEBP)
+  set(WEBP_FIND_IMG_LIBS TRUE)
+else()
+  set(WEBP_FIND_IMG_LIBS FALSE)
+endif()
 include(cmake/deps.cmake)
 include(GNUInstallDirs)
 
-if(BUILD_SHARED_LIBS AND NOT CMAKE_INSTALL_RPATH)
+if(BUILD_SHARED_LIBS AND NOT DEFINED CMAKE_INSTALL_RPATH)
   # Set the rpath to match autoconf/libtool behavior. Note this must be set
   # before target creation.
   set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
@@ -141,6 +152,14 @@ else()
 endif()
 set(PTHREAD_LIBS ${CMAKE_THREAD_LIBS_INIT})
 set(INSTALLED_LIBRARIES)
+
+if(MSVC)
+  # match the naming convention used by nmake
+  set(webp_libname_prefix "lib")
+  set(CMAKE_SHARED_LIBRARY_PREFIX "${webp_libname_prefix}")
+  set(CMAKE_IMPORT_LIBRARY_PREFIX "${webp_libname_prefix}")
+  set(CMAKE_STATIC_LIBRARY_PREFIX "${webp_libname_prefix}")
+endif()
 
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 
@@ -246,7 +265,7 @@ add_definitions(-DHAVE_CONFIG_H)
 # object files, so consider adding at least one real source file to any target
 # that references $<TARGET_OBJECTS:objlib>."
 function(libwebp_add_stub_file TARGET)
-  set(stub_source_dir "${CMAKE_BINARY_DIR}")
+  set(stub_source_dir "${THIRDPARTY_CONFIG_DIR}/libwebp")
   set(stub_source_file "${stub_source_dir}/libwebp_${TARGET}_stub.c")
   set(stub_source_code
       "// Generated file. DO NOT EDIT!\n"

@@ -266,8 +266,9 @@ public class MengineActivity extends SDLActivity {
             try {
                 p.onCreate(this, savedInstanceState);
             } catch (MenginePluginInvalidInitializeException e) {
-                MengineLog.logError(TAG, "invalid plugin %s callback onCreate"
+                MengineLog.logError(TAG, "invalid plugin %s callback onCreate exception: %s"
                     , e.getPluginName()
+                    , e.getLocalizedMessage()
                 );
 
                 this.finish();
@@ -285,8 +286,9 @@ public class MengineActivity extends SDLActivity {
             try {
                 p.onExtensionInitialize(this);
             } catch (MenginePluginInvalidInitializeException e) {
-                MengineLog.logError(TAG, "invalid plugin %s callback onExtensionInitialize"
+                MengineLog.logError(TAG, "invalid plugin %s callback onExtensionInitialize exception: %s"
                     , e.getPluginName()
+                    , e.getLocalizedMessage()
                 );
 
                 this.finish();

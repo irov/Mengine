@@ -97,6 +97,8 @@ endif()
 
 include_directories(${CURL_SOURCE_DIR}/include)
 
+set(CMAKE_UNITY_BUILD_BATCH_SIZE 0)
+
 option(CURL_WERROR "Turn compiler warnings into errors" OFF)
 option(PICKY_COMPILER "Enable picky compiler options" ON)
 option(BUILD_CURL_EXE "Set to ON to build curl executable." ON)
@@ -518,7 +520,7 @@ endif()
 option(CURL_BROTLI "Set to ON to enable building curl with brotli support." OFF)
 set(HAVE_BROTLI OFF)
 if(CURL_BROTLI)
-  find_package(Brotli QUIET)
+  find_package(Brotli REQUIRED)
   if(BROTLI_FOUND)
     set(HAVE_BROTLI ON)
     set(CURL_LIBS "${BROTLI_LIBRARIES};${CURL_LIBS}")  # For 'ld' linker. Emulate `list(PREPEND ...)` to stay compatible with <v3.15 CMake.
@@ -669,9 +671,7 @@ if(NOT CURL_DISABLE_LDAP)
   endif()
 
   # Now that we know, we're not using windows LDAP...
-  if(USE_WIN32_LDAP)
-    check_include_file_concat("winldap.h" HAVE_WINLDAP_H)
-  else()
+  if(NOT USE_WIN32_LDAP)
     # Check for LDAP
     set(CMAKE_REQUIRED_LIBRARIES ${OPENSSL_LIBRARIES})
     check_library_exists_concat(${CMAKE_LDAP_LIB} ldap_init HAVE_LIBLDAP)
@@ -1375,7 +1375,7 @@ endif()
 function(transform_makefile_inc INPUT_FILE OUTPUT_FILE)
   file(READ ${INPUT_FILE} MAKEFILE_INC_TEXT)
   string(REPLACE "$(top_srcdir)"   "\${CURL_SOURCE_DIR}" MAKEFILE_INC_TEXT ${MAKEFILE_INC_TEXT})
-  string(REPLACE "$(top_builddir)" "\${CURL_BINARY_DIR}" MAKEFILE_INC_TEXT ${MAKEFILE_INC_TEXT})
+  string(REPLACE "$(top_builddir)" "\${THIRDPARTY_CONFIG_DIR}/curl" MAKEFILE_INC_TEXT ${MAKEFILE_INC_TEXT})
 
   string(REGEX REPLACE "\\\\\n" "!π!α!" MAKEFILE_INC_TEXT ${MAKEFILE_INC_TEXT})
   string(REGEX REPLACE "([a-zA-Z_][a-zA-Z0-9_]*)[\t ]*=[\t ]*([^\n]*)" "SET(\\1 \\2)" MAKEFILE_INC_TEXT ${MAKEFILE_INC_TEXT})
@@ -1391,7 +1391,7 @@ include(GNUInstallDirs)
 
 set(CURL_INSTALL_CMAKE_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
-set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
+set(generated_dir "${THIRDPARTY_CONFIG_DIR}/curl/generated")
 set(project_config "${generated_dir}/${PROJECT_NAME}Config.cmake")
 set(version_config "${generated_dir}/${PROJECT_NAME}ConfigVersion.cmake")
 
@@ -1587,8 +1587,8 @@ set(VERSIONNUM              "${CURL_VERSION_NUM}")
 # * ENABLE_SHARED
 # * ENABLE_STATIC
 configure_file("${CURL_SOURCE_DIR}/curl-config.in"
-               "${CURL_BINARY_DIR}/curl-config" @ONLY)
-install(FILES "${CURL_BINARY_DIR}/curl-config"
+               "${THIRDPARTY_CONFIG_DIR}/curl/curl-config" @ONLY)
+install(FILES "${THIRDPARTY_CONFIG_DIR}/curl/curl-config"
         DESTINATION ${CMAKE_INSTALL_BINDIR}
         PERMISSIONS
           OWNER_READ OWNER_WRITE OWNER_EXECUTE
@@ -1597,8 +1597,8 @@ install(FILES "${CURL_BINARY_DIR}/curl-config"
 
 # Finally generate a pkg-config file matching this config
 configure_file("${CURL_SOURCE_DIR}/libcurl.pc.in"
-               "${CURL_BINARY_DIR}/libcurl.pc" @ONLY)
-install(FILES "${CURL_BINARY_DIR}/libcurl.pc"
+               "${THIRDPARTY_CONFIG_DIR}/curl/libcurl.pc" @ONLY)
+install(FILES "${THIRDPARTY_CONFIG_DIR}/curl/libcurl.pc"
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
 # install headers
@@ -1646,7 +1646,7 @@ install(
 # Workaround for MSVS10 to avoid the Dialog Hell
 # FIXME: This could be removed with future version of CMake.
 if(MSVC_VERSION EQUAL 1600)
-  set(CURL_SLN_FILENAME "${CMAKE_CURRENT_BINARY_DIR}/CURL.sln")
+  set(CURL_SLN_FILENAME "${THIRDPARTY_CONFIG_DIR}/curl/CURL.sln")
   if(EXISTS "${CURL_SLN_FILENAME}")
     file(APPEND "${CURL_SLN_FILENAME}" "\n# This should be regenerated!\n")
   endif()
@@ -1655,10 +1655,10 @@ endif()
 if(NOT TARGET curl_uninstall)
   configure_file(
       ${CMAKE_CURRENT_SOURCE_DIR}/CMake/cmake_uninstall.cmake.in
-      ${CMAKE_CURRENT_BINARY_DIR}/CMake/cmake_uninstall.cmake
+      ${THIRDPARTY_CONFIG_DIR}/curl/CMake/cmake_uninstall.cmake
       IMMEDIATE @ONLY)
 
   add_custom_target(curl_uninstall
       COMMAND ${CMAKE_COMMAND} -P
-      ${CMAKE_CURRENT_BINARY_DIR}/CMake/cmake_uninstall.cmake)
+      ${THIRDPARTY_CONFIG_DIR}/curl/CMake/cmake_uninstall.cmake)
 endif()

@@ -103,7 +103,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         }
 
         try {
-            MengineApplication application = this.getApplication();
+            MengineApplication application = this.getMengineApplication();
 
             Helpshift.install(application, MengineHelpshiftPlugin_PlatformId, MengineHelpshiftPlugin_Domain, config);
         } catch (UnsupportedOSVersionException e) {
@@ -253,7 +253,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     public void showFAQs() {
         this.logMessage("showFAQs");
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         Map<String, Object> config = new HashMap<>();
         Helpshift.showFAQs(activity, config);
@@ -262,7 +262,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     public void showConversation() {
         this.logMessage("showConversation");
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         Map<String, Object> config = new HashMap<>();
         Helpshift.showConversation(activity, config);
@@ -273,7 +273,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
             , sectionPublishId
         );
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         Map<String, Object> config = new HashMap<>();
         Helpshift.showFAQSection(activity, sectionPublishId, config);
@@ -284,7 +284,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
             , publishId
         );
 
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         Map<String, Object> config = new HashMap<>();
         Helpshift.showSingleFAQ(activity, publishId, config);

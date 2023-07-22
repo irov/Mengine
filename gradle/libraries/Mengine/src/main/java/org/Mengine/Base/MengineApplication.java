@@ -654,8 +654,9 @@ public class MengineApplication extends Application {
             try {
                 l.onAppPrepare(this);
             } catch (MenginePluginInvalidInitializeException e) {
-                this.invalidInitialize("invalid onAppCreate plugin: %s"
+                this.invalidInitialize("invalid plugin %s onAppCreate exception: %s"
                     , e.getPluginName()
+                    , e.getLocalizedMessage()
                 );
             }
         }
@@ -694,7 +695,7 @@ public class MengineApplication extends Application {
                     .addParameterLong("time", MengineUtils.getDurationTimestamp(app_init_plugin_start_timestamp))
                     .log();
             } catch (MenginePluginInvalidInitializeException e) {
-                this.invalidInitialize("invalid onAppCreate plugin: %s"
+                this.invalidInitialize("invalid plugin %s callback onAppCreate exception: %s"
                     , e.getPluginName()
                 );
             }

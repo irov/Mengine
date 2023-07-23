@@ -339,10 +339,10 @@ else()
       message(FATAL_ERROR "generate_chk: Missing OUTPUT argument")
     endif()
 
-    add_custom_command(OUTPUT "${_GC_OUTPUT}"
+    add_custom_command(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/${_GC_OUTPUT}"
                        COMMAND "${CMAKE_COMMAND}"
                                "-DINPUT=${_GC_INPUT}"
-                               "-DOUTPUT=${_GC_OUTPUT}"
+                               "-DOUTPUT=${THIRDPARTY_CONFIG_DIR}/libpng/${_GC_OUTPUT}"
                                -P "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/genchk.cmake"
                        DEPENDS "${_GC_INPUT}" ${_GC_DEPENDS}
                        WORKING_DIRECTORY "${THIRDPARTY_CONFIG_DIR}/libpng")
@@ -362,10 +362,10 @@ else()
       message(FATAL_ERROR "generate_out: Missing OUTPUT argument")
     endif()
 
-    add_custom_command(OUTPUT "${_GO_OUTPUT}"
+    add_custom_command(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/${_GO_OUTPUT}"
                        COMMAND "${CMAKE_COMMAND}"
                                "-DINPUT=${_GO_INPUT}"
-                               "-DOUTPUT=${_GO_OUTPUT}"
+                               "-DOUTPUT=${THIRDPARTY_CONFIG_DIR}/libpng/${_GO_OUTPUT}"
                                -P "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/genout.cmake"
                        DEPENDS "${_GO_INPUT}" ${_GO_DEPENDS}
                        WORKING_DIRECTORY "${THIRDPARTY_CONFIG_DIR}/libpng")
@@ -384,7 +384,7 @@ else()
 
     add_custom_command(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/${_GSO_OUTPUT}"
                        COMMAND "${CMAKE_COMMAND}"
-                               "-DOUTPUT=${_GSO_OUTPUT}"
+                               "-DOUTPUT=${THIRDPARTY_CONFIG_DIR}/libpng/${_GSO_OUTPUT}"
                                -P "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/gensrc.cmake"
                        DEPENDS ${_GSO_DEPENDS}
                        WORKING_DIRECTORY "${THIRDPARTY_CONFIG_DIR}/libpng")
@@ -404,7 +404,7 @@ else()
       message(FATAL_ERROR "generate_copy: Missing OUTPUT argument")
     endif()
 
-    add_custom_command(OUTPUT "${_GCO_OUTPUT}"
+    add_custom_command(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/${_GCO_OUTPUT}"
                        COMMAND "${CMAKE_COMMAND}"
                                -E remove "${_GCO_OUTPUT}"
                        COMMAND "${CMAKE_COMMAND}"
@@ -413,7 +413,7 @@ else()
   endfunction()
 
   # Generate scripts/pnglibconf.h
-  generate_source(OUTPUT "scripts/pnglibconf.c"
+  generate_source(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/pnglibconf.c"
                   DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.dfa"
                           "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/options.awk"
                           "${CMAKE_CURRENT_SOURCE_DIR}/pngconf.h")
@@ -421,7 +421,7 @@ else()
                     DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/pnglibconf.c")
 
   # Generate pnglibconf.c
-  generate_source(OUTPUT "pnglibconf.c"
+  generate_source(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.c"
                   DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.dfa"
                           "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/options.awk"
                           "${CMAKE_CURRENT_SOURCE_DIR}/pngconf.h")
@@ -443,7 +443,7 @@ else()
                     DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.out")
 
   # Generate pnglibconf.h
-  generate_source(OUTPUT "pnglibconf.h"
+  generate_source(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h"
                   DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.out" pnglibconf_out
                           ${PNGLIBCONF_H_EXTRA_DEPENDS})
   add_custom_target(pnglibconf_h
@@ -464,7 +464,7 @@ else()
                     DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/prefix.out")
 
   # Generate pngprefix.h
-  generate_source(OUTPUT "pngprefix.h"
+  generate_source(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/pngprefix.h"
                   DEPENDS ${PNGPREFIX_H_EXTRA_DEPENDS})
   add_custom_target(pngprefix_h
                     DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pngprefix.h")
@@ -514,7 +514,7 @@ else()
 
   add_custom_target(png_genprebuilt
                     COMMAND "${CMAKE_COMMAND}"
-                            "-DOUTPUT=scripts/pnglibconf.h.prebuilt"
+                            "-DOUTPUT=${THIRDPARTY_CONFIG_DIR}/libpng/scripts/pnglibconf.h.prebuilt"
                             -P "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/gensrc.cmake"
                     WORKING_DIRECTORY "${THIRDPARTY_CONFIG_DIR}/libpng")
 

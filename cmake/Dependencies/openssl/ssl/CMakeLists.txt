@@ -23,11 +23,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-if(NOT THIRDPARTY_CONFIG_DIR)
-  SET(THIRDPARTY_CONFIG_DIR "${CMAKE_SOURCE_DIR}/../configuration/Ninja/android_ogl/${CMAKE_BUILD_TYPE}/${ANDROID_ABI}")
-  MESSAGE("SSL| THIRDPARTY_CONFIG_DIR: ${THIRDPARTY_CONFIG_DIR}")
-endif()
-
 if( BUILD_SHARED_LIBS )
   add_definitions( -DOPENSSL_BUILD_SHLIBSSL )
 endif()
@@ -50,7 +45,7 @@ include_directories( BEFORE SYSTEM
 
 add_library( ssl ${LIBSRC} )
 
-target_include_directories( ssl PUBLIC ${THIRDPARTY_CONFIG_DIR}/openssl/include )
+target_include_directories( ssl PUBLIC ${PROJECT_BINARY_DIR}/include )
 
 target_link_libraries( ssl crypto )
 

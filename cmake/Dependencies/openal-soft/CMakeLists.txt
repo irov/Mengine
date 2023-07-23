@@ -1,8 +1,3 @@
-if(NOT THIRDPARTY_CONFIG_DIR)
-  SET(THIRDPARTY_CONFIG_DIR "${CMAKE_SOURCE_DIR}/../configuration/Ninja/android_ogl/${CMAKE_BUILD_TYPE}/${ANDROID_ABI}")
-  MESSAGE("OPENAL| THIRDPARTY_CONFIG_DIR: ${THIRDPARTY_CONFIG_DIR}")
-endif()
-
 # CMake build file list for OpenAL
 
 cmake_minimum_required(VERSION 3.0.2)
@@ -1219,25 +1214,25 @@ if(ALSOFT_UPDATE_BUILD_VERSION AND GIT_FOUND AND EXISTS "${OpenAL_SOURCE_DIR}/.g
     endif()
 
     # Get the current working branch and its latest abbreviated commit hash
-    add_custom_command(OUTPUT "${THIRDPARTY_CONFIG_DIR}/openal-soft/version_witness.txt"
-        BYPRODUCTS "${THIRDPARTY_CONFIG_DIR}/openal-soft/version.h"
+    add_custom_command(OUTPUT "${OpenAL_BINARY_DIR}/version_witness.txt"
+        BYPRODUCTS "${OpenAL_BINARY_DIR}/version.h"
         COMMAND ${CMAKE_COMMAND} -D GIT_EXECUTABLE=${GIT_EXECUTABLE} -D LIB_VERSION=${LIB_VERSION}
             -D LIB_VERSION_NUM=${LIB_VERSION_NUM} -D SRC=${OpenAL_SOURCE_DIR}/version.h.in
-            -D DST=${THIRDPARTY_CONFIG_DIR}/openal-soft/version.h -P ${OpenAL_SOURCE_DIR}/version.cmake
-        COMMAND ${CMAKE_COMMAND} -E touch "${THIRDPARTY_CONFIG_DIR}/openal-soft/version_witness.txt"
+            -D DST=${OpenAL_BINARY_DIR}/version.h -P ${OpenAL_SOURCE_DIR}/version.cmake
+        COMMAND ${CMAKE_COMMAND} -E touch "${OpenAL_BINARY_DIR}/version_witness.txt"
         WORKING_DIRECTORY "${OpenAL_SOURCE_DIR}"
         MAIN_DEPENDENCY "${OpenAL_SOURCE_DIR}/version.h.in"
         DEPENDS "${GIT_DIR}/index" "${OpenAL_SOURCE_DIR}/version.cmake"
         VERBATIM
     )
 
-    add_custom_target(build_version DEPENDS "${THIRDPARTY_CONFIG_DIR}/openal-soft/version_witness.txt")
+    add_custom_target(build_version DEPENDS "${OpenAL_BINARY_DIR}/version_witness.txt")
 else()
     set(GIT_BRANCH "UNKNOWN")
     set(GIT_COMMIT_HASH "unknown")
     configure_file(
         "${OpenAL_SOURCE_DIR}/version.h.in"
-        "${THIRDPARTY_CONFIG_DIR}/openal-soft/version.h")
+        "${OpenAL_BINARY_DIR}/version.h")
 endif()
 
 
@@ -1245,7 +1240,7 @@ option(ALSOFT_EMBED_HRTF_DATA "Embed the HRTF data files (increases library foot
 if(ALSOFT_EMBED_HRTF_DATA)
     macro(make_hrtf_header FILENAME VARNAME)
         set(infile  "${OpenAL_SOURCE_DIR}/hrtf/${FILENAME}")
-        set(outfile  "${THIRDPARTY_CONFIG_DIR}/openal-soft/${VARNAME}.txt")
+        set(outfile  "${OpenAL_BINARY_DIR}/${VARNAME}.txt")
 
         add_custom_command(OUTPUT "${outfile}"
             COMMAND ${CMAKE_COMMAND} -D "INPUT_FILE=${infile}" -D "OUTPUT_FILE=${outfile}"
@@ -1311,15 +1306,15 @@ endif()
 # End configuration
 configure_file(
     "${OpenAL_SOURCE_DIR}/config.h.in"
-    "${THIRDPARTY_CONFIG_DIR}/openal-soft/config.h")
+    "${OpenAL_BINARY_DIR}/config.h")
 configure_file(
     "${OpenAL_SOURCE_DIR}/openal.pc.in"
-    "${THIRDPARTY_CONFIG_DIR}/openal-soft/openal.pc"
+    "${OpenAL_BINARY_DIR}/openal.pc"
     @ONLY)
 
 
 add_library(common STATIC EXCLUDE_FROM_ALL ${COMMON_OBJS})
-target_include_directories(common PRIVATE ${THIRDPARTY_CONFIG_DIR}/openal-soft ${OpenAL_SOURCE_DIR}/include)
+target_include_directories(common PRIVATE ${OpenAL_BINARY_DIR} ${OpenAL_SOURCE_DIR}/include)
 target_compile_definitions(common PRIVATE ${CPP_DEFS})
 target_compile_options(common PRIVATE ${C_FLAGS})
 set_target_properties(common PROPERTIES ${DEFAULT_TARGET_PROPS} POSITION_INDEPENDENT_CODE TRUE)
@@ -1364,7 +1359,7 @@ else()
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
           PRIVATE
             ${OpenAL_SOURCE_DIR}/common
-            ${THIRDPARTY_CONFIG_DIR}/openal-soft
+            ${OpenAL_BINARY_DIR}
         )
         set_target_properties(OpenAL PROPERTIES ${DEFAULT_TARGET_PROPS} PREFIX ""
             OUTPUT_NAME ${LIBNAME})
@@ -1441,7 +1436,7 @@ target_include_directories(${IMPL_TARGET}
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/AL>
   PRIVATE
     ${INC_PATHS}
-    ${THIRDPARTY_CONFIG_DIR}/openal-soft
+    ${OpenAL_BINARY_DIR}
     ${OpenAL_SOURCE_DIR}
     ${OpenAL_SOURCE_DIR}/common
 )
@@ -1536,9 +1531,9 @@ if(ALSOFT_INSTALL)
         FILE OpenALTargets.cmake)
     install(DIRECTORY include/AL
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-    install(FILES "${THIRDPARTY_CONFIG_DIR}/openal-soft/openal.pc"
+    install(FILES "${OpenAL_BINARY_DIR}/openal.pc"
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
-    install(FILES "${THIRDPARTY_CONFIG_DIR}/openal-soft/OpenALConfig.cmake"
+    install(FILES "${OpenAL_BINARY_DIR}/OpenALConfig.cmake"
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/OpenAL")
     if(TARGET soft_oal)
         install(TARGETS soft_oal
@@ -1587,7 +1582,7 @@ if(ALSOFT_UTILS)
         add_executable(uhjdecoder utils/uhjdecoder.cpp)
         target_compile_definitions(uhjdecoder PRIVATE ${CPP_DEFS})
         target_include_directories(uhjdecoder
-            PRIVATE ${THIRDPARTY_CONFIG_DIR}/openal-soft ${OpenAL_SOURCE_DIR}/common)
+            PRIVATE ${OpenAL_BINARY_DIR} ${OpenAL_SOURCE_DIR}/common)
         target_compile_options(uhjdecoder PRIVATE ${C_FLAGS})
         target_link_libraries(uhjdecoder PUBLIC common
             PRIVATE ${LINKER_FLAGS} SndFile::SndFile ${UNICODE_FLAG})
@@ -1596,7 +1591,7 @@ if(ALSOFT_UTILS)
         add_executable(uhjencoder utils/uhjencoder.cpp)
         target_compile_definitions(uhjencoder PRIVATE ${CPP_DEFS})
         target_include_directories(uhjencoder
-            PRIVATE ${THIRDPARTY_CONFIG_DIR}/openal-soft ${OpenAL_SOURCE_DIR}/common)
+            PRIVATE ${OpenAL_BINARY_DIR} ${OpenAL_SOURCE_DIR}/common)
         target_compile_options(uhjencoder PRIVATE ${C_FLAGS})
         target_link_libraries(uhjencoder PUBLIC common
             PRIVATE ${LINKER_FLAGS} SndFile::SndFile ${UNICODE_FLAG})
@@ -1627,7 +1622,7 @@ if(ALSOFT_UTILS)
         add_executable(makemhr ${MAKEMHR_SRCS})
         target_compile_definitions(makemhr PRIVATE ${CPP_DEFS})
         target_include_directories(makemhr
-            PRIVATE ${THIRDPARTY_CONFIG_DIR}/openal-soft ${OpenAL_SOURCE_DIR}/utils)
+            PRIVATE ${OpenAL_BINARY_DIR} ${OpenAL_SOURCE_DIR}/utils)
         target_compile_options(makemhr PRIVATE ${C_FLAGS})
         target_link_libraries(makemhr PRIVATE ${LINKER_FLAGS} sofa-support ${UNICODE_FLAG})
         set_target_properties(makemhr PROPERTIES ${DEFAULT_TARGET_PROPS})

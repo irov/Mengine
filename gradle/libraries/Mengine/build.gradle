@@ -12,7 +12,7 @@ def MENGINE_APP_SECURE_VALUE = Utils.getStringProperty(project, "MENGINE_APP_SEC
 android {
     externalNativeBuild {
         cmake {
-            path "../../../cmake/Android_SDL/CMakeLists.txt"
+            path "../../../cmake/Android_SDL/Mengine/CMakeLists.txt"
         }
     }
 

@@ -17,6 +17,7 @@ src
     OpenALSoundErrorHelper.h
 )
 
+INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/openal-soft)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/openal-soft/include)
 
 add_definitions(-DAL_LIBTYPE_STATIC)
@@ -37,11 +38,7 @@ if(MENGINE_TOOLCHAIN_MINGW)
 endif()
 
 IF(MENGINE_TARGET_ANDROID)
-    IF(UNIX)
-        string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_CORRECT)
-    ELSE()
-        SET(CMAKE_BUILD_TYPE_CORRECT ${CMAKE_BUILD_TYPE})
-    ENDIF()
+    string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_TOLOWER)
 
-    ADD_LIBRARY_IMPORTED(OPENAL_IMPORTED "${MENGINE_REPOSITORY}/gradle/libraries/OpenAL32/build/intermediates/library_jni/${CMAKE_BUILD_TYPE_CORRECT}/jni/${ANDROID_ABI}/libopenal.so")
+    ADD_LIBRARY_IMPORTED(OPENAL_IMPORTED "${MENGINE_REPOSITORY}/gradle/app/build/intermediates/merged_native_libs/${CMAKE_BUILD_TYPE_TOLOWER}/out/lib/${ANDROID_ABI}/libopenal.so")
 ENDIF()

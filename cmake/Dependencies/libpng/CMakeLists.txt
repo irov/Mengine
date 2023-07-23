@@ -232,7 +232,7 @@ endif(PNG_HARDWARE_OPTIMIZATIONS)
 option(ld-version-script "Enable linker version script" ON)
 if(ld-version-script AND NOT ANDROID AND NOT APPLE)
   # Check if LD supports linker scripts.
-  file(WRITE "${THIRDPARTY_CONFIG_DIR}/libpng/conftest.map" "
+  file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/conftest.map" "
 VERS_1 { global: sym1; local: *; };
 VERS_2 { global: sym2; main; } VERS_1;
 ")
@@ -242,7 +242,7 @@ VERS_2 { global: sym2; main; } VERS_1;
     # Solaris, because of an incompatibility with the Solaris link editor.
     list(APPEND CMAKE_REQUIRED_FLAGS ${CMAKE_SHARED_LIBRARY_C_FLAGS})
   endif()
-  list(APPEND CMAKE_REQUIRED_FLAGS "-Wl,--version-script='${THIRDPARTY_CONFIG_DIR}/libpng/conftest.map'")
+  list(APPEND CMAKE_REQUIRED_FLAGS "-Wl,--version-script='${CMAKE_CURRENT_BINARY_DIR}/conftest.map'")
   check_c_source_compiles("
 void sym1(void) {}
 void sym2(void) {}
@@ -255,7 +255,7 @@ int main(void) { return 0; }
       # checks on Solaris.
       list(APPEND CMAKE_REQUIRED_FLAGS ${CMAKE_SHARED_LIBRARY_C_FLAGS})
     endif()
-    list(APPEND CMAKE_REQUIRED_FLAGS "-Wl,-M -Wl,${THIRDPARTY_CONFIG_DIR}/libpng/conftest.map")
+    list(APPEND CMAKE_REQUIRED_FLAGS "-Wl,-M -Wl,${CMAKE_CURRENT_BINARY_DIR}/conftest.map")
     check_c_source_compiles("
 void sym1(void) {}
 void sym2(void) {}
@@ -263,7 +263,7 @@ int main(void) { return 0; }
 " HAVE_SOLARIS_LD_VERSION_SCRIPT)
   endif()
   set(CMAKE_REQUIRED_FLAGS ${_SAVED_CMAKE_REQUIRED_FLAGS})
-  file(REMOVE "${THIRDPARTY_CONFIG_DIR}/libpng/conftest.map")
+  file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/conftest.map")
 endif()
 
 # Find symbol prefix.  Likely obsolete and unnecessary with recent
@@ -303,25 +303,25 @@ endif()
 
 find_program(AWK NAMES gawk awk)
 
-include_directories(${THIRDPARTY_CONFIG_DIR}/libpng)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 if(NOT AWK OR ANDROID OR IOS)
   # No awk available to generate sources; use pre-built pnglibconf.h
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.h.prebuilt
-                 ${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h)
+                 ${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.h)
   add_custom_target(png_genfiles)
 else()
   # Copy the awk scripts, converting their line endings to Unix (LF)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/checksym.awk
-                 ${THIRDPARTY_CONFIG_DIR}/libpng/scripts/checksym.awk
+                 ${CMAKE_CURRENT_BINARY_DIR}/scripts/checksym.awk
                  @ONLY
                  NEWLINE_STYLE LF)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/options.awk
-                 ${THIRDPARTY_CONFIG_DIR}/libpng/scripts/options.awk
+                 ${CMAKE_CURRENT_BINARY_DIR}/scripts/options.awk
                  @ONLY
                  NEWLINE_STYLE LF)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/dfn.awk
-                 ${THIRDPARTY_CONFIG_DIR}/libpng/scripts/dfn.awk
+                 ${CMAKE_CURRENT_BINARY_DIR}/scripts/dfn.awk
                  @ONLY
                  NEWLINE_STYLE LF)
 
@@ -339,13 +339,13 @@ else()
       message(FATAL_ERROR "generate_chk: Missing OUTPUT argument")
     endif()
 
-    add_custom_command(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/${_GC_OUTPUT}"
+    add_custom_command(OUTPUT "${_GC_OUTPUT}"
                        COMMAND "${CMAKE_COMMAND}"
                                "-DINPUT=${_GC_INPUT}"
-                               "-DOUTPUT=${THIRDPARTY_CONFIG_DIR}/libpng/${_GC_OUTPUT}"
-                               -P "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/genchk.cmake"
+                               "-DOUTPUT=${_GC_OUTPUT}"
+                               -P "${CMAKE_CURRENT_BINARY_DIR}/scripts/genchk.cmake"
                        DEPENDS "${_GC_INPUT}" ${_GC_DEPENDS}
-                       WORKING_DIRECTORY "${THIRDPARTY_CONFIG_DIR}/libpng")
+                       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
   endfunction()
 
   # Generate .out from .c with awk
@@ -362,13 +362,13 @@ else()
       message(FATAL_ERROR "generate_out: Missing OUTPUT argument")
     endif()
 
-    add_custom_command(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/${_GO_OUTPUT}"
+    add_custom_command(OUTPUT "${_GO_OUTPUT}"
                        COMMAND "${CMAKE_COMMAND}"
                                "-DINPUT=${_GO_INPUT}"
-                               "-DOUTPUT=${THIRDPARTY_CONFIG_DIR}/libpng/${_GO_OUTPUT}"
-                               -P "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/genout.cmake"
+                               "-DOUTPUT=${_GO_OUTPUT}"
+                               -P "${CMAKE_CURRENT_BINARY_DIR}/scripts/genout.cmake"
                        DEPENDS "${_GO_INPUT}" ${_GO_DEPENDS}
-                       WORKING_DIRECTORY "${THIRDPARTY_CONFIG_DIR}/libpng")
+                       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
   endfunction()
 
   # Generate specific source file with awk
@@ -382,12 +382,12 @@ else()
       message(FATAL_ERROR "generate_source: Missing OUTPUT argument")
     endif()
 
-    add_custom_command(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/${_GSO_OUTPUT}"
+    add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${_GSO_OUTPUT}"
                        COMMAND "${CMAKE_COMMAND}"
-                               "-DOUTPUT=${THIRDPARTY_CONFIG_DIR}/libpng/${_GSO_OUTPUT}"
-                               -P "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/gensrc.cmake"
+                               "-DOUTPUT=${_GSO_OUTPUT}"
+                               -P "${CMAKE_CURRENT_BINARY_DIR}/scripts/gensrc.cmake"
                        DEPENDS ${_GSO_DEPENDS}
-                       WORKING_DIRECTORY "${THIRDPARTY_CONFIG_DIR}/libpng")
+                       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
   endfunction()
 
   # Copy file
@@ -404,7 +404,7 @@ else()
       message(FATAL_ERROR "generate_copy: Missing OUTPUT argument")
     endif()
 
-    add_custom_command(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/${_GCO_OUTPUT}"
+    add_custom_command(OUTPUT "${_GCO_OUTPUT}"
                        COMMAND "${CMAKE_COMMAND}"
                                -E remove "${_GCO_OUTPUT}"
                        COMMAND "${CMAKE_COMMAND}"
@@ -413,133 +413,133 @@ else()
   endfunction()
 
   # Generate scripts/pnglibconf.h
-  generate_source(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/pnglibconf.c"
+  generate_source(OUTPUT "scripts/pnglibconf.c"
                   DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.dfa"
-                          "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/options.awk"
+                          "${CMAKE_CURRENT_BINARY_DIR}/scripts/options.awk"
                           "${CMAKE_CURRENT_SOURCE_DIR}/pngconf.h")
   add_custom_target(png_scripts_pnglibconf_c
-                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/pnglibconf.c")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/scripts/pnglibconf.c")
 
   # Generate pnglibconf.c
-  generate_source(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.c"
+  generate_source(OUTPUT "pnglibconf.c"
                   DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.dfa"
-                          "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/options.awk"
+                          "${CMAKE_CURRENT_BINARY_DIR}/scripts/options.awk"
                           "${CMAKE_CURRENT_SOURCE_DIR}/pngconf.h")
   add_custom_target(pnglibconf_c
-                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.c")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.c")
 
   if(PNG_PREFIX)
     set(PNGLIBCONF_H_EXTRA_DEPENDS
-        "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/prefix.out"
+        "${CMAKE_CURRENT_BINARY_DIR}/scripts/prefix.out"
         "${CMAKE_CURRENT_SOURCE_DIR}/scripts/macro.lst")
     set(PNGPREFIX_H_EXTRA_DEPENDS
-        "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/intprefix.out")
+        "${CMAKE_CURRENT_BINARY_DIR}/scripts/intprefix.out")
   endif()
 
-  generate_out(INPUT "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.c"
-               OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.out"
+  generate_out(INPUT "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.c"
+               OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.out"
                DEPENDS pnglibconf_c)
   add_custom_target(pnglibconf_out
-                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.out")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.out")
 
   # Generate pnglibconf.h
-  generate_source(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h"
-                  DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.out" pnglibconf_out
+  generate_source(OUTPUT "pnglibconf.h"
+                  DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.out" pnglibconf_out
                           ${PNGLIBCONF_H_EXTRA_DEPENDS})
   add_custom_target(pnglibconf_h
-                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.h")
 
   generate_out(INPUT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/intprefix.c"
-               OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/intprefix.out"
-               DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h" pnglibconf_h)
+               OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/scripts/intprefix.out"
+               DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.h" pnglibconf_h)
   add_custom_target(png_scripts_intprefix_out
-                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/intprefix.out")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/scripts/intprefix.out")
 
   generate_out(INPUT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/prefix.c"
-               OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/prefix.out"
+               OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/scripts/prefix.out"
                DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/png.h"
                        "${CMAKE_CURRENT_SOURCE_DIR}/pngconf.h"
-                       "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.out" pnglibconf_out)
+                       "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.out" pnglibconf_out)
   add_custom_target(png_scripts_prefix_out
-                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/prefix.out")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/scripts/prefix.out")
 
   # Generate pngprefix.h
-  generate_source(OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/pngprefix.h"
+  generate_source(OUTPUT "pngprefix.h"
                   DEPENDS ${PNGPREFIX_H_EXTRA_DEPENDS})
   add_custom_target(pngprefix_h
-                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pngprefix.h")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/pngprefix.h")
 
   generate_out(INPUT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/sym.c"
-               OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/sym.out"
-               DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h" pnglibconf_h)
+               OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/scripts/sym.out"
+               DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.h" pnglibconf_h)
   add_custom_target(png_scripts_sym_out
-                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/sym.out")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/scripts/sym.out")
 
   generate_out(INPUT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/symbols.c"
-               OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/symbols.out"
+               OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/scripts/symbols.out"
                DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/png.h"
                        "${CMAKE_CURRENT_SOURCE_DIR}/pngconf.h"
                        "${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.h.prebuilt")
   add_custom_target(png_scripts_symbols_out
-                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/symbols.out")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/scripts/symbols.out")
 
   generate_out(INPUT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/vers.c"
-               OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/vers.out"
+               OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/scripts/vers.out"
                DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/png.h"
                        "${CMAKE_CURRENT_SOURCE_DIR}/pngconf.h"
-                       "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h" pnglibconf_h)
+                       "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.h" pnglibconf_h)
   add_custom_target(png_scripts_vers_out
-                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/vers.out")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/scripts/vers.out")
 
-  generate_chk(INPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/symbols.out"
-               OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/symbols.chk"
+  generate_chk(INPUT "${CMAKE_CURRENT_BINARY_DIR}/scripts/symbols.out"
+               OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/scripts/symbols.chk"
                DEPENDS png_scripts_symbols_out
-                       "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/checksym.awk"
+                       "${CMAKE_CURRENT_BINARY_DIR}/scripts/checksym.awk"
                        "${CMAKE_CURRENT_SOURCE_DIR}/scripts/symbols.def")
 
   add_custom_target(png_scripts_symbols_chk
-                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/symbols.chk")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/scripts/symbols.chk")
 
-  generate_copy(INPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/sym.out"
-                OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/libpng.sym"
+  generate_copy(INPUT "${CMAKE_CURRENT_BINARY_DIR}/scripts/sym.out"
+                OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/libpng.sym"
                 DEPENDS png_scripts_sym_out)
-  generate_copy(INPUT "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/vers.out"
-                OUTPUT "${THIRDPARTY_CONFIG_DIR}/libpng/libpng.vers"
+  generate_copy(INPUT "${CMAKE_CURRENT_BINARY_DIR}/scripts/vers.out"
+                OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/libpng.vers"
                 DEPENDS png_scripts_vers_out)
 
   add_custom_target(png_genvers
-                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/libpng.vers")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/libpng.vers")
   add_custom_target(png_gensym
-                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/libpng.sym")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/libpng.sym")
 
   add_custom_target(png_genprebuilt
                     COMMAND "${CMAKE_COMMAND}"
-                            "-DOUTPUT=${THIRDPARTY_CONFIG_DIR}/libpng/scripts/pnglibconf.h.prebuilt"
-                            -P "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/gensrc.cmake"
-                    WORKING_DIRECTORY "${THIRDPARTY_CONFIG_DIR}/libpng")
+                            "-DOUTPUT=scripts/pnglibconf.h.prebuilt"
+                            -P "${CMAKE_CURRENT_BINARY_DIR}/scripts/gensrc.cmake"
+                    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 
   # A single target handles generation of all generated files.
   add_custom_target(png_genfiles
-                    DEPENDS "${THIRDPARTY_CONFIG_DIR}/libpng/libpng.sym" png_gensym
-                            "${THIRDPARTY_CONFIG_DIR}/libpng/libpng.vers" png_genvers
-                            "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.c" pnglibconf_c
-                            "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h" pnglibconf_h
-                            "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.out" pnglibconf_out
-                            "${THIRDPARTY_CONFIG_DIR}/libpng/pngprefix.h" pngprefix_h
-                            "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/intprefix.out" png_scripts_intprefix_out
-                            "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/pnglibconf.c" png_scripts_pnglibconf_c
-                            "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/prefix.out" png_scripts_prefix_out
-                            "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/sym.out" png_scripts_sym_out
-                            "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/symbols.chk" png_scripts_symbols_chk
-                            "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/symbols.out" png_scripts_symbols_out
-                            "${THIRDPARTY_CONFIG_DIR}/libpng/scripts/vers.out" png_scripts_vers_out)
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/libpng.sym" png_gensym
+                            "${CMAKE_CURRENT_BINARY_DIR}/libpng.vers" png_genvers
+                            "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.c" pnglibconf_c
+                            "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.h" pnglibconf_h
+                            "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.out" pnglibconf_out
+                            "${CMAKE_CURRENT_BINARY_DIR}/pngprefix.h" pngprefix_h
+                            "${CMAKE_CURRENT_BINARY_DIR}/scripts/intprefix.out" png_scripts_intprefix_out
+                            "${CMAKE_CURRENT_BINARY_DIR}/scripts/pnglibconf.c" png_scripts_pnglibconf_c
+                            "${CMAKE_CURRENT_BINARY_DIR}/scripts/prefix.out" png_scripts_prefix_out
+                            "${CMAKE_CURRENT_BINARY_DIR}/scripts/sym.out" png_scripts_sym_out
+                            "${CMAKE_CURRENT_BINARY_DIR}/scripts/symbols.chk" png_scripts_symbols_chk
+                            "${CMAKE_CURRENT_BINARY_DIR}/scripts/symbols.out" png_scripts_symbols_out
+                            "${CMAKE_CURRENT_BINARY_DIR}/scripts/vers.out" png_scripts_vers_out)
 endif(NOT AWK OR ANDROID OR IOS)
 
 # List the source code files.
 set(libpng_public_hdrs
     png.h
     pngconf.h
-    "${THIRDPARTY_CONFIG_DIR}/libpng/pnglibconf.h"
+    "${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.h"
 )
 set(libpng_private_hdrs
     pngpriv.h
@@ -548,7 +548,7 @@ set(libpng_private_hdrs
     pngstruct.h
 )
 if(AWK AND NOT ANDROID AND NOT IOS)
-  list(APPEND libpng_private_hdrs "${THIRDPARTY_CONFIG_DIR}/libpng/pngprefix.h")
+  list(APPEND libpng_private_hdrs "${CMAKE_CURRENT_BINARY_DIR}/pngprefix.h")
 endif()
 set(libpng_sources
     ${libpng_public_hdrs}
@@ -639,10 +639,10 @@ if(PNG_SHARED)
   if(UNIX AND AWK)
     if(HAVE_LD_VERSION_SCRIPT)
       set_target_properties(png_shared PROPERTIES
-                            LINK_FLAGS "-Wl,--version-script='${THIRDPARTY_CONFIG_DIR}/libpng/libpng.vers'")
+                            LINK_FLAGS "-Wl,--version-script='${CMAKE_CURRENT_BINARY_DIR}/libpng.vers'")
     elseif(HAVE_SOLARIS_LD_VERSION_SCRIPT)
       set_target_properties(png_shared PROPERTIES
-                            LINK_FLAGS "-Wl,-M -Wl,'${THIRDPARTY_CONFIG_DIR}/libpng/libpng.vers'")
+                            LINK_FLAGS "-Wl,-M -Wl,'${CMAKE_CURRENT_BINARY_DIR}/libpng.vers'")
     endif()
   endif()
   if(WIN32)
@@ -656,7 +656,8 @@ if(PNG_STATIC)
   add_dependencies(png_static png_genfiles)
   list(APPEND PNG_LIBRARY_TARGETS png_static)
   set_target_properties(png_static PROPERTIES
-                        OUTPUT_NAME "${PNG_STATIC_OUTPUT_NAME}")
+                        OUTPUT_NAME "${PNG_STATIC_OUTPUT_NAME}"
+                        DEBUG_POSTFIX "${PNG_DEBUG_POSTFIX}")
   target_link_libraries(png_static ${ZLIB_LIBRARIES} ${M_LIBRARY})
 endif()
 
@@ -698,13 +699,13 @@ function(png_add_test)
   set(TEST_FILES "${_PAT_FILES}")
 
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/scripts/test.cmake.in"
-                 "${THIRDPARTY_CONFIG_DIR}/libpng/tests/${_PAT_NAME}.cmake"
+                 "${CMAKE_CURRENT_BINARY_DIR}/tests/${_PAT_NAME}.cmake"
                  @ONLY)
   add_test(NAME "${_PAT_NAME}"
            COMMAND "${CMAKE_COMMAND}"
                    "-DLIBPNG=$<TARGET_FILE:png_shared>"
                    "-DTEST_COMMAND=$<TARGET_FILE:${_PAT_COMMAND}>"
-                   -P "${THIRDPARTY_CONFIG_DIR}/libpng/tests/${_PAT_NAME}.cmake")
+                   -P "${CMAKE_CURRENT_BINARY_DIR}/tests/${_PAT_NAME}.cmake")
 endfunction()
 
 if(PNG_TESTS AND PNG_SHARED)
@@ -900,12 +901,12 @@ function(create_symlink DEST_FILE)
       execute_process(COMMAND "${CMAKE_COMMAND}"
                               -E copy_if_different
                               ${_SYM_FILE} ${DEST_FILE}
-                      WORKING_DIRECTORY "${THIRDPARTY_CONFIG_DIR}/libpng")
+                      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
     else()
       execute_process(COMMAND "${CMAKE_COMMAND}"
                               -E create_symlink
                               ${_SYM_FILE} ${DEST_FILE}
-                      WORKING_DIRECTORY "${THIRDPARTY_CONFIG_DIR}/libpng")
+                      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
     endif()
   endif()
 
@@ -933,13 +934,13 @@ endfunction()
 
 # Create source generation scripts.
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/genchk.cmake.in
-               ${THIRDPARTY_CONFIG_DIR}/libpng/scripts/genchk.cmake
+               ${CMAKE_CURRENT_BINARY_DIR}/scripts/genchk.cmake
                @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/genout.cmake.in
-               ${THIRDPARTY_CONFIG_DIR}/libpng/scripts/genout.cmake
+               ${CMAKE_CURRENT_BINARY_DIR}/scripts/genout.cmake
                @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/gensrc.cmake.in
-               ${THIRDPARTY_CONFIG_DIR}/libpng/scripts/gensrc.cmake
+               ${CMAKE_CURRENT_BINARY_DIR}/scripts/gensrc.cmake
                @ONLY)
 
 # libpng is a library so default to 'lib'
@@ -958,11 +959,11 @@ if(NOT WIN32 OR CYGWIN OR MINGW)
   set(includedir  ${CMAKE_INSTALL_FULL_INCLUDEDIR})
   set(LIBS        "-lz -lm")
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libpng.pc.in
-                 ${THIRDPARTY_CONFIG_DIR}/libpng/libpng${PNGLIB_ABI_VERSION}.pc
+                 ${CMAKE_CURRENT_BINARY_DIR}/libpng${PNGLIB_ABI_VERSION}.pc
                  @ONLY)
   create_symlink(libpng.pc FILE libpng${PNGLIB_ABI_VERSION}.pc)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libpng-config.in
-                 ${THIRDPARTY_CONFIG_DIR}/libpng/libpng${PNGLIB_ABI_VERSION}-config
+                 ${CMAKE_CURRENT_BINARY_DIR}/libpng${PNGLIB_ABI_VERSION}-config
                  @ONLY)
   create_symlink(libpng-config FILE libpng${PNGLIB_ABI_VERSION}-config)
 endif()
@@ -1008,9 +1009,9 @@ if(NOT SKIP_INSTALL_HEADERS AND NOT SKIP_INSTALL_ALL)
 endif()
 if(NOT SKIP_INSTALL_EXECUTABLES AND NOT SKIP_INSTALL_ALL)
   if(NOT WIN32 OR CYGWIN OR MINGW)
-    install(PROGRAMS ${THIRDPARTY_CONFIG_DIR}/libpng/libpng-config
+    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/libpng-config
             DESTINATION bin)
-    install(PROGRAMS ${THIRDPARTY_CONFIG_DIR}/libpng/libpng${PNGLIB_ABI_VERSION}-config
+    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/libpng${PNGLIB_ABI_VERSION}-config
             DESTINATION bin)
   endif()
 endif()
@@ -1028,13 +1029,13 @@ if(NOT SKIP_INSTALL_FILES AND NOT SKIP_INSTALL_ALL)
           DESTINATION ${CMAKE_INSTALL_MANDIR}/man5)
   # Install the pkg-config files.
   if(NOT CMAKE_HOST_WIN32 OR CYGWIN OR MINGW)
-    install(FILES ${THIRDPARTY_CONFIG_DIR}/libpng/libpng.pc
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libpng.pc
             DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
-    install(PROGRAMS ${THIRDPARTY_CONFIG_DIR}/libpng/libpng-config
+    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/libpng-config
             DESTINATION ${CMAKE_INSTALL_BINDIR})
-    install(FILES ${THIRDPARTY_CONFIG_DIR}/libpng/libpng${PNGLIB_ABI_VERSION}.pc
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libpng${PNGLIB_ABI_VERSION}.pc
             DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
-    install(PROGRAMS ${THIRDPARTY_CONFIG_DIR}/libpng/libpng${PNGLIB_ABI_VERSION}-config
+    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/libpng${PNGLIB_ABI_VERSION}-config
             DESTINATION ${CMAKE_INSTALL_BINDIR})
   endif()
 endif()

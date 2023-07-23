@@ -24,12 +24,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-if(NOT THIRDPARTY_CONFIG_DIR)
-  SET(THIRDPARTY_CONFIG_DIR "${CMAKE_SOURCE_DIR}/../configuration/Ninja/android_ogl/${CMAKE_BUILD_TYPE}/${ANDROID_ABI}")
-  MESSAGE("OpenSSL| THIRDPARTY_CONFIG_DIR: ${THIRDPARTY_CONFIG_DIR}")
-endif()
-
-
 set( CMAKE_LEGACY_CYGWIN_WIN32 0 )
 project( openssl )
 cmake_minimum_required( VERSION 3.1.0 )
@@ -163,9 +157,9 @@ if( MSVC OR ( WIN32 AND MINGW AND NOT CYGWIN ) )
 endif()
 
 # Begin configure public headers
-file( COPY ${PROJECT_SOURCE_DIR}/include/internal DESTINATION ${THIRDPARTY_CONFIG_DIR}/openssl/include )
-file( COPY ${PROJECT_SOURCE_DIR}/include/crypto DESTINATION ${THIRDPARTY_CONFIG_DIR}/openssl/include )
-file( COPY ${PROJECT_SOURCE_DIR}/include/openssl DESTINATION ${THIRDPARTY_CONFIG_DIR}/openssl/include )
+file( COPY ${PROJECT_SOURCE_DIR}/include/internal DESTINATION include )
+file( COPY ${PROJECT_SOURCE_DIR}/include/crypto DESTINATION include )
+file( COPY ${PROJECT_SOURCE_DIR}/include/openssl DESTINATION include )
 
 file( READ ${PROJECT_SOURCE_DIR}/opensslconf.h.cmake CONF )
 set( CONF "
@@ -177,7 +171,7 @@ ${CONF}" )
 file( WRITE ${PROJECT_BINARY_DIR}/opensslconf.h.cmake "${CONF}" )
 
 configure_file( ${PROJECT_BINARY_DIR}/opensslconf.h.cmake
-  ${THIRDPARTY_CONFIG_DIR}/openssl/include/openssl/opensslconf.h )
+  ${PROJECT_BINARY_DIR}/include/openssl/opensslconf.h )
 # End configure public headers
 
 add_subdirectory(crypto)
@@ -189,7 +183,7 @@ if( WITH_APPS AND NOT ANDROID AND NOT IOS )
   file( READ ${PROJECT_SOURCE_DIR}/c_rehash.cmake C_REHASH )
   string( REPLACE "@OPENSSLDIR@" "${OPENSSLDIR}" C_REHASH "${C_REHASH}" )
   string( REPLACE "@CMAKE_INSTALL_PREFIX@" "${CMAKE_INSTALL_PREFIX}" C_REHASH "${C_REHASH}" )
-  file( WRITE ${THIRDPARTY_CONFIG_DIR}/openssl/c_rehash "${C_REHASH}" )
+  file( WRITE ${PROJECT_BINARY_DIR}/c_rehash "${C_REHASH}" )
 
   install( FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/apps/openssl.cnf
@@ -198,10 +192,10 @@ if( WITH_APPS AND NOT ANDROID AND NOT IOS )
   install( CODE "FILE(MAKE_DIRECTORY \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/ssl/certs)" )
   install( CODE "FILE(MAKE_DIRECTORY \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/ssl/misc)" )
   install( CODE "FILE(MAKE_DIRECTORY \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/ssl/private)" )
-  install( FILES ${THIRDPARTY_CONFIG_DIR}/openssl/c_rehash DESTINATION bin )
+  install( FILES ${PROJECT_BINARY_DIR}/c_rehash DESTINATION bin )
 endif()
 
-file( GLOB PUBLIC_HEADERS "${THIRDPARTY_CONFIG_DIR}/openssl/include/openssl/*.h" )
+file( GLOB PUBLIC_HEADERS "${PROJECT_BINARY_DIR}/include/openssl/*.h" )
 install( FILES ${PUBLIC_HEADERS} DESTINATION include/openssl )
 
 install( FILES
@@ -212,13 +206,13 @@ install( DIRECTORY doc DESTINATION share )
 
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in
-  ${THIRDPARTY_CONFIG_DIR}/openssl/cmake_uninstall.cmake IMMEDIATE @ONLY
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake IMMEDIATE @ONLY
 )
 
 if( ${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME} )
   add_custom_target(
     "uninstall"
-    ${CMAKE_COMMAND} -P ${THIRDPARTY_CONFIG_DIR}/openssl/cmake_uninstall.cmake
+    ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
   )
 endif()
 

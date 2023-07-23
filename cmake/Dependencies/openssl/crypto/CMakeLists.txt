@@ -23,11 +23,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-if(NOT THIRDPARTY_CONFIG_DIR)
-  SET(THIRDPARTY_CONFIG_DIR "${CMAKE_SOURCE_DIR}/../configuration/Ninja/android_ogl/${CMAKE_BUILD_TYPE}/${ANDROID_ABI}")
-  MESSAGE("SSL| THIRDPARTY_CONFIG_DIR: ${THIRDPARTY_CONFIG_DIR}")
-endif()
-
 include( CMakeParseArguments )
 
 string(TIMESTAMP BUILDINF_DATE "%Y-%m-%d %H:%M:%S UTC" UTC)
@@ -58,25 +53,19 @@ else()
 endif()
 
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/bn_conf.h.cmake
-  ${THIRDPARTY_CONFIG_DIR}/openssl/include/crypto/bn_conf.h )
+  ${PROJECT_BINARY_DIR}/include/crypto/bn_conf.h )
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/dso_conf.h.cmake
-  ${THIRDPARTY_CONFIG_DIR}/openssl/include/crypto/dso_conf.h )
+  ${PROJECT_BINARY_DIR}/include/crypto/dso_conf.h )
 
 set( LIBSRC
   cpt_err.c cryptlib.c ctype.c cversion.c ebcdic.c ex_data.c init.c mem.c mem_clr.c mem_dbg.c mem_sec.c o_dir.c o_fips.c
   o_fopen.c o_init.c o_str.c o_time.c uid.c getenv.c )
 
-MESSAGE("${CMAKE_CURRENT_BINARY_DIR}/ # buildinf.h")
-MESSAGE("${PROJECT_BINARY_DIR}/include # public|crypto|internal")
-MESSAGE("${THIRDPARTY_CONFIG_DIR}/openssl/include # public|crypto|internal")
-MESSAGE("${PROJECT_SOURCE_DIR}/ # e_os.h")
-
 include_directories( BEFORE SYSTEM
   modes ec/curve448 ec/curve448/arch_32
   ${CMAKE_CURRENT_BINARY_DIR}/ # buildinf.h
-  ${THIRDPARTY_CONFIG_DIR}/openssl/include # public|crypto|internal
+  ${PROJECT_BINARY_DIR}/include # public|crypto|internal
   ${PROJECT_SOURCE_DIR}/ # e_os.h
-  ${PROJECT_SOURCE_DIR}/include # e_os.h
 )
 
 if( BUILD_SHARED_LIBS )
@@ -291,7 +280,7 @@ endif()
 
 add_library( crypto ${LIBSRC} ${OBJECTS_SRC} )
 
-target_include_directories( crypto PUBLIC ${THIRDPARTY_CONFIG_DIR}/openssl/include )
+target_include_directories( crypto PUBLIC ${PROJECT_BINARY_DIR}/include )
 
 if( WIN32 AND NOT CYGWIN )
   target_link_libraries( crypto ws2_32 crypt32 )

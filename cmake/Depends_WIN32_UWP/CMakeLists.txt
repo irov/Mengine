@@ -6,9 +6,12 @@ OPTION(MENGINE_USE_PRECOMPILED_HEADER "Mengine use precompiled header" OFF)
 
 PROJECT(Depends_WIN32_UWP)
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../base_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../macro_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../win64_uwp_template.cmake)
+SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+
+INCLUDE(${MENGINE_REPOSITORY}/cmake/base_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/macro_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/win64_uwp_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/dependencies_template.cmake)
 
 SET_MENGINE_ENVIRONMENT(UWP DIRECTX11 SDL MSVC)
 

@@ -1,11 +1,9 @@
-import com.Mengine.Utils
-
 apply from: rootProject.projectDir.getAbsolutePath() + '/libraries/library.gradle'
 
 android {
     externalNativeBuild {
         cmake {
-            path "../../../dependencies/openal-soft/CMakeLists.txt"
+            path "../../../cmake/Android_SDL/OpenAL/CMakeLists.txt"
         }
     }
 

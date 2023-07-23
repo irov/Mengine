@@ -1,12 +1,10 @@
-import com.Mengine.Utils
-
 apply from: rootProject.projectDir.getAbsolutePath() + '/libraries/library.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/minify.gradle'
 
 android {
     externalNativeBuild {
         cmake {
-            path "../../../dependencies/SDL/CMakeLists.txt"
+            path "../../../cmake/Android_SDL/SDL/CMakeLists.txt"
         }
     }
 

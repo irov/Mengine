@@ -19,7 +19,7 @@ if (UNIX)
 endif ()
 
 # Set some nicer output dirs.
-set(JANSSON_TEMP_DIR ${THIRDPARTY_CONFIG_DIR}/jansson/tmp)
+set(JANSSON_TEMP_DIR ${CMAKE_CURRENT_BINARY_DIR}/tmp)
 
 # This is how I thought it should go
 # set (JANSSON_VERSION "2.3.1")
@@ -255,23 +255,23 @@ set (JANSSON_INITIAL_HASHTABLE_ORDER 3 CACHE STRING "Number of buckets new objec
 
 # configure the public config file
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/cmake/jansson_config.h.cmake
-                ${THIRDPARTY_CONFIG_DIR}/jansson/include/jansson_config.h)
+                ${CMAKE_CURRENT_BINARY_DIR}/include/jansson_config.h)
 
 # Copy the jansson.h file to the public include folder
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/jansson.h
-           DESTINATION ${THIRDPARTY_CONFIG_DIR}/jansson/include/)
+           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
 
 add_definitions(-DJANSSON_USING_CMAKE)
 
 # configure the private config file
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/cmake/jansson_private_config.h.cmake
-                ${THIRDPARTY_CONFIG_DIR}/jansson/private_include/jansson_private_config.h)
+                ${CMAKE_CURRENT_BINARY_DIR}/private_include/jansson_private_config.h)
 
 # and tell the source code to include it
 add_definitions(-DHAVE_CONFIG_H)
 
-include_directories (${THIRDPARTY_CONFIG_DIR}/jansson/include)
-include_directories (${THIRDPARTY_CONFIG_DIR}/jansson/private_include)
+include_directories (${CMAKE_CURRENT_BINARY_DIR}/include)
+include_directories (${CMAKE_CURRENT_BINARY_DIR}/private_include)
 
 # Add the lib sources.
 file(GLOB JANSSON_SRC src/*.c)
@@ -281,10 +281,10 @@ set(JANSSON_HDR_PRIVATE
    ${CMAKE_CURRENT_SOURCE_DIR}/src/jansson_private.h
    ${CMAKE_CURRENT_SOURCE_DIR}/src/strbuffer.h
    ${CMAKE_CURRENT_SOURCE_DIR}/src/utf.h
-   ${THIRDPARTY_CONFIG_DIR}/jansson/private_include/jansson_private_config.h)
+   ${CMAKE_CURRENT_BINARY_DIR}/private_include/jansson_private_config.h)
 
 set(JANSSON_HDR_PUBLIC
-   ${THIRDPARTY_CONFIG_DIR}/jansson/include/jansson_config.h
+   ${CMAKE_CURRENT_BINARY_DIR}/include/jansson_config.h
    ${CMAKE_CURRENT_SOURCE_DIR}/src/jansson.h)
 
 source_group("Library Sources" FILES ${JANSSON_SRC})
@@ -315,12 +315,12 @@ if(JANSSON_BUILD_SHARED_LIBS)
       set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--default-symver")
    else()
 # some linkers may only support --version-script
-      file(WRITE "${THIRDPARTY_CONFIG_DIR}/jansson/jansson.sym" "JANSSON_${JANSSON_SOVERSION} {
+      file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/jansson.sym" "JANSSON_${JANSSON_SOVERSION} {
     global:
           *;
 };
 ")
-      list(APPEND CMAKE_REQUIRED_LIBRARIES "-Wl,--version-script,${THIRDPARTY_CONFIG_DIR}/jansson/jansson.sym")
+      list(APPEND CMAKE_REQUIRED_LIBRARIES "-Wl,--version-script,${CMAKE_CURRENT_BINARY_DIR}/jansson.sym")
       check_c_source_compiles(
    "
    int main (void)
@@ -330,9 +330,9 @@ if(JANSSON_BUILD_SHARED_LIBS)
    "
    VSCRIPT_WORKS
    )
-      list(REMOVE_ITEM CMAKE_REQUIRED_LIBRARIES "-Wl,--version-script,${THIRDPARTY_CONFIG_DIR}/jansson/jansson.sym")
+      list(REMOVE_ITEM CMAKE_REQUIRED_LIBRARIES "-Wl,--version-script,${CMAKE_CURRENT_BINARY_DIR}/jansson.sym")
       if (VSCRIPT_WORKS)
-         set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--version-script,${THIRDPARTY_CONFIG_DIR}/jansson/jansson.sym")
+         set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--version-script,${CMAKE_CURRENT_BINARY_DIR}/jansson.sym")
       endif()
    endif()
 
@@ -370,10 +370,10 @@ if (JANSSON_BUILD_DOCS)
       endif()
 
       # configured documentation tools and intermediate build results
-      set(BINARY_BUILD_DIR "${THIRDPARTY_CONFIG_DIR}/jansson/_build")
+      set(BINARY_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/_build")
 
       # Sphinx cache with pickled ReST documents
-      set(SPHINX_CACHE_DIR "${THIRDPARTY_CONFIG_DIR}/jansson/_doctrees")
+      set(SPHINX_CACHE_DIR "${CMAKE_CURRENT_BINARY_DIR}/_doctrees")
 
       # CMake could be used to build the conf.py file too,
       # eg it could automatically write the version of the program or change the theme.
@@ -429,7 +429,7 @@ if (JANSSON_BUILD_DOCS)
             -d "${SPHINX_CACHE_DIR}"
             # -c "${BINARY_BUILD_DIR}" # enable if using cmake-generated conf.py
             "${CMAKE_CURRENT_SOURCE_DIR}/doc"
-            "${THIRDPARTY_CONFIG_DIR}/jansson/doc/${DOC_TARGET}"
+            "${CMAKE_CURRENT_BINARY_DIR}/doc/${DOC_TARGET}"
             COMMENT "Building ${DOC_TARGET} documentation with Sphinx")
 
          add_dependencies(doc ${DOC_TARGET})
@@ -584,7 +584,7 @@ set(libdir      "\${exec_prefix}/${JANSSON_INSTALL_LIB_DIR}")
 set(includedir  "\${prefix}/${JANSSON_INSTALL_INCLUDE_DIR}")
 set(VERSION     ${JANSSON_DISPLAY_VERSION})
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jansson.pc.in
-               ${THIRDPARTY_CONFIG_DIR}/jansson/jansson.pc @ONLY)
+               ${CMAKE_CURRENT_BINARY_DIR}/jansson.pc @ONLY)
 
 # Make sure the paths are relative.
 foreach(p LIB BIN INCLUDE CMAKE)
@@ -594,10 +594,10 @@ endforeach()
 # Generate the config file for the build-tree.
 set(JANSSON__INCLUDE_DIRS
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
-    "${THIRDPARTY_CONFIG_DIR}/jansson/include")
+    "${CMAKE_CURRENT_BINARY_DIR}/include")
 set(JANSSON_INCLUDE_DIRS ${JANSSON__INCLUDE_DIRS} CACHE PATH "Jansson include directories")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/janssonConfig.cmake.in
-               ${THIRDPARTY_CONFIG_DIR}/jansson/janssonConfig.cmake
+               ${CMAKE_CURRENT_BINARY_DIR}/janssonConfig.cmake
                @ONLY)
 
 
@@ -605,14 +605,14 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/janssonConfig.cmake.in
 include(CMakePackageConfigHelpers)
 
 write_basic_package_version_file(
-  "${THIRDPARTY_CONFIG_DIR}/jansson/cmake/janssonConfigVersion.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake/janssonConfigVersion.cmake"
   VERSION ${JANSSON_VERSION}
   COMPATIBILITY ExactVersion
 )
 
 configure_package_config_file(
     "cmake/janssonConfig.cmake.in"
-    "${THIRDPARTY_CONFIG_DIR}/jansson/cmake/janssonConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/janssonConfig.cmake"
     INSTALL_DESTINATION "${JANSSON_INSTALL_CMAKE_DIR}"
 )
 
@@ -633,13 +633,13 @@ if (JANSSON_INSTALL)
 
   # Install the pkg-config.
   install(FILES
-          ${THIRDPARTY_CONFIG_DIR}/jansson/jansson.pc
+          ${CMAKE_CURRENT_BINARY_DIR}/jansson.pc
           DESTINATION lib/pkgconfig)
 
   # Install the configs.
   install(FILES
-      ${THIRDPARTY_CONFIG_DIR}/jansson/cmake/janssonConfig.cmake
-      ${THIRDPARTY_CONFIG_DIR}/jansson/cmake/janssonConfigVersion.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/cmake/janssonConfig.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/cmake/janssonConfigVersion.cmake
       DESTINATION "${JANSSON_INSTALL_CMAKE_DIR}")
 
   # Install exports for the install-tree.

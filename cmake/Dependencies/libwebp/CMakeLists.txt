@@ -153,14 +153,6 @@ endif()
 set(PTHREAD_LIBS ${CMAKE_THREAD_LIBS_INIT})
 set(INSTALLED_LIBRARIES)
 
-if(MSVC)
-  # match the naming convention used by nmake
-  set(webp_libname_prefix "lib")
-  set(CMAKE_SHARED_LIBRARY_PREFIX "${webp_libname_prefix}")
-  set(CMAKE_IMPORT_LIBRARY_PREFIX "${webp_libname_prefix}")
-  set(CMAKE_STATIC_LIBRARY_PREFIX "${webp_libname_prefix}")
-endif()
-
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 
 # ##############################################################################
@@ -185,16 +177,16 @@ endif()
 
 function(configure_pkg_config FILE)
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${FILE}.in"
-                 "${THIRDPARTY_CONFIG_DIR}/libwebp/${FILE}" @ONLY)
+                 "${CMAKE_CURRENT_BINARY_DIR}/${FILE}" @ONLY)
 
   if(HAVE_MATH_LIBRARY)
     # MSVC doesn't have libm
-    file(READ ${THIRDPARTY_CONFIG_DIR}/libwebp/${FILE} data)
+    file(READ ${CMAKE_CURRENT_BINARY_DIR}/${FILE} data)
     string(REPLACE "-lm" "" data ${data})
-    file(WRITE ${THIRDPARTY_CONFIG_DIR}/libwebp/${FILE} ${data})
+    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${FILE} ${data})
   endif()
 
-  install(FILES "${THIRDPARTY_CONFIG_DIR}/libwebp/${FILE}"
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${FILE}"
           DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 endfunction()
 
@@ -246,12 +238,10 @@ if(WIN32 OR ANDROID)
 endif()
 
 configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/config.h.in
-               ${THIRDPARTY_CONFIG_DIR}/libwebp/src/webp/config.h @ONLY)
-
-set(WEBP_DEP_INCLUDE_DIRS ${WEBP_DEP_INCLUDE_DIRS}
-    ${THIRDPARTY_CONFIG_DIR}/libwebp)
-    
+               ${CMAKE_CURRENT_BINARY_DIR}/src/webp/config.h @ONLY)
 add_definitions(-DHAVE_CONFIG_H)
+
+
 
 # ##############################################################################
 # Build the webpdecoder library.
@@ -265,7 +255,7 @@ add_definitions(-DHAVE_CONFIG_H)
 # object files, so consider adding at least one real source file to any target
 # that references $<TARGET_OBJECTS:objlib>."
 function(libwebp_add_stub_file TARGET)
-  set(stub_source_dir "${THIRDPARTY_CONFIG_DIR}/libwebp")
+  set(stub_source_dir "${CMAKE_BINARY_DIR}")
   set(stub_source_file "${stub_source_dir}/libwebp_${TARGET}_stub.c")
   set(stub_source_code
       "// Generated file. DO NOT EDIT!\n"
@@ -300,7 +290,7 @@ if(XCODE)
 endif()
 target_link_libraries(webp ${WEBP_DEP_LIBRARIES})
 target_include_directories(
-  webp PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${THIRDPARTY_CONFIG_DIR}/libwebp
+  webp PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
          $<INSTALL_INTERFACE:include>)
 set_target_properties(

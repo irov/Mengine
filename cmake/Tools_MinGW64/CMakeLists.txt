@@ -6,11 +6,13 @@ OPTION(MENGINE_USE_PRECOMPILED_HEADER "Mengine use precompiled header" OFF)
 
 PROJECT(Tools_MinGW64)
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../master_options_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../base_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../macro_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../mingw64_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../mengine_template.cmake)
+SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+
+INCLUDE(${MENGINE_REPOSITORY}/cmake/master_options_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/base_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/macro_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/mingw64_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/mengine_template.cmake)
 
 SET_MENGINE_ENVIRONMENT(WINDOWS DIRECTX9 WIN32 MINGW)
 

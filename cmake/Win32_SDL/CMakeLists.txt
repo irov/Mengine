@@ -4,11 +4,13 @@ SET(MENGINE_PROJECT_NAME "Mengine_WIN32_SDL" CACHE STRING "Mengine project name"
 
 PROJECT(${MENGINE_PROJECT_NAME})
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../dev_options_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../base_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../macro_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../win32_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../mengine_template.cmake)
+SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+
+INCLUDE(${MENGINE_REPOSITORY}/cmake/dev_options_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/base_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/macro_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/win32_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/mengine_template.cmake)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /WX")

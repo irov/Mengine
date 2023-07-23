@@ -4,11 +4,13 @@ SET(MENGINE_PROJECT_NAME "Mengine_Android_SDL" CACHE STRING "Mengine project nam
 
 PROJECT(${MENGINE_PROJECT_NAME})
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../master_options_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../base_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../macro_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../android_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../mengine_template.cmake)
+SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
+
+INCLUDE(${MENGINE_REPOSITORY}/cmake/master_options_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/base_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/macro_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/android_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/mengine_template.cmake)
 
 SET_MENGINE_ENVIRONMENT(ANDROID OPENGL SDL GRADLE)
 

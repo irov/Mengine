@@ -6,11 +6,13 @@ SET(MENGINE_PROJECT_NAME "Mengine_WIN32_UWP" CACHE STRING "Mengine project name"
 
 PROJECT(${MENGINE_PROJECT_NAME})
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../master_options_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../base_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../macro_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../win64_uwp_template.cmake)
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../mengine_template.cmake)
+SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+
+INCLUDE(${MENGINE_REPOSITORY}/cmake/master_options_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/base_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/macro_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/win64_uwp_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/mengine_template.cmake)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /WX")

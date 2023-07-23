@@ -1,8 +1,3 @@
-if(NOT THIRDPARTY_CONFIG_DIR)
-  SET(THIRDPARTY_CONFIG_DIR "${CMAKE_SOURCE_DIR}/../configuration/Ninja/android_ogl/${CMAKE_BUILD_TYPE}/${ANDROID_ABI}")
-  MESSAGE("SDL2| THIRDPARTY_CONFIG_DIR: ${THIRDPARTY_CONFIG_DIR}")
-endif()
-
 if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
   message(FATAL_ERROR "Prevented in-tree build. Please create a build directory outside of the SDL source code and run \"cmake -S ${CMAKE_SOURCE_DIR} -B .\" from there")
 endif()
@@ -321,7 +316,7 @@ endif()
 
 # General includes
 target_compile_definitions(sdl-build-options INTERFACE "-DUSING_GENERATED_CONFIG_H")
-target_include_directories(sdl-build-options BEFORE INTERFACE "${THIRDPARTY_CONFIG_DIR}/SDL/include" "${THIRDPARTY_CONFIG_DIR}/SDL/include-config-$<LOWER_CASE:$<CONFIG>>")
+target_include_directories(sdl-build-options BEFORE INTERFACE "${SDL2_BINARY_DIR}/include" "${SDL2_BINARY_DIR}/include-config-$<LOWER_CASE:$<CONFIG>>")
 # Note: The clang toolset for Visual Studio does not support the '-idirafter' option.
 if(USE_GCC OR (USE_CLANG AND NOT MSVC_CLANG))
   # !!! FIXME: do we _need_ to mess with CMAKE_C_FLAGS here?
@@ -2987,14 +2982,14 @@ endif()
 # config variables may contain generator expression, so we need to generate SDL_config.h in 2 steps:
 # 1. replace all `#cmakedefine`'s and `@abc@`
 configure_file("${SDL2_SOURCE_DIR}/include/SDL_config.h.cmake"
-  "${THIRDPARTY_CONFIG_DIR}/SDL/SDL_config.h.intermediate")
+  "${SDL2_BINARY_DIR}/SDL_config.h.intermediate")
 # 2. Create the "include-config-${CMAKE_BUILD_TYPE}" folder (fails on older CMake versions when it does not exist)
 string(TOLOWER "${CMAKE_BUILD_TYPE}" lower_build_type)
-execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory "${THIRDPARTY_CONFIG_DIR}/SDL/include-config-${lower_build_type}")
+execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/include-config-${lower_build_type}")
 # 3. generate SDL_config in an build_type-dependent folder (which should be first in the include search path)
 file(GENERATE
-    OUTPUT "${THIRDPARTY_CONFIG_DIR}/SDL/include-config-$<LOWER_CASE:$<CONFIG>>/SDL2/SDL_config.h"
-    INPUT "${THIRDPARTY_CONFIG_DIR}/SDL/SDL_config.h.intermediate")
+    OUTPUT "${SDL2_BINARY_DIR}/include-config-$<LOWER_CASE:$<CONFIG>>/SDL2/SDL_config.h"
+    INPUT "${SDL2_BINARY_DIR}/SDL_config.h.intermediate")
 
 # Prepare the flags and remove duplicates
 if(EXTRA_LDFLAGS)
@@ -3044,9 +3039,9 @@ else()
 endif()
 
 configure_file("${SDL2_SOURCE_DIR}/include/SDL_revision.h.cmake"
-  "${THIRDPARTY_CONFIG_DIR}/SDL/include/SDL_revision.h")
+  "${SDL2_BINARY_DIR}/include/SDL2/SDL_revision.h")
 
-# Copy all non-generated headers to "${THIRDPARTY_CONFIG_DIR}/SDL/include/SDL2"
+# Copy all non-generated headers to "${SDL2_BINARY_DIR}/include/SDL2"
 # This is done to avoid the inclusion of a pre-generated SDL_config.h
 file(GLOB SDL2_INCLUDE_FILES ${SDL2_SOURCE_DIR}/include/*.h)
 set(SDL2_COPIED_INCLUDE_FILES)
@@ -3055,7 +3050,7 @@ foreach(_hdr IN LISTS SDL2_INCLUDE_FILES)
     list(REMOVE_ITEM SDL2_INCLUDE_FILES "${_hdr}")
   else()
     get_filename_component(_name "${_hdr}" NAME)
-    set(_bin_hdr "${THIRDPARTY_CONFIG_DIR}/SDL/include/SDL2/${_name}")
+    set(_bin_hdr "${SDL2_BINARY_DIR}/include/SDL2/${_name}")
     list(APPEND SDL2_COPIED_INCLUDE_FILES "${_bin_hdr}")
     add_custom_command(OUTPUT "${_bin_hdr}"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_hdr}" "${_bin_hdr}"
@@ -3120,11 +3115,11 @@ endif()
 # MESSAGE(STATUS "SDL_STATIC_LIBS: ${SDL_STATIC_LIBS}")
 
 configure_file("${SDL2_SOURCE_DIR}/sdl2.pc.in"
-  "${THIRDPARTY_CONFIG_DIR}/SDL/sdl2.pc" @ONLY)
+  "${SDL2_BINARY_DIR}/sdl2.pc" @ONLY)
 configure_file("${SDL2_SOURCE_DIR}/sdl2-config.in"
-  "${THIRDPARTY_CONFIG_DIR}/SDL/sdl2-config" @ONLY)
+  "${SDL2_BINARY_DIR}/sdl2-config" @ONLY)
 configure_file("${SDL2_SOURCE_DIR}/SDL2.spec.in"
-  "${THIRDPARTY_CONFIG_DIR}/SDL/SDL2.spec" @ONLY)
+  "${SDL2_BINARY_DIR}/SDL2.spec" @ONLY)
 
 macro(check_add_debug_flag FLAG SUFFIX)
     check_c_compiler_flag(${FLAG} HAS_C_FLAG_${SUFFIX})
@@ -3290,11 +3285,11 @@ if(NOT WINDOWS_STORE AND NOT SDL2_DISABLE_SDL2MAIN)
   # alias target for in-tree builds
   add_library(SDL2::SDL2main ALIAS SDL2main)
   target_include_directories(SDL2main BEFORE
-    PRIVATE "${THIRDPARTY_CONFIG_DIR}/SDL/include"
-    PRIVATE "${THIRDPARTY_CONFIG_DIR}/SDL/include/SDL2"
-    PRIVATE "${THIRDPARTY_CONFIG_DIR}/SDL/include-config-$<LOWER_CASE:$<CONFIG>>/SDL2"
+    PRIVATE "${SDL2_BINARY_DIR}/include"
+    PRIVATE "${SDL2_BINARY_DIR}/include/SDL2"
+    PRIVATE "${SDL2_BINARY_DIR}/include-config-$<LOWER_CASE:$<CONFIG>>/SDL2"
   )
-  target_include_directories(SDL2main PUBLIC "$<BUILD_INTERFACE:${THIRDPARTY_CONFIG_DIR}/SDL/include>" $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>)
+  target_include_directories(SDL2main PUBLIC "$<BUILD_INTERFACE:${SDL2_BINARY_DIR}/include>" $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>)
   if (WIN32)
     target_link_libraries(SDL2main PRIVATE shell32)
   endif()
@@ -3383,9 +3378,9 @@ if(SDL_SHARED)
   # FIXME: if CMAKE_VERSION >= 3.13, use target_link_options for EXTRA_LDFLAGS
   target_link_libraries(SDL2 PRIVATE ${EXTRA_LIBS} ${EXTRA_LDFLAGS} ${EXTRA_LDFLAGS_BUILD} ${CMAKE_DEPENDS})
   target_include_directories(SDL2 PUBLIC
-      "$<BUILD_INTERFACE:${THIRDPARTY_CONFIG_DIR}/SDL/include>"
-      "$<BUILD_INTERFACE:${THIRDPARTY_CONFIG_DIR}/SDL/include/SDL2>"
-      "$<BUILD_INTERFACE:${THIRDPARTY_CONFIG_DIR}/SDL/include-config-$<LOWER_CASE:$<CONFIG>>/SDL2>"
+      "$<BUILD_INTERFACE:${SDL2_BINARY_DIR}/include>"
+      "$<BUILD_INTERFACE:${SDL2_BINARY_DIR}/include/SDL2>"
+      "$<BUILD_INTERFACE:${SDL2_BINARY_DIR}/include-config-$<LOWER_CASE:$<CONFIG>>/SDL2>"
       "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
       "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>"
   )
@@ -3419,9 +3414,9 @@ if(SDL_STATIC)
   # libraries - do we need to consider this?
   target_link_libraries(SDL2-static PRIVATE ${EXTRA_LIBS} ${EXTRA_LDFLAGS} ${CMAKE_DEPENDS})
   target_include_directories(SDL2-static PUBLIC
-      "$<BUILD_INTERFACE:${THIRDPARTY_CONFIG_DIR}/SDL/include>"
-      "$<BUILD_INTERFACE:${THIRDPARTY_CONFIG_DIR}/SDL/include/SDL2>"
-      "$<BUILD_INTERFACE:${THIRDPARTY_CONFIG_DIR}/SDL/include-config-$<LOWER_CASE:$<CONFIG>>/SDL2>"
+      "$<BUILD_INTERFACE:${SDL2_BINARY_DIR}/include>"
+      "$<BUILD_INTERFACE:${SDL2_BINARY_DIR}/include/SDL2>"
+      "$<BUILD_INTERFACE:${SDL2_BINARY_DIR}/include-config-$<LOWER_CASE:$<CONFIG>>/SDL2>"
       "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
       "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>"
   )
@@ -3451,9 +3446,9 @@ if(SDL_TEST)
   set_target_properties(SDL2_test PROPERTIES
       EXPORT_NAME SDL2test)
   target_include_directories(SDL2_test PUBLIC
-      "$<BUILD_INTERFACE:${THIRDPARTY_CONFIG_DIR}/SDL/include>"
-      "$<BUILD_INTERFACE:${THIRDPARTY_CONFIG_DIR}/SDL/include/SDL2>"
-      "$<BUILD_INTERFACE:${THIRDPARTY_CONFIG_DIR}/SDL/include-config-$<LOWER_CASE:$<CONFIG>>/SDL2>"
+      "$<BUILD_INTERFACE:${SDL2_BINARY_DIR}/include>"
+      "$<BUILD_INTERFACE:${SDL2_BINARY_DIR}/include/SDL2>"
+      "$<BUILD_INTERFACE:${SDL2_BINARY_DIR}/include-config-$<LOWER_CASE:$<CONFIG>>/SDL2>"
       "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
       "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>")
   target_link_libraries(SDL2_test PRIVATE ${EXTRA_TEST_LIBS})
@@ -3500,16 +3495,13 @@ if(NOT SDL2_DISABLE_INSTALL)
     set(LICENSES_PREFIX "${CMAKE_INSTALL_DATAROOTDIR}/licenses/${PROJECT_NAME}")
   endif ()
   set(SDL_INSTALL_CMAKEDIR "${SDL_INSTALL_CMAKEDIR_DEFAULT}" CACHE STRING "Location where to install SDL2Config.cmake")
-  message("SDL_INSTALL_CMAKEDIR: ${SDL_INSTALL_CMAKEDIR}")
 
   include(CMakePackageConfigHelpers)
-  configure_file(${SDL2_SOURCE_DIR}/cmake/sdlfind.cmake ${THIRDPARTY_CONFIG_DIR}/SDL/sdlfind.cmake COPYONLY)
-  
-  configure_package_config_file(SDL2Config.cmake.in "${THIRDPARTY_CONFIG_DIR}/SDL/SDL2Config.cmake"
+  configure_package_config_file(SDL2Config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/SDL2Config.cmake"
     PATH_VARS CMAKE_INSTALL_PREFIX CMAKE_INSTALL_FULL_BINDIR CMAKE_INSTALL_FULL_INCLUDEDIR CMAKE_INSTALL_FULL_LIBDIR
     INSTALL_DESTINATION "${SDL_INSTALL_CMAKEDIR}"
   )
-  write_basic_package_version_file("${THIRDPARTY_CONFIG_DIR}/SDL/SDL2ConfigVersion.cmake"
+  write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/SDL2ConfigVersion.cmake"
     VERSION ${SDL_VERSION}
     COMPATIBILITY AnyNewerVersion
   )
@@ -3564,8 +3556,8 @@ if(NOT SDL2_DISABLE_INSTALL)
 
   install(
     FILES
-      ${THIRDPARTY_CONFIG_DIR}/SDL/SDL2Config.cmake
-      ${THIRDPARTY_CONFIG_DIR}/SDL/SDL2ConfigVersion.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/SDL2Config.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/SDL2ConfigVersion.cmake
       ${SDL2_SOURCE_DIR}/cmake/sdlfind.cmake
     DESTINATION "${SDL_INSTALL_CMAKEDIR}"
     COMPONENT Devel
@@ -3574,8 +3566,8 @@ if(NOT SDL2_DISABLE_INSTALL)
   install(
     FILES
       ${SDL2_INCLUDE_FILES}
-      "${THIRDPARTY_CONFIG_DIR}/SDL/include/SDL2/SDL_revision.h"
-      "${THIRDPARTY_CONFIG_DIR}/SDL/include-config-$<LOWER_CASE:$<CONFIG>>/SDL2/SDL_config.h"
+      "${SDL2_BINARY_DIR}/include/SDL2/SDL_revision.h"
+      "${SDL2_BINARY_DIR}/include-config-$<LOWER_CASE:$<CONFIG>>/SDL2/SDL_config.h"
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/SDL2)
 
   string(TOUPPER "${CMAKE_BUILD_TYPE}" UPPER_BUILD_TYPE)
@@ -3588,9 +3580,9 @@ if(NOT SDL2_DISABLE_INSTALL)
   install(FILES "LICENSE.txt" DESTINATION "${LICENSES_PREFIX}")
   if(FREEBSD)
     # FreeBSD uses ${PREFIX}/libdata/pkgconfig
-    install(FILES ${THIRDPARTY_CONFIG_DIR}/SDL/sdl2.pc DESTINATION "libdata/pkgconfig")
+    install(FILES ${SDL2_BINARY_DIR}/sdl2.pc DESTINATION "libdata/pkgconfig")
   else()
-    install(FILES ${THIRDPARTY_CONFIG_DIR}/SDL/sdl2.pc
+    install(FILES ${SDL2_BINARY_DIR}/sdl2.pc
             DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
   endif()
   if(NOT (WINDOWS OR CYGWIN) OR MINGW)
@@ -3601,11 +3593,11 @@ if(NOT SDL2_DISABLE_INSTALL)
           install(CODE "
             execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
               \"lib${SONAME}${SOPOSTFIX}${SOEXT}\" \"libSDL2${SOPOSTFIX}${SOEXT}\"
-              WORKING_DIRECTORY \"${THIRDPARTY_CONFIG_DIR}/SDL\")")
-          install(FILES ${THIRDPARTY_CONFIG_DIR}/SDL/libSDL2${SOPOSTFIX}${SOEXT} DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+              WORKING_DIRECTORY \"${SDL2_BINARY_DIR}\")")
+          install(FILES ${SDL2_BINARY_DIR}/libSDL2${SOPOSTFIX}${SOEXT} DESTINATION "${CMAKE_INSTALL_LIBDIR}")
       endif()
     endif()
-    install(PROGRAMS ${THIRDPARTY_CONFIG_DIR}/SDL/sdl2-config DESTINATION "${CMAKE_INSTALL_BINDIR}")
+    install(PROGRAMS ${SDL2_BINARY_DIR}/sdl2-config DESTINATION "${CMAKE_INSTALL_BINDIR}")
     # TODO: what about the .spec file? Is it only needed for RPM creation?
     install(FILES "${SDL2_SOURCE_DIR}/sdl2.m4" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/aclocal")
   endif()
@@ -3617,11 +3609,11 @@ if(NOT SDL2_DISABLE_UNINSTALL)
   if(NOT TARGET uninstall)
     configure_file(
         "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-        "${THIRDPARTY_CONFIG_DIR}/SDL/cmake_uninstall.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
         IMMEDIATE @ONLY)
 
     add_custom_target(uninstall
-        COMMAND ${CMAKE_COMMAND} -P ${THIRDPARTY_CONFIG_DIR}/SDL/cmake_uninstall.cmake)
+        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
   endif()
 endif()
 

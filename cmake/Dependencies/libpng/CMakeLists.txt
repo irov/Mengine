@@ -91,7 +91,7 @@ endif()
 # enable. Note that this will fail if you attempt to build a universal binary in
 # a single CMake invocation.
 if (APPLE AND CMAKE_OSX_ARCHITECTURES)
-  set(TARGET_ARCH ${CMAKE_OSX_ARCHITECTURES})
+  set(TARGET_ARCH ${CMAKE_SYSTEM_PROCESSOR})
 else()
   set(TARGET_ARCH ${CMAKE_SYSTEM_PROCESSOR})
 endif()

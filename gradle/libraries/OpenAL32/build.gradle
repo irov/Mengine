@@ -13,37 +13,10 @@ android {
         cmake_arguments.add("-DANDROID_ARM_NEON=TRUE")
         cmake_arguments.add("-DANDROID_STL=c++_shared")
         cmake_arguments.add("-DANDROID_TOOLCHAIN=clang")
-        cmake_arguments.add("-DLIBTYPE=SHARED")
-        cmake_arguments.add("-DOPENAL_SHARED=ON")
-        cmake_arguments.add("-DALSOFT_DLOPEN=OFF")
-        cmake_arguments.add("-DALSOFT_WERROR=OFF")
-        cmake_arguments.add("-DALSOFT_UTILS=OFF")
-        cmake_arguments.add("-DALSOFT_NO_CONFIG_UTIL=ON")
-        cmake_arguments.add("-DALSOFT_EXAMPLES=OFF")
-        cmake_arguments.add("-DALSOFT_INSTALL=OFF")
-        cmake_arguments.add("-DALSOFT_INSTALL_CONFIG=OFF")
-        cmake_arguments.add("-DALSOFT_INSTALL_HRTF_DATA=OFF")
-        cmake_arguments.add("-DALSOFT_INSTALL_AMBDEC_PRESETS=OFF")
-        cmake_arguments.add("-DALSOFT_INSTALL_EXAMPLES=OFF")
-        cmake_arguments.add("-DALSOFT_INSTALL_UTILS=OFF")
-        cmake_arguments.add("-DALSOFT_UPDATE_BUILD_VERSION=OFF")
-        cmake_arguments.add("-DALSOFT_BUILD_IMPORT_LIB=OFF")
-        cmake_arguments.add("-DALSOFT_BUILD_ROUTER=OFF")
-        cmake_arguments.add("-DALSOFT_EMBED_HRTF_DATA=OFF")
-        cmake_arguments.add("-DALSOFT_OSX_FRAMEWORK=OFF")
-        cmake_arguments.add("-DALSOFT_STATIC_LIBGCC=OFF")
-        cmake_arguments.add("-DALSOFT_STATIC_STDCXX=OFF")
-        cmake_arguments.add("-DALSOFT_BACKEND_WAVE=ON")
-        cmake_arguments.add("-DALSOFT_REQUIRE_SDL2=OFF")
-        cmake_arguments.add("-DALSOFT_REQUIRE_OPENSL=ON")
-        cmake_arguments.add("-DALSOFT_EMBED_HRTF_DATA=OFF")
 
         debug {
             externalNativeBuild {
                 cmake {
-                    cFlags "-std=c11 -g -O0 -D_DEBUG"
-                    cppFlags "-std=c++17 -frtti -fexceptions -g -O0 -D_DEBUG"
-
                     for (String argument : cmake_arguments) {
                         arguments.add(argument)
                     }
@@ -56,9 +29,6 @@ android {
         release {
             externalNativeBuild {
                 cmake {
-                    cFlags "-std=c11 -O3 -DNDEBUG"
-                    cppFlags "-std=c++17 -frtti -fexceptions -O3 -DNDEBUG"
-
                     for (String argument : cmake_arguments) {
                         arguments.add(argument)
                     }

@@ -33,9 +33,6 @@ android {
         debug {
             externalNativeBuild {
                 cmake {
-                    cFlags "-std=c11 -g -O0 -D_DEBUG"
-                    cppFlags "-std=c++17 -frtti -fexceptions -g -O0 -D_DEBUG"
-
                     for (String argument : cmake_arguments) {
                         arguments.add(argument)
                     }
@@ -50,9 +47,6 @@ android {
         release {
             externalNativeBuild {
                 cmake {
-                    cFlags "-std=c11 -O3 -DNDEBUG"
-                    cppFlags "-std=c++17 -frtti -fexceptions -O3 -DNDEBUG"
-
                     for (String argument : cmake_arguments) {
                         arguments.add(argument)
                     }

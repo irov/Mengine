@@ -4,6 +4,10 @@
 
 #include "Config/StdString.h"
 
+#import <Foundation/Foundation.h>
+
+#define MENGINE_APPLE_LOG_MAX_MESSAGE 1024
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -61,12 +65,11 @@ namespace Mengine
 
         if( _message.flag & LFLAG_CATEGORYSTAMP )
         {
-            Char categorystamp[256] = {'\0'};
-
             const Char * category = _message.category;
-            MENGINE_SPRINTF( categorystamp, "[%s]", category );
-
-            MENGINE_STRCAT( m_message, categorystamp );
+            
+            MENGINE_STRCAT( m_message, "[" );
+            MENGINE_STRCAT( m_message, category );
+            MENGINE_STRCAT( m_message, "]" );
             MENGINE_STRCAT( m_message, " " );
         }
 
@@ -84,26 +87,26 @@ namespace Mengine
 
         size_t message_len = MENGINE_STRLEN( m_message );
 
-        size_t message_packages = message_len / MENGINE_ANDROID_LOG_MAX_MESSAGE;
-        size_t message_tail = message_len % MENGINE_ANDROID_LOG_MAX_MESSAGE;
+        size_t message_packages = message_len / MENGINE_APPLE_LOG_MAX_MESSAGE;
+        size_t message_tail = message_len % MENGINE_APPLE_LOG_MAX_MESSAGE;
 
         if( message_packages != 0 )
         {
-            NSLog( @"%.*s <<<", @(MENGINE_ANDROID_LOG_MAX_MESSAGE), @(data) );
+            NSLog( @"%.*s <<<", MENGINE_APPLE_LOG_MAX_MESSAGE, data );
 
             for( size_t package = 1; package != message_packages; ++package )
             {
-                NSLog( ">>>  %.*s", @(MENGINE_ANDROID_LOG_MAX_MESSAGE), @(data + package * MENGINE_ANDROID_LOG_MAX_MESSAGE) );
+                NSLog( @">>>  %.*s", MENGINE_APPLE_LOG_MAX_MESSAGE, data + package * MENGINE_APPLE_LOG_MAX_MESSAGE );
             }
 
             if( message_tail != 0 )
             {
-                NSLog( ">>>  %s", @(data + message_packages * MENGINE_ANDROID_LOG_MAX_MESSAGE) );
+                NSLog( @">>>  %s", data + message_packages * MENGINE_APPLE_LOG_MAX_MESSAGE );
             }
         }
         else
         {
-            NSLog( "%s", @(data + message_packages * MENGINE_ANDROID_LOG_MAX_MESSAGE) );
+            NSLog( @"%s", data + message_packages * MENGINE_APPLE_LOG_MAX_MESSAGE );
         }
     }
     //////////////////////////////////////////////////////////////////////////

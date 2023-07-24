@@ -53,6 +53,16 @@
     provider->onAdRewardedDidShow();
 }
 
+- (void) MARAdRewardedDidShowFailed :(NSDictionary *)adDict {
+    LOGGER_MESSAGE( "MARAdRewardedDidShowFailed adDict: %s"
+        , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
+    );
+    
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    
+    provider->onAdRewardedDidShowFailed();
+}
+
 - (void) MARAdRewardedDidClicked :(NSDictionary *)adDict {
     LOGGER_MESSAGE( "MARAdRewardedDidClicked adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]

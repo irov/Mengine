@@ -38,6 +38,7 @@ namespace Mengine
         virtual void onAdRewardedDidFailed() = 0;
         virtual void onAdRewardedDidLoaded() = 0;
         virtual void onAdRewardedDidShow() = 0;
+        virtual void onAdRewardedDidShowFailed() = 0;
         virtual void onAdRewardedDidClicked() = 0;
         virtual void onAdRewardedDidClosed() = 0;
         virtual void onAdRewardedDidSkipped() = 0;

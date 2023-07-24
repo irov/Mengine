@@ -17,10 +17,13 @@
 #   include "Environment/Android/AndroidEnv.h"
 #elif defined(MENGINE_PLATFORM_APPLE)
 #   include "Environment/Apple/AppleUtils.h"
+#   include "Environment/Apple/AppleNSLogger.h"
 #endif
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "AndroidLogger.h"
+#elif defined(MENGINE_PLATFORM_APPLE)
+#   include "AppleNSLogger.h"
 #else
 #   include "Kernel/StdioLogger.h"
 #endif
@@ -164,6 +167,8 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<AndroidLogger>( MENGINE_DOCUMENT_FUNCTION );
+#elif defined(MENGINE_PLATFORM_APPLE)
+        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<AppleNSLogger>( MENGINE_DOCUMENT_FUNCTION );
 #else
         LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<StdioLogger>( MENGINE_DOCUMENT_FUNCTION );
 #endif

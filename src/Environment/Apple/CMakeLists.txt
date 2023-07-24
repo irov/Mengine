@@ -17,6 +17,9 @@ src
     AppleEnvironmentService.h
     AppleEnvironmentService.mm
     
+    AppleNSLogger.h
+    AppleNSLogger.mm
+    
     ConstStringHolderNSString.h
     ConstStringHolderNSString.mm
 )

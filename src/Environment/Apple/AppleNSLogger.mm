@@ -1,59 +1,22 @@
-#include "AndroidLogger.h"
+#include "AppleNSLogger.h"
 
 #include "Kernel/LoggerHelper.h"
 
-#include "Config/StdIO.h"
 #include "Config/StdString.h"
-
-#include <android/log.h>
-
-#ifndef MENGINE_ANDROID_LOG_MAX_MESSAGE
-#define MENGINE_ANDROID_LOG_MAX_MESSAGE 1000
-#endif
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AndroidLogger::AndroidLogger()
+    AppleNSLogger::AppleNSLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AndroidLogger::~AndroidLogger()
+    AppleNSLogger::~AppleNSLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidLogger::_log( const LoggerMessage & _message )
+    void AppleNSLogger::_log( const LoggerMessage & _message )
     {
-        android_LogPriority prio = ANDROID_LOG_UNKNOWN;
-
-        ELoggerLevel level = _message.level;
-
-        switch( level )
-        {
-        case LM_SILENT:
-            return;
-        case LM_FATAL:
-            prio = ANDROID_LOG_FATAL;
-            break;
-        case LM_MESSAGE_RELEASE:
-        case LM_ERROR:
-            prio = ANDROID_LOG_ERROR;
-            break;
-        case LM_WARNING:
-            prio = ANDROID_LOG_WARN;
-            break;
-        case LM_MESSAGE:
-        case LM_INFO:
-            prio = ANDROID_LOG_INFO;
-            break;
-        case LM_DEBUG:
-            prio = ANDROID_LOG_DEBUG;
-            break;
-        case LM_VERBOSE:
-            prio = ANDROID_LOG_VERBOSE;
-            break;
-        }
-
         if( _message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
             Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
@@ -83,6 +46,16 @@ namespace Mengine
             size_t threadstampSize = Helper::makeLoggerThreadStamp( "|%s|", threadstamp, 0, 256 );
 
             MENGINE_STRCAT( m_message, threadstamp );
+            MENGINE_STRCAT( m_message, " " );
+        }
+
+        if( _message.flag & LFLAG_SYMBOLSTAMP )
+        {
+            ELoggerLevel level = _message.level;
+
+            Char symbol = Helper::getLoggerLevelSymbol( level );
+
+            MENGINE_STRNCAT( m_message, &symbol, 1 );
             MENGINE_STRCAT( m_message, " " );
         }
 
@@ -116,29 +89,21 @@ namespace Mengine
 
         if( message_packages != 0 )
         {
-            __android_log_print( prio, "Mengine", "%.*s <<<"
-                , (int32_t)MENGINE_ANDROID_LOG_MAX_MESSAGE, data
-            );
+            NSLog( @"%.*s <<<", @(MENGINE_ANDROID_LOG_MAX_MESSAGE), @(data) );
 
             for( size_t package = 1; package != message_packages; ++package )
             {
-                __android_log_print( prio, "Mengine", ">>>  %.*s"
-                    , (int32_t)MENGINE_ANDROID_LOG_MAX_MESSAGE, data + package * MENGINE_ANDROID_LOG_MAX_MESSAGE
-                );
+                NSLog( ">>>  %.*s", @(MENGINE_ANDROID_LOG_MAX_MESSAGE), @(data + package * MENGINE_ANDROID_LOG_MAX_MESSAGE) );
             }
 
             if( message_tail != 0 )
             {
-                __android_log_print( prio, "Mengine", ">>>  %s"
-                    , data + message_packages * MENGINE_ANDROID_LOG_MAX_MESSAGE
-                );
+                NSLog( ">>>  %s", @(data + message_packages * MENGINE_ANDROID_LOG_MAX_MESSAGE) );
             }
         }
         else
         {
-            __android_log_print( prio, "Mengine", "%s"
-                , data + message_packages * MENGINE_ANDROID_LOG_MAX_MESSAGE
-            );
+            NSLog( "%s", @(data + message_packages * MENGINE_ANDROID_LOG_MAX_MESSAGE) );
         }
     }
     //////////////////////////////////////////////////////////////////////////

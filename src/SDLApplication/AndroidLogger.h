@@ -13,6 +13,8 @@ namespace Mengine
 
     public:
         void _log( const LoggerMessage & _message ) override;
-        void _flush() override;
+
+    protected:
+        Char m_message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
     };
 }

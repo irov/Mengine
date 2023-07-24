@@ -43,7 +43,7 @@ namespace Mengine
             std::cout.write( " ", 1 );
         }
 
-        if(_message.flag & LFLAG_SYMBOLSTAMP )
+        if( _message.flag & LFLAG_SYMBOLSTAMP )
         {
             ELoggerLevel level = _message.level;
 
@@ -52,7 +52,7 @@ namespace Mengine
             std::cout.write( " ", 1 );
         }
 
-        if(_message.flag & LFLAG_CATEGORYSTAMP )
+        if( _message.flag & LFLAG_CATEGORYSTAMP )
         {
             size_t category_size = MENGINE_STRLEN( _message.category );
 

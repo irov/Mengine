@@ -202,6 +202,18 @@ namespace Mengine
                 cb.call_args( m_args );
             }
             
+            void onAdRewardedDidShowFailed() override
+            {
+                pybind::object cb = m_cbs["onAdRewardedDidShowFailed"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
             void onAdRewardedDidClicked() override
             {
                 pybind::object cb = m_cbs["onAdRewardedDidClicked"];

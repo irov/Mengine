@@ -30,6 +30,8 @@ elseif(MENGINE_TARGET_ANDROID)
     ADD_FILTER(
     main
         AndroidMain.cpp
+        
+        stack_chk_fail_local.c
     )
 elseif(MENGINE_TARGET_MACOS)
     ADD_FILTER(
@@ -80,16 +82,6 @@ if(MENGINE_TARGET_IOS)
     ios
         MengineUIKitDelegate.mm
         MengineUIKitDelegate.h
-    )
-endif()
-
-if(MENGINE_TARGET_ANDROID)
-    ADD_FILTER(
-    android
-        stack_chk_fail_local.c
-        
-        AndroidLogger.cpp
-        AndroidLogger.h
     )
 endif()
 

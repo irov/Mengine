@@ -17,13 +17,12 @@
 #   include "Environment/Android/AndroidEnv.h"
 #elif defined(MENGINE_PLATFORM_APPLE)
 #   include "Environment/Apple/AppleUtils.h"
-#   include "Environment/Apple/AppleNSLogger.h"
 #endif
 
 #if defined(MENGINE_PLATFORM_ANDROID)
-#   include "AndroidLogger.h"
+#   include "Environment/Android/AndroidLogger.h"
 #elif defined(MENGINE_PLATFORM_APPLE)
-#   include "AppleNSLogger.h"
+#   include "Environment/Apple/AppleNSLogger.h"
 #else
 #   include "Kernel/StdioLogger.h"
 #endif

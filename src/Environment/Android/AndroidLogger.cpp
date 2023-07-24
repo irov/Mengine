@@ -88,12 +88,11 @@ namespace Mengine
 
         if( _message.flag & LFLAG_CATEGORYSTAMP )
         {
-            Char categorystamp[256] = {'\0'};
-
             const Char * category = _message.category;
-            MENGINE_SPRINTF( categorystamp, "[%s]", category );
-
-            MENGINE_STRCAT( m_message, categorystamp );
+            
+            MENGINE_STRCAT( m_message, "[" );
+            MENGINE_STRCAT( m_message, category );
+            MENGINE_STRCAT( m_message, "]" );
             MENGINE_STRCAT( m_message, " " );
         }
 

@@ -18,6 +18,9 @@ src
     ConstStringHolderJString.h
     ConstStringHolderJString.cpp
     
+    AndroidLogger.h
+    AndroidLogger.cpp
+    
     AndroidProxyLogger.h
     AndroidProxyLogger.cpp
 )

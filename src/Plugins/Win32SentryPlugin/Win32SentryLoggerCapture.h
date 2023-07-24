@@ -18,7 +18,7 @@ namespace Mengine
         void _log( const LoggerMessage & _message ) override;
 
     protected:
-        Char m_buffer[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        Char m_message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32SentryLoggerCapture, LoggerInterface> Win32SentryLoggerCapturePtr;

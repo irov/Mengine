@@ -21,6 +21,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleNSLogger::_log( const LoggerMessage & _message )
     {
+        MENGINE_STRCPY( m_message, "" );
+
         if( _message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
             Char functionstamp[MENGINE_MAX_PATH] = {'\0'};

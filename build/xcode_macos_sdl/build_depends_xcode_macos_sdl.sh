@@ -22,7 +22,7 @@ SOURCE_DIRECTORY=$PWD/../../cmake/Depends_Xcode_MacOS_SDL
 mkdir -p $SOLUTION_DIR
 
 pushd $SOLUTION_DIR
-$CMAKE -G"Xcode" -S "$SOURCE_DIRECTORY" -DCMAKE_BUILD_TYPE:STRING="$CONFIGURATION"
+$CMAKE -G"Xcode" -S "$SOURCE_DIRECTORY" -DCMAKE_BUILD_TYPE:STRING=$CONFIGURATION
 
 if [ $? -ne 0 ]; then
     echo "please fix generate CMake"

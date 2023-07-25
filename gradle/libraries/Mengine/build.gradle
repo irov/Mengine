@@ -13,6 +13,7 @@ android {
     externalNativeBuild {
         cmake {
             path "../../../cmake/Android_SDL/Mengine/CMakeLists.txt"
+            buildStagingDirectory "../../../outputs/gradle/.cxx/"  + project.getName()
         }
     }
 

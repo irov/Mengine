@@ -4,6 +4,7 @@ android {
     externalNativeBuild {
         cmake {
             path "../../../cmake/Android_SDL/OpenAL/CMakeLists.txt"
+            buildStagingDirectory "../../../outputs/gradle/.cxx/" + project.getName()
         }
     }
 

@@ -171,7 +171,7 @@ if(MENGINE_TARGET_APPLE)
             file(RELATIVE_PATH RES ${MENGINE_DEPLOY_PATH}/${FOLDER} ${FILE})
             get_filename_component(RES_LOC ${RES} PATH)
             
-            set_source_files_properties(${FILE} PROPERTIES MACOSX_PACKAGE_LOCATION "deploy_data/${RES_LOC}" HEADER_FILE_ONLY TRUE)
+            set_source_files_properties(${FILE} PROPERTIES MACOSX_PACKAGE_LOCATION Resources HEADER_FILE_ONLY TRUE)
             string(REPLACE "/" "\\" ide_group_name "deploy_data/${RES_LOC}")
             source_group(${ide_group_name} FILES ${FILE})
         endforeach()
@@ -186,9 +186,9 @@ if(MENGINE_TARGET_APPLE)
         endif()
     endif()
     
-    set_source_files_properties(${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PLIST} PROPERTIES MACOSX_PACKAGE_LOCATION "deploy_plist")
-    
     MESSAGE("MENGINE_APPLICATION_DEPLOY_PLIST: ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PLIST}")
+    
+    source_group("deploy_plist" FILES ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PLIST})
     
     get_filename_component(MENGINE_APPLICATION_DEPLOY_PLIST_PATH ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PLIST} PATH)
     get_filename_component(MENGINE_APPLICATION_DEPLOY_PLIST_NAME ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PLIST} NAME)
@@ -210,20 +210,23 @@ if(MENGINE_TARGET_APPLE)
         get_filename_component(MACOSX_BUNDLE_ICON_FILE ${MENGINE_APPLICATION_DEPLOY_ICONS} NAME)
         
         MESSAGE("Add deploy icons: ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_ICONS}")
-        set_source_files_properties(${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_ICONS} PROPERTIES MACOSX_PACKAGE_LOCATION "deploy_icons")
+        set_source_files_properties(${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_ICONS} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
         set(MENGINE_APPLE_RESOURCES ${MENGINE_APPLE_RESOURCES} ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_ICONS})
+        source_group("deploy_icons" FILES ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_ICONS})
     endif()
     
     if(MENGINE_APPLICATION_DEPLOY_MEDIA)
         MESSAGE("Add deploy media: ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_MEDIA}")
-        set_source_files_properties(${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_MEDIA} PROPERTIES MACOSX_PACKAGE_LOCATION "deploy_media")
+        set_source_files_properties(${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_MEDIA} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
         set(MENGINE_APPLE_RESOURCES ${MENGINE_APPLE_RESOURCES} ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_MEDIA})
+        source_group("deploy_media" FILES ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_MEDIA})
     endif()
         
     if(MENGINE_APPLICATION_DEPLOY_STORYBOARD)
         MESSAGE("Add deploy storyboard: ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_STORYBOARD}")
-        set_source_files_properties(${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_STORYBOARD} PROPERTIES MACOSX_PACKAGE_LOCATION "deploy_storyboard")
+        set_source_files_properties(${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_STORYBOARD} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
         set(MENGINE_APPLE_RESOURCES ${MENGINE_APPLE_RESOURCES} ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_STORYBOARD})
+        source_group("deploy_storyboard" FILES ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_STORYBOARD})
     endif()
     
     if(MENGINE_APPLICATION_DEPLOY_DATA)
@@ -233,19 +236,17 @@ if(MENGINE_TARGET_APPLE)
     if(MENGINE_TARGET_MACOS)
         foreach(DYLIB ${APPLICATION_MACOS_DYLIB})
             MESSAGE("Add macos dylib: ${DYLIB}")
-            
-            set_source_files_properties(${DYLIB} PROPERTIES MACOSX_PACKAGE_LOCATION "deploy_dylib")
-            
+            set_source_files_properties(${DYLIB} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
             set(MENGINE_APPLE_RESOURCES ${MENGINE_APPLE_RESOURCES} ${DYLIB})
+            source_group("deploy_dylib" FILES ${DYLIB})
         endforeach()
         
-        foreach(DYLIB ${APPLICATION_MACOS_DYLIB_WITH_SIGN})
-            MESSAGE("Add macos dylib with sign: ${DYLIB}")
-            
-            set_source_files_properties(${DYLIB} PROPERTIES MACOSX_PACKAGE_LOCATION "deploy_dylib_with_sign")
-            set_source_files_properties(${DYLIB} PROPERTIES XCODE_FILE_ATTRIBUTES "CodeSignOnCopy")
-            
-            set(MENGINE_APPLE_RESOURCES ${MENGINE_APPLE_RESOURCES} ${DYLIB})
+        foreach(DYLIB_WITH_SIGN ${APPLICATION_MACOS_DYLIB_WITH_SIGN})
+            MESSAGE("Add macos dylib with sign: ${DYLIB_WITH_SIGN}")
+            set_source_files_properties(${DYLIB_WITH_SIGN} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+            set_source_files_properties(${DYLIB_WITH_SIGN} PROPERTIES XCODE_FILE_ATTRIBUTES "CodeSignOnCopy")
+            set(MENGINE_APPLE_RESOURCES ${MENGINE_APPLE_RESOURCES} ${DYLIB_WITH_SIGN})
+            source_group("deploy_dylib_with_sign" FILES ${DYLIB_WITH_SIGN})
         endforeach()
     endif()
     

@@ -42,6 +42,8 @@ def ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_
 def ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_COMPILE_SDK_VERSION", 33)
 
 allprojects {
+    buildDir = rootProject.projectDir.getAbsolutePath() + "/../outputs/gradle/build/${rootProject.name}/${project.name}"
+
     project.ext {
         ndkVersion = ANDROID_APP_NDK_VERSION
         buildToolsVersion = ANDROID_APP_BUILD_TOOLS_VERSION

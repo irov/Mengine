@@ -39,6 +39,8 @@ namespace Mengine
         NSDictionary * MARSDKConfig = Mengine::Helper::AppleGetBundlePluginConfig(@"MARSDK");
         [[MARSDK sharedInstance] initWithParams:MARSDKConfig];
         
+        [[MARSDK sharedInstance] openXcodeLog];
+        
         return true;
     }
     ////////////////////////////////////////////////////////////////////////

@@ -145,7 +145,11 @@ elseif(MINGW)
     SET(MENGINE_OUTPUT_SUFFIX ${CMAKE_BUILD_TYPE})
 elseif(APPLE)
     # input and thirdparty paths
-    SET(MENGINE_OUTPUT_SUFFIX ${CMAKE_BUILD_TYPE})
+	if(IOS)
+    	SET(MENGINE_OUTPUT_SUFFIX ${CMAKE_BUILD_TYPE})
+	else()
+    	SET(MENGINE_OUTPUT_SUFFIX ${CMAKE_BUILD_TYPE})
+	endif()
 else()
     # input and thirdparty paths
     if(CMAKE_GENERATOR_PLATFORM)

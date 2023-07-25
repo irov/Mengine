@@ -1,5 +1,6 @@
 package org.Mengine.Plugin.Facebook;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
+import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,7 +41,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Map;
 
-public class MengineFacebookPlugin extends MenginePlugin implements MenginePluginAnalyticsListener {
+public class MengineFacebookPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "Facebook";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -60,8 +62,25 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
+    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+        Context context = application.getApplicationContext();
+
+        m_logger = AppEventsLogger.newLogger(context);
+    }
+
+    @Override
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+        //Empty
+    }
+
+    @Override
+    public void onAppTerminate(MengineApplication application) {
+        m_logger = null;
+    }
+
+    @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG == true) {
             FacebookSdk.setIsDebugEnabled(true);
             FacebookSdk.addLoggingBehavior(LoggingBehavior.APP_EVENTS);
         }
@@ -187,12 +206,10 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             MengineApplication application = this.getMengineApplication();
             AppEventsLogger.activateApp(application);
         } catch (Exception ex) {
-            MengineFacebookPlugin.this.logError("activateApp catch exception: %s"
+            this.logError("activateApp catch exception: %s"
                 , ex.getLocalizedMessage()
             );
         }
-
-        m_logger = AppEventsLogger.newLogger(activity);
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null) {
@@ -219,6 +236,10 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
     @Override
     public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> context, Map<String, Object> parameters) {
+        if (m_logger == null) {
+            return;
+        }
+
         switch (eventType) {
             case EAET_CUSTOM: {
                 Bundle params = new Bundle();
@@ -284,6 +305,27 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
                 m_logger.logEvent(AppEventsConstants.EVENT_NAME_UNLOCKED_ACHIEVEMENT, params);
             } break;
+            case EAET_LEVEL_UP: {
+                //ToDo EAET_LEVEL_UP
+            }break;
+            case EAET_LEVEL_START: {
+                //ToDo EAET_LEVEL_START
+            }break;
+            case EAET_LEVEL_END: {
+                //ToDo EAET_LEVEL_END
+            }break;
+            case EAET_SELECT_ITEM: {
+                //ToDo EAET_SELECT_ITEM
+            }break;
+            case EAET_TUTORIAL_BEGIN: {
+                //ToDo EAET_TUTORIAL_BEGIN
+            }break;
+            case EAET_TUTORIAL_COMPLETE: {
+                //ToDo EAET_TUTORIAL_COMPLETE
+            }break;
+            case EAET_SCREEN_VIEW: {
+                //ToDo EAET_SCREEN_VIEW
+            }break;
             default: {
                 this.logError("unknown event type: %d name: %s"
                 	, eventType

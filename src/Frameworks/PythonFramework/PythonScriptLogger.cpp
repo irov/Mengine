@@ -56,12 +56,10 @@ namespace Mengine
 
         if( MENGINE_STRCMP( arg_str, "\n" ) != 0 )
         {
-            m_messageCache.append( arg_str, arg_str_size );
+            MENGINE_STRNCAT( m_message, arg_str, arg_str_size );
 
             return _kernel->ret_none();
         }
-
-        const Char * message = m_messageCache.c_str();
 
         uint32_t color = this->getColor();
 
@@ -71,14 +69,14 @@ namespace Mengine
             uint32_t lineno = 0;
             _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
-            LOGGER_VERBOSE_LEVEL( "python", LM_WARNING, LFILTER_NONE, color, function, lineno, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )( "%s", message );
+            LOGGER_VERBOSE_LEVEL( "python", LM_WARNING, LFILTER_NONE, color, function, lineno, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )("%s", m_message);
         }
         else
         {
-            LOGGER_VERBOSE_LEVEL( "python", LM_WARNING, LFILTER_NONE, color, nullptr, 0, LFLAG_SHORT )( "%s", message );
+            LOGGER_VERBOSE_LEVEL( "python", LM_WARNING, LFILTER_NONE, color, nullptr, 0, LFLAG_SHORT )("%s", m_message);
         }
 
-        m_messageCache.clear();
+        MENGINE_STRCPY( m_message, "" );
 
         return _kernel->ret_none();
     }

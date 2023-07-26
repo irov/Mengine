@@ -36,7 +36,7 @@ namespace Mengine
     protected:
         uint32_t m_color;
 
-        String m_messageCache;
+        Char m_message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
         int32_t m_softspace;
     };

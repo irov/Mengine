@@ -116,27 +116,27 @@ namespace Mengine
         if( message_packages != 0 )
         {
             __android_log_print( prio, "Mengine", "%.*s <<<"
-                , (int32_t)MENGINE_ANDROID_LOG_MAX_MESSAGE, data
+                , (int32_t)MENGINE_ANDROID_LOG_MAX_MESSAGE, m_message
             );
 
             for( size_t package = 1; package != message_packages; ++package )
             {
                 __android_log_print( prio, "Mengine", ">>>  %.*s"
-                    , (int32_t)MENGINE_ANDROID_LOG_MAX_MESSAGE, data + package * MENGINE_ANDROID_LOG_MAX_MESSAGE
+                    , (int32_t)MENGINE_ANDROID_LOG_MAX_MESSAGE, m_message + package * MENGINE_ANDROID_LOG_MAX_MESSAGE
                 );
             }
 
             if( message_tail != 0 )
             {
                 __android_log_print( prio, "Mengine", ">>>  %s"
-                    , data + message_packages * MENGINE_ANDROID_LOG_MAX_MESSAGE
+                    , m_message + message_packages * MENGINE_ANDROID_LOG_MAX_MESSAGE
                 );
             }
         }
         else
         {
             __android_log_print( prio, "Mengine", "%s"
-                , data + message_packages * MENGINE_ANDROID_LOG_MAX_MESSAGE
+                , m_message + message_packages * MENGINE_ANDROID_LOG_MAX_MESSAGE
             );
         }
     }

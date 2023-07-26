@@ -94,21 +94,21 @@ namespace Mengine
 
         if( message_packages != 0 )
         {
-            NSLog( @"%.*s <<<", MENGINE_APPLE_LOG_MAX_MESSAGE, data );
+            NSLog( @"%.*s <<<", MENGINE_APPLE_LOG_MAX_MESSAGE, m_message );
 
             for( size_t package = 1; package != message_packages; ++package )
             {
-                NSLog( @">>>  %.*s", MENGINE_APPLE_LOG_MAX_MESSAGE, data + package * MENGINE_APPLE_LOG_MAX_MESSAGE );
+                NSLog( @">>>  %.*s", MENGINE_APPLE_LOG_MAX_MESSAGE, m_message + package * MENGINE_APPLE_LOG_MAX_MESSAGE );
             }
 
             if( message_tail != 0 )
             {
-                NSLog( @">>>  %s", data + message_packages * MENGINE_APPLE_LOG_MAX_MESSAGE );
+                NSLog( @">>>  %s", m_message + message_packages * MENGINE_APPLE_LOG_MAX_MESSAGE );
             }
         }
         else
         {
-            NSLog( @"%s", data + message_packages * MENGINE_APPLE_LOG_MAX_MESSAGE );
+            NSLog( @"%s", m_message + message_packages * MENGINE_APPLE_LOG_MAX_MESSAGE );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -37,6 +37,11 @@
     );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    
+    if( provider == nullptr )
+    {
+        return;
+    }
 
     Mengine::MARSDKResultParams result_params;
     Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
@@ -50,6 +55,11 @@
     );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    
+    if( provider == nullptr )
+    {
+        return;
+    }
 
     Mengine::MARSDKResultParams result_params;
     Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
@@ -64,6 +74,11 @@
     );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    
+    if( provider == nullptr )
+    {
+        return;
+    }
 
     const Mengine::Char * msg_str = [msg UTF8String];
     
@@ -77,6 +92,11 @@
     );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    
+    if( provider == nullptr )
+    {
+        return;
+    }
 
     const Mengine::Char * eventName_str = [eventName UTF8String];
     
@@ -93,6 +113,11 @@
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
+    if( provider == nullptr )
+    {
+        return;
+    }
+    
     Mengine::MARSDKResultParams result_params;
     Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
     
@@ -106,6 +131,11 @@
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
+    if( provider == nullptr )
+    {
+        return;
+    }
+    
     Mengine::MARSDKResultParams result_params;
     Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
     
@@ -118,6 +148,11 @@
     );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    
+    if( provider == nullptr )
+    {
+        return;
+    }
     
     Mengine::MARSDKResultParams result_params;
     Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );

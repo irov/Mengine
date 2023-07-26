@@ -30,6 +30,11 @@
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
+    if( provider == nullptr )
+    {
+        return;
+    }
+    
     provider->onAdRewardedDidFailed();
 }
 
@@ -39,6 +44,11 @@
     );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    
+    if( provider == nullptr )
+    {
+        return;
+    }
     
     provider->onAdRewardedDidLoaded();
 }
@@ -50,6 +60,11 @@
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
+    if( provider == nullptr )
+    {
+        return;
+    }
+    
     provider->onAdRewardedDidShow();
 }
 
@@ -59,6 +74,11 @@
     );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    
+    if( provider == nullptr )
+    {
+        return;
+    }
     
     provider->onAdRewardedDidShowFailed();
 }
@@ -70,6 +90,11 @@
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
+    if( provider == nullptr )
+    {
+        return;
+    }
+    
     provider->onAdRewardedDidClicked();
 }
 
@@ -79,6 +104,11 @@
     );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    
+    if( provider == nullptr )
+    {
+        return;
+    }
     
     provider->onAdRewardedDidClosed();
 }
@@ -90,6 +120,11 @@
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
     
+    if( provider == nullptr )
+    {
+        return;
+    }
+    
     provider->onAdRewardedDidSkipped();
 }
 
@@ -99,6 +134,11 @@
     );
     
     const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    
+    if( provider == nullptr )
+    {
+        return;
+    }
     
     provider->onAdRewardedDidFinished([itemName UTF8String], itemNum);
 }

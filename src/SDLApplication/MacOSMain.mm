@@ -4,6 +4,8 @@
 
 #import "MengineAppleApplicationDelegates.h"
 
+#import <Foundation/Foundation.h>
+
 #include "SDLApplication.h"
 
 int main( int argc, char * argv[] )
@@ -16,6 +18,10 @@ int main( int argc, char * argv[] )
 
         if( clazz == nil )
         {
+            NSLog( @"invalid found application delegate %@"
+              , className
+            );
+            
             return EXIT_FAILURE;
         }
         
@@ -23,6 +29,10 @@ int main( int argc, char * argv[] )
 
         if( [delegate application] == NO )
         {
+            NSLog( @"invalid initialize application delegate %@"
+              , className
+            );
+            
             return EXIT_FAILURE;
         }
     }

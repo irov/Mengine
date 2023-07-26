@@ -27,5 +27,6 @@ namespace Mengine
         uint32_t getBuildVersionPatch();
         uint32_t getBuildVersionNumber();
         uint64_t getBuildNumber();
+        const Char * getBuildNumberString();
     }
 }

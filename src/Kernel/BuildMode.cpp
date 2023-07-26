@@ -179,5 +179,12 @@ namespace Mengine
             return BUILD_NUMBER;
         }
         //////////////////////////////////////////////////////////////////////////
+        const Char * getBuildNumberString()
+        {
+            const Char * BUILD_NUMBER_STRING = MENGINE_BUILD_NUMBER_STRING;
+
+            return BUILD_NUMBER_STRING;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

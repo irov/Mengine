@@ -11,6 +11,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/BuildMode.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ConverterService, Mengine::ConverterService );
@@ -74,6 +75,13 @@ namespace Mengine
         {
             *_out = _in;
 
+            return true;
+        }
+
+        bool developmentMode = Helper::isDevelopmentMode();
+
+        if( developmentMode == false )
+        {
             return true;
         }
 

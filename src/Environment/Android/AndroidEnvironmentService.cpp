@@ -154,9 +154,11 @@ extern "C"
             if( _message.flag & Mengine::LFLAG_CATEGORYSTAMP )
             {
                 env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, '[' );
+
                 jstring jvalue = env->NewStringUTF( _message.category );
                 env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
                 env->DeleteLocalRef( jvalue );
+
                 env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ']' );
                 env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ' ' );
             }
@@ -164,7 +166,7 @@ extern "C"
             const Mengine::Char * data_value = _message.data;
             size_t data_size = _message.size;
 
-            Mengine::Char msg[MENGINE_LOGGER_MAX_MESSAGE];
+            Mengine::Char msg[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
             MENGINE_MEMCPY( msg, data_value, data_size * sizeof(Mengine::Char) );
             msg[data_size] = '\0';
 
@@ -173,6 +175,7 @@ extern "C"
             env->DeleteLocalRef( jvalue );
 
             env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, '\n' );
+            env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, '\0' );
 
             env->DeleteLocalRef( jclass_Writer );
         });
@@ -203,11 +206,14 @@ extern "C"
         const void * data_value = memory->getBuffer();
         size_t data_size = memory->getSize();
 
-        MENGINE_UNUSED(data_size);
+        MENGINE_UNUSED( data_size );
 
         jstring jvalue = env->NewStringUTF( (const Mengine::Char *)data_value );
         env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
         env->DeleteLocalRef( jvalue );
+
+        env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, '\n' );
+        env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, '\0' );
 
         env->DeleteLocalRef( jclass_Writer );
 

@@ -1934,7 +1934,6 @@ namespace Mengine
         SERVICE_FINALIZE( RenderMaterialService );
         SERVICE_FINALIZE( RenderTextureService );
         SERVICE_FINALIZE( ArchiveService );
-        SERVICE_FINALIZE( MemoryService );
         SERVICE_FINALIZE( ThreadService );
         SERVICE_FINALIZE( EasingService );
 
@@ -1978,6 +1977,7 @@ namespace Mengine
 
         SERVICE_FINALIZE( PlatformService );
         SERVICE_FINALIZE( LoggerService );
+        SERVICE_FINALIZE( MemoryService );
         SERVICE_FINALIZE( FactoryService );
         SERVICE_FINALIZE( OptionsService );
         SERVICE_FINALIZE( NotificationService );

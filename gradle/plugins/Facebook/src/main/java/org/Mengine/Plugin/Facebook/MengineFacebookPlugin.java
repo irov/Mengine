@@ -407,7 +407,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         this.logMessage("getUser");
 
         if (this.isLoggedIn() == false) {
-            this.logError("is not logged in");
+            this.logWarning("is not logged in");
 
             this.pythonCall("onFacebookUserFetchSuccess", "", "");
             
@@ -526,7 +526,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         );
 
         if (this.isLoggedIn() == false) {
-            this.logError("is not logged in");
+            this.logWarning("is not logged in");
 
             this.pythonCall("onFacebookProfilePictureLinkGet", m_facebookUserId, false, "");
             
@@ -543,7 +543,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         );
 
         if (this.isLoggedIn() == false || user_id.isEmpty() == true) {
-            this.logError("is not logged in");
+            this.logWarning("is not logged in");
 
             this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
 

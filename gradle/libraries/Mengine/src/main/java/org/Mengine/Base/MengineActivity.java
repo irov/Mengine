@@ -36,6 +36,7 @@ public class MengineActivity extends SDLActivity {
     private static native boolean AndroidEnvironmentService_hasCurrentAccount();
     private static native String AndroidEnvironmentService_getCurrentAccountFolderName();
     private static native boolean AndroidEnvironmentService_writeLoggerHistoryToFile(Writer writer);
+    private static native boolean AndroidEnvironmentService_writeOldLogToFile(Writer writer);
     private static native int AndroidEnvironmentService_getProjectVersion();
     private static native boolean AndroidEnvironmentService_isDebugMode();
     private static native boolean AndroidEnvironmentService_isDevelopmentMode();
@@ -927,6 +928,38 @@ public class MengineActivity extends SDLActivity {
                         );
 
                         fileUris.add(logZipFileUri);
+                    }
+                }
+
+                File oldLogFile = MengineUtils.createTempFile(context, "mng_old_log_", ".log");
+
+                if (oldLogFile == null) {
+                    MengineLog.logWarning(TAG, "linking open mail [%s] subject [%s] invalid create temp file 'mng_old_log_***.log'"
+                        , email
+                        , subject
+                    );
+
+                    return false;
+                }
+
+                OutputStreamWriter oldLogFileStream = new OutputStreamWriter(new FileOutputStream(oldLogFile));
+
+                if (AndroidEnvironmentService_writeOldLogToFile(oldLogFileStream) == true) {
+                    oldLogFileStream.flush();
+                    oldLogFileStream.close();
+
+                    File oldLogZipFile = MengineUtils.createTempFile(context, "mng_old_log_", ".zip");
+
+                    if (MengineUtils.zipFiles(oldLogFile, oldLogZipFile) == true) {
+                        Uri oldLogZipFileUri = MengineUtils.getUriForFile(context, oldLogZipFile);
+
+                        MengineLog.logInfo(TAG, "linking open mail [%s] subject [%s] attach: %s"
+                            , email
+                            , subject
+                            , oldLogZipFileUri
+                        );
+
+                        fileUris.add(oldLogZipFileUri);
                     }
                 }
 

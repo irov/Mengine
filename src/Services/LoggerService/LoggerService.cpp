@@ -15,6 +15,8 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/MemoryStreamHelper.h"
+#include "Kernel/FileGroupHelper.h"
 
 #include "Config/StdIO.h"
 #include "Config/Algorithm.h"
@@ -220,6 +222,8 @@ namespace Mengine
     void LoggerService::_finalizeService()
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CONFIGS_LOAD );
+
+        m_memoryOldLog = nullptr;
 
         m_mutexLogger = nullptr;
         m_mutexHistory = nullptr;
@@ -479,6 +483,30 @@ namespace Mengine
 
             _logger->log( msg );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool LoggerService::loadOldLogMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    {
+        if( _fileGroup->existFile( _filePath, false ) == false )
+        {
+            return false;
+        }
+
+        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( memory == nullptr )
+        {
+            return false;
+        }
+
+        m_memoryOldLog = memory;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const MemoryInterfacePtr & LoggerService::getOldLogMemory() const
+    {
+        return m_memoryOldLog;
     }
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::registerLogger( const LoggerInterfacePtr & _logger )

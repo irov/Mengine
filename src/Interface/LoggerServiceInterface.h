@@ -2,6 +2,8 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/LoggerInterface.h"
+#include "Interface/FileGroupInterface.h"
+#include "Interface/MemoryInterface.h"
 
 #include "Kernel/ConstString.h"
 
@@ -45,6 +47,10 @@ namespace Mengine
     public:
         virtual void lockMessage() = 0;
         virtual void unlockMessage() = 0;
+
+    public:
+        virtual bool loadOldLogMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
+        virtual const MemoryInterfacePtr & getOldLogMemory() const = 0;
 
     public:
         virtual void writeHistory( const LoggerInterfacePtr & _logger ) const = 0;

@@ -186,6 +186,34 @@ extern "C"
         return JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1writeOldLogToFile )(JNIEnv * env, jclass cls, jobject _writer)
+    {
+        const Mengine::MemoryInterfacePtr & memory = LOGGER_SERVICE()
+            ->getOldLogMemory();
+
+        if( memory == nullptr )
+        {
+            return JNI_FALSE;
+        }
+
+        jclass jclass_Writer = env->GetObjectClass( _writer );
+        jmethodID jmethodID_Writer_write_String = env->GetMethodID( jclass_Writer, "write", "(Ljava/lang/String;)V" );
+        jmethodID jmethodID_Writer_write_Char = env->GetMethodID( jclass_Writer, "write", "(I)V" );
+
+        const void * data_value = memory->getBuffer();
+        size_t data_size = memory->getSize();
+
+        MENGINE_UNUSED(data_size);
+
+        jstring jvalue = env->NewStringUTF( (const Mengine::Char *)data_value );
+        env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
+        env->DeleteLocalRef( jvalue );
+
+        env->DeleteLocalRef( jclass_Writer );
+
+        return JNI_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jint JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getProjectVersion )(JNIEnv * env, jclass cls)
     {
         uint32_t projectVersion = APPLICATION_SERVICE()

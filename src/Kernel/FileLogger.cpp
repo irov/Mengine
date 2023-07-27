@@ -54,7 +54,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "invalid initialize file logger '%s'"
+            LOGGER_ERROR( "invalid open file logger '%s'"
                 , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
             );
 

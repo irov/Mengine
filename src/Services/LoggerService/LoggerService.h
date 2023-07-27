@@ -61,6 +61,10 @@ namespace Mengine
         void writeHistory( const LoggerInterfacePtr & _logger ) const override;
 
     public:
+        bool loadOldLogMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
+        const MemoryInterfacePtr & getOldLogMemory() const override;
+
+    public:
         bool registerLogger( const LoggerInterfacePtr & _logger ) override;
         void unregisterLogger( const LoggerInterfacePtr & _logger ) override;
 
@@ -109,6 +113,8 @@ namespace Mengine
         bool m_historically;
 
         uint32_t m_historyLimit;
+
+        MemoryInterfacePtr m_memoryOldLog;
 
         typedef List<HistoryRecord> ListHistoryRecords;
         ListHistoryRecords m_history;

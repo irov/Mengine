@@ -729,7 +729,14 @@ namespace Mengine
         bool OPTION_roaming = HAS_OPTION( "roaming" );
         bool OPTION_noroaming = HAS_OPTION( "noroaming" );
 
+        bool developmentLog = false;
+
         if( developmentMode == true && (OPTION_roaming == false || OPTION_noroaming == false) )
+        {
+            developmentLog = true;
+        }
+
+        if( developmentLog == true )
         {
             unicode_logFilename += L"_";
             unicode_logFilename += unicode_date;
@@ -750,6 +757,12 @@ namespace Mengine
 
         const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
+        if( developmentLog == false )
+        {
+            LOGGER_SERVICE()
+                ->loadOldLogMemory( userFileGroup, logFilename );
+        }
 
         FileLoggerPtr fileLog = Helper::makeFactorableUnique<FileLogger>( MENGINE_DOCUMENT_FACTORABLE );
 

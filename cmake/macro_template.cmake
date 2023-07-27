@@ -387,7 +387,7 @@ MACRO(ADD_MENGINE_FRAMEWORK)
 ENDMACRO()
 
 MACRO(ENABLE_PLUGIN Plugin)
-    IF(NOT ${Plugin})
+    IF(NOT DEFINED ${Plugin})
         MESSAGE( FATAL_ERROR "Not found plugin ${Plugin}")
     ENDIF()
     
@@ -396,7 +396,7 @@ MACRO(ENABLE_PLUGIN Plugin)
 ENDMACRO()
 
 MACRO(DISABLE_PLUGIN Plugin)
-    IF(NOT ${Plugin})
+    IF(NOT DEFINED ${Plugin})
         MESSAGE( FATAL_ERROR "Not found plugin ${Plugin}")
     ENDIF()
     
@@ -405,7 +405,7 @@ MACRO(DISABLE_PLUGIN Plugin)
 ENDMACRO()
 
 MACRO(ENABLE_PLUGIN_DEBUG Plugin)
-    IF(NOT ${Plugin})
+    IF(NOT DEFINED ${Plugin})
         MESSAGE( FATAL_ERROR "Not found plugin ${Plugin}")
     ENDIF()
     
@@ -414,7 +414,7 @@ MACRO(ENABLE_PLUGIN_DEBUG Plugin)
 ENDMACRO()
 
 MACRO(DISABLE_PLUGIN_DEBUG Plugin)
-    IF(NOT ${Plugin})
+    IF(NOT DEFINED ${Plugin})
         MESSAGE( FATAL_ERROR "Not found plugin ${Plugin}")
     ENDIF()
     
@@ -423,7 +423,7 @@ MACRO(DISABLE_PLUGIN_DEBUG Plugin)
 ENDMACRO()
 
 MACRO(ENABLE_PLUGIN_OPTION Plugin Option)
-    IF(NOT ${Plugin}_${Option})
+    IF(NOT DEFINED ${Plugin}_${Option})
         MESSAGE( FATAL_ERROR "Not found plugin option ${Plugin}_${Option}")
     ENDIF()
 
@@ -432,7 +432,7 @@ MACRO(ENABLE_PLUGIN_OPTION Plugin Option)
 ENDMACRO()
 
 MACRO(DISABLE_PLUGIN_OPTION Plugin Option)
-    IF(NOT ${Plugin}_${Option})
+    IF(NOT DEFINED ${Plugin}_${Option})
         MESSAGE( FATAL_ERROR "Not found plugin option ${Plugin}_${Option}")
     ENDIF()
     

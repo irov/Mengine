@@ -387,31 +387,55 @@ MACRO(ADD_MENGINE_FRAMEWORK)
 ENDMACRO()
 
 MACRO(ENABLE_PLUGIN Plugin)
+    IF(NOT ${Plugin})
+        MESSAGE( FATAL_ERROR "Not found plugin ${Plugin}")
+    ENDIF()
+    
     MESSAGE("ENABLE_PLUGIN: ${Plugin}")
     SET(${Plugin}_FORCE_ENABLE ${MENGINE_VARIABLES_CACHE_TIMESTEMP} CACHE STRING "${Plugin}_FORCE_ENABLE" FORCE)
 ENDMACRO()
 
 MACRO(DISABLE_PLUGIN Plugin)
+    IF(NOT ${Plugin})
+        MESSAGE( FATAL_ERROR "Not found plugin ${Plugin}")
+    ENDIF()
+    
     MESSAGE("DISABLE_PLUGIN: ${Plugin}")
     SET(${Plugin}_FORCE_DISABLE ${MENGINE_VARIABLES_CACHE_TIMESTEMP} CACHE STRING "${Plugin}_FORCE_DISABLE" FORCE)
 ENDMACRO()
 
 MACRO(ENABLE_PLUGIN_DEBUG Plugin)
+    IF(NOT ${Plugin})
+        MESSAGE( FATAL_ERROR "Not found plugin ${Plugin}")
+    ENDIF()
+    
     MESSAGE("ENABLE_PLUGIN_DEBUG: ${Plugin}")
     SET(${Plugin}_DEBUG_FORCE_ENABLE ${MENGINE_VARIABLES_CACHE_TIMESTEMP} CACHE STRING "${Plugin}_DEBUG_FORCE_ENABLE" FORCE)
 ENDMACRO()
 
 MACRO(DISABLE_PLUGIN_DEBUG Plugin)
+    IF(NOT ${Plugin})
+        MESSAGE( FATAL_ERROR "Not found plugin ${Plugin}")
+    ENDIF()
+    
     MESSAGE("DISABLE_PLUGIN_DEBUG: ${Plugin}")
     SET(${Plugin}_DEBUG_FORCE_DISABLE ${MENGINE_VARIABLES_CACHE_TIMESTEMP} CACHE STRING "${Plugin}_DEBUG_FORCE_DISABLE" FORCE)
 ENDMACRO()
 
 MACRO(ENABLE_PLUGIN_OPTION Plugin Option)
+    IF(NOT ${Plugin}_${Option})
+        MESSAGE( FATAL_ERROR "Not found plugin option ${Plugin}_${Option}")
+    ENDIF()
+
     MESSAGE("ENABLE_PLUGIN_OPTION: ${Plugin}")
     SET(${Plugin}_${Option}_FORCE_ENABLE ${MENGINE_VARIABLES_CACHE_TIMESTEMP} CACHE STRING "${Plugin}_${Option}_FORCE_ENABLE" FORCE)
 ENDMACRO()
 
 MACRO(DISABLE_PLUGIN_OPTION Plugin Option)
+    IF(NOT ${Plugin}_${Option})
+        MESSAGE( FATAL_ERROR "Not found plugin option ${Plugin}_${Option}")
+    ENDIF()
+    
     MESSAGE("DISABLE_PLUGIN_OPTION: ${Plugin}")
     SET(${Plugin}_${Option}_FORCE_DISABLE ${MENGINE_VARIABLES_CACHE_TIMESTEMP} CACHE STRING "${Plugin}_${Option}_FORCE_DISABLE" FORCE)
 ENDMACRO()

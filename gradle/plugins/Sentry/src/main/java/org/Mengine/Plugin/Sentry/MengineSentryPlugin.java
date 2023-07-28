@@ -25,7 +25,7 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
     public static final String PLUGIN_METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER = "mengine.sentry.enable_uncaught_exception_handler";
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         String MengineSentryPlugin_DSN = application.getMetaDataString(PLUGIN_METADATA_DSN);
 
         if (MengineSentryPlugin_DSN == null) {
@@ -34,11 +34,17 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
             return;
         }
 
-        MengineSentryPlugin.this.logInfo("DNS: %s"
+        this.logInfo("%s: %s"
+            , PLUGIN_METADATA_DSN
             , MengineSentryPlugin_DSN
         );
 
         boolean MengineSentryPlugin_EnableUncaughtExceptionHandler = application.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER, true);
+
+        this.logInfo("%s: %s"
+            , PLUGIN_METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER
+            , MengineSentryPlugin_DSN
+        );
 
         Context context = application.getApplicationContext();
 
@@ -67,6 +73,11 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
 
             options.setEnableUncaughtExceptionHandler(MengineSentryPlugin_EnableUncaughtExceptionHandler);
         });
+    }
+
+    @Override
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+        //Empty
     }
 
     @Override

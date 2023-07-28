@@ -57,14 +57,14 @@ namespace Mengine
         const Char * data_value = _message.data;
         size_t data_size = _message.size;
 
-        Char msg[MENGINE_LOGGER_MAX_MESSAGE];
+        Char msg[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
         MENGINE_MEMCPY( msg, data_value, data_size * sizeof(Char) );
         msg[data_size] = '\0';
 
         jstring data_jstring = jenv->NewStringUTF( msg );
 
         ANDROID_ENVIRONMENT_SERVICE()
-                ->callVoidApplicationMethod(jenv, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V", category_jstring, level, filter, color, data_jstring);
+                ->callVoidApplicationMethod( jenv, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V", category_jstring, level, filter, color, data_jstring );
 
         jenv->DeleteLocalRef( category_jstring );
         jenv->DeleteLocalRef( data_jstring );

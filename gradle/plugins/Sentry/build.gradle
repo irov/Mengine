@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    implementation 'io.sentry:sentry-android:6.25.1'
+    implementation 'io.sentry:sentry-android:6.27.0'
 }
 
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

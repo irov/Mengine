@@ -39,6 +39,11 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
             return;
         }
 
+        this.logInfo("%s: %s"
+            , PLUGIN_METADATA_SITE
+            , MengineDataDogPlugin_Site
+        );
+
         DatadogSite site;
 
         if (MengineDataDogPlugin_Site.equals("us1") == true) {
@@ -67,6 +72,11 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
             return;
         }
 
+        this.logInfo("%s: %s"
+            , PLUGIN_METADATA_CLIENT_TOKEN
+            , MengineDataDogPlugin_ClientToken
+        );
+
         boolean logsEnabled = true;
         boolean tracesEnabled = true;
         boolean crashReportsEnabled = true;
@@ -77,6 +87,11 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
             .build();
 
         String MengineDataDogPlugin_ServiceName = activity.getMetaDataString(PLUGIN_METADATA_SERVICE_NAME);
+
+        this.logInfo("%s: %s"
+            , PLUGIN_METADATA_SERVICE_NAME
+            , MengineDataDogPlugin_ServiceName
+        );
 
         String clientToken = MengineDataDogPlugin_ClientToken;
         String envName = "production";

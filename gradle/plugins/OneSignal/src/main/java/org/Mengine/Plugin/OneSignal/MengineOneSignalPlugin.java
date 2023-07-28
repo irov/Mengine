@@ -22,6 +22,11 @@ public class MengineOneSignalPlugin extends MenginePlugin implements MenginePlug
             return;
         }
 
+        this.logInfo("%s: %s"
+            , PLUGIN_METADATA_APP_ID
+            , MengineOneSignalPlugin_AppId
+        );
+
         OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
         OneSignal.initWithContext(application);
         OneSignal.setAppId(MengineOneSignalPlugin_AppId);

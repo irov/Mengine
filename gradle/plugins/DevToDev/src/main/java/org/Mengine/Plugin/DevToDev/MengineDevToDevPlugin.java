@@ -35,6 +35,11 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             return;
         }
 
+        this.logInfo("%s: %s"
+            , PLUGIN_METADATA_APP_ID
+            , MengineDevToDevPlugin_AppId
+        );
+
         DTDAnalytics.INSTANCE.setInitializationCompleteCallback(() -> {
             MengineDevToDevPlugin.this.logMessage("Initialized DevToDev has been finished");
 

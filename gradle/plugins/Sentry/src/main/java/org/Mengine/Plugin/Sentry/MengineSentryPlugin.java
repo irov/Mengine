@@ -41,9 +41,9 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
 
         boolean MengineSentryPlugin_EnableUncaughtExceptionHandler = application.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER, true);
 
-        this.logInfo("%s: %s"
+        this.logInfo("%s: %b"
             , PLUGIN_METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER
-            , MengineSentryPlugin_DSN
+            , MengineSentryPlugin_EnableUncaughtExceptionHandler
         );
 
         Context context = application.getApplicationContext();

@@ -52,8 +52,8 @@ public class MengineApplication extends Application {
 
     private MengineActivityLifecycle m_activityLifecycle;
 
-    private Object m_syncEvent = new Object();
-    private Object m_syncState = new Object();
+    private final Object m_syncEvent = new Object();
+    private final Object m_syncState = new Object();
 
     public String[] getGradleAndroidPlugins() {
         String[] plugins = {};
@@ -243,7 +243,6 @@ public class MengineApplication extends Application {
         return OSVersion;
     }
 
-    @SuppressWarnings("deprecation")
     private PackageInfo getPackageInfo(PackageManager manager, String packageName) {
         PackageInfo packageInfo;
 
@@ -752,7 +751,9 @@ public class MengineApplication extends Application {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        MengineLog.logInfo(TAG, "onConfigurationChanged");
+        MengineLog.logInfo(TAG, "onConfigurationChanged config: %s"
+            , newConfig.toString()
+        );
 
         ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 

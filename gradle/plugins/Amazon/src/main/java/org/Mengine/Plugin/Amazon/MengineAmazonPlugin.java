@@ -31,6 +31,11 @@ public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginA
             return;
         }
 
+        this.logInfo("%s: %s"
+            , PLUGIN_METADATA_APP_ID
+            , MengineAmazonPlugin_AppId
+        );
+
         try {
             AdRegistration.getInstance(MengineAmazonPlugin_AppId, application);
         } catch (IllegalArgumentException e) {
@@ -52,10 +57,20 @@ public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginA
             AdRegistration.enableTesting(true);
         }
 
+        this.logInfo("%s: %b"
+            , PLUGIN_METADATA_ENABLE_TESTING
+            , MengineAmazonPlugin_EnableTesting
+        );
+
         boolean MengineAmazonPlugin_EnableLogging = application.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_LOGGING, BuildConfig.DEBUG);
 
         if (MengineAmazonPlugin_EnableLogging == true) {
             AdRegistration.enableLogging(true);
         }
+
+        this.logInfo("%s: %b"
+            , PLUGIN_METADATA_ENABLE_LOGGING
+            , MengineAmazonPlugin_EnableLogging
+        );
     }
 }

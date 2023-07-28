@@ -139,7 +139,8 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         boolean MengineAppLovinPlugin_IsAgeRestrictedUser = activity.getMetaDataBoolean(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER, true);
 
-        this.logMessage("setIsAgeRestrictedUser: %b"
+        this.logMessage("%s: %b"
+            , PLUGIN_METADATA_IS_AGE_RESTRICTED_USER
             , MengineAppLovinPlugin_IsAgeRestrictedUser
         );
 
@@ -147,7 +148,8 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         boolean MengineAppLovinPlugin_CCPA = activity.getMetaDataBoolean(PLUGIN_METADATA_CCPA, true);
 
-        this.logMessage("CCPA: %b"
+        this.logMessage("%s: %b"
+            , PLUGIN_METADATA_CCPA
             , MengineAppLovinPlugin_CCPA
         );
 

@@ -94,6 +94,11 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
             return;
         }
 
+        this.logInfo("%s: %s"
+            , PLUGIN_METADATA_PLATFORM_ID
+            , MengineHelpshiftPlugin_PlatformId
+        );
+
         String MengineHelpshiftPlugin_Domain = activity.getMetaDataString(PLUGIN_METADATA_DOMAIN);
 
         if (MengineHelpshiftPlugin_Domain == null) {
@@ -101,6 +106,11 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
 
             return;
         }
+
+        this.logInfo("%s: %s"
+            , PLUGIN_METADATA_DOMAIN
+            , MengineHelpshiftPlugin_Domain
+        );
 
         try {
             MengineApplication application = this.getMengineApplication();

@@ -56,6 +56,11 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
             return;
         }
 
+        this.logInfo("%s: %s"
+            , PLUGIN_METADATA_APP_TOKEN
+            , MengineAdjustPlugin_AppToken
+        );
+
         AdjustConfig config = new AdjustConfig(application, MengineAdjustPlugin_AppToken, environment);
 
         if (BuildConfig.DEBUG) {

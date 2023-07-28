@@ -615,6 +615,8 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
+        this.setState("configuration.orientation", newConfig.orientation);
+
         ArrayList<MenginePlugin> plugins = this.getPlugins();
 
         for (MenginePlugin p : plugins) {
@@ -753,6 +755,8 @@ public class MengineActivity extends SDLActivity {
             );
         }
 
+        this.setState("python.call", plugin + "." + method);
+
         AndroidNativePython_call(plugin, method, args);
     }
 
@@ -781,6 +785,8 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logMessage(TAG, "activate semaphore [%s]"
             , name
         );
+
+        this.setState("python.semaphore", name);
 
         MengineSemaphore semaphore = m_semaphores.get(name);
 
@@ -832,6 +838,8 @@ public class MengineActivity extends SDLActivity {
             , url
         );
 
+        this.setState("open.url", url);
+
         Intent intent = new Intent(Intent.ACTION_VIEW);
 
         Uri uri = Uri.parse(url);
@@ -849,6 +857,8 @@ public class MengineActivity extends SDLActivity {
             , subject
             , body
         );
+
+        this.setState("open.mail", email);
 
         Context context = this.getApplicationContext();
 

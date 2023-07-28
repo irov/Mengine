@@ -335,7 +335,7 @@ namespace Mengine
         uint32_t buildVersionNumber = Helper::getBuildVersionNumber();
         const Char * buildUserName = Helper::getBuildUsername();
         const Char * buildTimestamp = Helper::getBuildTimestamp();
-        const Char * buildProjectName = Helper::getBuildProjectName();
+        const Char * buildProjectName = Helper::getBuildSolutionName();
         uint64_t buildNumber = Helper::getBuildNumber();
 
         if( HAS_OPTION( "buildinfo" ) == true )

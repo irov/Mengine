@@ -116,11 +116,11 @@ namespace Mengine
             return defaultContentCommit;
         }
         //////////////////////////////////////////////////////////////////////////
-        const Char * getBuildProjectName()
+        const Char * getBuildSolutionName()
         {
-            const Char * BUILD_PROJECT_NAME = MENGINE_BUILD_PROJECT_NAME;
+            const Char * BUILD_SOLUTION_NAME = MENGINE_BUILD_SOLUTION_NAME;
 
-            return BUILD_PROJECT_NAME;
+            return BUILD_SOLUTION_NAME;
         }
         //////////////////////////////////////////////////////////////////////////
         const Char * getBuildTimestamp()

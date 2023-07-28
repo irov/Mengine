@@ -194,6 +194,9 @@ namespace Mengine
         const Char * BUILD_VERSION = Helper::getBuildVersion();
         sentry_options_set_release( options, BUILD_VERSION );
 
+        const Char * BUILD_NUMBER_STRING = Helper::getBuildNumberString();
+        sentry_options_set_dist( options, BUILD_NUMBER_STRING );
+
         Char environment[128] = {'\0'};
 
 #if defined(MENGINE_BUILD_PUBLISH)
@@ -328,7 +331,7 @@ namespace Mengine
 
         sentry_set_extra( "Company", sentry_value_new_string( companyName ) );
 
-        Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
+        Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
         APPLICATION_SERVICE()
             ->getProjectName( projectName );
 
@@ -337,6 +340,12 @@ namespace Mengine
         );
 
         sentry_set_extra( "Project", sentry_value_new_string( projectName ) );
+
+        LOGGER_INFO_PROTECTED( "sentry", "Sentry set tag [project: %s]"
+            , projectName
+        );
+
+        sentry_set_tag( "project", projectName );
 
 #if defined(MENGINE_DEBUG)
         Char userName[MENGINE_PLATFORM_USER_MAXNAME] = {'\0'};
@@ -354,22 +363,13 @@ namespace Mengine
             ->getProjectVersion();
 
         Char projectVersionString[32] = {'\0'};
-        if( Helper::stringalized( projectVersion, projectVersionString, 31 ) == false )
-        {
-            LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Version: %s]"
-                , "Error"
-            );
+        Helper::stringalized( projectVersion, projectVersionString, 31 );
+        
+        LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Version: %s]"
+            , projectVersionString
+        );
 
-            sentry_set_extra( "Version", sentry_value_new_string( "Error" ) );
-        }
-        else
-        {
-            LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Version: %s]"
-                , projectVersionString
-            );
-
-            sentry_set_extra( "Version", sentry_value_new_string( projectVersionString ) );
-        }
+        sentry_set_extra( "Version", sentry_value_new_string( projectVersionString ) );
 
         bool debugMode = Helper::isDebugMode();
 
@@ -419,13 +419,13 @@ namespace Mengine
 
         sentry_set_extra( "Build Timestamp", sentry_value_new_string( BUILD_TIMESTAMP ) );
 
-        const Char * BUILD_PROJECT_NAME = Helper::getBuildProjectName();
+        const Char * BUILD_SOLUTION_NAME = Helper::getBuildSolutionName();
 
-        LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Build Project Name: %s]"
-            , BUILD_PROJECT_NAME
+        LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Build Solution Name: %s]"
+            , BUILD_SOLUTION_NAME
         );
 
-        sentry_set_extra( "Build Project Name", sentry_value_new_string( BUILD_PROJECT_NAME ) );
+        sentry_set_extra( "Build Solution Name", sentry_value_new_string( BUILD_SOLUTION_NAME ) );
 
         const Char * BUILD_USERNAME = Helper::getBuildUsername();
 
@@ -447,14 +447,14 @@ namespace Mengine
         DATETIME_SYSTEM()
             ->getLocalDateTime( &dateTime );
 
-        Char LOG_TIMESTAMP[256] = {'\0'};
-        Helper::makeLoggerTimeStamp( dateTime, "[%02u:%02u:%02u:%04u]", LOG_TIMESTAMP, 0, 256 );
+        Char INIT_TIMESTAMP[256] = {'\0'};
+        Helper::makeLoggerTimeStamp( dateTime, "[%02u:%02u:%02u:%04u]", INIT_TIMESTAMP, 0, 256 );
 
-        LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Log Timestamp: %s]"
-            , LOG_TIMESTAMP
+        LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Init Timestamp: %s]"
+            , INIT_TIMESTAMP
         );
 
-        sentry_set_extra( "Log Timestamp", sentry_value_new_string( LOG_TIMESTAMP ) );
+        sentry_set_extra( "Init Timestamp", sentry_value_new_string( INIT_TIMESTAMP ) );
 
         LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Engine Stop: %d]"
             , false

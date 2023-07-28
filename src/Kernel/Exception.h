@@ -5,7 +5,7 @@
 #include <exception>
 
 #ifndef MENGINE_EXCEPTION_MAX_MESSAGE
-#define MENGINE_EXCEPTION_MAX_MESSAGE 4096
+#define MENGINE_EXCEPTION_MAX_MESSAGE 8192
 #endif
 
 namespace Mengine

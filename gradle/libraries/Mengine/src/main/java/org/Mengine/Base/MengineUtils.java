@@ -18,6 +18,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -344,5 +347,13 @@ public class MengineUtils {
         Uri uri = FileProvider.getUriForFile(context, packageName + ".fileprovider", file);
 
         return uri;
+    }
+
+    public static String getDateFormat(String format) {
+        SimpleDateFormat df = new SimpleDateFormat(format);
+        Date date = Calendar.getInstance().getTime();
+        String s = df.format(date);
+
+        return s;
     }
 }

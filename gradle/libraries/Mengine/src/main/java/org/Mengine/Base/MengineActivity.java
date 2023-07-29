@@ -63,16 +63,6 @@ public class MengineActivity extends SDLActivity {
     private Map<String, Integer> m_requestCodes;
 
     public MengineActivity() {
-        m_initializeBaseServices = false;
-        m_initializePython = false;
-        m_destroy = false;
-
-        m_openFiles = new HashMap<>();
-        m_fileEnumerator = 0;
-
-        m_semaphores = new HashMap<>();
-
-        m_requestCodes = new HashMap<>();
     }
 
     @Override
@@ -232,6 +222,16 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        m_initializeBaseServices = false;
+        m_initializePython = false;
+        m_destroy = false;
+
+        m_openFiles = new HashMap<>();
+        m_fileEnumerator = 0;
+
+        m_semaphores = new HashMap<>();
+        m_requestCodes = new HashMap<>();
+
         this.setState("activity.lifecycle", "create");
 
         this.setState("activity.init", "start");

@@ -25,8 +25,8 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
      * - onGoogleInAppReviewsLaunchingTheReviewCompleted
      */
 
-    ReviewManager m_manager;
-    ReviewInfo m_reviewInfo = null;
+    private ReviewManager m_manager;
+    private ReviewInfo m_reviewInfo;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {

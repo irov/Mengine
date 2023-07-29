@@ -23,10 +23,12 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
 
     public static final String PLUGIN_METADATA_APP_ID = "mengine.devtodev.app_id";
 
-    private boolean m_initializeSuccessful = false;
+    private boolean m_initializeSuccessful;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+        m_initializeSuccessful = false;
+
         String MengineDevToDevPlugin_AppId = activity.getMetaDataString(PLUGIN_METADATA_APP_ID);
 
         if (MengineDevToDevPlugin_AppId == null) {

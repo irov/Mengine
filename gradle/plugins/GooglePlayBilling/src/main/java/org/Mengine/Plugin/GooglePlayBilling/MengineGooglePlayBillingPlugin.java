@@ -80,12 +80,14 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
      * - onGooglePlayBillingPurchasesUpdatedUnknown (int responseCode)
      **/
 
-    private ArrayList<ProductDetails> m_productsDetails = new ArrayList<>();
+    private ArrayList<ProductDetails> m_productsDetails;
 
-    private BillingClient m_billingClient = null;
+    private BillingClient m_billingClient;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+        m_productsDetails = new ArrayList<>();
+
         final PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
             @Override
             public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> purchases) {

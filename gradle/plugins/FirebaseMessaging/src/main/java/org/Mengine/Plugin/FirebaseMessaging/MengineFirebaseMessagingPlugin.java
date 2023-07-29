@@ -26,10 +26,12 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin implements Men
     public static final String PLUGIN_NAME = "FirebaseMessaging";
     public static final boolean PLUGIN_EMBEDDING = true;
 
-    private ArrayList<MengineFirebaseMessagingListener> m_messagings = new ArrayList<>();
+    private ArrayList<MengineFirebaseMessagingListener> m_messagingListeners;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+        m_messagingListeners = new ArrayList<>();
+
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
 
         Context context = activity.getApplicationContext();
@@ -63,7 +65,7 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin implements Men
 
     @Override
     public void onDestroy(MengineActivity activity) {
-        m_messagings = null;
+        m_messagingListeners = null;
     }
 
     @Override
@@ -71,12 +73,12 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin implements Men
         if (extension instanceof MengineFirebaseMessagingListener) {
             MengineFirebaseMessagingListener listener = (MengineFirebaseMessagingListener)extension;
 
-            m_messagings.add(listener);
+            m_messagingListeners.add(listener);
         }
     }
 
     public void onMessageReceived(final RemoteMessage remoteMessage) {
-        for (MengineFirebaseMessagingListener listener : m_messagings) {
+        for (MengineFirebaseMessagingListener listener : m_messagingListeners) {
             if (listener.onMessageReceived(remoteMessage) == true) {
                 break;
             }
@@ -84,25 +86,25 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin implements Men
     }
 
     public void onDeletedMessages() {
-        for (MengineFirebaseMessagingListener listener : m_messagings) {
+        for (MengineFirebaseMessagingListener listener : m_messagingListeners) {
             listener.onDeletedMessages();
         }
     }
 
     public void onMessageSent(@NonNull String msgId) {
-        for (MengineFirebaseMessagingListener listener : m_messagings) {
+        for (MengineFirebaseMessagingListener listener : m_messagingListeners) {
             listener.onMessageSent(msgId);
         }
     }
 
     public void onSendError(@NonNull String msgId, @NonNull Exception exception) {
-        for (MengineFirebaseMessagingListener listener : m_messagings) {
+        for (MengineFirebaseMessagingListener listener : m_messagingListeners) {
             listener.onSendError(msgId, exception);
         }
     }
 
     public void onNewToken(@NonNull String token) {
-        for (MengineFirebaseMessagingListener listener : m_messagings) {
+        for (MengineFirebaseMessagingListener listener : m_messagingListeners) {
             listener.onNewToken(token);
         }
     }

@@ -645,6 +645,12 @@ public class MengineApplication extends Application {
         this.setState("user.session_index", m_sessionIndex);
         this.setState("user.session_id", m_sessionId);
 
+        String sessionStartDate = MengineUtils.getDateFormat("d MMM yyyy HH:mm:ss");
+        this.setState("user.session_start_date", sessionStartDate);
+
+        long sessionStartTimestamp = MengineUtils.getTimestamp();
+        this.setState("user.session_start_timestamp", sessionStartTimestamp);
+
         this.setState("application.init", "load");
 
         ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
@@ -665,14 +671,6 @@ public class MengineApplication extends Application {
         if (m_sessionId.isEmpty() == false) {
             this.sendEvent(MengineEvent.EVENT_SESSION_ID, m_sessionId);
         }
-
-        MengineAnalytics.addContextParameterString("install_key", this.m_installKey);
-        MengineAnalytics.addContextParameterLong("install_key_timestamp", this.m_installKeyTimestamp);
-        MengineAnalytics.addContextParameterLong("install_rnd", this.m_installRND);
-        MengineAnalytics.addContextParameterLong("session_index", this.m_sessionIndex);
-        MengineAnalytics.addContextGetterParameterString("session_id", () -> {
-            return this.m_sessionId;
-        });
 
         long app_init_start_timestamp = MengineAnalytics.buildEvent("mng_app_init_start")
             .log();

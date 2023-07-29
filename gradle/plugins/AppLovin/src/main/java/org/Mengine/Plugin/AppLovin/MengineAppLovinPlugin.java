@@ -118,6 +118,12 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+        m_banners = new HashMap<>();
+        m_interstitials = new HashMap<>();
+        m_rewardeds = new HashMap<>();
+
+        m_analytics = new ArrayList<>();
+
         final Context context = activity.getApplicationContext();
 
         MengineAppLovinMediationInterface mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);

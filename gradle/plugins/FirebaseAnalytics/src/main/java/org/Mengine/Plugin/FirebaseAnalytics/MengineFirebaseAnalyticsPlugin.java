@@ -42,11 +42,18 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         String sessionId = application.getSessionId();
         m_firebaseAnalytics.setUserId(sessionId);
 
+        String installKey = application.getInstallKey();
         long installKeyTimestamp = application.getInstallKeyTimestamp();
-        m_firebaseAnalytics.setUserProperty("install_key_timestamp", String.valueOf(installKeyTimestamp));
-
+        long installRND = application.getInstallRND();
         long sessionIndex = application.getSessionIndex();
-        m_firebaseAnalytics.setUserProperty("session_index", String.valueOf(sessionIndex));
+
+        Bundle params = new Bundle();
+        params.putString("install_key", installKey);
+        params.putLong("install_key_timestamp", installKeyTimestamp);
+        params.putLong("install_rnd", installRND);
+        params.putLong("session_index", sessionIndex);
+
+        m_firebaseAnalytics.setDefaultEventParameters(params);
     }
 
     @Override

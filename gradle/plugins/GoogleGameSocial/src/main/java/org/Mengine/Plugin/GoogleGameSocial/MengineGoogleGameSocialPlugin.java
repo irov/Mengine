@@ -96,7 +96,25 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         //this.signInSilently();
     }
 
+    @Override
+    public void onDestroy(MengineActivity activity) {
+        super.onDestroy(activity);
+
+        if (m_signInClient == null) {
+            m_signInClient.signOut();
+            m_signInClient = null;
+        }
+
+        m_achievementsClient = null;
+    }
+
     public void startSignInIntent() {
+        if (m_signInClient == null) {
+            this.logError("startSignInIntent google client not created");
+
+            return;
+        }
+
         this.logMessage("startSignInIntent");
 
         MengineActivity activity = this.getMengineActivity();
@@ -107,6 +125,12 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public void signOut() {
+        if (m_signInClient == null) {
+            this.logError("signOut google client not created");
+
+            return;
+        }
+
         this.logMessage("signOut");
 
         MengineActivity activity = this.getMengineActivity();
@@ -141,6 +165,28 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
                     MengineGoogleGameSocialPlugin.this.logMessage("google game social log OUT success");
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialSignOutSuccess");
+                }
+            });
+    }
+
+    public void revokeAccess() {
+        if (m_signInClient == null) {
+            this.logError("revokeAccess google client not created");
+
+            return;
+        }
+
+        this.logMessage("revokeAccess");
+
+        MengineActivity activity = this.getMengineActivity();
+
+        m_signInClient.revokeAccess()
+            .addOnCompleteListener(activity, new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    MengineGoogleGameSocialPlugin.this.logMessage("google game social revoke access success");
+
+                    MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialRevokeAccessSuccess");
                 }
             });
     }
@@ -204,7 +250,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
         this.logMessage("account sign in");
 
         if (account == null) {
-            this.logError("account == null");
+            this.logWarning("account == null");
 
             return;
         }
@@ -285,11 +331,13 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public boolean showAchievements() {
-        this.logMessage("showAchievements");
-
         if (m_achievementsClient == null) {
+            this.logError("showAchievements achievements client not created");
+
             return false;
         }
+
+        this.logMessage("showAchievements");
 
         m_achievementsClient.getAchievementsIntent()
             .addOnSuccessListener(new OnSuccessListener<Intent>() {
@@ -319,13 +367,15 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public boolean unlockAchievement(String achievementId) {
+        if (m_achievementsClient == null) {
+            this.logError("unlockAchievement achievements client not created");
+
+            return false;
+        }
+
         this.logMessage("unlockAchievement: %s"
             , achievementId
         );
-
-        if (m_achievementsClient == null) {
-            return false;
-        }
 
         m_achievementsClient.unlockImmediate(achievementId)
             .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -354,14 +404,16 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
     }
 
     public boolean incrementAchievement(String achievementId, int numSteps) {
+        if (m_achievementsClient == null) {
+            this.logError("incrementAchievement achievements client not created");
+
+            return false;
+        }
+
         this.logMessage("incrementAchievement achievementId: %s numSteps: %d"
             , achievementId
             , numSteps
         );
-
-        if (m_achievementsClient == null) {
-            return false;
-        }
 
         m_achievementsClient.incrementImmediate(achievementId, numSteps)
             .addOnSuccessListener(new OnSuccessListener<Boolean>() {

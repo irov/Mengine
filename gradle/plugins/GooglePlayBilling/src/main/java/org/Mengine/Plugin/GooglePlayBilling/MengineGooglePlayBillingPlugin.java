@@ -1,5 +1,6 @@
 package org.Mengine.Plugin.GooglePlayBilling;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.AnyThread;
@@ -81,14 +82,13 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
      **/
 
     private ArrayList<ProductDetails> m_productsDetails;
-
     private BillingClient m_billingClient;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         m_productsDetails = new ArrayList<>();
 
-        final PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
+        PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
             @Override
             public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> purchases) {
                 int responseCode = billingResult.getResponseCode();
@@ -192,7 +192,9 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
             }
         };
 
-        m_billingClient = BillingClient.newBuilder(activity.getBaseContext())
+        Context context = activity.getBaseContext();
+
+        m_billingClient = BillingClient.newBuilder(context)
             .setListener(purchasesUpdatedListener)
             .enablePendingPurchases()
             .build();
@@ -200,15 +202,21 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
 
     @Override
     public void onDestroy(MengineActivity activity) {
-        if (m_billingClient == null) {
-            return;
-        }
+        m_productsDetails = null;
 
-        m_billingClient.endConnection();
-        m_billingClient = null;
+        if (m_billingClient != null) {
+            m_billingClient.endConnection();
+            m_billingClient = null;
+        }
     }
 
     public void billingConnect() {
+        if (m_billingClient == null) {
+            this.logError("billingConnect billing client not created");
+
+            return;
+        }
+
         this.logMessage("billingConnect");
 
         m_billingClient.startConnection(new BillingClientStateListener() {
@@ -244,6 +252,12 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     }
 
     public void queryProducts(List<String> products) {
+        if (m_billingClient == null) {
+            this.logError("queryProducts billing client not created");
+
+            return;
+        }
+
         this.logMessage("queryProducts: %s"
             , products
         );
@@ -327,6 +341,12 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     }
 
     public void queryPurchases() {
+        if (m_billingClient == null) {
+            this.logError("queryPurchases billing client not created");
+
+            return;
+        }
+
         this.logMessage("queryPurchases");
 
         QueryPurchasesParams purchasesParams = QueryPurchasesParams.newBuilder()
@@ -378,6 +398,12 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin {
     }
 
     public boolean buyInApp(String productId) {
+        if (m_billingClient == null) {
+            this.logError("buyInApp billing client not created");
+
+            return false;
+        }
+
         this.logMessage("buyInApp productId: %s"
             , productId
         );

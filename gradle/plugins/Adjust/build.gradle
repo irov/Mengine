@@ -33,7 +33,7 @@ if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
 }
 
 dependencies {
-    implementation 'com.adjust.sdk:adjust-android:4.33.4'
+    implementation 'com.adjust.sdk:adjust-android:4.33.5'
 }
 
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

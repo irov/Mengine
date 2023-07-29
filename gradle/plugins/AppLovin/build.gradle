@@ -109,7 +109,7 @@ if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
 }
 
 dependencies {
-    implementation 'com.applovin:applovin-sdk:11.10.1'
+    implementation 'com.applovin:applovin-sdk:11.11.1'
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADCOLONY == true) {
         implementation 'com.applovin.mediation:adcolony-adapter:4.8.0.4'
@@ -125,7 +125,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CHARTBOOST == true) {
-        implementation 'com.applovin.mediation:chartboost-adapter:9.3.1.0'
+        implementation 'com.applovin.mediation:chartboost-adapter:9.4.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CRITEO == true) {
@@ -145,11 +145,11 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_HYPRMX == true) {
-        implementation 'com.applovin.mediation:hyprmx-adapter:6.2.0.1'
+        implementation 'com.applovin.mediation:hyprmx-adapter:6.2.0.2'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_INMOBI == true) {
-        implementation 'com.applovin.mediation:inmobi-adapter:10.1.4.1'
+        implementation 'com.applovin.mediation:inmobi-adapter:10.1.4.2'
         implementation 'com.squareup.picasso:picasso:2.71828'
     }
 
@@ -174,7 +174,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL == true) {
-        implementation 'com.applovin.mediation:mintegral-adapter:16.4.71.0'
+        implementation 'com.applovin.mediation:mintegral-adapter:16.4.81.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MOBILEFUSE == true) {
@@ -202,7 +202,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_TAPJOY == true) {
-        implementation 'com.applovin.mediation:tapjoy-adapter:13.1.1.0'
+        implementation 'com.applovin.mediation:tapjoy-adapter:13.1.2.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS == true) {
@@ -210,11 +210,11 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE == true) {
-        implementation 'com.applovin.mediation:verve-adapter:2.18.1.1'
+        implementation 'com.applovin.mediation:verve-adapter:2.19.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YANDEX == true) {
-        implementation 'com.applovin.mediation:yandex-adapter:5.9.0.1'
+        implementation 'com.applovin.mediation:yandex-adapter:5.10.0.0'
     }
 }
 

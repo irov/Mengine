@@ -530,6 +530,9 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
+        this.setState("activity.intent.type", intent.getType());
+        this.setState("activity.intent.action", intent.getAction());
+
         ArrayList<MenginePlugin> plugins = this.getPlugins();
 
         for (MenginePlugin p : plugins) {

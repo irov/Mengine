@@ -1082,7 +1082,7 @@ public class MengineActivity extends SDLActivity {
 
         InputStream stream = m_openFiles.get(id);
 
-        long skip;
+        long skip = 0;
 
         try {
             skip = stream.skip(offset);

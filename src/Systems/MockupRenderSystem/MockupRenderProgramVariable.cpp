@@ -30,11 +30,11 @@ namespace Mengine
     namespace Detail
     {
         template<class T>
-        static void makeVariableData( MockupRenderProgramVariable::ProgramVariableDesc & _variable, Vector<T> & _container, const T * _values, uint32_t _size, uint32_t _count )
+        static void makeVariableData( MockupRenderProgramVariable::ProgramVariableDesc * const _variable, Vector<T> & _container, const T * _values, uint32_t _size, uint32_t _count )
         {
-            _variable.offset = (uint32_t)_container.size();
-            _variable.size = _size;
-            _variable.count = _count;
+            _variable->offset = (uint32_t)_container.size();
+            _variable->size = _size;
+            _variable->count = _count;
 
             _container.insert( _container.end(), _values, _values + _size * _count );
         }
@@ -45,7 +45,7 @@ namespace Mengine
         MENGINE_UNUSED( _uniform );
 
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_dataFloats, _values, _size, _count );
+        Detail::makeVariableData( &v, m_dataFloats, _values, _size, _count );
 
         m_vertexVariables[_index] = v;
     }
@@ -55,7 +55,7 @@ namespace Mengine
         MENGINE_UNUSED( _uniform );
 
         ProgramVariableDesc v;
-        Detail::makeVariableData( v, m_pixelFloats, _values, _size, _count );
+        Detail::makeVariableData( &v, m_pixelFloats, _values, _size, _count );
 
         m_pixelVariables[_index] = v;
     }

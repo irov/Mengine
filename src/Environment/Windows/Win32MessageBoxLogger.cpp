@@ -25,7 +25,7 @@ namespace Mengine
         Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
         MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s"
             , size
-            , data 
+            , data
         );
 
         Helper::debuggerBreak();

@@ -22,7 +22,7 @@ if %errorlevel% NEQ 0 (
 )
 
 @pushd %~dp0..\..\solutions\downloads
-@call CMake.exe --build . -j 4 -- /verbosity:minimal
+@call CMake.exe --build . -j 4
 @popd
 
 if %errorlevel% NEQ 0 (

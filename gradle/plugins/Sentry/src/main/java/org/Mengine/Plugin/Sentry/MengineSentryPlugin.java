@@ -151,7 +151,11 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
             , value
         );
 
-        Sentry.setExtra(key, String.valueOf(value));
+        if (value == null) {
+            Sentry.setExtra(key, "null");
+        } else {
+            Sentry.setExtra(key, String.valueOf(value));
+        }
     }
 
     public void recordException(Throwable throwable) {

@@ -4689,7 +4689,6 @@ namespace Mengine
         }
 
         LPITEMIDLIST itemIDList;
-
         HRESULT hr = ::SHGetSpecialFolderLocation( NULL, CSIDL_APPDATA | CSIDL_FLAG_CREATE, &itemIDList );
 
         if( hr != S_OK )

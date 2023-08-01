@@ -80,7 +80,9 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
             , value
         );
 
-        if (value instanceof Boolean) {
+        if (value == null) {
+            FirebaseCrashlytics.getInstance().setCustomKey(key, "null");
+        } else if (value instanceof Boolean) {
             FirebaseCrashlytics.getInstance().setCustomKey(key, (Boolean)value);
         } else if (value instanceof Integer) {
             FirebaseCrashlytics.getInstance().setCustomKey(key, (Integer)value);

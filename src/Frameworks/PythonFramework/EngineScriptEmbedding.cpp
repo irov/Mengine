@@ -1877,10 +1877,10 @@ namespace Mengine
                     }
                     else
                     {
-                        LOGGER_ERROR( "unsupport pybind analytics parameter '%s' type '%s' value '%s'"
+                        LOGGER_ERROR( "unsupport pybind analytics parameter '%s' value '%s' type '%s'"
                             , k.c_str()
-                            , v.repr_type().c_str()
                             , v.repr().c_str()
+                            , v.repr_type().c_str()
                         );
 
                         return;
@@ -3636,9 +3636,10 @@ namespace Mengine
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' not None"
+                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
+                            , py_result.repr_type().c_str()
                         );
                     }
 
@@ -3687,9 +3688,10 @@ namespace Mengine
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' not None"
+                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
+                            , py_result.repr_type().c_str()
                         );
                     }
 
@@ -3739,9 +3741,10 @@ namespace Mengine
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' not None"
+                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
+                            , py_result.repr_type().c_str()
                         );
                     }
 
@@ -3791,9 +3794,10 @@ namespace Mengine
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' not None"
+                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
+                            , py_result.repr_type().c_str()
                         );
                     }
 
@@ -3835,9 +3839,10 @@ namespace Mengine
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' not None"
+                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
+                            , py_result.repr_type().c_str()
                         );
                     }
 
@@ -3878,9 +3883,10 @@ namespace Mengine
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' not None"
+                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
+                            , py_result.repr_type().c_str()
                         );
                     }
 
@@ -3921,9 +3927,10 @@ namespace Mengine
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' not None"
+                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
+                            , py_result.repr_type().c_str()
                         );
                     }
 

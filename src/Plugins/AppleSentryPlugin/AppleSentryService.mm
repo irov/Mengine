@@ -189,13 +189,13 @@ namespace Mengine
 
         Helper::appleSentrySetExtraString( "Engine Commit", ENGINE_GIT_SHA1 );
 
-        const Char * BUILD_TIMESTAMP = Helper::getBuildTimestamp();
+        const Char * BUILD_DATE = Helper::getBuildDate();
 
-        LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Build Timestamp: %s]"
-            , BUILD_TIMESTAMP
+        LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Build Date: %s]"
+            , BUILD_DATE
         );
 
-        Helper::appleSentrySetExtraString( "Build Timestamp", BUILD_TIMESTAMP );
+        Helper::appleSentrySetExtraString( "Build Date", BUILD_DATE );
 
         const Char * BUILD_USERNAME = Helper::getBuildUsername();
 

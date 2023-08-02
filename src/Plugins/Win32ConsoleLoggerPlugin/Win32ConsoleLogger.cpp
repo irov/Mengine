@@ -210,7 +210,7 @@ namespace Mengine
         if( _message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
-            size_t timestampSize = Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
+            size_t timestampSize = Helper::makeLoggerShortDate( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
             ::WriteConsoleA( output_handle, timestamp, (DWORD)timestampSize, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }

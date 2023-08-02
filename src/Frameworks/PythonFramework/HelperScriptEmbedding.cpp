@@ -1488,7 +1488,7 @@ namespace Mengine
                     ->getLocalDateTime( &dateTime );
 
                 Char loggerTimestamp[1024] = {'\0'};
-                Helper::makeLoggerTimeStamp( dateTime, _format, loggerTimestamp, 0, 1024 );
+                Helper::makeLoggerShortDate( dateTime, _format, loggerTimestamp, 0, 1024 );
 
                 return loggerTimestamp;
             }

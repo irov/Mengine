@@ -334,18 +334,18 @@ namespace Mengine
         const Char * buildVersion = Helper::getBuildVersion();
         uint32_t buildVersionNumber = Helper::getBuildVersionNumber();
         const Char * buildUserName = Helper::getBuildUsername();
-        const Char * buildTimestamp = Helper::getBuildTimestamp();
+        const Char * buildDate = Helper::getBuildDate();
         const Char * buildProjectName = Helper::getBuildSolutionName();
         uint64_t buildNumber = Helper::getBuildNumber();
 
         if( HAS_OPTION( "buildinfo" ) == true )
         {
             PLATFORM_SERVICE()
-                ->messageBox( "Mengine", "build version: %s [0x%08x] user: %s timestamp: %s project: %s build number: %" MENGINE_PRIu64 ""
+                ->messageBox( "Mengine", "build version: %s [0x%08x] user: %s date: %s project: %s number: %" MENGINE_PRIu64 ""
                     , buildVersion
                     , buildVersionNumber
                     , buildUserName
-                    , buildTimestamp
+                    , buildDate
                     , buildProjectName
                     , buildNumber
                 );
@@ -355,7 +355,7 @@ namespace Mengine
             , buildVersion
             , buildVersionNumber
             , buildUserName
-            , buildTimestamp
+            , buildDate
             , buildProjectName
             , buildNumber
         );

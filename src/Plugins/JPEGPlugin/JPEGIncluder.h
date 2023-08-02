@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Config.h"
+
 extern "C"
 {
 #define XMD_H

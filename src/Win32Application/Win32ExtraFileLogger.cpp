@@ -65,7 +65,7 @@ namespace Mengine
         if( _message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
-            Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
+            Helper::makeLoggerShortDate( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
             this->writeMessage_( timestamp );
             this->writeMessage_( " " );
         }

@@ -75,11 +75,6 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     public void setCustomKey(String key, Object value) {
-        this.logMessage("setCustomKey key: %s value: %s"
-            , key
-            , value
-        );
-
         if (value == null) {
             FirebaseCrashlytics.getInstance().setCustomKey(key, "null");
         } else if (value instanceof Boolean) {

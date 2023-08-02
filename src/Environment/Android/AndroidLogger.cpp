@@ -1,15 +1,11 @@
 #include "AndroidLogger.h"
 
+#include "Environment/Android/AndroidEnv.h"
+
+#include "Kernel/AssertionUtf8.h"
 #include "Kernel/LoggerHelper.h"
 
-#include "Config/StdIO.h"
 #include "Config/StdString.h"
-
-#include <android/log.h>
-
-#ifndef MENGINE_ANDROID_LOG_MAX_MESSAGE
-#define MENGINE_ANDROID_LOG_MAX_MESSAGE 1000
-#endif
 
 namespace Mengine
 {
@@ -24,35 +20,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidLogger::_log( const LoggerMessage & _message )
     {
-        android_LogPriority prio = ANDROID_LOG_UNKNOWN;
+        MENGINE_ASSERTION_VALIDATE_UTF8( _message.category, MENGINE_UNKNOWN_SIZE );
+        MENGINE_ASSERTION_VALIDATE_UTF8( _message.data, _message.size );
+
+        if( (_message.filter & Mengine::LFILTER_ANDROID) == Mengine::LFILTER_ANDROID )
+        {
+            return;
+        }
 
         ELoggerLevel level = _message.level;
-
-        switch( level )
-        {
-        case LM_SILENT:
-            return;
-        case LM_FATAL:
-            prio = ANDROID_LOG_FATAL;
-            break;
-        case LM_MESSAGE_RELEASE:
-        case LM_ERROR:
-            prio = ANDROID_LOG_ERROR;
-            break;
-        case LM_WARNING:
-            prio = ANDROID_LOG_WARN;
-            break;
-        case LM_MESSAGE:
-        case LM_INFO:
-            prio = ANDROID_LOG_INFO;
-            break;
-        case LM_DEBUG:
-            prio = ANDROID_LOG_DEBUG;
-            break;
-        case LM_VERBOSE:
-            prio = ANDROID_LOG_VERBOSE;
-            break;
-        }
 
         Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
@@ -70,12 +46,12 @@ namespace Mengine
 
         if( _message.flag & LFLAG_TIMESTAMP )
         {
-            Char timestamp[256] = {'\0'};
+            Char date[256] = {'\0'};
 
             const PlatformDateTime & dateTime = _message.dateTime;
-            size_t timestampSize = Helper::makeLoggerTimeStamp( dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
+            size_t dateSize = Helper::makeLoggerShortDate( dateTime, "[%02u:%02u:%02u:%04u]", date, 0, 256 );
 
-            MENGINE_STRCAT( message, timestamp );
+            MENGINE_STRCAT( message, date );
             MENGINE_STRCAT( message, " " );
         }
 
@@ -110,37 +86,22 @@ namespace Mengine
 
         MENGINE_STRNCAT( message, data, size );
 
-        size_t message_len = MENGINE_STRLEN( message );
+        JNIEnv * env = Mengine_JNI_GetEnv();
 
-        size_t message_packages = message_len / MENGINE_ANDROID_LOG_MAX_MESSAGE;
-        size_t message_tail = message_len % MENGINE_ANDROID_LOG_MAX_MESSAGE;
+        jclass jclass_MengineLog = env->FindClass( "org/Mengine/Base/MengineLog" );
 
-        if( message_packages != 0 )
-        {
-            __android_log_print( prio, "Mengine", "%.*s <<<"
-                , (int32_t)MENGINE_ANDROID_LOG_MAX_MESSAGE, message
-            );
+        jmethodID jclass_MengineLog_logLevel = env->GetStaticMethodID( jclass_MengineLog, "logLevel", "(ILjava/lang/String;Ljava/lang/String;)V" );
 
-            for( size_t package = 1; package != message_packages; ++package )
-            {
-                __android_log_print( prio, "Mengine", ">>>  %.*s"
-                    , (int32_t)MENGINE_ANDROID_LOG_MAX_MESSAGE, message + package * MENGINE_ANDROID_LOG_MAX_MESSAGE
-                );
-            }
+        jint jint_level = (jint)level;
+        jstring jstring_Mengine = env->NewStringUTF( "Mengine" );
+        jstring jstring_message = env->NewStringUTF( message );
 
-            if( message_tail != 0 )
-            {
-                __android_log_print( prio, "Mengine", ">>>  %s"
-                    , message + message_packages * MENGINE_ANDROID_LOG_MAX_MESSAGE
-                );
-            }
-        }
-        else
-        {
-            __android_log_print( prio, "Mengine", "%s"
-                , message + message_packages * MENGINE_ANDROID_LOG_MAX_MESSAGE
-            );
-        }
+        env->CallStaticVoidMethod( jclass_MengineLog, jclass_MengineLog_logLevel, jint_level, jstring_Mengine, jstring_message );
+
+        env->DeleteLocalRef( jstring_Mengine );
+        env->DeleteLocalRef( jstring_message );
+
+        env->DeleteLocalRef( jclass_MengineLog );
     }
     //////////////////////////////////////////////////////////////////////////
 }

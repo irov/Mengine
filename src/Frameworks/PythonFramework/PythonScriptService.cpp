@@ -314,8 +314,8 @@ namespace Mengine
         const Char * buildProjectName = Helper::getBuildSolutionName();
         this->addGlobalModuleT( "_BUILD_PROJECTNAME", buildProjectName );
 
-        const Char * buildTimestamp = Helper::getBuildTimestamp();
-        this->addGlobalModuleT( "_BUILD_TIMESTAMP", buildTimestamp );
+        const Char * buildDate = Helper::getBuildDate();
+        this->addGlobalModuleT( "_BUILD_DATE", buildDate );
 
         const Char * buildUsername = Helper::getBuildUsername();
         this->addGlobalModuleT( "_BUILD_USERNAME", buildUsername );

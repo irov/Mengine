@@ -19,7 +19,7 @@ namespace Mengine
         const Char * getEngineGITDate();
         const Char * getContentCommit();
         const Char * getBuildSolutionName();
-        const Char * getBuildTimestamp();
+        const Char * getBuildDate();
         const Char * getBuildUsername();
         const Char * getBuildVersion();
         uint32_t getBuildVersionMajor();

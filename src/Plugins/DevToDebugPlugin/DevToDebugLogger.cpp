@@ -75,7 +75,7 @@ namespace Mengine
         MessageDesc desc;
 
         Char loggerTimestamp[1024] = {'\0'};
-        Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", loggerTimestamp, 0, 1024 );
+        Helper::makeLoggerShortDate( _message.dateTime, "[%02u:%02u:%02u:%04u]", loggerTimestamp, 0, 1024 );
 
         desc.timestamp = loggerTimestamp;
         desc.tag = _message.category;

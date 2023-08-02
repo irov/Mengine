@@ -73,6 +73,20 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
 
             options.setEnableUncaughtExceptionHandler(MengineSentryPlugin_EnableUncaughtExceptionHandler);
         });
+
+        Sentry.configureScope(scope -> {
+            boolean isMasterRelease = application.isMasterRelease();
+            boolean isBuildPublish = application.isBuildPublish();
+            String engineGITSHA1 = application.getEngineGITSHA1();
+            String buildDate = application.getBuildDate();
+            String buildUsername = application.getBuildUsername();
+
+            scope.setExtra("Master", String.valueOf(isMasterRelease));
+            scope.setExtra("Publish", String.valueOf(isBuildPublish));
+            scope.setExtra("Engine Commit", engineGITSHA1);
+            scope.setExtra("Build Date", buildDate);
+            scope.setExtra("Build Username", buildUsername);
+        });
     }
 
     @Override
@@ -95,27 +109,15 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
     @Override
     public void onMengineCreateApplication(MengineActivity activity) {
         Sentry.configureScope(scope -> {
+            boolean isDevelopmentMode = activity.isDevelopmentMode();
             String companyName = activity.getCompanyName();
             String projectName = activity.getProjectName();
             int projectVersion = activity.getProjectVersion();
-            boolean isDebugMode = activity.isDebugMode();
-            boolean isDevelopmentMode = activity.isDevelopmentMode();
-            boolean isMasterRelease = activity.isMasterRelease();
-            boolean isBuildPublish = activity.isBuildPublish();
-            String engineGITSHA1 = activity.getEngineGITSHA1();
-            String buildTimestamp = activity.getBuildTimestamp();
-            String buildUsername = activity.getBuildUsername();
 
+            scope.setExtra("Development", String.valueOf(isDevelopmentMode));
             scope.setExtra("Company", companyName);
             scope.setExtra("Project", projectName);
             scope.setExtra("Version", String.valueOf(projectVersion));
-            scope.setExtra("Debug", String.valueOf(isDebugMode));
-            scope.setExtra("Development", String.valueOf(isDevelopmentMode));
-            scope.setExtra("Master", String.valueOf(isMasterRelease));
-            scope.setExtra("Publish", String.valueOf(isBuildPublish));
-            scope.setExtra("Engine Commit", engineGITSHA1);
-            scope.setExtra("Build Timestamp", buildTimestamp);
-            scope.setExtra("Build Username", buildUsername);
         });
     }
 
@@ -146,11 +148,6 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
     }
 
     public void setCustomKey(String key, Object value) {
-        this.logMessage("setCustomKey key: %s value: %s"
-            , key
-            , value
-        );
-
         if (value == null) {
             Sentry.setExtra(key, "null");
         } else {

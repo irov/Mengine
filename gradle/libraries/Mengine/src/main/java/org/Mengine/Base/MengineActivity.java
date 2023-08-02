@@ -30,6 +30,7 @@ public class MengineActivity extends SDLActivity {
     private static native void AndroidEnv_removeMengineAndroidActivityJNI();
 
     private static native void AndroidEnvironmentService_quitMengineAndroidActivityJNI();
+    private static native boolean AndroidEnvironmentService_isDevelopmentMode();
     private static native String AndroidEnvironmentService_getCompanyName();
     private static native String AndroidEnvironmentService_getProjectName();
     private static native String AndroidEnvironmentService_getExtraPreferencesFolderName();
@@ -38,14 +39,6 @@ public class MengineActivity extends SDLActivity {
     private static native boolean AndroidEnvironmentService_writeLoggerHistoryToFile(Writer writer);
     private static native boolean AndroidEnvironmentService_writeOldLogToFile(Writer writer);
     private static native int AndroidEnvironmentService_getProjectVersion();
-    private static native boolean AndroidEnvironmentService_isDebugMode();
-    private static native boolean AndroidEnvironmentService_isDevelopmentMode();
-    private static native boolean AndroidEnvironmentService_isMasterRelease();
-    private static native boolean AndroidEnvironmentService_isBuildPublish();
-    private static native String AndroidEnvironmentService_getEngineGITSHA1();
-    private static native String AndroidEnvironmentService_getBuildTimestamp();
-    private static native String AndroidEnvironmentService_getBuildUsername();
-    private static native String AndroidEnvironmentService_getBuildVersion();
 
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
     private static native void AndroidNativePython_call(String plugin, String method, Object args[]);
@@ -79,6 +72,10 @@ public class MengineActivity extends SDLActivity {
         return mainSharedObject;
     }
 
+    public boolean isDevelopmentMode() {
+        return AndroidEnvironmentService_isDevelopmentMode();
+    }
+
     public String getCompanyName() {
        return AndroidEnvironmentService_getCompanyName();
     }
@@ -91,37 +88,6 @@ public class MengineActivity extends SDLActivity {
         return AndroidEnvironmentService_getProjectVersion();
     }
 
-    public boolean isDebugMode() {
-        return AndroidEnvironmentService_isDebugMode();
-    }
-
-    public boolean isDevelopmentMode() {
-        return AndroidEnvironmentService_isDevelopmentMode();
-    }
-
-    public boolean isMasterRelease() {
-        return AndroidEnvironmentService_isMasterRelease();
-    }
-
-    public boolean isBuildPublish() {
-        return AndroidEnvironmentService_isBuildPublish();
-    }
-
-    public String getEngineGITSHA1() {
-        return AndroidEnvironmentService_getEngineGITSHA1();
-    }
-
-    public String getBuildTimestamp() {
-        return AndroidEnvironmentService_getBuildTimestamp();
-    }
-
-    public String getBuildUsername() {
-        return AndroidEnvironmentService_getBuildUsername();
-    }
-
-    public String getBuildVersion() {
-        return AndroidEnvironmentService_getBuildVersion();
-    }
 
     public MengineApplication getMengineApplication() {
         MengineApplication app = (MengineApplication)this.getApplication();
@@ -903,6 +869,10 @@ public class MengineActivity extends SDLActivity {
                 if (MengineUtils.zipFiles(accountFolder, accountZipFile) == true) {
                     Uri accountZIPUri = MengineUtils.getUriForFile(context, accountZipFile);
 
+                    if (accountZIPUri == null) {
+                        return false;
+                    }
+
                     MengineLog.logInfo(TAG, "linking open mail [%s] subject [%s] attach: %s"
                         , email
                         , subject
@@ -933,6 +903,10 @@ public class MengineActivity extends SDLActivity {
 
                     if (MengineUtils.zipFiles(logFile, logZipFile) == true) {
                         Uri logZipFileUri = MengineUtils.getUriForFile(context, logZipFile);
+
+                        if (logZipFileUri == null) {
+                            return false;
+                        }
 
                         MengineLog.logInfo(TAG, "linking open mail [%s] subject [%s] attach: %s"
                             , email
@@ -965,6 +939,10 @@ public class MengineActivity extends SDLActivity {
 
                     if (MengineUtils.zipFiles(oldLogFile, oldLogZipFile) == true) {
                         Uri oldLogZipFileUri = MengineUtils.getUriForFile(context, oldLogZipFile);
+
+                        if (oldLogZipFileUri == null) {
+                            return false;
+                        }
 
                         MengineLog.logInfo(TAG, "linking open mail [%s] subject [%s] attach: %s"
                             , email

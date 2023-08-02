@@ -35,46 +35,50 @@ public class MengineLog {
         MengineLog.m_initializeBaseServices = false;
     }
 
+    public static void logLevel(int level, String tag, String msg) {
+        switch (level) {
+            case LM_SILENT:
+                break;
+            case LM_FATAL:
+                Log.wtf(tag, msg);
+                break;
+            case LM_MESSAGE_RELEASE:
+                Log.w(tag, msg);
+                break;
+            case LM_ERROR:
+                Log.e(tag, msg);
+                break;
+            case LM_WARNING:
+                Log.w(tag, msg);
+                break;
+            case LM_MESSAGE:
+                Log.i(tag, msg);
+                break;
+            case LM_INFO:
+                Log.i(tag, msg);
+                break;
+            case LM_DEBUG:
+                Log.d(tag, msg);
+                break;
+            case LM_VERBOSE:
+                Log.v(tag, msg);
+                break;
+        }
+    }
+
     private static String log(int level, String tag, String format, Object ... args) {
         String totalMsg = MengineLog.buildTotalMsg(format, args);
 
-        switch (level) {
-            case LM_SILENT:
-                return totalMsg;
-            case LM_FATAL:
-                Log.wtf(tag, totalMsg);
-                break;
-            case LM_MESSAGE_RELEASE:
-                Log.w(tag, totalMsg);
-                break;
-            case LM_ERROR:
-                Log.e(tag, totalMsg);
-                break;
-            case LM_WARNING:
-                Log.w(tag, totalMsg);
-                break;
-            case LM_MESSAGE:
-                Log.i(tag, totalMsg);
-                break;
-            case LM_INFO:
-                Log.i(tag, totalMsg);
-                break;
-            case LM_DEBUG:
-                Log.d(tag, totalMsg);
-                break;
-            case LM_VERBOSE:
-                Log.v(tag, totalMsg);
-                break;
-        }
+        MengineLog.logLevel(level, tag, totalMsg);
 
         if( MengineLog.m_initializeBaseServices == true ) {
             synchronized (MengineLog.m_lock) {
                 AndroidEnvironmentService_log(level, tag, totalMsg);
             }
-        } else {
-            if (MengineLog.m_application != null) {
-                MengineLog.m_application.onMengineLogger(tag, level, 0, 0, totalMsg);
-            }
+        }
+
+        if (MengineLog.m_application != null) {
+            MengineLog.m_application.onMengineLogger(tag, level, 0, 0, totalMsg);
         }
 
         return totalMsg;

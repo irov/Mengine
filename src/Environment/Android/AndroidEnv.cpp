@@ -1,5 +1,7 @@
 #include "AndroidEnv.h"
 
+#include "Kernel/BuildMode.h"
+
 #include <pthread.h>
 
 extern "C" 
@@ -39,6 +41,51 @@ extern "C"
 
         env->DeleteGlobalRef( g_jobject_MengineActivity );
         g_jobject_MengineActivity = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1isMasterRelease )(JNIEnv * env, jclass cls)
+    {
+        bool mode = Mengine::Helper::isMasterRelease();
+
+        jboolean result = (jboolean)mode;
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1isBuildPublish )(JNIEnv * env, jclass cls)
+    {
+        bool mode = Mengine::Helper::isBuildPublish();
+
+        jboolean result = (jboolean)mode;
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1getEngineGITSHA1 )(JNIEnv * env, jclass cls)
+    {
+        const Mengine::Char * ENGINE_GIT_SHA1 = Mengine::Helper::getEngineGITSHA1();
+
+        jstring result = env->NewStringUTF( ENGINE_GIT_SHA1 );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1getBuildDate )(JNIEnv * env, jclass cls)
+    {
+        const Mengine::Char * BUILD_DATE = Mengine::Helper::getBuildDate();
+
+        jstring result = env->NewStringUTF( BUILD_DATE );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1getBuildUsername )(JNIEnv * env, jclass cls)
+    {
+        const Mengine::Char * BUILD_USERNAME = Mengine::Helper::getBuildUsername();
+
+        jstring result = env->NewStringUTF( BUILD_USERNAME );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     jclass Mengine_JNI_GetJClassMengineApplication( void )

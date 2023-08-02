@@ -137,11 +137,11 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_GOOGLEADMANAGER == true) {
-        implementation 'com.applovin.mediation:google-ad-manager-adapter:22.2.0.0'
+        implementation 'com.applovin.mediation:google-ad-manager-adapter:22.2.0.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADMOB == true) {
-        implementation 'com.applovin.mediation:google-adapter:22.2.0.0'
+        implementation 'com.applovin.mediation:google-adapter:22.2.0.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_HYPRMX == true) {
@@ -149,7 +149,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_INMOBI == true) {
-        implementation 'com.applovin.mediation:inmobi-adapter:10.1.4.2'
+        implementation 'com.applovin.mediation:inmobi-adapter:10.1.4.3'
         implementation 'com.squareup.picasso:picasso:2.71828'
     }
 
@@ -170,7 +170,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_META == true) {
-        implementation 'com.applovin.mediation:facebook-adapter:6.14.0.0'
+        implementation 'com.applovin.mediation:facebook-adapter:6.15.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL == true) {
@@ -182,7 +182,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MYTARGET == true) {
-        implementation 'com.applovin.mediation:mytarget-adapter:5.17.0.0'
+        implementation 'com.applovin.mediation:mytarget-adapter:5.18.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_NEND == true) {

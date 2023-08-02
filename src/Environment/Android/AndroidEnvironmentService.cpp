@@ -121,10 +121,10 @@ extern "C"
 
             if( _message.flag & Mengine::LFLAG_TIMESTAMP )
             {
-                Mengine::Char timestamp[256] = {'\0'};
-                Mengine::Helper::makeLoggerTimeStamp( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
+                Mengine::Char date[256] = {'\0'};
+                Mengine::Helper::makeLoggerShortDate( _message.dateTime, "[%02u:%02u:%02u:%04u]", date, 0, 256 );
 
-                jstring jvalue = env->NewStringUTF( timestamp );
+                jstring jvalue = env->NewStringUTF( date );
                 env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
                 env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ' ' );
                 env->DeleteLocalRef( jvalue );
@@ -220,26 +220,7 @@ extern "C"
         return JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jint JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getProjectVersion )(JNIEnv * env, jclass cls)
-    {
-        uint32_t projectVersion = APPLICATION_SERVICE()
-            ->getProjectVersion();
-
-        jint result = (jint)projectVersion;
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jint JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1isDebugMode )(JNIEnv * env, jclass cls)
-    {
-        bool mode = Mengine::Helper::isDebugMode();
-
-        jboolean result = (jboolean)mode;
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jint JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1isDevelopmentMode )(JNIEnv * env, jclass cls)
+    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1isDevelopmentMode )(JNIEnv * env, jclass cls)
     {
         bool mode = Mengine::Helper::isDevelopmentMode();
 
@@ -248,56 +229,12 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jint JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1isMasterRelease )(JNIEnv * env, jclass cls)
+    JNIEXPORT jint JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getProjectVersion )(JNIEnv * env, jclass cls)
     {
-        bool mode = Mengine::Helper::isMasterRelease();
+        uint32_t projectVersion = APPLICATION_SERVICE()
+            ->getProjectVersion();
 
-        jboolean result = (jboolean)mode;
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jint JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1isBuildPublish )(JNIEnv * env, jclass cls)
-    {
-        bool mode = Mengine::Helper::isBuildPublish();
-
-        jboolean result = (jboolean)mode;
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getEngineGITSHA1 )(JNIEnv * env, jclass cls)
-    {
-        const Mengine::Char * ENGINE_GIT_SHA1 = Mengine::Helper::getEngineGITSHA1();
-
-        jstring result = env->NewStringUTF( ENGINE_GIT_SHA1 );
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getBuildTimestamp )(JNIEnv * env, jclass cls)
-    {
-        const Mengine::Char * BUILD_TIMESTAMP = Mengine::Helper::getBuildTimestamp();
-
-        jstring result = env->NewStringUTF( BUILD_TIMESTAMP );
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getBuildUsername )(JNIEnv * env, jclass cls)
-    {
-        const Mengine::Char * BUILD_USERNAME = Mengine::Helper::getBuildUsername();
-
-        jstring result = env->NewStringUTF( BUILD_USERNAME );
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getBuildVersion )(JNIEnv * env, jclass cls)
-    {
-        const Mengine::Char * BUILD_VERSION = Mengine::Helper::getBuildVersion();
-
-        jstring result = env->NewStringUTF( BUILD_VERSION );
+        jint result = (jint)projectVersion;
 
         return result;
     }
@@ -314,43 +251,46 @@ extern "C"
 
         Mengine::ELoggerLevel level;
         uint32_t color;
+
         switch (_level) {
-            case 0:
+            case Mengine::LM_SILENT:
                 return;
-            case 1:
+            case Mengine::LM_FATAL:
                 level = Mengine::LM_FATAL;
                 color = Mengine::LCOLOR_RED;
                 break;
-            case 2:
+            case Mengine::LM_MESSAGE_RELEASE:
                 level = Mengine::LM_MESSAGE_RELEASE;
                 color = Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE;
                 break;
-            case 3:
+            case Mengine::LM_ERROR:
                 level = Mengine::LM_ERROR;
                 color = Mengine::LCOLOR_RED;
                 break;
-            case 4:
+            case Mengine::LM_WARNING:
                 level = Mengine::LM_WARNING;
                 color = Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN;
                 break;
-            case 5:
+            case Mengine::LM_MESSAGE:
                 level = Mengine::LM_MESSAGE;
                 color = Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE;
                 break;
-            case 6:
+            case Mengine::LM_INFO:
                 level = Mengine::LM_INFO;
                 color = Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE;
                 break;
-            case 7:
+            case Mengine::LM_DEBUG:
                 level = Mengine::LM_DEBUG;
                 color = Mengine::LCOLOR_BLUE;
                 break;
-            case 8:
+            case Mengine::LM_VERBOSE:
+                level = Mengine::LM_VERBOSE;
+                color = Mengine::LCOLOR_NONE;
                 return;
                 break;
         }
 
-        LOGGER_VERBOSE_LEVEL( "android", level, Mengine::LFILTER_NONE, color, nullptr, 0, Mengine::LFLAG_SHORT )("[%s] %s"
+        LOGGER_VERBOSE_LEVEL( "android", level, Mengine::LFILTER_NONE | Mengine::LFILTER_ANDROID, color, nullptr, 0, Mengine::LFLAG_SHORT )("[%s] %s"
             , tag_str
             , msg_str
         );

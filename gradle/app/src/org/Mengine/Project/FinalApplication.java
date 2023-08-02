@@ -12,11 +12,6 @@ public class FinalApplication extends org.Mengine.Base.MengineApplication {
     }
 
     @Override
-    public boolean isBuildPublish() {
-        return BuildConfig.MENGINE_APP_BUILD_PUBLISH;
-    }
-
-    @Override
     public int getVersionCode() {
         return BuildConfig.VERSION_CODE;
     }

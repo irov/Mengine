@@ -123,11 +123,11 @@ namespace Mengine
             return BUILD_SOLUTION_NAME;
         }
         //////////////////////////////////////////////////////////////////////////
-        const Char * getBuildTimestamp()
+        const Char * getBuildDate()
         {
-            const Char * BUILD_TIMESTAMP = MENGINE_BUILD_TIMESTAMP;
+            const Char * BUILD_DATE = MENGINE_BUILD_DATE;
 
-            return BUILD_TIMESTAMP;
+            return BUILD_DATE;
         }
         //////////////////////////////////////////////////////////////////////////
         const Char * getBuildUsername()

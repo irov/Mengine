@@ -5,6 +5,10 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
 
+#if defined(MENGINE_WINDOWS_DEBUG)
+#   include "Environment/Windows/Win32Helper.h"
+#endif
+
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Crash.h"
 #include "Kernel/Stringalized.h"
@@ -79,6 +83,20 @@ namespace Mengine
             LoggerOperator( "sentry", level, 0, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT ).logMessageArgs( _format, _args );
         }
         //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_WINDOWS_DEBUG)
+        //////////////////////////////////////////////////////////////////////////
+        sentry_value_t sentry_crash_function( const sentry_ucontext_t * _uctx, sentry_value_t _event, void * _closure )
+        {
+            MENGINE_UNUSED( _uctx );
+            MENGINE_UNUSED( _closure );
+
+            Helper::Win32Toast( L"Engine caught crash [Sentry]" );
+
+            return _event;
+        }
+        //////////////////////////////////////////////////////////////////////////
+#endif
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     Win32SentryService::Win32SentryService()
@@ -101,8 +119,10 @@ namespace Mengine
         }
 #endif
 
-        LOGGER_MESSAGE( "Sentry version: %s"
-            , SENTRY_SDK_USER_AGENT
+        LOGGER_MESSAGE( "Sentry version: %s name: %s agent: %s"
+            , sentry_sdk_version()
+            , sentry_sdk_name()
+            , sentry_sdk_user_agent()
         );
 
         const Char * Win32SentryPlugin_DSN = CONFIG_VALUE( "Win32SentryPlugin", "DSN", "" );
@@ -215,11 +235,24 @@ namespace Mengine
         
         sentry_options_set_environment( options, environment );
 
+#if defined(MENGINE_WINDOWS_DEBUG)
+        sentry_options_set_on_crash( options, &Detail::sentry_crash_function, nullptr );
+#endif
+
         if( sentry_init( options ) != 0 )
         {
             LOGGER_ERROR( "invalid initialize sentry plugin" );
 
             return false;
+        }
+
+        if( sentry_get_crashed_last_run() == 1 )
+        {
+            sentry_clear_crashed_last_run();
+
+#if defined(MENGINE_WINDOWS_DEBUG)
+            Helper::Win32Toast( L"application has crashed on the last run" );
+#endif
         }
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &Win32SentryService::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
@@ -411,13 +444,13 @@ namespace Mengine
 
         sentry_set_extra( "Engine Commit", sentry_value_new_string( ENGINE_GIT_SHA1 ) );
 
-        const Char * BUILD_TIMESTAMP = Helper::getBuildTimestamp();
+        const Char * BUILD_DATE = Helper::getBuildDate();
 
-        LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Build Timestamp: %s]"
-            , BUILD_TIMESTAMP
+        LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Build Date: %s]"
+            , BUILD_DATE
         );
 
-        sentry_set_extra( "Build Timestamp", sentry_value_new_string( BUILD_TIMESTAMP ) );
+        sentry_set_extra( "Build Date", sentry_value_new_string( BUILD_DATE ) );
 
         const Char * BUILD_SOLUTION_NAME = Helper::getBuildSolutionName();
 
@@ -447,14 +480,14 @@ namespace Mengine
         DATETIME_SYSTEM()
             ->getLocalDateTime( &dateTime );
 
-        Char INIT_TIMESTAMP[256] = {'\0'};
-        Helper::makeLoggerTimeStamp( dateTime, "[%02u:%02u:%02u:%04u]", INIT_TIMESTAMP, 0, 256 );
+        Char INIT_DATE[256] = {'\0'};
+        Helper::makeLoggerFullDate( dateTime, "[%04u.%02u.%02u %02u:%02u:%02u:%04u]", INIT_DATE, 0, 256 );
 
-        LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Init Timestamp: %s]"
-            , INIT_TIMESTAMP
+        LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Init Date: %s]"
+            , INIT_DATE
         );
 
-        sentry_set_extra( "Init Timestamp", sentry_value_new_string( INIT_TIMESTAMP ) );
+        sentry_set_extra( "Init Date", sentry_value_new_string( INIT_DATE ) );
 
         LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Engine Stop: %d]"
             , false
@@ -472,10 +505,6 @@ namespace Mengine
 
             LOGGER_MESSAGE_RELEASE( "uid: %s", message_uid );
             LOGGER_MESSAGE_RELEASE( "!!!test sentry crash!!!" );
-
-            sentry_value_t event = sentry_value_new_message_event( SENTRY_LEVEL_ERROR, "Test", "sentrycrash" );
-
-            sentry_capture_event( event );
 
             Helper::crash( "sentrycrash" );
         }

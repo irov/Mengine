@@ -119,5 +119,10 @@ namespace Mengine
             return errorMessageBufferWithErrorCode;
         }
         //////////////////////////////////////////////////////////////////////////
+        void Win32Toast( const WChar * _message )
+        {
+            ::MessageBoxW( NULL, _message, L"Mengine", MB_OK );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

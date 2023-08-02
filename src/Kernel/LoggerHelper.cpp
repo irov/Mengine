@@ -38,7 +38,22 @@ namespace Mengine
             return '?';
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t makeLoggerTimeStamp( const PlatformDateTime & _dateTime, const Char * _format, Char * const _buffer, size_t _offset, size_t _capacity )
+        size_t makeLoggerFullDate( const PlatformDateTime & _dateTime, const Char * _format, Char * const _buffer, size_t _offset, size_t _capacity )
+        {
+            int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, _format //"[%02u:%02u:%02u:%04u]"
+                , _dateTime.year
+                , _dateTime.month
+                , _dateTime.day
+                , _dateTime.hour
+                , _dateTime.minute
+                , _dateTime.second
+                , _dateTime.milliseconds
+            );
+
+            return (size_t)size;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        size_t makeLoggerShortDate( const PlatformDateTime & _dateTime, const Char * _format, Char * const _buffer, size_t _offset, size_t _capacity )
         {
             int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, _format //"[%02u:%02u:%02u:%04u]"
                 , _dateTime.hour

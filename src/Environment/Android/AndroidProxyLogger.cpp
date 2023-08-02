@@ -39,6 +39,11 @@ namespace Mengine
         MENGINE_ASSERTION_VALIDATE_UTF8( _message.category, MENGINE_UNKNOWN_SIZE );
         MENGINE_ASSERTION_VALIDATE_UTF8( _message.data, _message.size );
 
+        if( (_message.filter & Mengine::LFILTER_ANDROID) == Mengine::LFILTER_ANDROID )
+        {
+            return;
+        }
+
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         if( jenv == nullptr )

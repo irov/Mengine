@@ -32,9 +32,35 @@ public class MengineApplication extends Application {
     private static native void AndroidEnv_setMengineAndroidApplicationJNI(Object activity);
     private static native void AndroidEnv_removeMengineAndroidApplicationJNI();
 
+    private static native boolean AndroidEnv_isMasterRelease();
+    private static native boolean AndroidEnv_isBuildPublish();
+    private static native String AndroidEnv_getEngineGITSHA1();
+    private static native String AndroidEnv_getBuildDate();
+    private static native String AndroidEnv_getBuildUsername();
+
+    public boolean isMasterRelease() {
+        return AndroidEnv_isMasterRelease();
+    }
+
+    public boolean isBuildPublish() {
+        return AndroidEnv_isBuildPublish();
+    }
+
+    public String getEngineGITSHA1() {
+        return AndroidEnv_getEngineGITSHA1();
+    }
+
+    public String getBuildDate() {
+        return AndroidEnv_getBuildDate();
+    }
+
+    public String getBuildUsername() {
+        return AndroidEnv_getBuildUsername();
+    }
+
     private String m_androidId;
     private String m_installKey;
-    private long m_installKeyTimestamp = -1;
+    private long m_installTimestamp = -1;
     private long m_installRND = -1;
     private long m_sessionIndex = -1;
     private String m_sessionId;
@@ -63,10 +89,6 @@ public class MengineApplication extends Application {
 
     public String getApplicationId() {
         return "";
-    }
-
-    public boolean isBuildPublish() {
-        return false;
     }
 
     public int getVersionCode() {
@@ -181,7 +203,7 @@ public class MengineApplication extends Application {
     }
 
     public long getInstallKeyTimestamp() {
-        return m_installKeyTimestamp;
+        return m_installTimestamp;
     }
 
     public long getInstallRND() {
@@ -243,6 +265,7 @@ public class MengineApplication extends Application {
         return OSVersion;
     }
 
+    @SuppressWarnings("deprecation")
     private PackageInfo getPackageInfo(PackageManager manager, String packageName) {
         PackageInfo packageInfo;
 
@@ -588,8 +611,6 @@ public class MengineApplication extends Application {
 
         MengineLog.logInfo(TAG, "onCreate");
 
-        boolean mengine_session_use_install_key = this.getMetaDataBoolean("mengine.session.use_install_key", false);
-
         if (this.getMetaDataBoolean("mengine.secure.allow_android_id", true) == true) {
             m_androidId = this.getSecureAndroidId();
         } else {
@@ -599,23 +620,25 @@ public class MengineApplication extends Application {
         SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
 
         String installKey = settings.getString("install_key", null);
-        long installKeyTimestamp = settings.getLong("install_key_timestamp", 0);
+        long installTimestamp = settings.getLong("install_timestamp", 0);
         long installRND = settings.getLong("install_rnd", -1);
         long sessionIndex = settings.getLong("session_index", 0);
-        String sessionId = settings.getString("session_id", "");
+        String sessionId = settings.getString("session_id", null);
 
         SharedPreferences.Editor editor = settings.edit();
 
         if (installKey == null) {
             installKey = MengineUtils.getRandomUUIDString();
-            installKeyTimestamp = MengineUtils.getTimestamp();
-            editor.putString("install_key", installKey);
-            editor.putLong("install_key_timestamp", installKeyTimestamp);
+            installTimestamp = MengineUtils.getTimestamp();
 
-            if (mengine_session_use_install_key == true) {
-                sessionId = installKey;
-                editor.putString("session_id", sessionId);
-            }
+            editor.putString("install_key", installKey);
+            editor.putLong("install_timestamp", installTimestamp);
+        }
+
+        if (sessionId == null) {
+            sessionId = installKey;
+
+            editor.putString("session_id", sessionId);
         }
 
         if (installRND == -1) {
@@ -634,22 +657,31 @@ public class MengineApplication extends Application {
         editor.apply();
 
         m_installKey = installKey;
-        m_installKeyTimestamp = installKeyTimestamp;
+        m_installTimestamp = installTimestamp;
         m_installRND = installRND;
         m_sessionIndex = sessionIndex;
         m_sessionId = sessionId;
 
+        String gitsha1 = this.getEngineGITSHA1();
+        this.setState("engine.gitsha1", gitsha1);
+
+        String build_date = this.getBuildDate();
+        this.setState("engine.build_date", build_date);
+
+        String build_username = this.getBuildUsername();
+        this.setState("engine.build_username", build_username);
+
         this.setState("user.install_key", m_installKey);
-        this.setState("user.install_key_timestamp", m_installKeyTimestamp);
+        this.setState("user.install_timestamp", m_installTimestamp);
         this.setState("user.install_rnd", m_installRND);
         this.setState("user.session_index", m_sessionIndex);
         this.setState("user.session_id", m_sessionId);
 
         String sessionStartDate = MengineUtils.getDateFormat("d MMM yyyy HH:mm:ss");
-        this.setState("user.session_start_date", sessionStartDate);
+        this.setState("user.session_date", sessionStartDate);
 
         long sessionStartTimestamp = MengineUtils.getTimestamp();
-        this.setState("user.session_start_timestamp", sessionStartTimestamp);
+        this.setState("user.session_timestamp", sessionStartTimestamp);
 
         this.setState("application.init", "load");
 

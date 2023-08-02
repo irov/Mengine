@@ -344,9 +344,18 @@ public class MengineUtils {
     public static Uri getUriForFile(Context context, File file) {
         String packageName = context.getPackageName();
 
-        Uri uri = FileProvider.getUriForFile(context, packageName + ".fileprovider", file);
+        try {
+            Uri uri = FileProvider.getUriForFile(context, packageName + ".fileprovider", file);
 
-        return uri;
+            return uri;
+        } catch (IllegalArgumentException e) {
+            MengineLog.logError(TAG, "failed get uri for file: %s exception: %s"
+                , file.getPath()
+                , e.getLocalizedMessage()
+            );
+        }
+
+        return null;
     }
 
     public static String getDateFormat(String format) {

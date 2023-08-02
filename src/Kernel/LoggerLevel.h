@@ -33,6 +33,7 @@ namespace Mengine
     {
         LFILTER_NONE = 0 << 0,
         LFILTER_PROTECTED = 1 << 0,
+        LFILTER_ANDROID = 2 << 0,
     };
     //////////////////////////////////////////////////////////////////////////
     enum ELoggerFlag : uint32_t

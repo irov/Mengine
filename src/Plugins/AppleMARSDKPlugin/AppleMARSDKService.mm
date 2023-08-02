@@ -206,6 +206,13 @@ namespace Mengine
                                          delegate:m_adRewardedDelegate];
     }
     //////////////////////////////////////////////////////////////////////////
+    int64_t AppleMARSDKService::getInternetDate() const
+    {
+        NSInteger date = [[MARSDK sharedInstance] getInternetDate];
+        
+        return date;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onUserLogin( const MARSDKResultParams & _params )
     {
         LOGGER_MESSAGE( "event user login" );

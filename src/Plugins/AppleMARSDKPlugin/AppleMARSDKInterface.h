@@ -72,6 +72,9 @@ namespace Mengine
         
     public:
         virtual void showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum ) = 0;
+        
+    public:
+        virtual int64_t getInternetDate() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

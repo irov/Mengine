@@ -345,6 +345,14 @@ namespace Mengine
                 ->showRewardVideoAd( _itemName, _itemNum );
         }
         //////////////////////////////////////////////////////////////////////////
+        static int64_t s_AppleMARSDK_getInternetDate()
+        {
+            int64_t date = APPLE_MARSDK_SERVICE()
+                ->getInternetDate();
+            
+            return date;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     AppleMARSDKScriptEmbedding::AppleMARSDKScriptEmbedding()
@@ -369,6 +377,7 @@ namespace Mengine
         pybind::def_function( _kernel, "appleMARSDKSubmitPaymentData", &Detail::s_AppleMARSDK_submitPaymentData );
         pybind::def_function( _kernel, "appleMARSDKPropComplete", &Detail::s_AppleMARSDK_propComplete );
         pybind::def_function( _kernel, "appleMARSDKShowRewardVideoAd", &Detail::s_AppleMARSDK_showRewardVideoAd );
+        pybind::def_function( _kernel, "appleMARSDKGetInternetDate", &Detail::s_AppleMARSDK_getInternetDate );
         
         return true;
     }

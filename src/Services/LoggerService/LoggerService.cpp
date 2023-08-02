@@ -70,24 +70,9 @@ namespace Mengine
             m_silentMessageRelease = true;
         }
 
-        ELoggerLevel logLevel;
+        ELoggerLevel logLevel = LM_MESSAGE;
 
-        bool developmentMode = Helper::isDevelopmentMode();
-        bool OPTION_roaming = HAS_OPTION( "roaming" );
-        bool OPTION_noroaming = HAS_OPTION( "noroaming" );
-
-        if( developmentMode == true && (OPTION_roaming == false || OPTION_noroaming == true) )
-        {
-            logLevel = LM_MESSAGE;
-        }
-        else
-        {
-#if defined(MENGINE_DEBUG)
-            logLevel = LM_MESSAGE;
-#else
-            logLevel = LM_ERROR;
-#endif
-        }
+        bool developmentMode = Helper::isDevelopmentMode(); 
 
         if( TEST_OPTION_VALUE( "log", "info" ) == true )
         {

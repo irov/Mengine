@@ -2,6 +2,7 @@ package org.Mengine.Base;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.IllegalFormatException;
@@ -23,12 +24,29 @@ public class MengineLog {
     private static boolean m_initializeBaseServices = false;
     private static final Object m_lock = new Object();
 
+    static class HistoryRecord
+    {
+        public int level;
+        public String tag;
+        public String message;
+    };
+
+    private static ArrayList<HistoryRecord> m_history = new ArrayList<>();
+
     public static void setMengineApplication(MengineApplication application) {
         MengineLog.m_application = application;
     }
 
     public static void onMengineInitializeBaseServices(MengineActivity activity) {
         MengineLog.m_initializeBaseServices = true;
+
+        for (HistoryRecord record : m_history) {
+            synchronized (MengineLog.m_lock) {
+                AndroidEnvironmentService_log(record.level, record.tag, record.message);
+            }
+        }
+
+        m_history.clear();
     }
 
     public static void onMenginePlatformStop(MengineActivity activity) {
@@ -75,6 +93,13 @@ public class MengineLog {
             synchronized (MengineLog.m_lock) {
                 AndroidEnvironmentService_log(level, tag, totalMsg);
             }
+        } else {
+            HistoryRecord record = new HistoryRecord();
+            record.level = level;
+            record.tag = tag;
+            record.message = totalMsg;
+
+            MengineLog.m_history.add(record);
         }
 
         if (MengineLog.m_application != null) {

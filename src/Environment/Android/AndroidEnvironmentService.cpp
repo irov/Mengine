@@ -175,7 +175,6 @@ extern "C"
             env->DeleteLocalRef( jvalue );
 
             env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, '\n' );
-            env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, '\0' );
 
             env->DeleteLocalRef( jclass_Writer );
         });

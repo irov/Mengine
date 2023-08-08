@@ -204,7 +204,8 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
                     }
                 }
 
-                this.logInfo("customEvent params: %s"
+                this.logInfo("logEvent [CUSTOM] eventName: %s params: %s"
+                    , eventName
                     , params
                 );
 
@@ -218,7 +219,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             return;
         }
 
-        this.logInfo("logEvent eventName: %s params: %s"
+        this.logInfo("logEvent [CUSTOM] eventName: %s params: %s"
             , eventName
             , params
         );

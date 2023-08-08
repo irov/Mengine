@@ -364,8 +364,6 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
         MengineLog.logInfo(TAG, "onActivityResult request: %d result: %d"
             , requestCode
             , resultCode
@@ -382,6 +380,8 @@ public class MengineActivity extends SDLActivity {
         for (MenginePlugin p : plugins) {
             p.onActivityResult(this, requestCode, resultCode, data);
         }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

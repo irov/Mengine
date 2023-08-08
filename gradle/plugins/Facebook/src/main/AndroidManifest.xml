@@ -2,6 +2,10 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <queries>
+        <package android:name="com.facebook.katana" />
+    </queries>
+
+    <queries>
         <provider android:authorities="com.facebook.katana.provider.PlatformProvider" />
         <provider android:authorities="com.facebook.orca.provider.PlatformProvider" />
     </queries>

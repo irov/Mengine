@@ -40,7 +40,7 @@ namespace Mengine
             Char timestamp[256] = {'\0'};
 
             const PlatformDateTime & dateTime = _message.dateTime;
-            size_t timestampSize = Helper::makeLoggerTimeStamp( dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
+            size_t timestampSize = Helper::makeLoggerShortDate( dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
 
             MENGINE_STRCAT( message, timestamp );
             MENGINE_STRCAT( message, " " );

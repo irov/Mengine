@@ -43,12 +43,15 @@ MESSAGE("MENGINE_ENGINE_GIT_URL: ${MENGINE_ENGINE_GIT_URL}")
 MESSAGE("MENGINE_ENGINE_GIT_BRANCH: ${MENGINE_ENGINE_GIT_BRANCH}")
 MESSAGE("MENGINE_ENGINE_GIT_DATE: ${MENGINE_ENGINE_GIT_DATE}")
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/GitSHA1.h.in ${CMAKE_CURRENT_SOURCE_DIR}/GitSHA1.h @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/GitSHA1.h.in ${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/GitSHA1.h @ONLY)
+MESSAGE("configure file: ${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/GitSHA1.h")
 
 string(TIMESTAMP MENGINE_BUILD_DATE "%Y-%m-%d %H:%M:%S")
 
 set(MENGINE_BUILD_USERNAME $ENV{USERNAME} CACHE STRING "MENGINE_BUILD_USERNAME")
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BuildInfo.h.in ${CMAKE_CURRENT_SOURCE_DIR}/BuildInfo.h @ONLY)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BuildInfo.h.in ${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/BuildInfo.h @ONLY)
+MESSAGE("configure file: ${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/BuildInfo.h")
 
 MESSAGE("MENGINE_BUILD_USERNAME: ${MENGINE_BUILD_USERNAME}")
 MESSAGE("MENGINE_BUILD_DATE: ${MENGINE_BUILD_DATE}")
@@ -65,7 +68,8 @@ endforeach()
 
 STRING(APPEND DEFINITIONS_BUFFER "#endif\n")
 
-FILE(WRITE ${CMAKE_BINARY_DIR}/Definitions.h ${DEFINITIONS_BUFFER})
+FILE(WRITE ${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/Definitions.h ${DEFINITIONS_BUFFER})
+MESSAGE("configure file: ${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/Definitions.h")
 
 ADD_FILTER(
 src
@@ -91,8 +95,6 @@ src
     Limits.h
     UInt32ToPointer.h
     Metaprogramming.h
-    GitSHA1.h
-    BuildInfo.h
     UniqueId.h
     Algorithm.h
     Numeric.h
@@ -101,7 +103,13 @@ src
     Thread.h
     Switch.h
     Utility.h
-    ${CMAKE_BINARY_DIR}/Definitions.h
+)
+
+ADD_FILTER(
+configuration
+    ${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/GitSHA1.h
+    ${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/BuildInfo.h
+    ${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/Definitions.h
 )
 
 ADD_MENGINE_INTERFACE()

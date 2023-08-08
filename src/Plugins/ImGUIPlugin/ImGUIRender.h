@@ -2,7 +2,7 @@
 
 #include "ImGUIInterface.h"
 
-#include "Interface/RenderExternalInterface.h"
+#include "Interface/RenderDrawPrimitiveInterface.h"
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
@@ -13,7 +13,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ImGUIRender
         : public Node
-        , public RenderExternalInterface
+        , public RenderDrawPrimitiveInterface
         , public UnknownImGUIRenderInterface
         , protected BaseRender
         , protected BaseTransformation
@@ -44,7 +44,7 @@ namespace Mengine
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
-        void onRenderExternal() const override;
+        void onRenderDrawPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) const override;
 
     protected:
         LambdaImGUIProvider m_provider;

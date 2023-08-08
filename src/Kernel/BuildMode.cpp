@@ -3,8 +3,8 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 
-#include "Config/GitSHA1.h"
-#include "Config/BuildInfo.h"
+#include "Configuration/GitSHA1.h"
+#include "Configuration/BuildInfo.h"
 
 namespace Mengine
 {

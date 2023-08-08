@@ -216,9 +216,6 @@ namespace Mengine
         time_t getFileUnixTime( const FILETIME * filetime ) const override;
 
     protected:
-        bool getCallstack( ThreadId _threadId, Char * const _stack, size_t _capacity, PCONTEXT _context ) const override;
-
-    protected:
         bool isNeedWindowRender() const;
 
     protected:

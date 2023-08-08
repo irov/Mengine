@@ -3,7 +3,7 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
 
-#include "Interface/Win32PlatformServiceExtensionInterface.h"
+#include "Environment/Windows/Win32GetCallstack.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/BuildMode.h"
@@ -80,11 +80,8 @@ namespace Mengine
         LOGGER_ERROR( "exception catch" );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        Win32PlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
-            ->getUnknown();
-
         Char stack[8096] = {'\0'};
-        if( extension->getCallstack( ~0U, stack, 8095, pExceptionPointers->ContextRecord ) == false )
+        if( Helper::Win32GetCallstack( ~0U, pExceptionPointers->ContextRecord, stack, 8095 ) == false )
         {
             LOGGER_FATAL( "catch exception and write dumb '%s'"
                 , g_monitor->m_dumpPath

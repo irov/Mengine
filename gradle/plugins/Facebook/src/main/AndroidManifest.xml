@@ -9,6 +9,8 @@
     <application>
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/mengine_facebook_app_id"/>
         <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/mengine_facebook_client_token"/>
+        <meta-data android:name='com.facebook.sdk.AutoLogAppEventsEnabled' android:value='false'/>
+        <meta-data android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled" android:value="false"/>
 
         <activity
             android:name="com.facebook.FacebookActivity"

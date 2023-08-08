@@ -457,11 +457,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderService::beginScene( const RenderPipelineInterfacePtr & _renderPipeline )
+    bool RenderService::beginScene( const RenderPipelineInterfacePtr & _pipeline )
     {
         MENGINE_PROFILER_CATEGORY();
 
-        _renderPipeline->prepare();
+        _pipeline->prepare();
 
         if( m_renderSystem->beginScene() == false )
         {
@@ -472,20 +472,20 @@ namespace Mengine
 
         this->clearFrameBuffer_();
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_SCENE_BEGIN, _renderPipeline );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_SCENE_BEGIN, _pipeline );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::endScene( const RenderPipelineInterfacePtr & _renderPipeline )
+    void RenderService::endScene( const RenderPipelineInterfacePtr & _pipeline )
     {
         MENGINE_PROFILER_CATEGORY();
 
-        _renderPipeline->flush();
+        _pipeline->flush();
 
-        this->flushRender_( _renderPipeline );
+        this->flushRender_( _pipeline );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_SCENE_END, _renderPipeline );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_SCENE_END, _pipeline );
 
         m_renderSystem->endScene();
 
@@ -658,11 +658,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::renderPrimitive_( const RenderPrimitive * _renderPrimitive )
+    void RenderService::drawPrimitive_( const RenderPrimitive * _primitive )
     {
-        RenderMaterialInterface * material = _renderPrimitive->material;
+        RenderMaterialInterface * material = _primitive->material;
 
-        if( _renderPrimitive->indexCount == 0 )
+        if( _primitive->indexCount == 0 )
         {
             if( material != nullptr )
             {
@@ -686,11 +686,11 @@ namespace Mengine
 
         RenderIndexedPrimitiveDesc desc;
         desc.primitiveType = primitiveType;
-        desc.baseVertexIndex = _renderPrimitive->baseVertexIndex;
-        desc.minIndex = _renderPrimitive->minIndex;
-        desc.vertexCount = _renderPrimitive->vertexCount;
-        desc.startIndex = _renderPrimitive->startIndex;
-        desc.indexCount = _renderPrimitive->indexCount;
+        desc.baseVertexIndex = _primitive->baseVertexIndex;
+        desc.minIndex = _primitive->minIndex;
+        desc.vertexCount = _primitive->vertexCount;
+        desc.startIndex = _primitive->startIndex;
+        desc.indexCount = _primitive->indexCount;
 
         const RenderMaterialStage * materialStage = material->getStage();
         const RenderMaterialStageCacheInterfacePtr & stageCache = materialStage->stageCache;
@@ -1060,13 +1060,13 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::renderPrimitives( const RenderPrimitive * _primitives, uint32_t _count )
+    void RenderService::drawPrimitives( const RenderPrimitive * _primitives, uint32_t _count )
     {
         for( uint32_t index = 0; index != _count; ++index )
         {
             const RenderPrimitive * renderPrimitive = _primitives + index;
 
-            this->renderPrimitive_( renderPrimitive );
+            this->drawPrimitive_( renderPrimitive );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1149,7 +1149,7 @@ namespace Mengine
         return indices_array;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderService::makeBatches_( const RenderPipelineInterfacePtr & _renderPipeline )
+    bool RenderService::makeBatches_( const RenderPipelineInterfacePtr & _pipeline )
     {
         for( const RenderBatchPtr & batch : m_cacheRenderBatches )
         {
@@ -1161,7 +1161,7 @@ namespace Mengine
             }
         }
 
-        _renderPipeline->batch();
+        _pipeline->batch();
 
         for( const RenderBatchPtr & batch : m_cacheRenderBatches )
         {
@@ -1176,14 +1176,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::flushRender_( const RenderPipelineInterfacePtr & _renderPipeline )
+    void RenderService::flushRender_( const RenderPipelineInterfacePtr & _pipeline )
     {
-        if( this->makeBatches_( _renderPipeline ) == false )
+        if( this->makeBatches_( _pipeline ) == false )
         {
             return;
         }
 
-        _renderPipeline->render();
+        _pipeline->render();
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::setVSync( bool _vSync )

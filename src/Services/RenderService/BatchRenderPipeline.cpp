@@ -398,7 +398,7 @@ namespace Mengine
     void BatchRenderPipeline::addRenderExternal( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderProgramVariableInterfacePtr & _programVariable
-        , const RenderExternalInterfacePtr & _external
+        , const RenderDrawPrimitiveInterfacePtr & _drawPrimitive
         , const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
@@ -407,7 +407,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
         MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
         MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
-        MENGINE_ASSERTION_FATAL( _external != nullptr, "_external == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _drawPrimitive != nullptr, "_external == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
 
         if( m_renderObjects.full() == true )
         {
@@ -451,7 +451,7 @@ namespace Mengine
         renderPass.zGroup = _context->zGroup == MENGINE_RENDER_ZGROUP_DEFAULT ? 0 : _context->zGroup;
         renderPass.zIndex = _context->zIndex == MENGINE_RENDER_ZINDEX_DEFAULT ? 0 : _context->zIndex;
         
-        renderPass.external = _external;
+        renderPass.drawPrimitive = _drawPrimitive;
 
         renderPass.flags = RENDER_PASS_FLAG_SINGLE;
 
@@ -704,6 +704,8 @@ namespace Mengine
             return _l.zIndex < _r.zIndex;
         } );
 
+        const RenderPrimitive * renderPrimitives = m_renderPrimitives.buff();
+
         for( const RenderPass & renderPass : m_renderPasses )
         {
             const RenderVertexBufferInterfacePtr & vertexBuffer = renderPass.vertexBuffer;
@@ -712,19 +714,17 @@ namespace Mengine
             const RenderContext * context = &renderPass.context;
 
             const RenderProgramVariableInterfacePtr & programVariable = renderPass.programVariable;
-            const RenderExternalInterfacePtr & external = renderPass.external;
+            const RenderDrawPrimitiveInterfacePtr & drawPrimitive = renderPass.drawPrimitive;
 
             m_renderService->beginRenderPass( vertexBuffer, indexBuffer, programVariable, context );
 
-            if( external == nullptr )
+            if( drawPrimitive == nullptr )
             {
-                const RenderPrimitive * renderPrimitives = m_renderPrimitives.buff();
-
-                m_renderService->renderPrimitives( renderPrimitives + renderPass.beginRenderObject, renderPass.countRenderObject );
+                m_renderService->drawPrimitives( renderPrimitives + renderPass.beginRenderObject, renderPass.countRenderObject );
             }
             else
             {
-                external->onRenderExternal();
+                drawPrimitive->onRenderDrawPrimitives( renderPrimitives + renderPass.beginRenderObject, renderPass.countRenderObject );
             }
 
             m_renderService->endRenderPass( context );

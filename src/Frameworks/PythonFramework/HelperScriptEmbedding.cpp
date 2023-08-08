@@ -71,8 +71,6 @@
 
 #include "Config/Typedef.h"
 #include "Config/StdString.h"
-#include "Config/BuildInfo.h"
-#include "Config/GitSHA1.h"
 #include "Config/StdMath.h"
 
 #include "math/angle.h"

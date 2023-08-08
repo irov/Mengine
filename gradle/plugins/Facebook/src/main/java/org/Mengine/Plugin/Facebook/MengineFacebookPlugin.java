@@ -219,19 +219,27 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
     @Override
     public void onDestroy(MengineActivity activity) {
-        m_accessTokenTracker.stopTracking();
-        m_accessTokenTracker = null;
+        if (m_accessTokenTracker != null) {
+            m_accessTokenTracker.stopTracking();
+            m_accessTokenTracker = null;
+        }
 
-        m_profileTracker.stopTracking();
-        m_profileTracker = null;
+        if (m_profileTracker != null) {
+            m_profileTracker.stopTracking();
+            m_profileTracker = null;
+        }
 
-        LoginManager.getInstance().unregisterCallback(m_facebookCallbackManager);
-        m_facebookCallbackManager = null;
+        if (m_facebookCallbackManager != null) {
+            LoginManager.getInstance().unregisterCallback(m_facebookCallbackManager);
+            m_facebookCallbackManager = null;
+        }
     }
 
     @Override
     public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
-        m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+        if (m_facebookCallbackManager != null) {
+            m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

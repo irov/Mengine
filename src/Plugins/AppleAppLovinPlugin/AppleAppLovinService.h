@@ -26,26 +26,26 @@ namespace Mengine
         void _finalizeService() override;
         
     public:
-        void initBanner( const ConstString & _bannerAdUnit ) override;
+        bool initBanner( const ConstString & _adUnitId, const AppleAppLovinBannerProviderInterfacePtr & _provider ) override;
+                
+    public:
+        bool showBanner( const ConstString & _adUnitId ) override;
+        bool hideBanner( const ConstString & _adUnitId ) override;
         
     public:
-        void initInterstitial( const ConstString & _interstitialAdUnit ) override;
+        bool initInterstitial( const ConstString & _adUnitId, const AppleAppLovinInterstitialProviderInterfacePtr & _provider ) override;
         
     public:
-        bool canYouShowInterstitial() const override;
-        bool showInterstitial() override;
+        bool canYouShowInterstitial( const ConstString & _adUnitId ) const override;
+        bool showInterstitial( const ConstString & _adUnitId ) override;
 
     public:
-        void initRewarded( const ConstString & _rewardedAdUnit ) override;
+        bool initRewarded( const ConstString & _adUnitId, const AppleAppLovinRewardedProviderInterfacePtr & _provider ) override;
         
     public:
-        bool canOfferRewarded() const override;
-        bool canYouShowRewarded() const override;
-        bool showRewarded() override;
-
-    public:
-        void showBanner() override;
-        void hideBanner() override;
+        bool canOfferRewarded( const ConstString & _adUnitId ) const override;
+        bool canYouShowRewarded( const ConstString & _adUnitId ) const override;
+        bool showRewarded( const ConstString & _adUnitId ) override;
 
     public:
         void showMediationDebugger() override;
@@ -53,9 +53,9 @@ namespace Mengine
     protected:
         AppleAppLovinAnalyticsService * m_analyticsService;
         
-        AppleAppLovinBannerDelegate * m_banner;
-        AppleAppLovinInterstitialDelegate * m_interstitial;
-        AppleAppLovinRewardedDelegate * m_rewarded;
+        NSMutableDictionary<NSString *, AppleAppLovinBannerDelegate *> * m_banners;
+        NSMutableDictionary<NSString *, AppleAppLovinInterstitialDelegate *> * m_interstitials;
+        NSMutableDictionary<NSString *, AppleAppLovinRewardedDelegate *> * m_rewardeds;
         
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
         AppleAppLovinAmazonService * m_amazonService;

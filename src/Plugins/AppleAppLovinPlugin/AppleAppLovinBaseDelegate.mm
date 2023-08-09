@@ -2,6 +2,14 @@
 
 @implementation AppleAppLovinBaseDelegate
 
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
+                                         analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
+    self = [super init];
+    
+    self.m_adUnitId = adUnitId;
+    self.m_analytics = analytics;
+}
+
 - (NSString *) getMAAdParams:(MAAd *) ad {
     NSMutableString * params = [NSMutableString stringWithCapacity:1024];
     

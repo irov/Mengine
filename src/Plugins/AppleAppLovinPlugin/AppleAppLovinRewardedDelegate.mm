@@ -1,19 +1,19 @@
 #import "AppleAppLovinRewardedDelegate.h"
 
+#include "Environment/Apple/AppleString.h"
 #include "Environment/Apple/AppleAnalytics.h"
 
 #include "Kernel/Logger.h"
 
 @implementation AppleAppLovinRewardedDelegate
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString* _Nonnull) adUnitIdentifier
-                                      amazonSlotId:(NSString* _Nullable) amazonSlotId
-                                  analyticsService:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
-    self = [super init];
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
+                                      amazonSlotId:(NSString * _Nullable) amazonSlotId
+                                          provider:(const Mengine::AppleAppLovinRewardedProviderInterfacePtr &) provider
+                                         analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
+    self = [super initWithAdUnitIdentifier:adUnitId analytics:analytics];
     
-    self.m_analytics = analytics;
-    
-    self.m_rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier: adUnitIdentifier];
+    self.m_rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier: adUnitId];
     self.m_rewardedAd.delegate = self;
     self.m_rewardedAd.requestDelegate = self;
     self.m_rewardedAd.revenueDelegate = self;
@@ -23,7 +23,7 @@
     self.m_requestId = 0;
     
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-    self.m_amazonLoader = [[AppleAppLovinRewardedAmazonLoader alloc] initWithSlotId: amazonSlotId rewardedAd: self.m_rewardedAd];
+    self.m_amazonLoader = [[AppleAppLovinRewardedAmazonLoader alloc] initWithSlotId:amazonSlotId rewardedAd:self.m_rewardedAd];
 #else
     [self loadAd];
 #endif
@@ -146,6 +146,8 @@
         @"attempt": @(self.m_retryAttempt),
         @"unit_id": adUnitIdentifier
     }];
+    
+    self.m_provider->onAppleAppLovinRewardedDidStartAdRequestForAdUnitIdentifier();
 }
 
 
@@ -163,6 +165,8 @@
         @"attempt": @(self.m_retryAttempt),
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    self.m_provider->onAppleAppLovinRewardedDidLoadAd();
     
     self.m_retryAttempt = 0;
 }
@@ -183,6 +187,8 @@
         @"error_code": @(error.code)
     }];
     
+    self.m_provider->onAppleAppLovinRewardedDidFailToLoadAdForAdUnitIdentifier();
+    
     self.m_retryAttempt++;
 
     NSInteger delaySec = pow(2, MIN(6, self.m_retryAttempt));
@@ -202,6 +208,8 @@
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    self.m_provider->onAppleAppLovinRewardedDidDisplayAd();
 }
 
 - (void) didClickAd:(MAAd *) ad {
@@ -214,6 +222,8 @@
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    self.m_provider->onAppleAppLovinRewardedDidClickAd();
 }
 
 - (void) didHideAd:(MAAd *) ad {
@@ -226,6 +236,8 @@
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    self.m_provider->onAppleAppLovinRewardedDidHideAd();
     
     [self loadAd];
 }
@@ -242,6 +254,8 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
+    self.m_provider->onAppleAppLovinRewardedDidFailToDisplayAd();
+    
     [self loadAd];
 }
 
@@ -252,6 +266,8 @@
         , [[self getMAAdParams:ad] UTF8String]
         , self.m_requestId
     );
+    
+    self.m_provider->onAppleAppLovinRewardedDidStartRewardedVideoForAd();
 }
 
 - (void) didCompleteRewardedVideoForAd:(MAAd *)ad {
@@ -259,6 +275,8 @@
         , [[self getMAAdParams:ad] UTF8String]
         , self.m_requestId
     );
+    
+    self.m_provider->onAppleAppLovinRewardedDidCompleteRewardedVideoForAd();
 }
 
 - (void) didRewardUserForAd:(MAAd *) ad withReward:(MAReward *) reward {
@@ -274,6 +292,8 @@
         @"label": reward.label,
         @"amount": @(reward.amount)
     }];
+    
+    self.m_provider->onAppleAppLovinRewardedDidRewardUserForAd();
 }
 
 #pragma mark - Revenue Callbacks
@@ -290,6 +310,8 @@
     }];
         
     [self.m_analytics eventRevenuePaid:ad];
+    
+    self.m_provider->onAppleAppLovinRewardedDidPayRevenueForAd();
 }
     
 @end

@@ -1,20 +1,22 @@
 #import "AppleAppLovinBannerDelegate.h"
 
+#include "Environment/Apple/AppleString.h"
 #include "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
 
 @implementation AppleAppLovinBannerDelegate
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
                                               rect:(CGRect) rect
-                                  analyticsService:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
-    self = [super init];
+                                          provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider
+                                         analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
+    self = [super initWithAdUnitIdentifier:adUnitId analytics:analytics];
     
-    self.m_analytics = analytics;
+    self.m_provider = provider;
     
-    self.m_adView = [[MAAdView alloc] initWithAdUnitIdentifier: adUnitIdentifier];
+    self.m_adView = [[MAAdView alloc] initWithAdUnitIdentifier:adUnitId];
     self.m_adView.delegate = self;
     self.m_adView.revenueDelegate = self;
     self.m_adView.requestDelegate = self;
@@ -23,7 +25,7 @@
 
     self.m_adView.backgroundColor = UIColor.blackColor;
 
-    [self.rootViewController.view addSubview: self.m_adView];
+    [self.rootViewController.view addSubview:self.m_adView];
     
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
     self.m_amazonLoader = [[AppleAppLovinBannerAmazonLoader alloc] initWithSlotId:amazonSlotId adView:self.m_adView rect:rect];
@@ -76,6 +78,8 @@
     LOGGER_MESSAGE( "banner didStartAdRequestForAdUnitIdentifier: %s"
         , [adUnitIdentifier UTF8String]
     );
+    
+    self.m_provider->onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier();
 }
 
 #pragma mark - MAAdDelegate Protocol
@@ -86,18 +90,26 @@
     CGFloat heightDp = adViewSize.height;
 
     LOGGER_MESSAGE( "banner didLoadAd" );
+    
+    self.m_provider->onAppleAppLovinBannerDidLoadAd();
 }
 
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {
     LOGGER_MESSAGE( "banner didFailToLoadAdForAdUnitIdentifier" );
+    
+    self.m_provider->onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier();
 }
 
 - (void) didClickAd:(MAAd *) ad {
     LOGGER_MESSAGE( "banner didClickAd" );
+    
+    self.m_provider->onAppleAppLovinBannerDidClickAd();
 }
 
 - (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {
     LOGGER_MESSAGE( "banner didFailToDisplayAd" );
+    
+    self.m_provider->onAppleAppLovinBannerDidFailToDisplayAd();
 }
 
 
@@ -105,26 +117,32 @@
 
 - (void) didExpandAd:(MAAd *) ad {
     LOGGER_MESSAGE( "banner didExpandAd" );
+    
+    self.m_provider->onAppleAppLovinBannerDidExpandAd();
 }
 
 - (void) didCollapseAd:(MAAd *) ad {
     LOGGER_MESSAGE( "banner didCollapseAd" );
+    
+    self.m_provider->onAppleAppLovinBannerDidCollapseAd();
 }
 
 #pragma mark - Deprecated Callbacks
 
 - (void) didDisplayAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "banner didDisplayAd" );
+    LOGGER_MESSAGE( "banner didDisplayAd [deprecated]" );
 }
 
 - (void) didHideAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "banner didHideAd" );
+    LOGGER_MESSAGE( "banner didHideAd [deprecated]" );
 }
     
 #pragma mark - Revenue Callbacks
 
 - (void)didPayRevenueForAd:(MAAd *)ad {
     LOGGER_MESSAGE( "banner didPayRevenueForAd" );
+    
+    self.m_provider->onAppleAppLovinBannerDidPayRevenueForAd();
 }
 
 @end

@@ -8,14 +8,15 @@
 
 @implementation AppleAppLovinInterstitialDelegate
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
-                                  analyticsService:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
-    self = [super init];
+                                          provider:(const Mengine::AppleAppLovinInterstitialProviderInterfacePtr &) provider
+                                         analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
+    self = [super initWithAdUnitIdentifier:adUnitId analytics:analytics];
     
-    self.m_analytics = analytics;
+    self.m_provider = provider;
     
-    self.m_interstitialAd = [[MAInterstitialAd alloc] initWithAdUnitIdentifier: adUnitIdentifier];
+    self.m_interstitialAd = [[MAInterstitialAd alloc] initWithAdUnitIdentifier:adUnitId];
     self.m_interstitialAd.delegate = self;
     self.m_interstitialAd.revenueDelegate = self;
     self.m_interstitialAd.requestDelegate = self;
@@ -130,6 +131,8 @@
         @"attempt": @(self.m_retryAttempt),
         @"unit_id": adUnitIdentifier
     }];
+    
+    self.m_provider->onAppleAppLovinInterstitialDidStartAdRequestForAdUnitIdentifier();
 }
 
 #pragma mark - MAAdDelegate Protocol
@@ -146,6 +149,8 @@
         @"attempt": @(self.m_retryAttempt),
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    self.m_provider->onAppleAppLovinInterstitialDidLoadAd();
     
     self.m_retryAttempt = 0;
 }
@@ -166,6 +171,8 @@
         @"error_code": @(error.code)
     }];
     
+    self.m_provider->onAppleAppLovinInterstitialDidFailToLoadAdForAdUnitIdentifier();
+    
     self.m_retryAttempt++;
     
     NSInteger delaySec = pow(2, MIN(6, self.m_retryAttempt));
@@ -185,6 +192,8 @@
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    self.m_provider->onAppleAppLovinInterstitialDidDisplayAd();
 }
 
 - (void) didClickAd:(MAAd *) ad {
@@ -197,6 +206,8 @@
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    self.m_provider->onAppleAppLovinInterstitialDidClickAd();
 }
 
 - (void) didHideAd:(MAAd *) ad {
@@ -209,6 +220,8 @@
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    self.m_provider->onAppleAppLovinInterstitialDidHideAd();
     
     [self loadAd];
 }
@@ -225,6 +238,8 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
+    self.m_provider->onAppleAppLovinInterstitialDidFailToDisplayAd();
+    
     [self loadAd];
 }
 
@@ -240,6 +255,8 @@
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
+    
+    self.m_provider->onAppleAppLovinInterstitialDidPayRevenueForAd();
 }
 
 @end

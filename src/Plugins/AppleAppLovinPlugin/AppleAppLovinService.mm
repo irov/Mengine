@@ -1,5 +1,7 @@
 #include "AppleAppLovinService.h"
 
+#include "Environment/Apple/AppleString.h"
+
 #ifdef MENGINE_PLUGIN_APPLE_APPTRACKING
 #   include "Plugins/AppleAppTrackingPlugin/AppleAppTrackingInterface.h"
 #endif
@@ -22,9 +24,9 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleAppLovinService::AppleAppLovinService()
-        : m_banner( nil )
-        , m_interstitial( nil )
-        , m_rewarded( nil )
+        : m_banners( nil )
+        , m_interstitials( nil )
+        , m_rewardeds( nil )
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
         , m_amazonService( nil )
 #endif
@@ -37,6 +39,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::_initializeService()
     {
+        m_banners = [[NSMutableDictionary alloc] init];
+        m_interstitials = [[NSMutableDictionary alloc] init];
+        m_rewardeds = [[NSMutableDictionary alloc] init];
+        
         bool OPTION_applovinverbose = HAS_OPTION( "applovinverbose" );
         
         if( OPTION_applovinverbose == true )
@@ -103,33 +109,33 @@ namespace Mengine
     {
         m_analyticsService = nil;
         
-        if( m_rewarded != nil )
-        {
-            [m_rewarded release];
-            m_rewarded = nil;
-        }
+        [m_banners enumerateKeysAndObjectsUsingBlock: ^(NSString * adUnitId, AppleAppLovinBannerDelegate * banner, BOOL *stop) {
+            [banner release];
+        }];
         
-        if( m_interstitial != nil )
-        {
-            [m_interstitial release];
-            m_interstitial = nil;
-        }
+        m_banners = nil;
         
-        if( m_banner != nil )
-        {
-            [m_banner release];
-            m_banner = nil;
-        }
+        [m_interstitials enumerateKeysAndObjectsUsingBlock: ^(NSString * adUnitId, AppleAppLovinInterstitialDelegate * interstitial, BOOL *stop) {
+            [interstitial release];
+        }];
+        
+        m_interstitials = nil;
+        
+        [m_rewardeds enumerateKeysAndObjectsUsingBlock: ^(NSString * adUnitId, AppleAppLovinRewardedDelegate * rewarded, BOOL *stop) {
+            [rewarded release];
+        }];
+        
+        m_rewardeds = nil;
     }
     /////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::initBanner( const ConstString & _bannerAdUnit )
+    bool AppleAppLovinService::initBanner( const ConstString & _adUnitId, const AppleAppLovinBannerProviderInterfacePtr & _provider )
     {
         LOGGER_MESSAGE( "init banner AdUnit '%s'"
-            , _bannerAdUnit.c_str()
+            , _adUnitId.c_str()
         );
-
-        NSString * bannerAdUnit = [NSString stringWithUTF8String:_bannerAdUnit.c_str()];
-
+        
+        NSString * adUnitId = Helper::stringToNSString(_adUnitId);
+        
         // Banner height on iPhone and iPad is 50 and 90, respectively
         CGFloat height = (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) ? 90 : 50;
         // Stretch to the width of the screen for banners to be fully functional
@@ -142,19 +148,56 @@ namespace Mengine
         amazonBannerSlotId = [m_amazonService getAmazonBannerSlotId];
 #endif
         
-        m_banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:bannerAdUnit
-                                                                    amazonSlotId:amazonBannerSlotId
-                                                                            rect:bannerRect
-                                                                analyticsService:m_analyticsService];
+        AppleAppLovinBannerDelegate * banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:adUnitId
+                                                                                                amazonSlotId:amazonBannerSlotId
+                                                                                                        rect:bannerRect
+                                                                                                    provider:_provider
+                                                                                                   analytics:m_analyticsService];
+        
+        [m_banners setValue:banner forKey:adUnitId];
+        
+        return true;
+    }
+    ////////////////////////////////////////////////////////////////////////
+    bool AppleAppLovinService::showBanner( const ConstString & _adUnitId )
+    {
+        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        
+        AppleAppLovinBannerDelegate * banner = [m_banners objectForKey:adUnit];
+        
+        if( banner == nil )
+        {
+            return false;
+        }
+        
+        [banner show];
+        
+        return true;
+    }
+    ////////////////////////////////////////////////////////////////////////
+    bool AppleAppLovinService::hideBanner( const ConstString & _adUnitId )
+    {
+        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        
+        AppleAppLovinBannerDelegate * banner = [m_banners objectForKey:adUnit];
+        
+        if( banner == nil )
+        {
+            return false;
+        }
+        
+        [banner hide];
+        
+        return true;
     }
     /////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::initInterstitial( const ConstString & _interstitialAdUnit )
+    bool AppleAppLovinService::initInterstitial( const ConstString & _adUnitId, const AppleAppLovinInterstitialProviderInterfacePtr & _provider )
     {
         LOGGER_MESSAGE( "init interstitial AdUnit '%s'"
-            , _interstitialAdUnit.c_str()
+            , _adUnitId.c_str()
         );
         
-        NSString * interstitialAdUnit = [NSString stringWithUTF8String:_interstitialAdUnit.c_str()];
+        NSString * adUnitId = Helper::stringToNSString(_adUnitId);
         
         NSString * amazonInterstitialSlotId = nil;
         
@@ -162,18 +205,55 @@ namespace Mengine
         amazonInterstitialSlotId = [m_amazonService getAmazonInterstitialSlotId];
 #endif
 
-        m_interstitial = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:interstitialAdUnit
-                                                                                amazonSlotId:amazonInterstitialSlotId
-                                                                            analyticsService:m_analyticsService];
+        AppleAppLovinInterstitialDelegate * interstitial = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:adUnitId
+                                                                                                                  amazonSlotId:amazonInterstitialSlotId
+                                                                                                                      provider:_provider
+                                                                                                                     analytics:m_analyticsService];
+        
+        [m_interstitials setValue:interstitial forKey:adUnitId];
+        
+        return true;
     }
     /////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::initRewarded( const ConstString & _rewardedAdUnit )
+    bool AppleAppLovinService::canYouShowInterstitial( const ConstString & _adUnitId ) const
+    {
+        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        
+        AppleAppLovinInterstitialDelegate * interstitial = [m_interstitials objectForKey:adUnit];
+        
+        if( interstitial == nil )
+        {
+            return false;
+        }
+        
+        BOOL result = [interstitial canYouShow];
+        
+        return result;
+    }
+    ////////////////////////////////////////////////////////////////////////
+    bool AppleAppLovinService::showInterstitial( const ConstString & _adUnitId )
+    {
+        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        
+        AppleAppLovinInterstitialDelegate * interstitial = [m_interstitials objectForKey:adUnit];
+        
+        if( interstitial == nil )
+        {
+            return false;
+        }
+        
+        BOOL result = [interstitial show];
+        
+        return result;
+    }
+    /////////////////////////////////////////////////////////////////////////
+    bool AppleAppLovinService::initRewarded( const ConstString & _adUnitId, const AppleAppLovinRewardedProviderInterfacePtr & _provider )
     {
         LOGGER_MESSAGE( "init rewarded AdUnit '%s'"
-            , _rewardedAdUnit.c_str()
+            , _adUnitId.c_str()
         );
-
-        NSString * rewardedAdUnit = [NSString stringWithUTF8String:_rewardedAdUnit.c_str()];
+        
+        NSString * adUnitId = Helper::stringToNSString(_adUnitId);
         
         NSString * amazonRewardedSlotId = nil;
         
@@ -181,54 +261,62 @@ namespace Mengine
         amazonRewardedSlotId = [m_amazonService getAmazonRewardedSlotId];
 #endif
 
-        m_rewarded = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier: rewardedAdUnit
-                                                                        amazonSlotId: amazonRewardedSlotId
-                                                                    analyticsService: m_analyticsService];
+        AppleAppLovinRewardedDelegate * rewarded = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier:adUnitId
+                                                                                                      amazonSlotId:amazonRewardedSlotId
+                                                                                                          provider:_provider
+                                                                                                         analytics:m_analyticsService];
+        
+        [m_rewardeds setValue:rewarded forKey:adUnitId];
+        
+        return true;
     }
-    /////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::canYouShowInterstitial() const
+    ////////////////////////////////////////////////////////////////////////
+    bool AppleAppLovinService::canOfferRewarded( const ConstString & _adUnitId ) const
     {
-        BOOL result = [m_interstitial canYouShow];
+        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        
+        AppleAppLovinRewardedDelegate * rewarded = [m_rewardeds objectForKey:adUnit];
+        
+        if( rewarded == nil )
+        {
+            return false;
+        }
+        
+        BOOL result = [rewarded canOffer];
         
         return result;
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::showInterstitial()
+    bool AppleAppLovinService::canYouShowRewarded( const ConstString & _adUnitId ) const
     {
-        BOOL result = [m_interstitial show];
+        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        
+        AppleAppLovinRewardedDelegate * rewarded = [m_rewardeds objectForKey:adUnit];
+        
+        if( rewarded == nil )
+        {
+            return false;
+        }
+        
+        BOOL result = [rewarded canYouShow];
         
         return result;
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::canOfferRewarded() const
+    bool AppleAppLovinService::showRewarded( const ConstString & _adUnitId )
     {
-        BOOL result = [m_rewarded canOffer];
+        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        
+        AppleAppLovinRewardedDelegate * rewarded = [m_rewardeds objectForKey:adUnit];
+        
+        if( rewarded == nil )
+        {
+            return false;
+        }
+        
+        BOOL result = [rewarded show];
         
         return result;
-    }
-    ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::canYouShowRewarded() const
-    {
-        BOOL result = [m_rewarded canYouShow];
-        
-        return result;
-    }
-    ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::showRewarded()
-    {
-        BOOL result = [m_rewarded show];
-        
-        return result;
-    }
-    ////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::showBanner()
-    {
-        [m_banner show];
-    }
-    ////////////////////////////////////////////////////////////////////////
-    void AppleAppLovinService::hideBanner()
-    {
-        [m_banner hide];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::showMediationDebugger()

@@ -11,14 +11,17 @@
 
 @interface AppleAppLovinInterstitialDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MAAdDelegate, MAAdRevenueDelegate>
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
-                                  analyticsService:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
+                                          provider:(const Mengine::AppleAppLovinInterstitialProviderInterfacePtr &) provider
+                                         analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
 
 - (BOOL) canYouShow;
 - (BOOL) show;
 
 - (void) loadAd;
+
+@property (assign) Mengine::AppleAppLovinInterstitialProviderInterfacePtr m_provider;
 
 @property (nonatomic, strong) MAInterstitialAd * _Nullable m_interstitialAd;
 @property (nonatomic, assign) NSInteger m_retryAttempt;

@@ -3341,9 +3341,11 @@ namespace Mengine
         LOGGER_INFO( "platform", "num video displays: %d"
             , SDL_GetNumVideoDisplays()
         );
+        
+        const Char * projectTitle_str = m_projectTitle.c_str();
 
 #if defined(MENGINE_PLATFORM_IOS)
-        SDL_Window * window = SDL_CreateWindow( m_projectTitle.c_str()
+        SDL_Window * window = SDL_CreateWindow( projectTitle_str
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED
             , -1
@@ -3351,7 +3353,7 @@ namespace Mengine
             , windowFlags );
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        SDL_Window * window = SDL_CreateWindow( m_projectTitle.c_str()
+        SDL_Window * window = SDL_CreateWindow( projectTitle_str
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED
             , -1
@@ -3370,8 +3372,6 @@ namespace Mengine
         }
 
         SDL_Window * window;
-
-        const Char * projectTitle_str = m_projectTitle.c_str();
 
         if( _fullscreen == false )
         {

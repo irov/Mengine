@@ -11,10 +11,11 @@
 
 @interface AppleAppLovinBannerDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MAAdViewAdDelegate, MAAdRevenueDelegate>
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) AdUnitIdentifier
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
                                               rect:(CGRect) rect
-                                  analyticsService:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
+                                           provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider
+                                         analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
 
 - (void) show;
 - (void) hide;
@@ -24,6 +25,8 @@
 - (UIViewController* _Nullable) rootViewController;
 
 @property (nonatomic, strong) MAAdView * _Nullable m_adView;
+
+@property (assign) Mengine::AppleAppLovinBannerProviderInterfacePtr m_provider;
 
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
 @property (nonatomic, strong) AppleAppLovinBannerAmazonLoader * _Nullable m_amazonLoader;

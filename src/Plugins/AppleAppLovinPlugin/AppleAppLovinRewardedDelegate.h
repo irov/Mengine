@@ -11,15 +11,18 @@
 
 @interface AppleAppLovinRewardedDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MARewardedAdDelegate, MAAdRevenueDelegate>
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitIdentifier
+- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
-                                  analyticsService:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
+                                          provider:(const Mengine::AppleAppLovinRewardedProviderInterfacePtr &) provider
+                                         analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
 
 - (BOOL) canOffer;
 - (BOOL) canYouShow;
 - (BOOL) show;
 
 - (void) loadAd;
+
+@property (assign) Mengine::AppleAppLovinRewardedProviderInterfacePtr m_provider;
 
 @property (nonatomic, strong) MARewardedAd * _Nullable m_rewardedAd;
 @property (nonatomic, assign) NSInteger m_retryAttempt;

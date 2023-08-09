@@ -139,11 +139,14 @@ namespace Mengine
         const RenderMaterialInterfacePtr & renderMaterial = RENDERMATERIAL_SERVICE()
             ->getDebugTriangleMaterial();
 
-        _renderPipeline->addRenderExternal( _context, renderMaterial, nullptr, RenderExternalInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+        _renderPipeline->addRenderExternal( _context, renderMaterial, nullptr, RenderDrawPrimitiveInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleDebugPanel::onRenderExternal() const
+    void ModuleDebugPanel::onRenderDrawPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) const
     {
+        MENGINE_UNUSED( _primitives );
+        MENGINE_UNUSED( _count );
+
         m_imguiRenderProvider->newFrame();
 
         ImGui::Begin( "debug panel" );

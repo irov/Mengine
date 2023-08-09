@@ -4,8 +4,13 @@ ADD_FILTER(
 src
     WindowsIncluder.h
     
+    DbgHelp.h
+    
     Win32Helper.h
     Win32Helper.cpp
+    
+    Win32GetCallstack.h
+    Win32GetCallstack.cpp
     
     Win32OutputDebugLogger.h
     Win32OutputDebugLogger.cpp
@@ -14,7 +19,6 @@ src
 if(NOT MENGINE_TARGET_UWP)
     ADD_FILTER(
     src
-    
         Win32FileHelper.h
         Win32FileHelper.cpp
     

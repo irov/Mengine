@@ -81,6 +81,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
 
             @Override
             public void onAnimationRepeat(Animation animation) {
+                //Empty
             }
         });
 
@@ -116,11 +117,14 @@ public class MengineSplashScreenPlugin extends MenginePlugin {
 
                 m_image.setVisibility(View.GONE);
 
-                MengineSplashScreenPlugin.this.removeSpash(activity);
+                MengineUtils.performOnMainThread(() -> {
+                    MengineSplashScreenPlugin.this.removeSpash(activity);
+                });
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
+                //Empty
             }
         });
 

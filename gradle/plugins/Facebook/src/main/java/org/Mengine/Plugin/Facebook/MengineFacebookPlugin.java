@@ -25,6 +25,7 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 
@@ -58,6 +59,10 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             final String token = (String)args[0];
 
             AppEventsLogger.setPushNotificationsRegistrationId(token);
+        } else if (event == MengineEvent.EVENT_SESSION_ID) {
+            String sessionId = (String)args[0];
+
+            AppEventsLogger.setUserID(sessionId);
         }
     }
 
@@ -66,6 +71,17 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         Context context = application.getApplicationContext();
 
         m_logger = AppEventsLogger.newLogger(context);
+
+        String sessionId = application.getSessionId();
+        AppEventsLogger.setUserID(sessionId);
+
+        try {
+            AppEventsLogger.activateApp(application);
+        } catch (Exception e) {
+            this.logError("AppEventsLogger activateApp caught exception: %s"
+                , e.getLocalizedMessage()
+            );
+        }
     }
 
     @Override
@@ -202,15 +218,6 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             }
         });
 
-        try {
-            MengineApplication application = this.getMengineApplication();
-            AppEventsLogger.activateApp(application);
-        } catch (Exception ex) {
-            this.logError("activateApp catch exception: %s"
-                , ex.getLocalizedMessage()
-            );
-        }
-
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null) {
             m_facebookUserId = accessToken.getUserId();
@@ -219,19 +226,27 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
     @Override
     public void onDestroy(MengineActivity activity) {
-        m_accessTokenTracker.stopTracking();
-        m_accessTokenTracker = null;
+        if (m_accessTokenTracker != null) {
+            m_accessTokenTracker.stopTracking();
+            m_accessTokenTracker = null;
+        }
 
-        m_profileTracker.stopTracking();
-        m_profileTracker = null;
+        if (m_profileTracker != null) {
+            m_profileTracker.stopTracking();
+            m_profileTracker = null;
+        }
 
-        LoginManager.getInstance().unregisterCallback(m_facebookCallbackManager);
-        m_facebookCallbackManager = null;
+        if (m_facebookCallbackManager != null) {
+            LoginManager.getInstance().unregisterCallback(m_facebookCallbackManager);
+            m_facebookCallbackManager = null;
+        }
     }
 
     @Override
     public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
-        m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+        if (m_facebookCallbackManager != null) {
+            m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -288,6 +303,11 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                     }
                 }
 
+                this.logInfo("logEvent [CUSTOM] eventName: %s params: %s"
+                    , eventName
+                    , params
+                );
+
                 m_logger.logEvent(eventName, params);
             } break;
             case EAET_EARN_VIRTUAL_CURRENCY: {
@@ -302,6 +322,11 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 String achievementId = (String)parameters.get("@ACHIEVEMENT_ID");
 
                 params.putString(AppEventsConstants.EVENT_PARAM_DESCRIPTION, achievementId);
+
+                this.logInfo("logEvent [UNLOCK_ACHIEVEMENT] eventName: %s params: %s"
+                    , AppEventsConstants.EVENT_NAME_UNLOCKED_ACHIEVEMENT
+                    , params
+                );
 
                 m_logger.logEvent(AppEventsConstants.EVENT_NAME_UNLOCKED_ACHIEVEMENT, params);
             } break;
@@ -437,10 +462,10 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         request.executeAsync();
     }
     
-    public void shareLink(String link, String picture, String quote) {
-        this.logMessage("shareLink link: %s picture: %s quote: %s"
+    public void shareLink(String link, String hashtag, String quote) {
+        this.logMessage("shareLink link: %s hashtag: %s quote: %s"
             , link
-            , picture
+            , hashtag
             , quote
         );
 
@@ -452,7 +477,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
         this.buildEvent("mengine_fb_share_link")
             .addParameterString("url", link)
-            .addParameterString("picture", picture)
+            .addParameterString("hashtag", hashtag)
             .addParameterString("quote", quote)
             .log();
 
@@ -470,9 +495,9 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
                 MengineFacebookPlugin.this.buildEvent("mengine_fb_share_link_success")
                     .addParameterString("url", link)
-                    .addParameterString("picture", picture)
+                    .addParameterString("hashtag", hashtag)
                     .addParameterString("quote", quote)
-                    .addParameterString( "postId", postId)
+                    .addParameterString("postId", postId)
                     .log();
 
                 MengineFacebookPlugin.this.pythonCall("onFacebookShareSuccess", postId);
@@ -484,7 +509,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
                 MengineFacebookPlugin.this.buildEvent("mengine_fb_share_link_cancel")
                     .addParameterString("url", link)
-                    .addParameterString("picture", picture)
+                    .addParameterString("hashtag", hashtag)
                     .addParameterString("quote", quote)
                     .log();
 
@@ -501,7 +526,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
                 MengineFacebookPlugin.this.buildEvent("mengine_fb_share_link_error")
                     .addParameterString("url", link)
-                    .addParameterString("picture", picture)
+                    .addParameterString("hashtag", hashtag)
                     .addParameterString("quote", quote)
                     .addParameterString("error", error_message)
                     .log();
@@ -510,10 +535,15 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             }
         });
 
-        Uri url = Uri.parse(link);
+        Uri contentUrl = Uri.parse(link);
+
+        ShareHashtag shareHashtag = new ShareHashtag.Builder()
+            .setHashtag(hashtag)
+            .build();
 
         ShareLinkContent linkContent = new ShareLinkContent.Builder()
-            .setContentUrl(url)
+            .setContentUrl(contentUrl)
+            .setShareHashtag(shareHashtag)
             .setQuote(quote)
             .build();
 

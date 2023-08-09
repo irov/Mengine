@@ -24,12 +24,12 @@ Win32Application
 
 if(MENGINE_TOOLCHAIN_MINGW)
     # resource compilation for mingw
-    ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o
+    ADD_CUSTOM_COMMAND(OUTPUT ${MENGINE_SOLUTIONS_CONFIG_DIR}/res/Win32Application_rc.o
                        COMMAND ${MINGW_ROOT}/bin/windres.exe -I ${CMAKE_CURRENT_SOURCE_DIR}
                                            -i ${CMAKE_CURRENT_SOURCE_DIR}/Win32Application.rc
-                                           -o ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o)
+                                           -o ${MENGINE_SOLUTIONS_CONFIG_DIR}/res/Win32Application_rc.o)
     
-    SET(SRC_FILES ${SRC_FILES} ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o)
+    SET(SRC_FILES ${SRC_FILES} ${MENGINE_SOLUTIONS_CONFIG_DIR}/res/Win32Application_rc.o)
 endif()
 
 if(MENGINE_TOOLCHAIN_MSVC)

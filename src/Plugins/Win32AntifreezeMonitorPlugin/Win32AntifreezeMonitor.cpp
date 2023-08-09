@@ -6,7 +6,7 @@
 #include "Interface/SceneServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-#   include "Interface/Win32PlatformServiceExtensionInterface.h"
+#   include "Environment/Windows/Win32GetCallstack.h"
 #endif
 
 #include "Kernel/ConfigHelper.h"
@@ -160,14 +160,11 @@ namespace Mengine
         }
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        Win32PlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
-            ->getUnknown();
-
         ThreadId mainThreadId = THREAD_SERVICE()
             ->getMainThreadId();
 
         Char stack_msg[8096] = {'\0'};
-        if( extension->getCallstack( mainThreadId, stack_msg, 8095, nullptr ) == false )
+        if( Helper::Win32GetCallstack( (DWORD)mainThreadId, nullptr, stack_msg, 8095 ) == false )
         {
             LOGGER_ERROR( "antifreeze monitor invalid callstack" );
         }

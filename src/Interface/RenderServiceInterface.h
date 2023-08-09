@@ -83,7 +83,8 @@ namespace Mengine
 
         virtual void endRenderPass( const RenderContext * context ) = 0;
 
-        virtual void renderPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) = 0;
+    public:
+        virtual void drawPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) = 0;
 
     public:
         virtual void swapBuffers() = 0;

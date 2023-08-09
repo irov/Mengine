@@ -2,7 +2,7 @@
 
 #include "Interface/RenderPipelineInterface.h"
 #include "Interface/RenderBatchInterface.h"
-#include "Interface/RenderExternalInterface.h"
+#include "Interface/RenderDrawPrimitiveInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/FactoryInterface.h"
 
@@ -52,7 +52,7 @@ namespace Mengine
         ZGroupType zGroup;
         ZIndexType zIndex;
 
-        RenderExternalInterfacePtr external;
+        RenderDrawPrimitiveInterfacePtr drawPrimitive;
 
         const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];
 
@@ -102,7 +102,7 @@ namespace Mengine
         void addRenderExternal( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _programVariable
-            , const RenderExternalInterfacePtr & _external
+            , const RenderDrawPrimitiveInterfacePtr & _drawPrimitive
             , const DocumentInterfacePtr & _doc ) override;
 
     public:

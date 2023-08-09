@@ -55,8 +55,8 @@ namespace Mengine
         VectorRenderIndex & getDebugRenderIndex( uint32_t _count ) override;
 
     public:
-        bool beginScene( const RenderPipelineInterfacePtr & _renderPipeline ) override;
-        void endScene( const RenderPipelineInterfacePtr & _renderPipeline ) override;
+        bool beginScene( const RenderPipelineInterfacePtr & _pipeline ) override;
+        void endScene( const RenderPipelineInterfacePtr & _pipeline ) override;
         void swapBuffers() override;
 
     public:
@@ -67,7 +67,7 @@ namespace Mengine
 
         void endRenderPass( const RenderContext * context ) override;
 
-        void renderPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) override;
+        void drawPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) override;
 
     public:
         void onWindowClose() override;
@@ -94,14 +94,14 @@ namespace Mengine
         void restoreTextureStage_( uint32_t _stage );
 
     protected:
-        void renderPrimitive_( const RenderPrimitive * _renderObject );
+        void drawPrimitive_( const RenderPrimitive * _primitive );
 
     protected:
         void calcRenderViewport_( const Viewport & _viewport, Viewport * const _renderViewport ) const;
 
     protected:
-        bool makeBatches_( const RenderPipelineInterfacePtr & _renderPipeline );
-        void flushRender_( const RenderPipelineInterfacePtr & _renderPipeline );
+        bool makeBatches_( const RenderPipelineInterfacePtr & _pipeline );
+        void flushRender_( const RenderPipelineInterfacePtr & _pipeline );
 
     protected:
         bool createNullTexture_();

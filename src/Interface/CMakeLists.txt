@@ -230,6 +230,7 @@ Render
     RenderMaterialInterface.h
     RenderBatchInterface.h
     RenderPipelineInterface.h
+    RenderDrawPrimitiveInterface.h
 )
 
 ADD_MENGINE_INTERFACE()

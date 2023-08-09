@@ -2,17 +2,18 @@
 
 #include "Kernel/Mixin.h"
 #include "Kernel/IntrusivePtr.h"
+#include "Kernel/RenderPrimitive.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class RenderExternalInterface
+    class RenderDrawPrimitiveInterface
         : public Mixin
     {
     public:
-        virtual void onRenderExternal() const = 0;
+        virtual void onRenderDrawPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderExternalInterface> RenderExternalInterfacePtr;
+    typedef IntrusivePtr<RenderDrawPrimitiveInterface> RenderDrawPrimitiveInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

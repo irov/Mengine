@@ -801,14 +801,6 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineAnalyticsEvent(int eventType, String eventName, long timestamp, Map<String, Object> context, Map<String, Object> parameters) {
-        MengineLog.logInfo(TAG, "onMengineAnalyticsEvent [%d] %s %d context [%s] parameters [%s]"
-            , eventType
-            , eventName
-            , timestamp
-            , context
-            , parameters
-        );
-
         ArrayList<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
 
         for (MenginePluginAnalyticsListener l : listeners) {

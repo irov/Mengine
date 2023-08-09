@@ -17,7 +17,7 @@ namespace Mengine
 {
     class ModuleDebugPanel
         : public ModuleBase
-        , public RenderExternalInterface
+        , public RenderDrawPrimitiveInterface
     {
         DECLARE_FACTORABLE( ModuleDebugPanel );
 
@@ -39,7 +39,7 @@ namespace Mengine
         void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) override;
 
     protected:
-        void onRenderExternal() const override;
+        void onRenderDrawPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) const override;
 
     protected:
         typedef Histogram<float, MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT> HistogramUpdate;

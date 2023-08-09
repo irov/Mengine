@@ -5,7 +5,7 @@
 #include "Interface/RenderProgramVariableInterface.h"
 #include "Interface/RenderVertexBufferInterface.h"
 #include "Interface/RenderIndexBufferInterface.h"
-#include "Interface/RenderExternalInterface.h"
+#include "Interface/RenderDrawPrimitiveInterface.h"
 
 #include "Kernel/RenderContext.h"
 #include "Kernel/RenderVertex2D.h"
@@ -53,7 +53,7 @@ namespace Mengine
         virtual void addRenderExternal( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _programVariable
-            , const RenderExternalInterfacePtr & _external
+            , const RenderDrawPrimitiveInterfacePtr & _drawPrimitive
             , const DocumentInterfacePtr & _doc ) = 0;
 
     public:

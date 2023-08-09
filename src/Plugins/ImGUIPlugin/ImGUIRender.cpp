@@ -52,11 +52,14 @@ namespace Mengine
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
             ->getDebugTriangleMaterial();
 
-        _renderPipeline->addRenderExternal( _context, material, nullptr, RenderExternalInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+        _renderPipeline->addRenderExternal( _context, material, nullptr, RenderDrawPrimitiveInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ImGUIRender::onRenderExternal() const
+    void ImGUIRender::onRenderDrawPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) const
     {
+        MENGINE_UNUSED( _primitives );
+        MENGINE_UNUSED( _count );
+
         m_renderProvider->newFrame();
 
         m_provider( m_renderProvider );

@@ -7,6 +7,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import com.helpshift.Helpshift;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 
-public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEventsListener {
+public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEventsListener, MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "Helpshift";
     public static final boolean PLUGIN_EMBEDDING = true;
 

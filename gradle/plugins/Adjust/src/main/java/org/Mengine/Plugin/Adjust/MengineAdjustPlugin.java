@@ -13,10 +13,11 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
-public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener {
+public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "Adjust";
     public static final boolean PLUGIN_EMBEDDING = true;
 

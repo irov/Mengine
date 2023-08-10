@@ -7,9 +7,10 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
-public class MengineFirebasePerformanceMonitoringPlugin extends MenginePlugin implements MenginePluginApplicationListener {
+public class MengineFirebasePerformanceMonitoringPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginEngineListener {
     public static final String PLUGIN_NAME = "FirebasePerformanceMonitoring";
     public static final boolean PLUGIN_EMBEDDING = true;
 

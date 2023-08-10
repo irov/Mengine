@@ -17,6 +17,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
@@ -25,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements MenginePluginApplicationListener {
+public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "FirebaseRemoteConfig";
     public static final boolean PLUGIN_EMBEDDING = true;
 

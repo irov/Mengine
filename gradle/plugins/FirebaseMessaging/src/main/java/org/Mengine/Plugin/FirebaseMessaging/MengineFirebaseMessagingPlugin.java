@@ -11,6 +11,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginExtension;
 import org.Mengine.Base.MenginePluginExtensionListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
@@ -22,7 +23,7 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
-public class MengineFirebaseMessagingPlugin extends MenginePlugin implements MenginePluginExtensionListener {
+public class MengineFirebaseMessagingPlugin extends MenginePlugin implements MenginePluginExtensionListener, MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "FirebaseMessaging";
     public static final boolean PLUGIN_EMBEDDING = true;
 

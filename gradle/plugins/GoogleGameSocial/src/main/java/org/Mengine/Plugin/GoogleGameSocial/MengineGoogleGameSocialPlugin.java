@@ -26,9 +26,10 @@ import com.google.android.gms.tasks.Task;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
-public class MengineGoogleGameSocialPlugin extends MenginePlugin {
+public class MengineGoogleGameSocialPlugin extends MenginePlugin implements MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "GoogleGameSocial";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -91,15 +92,11 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin {
 
     @Override
     public void onResume(MengineActivity activity) {
-        super.onResume(activity);
-
         //this.signInSilently();
     }
 
     @Override
     public void onDestroy(MengineActivity activity) {
-        super.onDestroy(activity);
-
         if (m_signInClient == null) {
             m_signInClient.signOut();
             m_signInClient = null;

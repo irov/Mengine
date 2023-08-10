@@ -14,12 +14,13 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginLoggerListener;
 
 import java.util.Map;
 
-public class MengineDataDogPlugin extends MenginePlugin implements MenginePluginLoggerListener {
+public class MengineDataDogPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "DevToDev";
     public static final boolean PLUGIN_EMBEDDING = true;
 

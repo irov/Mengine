@@ -12,11 +12,12 @@ import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
+import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginLoggerListener;
 import org.Mengine.Base.MengineUtils;
 
-public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener {
+public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginEngineListener {
     public static final String PLUGIN_NAME = "FirebaseCrashlytics";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -47,11 +48,6 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
 
             FirebaseCrashlytics.getInstance().setUserId(sessionId);
         }
-    }
-
-    @Override
-    public void onMengineCurrentSceneChange(MengineActivity activity, String name) {
-        this.setCustomKey("current.scene", name);
     }
 
     @Override
@@ -88,7 +84,15 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
         } else if (value instanceof Double) {
             FirebaseCrashlytics.getInstance().setCustomKey(key, (Double)value);
         } else if (value instanceof String) {
-            FirebaseCrashlytics.getInstance().setCustomKey(key, (String)value);
+            String stringValue = (String)value;
+
+            if (stringValue.length() > 1024) {
+                String stringValue1024 = stringValue.substring(0, 1024);
+
+                FirebaseCrashlytics.getInstance().setCustomKey(key, stringValue1024);
+            } else {
+                FirebaseCrashlytics.getInstance().setCustomKey(key, stringValue);
+            }
         } else {
             this.logError("unsupported custom key: %s value: %s class: %s"
                 , key

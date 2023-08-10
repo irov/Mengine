@@ -146,10 +146,6 @@ public class MenginePlugin implements MenginePluginInterface {
         //Empty
     }
 
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        //Empty
-    }
-
     public boolean createExtension(MengineActivity activity, String type) {
         this.logMessage("plugin [%s] add extension: %s"
             , m_pluginName
@@ -251,73 +247,5 @@ public class MenginePlugin implements MenginePluginInterface {
         }
 
         m_extensions = null;
-    }
-
-    public void onMengineInitializeBaseServices(MengineActivity activity) {
-        //Empty
-    }
-
-    public void onMengineCreateApplication(MengineActivity activity) {
-        //Empty
-    }
-
-    public void onMenginePlatformRun(MengineActivity activity) {
-        //Empty
-    }
-
-    public void onMenginePlatformReady(MengineActivity activity) {
-        //Empty
-    }
-
-    public void onMenginePlatformStop(MengineActivity activity) {
-        //Empty
-    }
-
-    public void onMengineCurrentSceneChange(MengineActivity activity, String name) {
-        //Empty
-    }
-
-    public void onMengineCaughtException(MengineApplication activity, Throwable e) {
-        //Empty
-    }
-
-    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
-        //Empty
-    }
-
-    public void onStart(MengineActivity activity) {
-        //Empty
-    }
-
-    public void onStop(MengineActivity activity) {
-        //Empty
-    }
-
-    public void onPause(MengineActivity activity) {
-        //Empty
-    }
-
-    public void onResume(MengineActivity activity) {
-        //Empty
-    }
-
-    public void onNewIntent(MengineActivity activity, Intent intent) {
-        //Empty
-    }
-
-    public void onDestroy(MengineActivity activity) {
-        //Empty
-    }
-
-    public void onRestart(MengineActivity activity) {
-        //Empty
-    }
-
-    public void onConfigurationChanged(MengineActivity activity, Configuration newConfig) {
-        //Empty
-    }
-
-    public void onRequestPermissionsResult(MengineActivity activity, int requestCode, String[] permissions, int[] grantResults) {
-        //Empty
     }
 }

@@ -25,6 +25,7 @@ import com.android.billingclient.api.QueryPurchasesParams;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineFunctorBoolean;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MengineGooglePlayBillingPlugin extends MenginePlugin {
+public class MengineGooglePlayBillingPlugin extends MenginePlugin implements MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "GooglePlayBilling";
     public static final boolean PLUGIN_EMBEDDING = true;
 

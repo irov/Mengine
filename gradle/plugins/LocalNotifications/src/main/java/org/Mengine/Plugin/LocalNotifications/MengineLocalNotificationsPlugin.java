@@ -2,6 +2,7 @@ package org.Mengine.Plugin.LocalNotifications;
 
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import androidx.annotation.RequiresApi;
@@ -23,17 +24,12 @@ import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.os.Bundle;
 
-public class MengineLocalNotificationsPlugin extends MenginePlugin {
+public class MengineLocalNotificationsPlugin extends MenginePlugin implements MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "LocalNotifications";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     private static final String CHANNEL_ID = "mengine_channel_id";
     private static final CharSequence CHANNEL_NAME = "Mengine Channel";
-
-    @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        //Empty
-    }
 
     @Override
     public void onNewIntent(MengineActivity activity, Intent intent) {

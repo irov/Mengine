@@ -9,9 +9,10 @@ import com.google.android.play.core.review.ReviewManagerFactory;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
-public class MengineGoogleInAppReviewsPlugin extends MenginePlugin {
+public class MengineGoogleInAppReviewsPlugin extends MenginePlugin implements MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "GoogleInAppReviews";
     public static final boolean PLUGIN_EMBEDDING = true;
 

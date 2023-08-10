@@ -12,6 +12,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginExtension;
 import org.Mengine.Base.MenginePluginExtensionListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginExtensionListener {
+public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginExtensionListener, MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "AppLovin";
     public static final boolean PLUGIN_EMBEDDING = true;
 

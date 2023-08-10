@@ -26,16 +26,19 @@ import com.mar.sdk.verify.UToken;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginKeyListener;
+import org.Mengine.Base.MenginePluginEngineListener;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class MengineMARPlugin extends MenginePlugin implements MARInitListener, MenginePluginApplicationListener, MenginePluginKeyListener {
+public class MengineMARPlugin extends MenginePlugin implements MARInitListener, MenginePluginApplicationListener, MenginePluginKeyListener, MenginePluginEngineListener, MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "MarSDK";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -400,14 +403,6 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     @Override
     public void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
         MARSDK.getInstance().onAppConfigurationChanged(application, newConfig);
-    }
-
-    @Override
-    public void onMengineInitializeBaseServices(MengineActivity activity) {
-    }
-
-    @Override
-    public void onMengineCreateApplication(MengineActivity activity) {
     }
 
     @Override

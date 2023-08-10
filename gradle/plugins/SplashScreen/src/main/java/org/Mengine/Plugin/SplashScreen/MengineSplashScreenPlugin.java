@@ -16,10 +16,12 @@ import androidx.annotation.NonNull;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MengineUtils;
 
-public class MengineSplashScreenPlugin extends MenginePlugin {
+public class MengineSplashScreenPlugin extends MenginePlugin implements MenginePluginEngineListener, MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "SplashScreen";
     public static final boolean PLUGIN_EMBEDDING = false;
 

@@ -9,6 +9,7 @@ import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
+import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginLoggerListener;
 
@@ -17,7 +18,7 @@ import io.sentry.SentryLevel;
 import io.sentry.android.core.SentryAndroid;
 import io.sentry.protocol.User;
 
-public class MengineSentryPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener {
+public class MengineSentryPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginEngineListener {
     public static final String PLUGIN_NAME = "Sentry";
     public static final boolean PLUGIN_EMBEDDING = true;
 

@@ -11,13 +11,14 @@ import com.devtodev.analytics.external.analytics.DTDCustomEventParameters;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import java.util.Map;
 
-public class MengineDevToDevPlugin extends MenginePlugin implements MenginePluginAnalyticsListener {
+public class MengineDevToDevPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "DevToDev";
     public static final boolean PLUGIN_EMBEDDING = true;
 

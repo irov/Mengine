@@ -16,7 +16,7 @@ extern "C"
     JNIEXPORT void JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidApplicationJNI )(JNIEnv * env, jclass cls, jobject obj)
     {
         g_jclass_MengineApplication = (jclass)env->NewGlobalRef( cls );
-        g_jobject_MengineApplication = (jclass)env->NewGlobalRef( obj );
+        g_jobject_MengineApplication = (jobject)env->NewGlobalRef( obj );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidApplicationJNI )(JNIEnv * env, jclass cls)
@@ -31,7 +31,7 @@ extern "C"
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidActivityJNI )(JNIEnv * env, jclass cls, jobject obj)
     {
         g_jclass_MengineActivity = (jclass)env->NewGlobalRef( cls );
-        g_jobject_MengineActivity = (jclass)env->NewGlobalRef( obj );
+        g_jobject_MengineActivity = (jobject)env->NewGlobalRef( obj );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidActivityJNI )(JNIEnv * env, jclass cls)

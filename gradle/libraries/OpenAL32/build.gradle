@@ -4,7 +4,7 @@ android {
     externalNativeBuild {
         cmake {
             path "../../../cmake/Android_SDL/OpenAL/CMakeLists.txt"
-            buildStagingDirectory "../../../outputs/gradle/.cxx/" + project.getName()
+            buildStagingDirectory rootProject.projectDir.getAbsolutePath() + "/../outputs/gradle/.cxx/" + project.getName()
         }
     }
 
@@ -41,7 +41,4 @@ android {
     }
 
     namespace "org.Mengine.Library.OpenAL32"
-}
-
-dependencies {
 }

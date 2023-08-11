@@ -35,6 +35,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/TimestampHelper.h"
+#include "Kernel/Crash.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_BOOTSTRAPPER_LOAD_CONFIG
@@ -565,6 +566,11 @@ namespace Mengine
             ->log();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE );
+
+        if( HAS_OPTION("crash") == true )
+        {
+            Helper::crash( "Bootstrapper test crash" );
+        }
 
         return true;
     }

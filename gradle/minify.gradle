@@ -3,19 +3,11 @@ import com.Mengine.Utils
 def ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
 def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
 
-def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS")
-
 android {
     buildTypes {
         if (ANDROID_APP_DEBUG_MINIFY_ENABLE) {
             debug {
                 minifyEnabled true
-
-                if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
-                    firebaseCrashlytics {
-                        mappingFileUploadEnabled true
-                    }
-                }
 
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             }
@@ -24,12 +16,6 @@ android {
         if (ANDROID_APP_RELEASE_MINIFY_ENABLE) {
             release {
                 minifyEnabled true
-
-                if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
-                    firebaseCrashlytics {
-                        mappingFileUploadEnabled true
-                    }
-                }
 
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             }

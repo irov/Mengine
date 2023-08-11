@@ -5,7 +5,7 @@ android {
     externalNativeBuild {
         cmake {
             path "../../../cmake/Android_SDL/SDL/CMakeLists.txt"
-            buildStagingDirectory "../../../outputs/gradle/.cxx/"  + project.getName()
+            buildStagingDirectory rootProject.projectDir.getAbsolutePath() + "/../outputs/gradle/.cxx/" + project.getName()
         }
     }
 
@@ -50,7 +50,4 @@ android {
     }
 
     namespace "org.Mengine.library.SDL"
-}
-
-dependencies {
 }

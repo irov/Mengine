@@ -397,7 +397,7 @@ namespace Mengine
 
         jstring jurl = jenv->NewStringUTF( _url );
 
-        jboolean jresult = this->callIntActivityMethod( jenv, "linkingOpenURL", "(Ljava/lang/String;)Z", jurl );
+        jboolean jresult = this->callBooleanActivityMethod( jenv, "linkingOpenURL", "(Ljava/lang/String;)Z", jurl );
 
         jenv->DeleteLocalRef( jurl );
 

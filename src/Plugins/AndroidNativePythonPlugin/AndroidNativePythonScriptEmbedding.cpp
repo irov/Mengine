@@ -17,10 +17,12 @@ namespace Mengine
     namespace Detail
     {
         ///////////////////////////////////////////////////////////////////////
-        static void AndroidNativePythonService_addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
+        static pybind::object AndroidNativePythonService_addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
         {
-            ANDROID_NATIVEPYTHON_SERVICE()
+            pybind::object cb = ANDROID_NATIVEPYTHON_SERVICE()
                 ->addAndroidCallback( _plugin, _method, _cb, _args );
+
+            return cb;
         }
         ///////////////////////////////////////////////////////////////////////
         static void AndroidNativePythonService_removeAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb )

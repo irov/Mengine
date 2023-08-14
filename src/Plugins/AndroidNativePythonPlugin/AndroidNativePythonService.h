@@ -43,7 +43,7 @@ namespace Mengine
         void activateSemaphore( const ConstString & _name ) override;
 
     public:
-        void addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args ) override;
+        pybind::object addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args ) override;
         void removeAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb ) override;
 
     public:

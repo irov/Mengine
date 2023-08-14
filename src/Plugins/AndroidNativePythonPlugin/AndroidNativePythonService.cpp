@@ -312,7 +312,7 @@ namespace Mengine
         m_plugins.emplace( _name, _plugin );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
+    pybind::object AndroidNativePythonService::addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
     {
         MapAndroidCallbacks::iterator it_found = m_callbacks.find( Utility::make_pair( _plugin, _method ) );
 
@@ -330,6 +330,8 @@ namespace Mengine
         desc.args = _args;
 
         callbacks.emplace_back( desc );
+
+        return _cb;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::removeAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb )

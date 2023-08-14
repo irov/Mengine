@@ -479,7 +479,7 @@ namespace Mengine
             ->getLocalDateTime( &dateTime );
 
         Char INIT_DATE[256] = {'\0'};
-        Helper::makeLoggerFullDate( dateTime, "[%04u.%02u.%02u %02u:%02u:%02u:%04u]", INIT_DATE, 0, 256 );
+        Helper::makeLoggerFullDate( dateTime, "%04u.%02u.%02u %02u:%02u:%02u:%04u", INIT_DATE, 0, 256 );
 
         LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Init Date: %s]"
             , INIT_DATE

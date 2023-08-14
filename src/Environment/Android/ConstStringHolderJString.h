@@ -19,9 +19,9 @@ namespace Mengine
 
     public:
         void setJString( JNIEnv * _jenv, jstring _value );
+        void removeJString( JNIEnv * _jenv );
 
     protected:
-        JNIEnv * m_jenv;
         jstring m_value;
     };
 }

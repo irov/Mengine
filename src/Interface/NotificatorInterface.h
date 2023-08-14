@@ -31,7 +31,15 @@ namespace Mengine
     typedef IntrusivePtr<class Scene, class Node> ScenePtr;
     //////////////////////////////////////////////////////////////////////////
     template<uint32_t ID>
-    struct Notificator;
+    struct Notificator
+    {
+        typedef Tuple<> args_type;
+
+        static const Char * getName()
+        {
+            return "UNDEFINED";
+        }
+    };
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_NOTIFICATOR_DECLARE_BEGIN()\
     static constexpr uint32_t MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN = MENGINE_CODE_LINE

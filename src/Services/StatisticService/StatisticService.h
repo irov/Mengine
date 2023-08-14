@@ -2,7 +2,7 @@
 
 #include "Interface/StatisticServiceInterface.h"
 #include "Interface/StatisticInterface.h"
-#include "Interface/ThreadMutexInterface.h"
+#include "Interface/ThreadSharedMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -37,7 +37,7 @@ namespace Mengine
         void resetStatisticConstString( uint32_t _id ) override;
 
     protected:
-        ThreadMutexInterfacePtr m_mutex;
+        ThreadSharedMutexInterfacePtr m_mutex;
 
         int64_t m_statisticIntegers[MENGINE_STATISTIC_MAX_COUNT] = {0LL};
         double m_statisticDoubles[MENGINE_STATISTIC_MAX_COUNT] = {0.0};

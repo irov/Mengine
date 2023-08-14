@@ -366,6 +366,15 @@ namespace Mengine
         m_androidEventationHub->finalize();
         m_androidEventationHub = nullptr;
 
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return;
+        }
+
         for( IntrusiveListConstStringHolderJString::iterator
              it = m_holdersJString.begin();
              it != m_holdersJString.end(); )
@@ -376,6 +385,8 @@ namespace Mengine
             ++it;
 
             m_holdersJString.erase( it_erase );
+
+            holder->removeJString( jenv );
 
             m_poolJString.destroyT( holder );
         }
@@ -699,6 +710,8 @@ namespace Mengine
         if( STRINGIZE_SERVICE()
             ->stringizeExternal( holder, _cstr ) == false )
         {
+            holder->removeJString( _jenv );
+
             m_poolJString.destroyT( holder );
 
             return;

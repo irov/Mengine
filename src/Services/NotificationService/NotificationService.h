@@ -31,5 +31,7 @@ namespace Mengine
 
     protected:
         NotificationArea m_areas[MENGINE_NOTIFICATOR_MAX_COUNT];
+
+        const Char * m_nameNotifications[MENGINE_NOTIFICATOR_MAX_COUNT];
     };
 }

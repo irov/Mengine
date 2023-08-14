@@ -876,6 +876,9 @@ Core
     
     NotificationHelper.h
     
+    NotificationName.cpp
+    NotificationName.h
+    
     ExecutorHelper.h
     PrototypeHelper.h
     

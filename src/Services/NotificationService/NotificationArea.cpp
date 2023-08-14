@@ -9,6 +9,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/MixinDebug.h"
+#include "Kernel/NotificationName.h"
 
 #include "Config/Algorithm.h"
 
@@ -49,33 +50,32 @@ namespace Mengine
 #if defined(MENGINE_DOCUMENT_ENABLE)
         for( const ObserverDesc & observer : m_observers )
         {
-            if( observer.callable == nullptr )
+            if( observer.observer == nullptr )
             {
                 continue;
             }
 
-            LOGGER_MESSAGE_RELEASE( "notification '%s' not clear"
+            MENGINE_ASSERTION_FATAL( false, "notification '%s' [%u] not clear observer (doc: %s)"
+                , Helper::getNotificationName( m_id )
+                , m_id
                 , MENGINE_DOCUMENT_STR( observer.doc )
             );
         }
 #endif
-
-        MENGINE_ASSERTION( Algorithm::find_if( m_observers.begin(), m_observers.end(), []( const ObserverDesc & _desc )
-        {
-            return _desc.observer != nullptr;
-        } ) == m_observers.end(), "finalized notification '%u' has observers"
-            , m_id
-            );
 
         m_observers.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void NotificationArea::addObserver( Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentInterfacePtr & _doc )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _observer );
+        MENGINE_ASSERTION_MEMORY_PANIC( _callable );
+
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        MENGINE_ASSERTION_FATAL( this->hasObserver_( _observer ) == false, "dublicate observer '%s' id [%u] (doc: %s)"
+        MENGINE_ASSERTION_FATAL( this->hasObserver_( _observer ) == false, "dublicate observer '%s' notificator '%s' [%u] (doc: %s)"
             , MENGINE_MIXIN_DEBUG_NAME( _observer )
+            , Helper::getNotificationName( m_id )
             , m_id
             , MENGINE_DOCUMENT_STR( _doc )
         );
@@ -100,6 +100,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NotificationArea::removeObserver( Observable * _observer )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _observer );
+
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         for( VectorObservers::iterator
@@ -108,15 +110,14 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            const ObserverDesc & queue = *it;
+            const ObserverDesc & desc = *it;
 
-            if( queue.observer != _observer )
+            if( desc.observer != _observer )
             {
                 continue;
             }
 
-            //keep callable ptr
-            ObserverCallableInterfacePtr keep_callable = queue.callable;
+            ObserverCallableInterfacePtr keep_callable = desc.callable;
 
             *it = m_addObservers.back();
             m_addObservers.pop_back();
@@ -134,12 +135,13 @@ namespace Mengine
                 }
 
                 ObserverCallableInterfacePtr keep_callable = desc.callable;
-                desc.callable = nullptr;
+                desc.observer = nullptr;
 
                 return;
             }
 
-            MENGINE_ASSERTION( false, "already remove observer for notificator %u"
+            MENGINE_ASSERTION( false, "already remove observer for notificator %s [%u]"
+                , Helper::getNotificationName( m_id )
                 , m_id
             );
 
@@ -151,6 +153,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NotificationArea::hasObserver( Observable * _observer ) const
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _observer );
+
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         bool exist = this->hasObserver_( _observer );
@@ -279,10 +283,12 @@ namespace Mengine
 
             desc = m_observers.back();
             m_observers.pop_back();
+
             return;
         }
 
-        MENGINE_ASSERTION( false, "already remove observer for notificator %u"
+        MENGINE_ASSERTION( false, "already remove observer for notificator [%s] %u"
+            , Helper::getNotificationName( m_id )
             , m_id
         );
     }

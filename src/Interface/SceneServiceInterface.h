@@ -8,15 +8,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class CurrentSceneProviderInterface
-        : public Interface
-    {
-    public:
-        virtual void onCurrentSceneChange( const ScenePtr & _scene ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<CurrentSceneProviderInterface> CurrentSceneProviderInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class SceneChangeCallbackInterface
         : public Interface
     {
@@ -30,10 +21,6 @@ namespace Mengine
         : public ServiceInterface
     {
         SERVICE_DECLARE( "SceneService" )
-
-    public:
-        virtual void addCurrentSceneProvider( const CurrentSceneProviderInterfacePtr & _currentSceneProvider ) = 0;
-        virtual void removeCurrentSceneProvider( const CurrentSceneProviderInterfacePtr & _currentSceneProvider ) = 0;
 
     public:
         virtual bool setCurrentScene( const ScenePtr & _scene, bool _immediately, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) = 0;

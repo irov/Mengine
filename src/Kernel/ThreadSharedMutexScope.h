@@ -2,6 +2,8 @@
 
 #include "Interface/ThreadSharedMutexInterface.h"
 
+#include "Kernel/ThreadMutexScope.h"
+
 namespace Mengine
 {
     class ThreadSharedMutexScope

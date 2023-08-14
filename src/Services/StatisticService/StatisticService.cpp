@@ -3,7 +3,8 @@
 #include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/DocumentHelper.h"
-#include "Kernel/ThreadMutexScope.h"
+#include "Kernel/ThreadSharedMutexScope.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/Algorithm.h"
 
@@ -32,8 +33,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool StatisticService::_initializeService()
     {
-        m_mutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadSharedMutexInterfacePtr mutex = THREAD_SYSTEM()
+            ->createSharedMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+
+        m_mutex = m_mutex;
 
         Algorithm::fill_n( m_statisticIntegers, MENGINE_STATISTIC_MAX_COUNT, 0LL );
         Algorithm::fill_n( m_statisticDoubles, MENGINE_STATISTIC_MAX_COUNT, 0.0 );
@@ -62,7 +67,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int64_t StatisticService::getStatisticInteger( uint32_t _id ) const
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+        MENGINE_THREAD_SHARED_MUTEX_SCOPE( m_mutex );
 
         int64_t value = m_statisticIntegers[_id];
 
@@ -85,7 +90,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     double StatisticService::getStatisticDouble( uint32_t _id ) const
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+        MENGINE_THREAD_SHARED_MUTEX_SCOPE( m_mutex );
 
         double value = m_statisticDoubles[_id];
 
@@ -108,7 +113,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ConstString & StatisticService::getStatisticConstString( uint32_t _id ) const
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+        MENGINE_THREAD_SHARED_MUTEX_SCOPE( m_mutex );
 
         const ConstString & value = m_statisticConstStrings[_id];
 

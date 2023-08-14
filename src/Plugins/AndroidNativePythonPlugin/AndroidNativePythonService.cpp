@@ -124,6 +124,9 @@ namespace Mengine
                     ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AndroidNativePythonScriptEmbedding" ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE, &AndroidNativePythonService::notifyChangeSceneComplete_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_REMOVE_SCENE_COMPLETE, &AndroidNativePythonService::notifyRemoveSceneComplete_, MENGINE_DOCUMENT_FACTORABLE );
+
         pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
             ->getKernel();
 
@@ -149,9 +152,6 @@ namespace Mengine
         ANDROID_ENVIRONMENT_SERVICE()
             ->addAndroidEventation( m_eventation );
 
-        SCENE_SERVICE()
-            ->addCurrentSceneProvider( CurrentSceneProviderInterfacePtr::from(this) );
-
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         if( jenv == nullptr )
@@ -172,6 +172,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_COMPLETE );
+
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         if( jenv == nullptr )
@@ -188,9 +193,6 @@ namespace Mengine
             ->invokeAndroidEventations();
 
         s_androidNativePythonService = nullptr;
-
-        SCENE_SERVICE()
-            ->removeCurrentSceneProvider( CurrentSceneProviderInterfacePtr::from(this) );
 
         m_semaphoreListeners.clear();
         m_callbacks.clear();
@@ -915,7 +917,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::onCurrentSceneChange( const ScenePtr & _scene )
+    void AndroidNativePythonService::notifyChangeSceneComplete_( const ScenePtr & _scene )
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -931,6 +933,28 @@ namespace Mengine
         const Char * sceneName_str = sceneName.c_str();
 
         jstring sceneName_jvalue = jenv->NewStringUTF( sceneName_str );
+
+        ANDROID_ENVIRONMENT_SERVICE()
+                ->callVoidActivityMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
+
+        jenv->DeleteLocalRef( sceneName_jvalue );
+
+        ANDROID_ENVIRONMENT_SERVICE()
+                ->invokeAndroidEventations();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidNativePythonService::notifyRemoveSceneComplete_()
+    {
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL("invalid get jenv");
+
+            return;
+        }
+
+        jstring sceneName_jvalue = jenv->NewStringUTF( "" );
 
         ANDROID_ENVIRONMENT_SERVICE()
                 ->callVoidActivityMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );

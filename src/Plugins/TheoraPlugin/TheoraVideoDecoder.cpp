@@ -4,6 +4,7 @@
 #include "Kernel/AssertionType.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ProfilerHelper.h"
+#include "Kernel/Array.h"
 
 #include "Config/StdString.h"
 
@@ -29,44 +30,62 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static int32_t YTable[256];
-        static int32_t BUTable[256];
-        static int32_t GUTable[256];
-        static int32_t GVTable[256];
-        static int32_t RVTable[256];
-        //////////////////////////////////////////////////////////////////////////
-        static void createCoefTables()
+        constexpr int32_t createCoefYTableFunction( size_t index )
         {
-            static bool s_initializeCoefTables = false;
+            const int32_t scale = (1L << 13);
 
-            if( s_initializeCoefTables == true )
-            {
-                return;
-            }
+            float base = (1.164f * scale + 0.5f);
 
-            s_initializeCoefTables = true;
+            int32_t value = (int32_t)(base * index - base * 16.f);
 
-            int32_t scale = 1L << 13;
-
-            for( int32_t i = 0; i != 256; ++i )
-            {
-                int32_t temp = i - 128;
-
-                YTable[i] = (int32_t)((1.164f * scale + 0.5f) * (i - 16));
-
-                RVTable[i] = (int32_t)((1.596f * scale + 0.5f) * temp);
-
-                GUTable[i] = (int32_t)((0.391f * scale + 0.5f) * temp);
-                GVTable[i] = (int32_t)((0.813f * scale + 0.5f) * temp);
-
-                BUTable[i] = (int32_t)((2.018f * scale + 0.5f) * temp);
-            }
+            return value;
         }
+        //////////////////////////////////////////////////////////////////////////
+        template<size_t ... index>
+        constexpr auto createCoefYTable( std::index_sequence<index ...> )
+        {
+            return Array<int32_t, sizeof ... (index)>{{Detail::createCoefYTableFunction( index ) ...}};
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<size_t size>
+        constexpr auto createCoefYTable()
+        {
+            return Detail::createCoefYTable( std::make_index_sequence<size>{} );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        constexpr int32_t createCoefUVTableFunction( float coeff, size_t index )
+        {
+            const int32_t scale = (1L << 13);
+
+            float base = (coeff * scale + 0.5f);
+
+            int32_t value = (int32_t)(base * index - base * 128.f);
+
+            return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<size_t ... index>
+        constexpr auto createCoefUVTable( float coeff, std::index_sequence<index ...> )
+        {
+            return Array<int32_t, sizeof ... (index)>{{Detail::createCoefUVTableFunction( coeff, index ) ...}};
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<size_t size>
+        constexpr auto createCoefUVTable( float coeff )
+        {
+            return Detail::createCoefUVTable( coeff, std::make_index_sequence<size>{} );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static const Array<int32_t, 256> YTable = Detail::createCoefYTable<256>();
+        static const Array<int32_t, 256> RVTable = Detail::createCoefUVTable<256>( 1.596f );
+        static const Array<int32_t, 256> GUTable = Detail::createCoefUVTable<256>( 0.391f );
+        static const Array<int32_t, 256> GVTable = Detail::createCoefUVTable<256>( 0.813f );
+        static const Array<int32_t, 256> BUTable = Detail::createCoefUVTable<256>( 2.018f );
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     TheoraVideoDecoder::TheoraVideoDecoder()
         : m_time( 0.f )
-        , m_readyFrame( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -81,8 +100,6 @@ namespace Mengine
         theora_comment_init( &m_theoraComment );
         theora_info_init( &m_theoraInfo );
 
-        Detail::createCoefTables();
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -93,7 +110,9 @@ namespace Mengine
 
         do
         {
-            if( this->read_buffer_data_() == 0 )
+            size_t bytes = this->readBufferData_();
+
+            if( bytes == 0 )
             {
                 LOGGER_ERROR( "theora video decoder bad file" );
 
@@ -209,9 +228,9 @@ namespace Mengine
             }
             else
             {
-                size_t ret = this->read_buffer_data_();
+                size_t bytes = this->readBufferData_();
 
-                if( ret == 0 )
+                if( bytes == 0 )
                 {
                     LOGGER_ERROR( "theora video decoder eof searched. terminate..." );
 
@@ -243,9 +262,15 @@ namespace Mengine
         m_dataInfo.fps = (float)m_theoraInfo.fps_numerator / (float)m_theoraInfo.fps_denominator;
 
         m_dataInfo.format = PF_R8G8B8;
+        m_dataInfo.clamp = true;
 
         m_time = 0.f;
-        m_readyFrame = false;
+        
+        float time;
+        if( this->readNextFrame( 0.f, &time ) == VDRS_FAILURE )
+        {
+            return 0;
+        }
 
         return true;
     }
@@ -300,17 +325,6 @@ namespace Mengine
         MENGINE_PROFILER_CATEGORY();
 
         const VideoDecoderData * decoderData = static_cast<const VideoDecoderData *>(_decoderData);
-
-        if( m_readyFrame == false )
-        {
-            float time;
-            if( this->readNextFrame( 0.f, &time ) == VDRS_FAILURE )
-            {
-                return 0;
-            }
-
-            m_readyFrame = true;
-        }
 
         yuv_buffer yuvBuffer;
         int32_t error_code = theora_decode_YUVout( &m_theoraState, &yuvBuffer );
@@ -648,7 +662,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t TheoraVideoDecoder::read_buffer_data_()
+    size_t TheoraVideoDecoder::readBufferData_()
     {
         char * buffer = ogg_sync_buffer( &m_oggSyncState, MENGINE_THEORA_OGG_BUFFER_SIZE );
 
@@ -724,7 +738,7 @@ namespace Mengine
                 return VDRS_FAILURE;
             }
 
-            size_t bytes = this->read_buffer_data_();
+            size_t bytes = this->readBufferData_();
 
             if( bytes == 0 )
             {
@@ -773,7 +787,7 @@ namespace Mengine
                     return false;
                 }
 
-                size_t bytes = this->read_buffer_data_();
+                size_t bytes = this->readBufferData_();
 
                 if( bytes == 0 )
                 {

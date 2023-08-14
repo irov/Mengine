@@ -4,6 +4,7 @@
 #include "SDLThreadProcessor.h"
 #include "SDLThreadMutex.h"
 #include "SDLThreadSharedMutex.h"
+#include "SDLThreadConditionVariable.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -31,6 +32,7 @@ namespace Mengine
         m_factoryThreadProcessor = Helper::makeFactoryPool<SDLThreadProcessor, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryThreadMutex = Helper::makeFactoryPool<SDLThreadMutex, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryThreadSharedMutex = Helper::makeFactoryPool<SDLThreadSharedMutex, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadConditionVariable = Helper::makeFactoryPool<SDLThreadConditionVariable, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -41,11 +43,13 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadProcessor );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadMutex );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadSharedMutex );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadConditionVariable );
 
         m_factoryThreadIdentity = nullptr;
         m_factoryThreadProcessor = nullptr;
         m_factoryThreadMutex = nullptr;
         m_factoryThreadSharedMutex = nullptr;
+        m_factoryThreadConditionVariable = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadIdentityInterfacePtr SDLThreadSystem::createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
@@ -139,6 +143,24 @@ namespace Mengine
         }
 
         return mutex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ThreadConditionVariableInterfacePtr SDLThreadSystem::createConditionVariable( const DocumentInterfacePtr & _doc )
+    {
+        SDLThreadConditionVariablePtr conditionVariable = m_factoryThreadConditionVariable->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( conditionVariable, "invalid create condition variable" );
+
+        if( conditionVariable->initialize() == false )
+        {
+            LOGGER_ERROR( "invalid initialize condition variable (doc: '%s')"
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            return nullptr;
+        }
+
+        return conditionVariable;
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadId SDLThreadSystem::getCurrentThreadId() const

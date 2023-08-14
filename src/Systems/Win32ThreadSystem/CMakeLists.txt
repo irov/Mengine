@@ -16,6 +16,8 @@ src
     Win32ThreadMutex.h
     Win32ThreadSharedMutex.cpp
     Win32ThreadSharedMutex.h
+    Win32ThreadConditionVariable.cpp
+    Win32ThreadConditionVariable.h
 )
 
 ADD_MENGINE_LIBRARY(Systems)

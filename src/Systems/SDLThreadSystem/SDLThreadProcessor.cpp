@@ -168,7 +168,7 @@ namespace Mengine
         m_threadId = SDL_ThreadID();
 
         ALLOCATOR_SYSTEM()
-            ->startThread();
+            ->beginThread( m_threadId );
 
         while( m_exit == false )
         {
@@ -242,7 +242,7 @@ namespace Mengine
         }
 
         ALLOCATOR_SYSTEM()
-            ->stopThread();
+            ->endThread( m_threadId );
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadId SDLThreadProcessor::getThreadId() const

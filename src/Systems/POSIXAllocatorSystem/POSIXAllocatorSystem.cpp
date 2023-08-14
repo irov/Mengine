@@ -157,13 +157,17 @@ namespace Mengine
         return mem;
     }
     //////////////////////////////////////////////////////////////////////////
-    void POSIXAllocatorSystem::startThread()
+    void POSIXAllocatorSystem::beginThread( ThreadId _threadId )
     {
+        MENGINE_UNUSED( _threadId );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void POSIXAllocatorSystem::stopThread()
+    void POSIXAllocatorSystem::endThread( ThreadId _threadId )
     {
+        MENGINE_UNUSED( _threadId );
+
         //Empty
     }    
     ////////////////////////////////////////////////////////////////////////

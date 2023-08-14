@@ -3,7 +3,6 @@
 #include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/String.h"
 
 #include "SDL_thread.h"
 

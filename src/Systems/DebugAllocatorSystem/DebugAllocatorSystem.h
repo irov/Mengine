@@ -37,8 +37,8 @@ namespace Mengine
         void * realloc( void * _mem, size_t _size, const Char * _doc ) override;
 
     protected:
-        void startThread() override;
-        void stopThread() override;
+        void beginThread( ThreadId _threadId ) override;
+        void endThread( ThreadId _threadId ) override;
 
     protected:
         uint32_t getMemoryUsage() const override;

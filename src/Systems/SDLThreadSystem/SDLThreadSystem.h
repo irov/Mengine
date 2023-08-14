@@ -23,6 +23,7 @@ namespace Mengine
         ThreadProcessorInterfacePtr createThreadProcessor( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) override;
         ThreadMutexInterfacePtr createMutex( const DocumentInterfacePtr & _doc ) override;
         ThreadSharedMutexInterfacePtr createSharedMutex( const DocumentInterfacePtr & _doc ) override;
+        ThreadConditionVariableInterfacePtr createConditionVariable( const DocumentInterfacePtr & _doc ) override;
 
     public:
         void sleep( uint32_t _ms ) override;
@@ -35,5 +36,6 @@ namespace Mengine
         FactoryInterfacePtr m_factoryThreadProcessor;
         FactoryInterfacePtr m_factoryThreadMutex;
         FactoryInterfacePtr m_factoryThreadSharedMutex;
+        FactoryInterfacePtr m_factoryThreadConditionVariable;
     };
 }

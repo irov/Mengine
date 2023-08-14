@@ -109,7 +109,7 @@ namespace Mengine
         m_threadId = SDL_ThreadID();
 
         ALLOCATOR_SYSTEM()
-            ->startThread();
+            ->beginThread( m_threadId );
 
         MENGINE_PROFILER_THREAD( m_name.c_str() );
         
@@ -117,7 +117,7 @@ namespace Mengine
         runner->run();
 
         ALLOCATOR_SYSTEM()
-            ->stopThread();
+            ->endThread( m_threadId );
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadId SDLThreadIdentity::getThreadId() const

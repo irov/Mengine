@@ -46,7 +46,7 @@ namespace Mengine
         bool seekToFrame( float _timing );
 
     protected:
-        size_t read_buffer_data_();
+        size_t readBufferData_();
         bool decodeBuffer_( const yuv_buffer & _yuvBuffer, const VideoDecoderData * _data );
 
     protected:
@@ -58,6 +58,5 @@ namespace Mengine
         mutable theora_state m_theoraState = {0};
 
         float m_time;
-        bool m_readyFrame;
     };
 }

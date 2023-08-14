@@ -5,6 +5,7 @@
 #include "Kernel/Unknowable.h"
 
 #include "Config/Char.h"
+#include "Config/Thread.h"
 
 namespace Mengine
 {
@@ -21,8 +22,8 @@ namespace Mengine
         virtual void * realloc( void * _mem, size_t _size, const Char * _doc ) = 0;
 
     public:
-        virtual void startThread() = 0;
-        virtual void stopThread() = 0;
+        virtual void beginThread( ThreadId _threadId ) = 0;
+        virtual void endThread( ThreadId _threadId ) = 0;
 
     public:
         virtual uint32_t getMemoryUsage() const = 0;

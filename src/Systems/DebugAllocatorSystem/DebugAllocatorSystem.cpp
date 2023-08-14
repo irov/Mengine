@@ -252,13 +252,17 @@ namespace Mengine
         return new_mem;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugAllocatorSystem::startThread()
+    void DebugAllocatorSystem::beginThread( ThreadId _threadId )
     {
+        MENGINE_UNUSED( _threadId );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugAllocatorSystem::stopThread()
+    void DebugAllocatorSystem::endThread( ThreadId _threadId )
     {
+        MENGINE_UNUSED( _threadId );
+
         //Empty
     }
     ////////////////////////////////////////////////////////////////////////

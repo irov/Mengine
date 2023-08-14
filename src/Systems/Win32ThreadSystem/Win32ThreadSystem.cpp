@@ -4,6 +4,7 @@
 #include "Win32ThreadProcessor.h"
 #include "Win32ThreadMutex.h"
 #include "Win32ThreadSharedMutex.h"
+#include "Win32ThreadConditionVariable.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -32,30 +33,33 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadSystem::_initializeService()
     {
-        m_factoryWin32ThreadIdentity = Helper::makeFactoryPool<Win32ThreadIdentity, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryWin32ThreadProcessor = Helper::makeFactoryPool<Win32ThreadProcessor, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryWin32ThreadMutex = Helper::makeFactoryPool<Win32ThreadMutex, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryWin32ThreadSharedMutex = Helper::makeFactoryPool<Win32ThreadSharedMutex, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadIdentity = Helper::makeFactoryPool<Win32ThreadIdentity, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadProcessor = Helper::makeFactoryPool<Win32ThreadProcessor, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadMutex = Helper::makeFactoryPool<Win32ThreadMutex, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadSharedMutex = Helper::makeFactoryPool<Win32ThreadSharedMutex, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadConditionVariable = Helper::makeFactoryPool<Win32ThreadConditionVariable, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadSystem::_finalizeService()
     {
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadIdentity );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadProcessor );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadMutex );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadSharedMutex );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadIdentity );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadProcessor );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadMutex );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadSharedMutex );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadConditionVariable );
 
-        m_factoryWin32ThreadIdentity = nullptr;
-        m_factoryWin32ThreadProcessor = nullptr;
-        m_factoryWin32ThreadMutex = nullptr;
-        m_factoryWin32ThreadSharedMutex = nullptr;
+        m_factoryThreadIdentity = nullptr;
+        m_factoryThreadProcessor = nullptr;
+        m_factoryThreadMutex = nullptr;
+        m_factoryThreadSharedMutex = nullptr;
+        m_factoryThreadConditionVariable = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadIdentityInterfacePtr Win32ThreadSystem::createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
-        Win32ThreadIdentityPtr threadIdentity = m_factoryWin32ThreadIdentity->createObject( _doc );
+        Win32ThreadIdentityPtr threadIdentity = m_factoryThreadIdentity->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( threadIdentity, "invalid create identity" );
 
@@ -73,7 +77,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadProcessorInterfacePtr Win32ThreadSystem::createThreadProcessor( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
-        Win32ThreadProcessorPtr threadProcessor = m_factoryWin32ThreadProcessor->createObject( _doc );
+        Win32ThreadProcessorPtr threadProcessor = m_factoryThreadProcessor->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( threadProcessor, "invalid create identity" );
 
@@ -95,7 +99,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const DocumentInterfacePtr & _doc )
     {
-        Win32ThreadMutexPtr mutex = m_factoryWin32ThreadMutex->createObject( _doc );
+        Win32ThreadMutexPtr mutex = m_factoryThreadMutex->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex" );
 
@@ -113,7 +117,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadSharedMutexInterfacePtr Win32ThreadSystem::createSharedMutex( const DocumentInterfacePtr & _doc )
     {
-        Win32ThreadSharedMutexPtr mutex = m_factoryWin32ThreadSharedMutex->createObject( _doc );
+        Win32ThreadSharedMutexPtr mutex = m_factoryThreadSharedMutex->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create shared mutex" );
 
@@ -127,6 +131,24 @@ namespace Mengine
         }
 
         return mutex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ThreadConditionVariableInterfacePtr Win32ThreadSystem::createConditionVariable( const DocumentInterfacePtr & _doc )
+    {
+        Win32ThreadConditionVariablePtr conditionVariable = m_factoryThreadConditionVariable->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( conditionVariable, "invalid create condition variable" );
+
+        if( conditionVariable->initialize() == false )
+        {
+            LOGGER_ERROR( "invalid initialize condition variable (doc %s)"
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            return nullptr;
+        }
+
+        return conditionVariable;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadSystem::sleep( uint32_t _ms )

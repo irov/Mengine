@@ -27,12 +27,12 @@ namespace Mengine
 
     protected:
         void lock() override;
-        void unlock() override;
+        _Requires_exclusive_lock_held_( m_srwLock ) void unlock() override;
         bool tryLock() override;
 
     protected:
         void lockShared() override;
-        void unlockShared() override;
+        _Requires_lock_held_( m_srwLock ) void unlockShared() override;
         bool tryLockShared() override;
 
     protected:

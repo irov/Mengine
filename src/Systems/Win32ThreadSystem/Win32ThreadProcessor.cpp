@@ -153,7 +153,7 @@ namespace Mengine
         m_threadId = ::GetCurrentThreadId();
 
         ALLOCATOR_SYSTEM()
-            ->startThread();
+            ->beginThread( m_threadId );
 
         MENGINE_PROFILER_THREAD( m_name.c_str() );
 
@@ -203,7 +203,7 @@ namespace Mengine
         }
 
         ALLOCATOR_SYSTEM()
-            ->stopThread();
+            ->endThread( m_threadId );
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadId Win32ThreadProcessor::getThreadId() const

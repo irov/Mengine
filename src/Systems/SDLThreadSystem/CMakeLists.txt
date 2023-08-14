@@ -14,6 +14,8 @@ src
     SDLThreadMutex.h
     SDLThreadSharedMutex.cpp
     SDLThreadSharedMutex.h
+    SDLThreadConditionVariable.cpp
+    SDLThreadConditionVariable.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL/include/include-config-$<LOWER_CASE:$<CONFIG>>)

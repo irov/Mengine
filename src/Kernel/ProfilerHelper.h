@@ -57,7 +57,7 @@ namespace Mengine
             {
                 if( SERVICE_IS_INITIALIZE( ProfilerSystemInterface ) == true )
                 {
-                    m_profiler = PROFILER_SYSTEM()\
+                    m_profiler = PROFILER_SYSTEM()
                         ->addThread( _name );
                 }
             }
@@ -71,10 +71,7 @@ namespace Mengine
         };
     }
 }
-#endif
 
-
-#if defined(MENGINE_PROFILER_ENABLE)
 #   ifndef MENGINE_PROFILER_FRAME
 #   define MENGINE_PROFILER_FRAME(Name)\
     static const Mengine::ProfilerDescriptionInterface * MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) = nullptr;\
@@ -85,11 +82,7 @@ namespace Mengine
     }\
     Mengine::Detail::ProfilerFrameScope MENGINE_PP_CONCATENATE( __mengine_profiler_frame_scope, MENGINE_CODE_LINE )(MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ));
 #   endif
-#else
-#   define MENGINE_PROFILER_FRAME(Name)
-#endif
 
-#if defined(MENGINE_PROFILER_ENABLE)
 #   ifndef MENGINE_PROFILER_CATEGORY
 #   define MENGINE_PROFILER_CATEGORY()\
     static const Mengine::ProfilerDescriptionInterface * MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ) = nullptr;\
@@ -100,20 +93,12 @@ namespace Mengine
     }\
     Mengine::Detail::ProfilerCategoryScope MENGINE_PP_CONCATENATE( __mengine_profiler_frame_scope, MENGINE_CODE_LINE )(MENGINE_PP_CONCATENATE( __mengine_profiler_description, MENGINE_CODE_LINE ));
 #   endif
-#else
-#   define MENGINE_PROFILER_CATEGORY()
-#endif
 
-#if defined(MENGINE_PROFILER_ENABLE)
 #   ifndef MENGINE_PROFILER_THREAD
 #   define MENGINE_PROFILER_THREAD(Name)\
     Mengine::Detail::ProfilerThreadScope MENGINE_PP_CONCATENATE( __mengine_profiler_thread, MENGINE_CODE_LINE )( Name );
 #   endif
-#else
-#   define MENGINE_PROFILER_THREAD(Name)
-#endif
 
-#if defined(MENGINE_PROFILER_ENABLE)
 #   ifndef MENGINE_PROFILER_BEGIN_APPLICATION
 #   define MENGINE_PROFILER_BEGIN_APPLICATION()\
     if( SERVICE_IS_INITIALIZE( ProfilerSystemInterface ) == true )\
@@ -122,11 +107,7 @@ namespace Mengine
             ->beginApplication();\
     }
 #   endif
-#else
-#   define MENGINE_PROFILER_BEGIN_APPLICATION()
-#endif
 
-#if defined(MENGINE_PROFILER_ENABLE)
 #   ifndef MENGINE_PROFILER_END_APPLICATION
 #   define MENGINE_PROFILER_END_APPLICATION()\
     if( SERVICE_IS_INITIALIZE( ProfilerSystemInterface ) == true )\
@@ -136,5 +117,9 @@ namespace Mengine
     }
 #   endif
 #else
+#   define MENGINE_PROFILER_FRAME(Name)
+#   define MENGINE_PROFILER_CATEGORY()
+#   define MENGINE_PROFILER_THREAD(Name)
+#   define MENGINE_PROFILER_BEGIN_APPLICATION()
 #   define MENGINE_PROFILER_END_APPLICATION()
 #endif

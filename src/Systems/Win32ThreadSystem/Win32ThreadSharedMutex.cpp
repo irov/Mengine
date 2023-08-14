@@ -29,7 +29,7 @@ namespace Mengine
         ::AcquireSRWLockExclusive( &m_srwLock );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ThreadSharedMutex::unlock()
+    _Requires_exclusive_lock_held_( m_srwLock ) void Win32ThreadSharedMutex::unlock()
     {  
         ::ReleaseSRWLockExclusive( &m_srwLock );
     }
@@ -49,7 +49,7 @@ namespace Mengine
         ::AcquireSRWLockShared( &m_srwLock );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ThreadSharedMutex::unlockShared()
+    _Requires_lock_held_( m_srwLock ) void Win32ThreadSharedMutex::unlockShared()
     {
         ::ReleaseSRWLockShared( &m_srwLock );
     }

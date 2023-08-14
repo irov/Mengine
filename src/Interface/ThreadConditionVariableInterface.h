@@ -2,6 +2,8 @@
 
 #include "Kernel/Mixin.h"
 
+#include "Config/Lambda.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -9,7 +11,10 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void wait() = 0;
+        typedef Lambda<bool()> LambdaCondition;
+        virtual void wait( const LambdaCondition & _condition ) = 0;
+
+    public:
         virtual void wake() = 0;
     };
     //////////////////////////////////////////////////////////////////////////

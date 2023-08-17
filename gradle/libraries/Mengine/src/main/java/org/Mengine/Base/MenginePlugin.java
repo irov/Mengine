@@ -12,7 +12,7 @@ import java.util.Locale;
 public class MenginePlugin implements MenginePluginInterface {
     private MengineApplication m_application;
     private MengineActivity m_activity;
-    private ArrayList<MenginePluginExtension> m_extensions = new ArrayList<>();
+    private ArrayList<MenginePluginExtension> m_extensions;
     private String m_pluginName;
 
     public MengineApplication getMengineApplication() {

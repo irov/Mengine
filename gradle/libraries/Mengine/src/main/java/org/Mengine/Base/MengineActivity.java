@@ -239,7 +239,6 @@ public class MengineActivity extends SDLActivity {
 
         for (MenginePlugin p : plugins) {
             p.setActivity(this);
-
         }
 
         ArrayList<MenginePluginActivityListener> listeners = this.getActivityListeners();

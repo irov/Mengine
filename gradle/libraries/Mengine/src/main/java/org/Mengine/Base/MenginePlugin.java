@@ -27,11 +27,15 @@ public class MenginePlugin implements MenginePluginInterface {
         m_application = application;
         m_pluginName = pluginName;
 
+        m_extensions = new ArrayList<>();
+
         return true;
     }
 
     public void onFinalize(MengineApplication application) {
         m_application = null;
+
+        m_extensions = null;
     }
 
     public void setActivity(MengineActivity activity) {
@@ -245,7 +249,5 @@ public class MenginePlugin implements MenginePluginInterface {
         for (MenginePluginExtension extension : m_extensions) {
             extension.onPluginExtensionFinalize(activity, this);
         }
-
-        m_extensions = null;
     }
 }

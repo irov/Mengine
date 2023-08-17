@@ -2217,7 +2217,6 @@ namespace Mengine
 
             float gameViewportAspect;
             Viewport gameViewport;
-
             APPLICATION_SERVICE()
                 ->getGameViewport( &gameViewportAspect, &gameViewport );
 
@@ -2460,6 +2459,8 @@ namespace Mengine
 
         float areaWidth = MENGINE_CEILF( dw * contentWidth );
         float areaHeight = MENGINE_CEILF( dh * contentHeight );
+
+        *_aspect = contentAspect;
 
         _viewport->begin.x = MENGINE_CEILF( (contentWidth - areaWidth) * 0.5f );
         _viewport->begin.y = MENGINE_CEILF( (contentHeight - areaHeight) * 0.5f );

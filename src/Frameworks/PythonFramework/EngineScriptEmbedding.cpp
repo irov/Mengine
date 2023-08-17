@@ -4005,7 +4005,6 @@ namespace Mengine
             {
                 float aspect;
                 Viewport viewport;
-
                 APPLICATION_SERVICE()
                     ->getGameViewport( &aspect, &viewport );
 
@@ -4016,7 +4015,6 @@ namespace Mengine
             {
                 float aspect;
                 Viewport viewport;
-
                 APPLICATION_SERVICE()
                     ->getGameViewport( &aspect, &viewport );
 

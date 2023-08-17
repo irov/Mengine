@@ -228,7 +228,6 @@ namespace Mengine
 
         float gameViewportAspect;
         Viewport gameViewport;
-
         APPLICATION_SERVICE()
             ->getGameViewport( &gameViewportAspect, &gameViewport );
 

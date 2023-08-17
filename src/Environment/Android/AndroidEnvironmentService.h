@@ -57,14 +57,6 @@ namespace Mengine
         bool openUrlInDefaultBrowser( const Char * _url ) override;
         bool openMail( const Char * _email, const Char * _subject, const Char * _body ) override;
 
-    public:
-        int32_t androidOpenAssetFile( const Char * _path ) override;
-        int32_t androidAvailableAssetFile( int32_t _fileId ) override;
-        int32_t androidReadAssetFile( int32_t _fileId, int32_t _offset, int32_t _size, void * const _buffer ) override;
-        int64_t androidSkipAssetFile( int32_t _fileId, int32_t _offset ) override;
-        void androidResetAssetFile( int32_t _fileId ) override;
-        void androidCloseAssetFile( int32_t _fileId ) override;
-
     protected:
         void addAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) override;
         void removeAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) override;

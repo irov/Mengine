@@ -156,6 +156,7 @@ namespace Mengine
         , m_updateRevision( 0 )
         , m_fixedContentResolution( false )
         , m_fixedDisplayResolution( false )
+        , m_fixedViewportResolution( false )
         , m_createRenderWindow( false )
         , m_debugMask( 0 )
         , m_maxFrameTime( 100.f )
@@ -234,6 +235,7 @@ namespace Mengine
         m_contentResolution = CONFIG_VALUE( "Game", "ContentResolution", Resolution( 1024, 768 ) );
         m_fixedContentResolution = CONFIG_VALUE( "Game", "FixedContentResolution", true );
         m_fixedDisplayResolution = CONFIG_VALUE( "Game", "FixedDisplayResolution", true );
+        m_fixedViewportResolution = CONFIG_VALUE( "Game", "FixedViewportResolution", true );
 
         VectorAspectRatioViewports aspectRatioViewports;
         CONFIG_VALUES( "Game", "AspectRatioViewport", &aspectRatioViewports );
@@ -780,24 +782,24 @@ namespace Mengine
         bool vsync = this->getVSync();
         bool fullscreen = this->getFullscreenMode();
 
-        Resolution currentResolution;
-        if( this->calcWindowResolution( fullscreen, &currentResolution ) == false )
+        Resolution windowResolution;
+        if( this->calcWindowResolution( fullscreen, &windowResolution ) == false )
         {
             LOGGER_ERROR( "invalid calc window resolution" );
 
             return false;
         }
 
-        LOGGER_INFO( "system", "set current resolution [%u:%u] %s"
-            , currentResolution.getWidth()
-            , currentResolution.getHeight()
+        LOGGER_INFO( "system", "set window resolution [%u:%u] %s"
+            , windowResolution.getWidth()
+            , windowResolution.getHeight()
             , fullscreen ? "Fullscreen" : "Window"
         );
 
-        m_currentResolution = currentResolution;
+        m_currentWindowResolution = windowResolution;
 
         Viewport renderViewport;
-        this->calcRenderViewport_( m_currentResolution, &renderViewport );
+        this->calcRenderViewport_( &renderViewport );
 
         LOGGER_INFO( "system", "set render viewport [%f %f - %f %f]"
             , renderViewport.begin.x
@@ -809,7 +811,7 @@ namespace Mengine
         m_renderViewport = renderViewport;
 
         bool result = RENDER_SERVICE()
-            ->createRenderWindow( m_currentResolution
+            ->createRenderWindow( m_currentWindowResolution
                 , m_contentResolution
                 , m_renderViewport
                 , vsync
@@ -836,7 +838,7 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CREATE_RENDER_WINDOW );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentWindowResolution );
 
         GAME_SERVICE()
             ->setRenderViewport( m_renderViewport, m_contentResolution );
@@ -2041,59 +2043,58 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Resolution & Application::getCurrentResolution() const
+    const Resolution & Application::getCurrentWindowResolution() const
     {
-        MENGINE_ASSERTION_FATAL( m_currentResolution.getWidth() != 0 && m_currentResolution.getHeight() != 0 );
+        MENGINE_ASSERTION_FATAL( m_currentWindowResolution.getWidth() != 0 && m_currentWindowResolution.getHeight() != 0 );
 
-        return m_currentResolution;
+        return m_currentWindowResolution;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::calcRenderViewport_( const Resolution & _resolution, Viewport * const _viewport )
+    void Application::calcRenderViewport_( Viewport * const _viewport )
     {
-        float width = _resolution.getWidthF();
-        float height = _resolution.getHeightF();
-
-        float r_aspect = _resolution.getAspectRatio();
+        float windowWidth = m_currentWindowResolution.getWidthF();
+        float windowHeight = m_currentWindowResolution.getHeightF();
+        float windowAspect = m_currentWindowResolution.getAspectRatio();
 
         bool fixedDisplayResolution = this->getFixedDisplayResolution();
 
-        if( fixedDisplayResolution == true )
-        {
-            float c_aspect = m_contentResolution.getAspectRatio();
-
-            float contentAspect;
-            if( Helper::findBestAspectViewport( m_aspectRatioViewports, r_aspect, &contentAspect, nullptr ) == false )
-            {
-                contentAspect = c_aspect;
-            }
-
-            float one_div_width = 1.f / width;
-            float one_div_height = 1.f / height;
-
-            float dw = 1.f;
-            float dh = width / contentAspect * one_div_height;
-
-            if( dh > 1.f )
-            {
-                dh = 1.f;
-                dw = height * contentAspect * one_div_width;
-            }
-
-            float areaWidth = MENGINE_CEILF( dw * width );
-            float areaHeight = MENGINE_CEILF( dh * height );
-
-            _viewport->begin.x = MENGINE_CEILF( (width - areaWidth) * 0.5f );
-            _viewport->begin.y = MENGINE_CEILF( (height - areaHeight) * 0.5f );
-            _viewport->end.x = _viewport->begin.x + areaWidth;
-            _viewport->end.y = _viewport->begin.y + areaHeight;
-        }
-        else
+        if( fixedDisplayResolution == false )
         {
             _viewport->begin.x = 0.f;
             _viewport->begin.y = 0.f;
-            _viewport->end.x = width;
-            _viewport->end.y = height;
+            _viewport->end.x = windowWidth;
+            _viewport->end.y = windowHeight;
+
+            return;
         }
+
+        float contentAspect = m_contentResolution.getAspectRatio();
+
+        float bestAspect;
+        if( Helper::findBestAspectViewport( m_aspectRatioViewports, windowAspect, &bestAspect, nullptr ) == false )
+        {
+            bestAspect = contentAspect;
+        }
+
+        float oneDivWidth = 1.f / windowWidth;
+        float oneDivHeight = 1.f / windowHeight;
+
+        float dw = 1.f;
+        float dh = windowWidth / bestAspect * oneDivHeight;
+
+        if( dh > 1.f )
+        {
+            dw = windowHeight * bestAspect * oneDivWidth;
+            dh = 1.f;
+        }
+
+        float areaWidth = MENGINE_CEILF( dw * windowWidth );
+        float areaHeight = MENGINE_CEILF( dh * windowHeight );
+
+        _viewport->begin.x = MENGINE_CEILF( (windowWidth - areaWidth) * 0.5f );
+        _viewport->begin.y = MENGINE_CEILF( (windowHeight - areaHeight) * 0.5f );
+        _viewport->end.x = _viewport->begin.x + areaWidth;
+        _viewport->end.y = _viewport->begin.y + areaHeight;
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::setWindowResolution( const Resolution & _resolution )
@@ -2148,7 +2149,7 @@ namespace Mengine
         bool fullscreen = this->getFullscreenMode();
 
         GAME_SERVICE()
-            ->setFullscreen( m_currentResolution, fullscreen );
+            ->setFullscreen( fullscreen );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Application::getWindowBits() const
@@ -2170,15 +2171,15 @@ namespace Mengine
     {
         bool fullscreen = this->getFullscreenMode();
 
-        if( this->calcWindowResolution( fullscreen, &m_currentResolution ) == false )
+        if( this->calcWindowResolution( fullscreen, &m_currentWindowResolution ) == false )
         {
             return;
         }
 
         LOGGER_INFO( "system", "current resolution [%s] [%u %u]"
             , fullscreen == true ? "Fullscreen" : "Window"
-            , m_currentResolution.getWidth()
-            , m_currentResolution.getHeight()
+            , m_currentWindowResolution.getWidth()
+            , m_currentWindowResolution.getHeight()
         );
 
         bool vsync = this->getVSync();
@@ -2187,13 +2188,13 @@ namespace Mengine
             ->setVSync( vsync );
 
         if( PLATFORM_SERVICE()
-            ->notifyWindowModeChanged( m_currentResolution, fullscreen ) == false )
+            ->notifyWindowModeChanged( m_currentWindowResolution, fullscreen ) == false )
         {
             return;
         }
 
         Viewport renderViewport;
-        this->calcRenderViewport_( m_currentResolution, &renderViewport );
+        this->calcRenderViewport_( &renderViewport );
 
         LOGGER_INFO( "system", "set render viewport [%f %f - %f %f]"
             , renderViewport.begin.x
@@ -2205,9 +2206,9 @@ namespace Mengine
         m_renderViewport = renderViewport;
 
         RENDER_SERVICE()
-            ->changeWindowMode( m_currentResolution, m_contentResolution, m_renderViewport, fullscreen );
+            ->changeWindowMode( m_currentWindowResolution, m_contentResolution, m_renderViewport, fullscreen );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentWindowResolution );
 
         if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )
         {
@@ -2349,7 +2350,7 @@ namespace Mengine
         this->invalidateWindow_();
 
         GAME_SERVICE()
-            ->setFixedContentResolution( m_currentResolution, m_fixedContentResolution );
+            ->setFixedContentResolution( m_fixedContentResolution );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::getFixedContentResolution() const
@@ -2373,7 +2374,7 @@ namespace Mengine
         this->invalidateWindow_();
 
         GAME_SERVICE()
-            ->setFixedDisplayResolution( m_currentResolution, m_fixedDisplayResolution );
+            ->setFixedDisplayResolution( m_fixedDisplayResolution );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::getFixedDisplayResolution() const
@@ -2381,11 +2382,35 @@ namespace Mengine
         return m_fixedDisplayResolution;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Application::setFixedViewportResolution( bool _fixedViewportResolution )
+    {
+        if( m_fixedViewportResolution == _fixedViewportResolution )
+        {
+            return;
+        }
+
+        LOGGER_INFO( "system", "set fixed display resolution: %d"
+            , _fixedViewportResolution
+        );
+
+        m_fixedViewportResolution = _fixedViewportResolution;
+
+        this->invalidateWindow_();
+
+        GAME_SERVICE()
+            ->setFixedViewportResolution( m_fixedViewportResolution );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::getFixedViewportResolution() const
+    {
+        return m_fixedViewportResolution;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Application::getGameViewport( float * const _aspect, Viewport * const _viewport ) const
     {
-        float contentAspect = m_contentResolution.getAspectRatio();
         float contentWidth = m_contentResolution.getWidthF();
         float contentHeight = m_contentResolution.getHeightF();
+        float contentAspect = m_contentResolution.getAspectRatio();
 
         if( m_fixedContentResolution == false )
         {
@@ -2399,25 +2424,47 @@ namespace Mengine
             return;
         }
 
-        float currentAspect = m_currentResolution.getAspectRatio();
+        float windowAspect = m_currentWindowResolution.getAspectRatio();
 
-        float bestAspect;
-        Viewport aspectRatioViewport;
-        if( Helper::findBestAspectViewport( m_aspectRatioViewports, currentAspect, &bestAspect, &aspectRatioViewport ) == true )
+        if( m_fixedViewportResolution == true )
         {
-            *_aspect = bestAspect;
+            float bestAspect;
+            Viewport aspectRatioViewport;
+            if( Helper::findBestAspectViewport( m_aspectRatioViewports, windowAspect, &bestAspect, &aspectRatioViewport ) == true )
+            {
+                *_aspect = bestAspect;
+                *_viewport = aspectRatioViewport;
 
-            *_viewport = aspectRatioViewport;
-        }
-        else
-        {
-            *_aspect = contentAspect;
+                return;
+            }
 
             _viewport->begin.x = 0.f;
             _viewport->begin.y = 0.f;
             _viewport->end.x = contentWidth;
             _viewport->end.y = contentHeight;
+
+            return;
         }
+
+        float oneDivWidth = 1.f / contentWidth;
+        float oneDivHeight = 1.f / contentHeight;
+
+        float dw = 1.f;
+        float dh = contentWidth / windowAspect * oneDivHeight;
+
+        if( dh < 1.f )
+        {
+            dw = contentHeight * windowAspect * oneDivWidth;
+            dh = 1.f;
+        }
+
+        float areaWidth = MENGINE_CEILF( dw * contentWidth );
+        float areaHeight = MENGINE_CEILF( dh * contentHeight );
+
+        _viewport->begin.x = MENGINE_CEILF( (contentWidth - areaWidth) * 0.5f );
+        _viewport->begin.y = MENGINE_CEILF( (contentHeight - areaHeight) * 0.5f );
+        _viewport->end.x = _viewport->begin.x + areaWidth;
+        _viewport->end.y = _viewport->begin.y + areaHeight;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::getAllowFullscreenSwitchShortcut() const

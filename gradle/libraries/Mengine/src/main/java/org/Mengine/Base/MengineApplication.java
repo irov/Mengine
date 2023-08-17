@@ -59,8 +59,10 @@ public class MengineApplication extends Application {
     }
 
     private String m_androidId;
+
     private String m_installKey;
     private long m_installTimestamp = -1;
+    private String m_installDate;
     private long m_installRND = -1;
     private long m_sessionIndex = -1;
     private String m_sessionId;
@@ -208,6 +210,10 @@ public class MengineApplication extends Application {
         return m_installTimestamp;
     }
 
+    public String getInstallDate() {
+        return m_installDate;
+    }
+
     public long getInstallRND() {
         return m_installRND;
     }
@@ -294,9 +300,9 @@ public class MengineApplication extends Application {
     }
 
     public void setState(String name, Object value) {
-        synchronized (m_syncState) {
-            m_states.put(name, value);
+        m_states.put(name, value);
 
+        synchronized (m_syncState) {
             ArrayList<MenginePlugin> plugins = this.getPlugins();
 
             for (MenginePlugin p : plugins) {
@@ -645,6 +651,7 @@ public class MengineApplication extends Application {
 
         String installKey = settings.getString("install_key", null);
         long installTimestamp = settings.getLong("install_timestamp", 0);
+        String installDate = settings.getString("install_date", "");
         long installRND = settings.getLong("install_rnd", -1);
         long sessionIndex = settings.getLong("session_index", 0);
         String sessionId = settings.getString("session_id", null);
@@ -654,9 +661,11 @@ public class MengineApplication extends Application {
         if (installKey == null) {
             installKey = MengineUtils.getRandomUUIDString();
             installTimestamp = MengineUtils.getTimestamp();
+            installDate = MengineUtils.getDateFormat("d MMM yyyy HH:mm:ss");
 
             editor.putString("install_key", installKey);
             editor.putLong("install_timestamp", installTimestamp);
+            editor.putString("install_date", installDate);
         }
 
         if (sessionId == null) {
@@ -682,6 +691,7 @@ public class MengineApplication extends Application {
 
         m_installKey = installKey;
         m_installTimestamp = installTimestamp;
+        m_installDate = installDate;
         m_installRND = installRND;
         m_sessionIndex = sessionIndex;
         m_sessionId = sessionId;
@@ -697,6 +707,7 @@ public class MengineApplication extends Application {
 
         this.setState("user.install_key", m_installKey);
         this.setState("user.install_timestamp", m_installTimestamp);
+        this.setState("user.install_date", m_installDate);
         this.setState("user.install_rnd", m_installRND);
         this.setState("user.session_index", m_sessionIndex);
         this.setState("user.session_id", m_sessionId);

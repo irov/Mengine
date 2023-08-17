@@ -20,6 +20,7 @@ namespace Mengine
         EVENT_GAME_FULLSCREEN = 0,
         EVENT_GAME_FIXED_CONTENT_RESOLUTION,
         EVENT_GAME_FIXED_DISPLAY_RESOLUTION,
+        EVENT_GAME_FIXED_VIEWPORT_RESOLUTION,
         EVENT_GAME_RENDER_VIEWPORT,
         EVENT_GAME_VIEWPORT,
         EVENT_GAME_KEY,
@@ -76,6 +77,7 @@ namespace Mengine
         virtual void onGameFullscreen( bool _fullscreen ) = 0;
         virtual void onGameFixedContentResolution( bool _fixed ) = 0;
         virtual void onGameFixedDisplayResolution( bool _fixed ) = 0;
+        virtual void onGameFixedViewportResolution( bool _fixed ) = 0;
         virtual void onGameRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) = 0;
         virtual void onGameViewport( const Viewport & _viewport, float _aspect ) = 0;
         virtual bool onGameKey( const InputKeyEvent & _event ) = 0;
@@ -126,6 +128,7 @@ namespace Mengine
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FULLSCREEN );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FIXED_CONTENT_RESOLUTION );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FIXED_DISPLAY_RESOLUTION );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FIXED_VIEWPORT_RESOLUTION );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_RENDER_VIEWPORT );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_VIEWPORT );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_KEY );

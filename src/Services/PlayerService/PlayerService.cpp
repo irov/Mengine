@@ -793,24 +793,6 @@ namespace Mengine
             ->handleMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::onFullscreen( const Resolution & _resolution, bool _fullscreen )
-    {
-        MENGINE_UNUSED( _resolution );
-        MENGINE_UNUSED( _fullscreen );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PlayerService::onFixedContentResolution( const Resolution & _resolution, bool _fixed )
-    {
-        MENGINE_UNUSED( _resolution );
-        MENGINE_UNUSED( _fixed );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PlayerService::onFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
-    {
-        MENGINE_UNUSED( _resolution );
-        MENGINE_UNUSED( _fixed );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void PlayerService::onFocus( bool _focus )
     {
         if( m_focus == _focus )

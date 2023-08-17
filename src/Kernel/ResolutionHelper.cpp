@@ -13,7 +13,7 @@ namespace Mengine
                 ->getRenderViewport();
 
             const Resolution & currentResolution = APPLICATION_SERVICE()
-                ->getCurrentResolution();
+                ->getCurrentWindowResolution();
 
             mt::vec2f renderViewportSize;
             renderViewport.calcSize( &renderViewportSize );
@@ -35,7 +35,7 @@ namespace Mengine
                 ->getRenderViewport();
 
             const Resolution & currentResolution = APPLICATION_SERVICE()
-                ->getCurrentResolution();
+                ->getCurrentWindowResolution();
 
             mt::vec2f renderViewportSize;
             renderViewport.calcSize( &renderViewportSize );
@@ -54,7 +54,7 @@ namespace Mengine
                 ->getRenderViewport();
 
             const Resolution & currentResolution = APPLICATION_SERVICE()
-                ->getCurrentResolution();
+                ->getCurrentWindowResolution();
 
             mt::vec2f renderViewportSize;
             renderViewport.calcSize( &renderViewportSize );

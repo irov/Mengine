@@ -256,7 +256,6 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &Win32SentryService::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &Win32SentryService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &Win32SentryService::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_STOP, &Win32SentryService::notifyEngineStop_, MENGINE_DOCUMENT_FACTORABLE );
 
         bool Win32SentryPlugin_LoggerCapture = CONFIG_VALUE( "Win32SentryPlugin", "LoggerCapture", MENGINE_MASTER_RELEASE_VALUE( true, false ) );
 
@@ -335,11 +334,6 @@ namespace Mengine
         sentry_value_t event = sentry_value_new_message_event( SENTRY_LEVEL_ERROR, "Error", _message );
 
         sentry_capture_event( event );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32SentryService::notifyEngineStop_()
-    {
-        sentry_set_extra( "Engine Stop", sentry_value_new_bool( true ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32SentryService::notifyBootstrapperCreateApplication_()
@@ -490,22 +484,6 @@ namespace Mengine
         LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Engine Stop: %d]"
             , false
         );
-
-        sentry_set_extra( "Engine Stop", sentry_value_new_bool( false ) );
-
-        if( HAS_OPTION( "sentrycrash" ) == true )
-        {
-            LOGGER_MESSAGE_RELEASE( "!!!test sentry crash!!!" );
-
-            Char message_uid[21] = {'\0'};
-            Helper::makeUID( 20, message_uid );
-            message_uid[20] = '\0';
-
-            LOGGER_MESSAGE_RELEASE( "uid: %s", message_uid );
-            LOGGER_MESSAGE_RELEASE( "!!!test sentry crash!!!" );
-
-            Helper::crash( "sentrycrash" );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

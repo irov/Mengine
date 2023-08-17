@@ -84,10 +84,13 @@ namespace Mengine
         virtual void setFixedDisplayResolution( bool _fixedDisplayResolution ) = 0;
         virtual bool getFixedDisplayResolution() const = 0;
 
+        virtual void setFixedViewportResolution( bool _fixedViewportResolution ) = 0;
+        virtual bool getFixedViewportResolution() const = 0;
+
     public:
         virtual bool calcWindowResolution( bool _fullscreen, Resolution * const _windowResolution ) const = 0;
 
-        virtual const Resolution & getCurrentResolution() const = 0;
+        virtual const Resolution & getCurrentWindowResolution() const = 0;
         virtual const Viewport & getRenderViewport() const = 0;
 
         virtual const Resolution & getContentResolution() const = 0;

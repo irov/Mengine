@@ -15,6 +15,7 @@ namespace Mengine
         void onGameFullscreen( bool _fullscreen ) override;
         void onGameFixedContentResolution( bool _fixed ) override;
         void onGameFixedDisplayResolution( bool _fixed ) override;
+        void onGameFixedViewportResolution( bool _fixed ) override;
         void onGameRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) override;
         void onGameViewport( const Viewport & _viewport, float _aspect ) override;
         bool onGameKey( const InputKeyEvent & _event ) override;

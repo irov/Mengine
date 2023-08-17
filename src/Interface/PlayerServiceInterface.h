@@ -28,10 +28,6 @@ namespace Mengine
     public:
         virtual void onFocus( bool _focus ) = 0;
 
-        virtual void onFullscreen( const Resolution & _resolution, bool _fullscreen ) = 0;
-        virtual void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) = 0;
-        virtual void onFixedDisplayResolution( const Resolution & _resolution, bool _fixed ) = 0;
-
     public:
         virtual void update() = 0;
         virtual void render( const RenderPipelineInterfacePtr & _renderPipeline ) = 0;

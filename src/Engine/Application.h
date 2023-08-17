@@ -80,12 +80,15 @@ namespace Mengine
     public:
         bool calcWindowResolution( bool _fullscreen, Resolution * const _windowResolution ) const override;
 
-        const Resolution & getCurrentResolution() const override;
+        const Resolution & getCurrentWindowResolution() const override;
 
         const Viewport & getRenderViewport() const override;
         const Resolution & getContentResolution() const override;
 
         void getGameViewport( float * const _aspect, Viewport * const _viewport ) const override;
+
+    protected:
+        void calcRenderViewport_( Viewport * const _viewport );
 
     public:
         bool render() override;
@@ -157,6 +160,10 @@ namespace Mengine
         bool getFixedDisplayResolution() const override;
 
     public:
+        void setFixedViewportResolution( bool _fixedViewportResolution ) override;
+        bool getFixedViewportResolution() const override;
+
+    public:
         void updateNotification();
         void setVSync( bool _vsync ) override;
         bool getVSync() const override;
@@ -167,8 +174,7 @@ namespace Mengine
     public:
         void debugPause( bool _pause ) override;
 
-    protected:
-        void calcRenderViewport_( const Resolution & _resolution, Viewport * const _viewport );
+    protected:        
         void invalidateWindow_();
 
     protected:
@@ -187,7 +193,7 @@ namespace Mengine
         RenderPipelineInterfacePtr m_renderPipeline;
         ResourceImagePtr m_resourceWhitePixel;
 
-        Resolution m_currentResolution;
+        Resolution m_currentWindowResolution;
 
         Viewport m_renderViewport;
 
@@ -219,6 +225,7 @@ namespace Mengine
 
         bool m_fixedContentResolution;
         bool m_fixedDisplayResolution;
+        bool m_fixedViewportResolution;
         bool m_createRenderWindow;
 
         uint32_t m_debugMask;

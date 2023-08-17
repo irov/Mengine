@@ -28,6 +28,11 @@ namespace Mengine
         m_cb.call( _fixed );
     }
     //////////////////////////////////////////////////////////////////////////
+    void PythonGameEventReceiver::onGameFixedViewportResolution( bool _fixed )
+    {
+        m_cb.call( _fixed );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PythonGameEventReceiver::onGameRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )
     {
         m_cb.call( _viewport, _contentResolution );

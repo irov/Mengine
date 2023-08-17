@@ -28,6 +28,7 @@ namespace Mengine
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onFullscreen" ), EVENT_GAME_FULLSCREEN, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onFixedContentResolution" ), EVENT_GAME_FIXED_CONTENT_RESOLUTION, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onFixedDisplayResolution" ), EVENT_GAME_FIXED_DISPLAY_RESOLUTION, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onFixedViewportResolution" ), EVENT_GAME_FIXED_VIEWPORT_RESOLUTION, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onRenderViewport" ), EVENT_GAME_RENDER_VIEWPORT, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onGameViewport" ), EVENT_GAME_VIEWPORT, _doc );
 

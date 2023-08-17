@@ -68,9 +68,10 @@ namespace Mengine
 
     public:
         void setFocus( bool _focus ) override;
-        void setFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
-        void setFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
-        void setFixedDisplayResolution( const Resolution & _resolution, bool _fixed ) override;
+        void setFullscreen( bool _fullscreen ) override;
+        void setFixedContentResolution( bool _fixed ) override;
+        void setFixedDisplayResolution( bool _fixed ) override;
+        void setFixedViewportResolution( bool _fixed ) override;
         void setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) override;
         void setGameViewport( const Viewport & _viewport, float _aspect ) override;
 

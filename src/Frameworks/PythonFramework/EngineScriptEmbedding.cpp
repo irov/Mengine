@@ -998,7 +998,7 @@ namespace Mengine
             const Resolution & s_getCurrentResolution()
             {
                 const Resolution & resolution = APPLICATION_SERVICE()
-                    ->getCurrentResolution();
+                    ->getCurrentWindowResolution();
 
                 return resolution;
             }
@@ -1324,6 +1324,18 @@ namespace Mengine
             {
                 return APPLICATION_SERVICE()
                     ->getFixedDisplayResolution();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_setFixedViewportResolution( bool _fixedViewportResolution )
+            {
+                APPLICATION_SERVICE()
+                    ->setFixedViewportResolution( _fixedViewportResolution );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_getFixedViewportResolution()
+            {
+                return APPLICATION_SERVICE()
+                    ->getFixedViewportResolution();
             }
             //////////////////////////////////////////////////////////////////////////
             void s_foreachSceneHotspot( const ScenePtr & _scene, const pybind::object & _cb, const pybind::args & _args )
@@ -4347,6 +4359,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "getFixedContentResolution", nodeScriptMethod, &EngineScriptMethod::s_getFixedContentResolution );
         pybind::def_functor( _kernel, "setFixedDisplayResolution", nodeScriptMethod, &EngineScriptMethod::s_setFixedDisplayResolution );
         pybind::def_functor( _kernel, "getFixedDisplayResolution", nodeScriptMethod, &EngineScriptMethod::s_getFixedDisplayResolution );
+        pybind::def_functor( _kernel, "setFixedViewportResolution", nodeScriptMethod, &EngineScriptMethod::s_setFixedViewportResolution );
+        pybind::def_functor( _kernel, "getFixedViewportResolution", nodeScriptMethod, &EngineScriptMethod::s_getFixedViewportResolution );
 
         pybind::def_functor_args( _kernel, "foreachSceneHotspot", nodeScriptMethod, &EngineScriptMethod::s_foreachSceneHotspot );
 

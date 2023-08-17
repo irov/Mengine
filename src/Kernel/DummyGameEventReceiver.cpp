@@ -32,6 +32,13 @@ namespace Mengine
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    void DummyGameEventReceiver::onGameFixedViewportResolution( bool _fixed )
+    {
+        MENGINE_UNUSED( _fixed );
+
+        // Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DummyGameEventReceiver::onGameRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )
     {
         MENGINE_UNUSED( _viewport );

@@ -800,7 +800,7 @@ namespace Mengine
                     ->getContentResolution();
 
                 const Resolution & currentResolution = APPLICATION_SERVICE()
-                    ->getCurrentResolution();
+                    ->getCurrentWindowResolution();
 
                 mt::vec2f adapt_pos;
                 adapt_pos.x = _pos.x / contentResolution.getWidth() * currentResolution.getWidth();

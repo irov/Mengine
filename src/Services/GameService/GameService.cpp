@@ -458,40 +458,28 @@ namespace Mengine
             ->onGameFocus( _focus );
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::setFullscreen( const Resolution & _resolution, bool _fullscreen )
+    void GameService::setFullscreen( bool _fullscreen )
     {
-        if( SERVICE_IS_INITIALIZE( PlayerServiceInterface ) == true )
-        {
-            PLAYER_SERVICE()
-                ->onFullscreen( _resolution, _fullscreen );
-        }
-
         EVENTABLE_METHOD( EVENT_GAME_FULLSCREEN )
             ->onGameFullscreen( _fullscreen );
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::setFixedContentResolution( const Resolution & _resolution, bool _fixed )
+    void GameService::setFixedContentResolution( bool _fixed )
     {
-        if( SERVICE_IS_INITIALIZE( PlayerServiceInterface ) == true )
-        {
-            PLAYER_SERVICE()
-                ->onFixedContentResolution( _resolution, _fixed );
-        }
-
         EVENTABLE_METHOD( EVENT_GAME_FIXED_CONTENT_RESOLUTION )
             ->onGameFixedContentResolution( _fixed );
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::setFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
+    void GameService::setFixedDisplayResolution( bool _fixed )
     {
-        if( SERVICE_IS_INITIALIZE( PlayerServiceInterface ) == true )
-        {
-            PLAYER_SERVICE()
-                ->onFixedContentResolution( _resolution, _fixed );
-        }
-
         EVENTABLE_METHOD( EVENT_GAME_FIXED_DISPLAY_RESOLUTION )
             ->onGameFixedDisplayResolution( _fixed );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GameService::setFixedViewportResolution( bool _fixed )
+    {
+        EVENTABLE_METHOD( EVENT_GAME_FIXED_VIEWPORT_RESOLUTION )
+            ->onGameFixedViewportResolution( _fixed );
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )

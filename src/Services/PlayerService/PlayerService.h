@@ -110,9 +110,6 @@ namespace Mengine
 
     public:
         void onFocus( bool _focus ) override;
-        void onFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
-        void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
-        void onFixedDisplayResolution( const Resolution & _resolution, bool _fixed ) override;
 
     protected:
         void notifyChangeScenePrepareDestroy( const ScenePtr & _oldScene, const ScenePtr & _newScene );

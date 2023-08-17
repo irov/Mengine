@@ -46,9 +46,10 @@ namespace Mengine
 
     public:
         virtual void setFocus( bool _focus ) = 0;
-        virtual void setFullscreen( const Resolution & _resolution, bool _fullscreen ) = 0;
-        virtual void setFixedContentResolution( const Resolution & _resolution, bool _fixed ) = 0;
-        virtual void setFixedDisplayResolution( const Resolution & _resolution, bool _fixed ) = 0;
+        virtual void setFullscreen( bool _fullscreen ) = 0;
+        virtual void setFixedContentResolution( bool _fixed ) = 0;
+        virtual void setFixedDisplayResolution( bool _fixed ) = 0;
+        virtual void setFixedViewportResolution( bool _fixed ) = 0;
         virtual void setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) = 0;
         virtual void setGameViewport( const Viewport & _viewport, float _aspect ) = 0;
 

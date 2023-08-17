@@ -2468,7 +2468,7 @@ namespace Mengine
         _viewport->end.y = _viewport->begin.y + areaHeight;
     }
     //////////////////////////////////////////////////////////////////////////
-    EContenEdgeMode Application::getAspectRatioContenEdgeMode() const
+    EContentEdgeMode Application::getAspectRatioContentEdgeMode() const
     {
         if( m_fixedContentResolution == false )
         {

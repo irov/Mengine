@@ -4021,10 +4021,10 @@ namespace Mengine
                 return viewport;
             }
             //////////////////////////////////////////////////////////////////////////
-            EContenEdgeMode s_getAspectRatioContenEdgeMode()
+            EContentEdgeMode s_getAspectRatioContentEdgeMode()
             {
-                EContenEdgeMode mode = APPLICATION_SERVICE()
-                    ->getAspectRatioContenEdgeMode();
+                EContentEdgeMode mode = APPLICATION_SERVICE()
+                    ->getAspectRatioContentEdgeMode();
 
                 return mode;
             }
@@ -4453,13 +4453,13 @@ namespace Mengine
         pybind::def_functor( _kernel, "getGameAspect", nodeScriptMethod, &EngineScriptMethod::s_getGameAspect );
         pybind::def_functor( _kernel, "getGameViewport", nodeScriptMethod, &EngineScriptMethod::s_getGameViewport );
 
-        pybind::enum_<EContenEdgeMode>( _kernel, "EContenEdgeMode" )
+        pybind::enum_<EContentEdgeMode>( _kernel, "EContentEdgeMode" )
             .def( "ECEM_NONE", ECEM_NONE )
             .def( "ECEM_HORIZONTAL_CONTENT_EDGE", ECEM_HORIZONTAL_CONTENT_EDGE )
             .def( "ECEM_VERTICAL_CONTENT_EDGE", ECEM_VERTICAL_CONTENT_EDGE )
             ;
 
-        pybind::def_functor( _kernel, "getAspectRatioContenEdgeMode", nodeScriptMethod, &EngineScriptMethod::s_getAspectRatioContenEdgeMode );
+        pybind::def_functor( _kernel, "getAspectRatioContentEdgeMode", nodeScriptMethod, &EngineScriptMethod::s_getAspectRatioContentEdgeMode );
 
         pybind::def_functor( _kernel, "hasGameParam", nodeScriptMethod, &EngineScriptMethod::s_hasGameParam );
         pybind::def_functor_kernel( _kernel, "getGameParamString", nodeScriptMethod, &EngineScriptMethod::s_getGameParamString );

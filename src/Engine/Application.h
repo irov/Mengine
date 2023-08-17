@@ -87,7 +87,7 @@ namespace Mengine
 
         void getGameViewport( float * const _aspect, Viewport * const _viewport ) const override;
 
-        EContenEdgeMode getAspectRatioContenEdgeMode() const override;
+        EContentEdgeMode getAspectRatioContentEdgeMode() const override;
 
     protected:
         void calcRenderViewport_( float * const _aspect, Viewport * const _viewport ) const;

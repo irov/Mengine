@@ -25,6 +25,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    enum EContenEdgeMode
+    {
+        ECEM_NONE,
+        ECEM_HORIZONTAL_CONTENT_EDGE,
+        ECEM_VERTICAL_CONTENT_EDGE
+    };
+    //////////////////////////////////////////////////////////////////////////
     class ApplicationInterface
         : public ServiceInterface
         , public InputHandlerInterface
@@ -95,6 +102,8 @@ namespace Mengine
 
         virtual const Resolution & getContentResolution() const = 0;
         virtual void getGameViewport( float * const _aspect, Viewport * const _viewport ) const = 0;
+
+        virtual EContenEdgeMode getAspectRatioContenEdgeMode() const = 0;
 
     public:
         virtual bool createRenderWindow() = 0;

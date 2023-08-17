@@ -798,8 +798,9 @@ namespace Mengine
 
         m_currentWindowResolution = windowResolution;
 
+        float renderViewportAspect;
         Viewport renderViewport;
-        this->calcRenderViewport_( &renderViewport );
+        this->calcRenderViewport_( &renderViewportAspect, &renderViewport );
 
         LOGGER_INFO( "system", "set render viewport [%f %f - %f %f]"
             , renderViewport.begin.x
@@ -2050,7 +2051,7 @@ namespace Mengine
         return m_currentWindowResolution;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::calcRenderViewport_( Viewport * const _viewport )
+    void Application::calcRenderViewport_( float * const _aspect, Viewport * const _viewport ) const
     {
         float windowWidth = m_currentWindowResolution.getWidthF();
         float windowHeight = m_currentWindowResolution.getHeightF();
@@ -2060,6 +2061,8 @@ namespace Mengine
 
         if( fixedDisplayResolution == false )
         {
+            *_aspect = windowAspect;
+
             _viewport->begin.x = 0.f;
             _viewport->begin.y = 0.f;
             _viewport->end.x = windowWidth;
@@ -2076,20 +2079,19 @@ namespace Mengine
             bestAspect = contentAspect;
         }
 
-        float oneDivWidth = 1.f / windowWidth;
-        float oneDivHeight = 1.f / windowHeight;
-
         float dw = 1.f;
-        float dh = windowWidth / bestAspect * oneDivHeight;
+        float dh = windowAspect / bestAspect;
 
         if( dh > 1.f )
         {
-            dw = windowHeight * bestAspect * oneDivWidth;
+            dw = bestAspect / windowAspect;
             dh = 1.f;
         }
 
         float areaWidth = MENGINE_CEILF( dw * windowWidth );
         float areaHeight = MENGINE_CEILF( dh * windowHeight );
+
+        *_aspect = bestAspect;
 
         _viewport->begin.x = MENGINE_CEILF( (windowWidth - areaWidth) * 0.5f );
         _viewport->begin.y = MENGINE_CEILF( (windowHeight - areaHeight) * 0.5f );
@@ -2193,8 +2195,9 @@ namespace Mengine
             return;
         }
 
+        float renderViewportAspect;
         Viewport renderViewport;
-        this->calcRenderViewport_( &renderViewport );
+        this->calcRenderViewport_( &renderViewportAspect, &renderViewport );
 
         LOGGER_INFO( "system", "set render viewport [%f %f - %f %f]"
             , renderViewport.begin.x
@@ -2445,15 +2448,12 @@ namespace Mengine
             return;
         }
 
-        float oneDivWidth = 1.f / contentWidth;
-        float oneDivHeight = 1.f / contentHeight;
-
         float dw = 1.f;
-        float dh = contentWidth / windowAspect * oneDivHeight;
+        float dh = contentAspect / windowAspect;
 
         if( dh < 1.f )
         {
-            dw = contentHeight * windowAspect * oneDivWidth;
+            dw = windowAspect / contentAspect;
             dh = 1.f;
         }
 
@@ -2466,6 +2466,31 @@ namespace Mengine
         _viewport->begin.y = MENGINE_CEILF( (contentHeight - areaHeight) * 0.5f );
         _viewport->end.x = _viewport->begin.x + areaWidth;
         _viewport->end.y = _viewport->begin.y + areaHeight;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EContenEdgeMode Application::getAspectRatioContenEdgeMode() const
+    {
+        if( m_fixedContentResolution == false )
+        {
+            return ECEM_NONE;
+        }
+
+        if( m_fixedViewportResolution == true )
+        {
+            return ECEM_NONE;
+        }
+
+        float contentAspect = m_contentResolution.getAspectRatio();
+        float windowAspect = m_currentWindowResolution.getAspectRatio();
+
+        float dh = contentAspect / windowAspect;
+
+        if( dh < 1.f )
+        {
+            return ECEM_HORIZONTAL_CONTENT_EDGE;
+        }
+
+        return ECEM_VERTICAL_CONTENT_EDGE;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::getAllowFullscreenSwitchShortcut() const

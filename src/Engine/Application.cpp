@@ -790,10 +790,10 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "system", "set window resolution [%u:%u] %s"
+        LOGGER_INFO( "system", "set current window resolution [%u:%u] %s"
             , windowResolution.getWidth()
             , windowResolution.getHeight()
-            , fullscreen ? "Fullscreen" : "Window"
+            , fullscreen ? "fullscreen" : "window"
         );
 
         m_currentWindowResolution = windowResolution;
@@ -2053,9 +2053,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::calcRenderViewport_( float * const _aspect, Viewport * const _viewport ) const
     {
-        float windowWidth = m_currentWindowResolution.getWidthF();
-        float windowHeight = m_currentWindowResolution.getHeightF();
-        float windowAspect = m_currentWindowResolution.getAspectRatio();
+        const Resolution & currentWindowResolution = this->getCurrentWindowResolution();
+
+        float windowWidth = currentWindowResolution.getWidthF();
+        float windowHeight = currentWindowResolution.getHeightF();
+        float windowAspect = currentWindowResolution.getAspectRatio();
 
         bool fixedDisplayResolution = this->getFixedDisplayResolution();
 
@@ -2171,20 +2173,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::invalidateWindow_()
     {
+        bool vsync = this->getVSync();
         bool fullscreen = this->getFullscreenMode();
 
-        if( this->calcWindowResolution( fullscreen, &m_currentWindowResolution ) == false )
+        Resolution windowResolution;
+        if( this->calcWindowResolution( fullscreen, &windowResolution ) == false )
         {
             return;
         }
 
         LOGGER_INFO( "system", "current resolution [%s] [%u %u]"
             , fullscreen == true ? "Fullscreen" : "Window"
-            , m_currentWindowResolution.getWidth()
-            , m_currentWindowResolution.getHeight()
+            , windowResolution.getWidth()
+            , windowResolution.getHeight()
         );
 
-        bool vsync = this->getVSync();
+        m_currentWindowResolution = windowResolution;
 
         RENDER_SERVICE()
             ->setVSync( vsync );
@@ -2410,9 +2414,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::getGameViewport( float * const _aspect, Viewport * const _viewport ) const
     {
-        float contentWidth = m_contentResolution.getWidthF();
-        float contentHeight = m_contentResolution.getHeightF();
-        float contentAspect = m_contentResolution.getAspectRatio();
+        const Resolution & contentResolution = this->getContentResolution();
+
+        float contentWidth = contentResolution.getWidthF();
+        float contentHeight = contentResolution.getHeightF();
+        float contentAspect = contentResolution.getAspectRatio();
 
         if( m_fixedContentResolution == false )
         {
@@ -2426,7 +2432,9 @@ namespace Mengine
             return;
         }
 
-        float windowAspect = m_currentWindowResolution.getAspectRatio();
+        const Resolution & currentWindowResolution = this->getCurrentWindowResolution();
+
+        float windowAspect = currentWindowResolution.getAspectRatio();
 
         if( m_fixedViewportResolution == true )
         {
@@ -2480,8 +2488,11 @@ namespace Mengine
             return ECEM_NONE;
         }
 
-        float contentAspect = m_contentResolution.getAspectRatio();
-        float windowAspect = m_currentWindowResolution.getAspectRatio();
+        const Resolution & contentResolution = this->getContentResolution();
+        const Resolution & currentWindowResolution = this->getCurrentWindowResolution();
+
+        float contentAspect = contentResolution.getAspectRatio();
+        float windowAspect = currentWindowResolution.getAspectRatio();
 
         float dh = contentAspect / windowAspect;
 

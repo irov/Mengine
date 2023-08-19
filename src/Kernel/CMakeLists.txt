@@ -468,6 +468,8 @@ Assertion
     AssertionMainThreadGuard.h
     AssertionVocabulary.h
     AssertionVocabulary.cpp
+    AssertionStatistic.h
+    AssertionStatistic.cpp
     AssertionNode.h
     AssertionType.h
     AssertionAllocator.h
@@ -878,6 +880,10 @@ Core
     
     NotificationName.cpp
     NotificationName.h
+
+    StatisticName.cpp
+    StatisticName.h
+
     
     ExecutorHelper.h
     PrototypeHelper.h

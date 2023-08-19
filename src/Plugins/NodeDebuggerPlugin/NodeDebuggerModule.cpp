@@ -57,6 +57,7 @@
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/ResolutionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/StatisticHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -1472,13 +1473,11 @@ namespace Mengine
 
         payloadNode.append_attribute( "AvailableTextureMemory" ).set_value( availableTextureMemory );
 
-        uint32_t textureMemoryUse = RENDER_SYSTEM()
-            ->getTextureMemoryUse();
+        int64_t textureMemoryUse = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_MEMORY_USAGE );
 
         payloadNode.append_attribute( "TextureMemoryUse" ).set_value( textureMemoryUse );
 
-        uint32_t textureCount = RENDER_SYSTEM()
-            ->getTextureCount();
+        int64_t textureCount = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
 
         payloadNode.append_attribute( "TextureCount" ).set_value( textureCount );
 

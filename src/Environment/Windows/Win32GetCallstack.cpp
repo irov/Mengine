@@ -1,13 +1,15 @@
 #include "Win32GetCallstack.h"
 
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(push, 0)
-#endif
+#ifndef MENGINE_PLATFORM_UWP
+#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#       pragma warning(push, 0)
+#   endif
 
-#include "Environment/Windows/DbgHelp.h"
+#   include "Environment/Windows/DbgHelp.h"
 
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(pop)
+#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#       pragma warning(pop)
+#   endif
 #endif
 
 #include "Config/StdString.h"
@@ -17,6 +19,8 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_PLATFORM_UWP
         //////////////////////////////////////////////////////////////////////////
         namespace Detail
         {
@@ -511,5 +515,18 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
+#else
+        //////////////////////////////////////////////////////////////////////////
+        bool Win32GetCallstack( DWORD _threadId, PCONTEXT _context, Char * const _stack, size_t _capacity )
+        {
+            MENGINE_UNUSED( _threadId );
+            MENGINE_UNUSED( _context );
+            MENGINE_UNUSED( _stack );
+            MENGINE_UNUSED( _capacity );
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+#endif
     }
 }

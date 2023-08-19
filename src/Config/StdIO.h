@@ -3,6 +3,7 @@
 #include "Config/Char.h"
 #include "Config/StdInt.h"
 #include "Config/StdArg.h"
+#include "Config/StdIntTypes.h"
 
 #include <cstdio>
 #include <cwchar>

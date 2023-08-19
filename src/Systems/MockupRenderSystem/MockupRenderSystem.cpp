@@ -322,16 +322,6 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t MockupRenderSystem::getTextureMemoryUse() const
-    {
-        return 0U;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t MockupRenderSystem::getTextureCount() const
-    {
-        return 0U;
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint32_t MockupRenderSystem::getMaxCombinedTextureImageUnits() const
     {
         return m_dxMaxCombinedTextureImageUnits;
@@ -773,20 +763,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( dx9RenderImage );
 
         dx9RenderImage->initialize( _mipmaps, _hwWidth, _hwHeight, _hwPixelFormat );
-
-#if defined(MENGINE_DEBUG)
-        bool OPTION_logcreateimage = HAS_OPTION( "logcreateimage" );
-
-        if( OPTION_logcreateimage == true )
-        {
-            LOGGER_STATISTIC( "create texture size %u:%u format %x (doc %s)"
-                , _hwWidth
-                , _hwHeight
-                , _hwPixelFormat
-                , MENGINE_DOCUMENT_STR( _doc )
-            );
-        }
-#endif
 
         return dx9RenderImage;
     }

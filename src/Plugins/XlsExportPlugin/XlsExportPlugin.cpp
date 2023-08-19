@@ -99,6 +99,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool XlsExportPlugin::_initializePlugin()
     {
+        if( HAS_OPTION( "noxlsexport" ) == true )
+        {
+            return true;
+        }
+
         //Py_IgnoreEnvironmentFlag = 1;
         //Py_VerboseFlag = 1;
         //Py_NoUserSiteDirectory = 1;
@@ -248,6 +253,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool XlsExportPlugin::proccess_()
     {
+        if( HAS_OPTION( "noxlsexport" ) == true )
+        {
+            return true;
+        }
+
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
         const ConstString & Project_Codename = APPLICATION_SERVICE()

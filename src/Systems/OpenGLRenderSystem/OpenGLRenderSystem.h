@@ -121,8 +121,6 @@ namespace Mengine
         void setVSync( bool _vSync ) override;
 
         uint32_t getAvailableTextureMemory() const override;
-        uint32_t getTextureMemoryUse() const override;
-        uint32_t getTextureCount() const override;
 
     protected:
         void findFormatFromChannels_( EPixelFormat _format, EPixelFormat * const _hwFormat ) const;

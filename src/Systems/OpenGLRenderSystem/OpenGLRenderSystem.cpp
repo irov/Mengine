@@ -770,16 +770,6 @@ namespace Mengine
         return 0U;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t OpenGLRenderSystem::getTextureMemoryUse() const
-    {
-        return 0U;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t OpenGLRenderSystem::getTextureCount() const
-    {
-        return 0U;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setDepthBufferTestEnable( bool _depthTest )
     {
         if( _depthTest == true )

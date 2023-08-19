@@ -100,8 +100,8 @@ namespace Mengine
             this->updateHistogramUpdate( &m_histogramFPS, STATISTIC_RENDER_FRAME_COUNT, coeffTime, 1.f );
             this->updateHistogramUpdate( &m_histogramAllocatorNew, STATISTIC_ALLOCATOR_NEW, coeffTime, 1.f / 1024.f );
             this->updateHistogramUpdate( &m_histogramAllocatorFree, STATISTIC_ALLOCATOR_FREE, coeffTime, 1.f / 1024.f );
-            this->updateHistogramUpdate( &m_histogramImageNew, STATISTIC_RENDER_IMAGE_NEW, coeffTime, 1.f );
-            this->updateHistogramUpdate( &m_histogramImageFree, STATISTIC_RENDER_IMAGE_FREE, coeffTime, 1.f );
+            this->updateHistogramUpdate( &m_histogramImageNew, STATISTIC_RENDER_IMAGE_ALLOC_NEW, coeffTime, 1.f );
+            this->updateHistogramUpdate( &m_histogramImageFree, STATISTIC_RENDER_IMAGE_ALLOC_FREE, coeffTime, 1.f );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -164,7 +164,7 @@ namespace Mengine
         this->drawHistogramUpdate( m_histogramImageNew, "Image new: %.0f", FLT_MAX, 60.f );
         this->drawHistogramUpdate( m_histogramImageFree, "Image free: %.0f", FLT_MAX, 60.f );
 
-        int64_t Statistic_Render_ImageSize = STATISTIC_GET_INTEGER( STATISTIC_RENDER_IMAGE_SIZE );
+        int64_t Statistic_Render_ImageSize = STATISTIC_GET_INTEGER( STATISTIC_RENDER_IMAGE_ALLOC_SIZE );
         ImGui::Text( "Image size: %lld", Statistic_Render_ImageSize );
 
         this->drawHistogramPerFrame( m_histogramPerFrameDrawIndexPrimitives, "DIP: %.0f", FLT_MAX, 50.f );

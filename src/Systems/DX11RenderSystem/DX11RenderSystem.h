@@ -130,8 +130,6 @@ namespace Mengine
 
     public:
         uint32_t getAvailableTextureMemory() const override;
-        uint32_t getTextureMemoryUse() const override;
-        uint32_t getTextureCount() const override;
 
     public:
         const ID3D11DevicePtr & getDirect3D11Device() const override;
@@ -236,11 +234,6 @@ namespace Mengine
         mt::mat4f m_modelViewMatrix;
         mt::mat4f m_worldMatrix;
         mt::mat4f m_totalWVPInvMatrix;
-
-        uint32_t m_textureMemoryUse;
-        uint32_t m_textureCount;
-        uint32_t m_vertexBufferCount;
-        uint32_t m_indexBufferCount;
 
         bool m_vertexBufferEnable;
         bool m_indexBufferEnable;

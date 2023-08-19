@@ -73,9 +73,9 @@ namespace Mengine
 
         m_upscalePow2 = _width != m_hwWidth || _height != m_hwHeight;
 
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_IMAGE_NEW );
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_IMAGE_COUNT );
-        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_IMAGE_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_IMAGE_ALLOC_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_IMAGE_ALLOC_COUNT );
+        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_IMAGE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
 
         return true;
     }
@@ -86,9 +86,9 @@ namespace Mengine
 
         if( m_pD3DTexture != nullptr )
         {
-            STATISTIC_INC_INTEGER( STATISTIC_RENDER_IMAGE_FREE );
-            STATISTIC_DEC_INTEGER( STATISTIC_RENDER_IMAGE_COUNT );
-            STATISTIC_DEL_INTEGER( STATISTIC_RENDER_IMAGE_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
+            STATISTIC_INC_INTEGER( STATISTIC_RENDER_IMAGE_ALLOC_FREE );
+            STATISTIC_DEC_INTEGER( STATISTIC_RENDER_IMAGE_ALLOC_COUNT );
+            STATISTIC_DEL_INTEGER( STATISTIC_RENDER_IMAGE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
 
             MENGINE_DXRELEASE( m_pD3DTexture );
         }

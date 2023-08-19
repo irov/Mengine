@@ -162,8 +162,6 @@ namespace Mengine
 
     public:
         virtual uint32_t getAvailableTextureMemory() const = 0;
-        virtual uint32_t getTextureMemoryUse() const = 0;
-        virtual uint32_t getTextureCount() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

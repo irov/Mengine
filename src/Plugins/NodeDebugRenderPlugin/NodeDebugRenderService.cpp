@@ -275,13 +275,11 @@ namespace Mengine
 
                 ss << "Available Texture Memory: " << (float)availableTextureMemory / (1024.f * 1024.f) << std::endl;
 
-                uint32_t textureMemoryUse = RENDER_SYSTEM()
-                    ->getTextureMemoryUse();
+                int64_t textureMemoryUse = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_MEMORY_USAGE );
 
-                ss << "Texture Memory Usage: " << (float)textureMemoryUse / (1024.f*1024.f) << std::endl;
+                ss << "Texture Memory Usage: " << (float)textureMemoryUse / (1024.f * 1024.f) << std::endl;
 
-                uint32_t textureCount = RENDER_SYSTEM()
-                    ->getTextureCount();
+                int64_t textureCount = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
 
                 ss << "Texture Count: " << textureCount << std::endl;
 
@@ -407,14 +405,20 @@ namespace Mengine
                 VisitorPlayerFactoryManager pfmv_node( STRINGIZE_STRING_LOCAL( "Node" ) );
 
                 PROTOTYPE_SERVICE()
-                    ->foreachGenerators( [&pfmv_node]( const PrototypeGeneratorInterfacePtr & _generator ) { pfmv_node.visit( _generator ); } );
+                    ->foreachGenerators( [&pfmv_node]( const PrototypeGeneratorInterfacePtr & _generator )
+                {
+                    pfmv_node.visit( _generator );
+                } );
 
                 ss << pfmv_node.getMsg() << std::endl;
 
                 VisitorPlayerFactoryManager pfmv_surface( STRINGIZE_STRING_LOCAL( "Surface" ) );
 
                 PROTOTYPE_SERVICE()
-                    ->foreachGenerators( [&pfmv_surface]( const PrototypeGeneratorInterfacePtr & _generator ) { pfmv_surface.visit( _generator ); } );
+                    ->foreachGenerators( [&pfmv_surface]( const PrototypeGeneratorInterfacePtr & _generator )
+                {
+                    pfmv_surface.visit( _generator );
+                } );
 
                 ss << pfmv_surface.getMsg() << std::endl;
             }
@@ -580,7 +584,7 @@ namespace Mengine
             const FontInterfacePtr & font = FONT_SERVICE()
                 ->getFont( STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ) );
 
-            Helper::drawTextDebug( _renderPipeline, _context, { 100.f, 100.f }, font, Color( 1.f, 0.f, 0.f, 1.f ), MENGINE_DOCUMENT_FORWARD, "%s"
+            Helper::drawTextDebug( _renderPipeline, _context, {100.f, 100.f}, font, Color( 1.f, 0.f, 0.f, 1.f ), MENGINE_DOCUMENT_FORWARD, "%s"
                 , text.c_str()
             );
         }

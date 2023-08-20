@@ -102,6 +102,9 @@ if(WIN32)
     )
 endif()
 if(MSVC)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
+
     string(REGEX REPLACE "/[Ww][0123]" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
     string(REGEX REPLACE "/[Ww][0123]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     target_compile_options(crashpad_interface INTERFACE
@@ -117,8 +120,14 @@ if(MSVC)
         $<$<COMPILE_LANGUAGE:C,CXX>:/wd4996> # 'X' was declared deprecated.
     )
 
-    SET(CRASHPAD_WER_ENABLED FALSE)
-    SET(CRASHPAD_WER_ENABLED FALSE PARENT_SCOPE)
+    # WER support is only available starting from Win10 build 10941
+    if("${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}" VERSION_LESS 10.0.19041)
+        message(STATUS "WER support disabled. Needs target platform >= 10.0.19041 (actual: ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION})")
+    else()
+        SET(CRASHPAD_WER_ENABLED TRUE)
+        SET(CRASHPAD_WER_ENABLED TRUE PARENT_SCOPE)
+        message(STATUS "WER support enabled")
+    endif()
 elseif(MINGW)
     # redirect to wmain
     # FIXME: cmake 3.13 added target_link_options

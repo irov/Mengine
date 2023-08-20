@@ -1089,9 +1089,12 @@ namespace Mengine
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
-        bool played = identity->state == ESS_PLAY;
+        if( identity->state != ESS_PLAY )
+        {
+            return false;
+        }
 
-        return played;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::isEmitterPause( const SoundIdentityInterfacePtr & _identity ) const
@@ -1100,9 +1103,12 @@ namespace Mengine
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
-        bool paused = identity->state == ESS_PAUSE;
+        if( identity->state != ESS_PAUSE )
+        {
+            return false;
+        }
 
-        return paused;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::setLoop( const SoundIdentityInterfacePtr & _identity, bool _looped )

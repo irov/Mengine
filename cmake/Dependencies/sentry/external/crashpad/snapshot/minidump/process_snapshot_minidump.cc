@@ -630,12 +630,10 @@ bool ProcessSnapshotMinidump::InitializeThreadNames() {
     return true;
   }
 
-#ifndef __MINGW64__
   if (stream_it->second->DataSize < sizeof(MINIDUMP_THREAD_NAME_LIST)) {
     LOG(ERROR) << "thread_name_list size mismatch";
     return false;
   }
-#endif
 
   if (!file_reader_->SeekSet(stream_it->second->Rva)) {
     return false;
@@ -647,7 +645,6 @@ bool ProcessSnapshotMinidump::InitializeThreadNames() {
     return false;
   }
 
-#ifndef __MINGW64__
   if (sizeof(MINIDUMP_THREAD_NAME_LIST) +
           thread_name_count * sizeof(MINIDUMP_THREAD_NAME) !=
       stream_it->second->DataSize) {
@@ -678,7 +675,6 @@ bool ProcessSnapshotMinidump::InitializeThreadNames() {
     const uint32_t thread_id = minidump_thread_name.ThreadId;
     thread_names_.emplace(thread_id, std::move(name));
   }
-#endif
 
   return true;
 }

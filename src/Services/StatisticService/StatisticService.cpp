@@ -38,7 +38,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 
-        m_mutex = m_mutex;
+        m_mutex = mutex;
 
         Algorithm::fill_n( m_statisticIntegers, MENGINE_STATISTIC_MAX_COUNT, 0LL );
         Algorithm::fill_n( m_statisticDoubles, MENGINE_STATISTIC_MAX_COUNT, 0.0 );

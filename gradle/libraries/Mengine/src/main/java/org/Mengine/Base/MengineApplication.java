@@ -441,51 +441,35 @@ public class MengineApplication extends Application {
         m_plugins.add(plugin);
         m_dictionaryPlugins.put(name, plugin);
 
-        if (plugin instanceof MenginePluginAnalyticsListener) {
-            MenginePluginAnalyticsListener listener = (MenginePluginAnalyticsListener)plugin;
-
+        if (plugin instanceof MenginePluginAnalyticsListener listener) {
             m_analyticsListeners.add(listener);
         }
 
-        if (plugin instanceof MenginePluginLoggerListener) {
-            MenginePluginLoggerListener listener = (MenginePluginLoggerListener)plugin;
-
+        if (plugin instanceof MenginePluginLoggerListener listener) {
             m_loggerListeners.add(listener);
         }
 
-        if (plugin instanceof MenginePluginActivityLifecycleListener) {
-            MenginePluginActivityLifecycleListener listener = (MenginePluginActivityLifecycleListener)plugin;
-
+        if (plugin instanceof MenginePluginActivityLifecycleListener listener) {
             m_activityLifecycleListeners.add(listener);
         }
 
-        if (plugin instanceof MenginePluginKeyListener) {
-            MenginePluginKeyListener listener = (MenginePluginKeyListener)plugin;
-
+        if (plugin instanceof MenginePluginKeyListener listener) {
             m_keyListeners.add(listener);
         }
 
-        if (plugin instanceof MenginePluginApplicationListener) {
-            MenginePluginApplicationListener listener = (MenginePluginApplicationListener)plugin;
-
+        if (plugin instanceof MenginePluginApplicationListener listener) {
             m_applicationListeners.add(listener);
         }
 
-        if (plugin instanceof MenginePluginActivityListener) {
-            MenginePluginActivityListener listener = (MenginePluginActivityListener)plugin;
-
+        if (plugin instanceof MenginePluginActivityListener listener) {
             m_activityListeners.add(listener);
         }
 
-        if (plugin instanceof MenginePluginExtensionListener) {
-            MenginePluginExtensionListener listener = (MenginePluginExtensionListener)plugin;
-
+        if (plugin instanceof MenginePluginExtensionListener listener) {
             m_extensionListeners.add(listener);
         }
 
-        if (plugin instanceof MenginePluginEngineListener) {
-            MenginePluginEngineListener listener = (MenginePluginEngineListener)plugin;
-
+        if (plugin instanceof MenginePluginEngineListener listener) {
             m_engineListeners.add(listener);
         }
 
@@ -708,6 +692,7 @@ public class MengineApplication extends Application {
         m_installKey = installKey;
         m_installTimestamp = installTimestamp;
         m_installDate = installDate;
+        m_installVersion = installVersion;
         m_installRND = installRND;
         m_sessionIndex = sessionIndex;
         m_sessionId = sessionId;
@@ -750,9 +735,7 @@ public class MengineApplication extends Application {
 
         this.setState("application.init", "plugins_prepare");
 
-        if (m_sessionId.isEmpty() == false) {
-            this.sendEvent(MengineEvent.EVENT_SESSION_ID, m_sessionId);
-        }
+        this.sendEvent(MengineEvent.EVENT_SESSION_ID, m_sessionId);
 
         long app_init_start_timestamp = MengineAnalytics.buildEvent("mng_app_init_start")
             .log();
@@ -775,6 +758,7 @@ public class MengineApplication extends Application {
                     .log();
             } catch (MenginePluginInvalidInitializeException e) {
                 this.invalidInitialize("invalid plugin %s callback onAppCreate exception: %s"
+                    , l.getPluginName()
                     , e.getPluginName()
                 );
             }
@@ -834,7 +818,7 @@ public class MengineApplication extends Application {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
         MengineLog.logInfo(TAG, "onConfigurationChanged config: %s"

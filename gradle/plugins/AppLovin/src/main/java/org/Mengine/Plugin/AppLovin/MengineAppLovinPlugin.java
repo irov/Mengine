@@ -139,11 +139,6 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         appLovinSdk.setMediationProvider("max");
 
-        MengineApplication application = activity.getMengineApplication();
-        String sessionId = application.getSessionId();
-
-        appLovinSdk.setUserIdentifier(sessionId);
-
         boolean MengineAppLovinPlugin_IsAgeRestrictedUser = activity.getMetaDataBoolean(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER, true);
 
         this.logMessage("%s: %b"

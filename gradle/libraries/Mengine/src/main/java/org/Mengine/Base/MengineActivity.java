@@ -753,7 +753,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG == true) {
             MengineLog.logInfo(TAG, "pythonCall plugin [%s] method [%s] args [%s]"
                 , plugin
                 , method

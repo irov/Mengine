@@ -64,7 +64,7 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
 
         AdjustConfig config = new AdjustConfig(application, MengineAdjustPlugin_AppToken, environment);
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG == true) {
             config.setLogLevel(LogLevel.VERBOSE);
         }
 

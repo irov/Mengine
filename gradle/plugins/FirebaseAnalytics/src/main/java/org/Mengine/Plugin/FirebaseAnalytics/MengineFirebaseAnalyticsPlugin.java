@@ -39,9 +39,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         m_firebaseAnalytics = FirebaseAnalytics.getInstance(application);
 
-        String sessionId = application.getSessionId();
-        m_firebaseAnalytics.setUserId(sessionId);
-
         String installKey = application.getInstallKey();
         long installTimestamp = application.getInstallTimestamp();
         String installVersion = application.getInstallVersion();

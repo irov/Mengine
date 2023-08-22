@@ -73,9 +73,6 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
         m_logger = AppEventsLogger.newLogger(context);
 
-        String sessionId = application.getSessionId();
-        AppEventsLogger.setUserID(sessionId);
-
         try {
             AppEventsLogger.activateApp(application);
         } catch (Exception e) {

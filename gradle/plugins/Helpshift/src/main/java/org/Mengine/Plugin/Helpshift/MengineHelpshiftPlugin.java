@@ -76,7 +76,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         Map<String, Object> config = new HashMap<>();
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG == true) {
             config.put("enableLogging", true);
         } else {
             config.put("enableLogging", false);

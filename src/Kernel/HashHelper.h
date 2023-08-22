@@ -30,7 +30,7 @@ namespace Mengine
             return x4;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_CONSTEXPR HashType makeHash( const Char * _data, const HashType _len )
+        MENGINE_CONSTEXPR HashType makeHash( const Char * _data, size_t _len )
         {
             if( _len == 0 )
             {
@@ -39,19 +39,19 @@ namespace Mengine
 
             const Char * p = _data;
 
-            const HashType b = *p;
+            HashType b = *p;
 
             HashType x = b << 7;
 
-            for( HashType i = 0; i != _len; ++i )
+            for( size_t i = 0; i != _len; ++i )
             {
-                const HashType b2 = *p++;
-                const HashType x2 = Helper::xmul12864( 1000003ULL, x );
+                HashType b2 = *p++;
+                HashType x2 = Helper::xmul12864( 1000003ULL, x );
 
                 x = x2 ^ b2;
             }
 
-            x ^= _len;
+            x ^= (HashType)_len;
 
             if( x == -1 )
             {

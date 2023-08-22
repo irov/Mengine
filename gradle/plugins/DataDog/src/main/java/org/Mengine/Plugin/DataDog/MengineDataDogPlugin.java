@@ -1,5 +1,6 @@
 package org.Mengine.Plugin.DataDog;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -12,15 +13,17 @@ import com.datadog.android.privacy.TrackingConsent;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
+import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginLoggerListener;
 
 import java.util.Map;
 
-public class MengineDataDogPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginActivityListener {
+public class MengineDataDogPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "DevToDev";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -31,8 +34,17 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
     private Logger m_loggerDataDog;
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        String MengineDataDogPlugin_Site = activity.getMetaDataString(PLUGIN_METADATA_SITE);
+    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
+        if (event == MengineEvent.EVENT_SESSION_ID) {
+            String sessionId = (String)args[0];
+
+            m_loggerDataDog.addAttribute("session_id", sessionId);
+        }
+    }
+
+    @Override
+    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+        String MengineDataDogPlugin_Site = application.getMetaDataString(PLUGIN_METADATA_SITE);
 
         if (MengineDataDogPlugin_Site == null) {
             this.invalidInitialize("initialize unsetup [%s]", PLUGIN_METADATA_SITE);
@@ -65,7 +77,7 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
             return;
         }
 
-        String MengineDataDogPlugin_ClientToken = activity.getMetaDataString(PLUGIN_METADATA_CLIENT_TOKEN);
+        String MengineDataDogPlugin_ClientToken = application.getMetaDataString(PLUGIN_METADATA_CLIENT_TOKEN);
 
         if (MengineDataDogPlugin_ClientToken == null) {
             this.invalidInitialize("initialize unsetup [%s]", PLUGIN_METADATA_CLIENT_TOKEN);
@@ -87,7 +99,7 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
             .useSite(site)
             .build();
 
-        String MengineDataDogPlugin_ServiceName = activity.getMetaDataString(PLUGIN_METADATA_SERVICE_NAME);
+        String MengineDataDogPlugin_ServiceName = application.getMetaDataString(PLUGIN_METADATA_SERVICE_NAME);
 
         this.logInfo("%s: %s"
             , PLUGIN_METADATA_SERVICE_NAME
@@ -102,7 +114,9 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
 
         Credentials credentials = new Credentials(clientToken, envName, variant, rumApplicationId, serviceName);
 
-        Datadog.initialize(activity, credentials, config, TrackingConsent.GRANTED);
+        Context context = application.getApplicationContext();
+
+        Datadog.initialize(context, credentials, config, TrackingConsent.GRANTED);
 
         if (BuildConfig.DEBUG == true) {
             Datadog.setVerbosity(Log.VERBOSE);
@@ -115,13 +129,8 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
             .setLoggerName("MengineDataDog")
             .build();
 
-        MengineApplication application = activity.getMengineApplication();
-
         String installKey = application.getInstallKey();
         loggerDataDog.addAttribute("install_key", installKey);
-
-        String sessionId = application.getSessionId();
-        loggerDataDog.addAttribute("session_id", sessionId);
 
         long sessionIndex = application.getSessionIndex();
         loggerDataDog.addAttribute("session_index", sessionIndex);

@@ -28,6 +28,7 @@ public class MenginePluginExtension {
     }
 
     public void onPluginExtensionFinalize(MengineActivity activity, MenginePlugin plugin) {
+        m_application = null;
         m_activity = null;
         m_plugin = null;
     }

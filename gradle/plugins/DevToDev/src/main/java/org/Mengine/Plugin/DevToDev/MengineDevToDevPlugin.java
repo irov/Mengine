@@ -55,7 +55,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
 
         DTDAnalyticsConfiguration configuration = new DTDAnalyticsConfiguration();
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG == true) {
             configuration.setLogLevel(DTDLogLevel.Debug);
         } else {
             configuration.setLogLevel(DTDLogLevel.Error);

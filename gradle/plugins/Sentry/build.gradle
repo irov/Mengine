@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.sentry:sentry-android-gradle-plugin:3.11.1'
+        classpath 'io.sentry:sentry-android-gradle-plugin:3.12.0'
     }
 }
 
@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    implementation 'io.sentry:sentry-android:6.27.0'
+    implementation 'io.sentry:sentry-android:6.28.0'
 }
 
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

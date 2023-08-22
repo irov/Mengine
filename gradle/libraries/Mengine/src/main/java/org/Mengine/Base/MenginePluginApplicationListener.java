@@ -3,12 +3,16 @@ package org.Mengine.Base;
 import android.content.Context;
 import android.content.res.Configuration;
 
+import androidx.annotation.NonNull;
+
 public interface MenginePluginApplicationListener extends MenginePluginInterface {
     default void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         //Empty
     }
 
-    void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException;
+    default void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+        //Empty
+    }
 
     default void onAppTerminate(MengineApplication application) {
         //Empty
@@ -18,7 +22,7 @@ public interface MenginePluginApplicationListener extends MenginePluginInterface
         //Empty
     }
 
-    default void onAppConfigurationChanged(MengineApplication application, Configuration newConfig) {
+    default void onAppConfigurationChanged(MengineApplication application, @NonNull Configuration newConfig) {
         //Empty
     }
 }

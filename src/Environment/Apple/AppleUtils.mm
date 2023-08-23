@@ -65,7 +65,7 @@ namespace Mengine
                 return false;
             }
             
-            NSString * value = [defaults objectForKey:[[NSString alloc] initWithUTF8String:_key]];
+            NSString * _Nullable value = [defaults objectForKey:@(_key)];
             
             if( value == nil )
             {
@@ -88,7 +88,7 @@ namespace Mengine
                 return false;
             }
             
-            [defaults setObject:[[NSString alloc] initWithUTF8String:_value] forKey:[[NSString alloc] initWithUTF8String:_key]];
+            [defaults setObject:@(_value) forKey:@(_key)];
             
             [defaults synchronize];
             
@@ -104,7 +104,7 @@ namespace Mengine
                 return false;
             }
 
-            [defaults removeObjectForKey:[[NSString alloc] initWithUTF8String:_key]];
+            [defaults removeObjectForKey:@(_key)];
             
             [defaults synchronize];
 

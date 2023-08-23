@@ -201,7 +201,7 @@ namespace Mengine
         UIViewController * rootViewController = Helper::iOSGetRootViewController();
         
         [[MARAd sharedInstance] showRewardVideoAd:rootViewController
-                                         itemName:[[NSString alloc] initWithUTF8String:_itemName.c_str()]
+                                         itemName:@(_itemName.c_str())
                                           itemNum:_itemNum
                                          delegate:m_adRewardedDelegate];
     }

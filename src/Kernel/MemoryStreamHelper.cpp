@@ -124,8 +124,8 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
             void * memory_buffer = memory->newBuffer( _size );
-
             MENGINE_UNUSED( memory_buffer );
+            
             MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer );
 
             return memory;
@@ -139,8 +139,8 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
             void * memory_buffer = memory->newBuffer( _size );
-
             MENGINE_UNUSED( memory_buffer );
+            
             MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer );
 
             return memory;

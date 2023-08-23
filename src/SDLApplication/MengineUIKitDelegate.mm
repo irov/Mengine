@@ -18,7 +18,7 @@
             continue;
         }
         
-        id delegate = [c alloc];
+        id delegate = [[c alloc] init];
 
         [self.m_applicationDelegates addObject:delegate];
     }
@@ -27,7 +27,6 @@
 }
 
 - (void)dealloc {
-    [self.m_applicationDelegates release];
     self.m_applicationDelegates = nil;
     
     [super dealloc];

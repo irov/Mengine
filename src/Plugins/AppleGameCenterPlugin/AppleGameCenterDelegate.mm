@@ -30,13 +30,13 @@
         handler( nil );
     }];
     
-    return true;
+    return YES;
 }
 
 - (BOOL) loadCompletedAchievements:(void(^)(NSError * _Nullable, NSArray * _Nullable))handler {
     if( m_authenticateSuccess == false )
     {
-        return false;
+        return NO;
     }
     
     [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * _Nullable achievements, NSError * _Nullable error) {
@@ -67,26 +67,26 @@
         handler( nil, cmpAch );
     }];
     
-    return true;
+    return YES;
 }
 
 - (BOOL) resetAchievements:(void(^ _Nonnull)(NSError * __nullable error))handler {
     if( m_authenticateSuccess == false )
     {
-        return false;
+        return NO;
     }
     
     [GKAchievement resetAchievementsWithCompletionHandler:^(NSError * _Nullable error) {
         handler( error );
     }];
     
-    return true;
+    return YES;
 }
 
 - (BOOL) reportScore:(NSString*)identifier score:(int64_t)score response:(void(^)(NSError * _Nullable))handler {
 	if( m_authenticateSuccess == false )
     {
-        return false;
+        return NO;
     }
     
 	GKScore * scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier:identifier];
@@ -98,13 +98,13 @@
         handler(error);
 	}];
     
-    return true;
+    return YES;
 }
 
 - (BOOL) reportAchievementIdentifier:(NSString*)identifier percentComplete:(double)percent withBanner:(BOOL)banner response:(void(^)(NSError * _Nullable))handler {
     if( m_authenticateSuccess == false )
     {
-        return false;
+        return NO;
     }
     
     GKAchievement * achievement = [[GKAchievement alloc] initWithIdentifier:identifier];
@@ -115,7 +115,7 @@
         handler(error);
     }];
     
-    return true;
+    return YES;
 }
 
 @end

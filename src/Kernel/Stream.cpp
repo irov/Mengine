@@ -111,7 +111,6 @@ namespace Mengine
             void * compress_memory = compress_buffer->getBuffer();
 
             size_t read_data = _stream->read( compress_memory, compress_size );
-
             MENGINE_UNUSED( read_data );
 
             MENGINE_ASSERTION_FATAL( read_data == (size_t)compress_size, "invalid read data '%zu' need '%zu'"
@@ -571,4 +570,4 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
     }
-}
+}}

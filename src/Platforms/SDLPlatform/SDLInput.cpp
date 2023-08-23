@@ -113,7 +113,6 @@ namespace Mengine
                 int x;
                 int y;
                 Uint32 state = SDL_GetMouseState( &x, &y );
-
                 MENGINE_UNUSED( state );
 
                 mt::vec2f point;
@@ -146,7 +145,6 @@ namespace Mengine
                 int x;
                 int y;
                 Uint32 state = SDL_GetMouseState( &x, &y );
-
                 MENGINE_UNUSED( state );
 
                 mt::vec2f point;
@@ -244,7 +242,6 @@ namespace Mengine
         int x;
         int y;
         Uint32 state = SDL_GetMouseState( &x, &y );
-
         MENGINE_UNUSED( state );
 
         this->calcCursorPosition_( _sdlWindow, x, y, _point );

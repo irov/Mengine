@@ -61,7 +61,7 @@ namespace Mengine
         {
             hash_type hash1 = hashgen_type1()(_key1);
             hash_type hash2 = hashgen_type2()(_key2);
-            hash_type hash = hash1 ^ hash2;
+            hash_type hash = Helper::combineHash( hash1, hash2 );
 
             return hash;
         }
@@ -697,7 +697,7 @@ namespace Mengine
         {
             hash_type hash1 = hashgen_type1()(_key1);
             hash_type hash2 = hashgen_type2()(_key2);
-            hash_type hash = hash1 ^ hash2;
+            hash_type hash = Helper::combineHash( hash1, hash2 );
 
             return hash;
         }

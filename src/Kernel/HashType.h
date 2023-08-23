@@ -4,5 +4,5 @@
 
 namespace Mengine
 {
-    typedef int64_t HashType;
+    typedef uint64_t HashType;
 }

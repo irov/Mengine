@@ -76,14 +76,11 @@ public class MengineApplication extends Application {
 
     private ArrayList<MenginePluginLoggerListener> m_loggerListeners = new ArrayList<>();
     private ArrayList<MenginePluginAnalyticsListener> m_analyticsListeners = new ArrayList<>();
-    private ArrayList<MenginePluginActivityLifecycleListener> m_activityLifecycleListeners = new ArrayList<>();
     private ArrayList<MenginePluginKeyListener> m_keyListeners = new ArrayList<>();
     private ArrayList<MenginePluginApplicationListener> m_applicationListeners = new ArrayList<>();
     private ArrayList<MenginePluginActivityListener> m_activityListeners = new ArrayList<>();
     private ArrayList<MenginePluginExtensionListener> m_extensionListeners = new ArrayList<>();
     private ArrayList<MenginePluginEngineListener> m_engineListeners = new ArrayList<>();
-
-    private MengineActivityLifecycle m_activityLifecycle;
 
     private final Object m_syncEvent = new Object();
     private final Object m_syncState = new Object();
@@ -340,10 +337,6 @@ public class MengineApplication extends Application {
         return m_analyticsListeners;
     }
 
-    public ArrayList<MenginePluginActivityLifecycleListener> getActivityLifecycleListeners() {
-        return m_activityLifecycleListeners;
-    }
-
     public ArrayList<MenginePluginKeyListener> getKeyListeners() {
         return m_keyListeners;
     }
@@ -449,10 +442,6 @@ public class MengineApplication extends Application {
             m_loggerListeners.add(listener);
         }
 
-        if (plugin instanceof MenginePluginActivityLifecycleListener listener) {
-            m_activityLifecycleListeners.add(listener);
-        }
-
         if (plugin instanceof MenginePluginKeyListener listener) {
             m_keyListeners.add(listener);
         }
@@ -518,39 +507,6 @@ public class MengineApplication extends Application {
 
         for (MenginePluginEngineListener l : listeners) {
             l.onMengineCaughtException(this, throwable);
-        }
-    }
-
-    public void onMengineInitializeBaseServices(MengineActivity activity) {
-        m_activityLifecycle = new MengineActivityLifecycle(this, activity);
-
-        this.registerActivityLifecycleCallbacks(m_activityLifecycle);
-    }
-
-    public void onMengineCreateApplication(MengineActivity activity) {
-        MengineLog.logInfo(TAG, "onMengineCreateApplication");
-
-        //Empty
-    }
-
-    public void onMenginePlatformRun(MengineActivity activity) {
-        MengineLog.logInfo(TAG, "onMenginePlatformRun");
-
-        //Empty
-    }
-
-    public void onMenginePlatformReady(MengineActivity activity) {
-        MengineLog.logInfo(TAG, "onMenginePlatformReady");
-
-        //Empty
-    }
-
-    public void onMenginePlatformStop(MengineActivity activity) {
-        MengineLog.logInfo(TAG, "onMenginePlatformStop");
-
-        if (m_activityLifecycle != null) {
-            this.unregisterActivityLifecycleCallbacks(m_activityLifecycle);
-            m_activityLifecycle = null;
         }
     }
 
@@ -790,7 +746,6 @@ public class MengineApplication extends Application {
 
         m_loggerListeners = null;
         m_analyticsListeners = null;
-        m_activityLifecycleListeners = null;
         m_keyListeners = null;
         m_applicationListeners = null;
         m_activityListeners = null;

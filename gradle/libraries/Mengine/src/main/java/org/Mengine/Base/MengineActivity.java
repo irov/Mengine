@@ -307,9 +307,6 @@ public class MengineActivity extends SDLActivity {
         for (MenginePluginEngineListener l : listeners) {
             l.onMengineInitializeBaseServices(this);
         }
-
-        MengineApplication app = this.getMengineApplication();
-        app.onMengineInitializeBaseServices(this);
     }
 
     public void onMengineCreateApplication() {
@@ -326,9 +323,6 @@ public class MengineActivity extends SDLActivity {
         for (MenginePlugin p : plugins) {
             p.onExtensionRun(this);
         }
-
-        MengineApplication app = this.getMengineApplication();
-        app.onMengineCreateApplication(this);
     }
 
     public void onMenginePlatformRun() {
@@ -339,9 +333,6 @@ public class MengineActivity extends SDLActivity {
         for (MenginePluginEngineListener l : listeners) {
             l.onMenginePlatformRun(this);
         }
-
-        MengineApplication app = this.getMengineApplication();
-        app.onMenginePlatformRun(this);
     }
 
     public void onMenginePlatformReady() {
@@ -352,9 +343,6 @@ public class MengineActivity extends SDLActivity {
         for (MenginePluginEngineListener l : listeners) {
             l.onMenginePlatformReady(this);
         }
-
-        MengineApplication app = this.getMengineApplication();
-        app.onMenginePlatformReady(this);
     }
 
     public void onMenginePlatformStop() {
@@ -365,9 +353,6 @@ public class MengineActivity extends SDLActivity {
         for (MenginePluginEngineListener l : listeners) {
             l.onMenginePlatformStop(this);
         }
-
-        MengineApplication app = this.getMengineApplication();
-        app.onMenginePlatformStop(this);
 
         MengineLog.onMenginePlatformStop(this);
 

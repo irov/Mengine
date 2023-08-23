@@ -9,7 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     static constexpr ConstStringHolder::size_type MENGINE_STRINGIZE_UNKNOWN_SIZE = MENGINE_UNKNOWN_SIZE;
-    static constexpr ConstStringHolder::hash_type MENGINE_STRINGIZE_UNKNOWN_HASH = -1;
+    static constexpr ConstStringHolder::hash_type MENGINE_STRINGIZE_UNKNOWN_HASH = ~0ULL;
     //////////////////////////////////////////////////////////////////////////
     class StringizeServiceInterface
         : public ServiceInterface

@@ -10,7 +10,7 @@
 
 #pragma mark - UIKitProxyApplicationDelegateInterface
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {   
     NSString * AppleSentryPlugin_DSN = Mengine::Helper::AppleGetBundlePluginConfigString( @("MengineAppleSentryPlugin"), @("DSN"), nil );
     
     if( AppleSentryPlugin_DSN == nil )
@@ -18,16 +18,13 @@
         return NO;
     }
 
-    BOOL AppleSentryPlugin_Debug = Mengine::Helper::AppleGetBundlePluginConfigBoolean( @("MengineAppleSentryPlugin"), @("Debug"), NO );
-    
     const Mengine::Char * BUILD_VERSION = Mengine::Helper::getBuildVersion();
     
     [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
         options.dsn = AppleSentryPlugin_DSN;
-        options.debug = AppleSentryPlugin_Debug; // Enabled debug when first installing is always helpful
+        options.debug = MENGINE_DEBUG_VALUE(YES, NO); // Enabled debug when first installing is always helpful
+        options.environment = MENGINE_BUILD_PUBLISH_VALUE(@"production", @"debug");
         options.releaseName = @(BUILD_VERSION);
-        options.attachStacktrace = true;
-        options.tracesSampleRate = @(1.0);
     }];
     
     return YES;

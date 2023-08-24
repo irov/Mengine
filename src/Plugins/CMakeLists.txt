@@ -250,6 +250,10 @@ if(MENGINE_PLUGIN_GAMEANALYTICS)
     ADD_SUBDIRECTORY(GameAnalyticsPlugin)
 endif()
 
+if(MENGINE_PLUGIN_APPLE_SENTRY)
+    ADD_SUBDIRECTORY(AppleSentryPlugin)
+endif()
+
 if(MENGINE_PLUGIN_APPLE_GAMECENTER)
     ADD_SUBDIRECTORY(AppleGameCenterPlugin)
 endif()
@@ -320,10 +324,6 @@ endif()
 
 if(MENGINE_PLUGIN_APPLE_ONESIGNAL)
     ADD_SUBDIRECTORY(AppleOneSignalPlugin)
-endif()
-
-if(MENGINE_PLUGIN_APPLE_SENTRY)
-    ADD_SUBDIRECTORY(AppleSentryPlugin)
 endif()
 
 MENGINE_SUBFOLDER()

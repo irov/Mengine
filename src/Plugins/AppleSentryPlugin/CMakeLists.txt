@@ -12,9 +12,6 @@ src
     
     AppleSentryService.h
     AppleSentryService.mm
-        
-    AppleSentryHelper.h
-    AppleSentryHelper.mm
 )
 
 if(MENGINE_TARGET_IOS)
@@ -31,6 +28,7 @@ elseif(MENGINE_TARGET_MACOS)
     )
 endif()
 
+
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_APPLE_SENTRY)
 
 if(MENGINE_TARGET_IOS)
@@ -44,4 +42,4 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 
-ADD_MENGINE_COCOAPOD(Sentry "https://github.com/getsentry/sentry-cocoa.git" "8.9.1")
+ADD_MENGINE_COCOAPOD(Sentry "https://github.com/getsentry/sentry-cocoa.git" "8.10.0")

@@ -1,10 +1,11 @@
 #include "AppleSentryLoggerCapture.h"
-#include "AppleSentryHelper.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/LoggerHelper.h"
 
 #include "Config/StdString.h"
+
+#import <Sentry/Sentry.h>
 
 namespace Mengine
 {
@@ -43,7 +44,7 @@ namespace Mengine
 
         MENGINE_STRNCAT( buffer, data_str, data_size );
         
-        Helper::appleSentryMessageCapture( buffer );
+        [SentrySDK captureMessage:@(buffer)];
     }
     //////////////////////////////////////////////////////////////////////////
 }

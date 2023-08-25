@@ -1,6 +1,6 @@
 #include "ApplePersistentSystem.h"
 
-#include "Environment/Apple/AppleUtils.h"
+#include "Environment/Apple/AppleUserDefaults.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PersistentSystem, Mengine::ApplePersistentSystem );
@@ -42,7 +42,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ApplePersistentSystem::removePersistentArguments()
     {
-        Helper::AppleRemoveUserDefaultsString( "mengine.persistent.arguments" );
+        Helper::AppleRemoveUserDefaults( "mengine.persistent.arguments" );
     }
     //////////////////////////////////////////////////////////////////////////
 }

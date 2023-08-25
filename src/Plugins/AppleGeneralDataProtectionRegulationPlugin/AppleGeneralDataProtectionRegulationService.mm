@@ -1,11 +1,8 @@
 #include "AppleGeneralDataProtectionRegulationService.h"
 
-#include "Environment/Apple/AppleUtils.h"
+#include "Environment/Apple/AppleUserDefaults.h"
 
 #include "Kernel/Logger.h"
-
-#import <Foundation/Foundation.h>
-#import <StoreKit/StoreKit.h>
 
 ////////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleGeneralDataProtectionRegulationService, Mengine::AppleGeneralDataProtectionRegulationService );
@@ -24,7 +21,9 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     bool AppleGeneralDataProtectionRegulationService::_initializeService()
     {
-        //Empty
+        bool passGDPR = Helper::AppleGetUserDefaultsBoolean( "mengine.gdpr.pass", false );
+        
+        m_passGDPR = passGDPR;
         
         return true;
     }
@@ -39,6 +38,8 @@ namespace Mengine
         LOGGER_MESSAGE( "set GDPR pass [%d]"
             , _passGDPR
         );
+        
+        Helper::AppleSetUserDefaultsBoolean( "mengine.gdpr.pass", _passGDPR );
 
         m_passGDPR = _passGDPR;
     }

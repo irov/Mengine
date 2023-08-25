@@ -4,7 +4,7 @@
 
 #include "Kernel/BuildMode.h"
 
-#import <Sentry/Sentry.h>
+#import "Sentry/Sentry.h"
 
 @implementation AppleSentryApplicationDelegate
 

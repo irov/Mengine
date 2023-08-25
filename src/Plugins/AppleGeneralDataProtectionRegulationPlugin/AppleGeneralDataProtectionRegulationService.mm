@@ -14,6 +14,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleGeneralDataProtectionRegulationService::AppleGeneralDataProtectionRegulationService()
+        : m_passGDPR(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -38,21 +39,13 @@ namespace Mengine
         LOGGER_MESSAGE( "set GDPR pass [%d]"
             , _passGDPR
         );
-        
-        if (@available(iOS 14.0, *)) {
-            UIWindowScene * foregroundScene = nil;
-            for( UIWindowScene * scene in UIApplication.sharedApplication.connectedScenes ) {
-                if( scene.activationState == UISceneActivationStateForegroundActive ) {
-                    foregroundScene = scene;
-                }
-            }
-            
-            if( foregroundScene != nil ) {
-                [SKStoreReviewController requestReviewInScene:foregroundScene];
-            }
-        } else if (@available(iOS 10.3, *)) {
-            [SKStoreReviewController requestReview];
-        }
+
+        m_passGDPR = _passGDPR;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AppleGeneralDataProtectionRegulationService::isGDPRPass() const
+    {
+        return m_passGDPR;
     }
     //////////////////////////////////////////////////////////////////////////
 }

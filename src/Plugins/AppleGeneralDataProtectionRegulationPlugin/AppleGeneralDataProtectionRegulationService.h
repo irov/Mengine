@@ -20,5 +20,8 @@ namespace Mengine
     public:
         void setGDPRPass( bool _passGDPR ) override;
         bool isGDPRPass() const override;
+        
+    protected:
+        bool m_passGDPR;
     };
 }

@@ -32,14 +32,14 @@ public class MengineGeneralDataProtectionRegulationPlugin extends MenginePlugin 
         this.sendEvent(MengineEvent.EVENT_GDPR_PASS, m_passGDPR);
     }
 
-    public void setGDPRPass() {
+    public void setGDPRPass(boolean passGDPR) {
         SharedPreferences settings = this.getPrivateSharedPreferences();
 
         SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean("gdpr_pass", true);
+        editor.putBoolean("gdpr_pass", passGDPR);
         editor.commit();
 
-        m_passGDPR = true;
+        m_passGDPR = passGDPR;
 
         this.sendEvent(MengineEvent.EVENT_GDPR_PASS, true);
     }

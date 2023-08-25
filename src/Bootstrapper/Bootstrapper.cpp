@@ -329,6 +329,10 @@ PLUGIN_EXPORT( Optick );
 PLUGIN_EXPORT( GameAnalytics );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_GENERALDATAPROTECTIONREGULATION_STATIC
+PLUGIN_EXPORT( AppleGeneralDataProtectionRegulation );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_USERNOTIFICATIONCENTER_STATIC
 PLUGIN_EXPORT( AppleUserNotificationCenter );
 #endif
@@ -1262,6 +1266,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC
         MENGINE_ADD_PLUGIN( GameAnalytics, "plugin GameAnalytics...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_APPLE_GENERALDATAPROTECTIONREGULATION_STATIC
+        MENGINE_ADD_PLUGIN( AppleGeneralDataProtectionRegulation, "plugin AppleGeneralDataProtectionRegulation...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_USERNOTIFICATIONCENTER_STATIC

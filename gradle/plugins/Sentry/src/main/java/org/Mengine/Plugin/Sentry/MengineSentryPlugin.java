@@ -25,6 +25,24 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
     public static final String PLUGIN_METADATA_DSN = "mengine.sentry.dsn";
     public static final String PLUGIN_METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER = "mengine.sentry.enable_uncaught_exception_handler";
 
+    public static boolean m_passGDPR = false;
+
+    @Override
+    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
+        if (event == MengineEvent.EVENT_GDPR_PASS) {
+            boolean passGDPR = (boolean)args[0];
+
+            m_passGDPR = passGDPR;
+        } else if (event == MengineEvent.EVENT_SESSION_ID) {
+            String sessionId = (String)args[0];
+
+            User user = new User();
+            user.setId(sessionId);
+
+            Sentry.setUser(user);
+        }
+    }
+
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         String MengineSentryPlugin_DSN = application.getMetaDataString(PLUGIN_METADATA_DSN);
@@ -52,14 +70,10 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
         SentryAndroid.init(context, options -> {
             options.setDsn(MengineSentryPlugin_DSN);
 
-            if (BuildConfig.DEBUG == true) {
-                options.setEnvironment("debug");
+            if (application.isBuildPublish() == true) {
+                options.setEnvironment("production");
             } else {
-                if (application.isBuildPublish() == false) {
-                    options.setEnvironment("dev");
-                } else {
-                    options.setEnvironment("publish");
-                }
+                options.setEnvironment("debug");
             }
 
             String versionName = application.getVersionName();
@@ -70,9 +84,24 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
 
             options.setAttachStacktrace(false);
             options.setAttachThreads(false);
-            options.setEnableAutoSessionTracking(false);
 
             options.setEnableUncaughtExceptionHandler(MengineSentryPlugin_EnableUncaughtExceptionHandler);
+
+            options.setBeforeSend((event, hint) -> {
+                if (m_passGDPR == false) {
+                    return null;
+                }
+
+                return event;
+            });
+
+            options.setBeforeSendTransaction((transaction, hint) -> {
+                if (m_passGDPR == false) {
+                    return null;
+                }
+
+                return transaction;
+            });
         });
 
         Sentry.configureScope(scope -> {
@@ -93,18 +122,6 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
     @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         //Empty
-    }
-
-    @Override
-    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (event == MengineEvent.EVENT_SESSION_ID) {
-            String sessionId = (String)args[0];
-
-            User user = new User();
-            user.setId(sessionId);
-
-            Sentry.setUser(user);
-        }
     }
 
     @Override

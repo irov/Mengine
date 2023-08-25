@@ -224,7 +224,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->playEmitter( m_soundIdentity ) == false )
         {
-            LOGGER_ERROR( "surface sound '%s' invalid play [%u] resource '%s'"
+            LOGGER_WARNING( "surface sound '%s' invalid play [%u] resource '%s'"
                 , this->getName().c_str()
                 , m_soundIdentity->getId()
                 , m_resourceSound->getName().c_str()

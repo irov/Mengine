@@ -13,25 +13,24 @@
 - (BOOL)application {
     NSString * AppleSentryPlugin_DSN = Mengine::Helper::AppleGetBundlePluginConfigString( @("MengineAppleSentryPlugin"), @("DSN"), nil );
     
-    if( AppleSentryPlugin_DSN == nil )
-    {
-        return YES;
+    if( AppleSentryPlugin_DSN == nil ) {
+        return NO;
     }
 
-    BOOL AppleSentryPlugin_Debug = Mengine::Helper::AppleGetBundlePluginConfigBoolean( @("MengineAppleSentryPlugin"), @("Debug"), NO );
+    BOOL AppleSentryPlugin_Debug = MENGINE_DEBUG_VALUE(YES, NO);
     
     const Mengine::Char * BUILD_VERSION = Mengine::Helper::getBuildVersion();
     const Mengine::Char * BUILD_NUMBER_STRING = Mengine::Helper::getBuildNumberString();
     
 #if defined(MENGINE_BUILD_PUBLISH_VALUE)
-    const Mengine::Char * ENVIRONMENT = "publish";
+    const Mengine::Char * ENVIRONMENT = "production";
 #else
-    const Mengine::Char * ENVIRONMENT = "dev";
+    const Mengine::Char * ENVIRONMENT = "debug";
 #endif
     
     [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
         options.dsn = AppleSentryPlugin_DSN;
-        options.debug = AppleSentryPlugin_Debug; // Enabled debug when first installing is always helpful
+        options.debug = AppleSentryPlugin_Debug;
         options.releaseName = @(BUILD_VERSION);
         options.dist = @(BUILD_NUMBER_STRING);
         options.environment = @(ENVIRONMENT);

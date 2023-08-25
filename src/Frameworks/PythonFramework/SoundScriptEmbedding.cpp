@@ -275,8 +275,9 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )
                 {
-                    LOGGER_ERROR( "invalid play '%s'"
+                    LOGGER_WARNING( "invalid sound play resource '%s' file '%s'"
                         , _resourceName.c_str()
+                        , Helper::getResourceFilePathByName( _resourceName ).c_str()
                     );
 
                     return nullptr;
@@ -301,8 +302,9 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->playEmitter( soundIdentity ) == false )
                 {
-                    LOGGER_ERROR( "invalid play '%s'"
+                    LOGGER_WARNING( "invalid voice play resource '%s' file '%s' play"
                         , _resourceName.c_str()
+                        , Helper::getResourceFilePathByName( _resourceName ).c_str()
                     );
 
                     return nullptr;
@@ -356,8 +358,9 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->playEmitter( sourceEmitter ) == false )
                 {
-                    LOGGER_ERROR( "resource sound '%s' invalid play '%f'"
+                    LOGGER_WARNING( "invalid voice play resource '%s' file '%s' from position '%f'"
                         , _resourceName.c_str()
+                        , Helper::getResourceFilePathByName( _resourceName ).c_str()
                         , _position
                     );
 

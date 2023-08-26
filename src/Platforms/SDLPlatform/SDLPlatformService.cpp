@@ -248,7 +248,7 @@ namespace Mengine
         DWORD unicode_userNameLen = UNLEN + 1;
         if( ::GetUserName( unicode_userName, &unicode_userNameLen ) == FALSE )
         {
-            LOGGER_ERROR( "invalid GetUserName %s"
+            LOGGER_ERROR( "invalid GetUserName %ls"
                 , Helper::Win32GetLastErrorMessage()
             );
 
@@ -905,7 +905,7 @@ namespace Mengine
         DWORD UserNameLen = UNLEN + 1;
         if( ::GetUserName( UserNameBuffer, &UserNameLen ) == FALSE )
         {
-            LOGGER_ASSERTION( "invalid GetUserName %s"
+            LOGGER_ASSERTION( "invalid GetUserName %ls"
                 , Helper::Win32GetLastErrorMessage()
             );
         }
@@ -914,7 +914,7 @@ namespace Mengine
         DWORD ComputerNameLen = MAX_COMPUTERNAME_LENGTH + 1;
         if( ::GetComputerName( ComputerNameBuffer, &ComputerNameLen ) == FALSE )
         {
-            LOGGER_ASSERTION( "invalid GetComputerName %s"
+            LOGGER_ASSERTION( "invalid GetComputerName %ls"
                 , Helper::Win32GetLastErrorMessage()
             );
         }
@@ -2969,6 +2969,22 @@ namespace Mengine
         Display * dispaly = wmInfo.info.x11.display;
 
         return dispaly;
+    }
+    //////////////////////////////////////////////////////////////////////////
+#endif
+    //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_IOS)
+    //////////////////////////////////////////////////////////////////////////
+    UIWindow * SDLPlatformService::getUIWindow() const
+    {
+        SDL_SysWMinfo wmInfo;
+        SDL_VERSION( &wmInfo.version );
+
+        SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
+
+        UIWindow * uiwindow = info.info.uikit.window;
+
+        return uiwindow;
     }
     //////////////////////////////////////////////////////////////////////////
 #endif

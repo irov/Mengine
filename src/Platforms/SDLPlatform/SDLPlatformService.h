@@ -197,6 +197,11 @@ namespace Mengine
         Display * getWindowDisplay() const override;
 #endif
 
+#if defined(MENGINE_PLATFORM_IOS)
+    public:
+        UIWindow * getUIWindow() const override;
+#endif
+
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     public:
         SDL_GLContext getGLContext() const override;

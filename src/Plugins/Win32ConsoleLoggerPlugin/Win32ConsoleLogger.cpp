@@ -102,7 +102,7 @@ namespace Mengine
 
         if( ::SetConsoleCtrlHandler( &Detail::ConsoleHandlerRoutine, TRUE ) == FALSE )
         {
-            LOGGER_ERROR( "invalid set console ctrl handler: %s"
+            LOGGER_ERROR( "invalid set console ctrl handler: %ls"
                 , Helper::Win32GetLastErrorMessage()
             );
         }

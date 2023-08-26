@@ -571,7 +571,7 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE );
 
-        if( HAS_OPTION("crash") == true )
+        if( HAS_OPTION( "crash" ) == true )
         {
             Helper::crash( "Bootstrapper test crash" );
         }
@@ -842,8 +842,8 @@ namespace Mengine
         MENGINE_ADD_SERVICE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );        
-        MENGINE_ADD_SERVICE( PersistentSystem, MENGINE_DOCUMENT_FACTORABLE );        
+        MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( PersistentSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
@@ -972,7 +972,7 @@ namespace Mengine
 
         BOOTSTRAPPER_SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FACTORABLE );
-        BOOTSTRAPPER_SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FACTORABLE );        
+        BOOTSTRAPPER_SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FACTORABLE );
 
 #ifdef MENGINE_PLUGIN_ZIP_STATIC
         MENGINE_ADD_PLUGIN( Zip, "plugin Zip...", MENGINE_DOCUMENT_FACTORABLE );
@@ -1896,7 +1896,7 @@ namespace Mengine
 
         this->stopFrameworks_();
         this->finalizeFrameworks_();
-        
+
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP_THREADS );

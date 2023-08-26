@@ -619,7 +619,6 @@ if(MENGINE_DEPENDENCE_SDL)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/src/dynapi/SDL_dynapi_procs.h ${THIRDPARTY_DIR}/SDL/src/dynapi/SDL_dynapi_procs.h COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/src/dynapi/SDL_dynapi_overrides.h ${THIRDPARTY_DIR}/SDL/src/dynapi/SDL_dynapi_overrides.h COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/src/video/android/SDL_androidvideo.c ${THIRDPARTY_DIR}/SDL/src/video/android/SDL_androidvideo.c COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/src/video/uikit/SDL_uikitappdelegate.m ${THIRDPARTY_DIR}/SDL/src/video/uikit/SDL_uikitappdelegate.m COPYONLY)
 
     set(SDL_CMAKE_DEBUG_POSTFIX "d" CACHE STRING "Name suffix for debug builds" FORCE)
     

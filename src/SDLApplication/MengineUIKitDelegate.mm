@@ -2,7 +2,13 @@
 
 #import "MengineAppleApplicationDelegates.h"
 
-#import "Environment/iOS/UIKitProxyApplicationDelegateInterface.h"
+#include "Interface/PlatformServiceInterface.h"
+#include "Interface/SDLPlatformServiceExtensionInterface.h"
+
+#include "Environment/iOS/UIKitProxyApplicationDelegateInterface.h"
+#include "Environment/SDL/SDLIncluder.h"
+
+#include "SDLApplication.h"
 
 @implementation MengineUIKitDelegate
 
@@ -40,10 +46,10 @@
             return NO;
         }
     }
+
+    SDL_SetMainReady();
     
-    if ([super application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
-        return NO;
-    }
+    [self performSelector:@selector(postFinishLaunch) withObject:nil afterDelay:0.0];
     
     return YES;
 }
@@ -117,7 +123,37 @@
         }
     }
     
-    return [super application:application openURL:url options:options];
+    return NO;
+}
+
+- (UIWindow *)window {
+    return nil;
+}
+
+- (void)setWindow:(UIWindow *)window {
+    /* Do nothing. */
+}
+
+- (void)postFinishLaunch {
+    /* run the user's application, passing argc and argv */
+    SDL_iPhoneSetEventPump(SDL_TRUE);
+    
+    Mengine::SDLApplication application;
+
+    bool initialize = application.initialize( 0, nullptr );
+
+    if( initialize == true )
+    {
+        application.loop();
+    }
+    else
+    {
+        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine initialize", "Mengine invalid initialization", NULL );
+    }
+
+    application.finalize();
+    
+    SDL_iPhoneSetEventPump(SDL_FALSE);
 }
 
 @end

@@ -2,11 +2,11 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol UIKitProxyApplicationDelegateInterface
+@protocol UIKitProxyApplicationDelegateInterface <NSObject>
 
 #pragma mark - UIApplicationDelegate Protocol
 
-- (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
 
 @optional
 

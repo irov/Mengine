@@ -37,7 +37,7 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_IOS)
     public:
-        UIWindow * getUIWindow() const override;
+        virtual UIWindow * getUIWindow() const = 0;
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)

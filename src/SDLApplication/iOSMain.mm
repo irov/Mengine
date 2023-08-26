@@ -1,25 +1,9 @@
-#include "Environment/SDL/SDLIncluder.h"
+#import "MengineUIKitDelegate.h"
 
-#include "SDLApplication.h"
+#import <UIKit/UIKit.h>
 
-int main( int argc, char * argv[] )
-{
-    Mengine::SDLApplication application;
-
-    bool initialize = application.initialize( argc, argv );
-
-    if( initialize == true )
-    {
-        application.loop();
+int main( int argc, char * argv[] ) {
+    @autoreleasepool {
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([MengineUIKitDelegate class]));
     }
-    else
-    {
-        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine initialize", "Mengine invalid initialization", NULL );
-    }
-
-    application.finalize();
-
-    ::exit( EXIT_SUCCESS );
-
-    return EXIT_SUCCESS;
 }

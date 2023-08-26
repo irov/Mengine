@@ -34,6 +34,16 @@
         options.releaseName = @(BUILD_VERSION);
         options.dist = @(BUILD_NUMBER_STRING);
         options.environment = @(ENVIRONMENT);
+        
+        options.beforeSend = ^SentryEvent * _Nullable(SentryEvent * _Nonnull event) {
+            
+            return event;
+        };
+        
+        options.beforeBreadcrumb = ^SentryBreadcrumb * _Nullable(SentryBreadcrumb * _Nonnull breadcrumb) {
+            
+            return breadcrumb;
+        };
     }];
     
     return YES;

@@ -2982,7 +2982,7 @@ namespace Mengine
 
         SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
 
-        UIWindow * uiwindow = info.info.uikit.window;
+        UIWindow * uiwindow = wmInfo.info.uikit.window;
 
         return uiwindow;
     }

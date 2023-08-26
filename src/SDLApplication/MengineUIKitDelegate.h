@@ -1,6 +1,6 @@
-#import "../src/video/uikit/SDL_uikitappdelegate.h"
+#import <UIKit/UIKit.h>
 
-@interface MengineUIKitDelegate : SDLUIKitDelegate
+@interface MengineUIKitDelegate : NSObject<UIApplicationDelegate>
 
 @property (nonatomic, strong) NSMutableArray<id> * m_applicationDelegates;
 

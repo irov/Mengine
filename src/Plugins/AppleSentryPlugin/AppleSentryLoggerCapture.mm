@@ -5,7 +5,7 @@
 
 #include "Config/StdString.h"
 
-#import <Sentry/Sentry.h>
+#import "Sentry/Sentry.h"
 
 namespace Mengine
 {

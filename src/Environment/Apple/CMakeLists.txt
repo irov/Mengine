@@ -10,6 +10,9 @@ src
     AppleErrorHelper.mm
     AppleString.h
     AppleString.mm
+
+    AppleUserDefaults.h
+    AppleUserDefaults.mm
     
     AppleAnalytics.h
     AppleAnalytics.mm

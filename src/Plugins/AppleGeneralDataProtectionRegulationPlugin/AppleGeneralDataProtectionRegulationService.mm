@@ -1,11 +1,8 @@
 #include "AppleGeneralDataProtectionRegulationService.h"
 
-#include "Environment/Apple/AppleUtils.h"
+#include "Environment/Apple/AppleUserDefaults.h"
 
 #include "Kernel/Logger.h"
-
-#import <Foundation/Foundation.h>
-#import <StoreKit/StoreKit.h>
 
 ////////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleGeneralDataProtectionRegulationService, Mengine::AppleGeneralDataProtectionRegulationService );
@@ -14,6 +11,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleGeneralDataProtectionRegulationService::AppleGeneralDataProtectionRegulationService()
+        : m_passGDPR(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -23,7 +21,9 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     bool AppleGeneralDataProtectionRegulationService::_initializeService()
     {
-        //Empty
+        bool passGDPR = Helper::AppleGetUserDefaultsBoolean( "mengine.gdpr.pass", false );
+        
+        m_passGDPR = passGDPR;
         
         return true;
     }
@@ -39,20 +39,14 @@ namespace Mengine
             , _passGDPR
         );
         
-        if (@available(iOS 14.0, *)) {
-            UIWindowScene * foregroundScene = nil;
-            for( UIWindowScene * scene in UIApplication.sharedApplication.connectedScenes ) {
-                if( scene.activationState == UISceneActivationStateForegroundActive ) {
-                    foregroundScene = scene;
-                }
-            }
-            
-            if( foregroundScene != nil ) {
-                [SKStoreReviewController requestReviewInScene:foregroundScene];
-            }
-        } else if (@available(iOS 10.3, *)) {
-            [SKStoreReviewController requestReview];
-        }
+        Helper::AppleSetUserDefaultsBoolean( "mengine.gdpr.pass", _passGDPR );
+
+        m_passGDPR = _passGDPR;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AppleGeneralDataProtectionRegulationService::isGDPRPass() const
+    {
+        return m_passGDPR;
     }
     //////////////////////////////////////////////////////////////////////////
 }

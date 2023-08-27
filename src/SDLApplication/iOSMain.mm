@@ -4,6 +4,8 @@
 
 int main( int argc, char * argv[] ) {
     @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([MengineUIKitDelegate class]));
+        int result = UIApplicationMain(argc, argv, nil, NSStringFromClass([MengineUIKitDelegate class]));
+        
+        return result;
     }
 }

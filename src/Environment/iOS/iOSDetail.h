@@ -2,7 +2,7 @@
 
 #include "Config/Config.h"
 
-#import "Environment/iOS/UIProxyApplicationDelegateInterface.h"
+#import "Environment/iOS/UIPluginApplicationDelegateInterface.h"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>

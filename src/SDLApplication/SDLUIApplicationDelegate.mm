@@ -39,7 +39,7 @@
 
 #pragma mark - UIMainApplicationDelegateInterface Protocol
 
-- (NSArray<UIProxyApplicationDelegateInterface> *)getPluginDelegates {
+- (NSArray<UIPluginApplicationDelegateInterface> *)getPluginDelegates {
     return self.m_pluginDelegates;
 }
 

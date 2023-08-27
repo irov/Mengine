@@ -4,7 +4,7 @@
 
 @implementation AppleStoreInAppPurchaseApplicationDelegate
 
-#pragma mark - UIProxyApplicationDelegateInterface
+#pragma mark - UIPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     AppleStoreInAppPurchasePaymentTransactionObserver * paymentTransactionObserver = [AppleStoreInAppPurchasePaymentTransactionObserver sharedInstance];

@@ -4,6 +4,6 @@
 
 @interface SDLUIApplicationDelegate : NSObject<UIApplicationDelegate, UIMainApplicationDelegateInterface>
 
-@property (nonatomic, strong) NSMutableArray<UIProxyApplicationDelegateInterface> * m_pluginDelegates;
+@property (nonatomic, strong) NSMutableArray<UIPluginApplicationDelegateInterface> * m_pluginDelegates;
 
 @end

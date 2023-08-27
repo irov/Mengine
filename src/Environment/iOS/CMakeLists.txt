@@ -9,7 +9,7 @@ src
     iOSDetail.mm
     
     UIMainApplicationDelegateInterface.h
-    UIProxyApplicationDelegateInterface.h
+    UIPluginApplicationDelegateInterface.h
 )
 
 ADD_MENGINE_LIBRARY(Environment)

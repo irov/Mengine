@@ -9,7 +9,7 @@
 
 @implementation AppleFirebaseRemoteConfigApplicationDelegate
 
-#pragma mark - UIProxyApplicationDelegateInterface
+#pragma mark - UIPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     FIRRemoteConfigSettings *remoteConfigSettings = [[FIRRemoteConfigSettings alloc] init];

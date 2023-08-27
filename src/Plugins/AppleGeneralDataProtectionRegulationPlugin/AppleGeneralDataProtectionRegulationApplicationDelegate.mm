@@ -17,7 +17,7 @@
     return passGDPR;
 }
 
-#pragma mark - UIProxyApplicationDelegateInterface
+#pragma mark - UIPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     bool passGDPR = Mengine::Helper::AppleGetUserDefaultsBoolean( "mengine.gdpr.pass", false );

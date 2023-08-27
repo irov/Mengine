@@ -8,7 +8,7 @@
 
 @implementation AppleSentryApplicationDelegate
 
-#pragma mark - UIProxyApplicationDelegateInterface
+#pragma mark - UIPluginApplicationDelegateInterface
 
 - (instancetype _Nonnull)init {
     self = [super init];

@@ -1,7 +1,7 @@
-#import "Environment/iOS/UIProxyApplicationDelegateInterface.h"
+#import "Environment/iOS/UIPluginApplicationDelegateInterface.h"
 
 #import <Adjust/Adjust.h>
 
-@interface AppleAdjustApplicationDelegate : NSObject<UIProxyApplicationDelegateInterface, AdjustDelegate>
+@interface AppleAdjustApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface, AdjustDelegate>
 
 @end

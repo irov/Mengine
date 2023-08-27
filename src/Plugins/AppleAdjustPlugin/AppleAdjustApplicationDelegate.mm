@@ -4,7 +4,7 @@
 
 @implementation AppleAdjustApplicationDelegate
 
-#pragma mark - UIProxyApplicationDelegateInterface
+#pragma mark - UIPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if (Mengine::Helper::iOSHasBundlePluginConfig(@"MengineAppleAdjustPlugin") == NO) {

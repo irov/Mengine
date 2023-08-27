@@ -29,9 +29,9 @@ namespace Mengine
         {
             NSObject<UIMainApplicationDelegateInterface> * delegate = (NSObject<UIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
 
-            NSArray<UIProxyApplicationDelegateInterface> * pluginDelegates = [delegate getPluginDelegates];
+            NSArray<UIPluginApplicationDelegateInterface> * pluginDelegates = [delegate getPluginDelegates];
 
-            for( NSObject<UIProxyApplicationDelegateInterface> * delegate : pluginDelegates ) {
+            for( NSObject<UIPluginApplicationDelegateInterface> * delegate : pluginDelegates ) {
                 if( [delegate isMemberOfClass:delegateClass] == YES ) {
                     return delegate;
                 }

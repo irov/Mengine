@@ -1,6 +1,6 @@
-#import "Environment/iOS/UIProxyApplicationDelegateInterface.h"
+#import "Environment/iOS/UIPluginApplicationDelegateInterface.h"
 
-@interface AppleSentryApplicationDelegate : NSObject<UIProxyApplicationDelegateInterface>
+@interface AppleSentryApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface>
 
 @property (assign) BOOL m_sendAllow;
 

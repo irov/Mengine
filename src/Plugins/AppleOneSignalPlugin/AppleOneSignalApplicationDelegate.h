@@ -1,5 +1,5 @@
-#import "Environment/iOS/UIProxyApplicationDelegateInterface.h"
+#import "Environment/iOS/UIPluginApplicationDelegateInterface.h"
 
-@interface AppleOneSignalApplicationDelegate : NSObject<UIProxyApplicationDelegateInterface>
+@interface AppleOneSignalApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface>
 
 @end

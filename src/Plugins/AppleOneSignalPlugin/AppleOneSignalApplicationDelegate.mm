@@ -6,7 +6,7 @@
 
 @implementation AppleOneSignalApplicationDelegate
 
-#pragma mark - UIProxyApplicationDelegateInterface
+#pragma mark - UIPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if (Mengine::Helper::iOSHasBundlePluginConfig(@"MengineAppleOneSignalPlugin") == NO) {

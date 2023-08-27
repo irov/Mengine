@@ -2,7 +2,7 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol UIProxyApplicationDelegateInterface <NSObject>
+@protocol UIPluginApplicationDelegateInterface <NSObject>
 
 #pragma mark - UIApplicationDelegate Protocol
 

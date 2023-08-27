@@ -1,6 +1,6 @@
-#import "Environment/iOS/UIProxyApplicationDelegateInterface.h"
+#import "Environment/iOS/UIPluginApplicationDelegateInterface.h"
 
-@interface AppleGeneralDataProtectionRegulationApplicationDelegate : NSObject<UIProxyApplicationDelegateInterface>
+@interface AppleGeneralDataProtectionRegulationApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface>
 
 - (void) setGDPRPass:(BOOL) passGDPR;
 - (BOOL) isGDPRPass;

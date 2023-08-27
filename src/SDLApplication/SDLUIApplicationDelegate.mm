@@ -37,6 +37,35 @@
     [super dealloc];
 }
 
+#pragma mark - UIMainApplicationDelegateInterface Protocol
+
+- (NSArray<UIProxyApplicationDelegateInterface> *)getPluginDelegates {
+    return self.m_pluginDelegates;
+}
+
+- (void)notify:(NSString *)name args:(id)firstArg, ... NS_REQUIRES_NIL_TERMINATION {
+    va_list args;
+    va_start(args, firstArg);
+    
+    NSMutableArray * send_args = [[NSMutableArray alloc] init];
+
+    for( NSString *arg = firstArg; arg != nil; arg = va_arg(args, NSString*) ) {
+        [send_args addObject:firstArg];
+    }
+
+    va_end(args);
+    
+    [self notify:name arrayArgs:send_args];
+}
+
+- (void)notify:(NSString *)name arrayArgs:(NSArray<id> *)args {
+    for (id delegate in self.m_pluginDelegates) {
+        if ([delegate respondsToSelector:@selector(event: args:)] == YES) {
+            [delegate event:name args:args];
+        }
+    }
+}
+
 #pragma mark - UIApplicationDelegate Protocol
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions API_AVAILABLE(ios(3.0)) {
@@ -46,8 +75,6 @@
         }
     }
 
-    SDL_SetMainReady();
-    
     [self performSelector:@selector(postFinishLaunch) withObject:nil afterDelay:0.0];
     
     return YES;
@@ -62,7 +89,6 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler API_AVAILABLE(ios(7.0)) {
-
     for (id delegate in self.m_pluginDelegates) {
         if ([delegate respondsToSelector:@selector(application: didReceiveRemoteNotification: fetchCompletionHandler:)] == YES) {
             [delegate application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
@@ -134,19 +160,17 @@
 }
 
 - (void)postFinishLaunch {
-    /* run the user's application, passing argc and argv */
+    SDL_SetMainReady();
+    
     SDL_iPhoneSetEventPump(SDL_TRUE);
     
     Mengine::SDLApplication application;
 
     bool initialize = application.initialize( 0, nullptr );
 
-    if( initialize == true )
-    {
+    if( initialize == true ) {
         application.loop();
-    }
-    else
-    {
+    } else {
         SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine initialize", "Mengine invalid initialization", NULL );
     }
 

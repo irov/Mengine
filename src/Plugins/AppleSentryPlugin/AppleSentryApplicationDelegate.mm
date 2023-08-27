@@ -10,6 +10,26 @@
 
 #pragma mark - UIProxyApplicationDelegateInterface
 
+- (instancetype _Nonnull)init {
+    self = [super init];
+    
+    self.m_sendAllow = NO;
+    
+    return self;
+}
+
+- (void)event:(NSString *)name args:(NSArray *)args {
+    if( [name isEqualToString:@"NOTIFICATION_GDPR_PASS"] == true ) {
+        BOOL passGDPR = [args[0] boolValue];
+        
+        if( passGDPR == YES ) {
+            self.m_sendAllow = YES;
+        } else {
+            self.m_sendAllow = NO;
+        }
+    }
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     NSString * AppleSentryPlugin_DSN = Mengine::Helper::AppleGetBundlePluginConfigString( @("MengineAppleSentryPlugin"), @("DSN"), nil );
     
@@ -36,11 +56,17 @@
         options.environment = @(ENVIRONMENT);
         
         options.beforeSend = ^SentryEvent * _Nullable(SentryEvent * _Nonnull event) {
+            if( self.m_sendAllow == NO ) {
+                return nil;
+            }
             
             return event;
         };
         
         options.beforeBreadcrumb = ^SentryBreadcrumb * _Nullable(SentryBreadcrumb * _Nonnull breadcrumb) {
+            if( self.m_sendAllow == NO ) {
+                return nil;
+            }
             
             return breadcrumb;
         };

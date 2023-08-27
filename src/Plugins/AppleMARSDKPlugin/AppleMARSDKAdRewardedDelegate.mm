@@ -11,7 +11,7 @@
 
 @synthesize m_service;
 
-- (instancetype _Nonnull)initWithService: (Mengine::AppleMARSDKServiceInterface* _Nonnull)service {
+- (instancetype _Nonnull)initWithService:(Mengine::AppleMARSDKServiceInterface* _Nonnull)service {
     self = [super init];
     
     self.m_service = service;
@@ -21,7 +21,7 @@
 
 #pragma mark - MARAdRewardedDelegate
 
-- (void) MARAdRewardedDidFailed: (MARAdErrorCode)code withMessage: (NSString *)message adDict:(NSDictionary *)adDict {
+- (void) MARAdRewardedDidFailed:(MARAdErrorCode)code withMessage: (NSString *)message adDict:(NSDictionary *)adDict {
     LOGGER_MESSAGE( "MARAdRewardedDidFailed code: %d message: %s adDict: %s"
         , (int32_t)code
         , [message UTF8String]
@@ -38,7 +38,7 @@
     provider->onAdRewardedDidFailed();
 }
 
-- (void) MARAdRewardedDidLoaded :(NSDictionary *)adDict {
+- (void) MARAdRewardedDidLoaded:(NSDictionary *)adDict {
     LOGGER_MESSAGE( "MARAdRewardedDidLoaded adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );
@@ -53,7 +53,7 @@
     provider->onAdRewardedDidLoaded();
 }
 
-- (void) MARAdRewardedDidShow :(NSDictionary *)adDict {
+- (void) MARAdRewardedDidShow:(NSDictionary *)adDict {
     LOGGER_MESSAGE( "MARAdRewardedDidShow adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );
@@ -68,7 +68,7 @@
     provider->onAdRewardedDidShow();
 }
 
-- (void) MARAdRewardedDidShowFailed :(NSDictionary *)adDict {
+- (void) MARAdRewardedDidShowFailed:(NSDictionary *)adDict {
     LOGGER_MESSAGE( "MARAdRewardedDidShowFailed adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );
@@ -83,7 +83,7 @@
     provider->onAdRewardedDidShowFailed();
 }
 
-- (void) MARAdRewardedDidClicked :(NSDictionary *)adDict {
+- (void) MARAdRewardedDidClicked:(NSDictionary *)adDict {
     LOGGER_MESSAGE( "MARAdRewardedDidClicked adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );
@@ -98,7 +98,7 @@
     provider->onAdRewardedDidClicked();
 }
 
-- (void) MARAdRewardedDidClosed :(NSDictionary *)adDict {
+- (void) MARAdRewardedDidClosed:(NSDictionary *)adDict {
     LOGGER_MESSAGE( "MARAdRewardedDidClosed adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );
@@ -113,7 +113,7 @@
     provider->onAdRewardedDidClosed();
 }
 
-- (void) MARAdRewardedDidSkipped :(NSDictionary *)adDict {
+- (void) MARAdRewardedDidSkipped:(NSDictionary *)adDict {
     LOGGER_MESSAGE( "MARAdRewardedDidSkipped adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );
@@ -128,7 +128,7 @@
     provider->onAdRewardedDidSkipped();
 }
 
-- (void) MARAdRewardedDidFinished: (NSString *)itemName itemNum:(int)itemNum adDict:(NSDictionary *)adDict {
+- (void) MARAdRewardedDidFinished:(NSString *)itemName itemNum:(int)itemNum adDict:(NSDictionary *)adDict {
     LOGGER_MESSAGE( "MARAdRewardedDidFinished adDict: %s"
         , [[NSString stringWithFormat:@"%@", adDict] UTF8String]
     );

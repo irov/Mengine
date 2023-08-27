@@ -2,6 +2,8 @@
 
 #include "Config/Config.h"
 
+#import "Environment/iOS/UIProxyApplicationDelegateInterface.h"
+
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
@@ -11,5 +13,7 @@ namespace Mengine
     {
         UIViewController * iOSGetRootViewController();
         NSUUID * iOSGetAdIdentifier();
+        id iOSGetUIProxyApplicationDelegate( Class delegateClass );
+        void iOSPluginApplicationDelegateEventNotify( NSString * name, id firstArg, ... );
     }
 }

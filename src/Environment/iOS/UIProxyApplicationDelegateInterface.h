@@ -10,6 +10,8 @@
 
 @optional
 
+- (void)event:(NSString *)name args:(NSArray *)args;
+
 #pragma mark - UISceneSession lifecycle
 
 - (void)applicationWillResignActive:(UIApplication *)application;

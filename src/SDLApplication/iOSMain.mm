@@ -1,10 +1,10 @@
-#import "MengineUIKitDelegate.h"
+#import "SDLUIApplicationDelegate.h"
 
 #import <UIKit/UIKit.h>
 
 int main( int argc, char * argv[] ) {
     @autoreleasepool {
-        int result = UIApplicationMain(argc, argv, nil, NSStringFromClass([MengineUIKitDelegate class]));
+        int result = UIApplicationMain(argc, argv, nil, NSStringFromClass([SDLUIApplicationDelegate class]));
         
         return result;
     }

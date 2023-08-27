@@ -1,7 +1,9 @@
 #import <UIKit/UIKit.h>
 
-@interface SDLUIApplicationDelegate : NSObject<UIApplicationDelegate>
+#import "Environment/iOS/UIMainApplicationDelegateInterface.h"
 
-@property (nonatomic, strong) NSMutableArray<id> * m_pluginDelegates;
+@interface SDLUIApplicationDelegate : NSObject<UIApplicationDelegate, UIMainApplicationDelegateInterface>
+
+@property (nonatomic, strong) NSMutableArray<UIProxyApplicationDelegateInterface> * m_pluginDelegates;
 
 @end

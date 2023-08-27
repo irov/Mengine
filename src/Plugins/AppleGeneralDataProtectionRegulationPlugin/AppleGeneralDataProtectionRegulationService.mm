@@ -1,8 +1,13 @@
 #include "AppleGeneralDataProtectionRegulationService.h"
 
-#include "Environment/Apple/AppleUserDefaults.h"
+#import "AppleGeneralDataProtectionRegulationApplicationDelegate.h"
+
+#import "Environment/iOS/iOSDetail.h"
+#import "Environment/Apple/AppleUserDefaults.h"
 
 #include "Kernel/Logger.h"
+
+#import <UIKit/UIKit.h>
 
 ////////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleGeneralDataProtectionRegulationService, Mengine::AppleGeneralDataProtectionRegulationService );
@@ -11,7 +16,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleGeneralDataProtectionRegulationService::AppleGeneralDataProtectionRegulationService()
-        : m_passGDPR(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -21,9 +25,7 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     bool AppleGeneralDataProtectionRegulationService::_initializeService()
     {
-        bool passGDPR = Helper::AppleGetUserDefaultsBoolean( "mengine.gdpr.pass", false );
-        
-        m_passGDPR = passGDPR;
+        //Empty
         
         return true;
     }
@@ -39,14 +41,18 @@ namespace Mengine
             , _passGDPR
         );
         
-        Helper::AppleSetUserDefaultsBoolean( "mengine.gdpr.pass", _passGDPR );
-
-        m_passGDPR = _passGDPR;
+        AppleGeneralDataProtectionRegulationApplicationDelegate * delegate = Helper::iOSGetUIProxyApplicationDelegate([AppleGeneralDataProtectionRegulationApplicationDelegate class]);
+        
+        [delegate setGDPRPass:(BOOL)_passGDPR];
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleGeneralDataProtectionRegulationService::isGDPRPass() const
     {
-        return m_passGDPR;
+        AppleGeneralDataProtectionRegulationApplicationDelegate * delegate = Helper::iOSGetUIProxyApplicationDelegate([AppleGeneralDataProtectionRegulationApplicationDelegate class]);
+        
+        BOOL passGDPR = [delegate isGDPRPass];
+        
+        return passGDPR;
     }
     //////////////////////////////////////////////////////////////////////////
 }

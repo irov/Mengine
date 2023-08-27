@@ -2,4 +2,6 @@
 
 @interface AppleSentryApplicationDelegate : NSObject<UIProxyApplicationDelegateInterface>
 
+@property (assign) BOOL m_sendAllow;
+
 @end

@@ -2,4 +2,7 @@
 
 @interface AppleGeneralDataProtectionRegulationApplicationDelegate : NSObject<UIProxyApplicationDelegateInterface>
 
+- (void) setGDPRPass:(BOOL) passGDPR;
+- (BOOL) isGDPRPass;
+
 @end

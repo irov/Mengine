@@ -8,6 +8,7 @@ src
     iOSDetail.h
     iOSDetail.mm
     
+    UIMainApplicationDelegateInterface.h
     UIProxyApplicationDelegateInterface.h
 )
 

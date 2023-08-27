@@ -1,5 +1,5 @@
-#import "Environment/iOS/UIKitProxyApplicationDelegateInterface.h"
+#import "Environment/iOS/UIProxyApplicationDelegateInterface.h"
 
-@interface AppleDevToDevApplicationDelegate : NSObject<UIKitProxyApplicationDelegateInterface>
+@interface AppleDevToDevApplicationDelegate : NSObject<UIProxyApplicationDelegateInterface>
 
 @end

@@ -4,7 +4,7 @@
 
 @implementation AppleFirebaseApplicationDelegate
 
-#pragma mark - UIKitProxyApplicationDelegateInterface
+#pragma mark - UIProxyApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     @try {

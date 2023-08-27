@@ -6,7 +6,7 @@
 
 @implementation AppleMARSDKApplicationDelegate
 
-#pragma mark - UIKitProxyApplicationDelegateInterface
+#pragma mark - UIProxyApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [[MARSDK sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];

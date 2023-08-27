@@ -6,7 +6,7 @@
 
 @implementation AppleFacebookApplicationDelegate
 
-#pragma mark - UIKitProxyApplicationDelegateInterface
+#pragma mark - UIProxyApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [FBSDKApplicationDelegate.sharedInstance application:application didFinishLaunchingWithOptions:launchOptions];

@@ -8,7 +8,7 @@
 
 @implementation AppleSentryApplicationDelegate
 
-#pragma mark - UIKitProxyApplicationDelegateInterface
+#pragma mark - UIProxyApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     NSString * AppleSentryPlugin_DSN = Mengine::Helper::AppleGetBundlePluginConfigString( @("MengineAppleSentryPlugin"), @("DSN"), nil );

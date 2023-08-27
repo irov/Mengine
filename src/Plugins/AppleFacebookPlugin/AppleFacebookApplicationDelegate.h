@@ -1,5 +1,5 @@
-#import "Environment/iOS/UIKitProxyApplicationDelegateInterface.h"
+#import "Environment/iOS/UIProxyApplicationDelegateInterface.h"
 
-@interface AppleFacebookApplicationDelegate : NSObject<UIKitProxyApplicationDelegateInterface>
+@interface AppleFacebookApplicationDelegate : NSObject<UIProxyApplicationDelegateInterface>
 
 @end

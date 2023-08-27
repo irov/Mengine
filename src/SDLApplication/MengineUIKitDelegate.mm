@@ -5,7 +5,6 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/SDLPlatformServiceExtensionInterface.h"
 
-#include "Environment/iOS/UIKitProxyApplicationDelegateInterface.h"
 #include "Environment/SDL/SDLIncluder.h"
 
 #include "SDLApplication.h"

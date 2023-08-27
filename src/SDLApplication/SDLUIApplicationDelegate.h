@@ -2,6 +2,6 @@
 
 @interface SDLUIApplicationDelegate : NSObject<UIApplicationDelegate>
 
-@property (nonatomic, strong) NSMutableArray<id> * m_applicationDelegates;
+@property (nonatomic, strong) NSMutableArray<id> * m_pluginDelegates;
 
 @end

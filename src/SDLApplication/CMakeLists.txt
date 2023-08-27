@@ -80,8 +80,8 @@ endif()
 if(MENGINE_TARGET_IOS)
     ADD_FILTER(
     ios
-        MengineUIKitDelegate.mm
-        MengineUIKitDelegate.h
+        SDLUIApplicationDelegate.mm
+        SDLUIApplicationDelegate.h
     )
 endif()
 

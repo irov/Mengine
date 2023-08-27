@@ -1,6 +1,6 @@
 #import <UIKit/UIKit.h>
 
-@interface MengineUIKitDelegate : NSObject<UIApplicationDelegate>
+@interface SDLUIApplicationDelegate : NSObject<UIApplicationDelegate>
 
 @property (nonatomic, strong) NSMutableArray<id> * m_applicationDelegates;
 

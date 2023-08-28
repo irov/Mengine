@@ -140,6 +140,6 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
 
         m_image = null;
 
-        this.setState("splashscreen.state", "remove");
+        this.setState("splashscreen.state", "removed");
     }
 }

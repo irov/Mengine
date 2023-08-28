@@ -2023,26 +2023,26 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color>> m_nodeAffectorCreatorInterpolateLinearColor;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_colorTo( Node * _node, float _time, const Color & _color, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_Node_colorTo( Node * _node, float _time, const Color & _color, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _node, "_node is None" );
 
                 if( _node->isActivate() == false )
                 {
-                    LOGGER_ERROR( "node '%s' is not activate"
+                    LOGGER_WARNING( "node '%s' is not activate"
                         , _node->getName().c_str()
                     );
 
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    LOGGER_ERROR( "node '%s' is not after activate"
+                    LOGGER_WARNING( "node '%s' is not after activate"
                         , _node->getName().c_str()
                     );
 
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 RenderInterface * render = _node->getRender();
@@ -2080,49 +2080,49 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    LOGGER_ERROR( "node '%s' after color stop is inactivate"
+                    LOGGER_WARNING( "node '%s' after color stop is inactivate"
                         , _node->getName().c_str()
                     );
 
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
                 UniqueId id = affectorHub->addAffector( affector );
 
-                if( id == 0 )
+                if( id == INVALID_UNIQUE_ID )
                 {
                     LOGGER_ERROR( "node '%s' invalid add affector"
                         , _node->getName().c_str()
                     );
 
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Node_alphaTo( Node * _node, float _time, float _alpha, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_Node_alphaTo( Node * _node, float _time, float _alpha, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _node, "_node is None" );
 
                 if( _node->isActivate() == false )
                 {
-                    LOGGER_ERROR( "node '%s' is not activate"
+                    LOGGER_WARNING( "node '%s' is not activate"
                         , _node->getName().c_str()
                     );
 
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 if( _node->isAfterActive() == false )
                 {
-                    LOGGER_ERROR( "node '%s' is not after activate"
+                    LOGGER_WARNING( "node '%s' is not after activate"
                         , _node->getName().c_str()
                     );
 
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 RenderInterface * render = _node->getRender();
@@ -2162,7 +2162,7 @@ namespace Mengine
 
                 if( _node->isActivate() == false )
                 {
-                    LOGGER_ERROR( "node '%s' after color stop is inactivate"
+                    LOGGER_WARNING( "node '%s' after color stop is inactivate"
                         , _node->getName().c_str()
                     );
 
@@ -2173,17 +2173,18 @@ namespace Mengine
 
                 UniqueId id = affectorHub->addAffector( affector );
 
-                if( id == 0 )
+                if( id == INVALID_UNIQUE_ID )
                 {
                     LOGGER_ERROR( "node '%s' invalid add affector"
                         , _node->getName().c_str()
                     );
 
-                    return 0;
+                    return INVALID_UNIQUE_ID;
                 }
 
                 return id;
             }
+            //////////////////////////////////////////////////////////////////////////
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<KernelScriptMethod> KernelScriptMethodPtr;

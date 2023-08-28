@@ -107,7 +107,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
 
     public void startSignInIntent() {
         if (m_signInClient == null) {
-            this.logError("startSignInIntent google client not created");
+            this.logWarning("startSignInIntent google client not created");
 
             return;
         }
@@ -123,7 +123,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
 
     public void signOut() {
         if (m_signInClient == null) {
-            this.logError("signOut google client not created");
+            this.logWarning("signOut google client not created");
 
             return;
         }
@@ -168,7 +168,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
 
     public void revokeAccess() {
         if (m_signInClient == null) {
-            this.logError("revokeAccess google client not created");
+            this.logWarning("revokeAccess google client not created");
 
             return;
         }
@@ -201,13 +201,13 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
         }
 
         if (result.isSuccess() == true) {
-            this.logMessage("resign");
+            this.logMessage("onActivityResult resign");
 
             GoogleSignInAccount account = result.getSignInAccount();
 
             this.signInCallback(account);
         } else {
-            this.logMessage("login");
+            this.logMessage("onActivityResult login");
 
             Status status = result.getStatus();
 
@@ -244,13 +244,13 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
     }
 
     private void signInCallback(GoogleSignInAccount account) {
-        this.logMessage("account sign in");
-
         if (account == null) {
-            this.logWarning("account == null");
+            this.logWarning("signInCallback account == null");
 
             return;
         }
+
+        this.logMessage("signInCallback");
 
         MengineActivity activity = this.getMengineActivity();
 
@@ -329,7 +329,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
 
     public boolean showAchievements() {
         if (m_achievementsClient == null) {
-            this.logError("showAchievements achievements client not created");
+            this.logWarning("showAchievements achievements client not created");
 
             return false;
         }
@@ -365,7 +365,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
 
     public boolean unlockAchievement(String achievementId) {
         if (m_achievementsClient == null) {
-            this.logError("unlockAchievement achievements client not created");
+            this.logWarning("unlockAchievement achievements client not created");
 
             return false;
         }
@@ -402,7 +402,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
 
     public boolean incrementAchievement(String achievementId, int numSteps) {
         if (m_achievementsClient == null) {
-            this.logError("incrementAchievement achievements client not created");
+            this.logWarning("incrementAchievement achievements client not created");
 
             return false;
         }
@@ -416,8 +416,9 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
             .addOnSuccessListener(new OnSuccessListener<Boolean>() {
                 @Override
                 public void onSuccess(Boolean aBoolean) {
-                    MengineGoogleGameSocialPlugin.this.logMessage("incrementImmediate complete achievementId: %s"
+                    MengineGoogleGameSocialPlugin.this.logMessage("incrementAchievement complete achievementId: %s numSteps: %d"
                         , achievementId
+                        , numSteps
                     );
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialAchievementIncrementSuccess", achievementId);
@@ -425,8 +426,9 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    MengineGoogleGameSocialPlugin.this.logError("incrementImmediate achievementId: %s error: %s"
+                    MengineGoogleGameSocialPlugin.this.logError("incrementAchievement achievementId: %s numSteps: %d error: %s"
                         , achievementId
+                        , numSteps
                         , e.getLocalizedMessage()
                     );
 

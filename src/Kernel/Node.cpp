@@ -164,7 +164,7 @@ namespace Mengine
 
         if( this->isAfterActive() == false )
         {
-            LOGGER_ERROR( "node '%s' invalid deactivate in 'activate state'"
+            LOGGER_WARNING( "node '%s' invalid deactivate in 'activate state'"
                 , this->getName().c_str()
             );
         }

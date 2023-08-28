@@ -611,8 +611,9 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
 
                 this.pythonCall("onMarSDKPaySuccess", productId, orderId);
             } else {
-                this.logError("pay fail productId: %s"
+                this.logError("pay fail productId: %s [result %d]"
                     , productId
+                    , payResult
                 );
 
                 this.pythonCall("onMarSDKPayFail", productId);

@@ -27,4 +27,4 @@ src
     ConstStringHolderNSString.mm
 )
 
-ADD_MENGINE_LIBRARY(Environment)
+ADD_MENGINE_APPLE_LIBRARY(Environment)

@@ -13,27 +13,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ConstStringHolderNSString::~ConstStringHolderNSString()
     {
-        if( m_value != nil )
-		{
-			[m_value release];
-			m_value = nil;
-		}
+        m_value = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     void ConstStringHolderNSString::setNSString( const NSString * _value )
     {
-        if( m_value != nil )
-		{
-			[m_value release];
-			m_value = nil;
-		}
-
-        m_value = _value;
-
-        if( m_value != nil )
+        if( _value != nil )
         {
-            [m_value retain];
-
             const char * data = [m_value UTF8String];
             size_t size = MENGINE_STRLEN( data );
             int64_t hash = Helper::makeHash( data, size );
@@ -44,6 +30,8 @@ namespace Mengine
         {
             this->setup( "", 0, 0 );
         }
+        
+        m_value = _value;
     }
     //////////////////////////////////////////////////////////////////////////
 }

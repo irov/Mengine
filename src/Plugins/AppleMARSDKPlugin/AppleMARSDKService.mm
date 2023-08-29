@@ -48,17 +48,8 @@ namespace Mengine
     {
         [[MARSDK sharedInstance] setDelegate:nil];
         
-        if( m_delegate != nil )
-        {
-            [m_delegate release];
-            m_delegate = nil;
-        }
-        
-        if( m_adRewardedDelegate != nil )
-        {
-            [m_adRewardedDelegate release];
-            m_adRewardedDelegate = nil;
-        }
+        m_delegate = nil;
+        m_adRewardedDelegate = nil;
     }
     //////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::setProvider( const AppleMARSDKProviderInterfacePtr & _provider )

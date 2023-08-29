@@ -34,11 +34,7 @@ namespace Mengine
     {
         m_provider = nullptr;
         
-        if( m_gameCenterDelegate != nil )
-        {
-            [m_gameCenterDelegate release];
-            m_gameCenterDelegate = nil;
-        }
+        m_gameCenterDelegate = nil;
     }
 //////////////////////////////////////////////////////////////////////////
     void AppleGameCenterService::setProvider( const AppleGameCenterProviderInterfacePtr & _provider )

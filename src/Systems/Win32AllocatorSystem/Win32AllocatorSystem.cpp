@@ -178,13 +178,17 @@ namespace Mengine
         return mem;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AllocatorSystem::startThread()
+    void Win32AllocatorSystem::beginThread( ThreadId _threadId )
     {
+        MENGINE_UNUSED( _threadId );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AllocatorSystem::stopThread()
+    void Win32AllocatorSystem::endThread( ThreadId _threadId )
     {
+        MENGINE_UNUSED( _threadId );
+
         //Empty
     }
     ////////////////////////////////////////////////////////////////////////

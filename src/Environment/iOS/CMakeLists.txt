@@ -8,6 +8,11 @@ src
     iOSDetail.h
     iOSDetail.mm
     
+    iOSIncluder.h
+    
+    iOSEnvironmentService.h
+    iOSEnvironmentService.cpp
+    
     UIMainApplicationDelegateInterface.h
     UIPluginApplicationDelegateInterface.h
 )

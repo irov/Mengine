@@ -15,6 +15,10 @@
 #   include "Interface/AndroidEnvironmentServiceInterface.h"
 #endif
 
+#if defined(MENGINE_PLATFORM_IOS)
+#   include "Interface/iOSEnvironmentServiceInterface.h"
+#endif
+
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
 #elif defined(MENGINE_PLATFORM_APPLE)
@@ -1266,8 +1270,16 @@ namespace Mengine
             , _body
         );
 
-#if defined(MENGINE_PLATFORM_APPLE)
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+#if defined(MENGINE_PLATFORM_IOS)
+        if(IOS_ENVIRONMENT_SERVICE()
+            ->openMail( _email, _subject, _body ) == false )
+        {
+            LOGGER_ERROR( "error open mail '%s'"
+                , _email
+            );
+
+            return false;
+        }
 
         return false;
 #elif defined(MENGINE_PLATFORM_ANDROID)

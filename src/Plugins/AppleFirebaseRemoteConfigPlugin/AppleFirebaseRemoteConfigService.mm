@@ -1,5 +1,7 @@
 #include "AppleFirebaseRemoteConfigService.h"
 
+#include "Environment/Apple/AppleString.h"
+
 #import <Firebase/Firebase.h>
 #import <FirebaseRemoteConfig/FirebaseRemoteConfig.h>
 
@@ -10,7 +12,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleFirebaseRemoteConfigService::AppleFirebaseRemoteConfigService()
-        : m_remoteConfig( nil )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -27,17 +28,36 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     void AppleFirebaseRemoteConfigService::_finalizeService()
     {
-        m_remoteConfig = nil;
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseRemoteConfigService::setRemoteConfig( NSMutableDictionary * _remoteConfig )
+    bool AppleFirebaseRemoteConfigService::getValueBoolean( const ConstString & _key ) const
     {
-        m_remoteConfig = _remoteConfig;
+        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:@(_key.c_str())];
+        
+        BOOL value = [firValue boolValue];
+        
+        return value;
     }
     //////////////////////////////////////////////////////////////////////////
-    NSMutableDictionary * AppleFirebaseRemoteConfigService::getRemoteConfig() const
+    int64_t AppleFirebaseRemoteConfigService::getValueInteger( const ConstString & _key ) const
     {
-        return m_remoteConfig;
+        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:@(_key.c_str())];
+        
+        NSInteger value = [[firValue numberValue] integerValue];
+        
+        return value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ConstString AppleFirebaseRemoteConfigService::getValueConstString( const ConstString & _key ) const
+    {
+        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:@(_key.c_str())];
+        
+        NSString * value = [firValue stringValue];
+        
+        ConstString value_cs = Helper::NSStringToConstString( value );
+        
+        return value_cs;
     }
     //////////////////////////////////////////////////////////////////////////
 }

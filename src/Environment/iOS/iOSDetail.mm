@@ -1,6 +1,7 @@
 #include "iOSDetail.h"
 
-#import "Environment/iOS/UIMainApplicationDelegateInterface.h"
+#import "UIMainApplicationDelegateInterface.h"
+#import "UIPluginApplicationDelegateInterface.h"
 
 #import <AdSupport/ASIdentifierManager.h>
 

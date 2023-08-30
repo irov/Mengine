@@ -11,7 +11,7 @@ src
     iOSIncluder.h
     
     iOSEnvironmentService.h
-    iOSEnvironmentService.cpp
+    iOSEnvironmentService.mm
     
     UIMainApplicationDelegateInterface.h
     UIPluginApplicationDelegateInterface.h

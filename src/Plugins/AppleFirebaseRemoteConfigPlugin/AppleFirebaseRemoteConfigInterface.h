@@ -12,8 +12,9 @@ namespace Mengine
         SERVICE_DECLARE( "AppleFirebaseRemoteConfigService" )
 
     public:
-        virtual void setRemoteConfig( NSMutableDictionary * _remoteConfig ) = 0;
-        virtual NSMutableDictionary * getRemoteConfig() const = 0;
+        virtual bool getValueBoolean( const ConstString & _key ) const = 0;
+        virtual int64_t getValueInteger( const ConstString & _key ) const = 0;
+        virtual ConstString getValueConstString( const ConstString & _key ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

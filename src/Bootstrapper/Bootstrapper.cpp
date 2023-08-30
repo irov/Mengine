@@ -117,6 +117,10 @@ SERVICE_EXTERN( AndroidEnvironmentService );
 SERVICE_EXTERN( AppleEnvironmentService );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_IOS)
+SERVICE_EXTERN( iOSEnvironmentService );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_EXTERNAL_SOURCE)
 PLUGIN_EXPORT( ExternalBootstrapper );
 #endif
@@ -865,7 +869,10 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_APPLE)
         MENGINE_ADD_SERVICE( AppleEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
-
+        
+#if defined(MENGINE_PLATFORM_IOS)
+        MENGINE_ADD_SERVICE( iOSEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         MENGINE_ADD_SERVICE( PlatformService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FileService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1985,6 +1992,10 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_APPLE)
         SERVICE_FINALIZE( AppleEnvironmentService );
 #endif
+        
+#if defined(MENGINE_PLATFORM_iOS)
+        SERVICE_FINALIZE( iOSEnvironmentService );
+#endif
 
         SERVICE_FINALIZE( AnalyticsService );
         SERVICE_FINALIZE( StatisticService );
@@ -2058,6 +2069,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_APPLE)
         SERVICE_DESTROY( AppleEnvironmentService );
+#endif
+        
+#if defined(MENGINE_PLATFORM_IOS)
+        SERVICE_DESTROY( iOSEnvironmentService );
 #endif
 
         SERVICE_DESTROY( PlatformService );

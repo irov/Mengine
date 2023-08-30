@@ -18,10 +18,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void setRemoteConfig( NSMutableDictionary * _remoteConfig ) override;
-        NSMutableDictionary * getRemoteConfig() const override;
-        
-    protected:
-        NSMutableDictionary * m_remoteConfig;
+        bool getValueBoolean( const ConstString & _key ) const override;
+        int64_t getValueInteger( const ConstString & _key ) const override;
+        ConstString getValueConstString( const ConstString & _key ) const override;
     };
 }

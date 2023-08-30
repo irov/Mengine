@@ -37,19 +37,10 @@
                         
                         return;
                     }
-
-                    NSArray<NSString*> * keys = [[FIRRemoteConfig remoteConfig] allKeysFromSource:FIRRemoteConfigSourceRemote];
-
-                    NSMutableDictionary * remoteConfig = [[NSMutableDictionary alloc] init];
-                    for (id key in keys)
-                    {
-                        NSString* strValue = [[[FIRRemoteConfig remoteConfig] configValueForKey:key] stringValue];
-                        
-                        [remoteConfig setValue:strValue forKey:key];
-                    }
-                        
-                    APPLE_FIREBASE_REMOTECONFIG_SERVICE()
-                        ->setRemoteConfig( remoteConfig );
+                    
+                    LOGGER_MESSAGE("FIRRemoteConfigFetchStatusSuccess activate changed: %d"
+                        , changed
+                    );
                 }];
                 break;
             case FIRRemoteConfigFetchStatusFailure:

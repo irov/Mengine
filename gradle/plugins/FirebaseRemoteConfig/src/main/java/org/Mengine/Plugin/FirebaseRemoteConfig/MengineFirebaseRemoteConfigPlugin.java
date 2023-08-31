@@ -76,27 +76,6 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
                     }
                 }
             });
-
-        remoteConfig.addOnConfigUpdateListener(new ConfigUpdateListener() {
-            @Override
-            public void onUpdate(ConfigUpdate configUpdate) {
-                Set<String> keys = configUpdate.getUpdatedKeys();
-
-                MengineFirebaseRemoteConfigPlugin.this.logMessage("remote config successful updated keys: %s"
-                    , keys
-                );
-
-                MengineFirebaseRemoteConfigPlugin.this.sendEvent(MengineEvent.EVENT_REMOTE_CONFIG_UPDATE, keys);
-            }
-
-            @Override
-            public void onError(FirebaseRemoteConfigException error) {
-                MengineFirebaseRemoteConfigPlugin.this.logWarning("remote config error updated keys: %s [code: %d]"
-                    , error.getLocalizedMessage()
-                    , error.getCode()
-                );
-            }
-        });
     }
 
     public Map<String, String> getRemoteConfig() {

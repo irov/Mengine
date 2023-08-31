@@ -44,6 +44,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         String installVersion = application.getInstallVersion();
         long installRND = application.getInstallRND();
         long sessionIndex = application.getSessionIndex();
+        long sessionTimestamp = application.getSessionTimestamp();
 
         Bundle params = new Bundle();
         params.putString("install_key", installKey);
@@ -51,8 +52,13 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         params.putString("install_version", installVersion);
         params.putLong("install_rnd", installRND);
         params.putLong("session_index", sessionIndex);
+        params.putLong("session_timestamp", sessionTimestamp);
 
         m_firebaseAnalytics.setDefaultEventParameters(params);
+
+        m_firebaseAnalytics.setUserProperty("is_dev", String.valueOf(BuildConfig.DEBUG));
+        m_firebaseAnalytics.setUserProperty("install_rnd", String.valueOf(installRND));
+        m_firebaseAnalytics.setUserProperty("session_timestamp", String.valueOf(sessionTimestamp));
     }
 
     @Override
@@ -279,6 +285,15 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 );
             } break;
         }
+    }
+
+    public void setUserProperty(@NonNull String name, @NonNull String value) {
+        this.logMessage("setUserProperty name: %s value: %s"
+            , name
+            , value
+        );
+
+        m_firebaseAnalytics.setUserProperty(name, value);
     }
 
     public void logEvent(@NonNull String eventName, @Nullable Bundle params) {

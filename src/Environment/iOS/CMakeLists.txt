@@ -13,6 +13,9 @@ src
     iOSEnvironmentService.h
     iOSEnvironmentService.mm
     
+    iOSMailCompose.h
+    iOSMailCompose.mm
+    
     UIMainApplicationDelegateInterface.h
     UIPluginApplicationDelegateInterface.h
 )

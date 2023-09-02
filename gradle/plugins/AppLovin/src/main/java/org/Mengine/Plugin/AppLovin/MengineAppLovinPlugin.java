@@ -73,13 +73,13 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
      * void showMediationDebugger()
      */
 
-    private Map<String, MengineAppLovinBanner> m_banners = new HashMap<>();
-    private Map<String, MengineAppLovinInterstitial> m_interstitials = new HashMap<>();
-    private Map<String, MengineAppLovinRewarded> m_rewardeds = new HashMap<>();
+    private Map<String, MengineAppLovinBanner> m_banners;
+    private Map<String, MengineAppLovinInterstitial> m_interstitials;
+    private Map<String, MengineAppLovinRewarded> m_rewardeds;
 
     private MengineAppLovinMediationInterface m_mediationAmazon;
 
-    private ArrayList<MengineAppLovinAnalyticsListener> m_analytics = new ArrayList<>();
+    private ArrayList<MengineAppLovinAnalyticsListener> m_analytics;
 
     @Override
     public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
@@ -139,7 +139,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         appLovinSdk.setMediationProvider("max");
 
-        boolean MengineAppLovinPlugin_IsAgeRestrictedUser = activity.getMetaDataBoolean(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER, true);
+        boolean MengineAppLovinPlugin_IsAgeRestrictedUser = activity.getMetaDataBoolean(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER, false);
 
         this.logMessage("%s: %b"
             , PLUGIN_METADATA_IS_AGE_RESTRICTED_USER

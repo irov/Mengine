@@ -12,7 +12,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         UIViewController * iOSGetRootViewController()
         {
-            UIWindow * window = [UIApplication sharedApplication].delegate.window;
+            UIApplication * application = [UIApplication sharedApplication];
+            id<UIApplicationDelegate> delegate = application.delegate;
+            UIWindow * window = delegate.window;
 
             UIViewController * viewController = window.rootViewController;
             
@@ -57,6 +59,27 @@ namespace Mengine
             va_end(args);
             
             [delegate notify:name arrayArgs:send_args];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        NSString * iOSPathForTemporaryFileWithPrefix( NSString * prefix, NSString * ext )
+        {
+            NSString *  result;
+            CFUUIDRef   uuid;
+            CFStringRef uuidStr;
+
+            uuid = CFUUIDCreate(NULL);
+            assert(uuid != NULL);
+
+            uuidStr = CFUUIDCreateString(NULL, uuid);
+            assert(uuidStr != NULL);
+
+            result = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@%@.%@", prefix, uuidStr, ext]];
+            assert(result != nil);
+
+            CFRelease(uuidStr);
+            CFRelease(uuid);
+
+            return result;
         }
         //////////////////////////////////////////////////////////////////////////
     }

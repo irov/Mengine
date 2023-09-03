@@ -7,14 +7,12 @@
 
 #include "Environment/SDL/SDLIncluder.h"
 
-#include "SDLApplication.h"
-
 @implementation SDLUIApplicationDelegate
 
 - (id)init {
     NSArray * proxysClassed = getMengineAppleApplicationDelegates();
 
-    self.m_pluginDelegates = [NSMutableArray array];
+    self.m_pluginDelegates = [NSMutableArray<UIPluginApplicationDelegateInterface> array];
     
     for (id className in proxysClassed) {
         id c = NSClassFromString(className);
@@ -74,8 +72,18 @@
             return NO;
         }
     }
+    
+    SDL_SetMainReady();
+    
+    SDL_iPhoneSetEventPump(SDL_TRUE);
+    
+    bool initialize = self.m_application.initialize( 0, nullptr );
 
-    [self performSelector:@selector(postFinishLaunch) withObject:nil afterDelay:0.0];
+    if( initialize == false ) {
+        return NO;
+    }
+
+    [self performSelector:@selector(postFinishLaunch) withObject:self afterDelay:0.0];
     
     return YES;
 }
@@ -152,7 +160,20 @@
 }
 
 - (UIWindow *)window {
-    return nil;
+    if( SERVICE_PROVIDER_EXIST() == false ) {
+        return nil;
+    }
+    
+    if( SERVICE_IS_INITIALIZE(Mengine::PlatformServiceInterface) == false ) {
+        return nil;
+    }
+    
+    Mengine::SDLPlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
+        ->getDynamicUnknown();
+    
+    UIWindow * window = sdlPlatform->getUIWindow();
+     
+    return window;
 }
 
 - (void)setWindow:(UIWindow *)window {
@@ -160,21 +181,9 @@
 }
 
 - (void)postFinishLaunch {
-    SDL_SetMainReady();
-    
-    SDL_iPhoneSetEventPump(SDL_TRUE);
-    
-    Mengine::SDLApplication application;
+    self.m_application.loop();
 
-    bool initialize = application.initialize( 0, nullptr );
-
-    if( initialize == true ) {
-        application.loop();
-    } else {
-        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine initialize", "Mengine invalid initialization", NULL );
-    }
-
-    application.finalize();
+    self.m_application.finalize();
     
     SDL_iPhoneSetEventPump(SDL_FALSE);
 }

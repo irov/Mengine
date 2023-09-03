@@ -4,6 +4,8 @@
 
 #include "Kernel/ServiceBase.h"
 
+#import "Environment/iOS/iOSMailCompose.h"
+
 namespace Mengine
 {
     class iOSEnvironmentService
@@ -20,7 +22,8 @@ namespace Mengine
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
         bool openMail( const Char * _email, const Char * _subject, const Char * _body ) override;
-
+        
     protected:
+        iOSMailCompose * m_mailCompose;
     };
 }

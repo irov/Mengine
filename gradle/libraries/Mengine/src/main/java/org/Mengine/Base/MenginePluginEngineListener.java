@@ -13,10 +13,6 @@ public interface MenginePluginEngineListener extends MenginePluginInterface {
         //Empty
     }
 
-    default void onMenginePlatformReady(MengineActivity activity) {
-        //Empty
-    }
-
     default void onMenginePlatformStop(MengineActivity activity) {
         //Empty
     }

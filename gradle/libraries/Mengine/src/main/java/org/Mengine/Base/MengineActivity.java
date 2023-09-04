@@ -335,16 +335,6 @@ public class MengineActivity extends SDLActivity {
         }
     }
 
-    public void onMenginePlatformReady() {
-        MengineLog.logInfo(TAG, "onMenginePlatformReady");
-
-        ArrayList<MenginePluginEngineListener> listeners = this.getEngineListeners();
-
-        for (MenginePluginEngineListener l : listeners) {
-            l.onMenginePlatformReady(this);
-        }
-    }
-
     public void onMenginePlatformStop() {
         MengineLog.logInfo(TAG, "onMenginePlatformStop");
 

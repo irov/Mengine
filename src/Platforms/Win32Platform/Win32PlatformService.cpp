@@ -928,9 +928,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::runPlatform()
     {
+        if( m_close == true )
+        {
+            return false;
+        }
+
+        this->setActive_( true );
+
+        if( this->updatePlatform() == false )
+        {
+            return false;
+        }
+
+        if( this->tickPlatform( 0.f ) == false )
+        {
+            return false;
+        }
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
-        LOGGER_INFO( "platform", "run platform" );
+        LOGGER_INFO( "platform", "run platform" );        
 
         MENGINE_PROFILER_BEGIN_APPLICATION();
 
@@ -1063,13 +1080,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::loopPlatform()
     {
-        if( m_close == true )
-        {
-            return;
-        }
-
-        this->setActive_( true );
-
         m_prevTime = Helper::getTimestamp();
 
         while( m_close == false )

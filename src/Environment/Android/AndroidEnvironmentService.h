@@ -67,7 +67,6 @@ namespace Mengine
 
     protected:
         void notifyPlatformRun_();
-        void notifyPlatformReady_();
         void notifyPlatformStop_();
         void notifyApplicationBeginUpdate_();
         void notifyApplicationEndUpdate_();

@@ -1051,8 +1051,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::runPlatform()
     {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
+        this->setActive_( true );
 
+        if( this->updatePlatform() == false )
+        {
+            return false;
+        }
+
+        if( this->tickPlatform( 0.f ) == false )
+        {
+            return false;
+        }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1171,11 +1183,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::loopPlatform()
     {
-        this->setActive_( true );
-
         m_prevTime = Helper::getTimestamp();
-
-        bool firstTickEnd = false;
 
         for( ;; )
         {
@@ -1193,13 +1201,6 @@ namespace Mengine
             if( this->tickPlatform( frameTime ) == false )
             {
                 break;
-            }
-
-            if( firstTickEnd == false )
-            {
-                firstTickEnd = true;
-
-                NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_READY );
             }
         }
     }

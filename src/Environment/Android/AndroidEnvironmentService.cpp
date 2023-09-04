@@ -335,7 +335,6 @@ namespace Mengine
         m_proxyLogger = proxyLogger;
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_RUN, &AndroidEnvironmentService::notifyPlatformRun_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_READY, &AndroidEnvironmentService::notifyPlatformReady_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_STOP, &AndroidEnvironmentService::notifyPlatformStop_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES, &AndroidEnvironmentService::notifyBootstrapperInitializeBaseServices_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AndroidEnvironmentService::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
@@ -348,7 +347,6 @@ namespace Mengine
     void AndroidEnvironmentService::_finalizeService()
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_RUN );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_READY );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_STOP );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
@@ -846,22 +844,6 @@ namespace Mengine
         }
 
         this->callVoidActivityMethod( jenv, "onMenginePlatformRun", "()V" );
-
-        m_androidEventationHub->invoke();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::notifyPlatformReady_()
-    {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
-        {
-            MENGINE_ERROR_FATAL( "invalid get jenv" );
-
-            return;
-        }
-
-        this->callVoidActivityMethod( jenv, "onMenginePlatformReady", "()V" );
 
         m_androidEventationHub->invoke();
     }

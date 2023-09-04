@@ -56,7 +56,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
     }
 
     @Override
-    public void onMenginePlatformReady(MengineActivity activity) {
+    public void onMenginePlatformRun(MengineActivity activity) {
         MengineUtils.performOnMainThread(() -> {
             this.hideSplash(activity);
         });

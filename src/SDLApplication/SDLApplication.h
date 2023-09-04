@@ -18,10 +18,10 @@ namespace Mengine
 
     public:
         void loop();
+        bool tick( float _frameTime );
 
     protected:
         bool initializeOptionsService_( int32_t argc, Char ** const _argv );
-        bool initializeFileService_();
         bool initializeLoggerService_();
 
     protected:

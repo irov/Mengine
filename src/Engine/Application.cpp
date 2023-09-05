@@ -1018,27 +1018,6 @@ namespace Mengine
         {
             bool controlDown = _event.special.isControl;
 
-            if( _event.code == KC_BACK && _event.isDown && controlDown == true )
-            {
-                Char userPath[MENGINE_MAX_PATH] = {'\0'};
-                PLATFORM_SERVICE()
-                    ->getUserPath( userPath );
-
-                String processDumpPath;
-                processDumpPath += userPath;
-                processDumpPath += "Process";
-                processDumpPath += "_";
-
-                Char filePathDate[1024] = {'\0'};
-                Helper::makeFilePathDateTimestamp( filePathDate, 1024 );
-
-                processDumpPath += filePathDate;
-                processDumpPath += ".dmp";
-
-                PLATFORM_SERVICE()
-                    ->createProcessDump( processDumpPath.c_str(), nullptr, true );
-            }
-
             if( _event.code == KC_F6 && _event.isDown == true )
             {
                 if( (m_debugMask & MENGINE_DEBUG_HOTSPOTS) != 0 )

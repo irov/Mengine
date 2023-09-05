@@ -5,9 +5,8 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
-#   include "Environment/Windows/Win32GetCallstack.h"
-#endif
+#include "Environment/Windows/Win32GetCallstack.h"
+#include "Environment/Windows/Win32CreateProcessDump.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
@@ -159,7 +158,6 @@ namespace Mengine
                 ->debugBreak();
         }
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
         ThreadId mainThreadId = THREAD_SERVICE()
             ->getMainThreadId();
 
@@ -174,7 +172,6 @@ namespace Mengine
                 , stack_msg
             );
         }
-#endif
 
         Char userPath[MENGINE_MAX_PATH] = {'\0'};
         PLATFORM_SERVICE()
@@ -191,8 +188,9 @@ namespace Mengine
         processDumpPath += filePathDate;
         processDumpPath += ".dmp";
 
-        if( PLATFORM_SERVICE()
-            ->createProcessDump( processDumpPath.c_str(), nullptr, true ) == false )
+        const Char * processDumpPath_str = processDumpPath.c_str();
+
+        if( Helper::Win32CreateProcessDump( processDumpPath_str, nullptr, true ) == false )
         {
             LOGGER_ERROR( "antifreeze monitor invalid create process dump '%s'"
                 , processDumpPath.c_str()

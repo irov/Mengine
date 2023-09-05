@@ -12,6 +12,9 @@ src
     Win32GetCallstack.h
     Win32GetCallstack.cpp
     
+    Win32CreateProcessDump.h
+    Win32CreateProcessDump.cpp
+    
     Win32OutputDebugLogger.h
     Win32OutputDebugLogger.cpp
 )

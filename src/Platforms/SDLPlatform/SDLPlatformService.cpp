@@ -1890,17 +1890,6 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full )
-    {
-        MENGINE_UNUSED( _dumpPath );
-        MENGINE_UNUSED( _pExceptionPointers );
-        MENGINE_UNUSED( _full );
-
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::closeWindow()
     {
         if( m_sdlWindow != nullptr )

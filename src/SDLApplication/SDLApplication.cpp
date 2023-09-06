@@ -393,7 +393,7 @@ namespace Mengine
         }
 
         if( PLATFORM_SERVICE()
-            ->tickPlatform( _frameTime ) == false )
+            ->tickPlatform( _frameTime, true, false, false ) == false )
         {
             return false;
         }

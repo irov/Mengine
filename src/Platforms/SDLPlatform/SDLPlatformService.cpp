@@ -1058,7 +1058,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->tickPlatform( 0.f ) == false )
+        if( this->tickPlatform( 0.f, false, false, false ) == false )
         {
             return false;
         }
@@ -1068,7 +1068,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::tickPlatform( float _frameTime )
+    bool SDLPlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
     {
         for( const UpdateDesc & desc : m_updates )
         {
@@ -1124,12 +1124,12 @@ namespace Mengine
                 ->tick( _frameTime );
         }
 
-        if( this->isNeedWindowRender() == true )
+        if( this->isNeedWindowRender() == true && _render == true )
         {
             bool sucessful = APPLICATION_SERVICE()
                 ->render();
 
-            if( sucessful == true )
+            if( sucessful == true && _flush == true )
             {
                 APPLICATION_SERVICE()
                     ->flush();
@@ -1156,24 +1156,30 @@ namespace Mengine
                 m_pauseUpdatingTime = _frameTime;
             }
 
-            if( m_sleepMode == true )
+            if( _pause == true )
             {
-                SDL_Delay( 100 );
-            }
-            else
-            {
-                SDL_Delay( 1 );
+                if( m_sleepMode == true )
+                {
+                    SDL_Delay( 100 );
+                }
+                else
+                {
+                    SDL_Delay( 1 );
+                }
             }
         }
         else
         {
 #if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS)
-            bool OPTION_maxfps = HAS_OPTION( "maxfps" );
-
-            if( APPLICATION_SERVICE()
-                ->getVSync() == false && OPTION_maxfps == false )
+            if( _pause == true )
             {
-                SDL_Delay( 1 );
+                bool OPTION_maxfps = HAS_OPTION( "maxfps" );
+                
+                if( APPLICATION_SERVICE()
+                   ->getVSync() == false && OPTION_maxfps == false )
+                {
+                    SDL_Delay( 1 );
+                }
             }
 #endif
         }
@@ -1198,7 +1204,7 @@ namespace Mengine
 
             m_prevTime = currentTime;
 
-            if( this->tickPlatform( frameTime ) == false )
+            if( this->tickPlatform( frameTime, true, true, true ) == false )
             {
                 break;
             }

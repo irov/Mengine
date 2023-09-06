@@ -10,7 +10,7 @@
     return result;
 }
 
-- (instancetype)initWithViewController:(UIViewController * _Nonnull)viewController email:(NSString * _Nonnull)email subject:(NSString * _Nonnull)subject message:(NSString * _Nonnull)message completion:(FBlockMailComposeCompletion)completion {
+- (instancetype)initWithViewController:(UIViewController * _Nonnull)viewController email:(NSString * _Nonnull)email subject:(NSString * _Nonnull)subject message:(NSString * _Nonnull)message completion:(FBlockMailComposeCompletion _Nonnull)completion {
     self = [super init];
 
     MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];

@@ -82,7 +82,7 @@
     if( initialize == false ) {
         return NO;
     }
-
+    
     [self performSelector:@selector(postFinishLaunch) withObject:self afterDelay:0.0];
     
     return YES;
@@ -142,6 +142,10 @@
             [delegate applicationWillTerminate:application];
         }
     }
+    
+    self.m_application.finalize();
+    
+    SDL_iPhoneSetEventPump(SDL_FALSE);
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options API_AVAILABLE(ios(9.0)) {
@@ -182,10 +186,6 @@
 
 - (void)postFinishLaunch {
     self.m_application.loop();
-
-    self.m_application.finalize();
-    
-    SDL_iPhoneSetEventPump(SDL_FALSE);
 }
 
 @end

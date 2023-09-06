@@ -43,7 +43,7 @@ namespace Mengine
         virtual bool runPlatform() = 0;
         virtual void loopPlatform() = 0;
         virtual bool updatePlatform() = 0;
-        virtual bool tickPlatform( float _frameTime ) = 0;
+        virtual bool tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause ) = 0;
         virtual void stopPlatform() = 0;
 
     public:

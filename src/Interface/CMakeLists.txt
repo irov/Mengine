@@ -137,6 +137,7 @@ Common
     PersistentSystemInterface.h
     DateTimeSystemInterface.h
     HttpSystemInterface.h
+    DebugFileInterface.h
 )
 
 ADD_FILTER(

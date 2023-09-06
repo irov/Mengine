@@ -42,7 +42,7 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( Win32FileInputStream, this, "Win32FileInputStream::open" );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_relationPath = _relationPath;
         m_folderPath = _folderPath;
         m_filePath = _filePath;
@@ -132,7 +132,7 @@ namespace Mengine
             return true;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath.c_str(), m_filePath.c_str(), m_streaming );
@@ -190,7 +190,7 @@ namespace Mengine
 
         m_hFile = hFile;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str(), m_streaming );
@@ -441,19 +441,19 @@ namespace Mengine
         return m_hFile;
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32FileInputStream::getRelationPath() const
+    const FilePath & Win32FileInputStream::getDebugRelationPath() const
     {
         return m_relationPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32FileInputStream::getFolderPath() const
+    const FilePath & Win32FileInputStream::getDebugFolderPath() const
     {
         return m_folderPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32FileInputStream::getFilePath() const
+    const FilePath & Win32FileInputStream::getDebugFilePath() const
     {
         return m_filePath;
     }

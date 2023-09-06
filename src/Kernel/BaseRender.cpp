@@ -360,7 +360,7 @@ namespace Mengine
         RenderContext context;
         this->mergeRenderContext( _context, &context );
 
-        if( m_localHide == false && this->isPersonalTransparent() == false )
+        if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
         {
             this->render( _renderPipeline, &context );
         }

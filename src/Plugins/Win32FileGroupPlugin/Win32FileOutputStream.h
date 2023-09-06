@@ -2,19 +2,22 @@
 
 #include "Interface/FileOutputStreamInterface.h"
 
-#include "Kernel/Factorable.h"
+#if defined(MENGINE_DEBUG)
+#   include "Interface/DebugFileInterface.h"
+#endif
 
 #include "Environment/Windows/WindowsIncluder.h"
 
-#ifdef MENGINE_DEBUG
-#include "Kernel/String.h"
-#endif
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class Win32FileOutputStream
         : public FileOutputStreamInterface
         , public Factorable
+#if defined(MENGINE_DEBUG)
+        , public DebugFileInterface
+#endif
     {
         DECLARE_FACTORABLE( Win32FileOutputStream );
 
@@ -36,11 +39,11 @@ namespace Mengine
     public:
         HANDLE getHandleFile() const;
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
     protected:
-        const FilePath & getRelationPath() const override;
-        const FilePath & getFolderPath() const override;
-        const FilePath & getFilePath() const override;
+        const FilePath & getDebugRelationPath() const override;
+        const FilePath & getDebugFolderPath() const override;
+        const FilePath & getDebugFilePath() const override;
 #endif
 
     protected:

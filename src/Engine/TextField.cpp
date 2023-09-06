@@ -993,7 +993,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextField::updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _textSize, mt::vec2f * const _textOffset, uint32_t * const _charCount, uint32_t * const _layoutCount ) const
+    bool TextField::updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines ) const
     {
         float charOffset = this->calcCharOffset();
         float lineOffset = this->calcLineOffset();
@@ -1036,13 +1036,15 @@ namespace Mengine
 
         if( layouts.empty() == true )
         {
-            *_charCount = 0;
-            *_layoutCount = 0;
-            *_textSize = mt::vec2f( 0.f, 0.f );
-            *_textOffset = mt::vec2f( 0.f, 0.f );
+            m_charCount = 0;
+            m_layoutCount = 0;
+            m_textSize = mt::vec2f( 0.f, 0.f );
+            m_textOffset = mt::vec2f( 0.f, 0.f );
 
             return true;
         }
+
+        m_layoutCount = (uint32_t)layouts.size();
 
         uint32_t charCount = 0;
 
@@ -1069,9 +1071,7 @@ namespace Mengine
             charCount += line_chars;
         }
 
-        *_charCount = charCount;
-
-        *_layoutCount = (uint32_t)layouts.size();
+        m_charCount = charCount;
 
         mt::vec2f textSize;
         textSize.x = text_length;
@@ -1079,27 +1079,24 @@ namespace Mengine
         float fontHeight = _font->getFontHeight();
         //float fontAscent = _font->getFontAscent();
 
-        VectorTextLinesLayout::size_type lineCount = layouts.size();
-
-        if( lineCount > 0 )
+        if( m_layoutCount > 0 )
         {
-            textSize.y = (lineOffset + fontHeight) * (lineCount - 1) + fontHeight + m_extraThickness * 2.f;
+            textSize.y = (lineOffset + fontHeight) * (m_layoutCount - 1) + fontHeight + m_extraThickness * 2.f;
         }
         else
         {
             textSize.y = fontHeight + m_extraThickness * 2.f;
         }
 
-        *_textSize = textSize;
-
-        mt::vec2f textOffset;
-        textOffset.x = text_offset;
+        m_textSize = textSize;
 
         float lines_offset = this->calcLinesOffset( lineOffset, _font );
 
+        mt::vec2f textOffset;
+        textOffset.x = text_offset;
         textOffset.y = -lines_offset;
 
-        *_textOffset = textOffset;
+        m_textOffset = textOffset;
 
         return true;
     }
@@ -1193,19 +1190,10 @@ namespace Mengine
 
         this->updateTextLinesWrap_( &m_cacheTextLines );
 
-        mt::vec2f textSize;
-        mt::vec2f textOffset;
-        uint32_t charCount;
-        uint32_t layoutCount;
-        if( this->updateTextLinesDimension_( baseFont, m_cacheTextLines, &textSize, &textOffset, &charCount, &layoutCount ) == false )
+        if( this->updateTextLinesDimension_( baseFont, m_cacheTextLines ) == false )
         {
             return false;
         }
-
-        m_textSize = textSize;
-        m_textOffset = textOffset;
-        m_charCount = charCount;
-        m_layoutCount = layoutCount;
 
         m_autoScaleFactor = 1.f;
 

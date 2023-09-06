@@ -22,6 +22,14 @@ namespace Mengine
             return;
         }
 
+        const ConstString & textId = _node->getTextId();
+        const String & text = _node->getText();
+
+        if( textId.empty() == true && text.empty() == true )
+        {
+            return;
+        }
+
         {
             const mt::vec2f & offset = _node->getTextOffset();
             const mt::vec2f & size = _node->getTextSize();

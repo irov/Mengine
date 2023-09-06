@@ -3,6 +3,10 @@
 #include "Interface/FileInputStreamInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
+#if defined(MENGINE_DEBUG)
+#   include "Interface/DebugFileInterface.h"
+#endif
+
 #include "Win32FileInputStream.h"
 
 #include "Kernel/Factorable.h"
@@ -15,6 +19,9 @@ namespace Mengine
     class Win32MutexFileInputStream
         : public FileInputStreamInterface
         , public Factorable
+#if defined(MENGINE_DEBUG)
+        , public DebugFileInterface
+#endif
     {
         DECLARE_FACTORABLE( Win32MutexFileInputStream );
 
@@ -49,11 +56,11 @@ namespace Mengine
         bool read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read );
         bool seek_( size_t _pos );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
     protected:
-        const FilePath & getRelationPath() const override;
-        const FilePath & getFolderPath() const override;
-        const FilePath & getFilePath() const override;
+        const FilePath & getDebugRelationPath() const override;
+        const FilePath & getDebugFolderPath() const override;
+        const FilePath & getDebugFilePath() const override;
 #endif
 
     protected:
@@ -69,7 +76,7 @@ namespace Mengine
 
         uint8_t m_readCache[MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE];
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         FilePath m_relationPath;
         FilePath m_folderPath;
         FilePath m_filePath;

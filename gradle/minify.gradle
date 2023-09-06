@@ -7,7 +7,7 @@ android {
     buildTypes {
         if (ANDROID_APP_DEBUG_MINIFY_ENABLE) {
             debug {
-                minifyEnabled true
+                minifyEnabled false
 
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             }

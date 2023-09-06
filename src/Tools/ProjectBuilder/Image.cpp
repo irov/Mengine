@@ -11,7 +11,6 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/ImageCodecHelper.h"
-#include "Kernel/Document.h"
 
 namespace Mengine
 {

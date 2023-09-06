@@ -25,13 +25,13 @@ namespace Mengine
         {
             Win32ThreadIdentity * thread = static_cast<Win32ThreadIdentity *>(lpThreadParameter);
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             try
 #endif
             {
                 thread->main();
             }
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             catch( const std::exception & ex )
             {
                 LOGGER_ERROR( "std::exception exception '%s'"

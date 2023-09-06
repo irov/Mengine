@@ -34,6 +34,7 @@ namespace Mengine
         ConstString m_codecType;
 
         ImageDecoderInterfacePtr m_imageDecoder;
+        MemoryInputInterfacePtr m_memoryInput;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadTaskPrefetchImageDecoder, ThreadTaskInterface> ThreadTaskPrefetchImageDecoderPtr;

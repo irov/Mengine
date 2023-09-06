@@ -81,7 +81,7 @@ namespace Mengine
         SERVICE_CREATE( StringizeService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
 
-        SERVICE_CREATE( PlatformSystem, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( PlatformSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );

@@ -3,6 +3,10 @@
 #include "Interface/FileInputStreamInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
+#if defined(MENGINE_DEBUG)
+#   include "Interface/DebugFileInterface.h"
+#endif
+
 #include "SDLFileInputStream.h"
 
 #include "Kernel/Factorable.h"
@@ -15,6 +19,9 @@ namespace Mengine
     class SDLMutexFileInputStream
         : public FileInputStreamInterface
         , public Factorable
+#if defined(MENGINE_DEBUG)
+        , public DebugFileInterface
+#endif
     {
         DECLARE_FACTORABLE( SDLMutexFileInputStream );
 
@@ -51,9 +58,9 @@ namespace Mengine
 
 #if defined(MENGINE_DEBUG)
     protected:
-        const FilePath & getRelationPath() const override;
-        const FilePath & getFolderPath() const override;
-        const FilePath & getFilePath() const override;
+        const FilePath & getDebugRelationPath() const override;
+        const FilePath & getDebugFolderPath() const override;
+        const FilePath & getDebugFilePath() const override;
 #endif
 
     protected:

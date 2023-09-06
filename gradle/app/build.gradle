@@ -196,14 +196,20 @@ android {
     }
 
     buildTypes {
-        if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
-            debug {
+        debug {
+            if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
                 signingConfig signingConfigs.debug
             }
         }
 
-        if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
-            release {
+        release {
+            if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
+                firebaseCrashlytics {
+                    mappingFileUploadEnabled true
+                }
+            }
+
+            if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
                 signingConfig signingConfigs.release
             }
         }
@@ -310,7 +316,7 @@ android {
     }
 
     androidResources {
-        noCompress 'pak', 'bin'
+        noCompress += ['pak', 'bin']
     }
 
     namespace "org.Mengine.Project"

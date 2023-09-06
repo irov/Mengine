@@ -64,7 +64,7 @@ namespace Mengine
             , _doc
         );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         SIZE_T usable_size = ::HeapSize( m_hHeap, 0, mem );
 
         MENGINE_ASSERTION_FATAL( usable_size != (SIZE_T)-1 );
@@ -84,7 +84,7 @@ namespace Mengine
             return;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         SIZE_T old_size = ::HeapSize( m_hHeap, 0, _mem );
 
         MENGINE_ASSERTION_FATAL( old_size != (SIZE_T)-1 );
@@ -96,7 +96,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( result == TRUE );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         this->report( 0, old_size );
 #endif
     }
@@ -115,7 +115,7 @@ namespace Mengine
 
         ::FillMemory( mem, _num * _size, 0x0 );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         SIZE_T usable_size = ::HeapSize( m_hHeap, 0, mem );
 
         MENGINE_ASSERTION_FATAL( usable_size != (SIZE_T)-1 );
@@ -141,7 +141,7 @@ namespace Mengine
                 , _doc
             );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
             SIZE_T usable_size = ::HeapSize( m_hHeap, 0, mem );
 
             MENGINE_ASSERTION_FATAL( usable_size != (SIZE_T)-1 );
@@ -152,7 +152,7 @@ namespace Mengine
             return mem;
         }
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         SIZE_T old_size = ::HeapSize( m_hHeap, 0, _mem );
 
         MENGINE_ASSERTION_FATAL( old_size != (SIZE_T)-1 );
@@ -167,7 +167,7 @@ namespace Mengine
             , _doc
         );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         SIZE_T usable_size = ::HeapSize( m_hHeap, 0, mem );
 
         MENGINE_ASSERTION_FATAL( usable_size != (SIZE_T)-1 );

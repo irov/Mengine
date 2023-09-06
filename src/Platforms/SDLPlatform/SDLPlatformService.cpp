@@ -1149,15 +1149,18 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->endUpdate();
 
-        if( updating == false )
-        {
-            if( m_pauseUpdatingTime < 0.f )
-            {
-                m_pauseUpdatingTime = _frameTime;
-            }
+        MENGINE_UNUSED( _pause );
 
-            if( _pause == true )
+#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS)
+        if( _pause == true )
+        {
+            if( updating == false )
             {
+                if( m_pauseUpdatingTime < 0.f )
+                {
+                    m_pauseUpdatingTime = _frameTime;
+                }
+
                 if( m_sleepMode == true )
                 {
                     SDL_Delay( 100 );
@@ -1167,22 +1170,18 @@ namespace Mengine
                     SDL_Delay( 1 );
                 }
             }
-        }
-        else
-        {
-#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS)
-            if( _pause == true )
+            else
             {
                 bool OPTION_maxfps = HAS_OPTION( "maxfps" );
-                
+
                 if( APPLICATION_SERVICE()
-                   ->getVSync() == false && OPTION_maxfps == false )
+                    ->getVSync() == false && OPTION_maxfps == false )
                 {
                     SDL_Delay( 1 );
                 }
             }
-#endif
         }
+#endif
 
         return true;
     }

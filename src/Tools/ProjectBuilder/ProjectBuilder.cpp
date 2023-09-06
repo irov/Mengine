@@ -33,7 +33,6 @@
 #include "Kernel/ConverterFactory.h"
 #include "Kernel/LoggerBase.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/UnicodeHelper.h"

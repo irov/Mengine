@@ -180,19 +180,19 @@ namespace Mengine
         return m_hFile;
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
 //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32FileOutputStream::getRelationPath() const
+    const FilePath & Win32FileOutputStream::getDebugRelationPath() const
     {
         return m_relationPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32FileOutputStream::getFolderPath() const
+    const FilePath & Win32FileOutputStream::getDebugFolderPath() const
     {
         return m_folderPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32FileOutputStream::getFilePath() const
+    const FilePath & Win32FileOutputStream::getDebugFilePath() const
     {
         return m_filePath;
     }

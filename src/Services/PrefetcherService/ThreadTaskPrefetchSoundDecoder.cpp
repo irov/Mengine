@@ -39,6 +39,7 @@ namespace Mengine
     void ThreadTaskPrefetchSoundDecoder::_finalize()
     {
         m_soundDecoder = nullptr;
+        m_memoryInput = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetchSoundDecoder::_onThreadTaskRun()
@@ -48,11 +49,13 @@ namespace Mengine
             return false;
         }
 
-        m_stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create sound file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create sound file '%s'"
             , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
         );
+
+        m_stream = stream;
 
         SoundDecoderInterfacePtr soundDecoder = CODEC_SERVICE()
             ->createDecoder( m_soundCodec, MENGINE_DOCUMENT_FACTORABLE );
@@ -62,6 +65,13 @@ namespace Mengine
         );
 
         m_soundDecoder = soundDecoder;
+
+        MemoryInputInterfacePtr memoryInput = MEMORY_SERVICE()
+            ->createMemoryInput( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryInput, "invalid create memory" );
+
+        m_memoryInput = memoryInput;
 
         return true;
     }
@@ -83,15 +93,7 @@ namespace Mengine
 
         size_t stream_size = m_stream->size();
 
-        MemoryInputInterfacePtr memoryInput = MEMORY_SERVICE()
-            ->createMemoryInput( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( memoryInput, "file '%s' invalid create memory input [size %zu]"
-            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
-            , stream_size
-        );
-
-        void * memory = memoryInput->newBuffer( stream_size );
+        void * memory = m_memoryInput->newBuffer( stream_size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "file '%s' invalid alloc memory '%zu'"
             , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
@@ -108,7 +110,7 @@ namespace Mengine
             return false;
         }
 
-        if( m_soundDecoder->prepareData( memoryInput ) == false )
+        if( m_soundDecoder->prepareData( m_memoryInput ) == false )
         {
             LOGGER_ERROR( "decoder for file '%s' was not initialize"
                 , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )

@@ -12,7 +12,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ToolLogger::log( const LoggerMessage & _message )
+    void ToolLogger::_log( const LoggerMessage & _message )
     {
         printf( "%.*s"
             , _message.size

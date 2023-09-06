@@ -219,7 +219,7 @@ namespace Mengine
         bool updateTextLines_() const;
         void updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const;
         void updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const;
-        bool updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * const _textSize, mt::vec2f * const _textOffset, uint32_t * const _charCount, uint32_t * const _layoutCount ) const;
+        bool updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines ) const;
 
     public:
         MENGINE_INLINE const TextEntryInterfacePtr & getTotalTextEntry() const;

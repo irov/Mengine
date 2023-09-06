@@ -70,11 +70,13 @@ namespace Mengine
             return false;
         }
 
-        m_stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create input stream '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create input stream '%s'"
             , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
         );
+
+        m_stream = stream;
 
         return true;
     }

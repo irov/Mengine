@@ -2,6 +2,10 @@
 
 #include "Interface/FileOutputStreamInterface.h"
 
+#if defined(MENGINE_DEBUG)
+#   include "Interface/DebugFileInterface.h"
+#endif
+
 #include "Kernel/Factorable.h"
 
 #include "SDL_rwops.h"
@@ -12,6 +16,9 @@ namespace Mengine
     class SDLFileOutputStream
         : public FileOutputStreamInterface
         , public Factorable
+#if defined(MENGINE_DEBUG)
+        , public DebugFileInterface
+#endif
     {
         DECLARE_FACTORABLE( SDLFileOutputStream );
 
@@ -35,9 +42,9 @@ namespace Mengine
 
 #if defined(MENGINE_DEBUG)
     public:
-        const FilePath & getRelationPath() const override;
-        const FilePath & getFolderPath() const override;
-        const FilePath & getFilePath() const override;
+        const FilePath & getDebugRelationPath() const override;
+        const FilePath & getDebugFolderPath() const override;
+        const FilePath & getDebugFilePath() const override;
 #endif
 
     protected:

@@ -384,23 +384,6 @@ namespace Mengine
             ->loopPlatform();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::tick( float _frameTime )
-    {
-        if( PLATFORM_SERVICE()
-            ->updatePlatform() == false )
-        {
-            return false;
-        }
-
-        if( PLATFORM_SERVICE()
-            ->tickPlatform( _frameTime, true, false, false ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()
     {
         if( SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true )

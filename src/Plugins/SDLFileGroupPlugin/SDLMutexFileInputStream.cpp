@@ -311,17 +311,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_DEBUG)
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLMutexFileInputStream::getRelationPath() const
+    const FilePath & SDLMutexFileInputStream::getDebugRelationPath() const
     {
         return m_relationPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLMutexFileInputStream::getFolderPath() const
+    const FilePath & SDLMutexFileInputStream::getDebugFolderPath() const
     {
         return m_folderPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLMutexFileInputStream::getFilePath() const
+    const FilePath & SDLMutexFileInputStream::getDebugFilePath() const
     {
         return m_filePath;
     }

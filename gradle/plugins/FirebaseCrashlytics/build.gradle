@@ -6,8 +6,8 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.firebase:firebase-crashlytics:18.4.0'
-    implementation 'com.google.firebase:firebase-crashlytics-ndk:18.4.0'
+    implementation 'com.google.firebase:firebase-crashlytics:18.4.1'
+    implementation 'com.google.firebase:firebase-crashlytics-ndk:18.4.1'
 }
 
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

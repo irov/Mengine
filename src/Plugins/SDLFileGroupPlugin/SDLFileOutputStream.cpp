@@ -171,17 +171,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_DEBUG)
 //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLFileOutputStream::getRelationPath() const
+    const FilePath & SDLFileOutputStream::getDebugRelationPath() const
     {
         return m_relationPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLFileOutputStream::getFolderPath() const
+    const FilePath & SDLFileOutputStream::getDebugFolderPath() const
     {
         return m_folderPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLFileOutputStream::getFilePath() const
+    const FilePath & SDLFileOutputStream::getDebugFilePath() const
     {
         return m_filePath;
     }

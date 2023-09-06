@@ -49,7 +49,7 @@ namespace Mengine
         MENGINE_UNUSED( _streaming );
         MENGINE_UNUSED( _share );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         m_relationPath = _relationPath;
         m_folderPath = _folderPath;
         m_filePath = _filePath;
@@ -328,19 +328,19 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32MutexFileInputStream::getRelationPath() const
+    const FilePath & Win32MutexFileInputStream::getDebugRelationPath() const
     {
         return m_relationPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32MutexFileInputStream::getFolderPath() const
+    const FilePath & Win32MutexFileInputStream::getDebugFolderPath() const
     {
         return m_folderPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32MutexFileInputStream::getFilePath() const
+    const FilePath & Win32MutexFileInputStream::getDebugFilePath() const
     {
         return m_filePath;
     }

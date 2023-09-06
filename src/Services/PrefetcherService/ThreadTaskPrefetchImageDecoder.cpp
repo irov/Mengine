@@ -40,6 +40,7 @@ namespace Mengine
     void ThreadTaskPrefetchImageDecoder::_finalize()
     {
         m_imageDecoder = nullptr;
+        m_memoryInput = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetchImageDecoder::_onThreadTaskRun()
@@ -49,11 +50,13 @@ namespace Mengine
             return false;
         }
 
-        m_stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "can't create image file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create image file '%s'"
             , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
         );
+
+        m_stream = stream;
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoder( m_codecType, MENGINE_DOCUMENT_FACTORABLE );
@@ -63,6 +66,13 @@ namespace Mengine
         );
 
         m_imageDecoder = imageDecoder;
+
+        MemoryInputInterfacePtr memoryInput = MEMORY_SERVICE()
+            ->createMemoryInput( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryInput, "invalid create memory" );
+
+        m_memoryInput = memoryInput;
 
         return true;
     }
@@ -89,17 +99,9 @@ namespace Mengine
             , this->getCodecType().c_str()
         );
 
-        MemoryInputInterfacePtr memoryInput = MEMORY_SERVICE()
-            ->createMemoryInput( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( memoryInput, "file '%s' invalid create memory input code '%s'"
-            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
-            , this->getCodecType().c_str()
-        );
-
         size_t stream_size = m_stream->size();
 
-        void * memory = memoryInput->newBuffer( stream_size );
+        void * memory = m_memoryInput->newBuffer( stream_size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "file '%s' codec '%s' invalid alloc memory '%zu'"
             , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
@@ -118,7 +120,7 @@ namespace Mengine
             return false;
         }
 
-        if( m_imageDecoder->prepareData( memoryInput ) == false )
+        if( m_imageDecoder->prepareData( m_memoryInput ) == false )
         {
             LOGGER_ERROR( "decoder for file '%s' codec '%s' was not initialize"
                 , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )

@@ -41,7 +41,7 @@ namespace Mengine
         m_poolNSString.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleEnvironmentService::stringize( const NSString * _value, ConstString * const _cstr )
+    void AppleEnvironmentService::stringize( NSString * _value, ConstString * const _cstr )
     {
         if( [_value length] == 0 )
         {

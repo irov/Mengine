@@ -14,7 +14,7 @@ namespace Mengine
         SERVICE_DECLARE( "AppleEnvironmentService" )
 
     public:
-        virtual void stringize( const NSString * _value, ConstString * const _cstr ) = 0;
+        virtual void stringize( NSString * _value, ConstString * const _cstr ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

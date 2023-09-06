@@ -140,10 +140,14 @@ namespace Mengine
                 
                 if( m_provider == nullptr )
                 {
+                    LOGGER_ERROR( "not setup MARSDK provider" );
+                    
                     return;
                 }
                 
-                m_provider->onPropError( copy_orderId );
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    m_provider->onPropError( copy_orderId );
+                });
                 
                 return;
             }
@@ -155,10 +159,14 @@ namespace Mengine
             
             if( m_provider == nullptr )
             {
+                LOGGER_ERROR( "not setup MARSDK provider" );
+                
                 return;
             }
                 
-            m_provider->onPropComplete( copy_orderId );
+            dispatch_async(dispatch_get_main_queue(), ^{
+                m_provider->onPropComplete( copy_orderId );
+            });
         }];
     }
     //////////////////////////////////////////////////////////////////////////
@@ -178,7 +186,16 @@ namespace Mengine
                 purchased.emplace_back( purchase_cstr );
             }
             
-            m_provider->onPurchasedNonConsumable( purchased );
+            if( m_provider == nullptr )
+            {
+                LOGGER_ERROR( "not setup MARSDK provider" );
+                
+                return;
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                m_provider->onPurchasedNonConsumable( purchased );
+            });
         }];
     }
     //////////////////////////////////////////////////////////////////////////
@@ -210,10 +227,14 @@ namespace Mengine
         
         if( m_provider == nullptr )
         {
+            LOGGER_ERROR( "not setup MARSDK provider" );
+            
             return;
         }
         
-        m_provider->onUserLogin( _params );
+        dispatch_async(dispatch_get_main_queue(), ^{
+            m_provider->onUserLogin( _params );
+        });
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onUserLogout( const MARSDKResultParams & _params )
@@ -222,10 +243,14 @@ namespace Mengine
         
         if( m_provider == nullptr )
         {
+            LOGGER_ERROR( "not setup MARSDK provider" );
+            
             return;
         }
         
-        m_provider->onUserLogout( _params );
+        dispatch_async(dispatch_get_main_queue(), ^{
+            m_provider->onUserLogout( _params );
+        });
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onPayPaid( const MARSDKResultParams & _params )
@@ -234,10 +259,14 @@ namespace Mengine
         
         if( m_provider == nullptr )
         {
+            LOGGER_ERROR( "not setup MARSDK provider" );
+            
             return;
         }
         
-        m_provider->onPayPaid( _params );
+        dispatch_async(dispatch_get_main_queue(), ^{
+            m_provider->onPayPaid( _params );
+        });
     }
     //////////////////////////////////////////////////////////////////////////
 }

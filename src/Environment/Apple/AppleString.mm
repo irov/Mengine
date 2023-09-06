@@ -11,7 +11,7 @@ namespace Mengine
     namespace Helper
     {
         /////////////////////////////////////////////////////////////////////////
-        size_t NSStringCopyToString( const NSString * _src, Char * const _dst, size_t _capacity )
+        size_t NSStringCopyToString( NSString * _src, Char * const _dst, size_t _capacity )
         {
             const Char * src_str = [_src UTF8String];
             
@@ -22,7 +22,7 @@ namespace Mengine
             return len;
         }
         /////////////////////////////////////////////////////////////////////////
-        ConstString NSStringToConstString( const NSString * _value )
+        ConstString NSStringToConstString( NSString * _value )
         {
             ConstString value_cstr;
             APPLE_ENVIRONMENT_SERVICE()
@@ -31,7 +31,7 @@ namespace Mengine
             return value_cstr;
         }
         /////////////////////////////////////////////////////////////////////////
-        String NSStringToString( const NSString * _value )
+        String NSStringToString( NSString * _value )
         {
             const Char * value_str = [_value UTF8String];
             

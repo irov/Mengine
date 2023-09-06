@@ -16,11 +16,11 @@ namespace Mengine
         m_value = nil;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstStringHolderNSString::setNSString( const NSString * _value )
+    void ConstStringHolderNSString::setNSString( NSString * _value )
     {
         if( _value != nil )
         {
-            const char * data = [m_value UTF8String];
+            const char * data = [_value UTF8String];
             size_t size = MENGINE_STRLEN( data );
             int64_t hash = Helper::makeHash( data, size );
 

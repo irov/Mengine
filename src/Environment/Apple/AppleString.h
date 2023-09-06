@@ -15,10 +15,10 @@ namespace Mengine
 {
     namespace Helper
     {
-        size_t NSStringCopyToString( const NSString * _src, Char * const _dst, size_t _capacity );
+        size_t NSStringCopyToString( NSString * _src, Char * const _dst, size_t _capacity );
     
-        ConstString NSStringToConstString( const NSString * _value );
-        String NSStringToString( const NSString * _value );
+        ConstString NSStringToConstString( NSString * _value );
+        String NSStringToString( NSString * _value );
     
         typedef StaticString<MENGINE_APPLE_MESSAGE_NSID> NSIDMessage;
         NSIDMessage NSIdToString( id _value );

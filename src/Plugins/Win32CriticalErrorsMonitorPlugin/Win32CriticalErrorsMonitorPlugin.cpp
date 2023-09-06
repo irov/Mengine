@@ -4,6 +4,7 @@
 #include "Interface/DateTimeSystemInterface.h"
 
 #include "Environment/Windows/Win32GetCallstack.h"
+#include "Environment/Windows/Win32CreateProcessDump.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/BuildMode.h"
@@ -64,8 +65,9 @@ namespace Mengine
             return false;
         }
 
-        if( PLATFORM_SERVICE()
-            ->createProcessDump( g_monitor->m_dumpPath.c_str(), pExceptionPointers, false ) == false )
+        const Char * dumpPath = g_monitor->m_dumpPath.c_str();
+
+        if( Helper::Win32CreateProcessDump( dumpPath, pExceptionPointers, false ) == false )
         {
             return false;
         }
@@ -122,6 +124,11 @@ namespace Mengine
         );
 
         g_monitor = this;
+
+        if( ::IsDebuggerPresent() == TRUE )
+        {
+            return true;
+        }
 
         ::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
         ::SetUnhandledExceptionFilter( &Win32CriticalErrorsMonitorPlugin::s_exceptionHandler );

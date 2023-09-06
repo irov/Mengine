@@ -70,7 +70,7 @@ namespace Mengine
 
         unknown_btn_change->setClickEvent( [unknown_text1_content]()
         {
-            Char buffer[64];
+            Char buffer[64] = {'\0'};
             MENGINE_SNPRINTF( buffer, 64, "Bye Bye! %" MENGINE_PRIu64 ""
                 , Helper::getTimestamp()
             );

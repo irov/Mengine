@@ -35,6 +35,8 @@ def MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.existAppPlugin(project, "MENGI
 def MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_MESSAGING")
 def MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG")
 def MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING")
+def MENGINE_APP_PLUGIN_APPMETRICA = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPMETRICA")
+def MENGINE_APP_PLUGIN_APPSFLYER = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPSFLYER")
 def MENGINE_APP_PLUGIN_DEVTODEV = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_DEVTODEV")
 def MENGINE_APP_PLUGIN_FACEBOOK = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FACEBOOK")
 def MENGINE_APP_PLUGIN_SENTRY = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_SENTRY")
@@ -547,6 +549,26 @@ if (MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING == true) {
 
     dependencies {
         implementation project(':plugins:FirebasePerformanceMonitoring')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_APPMETRICA", MENGINE_APP_PLUGIN_APPMETRICA)
+
+if (MENGINE_APP_PLUGIN_APPMETRICA == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.AppMetrica.MengineAppMetricaPlugin'
+
+    dependencies {
+        implementation project(':plugins:AppMetrica')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_APPSFLYER", MENGINE_APP_PLUGIN_APPSFLYER)
+
+if (MENGINE_APP_PLUGIN_APPSFLYER == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.AppsFlyer.MengineAppsFlyerPlugin'
+
+    dependencies {
+        implementation project(':plugins:AppsFlyer')
     }
 }
 

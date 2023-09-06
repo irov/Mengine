@@ -22,12 +22,12 @@ namespace Mengine
             }
 
             Char msg[1024] = {'\0'};
-            MENGINE_SNPRINTF( msg, 1024, "[Assert] Statistics '%s' not empty ['%" MENGINE_PRLPARAM "']"
+            MENGINE_SNPRINTF( msg, 1024, "Statistics '%s' not empty ['%" MENGINE_PRLPARAM "']"
                 , Helper::getStatisticName( _id )
                 , value
             );
 
-            Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Vocabulary Empty" );
+            Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Staticstic Empty" );
         }
     }
 }

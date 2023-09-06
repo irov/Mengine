@@ -3,8 +3,6 @@
 #include "Config/Config.h"
 
 #if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
-#   include "Kernel/ConstString.h"
-
 #   include "Config/Char.h"
 #   include "Config/Utf8.h"
 #   include "Config/Typedef.h"

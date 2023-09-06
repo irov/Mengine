@@ -1,3 +1,5 @@
+-keep public class com.android.installreferrer.** { *; }
+
 -keep public class * extends org.Mengine.Base.MenginePluginExtension {
     native <methods>;
     public <methods>;

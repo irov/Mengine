@@ -485,6 +485,8 @@ Assertion
     AssertionReferenceCount.h
     AssertionVSNPRINTF.cpp
     AssertionVSNPRINTF.h
+    AssertionFilePath.h
+    AssertionFilePath.cpp
 )
 
 ADD_FILTER(

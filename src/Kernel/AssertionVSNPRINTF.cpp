@@ -19,7 +19,7 @@ namespace Mengine
             if( format_count < 0 )
             {
                 Char msg[2048] = {'\0'};
-                MENGINE_SNPRINTF( msg, 1024, "[Assert] VSNPRINTF format '%s' invalid args"
+                MENGINE_SNPRINTF( msg, 2048, "VSNPRINTF format '%s' invalid args"
                     , _format
                 );
 
@@ -34,7 +34,7 @@ namespace Mengine
             }
 
             Char msg[2048] = {'\0'};
-            MENGINE_SNPRINTF( msg, 1024, "[Assert] VSNPRINTF format '%s' capacity [%zu]"
+            MENGINE_SNPRINTF( msg, 2048, "VSNPRINTF format '%s' capacity [%zu]"
                 , _format
                 , _capacity
             );

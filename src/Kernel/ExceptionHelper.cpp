@@ -41,7 +41,7 @@ namespace Mengine
         MENGINE_STRCAT( exception_msg, "\n" );
 
         Char format_line[32] = {'\0'};
-        MENGINE_SNPRINTF( format_line, 16, "%u", m_line );
+        MENGINE_SNPRINTF( format_line, 32, "%u", m_line );
 
         MENGINE_STRCAT( exception_msg, "line: " );
         MENGINE_STRCAT( exception_msg, format_line );

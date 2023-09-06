@@ -25,12 +25,12 @@ namespace Mengine
                 size_t replace_msg_len = replace_msg_end - replace_msg;
 
                 Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
-                MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "[Assert] original string '%.*s' has invalid utf8"
+                MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "original string '%.*s' has invalid utf8"
                     , (int32_t)replace_msg_len
                     , replace_msg_end
                 );
 
-                Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Standard Character Set" );
+                Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Validate UTF8" );
             }
         }
     }

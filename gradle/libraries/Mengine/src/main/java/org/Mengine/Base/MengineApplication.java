@@ -795,11 +795,11 @@ public class MengineApplication extends Application {
         }
     }
 
-    public void onMengineAnalyticsEvent(int eventType, String eventName, long timestamp, Map<String, Object> context, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(int eventType, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         ArrayList<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
 
         for (MenginePluginAnalyticsListener l : listeners) {
-            l.onMengineAnalyticsEvent(this, eventType, eventName, timestamp, context, parameters);
+            l.onMengineAnalyticsEvent(this, eventType, eventName, timestamp, bases, parameters);
         }
     }
 

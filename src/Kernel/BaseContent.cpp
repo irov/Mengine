@@ -1,5 +1,7 @@
 #include "BaseContent.h"
 
+#include "Kernel/AssertionFilePath.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -24,6 +26,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseContent::setFilePath( const FilePath & _filePath )
     {
+        MENGINE_ASSERTION_VALIDATE_FILEPATH( _filePath );
+
         m_filePath = _filePath;
     }
     //////////////////////////////////////////////////////////////////////////

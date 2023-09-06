@@ -248,7 +248,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> context, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         if (m_logger == null) {
             return;
         }
@@ -257,7 +257,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             case EAET_CUSTOM: {
                 Bundle params = new Bundle();
 
-                for (Map.Entry<String, Object> entry : context.entrySet()) {
+                for (Map.Entry<String, Object> entry : bases.entrySet()) {
                     String name = entry.getKey();
                     Object value = entry.getValue();
 

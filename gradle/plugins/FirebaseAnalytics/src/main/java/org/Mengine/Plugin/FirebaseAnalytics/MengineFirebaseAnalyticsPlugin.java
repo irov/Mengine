@@ -75,7 +75,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> context, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         if (m_firebaseAnalytics == null) {
             return;
         }
@@ -84,7 +84,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
             case EAET_CUSTOM: {
                 Bundle params = new Bundle();
 
-                for (Map.Entry<String, Object> entry : context.entrySet()) {
+                for (Map.Entry<String, Object> entry : bases.entrySet()) {
                     String name = entry.getKey();
                     Object value = entry.getValue();
 

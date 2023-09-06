@@ -1,0 +1,11 @@
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
+
+android {
+    namespace "org.Mengine.Plugin.AppMetrica"
+}
+
+dependencies {
+    implementation 'com.yandex.android:mobmetricalib:5.3.0'
+}
+
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

@@ -30,14 +30,14 @@ namespace Mengine
                 }
 
                 Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
-                MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "[Assert] string '%.*s' has non standard char '%c' code: %u"
+                MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "string '%.*s' has non standard char '%c' code: %u"
                     , (int32_t)_len
                     , _value
                     , ch
                     , (uint32_t)ch
                 );
 
-                Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Standard Character Set" );
+                Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Standard Character Set" );
             }
         }
         //////////////////////////////////////////////////////////////////////////
@@ -53,14 +53,14 @@ namespace Mengine
                 }
 
                 Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
-                MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "[Assert] string '%.*s' has non lower char '%c' code: %u"
+                MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "string '%.*s' has non lower char '%c' code: %u"
                     , (int32_t)_len
                     , _value
                     , ch
                     , (uint32_t)ch
                 );
 
-                Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Lower Character Set" );
+                Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Lower Character Set" );
             }
         }
         //////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ namespace Mengine
                 }
 
                 Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
-                MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "[Assert] string '%.*s' has non upper char '%c' code: %u"
+                MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "string '%.*s' has non upper char '%c' code: %u"
                     , (int32_t)_len
                     , _value
                     , ch

@@ -91,17 +91,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::submitExtendedData( const Char * _data )
     {
-        MARUserExtraData * extraData = [MARUserExtraData dataFromJsonString:@(_data)];
-        
-        LOGGER_MESSAGE( "submit extended data: %s"
+        LOGGER_MESSAGE( "submitExtendedData data: %s"
             , _data
         );
+        
+        MARUserExtraData * extraData = [MARUserExtraData dataFromJsonString:@(_data)];
         
         [[MARSDK sharedInstance] submitExtraData:extraData];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::submitPaymentData( const Char * _data )
     {
+        LOGGER_MESSAGE( "submitPaymentData data: %s"
+            , _data
+        );
+        
         MARProductInfo * productInfo = [MARProductInfo productFromJsonString:@(_data)];
         
         if( productInfo == nil )
@@ -112,17 +116,13 @@ namespace Mengine
             
             return;
         }
-
-        LOGGER_MESSAGE( "submit payment data: %s"
-            , _data
-        );
         
         [[MARSDK sharedInstance] pay:productInfo];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::propComplete( const ConstString & _orderId )
     {
-        LOGGER_MESSAGE( "prop complete orderId: %s"
+        LOGGER_MESSAGE( "propComplete orderId: %s"
             , _orderId.c_str()
         );
         
@@ -201,7 +201,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum )
     {
-        LOGGER_MESSAGE( "show reward video ad: item '%s' num [%u]"
+        LOGGER_MESSAGE( "showRewardVideoAd itemName: %s itemNum: %u"
             , _itemName.c_str()
             , _itemNum
         );
@@ -223,7 +223,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onUserLogin( const MARSDKResultParams & _params )
     {
-        LOGGER_MESSAGE( "event user login" );
+        LOGGER_MESSAGE( "onUserLogin" );
         
         if( m_provider == nullptr )
         {
@@ -239,7 +239,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onUserLogout( const MARSDKResultParams & _params )
     {
-        LOGGER_MESSAGE( "event user logout" );
+        LOGGER_MESSAGE( "onUserLogout" );
         
         if( m_provider == nullptr )
         {
@@ -255,7 +255,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleMARSDKService::onPayPaid( const MARSDKResultParams & _params )
     {
-        LOGGER_MESSAGE( "event pay paid" );
+        LOGGER_MESSAGE( "onPayPaid" );
         
         if( m_provider == nullptr )
         {

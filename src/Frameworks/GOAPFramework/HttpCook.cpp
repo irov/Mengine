@@ -17,7 +17,7 @@ namespace Mengine
                 : public HttpTaskReceiverInterface
             {
             public:
-                HttpTaskReceiverF( const LambdaTaskReceiver & _f )
+                explicit HttpTaskReceiverF( const LambdaTaskReceiver & _f )
                     : m_f( _f )
                 {
                 }

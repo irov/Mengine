@@ -2,7 +2,6 @@ MENGINE_PROJECT(ResourceValidatePlugin)
 
 ADD_FILTER(
 src
-    ResourceValidatorInterface.h
     ResourceValidateServiceInterface.h
 
     ResourceValidatePlugin.h
@@ -12,7 +11,6 @@ src
     ResourceValidateService.h
     ResourceValidateService.cpp
     
-    ResourceValidatorHelper.h
     ResourceImageDefaultValidator.h
     ResourceImageDefaultValidator.cpp
     ResourceImageDataValidator.h

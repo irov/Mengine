@@ -19,9 +19,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderResourceSpineSkeleton::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
+    bool LoaderResourceSpineSkeleton::load( const FactorablePtr & _factorable, const Metabuf::Metadata * _meta )
     {
-        ResourceSpineSkeleton * resource = _loadable.getT<ResourceSpineSkeleton *>();
+        ResourceSpineSkeleton * resource = _factorable.getT<ResourceSpineSkeleton *>();
 
         const ConstString & groupName = resource->getGroupName();
 

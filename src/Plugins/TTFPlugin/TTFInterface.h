@@ -10,6 +10,10 @@
 
 #include "math/uv4.h"
 
+#ifndef MENGINE_TTF_METRICS_SYMBOL
+#define MENGINE_TTF_METRICS_SYMBOL 'A'
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

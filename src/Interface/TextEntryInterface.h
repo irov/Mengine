@@ -6,7 +6,7 @@
 #include "Kernel/Tags.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/GlyphChar.h"
+#include "Kernel/GlyphCode.h"
 #include "Kernel/Color.h"
 #include "Kernel/VectorString.h"
 

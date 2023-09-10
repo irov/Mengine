@@ -44,7 +44,7 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
     }
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppInit(MengineApplication application) throws MenginePluginInvalidInitializeException {
         String MengineSentryPlugin_DSN = application.getMetaDataString(PLUGIN_METADATA_DSN);
 
         if (MengineSentryPlugin_DSN == null) {
@@ -103,7 +103,10 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
                 return transaction;
             });
         });
+    }
 
+    @Override
+    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         Sentry.configureScope(scope -> {
             boolean isMasterRelease = application.isMasterRelease();
             boolean isBuildPublish = application.isBuildPublish();

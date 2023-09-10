@@ -7,7 +7,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/FontConfigLoaderInterface.h"
+#include "Interface/ConfigLoaderInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
 

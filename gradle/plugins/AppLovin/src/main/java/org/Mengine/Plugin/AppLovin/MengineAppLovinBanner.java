@@ -15,6 +15,7 @@ import com.applovin.sdk.AppLovinAdSize;
 import com.applovin.sdk.AppLovinSdkUtils;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineUtils;
 
 public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener {
     private MaxAdView m_adView;
@@ -22,7 +23,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     private int m_enumeratorRequest;
     private int m_requestId;
 
-    public MengineAppLovinBanner(MengineAppLovinPlugin plugin, String adUnitId) {
+    public MengineAppLovinBanner(MengineAppLovinPlugin plugin, String adUnitId, String placement) {
         super(plugin);
 
         m_enumeratorRequest = 0;
@@ -31,6 +32,8 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         MengineActivity activity = plugin.getMengineActivity();
 
         MaxAdView adView = new MaxAdView(adUnitId, activity);
+
+        adView.setPlacement(placement);
 
         adView.setRequestListener(this);
         adView.setListener(this);
@@ -159,12 +162,12 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdLoaded(MaxAd ad) {
         this.logMaxAd( "Banner","onAdLoaded", ad);
 
-        String adUnitId = m_adView.getAdUnitId();
+        String adUnitId = ad.getAdUnitId();
 
         this.buildEvent("mng_ad_banner_loaded")
             .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
-            .addParameterString("ad", this.getMAAdParams(ad))
+            .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
         m_plugin.setState("applovin.banner.state." + adUnitId, "loaded." + ad.getNetworkName());
@@ -176,12 +179,14 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdDisplayed(MaxAd ad) {
         this.logMaxAd("Banner", "onAdDisplayed", ad);
 
-        String adUnitId = m_adView.getAdUnitId();
+        String adUnitId = ad.getAdUnitId();
+        String placement = ad.getPlacement();
 
         this.buildEvent("mng_ad_banner_displayed")
             .addParameterString("ad_unit_id", adUnitId)
+            .addParameterString("placement", placement)
             .addParameterLong("request_id", m_requestId)
-            .addParameterString("ad", this.getMAAdParams(ad))
+            .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
         m_plugin.setState("applovin.banner.state." + adUnitId, "displayed." + ad.getNetworkName());
@@ -193,12 +198,14 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdHidden(MaxAd ad) {
         this.logMaxAd("Banner", "onAdHidden", ad);
 
-        String adUnitId = m_adView.getAdUnitId();
+        String adUnitId = ad.getAdUnitId();
+        String placement = ad.getPlacement();
 
         this.buildEvent("mng_ad_banner_hidden")
             .addParameterString("ad_unit_id", adUnitId)
+            .addParameterString("placement", placement)
             .addParameterLong("request_id", m_requestId)
-            .addParameterString("ad", this.getMAAdParams(ad))
+            .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
         m_plugin.setState("applovin.banner.state." + adUnitId, "hidden." + ad.getNetworkName());
@@ -210,12 +217,14 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdClicked(MaxAd ad) {
         this.logMaxAd("Banner", "onAdClicked", ad);
 
-        String adUnitId = m_adView.getAdUnitId();
+        String adUnitId = ad.getAdUnitId();
+        String placement = ad.getPlacement();
 
         this.buildEvent("mng_ad_banner_clicked")
             .addParameterString("ad_unit_id", adUnitId)
+            .addParameterString("placement", placement)
             .addParameterLong("request_id", m_requestId)
-            .addParameterString("ad", this.getMAAdParams(ad))
+            .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
         m_plugin.setState("applovin.banner.state." + adUnitId, "clicked." + ad.getNetworkName());
@@ -225,13 +234,15 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
     @Override
     public void onAdLoadFailed(String adUnitId, MaxError error) {
-        this.logMaxError("Banner", "onAdLoadFailed", error);
+        this.logMaxError("Banner", "onAdLoadFailed", adUnitId, error);
+
+        int errorCode = error.getCode();
 
         this.buildEvent("mng_ad_banner_load_failed")
             .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
-            .addParameterString("error", this.getMaxErrorParams(error))
-            .addParameterLong("error_code", error.getCode())
+            .addParameterLong("error_code", errorCode)
+            .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
         m_plugin.setState("applovin.banner.state." + adUnitId, "load_failed");
@@ -241,16 +252,20 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
     @Override
     public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-        this.logMaxError("Banner", "onAdDisplayFailed", error);
+        this.logMaxError("Banner", "onAdDisplayFailed", ad.getAdUnitId(), error);
 
-        String adUnitId = m_adView.getAdUnitId();
+        String adUnitId = ad.getAdUnitId();
+        String placement = ad.getPlacement();
+
+        int errorCode = error.getCode();
 
         this.buildEvent("mng_ad_banner_display_failed")
             .addParameterString("ad_unit_id", adUnitId)
+            .addParameterString("placement", placement)
             .addParameterLong("request_id", m_requestId)
-            .addParameterString("ad", this.getMAAdParams(ad))
-            .addParameterString("error", this.getMaxErrorParams(error))
-            .addParameterLong("error_code", error.getCode())
+            .addParameterLong("error_code", errorCode)
+            .addParameterJSON("ad", this.getMAAdParams(ad))
+            .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
         m_plugin.setState("applovin.banner.state." + adUnitId, "display_failed." + ad.getNetworkName());
@@ -262,12 +277,14 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdExpanded(MaxAd ad) {
         this.logMaxAd("Banner", "onAdExpanded", ad);
 
-        String adUnitId = m_adView.getAdUnitId();
+        String adUnitId = ad.getAdUnitId();
+        String placement = ad.getPlacement();
 
         this.buildEvent("mng_ad_banner_expanded")
             .addParameterString("ad_unit_id", adUnitId)
+            .addParameterString("placement", placement)
             .addParameterLong("request_id", m_requestId)
-            .addParameterString("ad", this.getMAAdParams(ad))
+            .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
         m_plugin.setState("applovin.banner.state." + adUnitId, "expanded." + ad.getNetworkName());
@@ -279,12 +296,12 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdCollapsed(MaxAd ad) {
         this.logMaxAd("Banner", "onAdCollapsed", ad);
 
-        String adUnitId = m_adView.getAdUnitId();
+        String adUnitId = ad.getAdUnitId();
 
         this.buildEvent("mng_ad_banner_collapsed")
             .addParameterString("ad_unit_id", adUnitId)
             .addParameterLong("request_id", m_requestId)
-            .addParameterString("ad", this.getMAAdParams(ad))
+            .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
         m_plugin.setState("applovin.banner.state." + adUnitId, "collapsed." + ad.getNetworkName());
@@ -296,12 +313,14 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     public void onAdRevenuePaid(MaxAd ad) {
         this.logMaxAd("Banner", "onAdRevenuePaid", ad);
 
-        String adUnitId = m_adView.getAdUnitId();
+        String adUnitId = ad.getAdUnitId();
+        String placement = ad.getPlacement();
 
         this.buildEvent("mng_ad_banner_revenue_paid")
             .addParameterString("ad_unit_id", adUnitId)
+            .addParameterString("placement", placement)
             .addParameterLong("request_id", m_requestId)
-            .addParameterString("ad", this.getMAAdParams(ad))
+            .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
         m_plugin.onEventRevenuePaid(ad);

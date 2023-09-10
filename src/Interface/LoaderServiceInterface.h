@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
-#include "Interface/LoaderInterface.h"
+#include "Interface/MetabufLoaderInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"

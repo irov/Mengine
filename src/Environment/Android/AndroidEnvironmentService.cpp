@@ -825,11 +825,25 @@ namespace Mengine
                jenv->DeleteLocalRef( jclass_Map );
            });
 
-        this->callVoidApplicationMethod(jenv, "onMengineAnalyticsEvent", "(ILjava/lang/String;JLjava/util/Map;Ljava/util/Map;)V", (jint)eventType, eventName_jobject, (jlong)eventTimestamp, bases_jobject, parameters_jobject );
+        this->callVoidApplicationMethod( jenv, "onMengineAnalyticsEvent", "(ILjava/lang/String;JLjava/util/Map;Ljava/util/Map;)V", (jint)eventType, eventName_jobject, (jlong)eventTimestamp, bases_jobject, parameters_jobject );
 
         jenv->DeleteLocalRef( eventName_jobject );
         jenv->DeleteLocalRef(bases_jobject );
         jenv->DeleteLocalRef( parameters_jobject );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidEnvironmentService::onAnalyticsFlush()
+    {
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        if( jenv == nullptr )
+        {
+            MENGINE_ERROR_FATAL( "invalid get jenv" );
+
+            return;
+        }
+
+        this->callVoidApplicationMethod( jenv, "onMengineAnalyticsFlush", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::notifyPlatformRun_()

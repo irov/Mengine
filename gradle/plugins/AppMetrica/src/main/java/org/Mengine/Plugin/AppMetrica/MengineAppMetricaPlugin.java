@@ -132,4 +132,11 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
             } break;
         }
     }
+
+    @Override
+    public void onMengineAnalyticsFlush(MengineApplication application) {
+        this.logInfo("logFlush");
+
+        YandexMetrica.sendEventsBuffer();
+    }
 }

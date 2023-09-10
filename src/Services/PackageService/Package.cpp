@@ -789,7 +789,7 @@ namespace Mengine
 
             resource->setContent( content );
             
-            LoaderInterfacePtr loader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Loader" ), type );
+            MetabufLoaderInterfacePtr loader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), type );
 
             MENGINE_ASSERTION_MEMORY_PANIC( loader, "file '%s' group '%s' resource '%s' type '%s' invalid create loader"
                 , Helper::getFileGroupFullPath( _fileGroup, _filePath )

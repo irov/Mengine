@@ -7,7 +7,7 @@
 #include "Kernel/String.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Color.h"
-#include "Kernel/GlyphChar.h"
+#include "Kernel/GlyphCode.h"
 
 #include "math/vec4.h"
 #include "math/mat4.h"
@@ -18,7 +18,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    struct CharData
+    struct TextCharData
     {
         GlyphCode code;
 
@@ -34,7 +34,7 @@ namespace Mengine
         RenderTextureInterfacePtr texture;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<CharData> VectorCharData;
+    typedef Vector<TextCharData> VectorTextCharData;
     //////////////////////////////////////////////////////////////////////////
     class TextLine
     {
@@ -46,15 +46,15 @@ namespace Mengine
         bool initialize( uint32_t _fontId, const FontInterfacePtr & _font, const U32String & _text );
 
     public:
-        const VectorCharData & getCharsData() const;
+        const VectorTextCharData & getCharsData() const;
 
     public:
         float getLength() const;
         uint32_t getCharsDataSize() const;
 
     public:
-        void calcCharPosition( const CharData & _cd, const mt::vec2f & _offset, float _charScale, uint32_t _index, mt::vec3f * const _pos ) const;
-        void advanceCharOffset( const CharData & _cd, float _charScale, mt::vec2f * const _offset ) const;
+        void calcCharPosition( const TextCharData & _cd, const mt::vec2f & _offset, float _charScale, uint32_t _index, mt::vec3f * const _pos ) const;
+        void advanceCharOffset( const TextCharData & _cd, float _charScale, mt::vec2f * const _offset ) const;
 
     protected:
         uint32_t m_layout;
@@ -62,7 +62,7 @@ namespace Mengine
 
         mutable float m_charOffset;
 
-        mutable VectorCharData m_charsData;
+        mutable VectorTextCharData m_charsData;
     };
     //////////////////////////////////////////////////////////////////////////
 };

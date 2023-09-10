@@ -2,9 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "ResourceValidatorInterface.h"
-
-#include "Kernel/ConstString.h"
+#include "Kernel/Resource.h"
 
 namespace Mengine
 {
@@ -14,7 +12,7 @@ namespace Mengine
         SERVICE_DECLARE( "ResourceValidateService" );
 
     public:
-        virtual bool validResource( const ResourcePtr & _resource ) const = 0;
+        virtual bool validateResource( const ResourcePtr & _resource ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

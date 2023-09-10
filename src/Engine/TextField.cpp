@@ -305,15 +305,16 @@ namespace Mengine
 
         float linesOffset = this->calcLinesOffset( lineOffset, _font );
 
-        mt::vec2f base_offset( 0.f, 0.f );
-        base_offset.y = linesOffset * m_autoScaleFactor;
+        mt::vec2f baseOffset;
+        baseOffset.x = 0.f;
+        baseOffset.y = linesOffset * m_autoScaleFactor;
 
         TextRenderChunk chunk;
         chunk.vertex_begin = 0;
         chunk.vertex_count = 0;
         chunk.material = nullptr;
 
-        mt::vec2f offset = base_offset;
+        mt::vec2f offset = baseOffset;
 
         float charScale = this->calcCharScale();
 
@@ -333,9 +334,9 @@ namespace Mengine
                 {
                     offset2 = offset;
 
-                    const VectorCharData & charsData = line.getCharsData();
+                    const VectorTextCharData & charsData = line.getCharsData();
 
-                    for( const CharData & cd : charsData )
+                    for( const TextCharData & cd : charsData )
                     {
                         if( cd.texture == nullptr )
                         {
@@ -1048,8 +1049,10 @@ namespace Mengine
 
         uint32_t charCount = 0;
 
+        const VectorTextLines2 & layout0 = layouts[0];
+
         float text_length = 0.f;
-        float text_offset = this->getHorizontAlignOffset_( layouts[0] );
+        float text_offset = this->getHorizontAlignOffset_( layout0 );
 
         for( const VectorTextLines2 & lines2 : layouts )
         {
@@ -1058,10 +1061,10 @@ namespace Mengine
 
             for( const VectorTextLines & lines : lines2 )
             {
-                const TextLine & line = lines[0];
+                const TextLine & line0 = lines[0];
 
-                line_length += line.getLength();
-                line_chars += line.getCharsDataSize();
+                line_length += line0.getLength();
+                line_chars += line0.getCharsDataSize();
             }
 
             float line_offset = this->getHorizontAlignOffset_( lines2 );
@@ -1079,13 +1082,17 @@ namespace Mengine
         float fontHeight = _font->getFontHeight();
         //float fontAscent = _font->getFontAscent();
 
-        if( m_layoutCount > 0 )
+        if( m_layoutCount == 0 )
         {
-            textSize.y = (lineOffset + fontHeight) * (m_layoutCount - 1) + fontHeight + m_extraThickness * 2.f;
+            textSize.y = 0.f;
+        }
+        else if( m_layoutCount == 1 )
+        {
+            textSize.y = fontHeight + m_extraThickness * 2.f;
         }
         else
         {
-            textSize.y = fontHeight + m_extraThickness * 2.f;
+            textSize.y = (lineOffset + fontHeight) * (m_layoutCount - 1) + fontHeight + m_extraThickness * 2.f;
         }
 
         m_textSize = textSize;
@@ -1094,7 +1101,7 @@ namespace Mengine
 
         mt::vec2f textOffset;
         textOffset.x = text_offset;
-        textOffset.y = -lines_offset;
+        textOffset.y = lines_offset * m_autoScaleFactor;
 
         m_textOffset = textOffset;
 
@@ -1572,7 +1579,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float TextField::calcLinesOffset( float _lineOffset, const FontInterfacePtr & _font ) const
     {
-        float fontAscent = _font->getFontAscent();
+        float fontAscender = _font->getFontAscender();
         //float fontDescent = _font->getFontDescent();
         float fontHeight = _font->getFontHeight();
         float fontBearingYA = _font->getFontBearingYA();
@@ -1587,7 +1594,7 @@ namespace Mengine
             {
             case ETFVA_BOTTOM:
                 {
-                    offset = fontAscent + m_extraThickness * 2.f;
+                    offset = fontAscender + m_extraThickness * 2.f;
                 }break;
             case ETFVA_CENTER:
                 {
@@ -1608,11 +1615,11 @@ namespace Mengine
             {
             case ETFVA_BOTTOM:
                 {
-                    offset = fontAscent + m_extraThickness * 2.f;
+                    offset = fontAscender + m_extraThickness * 2.f;
                 }break;
             case ETFVA_CENTER:
                 {
-                    offset = fontAscent - (fontHeight + _lineOffset) * layoutCountf * 0.5f;
+                    offset = fontAscender - (fontHeight + _lineOffset) * layoutCountf * 0.5f;
 
                     if( m_anchorVerticalAlign == false )
                     {

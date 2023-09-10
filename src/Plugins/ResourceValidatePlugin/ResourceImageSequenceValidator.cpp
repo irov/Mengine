@@ -39,7 +39,7 @@ namespace Mengine
             const ResourceImagePtr & resourceImage = sequence.resourceImage;
 
             if( RESOURCEVALIDATE_SERVICE()
-                ->validResource( resourceImage ) == false )
+                ->validateResource( resourceImage ) == false )
             {
                 LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid validate sequence resource '%s'"
                     , _resource->getName().c_str()

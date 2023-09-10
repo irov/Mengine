@@ -39,11 +39,11 @@ Common
     PickCodecInterface.h
     SoundCodecInterface.h
     FontInterface.h
-    FontEffectInterface.h
-    FontConfigLoaderInterface.h
+    FontGlyphInterface.h
+    FontEffectInterface.h    
     TextEntryInterface.h
     TextServiceInterface.h
-    FontValidatorInterface.h
+    ValidatorInterface.h
     FontServiceInterface.h
     InputStreamInterface.h
     OutputStreamInterface.h
@@ -96,8 +96,8 @@ Common
     ResourceServiceInterface.h
     UnicodeSystemInterface.h
     NotificatorInterface.h
-    LoadableInterface.h
-    LoaderInterface.h
+    ConfigLoaderInterface.h
+    MetabufLoaderInterface.h
     LoaderServiceInterface.h
     RandomizerInterface.h
     AnimationInterface.h

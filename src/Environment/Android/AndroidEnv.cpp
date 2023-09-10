@@ -52,15 +52,6 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jboolean JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1isBuildPublish )(JNIEnv * env, jclass cls)
-    {
-        bool mode = Mengine::Helper::isBuildPublish();
-
-        jboolean result = (jboolean)mode;
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jstring JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1getEngineGITSHA1 )(JNIEnv * env, jclass cls)
     {
         const Mengine::Char * ENGINE_GIT_SHA1 = Mengine::Helper::getEngineGITSHA1();

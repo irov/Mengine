@@ -18,8 +18,8 @@ src
     AstralaxEmitterContainer.h
     ResourceAstralax.cpp
     ResourceAstralax.h
-    LoaderResourceAstralax.cpp
-    LoaderResourceAstralax.h
+    MetabufLoaderResourceAstralax.cpp
+    MetabufLoaderResourceAstralax.h
     AstralaxService.h
     AstralaxService.cpp
     

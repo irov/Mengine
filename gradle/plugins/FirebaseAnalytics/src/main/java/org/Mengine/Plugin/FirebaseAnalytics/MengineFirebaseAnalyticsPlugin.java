@@ -85,17 +85,25 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 Bundle params = new Bundle();
 
                 for (Map.Entry<String, Object> entry : bases.entrySet()) {
-                    String name = entry.getKey();
+                    String key = entry.getKey();
                     Object value = entry.getValue();
 
                     if (value instanceof Boolean) {
-                        params.putBoolean(name, (Boolean)value);
+                        params.putBoolean(key, (Boolean)value);
                     } else if (value instanceof Long) {
-                        params.putLong(name, (Long)value);
+                        params.putLong(key, (Long)value);
                     } else if (value instanceof Double) {
-                        params.putDouble(name, (Double)value);
+                        params.putDouble(key, (Double)value);
                     } else if (value instanceof String) {
-                        params.putString(name, (String)value);
+                        String stringValue = (String)value;
+
+                        if (stringValue.length() > 100) {
+                            String stringValue100 = stringValue.substring(0, 100);
+
+                            params.putString(key, stringValue100);
+                        } else {
+                            params.putString(key, stringValue);
+                        }
                     } else {
                         this.logError("unsupported parameter: %s class: %s"
                             , value
@@ -107,17 +115,25 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 }
 
                 for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-                    String name = entry.getKey();
+                    String key = entry.getKey();
                     Object value = entry.getValue();
 
                     if (value instanceof Boolean) {
-                        params.putBoolean(name, (Boolean)value);
+                        params.putBoolean(key, (Boolean)value);
                     } else if (value instanceof Long) {
-                        params.putLong(name, (Long)value);
+                        params.putLong(key, (Long)value);
                     } else if (value instanceof Double) {
-                        params.putDouble(name, (Double)value);
+                        params.putDouble(key, (Double)value);
                     } else if (value instanceof String) {
-                        params.putString(name, (String)value);
+                        String stringValue = (String)value;
+
+                        if (stringValue.length() > 100) {
+                            String stringValue100 = stringValue.substring(0, 100);
+
+                            params.putString(key, stringValue100);
+                        } else {
+                            params.putString(key, stringValue);
+                        }
                     } else {
                         this.logError("unsupported parameter: %s class: %s"
                             , value
@@ -290,7 +306,20 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         }
     }
 
+    @Override
+    public void onMengineAnalyticsFlush(MengineApplication application) {
+        if (m_firebaseAnalytics == null) {
+            return;
+        }
+
+        //Empty
+    }
+
     public void setUserProperty(@NonNull String name, @NonNull String value) {
+        if (m_firebaseAnalytics == null) {
+            return;
+        }
+
         this.logMessage("setUserProperty name: %s value: %s"
             , name
             , value
@@ -300,6 +329,10 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     }
 
     public void logEvent(@NonNull String eventName, @Nullable Bundle params) {
+        if (m_firebaseAnalytics == null) {
+            return;
+        }
+
         this.logMessage("logEvent eventName: %s params: %s"
             , eventName
             , params

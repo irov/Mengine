@@ -18,9 +18,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderResourceVideo::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
+    bool LoaderResourceVideo::load( const FactorablePtr & _factorable, const Metabuf::Metadata * _meta )
     {
-        ResourceVideo * resource = _loadable.getT<ResourceVideo *>();
+        ResourceVideo * resource = _factorable.getT<ResourceVideo *>();
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceVideo * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceVideo *>(_meta);

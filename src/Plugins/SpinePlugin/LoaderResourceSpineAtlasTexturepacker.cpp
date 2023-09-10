@@ -20,9 +20,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderResourceSpineAtlasTexturepacker::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
+    bool LoaderResourceSpineAtlasTexturepacker::load( const FactorablePtr & _factorable, const Metabuf::Metadata * _meta )
     {
-        ResourceSpineAtlasTexturepacker * resource = _loadable.getT<ResourceSpineAtlasTexturepacker *>();
+        ResourceSpineAtlasTexturepacker * resource = _factorable.getT<ResourceSpineAtlasTexturepacker *>();
 
         const ConstString & groupName = resource->getGroupName();
 

@@ -49,6 +49,15 @@ public class MengineAnalyticsEventBuilder {
         return this;
     }
 
+    public MengineAnalyticsEventBuilder addParameterJSON(String key, String value) {
+        this.assertBases(key);
+        this.assertParameters(key);
+
+        m_parameters.put(key, value);
+
+        return this;
+    }
+
     public MengineAnalyticsEventBuilder addParameterLong(String key, long value) {
         this.assertBases(key);
         this.assertParameters(key);

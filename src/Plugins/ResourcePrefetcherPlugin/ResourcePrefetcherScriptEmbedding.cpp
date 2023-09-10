@@ -138,6 +138,12 @@ namespace Mengine
             PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYBIND, ConstString::none(), _cb, _args );
 
             FONT_SERVICE()
+                ->foreachGlyphs( [&observer]( const FontGlyphInterfacePtr & _glyph )
+            {
+                _glyph->prefetch( observer );
+            } );
+
+            FONT_SERVICE()
                 ->foreachFonts( [&observer]( const FontInterfacePtr & _font )
             {
                 _font->prefetch( observer );
@@ -162,6 +168,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void s_unfetchFonts()
         {
+            FONT_SERVICE()
+                ->foreachGlyphs( []( const FontGlyphInterfacePtr & _glyph )
+            {
+                _glyph->unfetch();
+            } );
+
             FONT_SERVICE()
                 ->foreachFonts( []( const FontInterfacePtr & _font )
             {

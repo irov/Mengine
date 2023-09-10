@@ -1,13 +1,12 @@
 #pragma once
 
-#include "ResourceValidatorHelper.h"
-
 #include "Kernel/ResourceSound.h"
+#include "Kernel/Validator.h"
 
 namespace Mengine
 {
     class ResourceSoundValidator
-        : public ResourceValidatorT<ResourceSoundPtr>
+        : public Validator<ResourceSoundPtr>
     {
     public:
         ResourceSoundValidator();

@@ -4,16 +4,11 @@
 #include "Kernel/Utf8Helper.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_TTF_METRICS_SYMBOL
-#define MENGINE_TTF_METRICS_SYMBOL 'A'
-#endif
-//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     FontBase::FontBase()
         : m_params( EFP_NONE )
-        , m_metricsSymbol( MENGINE_TTF_METRICS_SYMBOL )
         , m_height( 0 )
         , m_lineOffset( 0.f )
         , m_charOffset( 0.f )
@@ -24,34 +19,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void FontBase::setContent( const ContentInterfacePtr & _content )
+    void FontBase::setGlyph( const FontGlyphInterfacePtr & _glyph )
     {
-        m_content = _content;
+        m_glyph = _glyph;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ContentInterfacePtr & FontBase::getContent() const
+    const FontGlyphInterfacePtr & FontBase::getGlyph() const
     {
-        return m_content;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void FontBase::setName( const ConstString & _name )
-    {
-        m_name = _name;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & FontBase::getName() const
-    {
-        return m_name;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void FontBase::setType( const ConstString & _type )
-    {
-        m_type = _type;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & FontBase::getType() const
-    {
-        return m_type;
+        return m_glyph;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontBase::compileFont()
@@ -94,16 +69,6 @@ namespace Mengine
     void FontBase::_unfetch()
     {
         //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void FontBase::setMetricSymbol( GlyphCode _metricsSymbol )
-    {
-        m_metricsSymbol = _metricsSymbol;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    GlyphCode FontBase::getMetricSymbol() const
-    {
-        return m_metricsSymbol;
     }
     //////////////////////////////////////////////////////////////////////////
     void FontBase::setHeight( uint32_t _height )

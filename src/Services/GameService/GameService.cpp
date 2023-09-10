@@ -562,4 +562,10 @@ namespace Mengine
             ->onGameAnalyticsEvent( _event );
     }
     //////////////////////////////////////////////////////////////////////////
+    void GameService::onAnalyticsFlush()
+    {
+        EVENTABLE_METHOD( EVENT_GAME_ANALYTICS_FLUSH )
+            ->onGameAnalyticsFlush();
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

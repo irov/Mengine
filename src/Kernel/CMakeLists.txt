@@ -906,6 +906,8 @@ Core
     
     ReferenceCounterGuardScope.cpp
     ReferenceCounterGuardScope.h
+    
+    Validator.h
 )
 
 ADD_FILTER(

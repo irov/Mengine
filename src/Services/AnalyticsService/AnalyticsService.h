@@ -27,6 +27,7 @@ namespace Mengine
 
     public:
         void logEvent( const AnalyticsEventInterfacePtr & _event ) override;
+        void logFlush() override;
 
     public:
         void logEarnVirtualCurrency( const ConstString & _currencyName, double _value, const DocumentInterfacePtr & _doc ) override;

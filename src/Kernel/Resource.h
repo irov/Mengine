@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Interface/LoadableInterface.h"
 #include "Interface/ContentInterface.h"
 
 #include "Kernel/Compilable.h"
@@ -30,7 +29,6 @@ namespace Mengine
         , public Identity
         , public Visitable
         , public Unknowable
-        , public LoadableInterface
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         , public Scriptable
 #endif

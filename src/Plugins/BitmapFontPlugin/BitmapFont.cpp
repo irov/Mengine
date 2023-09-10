@@ -18,6 +18,9 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     BitmapFont::BitmapFont()
+        : m_ascender( 0.f )
+        , m_descent( 0.f )
+        , m_bearingYA( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -39,23 +42,39 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::initialize()
     {
-        //Empty
+        if( m_glyph == nullptr )
+        {
+            return false;
+        }
+
+        const BitmapFontGlyphDescriptionPtr & symbols = m_glyph->getBitmapFontGlyphDescription();
+
+        float ascender = symbols->getAscender();
+        m_ascender = ascender;
+
+        float descender = symbols->getDescender();
+        m_descent = descender;
+
+        uint32_t height = symbols->getHeight();
+        this->setHeight( height );
+
+        const BitmapFontGlyphFace * glyphFace = symbols->getGlyphFace( MENGINE_BITMAP_METRICS_SYMBOL );
+
+        m_bearingYA = glyphFace->size.y;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void BitmapFont::finalize()
     {
-        m_content = nullptr;
         m_glyph = nullptr;
 
         m_textureFont = nullptr;
-        m_textureOutline = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::_compile()
     {
-        const ContentInterfacePtr & content = this->getContent();
+        const ContentInterfacePtr & content = m_glyph->getBitmapImageContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
@@ -77,7 +96,6 @@ namespace Mengine
     void BitmapFont::_release()
     {
         m_textureFont = nullptr;
-        m_textureOutline = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t BitmapFont::getLayoutCount() const
@@ -85,12 +103,12 @@ namespace Mengine
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BitmapFont::setBitmapGlyph( const BitmapGlyphPtr & _glyph )
+    void BitmapFont::setBitmapFontGlyph( const BitmapFontGlyphPtr & _glyph )
     {
         m_glyph = _glyph;
     }
     //////////////////////////////////////////////////////////////////////////
-    const BitmapGlyphPtr & BitmapFont::getBitmapGlyph() const
+    const BitmapFontGlyphPtr & BitmapFont::getBitmapFontGlyph() const
     {
         return m_glyph;
     }
@@ -99,7 +117,9 @@ namespace Mengine
     {
         MENGINE_UNUSED( _layout );
 
-        const BitmapGlyphChar * ch = m_glyph->getGlyphChar( _code );
+        const BitmapFontGlyphDescriptionPtr & symbols = m_glyph->getBitmapFontGlyphDescription();
+
+        const BitmapFontGlyphFace * ch = symbols->getGlyphFace( _code );
 
         if( ch == nullptr )
         {
@@ -113,7 +133,7 @@ namespace Mengine
 
         _glyph->texture = m_textureFont;
 
-        float kerning = m_glyph->getKerning( _code, _next );
+        float kerning = symbols->getKerning( _code, _next );
         _glyph->advance += kerning;
 
         return true;
@@ -121,7 +141,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::hasGlyph( GlyphCode _code ) const
     {
-        const BitmapGlyphChar * ch = m_glyph->getGlyphChar( _code );
+        const BitmapFontGlyphDescriptionPtr & symbols = m_glyph->getBitmapFontGlyphDescription();
+
+        const BitmapFontGlyphFace * ch = symbols->getGlyphFace( _code );
 
         if( ch == nullptr )
         {
@@ -131,14 +153,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    float BitmapFont::getFontAscent() const
+    float BitmapFont::getFontAscender() const
     {
-        return (float)m_height;
+        return m_ascender;
     }
     //////////////////////////////////////////////////////////////////////////
-    float BitmapFont::getFontDescent() const
+    float BitmapFont::getFontDescender() const
     {
-        return 0.f;
+        return m_descent;
     }
     //////////////////////////////////////////////////////////////////////////
     float BitmapFont::getFontHeight() const
@@ -148,7 +170,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float BitmapFont::getFontBearingYA() const
     {
-        return (float)m_height;
+        return m_bearingYA;
     }
     //////////////////////////////////////////////////////////////////////////
     float BitmapFont::getFontSpacing() const

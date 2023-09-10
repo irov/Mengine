@@ -32,10 +32,17 @@ namespace Mengine
 
         {
             const mt::vec2f & offset = _node->getTextOffset();
-            const mt::vec2f & size = _node->getTextSize();
 
-            mt::vec2f b = offset;
-            mt::vec2f e = offset + size;
+            mt::vec2f size;
+            _node->calcTotalTextSize( &size );
+
+            mt::vec2f b;
+            mt::vec2f e;
+
+            b.x = offset.x + 0.f;
+            b.y = offset.y - size.y;
+            e.x = offset.x + size.x;
+            e.y = offset.y + 0.f;
 
             mt::vec2f v0( b.x, b.y );
             mt::vec2f v1( e.x, b.y );

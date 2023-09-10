@@ -9,14 +9,22 @@ src
     BitmapFont.cpp
     BitmapFontConfigLoader.h
     BitmapFontConfigLoader.cpp
-    BitmapGlyph.h
-    BitmapGlyph.cpp
-    BitmapGlyphService.h
-    BitmapGlyphService.cpp
+    BitmapFontGlyphConfigLoader.h
+    BitmapFontGlyphConfigLoader.cpp
+    BitmapFontGlyph.h
+    BitmapFontGlyph.cpp
+    BitmapFontService.h
+    BitmapFontService.cpp
     BitmapFontPrototypeGenerator.h
     BitmapFontPrototypeGenerator.cpp
+    BitmapFontGlyphPrototypeGenerator.h
+    BitmapFontGlyphPrototypeGenerator.cpp
     BitmapFontValidator.h
     BitmapFontValidator.cpp
+    BitmapFontGlyphValidator.h
+    BitmapFontGlyphValidator.cpp
+    BitmapFontGlyphDescription.h
+    BitmapFontGlyphDescription.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/utf8/source)

@@ -11,8 +11,8 @@ src
     ResourceJSON.cpp
     ResourceJSON.h
 
-    LoaderResourceJSON.cpp
-    LoaderResourceJSON.h
+    MetabufLoaderResourceJSON.cpp
+    MetabufLoaderResourceJSON.h
     
     JSONSetting.cpp
     JSONSetting.h

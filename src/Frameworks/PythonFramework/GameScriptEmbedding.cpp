@@ -81,6 +81,7 @@ namespace Mengine
 #endif
 
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onAnalyticsEvent" ), EVENT_GAME_ANALYTICS_EVENT, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onAnalyticsFlush" ), EVENT_GAME_ANALYTICS_FLUSH, _doc );
         }
     }
     //////////////////////////////////////////////////////////////////////////

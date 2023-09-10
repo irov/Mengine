@@ -20,4 +20,9 @@ public class FinalApplication extends org.Mengine.Base.MengineApplication {
     public String getVersionName() {
         return BuildConfig.VERSION_NAME;
     }
+
+    @Override
+    public boolean isBuildPublish() {
+        return BuildConfig.ANDROID_APP_BUILD_PUBLISH;
+    }
 }

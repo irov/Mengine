@@ -33,7 +33,6 @@ public class MengineApplication extends Application {
     private static native void AndroidEnv_removeMengineAndroidApplicationJNI();
 
     private static native boolean AndroidEnv_isMasterRelease();
-    private static native boolean AndroidEnv_isBuildPublish();
     private static native String AndroidEnv_getEngineGITSHA1();
     private static native String AndroidEnv_getBuildDate();
     private static native String AndroidEnv_getBuildUsername();
@@ -43,7 +42,7 @@ public class MengineApplication extends Application {
     }
 
     public boolean isBuildPublish() {
-        return AndroidEnv_isBuildPublish();
+        return false;
     }
 
     public String getEngineGITSHA1() {
@@ -301,9 +300,9 @@ public class MengineApplication extends Application {
     }
 
     private String getSecureAndroidId() {
-        Context applicationContext = this.getApplicationContext();
+        Context context = this.getApplicationContext();
 
-        ContentResolver resolver = applicationContext.getContentResolver();
+        ContentResolver resolver = context.getContentResolver();
         String androidId = Settings.Secure.getString(resolver, Settings.Secure.ANDROID_ID);
 
         return androidId;
@@ -511,11 +510,11 @@ public class MengineApplication extends Application {
     }
 
     public SharedPreferences getPrivateSharedPreferences(@NonNull String tag) {
-        Context applicationContext = this.getApplicationContext();
+        Context context = this.getApplicationContext();
 
-        String packageName = applicationContext.getPackageName();
+        String packageName = context.getPackageName();
 
-        SharedPreferences settings = applicationContext.getSharedPreferences(packageName + "." + tag, MODE_PRIVATE);
+        SharedPreferences settings = context.getSharedPreferences(packageName + "." + tag, MODE_PRIVATE);
 
         return settings;
     }
@@ -565,13 +564,24 @@ public class MengineApplication extends Application {
 
     @Override
     public void onCreate() {
+        super.onCreate();
+
+        ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
+
+        for (MenginePluginApplicationListener l : applicationListeners) {
+            try {
+                l.onAppInit(this);
+            } catch (MenginePluginInvalidInitializeException e) {
+                this.invalidInitialize("invalid plugin %s onAppCreate exception: %s"
+                        , e.getPluginName()
+                        , e.getLocalizedMessage()
+                );
+            }
+        }
+
         this.setState("build.debug", BuildConfig.DEBUG);
 
         this.setState("application.init", "started");
-
-        super.onCreate();
-
-        this.setState("application.init", "create");
 
         try {
             SDL.loadLibrary("SDLApplication");
@@ -655,8 +665,8 @@ public class MengineApplication extends Application {
         m_sessionTimestamp = MengineUtils.getTimestamp();
         m_sessionDate = MengineUtils.getDateFormat("d MMM yyyy HH:mm:ss");
 
-        String gitsha1 = this.getEngineGITSHA1();
-        this.setState("engine.gitsha1", gitsha1);
+        String build_gitsha1 = this.getEngineGITSHA1();
+        this.setState("engine.build_gitsha1", build_gitsha1);
 
         String build_date = this.getBuildDate();
         this.setState("engine.build_date", build_date);
@@ -676,7 +686,15 @@ public class MengineApplication extends Application {
 
         this.setState("application.init", "load");
 
-        ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
+        MengineAnalytics.addContextGetterParameterLong("connection", new MengineAnalyticsGetter<Long>() {
+            @Override
+            public Long get() {
+                Context context = MengineApplication.this.getApplicationContext();
+                int status = MengineUtils.getConectivityStatus(context);
+
+                return Long.valueOf(status);
+            }
+        });
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
@@ -800,6 +818,14 @@ public class MengineApplication extends Application {
 
         for (MenginePluginAnalyticsListener l : listeners) {
             l.onMengineAnalyticsEvent(this, eventType, eventName, timestamp, bases, parameters);
+        }
+    }
+
+    public void onMengineAnalyticsFlush() {
+        ArrayList<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
+
+        for (MenginePluginAnalyticsListener l : listeners) {
+            l.onMengineAnalyticsFlush(this);
         }
     }
 

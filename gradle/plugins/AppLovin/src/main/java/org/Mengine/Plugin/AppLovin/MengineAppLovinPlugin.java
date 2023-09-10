@@ -35,8 +35,8 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
      * <p>
      * установка Interstitial
      * void initInterstitial(String adUnitId)
-     * boolean canYouShowInterstitial(String adUnitId)
-     * void showInterstitial(String adUnitId)
+     * boolean canYouShowInterstitial(String adUnitId, String placement)
+     * void showInterstitial(String adUnitId, String placement)
      * - onApplovinInterstitialOnAdLoaded
      * - onApplovinInterstitialOnAdDisplayed
      * - onApplovinInterstitialOnAdHidden
@@ -46,9 +46,9 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
      * <p>
      * установка Rewarded
      * void initRewarded(String adUnitId)
-     * boolean canOfferRewarded(String adUnitId)
-     * boolean canYouShowRewarded(String adUnitId)
-     * void showRewarded(String adUnitId)
+     * boolean canOfferRewarded(String adUnitId, String placement)
+     * boolean canYouShowRewarded(String adUnitId, String placement)
+     * void showRewarded(String adUnitId, String placement)
      * - onApplovinRewardedOnRewardedVideoStarted
      * - onApplovinRewardedOnRewardedVideoCompleted
      * - onApplovinRewardedOnUserRewarded
@@ -212,12 +212,12 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         return m_mediationAmazon;
     }
 
-    public void initBanner(String adUnitId) {
+    public void initBanner(String adUnitId, String placement) {
         if (m_banners.containsKey(adUnitId) == false) {
             this.assertionError("already exist banner: %s", adUnitId);
         }
 
-        MengineAppLovinBanner banner = new MengineAppLovinBanner(this, adUnitId);
+        MengineAppLovinBanner banner = new MengineAppLovinBanner(this, adUnitId, placement);
 
         m_banners.put(adUnitId, banner);
     }
@@ -248,7 +248,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         m_interstitials.put(adUnitId, interstitial);
     }
 
-    public boolean canYouShowInterstitial(String adUnitId) {
+    public boolean canYouShowInterstitial(String adUnitId, String placement) {
         MengineAppLovinInterstitial interstitial = m_interstitials.get(adUnitId);
 
         if (interstitial == null) {
@@ -257,14 +257,14 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             return false;
         }
 
-        if (interstitial.canYouShowInterstitial() == false) {
+        if (interstitial.canYouShowInterstitial(placement) == false) {
             return false;
         }
 
         return true;
     }
 
-    public boolean showInterstitial(String adUnitId) {
+    public boolean showInterstitial(String adUnitId, String placement) {
         MengineAppLovinInterstitial interstitial = m_interstitials.get(adUnitId);
 
         if (interstitial == null) {
@@ -273,7 +273,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             return false;
         }
 
-        if (interstitial.showInterstitial() == false) {
+        if (interstitial.showInterstitial(placement) == false) {
             return false;
         }
 
@@ -290,7 +290,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         m_rewardeds.put(adUnitId, rewarded);
     }
 
-    public boolean canOfferRewarded(String adUnitId) {
+    public boolean canOfferRewarded(String adUnitId, String placement) {
         MengineAppLovinRewarded rewarded = m_rewardeds.get(adUnitId);
 
         if (rewarded == null) {
@@ -299,14 +299,14 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             return false;
         }
 
-        if (rewarded.canOfferRewarded() == false) {
+        if (rewarded.canOfferRewarded(placement) == false) {
             return false;
         }
 
         return true;
     }
 
-    public boolean canYouShowRewarded(String adUnitId) {
+    public boolean canYouShowRewarded(String adUnitId, String placement) {
         MengineAppLovinRewarded rewarded = m_rewardeds.get(adUnitId);
 
         if (rewarded == null) {
@@ -315,14 +315,14 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             return false;
         }
 
-        if (rewarded.canYouShowRewarded() == false) {
+        if (rewarded.canYouShowRewarded(placement) == false) {
             return false;
         }
 
         return true;
     }
 
-    public boolean showRewarded(String adUnitId) {
+    public boolean showRewarded(String adUnitId, String placement) {
         MengineAppLovinRewarded rewarded = m_rewardeds.get(adUnitId);
 
         if (rewarded == null) {
@@ -331,7 +331,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             return false;
         }
 
-        if (rewarded.showRewarded() == false) {
+        if (rewarded.showRewarded(placement) == false) {
             return false;
         }
 

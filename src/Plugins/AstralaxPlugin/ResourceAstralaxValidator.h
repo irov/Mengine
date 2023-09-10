@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Plugins/ResourceValidatePlugin/ResourceValidatorHelper.h"
-
 #include "ResourceAstralax.h"
+
+#include "Kernel/Validator.h"
 
 namespace Mengine
 {
     class ResourceAstralaxValidator
-        : public ResourceValidatorT<ResourceAstralaxPtr>
+        : public Validator<ResourceAstralaxPtr>
     {
     public:
         ResourceAstralaxValidator();

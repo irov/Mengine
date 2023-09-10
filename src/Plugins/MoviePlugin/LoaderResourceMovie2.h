@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Interface/LoaderInterface.h"
+#include "Interface/MetabufLoaderInterface.h"
 
 #include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class LoaderResourceMovie2
-        : public LoaderInterface
+        : public MetabufLoaderInterface
         , public Factorable
     {
     public:
@@ -15,6 +15,6 @@ namespace Mengine
         ~LoaderResourceMovie2() override;
 
     protected:
-        bool load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta ) override;
+        bool load( const FactorablePtr & _factorable, const Metabuf::Metadata * _meta ) override;
     };
 }

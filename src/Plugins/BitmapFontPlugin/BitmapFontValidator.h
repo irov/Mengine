@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Interface/FontValidatorInterface.h"
+#include "Interface/ValidatorInterface.h"
 
 namespace Mengine
 {
     class BitmapFontValidator
-        : public FontValidatorInterface
+        : public ValidatorInterface
     {
     public:
-        bool validate( const FontInterfacePtr & _font ) const override;
+        bool validate( const FactorablePtr & _factorable ) const override;
     };
 }

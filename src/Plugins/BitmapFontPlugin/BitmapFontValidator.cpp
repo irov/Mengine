@@ -8,24 +8,11 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFontValidator::validate( const FontInterfacePtr & _font ) const
+    bool BitmapFontValidator::validate( const FactorablePtr & _factorable ) const
     {
-        BitmapFontPtr bitmapFont = BitmapFontPtr::from( _font );
+        BitmapFontPtr font = BitmapFontPtr::from( _factorable );
 
-        const ContentInterfacePtr & content = bitmapFont->getContent();
-
-        if( content->existContent() == false )
-        {
-            const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-            const FilePath & filePath = content->getFilePath();
-
-            LOGGER_ERROR( "bitmap font '%s' not found file '%s'"
-                , bitmapFont->getName().c_str()
-                , Helper::getFileGroupFullPath( fileGroup, filePath )
-            );
-
-            return false;
-        }
+        MENGINE_UNUSED( font );
 
         return true;
     }

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "ResourceValidatorHelper.h"
-
 #include "Engine/ResourceHIT.h"
+
+#include "Kernel/Validator.h"
 
 namespace Mengine
 {
     class ResourceHITValidator
-        : public ResourceValidatorT<ResourceHITPtr>
+        : public Validator<ResourceHITPtr>
     {
     public:
         ResourceHITValidator();

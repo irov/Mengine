@@ -1962,6 +1962,12 @@ namespace Mengine
                     ->logScreenView( _screenClass, _screenName, MENGINE_DOCUMENT_PYBIND );
             }
             //////////////////////////////////////////////////////////////////////////
+            void s_analyticsEventFlush()
+            {
+                ANALYTICS_SERVICE()
+                    ->logFlush();
+            }
+            //////////////////////////////////////////////////////////////////////////
             bool s_mountResourcePackage( const ConstString & _fileGroupName
                 , const ConstString & _name
                 , const ConstString & _type
@@ -4259,7 +4265,7 @@ namespace Mengine
                 }
 
                 bool valid = RESOURCEVALIDATE_SERVICE()
-                    ->validResource( resource );
+                    ->validateResource( resource );
 
                 return valid;
             }
@@ -4539,6 +4545,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "analyticsTutorialBegin", nodeScriptMethod, &EngineScriptMethod::s_analyticsTutorialBegin );
         pybind::def_functor( _kernel, "analyticsTutorialComplete", nodeScriptMethod, &EngineScriptMethod::s_analyticsTutorialComplete );
         pybind::def_functor( _kernel, "analyticsScreenView", nodeScriptMethod, &EngineScriptMethod::s_analyticsScreenView );
+        pybind::def_functor( _kernel, "analyticsEventFlush", nodeScriptMethod, &EngineScriptMethod::s_analyticsEventFlush );
 
         pybind::def_functor_deprecated( _kernel, "mountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePackage, "use 'mountResourcePackage'" );
         pybind::def_functor_deprecated( _kernel, "unmountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePackage, "use 'unmountResourcePackage'" );

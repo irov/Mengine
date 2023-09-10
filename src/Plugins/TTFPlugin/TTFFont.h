@@ -1,19 +1,16 @@
 #pragma once
 
+#include "TTFIncluder.h"
 #include "TTFInterface.h"
 #include "TTFDataInterface.h"
 
 #include "Interface/MemoryInterface.h"
 #include "Interface/FontInterface.h"
 
-#include "Kernel/Observable.h"
-#include "Kernel/String.h"
-#include "Kernel/Factorable.h"
-#include "Kernel/FontBase.h"
+#include "TTFFontGlyph.h"
 
-#include "ft2build.h"
-#include "freetype/freetype.h"
-#include "freetype/ftglyph.h"
+#include "Kernel/String.h"
+#include "Kernel/FontBase.h"
 
 #include "math/uv4.h"
 
@@ -27,8 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class TTFFont
         : public FontBase
-        , public UnknownTTFFontInterface
-        , public Observable
+        , public UnknownTTFFontInterface        
     {
         DECLARE_FACTORABLE( TTFFont );
         DECLARE_UNKNOWABLE();
@@ -40,6 +36,10 @@ namespace Mengine
     public:
         void setFTLibrary( FT_Library _library );
         FT_Library getFTLibrary() const;
+
+    public:
+        void setTTFFontGlyph( const TTFFontGlyphPtr & _glyph );
+        const TTFFontGlyphPtr & getTTFFontGlyph() const;
 
     public:
         void setEffect( const FontEffectInterfacePtr & _effect ) override;
@@ -65,8 +65,8 @@ namespace Mengine
         uint32_t getLayoutCount() const override;
 
     protected:
-        float getFontAscent() const override;
-        float getFontDescent() const override;
+        float getFontAscender() const override;
+        float getFontDescender() const override;
         float getFontHeight() const override;
         float getFontBearingYA() const override;
         float getFontSpacing() const override;
@@ -97,8 +97,8 @@ namespace Mengine
 
     protected:
         FT_Library m_ftlibrary;
-        TTFDataInterfacePtr m_dataTTF;
 
+        TTFFontGlyphPtr m_glyph;
         FontEffectInterfacePtr m_effect;
 
         float m_ttfAscender;
@@ -129,6 +129,6 @@ namespace Mengine
         VectorTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TTFFont> TTFFontPtr;
+    typedef IntrusivePtr<TTFFont, FontInterface> TTFFontPtr;
     //////////////////////////////////////////////////////////////////////////
 }

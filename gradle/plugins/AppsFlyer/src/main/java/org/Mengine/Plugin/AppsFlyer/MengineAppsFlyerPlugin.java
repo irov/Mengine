@@ -3,6 +3,7 @@ package org.Mengine.Plugin.AppsFlyer;
 import android.content.Context;
 
 import com.appsflyer.AppsFlyerLib;
+import com.appsflyer.attribution.AppsFlyerRequestListener;
 
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineApplication;
@@ -20,10 +21,6 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_API_KEY = "mengine.appsflyer.api_key";
-
-    /**
-     * void logEvent (String name, Bundle params)
-     */
 
     @Override
     public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
@@ -74,7 +71,22 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
                 Context context = application.getApplicationContext();
 
                 AppsFlyerLib appsFlyer = AppsFlyerLib.getInstance();
-                appsFlyer.logEvent(context, eventName, params);
+                appsFlyer.logEvent(context, eventName, params, new AppsFlyerRequestListener() {
+                        @Override
+                        public void onSuccess() {
+                            //Empty
+                        }
+
+                        @Override
+                        public void onError(int errorCode, String errorMessage) {
+                            MengineAppsFlyerPlugin.this.logInfo("logEvent [CUSTOM] eventName: %s params: %s [ERROR] code: %d description: %s"
+                                , eventName
+                                , params
+                                , errorCode
+                                , errorMessage
+                            );
+                        }
+                    });
             } break;
             case EAET_EARN_VIRTUAL_CURRENCY: {
                 //ToDo
@@ -113,5 +125,10 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
                 );
             } break;
         }
+    }
+
+    @Override
+    public void onMengineAnalyticsFlush(MengineApplication application) {
+        //Empty
     }
 }

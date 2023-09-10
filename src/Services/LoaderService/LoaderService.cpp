@@ -68,7 +68,7 @@ namespace Mengine
 
         m_metacache.strings.clear();
 
-        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Loader" ) );
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "MetabufLoader" ) );
 
         MENGINE_ASSERTION_ALLOCATOR( "metabuf" );
     }

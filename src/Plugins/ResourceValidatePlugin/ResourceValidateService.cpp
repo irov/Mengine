@@ -2,6 +2,7 @@
 
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/ValidatorInterface.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionVocabulary.h"
@@ -39,7 +40,7 @@ namespace Mengine
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Validator" ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceValidateService::validResource( const ResourcePtr & _resource ) const
+    bool ResourceValidateService::validateResource( const ResourcePtr & _resource ) const
     {
         bool valid = this->visitableResource_( _resource );
 
@@ -50,7 +51,7 @@ namespace Mengine
     {
         const ConstString & resourceType = _resource->getType();
 
-        const ResourceValidatorInterfacePtr & validator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Validator" ), resourceType );
+        const ValidatorInterfacePtr & validator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Validator" ), resourceType );
 
         if( validator == nullptr )
         {

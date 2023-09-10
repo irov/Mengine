@@ -16,4 +16,6 @@ public interface MenginePluginAnalyticsListener extends MenginePluginInterface {
     int EAET_SCREEN_VIEW = MengineAnalytics.EAET_SCREEN_VIEW;
 
     void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters);
+
+    void onMengineAnalyticsFlush(MengineApplication application);
 }

@@ -21,9 +21,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderResourceMovie2::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
+    bool LoaderResourceMovie2::load( const FactorablePtr & _factorable, const Metabuf::Metadata * _meta )
     {
-        ResourceMovie2 * resource = _loadable.getT<ResourceMovie2 *>();
+        ResourceMovie2 * resource = _factorable.getT<ResourceMovie2 *>();
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 *>(_meta);

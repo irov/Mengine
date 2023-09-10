@@ -20,9 +20,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderResourceTexturepacker::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
+    bool LoaderResourceTexturepacker::load( const FactorablePtr & _factorable, const Metabuf::Metadata * _meta )
     {
-        ResourceTexturepacker * resource = _loadable.getT<ResourceTexturepacker *>();
+        ResourceTexturepacker * resource = _factorable.getT<ResourceTexturepacker *>();
 
         const ConstString & groupName = resource->getGroupName();
 

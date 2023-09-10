@@ -3,22 +3,22 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
-#include "LoaderResourceCursorICO.h"
-#include "LoaderResourceCursorSystem.h"
-#include "LoaderResourceFile.h"
-#include "LoaderResourceHIT.h"
-#include "LoaderResourceImageData.h"
-#include "LoaderResourceImageDefault.h"
-#include "LoaderResourceImageEmpty.h"
-#include "LoaderResourceImageSequence.h"
-#include "LoaderResourceImageSolid.h"
-#include "LoaderResourceImageSubstract.h"
-#include "LoaderResourceImageSubstractRGBAndAlpha.h"
-#include "LoaderResourceImageSubstractRGBAndAlpha.h"
-#include "LoaderResourceMusic.h"
-#include "LoaderResourceShape.h"
-#include "LoaderResourceSound.h"
-#include "LoaderResourceWindow.h"
+#include "MetabufLoaderResourceCursorICO.h"
+#include "MetabufLoaderResourceCursorSystem.h"
+#include "MetabufLoaderResourceFile.h"
+#include "MetabufLoaderResourceHIT.h"
+#include "MetabufLoaderResourceImageData.h"
+#include "MetabufLoaderResourceImageDefault.h"
+#include "MetabufLoaderResourceImageEmpty.h"
+#include "MetabufLoaderResourceImageSequence.h"
+#include "MetabufLoaderResourceImageSolid.h"
+#include "MetabufLoaderResourceImageSubstract.h"
+#include "MetabufLoaderResourceImageSubstractRGBAndAlpha.h"
+#include "MetabufLoaderResourceImageSubstractRGBAndAlpha.h"
+#include "MetabufLoaderResourceMusic.h"
+#include "MetabufLoaderResourceShape.h"
+#include "MetabufLoaderResourceSound.h"
+#include "MetabufLoaderResourceWindow.h"
 
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/FactorableUnique.h"
@@ -53,7 +53,7 @@ namespace Mengine
     bool MetabufLoaderPlugin::_initializePlugin()
     {
 #define SET_LOADER(T)\
-        VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( #T ), Helper::makeFactorableUnique<Loader##T>(MENGINE_DOCUMENT_FACTORABLE), MENGINE_DOCUMENT_FACTORABLE )
+        VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( #T ), Helper::makeFactorableUnique<MetabufLoader##T>(MENGINE_DOCUMENT_FACTORABLE), MENGINE_DOCUMENT_FACTORABLE )
 
         SET_LOADER( ResourceCursorICO );
         SET_LOADER( ResourceCursorSystem );
@@ -79,7 +79,7 @@ namespace Mengine
     void MetabufLoaderPlugin::_finalizePlugin()
     {
 #define REMOVE_LOADER(T)\
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( #T ) )
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( #T ) )
 
         REMOVE_LOADER( ResourceCursorICO );
         REMOVE_LOADER( ResourceCursorSystem );

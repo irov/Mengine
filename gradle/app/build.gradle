@@ -684,6 +684,12 @@ if (project.hasProperty("MENGINE_APP_OPTIONS")) {
 
 android {
     defaultConfig {
+        buildConfigField "boolean", "ANDROID_APP_BUILD_PUBLISH", "${ANDROID_APP_BUILD_PUBLISH}"
+    }
+}
+
+android {
+    defaultConfig {
         buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGINS", '{' + android.ext.plugins.collect {"\"${it}\""}.join(",") + '}'
     }
 }

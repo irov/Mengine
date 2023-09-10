@@ -74,6 +74,20 @@ public class MengineAnalytics {
         MengineAnalytics.m_getter.put(key, value);
     }
 
+    static public void addContextGetterParameterLong(String key, MengineAnalyticsGetter<Long> value) {
+        MengineAnalytics.assertContext(key);
+        MengineAnalytics.assertGetter(key);
+
+        MengineAnalytics.m_getter.put(key, value);
+    }
+
+    static public void addContextGetterParameterDouble(String key, MengineAnalyticsGetter<Double> value) {
+        MengineAnalytics.assertContext(key);
+        MengineAnalytics.assertGetter(key);
+
+        MengineAnalytics.m_getter.put(key, value);
+    }
+
     static private void collapseGetter(Map<String, Object> parameters) {
         for (Map.Entry<String, Object> entry : m_getter.entrySet()) {
             String key = entry.getKey();

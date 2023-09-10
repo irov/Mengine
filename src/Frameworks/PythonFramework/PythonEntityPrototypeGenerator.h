@@ -47,7 +47,7 @@ namespace Mengine
         pybind::object m_type;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PythonEntityPrototypeGenerator> PythonEntityPrototypeGeneratorPtr;
+    typedef IntrusivePtr<PythonEntityPrototypeGenerator, PrototypeGeneratorInterface> PythonEntityPrototypeGeneratorPtr;
     //////////////////////////////////////////////////////////////////////////
 
 }

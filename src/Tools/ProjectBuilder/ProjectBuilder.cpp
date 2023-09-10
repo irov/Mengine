@@ -13,7 +13,6 @@
 #include "Interface/PluginInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
-#include "Interface/LoaderInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"

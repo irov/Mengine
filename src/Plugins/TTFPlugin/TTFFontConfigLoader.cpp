@@ -3,6 +3,7 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/FontServiceInterface.h"
 
 #include "Plugins/FEPlugin/FEInterface.h"
 
@@ -12,6 +13,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -24,91 +26,49 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFontConfigLoader::load( const FontInterfacePtr & _font, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
+    bool TTFFontConfigLoader::load( const FactorablePtr & _factorable, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
     {
-        TTFFontPtr font = _font;
+        TTFFontPtr font = TTFFontPtr::from( _factorable );
 
         const ConstString & name = font->getName();
 
         Color colorFont;
         if( _config->hasValue( name.c_str(), "ColorFont", Color(), &colorFont ) == true )
         {
-            _font->setFontColor( colorFont );
+            font->setFontColor( colorFont );
         }
 
         float lineOffset;
         if( _config->hasValue( name.c_str(), "LineOffset", 0.f, &lineOffset ) == true )
         {
-            _font->setLineOffset( lineOffset );
+            font->setLineOffset( lineOffset );
         }
 
         float charOffset;
         if( _config->hasValue( name.c_str(), "CharOffset", 0.f, &charOffset ) == true )
         {
-            _font->setCharOffset( charOffset );
+            font->setCharOffset( charOffset );
         }
 
-        bool system;
-        _config->hasValue( name.c_str(), "System", false, &system );
-
-        if( system == false )
+        ConstString glyphName;
+        if( _config->hasValue( name.c_str(), "Glyph", FilePath::none(), &glyphName ) == false )
         {
-            FilePath ttfPath;
-            if( _config->hasValue( name.c_str(), "Path", FilePath::none(), &ttfPath ) == false )
-            {
-                LOGGER_ERROR( "ttf font '%s' don't setup Glyph"
-                    , name.c_str()
-                );
+            LOGGER_ERROR( "bitmap font '%s' don't setup Glyph"
+                , name.c_str()
+            );
 
-                return false;
-            }
-
-            ContentInterfacePtr content = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-
-            content->setFileGroup( _fileGroup );
-            content->setFilePath( ttfPath );
-
-            _font->setContent( content );
+            return false;
         }
-        else
-        {
-            const Char * ttfName = nullptr;
-            if( _config->hasValue( name.c_str(), "Name", "", & ttfName) == false )
-            {
-                LOGGER_ERROR( "ttf font '%s' don't setup Name"
-                    , name.c_str()
-                );
 
-                return false;
-            }
+        const TTFFontGlyphPtr & glyph = FONT_SERVICE()
+            ->getGlyph( glyphName );
 
-            ConstString groupName;
-            Char utf8_ttfPath[MENGINE_MAX_PATH] = {'\0'};
-            if( PLATFORM_SERVICE()
-                ->getSystemFontPath( &groupName, ttfName, utf8_ttfPath ) == MENGINE_UNKNOWN_SIZE )
-            {
-                LOGGER_ERROR( "ttf font '%s' don't found '%s' path"
-                    , name.c_str()
-                    , ttfName
-                );
+        MENGINE_ASSERTION_MEMORY_PANIC( glyph, "invalid font '%s' don't load glyph '%s'"
+            , name.c_str()
+            , glyphName.c_str()
+        );
 
-                return false;
-            }
-
-            FilePath ttfPath = Helper::stringizeFilePath( utf8_ttfPath );
-
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getFileGroup( groupName );
-
-            ContentInterfacePtr content = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-
-            content->setFileGroup( fileGroup );
-            content->setFilePath( ttfPath );
-
-            _font->setContent( content );
-        }
+        font->setTTFFontGlyph( glyph );
 
         uint32_t height;
         if( _config->hasValue( name.c_str(), "Height", 0u, &height ) == false )
@@ -120,7 +80,7 @@ namespace Mengine
             return false;
         }
 
-        _font->setHeight( height );
+        font->setHeight( height );
 
         FilePath FEPath;
         if( _config->hasValue( name.c_str(), "FEPath", FilePath::none(), &FEPath ) == true )
@@ -156,7 +116,7 @@ namespace Mengine
                 fontEffet->setEffectSample( FESample );
             }
 
-            _font->setEffect( fontEffet );
+            font->setEffect( fontEffet );
         }
 
         return true;

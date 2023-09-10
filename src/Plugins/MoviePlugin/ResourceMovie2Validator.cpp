@@ -75,7 +75,7 @@ namespace Mengine
                     }
 
                     RESOURCEVALIDATE_SERVICE()
-                        ->validResource( resource );
+                        ->validateResource( resource );
 
                     return AE_TRUE;
                 }break;
@@ -94,7 +94,7 @@ namespace Mengine
                     }
 
                     RESOURCEVALIDATE_SERVICE()
-                        ->validResource( resource );
+                        ->validateResource( resource );
 
                     return AE_TRUE;
                 }break;
@@ -113,7 +113,7 @@ namespace Mengine
                     }
 
                     RESOURCEVALIDATE_SERVICE()
-                        ->validResource( resource );
+                        ->validateResource( resource );
 
                     return AE_TRUE;
                 }break;
@@ -132,7 +132,7 @@ namespace Mengine
                     }
 
                     RESOURCEVALIDATE_SERVICE()
-                        ->validResource( resource );
+                        ->validateResource( resource );
 
                     return AE_TRUE;
                 }break;

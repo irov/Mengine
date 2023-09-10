@@ -1,5 +1,6 @@
 package org.Mengine.Plugin.AppLovin;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.applovin.mediation.MaxAd;
@@ -9,6 +10,8 @@ import com.applovin.mediation.MaxMediatedNetworkInfo;
 import com.applovin.mediation.MaxNetworkResponseInfo;
 
 import org.Mengine.Base.MengineAnalyticsEventBuilder;
+import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -22,6 +25,14 @@ public class MengineAppLovinBase {
 
     public void destroy() {
         m_plugin = null;
+    }
+
+    protected int getConectivityStatus() {
+        MengineApplication application = m_plugin.getMengineApplication();
+        Context context = application.getApplicationContext();
+        int status = MengineUtils.getConectivityStatus(context);
+
+        return status;
     }
 
     protected String getMAAdParams(MaxAd ad) {
@@ -98,6 +109,8 @@ public class MengineAppLovinBase {
     protected MengineAnalyticsEventBuilder buildEvent(String name) {
         MengineAnalyticsEventBuilder eventBuilder = m_plugin.buildEvent(name);
 
+        eventBuilder.addParameterLong("connection", this.getConectivityStatus());
+
         return eventBuilder;
     }
 
@@ -117,7 +130,7 @@ public class MengineAppLovinBase {
         m_plugin.logMessage(message);
     }
 
-    protected void logMaxError(String type, String callback, MaxError error) {
+    protected void logMaxError(String type, String callback, String adUnitId, MaxError error) {
         StringBuilder sb = new StringBuilder(512);
 
         int errorCode = error.getCode();
@@ -126,6 +139,7 @@ public class MengineAppLovinBase {
         String mediatedNetworkErrorMessage = error.getMediatedNetworkErrorMessage();
 
         sb.append(String.format(Locale.US, "[%s] callback: %s\n", type, callback));
+        sb.append(String.format(Locale.US, "AdUnitId: %s\n", adUnitId));
         sb.append(String.format(Locale.US, "MaxError: code: %d message: %s\n", errorCode, errorMessage));
         sb.append(String.format(Locale.US, "MediatedNetwork: code: %d message: %s\n", mediatedNetworkErrorCode, mediatedNetworkErrorMessage));
 

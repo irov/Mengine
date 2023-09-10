@@ -24,15 +24,13 @@
 
 #include "Config/Algorithm.h"
 
-//////////////////////////////////////////////////////////////////////////
 #define MENGINE_FT_FLOOR(X) (((X) & -64) / 64)
 #define MENGINE_FT_CEIL(X) MENGINE_FT_FLOOR((X) + 63)
 #define MENGINE_FT_CEILF(X) ((float)MENGINE_FT_CEIL((X)))
-//////////////////////////////////////////////////////////////////////////
+#define MENGINE_FT_INV64 (1.f / 64.f)
+
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    const float inv_64f = 1.f / 64.f;
     //////////////////////////////////////////////////////////////////////////
     TTFFont::TTFFont()
         : m_ftlibrary( nullptr )
@@ -61,6 +59,16 @@ namespace Mengine
         return m_ftlibrary;
     }
     //////////////////////////////////////////////////////////////////////////
+    void TTFFont::setTTFFontGlyph( const TTFFontGlyphPtr & _glyph )
+    {
+        m_glyph = _glyph;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const TTFFontGlyphPtr & TTFFont::getTTFFontGlyph() const
+    {
+        return m_glyph;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TTFFont::setEffect( const FontEffectInterfacePtr & _effect )
     {
         m_effect = _effect;
@@ -82,9 +90,7 @@ namespace Mengine
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
 
-        MENGINE_ASSERTION_FATAL( m_dataTTF == nullptr );
-
-        m_content = nullptr;
+        m_glyph = nullptr;
 
         this->clearGlyphs_();
 
@@ -101,28 +107,13 @@ namespace Mengine
             }
         }
 
-        DataflowInterfacePtr dataflowTTF = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dataflowTTF );
-
-        const ContentInterfacePtr & content = this->getContent();
-
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
-        DataflowContext context;
-        context.filePath = filePath;
-
-        TTFDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowTTF, &context, MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( data );
-
-        m_dataTTF = data;
-
-        GlyphCode metricSymbol = this->getMetricSymbol();
+        if( m_glyph->compile() == false )
+        {
+            return false;
+        }
 
         FT_Face face;
-        if( this->loadFaceGlyph_( metricSymbol, &face ) == false )
+        if( this->loadFaceGlyph_( MENGINE_TTF_METRICS_SYMBOL, &face ) == false )
         {
             return false;
         }
@@ -136,12 +127,6 @@ namespace Mengine
         m_ttfAscender = MENGINE_FT_CEILF( FT_MulFix( face->ascender, scale ) );
         m_ttfDescender = MENGINE_FT_CEILF( FT_MulFix( face->descender, scale ) );
         m_ttfHeight = MENGINE_FT_CEILF( FT_MulFix( face->ascender - face->descender, scale ) );
-        
-        float sampleInv = this->getSampleInv();
-
-        m_ttfAscender *= sampleInv;
-        m_ttfDescender *= sampleInv;
-        m_ttfHeight *= sampleInv;
 
         m_ttfSpacing = m_ttfHeight - (m_ttfAscender - m_ttfDescender);
 
@@ -149,9 +134,17 @@ namespace Mengine
 
         const FT_Glyph_Metrics & face_glyphA_metrics = face_glyphA->metrics;
 
-        float glyphA_bearingY = (float)face_glyphA_metrics.horiBearingY * inv_64f;
+        float glyphA_bearingY = (float)face_glyphA_metrics.horiBearingY * MENGINE_FT_INV64;
 
-        m_ttfBearingYA = glyphA_bearingY * sampleInv;
+        m_ttfBearingYA = glyphA_bearingY;
+
+        float sampleInv = this->getSampleInv();
+
+        m_ttfAscender *= sampleInv;
+        m_ttfDescender *= sampleInv;
+        m_ttfHeight *= sampleInv;
+        m_ttfSpacing *= sampleInv;
+        m_ttfBearingYA *= sampleInv;
 
         return true;
     }
@@ -163,7 +156,7 @@ namespace Mengine
             m_effect->release();
         }
 
-        m_dataTTF = nullptr;
+        m_glyph->release();
     }
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_prefetch( const PrefetcherObserverInterfacePtr & _observer )
@@ -176,24 +169,6 @@ namespace Mengine
             }
         }
 
-        DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dataflow );
-
-        const ContentInterfacePtr & content = this->getContent();
-
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
-        DataflowContext context;
-        context.filePath = filePath;
-
-        if( PREFETCHER_SERVICE()
-            ->prefetchData( fileGroup, filePath, dataflow, &context, _observer ) == false )
-        {
-            return false;
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -203,14 +178,6 @@ namespace Mengine
         {
             m_effect->unfetch();
         }
-
-        const ContentInterfacePtr & content = this->getContent();
-
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
-        PREFETCHER_SERVICE()
-            ->unfetch( fileGroup, filePath );
     }
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_prepareGlyph( GlyphCode _code, const DocumentInterfacePtr & _doc )
@@ -243,12 +210,12 @@ namespace Mengine
 
         const FT_Glyph_Metrics & metrics = glyph->metrics;
 
-        float glyph_dx = (float)metrics.horiBearingX * inv_64f;
-        float glyph_dy = (float)metrics.horiBearingY * inv_64f;
-        float glyph_w = (float)metrics.width * inv_64f;
-        float glyph_h = (float)metrics.height * inv_64f;
+        float glyph_dx = (float)metrics.horiBearingX * MENGINE_FT_INV64;
+        float glyph_dy = (float)metrics.horiBearingY * MENGINE_FT_INV64;
+        float glyph_w = (float)metrics.width * MENGINE_FT_INV64;
+        float glyph_h = (float)metrics.height * MENGINE_FT_INV64;
 
-        float glyph_advance = (float)metrics.horiAdvance * inv_64f;
+        float glyph_advance = (float)metrics.horiAdvance * MENGINE_FT_INV64;
 
         const FT_Bitmap & glyph_bitmap = glyph->bitmap;
 
@@ -363,7 +330,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_validateGlyphes( const U32String & _codes ) const
     {
-        const ContentInterfacePtr & content = this->getContent();
+        const TTFFontGlyphPtr & ttfGlyph = this->getTTFFontGlyph();
+
+        const ContentInterfacePtr & content = ttfGlyph->getGlyphContent();
 
         MemoryInterfacePtr memory = Helper::createMemoryContent( content, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -474,6 +443,34 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::loadFaceGlyph_( GlyphCode _code, FT_Face * const _face ) const
+    {
+        const TTFDataInterfacePtr dataTTF = m_glyph->getTTFData();
+
+        FT_Face face = this->getFTFace( dataTTF );
+
+        FT_UInt glyph_index = FT_Get_Char_Index( face, _code );
+
+        FT_Error err_code = FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR );
+
+        if( err_code != FT_Err_Ok )
+        {
+            const Char * err_message = FT_Error_String( err_code );
+
+            LOGGER_ERROR( "ttf font '%s' invalid load glyph code '%u' error [%s]"
+                , this->getName().c_str()
+                , _code
+                , err_message
+            );
+
+            return false;
+        }
+
+        *_face = face;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool TTFFont::hasGlyph( GlyphCode _code ) const
     {
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
@@ -523,7 +520,9 @@ namespace Mengine
             return true;
         }
 
-        FT_Face face = this->getFTFace( m_dataTTF );
+        const TTFDataInterfacePtr dataTTF = m_glyph->getTTFData();
+
+        FT_Face face = this->getFTFace( dataTTF );
 
         if( FT_HAS_KERNING( face ) == false )
         {
@@ -560,7 +559,7 @@ namespace Mengine
             return true;
         }
 
-        float kerning = (float)ttf_kerning.x * inv_64f;
+        float kerning = (float)ttf_kerning.x * MENGINE_FT_INV64;
 
         _glyph->advance += kerning;
 
@@ -579,12 +578,12 @@ namespace Mengine
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    float TTFFont::getFontAscent() const
+    float TTFFont::getFontAscender() const
     {
         return m_ttfAscender;
     }
     //////////////////////////////////////////////////////////////////////////
-    float TTFFont::getFontDescent() const
+    float TTFFont::getFontDescender() const
     {
         return m_ttfDescender;
     }
@@ -612,32 +611,6 @@ namespace Mengine
     float TTFFont::getFontSpacing() const
     {
         return m_ttfSpacing;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::loadFaceGlyph_( GlyphCode _code, FT_Face * const _face ) const
-    {
-        FT_Face face = this->getFTFace( m_dataTTF );
-
-        FT_UInt glyph_index = FT_Get_Char_Index( face, _code );
-
-        FT_Error err_code = FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR );
-
-        if( err_code != FT_Err_Ok )
-        {
-            const Char * err_message = FT_Error_String( err_code );
-
-            LOGGER_ERROR( "ttf font '%s' invalid load glyph code '%u' error [%s]"
-                , this->getName().c_str()
-                , _code
-                , err_message
-            );
-
-            return false;
-        }
-
-        *_face = face;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void TTFFont::notifyRenderDeviceLostPrepare()

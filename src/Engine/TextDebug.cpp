@@ -53,7 +53,7 @@ namespace Mengine
 
                 uint32_t vertexCount = 0;
 
-                const VectorCharData & charsData = tl.getCharsData();
+                const VectorTextCharData & charsData = tl.getCharsData();
 
                 uint32_t charsDataCount = (uint32_t)charsData.size();
 
@@ -74,7 +74,7 @@ namespace Mengine
 
                 mt::vec2f offset( 0.f, 0.f );
 
-                for( const CharData & cd : charsData )
+                for( const TextCharData & cd : charsData )
                 {
                     if( cd.texture == nullptr )
                     {

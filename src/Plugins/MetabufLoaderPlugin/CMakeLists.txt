@@ -2,36 +2,37 @@ MENGINE_PROJECT(MetabufLoaderPlugin)
 
 ADD_FILTER(
 src
-    LoaderResourceCursorICO.cpp
-    LoaderResourceCursorICO.h
-    LoaderResourceCursorSystem.cpp
-    LoaderResourceCursorSystem.h
-    LoaderResourceFile.cpp
-    LoaderResourceFile.h
-    LoaderResourceHIT.cpp
-    LoaderResourceHIT.h
-    LoaderResourceImageData.cpp
-    LoaderResourceImageData.h
-    LoaderResourceImageDefault.cpp
-    LoaderResourceImageDefault.h
-    LoaderResourceImageEmpty.cpp
-    LoaderResourceImageEmpty.h    
-    LoaderResourceImageSequence.cpp
-    LoaderResourceImageSequence.h
-    LoaderResourceImageSolid.cpp
-    LoaderResourceImageSolid.h
-    LoaderResourceImageSubstract.cpp
-    LoaderResourceImageSubstract.h
-    LoaderResourceImageSubstractRGBAndAlpha.cpp
-    LoaderResourceImageSubstractRGBAndAlpha.h
-    LoaderResourceMusic.cpp
-    LoaderResourceMusic.h
-    LoaderResourceShape.cpp
-    LoaderResourceShape.h
-    LoaderResourceSound.cpp
-    LoaderResourceSound.h
-    LoaderResourceWindow.cpp
-    LoaderResourceWindow.h
+    MetabufLoaderResourceCursorICO.cpp
+    MetabufLoaderResourceCursorICO.h
+    MetabufLoaderResourceCursorSystem.cpp
+    MetabufLoaderResourceCursorSystem.h
+    MetabufLoaderResourceFile.cpp
+    MetabufLoaderResourceFile.h
+    MetabufLoaderResourceHIT.cpp
+    MetabufLoaderResourceHIT.h
+    MetabufLoaderResourceImageData.cpp
+    MetabufLoaderResourceImageData.h
+    MetabufLoaderResourceImageDefault.cpp
+    MetabufLoaderResourceImageDefault.h
+    MetabufLoaderResourceImageEmpty.cpp
+    MetabufLoaderResourceImageEmpty.h    
+    MetabufLoaderResourceImageSequence.cpp
+    MetabufLoaderResourceImageSequence.h
+    MetabufLoaderResourceImageSolid.cpp
+    MetabufLoaderResourceImageSolid.h
+    MetabufLoaderResourceImageSubstract.cpp
+    MetabufLoaderResourceImageSubstract.h
+    MetabufLoaderResourceImageSubstractRGBAndAlpha.cpp
+    MetabufLoaderResourceImageSubstractRGBAndAlpha.h
+    MetabufLoaderResourceMusic.cpp
+    MetabufLoaderResourceMusic.h
+    MetabufLoaderResourceShape.cpp
+    MetabufLoaderResourceShape.h
+    MetabufLoaderResourceSound.cpp
+    MetabufLoaderResourceSound.h
+    MetabufLoaderResourceWindow.cpp
+    MetabufLoaderResourceWindow.h
+
     MetabufLoaderPlugin.cpp
     MetabufLoaderPlugin.h    
 )

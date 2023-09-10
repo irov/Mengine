@@ -94,6 +94,7 @@ namespace Mengine
 
     protected:
         void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;
+        void onAnalyticsFlush() override;
 
     protected:
         ConstString m_currentPackName;

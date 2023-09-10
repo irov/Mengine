@@ -1,15 +1,17 @@
 #pragma once
 
 #include "Interface/ServantInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/FontGlyphInterface.h"
+#include "Interface/FontEffectInterface.h"
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/PrefetcherObserverInterface.h"
-#include "Interface/FontEffectInterface.h"
 
+#include "Kernel/Identity.h"
+#include "Kernel/Observable.h"
 #include "Kernel/Unknowable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/GlyphChar.h"
+#include "Kernel/GlyphCode.h"
 #include "Kernel/Color.h"
 #include "Kernel/VectorString.h"
 
@@ -45,23 +47,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class FontInterface
         : public ServantInterface
+        , public Identity
+        , public Observable
         , public Unknowable
     {
     public:
-        virtual void setContent( const ContentInterfacePtr & _content ) = 0;
-        virtual const ContentInterfacePtr & getContent() const = 0;
+        virtual void setGlyph( const FontGlyphInterfacePtr & _glyph ) = 0;
+        virtual const FontGlyphInterfacePtr & getGlyph() const = 0;
 
     public:
         virtual void setEffect( const FontEffectInterfacePtr & _effect ) = 0;
         virtual const FontEffectInterfacePtr & getEffect() const = 0;
-
-    public:
-        virtual void setName( const ConstString & _name ) = 0;
-        virtual const ConstString & getName() const = 0;
-
-    public:
-        virtual void setType( const ConstString & _name ) = 0;
-        virtual const ConstString & getType() const = 0;
 
     public:
         virtual bool initialize() = 0;
@@ -82,9 +78,6 @@ namespace Mengine
         virtual uint32_t getLayoutCount() const = 0;
 
     public:
-        virtual void setMetricSymbol( GlyphCode _symbol ) = 0;
-        virtual GlyphCode getMetricSymbol() const = 0;
-
         virtual void setHeight( uint32_t _height ) = 0;
         virtual uint32_t getHeight() const = 0;
 
@@ -107,8 +100,8 @@ namespace Mengine
         virtual bool getGlyph( uint32_t _layout, GlyphCode _char, GlyphCode _next, Glyph * const _glyph ) const = 0;
 
     public:
-        virtual float getFontAscent() const = 0;
-        virtual float getFontDescent() const = 0;
+        virtual float getFontAscender() const = 0;
+        virtual float getFontDescender() const = 0;
         virtual float getFontHeight() const = 0;
         virtual float getFontBearingYA() const = 0;
         virtual float getFontSpacing() const = 0;

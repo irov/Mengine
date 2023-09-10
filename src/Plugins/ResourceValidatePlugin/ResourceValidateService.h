@@ -18,7 +18,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool validResource( const ResourcePtr & _resource ) const override;
+        bool validateResource( const ResourcePtr & _resource ) const override;
 
     protected:
         bool visitableResource_( const ResourcePtr & _resource ) const;

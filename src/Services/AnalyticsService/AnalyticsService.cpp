@@ -72,6 +72,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void AnalyticsService::logFlush()
+    {
+        for( const AnalyticsEventProviderInterfacePtr & provider : m_eventProviders )
+        {
+            provider->onAnalyticsFlush();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AnalyticsService::logEarnVirtualCurrency( const ConstString & _currencyName, double _value, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventBuilderPtr builder = m_analyticsFactory->makeEventBuilder( _doc );

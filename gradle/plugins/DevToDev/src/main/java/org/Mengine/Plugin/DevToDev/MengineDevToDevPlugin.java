@@ -1,5 +1,6 @@
 package org.Mengine.Plugin.DevToDev;
 
+import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
@@ -11,14 +12,16 @@ import com.devtodev.analytics.external.analytics.DTDCustomEventParameters;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import java.util.Map;
 
-public class MengineDevToDevPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginActivityListener {
+public class MengineDevToDevPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "DevToDev";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -27,10 +30,19 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
     private boolean m_initializeSuccessful;
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
+        if (event == MengineEvent.EVENT_SESSION_ID) {
+            String sessionId = (String)args[0];
+
+            DTDAnalytics.INSTANCE.setUserId(sessionId);
+        }
+    }
+
+    @Override
+    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         m_initializeSuccessful = false;
 
-        String MengineDevToDevPlugin_AppId = activity.getMetaDataString(PLUGIN_METADATA_APP_ID);
+        String MengineDevToDevPlugin_AppId = application.getMetaDataString(PLUGIN_METADATA_APP_ID);
 
         if (MengineDevToDevPlugin_AppId == null) {
             this.invalidInitialize("initialize unsetup [%s]", PLUGIN_METADATA_APP_ID);
@@ -61,12 +73,9 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             configuration.setLogLevel(DTDLogLevel.Error);
         }
 
-        DTDAnalytics.INSTANCE.initialize(MengineDevToDevPlugin_AppId, configuration, activity);
-    }
+        Context context = application.getApplicationContext();
 
-    @Override
-    public void onDestroy(MengineActivity activity) {
-        //Empty
+        DTDAnalytics.INSTANCE.initialize(MengineDevToDevPlugin_AppId, configuration, context);
     }
 
     public void tutorialEvent(int stateOrStep) {
@@ -213,6 +222,17 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
                 DTDAnalytics.INSTANCE.customEvent(eventName, params);
             }break;
         }
+    }
+
+    @Override
+    public void onMengineAnalyticsFlush(MengineApplication application) {
+        if (m_initializeSuccessful == false) {
+            return;
+        }
+
+        this.logInfo("logFlush");
+
+        DTDAnalytics.INSTANCE.sendBufferedEvents();
     }
 
     public void logEvent(@NonNull String eventName, @NonNull DTDCustomEventParameters params) {

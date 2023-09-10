@@ -15,9 +15,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderResourceInternalObject::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
+    bool LoaderResourceInternalObject::load( const FactorablePtr & _factorable, const Metabuf::Metadata * _meta )
     {
-        ResourceInternalObject * resource = _loadable.getT<ResourceInternalObject *>();
+        ResourceInternalObject * resource = _factorable.getT<ResourceInternalObject *>();
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceInternalObject * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceInternalObject *>(_meta);

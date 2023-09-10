@@ -148,4 +148,9 @@ namespace Mengine
         [FIRAnalytics logEventWithName:@(eventName_str) parameters:firebase_parameters];
     }
     //////////////////////////////////////////////////////////////////////////
+    void AppleFirebaseAnalyticsService::onAnalyticsFlush()
+    {
+        //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

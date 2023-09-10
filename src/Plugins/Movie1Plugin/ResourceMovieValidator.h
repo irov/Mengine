@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Plugins/ResourceValidatePlugin/ResourceValidatorHelper.h"
-
 #include "ResourceMovie.h"
+
+#include "Kernel/Validator.h"
 
 namespace Mengine
 {
     class ResourceMovieValidator
-        : public ResourceValidatorT<ResourceMoviePtr>
+        : public Validator<ResourceMoviePtr>
     {
     public:
         ResourceMovieValidator();

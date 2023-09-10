@@ -1,13 +1,12 @@
 #pragma once
 
-#include "ResourceValidatorHelper.h"
-
 #include "Kernel/ResourceImageDefault.h"
+#include "Kernel/Validator.h"
 
 namespace Mengine
 {
     class ResourceImageDefaultValidator
-        : public ResourceValidatorT<ResourceImageDefaultPtr>
+        : public Validator<ResourceImageDefaultPtr>
     {
     public:
         ResourceImageDefaultValidator();

@@ -26,6 +26,7 @@ namespace Mengine
 
     public:
         virtual void logEvent( const AnalyticsEventInterfacePtr & _event ) = 0;
+        virtual void logFlush() = 0;
 
     public:
         virtual void logEarnVirtualCurrency( const ConstString & _currencyName, double _value, const DocumentInterfacePtr & _doc ) = 0;

@@ -1,5 +1,6 @@
 #include "BitmapFontConfigLoader.h"
 
+#include "Interface/FontServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 
 #include "BitmapFontInterface.h"
@@ -20,32 +21,34 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFontConfigLoader::load( const FontInterfacePtr & _font, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
+    bool BitmapFontConfigLoader::load( const FactorablePtr & _factorable, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
     {
-        BitmapFontPtr font = _font;
+        MENGINE_UNUSED( _fileGroup );
 
-        const ConstString & name = _font->getName();
+        BitmapFontPtr font = BitmapFontPtr::from( _factorable );
+
+        const ConstString & name = font->getName();
 
         Color colorFont;
         if( _config->hasValue( name.c_str(), "ColorFont", Color(), &colorFont ) == true )
         {
-            _font->setFontColor( colorFont );
+            font->setFontColor( colorFont );
         }
 
         float lineOffset;
         if( _config->hasValue( name.c_str(), "LineOffset", 0.f, &lineOffset ) == true )
         {
-            _font->setLineOffset( lineOffset );
+            font->setLineOffset( lineOffset );
         }
 
         float charOffset;
         if( _config->hasValue( name.c_str(), "CharOffset", 0.f, &charOffset ) == true )
         {
-            _font->setCharOffset( charOffset );
+            font->setCharOffset( charOffset );
         }
 
-        FilePath glyphPath;
-        if( _config->hasValue( name.c_str(), "Glyph", FilePath::none(), &glyphPath ) == false )
+        ConstString glyphName;
+        if( _config->hasValue( name.c_str(), "Glyph", FilePath::none(), &glyphName ) == false )
         {
             LOGGER_ERROR( "bitmap font '%s' don't setup Glyph"
                 , name.c_str()
@@ -54,37 +57,15 @@ namespace Mengine
             return false;
         }
 
-        BitmapGlyphPtr glyph = BITMAPGLYPH_SERVICE()
-            ->getGlyph( _fileGroup, glyphPath );
+        const BitmapFontGlyphPtr & glyph = FONT_SERVICE()
+            ->getGlyph( glyphName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( glyph, "invalid font '%s' don't load Glyph '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( glyph, "invalid font '%s' don't load glyph '%s'"
             , name.c_str()
-            , glyphPath.c_str()
+            , glyphName.c_str()
         );
 
-        font->setBitmapGlyph( glyph );
-
-        uint32_t height = glyph->getHeight();
-
-        font->setHeight( height );
-
-        FilePath pathFontImage;
-        if( _config->hasValue( name.c_str(), "Image", FilePath::none(), &pathFontImage ) == false )
-        {
-            LOGGER_ERROR( "bitmap font '%s' dont setup Image"
-                , name.c_str()
-            );
-
-            return false;
-        }
-
-        ContentInterfacePtr content = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-
-        content->setFileGroup( _fileGroup );
-        content->setFilePath( pathFontImage );
-
-        font->setContent( content );
+        font->setBitmapFontGlyph( glyph );
 
         return true;
     }

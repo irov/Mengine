@@ -127,4 +127,9 @@ namespace Mengine
         [DTDAnalytics customEvent:@(eventName_str) withParameters:devtodev_parameters];
     }
     //////////////////////////////////////////////////////////////////////////
+    void AppleDevToDevService::onAnalyticsFlush()
+    {
+        //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -19,9 +19,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderResourceSpineAtlasDefault::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
+    bool LoaderResourceSpineAtlasDefault::load( const FactorablePtr & _factorable, const Metabuf::Metadata * _meta )
     {
-        ResourceSpineAtlasDefault * resource = _loadable.getT<ResourceSpineAtlasDefault *>();
+        ResourceSpineAtlasDefault * resource = _factorable.getT<ResourceSpineAtlasDefault *>();
 
         const ConstString & groupName = resource->getGroupName();
 

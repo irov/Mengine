@@ -89,6 +89,9 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
     @Override
     public void onAppTerminate(MengineApplication application) {
+        m_facebookCallbackManager = null;
+        m_accessTokenTracker = null;
+        m_profileTracker = null;
         m_logger = null;
     }
 
@@ -356,6 +359,17 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 );
             } break;
         }
+    }
+
+    @Override
+    public void onMengineAnalyticsFlush(MengineApplication application) {
+        if (m_logger == null) {
+            return;
+        }
+
+        this.logInfo("logFlush");
+
+        m_logger.flush();
     }
 
     public boolean isLoggedIn() {

@@ -49,7 +49,7 @@ namespace Mengine
 
         FilePath m_protocolPath;
 
-        typedef Hashtable<ConstString, LoaderInterfacePtr> HashtableLoaders;
+        typedef Hashtable<ConstString, MetabufLoaderInterfacePtr> HashtableLoaders;
         HashtableLoaders m_loaders;
 
         mutable Metacache m_metacache;

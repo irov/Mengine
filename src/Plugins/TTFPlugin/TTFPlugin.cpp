@@ -13,10 +13,13 @@
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/FactorableUnique.h"
 
-#include "TTFPrototypeGenerator.h"
+#include "TTFFontPrototypeGenerator.h"
+#include "TTFFontGlyphPrototypeGenerator.h"
 #include "TTFFontConfigLoader.h"
+#include "TTFFontGlyphConfigLoader.h"
 #include "TTFDataflow.h"
 #include "TTFFontValidator.h"
+#include "TTFFontGlyphValidator.h"
 
 //////////////////////////////////////////////////////////////////////////
 void * _ft_malloc( size_t _size )
@@ -93,7 +96,7 @@ namespace Mengine
             return false;
         }
 
-        TTFPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<TTFPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
+        TTFFontPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<TTFFontPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
         generator->setFTLibrary( m_ftlibrary );
 
@@ -103,9 +106,17 @@ namespace Mengine
             return false;
         }
 
-        VOCABULARY_SET( FontConfigLoaderInterface, STRINGIZE_STRING_LOCAL( "FontConfigLoader" ), STRINGIZE_STRING_LOCAL( "TTF" ), Helper::makeFactorableUnique<TTFFontConfigLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "FontGlyph" ), STRINGIZE_STRING_LOCAL( "TTF" ), Helper::makeFactorableUnique<TTFFontGlyphPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
 
-        VOCABULARY_SET( FontValidatorInterface, STRINGIZE_STRING_LOCAL( "FontValidator" ), STRINGIZE_STRING_LOCAL( "TTF" ), Helper::makeFactorableUnique<TTFFontValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ConfigLoaderInterface, STRINGIZE_STRING_LOCAL( "FontConfigLoader" ), STRINGIZE_STRING_LOCAL( "TTF" ), Helper::makeFactorableUnique<TTFFontConfigLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ConfigLoaderInterface, STRINGIZE_STRING_LOCAL( "FontGlyphConfigLoader" ), STRINGIZE_STRING_LOCAL( "TTF" ), Helper::makeFactorableUnique<TTFFontGlyphConfigLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+
+        VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "FontValidator" ), STRINGIZE_STRING_LOCAL( "TTF" ), Helper::makeFactorableUnique<TTFFontValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "FontGlyphValidator" ), STRINGIZE_STRING_LOCAL( "TTF" ), Helper::makeFactorableUnique<TTFFontGlyphValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         m_ftMutex = THREAD_SYSTEM()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
@@ -144,8 +155,14 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" ), nullptr );
 
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "FontGlyph" ), STRINGIZE_STRING_LOCAL( "TTF" ), nullptr );
+
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FontConfigLoader" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FontGlyphConfigLoader" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
+
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FontValidator" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FontGlyphValidator" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
 
         SERVICE_FINALIZE( TTFAtlasService );
 

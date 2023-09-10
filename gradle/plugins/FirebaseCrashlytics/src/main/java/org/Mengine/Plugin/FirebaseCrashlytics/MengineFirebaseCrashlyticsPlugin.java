@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.FirebaseCrashlytics;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.widget.Toast;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -11,13 +12,14 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginLoggerListener;
 import org.Mengine.Base.MengineUtils;
 
-public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginEngineListener {
+public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginEngineListener {
     public static final String PLUGIN_NAME = "FirebaseCrashlytics";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -28,13 +30,22 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
      */
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppInit(MengineApplication application) throws MenginePluginInvalidInitializeException {
+        boolean isBuildPublish = application.isBuildPublish();
+
+        if(isBuildPublish == false) {
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+        }
+    }
+
+    @Override
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         if (BuildConfig.DEBUG == true) {
             if (FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution() == true) {
                 MengineUtils.performOnMainThreadDelayed(() -> {
-                    Context applicatonContext = application.getApplicationContext();
+                    Context context = activity.getApplicationContext();
 
-                    Toast text = Toast.makeText(applicatonContext, "Last launch ended in a crash", Toast.LENGTH_LONG);
+                    Toast text = Toast.makeText(context, "Last launch ended in a crash", Toast.LENGTH_LONG);
                     text.show();
                 }, 5000L);
             }

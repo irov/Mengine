@@ -712,7 +712,7 @@ public class MengineApplication extends Application {
         this.sendEvent(MengineEvent.EVENT_SESSION_ID, m_sessionId);
 
         long app_init_start_timestamp = MengineAnalytics.buildEvent("mng_app_init_start")
-            .log();
+            .flush();
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
@@ -722,14 +722,14 @@ public class MengineApplication extends Application {
 
                 long app_init_plugin_start_timestamp = MengineAnalytics.buildEvent("mng_app_init_plugin_start")
                     .addParameterString("name", pluginName)
-                    .log();
+                    .flush();
 
                 l.onAppCreate(this);
 
                 MengineAnalytics.buildEvent("mng_app_init_plugin_completed")
                     .addParameterString("name", pluginName)
                     .addParameterLong("time", MengineUtils.getDurationTimestamp(app_init_plugin_start_timestamp))
-                    .log();
+                    .flush();
             } catch (MenginePluginInvalidInitializeException e) {
                 this.invalidInitialize("invalid plugin %s callback onAppCreate exception: %s"
                     , l.getPluginName()
@@ -742,7 +742,7 @@ public class MengineApplication extends Application {
 
         MengineAnalytics.buildEvent("mng_app_init_completed")
             .addParameterLong("time", MengineUtils.getDurationTimestamp(app_init_start_timestamp))
-            .log();
+            .flush();
     }
 
     @Override

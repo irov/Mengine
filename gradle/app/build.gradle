@@ -15,6 +15,8 @@ def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_SP
 def ANDROID_APP_BUNDLE_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_BUNDLE_ENABLE", false)
 def ANDROID_APP_DELIVERY_PACKAGES = Utils.getStringProperty(project, "ANDROID_APP_DELIVERY_PACKAGES", null)
 def ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty(project, "ANDROID_APP_BUILD_NUMBER", 0)
+def ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
+def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
 
 def MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_MENGINE")
 def MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_OPENAL32")
@@ -205,14 +207,36 @@ android {
         }
 
         release {
-            if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
+            if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
+        buildTypes {
+            debug {
                 firebaseCrashlytics {
-                    mappingFileUploadEnabled true
+                    if (ANDROID_APP_DEBUG_MINIFY_ENABLE == true) {
+                        mappingFileUploadEnabled true
+                    }
+
+                    nativeSymbolUploadEnabled true
+
+                    unstrippedNativeLibsDir "$buildDir/intermediates/merged_native_libs/debug/out/lib/"
                 }
             }
 
-            if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
-                signingConfig signingConfigs.release
+            release {
+                firebaseCrashlytics {
+                    if (ANDROID_APP_RELEASE_MINIFY_ENABLE == true) {
+                        mappingFileUploadEnabled true
+                    }
+
+                    nativeSymbolUploadEnabled true
+
+                    unstrippedNativeLibsDir "$buildDir/intermediates/merged_native_libs/release/out/lib/"
+                }
             }
         }
     }
@@ -294,26 +318,6 @@ android {
     packagingOptions {
         jniLibs {
             pickFirsts += ['lib/**/libc++_shared.so', 'lib/**/libopenal.so', 'lib/**/libSDL2.so']
-        }
-    }
-
-    if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
-        buildTypes {
-            debug {
-                firebaseCrashlytics {
-                    nativeSymbolUploadEnabled true
-
-                    unstrippedNativeLibsDir "$buildDir/intermediates/merged_native_libs/debug/out/lib/"
-                }
-            }
-
-            release {
-                firebaseCrashlytics {
-                    nativeSymbolUploadEnabled true
-
-                    unstrippedNativeLibsDir "$buildDir/intermediates/merged_native_libs/release/out/lib/"
-                }
-            }
         }
     }
 

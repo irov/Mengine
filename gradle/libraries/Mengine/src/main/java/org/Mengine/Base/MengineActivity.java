@@ -219,7 +219,7 @@ public class MengineActivity extends SDLActivity {
         this.setState("activity.init", "start");
 
         long activity_init_start_timestamp = MengineAnalytics.buildEvent("mng_activity_init_start")
-            .log();
+            .flush();
 
         super.onCreate(savedInstanceState);
 
@@ -248,7 +248,7 @@ public class MengineActivity extends SDLActivity {
 
             long plugin_init_start_timestamp = MengineAnalytics.buildEvent("mng_activity_init_plugin_start")
                 .addParameterString("name", pluginName)
-                .log();
+                .flush();
 
             try {
                 l.onCreate(this, savedInstanceState);
@@ -264,7 +264,7 @@ public class MengineActivity extends SDLActivity {
             MengineAnalytics.buildEvent("mng_activity_init_plugin_completed")
                 .addParameterString("name", pluginName)
                 .addParameterLong("time", MengineUtils.getDurationTimestamp(plugin_init_start_timestamp))
-                .log();
+                .flush();
         }
 
         this.setState("activity.init", "plugin_create");
@@ -286,7 +286,7 @@ public class MengineActivity extends SDLActivity {
 
         MengineAnalytics.buildEvent("mng_activity_init_completed")
             .addParameterLong("time", MengineUtils.getDurationTimestamp(activity_init_start_timestamp))
-            .log();
+            .flush();
 
         this.setState("activity.lifecycle", "created");
     }

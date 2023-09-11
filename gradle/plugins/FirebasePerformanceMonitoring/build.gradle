@@ -6,7 +6,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.firebase:firebase-perf:20.4.0'
+    implementation 'com.google.firebase:firebase-perf:20.4.1'
 }
 
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

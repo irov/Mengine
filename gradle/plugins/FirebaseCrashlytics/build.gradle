@@ -6,7 +6,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.firebase:firebase-crashlytics:18.4.1'
     implementation 'com.google.firebase:firebase-crashlytics-ndk:18.4.1'
 }
 

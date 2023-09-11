@@ -76,11 +76,19 @@ public class MengineAnalyticsEventBuilder {
         return this;
     }
 
+    public long flush() {
+        long timestamp = this.log();
+
+        m_application.onMengineAnalyticsFlush();
+
+        return timestamp;
+    }
+
     public long log() {
-        long log_timestamp = MengineUtils.getTimestamp();
+        long timestamp = MengineUtils.getTimestamp();
 
-        m_application.onMengineAnalyticsEvent(MengineAnalytics.EAET_CUSTOM, m_name, log_timestamp, m_bases, m_parameters);
+        m_application.onMengineAnalyticsEvent(MengineAnalytics.EAET_CUSTOM, m_name, timestamp, m_bases, m_parameters);
 
-        return log_timestamp;
+        return timestamp;
     }
 }

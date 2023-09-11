@@ -3598,9 +3598,10 @@ namespace Mengine
 
                     if( py_result.is_none() == false )
                     {
-                        LOGGER_ERROR( "'%s' return value '%s' not None"
+                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
                             , m_cb.repr().c_str()
                             , py_result.repr().c_str()
+                            , py_result.repr_type().c_str()
                         );
                     }
                 }

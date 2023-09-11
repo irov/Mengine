@@ -348,13 +348,14 @@ namespace Mengine
         pybind::def_functor( m_kernel, "setTracebackOffset", this, &PythonScriptService::setTracebackOffset );
 
         pybind::interface_<PythonScriptLogger>( m_kernel, "PythonScriptLogger", true )
-            .def_native_silent_kernel( "write", &PythonScriptLogger::py_write )
+            .def_native_silent_kernel( "write", &PythonScriptLogger::write )
             .def_property( "softspace", &PythonScriptLogger::getSoftspace, &PythonScriptLogger::setSoftspace )
             ;
 
         m_loggerWarning = Helper::makeFactorableUnique<PythonScriptLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_loggerWarning->setColor( LCOLOR_RED | LCOLOR_GREEN );
+        m_loggerWarning->setLoggerLevel( LM_WARNING );
 
         pybind::object py_logger = pybind::make_object_t( m_kernel, m_loggerWarning );
         kernel->setStdOutHandle( py_logger.ptr() );
@@ -362,6 +363,7 @@ namespace Mengine
         m_loggerError = Helper::makeFactorableUnique<PythonScriptLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_loggerError->setColor( LCOLOR_RED );
+        m_loggerError->setLoggerLevel( LM_ERROR );
 
         pybind::object py_loggerError = pybind::make_object_t( m_kernel, m_loggerError );
         kernel->setStdErrorHandle( py_loggerError.ptr() );

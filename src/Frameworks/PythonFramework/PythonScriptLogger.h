@@ -4,23 +4,20 @@
 
 #include "Environment/Python/PythonIncluder.h"
 
-#include "Kernel/LoggerBase.h"
+#include "Kernel/Factorable.h"
 #include "Kernel/String.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PythonScriptLogger
-        : public LoggerBase
+        : public Factorable
     {
         DECLARE_FACTORABLE( PythonScriptLogger );
 
     public:
         PythonScriptLogger();
         ~PythonScriptLogger() override;
-
-    public:
-        PyObject * py_write( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds );
 
     public:
         void setSoftspace( int32_t _softspace );
@@ -30,17 +27,21 @@ namespace Mengine
         void setColor( uint32_t _color );
         uint32_t getColor() const;
 
-    protected:
-        void _log( const LoggerMessage & _loggerMessage ) override;
+    public:
+        void setLoggerLevel( ELoggerLevel _level );
+        ELoggerLevel getLoggerLevel() const;
+
+    public:
+        PyObject * write( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds );
 
     protected:
         uint32_t m_color;
+        int32_t m_softspace;
+        ELoggerLevel m_level;
 
         Char m_message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
-
-        int32_t m_softspace;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PythonScriptLogger, LoggerInterface> PythonScriptLoggerPtr;
+    typedef IntrusivePtr<PythonScriptLogger> PythonScriptLoggerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -13,6 +13,7 @@ namespace Mengine
     PythonScriptLogger::PythonScriptLogger()
         : m_color( LCOLOR_NONE )
         , m_softspace( 0 )
+        , m_level( LM_SILENT )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -20,7 +21,37 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * PythonScriptLogger::py_write( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds )
+    void PythonScriptLogger::setSoftspace( int32_t _softspace )
+    {
+        m_softspace = _softspace;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t PythonScriptLogger::getSoftspace() const
+    {
+        return m_softspace;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonScriptLogger::setColor( uint32_t _color )
+    {
+        m_color = _color;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t PythonScriptLogger::getColor() const
+    {
+        return m_color;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonScriptLogger::setLoggerLevel( ELoggerLevel _level )
+    {
+        m_level = _level;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ELoggerLevel PythonScriptLogger::getLoggerLevel() const
+    {
+        return m_level;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PyObject * PythonScriptLogger::write( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds )
     {
         MENGINE_UNUSED( _kwds );
 
@@ -69,43 +100,16 @@ namespace Mengine
             uint32_t lineno = 0;
             _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
-            LOGGER_VERBOSE_LEVEL( "python", LM_WARNING, LFILTER_NONE, color, function, lineno, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )("%s", m_message);
+            LOGGER_VERBOSE_LEVEL( "python", m_level, LFILTER_NONE, color, function, lineno, LFLAG_SHORT | LFLAG_FUNCTIONSTAMP )("%s", m_message);
         }
         else
         {
-            LOGGER_VERBOSE_LEVEL( "python", LM_WARNING, LFILTER_NONE, color, nullptr, 0, LFLAG_SHORT )("%s", m_message);
+            LOGGER_VERBOSE_LEVEL( "python", m_level, LFILTER_NONE, color, nullptr, 0, LFLAG_SHORT )("%s", m_message);
         }
 
         MENGINE_STRCPY( m_message, "" );
 
         return _kernel->ret_none();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PythonScriptLogger::setSoftspace( int32_t _softspace )
-    {
-        m_softspace = _softspace;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    int32_t PythonScriptLogger::getSoftspace() const
-    {
-        return m_softspace;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PythonScriptLogger::setColor( uint32_t _color )
-    {
-        m_color = _color;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t PythonScriptLogger::getColor() const
-    {
-        return m_color;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PythonScriptLogger::_log( const LoggerMessage & _loggerMessage )
-    {
-        MENGINE_UNUSED( _loggerMessage );
-
-        //Empty;
     }
     //////////////////////////////////////////////////////////////////////////
 }

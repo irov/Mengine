@@ -1353,7 +1353,7 @@ namespace Mengine
         {
             uint32_t params = textEntry->getFontParams();
 
-            if( params & EFP_FONT )
+            if( (params & EFP_FONT) == EFP_FONT )
             {
                 const FontInterfacePtr & font = textEntry->getFont();
 
@@ -1380,7 +1380,7 @@ namespace Mengine
         {
             uint32_t params = textEntry->getFontParams();
 
-            if( params & EFP_LINE_OFFSET )
+            if( (params & EFP_LINE_OFFSET) == EFP_LINE_OFFSET )
             {
                 float value = textEntry->getLineOffset();
 
@@ -1388,7 +1388,7 @@ namespace Mengine
             }
         }
 
-        if( m_textParams & EFP_LINE_OFFSET )
+        if( (m_textParams & EFP_LINE_OFFSET) == EFP_LINE_OFFSET )
         {
             return m_lineOffset;
         }
@@ -1399,7 +1399,7 @@ namespace Mengine
         {
             uint32_t params = font->getFontParams();
 
-            if( params & EFP_LINE_OFFSET )
+            if( (params & EFP_LINE_OFFSET) == EFP_LINE_OFFSET )
             {
                 float lineOffset = font->getLineOffset();
 
@@ -1418,7 +1418,7 @@ namespace Mengine
         {
             uint32_t params = textEntry->getFontParams();
 
-            if( params & EFP_CHAR_OFFSET )
+            if( (params & EFP_CHAR_OFFSET) == EFP_CHAR_OFFSET )
             {
                 float value = textEntry->getCharOffset();
 
@@ -1426,7 +1426,7 @@ namespace Mengine
             }
         }
 
-        if( m_textParams & EFP_CHAR_OFFSET )
+        if( (m_textParams & EFP_CHAR_OFFSET) == EFP_CHAR_OFFSET )
         {
             return m_charOffset;
         }
@@ -1437,7 +1437,7 @@ namespace Mengine
         {
             uint32_t params = font->getFontParams();
 
-            if( params & EFP_CHAR_OFFSET )
+            if( (params & EFP_CHAR_OFFSET) == EFP_CHAR_OFFSET )
             {
                 float value = font->getCharOffset();
 
@@ -1456,7 +1456,7 @@ namespace Mengine
         {
             uint32_t params = textEntry->getFontParams();
 
-            if( params & EFP_MAX_LENGTH )
+            if( (params & EFP_MAX_LENGTH) == EFP_MAX_LENGTH )
             {
                 float value = textEntry->getMaxLength();
 
@@ -1475,7 +1475,7 @@ namespace Mengine
         {
             uint32_t params = textEntry->getFontParams();
 
-            if( params & EFP_COLOR_FONT )
+            if( (params & EFP_COLOR_FONT) == EFP_COLOR_FONT )
             {
                 const Color & value = textEntry->getColorFont();
 
@@ -1483,7 +1483,7 @@ namespace Mengine
             }
         }
 
-        if( m_textParams & EFP_COLOR_FONT )
+        if( (m_textParams & EFP_COLOR_FONT) == EFP_COLOR_FONT )
         {
             return m_colorFont;
         }
@@ -1494,7 +1494,7 @@ namespace Mengine
         {
             uint32_t params = font->getFontParams();
 
-            if( params & EFP_COLOR_FONT )
+            if( (params & EFP_COLOR_FONT) == EFP_COLOR_FONT )
             {
                 const Color & value = font->getFontColor();
 
@@ -1513,7 +1513,7 @@ namespace Mengine
         {
             uint32_t params = textEntry->getFontParams();
 
-            if( params & EFP_HORIZONTAL_ALIGN )
+            if( (params & EFP_HORIZONTAL_ALIGN) == EFP_HORIZONTAL_ALIGN )
             {
                 ETextHorizontAlign value = textEntry->getHorizontAlign();
 
@@ -1521,7 +1521,7 @@ namespace Mengine
             }
         }
 
-        if( m_textParams & EFP_HORIZONTAL_ALIGN )
+        if( (m_textParams & EFP_HORIZONTAL_ALIGN) == EFP_HORIZONTAL_ALIGN )
         {
             return m_horizontAlign;
         }
@@ -1537,7 +1537,7 @@ namespace Mengine
         {
             uint32_t params = textEntry->getFontParams();
 
-            if( params & EFP_VERTICAL_ALIGN )
+            if( (params & EFP_VERTICAL_ALIGN) == EFP_VERTICAL_ALIGN )
             {
                 ETextVerticalAlign value = textEntry->getVerticalAlign();
 
@@ -1545,7 +1545,7 @@ namespace Mengine
             }
         }
 
-        if( m_textParams & EFP_VERTICAL_ALIGN )
+        if( (m_textParams & EFP_VERTICAL_ALIGN) == EFP_VERTICAL_ALIGN )
         {
             return m_verticalAlign;
         }
@@ -1561,7 +1561,7 @@ namespace Mengine
         {
             uint32_t params = textEntry->getFontParams();
 
-            if( params & EFP_CHAR_SCALE )
+            if( (params & EFP_CHAR_SCALE) == EFP_CHAR_SCALE )
             {
                 float value = textEntry->getCharScale();
 
@@ -1569,7 +1569,7 @@ namespace Mengine
             }
         }
 
-        if( m_textParams & EFP_CHAR_SCALE )
+        if( (m_textParams & EFP_CHAR_SCALE) == EFP_CHAR_SCALE )
         {
             return m_charScale;
         }

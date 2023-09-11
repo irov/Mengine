@@ -186,52 +186,53 @@ namespace Mengine
                 firstEntry, nextEntry, lastEntry
             };
             //////////////////////////////////////////////////////////////////////////
-            static size_t OnCallstackEntry( Char * const _stack, size_t _capacity, CallstackEntry & entry )
+            static size_t OnCallstackEntry( Char * const _stack, size_t _capacity, CallstackEntry * const _entry )
             {
-                CHAR buffer[MENGINE_STACKWALK_MAX_NAMELEN];
-                if( entry.offset == 0 )
+                CHAR buffer[MENGINE_STACKWALK_MAX_NAMELEN] = {'\0'};
+
+                if( _entry->offset == 0 )
                 {
                     return 0;
                 }
 
-                if( entry.name[0] == 0 )
+                if( _entry->name[0] == 0 )
                 {
-                    MENGINE_STRCPY( entry.name, "(function-name not available)" );
+                    MENGINE_STRCPY( _entry->name, "(function-name not available)" );
                 }
 
-                if( entry.undName[0] != 0 )
+                if( _entry->undName[0] != 0 )
                 {
-                    MENGINE_STRCPY( entry.name, entry.undName );
+                    MENGINE_STRCPY( _entry->name, _entry->undName );
                 }
 
-                if( entry.undFullName[0] != 0 )
+                if( _entry->undFullName[0] != 0 )
                 {
-                    MENGINE_STRCPY( entry.name, entry.undFullName );
+                    MENGINE_STRCPY( _entry->name, _entry->undFullName );
                 }
 
-                if( entry.lineFileName[0] == 0 )
+                if( _entry->lineFileName[0] == 0 )
                 {
-                    MENGINE_STRCPY( entry.lineFileName, "(filename not available)" );
+                    MENGINE_STRCPY( _entry->lineFileName, "(filename not available)" );
 
-                    if( entry.moduleName[0] == 0 )
+                    if( _entry->moduleName[0] == 0 )
                     {
-                        MENGINE_STRCPY( entry.moduleName, "(module-name not available)" );
+                        MENGINE_STRCPY( _entry->moduleName, "(module-name not available)" );
                     }
 
                     MENGINE_SNPRINTF( buffer, MENGINE_STACKWALK_MAX_NAMELEN, "%p (%s): %s (%d): %s\n"
-                        , (LPVOID)entry.offset
-                        , entry.moduleName
-                        , entry.lineFileName
-                        , entry.lineNumber
-                        , entry.name
+                        , (LPVOID)_entry->offset
+                        , _entry->moduleName
+                        , _entry->lineFileName
+                        , _entry->lineNumber
+                        , _entry->name
                     );
                 }
                 else
                 {
                     MENGINE_SNPRINTF( buffer, MENGINE_STACKWALK_MAX_NAMELEN, "%s (%d): %s\n"
-                        , entry.lineFileName
-                        , entry.lineNumber
-                        , entry.name
+                        , _entry->lineFileName
+                        , _entry->lineNumber
+                        , _entry->name
                     );
                 }
 
@@ -271,9 +272,16 @@ namespace Mengine
                 TSymLoadModule64 pSymLoadModule64 = (TSymLoadModule64)::GetProcAddress( hDbhHelp, "SymLoadModule64" );
                 TSymGetSearchPath pSymGetSearchPath = (TSymGetSearchPath)::GetProcAddress( hDbhHelp, "SymGetSearchPath" );
 
-                if( pRtlCaptureContext == NULL || pStackWalk64 == NULL || pSymGetOptions == NULL ||
-                    pSymSetOptions == NULL || pSymFunctionTableAccess64 == NULL || pSymGetModuleBase64 == NULL ||
-                    pSymGetModuleInfo64 == NULL || pSymGetSymFromAddr64 == NULL || pUnDecorateSymbolName == NULL || pSymLoadModule64 == NULL ||
+                if( pRtlCaptureContext == NULL ||
+                    pStackWalk64 == NULL ||
+                    pSymGetOptions == NULL ||
+                    pSymSetOptions == NULL ||
+                    pSymFunctionTableAccess64 == NULL ||
+                    pSymGetModuleBase64 == NULL ||
+                    pSymGetModuleInfo64 == NULL ||
+                    pSymGetSymFromAddr64 == NULL ||
+                    pUnDecorateSymbolName == NULL ||
+                    pSymLoadModule64 == NULL ||
                     pSymGetSearchPath == NULL )
                 {
                     return false;
@@ -357,11 +365,11 @@ namespace Mengine
 #endif
 
                 uint8_t pSymBuff[sizeof( IMAGEHLP_SYMBOL64 ) + MENGINE_STACKWALK_MAX_NAMELEN];
-                IMAGEHLP_SYMBOL64 * pSym = (IMAGEHLP_SYMBOL64 *)pSymBuff;
-                MENGINE_MEMSET( pSym, 0, sizeof( IMAGEHLP_SYMBOL64 ) + MENGINE_STACKWALK_MAX_NAMELEN );
+                IMAGEHLP_SYMBOL64 * pSymbol = (IMAGEHLP_SYMBOL64 *)pSymBuff;
+                MENGINE_MEMSET( pSymbol, 0, sizeof( IMAGEHLP_SYMBOL64 ) + MENGINE_STACKWALK_MAX_NAMELEN );
 
-                pSym->SizeOfStruct = sizeof( IMAGEHLP_SYMBOL64 );
-                pSym->MaxNameLength = MENGINE_STACKWALK_MAX_NAMELEN;
+                pSymbol->SizeOfStruct = sizeof( IMAGEHLP_SYMBOL64 );
+                pSymbol->MaxNameLength = MENGINE_STACKWALK_MAX_NAMELEN;
 
                 IMAGEHLP_LINE64 Line;
                 MENGINE_MEMSET( &Line, 0, sizeof( Line ) );
@@ -400,11 +408,11 @@ namespace Mengine
                     if( frame.AddrPC.Offset != 0 )
                     {
                         DWORD64 offsetFromSmybol;
-                        if( (*pSymGetSymFromAddr64)(hProcess, frame.AddrPC.Offset, &offsetFromSmybol, pSym) == TRUE )
+                        if( (*pSymGetSymFromAddr64)(hProcess, frame.AddrPC.Offset, &offsetFromSmybol, pSymbol) == TRUE )
                         {
-                            MENGINE_STRCPY( csEntry.name, pSym->Name );
-                            (*pUnDecorateSymbolName)(pSym->Name, csEntry.undName, MENGINE_STACKWALK_MAX_NAMELEN, UNDNAME_NAME_ONLY);
-                            (*pUnDecorateSymbolName)(pSym->Name, csEntry.undFullName, MENGINE_STACKWALK_MAX_NAMELEN, UNDNAME_COMPLETE);
+                            MENGINE_STRCPY( csEntry.name, pSymbol->Name );
+                            (*pUnDecorateSymbolName)(pSymbol->Name, csEntry.undName, MENGINE_STACKWALK_MAX_NAMELEN, UNDNAME_NAME_ONLY);
+                            (*pUnDecorateSymbolName)(pSymbol->Name, csEntry.undFullName, MENGINE_STACKWALK_MAX_NAMELEN, UNDNAME_COMPLETE);
                         }
 
                         if( pSymGetLineFromAddr64 != NULL )
@@ -423,7 +431,7 @@ namespace Mengine
                         }
                     }
 
-                    size_t stack_len = Detail::OnCallstackEntry( _stack, _capacity, csEntry );
+                    size_t stack_len = Detail::OnCallstackEntry( _stack, _capacity, &csEntry );
 
                     _capacity -= stack_len;
 

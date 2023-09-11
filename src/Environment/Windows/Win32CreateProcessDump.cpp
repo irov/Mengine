@@ -19,6 +19,7 @@ namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         bool Win32CreateProcessDump( const Char * _dumpPath, PEXCEPTION_POINTERS _pExceptionPointers, bool _fullDump )
         {
             WChar unicode_processDumpPath[MENGINE_MAX_PATH] = {L'\0'};
@@ -36,9 +37,9 @@ namespace Mengine
                 return false;
             }
 
-            HMODULE dbghelp_dll = ::LoadLibrary( L"dbghelp.dll" );
+            HMODULE hDbgHelp = ::LoadLibrary( L"DbgHelp.dll" );
 
-            if( dbghelp_dll == NULL )
+            if( hDbgHelp == NULL )
             {
                 ::CloseHandle( hFile );
 
@@ -52,11 +53,11 @@ namespace Mengine
                 CONST PMINIDUMP_CALLBACK_INFORMATION callbackparam
                 );
 
-            MINIDUMPWRITEDUMP MiniDumpWriteDump = (MINIDUMPWRITEDUMP)::GetProcAddress( dbghelp_dll, "MiniDumpWriteDump" );
+            MINIDUMPWRITEDUMP MiniDumpWriteDump = (MINIDUMPWRITEDUMP)::GetProcAddress( hDbgHelp, "MiniDumpWriteDump" );
 
             if( MiniDumpWriteDump == NULL )
             {
-                ::FreeLibrary( dbghelp_dll );
+                ::FreeLibrary( hDbgHelp );
                 ::CloseHandle( hFile );
 
                 return false;
@@ -84,7 +85,7 @@ namespace Mengine
 
             BOOL successful = (*MiniDumpWriteDump)(hProcess, dwProcessId, hFile, dumptype, (_pExceptionPointers == nullptr ? nullptr : &exInfo), NULL, NULL);
 
-            ::FreeLibrary( dbghelp_dll );
+            ::FreeLibrary( hDbgHelp );
             ::CloseHandle( hFile );
 
             if( successful == FALSE )
@@ -94,5 +95,6 @@ namespace Mengine
 
             return true;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

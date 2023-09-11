@@ -135,12 +135,12 @@ namespace Mengine
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
 #endif
 
-        HMODULE hm_ntdll = ::LoadLibrary( L"ntdll.dll" );
+        HMODULE hNtdll = ::LoadLibrary( L"ntdll.dll" );
 
-        if( hm_ntdll != NULL )
+        if( hNtdll != NULL )
         {
             LONG( WINAPI * RtlGetVersion )(LPOSVERSIONINFOEXW);
-            *(FARPROC *)&RtlGetVersion = ::GetProcAddress( hm_ntdll, "RtlGetVersion" );
+            *(FARPROC *)&RtlGetVersion = ::GetProcAddress( hNtdll, "RtlGetVersion" );
 
             if( RtlGetVersion != NULL )
             {
@@ -165,7 +165,7 @@ namespace Mengine
                 );
             }
 
-            ::FreeLibrary( hm_ntdll );
+            ::FreeLibrary( hNtdll );
         }
 
         m_hInstance = ::GetModuleHandle( NULL );

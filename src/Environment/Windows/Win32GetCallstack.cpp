@@ -455,19 +455,19 @@ namespace Mengine
         {
             HANDLE hProcess = ::GetCurrentProcess();
 
-            HMODULE hDbhHelp = ::LoadLibraryW( L"dbghelp.dll" );
+            HMODULE hDbgHelp = ::LoadLibraryW( L"DbgHelp.dll" );
 
-            if( hDbhHelp == NULL )
+            if( hDbgHelp == NULL )
             {
                 return false;
             }
 
-            Detail::TSymInitialize pSymInitialize = (Detail::TSymInitialize)::GetProcAddress( hDbhHelp, "SymInitialize" );
-            Detail::TSymCleanup pSymCleanup = (Detail::TSymCleanup)::GetProcAddress( hDbhHelp, "SymCleanup" );
+            Detail::TSymInitialize pSymInitialize = (Detail::TSymInitialize)::GetProcAddress( hDbgHelp, "SymInitialize" );
+            Detail::TSymCleanup pSymCleanup = (Detail::TSymCleanup)::GetProcAddress( hDbgHelp, "SymCleanup" );
 
             if( pSymInitialize == NULL || pSymCleanup == NULL )
             {
-                ::FreeLibrary( hDbhHelp );
+                ::FreeLibrary( hDbgHelp );
 
                 return false;
             }
@@ -476,14 +476,14 @@ namespace Mengine
 
             if( hKernel32 == NULL )
             {
-                ::FreeLibrary( hDbhHelp );
+                ::FreeLibrary( hDbgHelp );
 
                 return false;
             }
 
             if( (*pSymInitialize)(hProcess, NULL, FALSE) == FALSE )
             {
-                ::FreeLibrary( hDbhHelp );
+                ::FreeLibrary( hDbgHelp );
                 ::FreeLibrary( hKernel32 );
 
                 return false;
@@ -502,13 +502,13 @@ namespace Mengine
 
             if( hThread == NULL )
             {
-                ::FreeLibrary( hDbhHelp );
+                ::FreeLibrary( hDbgHelp );
                 ::FreeLibrary( hKernel32 );
 
                 return false;
             }
 
-            bool successful = Detail::GetCallstack( _stack, _capacity, (PCONTEXT)_context, hDbhHelp, hKernel32, hThread, hProcess );
+            bool successful = Detail::GetCallstack( _stack, _capacity, (PCONTEXT)_context, hDbgHelp, hKernel32, hThread, hProcess );
 
             (*pSymCleanup)(hProcess);
 
@@ -517,7 +517,7 @@ namespace Mengine
                 ::CloseHandle( hThread );
             }
 
-            ::FreeLibrary( hDbhHelp );
+            ::FreeLibrary( hDbgHelp );
             ::FreeLibrary( hKernel32 );
 
             return successful;

@@ -15,12 +15,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AppleStoreInAppPurchaseProduct::~AppleStoreInAppPurchaseProduct()
     {
-        [m_skProduct release];
+        m_skProduct = nil;
     }
     /////////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchaseProduct::setSKProduct( SKProduct * _skProduct )
     {
-        m_skProduct = [_skProduct retain];
+        m_skProduct = _skProduct;
         
         m_productIdentifier = Helper::NSStringToConstString( m_skProduct.productIdentifier );
         m_productTitle = Helper::NSStringToString( m_skProduct.localizedTitle );

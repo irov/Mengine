@@ -13,12 +13,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AppleStoreInAppPurchaseProductsRequest::~AppleStoreInAppPurchaseProductsRequest()
     {
-        [m_skProductsRequest release];
+        m_skProductsRequest = nil;
     }
     /////////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchaseProductsRequest::setSKProductsRequest( SKProductsRequest * _skProductsRequest )
     {
-        m_skProductsRequest = [_skProductsRequest retain];
+        m_skProductsRequest = _skProductsRequest;
     }
     /////////////////////////////////////////////////////////////////////////////
     SKProductsRequest * AppleStoreInAppPurchaseProductsRequest::getSKProductsRequest() const

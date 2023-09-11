@@ -26,7 +26,7 @@ namespace Mengine
         void _finalizeService() override;
         
     public:
-        bool initBanner( const ConstString & _adUnitId, const AppleAppLovinBannerProviderInterfacePtr & _provider ) override;
+        bool initBanner( const ConstString & _adUnitId, const ConstString & _placement, const AppleAppLovinBannerProviderInterfacePtr & _provider ) override;
                 
     public:
         bool showBanner( const ConstString & _adUnitId ) override;
@@ -36,16 +36,16 @@ namespace Mengine
         bool initInterstitial( const ConstString & _adUnitId, const AppleAppLovinInterstitialProviderInterfacePtr & _provider ) override;
         
     public:
-        bool canYouShowInterstitial( const ConstString & _adUnitId ) const override;
-        bool showInterstitial( const ConstString & _adUnitId ) override;
+        bool canYouShowInterstitial( const ConstString & _adUnitId, const ConstString & _placement ) const override;
+        bool showInterstitial( const ConstString & _adUnitId, const ConstString & _placement ) override;
 
     public:
         bool initRewarded( const ConstString & _adUnitId, const AppleAppLovinRewardedProviderInterfacePtr & _provider ) override;
         
     public:
-        bool canOfferRewarded( const ConstString & _adUnitId ) const override;
-        bool canYouShowRewarded( const ConstString & _adUnitId ) const override;
-        bool showRewarded( const ConstString & _adUnitId ) override;
+        bool canOfferRewarded( const ConstString & _adUnitId, const ConstString & _placement ) const override;
+        bool canYouShowRewarded( const ConstString & _adUnitId, const ConstString & _placement ) const override;
+        bool showRewarded( const ConstString & _adUnitId, const ConstString & _placement ) override;
 
     public:
         void showMediationDebugger() override;

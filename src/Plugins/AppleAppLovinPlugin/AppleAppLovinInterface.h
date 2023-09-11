@@ -62,7 +62,7 @@ namespace Mengine
         SERVICE_DECLARE( "AppleAppLovinService" )
 
     public:
-        virtual bool initBanner( const ConstString & _adUnitId, const AppleAppLovinBannerProviderInterfacePtr & _provider ) = 0;
+        virtual bool initBanner( const ConstString & _adUnitId, const ConstString & _placement, const AppleAppLovinBannerProviderInterfacePtr & _provider ) = 0;
         
     public:
         virtual bool showBanner( const ConstString & _adUnitId ) = 0;
@@ -72,15 +72,15 @@ namespace Mengine
         virtual bool initInterstitial( const ConstString & _adUnitId, const AppleAppLovinInterstitialProviderInterfacePtr & _provider ) = 0;
         
     public:
-        virtual bool canYouShowInterstitial( const ConstString & _adUnitId ) const = 0;
-        virtual bool showInterstitial( const ConstString & _adUnitId ) = 0;
+        virtual bool canYouShowInterstitial( const ConstString & _adUnitId, const ConstString & _placement ) const = 0;
+        virtual bool showInterstitial( const ConstString & _adUnitId, const ConstString & _placement ) = 0;
         
     public:
         virtual bool initRewarded( const ConstString & _adUnitId, const AppleAppLovinRewardedProviderInterfacePtr & _provider ) = 0;
 
-        virtual bool canOfferRewarded( const ConstString & _adUnitId ) const = 0;
-        virtual bool canYouShowRewarded( const ConstString & _adUnitId ) const = 0;
-        virtual bool showRewarded( const ConstString & _adUnitId ) = 0;
+        virtual bool canOfferRewarded( const ConstString & _adUnitId, const ConstString & _placement ) const = 0;
+        virtual bool canYouShowRewarded( const ConstString & _adUnitId, const ConstString & _placement ) const = 0;
+        virtual bool showRewarded( const ConstString & _adUnitId, const ConstString & _placement ) = 0;
 
     public:
         virtual void showMediationDebugger() = 0;

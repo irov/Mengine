@@ -116,7 +116,9 @@ namespace Mengine
         }
         
         SKProductsRequest * skrequest = [[SKProductsRequest alloc] initWithProductIdentifiers:products];
-        skrequest.delegate = [[AppleStoreInAppPurchaseProductsRequestDelegate alloc] initWithFactory:this cb:_cb];
+        
+        id<SKProductsRequestDelegate> delegate = [[AppleStoreInAppPurchaseProductsRequestDelegate alloc] initWithFactory:this cb:_cb];
+        skrequest.delegate = delegate;
         
         [skrequest start];
         

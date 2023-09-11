@@ -15,12 +15,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AppleStoreInAppPurchasePaymentTransaction::~AppleStoreInAppPurchasePaymentTransaction()
     {
-        [m_skPaymentTransaction release];
+        m_skPaymentTransaction = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchasePaymentTransaction::setSKPaymentTransaction( SKPaymentTransaction * _skPaymentTransaction )
     {
-        m_skPaymentTransaction = [_skPaymentTransaction retain];
+        m_skPaymentTransaction = _skPaymentTransaction;
         
         SKPayment * payment = m_skPaymentTransaction.payment;
         

@@ -127,12 +127,12 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_initBanner( const ConstString & _adUnitId, const pybind::dict & _cbs, const pybind::args & _args )
+        static bool s_appleAppLovin_initBanner( const ConstString & _adUnitId, const ConstString & _placement, const pybind::dict & _cbs, const pybind::args & _args )
         {
             AppleAppLovinBannerProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleAppLovinBannerProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
             
             bool result = APPLE_APPLOVIN_SERVICE()
-                ->initBanner( _adUnitId, provider );
+                ->initBanner( _adUnitId, _placement, provider );
             
             return result;
         }
@@ -408,42 +408,42 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_canYouShowInterstitial( const ConstString & _adUnit )
+        static bool s_appleAppLovin_canYouShowInterstitial( const ConstString & _adUnit, const ConstString & _placement )
         {
             bool result = APPLE_APPLOVIN_SERVICE()
-                ->canYouShowInterstitial( _adUnit );
+                ->canYouShowInterstitial( _adUnit, _placement );
             
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_showInterstitial( const ConstString & _adUnit )
+        static bool s_appleAppLovin_showInterstitial( const ConstString & _adUnit, const ConstString & _placement )
         {
             bool result = APPLE_APPLOVIN_SERVICE()
-                ->showInterstitial( _adUnit );
+                ->showInterstitial( _adUnit, _placement );
             
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_canOfferRewarded( const ConstString & _adUnit )
+        static bool s_appleAppLovin_canOfferRewarded( const ConstString & _adUnit, const ConstString & _placement )
         {
             bool result = APPLE_APPLOVIN_SERVICE()
-                ->canOfferRewarded( _adUnit );
+                ->canOfferRewarded( _adUnit, _placement );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_canYouShowRewarded( const ConstString & _adUnit )
+        static bool s_appleAppLovin_canYouShowRewarded( const ConstString & _adUnit, const ConstString & _placement )
         {
             bool result = APPLE_APPLOVIN_SERVICE()
-                ->canYouShowRewarded( _adUnit );
+                ->canYouShowRewarded( _adUnit, _placement );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_showRewarded( const ConstString & _adUnit )
+        static bool s_appleAppLovin_showRewarded( const ConstString & _adUnit, const ConstString & _placement )
         {
             bool result = APPLE_APPLOVIN_SERVICE()
-                ->showRewarded( _adUnit );
+                ->showRewarded( _adUnit, _placement );
 
             return result;
         }

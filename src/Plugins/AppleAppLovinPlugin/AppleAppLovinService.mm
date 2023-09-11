@@ -108,33 +108,20 @@ namespace Mengine
     void AppleAppLovinService::_finalizeService()
     {
         m_analyticsService = nil;
-        
-        [m_banners enumerateKeysAndObjectsUsingBlock: ^(NSString * adUnitId, AppleAppLovinBannerDelegate * banner, BOOL *stop) {
-            [banner release];
-        }];
-        
+                
         m_banners = nil;
-        
-        [m_interstitials enumerateKeysAndObjectsUsingBlock: ^(NSString * adUnitId, AppleAppLovinInterstitialDelegate * interstitial, BOOL *stop) {
-            [interstitial release];
-        }];
-        
         m_interstitials = nil;
-        
-        [m_rewardeds enumerateKeysAndObjectsUsingBlock: ^(NSString * adUnitId, AppleAppLovinRewardedDelegate * rewarded, BOOL *stop) {
-            [rewarded release];
-        }];
-        
         m_rewardeds = nil;
     }
     /////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::initBanner( const ConstString & _adUnitId, const AppleAppLovinBannerProviderInterfacePtr & _provider )
+    bool AppleAppLovinService::initBanner( const ConstString & _adUnitId, const ConstString & _placement, const AppleAppLovinBannerProviderInterfacePtr & _provider )
     {
         LOGGER_MESSAGE( "init banner AdUnit '%s'"
             , _adUnitId.c_str()
         );
         
         NSString * adUnitId = Helper::stringToNSString(_adUnitId);
+        NSString * placement = Helper::stringToNSString(_placement);
         
         // Banner height on iPhone and iPad is 50 and 90, respectively
         CGFloat height = (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) ? 90 : 50;
@@ -149,6 +136,7 @@ namespace Mengine
 #endif
         
         AppleAppLovinBannerDelegate * banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:adUnitId
+                                                                                                   placement:placement
                                                                                                 amazonSlotId:amazonBannerSlotId
                                                                                                         rect:bannerRect
                                                                                                     provider:_provider
@@ -215,7 +203,7 @@ namespace Mengine
         return true;
     }
     /////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::canYouShowInterstitial( const ConstString & _adUnitId ) const
+    bool AppleAppLovinService::canYouShowInterstitial( const ConstString & _adUnitId, const ConstString & _placement ) const
     {
         NSString * adUnit = Helper::stringToNSString(_adUnitId);
         
@@ -226,12 +214,14 @@ namespace Mengine
             return false;
         }
         
-        BOOL result = [interstitial canYouShow];
+        NSString * placement = Helper::stringToNSString(_placement);
+        
+        BOOL result = [interstitial canYouShow:placement];
         
         return result;
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::showInterstitial( const ConstString & _adUnitId )
+    bool AppleAppLovinService::showInterstitial( const ConstString & _adUnitId, const ConstString & _placement )
     {
         NSString * adUnit = Helper::stringToNSString(_adUnitId);
         
@@ -242,7 +232,9 @@ namespace Mengine
             return false;
         }
         
-        BOOL result = [interstitial show];
+        NSString * placement = Helper::stringToNSString(_placement);
+        
+        BOOL result = [interstitial show:placement];
         
         return result;
     }
@@ -271,7 +263,7 @@ namespace Mengine
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::canOfferRewarded( const ConstString & _adUnitId ) const
+    bool AppleAppLovinService::canOfferRewarded( const ConstString & _adUnitId, const ConstString & _placement ) const
     {
         NSString * adUnit = Helper::stringToNSString(_adUnitId);
         
@@ -282,12 +274,14 @@ namespace Mengine
             return false;
         }
         
-        BOOL result = [rewarded canOffer];
+        NSString * placement = Helper::stringToNSString(_placement);
+        
+        BOOL result = [rewarded canOffer:placement];
         
         return result;
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::canYouShowRewarded( const ConstString & _adUnitId ) const
+    bool AppleAppLovinService::canYouShowRewarded( const ConstString & _adUnitId, const ConstString & _placement ) const
     {
         NSString * adUnit = Helper::stringToNSString(_adUnitId);
         
@@ -298,12 +292,14 @@ namespace Mengine
             return false;
         }
         
-        BOOL result = [rewarded canYouShow];
+        NSString * placement = Helper::stringToNSString(_placement);
+        
+        BOOL result = [rewarded canYouShow:placement];
         
         return result;
     }
     ////////////////////////////////////////////////////////////////////////
-    bool AppleAppLovinService::showRewarded( const ConstString & _adUnitId )
+    bool AppleAppLovinService::showRewarded( const ConstString & _adUnitId, const ConstString & _placement )
     {
         NSString * adUnit = Helper::stringToNSString(_adUnitId);
         
@@ -314,7 +310,9 @@ namespace Mengine
             return false;
         }
         
-        BOOL result = [rewarded show];
+        NSString * placement = Helper::stringToNSString(_placement);
+        
+        BOOL result = [rewarded show:placement];
         
         return result;
     }

@@ -22,7 +22,6 @@ namespace Mengine
             size_t realsize = _size * _nmemb;
 
             size_t writez = stream_ptr->write( _contents, realsize );
-
             MENGINE_UNUSED( writez );
 
             return realsize;

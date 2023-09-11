@@ -16,9 +16,9 @@
                                           provider:(const Mengine::AppleAppLovinRewardedProviderInterfacePtr &) provider
                                          analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
 
-- (BOOL) canOffer;
-- (BOOL) canYouShow;
-- (BOOL) show;
+- (BOOL) canOffer:(NSString * _Nonnull) placement;
+- (BOOL) canYouShow:(NSString * _Nonnull) placement;
+- (BOOL) show:(NSString * _Nonnull) placement;
 
 - (void) loadAd;
 

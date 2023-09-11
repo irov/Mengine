@@ -41,20 +41,20 @@
 #endif
     
     self.m_rewardedAd = nil;
-    
-    [super dealloc];
 }
 
-- (BOOL) canOffer {
+- (BOOL) canOffer:(NSString * _Nonnull) placement {
     BOOL ready = [self.m_rewardedAd isReady];
     
-    LOGGER_MESSAGE("canOffer rewarded ready: %d request: %ld attempt: %ld"
+    LOGGER_MESSAGE("canOffer rewarded placement: %s ready: %d request: %ld attempt: %ld"
+        , [placement UTF8String]
         , ready
         , self.m_requestId
         , self.m_retryAttempt
         );
     
     [AppleAnalytics event:@"mng_ad_rewarded_offer" params:@{
+        @"placement": placement,
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
         @"ready": @(ready)
@@ -63,10 +63,11 @@
     return ready;
 }
 
-- (BOOL) canYouShow {
+- (BOOL) canYouShow:(NSString * _Nonnull) placement {
     BOOL ready = [self.m_rewardedAd isReady];
 
-    LOGGER_MESSAGE("canYouShow rewarded ready: %d request: %ld attempt: %ld"
+    LOGGER_MESSAGE("canYouShow rewarded placement: %s ready: %d request: %ld attempt: %ld"
+        , [placement UTF8String]
         , ready
         , self.m_requestId
         , self.m_retryAttempt
@@ -75,6 +76,7 @@
     if( ready == NO )
     {
         [AppleAnalytics event:@"mng_ad_rewarded_show" params:@{
+            @"placement": placement,
             @"request_id": @(self.m_requestId),
             @"attempt": @(self.m_retryAttempt),
             @"ready": @(NO)
@@ -86,16 +88,18 @@
     return YES;
 }
 
-- (BOOL) show {
+- (BOOL) show:(NSString * _Nonnull) placement {
     BOOL ready = [self.m_rewardedAd isReady];
     
-    LOGGER_MESSAGE("show rewarded ready: %d request: %ld attempt: %ld"
+    LOGGER_MESSAGE("show rewarded placement: %s ready: %d request: %ld attempt: %ld"
+        , [placement UTF8String]
         , ready
         , self.m_requestId
         , self.m_retryAttempt
     );
     
     [AppleAnalytics event:@"mng_ad_rewarded_show" params:@{
+        @"placement": placement,
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
         @"ready": @(ready)
@@ -205,6 +209,7 @@
     );
     
     [AppleAnalytics event:@"mng_ad_rewarded_displayed" params:@{
+        @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -219,6 +224,7 @@
     );
     
     [AppleAnalytics event:@"mng_ad_rewarded_clicked" params:@{
+        @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -233,6 +239,7 @@
     );
     
     [AppleAnalytics event:@"mng_ad_rewarded_hidden" params:@{
+        @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -250,6 +257,7 @@
     );
     
     [AppleAnalytics event:@"mng_ad_rewarded_display_failed" params:@{
+        @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -287,6 +295,7 @@
     );
     
     [AppleAnalytics event:@"mng_ad_rewarded_reward_user" params:@{
+        @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad],
         @"label": reward.label,
@@ -305,6 +314,7 @@
     );
     
     [AppleAnalytics event:@"mng_ad_rewarded_revenue_paid" params:@{
+        @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];

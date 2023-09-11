@@ -16,14 +16,16 @@
     
     self.m_provider = provider;
     
-    self.m_interstitialAd = [[MAInterstitialAd alloc] initWithAdUnitIdentifier:adUnitId];
-    self.m_interstitialAd.delegate = self;
-    self.m_interstitialAd.revenueDelegate = self;
-    self.m_interstitialAd.requestDelegate = self;
+    MAInterstitialAd * interstitialAd = [[MAInterstitialAd alloc] initWithAdUnitIdentifier:adUnitId];
+    interstitialAd.delegate = self;
+    interstitialAd.revenueDelegate = self;
+    interstitialAd.requestDelegate = self;
     
     self.m_retryAttempt = 0;
     self.m_enumeratorRequest = 0;
     self.m_requestId = 0;
+    
+    self.m_interstitialAd = interstitialAd;
     
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
     self.m_amazonLoader = [[AppleAppLovinInterstitialAmazonLoader alloc] initWithSlotId:amazonSlotId interstitialAd:self.m_interstitialAd];
@@ -44,14 +46,13 @@
 #endif
     
     self.m_interstitialAd = nil;
-    
-    [super dealloc];
 }
 
-- (BOOL) canYouShow {
+- (BOOL) canYouShow:(NSString * _Nonnull) placement {
     BOOL ready = [self.m_interstitialAd isReady];
     
-    LOGGER_MESSAGE("canYouShow interstitial ready: %d request: %ld attempt: %ld"
+    LOGGER_MESSAGE("canYouShow interstitial placement: %s ready: %d request: %ld attempt: %ld"
+        , [placement UTF8String]
         , ready
         , self.m_requestId
         , self.m_retryAttempt
@@ -61,6 +62,7 @@
     {
         [AppleAnalytics event:@"mng_ad_interstitial_show" params:@{
             @"request_id": @(self.m_requestId),
+            @"placement": placement,
             @"attempt": @(self.m_retryAttempt),
             @"ready": @(NO)
         }];
@@ -71,10 +73,11 @@
     return YES;
 }
 
-- (BOOL) show {
+- (BOOL) show:(NSString * _Nonnull) placement {
     BOOL ready = [self.m_interstitialAd isReady];
     
-    LOGGER_MESSAGE("show interstitial ready: %d request: %ld attempt: %ld"
+    LOGGER_MESSAGE("show interstitial placement: %s ready: %d request: %ld attempt: %ld"
+        , [placement UTF8String]
         , ready
         , self.m_requestId
         , self.m_retryAttempt
@@ -82,6 +85,7 @@
     
     [AppleAnalytics event:@"mng_ad_interstitial_show" params:@{
         @"request_id": @(self.m_requestId),
+        @"placement": placement,
         @"attempt": @(self.m_retryAttempt),
         @"ready": @(ready)
     }];
@@ -91,7 +95,7 @@
         return NO;
     }
     
-    [self.m_interstitialAd showAd];
+    [self.m_interstitialAd showAdForPlacement:placement];
 
     return YES;
 }
@@ -189,6 +193,7 @@
     );
     
     [AppleAnalytics event:@"mng_ad_interstitial_displayed" params:@{
+        @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -203,6 +208,7 @@
     );
     
     [AppleAnalytics event:@"mng_ad_interstitial_clicked" params:@{
+        @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -217,6 +223,7 @@
     );
     
     [AppleAnalytics event:@"mng_ad_interstitial_hidden" params:@{
+        @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -234,6 +241,7 @@
     );
     
     [AppleAnalytics event:@"mng_ad_interstitial_display_failed" params:@{
+        @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];
@@ -252,6 +260,7 @@
     );
     
     [AppleAnalytics event:@"mng_ad_interstitial_revenue_paid" params:@{
+        @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
     }];

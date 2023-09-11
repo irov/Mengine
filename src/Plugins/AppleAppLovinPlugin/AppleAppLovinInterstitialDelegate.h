@@ -16,8 +16,8 @@
                                           provider:(const Mengine::AppleAppLovinInterstitialProviderInterfacePtr &) provider
                                          analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
 
-- (BOOL) canYouShow;
-- (BOOL) show;
+- (BOOL) canYouShow:(NSString * _Nonnull) placement;
+- (BOOL) show:(NSString * _Nonnull) placement;
 
 - (void) loadAd;
 

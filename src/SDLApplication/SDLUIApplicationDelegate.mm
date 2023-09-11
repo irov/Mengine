@@ -31,8 +31,6 @@
 
 - (void)dealloc {
     self.m_pluginDelegates = nil;
-    
-    [super dealloc];
 }
 
 #pragma mark - UIMainApplicationDelegateInterface Protocol

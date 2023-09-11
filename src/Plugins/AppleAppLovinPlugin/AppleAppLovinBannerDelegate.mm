@@ -8,6 +8,7 @@
 @implementation AppleAppLovinBannerDelegate
 
 - (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
+                                         placement:(NSString * _Nonnull) placement
                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
                                               rect:(CGRect) rect
                                           provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider
@@ -16,16 +17,19 @@
     
     self.m_provider = provider;
     
-    self.m_adView = [[MAAdView alloc] initWithAdUnitIdentifier:adUnitId];
-    self.m_adView.delegate = self;
-    self.m_adView.revenueDelegate = self;
-    self.m_adView.requestDelegate = self;
+    MAAdView * adView = [[MAAdView alloc] initWithAdUnitIdentifier:adUnitId];
+    [adView setPlacement:placement];
+    adView.delegate = self;
+    adView.revenueDelegate = self;
+    adView.requestDelegate = self;
 
-    self.m_adView.frame = rect;
+    adView.frame = rect;
+    adView.backgroundColor = UIColor.blackColor;
 
-    self.m_adView.backgroundColor = UIColor.blackColor;
-
-    [self.rootViewController.view addSubview:self.m_adView];
+    UIViewController * rootViewController = Mengine::Helper::iOSGetRootViewController();
+    [rootViewController.view addSubview:adView];
+    
+    self.m_adView = adView;
     
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
     self.m_amazonLoader = [[AppleAppLovinBannerAmazonLoader alloc] initWithSlotId:amazonSlotId adView:self.m_adView rect:rect];
@@ -46,8 +50,6 @@
 #endif
     
     self.m_adView = nil;
-    
-    [super dealloc];
 }
 
 - (void) show {
@@ -64,12 +66,6 @@
 
 - (void) loadAd {
     [self.m_adView loadAd];
-}
-
-- (UIViewController* _Nullable) rootViewController {
-    UIViewController * rootViewController = Mengine::Helper::iOSGetRootViewController();
-    
-    return rootViewController;
 }
 
 #pragma mark - MAAdRequestDelegate Protocol

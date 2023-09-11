@@ -165,7 +165,7 @@ namespace Mengine
             return false;
         }
 
-        if( Helper::addObjectPrototype<Movie2SubComposition, 128>( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::addIdentityPrototype<Movie2SubComposition, 128>( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }

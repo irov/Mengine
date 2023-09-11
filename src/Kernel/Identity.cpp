@@ -1,6 +1,6 @@
 #include "Identity.h"
 
-#include "Kernel/Assertion.h"
+#include "Kernel/AssertionIdentity.h"
 
 namespace Mengine
 {
@@ -12,7 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Identity::~Identity()
     {
-        MENGINE_ASSERTION( m_uniqueIdentity != INVALID_UNIQUE_ID );
+        MENGINE_ASSERTION_IDENTITY( this );
     }
     //////////////////////////////////////////////////////////////////////////
     void Identity::setName( const ConstString & _name )

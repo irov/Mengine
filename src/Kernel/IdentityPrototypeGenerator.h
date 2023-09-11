@@ -43,7 +43,6 @@ namespace Mengine
             );
 
             UniqueId uniqueIdentity = Helper::generateUniqueIdentity();
-
             object->setUniqueIdentity( uniqueIdentity );
 
 #if defined(MENGINE_DOCUMENT_ENABLE)

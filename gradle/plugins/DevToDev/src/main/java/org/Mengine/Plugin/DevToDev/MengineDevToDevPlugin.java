@@ -214,11 +214,6 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
                     }
                 }
 
-                this.logInfo("logEvent [CUSTOM] eventName: %s params: %s"
-                    , eventName
-                    , params
-                );
-
                 DTDAnalytics.INSTANCE.customEvent(eventName, params);
             }break;
         }
@@ -230,8 +225,6 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             return;
         }
 
-        this.logInfo("logFlush");
-
         DTDAnalytics.INSTANCE.sendBufferedEvents();
     }
 
@@ -239,11 +232,6 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
         if (m_initializeSuccessful == false) {
             return;
         }
-
-        this.logInfo("logEvent [CUSTOM] eventName: %s params: %s"
-            , eventName
-            , params
-        );
 
         DTDAnalytics.INSTANCE.customEvent(eventName, params);
     }

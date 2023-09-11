@@ -144,11 +144,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                     }
                 }
 
-                this.logInfo("logEvent [CUSTOM] eventName: %s params: %s"
-                    , eventName
-                    , params
-                );
-
                 m_firebaseAnalytics.logEvent(eventName, params);
             } break;
             case EAET_EARN_VIRTUAL_CURRENCY: {
@@ -178,11 +173,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, VIRTUAL_CURRENCY_NAME);
                 params.putDouble(FirebaseAnalytics.Param.VALUE, VALUE);
 
-                this.logInfo("logEvent [SPEND_VIRTUAL_CURRENCY] eventName: %s params: %s"
-                    , FirebaseAnalytics.Event.SPEND_VIRTUAL_CURRENCY
-                    , params
-                );
-
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SPEND_VIRTUAL_CURRENCY, params);
             } break;
             case EAET_UNLOCK_ACHIEVEMENT: {
@@ -191,11 +181,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 String ACHIEVEMENT_ID = (String)parameters.get("@ACHIEVEMENT_ID");
 
                 params.putString(FirebaseAnalytics.Param.ACHIEVEMENT_ID, ACHIEVEMENT_ID);
-
-                this.logInfo("logEvent [UNLOCK_ACHIEVEMENT] eventName: %s params: %s"
-                    , FirebaseAnalytics.Event.UNLOCK_ACHIEVEMENT
-                    , params
-                );
 
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.UNLOCK_ACHIEVEMENT, params);
             } break;
@@ -208,11 +193,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putString(FirebaseAnalytics.Param.CHARACTER, CHARACTER);
                 params.putLong(FirebaseAnalytics.Param.LEVEL, LEVEL);
 
-                this.logInfo("logEvent [LEVEL_UP] eventName: %s params: %s"
-                    , FirebaseAnalytics.Event.LEVEL_UP
-                    , params
-                );
-
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LEVEL_UP, params);
             } break;
             case EAET_LEVEL_START: {
@@ -221,11 +201,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 String LEVEL_NAME = (String)parameters.get("@LEVEL_NAME");
 
                 params.putString(FirebaseAnalytics.Param.LEVEL_NAME, LEVEL_NAME);
-
-                this.logInfo("logEvent [LEVEL_START] eventName: %s params: %s"
-                    , FirebaseAnalytics.Event.LEVEL_START
-                    , params
-                );
 
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LEVEL_START, params);
             } break;
@@ -238,11 +213,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putString(FirebaseAnalytics.Param.LEVEL_NAME, LEVEL_NAME);
                 params.putBoolean(FirebaseAnalytics.Param.SUCCESS, SUCCESS);
 
-                this.logInfo("logEvent [LEVEL_END] eventName: %s params: %s"
-                    , FirebaseAnalytics.Event.LEVEL_END
-                    , params
-                );
-
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LEVEL_END, params);
             } break;
             case EAET_SELECT_ITEM: {
@@ -254,30 +224,15 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putString(FirebaseAnalytics.Param.ITEM_LIST_ID, ITEM_LIST_ID);
                 params.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, ITEM_LIST_NAME);
 
-                this.logInfo("logEvent [SELECT_ITEM] eventName: %s params: %s"
-                    , FirebaseAnalytics.Event.SELECT_ITEM
-                    , params
-                );
-
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, params);
             } break;
             case EAET_TUTORIAL_BEGIN: {
                 Bundle params = new Bundle();
 
-                this.logInfo("logEvent [TUTORIAL_BEGIN] eventName: %s params: %s"
-                    , eventName
-                    , params
-                );
-
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_BEGIN, params);
             } break;
             case EAET_TUTORIAL_COMPLETE: {
                 Bundle params = new Bundle();
-
-                this.logInfo("logEvent [TUTORIAL_COMPLETE] eventName: %s params: %s"
-                    , FirebaseAnalytics.Event.TUTORIAL_COMPLETE
-                    , params
-                );
 
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_COMPLETE, params);
             } break;
@@ -289,11 +244,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
 
                 params.putString(FirebaseAnalytics.Param.SCREEN_CLASS, SCREEN_CLASS);
                 params.putString(FirebaseAnalytics.Param.SCREEN_NAME, SCREEN_NAME);
-
-                this.logInfo("logEvent [EAET_SCREEN_VIEW] eventName: %s params: %s"
-                    , FirebaseAnalytics.Event.SCREEN_VIEW
-                    , params
-                );
 
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, params);
             } break;
@@ -332,11 +282,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         if (m_firebaseAnalytics == null) {
             return;
         }
-
-        this.logMessage("logEvent eventName: %s params: %s"
-            , eventName
-            , params
-        );
 
         m_firebaseAnalytics.logEvent(eventName, params);
     }

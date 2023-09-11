@@ -304,11 +304,6 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                     }
                 }
 
-                this.logInfo("logEvent [CUSTOM] eventName: %s params: %s"
-                    , eventName
-                    , params
-                );
-
                 m_logger.logEvent(eventName, params);
             } break;
             case EAET_EARN_VIRTUAL_CURRENCY: {
@@ -323,11 +318,6 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 String achievementId = (String)parameters.get("@ACHIEVEMENT_ID");
 
                 params.putString(AppEventsConstants.EVENT_PARAM_DESCRIPTION, achievementId);
-
-                this.logInfo("logEvent [UNLOCK_ACHIEVEMENT] eventName: %s params: %s"
-                    , AppEventsConstants.EVENT_NAME_UNLOCKED_ACHIEVEMENT
-                    , params
-                );
 
                 m_logger.logEvent(AppEventsConstants.EVENT_NAME_UNLOCKED_ACHIEVEMENT, params);
             } break;
@@ -366,8 +356,6 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         if (m_logger == null) {
             return;
         }
-
-        this.logInfo("logFlush");
 
         m_logger.flush();
     }

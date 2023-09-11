@@ -87,11 +87,6 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
                 params.putAll(bases);
                 params.putAll(parameters);
 
-                this.logInfo("logEvent [CUSTOM] eventName: %s params: %s"
-                    , eventName
-                    , params
-                );
-
                 YandexMetrica.reportEvent(eventName, params);
             } break;
             case EAET_EARN_VIRTUAL_CURRENCY: {
@@ -135,8 +130,6 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
 
     @Override
     public void onMengineAnalyticsFlush(MengineApplication application) {
-        this.logInfo("logFlush");
-
         YandexMetrica.sendEventsBuffer();
     }
 }

@@ -63,11 +63,6 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
                 params.putAll(bases);
                 params.putAll(parameters);
 
-                this.logInfo("logEvent [CUSTOM] eventName: %s params: %s"
-                    , eventName
-                    , params
-                );
-
                 Context context = application.getApplicationContext();
 
                 AppsFlyerLib appsFlyer = AppsFlyerLib.getInstance();

@@ -59,6 +59,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YANDEX", MENGINE_APP_P
 
 def MENGINE_APP_PLUGIN_AMAZON = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_AMAZON")
 def MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS")
+def MENGINE_APP_PLUGIN_APPMETRICA = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPMETRICA")
 
 if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
     if (MENGINE_APP_PLUGIN_AMAZON == false) {
@@ -84,7 +85,7 @@ if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
 
         sourceSets {
             main {
-                java.srcDirs += ['firebaseAnalytics']
+                java.srcDirs += ['FirebaseAnalytics']
             }
         }
     }
@@ -92,7 +93,27 @@ if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
     dependencies {
         implementation project(path: ':plugins:FirebaseAnalytics')
 
-        implementation 'com.google.firebase:firebase-analytics'
+        implementation 'com.google.firebase:firebase-analytics:21.3.0'
+    }
+}
+
+Utils.logAvailable("AppLovin add AppMetrica extension", MENGINE_APP_PLUGIN_APPMETRICA)
+
+if (MENGINE_APP_PLUGIN_APPMETRICA == true) {
+    android {
+        ext.extensions += 'org.Mengine.Plugin.AppLovin.MengineAppLovinExtensionAppMetrica'
+
+        sourceSets {
+            main {
+                java.srcDirs += ['AppMetrica']
+            }
+        }
+    }
+
+    dependencies {
+        implementation project(path: ':plugins:AppMetrica')
+
+        implementation 'com.yandex.android:mobmetricalib:5.3.0'
     }
 }
 
@@ -102,7 +123,7 @@ if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
     android {
         sourceSets {
             main {
-                java.srcDirs += ['mediationAmazon']
+                java.srcDirs += ['Amazon']
             }
         }
     }

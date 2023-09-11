@@ -33,7 +33,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     public void onAppInit(MengineApplication application) throws MenginePluginInvalidInitializeException {
         boolean isBuildPublish = application.isBuildPublish();
 
-        if(isBuildPublish == false) {
+        if (isBuildPublish == false) {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
         }
     }

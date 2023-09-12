@@ -76,7 +76,11 @@ namespace Mengine
 
         m_fonts.clear();
 
-        m_defaultFont = nullptr;
+        if( m_defaultFont != nullptr )
+        {
+            m_defaultFont->releaseFont();
+            m_defaultFont = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     FontGlyphInterfacePtr FontService::createGlyph( const ConstString & _glyphName, const ConstString & _glyphType, const DocumentInterfacePtr & _doc )
@@ -353,6 +357,14 @@ namespace Mengine
             }
 
             m_defaultFont = defaultFont;
+        }
+
+        if( m_defaultFont != nullptr )
+        {
+            if( m_defaultFont->compileFont() == false )
+            {
+                return false;
+            }
         }
 
         return true;

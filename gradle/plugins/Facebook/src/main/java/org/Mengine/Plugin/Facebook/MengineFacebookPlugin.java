@@ -1,7 +1,6 @@
 package org.Mengine.Plugin.Facebook;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -85,7 +84,9 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         if (BuildConfig.DEBUG == true) {
             FacebookSdk.setIsDebugEnabled(true);
+
             FacebookSdk.addLoggingBehavior(LoggingBehavior.APP_EVENTS);
+            FacebookSdk.addLoggingBehavior(LoggingBehavior.DEVELOPER_ERRORS);
         }
 
         LoginManager.getInstance().retrieveLoginStatus(activity, new LoginStatusCallback() {
@@ -106,7 +107,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
             @Override
             public void onFailure() {
-                MengineFacebookPlugin.this.logWarning("retrieve login [onFailure]");
+                MengineFacebookPlugin.this.logMessage("retrieve login [onFailure]");
             }
 
             @Override

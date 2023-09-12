@@ -394,7 +394,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    public void onStart(){
+    protected void onStart(){
         super.onStart();
 
         this.setState("activity.lifecycle", "start");
@@ -450,7 +450,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
 
         this.setState("activity.lifecycle", "pause");
@@ -477,7 +477,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
 
         this.setState("activity.lifecycle", "resume");
@@ -507,6 +507,10 @@ public class MengineActivity extends SDLActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
+        this.setState("activity.lifecycle", "intent");
+        this.setState("activity.intent.type", intent.getType());
+        this.setState("activity.intent.action", intent.getAction());
+
         MengineLog.logInfo(TAG, "onNewIntent intent: %s", intent);
 
         if (mBrokenLibraries == true) {
@@ -514,10 +518,6 @@ public class MengineActivity extends SDLActivity {
 
             return;
         }
-
-        this.setState("activity.lifecycle", "intent");
-        this.setState("activity.intent.type", intent.getType());
-        this.setState("activity.intent.action", intent.getAction());
 
         ArrayList<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -529,10 +529,10 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    public void onDestroy() {
-        MengineLog.logInfo(TAG, "onDestroy");
-
+    protected void onDestroy() {
         this.setState("activity.lifecycle", "destroy");
+
+        MengineLog.logInfo(TAG, "onDestroy");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onDestroy: broken libraries");
@@ -570,7 +570,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    public void onRestart() {
+    protected void onRestart() {
         super.onRestart();
 
         this.setState("activity.lifecycle", "restart");
@@ -600,6 +600,8 @@ public class MengineActivity extends SDLActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
+        this.setState("configuration.orientation", newConfig.orientation);
+
         MengineLog.logInfo(TAG, "onConfigurationChanged config: %s"
             , newConfig.toString()
         );
@@ -609,8 +611,6 @@ public class MengineActivity extends SDLActivity {
 
             return;
         }
-
-        this.setState("configuration.orientation", newConfig.orientation);
 
         ArrayList<MenginePluginActivityListener> listeners = this.getActivityListeners();
 

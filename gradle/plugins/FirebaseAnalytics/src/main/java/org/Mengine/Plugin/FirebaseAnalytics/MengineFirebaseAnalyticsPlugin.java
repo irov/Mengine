@@ -155,11 +155,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                 params.putString(FirebaseAnalytics.Param.VIRTUAL_CURRENCY_NAME, VIRTUAL_CURRENCY_NAME);
                 params.putDouble(FirebaseAnalytics.Param.VALUE, VALUE);
 
-                this.logInfo("logEvent [EARN_VIRTUAL_CURRENCY] eventName: %s params: %s"
-                    , FirebaseAnalytics.Event.EARN_VIRTUAL_CURRENCY
-                    , params
-                );
-
                 m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.EARN_VIRTUAL_CURRENCY, params);
             } break;
             case EAET_SPEND_VIRTUAL_CURRENCY: {

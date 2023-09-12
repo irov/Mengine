@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -444,4 +445,24 @@ public class MengineUtils {
         return stack;
     }
 
+    public static String getProcessNameBeforeVersionP(Context context) {
+        int mypid = android.os.Process.myPid();
+
+        ActivityManager manager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> infos = manager.getRunningAppProcesses();
+
+        if (infos == null) {
+            return null;
+        }
+
+        for(ActivityManager.RunningAppProcessInfo info : infos) {
+            if (info.pid != mypid) {
+                continue;
+            }
+
+            return info.processName;
+        }
+
+        return null;
+    }
 }

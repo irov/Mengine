@@ -118,8 +118,6 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             }
         });
 
-        m_facebookCallbackManager = CallbackManager.Factory.create();
-
         m_accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
@@ -160,6 +158,8 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         };
 
         m_profileTracker.startTracking();
+
+        m_facebookCallbackManager = CallbackManager.Factory.create();
 
         LoginManager.getInstance().registerCallback(m_facebookCallbackManager, new FacebookCallback<>() {
             @Override

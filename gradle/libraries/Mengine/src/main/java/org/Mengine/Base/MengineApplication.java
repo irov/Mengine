@@ -1,5 +1,6 @@
 package org.Mengine.Base;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.ContentResolver;
@@ -23,6 +24,7 @@ import org.libsdl.app.SDL;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -562,9 +564,35 @@ public class MengineApplication extends Application {
         }
     }
 
+    private boolean isMainProcess() {
+        String packageName = this.getPackageName();
+
+        String processName = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            processName = this.getProcessName();
+        } else {
+            Context context = this.getApplicationContext();
+            processName = MengineUtils.getProcessNameBeforeVersionP(context);
+        }
+
+        if (processName == null) {
+            return false;
+        }
+
+        if (packageName.equals(processName) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (this.isMainProcess() == false) {
+            return;
+        }
 
         ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 

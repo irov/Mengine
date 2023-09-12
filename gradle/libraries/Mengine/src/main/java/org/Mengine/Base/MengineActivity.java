@@ -507,10 +507,6 @@ public class MengineActivity extends SDLActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        this.setState("activity.lifecycle", "intent");
-        this.setState("activity.intent.type", intent.getType());
-        this.setState("activity.intent.action", intent.getAction());
-
         MengineLog.logInfo(TAG, "onNewIntent intent: %s", intent);
 
         if (mBrokenLibraries == true) {
@@ -524,8 +520,6 @@ public class MengineActivity extends SDLActivity {
         for (MenginePluginActivityListener l : listeners) {
             l.onNewIntent(this, intent);
         }
-
-        this.setState("activity.lifecycle", "intented");
     }
 
     @Override

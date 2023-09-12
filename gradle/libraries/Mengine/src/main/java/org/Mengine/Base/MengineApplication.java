@@ -759,6 +759,9 @@ public class MengineApplication extends Application {
             plugin.onFinalize(this);
         }
 
+        MengineLog.setMengineApplication(null);
+        MengineAnalytics.setMengineApplication(null);
+
         m_plugins = null;
         m_dictionaryPlugins = null;
 

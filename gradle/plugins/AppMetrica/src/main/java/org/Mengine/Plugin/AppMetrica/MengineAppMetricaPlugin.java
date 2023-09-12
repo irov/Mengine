@@ -5,6 +5,7 @@ import android.content.Context;
 import com.yandex.metrica.YandexMetrica;
 import com.yandex.metrica.YandexMetricaConfig;
 
+import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
@@ -67,8 +68,10 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
                 .withRevenueAutoTrackingEnabled(false)
                 ;
 
-        if (MengineAppMetricaPlugin_Logs == true) {
-            builder.withLogs();
+        if (BuildConfig.DEBUG == true) {
+            if (MengineAppMetricaPlugin_Logs == true) {
+                builder.withLogs();
+            }
         }
 
         YandexMetricaConfig config = builder.build();

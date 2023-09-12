@@ -63,8 +63,9 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
         m_adView = adView;
 
-        m_plugin.logMessage("[Banner] create adUnitId: %s size: [%d, %d]"
+        m_plugin.logMessage("[Banner] create adUnitId: %s placement: %s size: [%d, %d]"
             , adUnitId
+            , placement
             , size.getWidth()
             , size.getHeight()
         );

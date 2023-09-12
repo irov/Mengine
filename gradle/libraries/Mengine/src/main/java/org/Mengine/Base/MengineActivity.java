@@ -148,6 +148,18 @@ public class MengineActivity extends SDLActivity {
         return plugin;
     }
 
+    public String getSessionId() {
+        if (m_destroy == true) {
+            return "";
+        }
+
+        MengineApplication app = this.getMengineApplication();
+
+        String sessionId = app.getSessionId();
+
+        return sessionId;
+    }
+
     public void setState(String name, Object value) {
         if (m_destroy == true) {
             return;
@@ -366,6 +378,8 @@ public class MengineActivity extends SDLActivity {
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onStart: broken libraries");
+
+            super.onActivityResult(requestCode, resultCode, data);
 
             return;
         }

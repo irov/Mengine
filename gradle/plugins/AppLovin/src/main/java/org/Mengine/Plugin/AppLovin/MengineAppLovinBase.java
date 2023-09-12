@@ -109,8 +109,6 @@ public class MengineAppLovinBase {
     protected MengineAnalyticsEventBuilder buildEvent(String name) {
         MengineAnalyticsEventBuilder eventBuilder = m_plugin.buildEvent(name);
 
-        eventBuilder.addParameterLong("connection", this.getConectivityStatus());
-
         return eventBuilder;
     }
 

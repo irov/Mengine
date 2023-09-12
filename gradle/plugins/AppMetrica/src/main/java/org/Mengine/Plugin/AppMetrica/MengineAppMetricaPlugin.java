@@ -64,6 +64,7 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
                 .withLocationTracking(MengineAppMetricaPlugin_LocationTracking)
                 .handleFirstActivationAsUpdate(MengineAppMetricaPlugin_HandleFirstActivationAsUpdate)
                 .withStatisticsSending(MengineAppMetricaPlugin_StatisticSending)
+                .withRevenueAutoTrackingEnabled(false)
                 ;
 
         if (MengineAppMetricaPlugin_Logs == true) {

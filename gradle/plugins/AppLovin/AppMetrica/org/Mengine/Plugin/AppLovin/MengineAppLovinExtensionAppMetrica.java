@@ -37,12 +37,18 @@ public class MengineAppLovinExtensionAppMetrica extends MenginePluginExtension i
     public void onEventRevenuePaid(MengineAppLovinPlugin plugin, MaxAd ad) {
         AdType adType = MengineAppLovinExtensionAppMetrica.getYandexAdType(ad.getFormat());
 
-        AdRevenue adRevenue = AdRevenue.newBuilder(ad.getRevenue(), Currency.getInstance("USD"))
-            .withAdNetwork(ad.getNetworkName())
-            .withAdPlacementId(ad.getPlacement())
+        String networkName = ad.getNetworkName();
+        String placement = ad.getPlacement();
+        String adUnitId = ad.getAdUnitId();
+        String revenuePrecision = ad.getRevenuePrecision();
+        double revenue = ad.getRevenue();
+
+        AdRevenue adRevenue = AdRevenue.newBuilder(revenue, Currency.getInstance("USD"))
+            .withAdNetwork(networkName)
+            .withAdPlacementId(placement)
             .withAdType(adType)
-            .withAdUnitId(ad.getAdUnitId())
-            .withPrecision(ad.getRevenuePrecision())
+            .withAdUnitId(adUnitId)
+            .withPrecision(revenuePrecision)
             .build();
 
         YandexMetrica.reportAdRevenue(adRevenue);

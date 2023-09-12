@@ -10,6 +10,7 @@ import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
@@ -110,6 +111,13 @@ public class MengineUtils {
         handler.postDelayed(runnable, delayMillis);
 
         return handler;
+    }
+
+    public static void makeToastLong(Context context, String text, long delayed) {
+        MengineUtils.performOnMainThreadDelayed(() -> {
+            Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
+            toast.show();
+        }, delayed);
     }
 
     public static boolean getDebugValue(boolean debug, boolean release) {

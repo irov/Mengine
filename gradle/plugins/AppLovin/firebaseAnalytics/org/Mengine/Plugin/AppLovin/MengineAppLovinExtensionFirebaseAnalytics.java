@@ -40,12 +40,17 @@ public class MengineAppLovinExtensionFirebaseAnalytics extends MenginePluginExte
 
     @Override
     public void onEventRevenuePaid(MengineAppLovinPlugin plugin, MaxAd ad) {
+        String networkName = ad.getNetworkName();
+        String formatLabel = ad.getFormat().getLabel();
+        String adUnitId = ad.getAdUnitId();
+        double revenue = ad.getRevenue();
+
         Bundle params = new Bundle();
         params.putString(FirebaseAnalytics.Param.AD_PLATFORM, "appLovin");
-        params.putString(FirebaseAnalytics.Param.AD_SOURCE, ad.getNetworkName());
-        params.putString(FirebaseAnalytics.Param.AD_FORMAT, ad.getFormat().getLabel());
-        params.putString(FirebaseAnalytics.Param.AD_UNIT_NAME, ad.getAdUnitId());
-        params.putDouble(FirebaseAnalytics.Param.VALUE, ad.getRevenue());
+        params.putString(FirebaseAnalytics.Param.AD_SOURCE, networkName);
+        params.putString(FirebaseAnalytics.Param.AD_FORMAT, formatLabel);
+        params.putString(FirebaseAnalytics.Param.AD_UNIT_NAME, adUnitId);
+        params.putDouble(FirebaseAnalytics.Param.VALUE, revenue);
         params.putString(FirebaseAnalytics.Param.CURRENCY, "USD");
 
         m_firebaseAnalyticsPlugin.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params);

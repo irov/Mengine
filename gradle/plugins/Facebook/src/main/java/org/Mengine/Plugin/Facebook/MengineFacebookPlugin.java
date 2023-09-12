@@ -1,5 +1,6 @@
 package org.Mengine.Plugin.Facebook;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -63,16 +64,14 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         } else if (event == MengineEvent.EVENT_SESSION_ID) {
             String sessionId = (String)args[0];
 
-            AppEventsLogger.setUserID(sessionId);
+            if (m_logger != null) {
+                AppEventsLogger.setUserID(sessionId);
+            }
         }
     }
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        Context context = application.getApplicationContext();
-
-        m_logger = AppEventsLogger.newLogger(context);
-
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         try {
             AppEventsLogger.activateApp(application);
         } catch (Exception e) {
@@ -80,19 +79,6 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 , e.getLocalizedMessage()
             );
         }
-    }
-
-    @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        //Empty
-    }
-
-    @Override
-    public void onAppTerminate(MengineApplication application) {
-        m_facebookCallbackManager = null;
-        m_accessTokenTracker = null;
-        m_profileTracker = null;
-        m_logger = null;
     }
 
     @Override
@@ -223,10 +209,20 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         if (accessToken != null) {
             m_facebookUserId = accessToken.getUserId();
         }
+
+        String sessionId = activity.getSessionId();
+        AppEventsLogger.setUserID(sessionId);
+
+        m_logger = AppEventsLogger.newLogger(activity);
     }
 
     @Override
     public void onDestroy(MengineActivity activity) {
+        if (m_logger != null) {
+            m_logger.flush();
+            m_logger = null;
+        }
+
         if (m_accessTokenTracker != null) {
             m_accessTokenTracker.stopTracking();
             m_accessTokenTracker = null;

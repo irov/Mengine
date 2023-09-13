@@ -105,7 +105,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                             params.putString(key, stringValue);
                         }
                     } else {
-                        this.logError("unsupported parameter: %s class: %s"
+                        this.logError("[ERROR] unsupported parameter: %s class: %s"
                             , value
                             , value.getClass()
                         );
@@ -135,7 +135,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
                             params.putString(key, stringValue);
                         }
                     } else {
-                        this.logError("unsupported parameter: %s class: %s"
+                        this.logError("[ERROR] unsupported parameter: %s class: %s"
                             , value
                             , value.getClass()
                         );

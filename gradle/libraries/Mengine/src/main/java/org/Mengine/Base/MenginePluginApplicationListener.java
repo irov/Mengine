@@ -6,7 +6,7 @@ import android.content.res.Configuration;
 import androidx.annotation.NonNull;
 
 public interface MenginePluginApplicationListener extends MenginePluginInterface {
-    default void onAppInit(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    default void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
         //Empty
     }
     

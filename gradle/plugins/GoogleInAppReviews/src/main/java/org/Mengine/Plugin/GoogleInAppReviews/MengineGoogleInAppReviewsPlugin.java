@@ -58,7 +58,7 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin implements Me
 
     public void launchTheInAppReview() {
         if (m_reviewInfo == null) {
-            this.logError("reviewInfo == null");
+            this.logError("[ERROR] reviewInfo == null");
 
             return;
         }

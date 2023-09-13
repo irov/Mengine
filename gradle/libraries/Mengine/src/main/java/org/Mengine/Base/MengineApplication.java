@@ -141,7 +141,7 @@ public class MengineApplication extends Application {
 
             return bundle;
         } catch (PackageManager.NameNotFoundException e) {
-            MengineLog.logError(TAG, "Unable to load meta-data: %s"
+            MengineLog.logError(TAG, "[ERROR] Unable to load meta-data: %s"
                 , e.getLocalizedMessage()
             );
         }
@@ -373,13 +373,13 @@ public class MengineApplication extends Application {
 
             name = (String)PLUGIN_NAME.get(null);
         } catch (NoSuchFieldException ex) {
-            MengineLog.logError(TAG, "plugin not found field PLUGIN_NAME: %s"
+            MengineLog.logError(TAG, "[ERROR] plugin not found field PLUGIN_NAME: %s"
                 , cls.getName()
             );
 
             return null;
         } catch (IllegalAccessException ex) {
-            MengineLog.logError(TAG, "plugin invalid field PLUGIN_NAME: %s"
+            MengineLog.logError(TAG, "[ERROR] plugin invalid field PLUGIN_NAME: %s"
                 , cls.getName()
             );
 
@@ -411,13 +411,13 @@ public class MengineApplication extends Application {
 
             name = (String)PLUGIN_NAME.get(plugin);
         } catch (NoSuchFieldException ex) {
-            MengineLog.logError(TAG, "plugin [%s] not found field PLUGIN_NAME"
+            MengineLog.logError(TAG, "[ERROR] plugin [%s] not found field PLUGIN_NAME"
                 , type
             );
 
             return false;
         } catch (IllegalAccessException ex) {
-            MengineLog.logError(TAG, "plugin [%s] invalid field PLUGIN_NAME"
+            MengineLog.logError(TAG, "[ERROR] plugin [%s] invalid field PLUGIN_NAME"
                 , type
             );
 
@@ -425,7 +425,7 @@ public class MengineApplication extends Application {
         }
 
         if (plugin.onInitialize(this, name) == false) {
-            MengineLog.logError(TAG, "plugin [%s] invalid initialize"
+            MengineLog.logError(TAG, "[ERROR] plugin [%s] invalid initialize"
                 , type
             );
 
@@ -590,22 +590,30 @@ public class MengineApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        if (this.isMainProcess() == false) {
-            return;
-        }
+        boolean isMainProcess = this.isMainProcess();
 
         ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
-                l.onAppInit(this);
+                MengineLog.logMessage(TAG, "onAppInit plugin: %s isMainProcess: %b"
+                    , l.getPluginName()
+                    , isMainProcess
+                );
+
+                l.onAppInit(this, isMainProcess);
             } catch (MenginePluginInvalidInitializeException e) {
-                this.invalidInitialize("invalid plugin %s onAppCreate exception: %s"
-                        , e.getPluginName()
-                        , e.getLocalizedMessage()
+                this.invalidInitialize("onAppCreate plugin: %s exception: %s"
+                    , l.getPluginName()
+                    , e.getLocalizedMessage()
                 );
             }
         }
+
+        if (isMainProcess == false) {
+            return;
+        }
+
 
         this.setState("build.debug", BuildConfig.DEBUG);
 
@@ -726,10 +734,14 @@ public class MengineApplication extends Application {
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
+                MengineLog.logMessage(TAG, "onAppPrepare plugin: %s"
+                        , l.getPluginName()
+                );
+
                 l.onAppPrepare(this);
             } catch (MenginePluginInvalidInitializeException e) {
-                this.invalidInitialize("invalid plugin %s onAppCreate exception: %s"
-                    , e.getPluginName()
+                this.invalidInitialize("onAppPrepare plugin: %s exception: %s"
+                    , l.getPluginName()
                     , e.getLocalizedMessage()
                 );
             }
@@ -746,6 +758,10 @@ public class MengineApplication extends Application {
             try {
                 String pluginName = l.getPluginName();
 
+                MengineLog.logMessage(TAG, "onAppCreate plugin: %s"
+                    , pluginName
+                );
+
                 this.setState("application.init", pluginName);
 
                 long app_init_plugin_start_timestamp = MengineAnalytics.buildEvent("mng_app_init_plugin_start")
@@ -759,9 +775,9 @@ public class MengineApplication extends Application {
                     .addParameterLong("time", MengineUtils.getDurationTimestamp(app_init_plugin_start_timestamp))
                     .flush();
             } catch (MenginePluginInvalidInitializeException e) {
-                this.invalidInitialize("invalid plugin %s callback onAppCreate exception: %s"
+                this.invalidInitialize("onAppCreate plugin: %s exception: %s"
                     , l.getPluginName()
-                    , e.getPluginName()
+                    , e.getLocalizedMessage()
                 );
             }
         }

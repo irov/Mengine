@@ -77,7 +77,7 @@ public class MenginePlugin implements MenginePluginInterface {
     protected void invalidInitialize(String format, Object ... args) throws MenginePluginInvalidInitializeException {
         String message = MengineLog.buildTotalMsg(format, args);
 
-        throw new MenginePluginInvalidInitializeException(m_pluginName, message);
+        throw new MenginePluginInvalidInitializeException(message);
     }
 
     public void sendEvent(MengineEvent event, Object ... args) {
@@ -159,7 +159,7 @@ public class MenginePlugin implements MenginePluginInterface {
         MenginePluginExtension extension = m_application.createPluginExtension(activity, this, type);
 
         if (extension == null) {
-            this.logError("plugin [%s] invalid create extension: %s"
+            this.logError("[ERROR] plugin [%s] invalid create extension: %s"
                 , m_pluginName
                 , type
             );
@@ -189,14 +189,14 @@ public class MenginePlugin implements MenginePluginInterface {
         } catch (NoSuchFieldException e) {
             return;
         } catch (NullPointerException e) {
-            this.invalidInitialize("plugin [%s] invalid get MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS exception: %s [NullPointerException]"
+            this.invalidInitialize("invalid get MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS plugin: %s exception: %s [NullPointerException]"
                 , m_pluginName
                 , e.getLocalizedMessage()
             );
 
             return;
         } catch (SecurityException e) {
-            this.invalidInitialize("plugin [%s] invalid get MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS exception: %s [SecurityException]"
+            this.invalidInitialize("invalid get MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS plugin: %s exception: %s [SecurityException]"
                 , m_pluginName
                 , e.getLocalizedMessage()
             );
@@ -209,14 +209,14 @@ public class MenginePlugin implements MenginePluginInterface {
         try {
             extension = f.get(this);
         } catch (IllegalArgumentException e) {
-            this.invalidInitialize("plugin [%s] invalid get extension from this exception: %s [IllegalArgumentException]"
+            this.invalidInitialize("invalid get extension from this plugin: %s exception: %s [IllegalArgumentException]"
                 , m_pluginName
                 , e.getLocalizedMessage()
             );
 
             return;
         } catch (IllegalAccessException e) {
-            this.invalidInitialize("plugin [%s] invalid get extension from this exception: %s [IllegalAccessException]"
+            this.invalidInitialize("invalid get extension from this plugin: %s exception: %s [IllegalAccessException]"
                 , m_pluginName
                 , e.getLocalizedMessage()
             );
@@ -230,7 +230,7 @@ public class MenginePlugin implements MenginePluginInterface {
 
         for (String extensionName : (String[])extension) {
             if (this.createExtension(activity, extensionName) == false) {
-                this.invalidInitialize("invalid create extension %s"
+                this.invalidInitialize("[ERROR] invalid create extension %s"
                     , extensionName
                 );
 

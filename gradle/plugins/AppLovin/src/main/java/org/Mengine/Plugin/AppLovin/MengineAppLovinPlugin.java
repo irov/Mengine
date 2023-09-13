@@ -11,6 +11,7 @@ import com.applovin.sdk.AppLovinSdkConfiguration;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
+import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginExtension;

@@ -8,6 +8,7 @@ import com.appsflyer.attribution.AppsFlyerRequestListener;
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
+import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;

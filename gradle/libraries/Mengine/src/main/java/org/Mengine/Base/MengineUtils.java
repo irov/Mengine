@@ -52,7 +52,7 @@ public class MengineUtils {
             return clazz;
         } catch (ClassNotFoundException e) {
             if (required == true) {
-                Log.e(TAG, "invalid create new instance: " + name + " ClassNotFoundException: " + e.getLocalizedMessage());
+                Log.e(TAG, "[ERROR] invalid create new instance: " + name + " ClassNotFoundException: " + e.getLocalizedMessage());
             }
         }
 
@@ -82,15 +82,15 @@ public class MengineUtils {
 
             return ob;
         } catch (NoSuchMethodException e) {
-            Log.e(TAG, "invalid create mediation extension: " + name + " NoSuchMethodException: " + e.getLocalizedMessage());
+            Log.e(TAG, "[ERROR] invalid create mediation extension: " + name + " NoSuchMethodException: " + e.getLocalizedMessage());
         } catch (IllegalAccessException e) {
-            Log.e(TAG, "invalid create mediation extension: " + name + " IllegalAccessException: " + e.getLocalizedMessage());
+            Log.e(TAG, "[ERROR] invalid create mediation extension: " + name + " IllegalAccessException: " + e.getLocalizedMessage());
         } catch (InstantiationException e) {
-            Log.e(TAG, "invalid create mediation extension: " + name + " InstantiationException: " + e.getLocalizedMessage());
+            Log.e(TAG, "[ERROR] invalid create mediation extension: " + name + " InstantiationException: " + e.getLocalizedMessage());
         } catch (InvocationTargetException e) {
-            Log.e(TAG, "invalid create mediation extension: " + name + " InvocationTargetException: " + e.getLocalizedMessage());
+            Log.e(TAG, "[ERROR] invalid create mediation extension: " + name + " InvocationTargetException: " + e.getLocalizedMessage());
         } catch (NullPointerException e) {
-            Log.e(TAG, "invalid create mediation extension: " + name + " NullPointerException: " + e.getLocalizedMessage());
+            Log.e(TAG, "[ERROR] invalid create mediation extension: " + name + " NullPointerException: " + e.getLocalizedMessage());
         }
 
         return null;
@@ -361,7 +361,7 @@ public class MengineUtils {
 
             out.close();
         } catch (Exception e) {
-            MengineLog.logError(TAG, "zipFiles exception: %s"
+            MengineLog.logError(TAG, "[ERROR] zipFiles exception: %s"
                 , e.getLocalizedMessage()
             );
 
@@ -391,7 +391,7 @@ public class MengineUtils {
         try {
             tempFile = File.createTempFile(prefix, suffix, cacheDir);
         } catch (IOException e) {
-            MengineLog.logError(TAG, "failed create temp file %s***%s in dir: %s exception: %s"
+            MengineLog.logError(TAG, "[ERROR] failed create temp file %s***%s in dir: %s exception: %s"
                 , prefix
                 , suffix
                 , cacheDir.getPath()
@@ -417,7 +417,7 @@ public class MengineUtils {
 
             return uri;
         } catch (IllegalArgumentException e) {
-            MengineLog.logError(TAG, "failed get uri for file: %s exception: %s"
+            MengineLog.logError(TAG, "[ERROR] failed get uri for file: %s exception: %s"
                 , file.getPath()
                 , e.getLocalizedMessage()
             );

@@ -45,19 +45,19 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
 
                     return adInfo;
                 } catch (IOException e) {
-                    MengineAdvertisingPlugin.this.logError("invalid get advertising id info IOException: %s"
+                    MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info IOException: %s"
                         , e.getLocalizedMessage()
                     );
                 } catch (IllegalStateException e) {
-                    MengineAdvertisingPlugin.this.logError("invalid get advertising id info IllegalStateException: %s"
+                    MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info IllegalStateException: %s"
                         , e.getLocalizedMessage()
                     );
                 } catch (GooglePlayServicesNotAvailableException e) {
-                    MengineAdvertisingPlugin.this.logError("invalid get advertising id info GooglePlayServicesNotAvailableException: %s"
+                    MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info GooglePlayServicesNotAvailableException: %s"
                         , e.getLocalizedMessage()
                     );
                 } catch (GooglePlayServicesRepairableException e) {
-                    MengineAdvertisingPlugin.this.logError("invalid get advertising id info GooglePlayServicesRepairableException: %s"
+                    MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info GooglePlayServicesRepairableException: %s"
                         , e.getLocalizedMessage()
                     );
                 }
@@ -79,15 +79,15 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
         try {
             adInfo = m_advertisingFuture.get();
         } catch (CancellationException ex) {
-            this.logError("invalid get advertising id CancellationException: %s"
+            this.logError("[ERROR] invalid get advertising id CancellationException: %s"
                 , ex.getLocalizedMessage()
             );
         } catch (InterruptedException ex) {
-            this.logError("invalid get advertising id InterruptedException: %s"
+            this.logError("[ERROR] invalid get advertising id InterruptedException: %s"
                 , ex.getLocalizedMessage()
             );
         } catch (ExecutionException ex) {
-            this.logError("invalid get advertising id ExecutionException: %s"
+            this.logError("[ERROR] invalid get advertising id ExecutionException: %s"
                 , ex.getLocalizedMessage()
             );
         }

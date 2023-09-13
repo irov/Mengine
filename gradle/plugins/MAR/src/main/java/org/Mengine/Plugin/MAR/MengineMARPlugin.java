@@ -143,7 +143,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
             params.setChannelOrderID(channelOrderID);
             params.setState(state);
         } catch (JSONException e) {
-            this.logError("makePayParams jsonData: %s error: %s"
+            this.logError("[ERROR] makePayParams jsonData: %s error: %s"
                 , jsonData
                 , e.getLocalizedMessage()
             );
@@ -279,7 +279,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
 
             this.pythonCall("onMarSDKSaveClipboard", hasPrimaryClip, code);
         } catch (Exception e) {
-            this.logError("pasteCode exception: %s"
+            this.logError("[ERROR] pasteCode exception: %s"
                 , e.getLocalizedMessage()
             );
 
@@ -333,7 +333,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
             data.setPartyMasterID(partyMasterID);
             data.setPartyMasterName(partyMasterName);
         } catch (JSONException e) {
-            this.logError("makeUserExtraData jsonData: %s error: %s"
+            this.logError("[ERROR] makeUserExtraData jsonData: %s error: %s"
                 , jsonData
                 , e.getLocalizedMessage()
             );
@@ -516,7 +516,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
                 this.activateSemaphore("onMarSDKInitSuccess");
             } break;
             case MARCode.CODE_INIT_FAIL: {
-                this.logError("init fail");
+                this.logError("[ERROR] init fail");
 
                 this.activateSemaphore("onMarSDKInitFail");
             } break;
@@ -611,7 +611,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
 
                 this.pythonCall("onMarSDKPaySuccess", productId, orderId);
             } else {
-                this.logError("pay fail productId: %s [result %d]"
+                this.logError("[ERROR] pay fail productId: %s [result %d]"
                     , productId
                     , payResult
                 );
@@ -619,7 +619,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
                 this.pythonCall("onMarSDKPayFail", productId);
             }
         } catch (JSONException e) {
-            this.logError("pay msg: %s JSONException: %s"
+            this.logError("[ERROR] pay msg: %s JSONException: %s"
                 , msg
                 , e.getLocalizedMessage()
             );
@@ -643,7 +643,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
 
             this.pythonCall("onMarSDKRedeemResult", propNumber, propType, message);
         } catch(JSONException e) {
-            this.logError("onRedeemResult msg: %s JSONException: %s"
+            this.logError("[ERROR] onRedeemResult msg: %s JSONException: %s"
                 , msg
                 , e.getLocalizedMessage()
             );

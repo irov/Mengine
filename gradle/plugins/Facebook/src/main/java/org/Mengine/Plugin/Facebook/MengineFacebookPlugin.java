@@ -74,7 +74,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         try {
             AppEventsLogger.activateApp(application);
         } catch (Exception e) {
-            this.logError("AppEventsLogger activateApp caught exception: %s"
+            this.logError("[ERROR] AppEventsLogger activateApp caught exception: %s"
                 , e.getLocalizedMessage()
             );
         }
@@ -112,7 +112,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
             @Override
             public void onError(@NonNull Exception e) {
-                MengineFacebookPlugin.this.logError("retrieve login [onError] exception: %s"
+                MengineFacebookPlugin.this.logError("[ERROR] retrieve login [onError] exception: %s"
                     , e.getLocalizedMessage()
                 );
             }
@@ -196,7 +196,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             public void onError(@NonNull FacebookException e) {
                 String message = e.getLocalizedMessage();
 
-                MengineFacebookPlugin.this.logError("login [onError] exception: %s"
+                MengineFacebookPlugin.this.logError("[ERROR] login [onError] exception: %s"
                     , message
                 );
 
@@ -270,7 +270,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                     } else if (value instanceof String) {
                         params.putString(name, (String)value);
                     } else {
-                        this.logError("unsupported parameter: %s class: %s"
+                        this.logError("[ERROR] unsupported parameter: %s class: %s"
                             , value
                             , value.getClass()
                         );
@@ -292,7 +292,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                     } else if (value instanceof String) {
                         params.putString(name, (String)value);
                     } else {
-                        this.logError("unsupported parameter: %s class: %s"
+                        this.logError("[ERROR] unsupported parameter: %s class: %s"
                             , value
                             , value.getClass()
                         );
@@ -340,7 +340,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 //ToDo EAET_SCREEN_VIEW
             }break;
             default: {
-                this.logError("unknown event type: %d name: %s"
+                this.logError("[ERROR] unknown event type: %d name: %s"
                 	, eventType
                     , eventName
                 );
@@ -517,7 +517,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             public void onError(@NonNull FacebookException exception) {
                 String error_message = exception.getMessage();
 
-                MengineFacebookPlugin.this.logError("shareLink error: %s"
+                MengineFacebookPlugin.this.logError("[ERROR] shareLink error: %s"
                     , error_message
                 );
 
@@ -585,7 +585,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             @Override
             public void onCompleted(@NonNull GraphResponse response) {
                 if (response.getError() != null) {
-                    MengineFacebookPlugin.this.logError("profile user picture link [%s] get error: %s"
+                    MengineFacebookPlugin.this.logError("[ERROR] profile user picture link [%s] get error: %s"
                         , graphPath
                         , response.getError().getErrorMessage()
                     );
@@ -598,7 +598,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 JSONObject responseObject = response.getJSONObject();
 
                 if (responseObject == null) {
-                    MengineFacebookPlugin.this.logError("profile user picture link [%s] invalid response: %s"
+                    MengineFacebookPlugin.this.logError("[ERROR] profile user picture link [%s] invalid response: %s"
                         , graphPath
                         , response
                     );
@@ -614,7 +614,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 } catch (JSONException e) {
                     e.printStackTrace();
 
-                    MengineFacebookPlugin.this.logError("profile user picture link [%s] catch JSONException: %s"
+                    MengineFacebookPlugin.this.logError("[ERROR] profile user picture link [%s] catch JSONException: %s"
                         , graphPath
                         , e.getLocalizedMessage()
                     );

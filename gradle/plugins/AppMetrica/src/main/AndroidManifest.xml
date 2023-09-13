@@ -1,6 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
     <application>
         <meta-data android:name="mengine.appmetrica.api_key" android:value="@string/mengine_appmetrica_api_key" />
         <meta-data android:name="mengine.appmetrica.crash_reporting" android:value="@bool/mengine_appmetrica_crash_reporting" />

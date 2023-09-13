@@ -8,10 +8,12 @@ import com.yandex.metrica.YandexMetricaConfig;
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
+import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +44,7 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     }
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
         String MengineAppMetricaPlugin_ApiKey = application.getMetaDataString(PLUGIN_METADATA_API_KEY);
 
         if (MengineAppMetricaPlugin_ApiKey == null) {

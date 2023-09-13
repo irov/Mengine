@@ -234,7 +234,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
                 this.pythonCall("onHelpshiftConversationReopened");
                 break;
             default:
-                this.logError("onEventOccurred UNKNOWN: %s"
+                this.logError("[ERROR] onEventOccurred UNKNOWN: %s"
                     , eventName
                 );
 
@@ -246,15 +246,15 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     public void onUserAuthenticationFailure(HelpshiftAuthenticationFailureReason reason) {
         switch (reason) {
             case REASON_AUTH_TOKEN_NOT_PROVIDED:
-                this.logError("onUserAuthenticationFailure REASON_AUTH_TOKEN_NOT_PROVIDED");
+                this.logError("[ERROR] onUserAuthenticationFailure REASON_AUTH_TOKEN_NOT_PROVIDED");
 
                 this.pythonCall("onHelpshiftAuthenticationFailureAuthTokenNotProvided");
             case REASON_INVALID_AUTH_TOKEN:
-                this.logError("onUserAuthenticationFailure REASON_INVALID_AUTH_TOKEN");
+                this.logError("[ERROR] onUserAuthenticationFailure REASON_INVALID_AUTH_TOKEN");
 
                 this.pythonCall("onHelpshiftAuthenticationFailureInvalidAuthToken");
             case UNKNOWN:
-                this.logError("onUserAuthenticationFailure UNKNOWN");
+                this.logError("[ERROR] onUserAuthenticationFailure UNKNOWN");
 
                 this.pythonCall("onHelpshiftAuthenticationFailureUnknown");
                 break;

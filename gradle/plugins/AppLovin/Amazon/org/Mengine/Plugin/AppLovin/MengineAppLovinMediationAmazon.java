@@ -77,7 +77,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                 m_loadBannerStatus = ELoadAdStatus.ADLOAD_FAILURE;
 
-                plugin.logError("Amazon failure load banner [%s] code [%s] message: %s"
+                plugin.logError("[ERROR] Amazon failure load banner [%s] code [%s] message: %s"
                     , MengineAppLovinPlugin_AmazonBannerSlotId
                     , adError.getCode()
                     , adError.getMessage()
@@ -135,7 +135,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                         m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_FAILURE;
 
-                        plugin.logError("Amazon failure load interstitial [%s] code [%s] message: %s"
+                        plugin.logError("[ERROR] Amazon failure load interstitial [%s] code [%s] message: %s"
                             , MengineAppLovinPlugin_AmazonInterstitialSlotId
                             , adError.getCode()
                             , adError.getMessage()
@@ -206,7 +206,7 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
 
                         m_loadRewardedStatus = ELoadAdStatus.ADLOAD_FAILURE;
 
-                        plugin.logError("Amazon failure load rewarded [%s] code [%s] message: %s"
+                        plugin.logError("[ERROR] Amazon failure load rewarded [%s] code [%s] message: %s"
                             , MengineAppLovinPlugin_AmazonRewardedSlotId
                             , adError.getCode()
                             , adError.getMessage()

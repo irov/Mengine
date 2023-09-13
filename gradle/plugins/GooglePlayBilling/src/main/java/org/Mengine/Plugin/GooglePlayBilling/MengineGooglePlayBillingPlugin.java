@@ -213,7 +213,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
 
     public void billingConnect() {
         if (m_billingClient == null) {
-            this.logError("billingConnect billing client not created");
+            this.logError("[ERROR] billingConnect billing client not created");
 
             return;
         }
@@ -254,7 +254,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
 
     public void queryProducts(List<String> products) {
         if (m_billingClient == null) {
-            this.logError("queryProducts billing client not created");
+            this.logError("[ERROR] queryProducts billing client not created");
 
             return;
         }
@@ -282,7 +282,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
                 int responseCode = billingResult.getResponseCode();
 
                 if (responseCode != BillingClient.BillingResponseCode.OK) {
-                    MengineGooglePlayBillingPlugin.this.logError("Billing invalid query product details code: %d message: %s"
+                    MengineGooglePlayBillingPlugin.this.logError("[ERROR] billing invalid query product details code: %d message: %s"
                         , responseCode
                         , billingResult.getDebugMessage()
                     );
@@ -343,7 +343,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
 
     public void queryPurchases() {
         if (m_billingClient == null) {
-            this.logError("queryPurchases billing client not created");
+            this.logError("[ERROR] queryPurchases billing client not created");
 
             return;
         }
@@ -360,7 +360,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
                 int responseCode = billingResult.getResponseCode();
 
                 if (responseCode != BillingClient.BillingResponseCode.OK) {
-                    MengineGooglePlayBillingPlugin.this.logError("billing invalid query purchases responseCode: %d message: %s"
+                    MengineGooglePlayBillingPlugin.this.logError("[ERROR] billing invalid query purchases responseCode: %d message: %s"
                         , responseCode
                         , billingResult.getDebugMessage()
                     );
@@ -400,7 +400,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
 
     public boolean buyInApp(String productId) {
         if (m_billingClient == null) {
-            this.logError("buyInApp billing client not created");
+            this.logError("[ERROR] buyInApp billing client not created");
 
             return false;
         }
@@ -412,7 +412,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
         ProductDetails product = this.getProductDetails(productId);
 
         if (product == null) {
-            this.logError("buyInApp invalid product id: %s"
+            this.logError("[ERROR] buyInApp invalid product id: %s"
                 , productId
             );
 
@@ -438,7 +438,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
         int responseCode = billingResult.getResponseCode();
 
         if (responseCode != BillingClient.BillingResponseCode.OK) {
-            this.logError("billing invalid launch billing flow code: %d message: %s"
+            this.logError("[ERROR] billing invalid launch billing flow code: %d message: %s"
                 , responseCode
                 , billingResult.getDebugMessage()
             );
@@ -479,7 +479,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
             int responseCode = billingResult.getResponseCode();
 
             if (responseCode != BillingClient.BillingResponseCode.OK) {
-                this.logError("billing invalid acknowledge purchase code: %d message: %s"
+                this.logError("[ERROR] billing invalid acknowledge purchase code: %d message: %s"
                     , responseCode
                     , billingResult.getDebugMessage()
                 );
@@ -516,7 +516,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
                 int responseCode = billingResult.getResponseCode();
 
                 if (responseCode != BillingClient.BillingResponseCode.OK) {
-                    MengineGooglePlayBillingPlugin.this.logError("billing invalid consume code: %d message: %s"
+                    MengineGooglePlayBillingPlugin.this.logError("[ERROR] billing invalid consume code: %d message: %s"
                         , responseCode
                         , billingResult.getDebugMessage()
                     );

@@ -44,7 +44,11 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
     }
 
     @Override
-    public void onAppInit(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
+        if (isMainProcess == false) {
+            return;
+        }
+
         String MengineSentryPlugin_DSN = application.getMetaDataString(PLUGIN_METADATA_DSN);
 
         if (MengineSentryPlugin_DSN == null) {

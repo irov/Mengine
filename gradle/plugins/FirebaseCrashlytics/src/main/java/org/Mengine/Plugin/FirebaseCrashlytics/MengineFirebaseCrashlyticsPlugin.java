@@ -30,7 +30,11 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
      */
 
     @Override
-    public void onAppInit(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
+        if (isMainProcess == false) {
+            return;
+        }
+
         boolean isBuildPublish = application.isBuildPublish();
 
         if (isBuildPublish == false) {
@@ -100,7 +104,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
                 FirebaseCrashlytics.getInstance().setCustomKey(key, stringValue);
             }
         } else {
-            this.logError("unsupported custom key: %s value: %s class: %s"
+            this.logError("[ERROR] unsupported custom key: %s value: %s class: %s"
                 , key
                 , value
                 , value.getClass()

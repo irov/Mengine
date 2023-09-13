@@ -258,6 +258,10 @@ public class MengineActivity extends SDLActivity {
         for (MenginePluginActivityListener l : listeners) {
             String pluginName = l.getPluginName();
 
+            MengineLog.logMessage(TAG, "onCreate plugin: %s"
+                , pluginName
+            );
+
             long plugin_init_start_timestamp = MengineAnalytics.buildEvent("mng_activity_init_plugin_start")
                 .addParameterString("name", pluginName)
                 .flush();
@@ -265,8 +269,8 @@ public class MengineActivity extends SDLActivity {
             try {
                 l.onCreate(this, savedInstanceState);
             } catch (MenginePluginInvalidInitializeException e) {
-                MengineLog.logError(TAG, "invalid plugin %s callback onCreate exception: %s"
-                    , e.getPluginName()
+                MengineLog.logError(TAG, "[ERROR] onCreate plugin: %s exception: %s"
+                    , l.getPluginName()
                     , e.getLocalizedMessage()
                 );
 
@@ -283,10 +287,14 @@ public class MengineActivity extends SDLActivity {
 
         for (MenginePlugin p : plugins) {
             try {
+                MengineLog.logMessage(TAG, "onExtensionInitialize plugin: %s"
+                    , p.getPluginName()
+                );
+
                 p.onExtensionInitialize(this);
             } catch (MenginePluginInvalidInitializeException e) {
-                MengineLog.logError(TAG, "invalid plugin %s callback onExtensionInitialize exception: %s"
-                    , e.getPluginName()
+                MengineLog.logError(TAG, "[ERROR] onExtensionInitialize plugin %s: exception: %s"
+                    , p.getPluginName()
                     , e.getLocalizedMessage()
                 );
 
@@ -638,7 +646,7 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        MengineLog.logInfo(TAG, "dispatchKeyEvent action: %d key code: %d scan code: %d"
+        MengineLog.logInfo(TAG, "dispatchKeyEvent action: %d key: %d scan: %d"
             , event.getAction()
             , event.getKeyCode()
             , event.getScanCode()
@@ -689,7 +697,7 @@ public class MengineActivity extends SDLActivity {
      **********************************************************************************************/
 
     public void pythonInitializePlugins() {
-        MengineLog.logInfo(TAG, "python initialize");
+        MengineLog.logInfo(TAG, "pythonInitializePlugins");
 
         m_initializePython = true;
 
@@ -727,7 +735,7 @@ public class MengineActivity extends SDLActivity {
 
     public void pythonCall(String plugin, String method, Object ... args) {
         if (m_initializePython == false) {
-            MengineLog.logWarning(TAG,"invalid python plugin [%s] method [%s] args [%s] call before embedding"
+            MengineLog.logWarning(TAG,"pythonCall call before embedding plugin: %s method: %s args: %s"
                 , plugin
                 , method
                 , args
@@ -754,7 +762,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        MengineLog.logMessage(TAG, "addPythonPlugin [%s] plugin: %s"
+        MengineLog.logMessage(TAG, "addPythonPlugin name: %s plugin: %s"
             , name
             , plugin
         );
@@ -771,7 +779,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        MengineLog.logMessage(TAG, "activate semaphore [%s]"
+        MengineLog.logMessage(TAG, "activateSemaphore semaphore: %s"
             , name
         );
 
@@ -807,7 +815,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     public void waitAndroidSemaphore(String name) {
-        MengineLog.logMessage(TAG, "wait android semaphore [%s]"
+        MengineLog.logMessage(TAG, "waitAndroidSemaphore semaphore: %s"
             , name
         );
 
@@ -823,7 +831,7 @@ public class MengineActivity extends SDLActivity {
      **********************************************************************************************/
 
     public boolean linkingOpenURL(String url) {
-        MengineLog.logMessage(TAG, "linking open url [%s]"
+        MengineLog.logMessage(TAG, "linkingOpenURL url: %s"
             , url
         );
 
@@ -841,7 +849,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     public boolean linkingOpenMail(String email, String subject, String body) {
-        MengineLog.logMessage(TAG, "linking open mail [%s] subject [%s] body: %s"
+        MengineLog.logMessage(TAG, "linkingOpenMail mail: %s subject: %s body: %s"
             , email
             , subject
             , body
@@ -878,7 +886,7 @@ public class MengineActivity extends SDLActivity {
                 File accountZipFile = MengineUtils.createTempFile(context, "mng_account_", ".zip");
 
                 if (accountZipFile == null) {
-                    MengineLog.logWarning(TAG, "linking open mail [%s] subject [%s] invalid create temp file 'mng_account_***.zip'"
+                    MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_account_***.zip' mail: %s subject: %s"
                         , email
                         , subject
                     );
@@ -893,10 +901,10 @@ public class MengineActivity extends SDLActivity {
                         return false;
                     }
 
-                    MengineLog.logInfo(TAG, "linking open mail [%s] subject [%s] attach: %s"
+                    MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' mail: %s subject: %s"
+                        , accountZIPUri
                         , email
                         , subject
-                        , accountZIPUri
                     );
 
                     fileUris.add(accountZIPUri);
@@ -905,7 +913,7 @@ public class MengineActivity extends SDLActivity {
                 File logFile = MengineUtils.createTempFile(context, "mng_log_", ".log");
 
                 if (logFile == null) {
-                    MengineLog.logWarning(TAG, "linking open mail [%s] subject [%s] invalid create temp file 'mng_log_***.log'"
+                    MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_log_***.log' mail: %s subject: %s"
                         , email
                         , subject
                     );
@@ -928,10 +936,10 @@ public class MengineActivity extends SDLActivity {
                             return false;
                         }
 
-                        MengineLog.logInfo(TAG, "linking open mail [%s] subject [%s] attach: %s"
+                        MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' mail: %s subject: %s"
+                            , logZipFileUri
                             , email
                             , subject
-                            , logZipFileUri
                         );
 
                         fileUris.add(logZipFileUri);
@@ -941,7 +949,7 @@ public class MengineActivity extends SDLActivity {
                 File oldLogFile = MengineUtils.createTempFile(context, "mng_old_log_", ".log");
 
                 if (oldLogFile == null) {
-                    MengineLog.logWarning(TAG, "linking open mail [%s] subject [%s] invalid create temp file 'mng_old_log_***.log'"
+                    MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_old_log_***.log' mail: %s subject: %s"
                         , email
                         , subject
                     );
@@ -964,10 +972,10 @@ public class MengineActivity extends SDLActivity {
                             return false;
                         }
 
-                        MengineLog.logInfo(TAG, "linking open mail [%s] subject [%s] attach: %s"
+                        MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' mail: %s subject: %s"
+                            , oldLogZipFileUri
                             , email
                             , subject
-                            , oldLogZipFileUri
                         );
 
                         fileUris.add(oldLogZipFileUri);
@@ -976,7 +984,7 @@ public class MengineActivity extends SDLActivity {
 
                 intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris);
             } catch (IOException e) {
-                MengineLog.logError(TAG, "linking open mail [%s] subject [%s] failed attachs file exception: %s"
+                MengineLog.logError(TAG, "[ERROR] linkingOpenMail failed attachs file mail: %s subject: %s exception: %s"
                     , email
                     , subject
                     , e.getLocalizedMessage()

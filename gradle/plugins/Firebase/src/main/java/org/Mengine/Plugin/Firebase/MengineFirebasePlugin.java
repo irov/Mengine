@@ -11,7 +11,11 @@ public class MengineFirebasePlugin extends MenginePlugin implements MenginePlugi
     public static final String PLUGIN_NAME = "Firebase";
 
     @Override
-    public void onAppInit(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
+        if (isMainProcess == false) {
+            return;
+        }
+
         FirebaseApp.initializeApp(application);
     }
 }

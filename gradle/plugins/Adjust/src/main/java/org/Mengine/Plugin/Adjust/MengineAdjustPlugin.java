@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.adjust.sdk.Adjust;
+import com.adjust.sdk.AdjustAdRevenue;
 import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.AdjustEvent;
 import com.adjust.sdk.BuildConfig;
@@ -14,10 +15,13 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
+import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
-public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener {
+import java.util.Map;
+
+public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginAnalyticsListener {
     public static final String PLUGIN_NAME = "Adjust";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -89,6 +93,45 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     @Override
     public void onPause(MengineActivity activity) {
         Adjust.onPause();
+    }
+
+    @Override
+    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+        //ToDo
+    }
+
+    @Override
+    public void onMengineAnalyticsFlush(MengineApplication application) {
+        //ToDo
+    }
+
+    private static String getAdjustMediationNetwork(String source) {
+        if (source.equalsIgnoreCase(EA_ADMEDIATION_APPLOVINMAX) == true) {
+            return AdjustConfig.AD_REVENUE_APPLOVIN_MAX;
+        }
+
+        return AdjustConfig.AD_REVENUE_SOURCE_PUBLISHER;
+    }
+
+    @Override
+    public void onMengineAnalyticsRevenuePaid(MengineApplication application, Map<String, Object> paid) {
+        String source = (String)paid.get(EA_ADREVENUE_SOURCE);
+        String AdjustSource = MengineAdjustPlugin.getAdjustMediationNetwork(source);
+        String network = (String)paid.get(EA_ADREVENUE_NETWORK);
+        int adType = (int)paid.get(EA_ADREVENUE_TYPE);
+        String adUnitId = (String)paid.get(EA_ADREVENUE_ADUNITID);
+        String placement = (String)paid.get(EA_ADREVENUE_PLACEMENT);
+        double revenue = (double)paid.get(EA_ADREVENUE_REVENUE_VALUE);
+        String revenuePrecision = (String)paid.get(EA_ADREVENUE_REVENUE_PRECISION);
+        String revenueСurrency = (String)paid.get(EA_ADREVENUE_REVENUE_CURRENCY);
+
+        AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue(AdjustSource);
+        adjustAdRevenue.setRevenue(revenue, revenueСurrency);
+        adjustAdRevenue.setAdRevenueNetwork(network);
+        adjustAdRevenue.setAdRevenueUnit(adUnitId);
+        adjustAdRevenue.setAdRevenuePlacement(placement);
+
+        Adjust.trackAdRevenue(adjustAdRevenue);
     }
 
     public void eventTraking(String token) {

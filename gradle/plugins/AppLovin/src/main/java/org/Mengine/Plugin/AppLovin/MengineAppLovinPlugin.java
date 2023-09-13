@@ -4,11 +4,13 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.applovin.mediation.MaxAd;
+import com.applovin.mediation.MaxAdFormat;
 import com.applovin.sdk.AppLovinPrivacySettings;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineAnalytics;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MengineLog;
@@ -339,10 +341,52 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         return true;
     }
 
-    public void onEventRevenuePaid(MaxAd ad) {
-        for (MengineAppLovinAnalyticsListener analytic : m_analytics) {
-            analytic.onEventRevenuePaid(this, ad);
+    private static int getAnalyticsAdType(MaxAdFormat format) {
+        if (format == MaxAdFormat.BANNER) {
+            return MengineAnalytics.EA_ADTYPE_BANNER;
+        } else if (format == MaxAdFormat.MREC) {
+            return MengineAnalytics.EA_ADTYPE_MREC;
+        } else if (format == MaxAdFormat.LEADER) {
+            return MengineAnalytics.EA_ADTYPE_LEADER;
+        } else if (format == MaxAdFormat.INTERSTITIAL) {
+            return MengineAnalytics.EA_ADTYPE_INTERSTITIAL;
+        } else if (format == MaxAdFormat.APP_OPEN) {
+            return MengineAnalytics.EA_ADTYPE_APP_OPEN;
+        } else if (format == MaxAdFormat.REWARDED) {
+            return MengineAnalytics.EA_ADTYPE_REWARDED;
+        } else if (format == MaxAdFormat.REWARDED_INTERSTITIAL) {
+            return MengineAnalytics.EA_ADTYPE_REWARDED_INTERSTITIAL;
+        } else if (format == MaxAdFormat.NATIVE) {
+            return MengineAnalytics.EA_ADTYPE_NATIVE;
+        } else if (format == MaxAdFormat.CROSS_PROMO) {
+            return MengineAnalytics.EA_ADTYPE_CROSS_PROMO;
         }
+
+        return MengineAnalytics.EA_ADTYPE_UNKNOWN;
+    }
+
+    public void onEventRevenuePaid(MaxAd ad) {
+        String networkName = ad.getNetworkName();
+        MaxAdFormat format = ad.getFormat();
+        int adType = MengineAppLovinPlugin.getAnalyticsAdType(format);
+        String adUnitId = ad.getAdUnitId();
+        String placement = ad.getPlacement();
+        double revenueValue = ad.getRevenue();
+        String revenuePrecision = ad.getRevenuePrecision();
+
+        MengineApplication application = this.getMengineApplication();
+
+        Map<String, Object> paid = new HashMap<>();
+        paid.put(MengineAnalytics.EA_ADREVENUE_SOURCE, MengineAnalytics.EA_ADMEDIATION_APPLOVINMAX);
+        paid.put(MengineAnalytics.EA_ADREVENUE_TYPE, adType);
+        paid.put(MengineAnalytics.EA_ADREVENUE_ADUNITID, adUnitId);
+        paid.put(MengineAnalytics.EA_ADREVENUE_PLACEMENT, placement);
+        paid.put(MengineAnalytics.EA_ADREVENUE_NETWORK, networkName);
+        paid.put(MengineAnalytics.EA_ADREVENUE_REVENUE_PRECISION, revenuePrecision);
+        paid.put(MengineAnalytics.EA_ADREVENUE_REVENUE_VALUE, revenueValue);
+        paid.put(MengineAnalytics.EA_ADREVENUE_REVENUE_CURRENCY, "USD");
+
+        application.onMengineAnalyticsRevenuePaid(paid);
     }
 
     public void showCreativeDebugger() {

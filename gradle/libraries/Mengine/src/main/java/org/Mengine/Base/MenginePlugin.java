@@ -80,6 +80,14 @@ public class MenginePlugin implements MenginePluginInterface {
         throw new MenginePluginInvalidInitializeException(message);
     }
 
+    public void makeToastLong(String text, long delayed) {
+        if (m_activity == null) {
+            return;
+        }
+
+        MengineUtils.makeToastLong(m_activity, text, delayed);
+    }
+
     public void sendEvent(MengineEvent event, Object ... args) {
         MengineApplication application = this.getMengineApplication();
 

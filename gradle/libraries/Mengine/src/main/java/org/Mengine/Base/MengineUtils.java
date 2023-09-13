@@ -115,6 +115,11 @@ public class MengineUtils {
     }
 
     public static void makeToastLong(Context context, String text, long delayed) {
+        MengineLog.logMessage(TAG, "Toast show after %d milliseconds text: %s"
+            , delayed
+            , text
+        );
+
         MengineUtils.performOnMainThreadDelayed(() -> {
             Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
             toast.show();

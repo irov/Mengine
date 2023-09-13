@@ -3,7 +3,11 @@ package org.Mengine.Plugin.AppsFlyer;
 import android.content.Context;
 
 import com.appsflyer.AppsFlyerLib;
+import com.appsflyer.adrevenue.adnetworks.AppsFlyerAdNetworkEventType;
+import com.appsflyer.adrevenue.adnetworks.generic.MediationNetwork;
+import com.appsflyer.adrevenue.adnetworks.generic.Scheme;
 import com.appsflyer.attribution.AppsFlyerRequestListener;
+import com.appsflyer.adrevenue.AppsFlyerAdRevenue;
 
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineApplication;
@@ -14,6 +18,7 @@ import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +58,9 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
 
         appsFlyer.init(MengineAppsFlyerPlugin_ApiKey, null, context);
         appsFlyer.start(context);
+
+        AppsFlyerAdRevenue.Builder afRevenueBuilder = new AppsFlyerAdRevenue.Builder(application);
+        AppsFlyerAdRevenue.initialize(afRevenueBuilder.build());
     }
 
     @Override
@@ -126,5 +134,56 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
     @Override
     public void onMengineAnalyticsFlush(MengineApplication application) {
         //Empty
+    }
+
+    private static String getAdType(int adType) {
+        if (adType == EA_ADTYPE_BANNER) {
+            return AppsFlyerAdNetworkEventType.BANNER.toString();
+        } else if (adType == EA_ADTYPE_LEADER) {
+            return AppsFlyerAdNetworkEventType.BANNER.toString();
+        } else if (adType == EA_ADTYPE_INTERSTITIAL) {
+            return AppsFlyerAdNetworkEventType.INTERSTITIAL.toString();
+        } else if (adType == EA_ADTYPE_REWARDED) {
+            return AppsFlyerAdNetworkEventType.REWARDED.toString();
+        } else if (adType == EA_ADTYPE_REWARDED_INTERSTITIAL) {
+            return AppsFlyerAdNetworkEventType.REWARDED.toString();
+        } else if (adType == EA_ADTYPE_APP_OPEN) {
+            return AppsFlyerAdNetworkEventType.APP_OPEN.toString();
+        } else if (adType == EA_ADTYPE_NATIVE) {
+            return AppsFlyerAdNetworkEventType.NATIVE.toString();
+        }
+
+        return "UNKNOWN";
+    }
+
+    private static MediationNetwork getMediationNetwork(String source) {
+        if (source.equalsIgnoreCase(EA_ADMEDIATION_APPLOVINMAX) == true) {
+            return MediationNetwork.applovinmax;
+        }
+
+        return MediationNetwork.customMediation;
+    }
+
+    @Override
+    public void onMengineAnalyticsRevenuePaid(MengineApplication application, Map<String, Object> paid) {
+        String source = (String)paid.get(EA_ADREVENUE_SOURCE);
+        MediationNetwork AppsFlyerSource = MengineAppsFlyerPlugin.getMediationNetwork(source);
+        String network = (String)paid.get(EA_ADREVENUE_NETWORK);
+        int adType = (int)paid.get(EA_ADREVENUE_TYPE);
+        String AppsFlyerAdType = MengineAppsFlyerPlugin.getAdType(adType);
+        String adUnitId = (String)paid.get(EA_ADREVENUE_ADUNITID);
+        String placement = (String)paid.get(EA_ADREVENUE_PLACEMENT);
+        double revenue = (double)paid.get(EA_ADREVENUE_REVENUE_VALUE);
+        String revenuePrecision = (String)paid.get(EA_ADREVENUE_REVENUE_PRECISION);
+        String revenueСurrency = (String)paid.get(EA_ADREVENUE_REVENUE_CURRENCY);
+
+        Map<String, String> params = new HashMap<>();
+        params.put(Scheme.AD_UNIT, adUnitId);
+        params.put(Scheme.AD_TYPE, AppsFlyerAdType);
+        params.put(Scheme.PLACEMENT, placement);
+
+        Currency currency = Currency.getInstance(revenueСurrency);
+
+        AppsFlyerAdRevenue.logAdRevenue(network, AppsFlyerSource, currency, revenue, params);
     }
 }

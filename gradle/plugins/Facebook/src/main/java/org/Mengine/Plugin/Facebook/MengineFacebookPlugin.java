@@ -357,6 +357,11 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         m_logger.flush();
     }
 
+    @Override
+    public void onMengineAnalyticsRevenuePaid(MengineApplication application, Map<String, Object> paid) {
+        //ToDo
+    }
+
     public boolean isLoggedIn() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
 

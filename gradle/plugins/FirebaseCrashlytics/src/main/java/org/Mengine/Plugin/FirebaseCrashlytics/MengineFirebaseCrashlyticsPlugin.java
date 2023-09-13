@@ -31,10 +31,6 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
 
     @Override
     public void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
-        if (isMainProcess == false) {
-            return;
-        }
-
         boolean isBuildPublish = application.isBuildPublish();
 
         if (isBuildPublish == false) {

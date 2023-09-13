@@ -379,7 +379,10 @@ namespace Mengine
 
         if( buffer->initialize( _vertexSize, _bufferType ) == false )
         {
-            LOGGER_ERROR( "invalid initialize vertex buffer" );
+            LOGGER_ERROR( "invalid initialize vertex buffer [%u] type [%u]"
+                , _vertexSize
+                , _bufferType
+                );
 
             return nullptr;
         }

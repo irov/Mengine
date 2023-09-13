@@ -876,6 +876,14 @@ public class MengineApplication extends Application {
         }
     }
 
+    public void onMengineAnalyticsRevenuePaid(Map<String, Object> paid) {
+        ArrayList<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
+
+        for (MenginePluginAnalyticsListener l : listeners) {
+            l.onMengineAnalyticsRevenuePaid(this, paid);
+        }
+    }
+
     private void invalidInitialize(String format, Object ... args) {
         String msg = MengineLog.logError(TAG, format, args);
 

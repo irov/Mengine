@@ -1,7 +1,10 @@
 package org.Mengine.Plugin.AppMetrica;
 
 import android.content.Context;
+import android.os.Bundle;
 
+import com.yandex.metrica.AdRevenue;
+import com.yandex.metrica.AdType;
 import com.yandex.metrica.YandexMetrica;
 import com.yandex.metrica.YandexMetricaConfig;
 
@@ -15,6 +18,7 @@ import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -137,5 +141,48 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     @Override
     public void onMengineAnalyticsFlush(MengineApplication application) {
         YandexMetrica.sendEventsBuffer();
+    }
+
+    private static AdType getYandexAdType(int adType) {
+        if (adType == EA_ADTYPE_BANNER) {
+            return AdType.BANNER;
+        } else if (adType == EA_ADTYPE_LEADER) {
+            return AdType.BANNER;
+        } else if (adType == EA_ADTYPE_INTERSTITIAL) {
+            return AdType.INTERSTITIAL;
+        } else if (adType == EA_ADTYPE_REWARDED) {
+            return AdType.REWARDED;
+        } else if (adType == EA_ADTYPE_REWARDED_INTERSTITIAL) {
+            return AdType.REWARDED;
+        } else if (adType == EA_ADTYPE_MREC) {
+            return AdType.MREC;
+        } else if (adType == EA_ADTYPE_NATIVE) {
+            return AdType.NATIVE;
+        }
+
+        return AdType.OTHER;
+    }
+
+    @Override
+    public void onMengineAnalyticsRevenuePaid(MengineApplication application, Map<String, Object> paid) {
+        String source = (String)paid.get(EA_ADREVENUE_SOURCE);
+        String networkName = (String)paid.get(EA_ADREVENUE_NETWORK);
+        int adType = (int)paid.get(EA_ADREVENUE_TYPE);
+        AdType YandexAdType = MengineAppMetricaPlugin.getYandexAdType(adType);
+        String adUnitId = (String)paid.get(EA_ADREVENUE_ADUNITID);
+        String placement = (String)paid.get(EA_ADREVENUE_PLACEMENT);
+        double revenue = (double)paid.get(EA_ADREVENUE_REVENUE_VALUE);
+        String revenuePrecision = (String)paid.get(EA_ADREVENUE_REVENUE_PRECISION);
+        String currency = (String)paid.get(EA_ADREVENUE_REVENUE_CURRENCY);
+
+        AdRevenue adRevenue = AdRevenue.newBuilder(revenue, Currency.getInstance(currency))
+            .withAdNetwork(networkName)
+            .withAdPlacementId(placement)
+            .withAdType(YandexAdType)
+            .withAdUnitId(adUnitId)
+            .withPrecision(revenuePrecision)
+            .build();
+
+        YandexMetrica.reportAdRevenue(adRevenue);
     }
 }

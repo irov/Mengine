@@ -65,16 +65,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     }
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        //Empty
-    }
-
-    @Override
-    public void onAppTerminate(MengineApplication application) {
-        m_firebaseAnalytics = null;
-    }
-
-    @Override
     public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         if (m_firebaseAnalytics == null) {
             return;
@@ -258,6 +248,55 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         }
 
         //Empty
+    }
+
+    private static String getAdFormat(int adType) {
+        if (adType == EA_ADTYPE_BANNER) {
+            return "BANNER";
+        } else if (adType == EA_ADTYPE_MREC) {
+            return "MREC";
+        } else if (adType == EA_ADTYPE_LEADER) {
+            return "LEADER";
+        } else if (adType == EA_ADTYPE_INTERSTITIAL) {
+            return "INTERSTITIAL";
+        } else if (adType == EA_ADTYPE_APP_OPEN) {
+            return "APP_OPEN";
+        } else if (adType == EA_ADTYPE_REWARDED) {
+            return "REWARDED";
+        } else if (adType == EA_ADTYPE_REWARDED_INTERSTITIAL) {
+            return "REWARDED_INTERSTITIAL";
+        } else if (adType == EA_ADTYPE_NATIVE) {
+            return "NATIVE";
+        } else if (adType == EA_ADTYPE_CROSS_PROMO) {
+            return "CROSS_PROMO";
+        }
+
+        return "UNKNOWN";
+    }
+
+    @Override
+    public void onMengineAnalyticsRevenuePaid(MengineApplication application, Map<String, Object> paid) {
+        if (m_firebaseAnalytics == null) {
+            return;
+        }
+
+        String source = (String)paid.get(EA_ADREVENUE_SOURCE);
+        String networkName = (String)paid.get(EA_ADREVENUE_NETWORK);
+        int adType = (int)paid.get(EA_ADREVENUE_TYPE);
+        String format = MengineFirebaseAnalyticsPlugin.getAdFormat(adType);
+        String adUnitId = (String)paid.get(EA_ADREVENUE_ADUNITID);
+        double revenue = (double)paid.get(EA_ADREVENUE_REVENUE_VALUE);
+        String currency = (String)paid.get(EA_ADREVENUE_REVENUE_CURRENCY);
+
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.AD_PLATFORM, source);
+        params.putString(FirebaseAnalytics.Param.AD_SOURCE, networkName);
+        params.putString(FirebaseAnalytics.Param.AD_FORMAT, format);
+        params.putString(FirebaseAnalytics.Param.AD_UNIT_NAME, adUnitId);
+        params.putDouble(FirebaseAnalytics.Param.VALUE, revenue);
+        params.putString(FirebaseAnalytics.Param.CURRENCY, currency);
+
+        m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params);
     }
 
     public void setUserProperty(@NonNull String name, @NonNull String value) {

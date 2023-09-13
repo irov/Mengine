@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
@@ -27,6 +28,7 @@ import org.Mengine.Base.MengineFunctorBoolean;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -259,11 +261,20 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
             return;
         }
 
-        this.logMessage("queryProducts: %s"
+        this.logMessage("queryProducts products: %s"
             , products
         );
 
+        BillingResult billingResult = m_billingClient.isFeatureSupported(BillingClient.FeatureType.PRODUCT_DETAILS);
+
+        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED) {
+            this.makeToastLong("GooglePlay billing asks you to update the PlayStore app", 10000L);
+
+            return;
+        }
+
         List<QueryProductDetailsParams.Product> productList = new ArrayList<>();
+
         for (String productId : products) {
             QueryProductDetailsParams.Product product = QueryProductDetailsParams.Product.newBuilder()
                 .setProductId(productId)
@@ -470,30 +481,33 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
         AcknowledgePurchaseParams.Builder acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
             .setPurchaseToken(token);
 
-        m_billingClient.acknowledgePurchase(acknowledgePurchaseParams.build(), billingResult -> {
-            this.logMessage("acknowledgePurchase responseCode: %d debugMessage: %s"
-                , billingResult.getResponseCode()
-                , billingResult.getDebugMessage()
-            );
-
-            int responseCode = billingResult.getResponseCode();
-
-            if (responseCode != BillingClient.BillingResponseCode.OK) {
-                this.logError("[ERROR] billing invalid acknowledge purchase code: %d message: %s"
-                    , responseCode
-                    , billingResult.getDebugMessage()
+        m_billingClient.acknowledgePurchase(acknowledgePurchaseParams.build(), new AcknowledgePurchaseResponseListener() {
+            @Override
+            public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
+                MengineGooglePlayBillingPlugin.this.logMessage("acknowledgePurchase responseCode: %d debugMessage: %s"
+                        , billingResult.getResponseCode()
+                        , billingResult.getDebugMessage()
                 );
 
-                this.pythonCall("onGooglePlayBillingPurchasesAcknowledgeFailed", products);
+                int responseCode = billingResult.getResponseCode();
 
-                return;
+                if (responseCode != BillingClient.BillingResponseCode.OK) {
+                    MengineGooglePlayBillingPlugin.this.logError("[ERROR] billing invalid acknowledge purchase code: %d message: %s"
+                            , responseCode
+                            , billingResult.getDebugMessage()
+                    );
+
+                    MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingPurchasesAcknowledgeFailed", products);
+
+                    return;
+                }
+
+                MengineGooglePlayBillingPlugin.this.logMessage("billing success acknowledge purchase: %s"
+                        , billingResult.getDebugMessage()
+                );
+
+                MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingPurchasesAcknowledgeSuccessful", products);
             }
-
-            this.logMessage("billing success acknowledge purchase: %s"
-                , billingResult.getDebugMessage()
-            );
-
-            this.pythonCall("onGooglePlayBillingPurchasesAcknowledgeSuccessful", products);
         });
     }
 

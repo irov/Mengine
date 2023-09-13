@@ -12,10 +12,6 @@ public class MengineFirebasePlugin extends MenginePlugin implements MenginePlugi
 
     @Override
     public void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
-        if (isMainProcess == false) {
-            return;
-        }
-
         FirebaseApp.initializeApp(application);
     }
 }

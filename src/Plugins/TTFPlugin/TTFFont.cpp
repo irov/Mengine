@@ -88,6 +88,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TTFFont::finalize()
     {
+        MENGINE_ASSERTION_FATAL( this->isCompile() == false );
+
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
 
         m_glyph = nullptr;

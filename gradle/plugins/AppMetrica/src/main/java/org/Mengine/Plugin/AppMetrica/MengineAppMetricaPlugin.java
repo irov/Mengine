@@ -1,7 +1,6 @@
 package org.Mengine.Plugin.AppMetrica;
 
 import android.content.Context;
-import android.os.Bundle;
 
 import com.yandex.metrica.AdRevenue;
 import com.yandex.metrica.AdType;
@@ -15,14 +14,15 @@ import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
+import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MengineUtils;
+import org.Mengine.Base.MenginePluginLoggerListener;
 
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener {
+public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginAnalyticsListener, MenginePluginApplicationListener, MenginePluginEngineListener {
     public static final String PLUGIN_NAME = "AppMetrica";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -187,5 +187,30 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
             .build();
 
         YandexMetrica.reportAdRevenue(adRevenue);
+    }
+
+    @Override
+    public void onMengineCaughtException(MengineApplication activity, Throwable throwable) {
+        if (BuildConfig.DEBUG == true) {
+            return;
+        }
+
+        YandexMetrica.reportError("Exception", throwable);
+    }
+
+    @Override
+    public void onMengineLogger(MengineApplication application, String category, int level, int filter, int color, String msg) {
+        if (BuildConfig.DEBUG == true) {
+            return;
+        }
+
+        switch (level) {
+            case MengineLog.LM_ERROR:
+                YandexMetrica.reportError(category, msg);
+                break;
+            case MengineLog.LM_FATAL:
+                YandexMetrica.reportError(category, msg);
+                break;
+        }
     }
 }

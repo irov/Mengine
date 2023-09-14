@@ -614,7 +614,6 @@ public class MengineApplication extends Application {
             return;
         }
 
-
         this.setState("build.debug", BuildConfig.DEBUG);
 
         this.setState("application.init", "started");

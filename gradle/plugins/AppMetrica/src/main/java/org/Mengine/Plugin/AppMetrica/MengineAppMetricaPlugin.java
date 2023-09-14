@@ -58,6 +58,8 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
             return;
         }
 
+        String AppVersion = application.getVersionName();
+
         boolean MengineAppMetricaPlugin_CrashReporting = application.getMetaDataBoolean(PLUGIN_METADATA_CRASH_REPORTING, true);
         boolean MengineAppMetricaPlugin_NativeCrashReporting = application.getMetaDataBoolean(PLUGIN_METADATA_NATIVE_CRASH_REPORTING, true);
         int MengineAppMetricaPlugin_SessionTimeout = application.getMetaDataInteger(PLUGIN_METADATA_SESSION_TIMEOUT, 300);
@@ -68,6 +70,7 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
 
         YandexMetricaConfig.Builder builder = YandexMetricaConfig
             .newConfigBuilder(MengineAppMetricaPlugin_ApiKey)
+                .withAppVersion(AppVersion)
                 .withCrashReporting(MengineAppMetricaPlugin_CrashReporting)
                 .withNativeCrashReporting(MengineAppMetricaPlugin_NativeCrashReporting)
                 .withSessionTimeout(MengineAppMetricaPlugin_SessionTimeout)

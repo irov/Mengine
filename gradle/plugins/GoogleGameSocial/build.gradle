@@ -6,7 +6,7 @@ android {
 
 dependencies {
     implementation "com.google.android.gms:play-services-games:23.1.0"
-    implementation "com.google.android.gms:play-services-auth:20.6.0"
+    implementation "com.google.android.gms:play-services-auth:20.7.0"
 }
 
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

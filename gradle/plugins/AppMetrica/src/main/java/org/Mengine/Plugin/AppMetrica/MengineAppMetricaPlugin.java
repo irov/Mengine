@@ -28,6 +28,7 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
 
     public static final String PLUGIN_METADATA_API_KEY = "mengine.appmetrica.api_key";
     public static final String PLUGIN_METADATA_CRASH_REPORTING = "mengine.appmetrica.crash_reporting";
+    public static final String PLUGIN_METADATA_NATIVE_CRASH_REPORTING = "mengine.appmetrica.native_crash_reporting";
     public static final String PLUGIN_METADATA_LOCATION_TRACKING = "mengine.appmetrica.location_tracking";
     public static final String PLUGIN_METADATA_SESSION_TIMEOUT = "mengine.appmetrica.session_timeout";
     public static final String PLUGIN_METADATA_LOGS = "mengine.appmetrica.logs";
@@ -58,6 +59,7 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
         }
 
         boolean MengineAppMetricaPlugin_CrashReporting = application.getMetaDataBoolean(PLUGIN_METADATA_CRASH_REPORTING, true);
+        boolean MengineAppMetricaPlugin_NativeCrashReporting = application.getMetaDataBoolean(PLUGIN_METADATA_NATIVE_CRASH_REPORTING, true);
         int MengineAppMetricaPlugin_SessionTimeout = application.getMetaDataInteger(PLUGIN_METADATA_SESSION_TIMEOUT, 300);
         boolean MengineAppMetricaPlugin_LocationTracking = application.getMetaDataBoolean(PLUGIN_METADATA_LOCATION_TRACKING, false);
         boolean MengineAppMetricaPlugin_Logs = application.getMetaDataBoolean(PLUGIN_METADATA_LOGS, true);
@@ -67,6 +69,7 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
         YandexMetricaConfig.Builder builder = YandexMetricaConfig
             .newConfigBuilder(MengineAppMetricaPlugin_ApiKey)
                 .withCrashReporting(MengineAppMetricaPlugin_CrashReporting)
+                .withNativeCrashReporting(MengineAppMetricaPlugin_NativeCrashReporting)
                 .withSessionTimeout(MengineAppMetricaPlugin_SessionTimeout)
                 .withLocationTracking(MengineAppMetricaPlugin_LocationTracking)
                 .handleFirstActivationAsUpdate(MengineAppMetricaPlugin_HandleFirstActivationAsUpdate)

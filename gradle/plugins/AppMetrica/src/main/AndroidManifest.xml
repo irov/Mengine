@@ -2,6 +2,7 @@
     <application>
         <meta-data android:name="mengine.appmetrica.api_key" android:value="@string/mengine_appmetrica_api_key" />
         <meta-data android:name="mengine.appmetrica.crash_reporting" android:value="@bool/mengine_appmetrica_crash_reporting" />
+        <meta-data android:name="mengine.appmetrica.native_crash_reporting" android:value="@bool/mengine_appmetrica_native_crash_reporting" />
         <meta-data android:name="mengine.appmetrica.location_tracking" android:value="@bool/mengine_appmetrica_location_tracking" />
         <meta-data android:name="mengine.appmetrica.session_timeout" android:value="@integer/mengine_appmetrica_session_timeout" />
         <meta-data android:name="mengine.appmetrica.logs" android:value="@bool/mengine_appmetrica_logs" />

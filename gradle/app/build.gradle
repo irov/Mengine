@@ -367,36 +367,6 @@ if (MENGINE_APP_LIBRARY_MENGINE == true) {
     }
 }
 
-Utils.logAvailable("MENGINE_APP_PLUGIN_SPLASHSCREEN", MENGINE_APP_PLUGIN_SPLASHSCREEN)
-
-if (MENGINE_APP_PLUGIN_SPLASHSCREEN == true) {
-    android.ext.plugins += 'org.Mengine.Plugin.SplashScreen.MengineSplashScreenPlugin'
-
-    dependencies {
-        implementation project(':plugins:SplashScreen')
-    }
-}
-
-Utils.logAvailable("MENGINE_APP_PLUGIN_DEVTODEV", MENGINE_APP_PLUGIN_DEVTODEV)
-
-if (MENGINE_APP_PLUGIN_DEVTODEV == true) {
-    android.ext.plugins += 'org.Mengine.Plugin.DevToDev.MengineDevToDevPlugin'
-
-    dependencies {
-        implementation project(':plugins:DevToDev')
-    }
-}
-
-Utils.logAvailable("MENGINE_APP_PLUGIN_FACEBOOK", MENGINE_APP_PLUGIN_FACEBOOK)
-
-if (MENGINE_APP_PLUGIN_FACEBOOK == true) {
-    android.ext.plugins += 'org.Mengine.Plugin.Facebook.MengineFacebookPlugin'
-
-    dependencies {
-        implementation project(':plugins:Facebook')
-    }
-}
-
 Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_SERVICE", MENGINE_APP_PLUGIN_GOOGLE_SERVICE)
 
 if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == true) {
@@ -426,48 +396,6 @@ if (MENGINE_APP_PLUGIN_GDPR == true) {
 
     dependencies {
         implementation project(':plugins:GeneralDataProtectionRegulation')
-    }
-}
-
-Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL)
-
-if (MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL == true) {
-    if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
-    }
-
-    android.ext.plugins += 'org.Mengine.Plugin.GoogleGameSocial.MengineGoogleGameSocialPlugin'
-
-    dependencies {
-        implementation project(':plugins:GoogleGameSocial')
-    }
-}
-
-Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING", MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING)
-
-if (MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING == true) {
-    if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
-    }
-
-    android.ext.plugins += 'org.Mengine.Plugin.GooglePlayBilling.MengineGooglePlayBillingPlugin'
-
-    dependencies {
-        implementation project(':plugins:GooglePlayBilling')
-    }
-}
-
-Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS)
-
-if (MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS == true) {
-    if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
-    }
-
-    android.ext.plugins += 'org.Mengine.Plugin.GoogleInAppReviews.MengineGoogleInAppReviewsPlugin'
-
-    dependencies {
-        implementation project(':plugins:GoogleInAppReviews')
     }
 }
 
@@ -576,13 +504,23 @@ if (MENGINE_APP_PLUGIN_APPSFLYER == true) {
     }
 }
 
-Utils.logAvailable("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS)
+Utils.logAvailable("MENGINE_APP_PLUGIN_DEVTODEV", MENGINE_APP_PLUGIN_DEVTODEV)
 
-if (MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS == true) {
-    android.ext.plugins += 'org.Mengine.Plugin.LocalNotifications.MengineLocalNotificationsPlugin'
+if (MENGINE_APP_PLUGIN_DEVTODEV == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.DevToDev.MengineDevToDevPlugin'
 
     dependencies {
-        implementation project(':plugins:LocalNotifications')
+        implementation project(':plugins:DevToDev')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_DATADOG", MENGINE_APP_PLUGIN_DATADOG)
+
+if (MENGINE_APP_PLUGIN_DATADOG == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.DataDog.MengineDataDogPlugin'
+
+    dependencies {
+        implementation project(':plugins:DataDog')
     }
 }
 
@@ -593,6 +531,88 @@ if (MENGINE_APP_PLUGIN_SENTRY == true) {
 
     dependencies {
         implementation project(':plugins:Sentry')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_ADJUST", MENGINE_APP_PLUGIN_ADJUST)
+
+if (MENGINE_APP_PLUGIN_ADJUST == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.Adjust.MengineAdjustPlugin'
+
+    dependencies {
+        implementation project(':plugins:Adjust')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_SPLASHSCREEN", MENGINE_APP_PLUGIN_SPLASHSCREEN)
+
+if (MENGINE_APP_PLUGIN_SPLASHSCREEN == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.SplashScreen.MengineSplashScreenPlugin'
+
+    dependencies {
+        implementation project(':plugins:SplashScreen')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL)
+
+if (MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL == true) {
+    if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
+        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
+    }
+
+    android.ext.plugins += 'org.Mengine.Plugin.GoogleGameSocial.MengineGoogleGameSocialPlugin'
+
+    dependencies {
+        implementation project(':plugins:GoogleGameSocial')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING", MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING)
+
+if (MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING == true) {
+    if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
+        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
+    }
+
+    android.ext.plugins += 'org.Mengine.Plugin.GooglePlayBilling.MengineGooglePlayBillingPlugin'
+
+    dependencies {
+        implementation project(':plugins:GooglePlayBilling')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS)
+
+if (MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS == true) {
+    if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
+        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
+    }
+
+    android.ext.plugins += 'org.Mengine.Plugin.GoogleInAppReviews.MengineGoogleInAppReviewsPlugin'
+
+    dependencies {
+        implementation project(':plugins:GoogleInAppReviews')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_FACEBOOK", MENGINE_APP_PLUGIN_FACEBOOK)
+
+if (MENGINE_APP_PLUGIN_FACEBOOK == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.Facebook.MengineFacebookPlugin'
+
+    dependencies {
+        implementation project(':plugins:Facebook')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS", MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS)
+
+if (MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.LocalNotifications.MengineLocalNotificationsPlugin'
+
+    dependencies {
+        implementation project(':plugins:LocalNotifications')
     }
 }
 
@@ -626,16 +646,6 @@ if (MENGINE_APP_PLUGIN_APPLOVIN == true) {
     }
 }
 
-Utils.logAvailable("MENGINE_APP_PLUGIN_ADJUST", MENGINE_APP_PLUGIN_ADJUST)
-
-if (MENGINE_APP_PLUGIN_ADJUST == true) {
-    android.ext.plugins += 'org.Mengine.Plugin.Adjust.MengineAdjustPlugin'
-
-    dependencies {
-        implementation project(':plugins:Adjust')
-    }
-}
-
 Utils.logAvailable("MENGINE_APP_PLUGIN_HELPSHIFT", MENGINE_APP_PLUGIN_HELPSHIFT)
 
 if (MENGINE_APP_PLUGIN_HELPSHIFT == true) {
@@ -653,16 +663,6 @@ if (MENGINE_APP_PLUGIN_ONESIGNAL == true) {
 
     dependencies {
         implementation project(':plugins:OneSignal')
-    }
-}
-
-Utils.logAvailable("MENGINE_APP_PLUGIN_DATADOG", MENGINE_APP_PLUGIN_DATADOG)
-
-if (MENGINE_APP_PLUGIN_DATADOG == true) {
-    android.ext.plugins += 'org.Mengine.Plugin.DataDog.MengineDataDogPlugin'
-
-    dependencies {
-        implementation project(':plugins:DataDog')
     }
 }
 

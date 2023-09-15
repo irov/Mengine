@@ -80,10 +80,8 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
                 .withRevenueAutoTrackingEnabled(false)
                 ;
 
-        if (BuildConfig.DEBUG == true) {
-            if (MengineAppMetricaPlugin_Logs == true) {
-                builder.withLogs();
-            }
+        if (MengineAppMetricaPlugin_Logs == true) {
+            builder.withLogs();
         }
 
         YandexMetricaConfig config = builder.build();

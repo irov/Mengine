@@ -77,6 +77,9 @@ public class MengineApplication extends Application {
 
     private ArrayList<MenginePluginLoggerListener> m_loggerListeners = new ArrayList<>();
     private ArrayList<MenginePluginAnalyticsListener> m_analyticsListeners = new ArrayList<>();
+    private ArrayList<MenginePluginAdRevenueListener> m_adRevenueListeners = new ArrayList<>();
+    private ArrayList<MenginePluginInAppPurchaseListener> m_inAppPurchaseListeners = new ArrayList<>();
+    private ArrayList<MenginePluginRemoteMessageListener> m_removeMessageListeners = new ArrayList<>();
     private ArrayList<MenginePluginKeyListener> m_keyListeners = new ArrayList<>();
     private ArrayList<MenginePluginApplicationListener> m_applicationListeners = new ArrayList<>();
     private ArrayList<MenginePluginActivityListener> m_activityListeners = new ArrayList<>();
@@ -338,6 +341,18 @@ public class MengineApplication extends Application {
         return m_analyticsListeners;
     }
 
+    public ArrayList<MenginePluginAdRevenueListener> getAdRevenueListeners() {
+        return m_adRevenueListeners;
+    }
+
+    public ArrayList<MenginePluginInAppPurchaseListener> getInAppAnalyticsListeners() {
+        return m_inAppPurchaseListeners;
+    }
+
+    public ArrayList<MenginePluginRemoteMessageListener> getRemoteMessageListeners() {
+        return m_removeMessageListeners;
+    }
+
     public ArrayList<MenginePluginKeyListener> getKeyListeners() {
         return m_keyListeners;
     }
@@ -437,6 +452,18 @@ public class MengineApplication extends Application {
 
         if (plugin instanceof MenginePluginAnalyticsListener listener) {
             m_analyticsListeners.add(listener);
+        }
+
+        if (plugin instanceof MenginePluginAdRevenueListener listener) {
+            m_adRevenueListeners.add(listener);
+        }
+
+        if (plugin instanceof MenginePluginInAppPurchaseListener listener) {
+            m_inAppPurchaseListeners.add(listener);
+        }
+
+        if (plugin instanceof MenginePluginRemoteMessageListener listener) {
+            m_removeMessageListeners.add(listener);
         }
 
         if (plugin instanceof MenginePluginLoggerListener listener) {
@@ -810,6 +837,9 @@ public class MengineApplication extends Application {
 
         m_loggerListeners = null;
         m_analyticsListeners = null;
+        m_adRevenueListeners = null;
+        m_inAppPurchaseListeners = null;
+        m_removeMessageListeners = null;
         m_keyListeners = null;
         m_applicationListeners = null;
         m_activityListeners = null;
@@ -875,11 +905,61 @@ public class MengineApplication extends Application {
         }
     }
 
-    public void onMengineAnalyticsRevenuePaid(Map<String, Object> paid) {
-        ArrayList<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
+    public void onMengineAdRevenue(Map<MengineAdRevenueParam, Object> paid) {
+        ArrayList<MenginePluginAdRevenueListener> listeners = this.getAdRevenueListeners();
 
-        for (MenginePluginAnalyticsListener l : listeners) {
-            l.onMengineAnalyticsRevenuePaid(this, paid);
+        for (MenginePluginAdRevenueListener l : listeners) {
+            l.onMengineAdRevenue(this, paid);
+        }
+    }
+
+    public void onMengineInAppPurchase(Map<MengineInAppPurchaseParam, Object> purchase) {
+        ArrayList<MenginePluginInAppPurchaseListener> listeners = this.getInAppAnalyticsListeners();
+
+        for (MenginePluginInAppPurchaseListener l : listeners) {
+            l.onMengineInAppPurchase(this, purchase);
+        }
+    }
+
+    public void onMengineRemoteMessageReceived(Map<MengineRemoteMessageParam, Object> message) {
+        ArrayList<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
+
+        for (MenginePluginRemoteMessageListener l : listeners) {
+            if (l.onMengineRemoteMessageReceived(this, message) == true) {
+                break;
+            }
+        }
+    }
+
+    public void onMengineRemoteMessageDeleted() {
+        ArrayList<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
+
+        for (MenginePluginRemoteMessageListener l : listeners) {
+            l.onMengineRemoteMessageDeleted(this);
+        }
+    }
+
+    public void onMengineRemoteMessageSent(String messageId) {
+        ArrayList<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
+
+        for (MenginePluginRemoteMessageListener l : listeners) {
+            l.onMengineRemoteMessageSent(this, messageId);
+        }
+    }
+
+    public void onMengineRemoteMessageSentError(String messageId, Exception exception) {
+        ArrayList<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
+
+        for (MenginePluginRemoteMessageListener l : listeners) {
+            l.onMengineRemoteMessageSentError(this, messageId, exception);
+        }
+    }
+
+    public void onMengineRemoteMessageNewToken(String token) {
+        ArrayList<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
+
+        for (MenginePluginRemoteMessageListener l : listeners) {
+            l.onMengineRemoteMessageNewToken(this, token);
         }
     }
 

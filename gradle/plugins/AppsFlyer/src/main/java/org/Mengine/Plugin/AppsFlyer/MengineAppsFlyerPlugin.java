@@ -10,10 +10,14 @@ import com.appsflyer.attribution.AppsFlyerRequestListener;
 import com.appsflyer.adrevenue.AppsFlyerAdRevenue;
 
 import org.Mengine.Base.BuildConfig;
+import org.Mengine.Base.MengineAdFormat;
+import org.Mengine.Base.MengineAdMediation;
+import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
-import org.Mengine.Base.MengineLog;
+import org.Mengine.Base.MengineInAppPurchaseParam;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginAdRevenueListener;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
@@ -22,7 +26,7 @@ import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener {
+public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "AppsFlyer";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -136,28 +140,28 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
         //Empty
     }
 
-    private static String getAdType(int adType) {
-        if (adType == EA_ADTYPE_BANNER) {
+    private static String getAppsFlyerAdType(MengineAdFormat adType) {
+        if (adType == MengineAdFormat.ADFORMAT_BANNER) {
             return AppsFlyerAdNetworkEventType.BANNER.toString();
-        } else if (adType == EA_ADTYPE_LEADER) {
+        } else if (adType == MengineAdFormat.ADFORMAT_LEADER) {
             return AppsFlyerAdNetworkEventType.BANNER.toString();
-        } else if (adType == EA_ADTYPE_INTERSTITIAL) {
+        } else if (adType == MengineAdFormat.ADFORMAT_INTERSTITIAL) {
             return AppsFlyerAdNetworkEventType.INTERSTITIAL.toString();
-        } else if (adType == EA_ADTYPE_REWARDED) {
+        } else if (adType == MengineAdFormat.ADFORMAT_REWARDED) {
             return AppsFlyerAdNetworkEventType.REWARDED.toString();
-        } else if (adType == EA_ADTYPE_REWARDED_INTERSTITIAL) {
+        } else if (adType == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
             return AppsFlyerAdNetworkEventType.REWARDED.toString();
-        } else if (adType == EA_ADTYPE_APP_OPEN) {
+        } else if (adType == MengineAdFormat.ADFORMAT_APP_OPEN) {
             return AppsFlyerAdNetworkEventType.APP_OPEN.toString();
-        } else if (adType == EA_ADTYPE_NATIVE) {
+        } else if (adType == MengineAdFormat.ADFORMAT_NATIVE) {
             return AppsFlyerAdNetworkEventType.NATIVE.toString();
         }
 
         return "UNKNOWN";
     }
 
-    private static MediationNetwork getMediationNetwork(String source) {
-        if (source.equalsIgnoreCase(EA_ADMEDIATION_APPLOVINMAX) == true) {
+    private static MediationNetwork getMediationNetwork(MengineAdMediation adMediation) {
+        if (adMediation == MengineAdMediation.ADMEDIATION_APPLOVINMAX) {
             return MediationNetwork.applovinmax;
         }
 
@@ -165,17 +169,17 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
     }
 
     @Override
-    public void onMengineAnalyticsRevenuePaid(MengineApplication application, Map<String, Object> paid) {
-        String source = (String)paid.get(EA_ADREVENUE_SOURCE);
-        MediationNetwork AppsFlyerSource = MengineAppsFlyerPlugin.getMediationNetwork(source);
-        String network = (String)paid.get(EA_ADREVENUE_NETWORK);
-        int adType = (int)paid.get(EA_ADREVENUE_TYPE);
-        String AppsFlyerAdType = MengineAppsFlyerPlugin.getAdType(adType);
-        String adUnitId = (String)paid.get(EA_ADREVENUE_ADUNITID);
-        String placement = (String)paid.get(EA_ADREVENUE_PLACEMENT);
-        double revenue = (double)paid.get(EA_ADREVENUE_REVENUE_VALUE);
-        String revenuePrecision = (String)paid.get(EA_ADREVENUE_REVENUE_PRECISION);
-        String revenueСurrency = (String)paid.get(EA_ADREVENUE_REVENUE_CURRENCY);
+    public void onMengineAdRevenue(MengineApplication application, Map<MengineAdRevenueParam, Object> paid) {
+        MengineAdMediation mediation = (MengineAdMediation)paid.get(MengineAdRevenueParam.ADREVENUE_MEDIATION);
+        MediationNetwork AppsFlyerSource = MengineAppsFlyerPlugin.getMediationNetwork(mediation);
+        String network = (String)paid.get(MengineAdRevenueParam.ADREVENUE_NETWORK);
+        MengineAdFormat adFormat = (MengineAdFormat)paid.get(MengineAdRevenueParam.ADREVENUE_FORMAT);
+        String AppsFlyerAdType = MengineAppsFlyerPlugin.getAppsFlyerAdType(adFormat);
+        String adUnitId = (String)paid.get(MengineAdRevenueParam.ADREVENUE_ADUNITID);
+        String placement = (String)paid.get(MengineAdRevenueParam.ADREVENUE_PLACEMENT);
+        double revenue = (double)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_VALUE);
+        String revenuePrecision = (String)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_PRECISION);
+        String revenueСurrency = (String)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_CURRENCY);
 
         Map<String, String> params = new HashMap<>();
         params.put(Scheme.AD_UNIT, adUnitId);

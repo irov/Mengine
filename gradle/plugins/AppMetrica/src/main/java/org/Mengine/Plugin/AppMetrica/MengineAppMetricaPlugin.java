@@ -8,10 +8,14 @@ import com.yandex.metrica.YandexMetrica;
 import com.yandex.metrica.YandexMetricaConfig;
 
 import org.Mengine.Base.BuildConfig;
+import org.Mengine.Base.MengineAdFormat;
+import org.Mengine.Base.MengineAdMediation;
+import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginAdRevenueListener;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginEngineListener;
@@ -22,7 +26,7 @@ import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginAnalyticsListener, MenginePluginApplicationListener, MenginePluginEngineListener {
+public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginEngineListener {
     public static final String PLUGIN_NAME = "AppMetrica";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -147,20 +151,20 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
         YandexMetrica.sendEventsBuffer();
     }
 
-    private static AdType getYandexAdType(int adType) {
-        if (adType == EA_ADTYPE_BANNER) {
+    private static AdType getYandexAdType(MengineAdFormat adType) {
+        if (adType == MengineAdFormat.ADFORMAT_BANNER) {
             return AdType.BANNER;
-        } else if (adType == EA_ADTYPE_LEADER) {
+        } else if (adType == MengineAdFormat.ADFORMAT_LEADER) {
             return AdType.BANNER;
-        } else if (adType == EA_ADTYPE_INTERSTITIAL) {
+        } else if (adType == MengineAdFormat.ADFORMAT_INTERSTITIAL) {
             return AdType.INTERSTITIAL;
-        } else if (adType == EA_ADTYPE_REWARDED) {
+        } else if (adType == MengineAdFormat.ADFORMAT_REWARDED) {
             return AdType.REWARDED;
-        } else if (adType == EA_ADTYPE_REWARDED_INTERSTITIAL) {
+        } else if (adType == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
             return AdType.REWARDED;
-        } else if (adType == EA_ADTYPE_MREC) {
+        } else if (adType == MengineAdFormat.ADFORMAT_MREC) {
             return AdType.MREC;
-        } else if (adType == EA_ADTYPE_NATIVE) {
+        } else if (adType == MengineAdFormat.ADFORMAT_NATIVE) {
             return AdType.NATIVE;
         }
 
@@ -168,16 +172,16 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     }
 
     @Override
-    public void onMengineAnalyticsRevenuePaid(MengineApplication application, Map<String, Object> paid) {
-        String source = (String)paid.get(EA_ADREVENUE_SOURCE);
-        String networkName = (String)paid.get(EA_ADREVENUE_NETWORK);
-        int adType = (int)paid.get(EA_ADREVENUE_TYPE);
-        AdType YandexAdType = MengineAppMetricaPlugin.getYandexAdType(adType);
-        String adUnitId = (String)paid.get(EA_ADREVENUE_ADUNITID);
-        String placement = (String)paid.get(EA_ADREVENUE_PLACEMENT);
-        double revenue = (double)paid.get(EA_ADREVENUE_REVENUE_VALUE);
-        String revenuePrecision = (String)paid.get(EA_ADREVENUE_REVENUE_PRECISION);
-        String currency = (String)paid.get(EA_ADREVENUE_REVENUE_CURRENCY);
+    public void onMengineAdRevenue(MengineApplication application, Map<MengineAdRevenueParam, Object> paid) {
+        MengineAdMediation mediation = (MengineAdMediation)paid.get(MengineAdRevenueParam.ADREVENUE_MEDIATION);
+        String networkName = (String)paid.get(MengineAdRevenueParam.ADREVENUE_NETWORK);
+        MengineAdFormat adFormat = (MengineAdFormat)paid.get(MengineAdRevenueParam.ADREVENUE_FORMAT);
+        AdType YandexAdType = MengineAppMetricaPlugin.getYandexAdType(adFormat);
+        String adUnitId = (String)paid.get(MengineAdRevenueParam.ADREVENUE_ADUNITID);
+        String placement = (String)paid.get(MengineAdRevenueParam.ADREVENUE_PLACEMENT);
+        double revenue = (double)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_VALUE);
+        String revenuePrecision = (String)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_PRECISION);
+        String currency = (String)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_CURRENCY);
 
         AdRevenue adRevenue = AdRevenue.newBuilder(revenue, Currency.getInstance(currency))
             .withAdNetwork(networkName)

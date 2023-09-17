@@ -7,16 +7,21 @@ import androidx.annotation.Nullable;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import org.Mengine.Base.MengineAdFormat;
+import org.Mengine.Base.MengineAdMediation;
+import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
+import org.Mengine.Base.MengineInAppPurchaseParam;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginAdRevenueListener;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import java.util.Map;
 
-public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener {
+public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "FirebaseAnalytics";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -250,46 +255,55 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         //Empty
     }
 
-    private static String getAdFormat(int adType) {
-        if (adType == EA_ADTYPE_BANNER) {
+    private static String getAdFormat(MengineAdFormat adType) {
+        if (adType == MengineAdFormat.ADFORMAT_BANNER) {
             return "BANNER";
-        } else if (adType == EA_ADTYPE_MREC) {
+        } else if (adType == MengineAdFormat.ADFORMAT_MREC) {
             return "MREC";
-        } else if (adType == EA_ADTYPE_LEADER) {
+        } else if (adType == MengineAdFormat.ADFORMAT_LEADER) {
             return "LEADER";
-        } else if (adType == EA_ADTYPE_INTERSTITIAL) {
+        } else if (adType == MengineAdFormat.ADFORMAT_INTERSTITIAL) {
             return "INTERSTITIAL";
-        } else if (adType == EA_ADTYPE_APP_OPEN) {
+        } else if (adType == MengineAdFormat.ADFORMAT_APP_OPEN) {
             return "APP_OPEN";
-        } else if (adType == EA_ADTYPE_REWARDED) {
+        } else if (adType == MengineAdFormat.ADFORMAT_REWARDED) {
             return "REWARDED";
-        } else if (adType == EA_ADTYPE_REWARDED_INTERSTITIAL) {
+        } else if (adType == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
             return "REWARDED_INTERSTITIAL";
-        } else if (adType == EA_ADTYPE_NATIVE) {
+        } else if (adType == MengineAdFormat.ADFORMAT_NATIVE) {
             return "NATIVE";
-        } else if (adType == EA_ADTYPE_CROSS_PROMO) {
+        } else if (adType == MengineAdFormat.ADFORMAT_CROSS_PROMO) {
             return "CROSS_PROMO";
         }
 
         return "UNKNOWN";
     }
 
+    private String getAdMediation(MengineAdMediation adMediation) {
+        if (adMediation == MengineAdMediation.ADMEDIATION_APPLOVINMAX) {
+            return "appLovin";
+        }
+
+        return "unknown";
+    }
+
     @Override
-    public void onMengineAnalyticsRevenuePaid(MengineApplication application, Map<String, Object> paid) {
+    public void onMengineAdRevenue(MengineApplication application, Map<MengineAdRevenueParam, Object> paid) {
         if (m_firebaseAnalytics == null) {
             return;
         }
 
-        String source = (String)paid.get(EA_ADREVENUE_SOURCE);
-        String networkName = (String)paid.get(EA_ADREVENUE_NETWORK);
-        int adType = (int)paid.get(EA_ADREVENUE_TYPE);
-        String format = MengineFirebaseAnalyticsPlugin.getAdFormat(adType);
-        String adUnitId = (String)paid.get(EA_ADREVENUE_ADUNITID);
-        double revenue = (double)paid.get(EA_ADREVENUE_REVENUE_VALUE);
-        String currency = (String)paid.get(EA_ADREVENUE_REVENUE_CURRENCY);
+        MengineAdMediation mediation = (MengineAdMediation)paid.get(MengineAdRevenueParam.ADREVENUE_MEDIATION);
+        String adFirebaseMediation = this.getAdMediation(mediation);
+        String networkName = (String)paid.get(MengineAdRevenueParam.ADREVENUE_NETWORK);
+        MengineAdFormat adFormat = (MengineAdFormat)paid.get(MengineAdRevenueParam.ADREVENUE_FORMAT);
+        String format = MengineFirebaseAnalyticsPlugin.getAdFormat(adFormat);
+        String adUnitId = (String)paid.get(MengineAdRevenueParam.ADREVENUE_ADUNITID);
+        double revenue = (double)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_VALUE);
+        String currency = (String)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_CURRENCY);
 
         Bundle params = new Bundle();
-        params.putString(FirebaseAnalytics.Param.AD_PLATFORM, source);
+        params.putString(FirebaseAnalytics.Param.AD_PLATFORM, adFirebaseMediation);
         params.putString(FirebaseAnalytics.Param.AD_SOURCE, networkName);
         params.putString(FirebaseAnalytics.Param.AD_FORMAT, format);
         params.putString(FirebaseAnalytics.Param.AD_UNIT_NAME, adUnitId);

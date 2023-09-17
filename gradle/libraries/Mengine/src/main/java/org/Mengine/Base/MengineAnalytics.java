@@ -17,28 +17,6 @@ public class MengineAnalytics {
     public final static int EAET_TUTORIAL_COMPLETE = 9;
     public final static int EAET_SCREEN_VIEW = 10;
 
-    public final static String EA_ADMEDIATION_APPLOVINMAX = "AppLovinMax";
-
-    public final static int EA_ADTYPE_BANNER = 0;
-    public final static int EA_ADTYPE_MREC = 1;
-    public final static int EA_ADTYPE_LEADER = 2;
-    public final static int EA_ADTYPE_INTERSTITIAL = 3;
-    public final static int EA_ADTYPE_APP_OPEN = 4;
-    public final static int EA_ADTYPE_REWARDED = 5;
-    public final static int EA_ADTYPE_REWARDED_INTERSTITIAL = 6;
-    public final static int EA_ADTYPE_NATIVE = 7;
-    public final static int EA_ADTYPE_CROSS_PROMO = 8;
-    public final static int EA_ADTYPE_UNKNOWN = 8;
-
-    public final static String EA_ADREVENUE_SOURCE = "SOURCE";
-    public final static String EA_ADREVENUE_TYPE = "TYPE";
-    public final static String EA_ADREVENUE_ADUNITID = "ADUNITID";
-    public final static String EA_ADREVENUE_PLACEMENT = "PLACEMENT";
-    public final static String EA_ADREVENUE_NETWORK = "NETWORK";
-    public final static String EA_ADREVENUE_REVENUE_PRECISION = "REVENUE_PRECISION";
-    public final static String EA_ADREVENUE_REVENUE_VALUE = "REVENUE_VALUE";
-    public final static String EA_ADREVENUE_REVENUE_CURRENCY = "REVENUE_CURRENCY";
-
     private static MengineApplication m_application;
     private static Map<String, Object> m_context = new HashMap<>();
     private static Map<String, Object> m_getter = new HashMap<>();

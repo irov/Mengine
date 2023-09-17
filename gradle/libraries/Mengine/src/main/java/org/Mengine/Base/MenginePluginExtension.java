@@ -8,10 +8,10 @@ public class MenginePluginExtension {
     MengineActivity m_activity;
     MenginePlugin m_plugin;
 
-    public MengineApplication getApplication() {
+    public MengineApplication getMengineApplication() {
         return m_application;
     }
-    public MengineActivity getActivity() {
+    public MengineActivity getMengineActivity() {
         return m_activity;
     }
 

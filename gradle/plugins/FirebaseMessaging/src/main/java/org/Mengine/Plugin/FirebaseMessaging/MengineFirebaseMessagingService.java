@@ -6,17 +6,31 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineRemoteMessageParam;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MengineFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        String messageId = remoteMessage.getMessageId();
+        String from = remoteMessage.getFrom();
+        String to = remoteMessage.getTo();
+        String collapseKey = remoteMessage.getCollapseKey();
+        Map<String, String> data = remoteMessage.getData();
+
+        Map<MengineRemoteMessageParam, Object> message = new HashMap<>();
+        message.put(MengineRemoteMessageParam.REMOTEMESSAGE_ID, messageId);
+        message.put(MengineRemoteMessageParam.REMOTEMESSAGE_FROM, from);
+        message.put(MengineRemoteMessageParam.REMOTEMESSAGE_TO, to);
+        message.put(MengineRemoteMessageParam.REMOTEMESSAGE_COLLAPSE_KEY, collapseKey);
+        message.put(MengineRemoteMessageParam.REMOTEMESSAGE_DATA, data);
+
         MengineApplication application = (MengineApplication)this.getApplication();
-
-        MengineFirebaseMessagingPlugin plugin = application.getPlugin(MengineFirebaseMessagingPlugin.class);
-
-        plugin.onMessageReceived(remoteMessage);
+        application.onMengineRemoteMessageReceived(message);
     }
 
     @Override
@@ -24,32 +38,23 @@ public class MengineFirebaseMessagingService extends FirebaseMessagingService {
         super.onDeletedMessages();
 
         MengineApplication application = (MengineApplication)this.getApplication();
-
-        MengineFirebaseMessagingPlugin plugin = application.getPlugin(MengineFirebaseMessagingPlugin.class);
-
-        plugin.onDeletedMessages();
+        application.onMengineRemoteMessageDeleted();
     }
 
     @Override
-    public void onMessageSent(@NonNull String msgId) {
-        super.onMessageSent(msgId);
+    public void onMessageSent(@NonNull String messageId) {
+        super.onMessageSent(messageId);
 
         MengineApplication application = (MengineApplication)this.getApplication();
-
-        MengineFirebaseMessagingPlugin plugin = application.getPlugin(MengineFirebaseMessagingPlugin.class);
-
-        plugin.onMessageSent(msgId);
+        application.onMengineRemoteMessageSent(messageId);
     }
 
     @Override
-    public void onSendError(@NonNull String msgId, @NonNull Exception exception) {
-        super.onSendError(msgId, exception);
+    public void onSendError(@NonNull String messageId, @NonNull Exception exception) {
+        super.onSendError(messageId, exception);
 
         MengineApplication application = (MengineApplication)this.getApplication();
-
-        MengineFirebaseMessagingPlugin plugin = application.getPlugin(MengineFirebaseMessagingPlugin.class);
-
-        plugin.onSendError(msgId, exception);
+        application.onMengineRemoteMessageSentError(messageId, exception);
     }
 
     @Override
@@ -57,9 +62,6 @@ public class MengineFirebaseMessagingService extends FirebaseMessagingService {
         super.onNewToken(token);
 
         MengineApplication application = (MengineApplication)this.getApplication();
-
-        MengineFirebaseMessagingPlugin plugin = application.getPlugin(MengineFirebaseMessagingPlugin.class);
-
-        plugin.onNewToken(token);
+        application.onMengineRemoteMessageNewToken(token);
     }
 }

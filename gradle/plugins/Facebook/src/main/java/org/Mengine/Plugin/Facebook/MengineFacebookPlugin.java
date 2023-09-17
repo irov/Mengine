@@ -37,13 +37,14 @@ import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MenginePluginRemoteMessageListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
 
-public class MengineFacebookPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener, MenginePluginActivityListener {
+public class MengineFacebookPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener, MenginePluginRemoteMessageListener, MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "Facebook";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -358,8 +359,8 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onMengineAnalyticsRevenuePaid(MengineApplication application, Map<String, Object> paid) {
-        //ToDo
+    public void onMengineRemoteMessageNewToken(MengineApplication application, String token) {
+        AppEventsLogger.setPushNotificationsRegistrationId(token);
     }
 
     public boolean isLoggedIn() {

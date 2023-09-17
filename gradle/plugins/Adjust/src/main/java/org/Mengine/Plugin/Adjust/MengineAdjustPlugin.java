@@ -3,6 +3,8 @@ package org.Mengine.Plugin.Adjust;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAdRevenue;
 import com.adjust.sdk.AdjustConfig;
@@ -11,17 +13,22 @@ import com.adjust.sdk.BuildConfig;
 import com.adjust.sdk.LogLevel;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineAdFormat;
+import org.Mengine.Base.MengineAdMediation;
+import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
+import org.Mengine.Base.MenginePluginAdRevenueListener;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MenginePluginRemoteMessageListener;
 
 import java.util.Map;
 
-public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginAnalyticsListener {
+public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginAdRevenueListener, MenginePluginRemoteMessageListener, MenginePluginAnalyticsListener {
     public static final String PLUGIN_NAME = "Adjust";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -105,8 +112,8 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
         //ToDo
     }
 
-    private static String getAdjustMediationNetwork(String source) {
-        if (source.equalsIgnoreCase(EA_ADMEDIATION_APPLOVINMAX) == true) {
+    private static String getAdjustMediation(MengineAdMediation adMediation) {
+        if (adMediation == MengineAdMediation.ADMEDIATION_APPLOVINMAX) {
             return AdjustConfig.AD_REVENUE_APPLOVIN_MAX;
         }
 
@@ -114,18 +121,18 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onMengineAnalyticsRevenuePaid(MengineApplication application, Map<String, Object> paid) {
-        String source = (String)paid.get(EA_ADREVENUE_SOURCE);
-        String AdjustSource = MengineAdjustPlugin.getAdjustMediationNetwork(source);
-        String network = (String)paid.get(EA_ADREVENUE_NETWORK);
-        int adType = (int)paid.get(EA_ADREVENUE_TYPE);
-        String adUnitId = (String)paid.get(EA_ADREVENUE_ADUNITID);
-        String placement = (String)paid.get(EA_ADREVENUE_PLACEMENT);
-        double revenue = (double)paid.get(EA_ADREVENUE_REVENUE_VALUE);
-        String revenuePrecision = (String)paid.get(EA_ADREVENUE_REVENUE_PRECISION);
-        String revenueСurrency = (String)paid.get(EA_ADREVENUE_REVENUE_CURRENCY);
+    public void onMengineAdRevenue(MengineApplication application, Map<MengineAdRevenueParam, Object> paid) {
+        MengineAdMediation mediation = (MengineAdMediation)paid.get(MengineAdRevenueParam.ADREVENUE_MEDIATION);
+        String AdjustMediation = MengineAdjustPlugin.getAdjustMediation(mediation);
+        String network = (String)paid.get(MengineAdRevenueParam.ADREVENUE_NETWORK);
+        MengineAdFormat adType = (MengineAdFormat)paid.get(MengineAdRevenueParam.ADREVENUE_FORMAT);
+        String adUnitId = (String)paid.get(MengineAdRevenueParam.ADREVENUE_ADUNITID);
+        String placement = (String)paid.get(MengineAdRevenueParam.ADREVENUE_PLACEMENT);
+        double revenue = (double)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_VALUE);
+        String revenuePrecision = (String)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_PRECISION);
+        String revenueСurrency = (String)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_CURRENCY);
 
-        AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue(AdjustSource);
+        AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue(AdjustMediation);
         adjustAdRevenue.setRevenue(revenue, revenueСurrency);
         adjustAdRevenue.setAdRevenueNetwork(network);
         adjustAdRevenue.setAdRevenueUnit(adUnitId);
@@ -134,8 +141,15 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
         Adjust.trackAdRevenue(adjustAdRevenue);
     }
 
-    public void eventTraking(String token) {
-        this.logMessage("eventTraking token: %s"
+    @Override
+    public void onMengineRemoteMessageNewToken(MengineApplication application, String token) {
+        final Context context = application.getApplicationContext();
+
+        Adjust.setPushToken(token, context);
+    }
+
+    public void eventTracking(String token) {
+        this.logMessage("eventTracking token: %s"
             , token
         );
 

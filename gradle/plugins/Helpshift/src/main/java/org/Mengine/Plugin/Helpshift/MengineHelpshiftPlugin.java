@@ -9,6 +9,8 @@ import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MenginePluginRemoteMessageListener;
+import org.Mengine.Base.MengineRemoteMessageParam;
 
 import com.helpshift.Helpshift;
 import com.helpshift.HelpshiftAuthenticationFailureReason;
@@ -22,7 +24,7 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 
-public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEventsListener, MenginePluginActivityListener {
+public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEventsListener, MenginePluginRemoteMessageListener, MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "Helpshift";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -130,6 +132,26 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         }
 
         Helpshift.setHelpshiftEventsListener(this);
+    }
+
+    @Override
+    public boolean onMengineRemoteMessageReceived(MengineApplication application, Map<MengineRemoteMessageParam, Object> message) {
+        @SuppressWarnings("unchecked")
+        Map<String, String> data = (Map<String, String>)message.get(REMOTEMESSAGE_DATA);
+
+        String origin = data.get("origin");
+        if (origin != null && origin.equals("helpshift")) {
+            Helpshift.handlePush(data);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onMengineRemoteMessageNewToken(MengineApplication application, String token) {
+        Helpshift.registerPushToken(token);
     }
 
     @Override

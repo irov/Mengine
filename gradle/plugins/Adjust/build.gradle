@@ -4,32 +4,8 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/installreferrer.gradle'
 
-def MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_MESSAGING")
-
 android {
-    sourceSets {
-        main {
-            if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
-                println "Plugin [Adjust] add extension 'firebaseMessaging'"
-                
-                java.srcDirs += ['firebaseMessaging']
-            }
-        }
-    }
-    
     namespace "org.Mengine.Plugin.Adjust"
-}
-
-Utils.logAvailable("Adjust add Firebase Messaging extension", MENGINE_APP_PLUGIN_FIREBASE_MESSAGING)
-
-if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
-    android.ext.extensions += 'org.Mengine.Plugin.Adjust.MengineAdjustExtensionFirebaseMessaging'
-
-    dependencies {
-        implementation project(path: ':plugins:FirebaseMessaging')
-
-        implementation 'com.google.firebase:firebase-messaging'
-    }
 }
 
 dependencies {

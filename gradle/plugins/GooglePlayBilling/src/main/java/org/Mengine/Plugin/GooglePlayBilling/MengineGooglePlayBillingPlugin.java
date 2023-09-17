@@ -24,6 +24,7 @@ import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFunctorBoolean;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
@@ -543,6 +544,14 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
                 MengineGooglePlayBillingPlugin.this.logMessage("billing successful consume: %s"
                     , billingResult.getDebugMessage()
                 );
+
+                String orderId = purchase.getOrderId();
+                int quantity = purchase.getQuantity();
+                boolean acknowledged = purchase.isAcknowledged();
+                String originalJson = purchase.getOriginalJson();
+
+                MengineApplication application = MengineGooglePlayBillingPlugin.this.getMengineApplication();
+                //application.onMenginePurchased(products);
 
                 MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingPurchasesOnConsumeSuccessful", products);
             }

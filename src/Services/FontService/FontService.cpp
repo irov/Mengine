@@ -49,6 +49,10 @@ namespace Mengine
 
         m_fonts.reserve( Engine_FontServiceReserveFonts );
 
+        uint32_t Engine_FontServiceReserveGlyphs = CONFIG_VALUE( "Engine", "FontServiceReserveGlyphs", 64U );
+
+        m_fontGlyphs.reserve( Engine_FontServiceReserveGlyphs );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -75,6 +79,8 @@ namespace Mengine
         }
 
         m_fonts.clear();
+
+        m_defaultFont = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     FontGlyphInterfacePtr FontService::createGlyph( const ConstString & _glyphName, const ConstString & _glyphType, const DocumentInterfacePtr & _doc )

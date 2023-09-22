@@ -76,7 +76,7 @@ public class MengineAnalyticsEventBuilder {
         return this;
     }
 
-    public long flush() {
+    public long logAndFlush() {
         long timestamp = this.log();
 
         m_application.onMengineAnalyticsFlush();

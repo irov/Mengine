@@ -48,6 +48,7 @@ def MENGINE_APP_PLUGIN_APPLOVIN = Utils.existAppPlugin(project, "MENGINE_APP_PLU
 def MENGINE_APP_PLUGIN_ADJUST = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_ADJUST")
 def MENGINE_APP_PLUGIN_HELPSHIFT = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_HELPSHIFT")
 def MENGINE_APP_PLUGIN_ONESIGNAL = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_ONESIGNAL")
+def MENGINE_APP_PLUGIN_LEANPLUM = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_LEANPLUM")
 def MENGINE_APP_PLUGIN_DATADOG = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_DATADOG")
 def MENGINE_APP_PLUGIN_DEVDEBUGGER = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_DEVDEBUGGER")
 
@@ -663,6 +664,16 @@ if (MENGINE_APP_PLUGIN_ONESIGNAL == true) {
 
     dependencies {
         implementation project(':plugins:OneSignal')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_LEANPLUM", MENGINE_APP_PLUGIN_LEANPLUM)
+
+if (MENGINE_APP_PLUGIN_LEANPLUM == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.Leanplum.MengineLeanplumPlugin'
+
+    dependencies {
+        implementation project(':plugins:Leanplum')
     }
 }
 

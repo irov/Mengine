@@ -79,6 +79,16 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    jboolean Mengine_JNI_ExistMengineApplication( void )
+    {
+        if( g_jclass_MengineApplication == nullptr )
+        {
+            return JNI_FALSE;
+        }
+
+        return JNI_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
     jclass Mengine_JNI_GetJClassMengineApplication( void )
     {
         return g_jclass_MengineApplication;
@@ -87,6 +97,16 @@ extern "C"
     jobject Mengine_JNI_GetJObjectMengineApplication( void )
     {
         return g_jobject_MengineApplication;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jboolean Mengine_JNI_ExistMengineActivity( void )
+    {
+        if( g_jclass_MengineActivity == nullptr )
+        {
+            return JNI_FALSE;
+        }
+
+        return JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     jclass Mengine_JNI_GetJClassMengineActivity( void )

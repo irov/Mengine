@@ -100,6 +100,7 @@ includeLibrary("MENGINE_APP_LIBRARY_SDL", ":libraries:SDL")
 / * - MENGINE_APP_PLUGIN_ADJUST [https://www.adjust.com]
 / * - MENGINE_APP_PLUGIN_HELPSHIFT [https://www.helpshift.com]
 / * - MENGINE_APP_PLUGIN_ONESIGNAL [https://onesignal.com]
+/ * - MENGINE_APP_PLUGIN_LEANPLUM [https://www.leanplum.com]
 / * - MENGINE_APP_PLUGIN_DATADOG [https://www.datadoghq.com]
 *****************************************************************************/
 
@@ -128,6 +129,7 @@ includePlugin("MENGINE_APP_PLUGIN_MAR", ":plugins:MAR")
 includePlugin("MENGINE_APP_PLUGIN_ADJUST", ":plugins:Adjust")
 includePlugin("MENGINE_APP_PLUGIN_HELPSHIFT", ":plugins:Helpshift")
 includePlugin("MENGINE_APP_PLUGIN_ONESIGNAL", ":plugins:OneSignal")
+includePlugin("MENGINE_APP_PLUGIN_LEANPLUM", ":plugins:Leanplum")
 includePlugin("MENGINE_APP_PLUGIN_DEVDEBUGGER", ":plugins:DevDebugger")
 includePlugin("MENGINE_APP_PLUGIN_DATADOG", ":plugins:DataDog")
 

@@ -1,6 +1,5 @@
 package org.Mengine.Base;
 
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.ContentResolver;
@@ -24,7 +23,6 @@ import org.libsdl.app.SDL;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -778,7 +776,7 @@ public class MengineApplication extends Application {
         this.sendEvent(MengineEvent.EVENT_SESSION_ID, m_sessionId);
 
         long app_init_start_timestamp = MengineAnalytics.buildEvent("mng_app_init_start")
-            .flush();
+            .logAndFlush();
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
@@ -792,14 +790,14 @@ public class MengineApplication extends Application {
 
                 long app_init_plugin_start_timestamp = MengineAnalytics.buildEvent("mng_app_init_plugin_start")
                     .addParameterString("name", pluginName)
-                    .flush();
+                    .logAndFlush();
 
                 l.onAppCreate(this);
 
                 MengineAnalytics.buildEvent("mng_app_init_plugin_completed")
                     .addParameterString("name", pluginName)
                     .addParameterLong("time", MengineUtils.getDurationTimestamp(app_init_plugin_start_timestamp))
-                    .flush();
+                    .logAndFlush();
             } catch (MenginePluginInvalidInitializeException e) {
                 this.invalidInitialize("onAppCreate plugin: %s exception: %s"
                     , l.getPluginName()
@@ -812,7 +810,7 @@ public class MengineApplication extends Application {
 
         MengineAnalytics.buildEvent("mng_app_init_completed")
             .addParameterLong("time", MengineUtils.getDurationTimestamp(app_init_start_timestamp))
-            .flush();
+            .logAndFlush();
     }
 
     @Override
@@ -910,6 +908,14 @@ public class MengineApplication extends Application {
 
         for (MenginePluginAdRevenueListener l : listeners) {
             l.onMengineAdRevenue(this, paid);
+        }
+    }
+
+    public void onMengineInAppProduct(Map<MengineInAppProductParam, Object> details) {
+        ArrayList<MenginePluginInAppPurchaseListener> listeners = this.getInAppAnalyticsListeners();
+
+        for (MenginePluginInAppPurchaseListener l : listeners) {
+            l.onMengineInAppProduct(this, details);
         }
     }
 

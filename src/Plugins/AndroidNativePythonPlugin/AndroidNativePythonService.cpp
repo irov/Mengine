@@ -115,13 +115,13 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
-                    ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AndroidNativePythonScriptEmbedding" ), Helper::makeFactorableUnique<AndroidNativePythonScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "AndroidNativePythonScriptEmbedding" ), Helper::makeFactorableUnique<AndroidNativePythonScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EJECTING, []()
         {
             SCRIPT_SERVICE()
-                    ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AndroidNativePythonScriptEmbedding" ) );
+                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "AndroidNativePythonScriptEmbedding" ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE, &AndroidNativePythonService::notifyChangeSceneComplete_, MENGINE_DOCUMENT_FACTORABLE );
@@ -152,20 +152,18 @@ namespace Mengine
         ANDROID_ENVIRONMENT_SERVICE()
             ->addAndroidEventation( m_eventation );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_TRUE )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-            return false;
+            MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+            ANDROID_ENVIRONMENT_SERVICE()
+                ->callVoidActivityMethod( jenv, "pythonInitializePlugins", "()V" );
+
+            ANDROID_ENVIRONMENT_SERVICE()
+                ->invokeAndroidEventations();
         }
-
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidActivityMethod( jenv, "pythonInitializePlugins", "()V" );
-
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->invokeAndroidEventations();
 
         return true;
     }
@@ -179,18 +177,16 @@ namespace Mengine
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        if( jenv == nullptr )
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        if( Mengine_JNI_ExistMengineActivity() == JNI_TRUE )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
+            ANDROID_ENVIRONMENT_SERVICE()
+                ->callVoidActivityMethod( jenv, "pythonFinalizePlugins", "()V" );
 
-            return;
+            ANDROID_ENVIRONMENT_SERVICE()
+                ->invokeAndroidEventations();
         }
-
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidActivityMethod( jenv, "pythonFinalizePlugins", "()V" );
-
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->invokeAndroidEventations();
 
         s_androidNativePythonService = nullptr;
 
@@ -226,12 +222,7 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        if( jenv == nullptr )
-        {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         LOGGER_INFO( "android", "call python plugin '%s' method '%s' [%s]"
             , _plugin.c_str()
@@ -283,8 +274,6 @@ namespace Mengine
                 PyObject * cb_arg = cb_args[index];
 
                 m_kernel->tuple_setitem( py_args, args_size + index, cb_arg );
-
-                m_kernel->decref( cb_arg );
             }
 
             const pybind::object & cb = desc.cb;
@@ -379,12 +368,7 @@ namespace Mengine
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        if( jenv == nullptr )
-        {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -422,12 +406,7 @@ namespace Mengine
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        if( jenv == nullptr )
-        {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -467,12 +446,7 @@ namespace Mengine
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        if( jenv == nullptr )
-        {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -512,12 +486,7 @@ namespace Mengine
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        if( jenv == nullptr )
-        {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
-            return 0ULL;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -557,12 +526,7 @@ namespace Mengine
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        if( jenv == nullptr )
-        {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
-            return 0.f;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -602,12 +566,7 @@ namespace Mengine
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        if( jenv == nullptr )
-        {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
-            return 0.0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -647,12 +606,7 @@ namespace Mengine
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        if( jenv == nullptr )
-        {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
-            return m_kernel->ret_none();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -700,12 +654,7 @@ namespace Mengine
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        if( jenv == nullptr )
-        {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
-            return m_kernel->ret_none();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jvalue jargs[32];
         jobject jfree[32];
@@ -919,14 +868,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::notifyChangeSceneComplete_( const ScenePtr & _scene )
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
             return;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         const ConstString & sceneName = _scene->getName();
 
@@ -935,34 +884,34 @@ namespace Mengine
         jstring sceneName_jvalue = jenv->NewStringUTF( sceneName_str );
 
         ANDROID_ENVIRONMENT_SERVICE()
-                ->callVoidActivityMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
+            ->callVoidActivityMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
 
         jenv->DeleteLocalRef( sceneName_jvalue );
 
         ANDROID_ENVIRONMENT_SERVICE()
-                ->invokeAndroidEventations();
+            ->invokeAndroidEventations();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::notifyRemoveSceneComplete_()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
             return;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jstring sceneName_jvalue = jenv->NewStringUTF( "" );
 
         ANDROID_ENVIRONMENT_SERVICE()
-                ->callVoidActivityMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
+            ->callVoidActivityMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
 
         jenv->DeleteLocalRef( sceneName_jvalue );
 
         ANDROID_ENVIRONMENT_SERVICE()
-                ->invokeAndroidEventations();
+            ->invokeAndroidEventations();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::waitAndroidSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
@@ -973,14 +922,14 @@ namespace Mengine
             , _args.repr().c_str()
         );
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
             return;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         AndroidSemaphoreListenerDesc desc;
         desc.name = _name;
@@ -994,7 +943,7 @@ namespace Mengine
         jstring name_jvalue = jenv->NewStringUTF( name_str );
 
         ANDROID_ENVIRONMENT_SERVICE()
-                ->callVoidActivityMethod( jenv, "waitAndroidSemaphore", "(Ljava/lang/String;)V", name_jvalue );
+            ->callVoidActivityMethod( jenv, "waitAndroidSemaphore", "(Ljava/lang/String;)V", name_jvalue );
 
         jenv->DeleteLocalRef( name_jvalue );
 

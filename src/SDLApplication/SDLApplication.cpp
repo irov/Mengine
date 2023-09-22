@@ -121,12 +121,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_ANDROID)
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        if( jenv == nullptr )
-        {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         Detail::addAndroidBuildConfigOptions( jenv, "MENGINE_APP_OPTIONS", arguments );
 #endif

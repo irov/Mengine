@@ -1,13 +1,13 @@
 package org.Mengine.Base;
 
 public class MengineRemoteMessageParam {
-    public final static MengineRemoteMessageParam REMOTEMESSAGE_ID = new MengineRemoteMessageParam("ID");
-    public final static MengineRemoteMessageParam REMOTEMESSAGE_FROM = new MengineRemoteMessageParam("FROM");
-    public final static MengineRemoteMessageParam REMOTEMESSAGE_TO = new MengineRemoteMessageParam("TO");
-    public final static MengineRemoteMessageParam REMOTEMESSAGE_COLLAPSE_KEY = new MengineRemoteMessageParam("COLLAPSE_KEY");
-    public final static MengineRemoteMessageParam REMOTEMESSAGE_DATA = new MengineRemoteMessageParam("DATA");
+    public final static MengineRemoteMessageParam REMOTEMESSAGE_ID = new MengineRemoteMessageParam("REMOTEMESSAGE_ID");
+    public final static MengineRemoteMessageParam REMOTEMESSAGE_FROM = new MengineRemoteMessageParam("REMOTEMESSAGE_FROM");
+    public final static MengineRemoteMessageParam REMOTEMESSAGE_TO = new MengineRemoteMessageParam("REMOTEMESSAGE_TO");
+    public final static MengineRemoteMessageParam REMOTEMESSAGE_COLLAPSE_KEY = new MengineRemoteMessageParam("REMOTEMESSAGE_COLLAPSE_KEY");
+    public final static MengineRemoteMessageParam REMOTEMESSAGE_DATA = new MengineRemoteMessageParam("REMOTEMESSAGE_DATA");
 
-    private String m_name;
+    private final String m_name;
 
     MengineRemoteMessageParam(String name) {
         m_name = name;

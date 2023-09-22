@@ -445,9 +445,32 @@ namespace Mengine
             _jenv->ExceptionClear();
 
             jclass jclassMengineApplication = Mengine_JNI_GetJClassMengineApplication();
-            jobject jobjectMengineApplication = Mengine_JNI_GetJObjectMengineApplication();
+
+            if( jclassMengineApplication == nullptr )
+            {
+                _jenv->DeleteLocalRef( jThrowable );
+
+                return;
+            }
 
             jmethodID jmethodID_MengineApplication_onMengineCaughtException = _jenv->GetMethodID( jclassMengineApplication, "onMengineCaughtException", "(Ljava/lang/Throwable;)V" );
+
+            if( jmethodID_MengineApplication_onMengineCaughtException == nullptr )
+            {
+                _jenv->DeleteLocalRef( jThrowable );
+
+                return;
+            }
+
+            jobject jobjectMengineApplication = Mengine_JNI_GetJObjectMengineApplication();
+
+            if( jobjectMengineApplication == nullptr )
+            {
+                _jenv->DeleteLocalRef( jThrowable );
+
+                return;
+            }
+
             _jenv->CallVoidMethod( jobjectMengineApplication, jmethodID_MengineApplication_onMengineCaughtException, jThrowable );
 
             _jenv->DeleteLocalRef( jThrowable );

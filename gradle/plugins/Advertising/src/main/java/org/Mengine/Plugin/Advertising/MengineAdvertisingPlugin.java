@@ -36,37 +36,39 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
         final Context context = application.getApplicationContext();
         final int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
 
-        if (resultCode == ConnectionResult.SUCCESS) {
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-
-            Future<AdvertisingIdClient.Info> future = executor.submit(() -> {
-                try {
-                    AdvertisingIdClient.Info adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
-
-                    return adInfo;
-                } catch (IOException e) {
-                    MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info IOException: %s"
-                        , e.getLocalizedMessage()
-                    );
-                } catch (IllegalStateException e) {
-                    MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info IllegalStateException: %s"
-                        , e.getLocalizedMessage()
-                    );
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info GooglePlayServicesNotAvailableException: %s"
-                        , e.getLocalizedMessage()
-                    );
-                } catch (GooglePlayServicesRepairableException e) {
-                    MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info GooglePlayServicesRepairableException: %s"
-                        , e.getLocalizedMessage()
-                    );
-                }
-
-                return null;
-            });
-
-            m_advertisingFuture = future;
+        if (resultCode != ConnectionResult.SUCCESS) {
+            return;
         }
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        Future<AdvertisingIdClient.Info> future = executor.submit(() -> {
+            try {
+                AdvertisingIdClient.Info adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+
+                return adInfo;
+            } catch (IOException e) {
+                MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info IOException: %s"
+                    , e.getLocalizedMessage()
+                );
+            } catch (IllegalStateException e) {
+                MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info IllegalStateException: %s"
+                    , e.getLocalizedMessage()
+                );
+            } catch (GooglePlayServicesNotAvailableException e) {
+                MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info GooglePlayServicesNotAvailableException: %s"
+                    , e.getLocalizedMessage()
+                );
+            } catch (GooglePlayServicesRepairableException e) {
+                MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info GooglePlayServicesRepairableException: %s"
+                    , e.getLocalizedMessage()
+                );
+            }
+
+            return null;
+        });
+
+        m_advertisingFuture = future;
     }
 
     public void onMengineInitializeBaseServices(MengineActivity activity) {

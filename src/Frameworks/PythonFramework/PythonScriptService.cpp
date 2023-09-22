@@ -352,21 +352,25 @@ namespace Mengine
             .def_property( "softspace", &PythonScriptLogger::getSoftspace, &PythonScriptLogger::setSoftspace )
             ;
 
-        m_loggerWarning = Helper::makeFactorableUnique<PythonScriptLogger>( MENGINE_DOCUMENT_FACTORABLE );
+        PythonScriptLoggerPtr loggerWarning = Helper::makeFactorableUnique<PythonScriptLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_loggerWarning->setColor( LCOLOR_RED | LCOLOR_GREEN );
-        m_loggerWarning->setLoggerLevel( LM_WARNING );
+        loggerWarning->setColor( LCOLOR_RED | LCOLOR_GREEN );
+        loggerWarning->setLoggerLevel( LM_MESSAGE );
 
-        pybind::object py_logger = pybind::make_object_t( m_kernel, m_loggerWarning );
+        pybind::object py_logger = pybind::make_object_t( m_kernel, loggerWarning );
         kernel->setStdOutHandle( py_logger.ptr() );
 
-        m_loggerError = Helper::makeFactorableUnique<PythonScriptLogger>( MENGINE_DOCUMENT_FACTORABLE );
+        m_loggerWarning = loggerWarning;
 
-        m_loggerError->setColor( LCOLOR_RED );
-        m_loggerError->setLoggerLevel( LM_ERROR );
+        PythonScriptLoggerPtr loggerError = Helper::makeFactorableUnique<PythonScriptLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
-        pybind::object py_loggerError = pybind::make_object_t( m_kernel, m_loggerError );
+        loggerError->setColor( LCOLOR_RED );
+        loggerError->setLoggerLevel( LM_WARNING );
+
+        pybind::object py_loggerError = pybind::make_object_t( m_kernel, loggerError );
         kernel->setStdErrorHandle( py_loggerError.ptr() );
+
+        m_loggerError = loggerError;
 
 #if defined(MENGINE_DEBUG)
         pybind::observer_bind_call * bind_call = Helper::newT<Detail::My_observer_bind_call>( this );

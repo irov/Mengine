@@ -75,7 +75,7 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin implements Me
         flow.addOnCompleteListener(task -> {
             MengineGoogleInAppReviewsPlugin.this.logMessage("Launching the review completed");
 
-            this.buildEvent("mng_inapp_review_completed")
+            MengineGoogleInAppReviewsPlugin.this.buildEvent("mng_inapp_review_completed")
                 .log();
 
             MengineGoogleInAppReviewsPlugin.this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewCompleted");

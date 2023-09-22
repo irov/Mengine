@@ -1,5 +1,7 @@
 package org.Mengine.Base;
 
+import androidx.annotation.Size;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -39,49 +41,49 @@ public class MengineAnalytics {
         }
     }
 
-    static public void addContextParameterBoolean(String key, boolean value) {
+    static public void addContextParameterBoolean(@Size(min = 1L,max = 40L) String key, boolean value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
         MengineAnalytics.m_context.put(key, value);
     }
 
-    static public void addContextParameterString(String key, String value) {
+    static public void addContextParameterString(@Size(min = 1L,max = 40L) String key, @Size(min = 1L,max = 100L) String value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
         MengineAnalytics.m_context.put(key, value);
     }
 
-    static public void addContextParameterLong(String key, long value) {
+    static public void addContextParameterLong(@Size(min = 1L,max = 40L) String key, long value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
         MengineAnalytics.m_context.put(key, value);
     }
 
-    static public void addContextParameterDouble(String key, double value) {
+    static public void addContextParameterDouble(@Size(min = 1L,max = 40L) String key, double value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
         MengineAnalytics.m_context.put(key, value);
     }
 
-    static public void addContextGetterParameterString(String key, MengineAnalyticsGetter<String> value) {
+    static public void addContextGetterParameterString(@Size(min = 1L,max = 40L) String key, MengineAnalyticsGetter<String> value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
         MengineAnalytics.m_getter.put(key, value);
     }
 
-    static public void addContextGetterParameterLong(String key, MengineAnalyticsGetter<Long> value) {
+    static public void addContextGetterParameterLong(@Size(min = 1L,max = 40L) String key, MengineAnalyticsGetter<Long> value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
         MengineAnalytics.m_getter.put(key, value);
     }
 
-    static public void addContextGetterParameterDouble(String key, MengineAnalyticsGetter<Double> value) {
+    static public void addContextGetterParameterDouble(@Size(min = 1L,max = 40L) String key, MengineAnalyticsGetter<Double> value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
@@ -99,7 +101,7 @@ public class MengineAnalytics {
         }
     }
 
-    static public MengineAnalyticsEventBuilder buildEvent(String name) {
+    static public MengineAnalyticsEventBuilder buildEvent(@Size(min = 1L,max = 40L) String name) {
         Map<String, Object> parameters = new HashMap<>();
 
         MengineAnalytics.collapseGetter(parameters);

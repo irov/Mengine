@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import androidx.annotation.Size;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -120,7 +122,7 @@ public class MenginePlugin implements MenginePluginInterface {
         throw new AssertionError("[" + m_pluginName + "] " + msg);
     }
 
-    public MengineAnalyticsEventBuilder buildEvent(String name) {
+    public MengineAnalyticsEventBuilder buildEvent(@Size(min = 1L,max = 40L) String name) {
         MengineAnalyticsEventBuilder eventBuilder = MengineAnalytics.buildEvent(name);
 
         return eventBuilder;

@@ -1,13 +1,13 @@
 package org.Mengine.Base;
 
 public class MengineEvent {
-    public final static MengineEvent EVENT_GDPR_PASS = new MengineEvent("GDPR");
-    public final static MengineEvent EVENT_PUSH_TOKEN = new MengineEvent("PushToken");
-    public final static MengineEvent EVENT_ADVERTISING_ID = new MengineEvent("AdvertisingId");
-    public final static MengineEvent EVENT_SESSION_ID = new MengineEvent("SessionId");
-    public final static MengineEvent EVENT_REMOTE_CONFIG_FETCH = new MengineEvent("RemoteConfigFetch");
+    public final static MengineEvent EVENT_GDPR_PASS = new MengineEvent("EVENT_GDPR_PASS");
+    public final static MengineEvent EVENT_PUSH_TOKEN = new MengineEvent("EVENT_PUSH_TOKEN");
+    public final static MengineEvent EVENT_ADVERTISING_ID = new MengineEvent("EVENT_ADVERTISING_ID");
+    public final static MengineEvent EVENT_SESSION_ID = new MengineEvent("EVENT_SESSION_ID");
+    public final static MengineEvent EVENT_REMOTE_CONFIG_FETCH = new MengineEvent("EVENT_REMOTE_CONFIG_FETCH");
 
-    private String m_name;
+    private final String m_name;
 
     MengineEvent(String name) {
         m_name = name;

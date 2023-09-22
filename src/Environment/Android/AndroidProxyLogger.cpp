@@ -5,6 +5,7 @@
 #include "Environment/Android/AndroidEnv.h"
 
 #include "Kernel/AssertionUtf8.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/LoggerHelper.h"
 #include "Kernel/Error.h"
@@ -44,14 +45,14 @@ namespace Mengine
             return;
         }
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
             return;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jstring category_jstring = jenv->NewStringUTF( _message.category );
 
@@ -69,7 +70,7 @@ namespace Mengine
         jstring data_jstring = jenv->NewStringUTF( msg );
 
         ANDROID_ENVIRONMENT_SERVICE()
-                ->callVoidApplicationMethod( jenv, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V", category_jstring, level, filter, color, data_jstring );
+            ->callVoidApplicationMethod( jenv, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V", category_jstring, level, filter, color, data_jstring );
 
         jenv->DeleteLocalRef( category_jstring );
         jenv->DeleteLocalRef( data_jstring );

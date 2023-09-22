@@ -1,9 +1,9 @@
 package org.Mengine.Base;
 
 public class MengineAdMediation {
-    public final static MengineAdMediation ADMEDIATION_APPLOVINMAX = new MengineAdMediation("APPLOVINMAX");
+    public final static MengineAdMediation ADMEDIATION_APPLOVINMAX = new MengineAdMediation("ADMEDIATION_APPLOVINMAX");
 
-    private String m_name;
+    private final String m_name;
 
     MengineAdMediation(String name) {
         m_name = name;

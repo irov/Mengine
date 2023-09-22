@@ -48,9 +48,6 @@ public class MengineActivity extends SDLActivity {
     private boolean m_initializePython;
     private boolean m_destroy;
 
-    private Map<Integer, InputStream> m_openFiles;
-    private int m_fileEnumerator;
-
     private Map<String, MengineSemaphore> m_semaphores;
 
     private Map<String, Integer> m_requestCodes;
@@ -171,6 +168,10 @@ public class MengineActivity extends SDLActivity {
     }
 
     public boolean hasMetaData(String name) {
+        if (m_destroy == true) {
+            return false;
+        }
+
         MengineApplication application = this.getMengineApplication();
 
         boolean result = application.hasMetaData(name);
@@ -179,6 +180,10 @@ public class MengineActivity extends SDLActivity {
     }
 
     public String getMetaDataString(String name) {
+        if (m_destroy == true) {
+            return null;
+        }
+
         MengineApplication application = this.getMengineApplication();
 
         String value = application.getMetaDataString(name);
@@ -187,6 +192,10 @@ public class MengineActivity extends SDLActivity {
     }
 
     public boolean getMetaDataBoolean(String name, boolean d) {
+        if (m_destroy == true) {
+            return d;
+        }
+
         MengineApplication application = this.getMengineApplication();
 
         boolean value = application.getMetaDataBoolean(name, d);
@@ -195,6 +204,10 @@ public class MengineActivity extends SDLActivity {
     }
 
     public int getMetaDataInteger(String name, int d) {
+        if (m_destroy == true) {
+            return d;
+        }
+
         MengineApplication application = this.getMengineApplication();
 
         int value = application.getMetaDataInteger(name, d);
@@ -220,9 +233,6 @@ public class MengineActivity extends SDLActivity {
         m_initializePython = false;
         m_destroy = false;
 
-        m_openFiles = new HashMap<>();
-        m_fileEnumerator = 0;
-
         m_semaphores = new HashMap<>();
         m_requestCodes = new HashMap<>();
 
@@ -231,7 +241,7 @@ public class MengineActivity extends SDLActivity {
         this.setState("activity.init", "start");
 
         long activity_init_start_timestamp = MengineAnalytics.buildEvent("mng_activity_init_start")
-            .flush();
+            .logAndFlush();
 
         super.onCreate(savedInstanceState);
 
@@ -241,6 +251,9 @@ public class MengineActivity extends SDLActivity {
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onCreate: broken libraries");
+
+            MengineAnalytics.buildEvent("mng_activity_init_broken_libraries")
+                .logAndFlush();
 
             return;
         }
@@ -262,9 +275,9 @@ public class MengineActivity extends SDLActivity {
                 , pluginName
             );
 
-            long plugin_init_start_timestamp = MengineAnalytics.buildEvent("mng_activity_init_plugin_start")
+            long plugin_init_plugin_start_timestamp = MengineAnalytics.buildEvent("mng_activity_init_plugin_start")
                 .addParameterString("name", pluginName)
-                .flush();
+                .logAndFlush();
 
             try {
                 l.onCreate(this, savedInstanceState);
@@ -279,8 +292,8 @@ public class MengineActivity extends SDLActivity {
 
             MengineAnalytics.buildEvent("mng_activity_init_plugin_completed")
                 .addParameterString("name", pluginName)
-                .addParameterLong("time", MengineUtils.getDurationTimestamp(plugin_init_start_timestamp))
-                .flush();
+                .addParameterLong("time", MengineUtils.getDurationTimestamp(plugin_init_plugin_start_timestamp))
+                .logAndFlush();
         }
 
         this.setState("activity.init", "plugin_create");
@@ -306,7 +319,7 @@ public class MengineActivity extends SDLActivity {
 
         MengineAnalytics.buildEvent("mng_activity_init_completed")
             .addParameterLong("time", MengineUtils.getDurationTimestamp(activity_init_start_timestamp))
-            .flush();
+            .logAndFlush();
 
         this.setState("activity.lifecycle", "created");
     }
@@ -562,7 +575,6 @@ public class MengineActivity extends SDLActivity {
             p.setActivity(null);
         }
 
-        m_openFiles = null;
         m_semaphores = null;
         m_requestCodes = null;
 

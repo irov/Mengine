@@ -366,12 +366,7 @@ namespace Mengine
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        if( jenv == nullptr )
-        {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         for( IntrusiveListConstStringHolderJString::iterator
              it = m_holdersJString.begin();
@@ -395,14 +390,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidEnvironmentService::openUrlInDefaultBrowser( const Char * _url )
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL( "invalid get jenv" );
-
             return false;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jstring jurl = jenv->NewStringUTF( _url );
 
@@ -415,14 +410,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidEnvironmentService::openMail( const Char * _email, const Char * _subject, const Char * _body )
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL( "invalid get jenv" );
-
             return false;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jstring jemail = jenv->NewStringUTF( _email );
         jstring jsubject = jenv->NewStringUTF( _subject );
@@ -437,25 +432,20 @@ namespace Mengine
         return jresult;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass AndroidEnvironmentService::getJClass( JNIEnv * _jenv, const Char * _signature ) const
+    void AndroidEnvironmentService::callVoidApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
     {
-        jclass clazz = _jenv->FindClass( _signature );
+        jmethodID jmethodId = this->getApplicationMethodID( _jenv, _name, _signature );
 
-        return clazz;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jmethodID AndroidEnvironmentService::getActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const
-    {
-        jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+        jobject jobjectMengineApplication = Mengine_JNI_GetJObjectMengineApplication();
 
-        jmethodID jmethodID_function = _jenv->GetMethodID( jclassMengineActivity, _name, _signature );
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _signature );
 
-        MENGINE_ASSERTION_FATAL( jmethodID_function != nullptr, "invalid get android activity method '%s' with signature '%s'"
-            , _name
-            , _signature
-        );
+        _jenv->CallVoidMethodV( jobjectMengineApplication, jmethodId, args );
 
-        return jmethodID_function;
+        MENGINE_VA_LIST_END( args );
+
+        Helper::jEnvExceptionCheck( _jenv );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::callVoidActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
@@ -546,6 +536,13 @@ namespace Mengine
         return jresult;
     }
     //////////////////////////////////////////////////////////////////////////
+    jclass AndroidEnvironmentService::getJClass( JNIEnv * _jenv, const Char * _signature ) const
+    {
+        jclass clazz = _jenv->FindClass( _signature );
+
+        return clazz;
+    }
+    //////////////////////////////////////////////////////////////////////////
     jmethodID AndroidEnvironmentService::getApplicationMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const
     {
         jclass jclassMengineApplication = Mengine_JNI_GetJClassMengineApplication();
@@ -560,20 +557,18 @@ namespace Mengine
         return jmethodID_function;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::callVoidApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
+    jmethodID AndroidEnvironmentService::getActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const
     {
-        jmethodID jmethodId = this->getApplicationMethodID( _jenv, _name, _signature );
+        jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
 
-        jobject jobjectMengineApplication = Mengine_JNI_GetJObjectMengineApplication();
+        jmethodID jmethodID_function = _jenv->GetMethodID( jclassMengineActivity, _name, _signature );
 
-        MENGINE_VA_LIST_TYPE args;
-        MENGINE_VA_LIST_START( args, _signature );
+        MENGINE_ASSERTION_FATAL( jmethodID_function != nullptr, "invalid get android activity method '%s' with signature '%s'"
+        	, _name
+        	, _signature
+        );
 
-        _jenv->CallVoidMethodV( jobjectMengineApplication, jmethodId, args );
-
-        MENGINE_VA_LIST_END( args );
-
-        Helper::jEnvExceptionCheck( _jenv );
+        return jmethodID_function;
     }
     //////////////////////////////////////////////////////////////////////////
     jobject AndroidEnvironmentService::callObjectApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
@@ -596,14 +591,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidEnvironmentService::getAndroidId( Char * _androidId, size_t _capacity ) const
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL("invalid get jenv");
-
             return 0;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jstring jReturnValue = (jstring)this->callObjectApplicationMethod( jenv, "getAndroidId", "()Ljava/lang/String;" );
 
@@ -620,14 +615,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidEnvironmentService::getDeviceName( Char * _deviceName, size_t _capacity ) const
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL( "invalid get jenv" );
-
             return 0;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jstring jReturnValue = (jstring)this->callObjectApplicationMethod( jenv, "getDeviceName", "()Ljava/lang/String;" );
 
@@ -644,14 +639,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidEnvironmentService::getDeviceLanguage( Char * _deviceLanguage, size_t _capacity ) const
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL( "invalid get jenv" );
-
             return 0;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jstring jReturnValue = (jstring) this->callObjectApplicationMethod(jenv, "getDeviceLanguage", "()Ljava/lang/String;" );
 
@@ -668,14 +663,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidEnvironmentService::getAndroidPackageName( Char * _packageName, size_t _capacity ) const
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL( "invalid get jenv" );
-
             return 0;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jstring jReturnValue = (jstring) this->callObjectApplicationMethod( jenv, "getPackageName", "()Ljava/lang/String;" );
 
@@ -735,14 +730,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL( "invalid get jenv" );
-
             return;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         EAnalyticsEventType eventType = _event->getType();
 
@@ -834,28 +829,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::onAnalyticsFlush()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL( "invalid get jenv" );
-
             return;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         this->callVoidApplicationMethod( jenv, "onMengineAnalyticsFlush", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::notifyPlatformRun_()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL( "invalid get jenv" );
-
             return;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         this->callVoidActivityMethod( jenv, "onMenginePlatformRun", "()V" );
 
@@ -864,14 +859,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::notifyPlatformStop_()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL( "invalid get jenv" );
-
             return;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         this->callVoidActivityMethod( jenv, "onMenginePlatformStop", "()V" );
 
@@ -880,24 +875,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::notifyApplicationBeginUpdate_()
     {
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        {
+            return;
+        }
+
         m_androidEventationHub->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::notifyApplicationEndUpdate_()
     {
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        {
+            return;
+        }
+
         m_androidEventationHub->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::notifyBootstrapperInitializeBaseServices_()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL( "invalid get jenv" );
-
             return;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         this->callVoidActivityMethod( jenv, "onMengineInitializeBaseServices", "()V" );
 
@@ -906,14 +911,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::notifyBootstrapperCreateApplication_()
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        if( jenv == nullptr )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            MENGINE_ERROR_FATAL( "invalid get jenv" );
-
             return;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         this->callVoidActivityMethod( jenv, "onMengineCreateApplication", "()V" );
 

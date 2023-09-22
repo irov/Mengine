@@ -8,5 +8,6 @@ public interface MenginePluginInAppPurchaseListener extends MenginePluginInterfa
     MengineInAppPurchaseParam INAPPPURCHASE_ACKNOWLEDGED = MengineInAppPurchaseParam.INAPPPURCHASE_ACKNOWLEDGED;
     MengineInAppPurchaseParam INAPPPURCHASE_TOKEN = MengineInAppPurchaseParam.INAPPPURCHASE_TOKEN;
 
+    void onMengineInAppProduct(MengineApplication application, Map<MengineInAppProductParam, Object> product);
     void onMengineInAppPurchase(MengineApplication application, Map<MengineInAppPurchaseParam, Object> purchase);
 }

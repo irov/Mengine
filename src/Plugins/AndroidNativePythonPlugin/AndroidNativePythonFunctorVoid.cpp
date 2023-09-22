@@ -6,6 +6,7 @@
 #include "Environment/Android/AndroidHelper.h"
 
 #include "Kernel/Error.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/Char.h"
 
@@ -24,12 +25,7 @@ namespace Mengine
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        if( jenv == nullptr )
-        {
-            MENGINE_ERROR_FATAL( "invalid get jenv" );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jobject functor = this->getJavaFunctor();
 

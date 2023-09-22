@@ -22,10 +22,14 @@ import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFunctorBoolean;
+import org.Mengine.Base.MengineInAppProductParam;
+import org.Mengine.Base.MengineInAppPurchaseParam;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
@@ -196,7 +200,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
             }
         };
 
-        Context context = activity.getBaseContext();
+        Context context = activity.getApplicationContext();
 
         m_billingClient = BillingClient.newBuilder(context)
             .setListener(purchasesUpdatedListener)
@@ -304,6 +308,34 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
                     return;
                 }
 
+                for(ProductDetails details : productsDetails) {
+                    Map<MengineInAppProductParam, Object> product = new HashMap<>();
+
+                    String productId = details.getProductId();
+                    String productType = details.getProductType();
+                    String name = details.getName();
+                    String title = details.getTitle();
+                    String description = details.getDescription();
+
+                    product.put(MengineInAppProductParam.INAPPPRODUCT_ID, productId);
+                    product.put(MengineInAppProductParam.INAPPPRODUCT_TYPE, productType);
+                    product.put(MengineInAppProductParam.INAPPPRODUCT_NAME, name);
+                    product.put(MengineInAppProductParam.INAPPPRODUCT_TITLE, title);
+                    product.put(MengineInAppProductParam.INAPPPRODUCT_DESCRIPTION, description);
+
+                    ProductDetails.OneTimePurchaseOfferDetails oneTimePurchaseOfferDetails = details.getOneTimePurchaseOfferDetails();
+                    long priceAmountMicros = oneTimePurchaseOfferDetails.getPriceAmountMicros();
+                    String formattedPrice = oneTimePurchaseOfferDetails.getFormattedPrice();
+                    String priceCurrencyCode = oneTimePurchaseOfferDetails.getPriceCurrencyCode();
+
+                    product.put(MengineInAppProductParam.INAPPPRODUCT_PRICE_AMOUNT_MICROS, priceAmountMicros);
+                    product.put(MengineInAppProductParam.INAPPPRODUCT_PRICE_FORMATTED, formattedPrice);
+                    product.put(MengineInAppProductParam.INAPPPRODUCT_PRICE_CURRENCY_CODE, priceCurrencyCode);
+
+                    MengineApplication application = getMengineApplication();
+                    application.onMengineInAppProduct(product);
+                }
+
                 m_productsDetails.clear();
                 m_productsDetails.addAll(productsDetails);
 
@@ -362,6 +394,9 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
 
         this.logMessage("queryPurchases");
 
+        this.buildEvent("mng_billing_query_purchases")
+            .log();
+
         QueryPurchasesParams purchasesParams = QueryPurchasesParams.newBuilder()
             .setProductType(BillingClient.ProductType.INAPP)
             .build();
@@ -377,6 +412,10 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
                         , billingResult.getDebugMessage()
                     );
 
+                    MengineGooglePlayBillingPlugin.this.buildEvent("mng_billing_purchases_failed")
+                        .addParameterLong("error_code", responseCode)
+                        .log();
+
                     MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingQueryPurchasesFailed");
 
                     return;
@@ -386,6 +425,9 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
                     , billingResult.getDebugMessage()
                     , purchases
                 );
+
+                MengineGooglePlayBillingPlugin.this.buildEvent("mng_billing_purchases_successful")
+                    .log();
 
                 for (Purchase purchase : purchases) {
                     MengineGooglePlayBillingPlugin.this.handlePurchase(purchase);
@@ -417,10 +459,6 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
             return false;
         }
 
-        this.logMessage("buyInApp productId: %s"
-            , productId
-        );
-
         ProductDetails product = this.getProductDetails(productId);
 
         if (product == null) {
@@ -430,6 +468,14 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
 
             return false;
         }
+
+        this.logMessage("buyInApp productId: %s"
+            , productId
+        );
+
+        this.buildEvent("mng_billing_buy_launch_flow")
+            .addParameterString("product_id", productId)
+            .log();
 
         List<BillingFlowParams.ProductDetailsParams> productDetailsParamsList = new ArrayList<>();
 
@@ -455,15 +501,23 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
                 , billingResult.getDebugMessage()
             );
 
+            MengineGooglePlayBillingPlugin.this.buildEvent("mng_billing_buy_failed")
+                .addParameterString("product_id", productId)
+                .addParameterLong("error_code", responseCode)
+                .log();
+
             this.pythonCall("onGooglePlayBillingBuyInAppFailed", productId);
 
             return true;
         }
 
-        this.logMessage("buy InApp successful productId: %s message: %s"
+        this.logMessage("buy InApp successful productId: %s"
             , productId
-            , billingResult.getDebugMessage()
         );
+
+        MengineGooglePlayBillingPlugin.this.buildEvent("mng_billing_buy_successful")
+            .addParameterString("product_id", productId)
+            .log();
 
         this.pythonCall("onGooglePlayBillingBuyInAppSuccessful", productId);
 
@@ -486,16 +540,16 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
             @Override
             public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
                 MengineGooglePlayBillingPlugin.this.logMessage("acknowledgePurchase responseCode: %d debugMessage: %s"
-                        , billingResult.getResponseCode()
-                        , billingResult.getDebugMessage()
+                    , billingResult.getResponseCode()
+                    , billingResult.getDebugMessage()
                 );
 
                 int responseCode = billingResult.getResponseCode();
 
                 if (responseCode != BillingClient.BillingResponseCode.OK) {
                     MengineGooglePlayBillingPlugin.this.logError("[ERROR] billing invalid acknowledge purchase code: %d message: %s"
-                            , responseCode
-                            , billingResult.getDebugMessage()
+                        , responseCode
+                        , billingResult.getDebugMessage()
                     );
 
                     MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingPurchasesAcknowledgeFailed", products);
@@ -504,7 +558,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
                 }
 
                 MengineGooglePlayBillingPlugin.this.logMessage("billing success acknowledge purchase: %s"
-                        , billingResult.getDebugMessage()
+                    , billingResult.getDebugMessage()
                 );
 
                 MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingPurchasesAcknowledgeSuccessful", products);
@@ -550,8 +604,16 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
                 boolean acknowledged = purchase.isAcknowledged();
                 String originalJson = purchase.getOriginalJson();
 
+                Map<MengineInAppPurchaseParam, Object> purchase = new HashMap<>();
+                purchase.put(MengineInAppPurchaseParam.INAPPPURCHASE_TRANSACTION, orderId);
+                purchase.put(MengineInAppPurchaseParam.INAPPPURCHASE_PRODUCTS, products);
+                purchase.put(MengineInAppPurchaseParam.INAPPPURCHASE_QUANTITY, quantity);
+                purchase.put(MengineInAppPurchaseParam.INAPPPURCHASE_ACKNOWLEDGED, acknowledged);
+                purchase.put(MengineInAppPurchaseParam.INAPPPURCHASE_TOKEN, purchaseToken);
+                purchase.put(MengineInAppPurchaseParam.INAPPPURCHASE_DATA, originalJson);
+
                 MengineApplication application = MengineGooglePlayBillingPlugin.this.getMengineApplication();
-                //application.onMenginePurchased(products);
+                application.onMengineInAppPurchase(purchase);
 
                 MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingPurchasesOnConsumeSuccessful", products);
             }

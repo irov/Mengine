@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.Size;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -313,7 +314,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params);
     }
 
-    public void setUserProperty(@NonNull String name, @NonNull String value) {
+    public void setUserProperty(@NonNull @Size(min = 1L,max = 24L) String name, @NonNull @Size(min = 1L,max = 36L) String value) {
         if (m_firebaseAnalytics == null) {
             return;
         }
@@ -326,7 +327,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         m_firebaseAnalytics.setUserProperty(name, value);
     }
 
-    public void logEvent(@NonNull String eventName, @Nullable Bundle params) {
+    public void logEvent(@NonNull @Size(min = 1L,max = 40L) String eventName, @Nullable Bundle params) {
         if (m_firebaseAnalytics == null) {
             return;
         }

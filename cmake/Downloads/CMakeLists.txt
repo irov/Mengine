@@ -9,7 +9,7 @@ SET(THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies)
 
 include(${MENGINE_REPOSITORY}/cmake/download_template.cmake)
 
-DOWNLOAD_URL_HASH(boost https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.7z SHA256 e72ff100482d4b371327b6c550dbd244d49c0186860ccc3b8c093dd621537e39)
+DOWNLOAD_URL_HASH(boost https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.7z SHA256 22ee9dcf3f1fb58f585772f70c69113a4077b92adeac58b643b3543b78633a16)
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image.h stb_image.h)
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image_write.h stb_image_write.h)
 

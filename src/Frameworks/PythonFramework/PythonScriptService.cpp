@@ -631,6 +631,7 @@ namespace Mengine
         m_moduleMengine = nullptr;
 
         m_kernel->set_current_module( nullptr );
+        m_kernel->collect();
 
         m_bootstrapperModules.clear();
         m_prototypies.clear();

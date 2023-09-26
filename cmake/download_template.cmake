@@ -54,7 +54,7 @@ endmacro()
 
 macro(DOWNLOAD_URL_FOLDER NAME URL FOLDER)
 	if(NOT EXISTS ${THIRDPARTY_DIR}/${FOLDER})
-	    MESSAGE("Download ${NAME}: ${URL}")		
+	    MESSAGE("Download ${NAME}: ${URL}")
         ExternalProject_Add(${NAME}_download PREFIX ${NAME}
             SOURCE_DIR ${THIRDPARTY_DIR}/${FOLDER}
         

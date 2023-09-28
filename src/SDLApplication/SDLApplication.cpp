@@ -381,6 +381,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()
     {
+        if( SERVICE_PROVIDER_EXIST() == false )
+        {
+            return;
+        }
+        
         if( SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true )
         {
             PLATFORM_SERVICE()

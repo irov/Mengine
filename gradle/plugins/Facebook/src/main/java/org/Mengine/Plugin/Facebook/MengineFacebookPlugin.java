@@ -249,104 +249,63 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         if (m_logger == null) {
             return;
         }
 
-        switch (eventType) {
-            case EAET_CUSTOM: {
-                Bundle params = new Bundle();
+        Bundle params = new Bundle();
 
-                for (Map.Entry<String, Object> entry : bases.entrySet()) {
-                    String name = entry.getKey();
-                    Object value = entry.getValue();
+        for (Map.Entry<String, Object> entry : bases.entrySet()) {
+            String name = entry.getKey();
+            Object value = entry.getValue();
 
-                    if (value instanceof Boolean) {
-                        params.putBoolean(name, (Boolean)value);
-                    } else if (value instanceof Long) {
-                        params.putLong(name, (Long)value);
-                    } else if (value instanceof Double) {
-                        params.putDouble(name, (Double)value);
-                    } else if (value instanceof String) {
-                        params.putString(name, (String)value);
-                    } else {
-                        this.logError("[ERROR] unsupported parameter: %s class: %s"
-                            , value
-                            , value.getClass()
-                        );
-
-                        return;
-                    }
-                }
-
-                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-                    String name = entry.getKey();
-                    Object value = entry.getValue();
-
-                    if (value instanceof Boolean) {
-                        params.putBoolean(name, (Boolean)value);
-                    } else if (value instanceof Long) {
-                        params.putLong(name, (Long)value);
-                    } else if (value instanceof Double) {
-                        params.putDouble(name, (Double)value);
-                    } else if (value instanceof String) {
-                        params.putString(name, (String)value);
-                    } else {
-                        this.logError("[ERROR] unsupported parameter: %s class: %s"
-                            , value
-                            , value.getClass()
-                        );
-
-                        return;
-                    }
-                }
-
-                m_logger.logEvent(eventName, params);
-            } break;
-            case EAET_EARN_VIRTUAL_CURRENCY: {
-                //ToDo EAET_EARN_VIRTUAL_CURRENCY
-            } break;
-            case EAET_SPEND_VIRTUAL_CURRENCY: {
-                //ToDo EAET_SPEND_VIRTUAL_CURRENCY
-            } break;
-            case EAET_UNLOCK_ACHIEVEMENT: {
-                Bundle params = new Bundle();
-
-                String achievementId = (String)parameters.get("@ACHIEVEMENT_ID");
-
-                params.putString(AppEventsConstants.EVENT_PARAM_DESCRIPTION, achievementId);
-
-                m_logger.logEvent(AppEventsConstants.EVENT_NAME_UNLOCKED_ACHIEVEMENT, params);
-            } break;
-            case EAET_LEVEL_UP: {
-                //ToDo EAET_LEVEL_UP
-            }break;
-            case EAET_LEVEL_START: {
-                //ToDo EAET_LEVEL_START
-            }break;
-            case EAET_LEVEL_END: {
-                //ToDo EAET_LEVEL_END
-            }break;
-            case EAET_SELECT_ITEM: {
-                //ToDo EAET_SELECT_ITEM
-            }break;
-            case EAET_TUTORIAL_BEGIN: {
-                //ToDo EAET_TUTORIAL_BEGIN
-            }break;
-            case EAET_TUTORIAL_COMPLETE: {
-                //ToDo EAET_TUTORIAL_COMPLETE
-            }break;
-            case EAET_SCREEN_VIEW: {
-                //ToDo EAET_SCREEN_VIEW
-            }break;
-            default: {
-                this.logError("[ERROR] unknown event type: %d name: %s"
-                	, eventType
-                    , eventName
+            if (value instanceof Boolean) {
+                params.putBoolean(name, (Boolean)value);
+            } else if (value instanceof Long) {
+                params.putLong(name, (Long)value);
+            } else if (value instanceof Double) {
+                params.putDouble(name, (Double)value);
+            } else if (value instanceof String) {
+                params.putString(name, (String)value);
+            } else {
+                this.logError("[ERROR] unsupported parameter: %s class: %s"
+                    , value
+                    , value.getClass()
                 );
-            } break;
+
+                return;
+            }
         }
+
+        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+            String name = entry.getKey();
+            Object value = entry.getValue();
+
+            if (value instanceof Boolean) {
+                params.putBoolean(name, (Boolean)value);
+            } else if (value instanceof Long) {
+                params.putLong(name, (Long)value);
+            } else if (value instanceof Double) {
+                params.putDouble(name, (Double)value);
+            } else if (value instanceof String) {
+                params.putString(name, (String)value);
+            } else {
+                this.logError("[ERROR] unsupported parameter: %s class: %s"
+                    , value
+                    , value.getClass()
+                );
+
+                return;
+            }
+        }
+
+        m_logger.logEvent(eventName, params);
+    }
+
+    @Override
+    public void onMengineAnalyticsScreenView(MengineApplication application, String screenType, String screenName) {
+        //ToDo
     }
 
     @Override

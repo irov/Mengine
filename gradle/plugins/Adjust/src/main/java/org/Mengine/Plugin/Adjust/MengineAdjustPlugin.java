@@ -103,7 +103,12 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+        //ToDo
+    }
+
+    @Override
+    public void onMengineAnalyticsScreenView(MengineApplication application, String screenType, String screenName) {
         //ToDo
     }
 

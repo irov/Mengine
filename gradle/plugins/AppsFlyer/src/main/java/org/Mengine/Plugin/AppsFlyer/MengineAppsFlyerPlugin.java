@@ -68,71 +68,36 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
-        switch (eventType) {
-            case EAET_CUSTOM: {
-                Map<String, Object> params = new HashMap<>();
+    public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+        Map<String, Object> params = new HashMap<>();
 
-                params.putAll(bases);
-                params.putAll(parameters);
+        params.putAll(bases);
+        params.putAll(parameters);
 
-                Context context = application.getApplicationContext();
+        Context context = application.getApplicationContext();
 
-                AppsFlyerLib appsFlyer = AppsFlyerLib.getInstance();
-                appsFlyer.logEvent(context, eventName, params, new AppsFlyerRequestListener() {
-                        @Override
-                        public void onSuccess() {
-                            //Empty
-                        }
+        AppsFlyerLib appsFlyer = AppsFlyerLib.getInstance();
+        appsFlyer.logEvent(context, eventName, params, new AppsFlyerRequestListener() {
+                @Override
+                public void onSuccess() {
+                    //Empty
+                }
 
-                        @Override
-                        public void onError(int errorCode, String errorMessage) {
-                            MengineAppsFlyerPlugin.this.logInfo("logEvent [CUSTOM] eventName: %s params: %s [ERROR] code: %d description: %s"
-                                , eventName
-                                , params
-                                , errorCode
-                                , errorMessage
-                            );
-                        }
-                    });
-            } break;
-            case EAET_EARN_VIRTUAL_CURRENCY: {
-                //ToDo
-            } break;
-            case EAET_SPEND_VIRTUAL_CURRENCY: {
-                //ToDo
-            } break;
-            case EAET_UNLOCK_ACHIEVEMENT: {
-                //ToDo
-            } break;
-            case EAET_LEVEL_UP: {
-                //ToDo
-            } break;
-            case EAET_LEVEL_START: {
-                //ToDo
-            } break;
-            case EAET_LEVEL_END: {
-                //ToDo
-            } break;
-            case EAET_SELECT_ITEM: {
-                //ToDo
-            } break;
-            case EAET_TUTORIAL_BEGIN: {
-                //ToDo
-            } break;
-            case EAET_TUTORIAL_COMPLETE: {
-                //ToDo
-            } break;
-            case EAET_SCREEN_VIEW: {
-                //ToDo
-            } break;
-            default: {
-                this.logWarning("event: %s unknown type: %d"
-                    , eventName
-                    , eventType
-                );
-            } break;
-        }
+                @Override
+                public void onError(int errorCode, String errorMessage) {
+                    MengineAppsFlyerPlugin.this.logInfo("logEvent [CUSTOM] eventName: %s params: %s [ERROR] code: %d description: %s"
+                        , eventName
+                        , params
+                        , errorCode
+                        , errorMessage
+                    );
+                }
+            });
+    }
+
+    @Override
+    public void onMengineAnalyticsScreenView(MengineApplication application, String screenType, String screenName) {
+        //ToDo
     }
 
     @Override

@@ -562,6 +562,12 @@ namespace Mengine
             ->onGameAnalyticsEvent( _event );
     }
     //////////////////////////////////////////////////////////////////////////
+    void GameService::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
+    {
+        EVENTABLE_METHOD( EVENT_GAME_ANALYTICS_SCREENVIEW )
+            ->onGameAnalyticsScreenView( _screenType, _screenName );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void GameService::onAnalyticsFlush()
     {
         EVENTABLE_METHOD( EVENT_GAME_ANALYTICS_FLUSH )

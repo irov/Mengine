@@ -10,26 +10,10 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum EAnalyticsEventType
-    {
-        EAET_CUSTOM = 0,
-        EAET_EARN_VIRTUAL_CURRENCY = 1,
-        EAET_SPEND_VIRTUAL_CURRENCY = 2,
-        EAET_UNLOCK_ACHIEVEMENT = 3,
-        EAET_LEVEL_UP = 4,
-        EAET_LEVEL_START = 5,
-        EAET_LEVEL_END = 6,
-        EAET_SELECT_ITEM = 7,
-        EAET_TUTORIAL_BEGIN = 8,
-        EAET_TUTORIAL_COMPLETE = 9,
-        EAET_SCREEN_VIEW = 10
-    };
-    //////////////////////////////////////////////////////////////////////////
     class AnalyticsEventInterface
         : public ServantInterface
     {
     public:
-        virtual EAnalyticsEventType getType() const = 0;
         virtual const ConstString & getName() const = 0;
 
     public:

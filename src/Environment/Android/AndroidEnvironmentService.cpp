@@ -739,12 +739,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        EAnalyticsEventType eventType = _event->getType();
-
         const ConstString & eventName = _event->getName();
-        const Char * eventName_str = eventName.c_str();
 
-        jobject eventName_jobject = Helper::makeJObjectString( jenv, eventName_str );
+        jobject eventName_jobject = Helper::makeJObjectString( jenv, eventName );
 
         Timestamp eventTimestamp = _event->getTimestamp();
 
@@ -756,9 +753,7 @@ namespace Mengine
 
         _event->foreachParameters( [parameters_jobject, jenv]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
            {
-               const Char * name_str = _name.c_str();
-
-               jobject name_jvalue = Helper::makeJObjectString( jenv, name_str );
+               jobject name_jvalue = Helper::makeJObjectString( jenv, _name );
 
                EAnalyticsEventParameterType parameterType = _parameter->getType();
 
@@ -792,18 +787,14 @@ namespace Mengine
                        AnalyticsEventParameterStringInterfacePtr parameter_string = AnalyticsEventParameterStringInterfacePtr::from( _parameter );
                        const String & parameter_value = parameter_string->resolveValue();
 
-                       const Char * parameter_value_str = parameter_value.c_str();
-
-                       parameter_jobject = Helper::makeJObjectString( jenv, parameter_value_str );
+                       parameter_jobject = Helper::makeJObjectString( jenv, parameter_value );
                    }break;
                case EAEPT_CONSTSTRING:
                    {
                        AnalyticsEventParameterConstStringInterfacePtr parameter_string = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
                        const ConstString & parameter_value = parameter_string->resolveValue();
 
-                       const Char * parameter_value_str = parameter_value.c_str();
-
-                       parameter_jobject = Helper::makeJObjectString( jenv, parameter_value_str );
+                       parameter_jobject = Helper::makeJObjectString( jenv, parameter_value );
                    }break;
                }
 
@@ -820,11 +811,31 @@ namespace Mengine
                jenv->DeleteLocalRef( jclass_Map );
            });
 
-        this->callVoidApplicationMethod( jenv, "onMengineAnalyticsEvent", "(ILjava/lang/String;JLjava/util/Map;Ljava/util/Map;)V", (jint)eventType, eventName_jobject, (jlong)eventTimestamp, bases_jobject, parameters_jobject );
+        this->callVoidApplicationMethod( jenv, "onMengineAnalyticsEvent", "(Ljava/lang/String;JLjava/util/Map;Ljava/util/Map;)V", eventName_jobject, (jlong)eventTimestamp, bases_jobject, parameters_jobject );
 
         jenv->DeleteLocalRef( eventName_jobject );
         jenv->DeleteLocalRef(bases_jobject );
         jenv->DeleteLocalRef( parameters_jobject );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidEnvironmentService::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
+    {
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
+        {
+            return;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jobject screenType_jobject = Helper::makeJObjectString( jenv, _screenType );
+        jobject screenName_jobject = Helper::makeJObjectString( jenv, _screenName );
+
+        this->callVoidApplicationMethod( jenv, "onMengineAnalyticsScreenView", "(Ljava/lang/String;Ljava/lang/String;)V", screenType_jobject, screenName_jobject );
+
+        jenv->DeleteLocalRef( screenType_jobject );
+        jenv->DeleteLocalRef(screenName_jobject );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::onAnalyticsFlush()

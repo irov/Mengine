@@ -87,7 +87,7 @@ public class MengineAnalyticsEventBuilder {
     public long log() {
         long timestamp = MengineUtils.getTimestamp();
 
-        m_application.onMengineAnalyticsEvent(MengineAnalytics.EAET_CUSTOM, m_name, timestamp, m_bases, m_parameters);
+        m_application.onMengineAnalyticsEvent(m_name, timestamp, m_bases, m_parameters);
 
         return timestamp;
     }

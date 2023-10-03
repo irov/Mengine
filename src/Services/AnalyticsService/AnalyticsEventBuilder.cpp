@@ -7,7 +7,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AnalyticsEventBuilder::AnalyticsEventBuilder()
-        : m_eventType( EAET_CUSTOM )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -43,16 +42,6 @@ namespace Mengine
     const AnalyticsContextInterfacePtr & AnalyticsEventBuilder::getGlobalContext() const
     {
         return m_globalContext;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AnalyticsEventBuilder::setEventType( EAnalyticsEventType _eventType )
-    {
-        m_eventType = _eventType;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    EAnalyticsEventType AnalyticsEventBuilder::getEventType() const
-    {
-        return m_eventType;
     }
     //////////////////////////////////////////////////////////////////////////
     void AnalyticsEventBuilder::setEventName( const ConstString & _eventName )
@@ -117,7 +106,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Timestamp AnalyticsEventBuilder::log()
     {
-        AnalyticsEventInterfacePtr event = m_analyticsFactory->makeEvent( m_eventType, m_eventName, MENGINE_DOCUMENT_FACTORABLE );
+        AnalyticsEventInterfacePtr event = m_analyticsFactory->makeEvent( m_eventName, MENGINE_DOCUMENT_FACTORABLE );
 
         event->setContext( m_context );
 

@@ -66,6 +66,7 @@ namespace Mengine
         EVENT_GAME_IOS_APPLICATION_WILL_TERMINATE,
 #endif
         EVENT_GAME_ANALYTICS_EVENT,
+        EVENT_GAME_ANALYTICS_SCREENVIEW,
         EVENT_GAME_ANALYTICS_FLUSH,
 
         __EVENT_GAME_LAST__
@@ -124,6 +125,7 @@ namespace Mengine
         virtual void onGameiOSApplicationWillTerminate() = 0;
 #endif
         virtual void onGameAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) = 0;
+        virtual void onGameAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName ) = 0;
         virtual void onGameAnalyticsFlush() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -176,6 +178,7 @@ namespace Mengine
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_IOS_APPLICATION_WILL_TERMINATE );
 #endif
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ANALYTICS_EVENT );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ANALYTICS_SCREENVIEW );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ANALYTICS_FLUSH );
     //////////////////////////////////////////////////////////////////////////
 }

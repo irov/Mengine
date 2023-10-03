@@ -175,6 +175,24 @@ namespace Mengine
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
+        jobject makeJObjectString( JNIEnv * _jenv, const String & _value )
+        {
+            const Char * value_str = _value.c_str();
+
+            jobject value_jobject = Helper::makeJObjectString( _jenv, value_str );
+
+            return value_jobject;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jobject makeJObjectString( JNIEnv * _jenv, const ConstString & _value )
+        {
+            const Char * value_str = _value.c_str();
+
+            jobject value_jobject = Helper::makeJObjectString( _jenv, value_str );
+
+            return value_jobject;
+        }
+        //////////////////////////////////////////////////////////////////////////
         jobject makeJObjectArrayList( JNIEnv * _jenv, int32_t _count )
         {
             jclass jclass_ArrayList = _jenv->FindClass( "java/util/ArrayList" );

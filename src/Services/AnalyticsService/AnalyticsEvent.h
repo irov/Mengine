@@ -18,10 +18,6 @@ namespace Mengine
         ~AnalyticsEvent() override;
 
     public:
-        void setType( EAnalyticsEventType _type );
-        EAnalyticsEventType getType() const override;
-
-    public:
         void setName( const ConstString & _name );
         const ConstString & getName() const override;
 
@@ -46,7 +42,6 @@ namespace Mengine
         void foreachParameters( const LambdaEventParameter & _lambda ) const override;
 
     protected:
-        EAnalyticsEventType m_type;
         ConstString m_name;
 
         Timestamp m_timestamp;

@@ -1835,7 +1835,7 @@ namespace Mengine
                 analyticsGlobalContext->addParameterDouble( _name, _value, MENGINE_DOCUMENT_PYBIND );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_analyticsCustomEvent( const ConstString & _eventName, const AnalyticsContextInterfacePtr & _context, const pybind::dict & _parameters )
+            void s_analyticsEvent( const ConstString & _eventName, const AnalyticsContextInterfacePtr & _context, const pybind::dict & _parameters )
             {
                 AnalyticsEventBuilderInterfacePtr builder = ANALYTICS_SERVICE()
                     ->buildEvent( _eventName, MENGINE_DOCUMENT_PYBIND );
@@ -1902,64 +1902,10 @@ namespace Mengine
                 builder->log();
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_analyticsEarnVirtualCurrencyEvent( const ConstString & _currencyName, double _value )
+            void s_analyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
             {
                 ANALYTICS_SERVICE()
-                    ->logEarnVirtualCurrency( _currencyName, _value, MENGINE_DOCUMENT_PYBIND );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_analyticsSpendVirtualCurrencyEvent( const ConstString & _itemName, const ConstString & _currencyName, double _value )
-            {
-                ANALYTICS_SERVICE()
-                    ->logSpendVirtualCurrency( _itemName, _currencyName, _value, MENGINE_DOCUMENT_PYBIND );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_analyticsUnlockAchievementEvent( const ConstString & _achievementId )
-            {
-                ANALYTICS_SERVICE()
-                    ->logUnlockAchievement( _achievementId, MENGINE_DOCUMENT_PYBIND );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_analyticsLevelUp( const ConstString & _character, int64_t _level )
-            {
-                ANALYTICS_SERVICE()
-                    ->logLevelUp( _character, _level, MENGINE_DOCUMENT_PYBIND );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_analyticsLevelStart( const ConstString & _name )
-            {
-                ANALYTICS_SERVICE()
-                    ->logLevelStart( _name, MENGINE_DOCUMENT_PYBIND );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_analyticsLevelEnd( const ConstString & _name, bool _successful )
-            {
-                ANALYTICS_SERVICE()
-                    ->logLevelEnd( _name, _successful, MENGINE_DOCUMENT_PYBIND );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_analyticsSelectItem( const ConstString & _category, const ConstString & _itemId )
-            {
-                ANALYTICS_SERVICE()
-                    ->logSelectItem( _category, _itemId, MENGINE_DOCUMENT_PYBIND );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_analyticsTutorialBegin()
-            {
-                ANALYTICS_SERVICE()
-                    ->logTutorialBegin( MENGINE_DOCUMENT_PYBIND );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_analyticsTutorialComplete()
-            {
-                ANALYTICS_SERVICE()
-                    ->logTutorialComplete( MENGINE_DOCUMENT_PYBIND );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_analyticsScreenView( const ConstString & _screenClass, const ConstString & _screenName )
-            {
-                ANALYTICS_SERVICE()
-                    ->logScreenView( _screenClass, _screenName, MENGINE_DOCUMENT_PYBIND );
+                    ->logScreenView( _screenType, _screenName );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_analyticsEventFlush()
@@ -4505,20 +4451,6 @@ namespace Mengine
             .def( "EAEPT_CONSTSTRING", EAEPT_CONSTSTRING )
             ;
 
-        pybind::enum_<EAnalyticsEventType>( _kernel, "EAnalyticsEventType" )
-            .def( "EAET_CUSTOM", EAET_CUSTOM )
-            .def( "EAET_EARN_VIRTUAL_CURRENCY", EAET_EARN_VIRTUAL_CURRENCY )
-            .def( "EAET_SPEND_VIRTUAL_CURRENCY", EAET_SPEND_VIRTUAL_CURRENCY )
-            .def( "EAET_UNLOCK_ACHIEVEMENT", EAET_UNLOCK_ACHIEVEMENT )
-            .def( "EAET_LEVEL_UP", EAET_LEVEL_UP )
-            .def( "EAET_LEVEL_START", EAET_LEVEL_START )
-            .def( "EAET_LEVEL_END", EAET_LEVEL_END )
-            .def( "EAET_SELECT_ITEM", EAET_SELECT_ITEM )
-            .def( "EAET_TUTORIAL_BEGIN", EAET_TUTORIAL_BEGIN )
-            .def( "EAET_TUTORIAL_COMPLETE", EAET_TUTORIAL_COMPLETE )
-            .def( "EAET_SCREEN_VIEW", EAET_SCREEN_VIEW )
-            ;
-
         pybind::interface_<AnalyticsContextInterface, pybind::bases<ServantInterface>>( _kernel, "AnalyticsContextInterface" )
             .def_proxy_static( "addParameterBoolean", nodeScriptMethod, &EngineScriptMethod::s_AnalyticsContext_addParameterBoolean )
             .def_proxy_static( "addParameterInteger", nodeScriptMethod, &EngineScriptMethod::s_AnalyticsContext_addParameterInteger )
@@ -4535,16 +4467,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterString", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterString );
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterInteger", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterInteger );
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterDouble", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterDouble );
-        pybind::def_functor( _kernel, "analyticsCustomEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsCustomEvent );
-        pybind::def_functor( _kernel, "analyticsEarnVirtualCurrencyEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEarnVirtualCurrencyEvent );
-        pybind::def_functor( _kernel, "analyticsSpendVirtualCurrencyEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsSpendVirtualCurrencyEvent );
-        pybind::def_functor( _kernel, "analyticsUnlockAchievementEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsUnlockAchievementEvent );
-        pybind::def_functor( _kernel, "analyticsLevelUp", nodeScriptMethod, &EngineScriptMethod::s_analyticsLevelUp );
-        pybind::def_functor( _kernel, "analyticsLevelStart", nodeScriptMethod, &EngineScriptMethod::s_analyticsLevelStart );
-        pybind::def_functor( _kernel, "analyticsLevelEnd", nodeScriptMethod, &EngineScriptMethod::s_analyticsLevelEnd );
-        pybind::def_functor( _kernel, "analyticsSelectItem", nodeScriptMethod, &EngineScriptMethod::s_analyticsSelectItem );
-        pybind::def_functor( _kernel, "analyticsTutorialBegin", nodeScriptMethod, &EngineScriptMethod::s_analyticsTutorialBegin );
-        pybind::def_functor( _kernel, "analyticsTutorialComplete", nodeScriptMethod, &EngineScriptMethod::s_analyticsTutorialComplete );
+        pybind::def_functor_deprecated( _kernel, "analyticsCustomEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEvent, "use analyticsEvent");
+        pybind::def_functor( _kernel, "analyticsEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEvent );
         pybind::def_functor( _kernel, "analyticsScreenView", nodeScriptMethod, &EngineScriptMethod::s_analyticsScreenView );
         pybind::def_functor( _kernel, "analyticsEventFlush", nodeScriptMethod, &EngineScriptMethod::s_analyticsEventFlush );
 

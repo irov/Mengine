@@ -384,12 +384,16 @@ namespace Mengine
             }            
         });
 
-        EAnalyticsEventType type = _event->getType();
         const ConstString & name = _event->getName();
 
         Timestamp timestamp = _event->getTimestamp();
 
-        m_cb.call( type, name, timestamp, params );
+        m_cb.call( name, timestamp, params );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonGameEventReceiver::onGameAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
+    {
+        m_cb.call( _screenType, _screenName );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonGameEventReceiver::onGameAnalyticsFlush()

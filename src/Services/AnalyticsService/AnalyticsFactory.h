@@ -21,7 +21,7 @@ namespace Mengine
 
     public:
         AnalyticsEventBuilderInterfacePtr makeEventBuilder( const DocumentInterfacePtr & _doc ) override;
-        AnalyticsEventInterfacePtr makeEvent( EAnalyticsEventType _type, const ConstString & _name, const DocumentInterfacePtr & _doc ) override;
+        AnalyticsEventInterfacePtr makeEvent( const ConstString & _name, const DocumentInterfacePtr & _doc ) override;
 
         AnalyticsEventParameterBooleanInterfacePtr makeEventConstParameterBoolean( bool _value, const DocumentInterfacePtr & _doc ) override;
         AnalyticsEventParameterConstStringInterfacePtr makeEventConstParameterConstString( const ConstString & _value, const DocumentInterfacePtr & _doc ) override;

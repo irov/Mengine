@@ -7,18 +7,6 @@ import java.util.Locale;
 import java.util.Map;
 
 public class MengineAnalytics {
-    public final static int EAET_CUSTOM = 0;
-    public final static int EAET_EARN_VIRTUAL_CURRENCY = 1;
-    public final static int EAET_SPEND_VIRTUAL_CURRENCY = 2;
-    public final static int EAET_UNLOCK_ACHIEVEMENT = 3;
-    public final static int EAET_LEVEL_UP = 4;
-    public final static int EAET_LEVEL_START = 5;
-    public final static int EAET_LEVEL_END = 6;
-    public final static int EAET_SELECT_ITEM = 7;
-    public final static int EAET_TUTORIAL_BEGIN = 8;
-    public final static int EAET_TUTORIAL_COMPLETE = 9;
-    public final static int EAET_SCREEN_VIEW = 10;
-
     private static MengineApplication m_application;
     private static Map<String, Object> m_context = new HashMap<>();
     private static Map<String, Object> m_getter = new HashMap<>();

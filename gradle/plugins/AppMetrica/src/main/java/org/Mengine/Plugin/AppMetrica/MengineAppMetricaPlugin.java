@@ -97,53 +97,18 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
-        switch (eventType) {
-            case EAET_CUSTOM: {
-                Map<String, Object> params = new HashMap<>();
+    public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+        Map<String, Object> params = new HashMap<>();
 
-                params.putAll(bases);
-                params.putAll(parameters);
+        params.putAll(bases);
+        params.putAll(parameters);
 
-                YandexMetrica.reportEvent(eventName, params);
-            } break;
-            case EAET_EARN_VIRTUAL_CURRENCY: {
-                //ToDo
-            } break;
-            case EAET_SPEND_VIRTUAL_CURRENCY: {
-                //ToDo
-            } break;
-            case EAET_UNLOCK_ACHIEVEMENT: {
-                //ToDo
-            } break;
-            case EAET_LEVEL_UP: {
-                //ToDo
-            } break;
-            case EAET_LEVEL_START: {
-                //ToDo
-            } break;
-            case EAET_LEVEL_END: {
-                //ToDo
-            } break;
-            case EAET_SELECT_ITEM: {
-                //ToDo
-            } break;
-            case EAET_TUTORIAL_BEGIN: {
-                //ToDo
-            } break;
-            case EAET_TUTORIAL_COMPLETE: {
-                //ToDo
-            } break;
-            case EAET_SCREEN_VIEW: {
-                //ToDo
-            } break;
-            default: {
-                this.logWarning("event: %s unknown type: %d"
-                    , eventName
-                    , eventType
-                );
-            } break;
-        }
+        YandexMetrica.reportEvent(eventName, params);
+    }
+
+    @Override
+    public void onMengineAnalyticsScreenView(MengineApplication application, String screenType, String screenName) {
+        //ToDo
     }
 
     @Override

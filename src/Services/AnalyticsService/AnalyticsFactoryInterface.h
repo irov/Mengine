@@ -15,7 +15,7 @@ namespace Mengine
 
     public:
         virtual AnalyticsEventBuilderInterfacePtr makeEventBuilder( const DocumentInterfacePtr & _doc ) = 0;
-        virtual AnalyticsEventInterfacePtr makeEvent( EAnalyticsEventType _type, const ConstString & _name, const DocumentInterfacePtr & _doc ) = 0;
+        virtual AnalyticsEventInterfacePtr makeEvent( const ConstString & _name, const DocumentInterfacePtr & _doc ) = 0;
 
         virtual AnalyticsEventParameterBooleanInterfacePtr makeEventConstParameterBoolean( bool _value, const DocumentInterfacePtr & _doc ) = 0;
         virtual AnalyticsEventParameterConstStringInterfacePtr makeEventConstParameterConstString( const ConstString & _value, const DocumentInterfacePtr & _doc ) = 0;

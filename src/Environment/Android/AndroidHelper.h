@@ -24,6 +24,8 @@ namespace Mengine
         jobject makeJObjectFloat( JNIEnv * _jenv, float _value );
         jobject makeJObjectDouble( JNIEnv * _jenv, double _value );
         jobject makeJObjectString( JNIEnv * _jenv, const Char * _value );
+        jobject makeJObjectString( JNIEnv * _jenv, const String & _value );
+        jobject makeJObjectString( JNIEnv * _jenv, const ConstString & _value );
         jobject makeJObjectArrayList( JNIEnv * _jenv, int32_t _count );
         jobject makeJObjectHashMap( JNIEnv * _jenv, int32_t _count );
         //////////////////////////////////////////////////////////////////////////

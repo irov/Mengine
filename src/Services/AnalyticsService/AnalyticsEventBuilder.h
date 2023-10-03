@@ -30,10 +30,6 @@ namespace Mengine
         const AnalyticsContextInterfacePtr & getGlobalContext() const;
 
     public:
-        void setEventType( EAnalyticsEventType _eventType );
-        EAnalyticsEventType getEventType() const;
-
-    public:
         void setEventName( const ConstString & _eventName );
         const ConstString & getEventName() const;
 
@@ -59,7 +55,6 @@ namespace Mengine
         AnalyticsContextInterfacePtr m_context;
         AnalyticsContextInterfacePtr m_globalContext;
 
-        EAnalyticsEventType m_eventType;
         ConstString m_eventName;
 
         AnalyticsContextInterfacePtr m_localContext;

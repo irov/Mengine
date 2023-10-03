@@ -90,11 +90,10 @@ namespace Mengine
         return eventBuilder;
     }
     //////////////////////////////////////////////////////////////////////////
-    AnalyticsEventInterfacePtr AnalyticsFactory::makeEvent( EAnalyticsEventType _type, const ConstString & _name, const DocumentInterfacePtr & _doc )
+    AnalyticsEventInterfacePtr AnalyticsFactory::makeEvent( const ConstString & _name, const DocumentInterfacePtr & _doc )
     {
         AnalyticsEventPtr event = m_factoryAnalyticsEvent->createObject( _doc );
 
-        event->setType( _type );
         event->setName( _name );
 
         return event;

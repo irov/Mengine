@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 public class MengineActivity extends SDLActivity {
     public static final String TAG = "MengineActivity";
@@ -100,34 +101,34 @@ public class MengineActivity extends SDLActivity {
         return applicationId;
     }
 
-    protected ArrayList<MenginePlugin> getPlugins() {
+    protected List<MenginePlugin> getPlugins() {
         MengineApplication app = this.getMengineApplication();
 
-        ArrayList<MenginePlugin> plugins = app.getPlugins();
+        List<MenginePlugin> plugins = app.getPlugins();
 
         return plugins;
     }
 
-    protected ArrayList<MenginePluginKeyListener> getKeyListeners() {
+    protected List<MenginePluginKeyListener> getKeyListeners() {
         MengineApplication app = this.getMengineApplication();
 
-        ArrayList<MenginePluginKeyListener> listeners = app.getKeyListeners();
+        List<MenginePluginKeyListener> listeners = app.getKeyListeners();
 
         return listeners;
     }
 
-    protected ArrayList<MenginePluginActivityListener> getActivityListeners() {
+    protected List<MenginePluginActivityListener> getActivityListeners() {
         MengineApplication app = this.getMengineApplication();
 
-        ArrayList<MenginePluginActivityListener> listeners = app.getActivityListeners();
+        List<MenginePluginActivityListener> listeners = app.getActivityListeners();
 
         return listeners;
     }
 
-    protected ArrayList<MenginePluginEngineListener> getEngineListeners() {
+    protected List<MenginePluginEngineListener> getEngineListeners() {
         MengineApplication app = this.getMengineApplication();
 
-        ArrayList<MenginePluginEngineListener> listeners = app.getEngineListeners();
+        List<MenginePluginEngineListener> listeners = app.getEngineListeners();
 
         return listeners;
     }
@@ -260,13 +261,13 @@ public class MengineActivity extends SDLActivity {
 
         AndroidEnv_setMengineAndroidActivityJNI(this);
 
-        ArrayList<MenginePlugin> plugins = this.getPlugins();
+        List<MenginePlugin> plugins = this.getPlugins();
 
         for (MenginePlugin p : plugins) {
             p.setActivity(this);
         }
 
-        ArrayList<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
             String pluginName = l.getPluginName();
@@ -335,7 +336,7 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logInfo(TAG, "onMengineInitializeBaseServices");
 
-        ArrayList<MenginePluginEngineListener> listeners = this.getEngineListeners();
+        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
 
         for (MenginePluginEngineListener l : listeners) {
             l.onMengineInitializeBaseServices(this);
@@ -345,13 +346,13 @@ public class MengineActivity extends SDLActivity {
     public void onMengineCreateApplication() {
         MengineLog.logInfo(TAG, "onMengineCreateApplication");
 
-        ArrayList<MenginePluginEngineListener> listeners = this.getEngineListeners();
+        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
 
         for (MenginePluginEngineListener l : listeners) {
             l.onMengineCreateApplication(this);
         }
 
-        ArrayList<MenginePlugin> plugins = this.getPlugins();
+        List<MenginePlugin> plugins = this.getPlugins();
 
         for (MenginePlugin p : plugins) {
             p.onExtensionRun(this);
@@ -361,7 +362,7 @@ public class MengineActivity extends SDLActivity {
     public void onMenginePlatformRun() {
         MengineLog.logInfo(TAG, "onMenginePlatformRun");
 
-        ArrayList<MenginePluginEngineListener> listeners = this.getEngineListeners();
+        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
 
         for (MenginePluginEngineListener l : listeners) {
             l.onMenginePlatformRun(this);
@@ -371,7 +372,7 @@ public class MengineActivity extends SDLActivity {
     public void onMenginePlatformStop() {
         MengineLog.logInfo(TAG, "onMenginePlatformStop");
 
-        ArrayList<MenginePluginEngineListener> listeners = this.getEngineListeners();
+        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
 
         for (MenginePluginEngineListener l : listeners) {
             l.onMenginePlatformStop(this);
@@ -405,7 +406,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        ArrayList<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
             l.onActivityResult(this, requestCode, resultCode, data);
@@ -428,7 +429,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        ArrayList<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
             l.onStart(this);
@@ -455,9 +456,9 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        ArrayList<MenginePlugin> plugins = this.getPlugins();
+        List<MenginePlugin> plugins = this.getPlugins();
 
-        ArrayList<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
             l.onStop(this);
@@ -484,7 +485,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        ArrayList<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
             l.onPause(this);
@@ -511,7 +512,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        ArrayList<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
             l.onResume(this);
@@ -536,7 +537,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        ArrayList<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
             l.onNewIntent(this, intent);
@@ -559,13 +560,13 @@ public class MengineActivity extends SDLActivity {
 
         m_destroy = true;
 
-        ArrayList<MenginePlugin> plugins = this.getPlugins();
+        List<MenginePlugin> plugins = this.getPlugins();
 
         for (MenginePlugin p : plugins) {
             p.onExtensionFinalize(this);
         }
 
-        ArrayList<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
             l.onDestroy(this);
@@ -597,7 +598,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        ArrayList<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
             l.onRestart(this);
@@ -626,7 +627,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        ArrayList<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
             l.onConfigurationChanged(this, newConfig);
@@ -649,7 +650,7 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        ArrayList<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
             l.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
@@ -670,7 +671,7 @@ public class MengineActivity extends SDLActivity {
             return super.dispatchKeyEvent(event);
         }
 
-        ArrayList<MenginePluginKeyListener> listeners = this.getKeyListeners();
+        List<MenginePluginKeyListener> listeners = this.getKeyListeners();
 
         for (MenginePluginKeyListener l : listeners) {
             if (l.dispatchKeyEvent(this, event) == true) {
@@ -718,7 +719,7 @@ public class MengineActivity extends SDLActivity {
         MengineApplication application = (MengineApplication)this.getApplication();
         AndroidNativePython_addPlugin("Application", application);
 
-        ArrayList<MenginePlugin> plugins = this.getPlugins();
+        List<MenginePlugin> plugins = this.getPlugins();
 
         for (MenginePlugin p : plugins) {
             try {

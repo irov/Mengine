@@ -69,6 +69,7 @@ namespace Mengine
 #endif
 
         void onGameAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;
+        void onGameAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName ) override;
         void onGameAnalyticsFlush() override;
     };
 }

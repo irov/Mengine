@@ -316,7 +316,7 @@ public class MengineApplication extends Application {
         m_states.put(name, value);
 
         synchronized (m_syncState) {
-            ArrayList<MenginePlugin> plugins = this.getPlugins();
+            List<MenginePlugin> plugins = this.getPlugins();
 
             for (MenginePlugin p : plugins) {
                 p.onState(this, name, value);
@@ -328,47 +328,47 @@ public class MengineApplication extends Application {
         return m_states;
     }
 
-    public ArrayList<MenginePlugin> getPlugins() {
+    public List<MenginePlugin> getPlugins() {
         return m_plugins;
     }
 
-    public ArrayList<MenginePluginLoggerListener> getLoggerListeners() {
+    public List<MenginePluginLoggerListener> getLoggerListeners() {
         return m_loggerListeners;
     }
 
-    public ArrayList<MenginePluginAnalyticsListener> getAnalyticsListeners() {
+    public List<MenginePluginAnalyticsListener> getAnalyticsListeners() {
         return m_analyticsListeners;
     }
 
-    public ArrayList<MenginePluginAdRevenueListener> getAdRevenueListeners() {
+    public List<MenginePluginAdRevenueListener> getAdRevenueListeners() {
         return m_adRevenueListeners;
     }
 
-    public ArrayList<MenginePluginInAppPurchaseListener> getInAppAnalyticsListeners() {
+    public List<MenginePluginInAppPurchaseListener> getInAppAnalyticsListeners() {
         return m_inAppPurchaseListeners;
     }
 
-    public ArrayList<MenginePluginRemoteMessageListener> getRemoteMessageListeners() {
+    public List<MenginePluginRemoteMessageListener> getRemoteMessageListeners() {
         return m_removeMessageListeners;
     }
 
-    public ArrayList<MenginePluginKeyListener> getKeyListeners() {
+    public List<MenginePluginKeyListener> getKeyListeners() {
         return m_keyListeners;
     }
 
-    public ArrayList<MenginePluginApplicationListener> getApplicationListeners() {
+    public List<MenginePluginApplicationListener> getApplicationListeners() {
         return m_applicationListeners;
     }
 
-    public ArrayList<MenginePluginActivityListener> getActivityListeners() {
+    public List<MenginePluginActivityListener> getActivityListeners() {
         return m_activityListeners;
     }
 
-    public ArrayList<MenginePluginExtensionListener> getExtensionListeners() {
+    public List<MenginePluginExtensionListener> getExtensionListeners() {
         return m_extensionListeners;
     }
 
-    public ArrayList<MenginePluginEngineListener> getEngineListeners() {
+    public List<MenginePluginEngineListener> getEngineListeners() {
         return m_engineListeners;
     }
 
@@ -510,7 +510,7 @@ public class MengineApplication extends Application {
             return null;
         }
 
-        ArrayList<MenginePluginExtensionListener> extensionListeners = this.getExtensionListeners();
+        List<MenginePluginExtensionListener> extensionListeners = this.getExtensionListeners();
 
         for (MenginePluginExtensionListener l : extensionListeners) {
             l.onMenginePluginExtension(this, activity, plugin, extension);
@@ -530,7 +530,7 @@ public class MengineApplication extends Application {
         String stacktrace = MengineUtils.getThrowableStackTrace(throwable);
         this.setState("exception.stacktrace", stacktrace);
 
-        ArrayList<MenginePluginEngineListener> listeners = this.getEngineListeners();
+        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
 
         for (MenginePluginEngineListener l : listeners) {
             l.onMengineCaughtException(this, throwable);
@@ -581,7 +581,7 @@ public class MengineApplication extends Application {
     }
 
     public void sendEvent(MengineEvent event, Object ... args) {
-        ArrayList<MenginePlugin> plugins = this.getPlugins();
+        List<MenginePlugin> plugins = this.getPlugins();
 
         synchronized (m_syncEvent) {
             for (MenginePlugin p : plugins) {
@@ -618,7 +618,7 @@ public class MengineApplication extends Application {
 
         boolean isMainProcess = this.isMainProcess();
 
-        ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
+        List<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
@@ -818,7 +818,7 @@ public class MengineApplication extends Application {
     public void onTerminate() {
         MengineLog.logInfo(TAG, "onTerminate");
 
-        ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
+        List<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             l.onAppTerminate(this);
@@ -858,7 +858,7 @@ public class MengineApplication extends Application {
 
         MengineLog.logInfo(TAG, "attachBaseContext");
 
-        ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
+        List<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             l.onAppAttachBaseContext(this, base);
@@ -873,7 +873,7 @@ public class MengineApplication extends Application {
             , newConfig.toString()
         );
 
-        ArrayList<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
+        List<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             l.onAppConfigurationChanged(this, newConfig);
@@ -881,23 +881,31 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineLogger(String category, int level, int filter, int color, String msg) {
-        ArrayList<MenginePluginLoggerListener> listeners = this.getLoggerListeners();
+        List<MenginePluginLoggerListener> listeners = this.getLoggerListeners();
 
         for(MenginePluginLoggerListener l : listeners) {
             l.onMengineLogger(this, category, level, filter, color, msg);
         }
     }
 
-    public void onMengineAnalyticsEvent(int eventType, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
-        ArrayList<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
+    public void onMengineAnalyticsEvent(String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+        List<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
 
         for (MenginePluginAnalyticsListener l : listeners) {
-            l.onMengineAnalyticsEvent(this, eventType, eventName, timestamp, bases, parameters);
+            l.onMengineAnalyticsEvent(this, eventName, timestamp, bases, parameters);
+        }
+    }
+
+    public void onMengineAnalyticsScreenView(String screenType, String screenName) {
+        List<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
+
+        for (MenginePluginAnalyticsListener l : listeners) {
+            l.onMengineAnalyticsScreenView(this, screenType, screenName);
         }
     }
 
     public void onMengineAnalyticsFlush() {
-        ArrayList<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
+        List<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
 
         for (MenginePluginAnalyticsListener l : listeners) {
             l.onMengineAnalyticsFlush(this);
@@ -905,7 +913,7 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineAdRevenue(MengineAdRevenueParam revenue) {
-        ArrayList<MenginePluginAdRevenueListener> listeners = this.getAdRevenueListeners();
+        List<MenginePluginAdRevenueListener> listeners = this.getAdRevenueListeners();
 
         for (MenginePluginAdRevenueListener l : listeners) {
             l.onMengineAdRevenue(this, revenue);
@@ -913,7 +921,7 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineInAppProducts(List<MengineInAppProductParam> products) {
-        ArrayList<MenginePluginInAppPurchaseListener> listeners = this.getInAppAnalyticsListeners();
+        List<MenginePluginInAppPurchaseListener> listeners = this.getInAppAnalyticsListeners();
 
         for (MenginePluginInAppPurchaseListener l : listeners) {
             l.onMengineInAppProduct(this, products);
@@ -921,7 +929,7 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineInAppPurchase(MengineInAppPurchaseParam purchase) {
-        ArrayList<MenginePluginInAppPurchaseListener> listeners = this.getInAppAnalyticsListeners();
+        List<MenginePluginInAppPurchaseListener> listeners = this.getInAppAnalyticsListeners();
 
         for (MenginePluginInAppPurchaseListener l : listeners) {
             l.onMengineInAppPurchase(this, purchase);
@@ -929,7 +937,7 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineRemoteMessageReceived(MengineRemoteMessageParam message) {
-        ArrayList<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
+        List<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
 
         for (MenginePluginRemoteMessageListener l : listeners) {
             if (l.onMengineRemoteMessageReceived(this, message) == true) {
@@ -939,7 +947,7 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineRemoteMessageDeleted() {
-        ArrayList<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
+        List<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
 
         for (MenginePluginRemoteMessageListener l : listeners) {
             l.onMengineRemoteMessageDeleted(this);
@@ -947,7 +955,7 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineRemoteMessageSent(String messageId) {
-        ArrayList<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
+        List<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
 
         for (MenginePluginRemoteMessageListener l : listeners) {
             l.onMengineRemoteMessageSent(this, messageId);
@@ -955,7 +963,7 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineRemoteMessageSentError(String messageId, Exception exception) {
-        ArrayList<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
+        List<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
 
         for (MenginePluginRemoteMessageListener l : listeners) {
             l.onMengineRemoteMessageSentError(this, messageId, exception);
@@ -963,7 +971,7 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineRemoteMessageNewToken(String token) {
-        ArrayList<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
+        List<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
 
         for (MenginePluginRemoteMessageListener l : listeners) {
             l.onMengineRemoteMessageNewToken(this, token);

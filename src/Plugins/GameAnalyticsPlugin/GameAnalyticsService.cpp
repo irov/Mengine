@@ -165,6 +165,13 @@ namespace Mengine
         gameanalytics::GameAnalytics::addDesignEvent( eventName_str, json_str );
     }
     //////////////////////////////////////////////////////////////////////////
+    void GameAnalyticsService::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
+    {
+        MENGINE_UNUSED( _screenType );
+        MENGINE_UNUSED( _screenName );
+        //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
     void GameAnalyticsService::onAnalyticsFlush()
     {
         //ToDo

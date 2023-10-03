@@ -82,62 +82,63 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, int eventType, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         if (m_initializeSuccessful == false) {
             return;
         }
 
-        switch (eventType) {
-            case  EAET_CUSTOM: {
-                DTDCustomEventParameters params = new DTDCustomEventParameters();
+        DTDCustomEventParameters params = new DTDCustomEventParameters();
 
-                for (Map.Entry<String, Object> entry : bases.entrySet()) {
-                    String name = entry.getKey();
-                    Object parameter = entry.getValue();
+        for (Map.Entry<String, Object> entry : bases.entrySet()) {
+            String name = entry.getKey();
+            Object parameter = entry.getValue();
 
-                    if (parameter instanceof Boolean) {
-                        params.add(name, (Boolean)parameter);
-                    } else if (parameter instanceof Long) {
-                        params.add(name, (Long)parameter);
-                    } else if (parameter instanceof Double) {
-                        params.add(name, (Double)parameter);
-                    } else if (parameter instanceof String) {
-                        params.add(name, (String)parameter);
-                    } else {
-                        this.logError("[ERROR] customEvent unsupported parameter: %s class: %s"
-                            , parameter
-                            , parameter.getClass()
-                        );
+            if (parameter instanceof Boolean) {
+                params.add(name, (Boolean)parameter);
+            } else if (parameter instanceof Long) {
+                params.add(name, (Long)parameter);
+            } else if (parameter instanceof Double) {
+                params.add(name, (Double)parameter);
+            } else if (parameter instanceof String) {
+                params.add(name, (String)parameter);
+            } else {
+                this.logError("[ERROR] customEvent unsupported parameter: %s class: %s"
+                    , parameter
+                    , parameter.getClass()
+                );
 
-                        return;
-                    }
-                }
-
-                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-                    String name = entry.getKey();
-                    Object parameter = entry.getValue();
-
-                    if (parameter instanceof Boolean) {
-                        params.add(name, (Boolean)parameter);
-                    } else if (parameter instanceof Long) {
-                        params.add(name, (Long)parameter);
-                    } else if (parameter instanceof Double) {
-                        params.add(name, (Double)parameter);
-                    } else if (parameter instanceof String) {
-                        params.add(name, (String)parameter);
-                    } else {
-                        this.logError("[ERROR] customEvent unsupported parameter: %s class: %s"
-                            , parameter
-                            , parameter.getClass()
-                        );
-
-                        return;
-                    }
-                }
-
-                DTDAnalytics.INSTANCE.customEvent(eventName, params);
-            }break;
+                return;
+            }
         }
+
+        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+            String name = entry.getKey();
+            Object parameter = entry.getValue();
+
+            if (parameter instanceof Boolean) {
+                params.add(name, (Boolean)parameter);
+            } else if (parameter instanceof Long) {
+                params.add(name, (Long)parameter);
+            } else if (parameter instanceof Double) {
+                params.add(name, (Double)parameter);
+            } else if (parameter instanceof String) {
+                params.add(name, (String)parameter);
+            } else {
+                this.logError("[ERROR] customEvent unsupported parameter: %s class: %s"
+                    , parameter
+                    , parameter.getClass()
+                );
+
+                return;
+            }
+        }
+
+        DTDAnalytics.INSTANCE.customEvent(eventName, params);
+    }
+
+    @Override
+    public void onMengineAnalyticsScreenView(MengineApplication application, String screenType, String screenName) {
+        //ToDo
     }
 
     @Override

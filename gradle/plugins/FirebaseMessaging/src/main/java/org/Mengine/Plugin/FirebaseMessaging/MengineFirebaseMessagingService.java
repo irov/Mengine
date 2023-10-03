@@ -22,12 +22,12 @@ public class MengineFirebaseMessagingService extends FirebaseMessagingService {
         String collapseKey = remoteMessage.getCollapseKey();
         Map<String, String> data = remoteMessage.getData();
 
-        Map<MengineRemoteMessageParam, Object> message = new HashMap<>();
-        message.put(MengineRemoteMessageParam.REMOTEMESSAGE_ID, messageId);
-        message.put(MengineRemoteMessageParam.REMOTEMESSAGE_FROM, from);
-        message.put(MengineRemoteMessageParam.REMOTEMESSAGE_TO, to);
-        message.put(MengineRemoteMessageParam.REMOTEMESSAGE_COLLAPSE_KEY, collapseKey);
-        message.put(MengineRemoteMessageParam.REMOTEMESSAGE_DATA, data);
+        MengineRemoteMessageParam message = new MengineRemoteMessageParam();
+        message.REMOTEMESSAGE_ID = messageId;
+        message.REMOTEMESSAGE_FROM = from;
+        message.REMOTEMESSAGE_TO = to;
+        message.REMOTEMESSAGE_COLLAPSE_KEY = collapseKey;
+        message.REMOTEMESSAGE_DATA = data;
 
         MengineApplication application = (MengineApplication)this.getApplication();
         application.onMengineRemoteMessageReceived(message);

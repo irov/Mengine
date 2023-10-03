@@ -3,13 +3,7 @@ package org.Mengine.Base;
 import java.util.Map;
 
 public interface MenginePluginRemoteMessageListener extends MenginePluginInterface {
-    MengineRemoteMessageParam REMOTEMESSAGE_ID = MengineRemoteMessageParam.REMOTEMESSAGE_ID;
-    MengineRemoteMessageParam REMOTEMESSAGE_FROM = MengineRemoteMessageParam.REMOTEMESSAGE_FROM;
-    MengineRemoteMessageParam REMOTEMESSAGE_TO = MengineRemoteMessageParam.REMOTEMESSAGE_TO;
-    MengineRemoteMessageParam REMOTEMESSAGE_COLLAPSE_KEY = MengineRemoteMessageParam.REMOTEMESSAGE_COLLAPSE_KEY;
-    MengineRemoteMessageParam REMOTEMESSAGE_DATA = MengineRemoteMessageParam.REMOTEMESSAGE_DATA;
-
-    default boolean onMengineRemoteMessageReceived(MengineApplication application, Map<MengineRemoteMessageParam, Object> message) {
+    default boolean onMengineRemoteMessageReceived(MengineApplication application, MengineRemoteMessageParam message) {
         //Empty
 
         return false;

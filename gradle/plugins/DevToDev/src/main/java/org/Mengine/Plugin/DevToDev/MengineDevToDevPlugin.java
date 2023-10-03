@@ -150,17 +150,17 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onMengineAdRevenue(MengineApplication application, Map<MengineAdRevenueParam, Object> paid) {
+    public void onMengineAdRevenue(MengineApplication application, MengineAdRevenueParam revenue) {
         if (m_initializeSuccessful == false) {
             return;
         }
 
-        String network = (String)paid.get(MengineAdRevenueParam.ADREVENUE_NETWORK);
-        String adUnitId = (String)paid.get(MengineAdRevenueParam.ADREVENUE_ADUNITID);
-        String placement = (String)paid.get(MengineAdRevenueParam.ADREVENUE_PLACEMENT);
-        double revenue = (double)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_VALUE);
+        String network = revenue.ADREVENUE_NETWORK;
+        String adUnitId = revenue.ADREVENUE_ADUNITID;
+        String placement = revenue.ADREVENUE_PLACEMENT;
+        double revenueValue = revenue.ADREVENUE_REVENUE_VALUE;
 
-        DTDAnalytics.INSTANCE.adImpression(network, revenue, placement, adUnitId);
+        DTDAnalytics.INSTANCE.adImpression(network, revenueValue, placement, adUnitId);
     }
 
     public void logEvent(@NonNull String eventName, @NonNull DTDCustomEventParameters params) {

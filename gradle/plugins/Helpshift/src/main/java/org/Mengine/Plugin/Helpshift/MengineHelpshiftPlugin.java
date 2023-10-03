@@ -135,9 +135,9 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     }
 
     @Override
-    public boolean onMengineRemoteMessageReceived(MengineApplication application, Map<MengineRemoteMessageParam, Object> message) {
+    public boolean onMengineRemoteMessageReceived(MengineApplication application, MengineRemoteMessageParam message) {
         @SuppressWarnings("unchecked")
-        Map<String, String> data = (Map<String, String>)message.get(REMOTEMESSAGE_DATA);
+        Map<String, String> data = message.REMOTEMESSAGE_DATA;
 
         String origin = data.get("origin");
         if (origin != null && origin.equals("helpshift")) {

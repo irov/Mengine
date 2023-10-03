@@ -23,6 +23,7 @@ import org.libsdl.app.SDL;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -903,23 +904,23 @@ public class MengineApplication extends Application {
         }
     }
 
-    public void onMengineAdRevenue(Map<MengineAdRevenueParam, Object> paid) {
+    public void onMengineAdRevenue(MengineAdRevenueParam revenue) {
         ArrayList<MenginePluginAdRevenueListener> listeners = this.getAdRevenueListeners();
 
         for (MenginePluginAdRevenueListener l : listeners) {
-            l.onMengineAdRevenue(this, paid);
+            l.onMengineAdRevenue(this, revenue);
         }
     }
 
-    public void onMengineInAppProduct(Map<MengineInAppProductParam, Object> details) {
+    public void onMengineInAppProducts(List<MengineInAppProductParam> products) {
         ArrayList<MenginePluginInAppPurchaseListener> listeners = this.getInAppAnalyticsListeners();
 
         for (MenginePluginInAppPurchaseListener l : listeners) {
-            l.onMengineInAppProduct(this, details);
+            l.onMengineInAppProduct(this, products);
         }
     }
 
-    public void onMengineInAppPurchase(Map<MengineInAppPurchaseParam, Object> purchase) {
+    public void onMengineInAppPurchase(MengineInAppPurchaseParam purchase) {
         ArrayList<MenginePluginInAppPurchaseListener> listeners = this.getInAppAnalyticsListeners();
 
         for (MenginePluginInAppPurchaseListener l : listeners) {
@@ -927,7 +928,7 @@ public class MengineApplication extends Application {
         }
     }
 
-    public void onMengineRemoteMessageReceived(Map<MengineRemoteMessageParam, Object> message) {
+    public void onMengineRemoteMessageReceived(MengineRemoteMessageParam message) {
         ArrayList<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
 
         for (MenginePluginRemoteMessageListener l : listeners) {

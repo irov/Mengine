@@ -378,17 +378,17 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         MengineApplication application = this.getMengineApplication();
 
-        Map<MengineAdRevenueParam, Object> paid = new HashMap<>();
-        paid.put(MengineAdRevenueParam.ADREVENUE_MEDIATION, MengineAdMediation.ADMEDIATION_APPLOVINMAX);
-        paid.put(MengineAdRevenueParam.ADREVENUE_FORMAT, adFormat);
-        paid.put(MengineAdRevenueParam.ADREVENUE_ADUNITID, adUnitId);
-        paid.put(MengineAdRevenueParam.ADREVENUE_PLACEMENT, placement);
-        paid.put(MengineAdRevenueParam.ADREVENUE_NETWORK, networkName);
-        paid.put(MengineAdRevenueParam.ADREVENUE_REVENUE_PRECISION, revenuePrecision);
-        paid.put(MengineAdRevenueParam.ADREVENUE_REVENUE_VALUE, revenueValue);
-        paid.put(MengineAdRevenueParam.ADREVENUE_REVENUE_CURRENCY, "USD");
+        MengineAdRevenueParam revenue = new MengineAdRevenueParam();
+        revenue.ADREVENUE_MEDIATION = MengineAdMediation.ADMEDIATION_APPLOVINMAX;
+        revenue.ADREVENUE_FORMAT = adFormat;
+        revenue.ADREVENUE_ADUNITID = adUnitId;
+        revenue.ADREVENUE_PLACEMENT = placement;
+        revenue.ADREVENUE_NETWORK = networkName;
+        revenue.ADREVENUE_REVENUE_PRECISION = revenuePrecision;
+        revenue.ADREVENUE_REVENUE_VALUE = revenueValue;
+        revenue.ADREVENUE_REVENUE_CURRENCY = "USD";
 
-        application.onMengineAdRevenue(paid);
+        application.onMengineAdRevenue(revenue);
     }
 
     public void showCreativeDebugger() {

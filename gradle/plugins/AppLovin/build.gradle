@@ -65,6 +65,10 @@ if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
     }
 }
 
+if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
+    apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/Amazon/amazon.gradle'
+}
+
 subprojects {
     repositories {
         maven { url 'https://artifacts.applovin.com/android' }
@@ -96,7 +100,6 @@ dependencies {
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
         implementation 'com.applovin.mediation:amazon-tam-adapter:9.8.5.0'
-        implementation 'com.amazon.android:aps-sdk:9.8.5'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE == true) {

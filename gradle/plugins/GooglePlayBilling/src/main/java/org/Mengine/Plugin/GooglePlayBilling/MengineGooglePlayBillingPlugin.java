@@ -89,7 +89,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
      * - onGooglePlayBillingPurchasesUpdatedUnknown (int responseCode)
      **/
 
-    private ArrayList<ProductDetails> m_productsDetails;
+    private List<ProductDetails> m_productsDetails;
     private BillingClient m_billingClient;
 
     @Override
@@ -308,8 +308,17 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
                     return;
                 }
 
+                MengineGooglePlayBillingPlugin.this.logMessage("Billing query products details: %s"
+                    , productsDetails
+                );
+
+                m_productsDetails.clear();
+                m_productsDetails.addAll(productsDetails);
+
+                ArrayList<MengineInAppProductParam> products = new ArrayList<>();
+
                 for(ProductDetails details : productsDetails) {
-                    Map<MengineInAppProductParam, Object> product = new HashMap<>();
+                    MengineInAppProductParam product = new MengineInAppProductParam();
 
                     String productId = details.getProductId();
                     String productType = details.getProductType();
@@ -317,43 +326,37 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
                     String title = details.getTitle();
                     String description = details.getDescription();
 
-                    product.put(MengineInAppProductParam.INAPPPRODUCT_ID, productId);
-                    product.put(MengineInAppProductParam.INAPPPRODUCT_TYPE, productType);
-                    product.put(MengineInAppProductParam.INAPPPRODUCT_NAME, name);
-                    product.put(MengineInAppProductParam.INAPPPRODUCT_TITLE, title);
-                    product.put(MengineInAppProductParam.INAPPPRODUCT_DESCRIPTION, description);
+                    product.INAPPPRODUCT_ID = productId;
+                    product.INAPPPRODUCT_TYPE = productType;
+                    product.INAPPPRODUCT_NAME = name;
+                    product.INAPPPRODUCT_TITLE = title;
+                    product.INAPPPRODUCT_DESCRIPTION = description;
 
                     ProductDetails.OneTimePurchaseOfferDetails oneTimePurchaseOfferDetails = details.getOneTimePurchaseOfferDetails();
                     long priceAmountMicros = oneTimePurchaseOfferDetails.getPriceAmountMicros();
                     String formattedPrice = oneTimePurchaseOfferDetails.getFormattedPrice();
                     String priceCurrencyCode = oneTimePurchaseOfferDetails.getPriceCurrencyCode();
 
-                    product.put(MengineInAppProductParam.INAPPPRODUCT_PRICE_AMOUNT_MICROS, priceAmountMicros);
-                    product.put(MengineInAppProductParam.INAPPPRODUCT_PRICE_FORMATTED, formattedPrice);
-                    product.put(MengineInAppProductParam.INAPPPRODUCT_PRICE_CURRENCY_CODE, priceCurrencyCode);
+                    product.INAPPPRODUCT_PRICE_AMOUNT_MICROS = priceAmountMicros;
+                    product.INAPPPRODUCT_PRICE_FORMATTED = formattedPrice;
+                    product.INAPPPRODUCT_PRICE_CURRENCY_CODE = priceCurrencyCode;
 
-                    MengineApplication application = getMengineApplication();
-                    application.onMengineInAppProduct(product);
+                    products.add(product);
                 }
 
-                m_productsDetails.clear();
-                m_productsDetails.addAll(productsDetails);
-
-                MengineGooglePlayBillingPlugin.this.logMessage("Billing query products details: %s"
-                    , m_productsDetails
-                );
+                MengineApplication application = getMengineApplication();
+                application.onMengineInAppProducts(products);
 
                 List<Map<String, Object>> desc_products = new ArrayList<>();
 
-                for (ProductDetails product : m_productsDetails) {
+                for (MengineInAppProductParam product : products) {
                     Map<String, Object> desc_product = new HashMap<>();
 
                     Map<String, Object> desc_offer = new HashMap<>();
 
-                    ProductDetails.OneTimePurchaseOfferDetails oneTimePurchaseOfferDetails = product.getOneTimePurchaseOfferDetails();
-                    long priceAmountMicros = oneTimePurchaseOfferDetails.getPriceAmountMicros();
-                    String formattedPrice = oneTimePurchaseOfferDetails.getFormattedPrice();
-                    String priceCurrencyCode = oneTimePurchaseOfferDetails.getPriceCurrencyCode();
+                    long priceAmountMicros = product.INAPPPRODUCT_PRICE_AMOUNT_MICROS;
+                    String formattedPrice = product.INAPPPRODUCT_PRICE_FORMATTED;
+                    String priceCurrencyCode = product.INAPPPRODUCT_PRICE_CURRENCY_CODE;
 
                     desc_offer.put("priceAmountMicros", priceAmountMicros);
                     desc_offer.put("formattedPrice", formattedPrice);
@@ -361,11 +364,11 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
 
                     desc_product.put("oneTimePurchaseOfferDetails", desc_offer);
 
-                    String description = product.getDescription();
-                    String name = product.getName();
-                    String productId = product.getProductId();
-                    String productType = product.getProductType();
-                    String title = product.getTitle();
+                    String description = product.INAPPPRODUCT_DESCRIPTION;
+                    String name = product.INAPPPRODUCT_NAME;
+                    String productId = product.INAPPPRODUCT_ID;
+                    String productType = product.INAPPPRODUCT_TYPE;
+                    String title = product.INAPPPRODUCT_TITLE;
 
                     desc_product.put("description", description);
                     desc_product.put("name", name);
@@ -604,13 +607,13 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
                 boolean acknowledged = purchase.isAcknowledged();
                 String originalJson = purchase.getOriginalJson();
 
-                Map<MengineInAppPurchaseParam, Object> purchase = new HashMap<>();
-                purchase.put(MengineInAppPurchaseParam.INAPPPURCHASE_TRANSACTION, orderId);
-                purchase.put(MengineInAppPurchaseParam.INAPPPURCHASE_PRODUCTS, products);
-                purchase.put(MengineInAppPurchaseParam.INAPPPURCHASE_QUANTITY, quantity);
-                purchase.put(MengineInAppPurchaseParam.INAPPPURCHASE_ACKNOWLEDGED, acknowledged);
-                purchase.put(MengineInAppPurchaseParam.INAPPPURCHASE_TOKEN, purchaseToken);
-                purchase.put(MengineInAppPurchaseParam.INAPPPURCHASE_DATA, originalJson);
+                MengineInAppPurchaseParam purchase = new MengineInAppPurchaseParam();
+                purchase.INAPPPURCHASE_TRANSACTION = orderId;
+                purchase.INAPPPURCHASE_PRODUCTS = products;
+                purchase.INAPPPURCHASE_QUANTITY = quantity;
+                purchase.INAPPPURCHASE_ACKNOWLEDGED = acknowledged;
+                purchase.INAPPPURCHASE_TOKEN = purchaseToken;
+                purchase.INAPPPURCHASE_DATA = originalJson;
 
                 MengineApplication application = MengineGooglePlayBillingPlugin.this.getMengineApplication();
                 application.onMengineInAppPurchase(purchase);

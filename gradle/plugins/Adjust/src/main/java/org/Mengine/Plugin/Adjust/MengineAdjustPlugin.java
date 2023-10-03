@@ -121,19 +121,19 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onMengineAdRevenue(MengineApplication application, Map<MengineAdRevenueParam, Object> paid) {
-        MengineAdMediation mediation = (MengineAdMediation)paid.get(MengineAdRevenueParam.ADREVENUE_MEDIATION);
+    public void onMengineAdRevenue(MengineApplication application, MengineAdRevenueParam revenue) {
+        MengineAdMediation mediation = revenue.ADREVENUE_MEDIATION;
         String AdjustMediation = MengineAdjustPlugin.getAdjustMediation(mediation);
-        String network = (String)paid.get(MengineAdRevenueParam.ADREVENUE_NETWORK);
-        MengineAdFormat adType = (MengineAdFormat)paid.get(MengineAdRevenueParam.ADREVENUE_FORMAT);
-        String adUnitId = (String)paid.get(MengineAdRevenueParam.ADREVENUE_ADUNITID);
-        String placement = (String)paid.get(MengineAdRevenueParam.ADREVENUE_PLACEMENT);
-        double revenue = (double)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_VALUE);
-        String revenuePrecision = (String)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_PRECISION);
-        String revenueСurrency = (String)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_CURRENCY);
+        String network = revenue.ADREVENUE_NETWORK;
+        MengineAdFormat adType = revenue.ADREVENUE_FORMAT;
+        String adUnitId = revenue.ADREVENUE_ADUNITID;
+        String placement = revenue.ADREVENUE_PLACEMENT;
+        double revenueValue = revenue.ADREVENUE_REVENUE_VALUE;
+        String revenuePrecision = revenue.ADREVENUE_REVENUE_PRECISION;
+        String revenueCurrency = revenue.ADREVENUE_REVENUE_CURRENCY;
 
         AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue(AdjustMediation);
-        adjustAdRevenue.setRevenue(revenue, revenueСurrency);
+        adjustAdRevenue.setRevenue(revenueValue, revenueCurrency);
         adjustAdRevenue.setAdRevenueNetwork(network);
         adjustAdRevenue.setAdRevenueUnit(adUnitId);
         adjustAdRevenue.setAdRevenuePlacement(placement);

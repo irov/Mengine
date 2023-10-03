@@ -289,27 +289,26 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     }
 
     @Override
-    public void onMengineAdRevenue(MengineApplication application, Map<MengineAdRevenueParam, Object> paid) {
+    public void onMengineAdRevenue(MengineApplication application, MengineAdRevenueParam revenue) {
         if (m_firebaseAnalytics == null) {
             return;
         }
 
-        MengineAdMediation mediation = (MengineAdMediation)paid.get(MengineAdRevenueParam.ADREVENUE_MEDIATION);
-        String adFirebaseMediation = this.getAdMediation(mediation);
-        String networkName = (String)paid.get(MengineAdRevenueParam.ADREVENUE_NETWORK);
-        MengineAdFormat adFormat = (MengineAdFormat)paid.get(MengineAdRevenueParam.ADREVENUE_FORMAT);
+        String adFirebaseMediation = this.getAdMediation(revenue.ADREVENUE_MEDIATION);
+        String networkName = revenue.ADREVENUE_NETWORK;
+        MengineAdFormat adFormat = revenue.ADREVENUE_FORMAT;
         String format = MengineFirebaseAnalyticsPlugin.getAdFormat(adFormat);
-        String adUnitId = (String)paid.get(MengineAdRevenueParam.ADREVENUE_ADUNITID);
-        double revenue = (double)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_VALUE);
-        String currency = (String)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_CURRENCY);
+        String adUnitId = revenue.ADREVENUE_ADUNITID;
+        double revenueValue = revenue.ADREVENUE_REVENUE_VALUE;
+        String revenueCurrency = revenue.ADREVENUE_REVENUE_CURRENCY;
 
         Bundle params = new Bundle();
         params.putString(FirebaseAnalytics.Param.AD_PLATFORM, adFirebaseMediation);
         params.putString(FirebaseAnalytics.Param.AD_SOURCE, networkName);
         params.putString(FirebaseAnalytics.Param.AD_FORMAT, format);
         params.putString(FirebaseAnalytics.Param.AD_UNIT_NAME, adUnitId);
-        params.putDouble(FirebaseAnalytics.Param.VALUE, revenue);
-        params.putString(FirebaseAnalytics.Param.CURRENCY, currency);
+        params.putDouble(FirebaseAnalytics.Param.VALUE, revenueValue);
+        params.putString(FirebaseAnalytics.Param.CURRENCY, revenueCurrency);
 
         m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params);
     }

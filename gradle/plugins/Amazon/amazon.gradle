@@ -1,0 +1,3 @@
+dependencies {
+    implementation 'com.amazon.android:aps-sdk:9.8.5'
+}

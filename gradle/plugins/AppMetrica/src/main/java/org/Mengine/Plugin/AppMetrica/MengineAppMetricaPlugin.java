@@ -172,18 +172,20 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     }
 
     @Override
-    public void onMengineAdRevenue(MengineApplication application, Map<MengineAdRevenueParam, Object> paid) {
-        MengineAdMediation mediation = (MengineAdMediation)paid.get(MengineAdRevenueParam.ADREVENUE_MEDIATION);
-        String networkName = (String)paid.get(MengineAdRevenueParam.ADREVENUE_NETWORK);
-        MengineAdFormat adFormat = (MengineAdFormat)paid.get(MengineAdRevenueParam.ADREVENUE_FORMAT);
+    public void onMengineAdRevenue(MengineApplication application, MengineAdRevenueParam revenue) {
+        MengineAdMediation mediation = revenue.ADREVENUE_MEDIATION;
+        String networkName = revenue.ADREVENUE_NETWORK;
+        MengineAdFormat adFormat = revenue.ADREVENUE_FORMAT;
         AdType YandexAdType = MengineAppMetricaPlugin.getYandexAdType(adFormat);
-        String adUnitId = (String)paid.get(MengineAdRevenueParam.ADREVENUE_ADUNITID);
-        String placement = (String)paid.get(MengineAdRevenueParam.ADREVENUE_PLACEMENT);
-        double revenue = (double)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_VALUE);
-        String revenuePrecision = (String)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_PRECISION);
-        String currency = (String)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_CURRENCY);
+        String adUnitId = revenue.ADREVENUE_ADUNITID;
+        String placement = revenue.ADREVENUE_PLACEMENT;
+        double revenueValue = revenue.ADREVENUE_REVENUE_VALUE;
+        String revenuePrecision = revenue.ADREVENUE_REVENUE_PRECISION;
+        String revenueCurrency = revenue.ADREVENUE_REVENUE_CURRENCY;
 
-        AdRevenue adRevenue = AdRevenue.newBuilder(revenue, Currency.getInstance(currency))
+        Currency currency = Currency.getInstance(revenueCurrency);
+
+        AdRevenue adRevenue = AdRevenue.newBuilder(revenueValue, currency)
             .withAdNetwork(networkName)
             .withAdPlacementId(placement)
             .withAdType(YandexAdType)

@@ -169,25 +169,25 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
     }
 
     @Override
-    public void onMengineAdRevenue(MengineApplication application, Map<MengineAdRevenueParam, Object> paid) {
-        MengineAdMediation mediation = (MengineAdMediation)paid.get(MengineAdRevenueParam.ADREVENUE_MEDIATION);
+    public void onMengineAdRevenue(MengineApplication application, MengineAdRevenueParam revenue) {
+        MengineAdMediation mediation = revenue.ADREVENUE_MEDIATION;
         MediationNetwork AppsFlyerSource = MengineAppsFlyerPlugin.getMediationNetwork(mediation);
-        String network = (String)paid.get(MengineAdRevenueParam.ADREVENUE_NETWORK);
-        MengineAdFormat adFormat = (MengineAdFormat)paid.get(MengineAdRevenueParam.ADREVENUE_FORMAT);
+        String network = revenue.ADREVENUE_NETWORK;
+        MengineAdFormat adFormat = revenue.ADREVENUE_FORMAT;
         String AppsFlyerAdType = MengineAppsFlyerPlugin.getAppsFlyerAdType(adFormat);
-        String adUnitId = (String)paid.get(MengineAdRevenueParam.ADREVENUE_ADUNITID);
-        String placement = (String)paid.get(MengineAdRevenueParam.ADREVENUE_PLACEMENT);
-        double revenue = (double)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_VALUE);
-        String revenuePrecision = (String)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_PRECISION);
-        String revenueСurrency = (String)paid.get(MengineAdRevenueParam.ADREVENUE_REVENUE_CURRENCY);
+        String adUnitId = revenue.ADREVENUE_ADUNITID;
+        String placement = revenue.ADREVENUE_PLACEMENT;
+        double revenueValue = revenue.ADREVENUE_REVENUE_VALUE;
+        String revenuePrecision = revenue.ADREVENUE_REVENUE_PRECISION;
+        String revenueCurrency = revenue.ADREVENUE_REVENUE_CURRENCY;
 
         Map<String, String> params = new HashMap<>();
         params.put(Scheme.AD_UNIT, adUnitId);
         params.put(Scheme.AD_TYPE, AppsFlyerAdType);
         params.put(Scheme.PLACEMENT, placement);
 
-        Currency currency = Currency.getInstance(revenueСurrency);
+        Currency currency = Currency.getInstance(revenueCurrency);
 
-        AppsFlyerAdRevenue.logAdRevenue(network, AppsFlyerSource, currency, revenue, params);
+        AppsFlyerAdRevenue.logAdRevenue(network, AppsFlyerSource, currency, revenueValue, params);
     }
 }

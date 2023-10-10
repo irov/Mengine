@@ -106,6 +106,21 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
+        MemoryInterfacePtr createMemoryFileString( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const DocumentInterfacePtr & _doc )
+        {
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, _doc );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create input file stream '%s' stream [%u] (doc: %s)"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , _stream
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+            MemoryInterfacePtr memory = Helper::createMemoryStreamString( stream, _doc );
+
+            return memory;
+        }
+        //////////////////////////////////////////////////////////////////////////
         MemoryInterfacePtr createMemoryContent( const ContentInterfacePtr & _content, bool _stream, bool _share, const DocumentInterfacePtr & _doc )
         {
             const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();

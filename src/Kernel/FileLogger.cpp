@@ -69,7 +69,7 @@ namespace Mengine
     void FileLogger::_finalizeLogger()
     {
         if( m_stream != nullptr )
-        {            
+        {
             m_stream->flush();
 
             Helper::closeOutputStreamFile( m_fileGroup, m_stream );
@@ -105,7 +105,7 @@ namespace Mengine
             m_stream->write( " ", 1 );
         }
 
-        if(_message.flag & LFLAG_SYMBOLSTAMP )
+        if( _message.flag & LFLAG_SYMBOLSTAMP )
         {
             ELoggerLevel level = _message.level;
 
@@ -114,7 +114,7 @@ namespace Mengine
             m_stream->write( " ", 1 );
         }
 
-        if(_message.flag & LFLAG_CATEGORYSTAMP )
+        if( _message.flag & LFLAG_CATEGORYSTAMP )
         {
             size_t category_size = MENGINE_STRLEN( _message.category );
 

@@ -903,9 +903,6 @@ Core
     
     StatisticHelper.h
     
-    TimeoutGuardScope.cpp
-    TimeoutGuardScope.h
-    
     ReferenceCounterGuardScope.cpp
     ReferenceCounterGuardScope.h
     

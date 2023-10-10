@@ -2,6 +2,7 @@
 
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
@@ -17,8 +18,10 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/StatisticHelper.h"
 
 #include "Config/StdIO.h"
+#include "Config/StdString.h"
 #include "Config/Algorithm.h"
 
 #ifndef MENGINE_LOGGER_LEVEL_FORCE_VERBOSE
@@ -31,6 +34,10 @@
 
 #ifndef MENGINE_LOGGER_HISTORY_MAX
 #define MENGINE_LOGGER_HISTORY_MAX 1048576
+#endif
+
+#ifndef MENGINE_LOGGER_MESSAGE_BUFFER_MAX
+#define MENGINE_LOGGER_MESSAGE_BUFFER_MAX 64
 #endif
 
 //////////////////////////////////////////////////////////////////////////
@@ -47,7 +54,15 @@ namespace Mengine
         , m_historically( true )
         , m_historyLimit( MENGINE_LOGGER_HISTORY_MAX )
     {
-        Algorithm::fill_n( m_countMessage, LOGGER_LEVEL_COUNT, 0u );
+        m_staticsticLevel[LM_SILENT] = STATISTIC_LOGGER_MESSAGE_SILENT;
+        m_staticsticLevel[LM_FATAL] = STATISTIC_LOGGER_MESSAGE_FATAL;
+        m_staticsticLevel[LM_MESSAGE_RELEASE] = STATISTIC_LOGGER_MESSAGE_MESSAGE_RELEASE;
+        m_staticsticLevel[LM_ERROR] = STATISTIC_LOGGER_MESSAGE_ERROR;
+        m_staticsticLevel[LM_WARNING] = STATISTIC_LOGGER_MESSAGE_WARNING;
+        m_staticsticLevel[LM_MESSAGE] = STATISTIC_LOGGER_MESSAGE_MESSAGE;
+        m_staticsticLevel[LM_INFO] = STATISTIC_LOGGER_MESSAGE_INFO;
+        m_staticsticLevel[LM_DEBUG] = STATISTIC_LOGGER_MESSAGE_DEBUG;
+        m_staticsticLevel[LM_VERBOSE] = STATISTIC_LOGGER_MESSAGE_VERBOSE;
     }
     //////////////////////////////////////////////////////////////////////////
     LoggerService::~LoggerService()
@@ -126,6 +141,9 @@ namespace Mengine
             }
         }
 
+        m_messages.reserve( MENGINE_LOGGER_MESSAGE_BUFFER_MAX );
+        m_messagesAux.reserve( MENGINE_LOGGER_MESSAGE_BUFFER_MAX );
+
         if( HAS_OPTION( "loghistory" ) == true )
         {
             m_historically = true;
@@ -178,6 +196,13 @@ namespace Mengine
 
         this->logHistory_( msg );
 
+        ThreadSharedMutexInterfacePtr mutexMessage = THREAD_SYSTEM()
+            ->createSharedMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutexMessage );
+
+        m_mutexMessage = mutexMessage;        
+
         ThreadSharedMutexInterfacePtr mutexLogger = THREAD_SYSTEM()
             ->createSharedMutex( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -201,6 +226,24 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CONFIGS_LOAD, &LoggerService::notifyConfigsLoad_, MENGINE_DOCUMENT_FACTORABLE );
 
+        ThreadConditionVariableInterfacePtr conditionLogger = THREAD_SYSTEM()
+            ->createConditionVariable( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( conditionLogger );
+
+        m_conditionLogger = conditionLogger;
+
+        ThreadIdentityInterfacePtr threadLogger = THREAD_SYSTEM()
+            ->createThreadIdentity( STRINGIZE_STRING_LOCAL( "LoggerService" ), ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
+
+        ThreadIdentityRunnerInterfacePtr threadRunner = threadLogger->run( [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
+        {
+            this->processMessages_( _runner );
+        } );
+
+        m_threadLogger = threadLogger;
+        m_threadRunner = threadRunner;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -210,14 +253,10 @@ namespace Mengine
 
         m_memoryOldLog = nullptr;
 
-        m_mutexLogger = nullptr;
+        m_mutexMessage = nullptr;
         m_mutexHistory = nullptr;
         m_mutexMessageBlock = nullptr;
-
-        for( const LoggerInterfacePtr & logger : m_loggers )
-        {
-            logger->flush();
-        }
+        m_mutexLogger = nullptr;
 
         m_loggers.clear();
         m_verboses.clear();
@@ -228,8 +267,24 @@ namespace Mengine
     {
         m_historically = false;
 
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutexHistory );
+        m_mutexHistory->lock();
         m_history.clear();
+        m_mutexHistory->unlock();
+
+        m_mutexLogger->lock();
+
+        for( const LoggerInterfacePtr & logger : m_loggers )
+        {
+            logger->flush();
+        }
+
+        m_mutexLogger->unlock();
+
+        m_threadRunner->cancel();
+        m_threadLogger->join();
+
+        m_threadRunner = nullptr;
+        m_threadLogger = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::setVerboseLevel( ELoggerLevel _level )
@@ -350,25 +405,41 @@ namespace Mengine
         this->logHistory_( _message );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_END, _message );
+
+        m_conditionLogger->wake();
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::logMessage_( const LoggerMessage & _message )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexMessageBlock );
 
-        MENGINE_THREAD_SHARED_MUTEX_SCOPE( m_mutexLogger );
+        ELoggerLevel level = _message.level;
 
-        ++m_countMessage[_message.level];
+        uint32_t statisticId = m_staticsticLevel[level];
 
-        for( const LoggerInterfacePtr & logger : m_loggers )
+        STATISTIC_INC_INTEGER( statisticId );
+
+        LoggerMessageRecord record;
+        MENGINE_STRNCPY( record.category, _message.category, sizeof( record.category ) );
+        record.dateTime = _message.dateTime;
+        record.level = _message.level;
+        record.flag = _message.flag;
+        record.filter = _message.filter;
+        record.color = _message.color;
+        record.file = _message.file;
+        record.line = _message.line;
+        MENGINE_MEMCPY( record.data, _message.data, _message.size );
+        record.data[_message.size] = '\0';
+        record.size = _message.size;
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexMessage );
+
+        if( m_messages.size() >= MENGINE_LOGGER_MESSAGE_BUFFER_MAX )
         {
-            if( logger->validMessage( _message ) == false )
-            {
-                continue;
-            }
-
-            logger->log( _message );
+            return;
         }
+
+        m_messages.emplace_back( record );
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::logHistory_( const LoggerMessage & _message )
@@ -378,7 +449,7 @@ namespace Mengine
             return;
         }
 
-        MENGINE_THREAD_SHARED_MUTEX_SCOPE( m_mutexHistory );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexHistory );
 
         if( m_historyLimit != MENGINE_UNKNOWN_SIZE && m_history.size() >= m_historyLimit )
         {
@@ -409,11 +480,62 @@ namespace Mengine
         m_verboses.insert( m_verboses.begin(), verboses.begin(), verboses.end() );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t LoggerService::getCountMessage( ELoggerLevel _level ) const
+    void LoggerService::processMessages_( const ThreadIdentityRunnerInterfacePtr & _runner )
     {
-        uint32_t count = m_countMessage[_level];
+        for( ;; )
+        {
+            m_conditionLogger->wait( [this, _runner]()
+            {
+                if( _runner->isCancel() == true )
+                {
+                    return true;
+                }
 
-        return count;
+                if( m_messages.empty() == true )
+                {
+                    return false;
+                }
+
+                return true;
+            } );
+
+            if( _runner->isCancel() == true )
+            {
+                break;
+            }
+
+            m_mutexMessage->lock();
+            std::swap( m_messagesAux, m_messages );
+            m_messages.clear();
+            m_mutexMessage->unlock();
+
+            MENGINE_THREAD_SHARED_MUTEX_SCOPE( m_mutexLogger );
+
+            for( const LoggerInterfacePtr & logger : m_loggers )
+            {
+                for( const LoggerMessageRecord & record : m_messagesAux )
+                {
+                    LoggerMessage msg;
+                    msg.category = record.category;
+                    msg.dateTime = record.dateTime;
+                    msg.level = record.level;
+                    msg.flag = record.flag;
+                    msg.filter = record.filter;
+                    msg.color = record.color;
+                    msg.file = record.file;
+                    msg.line = record.line;
+                    msg.data = record.data;
+                    msg.size = MENGINE_STRLEN( record.data );
+
+                    if( logger->validMessage( msg ) == false )
+                    {
+                        continue;
+                    }
+
+                    logger->log( msg );
+                }
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::lockMessage()
@@ -477,7 +599,7 @@ namespace Mengine
             return false;
         }
 
-        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        MemoryInterfacePtr memory = Helper::createMemoryFileString( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( memory == nullptr )
         {

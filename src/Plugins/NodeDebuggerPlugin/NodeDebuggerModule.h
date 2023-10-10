@@ -25,7 +25,6 @@
 #include "Kernel/List.h"
 
 #include "NodeDebuggerSerialization.h"
-#include "NodeDebuggerNetworkLogger.h"
 #include "SceneDataProviderInterface.h"
 
 namespace Mengine

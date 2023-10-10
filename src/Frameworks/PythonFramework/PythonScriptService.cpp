@@ -42,6 +42,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/StatisticHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -135,8 +136,7 @@ namespace Mengine
                     );
                 }
 
-                uint32_t count = LOGGER_SERVICE()
-                    ->getCountMessage( LM_ERROR );
+                int64_t count = STATISTIC_GET_INTEGER( STATISTIC_LOGGER_MESSAGE_ERROR );
 
                 m_counts.emplace_back( count );
 
@@ -172,10 +172,9 @@ namespace Mengine
                     );
                 }
 
-                uint32_t count = LOGGER_SERVICE()
-                    ->getCountMessage( LM_ERROR );
+                int64_t count = STATISTIC_GET_INTEGER( STATISTIC_LOGGER_MESSAGE_ERROR );
 
-                uint32_t last_count = m_counts.back();
+                int64_t last_count = m_counts.back();
                 m_counts.pop_back();
 
                 if( last_count == count )
@@ -232,7 +231,7 @@ namespace Mengine
         protected:
             PythonScriptService * m_scriptService;
 
-            typedef Vector<uint32_t> VectorStackMsgCount;
+            typedef Vector<int64_t> VectorStackMsgCount;
             VectorStackMsgCount m_counts;
 
 #   if defined(MENGINE_WINDOWS_DEBUG)

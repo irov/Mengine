@@ -27,10 +27,6 @@ namespace Mengine
         virtual bool destroyThreadProcessor( const ConstString & _threadName ) = 0;
 
     public:
-        virtual ThreadIdentityInterfacePtr createThreadIdentity( const ConstString & _threadName, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) = 0;
-        virtual bool destroyThreadIdentity( const ThreadIdentityInterfacePtr & _threadIdentity ) = 0;
-
-    public:
         virtual bool hasThreadProcessor( const ConstString & _threadName ) const = 0;
 
     public:

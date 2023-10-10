@@ -86,13 +86,6 @@ namespace Mengine
 
         m_threadProcessors.clear();
 
-        for( const ThreadIdentityInterfacePtr & threadIdentity : m_threadIdentities )
-        {
-            threadIdentity->join();
-        }
-
-        m_threadIdentities.clear();
-
         m_mutexTasks = nullptr;
         m_mutexThreads = nullptr;
 
@@ -165,39 +158,6 @@ namespace Mengine
         }
 
         return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityInterfacePtr ThreadService::createThreadIdentity( const ConstString & _threadName, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
-    {
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutexThreads );
-
-        ThreadIdentityInterfacePtr threadIdentity = THREAD_SYSTEM()
-            ->createThreadIdentity( _threadName, _priority, _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( threadIdentity );
-
-        m_threadIdentities.emplace_back( threadIdentity );
-
-        return threadIdentity;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::destroyThreadIdentity( const ThreadIdentityInterfacePtr & _threadIdentity )
-    {
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutexThreads );
-
-        VectorThreadIdentityDescs::iterator it_found = Algorithm::find( m_threadIdentities.begin(), m_threadIdentities.end(), _threadIdentity );
-
-        if( it_found == m_threadIdentities.end() )
-        {
-            return false;
-        }
-
-        ThreadIdentityInterfacePtr threadIdentity = *it_found;
-        threadIdentity->cancel();
-
-        m_threadIdentities.erase( it_found );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::hasThreadProcessor( const ConstString & _threadName ) const

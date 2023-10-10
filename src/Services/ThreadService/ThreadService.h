@@ -34,10 +34,6 @@ namespace Mengine
         bool destroyThreadProcessor( const ConstString & _threadName ) override;
 
     public:
-        ThreadIdentityInterfacePtr createThreadIdentity( const ConstString & _threadName, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) override;
-        bool destroyThreadIdentity( const ThreadIdentityInterfacePtr & _threadIdentity ) override;
-
-    public:
         bool hasThreadProcessor( const ConstString & _threadName ) const override;
 
     public:
@@ -101,9 +97,6 @@ namespace Mengine
 
         typedef Vector<ThreadProcessorDesc> VectorThreadProcessorDescs;
         VectorThreadProcessorDescs m_threadProcessors;
-
-        typedef Vector<ThreadIdentityInterfacePtr> VectorThreadIdentityDescs;
-        VectorThreadIdentityDescs m_threadIdentities;
 
         ThreadId m_mainThreadId;
 

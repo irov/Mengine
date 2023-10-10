@@ -200,7 +200,6 @@ extern "C"
 
         jclass jclass_Writer = env->GetObjectClass( _writer );
         jmethodID jmethodID_Writer_write_String = env->GetMethodID( jclass_Writer, "write", "(Ljava/lang/String;)V" );
-        jmethodID jmethodID_Writer_write_Char = env->GetMethodID( jclass_Writer, "write", "(I)V" );
 
         const void * data_value = memory->getBuffer();
         size_t data_size = memory->getSize();
@@ -210,9 +209,6 @@ extern "C"
         jstring jvalue = env->NewStringUTF( (const Mengine::Char *)data_value );
         env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
         env->DeleteLocalRef( jvalue );
-
-        env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, '\n' );
-        env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, '\0' );
 
         env->DeleteLocalRef( jclass_Writer );
 
@@ -285,7 +281,6 @@ extern "C"
             case Mengine::LM_VERBOSE:
                 level = Mengine::LM_VERBOSE;
                 color = Mengine::LCOLOR_NONE;
-                return;
                 break;
         }
 

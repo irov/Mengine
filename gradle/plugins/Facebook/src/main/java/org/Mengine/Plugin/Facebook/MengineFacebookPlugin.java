@@ -261,7 +261,11 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             Object value = entry.getValue();
 
             if (value instanceof Boolean) {
-                params.putBoolean(name, (Boolean)value);
+                if ((Boolean)value == true) {
+                    params.putLong(name, 1);
+                } else {
+                    params.putLong(name, 0);
+                }
             } else if (value instanceof Long) {
                 params.putLong(name, (Long)value);
             } else if (value instanceof Double) {
@@ -283,7 +287,11 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             Object value = entry.getValue();
 
             if (value instanceof Boolean) {
-                params.putBoolean(name, (Boolean)value);
+                if ((Boolean)value == true) {
+                    params.putLong(name, 1);
+                } else {
+                    params.putLong(name, 0);
+                }
             } else if (value instanceof Long) {
                 params.putLong(name, (Long)value);
             } else if (value instanceof Double) {

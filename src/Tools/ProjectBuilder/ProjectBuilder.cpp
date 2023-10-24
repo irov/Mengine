@@ -21,8 +21,10 @@
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
+#include "Interface/RenderMaterialServiceInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
+#include "Environment/Windows/Win32Helper.h"
 
 #include "XmlToBinDecoder.h"
 #include "XmlToAekConverter.h"
@@ -245,6 +247,41 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void finalize()
+    {
+        SERVICE_PROVIDER_STOP();
+
+        PLUGIN_SERVICE()
+            ->unloadPlugins();
+
+        SERVICE_FINALIZE( ConfigService );
+        SERVICE_FINALIZE( FileService );
+        SERVICE_FINALIZE( PlatformService );
+        SERVICE_FINALIZE( PluginService );
+        SERVICE_FINALIZE( ModuleService );
+        SERVICE_FINALIZE( TimepipeService );
+        SERVICE_FINALIZE( TimelineService );
+        SERVICE_FINALIZE( EnumeratorService );
+        SERVICE_FINALIZE( MemoryService );
+        SERVICE_FINALIZE( ThreadService );
+        SERVICE_FINALIZE( DataService );
+        SERVICE_FINALIZE( CodecService );
+        SERVICE_FINALIZE( ConverterService );
+        SERVICE_FINALIZE( LoggerService );
+        SERVICE_FINALIZE( ArchiveService );
+        SERVICE_FINALIZE( FactoryService );
+        SERVICE_FINALIZE( OptionsService );
+        SERVICE_FINALIZE( PrototypeService );
+        SERVICE_FINALIZE( VocabularyService );
+        SERVICE_FINALIZE( NotificationService );
+        SERVICE_FINALIZE( EnumeratorService );
+        SERVICE_FINALIZE( DateTimeSystem );
+        SERVICE_FINALIZE( UnicodeSystem );
+        SERVICE_FINALIZE( ThreadSystem );
+        SERVICE_FINALIZE( TimeSystem );
+        SERVICE_FINALIZE( PlatformSystem );
     }
     //////////////////////////////////////////////////////////////////////////
     static bool s_convert( const WString & _fromPath, const WString & _toPath, const WString & _convertType, const MapWParams & _params )
@@ -677,85 +714,6 @@ static void s_error( const wchar_t * _msg )
     );
 }
 //////////////////////////////////////////////////////////////////////////
-static bool getCurrentUserRegValue( const WCHAR * _path, const WCHAR * _key, WCHAR * _value, DWORD _size )
-{
-    HKEY hKey;
-    LONG lRes = RegOpenKeyEx( HKEY_CURRENT_USER, _path, 0, KEY_READ, &hKey );  // Check Python x32
-    if( lRes == ERROR_FILE_NOT_FOUND )
-    {
-#ifdef _MSC_VER
-        lRes = RegOpenKeyEx( HKEY_CURRENT_USER, _path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey );  // Check Python x64
-#endif
-    }
-
-    if( lRes != ERROR_SUCCESS )
-    {
-        LOGGER_ERROR( "%ls RegOpenKeyEx get Error %d"
-            , _path
-            , lRes
-        );
-
-        return false;
-    }
-
-    DWORD dwBufferSize = _size;
-    LONG nError = ::RegQueryValueEx( hKey, _key, 0, NULL, (LPBYTE)_value, &dwBufferSize );
-
-    RegCloseKey( hKey );
-
-    if( nError != ERROR_SUCCESS )
-    {
-        LOGGER_ERROR( "%ls RegQueryValueEx get Error %d"
-            , _path
-            , nError
-        );
-
-        return false;
-    }
-
-    return true;
-}
-//////////////////////////////////////////////////////////////////////////
-static bool filterCurrentUserRegValue( const WCHAR * _path, const std::function<void( const WCHAR *, DWORD )> & _filter )
-{
-    HKEY hKey;
-    LONG lOpenRes = RegOpenKeyEx( HKEY_CURRENT_USER, _path, 0, KEY_READ, &hKey );  // Check Python x32
-    if( lOpenRes == ERROR_FILE_NOT_FOUND )
-    {
-#ifdef _MSC_VER
-        lOpenRes = RegOpenKeyEx( HKEY_CURRENT_USER, _path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey );  // Check Python x64
-#endif
-    }
-
-    if( lOpenRes != ERROR_SUCCESS )
-    {
-        LOGGER_ERROR( "%ls RegOpenKeyEx get Error %d"
-            , _path
-            , lOpenRes
-        );
-
-        return false;
-    }
-
-    for( DWORD index = 0;; ++index )
-    {
-        WCHAR wcKeyValue[256];
-        DWORD wcKeyValueSize = 256;
-        LONG lEnumRes = ::RegEnumKeyEx( hKey, index, wcKeyValue, &wcKeyValueSize, 0, NULL, NULL, NULL );
-
-        if( lEnumRes != ERROR_SUCCESS )
-        {
-            break;
-        }
-
-        _filter( wcKeyValue, wcKeyValueSize );
-    }
-
-    RegCloseKey( hKey );
-
-    return true;
-}
-//////////////////////////////////////////////////////////////////////////
 struct extract_String_type
     : public pybind::type_cast_result<Mengine::String>
 {
@@ -989,6 +947,7 @@ bool run()
 
     LOGGER_ERROR( "initialize complete" );
 
+    /*
     const WCHAR * szPythonVersionRegPath = L"SOFTWARE\\Python\\PythonCore";
 
     std::vector<std::wstring> vPythonVersions;
@@ -1068,7 +1027,7 @@ bool run()
         LOGGER_ERROR( "invalid found python 3.8" );
 
         return false;
-    }
+    }    
 
     PythonDesc & desc = *it_found;
 
@@ -1080,19 +1039,54 @@ bool run()
 
         return false;
     }
+    */
+
+    WCHAR currentPath[MENGINE_MAX_PATH] = {L'\0'};
+    DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
+
+    if( len == 0 )
+    {
+        return false;
+    }
+
+    currentPath[len + 0] = MENGINE_PATH_WDELIM;
+    currentPath[len + 1] = L'\0';
+
+    WCHAR exportPath[MENGINE_MAX_PATH] = {L'\0'};
+    ::wcscpy( exportPath, currentPath );
+    ::wcscat( exportPath, L"Python3Lib/" );
+
+    WCHAR shortpath_stdPath[MENGINE_MAX_PATH] = {L'\0'};
+    DWORD ShortPathNameLen = ::GetShortPathName( exportPath, shortpath_stdPath, MENGINE_MAX_PATH );
+
+    if( ShortPathNameLen == 0 )
+    {
+        LOGGER_ERROR( "invalid GetShortPathName '%ls' get error %ls"
+            , exportPath
+            , Mengine::Helper::Win32GetLastErrorMessage()
+        );
+
+        return false;
+    }
 
     LOGGER_ERROR( "python path: %ls"
-        , szPythonPath
+        , shortpath_stdPath
     );
 
     pybind::allocator_interface * allocator = Mengine::Helper::newT<Detail::MyAllocator>();
 
-    pybind::kernel_interface * kernel = pybind::initialize( allocator, szPythonPath, MENGINE_DEBUG_VALUE( true, false ), true, false );
+    pybind::kernel_interface * kernel = pybind::initialize( allocator, shortpath_stdPath, MENGINE_DEBUG_VALUE( true, false ), true, false );
 
     if( kernel == nullptr )
     {
         return false;
     }
+
+    pybind::list py_syspath( kernel );
+    py_syspath.append( currentPath );
+    py_syspath.append( shortpath_stdPath );
+
+    kernel->set_syspath( py_syspath.ptr() );
 
     LOGGER_ERROR( "pybind::initialize complete" );
 
@@ -1150,50 +1144,7 @@ bool run()
     kernel->incref( py_tools_module );
     kernel->module_addobject( module_builtins, "ToolsBuilderPlugin", py_tools_module );
 
-    Mengine::WChar currentDirectory[MAX_PATH] = {L'\0'};
-    if( ::GetCurrentDirectory( MAX_PATH, currentDirectory ) == 0 )
-    {
-        return false;
-    }
-
-    PyObject * py_syspath = kernel->list_new( 0 );
-
-    {
-#ifdef _MSC_VER
-        WCHAR * ch_buffer;
-        WCHAR * ch = wcstok( szPythonPath, L";", &ch_buffer );
-#elif __MINGW32__
-        WCHAR * ch = wcstok( szPythonPath, L";" );
-#else
-#   error unssuport
-#endif
-
-        while( ch != NULL )
-        {
-            PyObject * py_stdpath = pybind::ptr( kernel, ch );
-            kernel->list_appenditem( py_syspath, py_stdpath );
-            kernel->decref( py_stdpath );
-
-#ifdef _MSC_VER
-            ch = wcstok( NULL, L";", &ch_buffer );
-#elif __MINGW32__
-            ch = wcstok( NULL, L";" );
-#else
-#   error unssuport
-#endif
-        }
-    }
-
-    PyObject * py_currentpath = pybind::ptr( kernel, currentDirectory );
-    kernel->list_appenditem( py_syspath, py_currentpath );
-    kernel->decref( py_currentpath );
-
-    kernel->set_syspath( py_syspath );
-
-    kernel->decref( py_syspath );
-
     LPWSTR lpwCmdLine = ::GetCommandLineW();
-
 
     int nArgs = 0;
     LPWSTR * szArglist = ::CommandLineToArgvW( lpwCmdLine, &nArgs );
@@ -1251,6 +1202,8 @@ bool run()
     }
 
     Mengine::Helper::deleteT( static_cast<Detail::MyAllocator *>(allocator) );
+
+    Mengine::finalize();
 
     return result;
 }

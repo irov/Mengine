@@ -101,19 +101,27 @@ public class MenginePlugin implements MenginePluginInterface {
     }
 
     public String logInfo(String format, Object ... args) {
-        return MengineLog.logInfo(m_pluginName, format, args);
+        String m = MengineLog.logInfo(m_pluginName, format, args);
+
+        return m;
     }
 
     public String logMessage(String format, Object ... args) {
-        return MengineLog.logMessage(m_pluginName, format, args);
+        String m = MengineLog.logMessage(m_pluginName, format, args);
+
+        return m;
     }
 
     public String logWarning(String format, Object ... args) {
-        return MengineLog.logWarning(m_pluginName, format, args);
+        String m = MengineLog.logWarning(m_pluginName, format, args);
+
+        return m;
     }
 
     public String logError(String format, Object ... args) {
-        return MengineLog.logError(m_pluginName, format, args);
+        String m = MengineLog.logError(m_pluginName, format, args);
+
+        return m;
     }
 
     public void assertionError(String format, Object ... args) {

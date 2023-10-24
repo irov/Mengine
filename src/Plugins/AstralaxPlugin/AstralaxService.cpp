@@ -103,7 +103,7 @@ namespace Mengine
 
         m_atlases.clear();
 
-        for( uint32_t index = 0; index != 256; ++index )
+        for( int32_t index = 0; index != m_stageCount; ++index )
         {
             const RenderMaterialStage * stage = m_stages[index];
 

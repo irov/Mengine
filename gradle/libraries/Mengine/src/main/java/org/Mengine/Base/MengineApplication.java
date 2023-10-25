@@ -62,13 +62,11 @@ public class MengineApplication extends Application {
 
     private String m_installKey;
     private long m_installTimestamp = -1;
-    private String m_installDate;
     private String m_installVersion;
     private long m_installRND = -1;
     private long m_sessionIndex = -1;
     private String m_sessionId;
-    private long m_sessionTimestamp;
-    private String m_sessionDate;
+    private long m_sessionTimestamp = -1;
 
     private ArrayList<MenginePlugin> m_plugins = new ArrayList<>();
     private Map<String, MenginePlugin> m_dictionaryPlugins = new HashMap<>();
@@ -213,10 +211,6 @@ public class MengineApplication extends Application {
         return m_installTimestamp;
     }
 
-    public String getInstallDate() {
-        return m_installDate;
-    }
-
     public String getInstallVersion() { return m_installVersion; }
 
     public long getInstallRND() {
@@ -250,10 +244,6 @@ public class MengineApplication extends Application {
 
     public long getSessionTimestamp() {
         return m_sessionTimestamp;
-    }
-
-    public String getSessionDate() {
-        return m_sessionDate;
     }
 
     public String getDeviceLanguage() {
@@ -674,8 +664,7 @@ public class MengineApplication extends Application {
         SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
 
         String installKey = settings.getString("install_key", null);
-        long installTimestamp = settings.getLong("install_timestamp", 0);
-        String installDate = settings.getString("install_date", "");
+        long installTimestamp = settings.getLong("install_timestamp", -1);
         String installVersion = settings.getString("install_version", "");
         long installRND = settings.getLong("install_rnd", -1);
         long sessionIndex = settings.getLong("session_index", 0);
@@ -686,12 +675,10 @@ public class MengineApplication extends Application {
         if (installKey == null) {
             installKey = MengineUtils.getRandomUUIDString();
             installTimestamp = MengineUtils.getTimestamp();
-            installDate = MengineUtils.getDateFormat("d MMM yyyy HH:mm:ss");
             installVersion = this.getVersionName();
 
             editor.putString("install_key", installKey);
             editor.putLong("install_timestamp", installTimestamp);
-            editor.putString("install_date", installDate);
             editor.putString("install_version", installVersion);
         }
 
@@ -718,13 +705,18 @@ public class MengineApplication extends Application {
 
         m_installKey = installKey;
         m_installTimestamp = installTimestamp;
-        m_installDate = installDate;
         m_installVersion = installVersion;
         m_installRND = installRND;
         m_sessionIndex = sessionIndex;
         m_sessionId = sessionId;
         m_sessionTimestamp = MengineUtils.getTimestamp();
-        m_sessionDate = MengineUtils.getDateFormat("d MMM yyyy HH:mm:ss");
+
+        MengineAnalytics.addContextParameterString("install_key", m_installKey);
+        MengineAnalytics.addContextParameterLong("install_timestamp", m_installTimestamp);
+        MengineAnalytics.addContextParameterString("install_version", m_installVersion);
+        MengineAnalytics.addContextParameterLong("install_rnd", m_installRND);
+        MengineAnalytics.addContextParameterLong("session_index", m_sessionIndex);
+        MengineAnalytics.addContextParameterLong("session_timestamp", m_sessionTimestamp);
 
         String build_gitsha1 = this.getEngineGITSHA1();
         this.setState("engine.build_gitsha1", build_gitsha1);
@@ -737,13 +729,17 @@ public class MengineApplication extends Application {
 
         this.setState("user.install_key", m_installKey);
         this.setState("user.install_timestamp", m_installTimestamp);
-        this.setState("user.install_date", m_installDate);
         this.setState("user.install_version", m_installVersion);
         this.setState("user.install_rnd", m_installRND);
         this.setState("user.session_index", m_sessionIndex);
         this.setState("user.session_id", m_sessionId);
         this.setState("user.session_timestamp", m_sessionTimestamp);
-        this.setState("user.session_date", m_sessionDate);
+
+        String installDate = MengineUtils.getDateFormat(m_installTimestamp, "d MMM yyyy HH:mm:ss");
+        this.setState("user.install_date", installDate);
+
+        String sessionDate = MengineUtils.getDateFormat(m_sessionTimestamp, "d MMM yyyy HH:mm:ss");
+        this.setState("user.session_date", sessionDate);
 
         this.setState("application.init", "load");
 

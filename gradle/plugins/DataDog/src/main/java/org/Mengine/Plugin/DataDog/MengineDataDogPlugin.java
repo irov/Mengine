@@ -132,8 +132,20 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
         String installKey = application.getInstallKey();
         loggerDataDog.addAttribute("install_key", installKey);
 
+        long installTimestamp = application.getInstallTimestamp();
+        loggerDataDog.addAttribute("install_timestamp", installTimestamp);
+
+        String installVersion = application.getInstallVersion();
+        loggerDataDog.addAttribute("install_version", installVersion);
+
+        long installRND = application.getInstallRND();
+        loggerDataDog.addAttribute("install_rnd", installRND);
+
         long sessionIndex = application.getSessionIndex();
         loggerDataDog.addAttribute("session_index", sessionIndex);
+
+        long sessionTimestamp = application.getSessionTimestamp();
+        loggerDataDog.addAttribute("session_timestamp", sessionTimestamp);
 
         m_loggerDataDog = loggerDataDog;
     }

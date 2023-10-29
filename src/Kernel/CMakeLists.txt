@@ -631,6 +631,9 @@ Core
     StringSplit.h
     StringSplit.cpp
     
+    StringSlice.h
+    StringSlice.cpp
+    
     StaticString.h
     StaticString.cpp
     

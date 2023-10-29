@@ -2,23 +2,19 @@ package org.Mengine.Plugin.Sentry;
 
 import android.content.Context;
 
-import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
-import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MenginePluginLoggerListener;
 
 import io.sentry.Sentry;
-import io.sentry.SentryLevel;
 import io.sentry.android.core.SentryAndroid;
 import io.sentry.protocol.User;
 
-public class MengineSentryPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginEngineListener {
+public class MengineSentryPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginEngineListener {
     public static final String PLUGIN_NAME = "Sentry";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -144,22 +140,6 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginL
             scope.setExtra("Project", projectName);
             scope.setExtra("Version", String.valueOf(projectVersion));
         });
-    }
-
-    @Override
-    public void onMengineLogger(MengineApplication application, String category, int level, int filter, int color, String msg) {
-        if (BuildConfig.DEBUG == true) {
-            return;
-        }
-
-        switch (level) {
-            case MengineLog.LM_ERROR:
-                Sentry.captureMessage("[" + category + "] " + msg, SentryLevel.ERROR);
-                break;
-            case MengineLog.LM_FATAL:
-                Sentry.captureMessage("[" + category + "] " + msg, SentryLevel.FATAL);
-                break;
-        }
     }
 
     @Override

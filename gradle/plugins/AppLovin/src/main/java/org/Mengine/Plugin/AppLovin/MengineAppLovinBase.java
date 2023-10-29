@@ -8,10 +8,9 @@ import com.applovin.mediation.MaxAdWaterfallInfo;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.MaxMediatedNetworkInfo;
 import com.applovin.mediation.MaxNetworkResponseInfo;
+import com.applovin.mediation.MaxReward;
 
 import org.Mengine.Base.MengineAnalyticsEventBuilder;
-import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -25,14 +24,6 @@ public class MengineAppLovinBase {
 
     public void destroy() {
         m_plugin = null;
-    }
-
-    protected int getConectivityStatus() {
-        MengineApplication application = m_plugin.getMengineApplication();
-        Context context = application.getApplicationContext();
-        int status = MengineUtils.getConectivityStatus(context);
-
-        return status;
     }
 
     protected String getMAAdParams(MaxAd ad) {
@@ -128,6 +119,23 @@ public class MengineAppLovinBase {
         m_plugin.logMessage(message);
     }
 
+    protected void logMaxAdReward(String type, String callback, MaxAd ad, MaxReward reward) {
+        StringBuilder sb = new StringBuilder(512);
+
+        sb.append(String.format(Locale.US, "[%s] callback: %s\n", type, callback));
+
+        MaxAdWaterfallInfo waterfall = ad.getWaterfall();
+
+        this.writeMaxAdWaterfallInfo(sb, waterfall);
+        this.writeMaxReward(sb, reward);
+
+        sb.setLength(sb.length() - 1); //remove last '\n'
+
+        String message = sb.toString();
+
+        m_plugin.logMessage(message);
+    }
+
     protected void logMaxError(String type, String callback, String adUnitId, MaxError error) {
         StringBuilder sb = new StringBuilder(512);
 
@@ -171,7 +179,22 @@ public class MengineAppLovinBase {
         }
     }
 
+    protected void writeMaxReward(StringBuilder sb, MaxReward reward) {
+        if (reward == null) {
+            return;
+        }
+
+        String label = reward.getLabel();
+        int amount = reward.getAmount();
+
+        sb.append(String.format(Locale.US, "Reward Label: %s Amount: %d\n", label, amount));
+    }
+
     protected void writeMaxNetworkResponseInfo(StringBuilder sb, MaxNetworkResponseInfo networkResponse) {
+        if (networkResponse == null) {
+            return;
+        }
+
         MaxMediatedNetworkInfo responseMediatedNetwork = networkResponse.getMediatedNetwork();
         MaxNetworkResponseInfo.AdLoadState responseAdLoadState = networkResponse.getAdLoadState();
         long responseLatencyMillis = networkResponse.getLatencyMillis();

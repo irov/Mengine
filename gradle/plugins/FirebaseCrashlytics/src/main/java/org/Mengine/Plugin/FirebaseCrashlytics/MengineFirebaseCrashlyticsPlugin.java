@@ -125,7 +125,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     @Override
-    public void onMengineLogger(MengineApplication application, String category, int level, int filter, int color, String msg) {
+    public void onMengineLogger(MengineApplication application, int level, String category, String msg) {
         if (BuildConfig.DEBUG == true) {
             return;
         }

@@ -75,7 +75,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         String adUnitId = m_rewardedAd.getAdUnitId();
 
-        m_plugin.logInfo("[Rewarded] loadAd adUnitId: %s request: %d attempt: %d"
+        m_plugin.logMessage("[Rewarded] loadAd adUnitId: %s request: %d attempt: %d"
             , adUnitId
             , m_enumeratorRequest
             , m_retryAttempt
@@ -191,7 +191,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
     @Override
     public void onAdRequestStarted(String adUnitId) {
-        m_plugin.logInfo("[Rewarded] onAdRequestStarted adUnitId: %s request: %d attempt: %d"
+        m_plugin.logMessage("[Rewarded] onAdRequestStarted adUnitId: %s request: %d attempt: %d"
             , adUnitId
             , m_requestId
             , m_retryAttempt
@@ -222,7 +222,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
     @Override
     public void onUserRewarded(MaxAd ad, MaxReward reward) {
-        this.logMaxAd("Rewarded", "onUserRewarded", ad);
+        this.logMaxAdReward("Rewarded", "onUserRewarded", ad, reward);
 
         String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
@@ -230,18 +230,13 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         String label = reward.getLabel();
         int amount = reward.getAmount();
 
-        m_plugin.logInfo("MaxReward %s [%d]"
-            , label
-            , amount
-        );
-
         this.buildEvent("mng_ad_rewarded_user_rewarded")
             .addParameterString("ad_unit_id", adUnitId)
             .addParameterString("placement", placement)
             .addParameterLong("request_id", m_requestId)
             .addParameterJSON("ad", this.getMAAdParams(ad))
-            .addParameterString("label", label)
-            .addParameterLong("amount", amount)
+            .addParameterString("reward_label", label)
+            .addParameterLong("reward_amount", amount)
             .log();
 
         m_plugin.pythonCall("onApplovinRewardedOnUserRewarded", adUnitId, label, amount);

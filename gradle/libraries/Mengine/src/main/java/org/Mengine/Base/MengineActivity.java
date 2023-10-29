@@ -249,7 +249,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.init", "create");
 
-        MengineLog.logInfo(TAG, "onCreate");
+        MengineLog.logMessage(TAG, "onCreate");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onCreate: broken libraries");
@@ -394,7 +394,7 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        MengineLog.logInfo(TAG, "onActivityResult request: %d result: %d"
+        MengineLog.logMessage(TAG, "onActivityResult request: %d result: %d"
             , requestCode
             , resultCode
         );
@@ -422,7 +422,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.lifecycle", "start");
 
-        MengineLog.logInfo(TAG, "onStart");
+        MengineLog.logMessage(TAG, "onStart");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onStart: broken libraries");
@@ -449,7 +449,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.lifecycle", "stop");
 
-        MengineLog.logInfo(TAG, "onStop");
+        MengineLog.logMessage(TAG, "onStop");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onStop: broken libraries");
@@ -478,7 +478,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.lifecycle", "pause");
 
-        MengineLog.logInfo(TAG, "onPause");
+        MengineLog.logMessage(TAG, "onPause");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onPause: broken libraries");
@@ -505,7 +505,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.lifecycle", "resume");
 
-        MengineLog.logInfo(TAG, "onResume");
+        MengineLog.logMessage(TAG, "onResume");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onResume: broken libraries");
@@ -530,7 +530,7 @@ public class MengineActivity extends SDLActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        MengineLog.logInfo(TAG, "onNewIntent intent: %s", intent);
+        MengineLog.logMessage(TAG, "onNewIntent intent: %s", intent);
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onNewIntent: broken libraries");
@@ -549,7 +549,7 @@ public class MengineActivity extends SDLActivity {
     protected void onDestroy() {
         this.setState("activity.lifecycle", "destroy");
 
-        MengineLog.logInfo(TAG, "onDestroy");
+        MengineLog.logMessage(TAG, "onDestroy");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onDestroy: broken libraries");
@@ -591,7 +591,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.lifecycle", "restart");
 
-        MengineLog.logInfo(TAG, "onRestart");
+        MengineLog.logMessage(TAG, "onRestart");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onRestart: broken libraries");
@@ -618,7 +618,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("configuration.orientation", newConfig.orientation);
 
-        MengineLog.logInfo(TAG, "onConfigurationChanged config: %s"
+        MengineLog.logMessage(TAG, "onConfigurationChanged config: %s"
             , newConfig.toString()
         );
 
@@ -639,7 +639,7 @@ public class MengineActivity extends SDLActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        MengineLog.logInfo(TAG, "onRequestPermissionsResult request: %d permissions: %s grantResults: %s"
+        MengineLog.logMessage(TAG, "onRequestPermissionsResult request: %d permissions: %s grantResults: %s"
             , requestCode
             , Arrays.toString(permissions)
             , Arrays.toString(grantResults)

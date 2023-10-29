@@ -396,8 +396,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::logMessage( const LoggerMessage & _message )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _message.category, "please setup category for log message ");
-        MENGINE_ASSERTION_MEMORY_PANIC( _message.data, "please setup data for log message " );
+        MENGINE_ASSERTION_MEMORY_PANIC( _message.category, "please setup category for log message" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _message.data, "please setup data for log message" );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _message );
 

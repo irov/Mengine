@@ -156,7 +156,7 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
     }
 
     @Override
-    public void onMengineLogger(MengineApplication application, String tag, int level, int filter, int color, String msg) {
+    public void onMengineLogger(MengineApplication application, int level, String tag, String msg) {
         if (m_loggerDataDog == null) {
             return;
         }

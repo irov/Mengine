@@ -161,7 +161,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
     @Override
     public void onAdLoaded(MaxAd ad) {
-        this.logMaxAd( "Banner","onAdLoaded", ad);
+        this.logMaxAd("Banner","onAdLoaded", ad);
 
         String adUnitId = ad.getAdUnitId();
 

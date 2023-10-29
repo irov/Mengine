@@ -23,6 +23,7 @@
 #include "Kernel/ProxyLogger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/LoggerHelper.h"
+#include "Kernel/StringSlice.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"
@@ -201,14 +202,16 @@ extern "C"
         jclass jclass_Writer = env->GetObjectClass( _writer );
         jmethodID jmethodID_Writer_write_String = env->GetMethodID( jclass_Writer, "write", "(Ljava/lang/String;)V" );
 
-        const void * data_value = memory->getBuffer();
+        const Mengine::Char * data_value = memory->getBuffer();
         size_t data_size = memory->getSize();
 
-        MENGINE_UNUSED( data_size );
-
-        jstring jvalue = env->NewStringUTF( (const Mengine::Char *)data_value );
-        env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
-        env->DeleteLocalRef( jvalue );
+        Mengine::Char jvalue_str[1024 + 1] = {'\0'};
+        Mengine::Helper::stringSlice( data_value, data_size, jvalue_str, 1024, [env, _writer, jmethodID_Writer_write_String]( const Mengine::Char * _str )
+        {
+            jstring jvalue = env->NewStringUTF( _str );
+            env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
+            env->DeleteLocalRef( jvalue );
+        });
 
         env->DeleteLocalRef( jclass_Writer );
 

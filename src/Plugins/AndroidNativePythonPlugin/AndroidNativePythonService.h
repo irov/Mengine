@@ -37,7 +37,8 @@ namespace Mengine
         void addCommand( const LambdaPythonEventHandler & _command );
 
     public:
-        void pythonMethod( const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) override;
+        bool hasPythonMethod( const ConstString & _plugin, const ConstString & _method ) const override;
+        void callPythonMethod( const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const override;
         void addPlugin( const ConstString & _name, jobject _plugin ) override;
         void activateSemaphore( const ConstString & _name ) override;
 
@@ -81,6 +82,8 @@ namespace Mengine
 
         typedef Map<Pair<ConstString, ConstString>, VectorAndroidPythonCallbacks> MapAndroidCallbacks;
         MapAndroidCallbacks m_callbacks;
+
+        ThreadMutexInterfacePtr m_callbacksMutex;
 
         struct AndroidSemaphoreListenerDesc
         {

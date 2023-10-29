@@ -82,6 +82,8 @@ namespace Mengine
 
         m_rwops = rwops;
 
+        m_size = 0;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -92,10 +94,10 @@ namespace Mengine
             return true;
         }
 
-        bool successful = this->flush();
-
         SDL_RWclose( m_rwops );
         m_rwops = nullptr;
+
+        m_size = 0;
 
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         if( m_withTemp == true )
@@ -130,7 +132,7 @@ namespace Mengine
         }
 #endif
 
-        return successful;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t SDLFileOutputStream::write( const void * _data, size_t _size )
@@ -161,6 +163,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileOutputStream::flush()
     {
+        //Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

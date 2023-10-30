@@ -436,10 +436,6 @@ public class MengineActivity extends SDLActivity {
             l.onStart(this);
         }
 
-        if (m_initializeBaseServices == true) {
-            this.pythonCall(TAG, "onStart");
-        }
-
         this.setState("activity.lifecycle", "started");
     }
 
@@ -465,10 +461,6 @@ public class MengineActivity extends SDLActivity {
             l.onStop(this);
         }
 
-        if (m_initializeBaseServices == true) {
-            this.pythonCall(TAG, "onStop");
-        }
-
         this.setState("activity.lifecycle", "stoped");
     }
 
@@ -492,10 +484,6 @@ public class MengineActivity extends SDLActivity {
             l.onPause(this);
         }
 
-        if (m_initializeBaseServices == true) {
-            this.pythonCall(TAG, "onPause");
-        }
-
         this.setState("activity.lifecycle", "paused");
     }
 
@@ -517,10 +505,6 @@ public class MengineActivity extends SDLActivity {
 
         for (MenginePluginActivityListener l : listeners) {
             l.onResume(this);
-        }
-
-        if (m_initializeBaseServices == true) {
-            this.pythonCall(TAG, "onResume");
         }
 
         this.setState("activity.lifecycle", "resumed");
@@ -603,10 +587,6 @@ public class MengineActivity extends SDLActivity {
 
         for (MenginePluginActivityListener l : listeners) {
             l.onRestart(this);
-        }
-
-        if (m_initializeBaseServices == true) {
-            this.pythonCall(TAG, "onRestart");
         }
 
         this.setState("activity.lifecycle", "restarted");

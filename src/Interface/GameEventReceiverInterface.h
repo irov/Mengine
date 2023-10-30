@@ -58,13 +58,11 @@ namespace Mengine
         EVENT_GAME_CLOSE,
         EVENT_GAME_OVER_FILLRATE,
         EVENT_GAME_FRAME_END,
-#if defined(MENGINE_PLATFORM_IOS)
-        EVENT_GAME_IOS_APPLICATION_DID_BECOME_ACTIVE,
-        EVENT_GAME_IOS_APPLICATION_WILL_ENTER_FOREGROUND,
-        EVENT_GAME_IOS_APPLICATION_DID_ENTER_BACKGROUD,
-        EVENT_GAME_IOS_APPLICATION_WILL_RESIGN_ACTIVE,
-        EVENT_GAME_IOS_APPLICATION_WILL_TERMINATE,
-#endif
+        EVENT_GAME_APPLICATION_DID_BECOME_ACTIVE,
+        EVENT_GAME_APPLICATION_WILL_ENTER_FOREGROUND,
+        EVENT_GAME_APPLICATION_DID_ENTER_BACKGROUD,
+        EVENT_GAME_APPLICATION_WILL_RESIGN_ACTIVE,
+        EVENT_GAME_APPLICATION_WILL_TERMINATE,
         EVENT_GAME_ANALYTICS_EVENT,
         EVENT_GAME_ANALYTICS_SCREENVIEW,
         EVENT_GAME_ANALYTICS_FLUSH,
@@ -117,12 +115,12 @@ namespace Mengine
         virtual bool onGameClose() = 0;
         virtual void onGameOverFillrate( double _fillrate, double _limit ) = 0;
         virtual void onGameFrameEnd() = 0;
-#if defined(MENGINE_PLATFORM_IOS)
-        virtual void onGameiOSApplicationDidBecomeActive() = 0;
-        virtual void onGameiOSApplicationWillEnterForeground() = 0;
-        virtual void onGameiOSApplicationDidEnterBackground() = 0;
-        virtual void onGameiOSApplicationWillResignActive() = 0;
-        virtual void onGameiOSApplicationWillTerminate() = 0;
+#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
+        virtual void onGameApplicationDidBecomeActive() = 0;
+        virtual void onGameApplicationWillEnterForeground() = 0;
+        virtual void onGameApplicationDidEnterBackground() = 0;
+        virtual void onGameApplicationWillResignActive() = 0;
+        virtual void onGameApplicationWillTerminate() = 0;
 #endif
         virtual void onGameAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) = 0;
         virtual void onGameAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName ) = 0;
@@ -170,12 +168,12 @@ namespace Mengine
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_CLOSE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_OVER_FILLRATE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FRAME_END );
-#if defined(MENGINE_PLATFORM_IOS)
-    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_IOS_APPLICATION_DID_BECOME_ACTIVE );
-    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_IOS_APPLICATION_WILL_ENTER_FOREGROUND );
-    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_IOS_APPLICATION_DID_ENTER_BACKGROUD );
-    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_IOS_APPLICATION_WILL_RESIGN_ACTIVE );
-    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_IOS_APPLICATION_WILL_TERMINATE );
+#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_APPLICATION_DID_BECOME_ACTIVE );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_APPLICATION_WILL_ENTER_FOREGROUND );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_APPLICATION_DID_ENTER_BACKGROUD );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_APPLICATION_WILL_RESIGN_ACTIVE );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_APPLICATION_WILL_TERMINATE );
 #endif
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ANALYTICS_EVENT );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ANALYTICS_SCREENVIEW );

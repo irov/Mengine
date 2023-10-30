@@ -84,12 +84,12 @@ namespace Mengine
     protected:
         void onTimeFactorChange_( float _timeFactor );
 
-#if defined(MENGINE_PLATFORM_IOS)
-        void oniOSApplicationDidBecomeActive_();
-        void oniOSApplicationWillEnterForeground_();
-        void oniOSApplicationDidEnterBackground_();
-        void oniOSApplicationWillResignActive_();
-        void oniOSApplicationWillTerminate_();
+#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
+        void onApplicationDidBecomeActive_();
+        void onApplicationWillEnterForeground_();
+        void onApplicationDidEnterBackground_();
+        void onApplicationWillResignActive_();
+        void onApplicationWillTerminate_();
 #endif
 
     protected:

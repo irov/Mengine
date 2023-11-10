@@ -102,10 +102,15 @@ namespace Mengine
         {
         case SDL_MOUSEWHEEL:
             {
-                mt::vec2f point;
-                this->calcCursorPosition_( _sdlWindow, _event.wheel.x, _event.wheel.y, &point );
+                Sint32 mouseX = _event.wheel.mouseX;
+                Sint32 mouseY = _event.wheel.mouseY;
 
-                Helper::pushMouseWheelEvent( point.x, point.y, WC_CENTRAL, _event.wheel.y );
+                mt::vec2f point;
+                this->calcCursorPosition_( _sdlWindow, mouseX, mouseY, &point );
+
+                Sint32 wheel_vertically = _event.wheel.y;
+
+                Helper::pushMouseWheelEvent( point.x, point.y, WC_CENTRAL, wheel_vertically );
             }break;
         case SDL_KEYDOWN:
         case SDL_KEYUP:
@@ -152,28 +157,37 @@ namespace Mengine
 
                 const Char * text = _event.text.text;
 
-                WChar text_code[8] = {L'\0'};
+                WChar text_code[SDL_TEXTINPUTEVENT_TEXT_SIZE] = {L'\0'};
                 size_t text_code_size;
                 UNICODE_SYSTEM()
-                    ->utf8ToUnicode( text, MENGINE_UNKNOWN_SIZE, text_code, 7, &text_code_size );
+                    ->utf8ToUnicode( text, MENGINE_UNKNOWN_SIZE, text_code, SDL_TEXTINPUTEVENT_TEXT_SIZE, &text_code_size );
 
-                Helper::pushTextEvent( point.x, point.y, text_code[0] );
+                Helper::pushTextEvent( point.x, point.y, text_code );
             }break;
         case SDL_MOUSEMOTION:
             {
+                Sint32 x = _event.motion.x;
+                Sint32 y = _event.motion.y;
+
                 mt::vec2f point;
-                this->calcCursorPosition_( _sdlWindow, _event.motion.x, _event.motion.y, &point );
+                this->calcCursorPosition_( _sdlWindow, x, y, &point );
+
+                Sint32 xrel = _event.motion.xrel;
+                Sint32 yrel = _event.motion.yrel;
 
                 mt::vec2f delta;
-                this->calcCursorPosition_( _sdlWindow, _event.motion.xrel, _event.motion.yrel, &delta );
+                this->calcCursorPosition_( _sdlWindow, xrel, yrel, &delta );
 
                 Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, delta.x, delta.y, 0.f );
             }break;
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP:
             {
+                Sint32 x = _event.button.x;
+                Sint32 y = _event.button.y;
+
                 mt::vec2f point;
-                this->calcCursorPosition_( _sdlWindow, _event.button.x, _event.button.y, &point );
+                this->calcCursorPosition_( _sdlWindow, x, y, &point );
 
                 EMouseButtonCode button;
 
@@ -182,37 +196,54 @@ namespace Mengine
                 case SDL_BUTTON_LEFT:
                     button = MC_LBUTTON;
                     break;
-                case SDL_BUTTON_RIGHT:
-                    button = MC_RBUTTON;
-                    break;
                 case SDL_BUTTON_MIDDLE:
                     button = MC_MBUTTON;
                     break;
-                default:
-                    button = static_cast<EMouseButtonCode>(_event.button.button - 1);
+                case SDL_BUTTON_RIGHT:
+                    button = MC_RBUTTON;
                     break;
+                case SDL_BUTTON_X1:
+                    button = MC_X1BUTTON;
+                    break;
+                case SDL_BUTTON_X2:
+                    button = MC_X2BUTTON;
+                    break;
+                default:
+                    return;
                 };
 
-                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, button, 0.f, _event.button.type == SDL_MOUSEBUTTONDOWN );
-            }
-            break;
+                bool isDown = _event.type == SDL_MOUSEBUTTONDOWN;
+
+                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, button, 0.f, isDown );
+            }break;
         case SDL_FINGERMOTION:
             {
-                ETouchCode fingerIndex = this->getFingerIndex_( _event.tfinger.fingerId );
+                SDL_FingerID fingerId = _event.tfinger.fingerId;
 
-                Helper::pushMouseMoveEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, _event.tfinger.dx, _event.tfinger.dy, _event.tfinger.pressure );
+                ETouchCode fingerIndex = this->getFingerIndex_( fingerId );
+
+                float x = _event.tfinger.x;
+                float y = _event.tfinger.y;
+                float dx = _event.tfinger.dx;
+                float dy = _event.tfinger.dy;
+                float pressure = _event.tfinger.pressure;
+
+                Helper::pushMouseMoveEvent( fingerIndex, x, y, dx, dy, pressure );
             }break;
         case SDL_FINGERDOWN:
-            {
-                ETouchCode fingerIndex = this->acquireFingerIndex_( _event.tfinger.fingerId );
-
-                Helper::pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, MC_LBUTTON, _event.tfinger.pressure, true );
-            }break;
         case SDL_FINGERUP:
             {
-                ETouchCode fingerIndex = this->releaseFingerIndex_( _event.tfinger.fingerId );
+                SDL_FingerID fingerId = _event.tfinger.fingerId;
 
-                Helper::pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, MC_LBUTTON, _event.tfinger.pressure, false );
+                ETouchCode fingerIndex = this->acquireFingerIndex_( fingerId );
+
+                float x = _event.tfinger.x;
+                float y = _event.tfinger.y;
+                float pressure = _event.tfinger.pressure;
+
+                bool isDown = _event.type == SDL_FINGERDOWN;
+
+                Helper::pushMouseButtonEvent( fingerIndex, x, y, MC_LBUTTON, pressure, isDown );
             }break;
         default:
             break;
@@ -221,14 +252,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLInput::isKeyDown( EKeyCode _code ) const
     {
-        return m_keyDown[_code];
+        bool isDown = m_keyDown[_code];
+
+        return isDown;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLInput::isAnyKeyDown() const
     {
         for( uint32_t i = 0; i != MENGINE_INPUT_MAX_KEY_CODE; ++i )
         {
-            if( m_keyDown[i] == true )
+            bool isDown = m_keyDown[i];
+
+            if( isDown == true )
             {
                 return true;
             }

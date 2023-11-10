@@ -2997,6 +2997,20 @@ namespace Mengine
                 return wp_screen;
             }
             //////////////////////////////////////////////////////////////////////////
+            static WChar s_InputTextEvent_getSymbol( InputTextEvent * _event )
+            {
+                WChar symbol = _event->text[0];
+
+                return symbol;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static const WChar * s_InputTextEvent_getText( InputTextEvent * _event )
+            {
+                const WChar * text = _event->text;
+
+                return text;
+            }
+            //////////////////////////////////////////////////////////////////////////
             PythonValueFollowerLinearPtr s_createValueFollowerLinear( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args )
             {
                 PythonValueFollowerLinearPtr follower = PROTOTYPE_SERVICE()
@@ -4545,7 +4559,8 @@ namespace Mengine
             .def_member( "special", &InputTextEvent::special )
             .def_member( "x", &InputTextEvent::x )
             .def_member( "y", &InputTextEvent::y )
-            .def_member( "symbol", &InputTextEvent::symbol )
+            .def_property_static( "symbol", &EngineScriptMethod::s_InputTextEvent_getSymbol, nullptr )
+            .def_property_static( "text", &EngineScriptMethod::s_InputTextEvent_getText, nullptr )
             ;
 
         pybind::struct_<InputMouseButtonEvent>( _kernel, "InputMouseButtonEvent" )

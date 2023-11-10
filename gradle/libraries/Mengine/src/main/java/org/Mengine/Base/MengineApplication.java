@@ -673,6 +673,10 @@ public class MengineApplication extends Application {
 
                 MengineNetworkTransport transport = this.getNetworkTransport(networkCapabilities);
 
+                if (m_networkUnmetered == unmetered && m_networkTransport == transport) {
+                    return;
+                }
+
                 MengineLog.logMessage(TAG, "NetworkCallback onCapabilitiesChanged unmetered: %b transport: %s"
                     , unmetered
                     , transport

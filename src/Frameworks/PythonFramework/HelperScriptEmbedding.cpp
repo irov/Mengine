@@ -1710,7 +1710,7 @@ namespace Mengine
                 pybind::args m_args;
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<PythonAccountSettingProvider> PyAccountSettingProviderPtr;
+            typedef IntrusivePtr<PythonAccountSettingProvider, AccountSettingProviderInterface> PyAccountSettingProviderPtr;
             //////////////////////////////////////////////////////////////////////////
             bool s_addAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args )
             {
@@ -3858,7 +3858,8 @@ namespace Mengine
             .def( "MC_LBUTTON", MC_LBUTTON )
             .def( "MC_RBUTTON", MC_RBUTTON )
             .def( "MC_MBUTTON", MC_MBUTTON )
-            .def( "MC_XBUTTON", MC_XBUTTON )
+            .def( "MC_X1BUTTON", MC_X1BUTTON )
+            .def( "MC_X2BUTTON", MC_X2BUTTON )
             ;
 
         pybind::enum_<ETouchCode>( _kernel, "TouchCode" )

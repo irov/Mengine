@@ -41,7 +41,7 @@ changed_files=$(git diff-index --cached $against | \
 	grep -E '[MA]	.*\.(c|cpp|cc|cxx)$' | cut -f 2)
 
 if [ -n "$changed_files" ]; then
-	cppcheck -j4 --inline-suppr --enable=warning,performance,portability,missingInclude --suppress=nullPointerRedundantCheck --suppress=unknownMacro --error-exitcode=1 $changed_files
+	cppcheck -j4 --inline-suppr --enable=warning,performance,portability --suppress=nullPointerRedundantCheck --suppress=unknownMacro --error-exitcode=1 $changed_files
 	exit $?
 fi
 

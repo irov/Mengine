@@ -231,7 +231,6 @@ namespace Mengine
                 Helper::pushMouseMoveEvent( fingerIndex, x, y, dx, dy, pressure );
             }break;
         case SDL_FINGERDOWN:
-        case SDL_FINGERUP:
             {
                 SDL_FingerID fingerId = _event.tfinger.fingerId;
 
@@ -241,9 +240,19 @@ namespace Mengine
                 float y = _event.tfinger.y;
                 float pressure = _event.tfinger.pressure;
 
-                bool isDown = _event.type == SDL_FINGERDOWN;
+                Helper::pushMouseButtonEvent( fingerIndex, x, y, MC_LBUTTON, pressure, true );
+            }break;
+        case SDL_FINGERUP:
+            {
+                SDL_FingerID fingerId = _event.tfinger.fingerId;
 
-                Helper::pushMouseButtonEvent( fingerIndex, x, y, MC_LBUTTON, pressure, isDown );
+                ETouchCode fingerIndex = this->releaseFingerIndex_( fingerId );
+
+                float x = _event.tfinger.x;
+                float y = _event.tfinger.y;
+                float pressure = _event.tfinger.pressure;
+
+                Helper::pushMouseButtonEvent( fingerIndex, x, y, MC_LBUTTON, pressure, false );
             }break;
         default:
             break;

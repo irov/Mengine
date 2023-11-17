@@ -777,6 +777,8 @@ namespace Mengine
             , deviceSeed
         );
 
+        SDL_EventState( SDL_JOYAXISMOTION, SDL_FALSE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

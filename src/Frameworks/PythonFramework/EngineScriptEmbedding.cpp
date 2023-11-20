@@ -1877,9 +1877,27 @@ namespace Mengine
                     }
                     else if( v.is_string() == true )
                     {
-                        ConstString value = v.extract();
+                        String value = v.extract();
 
-                        builder->addParameterConstString( k, value );
+                        builder->addParameterString( k, value );
+                    }
+                    else if( v.is_unicode() == true )
+                    {
+                        WString value = v.extract();
+
+                        String utf8_value;
+                        if( Helper::unicodeToUtf8( value, &utf8_value ) == false )
+                        {
+                            LOGGER_ERROR( "invalid convert to utf8 pybind analytics parameter '%s' value '%s' type '%s'"
+                                , k.c_str()
+                                , v.repr().c_str()
+                                , v.repr_type().c_str()
+                            );
+
+                            return;
+                        }
+
+                        builder->addParameterString( k, utf8_value );
                     }
                     else if( v.is_embedded_type<ConstString>() == true )
                     {

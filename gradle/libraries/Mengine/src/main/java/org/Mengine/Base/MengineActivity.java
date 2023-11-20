@@ -87,7 +87,6 @@ public class MengineActivity extends SDLActivity {
         return AndroidEnvironmentService_getProjectVersion();
     }
 
-
     public MengineApplication getMengineApplication() {
         MengineApplication app = (MengineApplication)this.getApplication();
 
@@ -157,6 +156,18 @@ public class MengineActivity extends SDLActivity {
         String sessionId = app.getSessionId();
 
         return sessionId;
+    }
+
+    public String getVersionName() {
+        if (m_destroy == true) {
+            return "";
+        }
+
+        MengineApplication app = this.getMengineApplication();
+
+        String versionName = app.getVersionName();
+
+        return versionName;
     }
 
     public void setState(String name, Object value) {

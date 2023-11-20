@@ -11,10 +11,12 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
@@ -26,6 +28,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
     public static final boolean PLUGIN_EMBEDDING = false;
 
     protected ImageView m_image;
+    protected TextView m_text;
 
     private Drawable getDrawableSplashScreen(Context context) {
         Resources resources = context.getResources();
@@ -35,22 +38,54 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
         return drawable;
     }
 
+    private ImageView createBackground(Context context) {
+        ImageView image = new ImageView(context);
+        Drawable mengine_splashscreen = this.getDrawableSplashScreen(context);
+        image.setBackground(mengine_splashscreen);
+        image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        image.setLayoutParams(params);
+
+        return image;
+    }
+
+    private TextView createTextSessionId(Context context, String message) {
+        TextView text = new TextView(context);
+        text.setText(message);
+        text.setTextColor(context.getResources().getColor(R.color.mengine_splashscreen_text_color));
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        params.addRule(RelativeLayout.ALIGN_PARENT_START);
+        text.setLayoutParams(params);
+
+        return text;
+    }
+
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         this.setState("splashscreen.state", "init");
 
-        ImageView image = new ImageView(activity);
-        Context context = MengineActivity.getContext();
-        Drawable mengine_splashscreen = this.getDrawableSplashScreen(context);
-        image.setBackground(mengine_splashscreen);
-        image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        image.setLayoutParams(params);
-
+        Context context = activity.getContext();
         ViewGroup view = (ViewGroup)MengineActivity.getContentView();
+
+        ImageView image = this.createBackground(context);
+
         view.addView(image);
 
         m_image = image;
+
+        String sessionId = activity.getSessionId();
+        String versionName = activity.getVersionName();
+
+        String message = String.format("ID: %s | %s", sessionId, versionName);
+
+        TextView text = this.createTextSessionId(context, message);
+
+        view.addView(text);
+
+        m_text = text;
 
         this.showSplash(activity);
     }
@@ -74,6 +109,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
                 MengineSplashScreenPlugin.this.logMessage("show splash screen");
 
                 m_image.setVisibility(View.VISIBLE);
+                m_text.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -118,6 +154,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
                 MengineSplashScreenPlugin.this.logMessage("hided splash screen");
 
                 m_image.setVisibility(View.GONE);
+                m_text.setVisibility(View.GONE);
 
                 MengineUtils.performOnMainThread(() -> {
                     MengineSplashScreenPlugin.this.removeSpash(activity);
@@ -136,9 +173,12 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
 
     private void removeSpash(@NonNull MengineActivity activity) {
         ViewGroup view = (ViewGroup)MengineActivity.getContentView();
-        view.removeView(m_image);
 
+        view.removeView(m_image);
         m_image = null;
+
+        view.removeView(m_text);
+        m_text = null;
 
         this.setState("splashscreen.state", "removed");
     }

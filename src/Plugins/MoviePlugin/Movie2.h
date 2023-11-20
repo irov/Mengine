@@ -173,7 +173,6 @@ namespace Mengine
         bool hasSocket( const ConstString & _name ) const;
         void foreachSockets( const LambdaNodes & _lambda );
 
-
     protected:
         void addText_( uint32_t _index, const TextFieldPtr & _text );
         const TextFieldPtr & getText_( uint32_t _index ) const;

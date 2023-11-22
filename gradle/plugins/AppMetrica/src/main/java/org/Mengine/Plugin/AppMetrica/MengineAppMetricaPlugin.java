@@ -171,7 +171,7 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     }
 
     @Override
-    public void onMengineLogger(MengineApplication application, String category, int level, int filter, int color, String msg) {
+    public void onMengineLogger(MengineApplication application, int level, String category, String msg) {
         if (BuildConfig.DEBUG == true) {
             return;
         }

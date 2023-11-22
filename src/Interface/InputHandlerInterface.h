@@ -9,6 +9,8 @@
 
 #include "Config/Char.h"
 
+#define MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE 32
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -48,7 +50,7 @@ namespace Mengine
 
         float x;
         float y;
-        WChar symbol;
+        WChar text[MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE];
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseButtonEvent

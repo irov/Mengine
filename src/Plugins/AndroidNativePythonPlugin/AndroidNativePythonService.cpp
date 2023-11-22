@@ -13,6 +13,7 @@
 #include "Kernel/Error.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/FactoryPool.h"
+#include "Kernel/ThreadMutexScope.h"
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
@@ -46,11 +47,16 @@ extern "C"
             return;
         }
 
+        if( s_androidNativePythonService->hasPythonMethod(plugin, method) == false )
+        {
+            return;
+        }
+
         jobjectArray new_args = (jobjectArray)env->NewGlobalRef( _args );
 
         s_androidNativePythonService->addCommand([plugin, method, new_args]( const Mengine::AndroidNativePythonEventHandlerInterfacePtr & _handler )
         {
-            _handler->pythonMethod( plugin, method, new_args );
+            _handler->callPythonMethod( plugin, method, new_args );
         } );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -137,13 +143,18 @@ namespace Mengine
 
         m_eventation = Helper::makeFactorableUnique<PythonEventation>( MENGINE_DOCUMENT_FACTORABLE );
 
-        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
+        ThreadMutexInterfacePtr eventationMutex = THREAD_SYSTEM()
             ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        if( m_eventation->initialize( mutex ) == false )
+        if( m_eventation->initialize( eventationMutex ) == false )
         {
             return false;
         }
+
+        ThreadMutexInterfacePtr callbacksMutex = THREAD_SYSTEM()
+                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        m_callbacksMutex = callbacksMutex;
 
         s_androidNativePythonService = this;
 
@@ -190,6 +201,8 @@ namespace Mengine
 
         s_androidNativePythonService = nullptr;
 
+        m_callbacksMutex = nullptr;
+
         m_semaphoreListeners.clear();
         m_callbacks.clear();
 
@@ -218,17 +231,32 @@ namespace Mengine
         m_eventation->addCommand( _command );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::pythonMethod( const ConstString & _plugin, const ConstString & _method, jobjectArray _args )
+    bool AndroidNativePythonService::hasPythonMethod( const ConstString & _plugin, const ConstString & _method ) const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_callbacksMutex );
+
+        MapAndroidCallbacks::const_iterator it_found = m_callbacks.find( Utility::make_pair( _plugin, _method ) );
+
+        if( it_found == m_callbacks.end() )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidNativePythonService::callPythonMethod( const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        LOGGER_INFO( "android", "call python plugin '%s' method '%s' [%s]"
+        LOGGER_INFO( "android", "call python plugin '%s' method '%s'"
             , _plugin.c_str()
             , _method.c_str()
-            , (m_callbacks.find( Utility::make_pair( _plugin, _method ) ) != m_callbacks.end() ? "Found" : "NOT-FOUND")
         );
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_callbacksMutex );
 
         MapAndroidCallbacks::const_iterator it_found = m_callbacks.find( Utility::make_pair( _plugin, _method ) );
 

@@ -1877,9 +1877,27 @@ namespace Mengine
                     }
                     else if( v.is_string() == true )
                     {
-                        ConstString value = v.extract();
+                        String value = v.extract();
 
-                        builder->addParameterConstString( k, value );
+                        builder->addParameterString( k, value );
+                    }
+                    else if( v.is_unicode() == true )
+                    {
+                        WString value = v.extract();
+
+                        String utf8_value;
+                        if( Helper::unicodeToUtf8( value, &utf8_value ) == false )
+                        {
+                            LOGGER_ERROR( "invalid convert to utf8 pybind analytics parameter '%s' value '%s' type '%s'"
+                                , k.c_str()
+                                , v.repr().c_str()
+                                , v.repr_type().c_str()
+                            );
+
+                            return;
+                        }
+
+                        builder->addParameterString( k, utf8_value );
                     }
                     else if( v.is_embedded_type<ConstString>() == true )
                     {
@@ -2995,6 +3013,20 @@ namespace Mengine
                 mt::mul_v3_v3_m4( &wp_screen, wp, vm );
 
                 return wp_screen;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static WChar s_InputTextEvent_getSymbol( InputTextEvent * _event )
+            {
+                WChar symbol = _event->text[0];
+
+                return symbol;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static const WChar * s_InputTextEvent_getText( InputTextEvent * _event )
+            {
+                const WChar * text = _event->text;
+
+                return text;
             }
             //////////////////////////////////////////////////////////////////////////
             PythonValueFollowerLinearPtr s_createValueFollowerLinear( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args )
@@ -4545,7 +4577,8 @@ namespace Mengine
             .def_member( "special", &InputTextEvent::special )
             .def_member( "x", &InputTextEvent::x )
             .def_member( "y", &InputTextEvent::y )
-            .def_member( "symbol", &InputTextEvent::symbol )
+            .def_property_static( "symbol", &EngineScriptMethod::s_InputTextEvent_getSymbol, nullptr )
+            .def_property_static( "text", &EngineScriptMethod::s_InputTextEvent_getText, nullptr )
             ;
 
         pybind::struct_<InputMouseButtonEvent>( _kernel, "InputMouseButtonEvent" )

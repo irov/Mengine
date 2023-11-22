@@ -218,7 +218,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     }
 
     public void initBanner(String adUnitId, String placement) {
-        if (m_banners.containsKey(adUnitId) == false) {
+        if (m_banners.containsKey(adUnitId) == true) {
             this.assertionError("already exist banner: %s", adUnitId);
         }
 

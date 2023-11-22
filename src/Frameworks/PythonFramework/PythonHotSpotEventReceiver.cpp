@@ -40,7 +40,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotText( const InputTextEvent & _event )
     {
-        return m_cb.call( _event.x, _event.y, _event.symbol );
+        WChar symbol = _event.text[0];
+
+        return m_cb.call( _event.x, _event.y, symbol );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotMouseButton( const InputMouseButtonEvent & _event )

@@ -305,29 +305,29 @@ namespace Mengine
         m_cb.call();
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_IOS)
+#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
     //////////////////////////////////////////////////////////////////////////
-    void PythonGameEventReceiver::onGameiOSApplicationDidBecomeActive()
+    void PythonGameEventReceiver::onGameApplicationDidBecomeActive()
     {
         m_cb.call();
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonGameEventReceiver::onGameiOSApplicationWillEnterForeground()
+    void PythonGameEventReceiver::onGameApplicationWillEnterForeground()
     {
         m_cb.call();
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonGameEventReceiver::onGameiOSApplicationDidEnterBackground()
+    void PythonGameEventReceiver::onGameApplicationDidEnterBackground()
     {
         m_cb.call();
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonGameEventReceiver::onGameiOSApplicationWillResignActive()
+    void PythonGameEventReceiver::onGameApplicationWillResignActive()
     {
         m_cb.call();
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonGameEventReceiver::onGameiOSApplicationWillTerminate()
+    void PythonGameEventReceiver::onGameApplicationWillTerminate()
     {
         m_cb.call();
     }

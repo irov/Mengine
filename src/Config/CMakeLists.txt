@@ -75,6 +75,8 @@ ADD_FILTER(
 src
     Char.h
     Utf8.h
+    Utf16.h
+    Utf32.h
     Typedef.h
     Typeinfo.h
     Atomic.h

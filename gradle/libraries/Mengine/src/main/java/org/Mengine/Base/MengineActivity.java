@@ -1,5 +1,6 @@
 package org.Mengine.Base;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -86,7 +87,6 @@ public class MengineActivity extends SDLActivity {
         return AndroidEnvironmentService_getProjectVersion();
     }
 
-
     public MengineApplication getMengineApplication() {
         MengineApplication app = (MengineApplication)this.getApplication();
 
@@ -156,6 +156,18 @@ public class MengineActivity extends SDLActivity {
         String sessionId = app.getSessionId();
 
         return sessionId;
+    }
+
+    public String getVersionName() {
+        if (m_destroy == true) {
+            return "";
+        }
+
+        MengineApplication app = this.getMengineApplication();
+
+        String versionName = app.getVersionName();
+
+        return versionName;
     }
 
     public void setState(String name, Object value) {
@@ -248,7 +260,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.init", "create");
 
-        MengineLog.logInfo(TAG, "onCreate");
+        MengineLog.logMessage(TAG, "onCreate");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onCreate: broken libraries");
@@ -393,7 +405,7 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        MengineLog.logInfo(TAG, "onActivityResult request: %d result: %d"
+        MengineLog.logMessage(TAG, "onActivityResult request: %d result: %d"
             , requestCode
             , resultCode
         );
@@ -421,7 +433,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.lifecycle", "start");
 
-        MengineLog.logInfo(TAG, "onStart");
+        MengineLog.logMessage(TAG, "onStart");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onStart: broken libraries");
@@ -435,10 +447,6 @@ public class MengineActivity extends SDLActivity {
             l.onStart(this);
         }
 
-        if (m_initializeBaseServices == true) {
-            this.pythonCall(TAG, "onStart");
-        }
-
         this.setState("activity.lifecycle", "started");
     }
 
@@ -448,7 +456,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.lifecycle", "stop");
 
-        MengineLog.logInfo(TAG, "onStop");
+        MengineLog.logMessage(TAG, "onStop");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onStop: broken libraries");
@@ -464,10 +472,6 @@ public class MengineActivity extends SDLActivity {
             l.onStop(this);
         }
 
-        if (m_initializeBaseServices == true) {
-            this.pythonCall(TAG, "onStop");
-        }
-
         this.setState("activity.lifecycle", "stoped");
     }
 
@@ -477,7 +481,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.lifecycle", "pause");
 
-        MengineLog.logInfo(TAG, "onPause");
+        MengineLog.logMessage(TAG, "onPause");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onPause: broken libraries");
@@ -491,10 +495,6 @@ public class MengineActivity extends SDLActivity {
             l.onPause(this);
         }
 
-        if (m_initializeBaseServices == true) {
-            this.pythonCall(TAG, "onPause");
-        }
-
         this.setState("activity.lifecycle", "paused");
     }
 
@@ -504,7 +504,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.lifecycle", "resume");
 
-        MengineLog.logInfo(TAG, "onResume");
+        MengineLog.logMessage(TAG, "onResume");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onResume: broken libraries");
@@ -518,10 +518,6 @@ public class MengineActivity extends SDLActivity {
             l.onResume(this);
         }
 
-        if (m_initializeBaseServices == true) {
-            this.pythonCall(TAG, "onResume");
-        }
-
         this.setState("activity.lifecycle", "resumed");
     }
 
@@ -529,7 +525,7 @@ public class MengineActivity extends SDLActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        MengineLog.logInfo(TAG, "onNewIntent intent: %s", intent);
+        MengineLog.logMessage(TAG, "onNewIntent intent: %s", intent);
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onNewIntent: broken libraries");
@@ -548,7 +544,7 @@ public class MengineActivity extends SDLActivity {
     protected void onDestroy() {
         this.setState("activity.lifecycle", "destroy");
 
-        MengineLog.logInfo(TAG, "onDestroy");
+        MengineLog.logMessage(TAG, "onDestroy");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onDestroy: broken libraries");
@@ -590,7 +586,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.lifecycle", "restart");
 
-        MengineLog.logInfo(TAG, "onRestart");
+        MengineLog.logMessage(TAG, "onRestart");
 
         if (mBrokenLibraries == true) {
             MengineLog.logWarning(TAG, "onRestart: broken libraries");
@@ -604,10 +600,6 @@ public class MengineActivity extends SDLActivity {
             l.onRestart(this);
         }
 
-        if (m_initializeBaseServices == true) {
-            this.pythonCall(TAG, "onRestart");
-        }
-
         this.setState("activity.lifecycle", "restarted");
     }
 
@@ -617,7 +609,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("configuration.orientation", newConfig.orientation);
 
-        MengineLog.logInfo(TAG, "onConfigurationChanged config: %s"
+        MengineLog.logMessage(TAG, "onConfigurationChanged config: %s"
             , newConfig.toString()
         );
 
@@ -638,7 +630,7 @@ public class MengineActivity extends SDLActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        MengineLog.logInfo(TAG, "onRequestPermissionsResult request: %d permissions: %s grantResults: %s"
+        MengineLog.logMessage(TAG, "onRequestPermissionsResult request: %d permissions: %s grantResults: %s"
             , requestCode
             , Arrays.toString(permissions)
             , Arrays.toString(grantResults)
@@ -856,7 +848,17 @@ public class MengineActivity extends SDLActivity {
         intent.setData(uri);
 
         Intent chooser = Intent.createChooser(intent, "");
-        this.startActivity(chooser);
+
+        try {
+            this.startActivity(chooser);
+        } catch (ActivityNotFoundException e) {
+            MengineLog.logWarning(TAG, "linkingOpenURL url: %s catch ActivityNotFoundException: %s"
+                , url
+                , e.getLocalizedMessage()
+            );
+
+            return false;
+        }
 
         return true;
     }

@@ -25,7 +25,6 @@ def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_NEND = Utils.existAppPlugin(project, "
 def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY")
 def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE")
 def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO")
-def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_TAPJOY = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_TAPJOY")
 def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS")
 def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE")
 def MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YANDEX = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YANDEX")
@@ -52,7 +51,6 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_NEND", MENGINE_APP_PLU
 Utils.logAvailable("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY", MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY)
 Utils.logAvailable("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE", MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE)
 Utils.logAvailable("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO", MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO)
-Utils.logAvailable("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_TAPJOY", MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_TAPJOY)
 Utils.logAvailable("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS", MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS)
 Utils.logAvailable("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE", MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE)
 Utils.logAvailable("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YANDEX", MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YANDEX)
@@ -92,18 +90,18 @@ if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
 }
 
 dependencies {
-    implementation 'com.applovin:applovin-sdk:11.11.3'
+    implementation 'com.applovin:applovin-sdk:12.0.0'
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADCOLONY == true) {
         implementation 'com.applovin.mediation:adcolony-adapter:4.8.0.4'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
-        implementation 'com.applovin.mediation:amazon-tam-adapter:9.8.5.0'
+        implementation 'com.applovin.mediation:amazon-tam-adapter:9.8.8.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE == true) {
-        implementation 'com.applovin.mediation:bidmachine-adapter:2.3.3.0'
+        implementation 'com.applovin.mediation:bidmachine-adapter:2.4.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CHARTBOOST == true) {
@@ -119,11 +117,11 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_GOOGLEADMANAGER == true) {
-        implementation 'com.applovin.mediation:google-ad-manager-adapter:22.4.0.0'
+        implementation 'com.applovin.mediation:google-ad-manager-adapter:22.5.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADMOB == true) {
-        implementation 'com.applovin.mediation:google-adapter:22.4.0.0'
+        implementation 'com.applovin.mediation:google-adapter:22.5.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_HYPRMX == true) {
@@ -131,16 +129,16 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_INMOBI == true) {
-        implementation 'com.applovin.mediation:inmobi-adapter:10.5.8.0'
+        implementation 'com.applovin.mediation:inmobi-adapter:10.6.1.0'
         implementation 'com.squareup.picasso:picasso:2.71828'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE == true) {
-        implementation 'com.applovin.mediation:ironsource-adapter:7.5.1.0.0'
+        implementation 'com.applovin.mediation:ironsource-adapter:7.5.2.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LIFTOFF == true) {
-        implementation 'com.applovin.mediation:vungle-adapter:6.12.1.1'
+        implementation 'com.applovin.mediation:vungle-adapter:7.0.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LINE == true) {
@@ -152,51 +150,47 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_META == true) {
-        implementation 'com.applovin.mediation:facebook-adapter:6.16.0.0'
+        implementation 'com.applovin.mediation:facebook-adapter:6.16.0.2'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL == true) {
-        implementation 'com.applovin.mediation:mintegral-adapter:16.5.11.0'
+        implementation 'com.applovin.mediation:mintegral-adapter:16.5.51.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MOBILEFUSE == true) {
-        implementation 'com.applovin.mediation:mobilefuse-adapter:1.6.2.0'
+        implementation 'com.applovin.mediation:mobilefuse-adapter:1.6.5.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MYTARGET == true) {
-        implementation 'com.applovin.mediation:mytarget-adapter:5.18.0.0'
+        implementation 'com.applovin.mediation:mytarget-adapter:5.19.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_NEND == true) {
-        implementation 'com.applovin.mediation:nend-adapter:9.0.1.0'
+        implementation 'com.applovin.mediation:nend-adapter:10.0.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY == true) {
-        implementation 'com.applovin.mediation:ogury-presage-adapter:5.6.0.0'
+        implementation 'com.applovin.mediation:ogury-presage-adapter:5.6.1.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE == true) {
-        implementation 'com.applovin.mediation:bytedance-adapter:5.4.1.1.0'
+        implementation 'com.applovin.mediation:bytedance-adapter:5.5.0.9.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO == true) {
-        implementation 'com.applovin.mediation:smaato-adapter:22.3.2.0'
-    }
-
-    if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_TAPJOY == true) {
-        implementation 'com.applovin.mediation:tapjoy-adapter:13.1.2.0'
+        implementation 'com.applovin.mediation:smaato-adapter:22.4.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS == true) {
-        implementation 'com.applovin.mediation:unityads-adapter:4.8.0.0'
+        implementation 'com.applovin.mediation:unityads-adapter:4.9.2.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE == true) {
-        implementation 'com.applovin.mediation:verve-adapter:2.19.0.0'
+        implementation 'com.applovin.mediation:verve-adapter:2.20.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YANDEX == true) {
-        implementation 'com.applovin.mediation:yandex-adapter:5.10.0.0'
+        implementation 'com.applovin.mediation:yandex-adapter:6.1.0.0'
     }
 }
 

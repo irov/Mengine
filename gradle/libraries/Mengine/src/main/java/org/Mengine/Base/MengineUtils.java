@@ -431,9 +431,9 @@ public class MengineUtils {
         return null;
     }
 
-    public static String getDateFormat(String format) {
+    public static String getDateFormat(long timestamp, String format) {
         SimpleDateFormat df = new SimpleDateFormat(format);
-        Date date = Calendar.getInstance().getTime();
+        Date date = new Date(timestamp);
         String s = df.format(date);
 
         return s;

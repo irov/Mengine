@@ -2,6 +2,8 @@
 
 #include "Interface/InputServiceInterface.h"
 
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     namespace Helper
@@ -85,7 +87,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushTextEvent( float _x, float _y, WChar _key )
+        void pushTextEvent( float _x, float _y, const WChar * _key )
         {
             float vx;
             float vy;
@@ -101,7 +103,7 @@ namespace Mengine
 
             ev.data.text.x = vx;
             ev.data.text.y = vy;
-            ev.data.text.symbol = _key;
+            MENGINE_WCSNCPY( ev.data.text.text, _key, MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE );
 
             INPUT_SERVICE()
                 ->pushEvent( ev );

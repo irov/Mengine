@@ -27,8 +27,7 @@
 
 static SDL_bool suppressError = SDL_FALSE;
 
-void
-SDL_SuppressError( SDL_bool _suppress )
+void SDL_SuppressError( SDL_bool _suppress )
 {
     suppressError = _suppress;
 }

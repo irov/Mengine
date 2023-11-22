@@ -15,7 +15,7 @@ namespace Mengine
         void pushMouseMoveEvent( ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure );
         void pushMouseButtonEvent( ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown );
         void pushKeyEvent( float _x, float _y, EKeyCode _code, bool _isDown, bool _repeating );
-        void pushTextEvent( float _x, float _y, WChar _key );
+        void pushTextEvent( float _x, float _y, const WChar * _key );
         void pushMouseLeaveEvent( ETouchCode _touchId, float _x, float _y, float _pressure );
         void pushMouseEnterEvent( ETouchCode _touchId, float _x, float _y, float _pressure );
         void pushMouseWheelEvent( float _x, float _y, EWheelCode _wheel, int32_t _scroll );

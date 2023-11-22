@@ -62,12 +62,12 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE, &GameService::onTimeFactorChange_, MENGINE_DOCUMENT_FACTORABLE );
 
-#if defined(MENGINE_PLATFORM_IOS)
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_DID_BECOME_ACTIVE, &GameService::oniOSApplicationDidBecomeActive_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_ENTER_FOREGROUND, &GameService::oniOSApplicationWillEnterForeground_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_DID_ENTER_BACKGROUD, &GameService::oniOSApplicationDidEnterBackground_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_RESIGN_ACTIVE, &GameService::oniOSApplicationWillResignActive_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_TERMINATE, &GameService::oniOSApplicationWillTerminate_, MENGINE_DOCUMENT_FACTORABLE );
+#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE, &GameService::onApplicationDidBecomeActive_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND, &GameService::onApplicationWillEnterForeground_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUD, &GameService::onApplicationDidEnterBackground_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE, &GameService::onApplicationWillResignActive_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_TERMINATE, &GameService::onApplicationWillTerminate_, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         ANALYTICS_SERVICE()
@@ -80,12 +80,12 @@ namespace Mengine
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE );
 
-#if defined(MENGINE_PLATFORM_IOS)
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_DID_BECOME_ACTIVE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_ENTER_FOREGROUND );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_DID_ENTER_BACKGROUD );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_RESIGN_ACTIVE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_IOS_APPLICATION_WILL_TERMINATE );
+#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUD );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
 #endif
 
         ANALYTICS_SERVICE()
@@ -523,35 +523,35 @@ namespace Mengine
             ->onGameTimeFactor( _timeFactor );
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_IOS)
+#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
     //////////////////////////////////////////////////////////////////////////
-    void GameService::oniOSApplicationDidBecomeActive_()
+    void GameService::onApplicationDidBecomeActive_()
     {
-        EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_DID_BECOME_ACTIVE )
-            ->onGameiOSApplicationDidBecomeActive();
+        EVENTABLE_METHOD( EVENT_GAME_APPLICATION_DID_BECOME_ACTIVE )
+            ->onGameApplicationDidBecomeActive();
     }
-    void GameService::oniOSApplicationWillEnterForeground_()
+    void GameService::onApplicationWillEnterForeground_()
     {
-        EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_WILL_ENTER_FOREGROUND )
-            ->onGameiOSApplicationWillEnterForeground();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void GameService::oniOSApplicationDidEnterBackground_()
-    {
-        EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_DID_ENTER_BACKGROUD )
-            ->onGameiOSApplicationDidEnterBackground();
+        EVENTABLE_METHOD( EVENT_GAME_APPLICATION_WILL_ENTER_FOREGROUND )
+            ->onGameApplicationWillEnterForeground();
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::oniOSApplicationWillResignActive_()
+    void GameService::onApplicationDidEnterBackground_()
     {
-        EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_WILL_RESIGN_ACTIVE )
-            ->onGameiOSApplicationWillResignActive();
+        EVENTABLE_METHOD( EVENT_GAME_APPLICATION_DID_ENTER_BACKGROUD )
+            ->onGameApplicationDidEnterBackground();
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::oniOSApplicationWillTerminate_()
+    void GameService::onApplicationWillResignActive_()
     {
-        EVENTABLE_METHOD( EVENT_GAME_IOS_APPLICATION_WILL_TERMINATE )
-            ->onGameiOSApplicationWillTerminate();
+        EVENTABLE_METHOD( EVENT_GAME_APPLICATION_WILL_RESIGN_ACTIVE )
+            ->onGameApplicationWillResignActive();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GameService::onApplicationWillTerminate_()
+    {
+        EVENTABLE_METHOD( EVENT_GAME_APPLICATION_WILL_TERMINATE )
+            ->onGameApplicationWillTerminate();
     }
     //////////////////////////////////////////////////////////////////////////
 #endif

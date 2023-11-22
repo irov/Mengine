@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class MengineAnalytics {
     private static MengineApplication m_application;
-    private static Map<String, Object> m_context = new HashMap<>();
+    private static Map<String, Object> m_bases = new HashMap<>();
     private static Map<String, Object> m_getter = new HashMap<>();
 
     public static void setMengineApplication(MengineApplication application) {
@@ -16,7 +16,7 @@ public class MengineAnalytics {
     }
 
     static private void assertContext(String key) {
-        if (MengineAnalytics.m_context.containsKey(key) == true) {
+        if (MengineAnalytics.m_bases.containsKey(key) == true) {
             String msg = String.format(Locale.US, "global analytics context parameter '%s' already exist", key);
             throw new AssertionError(msg);
         }
@@ -33,28 +33,28 @@ public class MengineAnalytics {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
-        MengineAnalytics.m_context.put(key, value);
+        MengineAnalytics.m_bases.put(key, value);
     }
 
     static public void addContextParameterString(@Size(min = 1L,max = 40L) String key, @Size(min = 1L,max = 100L) String value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
-        MengineAnalytics.m_context.put(key, value);
+        MengineAnalytics.m_bases.put(key, value);
     }
 
     static public void addContextParameterLong(@Size(min = 1L,max = 40L) String key, long value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
-        MengineAnalytics.m_context.put(key, value);
+        MengineAnalytics.m_bases.put(key, value);
     }
 
     static public void addContextParameterDouble(@Size(min = 1L,max = 40L) String key, double value) {
         MengineAnalytics.assertContext(key);
         MengineAnalytics.assertGetter(key);
 
-        MengineAnalytics.m_context.put(key, value);
+        MengineAnalytics.m_bases.put(key, value);
     }
 
     static public void addContextGetterParameterString(@Size(min = 1L,max = 40L) String key, MengineAnalyticsGetter<String> value) {
@@ -94,7 +94,7 @@ public class MengineAnalytics {
 
         MengineAnalytics.collapseGetter(parameters);
 
-        MengineAnalyticsEventBuilder eventBuilder = new MengineAnalyticsEventBuilder(MengineAnalytics.m_application, MengineAnalytics.m_context, parameters, name);
+        MengineAnalyticsEventBuilder eventBuilder = new MengineAnalyticsEventBuilder(MengineAnalytics.m_application, MengineAnalytics.m_bases, parameters, name);
 
         return eventBuilder;
     }

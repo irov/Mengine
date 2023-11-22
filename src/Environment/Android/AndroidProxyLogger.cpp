@@ -57,8 +57,6 @@ namespace Mengine
         jstring category_jstring = jenv->NewStringUTF( _message.category );
 
         ELoggerLevel level = _message.level;
-        uint32_t filter = _message.filter;
-        uint32_t color = _message.color;
 
         const Char * data_value = _message.data;
         size_t data_size = _message.size;
@@ -70,7 +68,7 @@ namespace Mengine
         jstring data_jstring = jenv->NewStringUTF( msg );
 
         ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidApplicationMethod( jenv, "onMengineLogger", "(Ljava/lang/String;IIILjava/lang/String;)V", category_jstring, level, filter, color, data_jstring );
+            ->callVoidApplicationMethod( jenv, "onMengineLogger", "(ILjava/lang/String;Ljava/lang/String;)V", level, category_jstring, data_jstring );
 
         jenv->DeleteLocalRef( category_jstring );
         jenv->DeleteLocalRef( data_jstring );

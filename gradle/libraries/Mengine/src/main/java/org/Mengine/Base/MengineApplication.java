@@ -10,6 +10,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -62,13 +65,16 @@ public class MengineApplication extends Application {
 
     private String m_installKey;
     private long m_installTimestamp = -1;
-    private String m_installDate;
     private String m_installVersion;
     private long m_installRND = -1;
     private long m_sessionIndex = -1;
     private String m_sessionId;
-    private long m_sessionTimestamp;
-    private String m_sessionDate;
+    private long m_sessionTimestamp = -1;
+
+    private boolean m_networkAvailable = false;
+    private boolean m_networkUnmetered = false;
+    private MengineNetworkTransport m_networkTransport = MengineNetworkTransport.NETWORKTRANSPORT_UNKNOWN;
+    private ConnectivityManager.NetworkCallback m_networkCallback;
 
     private ArrayList<MenginePlugin> m_plugins = new ArrayList<>();
     private Map<String, MenginePlugin> m_dictionaryPlugins = new HashMap<>();
@@ -213,10 +219,6 @@ public class MengineApplication extends Application {
         return m_installTimestamp;
     }
 
-    public String getInstallDate() {
-        return m_installDate;
-    }
-
     public String getInstallVersion() { return m_installVersion; }
 
     public long getInstallRND() {
@@ -250,10 +252,6 @@ public class MengineApplication extends Application {
 
     public long getSessionTimestamp() {
         return m_sessionTimestamp;
-    }
-
-    public String getSessionDate() {
-        return m_sessionDate;
     }
 
     public String getDeviceLanguage() {
@@ -520,10 +518,6 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineCaughtException(Throwable throwable) {
-        MengineLog.logInfo(TAG, "onMengineCaughtException: %s"
-            , throwable.getLocalizedMessage()
-        );
-
         String message = throwable.getLocalizedMessage();
         this.setState("exception.message", message);
 
@@ -558,7 +552,7 @@ public class MengineApplication extends Application {
     public void showAlertDialog(String format, Object ... args) {
         String message = MengineLog.buildTotalMsg(format, args);
 
-        MengineLog.logInfo(TAG, "show alert dialog: %s"
+        MengineLog.logMessage(TAG, "show alert dialog: %s"
             , message
         );
 
@@ -612,11 +606,125 @@ public class MengineApplication extends Application {
         return true;
     }
 
+    private void initializeMonitorConnectivityStatusAndConnectionMetering() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return;
+        }
+
+        ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                super.onAvailable(network);
+
+                MengineLog.logMessage(TAG, "NetworkCallback onAvailable");
+
+                m_networkAvailable = true;
+            }
+
+            @Override
+            public void onLost(@NonNull Network network) {
+                super.onLost(network);
+
+                MengineLog.logMessage(TAG, "NetworkCallback onLost");
+
+                m_networkAvailable = false;
+            }
+
+            private MengineNetworkTransport getNetworkTransport(@NonNull NetworkCapabilities networkCapabilities) {
+                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true) {
+                    return MengineNetworkTransport.NETWORKTRANSPORT_CELLULAR;
+                }
+
+                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true) {
+                    return MengineNetworkTransport.NETWORKTRANSPORT_WIFI;
+                }
+
+                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) == true) {
+                    return MengineNetworkTransport.NETWORKTRANSPORT_BLUETOOTH;
+                }
+
+                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) == true) {
+                    return MengineNetworkTransport.NETWORKTRANSPORT_ETHERNET;
+                }
+
+                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) == true) {
+                    return MengineNetworkTransport.NETWORKTRANSPORT_VPN;
+                }
+
+                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI_AWARE) == true) {
+                    return MengineNetworkTransport.NETWORKTRANSPORT_WIFI_AWARE;
+                }
+
+                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_LOWPAN) == true) {
+                    return MengineNetworkTransport.NETWORKTRANSPORT_LOWPAN;
+                }
+
+                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_USB) == true) {
+                    return MengineNetworkTransport.NETWORKTRANSPORT_USB;
+                }
+
+                return MengineNetworkTransport.NETWORKTRANSPORT_UNKNOWN;
+            }
+
+            @Override
+            public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
+                super.onCapabilitiesChanged(network, networkCapabilities);
+                final boolean unmetered = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED);
+
+                MengineNetworkTransport transport = this.getNetworkTransport(networkCapabilities);
+
+                if (m_networkUnmetered == unmetered && m_networkTransport == transport) {
+                    return;
+                }
+
+                MengineLog.logMessage(TAG, "NetworkCallback onCapabilitiesChanged unmetered: %b transport: %s"
+                    , unmetered
+                    , transport
+                );
+
+                m_networkUnmetered = unmetered;
+                m_networkTransport = transport;
+            }
+        };
+
+        Context context = this.getApplicationContext();
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(ConnectivityManager.class);
+        connectivityManager.registerDefaultNetworkCallback(networkCallback);
+
+        m_networkCallback = networkCallback;
+    }
+
+    private void finalizeMonitorConnectivityStatusAndConnectionMetering() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return;
+        }
+
+        if (m_networkCallback == null) {
+            return;
+        }
+
+        Context context = this.getApplicationContext();
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(ConnectivityManager.class);
+        connectivityManager.registerDefaultNetworkCallback(m_networkCallback);
+
+        m_networkCallback = null;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
 
         boolean isMainProcess = this.isMainProcess();
+        String versionName = this.getVersionName();
+        int versionCode = this.getVersionCode();
+
+        MengineLog.logMessage(TAG, "onCreate isMainProcess: %b VersionName: %s [%d]"
+            , isMainProcess
+            , versionName
+            , versionCode
+        );
 
         List<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
@@ -644,6 +752,8 @@ public class MengineApplication extends Application {
 
         this.setState("application.init", "started");
 
+        this.initializeMonitorConnectivityStatusAndConnectionMetering();
+
         try {
             SDL.loadLibrary("SDLApplication");
         } catch (UnsatisfiedLinkError e) {
@@ -663,8 +773,6 @@ public class MengineApplication extends Application {
         MengineLog.setMengineApplication(this);
         MengineAnalytics.setMengineApplication(this);
 
-        MengineLog.logInfo(TAG, "onCreate");
-
         if (this.getMetaDataBoolean("mengine.secure.allow_android_id", true) == true) {
             m_androidId = this.getSecureAndroidId();
         } else {
@@ -674,8 +782,7 @@ public class MengineApplication extends Application {
         SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
 
         String installKey = settings.getString("install_key", null);
-        long installTimestamp = settings.getLong("install_timestamp", 0);
-        String installDate = settings.getString("install_date", "");
+        long installTimestamp = settings.getLong("install_timestamp", -1);
         String installVersion = settings.getString("install_version", "");
         long installRND = settings.getLong("install_rnd", -1);
         long sessionIndex = settings.getLong("session_index", 0);
@@ -686,12 +793,10 @@ public class MengineApplication extends Application {
         if (installKey == null) {
             installKey = MengineUtils.getRandomUUIDString();
             installTimestamp = MengineUtils.getTimestamp();
-            installDate = MengineUtils.getDateFormat("d MMM yyyy HH:mm:ss");
             installVersion = this.getVersionName();
 
             editor.putString("install_key", installKey);
             editor.putLong("install_timestamp", installTimestamp);
-            editor.putString("install_date", installDate);
             editor.putString("install_version", installVersion);
         }
 
@@ -718,13 +823,18 @@ public class MengineApplication extends Application {
 
         m_installKey = installKey;
         m_installTimestamp = installTimestamp;
-        m_installDate = installDate;
         m_installVersion = installVersion;
         m_installRND = installRND;
         m_sessionIndex = sessionIndex;
         m_sessionId = sessionId;
         m_sessionTimestamp = MengineUtils.getTimestamp();
-        m_sessionDate = MengineUtils.getDateFormat("d MMM yyyy HH:mm:ss");
+
+        MengineAnalytics.addContextParameterString("install_key", m_installKey);
+        MengineAnalytics.addContextParameterLong("install_timestamp", m_installTimestamp);
+        MengineAnalytics.addContextParameterString("install_version", m_installVersion);
+        MengineAnalytics.addContextParameterLong("install_rnd", m_installRND);
+        MengineAnalytics.addContextParameterLong("session_index", m_sessionIndex);
+        MengineAnalytics.addContextParameterLong("session_timestamp", m_sessionTimestamp);
 
         String build_gitsha1 = this.getEngineGITSHA1();
         this.setState("engine.build_gitsha1", build_gitsha1);
@@ -737,23 +847,64 @@ public class MengineApplication extends Application {
 
         this.setState("user.install_key", m_installKey);
         this.setState("user.install_timestamp", m_installTimestamp);
-        this.setState("user.install_date", m_installDate);
         this.setState("user.install_version", m_installVersion);
         this.setState("user.install_rnd", m_installRND);
         this.setState("user.session_index", m_sessionIndex);
         this.setState("user.session_id", m_sessionId);
         this.setState("user.session_timestamp", m_sessionTimestamp);
-        this.setState("user.session_date", m_sessionDate);
+
+        String installDate = MengineUtils.getDateFormat(m_installTimestamp, "d MMM yyyy HH:mm:ss");
+        this.setState("user.install_date", installDate);
+
+        String sessionDate = MengineUtils.getDateFormat(m_sessionTimestamp, "d MMM yyyy HH:mm:ss");
+        this.setState("user.session_date", sessionDate);
 
         this.setState("application.init", "load");
 
         MengineAnalytics.addContextGetterParameterLong("connection", new MengineAnalyticsGetter<Long>() {
             @Override
             public Long get() {
-                Context context = MengineApplication.this.getApplicationContext();
-                int status = MengineUtils.getConectivityStatus(context);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                    return -3L;
+                }
 
-                return Long.valueOf(status);
+                if (m_networkAvailable == false) {
+                    return -2L;
+                }
+
+                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_CELLULAR) {
+                    return 1L;
+                }
+
+                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_WIFI) {
+                    return 2L;
+                }
+
+                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_BLUETOOTH) {
+                    return 3L;
+                }
+
+                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_ETHERNET) {
+                    return 4L;
+                }
+
+                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_VPN) {
+                    return 5L;
+                }
+
+                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_WIFI_AWARE) {
+                    return 6L;
+                }
+
+                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_LOWPAN) {
+                    return 7L;
+                }
+
+                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_USB) {
+                    return 8L;
+                }
+
+                return -1L;
             }
         });
 
@@ -816,7 +967,7 @@ public class MengineApplication extends Application {
 
     @Override
     public void onTerminate() {
-        MengineLog.logInfo(TAG, "onTerminate");
+        MengineLog.logMessage(TAG, "onTerminate");
 
         List<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
@@ -827,6 +978,8 @@ public class MengineApplication extends Application {
         for (MenginePlugin plugin : m_plugins) {
             plugin.onFinalize(this);
         }
+
+        this.finalizeMonitorConnectivityStatusAndConnectionMetering();
 
         MengineLog.setMengineApplication(null);
         MengineAnalytics.setMengineApplication(null);
@@ -856,7 +1009,7 @@ public class MengineApplication extends Application {
 
         MultiDex.install(this);
 
-        MengineLog.logInfo(TAG, "attachBaseContext");
+        MengineLog.logMessage(TAG, "attachBaseContext");
 
         List<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
@@ -869,7 +1022,7 @@ public class MengineApplication extends Application {
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        MengineLog.logInfo(TAG, "onConfigurationChanged config: %s"
+        MengineLog.logMessage(TAG, "onConfigurationChanged config: %s"
             , newConfig.toString()
         );
 
@@ -880,11 +1033,11 @@ public class MengineApplication extends Application {
         }
     }
 
-    public void onMengineLogger(String category, int level, int filter, int color, String msg) {
+    public void onMengineLogger(int level, String category, String msg) {
         List<MenginePluginLoggerListener> listeners = this.getLoggerListeners();
 
         for(MenginePluginLoggerListener l : listeners) {
-            l.onMengineLogger(this, category, level, filter, color, msg);
+            l.onMengineLogger(this, level, category, msg);
         }
     }
 

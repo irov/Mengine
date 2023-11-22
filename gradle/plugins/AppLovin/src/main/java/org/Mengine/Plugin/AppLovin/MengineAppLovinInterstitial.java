@@ -76,7 +76,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_requestId = m_enumeratorRequest++;
 
-        m_plugin.logInfo("[Interstitial] loadAd adUnitId: %s request: %d attempt: %d"
+        m_plugin.logMessage("[Interstitial] loadAd adUnitId: %s request: %d attempt: %d"
             , adUnitId
             , m_requestId
             , m_retryAttempt
@@ -159,7 +159,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
     @Override
     public void onAdRequestStarted(String adUnitId) {
-        m_plugin.logInfo("[Interstitial] onAdRequestStarted adUnitId: %s request: %d attempt: %d"
+        m_plugin.logMessage("[Interstitial] onAdRequestStarted adUnitId: %s request: %d attempt: %d"
             , adUnitId
             , m_requestId
             , m_retryAttempt

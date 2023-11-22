@@ -33,6 +33,7 @@ namespace Mengine
             m_handler = nullptr;
 
             m_commands.clear();
+            m_commandsAux.clear();
         }
 
         void setEventHandler( const EventHandlerPtr & _handler )
@@ -50,10 +51,9 @@ namespace Mengine
     protected:
         void invoke() override
         {
-            VectorEventHandlerCommand commands;
-
             m_mutex->lock();
-            std::swap( m_commands, commands );
+            std::swap( m_commands, m_commandsAux );
+            m_commands.clear();
             m_mutex->unlock();
 
             if( m_handler == nullptr )
@@ -61,10 +61,12 @@ namespace Mengine
                 return;
             }
 
-            for( const LambdaEventHandler & command : commands )
+            for( const LambdaEventHandler & command : m_commandsAux )
             {
                 command( m_handler );
             }
+
+            m_commandsAux.clear();
         }
 
     protected:
@@ -72,5 +74,6 @@ namespace Mengine
         EventHandlerPtr m_handler;
 
         VectorEventHandlerCommand m_commands;
+        VectorEventHandlerCommand m_commandsAux;
     };
 }

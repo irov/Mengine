@@ -228,7 +228,11 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::removeResource" );
 
-        MENGINE_ASSERTION_FATAL( _resource->getCompileReferenceCount() == 0 );
+        MENGINE_ASSERTION_FATAL( _resource->getCompileReferenceCount() == 0, "remove resource '%s' type '%s' has reference count: %u"
+            , _resource->getName().c_str()
+            , _resource->getType().c_str()
+            , _resource->getCompileReferenceCount()
+        );
 
         MENGINE_ASSERTION_FATAL( _resource->isMapping() == false || m_resources.exist( _resource->getName() ) == true, "resource '%s' type '%s' not found (maybe already remove)"
             , _resource->getName().c_str()

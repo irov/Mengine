@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EAnalyticsEventParameterType AnalyticsEventConstParameterString::getType() const
     {
-        return EAEPT_CONSTSTRING;
+        return EAEPT_STRING;
     }
     //////////////////////////////////////////////////////////////////////////
     AnalyticsEventParameterInterfacePtr AnalyticsEventConstParameterString::resolveParameter( const DocumentInterfacePtr & _doc ) const

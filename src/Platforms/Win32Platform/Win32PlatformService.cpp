@@ -49,6 +49,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ExecutorHelper.h"
 #include "Kernel/TimestampHelper.h"
+#include "Kernel/Utf8Helper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -1268,6 +1269,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
         static LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
         {
             switch( uMsg )
@@ -1305,6 +1307,21 @@ namespace Mengine
 
             return app_result;
         }
+        //////////////////////////////////////////////////////////////////////////
+        static EMouseButtonCode getXButtonCode( DWORD lParam )
+        {
+            if( lParam == XBUTTON1 )
+            {
+                return MC_X1BUTTON;
+            }
+            else if( lParam == XBUTTON2 )
+            {
+                return MC_X2BUTTON;
+            }
+
+            return MC_X1BUTTON;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     LRESULT Win32PlatformService::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -1713,73 +1730,6 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_sonvertUTF32toUTF8( UINT32 _utf32, Char * const _utf8 )
-    {
-        if( _utf32 <= 0x7F )
-        {
-            _utf8[0] = (Char)_utf32;
-            _utf8[1] = '\0';
-        }
-        else if( _utf32 <= 0x7FF )
-        {
-            _utf8[0] = 0xC0 | (Char)((_utf32 >> 6) & 0x1F);
-            _utf8[1] = 0x80 | (Char)(_utf32 & 0x3F);
-            _utf8[2] = '\0';
-        }
-        else if( _utf32 <= 0xFFFF )
-        {
-            _utf8[0] = 0xE0 | (Char)((_utf32 >> 12) & 0x0F);
-            _utf8[1] = 0x80 | (Char)((_utf32 >> 6) & 0x3F);
-            _utf8[2] = 0x80 | (Char)(_utf32 & 0x3F);
-            _utf8[3] = '\0';
-        }
-        else if( _utf32 <= 0x10FFFF )
-        {
-            _utf8[0] = 0xF0 | (Char)((_utf32 >> 18) & 0x0F);
-            _utf8[1] = 0x80 | (Char)((_utf32 >> 12) & 0x3F);
-            _utf8[2] = 0x80 | (Char)((_utf32 >> 6) & 0x3F);
-            _utf8[3] = 0x80 | (Char)(_utf32 & 0x3F);
-            _utf8[4] = '\0';
-        }
-        else
-        {
-            return false;
-        }
-
-        return true;
-    }
-    ////////////////////////////////////////////////////////////////////////////
-    //bool Win32Platform::wndProcTouch( HWND hWnd, WPARAM wParam, LPARAM lParam )
-    //{
-    //    MENGINE_UNUSED( hWnd );
-
-    //    BOOL bHandled = FALSE;
-    //    UINT cInputs = LOWORD( wParam );
-    //    TOUCHINPUT pInputs[32];
-    //    if( pInputs ) {
-    //        if( GetTouchInputInfo( (HTOUCHINPUT)lParam, cInputs, pInputs, sizeof( TOUCHINPUT ) ) ) {
-    //            for( UINT i = 0; i < cInputs; i++ ) {
-    //                TOUCHINPUT ti = pInputs[i];
-    //                //do something with each touch input entry
-    //            }
-    //            bHandled = TRUE;
-    //        }
-    //        else {
-    //            /* handle the error here */
-    //        }
-    //    }
-    //    else {
-    //        /* handle the error here, probably out of memory */
-    //    }
-    //    if( bHandled ) {
-    //        // if you handled the message, close the touch input handle and return
-    //        CloseTouchInputHandle( (HTOUCHINPUT)lParam );
-    //        return true;
-    //    }
-
-    //    return false;
-    //}
-    //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT * const _result )
     {
         bool handle = false;
@@ -2053,7 +2003,11 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
-                m_isDoubleClick[MC_XBUTTON] = true;
+                DWORD XButton = GET_XBUTTON_WPARAM( wParam );
+
+                EMouseButtonCode code = Detail::getXButtonCode( XButton );
+
+                m_isDoubleClick[code] = true;
 
                 handle = true;
                 *_result = 0;
@@ -2237,7 +2191,11 @@ namespace Mengine
                     return false;
                 }
 
-                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_XBUTTON, 0.f, true );
+                DWORD XButton = GET_XBUTTON_WPARAM( wParam );
+
+                EMouseButtonCode code = Detail::getXButtonCode( XButton );
+
+                Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, code, 0.f, true );
 
                 handle = true;
                 *_result = 0;
@@ -2251,7 +2209,11 @@ namespace Mengine
                     , ::IsWindowVisible( hWnd )
                 );
 
-                if( m_isDoubleClick[MC_XBUTTON] == false )
+                DWORD XButton = GET_XBUTTON_WPARAM( wParam );
+
+                EMouseButtonCode code = Detail::getXButtonCode( XButton );
+
+                if( m_isDoubleClick[code] == false )
                 {
                     POINT p;
                     p.x = GET_X_LPARAM( lParam );
@@ -2263,10 +2225,10 @@ namespace Mengine
                         return false;
                     }
 
-                    Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, MC_XBUTTON, 0.f, false );
+                    Helper::pushMouseButtonEvent( TC_TOUCH0, point.x, point.y, code, 0.f, false );
                 }
 
-                m_isDoubleClick[MC_XBUTTON] = false;
+                m_isDoubleClick[code] = false;
 
                 handle = true;
                 *_result = 0;
@@ -2331,7 +2293,7 @@ namespace Mengine
                 if( wParam == UNICODE_NOCHAR )
                 {
                     handle = true;
-                    *_result = 1;
+                    *_result = TRUE;
 
                     break;
                 }
@@ -2342,7 +2304,7 @@ namespace Mengine
                 }
 
                 handle = true;
-                *_result = 0;
+                *_result = TRUE;
             }break;
         case WM_CHAR:
             {
@@ -2371,8 +2333,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::sendChar_( WPARAM wParam )
     {
-        Char utf8[5] = {'\0'};
-        if( s_sonvertUTF32toUTF8( (uint32_t)wParam, utf8 ) == false )
+        Char utf8_code[5] = {'\0'};
+        if( Helper::Utf32ToUtf8( (Utf32)wParam, utf8_code ) == false )
         {
             return false;
         }
@@ -2383,13 +2345,13 @@ namespace Mengine
             return false;
         }
 
-        WChar text_code[2] = {L'\0'};
-        if( Helper::utf8ToUnicode( utf8, text_code, 2 ) == false )
+        WChar unicode_code[MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE] = {L'\0'};
+        if( Helper::utf8ToUnicode( utf8_code, unicode_code, 8 ) == false )
         {
             return false;
         }
 
-        Helper::pushTextEvent( point.x, point.y, text_code[0] );
+        Helper::pushTextEvent( point.x, point.y, unicode_code );
 
         return true;
     }

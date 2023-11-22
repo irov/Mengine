@@ -35,7 +35,7 @@ namespace Mengine
 
         if( emitterId == 0 )
         {
-            LOGGER_ERROR( "astralax emitter2 invalid create " );
+            LOGGER_ERROR( "astralax emitter2 invalid create" );
 
             return false;
         }

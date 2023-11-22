@@ -29,6 +29,7 @@ public class MengineLog {
         public int level;
         public String tag;
         public String message;
+        public MengineApplication application;
     };
 
     private static ArrayList<HistoryRecord> m_history = new ArrayList<>();
@@ -40,9 +41,13 @@ public class MengineLog {
     public static void onMengineInitializeBaseServices(MengineActivity activity) {
         MengineLog.m_initializeBaseServices = true;
 
-        for (HistoryRecord record : m_history) {
-            synchronized (MengineLog.m_lock) {
+        synchronized (MengineLog.m_lock) {
+            for (HistoryRecord record : m_history) {
                 AndroidEnvironmentService_log(record.level, record.tag, record.message);
+
+                if (record.application == null) {
+                    MengineLog.m_application.onMengineLogger(record.level, record.tag, record.message);
+                }
             }
         }
 
@@ -89,21 +94,22 @@ public class MengineLog {
 
         MengineLog.logLevel(level, tag, totalMsg);
 
-        if( MengineLog.m_initializeBaseServices == true ) {
-            synchronized (MengineLog.m_lock) {
+        synchronized (MengineLog.m_lock) {
+            if (MengineLog.m_initializeBaseServices == true) {
                 AndroidEnvironmentService_log(level, tag, totalMsg);
-            }
-        } else {
-            HistoryRecord record = new HistoryRecord();
-            record.level = level;
-            record.tag = tag;
-            record.message = totalMsg;
+            } else {
+                HistoryRecord record = new HistoryRecord();
+                record.level = level;
+                record.tag = tag;
+                record.message = totalMsg;
+                record.application = MengineLog.m_application;
 
-            MengineLog.m_history.add(record);
+                MengineLog.m_history.add(record);
+            }
         }
 
         if (MengineLog.m_application != null) {
-            MengineLog.m_application.onMengineLogger(tag, level, 0, 0, totalMsg);
+            MengineLog.m_application.onMengineLogger(level, tag, totalMsg);
         }
 
         return totalMsg;
@@ -114,7 +120,9 @@ public class MengineLog {
             return "";
         }
 
-        return MengineLog.log(LM_VERBOSE, tag, format, args);
+        String m = MengineLog.log(LM_VERBOSE, tag, format, args);
+
+        return m;
     }
 
     public static String logDebug(String tag, String format, Object ... args) {
@@ -122,7 +130,9 @@ public class MengineLog {
             return "";
         }
 
-        return MengineLog.log(LM_DEBUG, tag, format, args);
+        String m = MengineLog.log(LM_DEBUG, tag, format, args);
+
+        return m;
     }
 
     public static String logInfo(String tag, String format, Object ... args) {
@@ -130,27 +140,39 @@ public class MengineLog {
             return "";
         }
 
-        return MengineLog.log(LM_INFO, tag, format, args);
+        String m = MengineLog.log(LM_INFO, tag, format, args);
+
+        return m;
     }
 
     public static String logMessage(String tag, String format, Object ... args) {
-        return MengineLog.log(LM_MESSAGE, tag, format, args);
+        String m = MengineLog.log(LM_MESSAGE, tag, format, args);
+
+        return m;
     }
 
     public static String logWarning(String tag, String format, Object ... args) {
-        return MengineLog.log(LM_WARNING, tag, format, args);
+        String m = MengineLog.log(LM_WARNING, tag, format, args);
+
+        return m;
     }
 
     public static String logFatal(String tag, String format, Object ... args) {
-        return MengineLog.log(LM_FATAL, tag, format, args);
+        String m = MengineLog.log(LM_FATAL, tag, format, args);
+
+        return m;
     }
 
     public static String logMessageRelease(String tag, String format, Object ... args) {
-        return MengineLog.log(LM_MESSAGE_RELEASE, tag, format, args);
+        String m = MengineLog.log(LM_MESSAGE_RELEASE, tag, format, args);
+
+        return m;
     }
 
     public static String logError(String tag, String format, Object ... args) {
-        return MengineLog.log(LM_ERROR, tag, format, args);
+        String m = MengineLog.log(LM_ERROR, tag, format, args);
+
+        return m;
     }
 
     public static String buildTotalMsg(String format, Object ... args) {

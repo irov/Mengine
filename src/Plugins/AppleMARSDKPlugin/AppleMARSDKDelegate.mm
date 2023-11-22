@@ -22,7 +22,9 @@
 - (UIView *)GetView {
     UIWindow * appWindow = [UIApplication sharedApplication].delegate.window;
     
-    return [appWindow.subviews objectAtIndex:0];
+    UIView * view = [appWindow.subviews objectAtIndex:0];
+    
+    return view;
 }
 
 - (UIViewController *)GetViewController {

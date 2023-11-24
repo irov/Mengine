@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
@@ -53,7 +54,8 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
     private TextView createTextSessionId(Context context, String message) {
         TextView text = new TextView(context);
         text.setText(message);
-        text.setTextColor(context.getResources().getColor(R.color.mengine_splashscreen_text_color));
+        int mengine_splashscreen_text_color = ContextCompat.getColor(context, R.color.mengine_splashscreen_text_color);
+        text.setTextColor(mengine_splashscreen_text_color);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);

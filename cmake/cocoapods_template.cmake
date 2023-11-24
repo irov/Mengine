@@ -105,22 +105,26 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
                 list(GET ${APPLICATION_APPLE_COCOAPODS_PROJECT} ${COCOAPODS_INDEX} COCOAPOD_PATCH)
                 math(EXPR COCOAPODS_INDEX "${COCOAPODS_INDEX}+1")
 
-                string(COMPARE EQUAL ${COCOAPOD_GIT} "NO-GIT" COCOAPODS_NO_GIT)
-                string(COMPARE EQUAL ${COCOAPOD_TAG} "NO-TAG" COCOAPODS_NO_TAG)
-                string(COMPARE EQUAL ${COCOAPOD_PATCH} "NO-PATCH" COCOAPODS_NO_PATCH)
+                string(COMPARE EQUAL ${COCOAPOD_GIT} "NO-GIT" COCOAPOD_NO_GIT)
+                string(COMPARE EQUAL ${COCOAPOD_TAG} "NO-TAG" COCOAPOD_NO_TAG)
+                string(COMPARE EQUAL ${COCOAPOD_PATCH} "NO-PATCH" COCOAPOD_NO_PATCH)
                 
                 STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "'")
                 
-                if(NOT COCOAPODS_NO_GIT)
+                if(NOT COCOAPOD_NO_GIT)
                     STRING(APPEND PODFILE_BUFFER ", :git => '" ${COCOAPOD_GIT} "'")
+					
+					if(NOT COCOAPOD_NO_TAG)
+						STRING(APPEND PODFILE_BUFFER ", :tag => '" ${COCOAPOD_TAG} "'")
+					endif()
+				else()
+					if(NOT COCOAPOD_NO_TAG)
+						STRING(APPEND PODFILE_BUFFER ", '" ${COCOAPOD_TAG} "'")
+					endif()
                 endif()
                 
-                if(NOT COCOAPODS_NO_TAG)
-                    STRING(APPEND PODFILE_BUFFER ", :tag => '" ${COCOAPOD_TAG} "'")
-                endif()
-                
-                if(NOT COCOAPODS_NO_PATCH)
-                    STRING(APPEND PODFILE_BUFFER ", " ${COCOAPODS_PATCH})
+                if(NOT COCOAPOD_NO_PATCH)
+                    STRING(APPEND PODFILE_BUFFER ", " ${COCOAPOD_PATCH})
                 endif()
                 
                 STRING(APPEND PODFILE_BUFFER "\n")
@@ -156,22 +160,26 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
             list(GET APPLICATION_APPLE_COCOAPODS ${COCOAPODS_INDEX} COCOAPOD_PATCH)
             math(EXPR COCOAPODS_INDEX "${COCOAPODS_INDEX}+1")
 
-            string(COMPARE EQUAL ${COCOAPOD_GIT} "NO-GIT" COCOAPODS_NO_GIT)
-            string(COMPARE EQUAL ${COCOAPOD_TAG} "NO-TAG" COCOAPODS_NO_TAG)
-            string(COMPARE EQUAL ${COCOAPOD_PATCH} "NO-PATCH" COCOAPODS_NO_PATCH)
+            string(COMPARE EQUAL ${COCOAPOD_GIT} "NO-GIT" COCOAPOD_NO_GIT)
+            string(COMPARE EQUAL ${COCOAPOD_TAG} "NO-TAG" COCOAPOD_NO_TAG)
+            string(COMPARE EQUAL ${COCOAPOD_PATCH} "NO-PATCH" COCOAPOD_NO_PATCH)
         
             STRING(APPEND PODFILE_BUFFER "  pod '" ${COCOAPOD_NAME} "'")
             
-            if(NOT COCOAPODS_NO_GIT)
+            if(NOT COCOAPOD_NO_GIT)
                 STRING(APPEND PODFILE_BUFFER ", :git => '" ${COCOAPOD_GIT} "'")
+				
+				if(NOT COCOAPOD_NO_TAG)
+					STRING(APPEND PODFILE_BUFFER ", :tag => '" ${COCOAPOD_TAG} "'")
+				endif()
+			else()
+				if(NOT COCOAPOD_NO_TAG)
+					STRING(APPEND PODFILE_BUFFER ", '" ${COCOAPOD_TAG} "'")
+				endif()
             endif()
             
-            if(NOT COCOAPODS_NO_TAG)
-                STRING(APPEND PODFILE_BUFFER ", :tag => '" ${COCOAPOD_TAG} "'")
-            endif()
-            
-            if(NOT COCOAPODS_NO_PATCH)
-                STRING(APPEND PODFILE_BUFFER ", " ${COCOAPODS_PATCH})
+            if(NOT COCOAPOD_NO_PATCH)
+                STRING(APPEND PODFILE_BUFFER ", " ${COCOAPOD_PATCH})
             endif()
             
             STRING(APPEND PODFILE_BUFFER "\n")

@@ -290,29 +290,29 @@ namespace Mengine
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_IOS)
+#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameiOSApplicationDidBecomeActive()
+    void DummyGameEventReceiver::onGameApplicationDidBecomeActive()
     {
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameiOSApplicationWillEnterForeground()
+    void DummyGameEventReceiver::onGameApplicationWillEnterForeground()
     {
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameiOSApplicationDidEnterBackground()
+    void DummyGameEventReceiver::onGameApplicationDidEnterBackground()
     {
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameiOSApplicationWillResignActive()
+    void DummyGameEventReceiver::onGameApplicationWillResignActive()
     {
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameiOSApplicationWillTerminate()
+    void DummyGameEventReceiver::onGameApplicationWillTerminate()
     {
         // Empty
     }

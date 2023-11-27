@@ -15,9 +15,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
@@ -34,7 +34,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
     private Drawable getDrawableSplashScreen(Context context) {
         Resources resources = context.getResources();
         Resources.Theme theme = context.getTheme();
-        Drawable drawable = resources.getDrawable(R.drawable.mengine_splashscreen, theme);
+        Drawable drawable = ResourcesCompat.getDrawable(resources, R.drawable.mengine_splashscreen, theme);
 
         return drawable;
     }
@@ -60,6 +60,12 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         params.addRule(RelativeLayout.ALIGN_PARENT_START);
+        int mengine_splashscreen_text_margin_left = context.getResources().getInteger(R.integer.mengine_splashscreen_text_margin_left);
+        int mengine_splashscreen_text_margin_bottom = context.getResources().getInteger(R.integer.mengine_splashscreen_text_margin_bottom);
+        float density = context.getResources().getDisplayMetrics().density;
+        int margin_left = (int)(mengine_splashscreen_text_margin_left * density);
+        int margin_bottom = (int)(mengine_splashscreen_text_margin_bottom * density);
+        params.setMargins(margin_left, 0, 0, margin_bottom);
         text.setLayoutParams(params);
 
         return text;
@@ -69,7 +75,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         this.setState("splashscreen.state", "init");
 
-        Context context = activity.getContext();
+        Context context = MengineActivity.getContext();
         ViewGroup view = (ViewGroup)MengineActivity.getContentView();
 
         ImageView image = this.createBackground(context);

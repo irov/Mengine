@@ -37,6 +37,7 @@ def MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.existAppPlugin(project, "MENGI
 def MENGINE_APP_PLUGIN_FIREBASE_MESSAGING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_MESSAGING")
 def MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG")
 def MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING")
+def MENGINE_APP_PLUGIN_FLURRY = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FLURRY")
 def MENGINE_APP_PLUGIN_APPMETRICA = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPMETRICA")
 def MENGINE_APP_PLUGIN_APPSFLYER = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPSFLYER")
 def MENGINE_APP_PLUGIN_DEVTODEV = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_DEVTODEV")
@@ -482,6 +483,16 @@ if (MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING == true) {
 
     dependencies {
         implementation project(':plugins:FirebasePerformanceMonitoring')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_FLURRY", MENGINE_APP_PLUGIN_FLURRY)
+
+if (MENGINE_APP_PLUGIN_FLURRY == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.Flurry.MengineFlurryPlugin'
+
+    dependencies {
+        implementation project(':plugins:Flurry')
     }
 }
 

@@ -86,7 +86,8 @@ includeLibrary("MENGINE_APP_LIBRARY_SDL", ":libraries:SDL")
 / * - MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG [https://firebase.google.com/docs/remote-config]
 / * - MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING [https://firebase.google.com/docs/perf-mon]
 / * - MENGINE_APP_PLUGIN_APPMETRICA [https://yandex.ru/dev/appmetrica]
-/ * - MENGINE_APP_PLUGIN_APPSFLYER [https://dev.appsflyer.com/]
+/ * - MENGINE_APP_PLUGIN_APPSFLYER [https://dev.appsflyer.com]
+/ * - MENGINE_APP_PLUGIN_FLURRY [https://www.flurry.com]
 / * - MENGINE_APP_PLUGIN_AMAZON [https://developer.amazon.com]
 / * - MENGINE_APP_PLUGIN_APPLOVIN [https://www.applovin.com]
 / * - MENGINE_APP_PLUGIN_SENTRY [https://sentry.io]
@@ -120,6 +121,7 @@ includePlugin("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG", ":plugins:FirebaseRemo
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING", ":plugins:FirebasePerformanceMonitoring")
 includePlugin("MENGINE_APP_PLUGIN_APPMETRICA", ":plugins:AppMetrica")
 includePlugin("MENGINE_APP_PLUGIN_APPSFLYER", ":plugins:AppsFlyer")
+includePlugin("MENGINE_APP_PLUGIN_FLURRY", ":plugins:Flurry")
 includePlugin("MENGINE_APP_PLUGIN_AMAZON", ":plugins:Amazon")
 includePlugin("MENGINE_APP_PLUGIN_APPLOVIN", ":plugins:AppLovin")
 includePlugin("MENGINE_APP_PLUGIN_SENTRY", ":plugins:Sentry")

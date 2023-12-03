@@ -68,7 +68,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
 
     public void recordException(Throwable throwable) {
         this.logMessage("recordException throwable: %s"
-            , throwable.getLocalizedMessage()
+            , throwable.getMessage()
         );
 
         throwable.printStackTrace(System.err);

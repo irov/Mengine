@@ -76,7 +76,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             AppEventsLogger.activateApp(application);
         } catch (Exception e) {
             this.logError("[ERROR] AppEventsLogger activateApp caught exception: %s"
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
         }
     }
@@ -114,7 +114,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             @Override
             public void onError(@NonNull Exception e) {
                 MengineFacebookPlugin.this.logError("[ERROR] retrieve login [onError] exception: %s"
-                    , e.getLocalizedMessage()
+                    , e.getMessage()
                 );
             }
         });
@@ -195,7 +195,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
             @Override
             public void onError(@NonNull FacebookException e) {
-                String message = e.getLocalizedMessage();
+                String message = e.getMessage();
 
                 MengineFacebookPlugin.this.logError("[ERROR] login [onError] exception: %s"
                     , message
@@ -592,7 +592,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
                     MengineFacebookPlugin.this.logError("[ERROR] profile user picture link [%s] catch JSONException: %s"
                         , graphPath
-                        , e.getLocalizedMessage()
+                        , e.getMessage()
                     );
 
                     MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");

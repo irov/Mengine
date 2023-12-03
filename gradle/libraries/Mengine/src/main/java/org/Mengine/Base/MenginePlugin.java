@@ -209,14 +209,14 @@ public class MenginePlugin implements MenginePluginInterface {
         } catch (NullPointerException e) {
             this.invalidInitialize("invalid get MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS plugin: %s exception: %s [NullPointerException]"
                 , m_pluginName
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
 
             return;
         } catch (SecurityException e) {
             this.invalidInitialize("invalid get MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS plugin: %s exception: %s [SecurityException]"
                 , m_pluginName
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
 
             return;
@@ -229,14 +229,14 @@ public class MenginePlugin implements MenginePluginInterface {
         } catch (IllegalArgumentException e) {
             this.invalidInitialize("invalid get extension from this plugin: %s exception: %s [IllegalArgumentException]"
                 , m_pluginName
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
 
             return;
         } catch (IllegalAccessException e) {
             this.invalidInitialize("invalid get extension from this plugin: %s exception: %s [IllegalAccessException]"
                 , m_pluginName
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
 
             return;

@@ -162,7 +162,7 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
 
     public void recordException(Throwable throwable) {
         this.logMessage("recordException throwable: %s"
-            , throwable.getLocalizedMessage()
+            , throwable.getMessage()
         );
 
         throwable.printStackTrace(System.err);

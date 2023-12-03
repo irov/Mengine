@@ -297,7 +297,7 @@ public class MengineActivity extends SDLActivity {
             } catch (MenginePluginInvalidInitializeException e) {
                 MengineLog.logError(TAG, "[ERROR] onCreate plugin: %s exception: %s"
                     , l.getPluginName()
-                    , e.getLocalizedMessage()
+                    , e.getMessage()
                 );
 
                 this.finish();
@@ -321,7 +321,7 @@ public class MengineActivity extends SDLActivity {
             } catch (MenginePluginInvalidInitializeException e) {
                 MengineLog.logError(TAG, "[ERROR] onExtensionInitialize plugin %s: exception: %s"
                     , p.getPluginName()
-                    , e.getLocalizedMessage()
+                    , e.getMessage()
                 );
 
                 this.finish();
@@ -854,7 +854,7 @@ public class MengineActivity extends SDLActivity {
         } catch (ActivityNotFoundException e) {
             MengineLog.logWarning(TAG, "linkingOpenURL url: %s catch ActivityNotFoundException: %s"
                 , url
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
 
             return false;
@@ -1002,7 +1002,7 @@ public class MengineActivity extends SDLActivity {
                 MengineLog.logError(TAG, "[ERROR] linkingOpenMail failed attachs file mail: %s subject: %s exception: %s"
                     , email
                     , subject
-                    , e.getLocalizedMessage()
+                    , e.getMessage()
                 );
             }
         } else {

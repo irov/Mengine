@@ -49,19 +49,19 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
                 return adInfo;
             } catch (IOException e) {
                 MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info IOException: %s"
-                    , e.getLocalizedMessage()
+                    , e.getMessage()
                 );
             } catch (IllegalStateException e) {
                 MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info IllegalStateException: %s"
-                    , e.getLocalizedMessage()
+                    , e.getMessage()
                 );
             } catch (GooglePlayServicesNotAvailableException e) {
                 MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info GooglePlayServicesNotAvailableException: %s"
-                    , e.getLocalizedMessage()
+                    , e.getMessage()
                 );
             } catch (GooglePlayServicesRepairableException e) {
                 MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info GooglePlayServicesRepairableException: %s"
-                    , e.getLocalizedMessage()
+                    , e.getMessage()
                 );
             }
 
@@ -82,15 +82,15 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
             adInfo = m_advertisingFuture.get();
         } catch (CancellationException ex) {
             this.logError("[ERROR] invalid get advertising id CancellationException: %s"
-                , ex.getLocalizedMessage()
+                , ex.getMessage()
             );
         } catch (InterruptedException ex) {
             this.logError("[ERROR] invalid get advertising id InterruptedException: %s"
-                , ex.getLocalizedMessage()
+                , ex.getMessage()
             );
         } catch (ExecutionException ex) {
             this.logError("[ERROR] invalid get advertising id ExecutionException: %s"
-                , ex.getLocalizedMessage()
+                , ex.getMessage()
             );
         }
 

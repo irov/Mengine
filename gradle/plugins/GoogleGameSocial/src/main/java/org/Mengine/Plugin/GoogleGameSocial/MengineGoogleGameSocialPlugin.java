@@ -144,7 +144,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
                 @Override
                 public void onFailure(@NonNull Exception ex) {
                     MengineGoogleGameSocialPlugin.this.logMessage("google game social log OUT failure: %s"
-                        , ex.getLocalizedMessage()
+                        , ex.getMessage()
                     );
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialSignOutFailure");
@@ -222,7 +222,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
                             status.startResolutionForResult(activity, RC_SIGN_IN);
                         } catch (IntentSender.SendIntentException ex) {
                             this.logError("[ERROR] start resolution for result RC_SIGN_IN catch SendIntentException: %s"
-                                , ex.getLocalizedMessage()
+                                , ex.getMessage()
                             );
                         }
                     } else {
@@ -353,7 +353,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     MengineGoogleGameSocialPlugin.this.logError("[ERROR] get achievements error: %s"
-                        , e.getLocalizedMessage()
+                        , e.getMessage()
                     );
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialShowAchievementError");
@@ -390,7 +390,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
                 public void onFailure(@NonNull Exception e) {
                     MengineGoogleGameSocialPlugin.this.logError("[ERROR] unlockAchievement achievementId: %s error: %s"
                         , achievementId
-                        , e.getLocalizedMessage()
+                        , e.getMessage()
                     );
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialAchievementError", achievementId);
@@ -429,7 +429,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
                     MengineGoogleGameSocialPlugin.this.logError("[ERROR] incrementAchievement achievementId: %s numSteps: %d error: %s"
                         , achievementId
                         , numSteps
-                        , e.getLocalizedMessage()
+                        , e.getMessage()
                     );
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialAchievementIncrementError", achievementId);

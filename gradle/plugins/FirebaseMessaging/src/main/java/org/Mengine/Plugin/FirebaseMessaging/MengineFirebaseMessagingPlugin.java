@@ -47,7 +47,7 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin implements Men
                             Exception exception = task.getException();
 
                             MengineFirebaseMessagingPlugin.this.logError("[ERROR] fetching FCM registration token failed: %s"
-                                , exception.getLocalizedMessage()
+                                , exception.getMessage()
                             );
 
                             return;

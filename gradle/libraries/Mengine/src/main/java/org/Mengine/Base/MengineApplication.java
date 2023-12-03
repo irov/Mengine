@@ -150,7 +150,7 @@ public class MengineApplication extends Application {
             return bundle;
         } catch (PackageManager.NameNotFoundException e) {
             MengineLog.logError(TAG, "[ERROR] Unable to load meta-data: %s"
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
         }
 
@@ -518,7 +518,7 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineCaughtException(Throwable throwable) {
-        String message = throwable.getLocalizedMessage();
+        String message = throwable.getMessage();
         this.setState("exception.message", message);
 
         String stacktrace = MengineUtils.getThrowableStackTrace(throwable);
@@ -739,7 +739,7 @@ public class MengineApplication extends Application {
             } catch (MenginePluginInvalidInitializeException e) {
                 this.invalidInitialize("onAppCreate plugin: %s exception: %s"
                     , l.getPluginName()
-                    , e.getLocalizedMessage()
+                    , e.getMessage()
                 );
             }
         }
@@ -758,11 +758,11 @@ public class MengineApplication extends Application {
             SDL.loadLibrary("SDLApplication");
         } catch (UnsatisfiedLinkError e) {
             this.invalidInitialize("load library SDLApplication catch UnsatisfiedLinkError: %s"
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
         } catch (Exception e) {
             this.invalidInitialize("load library SDLApplication catch Exception: %s"
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
         }
 
@@ -918,7 +918,7 @@ public class MengineApplication extends Application {
             } catch (MenginePluginInvalidInitializeException e) {
                 this.invalidInitialize("onAppPrepare plugin: %s exception: %s"
                     , l.getPluginName()
-                    , e.getLocalizedMessage()
+                    , e.getMessage()
                 );
             }
         }
@@ -953,7 +953,7 @@ public class MengineApplication extends Application {
             } catch (MenginePluginInvalidInitializeException e) {
                 this.invalidInitialize("onAppCreate plugin: %s exception: %s"
                     , l.getPluginName()
-                    , e.getLocalizedMessage()
+                    , e.getMessage()
                 );
             }
         }

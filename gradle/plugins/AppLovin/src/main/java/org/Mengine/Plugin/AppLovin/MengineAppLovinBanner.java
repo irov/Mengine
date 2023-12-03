@@ -117,7 +117,24 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
         m_plugin.setState("applovin.banner.state." + adUnitId, "load");
 
-        m_adView.loadAd();
+        try {
+            m_adView.loadAd();
+        } catch (Exception e) {
+            m_plugin.logError("[Banner] loadAd adUnitId: %s exception: %s"
+                , adUnitId
+                , e.getMessage()
+            );
+
+            this.buildEvent("mng_ad_banner_load_exception")
+                .addParameterString("ad_unit_id", adUnitId)
+                .addParameterLong("request_id", m_requestId)
+                .addParameterString("exception", e.getMessage())
+                .log();
+
+            m_plugin.setState("applovin.banner.state." + adUnitId, "load_exception");
+
+            m_plugin.pythonCall("onApplovinBannerOnAdLoadException", adUnitId);
+        }
     }
 
     public boolean bannerVisible(boolean show) {

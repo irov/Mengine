@@ -66,7 +66,6 @@ public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginA
         this.logInfo("Flurry session started");
     }
 
-
     @Override
     public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         Map<String, String> params = new HashMap<String, String>();

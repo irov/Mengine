@@ -145,7 +145,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
         } catch (JSONException e) {
             this.logError("[ERROR] makePayParams jsonData: %s error: %s"
                 , jsonData
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
 
             return null;
@@ -280,7 +280,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
             this.pythonCall("onMarSDKSaveClipboard", hasPrimaryClip, code);
         } catch (Exception e) {
             this.logError("[ERROR] pasteCode exception: %s"
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
 
             return false;
@@ -335,7 +335,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
         } catch (JSONException e) {
             this.logError("[ERROR] makeUserExtraData jsonData: %s error: %s"
                 , jsonData
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
 
             return null;
@@ -621,10 +621,12 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
         } catch (JSONException e) {
             this.logError("[ERROR] pay msg: %s JSONException: %s"
                 , msg
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
 
-            this.pythonCall("onMarSDKPayError", code, msg, e.getLocalizedMessage());
+            String message = e.getMessage();
+
+            this.pythonCall("onMarSDKPayError", code, msg, message);
         }
     }
 
@@ -645,10 +647,12 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
         } catch(JSONException e) {
             this.logError("[ERROR] onRedeemResult msg: %s JSONException: %s"
                 , msg
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
 
-            this.pythonCall("onMarSDKRedeemError", msg, e.getLocalizedMessage());
+            String message = e.getMessage();
+
+            this.pythonCall("onMarSDKRedeemError", msg, message);
         }
     }
 

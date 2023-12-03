@@ -67,6 +67,17 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         }
     }
 
+    private void retryLoadAd() {
+        m_retryAttempt++;
+
+        long duration = (long) Math.pow(2, Math.min(6, m_retryAttempt));
+        long delayMillis = TimeUnit.SECONDS.toMillis(duration);
+
+        MengineUtils.performOnMainThreadDelayed(() -> {
+            this.loadAd();
+        }, delayMillis);
+    }
+
     public void loadAd() {
         if (m_interstitialAd == null) {
             return;
@@ -90,7 +101,26 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_plugin.setState("applovin.interstitial.state." + adUnitId, "load");
 
-        m_interstitialAd.loadAd();
+        try {
+            m_interstitialAd.loadAd();
+        } catch (Exception e) {
+            m_plugin.logError("[Interstitial] loadAd adUnitId: %s attempt: %d exception: %s"
+                    , adUnitId
+                    , m_retryAttempt
+                    , e.getMessage()
+            );
+
+            this.buildEvent("mng_ad_interstitial_load_exception")
+                .addParameterString("ad_unit_id", adUnitId)
+                .addParameterLong("request_id", m_requestId)
+                .addParameterLong("attempt", m_retryAttempt)
+                .addParameterString("exception", e.getMessage())
+                .log();
+
+            m_plugin.setState("applovin.interstitial.state." + adUnitId, "load_exception");
+
+            this.retryLoadAd();
+        }
     }
 
     public boolean canYouShowInterstitial(String placement) {
@@ -275,13 +305,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_plugin.pythonCall("onApplovinInterstitialOnAdLoadFailed", adUnitId);
 
-        m_retryAttempt++;
-
-        long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttempt)));
-
-        MengineUtils.performOnMainThreadDelayed(() -> {
-            this.loadAd();
-        }, delayMillis);
+        this.retryLoadAd();
     }
 
     @Override

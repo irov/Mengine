@@ -41,7 +41,7 @@ public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginA
         } catch (IllegalArgumentException e) {
             this.invalidInitialize("AdRegistration get instance failed: %s"
                 , MengineAmazonPlugin_AppId
-                , e.getLocalizedMessage()
+                , e.getMessage()
             );
 
             return;

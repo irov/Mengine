@@ -68,6 +68,17 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         }
     }
 
+    private void retryLoadAd() {
+        m_retryAttempt++;
+
+        long duration = (long) Math.pow(2, Math.min(6, m_retryAttempt));
+        long delayMillis = TimeUnit.SECONDS.toMillis(duration);
+
+        MengineUtils.performOnMainThreadDelayed(() -> {
+            this.loadAd();
+        }, delayMillis);
+    }
+
     public void loadAd() {
         if (m_rewardedAd == null) {
             return;
@@ -91,7 +102,25 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_plugin.setState("applovin.rewarded.state." + adUnitId, "load");
 
-        m_rewardedAd.loadAd();
+        try {
+            m_rewardedAd.loadAd();
+        } catch (Exception e) {
+            m_plugin.logError("[Rewarded] loadAd adUnitId: %s request: %d attempt: %d exception: %s"
+                , adUnitId
+                , m_enumeratorRequest
+                , m_retryAttempt
+                , e.getMessage()
+            );
+
+            this.buildEvent("mng_ad_rewarded_load_exception")
+                .addParameterString("ad_unit_id", adUnitId)
+                .addParameterLong("request_id", m_requestId)
+                .addParameterLong("attempt", m_retryAttempt)
+                .addParameterString("exception", e.getMessage())
+                .log();
+
+            this.retryLoadAd();
+        }
     }
 
     public boolean canOfferRewarded(String placement) {
@@ -341,13 +370,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_plugin.pythonCall("onApplovinRewardedOnAdLoadFailed", adUnitId);
 
-        m_retryAttempt++;
-
-        long delayMillis = TimeUnit.SECONDS.toMillis((long) Math.pow(2, Math.min(6, m_retryAttempt)));
-
-        MengineUtils.performOnMainThreadDelayed(() -> {
-            this.loadAd();
-        }, delayMillis);
+        this.retryLoadAd();
     }
 
     @Override

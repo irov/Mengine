@@ -72,7 +72,7 @@ namespace Mengine
     void AppleFirebaseAnalyticsService::sendEvent( NSString * _name, NSDictionary<NSString *, id> * _parameters )
     {
         LOGGER_MESSAGE( "sendEvent name: %s"
-            , [ _name UTF8String]
+            , [_name UTF8String]
         );
         
         for (NSString * key in _parameters)
@@ -86,6 +86,14 @@ namespace Mengine
         }
 
         [FIRAnalytics logEventWithName:_name parameters:_parameters];
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleFirebaseAnalyticsService::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
+    {
+        MENGINE_UNUSED( _screenType );
+        MENGINE_UNUSED( _screenName );
+        
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseAnalyticsService::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )

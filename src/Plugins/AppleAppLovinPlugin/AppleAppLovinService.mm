@@ -107,6 +107,10 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::_finalizeService()
     {
+#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+        m_amazonService = nil;
+#endif
+        
         m_analyticsService = nil;
                 
         m_banners = nil;

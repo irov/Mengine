@@ -7,9 +7,6 @@ src
     AppleSentryPlugin.h
     AppleSentryPlugin.mm
     
-    AppleSentryLoggerCapture.h
-    AppleSentryLoggerCapture.mm
-    
     AppleSentryService.h
     AppleSentryService.mm
 )

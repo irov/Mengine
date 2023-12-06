@@ -44,25 +44,6 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &AppleSentryService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &AppleSentryService::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_STOP, &AppleSentryService::notifyEngineStop_, MENGINE_DOCUMENT_FACTORABLE );
-
-        BOOL AppleSentryPlugin_LoggerCapture = Helper::AppleGetBundlePluginConfigBoolean( @("MengineAppleSentryPlugin"), @("LoggerCapture"), MENGINE_MASTER_RELEASE_VALUE( YES, NO ) );
-
-        if( AppleSentryPlugin_LoggerCapture == YES )
-        {
-            AppleSentryLoggerCapturePtr loggerCapture = Helper::makeFactorableUnique<AppleSentryLoggerCapture>( MENGINE_DOCUMENT_FACTORABLE );
-            
-            MENGINE_ASSERTION_MEMORY_PANIC( loggerCapture );
-            
-            uint32_t loggerFilter = ~0u & ~(LFILTER_PROTECTED);
-            loggerCapture->setVerboseFilter( loggerFilter );
-            loggerCapture->setVerboseLevel( LM_ERROR );
-            loggerCapture->setWriteHistory( true );
-            
-            LOGGER_SERVICE()
-                ->registerLogger( loggerCapture );
-            
-            m_loggerCapture = loggerCapture;
-        }
         
         return true;
     }
@@ -73,11 +54,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ERROR );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_STOP );
-        
-        LOGGER_SERVICE()
-            ->unregisterLogger( m_loggerCapture );
-
-        m_loggerCapture = nullptr;
         
         [SentrySDK close];
     }

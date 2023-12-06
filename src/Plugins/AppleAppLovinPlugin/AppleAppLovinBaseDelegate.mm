@@ -8,6 +8,8 @@
     
     self.m_adUnitId = adUnitId;
     self.m_analytics = analytics;
+    
+    return self;
 }
 
 - (NSString *) getMAAdParams:(MAAd *) ad {

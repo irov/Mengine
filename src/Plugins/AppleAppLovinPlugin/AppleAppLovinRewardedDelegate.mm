@@ -12,11 +12,15 @@
                                           provider:(const Mengine::AppleAppLovinRewardedProviderInterfacePtr &) provider
                                          analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
     self = [super initWithAdUnitIdentifier:adUnitId analytics:analytics];
+
+    self.m_provider = provider;
     
-    self.m_rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier: adUnitId];
-    self.m_rewardedAd.delegate = self;
-    self.m_rewardedAd.requestDelegate = self;
-    self.m_rewardedAd.revenueDelegate = self;
+    MARewardedAd * rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier: adUnitId];
+    rewardedAd.delegate = self;
+    rewardedAd.requestDelegate = self;
+    rewardedAd.revenueDelegate = self;
+    
+    self.m_rewardedAd = rewardedAd;
     
     self.m_retryAttempt = 0;
     self.m_enumeratorRequest = 0;

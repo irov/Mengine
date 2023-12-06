@@ -36,8 +36,6 @@
     if( AppleSentryPlugin_DSN == nil ) {
         return NO;
     }
-    
-    BOOL AppleSentryPlugin_Debug = MENGINE_DEBUG_VALUE(YES, NO);
 
     const Mengine::Char * BUILD_VERSION = Mengine::Helper::getBuildVersion();
     const Mengine::Char * BUILD_NUMBER_STRING = Mengine::Helper::getBuildNumberString();
@@ -50,7 +48,7 @@
     
     [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
         options.dsn = AppleSentryPlugin_DSN;
-        options.debug = AppleSentryPlugin_Debug;
+        options.debug = NO;
         options.releaseName = @(BUILD_VERSION);
         options.dist = @(BUILD_NUMBER_STRING);
         options.environment = @(ENVIRONMENT);

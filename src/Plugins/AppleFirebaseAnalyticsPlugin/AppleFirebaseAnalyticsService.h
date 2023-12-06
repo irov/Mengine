@@ -36,6 +36,8 @@ namespace Mengine
         
     protected:
         void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;
+        void onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName ) override;
+        
         void onAnalyticsFlush() override;
     };
 }

@@ -101,10 +101,24 @@ namespace Mengine
         const ConstString & eventName = _event->getName();
         const Char * eventName_str = eventName.c_str();
         
+        uint32_t countParameters = _event->getCountParameters();
+        
+        if( countParameters > 25 )
+        {
+            return;
+        }
+        
         NSMutableDictionary<NSString *, id> * firebase_parameters = [[NSMutableDictionary alloc] init];
         
         _event->foreachParameters( [firebase_parameters]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
         {
+            ConstString::size_type name_size = _name.size();
+            
+            if( name_size > 40 )
+            {
+                return;
+            }
+            
             const Char * name_str = _name.c_str();
             
             EAnalyticsEventParameterType parameterType = _parameter->getType();
@@ -137,6 +151,13 @@ namespace Mengine
                     AnalyticsEventParameterStringInterfacePtr parameter_string = AnalyticsEventParameterStringInterfacePtr::from( _parameter );
                     const String & parameter_value = parameter_string->resolveValue();
                     
+                    String::size_type parameter_value_size = parameter_value.size();
+                    
+                    if( parameter_value_size > 100 )
+                    {
+                        return;
+                    }
+                    
                     const Char * parameter_value_str = parameter_value.c_str();
 
                     [firebase_parameters setValue:@(parameter_value_str) forKey:@(name_str)];
@@ -145,6 +166,13 @@ namespace Mengine
                 {
                     AnalyticsEventParameterConstStringInterfacePtr parameter_string = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
                     const ConstString & parameter_value = parameter_string->resolveValue();
+                    
+                    ConstString::size_type parameter_value_size = parameter_value.size();
+                    
+                    if( parameter_value_size > 100 )
+                    {
+                        return;
+                    }
                     
                     const Char * parameter_value_str = parameter_value.c_str();
 

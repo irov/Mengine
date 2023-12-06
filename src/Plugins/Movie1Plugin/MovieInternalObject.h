@@ -6,6 +6,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
+#include "Kernel/BaseTransformation.h"
 
 namespace Mengine
 {
@@ -15,9 +16,11 @@ namespace Mengine
     class MovieInternalObject
         : public Node
         , protected BaseRender
+        , protected BaseTransformation
     {
         DECLARE_FACTORABLE( MovieInternalObject );
         DECLARE_VISITABLE( Node );
+        DECLARE_TRANSFORMABLE();
         DECLARE_RENDERABLE();
 
     public:

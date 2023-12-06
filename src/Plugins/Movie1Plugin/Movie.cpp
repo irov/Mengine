@@ -491,6 +491,8 @@ namespace Mengine
 
         TransformationInterface * transformation = _node->getTransformation();
 
+        MENGINE_ASSERTION_MEMORY_PANIC( transformation );
+
         transformation->setTransformationData(
             TRANSFORMATION_INVALIDATE_UNKNOWN,
             _layer.position,

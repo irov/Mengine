@@ -24,7 +24,7 @@ namespace Mengine
                 ->setGDPRPass( _passGDPR );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleGeneralDataProtectionRegulation_isGDPRPass( bool _passGDPR )
+        static void s_AppleGeneralDataProtectionRegulation_isGDPRPass()
         {
             bool passGDPR = APPLE_GENERALDATAPROTECTIONREGULATION_SERVICE()
                 ->isGDPRPass();

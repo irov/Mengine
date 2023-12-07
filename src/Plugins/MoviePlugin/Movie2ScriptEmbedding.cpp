@@ -298,10 +298,10 @@ namespace Mengine
             .def_static_kernel( "getCompositions", &Detail::s_ResourceMovie2_getCompositions )
             ;
 
-        Helper::registerScriptWrapping<Movie2>( _kernel, STRINGIZE_STRING_LOCAL( "Movie2" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<Movie2Slot>( _kernel, STRINGIZE_STRING_LOCAL( "Movie2Slot" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<Movie2SubComposition>( _kernel, STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<ResourceMovie2>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Movie2>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Movie2Slot>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Movie2SubComposition>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceMovie2>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -313,10 +313,10 @@ namespace Mengine
         _kernel->remove_scope<Movie2SubComposition>();
         _kernel->remove_scope<ResourceMovie2>();
 
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Movie2" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Movie2Slot" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+        Helper::unregisterScriptWrapping<Movie2>();
+        Helper::unregisterScriptWrapping<Movie2Slot>();
+        Helper::unregisterScriptWrapping<Movie2SubComposition>();
+        Helper::unregisterScriptWrapping<ResourceMovie2>();
     }
     //////////////////////////////////////////////////////////////////////////
 }

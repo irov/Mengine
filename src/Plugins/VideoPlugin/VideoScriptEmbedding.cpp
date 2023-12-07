@@ -125,9 +125,9 @@ namespace Mengine
 
         pybind::def_function( _kernel, "createVideo", &Detail::s_createVideo );
 
-        Helper::registerScriptWrapping<ResourceVideo>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceVideo" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<SurfaceVideo>( _kernel, STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<SurfaceMockupVideo>( _kernel, STRINGIZE_STRING_LOCAL( "SurfaceMockupVideo" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceVideo>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<SurfaceVideo>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<SurfaceMockupVideo>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -138,9 +138,9 @@ namespace Mengine
         _kernel->remove_scope<SurfaceVideo>();
         _kernel->remove_scope<SurfaceMockupVideo>();
 
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "SurfaceMockupVideo" ) );
+        Helper::unregisterScriptWrapping<ResourceVideo>();
+        Helper::unregisterScriptWrapping<SurfaceVideo>();
+        Helper::unregisterScriptWrapping<SurfaceMockupVideo>();
     }
     //////////////////////////////////////////////////////////////////////////
 }

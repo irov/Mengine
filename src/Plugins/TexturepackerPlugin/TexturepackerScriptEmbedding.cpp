@@ -61,8 +61,8 @@ namespace Mengine
             .def( "getStripFrameNameExtension", &ResourceMultiTexturepacker::getStripFrameNameExtension )
             ;
 
-        Helper::registerScriptWrapping<ResourceTexturepacker>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<ResourceMultiTexturepacker>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceMultiTexturepacker" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceTexturepacker>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceMultiTexturepacker>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -72,8 +72,8 @@ namespace Mengine
         _kernel->remove_scope<ResourceTexturepacker>();
         _kernel->remove_scope<ResourceMultiTexturepacker>();
 
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceMultiTexturepacker" ) );
+        Helper::unregisterScriptWrapping<ResourceTexturepacker>();
+        Helper::unregisterScriptWrapping<ResourceMultiTexturepacker>();
     }
     //////////////////////////////////////////////////////////////////////////
 }

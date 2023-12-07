@@ -92,6 +92,9 @@ namespace Mengine
             .def_static_native_kernel( "setEventListener", &Detail::s_SamplerSpineAnimationInterface_setEventListener )
             ;
 
+        pybind::interface_<SamplerSpineAnimation, pybind::bases<SamplerSpineAnimationInterface>>( _kernel, "SamplerSpineAnimation", false )
+            ;
+
         pybind::interface_<ResourceSpineAtlas, pybind::bases<Resource> >( _kernel, "ResourceSpineAtlas", false )
             ;
 
@@ -108,11 +111,11 @@ namespace Mengine
             .def( "getResourceSpineAtlas", &ResourceSpineSkeleton::getResourceSpineAtlas )
             ;
 
-        Helper::registerScriptWrapping<Spine>( _kernel, STRINGIZE_STRING_LOCAL( "Spine" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<SamplerSpineAnimationInterface>( _kernel, STRINGIZE_STRING_LOCAL( "SamplerSpineAnimationInterface" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<ResourceSpineSkeleton>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<ResourceSpineAtlasDefault>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<ResourceSpineAtlasTexturepacker>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Spine>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<SamplerSpineAnimation>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceSpineSkeleton>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceSpineAtlasDefault>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceSpineAtlasTexturepacker>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -120,17 +123,17 @@ namespace Mengine
     void SpineScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_scope<Spine>();
-        _kernel->remove_scope<SamplerSpineAnimationInterface>();
+        _kernel->remove_scope<SamplerSpineAnimation>();
         _kernel->remove_scope<ResourceSpineAtlas>();
         _kernel->remove_scope<ResourceSpineAtlasDefault>();
         _kernel->remove_scope<ResourceSpineAtlasTexturepacker>();
         _kernel->remove_scope<ResourceSpineSkeleton>();
 
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Spine" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "SamplerSpineAnimationInterface" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ) );
+        Helper::unregisterScriptWrapping<Spine>();
+        Helper::unregisterScriptWrapping<SamplerSpineAnimation>();
+        Helper::unregisterScriptWrapping<ResourceSpineSkeleton>();
+        Helper::unregisterScriptWrapping<ResourceSpineAtlasDefault>();
+        Helper::unregisterScriptWrapping<ResourceSpineAtlasTexturepacker>();
     }
     //////////////////////////////////////////////////////////////////////////
 }

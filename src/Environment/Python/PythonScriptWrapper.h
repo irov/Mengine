@@ -121,14 +121,30 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        void registerScriptWrapping( pybind::kernel_interface * _kernel, const ConstString & _type, const DocumentInterfacePtr & _doc )
+        void registerScriptWrapping( pybind::kernel_interface * _kernel, const DocumentInterfacePtr & _doc )
+        {
+            const ConstString & type = T::getFactorableType();
+
+            VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ScriptWrapping" ), type, Helper::makeFactorableUnique<PythonScriptWrapper<T>>( _doc, _kernel ), _doc );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        void registerScriptWrappingEx( pybind::kernel_interface * _kernel, const ConstString & _type, const DocumentInterfacePtr & _doc )
         {
             VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ScriptWrapping" ), _type, Helper::makeFactorableUnique<PythonScriptWrapper<T>>( _doc, _kernel ), _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE void unregisterScriptWrapping( const ConstString & _type )
+        MENGINE_INLINE void unregisterScriptWrappingEx( const ConstString & _type )
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ScriptWrapping" ), _type );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        void unregisterScriptWrapping()
+        {
+            const ConstString & type = T::getFactorableType();
+
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ScriptWrapping" ), type );
         }
         //////////////////////////////////////////////////////////////////////////
     }

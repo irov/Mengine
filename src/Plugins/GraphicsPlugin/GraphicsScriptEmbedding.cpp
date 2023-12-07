@@ -55,7 +55,7 @@ namespace Mengine
             .def( "clear", &Graphics::clear )
             ;
 
-        Helper::registerScriptWrapping<Graphics>( _kernel, STRINGIZE_STRING_LOCAL( "Graphics" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Graphics>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -64,6 +64,6 @@ namespace Mengine
     {
         _kernel->remove_scope<Graphics>();
 
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Graphics" ) );
+        Helper::unregisterScriptWrapping<Graphics>();
     }
 }

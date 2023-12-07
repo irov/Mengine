@@ -1129,13 +1129,17 @@ namespace Mengine
                 ;
         }
 
-#define SCRIPT_CLASS_WRAPPING( Class )\
-    Helper::registerScriptWrapping<Class>(_kernel, STRINGIZE_STRING_LOCAL(#Class), MENGINE_DOCUMENT_FACTORABLE)
+        Helper::registerScriptWrappingEx<Node>( _kernel, STRINGIZE_STRING_LOCAL( "Node" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrappingEx<Resource>( _kernel, STRINGIZE_STRING_LOCAL( "Resource" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrappingEx<Layer>( _kernel, STRINGIZE_STRING_LOCAL( "Layer" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrappingEx<HotSpot>( _kernel, STRINGIZE_STRING_LOCAL( "HotSpot" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrappingEx<Surface>( _kernel, STRINGIZE_STRING_LOCAL( "Surface" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        SCRIPT_CLASS_WRAPPING( Node );
-        SCRIPT_CLASS_WRAPPING( Layer );
+#define SCRIPT_CLASS_WRAPPING( Class )\
+    Helper::registerScriptWrapping<Class>(_kernel, MENGINE_DOCUMENT_FACTORABLE)
+
         SCRIPT_CLASS_WRAPPING( Layer2D );
-        SCRIPT_CLASS_WRAPPING( HotSpot );
+        
         SCRIPT_CLASS_WRAPPING( HotSpotPolygon );
         SCRIPT_CLASS_WRAPPING( HotSpotGlobal );
         SCRIPT_CLASS_WRAPPING( HotSpotCircle );
@@ -1171,7 +1175,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( RenderCameraProjection );
         SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalTarget );
 
-        SCRIPT_CLASS_WRAPPING( Resource );
         SCRIPT_CLASS_WRAPPING( ResourceImage );        
         SCRIPT_CLASS_WRAPPING( ResourceImageData );
         SCRIPT_CLASS_WRAPPING( ResourceImageDefault );
@@ -1192,7 +1195,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ResourceTestPick );
         SCRIPT_CLASS_WRAPPING( ResourceHIT );
 
-        SCRIPT_CLASS_WRAPPING( Surface );
         SCRIPT_CLASS_WRAPPING( SurfaceSound );
         SCRIPT_CLASS_WRAPPING( SurfaceImage );
         SCRIPT_CLASS_WRAPPING( SurfaceImageSequence );
@@ -1210,13 +1212,16 @@ namespace Mengine
     {
         MENGINE_UNUSED( _kernel );
 
-#define UNSCRIPT_CLASS_WRAPPING( Class )\
-    Helper::unregisterScriptWrapping(STRINGIZE_STRING_LOCAL(#Class))
+        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "Node" ) );
+        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "Resource" ) );
+        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "Layer" ) );
+        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "HotSpot" ) );
+        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "Surface" ) );
 
-        UNSCRIPT_CLASS_WRAPPING( Node );
-        UNSCRIPT_CLASS_WRAPPING( Layer );
+#define UNSCRIPT_CLASS_WRAPPING( Class )\
+    Helper::unregisterScriptWrapping<Class>()
+
         UNSCRIPT_CLASS_WRAPPING( Layer2D );
-        UNSCRIPT_CLASS_WRAPPING( HotSpot );
         UNSCRIPT_CLASS_WRAPPING( HotSpotPolygon );
         UNSCRIPT_CLASS_WRAPPING( HotSpotGlobal );
         UNSCRIPT_CLASS_WRAPPING( HotSpotCircle );
@@ -1244,8 +1249,6 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         UNSCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
 
-        UNSCRIPT_CLASS_WRAPPING( Graphics );
-
         UNSCRIPT_CLASS_WRAPPING( Window );
 
         UNSCRIPT_CLASS_WRAPPING( RenderViewport );
@@ -1254,10 +1257,9 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( RenderCameraProjection );
         UNSCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalTarget );
 
-        UNSCRIPT_CLASS_WRAPPING( Resource );
         UNSCRIPT_CLASS_WRAPPING( ResourceImage );
         UNSCRIPT_CLASS_WRAPPING( ResourceImageEmpty );
-        UNSCRIPT_CLASS_WRAPPING( ResourceImageData );        
+        UNSCRIPT_CLASS_WRAPPING( ResourceImageData );
         UNSCRIPT_CLASS_WRAPPING( ResourceImageDefault );
         UNSCRIPT_CLASS_WRAPPING( ResourceMusic );
         UNSCRIPT_CLASS_WRAPPING( ResourceImageSequence );
@@ -1275,7 +1277,6 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( ResourceTestPick );
         UNSCRIPT_CLASS_WRAPPING( ResourceHIT );
 
-        UNSCRIPT_CLASS_WRAPPING( Surface );
         UNSCRIPT_CLASS_WRAPPING( SurfaceSound );
         UNSCRIPT_CLASS_WRAPPING( SurfaceImage );
         UNSCRIPT_CLASS_WRAPPING( SurfaceImageSequence );

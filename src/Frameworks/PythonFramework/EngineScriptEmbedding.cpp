@@ -4653,8 +4653,8 @@ namespace Mengine
 
         m_implement = nodeScriptMethod;
 
-        Helper::registerScriptWrapping<PythonValueFollowerLinear>( _kernel, STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<PythonValueFollowerAcceleration>( _kernel, STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<PythonValueFollowerLinear>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<PythonValueFollowerAcceleration>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerLinear, 32>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
@@ -4726,8 +4726,8 @@ namespace Mengine
 
         m_implement = nullptr;
 
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ) );
+        Helper::unregisterScriptWrapping<PythonValueFollowerLinear>();
+        Helper::unregisterScriptWrapping<PythonValueFollowerAcceleration>();
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), nullptr );

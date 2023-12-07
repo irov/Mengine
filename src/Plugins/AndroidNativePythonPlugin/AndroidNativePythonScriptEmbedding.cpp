@@ -122,8 +122,8 @@ namespace Mengine
             .def_call( &AndroidNativePythonFunctorBoolean::call )
             ;
 
-        Helper::registerScriptWrapping<AndroidNativePythonFunctorVoid>( _kernel, STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<AndroidNativePythonFunctorBoolean>( _kernel, STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<AndroidNativePythonFunctorVoid>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<AndroidNativePythonFunctorBoolean>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<AndroidNativePythonFunctorVoid, 32>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
@@ -145,8 +145,8 @@ namespace Mengine
         _kernel->remove_scope<AndroidNativePythonFunctorVoid>();
         _kernel->remove_scope<AndroidNativePythonFunctorBoolean>();
 
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ) );
+        Helper::unregisterScriptWrapping<AndroidNativePythonFunctorVoid>();
+        Helper::unregisterScriptWrapping<AndroidNativePythonFunctorBoolean>();
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ), nullptr );

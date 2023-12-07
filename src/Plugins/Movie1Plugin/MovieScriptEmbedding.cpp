@@ -1386,14 +1386,14 @@ namespace Mengine
         pybind::def_function( _kernel, "hasMovieSocket", &Detail::s_hasMovieSocket );
         pybind::def_function( _kernel, "hasMovieEvent", &Detail::s_hasMovieEvent );
 
-        Helper::registerScriptWrapping<Movie>( _kernel, STRINGIZE_STRING_LOCAL( "Movie" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<MovieSlot>( _kernel, STRINGIZE_STRING_LOCAL( "MovieSlot" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<MovieSceneEffect>( _kernel, STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<MovieInternalObject>( _kernel, STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<MovieMesh2D>( _kernel, STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<MovieEvent>( _kernel, STRINGIZE_STRING_LOCAL( "MovieEvent" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<ResourceMovie>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceMovie" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<ResourceInternalObject>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Movie>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<MovieSlot>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<MovieSceneEffect>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<MovieInternalObject>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<MovieMesh2D>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<MovieEvent>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceMovie>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceInternalObject>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -1420,14 +1420,14 @@ namespace Mengine
         _kernel->remove_from_module( "getMovieSlotsPosition", nullptr );
         _kernel->remove_from_module( "getMovieSlotPosition", nullptr );
 
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Movie" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "MovieSlot" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "MovieEvent" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ) );
+        Helper::unregisterScriptWrapping<Movie>();
+        Helper::unregisterScriptWrapping<MovieSlot>();
+        Helper::unregisterScriptWrapping<MovieSceneEffect>();
+        Helper::unregisterScriptWrapping<MovieInternalObject>();
+        Helper::unregisterScriptWrapping<MovieMesh2D>();
+        Helper::unregisterScriptWrapping<MovieEvent>();
+        Helper::unregisterScriptWrapping<ResourceMovie>();
+        Helper::unregisterScriptWrapping<ResourceInternalObject>();
     }
     //////////////////////////////////////////////////////////////////////////
 }

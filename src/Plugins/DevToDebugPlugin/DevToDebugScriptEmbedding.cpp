@@ -477,13 +477,13 @@ namespace Mengine
             .def_static_args( "setChangeEvent", &Detail::s_DevToDebugWidgetSelector_setChangeEvent )
             ;
 
-        Helper::registerScriptWrapping<DevToDebugTab>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<DevToDebugWidgetText>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<DevToDebugWidgetButton>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<DevToDebugWidgetCheckbox>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<DevToDebugWidgetCommandLine>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCommandLine" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<DevToDebugWidgetRadioButton>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetRadioButton" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<DevToDebugWidgetSelector>( _kernel, STRINGIZE_STRING_LOCAL( "DevToDebugWidgetSelector" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<DevToDebugTab>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<DevToDebugWidgetText>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<DevToDebugWidgetButton>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<DevToDebugWidgetCheckbox>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<DevToDebugWidgetCommandLine>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<DevToDebugWidgetRadioButton>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<DevToDebugWidgetSelector>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -510,13 +510,13 @@ namespace Mengine
         _kernel->remove_from_module( "createDevToDebugWidgetRadioButton", nullptr );
         _kernel->remove_from_module( "createDevToDebugWidgetSelector", nullptr );
 
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugTab" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCommandLine" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetRadioButton" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "DevToDebugWidgetSelector" ) );
+        Helper::unregisterScriptWrapping<DevToDebugTab>();
+        Helper::unregisterScriptWrapping<DevToDebugWidgetText>();
+        Helper::unregisterScriptWrapping<DevToDebugWidgetButton>();
+        Helper::unregisterScriptWrapping<DevToDebugWidgetCheckbox>();
+        Helper::unregisterScriptWrapping<DevToDebugWidgetCommandLine>();
+        Helper::unregisterScriptWrapping<DevToDebugWidgetRadioButton>();
+        Helper::unregisterScriptWrapping<DevToDebugWidgetSelector>();
     }
     //////////////////////////////////////////////////////////////////////////
 }

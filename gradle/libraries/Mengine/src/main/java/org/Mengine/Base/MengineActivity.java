@@ -58,7 +58,7 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected String[] getLibraries() {
-        return new String[]{
+        return new String[] {
             "SDL2"
         };
     }

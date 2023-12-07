@@ -400,9 +400,9 @@ namespace Mengine
 
         m_implement = entityScriptMethod;
 
-        Helper::registerScriptWrapping<Arrow>( _kernel, STRINGIZE_STRING_LOCAL( "Arrow" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<Entity>( _kernel, STRINGIZE_STRING_LOCAL( "Entity" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<Scene>( _kernel, STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Arrow>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Entity>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<Scene>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -416,9 +416,9 @@ namespace Mengine
 
         m_implement = nullptr;
 
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Arrow" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Entity" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "Scene" ) );
+        Helper::unregisterScriptWrapping<Arrow>();
+        Helper::unregisterScriptWrapping<Entity>();
+        Helper::unregisterScriptWrapping<Scene>();
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -104,11 +104,11 @@ namespace Mengine
             .def( "getOzzAnimationSampler", &NodeOzzAnimation::getOzzAnimationSampler )
             ;
 
-        Helper::registerScriptWrapping<ResourceOzzAnimation>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<ResourceOzzMesh>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceOzzMesh" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<ResourceOzzSkeleton>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceOzzSkeleton" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<SamplerOzzAnimation>( _kernel, STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<NodeOzzAnimation>( _kernel, STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceOzzAnimation>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceOzzMesh>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<ResourceOzzSkeleton>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<SamplerOzzAnimation>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<NodeOzzAnimation>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -121,11 +121,11 @@ namespace Mengine
         _kernel->remove_scope<SamplerOzzAnimationInterface>();
         _kernel->remove_scope<NodeOzzAnimation>();
 
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceOzzMesh" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "ResourceOzzSkeleton" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ) );
+        Helper::unregisterScriptWrapping<ResourceOzzAnimation>();
+        Helper::unregisterScriptWrapping<ResourceOzzMesh>();
+        Helper::unregisterScriptWrapping<ResourceOzzSkeleton>();
+        Helper::unregisterScriptWrapping<SamplerOzzAnimation>();
+        Helper::unregisterScriptWrapping<NodeOzzAnimation>();
     }
     //////////////////////////////////////////////////////////////////////////
 }

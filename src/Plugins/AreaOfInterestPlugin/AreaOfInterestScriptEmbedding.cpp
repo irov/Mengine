@@ -126,8 +126,8 @@ namespace Mengine
 
         pybind::def_function( _kernel, "createAreaOfInterestZone", &Detail::s_createAreaOfInterestZone );
 
-        Helper::registerScriptWrapping<NodeAreaOfInterestTrigger>( _kernel, STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestTrigger" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrapping<NodeAreaOfInterestActor>( _kernel, STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestActor" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<NodeAreaOfInterestTrigger>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<NodeAreaOfInterestActor>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -139,8 +139,8 @@ namespace Mengine
         _kernel->remove_scope<NodeAreaOfInterestTrigger>();
         _kernel->remove_scope<NodeAreaOfInterestActor>();
 
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestTrigger" ) );
-        Helper::unregisterScriptWrapping( STRINGIZE_STRING_LOCAL( "NodeAreaOfInterestActor" ) );
+        Helper::unregisterScriptWrapping<NodeAreaOfInterestTrigger>();
+        Helper::unregisterScriptWrapping<NodeAreaOfInterestActor>();
     }
 }
 

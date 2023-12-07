@@ -195,7 +195,7 @@ namespace Mengine
             }
             
         protected:
-            void onProductResponse( const VectorAppleStoreInAppPurchaseProducts & _products ) override
+            void onProductResponse( const AppleStoreInAppPurchaseProductsRequestInterfacePtr & _request, const VectorAppleStoreInAppPurchaseProducts & _products ) override
             {
                 pybind::object cb = m_cbs["onProductResponse"];
                 
@@ -204,10 +204,10 @@ namespace Mengine
                     return;
                 }
                 
-                cb.call_args( _products, m_args );
+                cb.call_args( _request, _products, m_args );
             }
             
-            void onProductFinish() override
+            void onProductFinish( const AppleStoreInAppPurchaseProductsRequestInterfacePtr & _request ) override
             {
                 pybind::object cb = m_cbs["onProductFinish"];
                 
@@ -216,10 +216,10 @@ namespace Mengine
                     return;
                 }
                 
-                cb.call_args( m_args );
+                cb.call_args( _request, m_args );
             }
             
-            void onProductFail() override
+            void onProductFail( const AppleStoreInAppPurchaseProductsRequestInterfacePtr & _request ) override
             {
                 pybind::object cb = m_cbs["onProductFail"];
                 
@@ -228,7 +228,7 @@ namespace Mengine
                     return;
                 }
                 
-                cb.call_args( m_args );
+                cb.call_args( _request, m_args );
             }
 
         protected:
@@ -316,11 +316,15 @@ namespace Mengine
         Helper::registerScriptWrapping<AppleStoreInAppPurchaseProduct>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<AppleStoreInAppPurchaseProductsRequest>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
         
+        pybind::registration_stl_vector_type_cast<VectorAppleStoreInAppPurchaseProducts>( _kernel );
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchaseScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
+        pybind::unregistration_stl_vector_type_cast<VectorAppleStoreInAppPurchaseProducts>( _kernel );
+        
         _kernel->remove_scope<AppleStoreInAppPurchasePaymentTransactionInterface>();
         _kernel->remove_scope<AppleStoreInAppPurchaseProductInterface>();
         _kernel->remove_scope<AppleStoreInAppPurchaseProductsRequestInterface>();

@@ -115,16 +115,16 @@ namespace Mengine
             [products addObject:@(productIdentifier_str)];
         }
         
-        SKProductsRequest * skrequest = [[SKProductsRequest alloc] initWithProductIdentifiers:products];
-        
-        id<SKProductsRequestDelegate> delegate = [[AppleStoreInAppPurchaseProductsRequestDelegate alloc] initWithFactory:this cb:_cb];
-        skrequest.delegate = delegate;
-        
-        [skrequest start];
-        
         AppleStoreInAppPurchaseProductsRequestPtr request = m_factoryProductsRequest->createObject( MENGINE_DOCUMENT_FACTORABLE );
         
-        request->setSKProductsRequest( skrequest );
+        SKProductsRequest * skrequest = [[SKProductsRequest alloc] initWithProductIdentifiers:products];
+        
+        id<SKProductsRequestDelegate> delegate = [[AppleStoreInAppPurchaseProductsRequestDelegate alloc] initWithFactory:this request:request cb:_cb];
+        skrequest.delegate = delegate;
+        
+        request->setSKProductsRequest( skrequest, delegate );
+        
+        [skrequest start];
         
         return request;
     }
@@ -163,15 +163,6 @@ namespace Mengine
         product->setSKProduct( _skProduct );
         
         return product;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    AppleStoreInAppPurchaseProductsRequestInterfacePtr AppleStoreInAppPurchaseService::makeProductsRequest( SKProductsRequest * _skProductsRequest )
-    {
-        AppleStoreInAppPurchaseProductsRequestPtr productsRequest = m_factoryProductsRequest->createObject( MENGINE_DOCUMENT_FACTORABLE );
-        
-        productsRequest->setSKProductsRequest( _skProductsRequest );
-        
-        return productsRequest;
     }
     //////////////////////////////////////////////////////////////////////////
     AppleStoreInAppPurchasePaymentTransactionInterfacePtr AppleStoreInAppPurchaseService::makePaymentTransaction( SKPaymentTransaction * _skPaymentTransaction )

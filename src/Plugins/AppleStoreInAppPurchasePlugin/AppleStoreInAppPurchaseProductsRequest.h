@@ -25,7 +25,7 @@ namespace Mengine
         ~AppleStoreInAppPurchaseProductsRequest() override;
 
     public:
-        void setSKProductsRequest( SKProductsRequest * _skProductsRequest );
+        void setSKProductsRequest( SKProductsRequest * _skProductsRequest, id<SKProductsRequestDelegate> _skProductsDelegate );
         SKProductsRequest * getSKProductsRequest() const;
         
     public:
@@ -33,6 +33,7 @@ namespace Mengine
         
     protected:
         SKProductsRequest * m_skProductsRequest;
+        id<SKProductsRequestDelegate> m_skProductsDelegate;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleStoreInAppPurchaseProductsRequest, AppleStoreInAppPurchaseProductsRequestInterface> AppleStoreInAppPurchaseProductsRequestPtr;

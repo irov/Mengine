@@ -44,7 +44,6 @@ namespace Mengine
         
     public:
         AppleStoreInAppPurchaseProductInterfacePtr makeProduct( SKProduct * _skProduct ) override;
-        AppleStoreInAppPurchaseProductsRequestInterfacePtr makeProductsRequest( SKProductsRequest * _skProductsRequest ) override;
         AppleStoreInAppPurchasePaymentTransactionInterfacePtr makePaymentTransaction( SKPaymentTransaction * _skPaymentTransaction ) override;
         
     protected:

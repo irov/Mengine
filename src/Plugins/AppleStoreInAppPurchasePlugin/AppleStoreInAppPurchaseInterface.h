@@ -38,17 +38,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<AppleStoreInAppPurchaseProductInterfacePtr> VectorAppleStoreInAppPurchaseProducts;
     //////////////////////////////////////////////////////////////////////////
-    class AppleStoreInAppPurchaseProductsResponseInterface
-        : public Interface
-    {
-    public:
-        virtual void onProductResponse( const VectorAppleStoreInAppPurchaseProducts & _products ) = 0;
-        virtual void onProductFinish() = 0;
-        virtual void onProductFail() = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AppleStoreInAppPurchaseProductsResponseInterface> AppleStoreInAppPurchaseProductsResponseInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class AppleStoreInAppPurchaseProductsRequestInterface
         : public ServantInterface
     {
@@ -57,6 +46,17 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleStoreInAppPurchaseProductsRequestInterface> AppleStoreInAppPurchaseProductsRequestInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class AppleStoreInAppPurchaseProductsResponseInterface
+        : public Interface
+    {
+    public:
+        virtual void onProductResponse( const AppleStoreInAppPurchaseProductsRequestInterfacePtr & _request, const VectorAppleStoreInAppPurchaseProducts & _products ) = 0;
+        virtual void onProductFinish( const AppleStoreInAppPurchaseProductsRequestInterfacePtr & _request ) = 0;
+        virtual void onProductFail( const AppleStoreInAppPurchaseProductsRequestInterfacePtr & _request ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<AppleStoreInAppPurchaseProductsResponseInterface> AppleStoreInAppPurchaseProductsResponseInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AppleStoreInAppPurchasePaymentTransactionProviderInterface
         : public Interface

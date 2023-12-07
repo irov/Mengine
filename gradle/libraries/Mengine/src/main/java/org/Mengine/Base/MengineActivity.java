@@ -46,7 +46,6 @@ public class MengineActivity extends SDLActivity {
     private static native void AndroidNativePython_call(String plugin, String method, Object args[]);
     private static native void AndroidNativePython_activateSemaphore(String name);
 
-    private boolean m_initializeBaseServices;
     private boolean m_initializePython;
     private boolean m_destroy;
 
@@ -242,7 +241,6 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        m_initializeBaseServices = false;
         m_initializePython = false;
         m_destroy = false;
 
@@ -256,17 +254,33 @@ public class MengineActivity extends SDLActivity {
         long activity_init_start_timestamp = MengineAnalytics.buildEvent("mng_activity_init_start")
             .logAndFlush();
 
-        super.onCreate(savedInstanceState);
+        try {
+            super.onCreate(savedInstanceState);
+        } catch (Exception e) {
+            MengineLog.logError(TAG, "[ERROR] onCreate SDL create exception: %s"
+                , e.getMessage()
+            );
+
+            MengineAnalytics.buildEvent("mng_activity_init_sdl_exception")
+                .addParameterString("exception", e.getMessage())
+                .logAndFlush();
+
+            this.finish();
+
+            return;
+        }
 
         this.setState("activity.init", "create");
 
         MengineLog.logMessage(TAG, "onCreate");
 
         if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onCreate: broken libraries");
+            MengineLog.logWarning(TAG, "onCreate broken libraries");
 
             MengineAnalytics.buildEvent("mng_activity_init_broken_libraries")
                 .logAndFlush();
+
+            this.finish();
 
             return;
         }
@@ -301,6 +315,8 @@ public class MengineActivity extends SDLActivity {
                 );
 
                 this.finish();
+
+                return;
             }
 
             MengineAnalytics.buildEvent("mng_activity_init_plugin_completed")
@@ -325,6 +341,8 @@ public class MengineActivity extends SDLActivity {
                 );
 
                 this.finish();
+
+                return;
             }
         }
 
@@ -342,8 +360,6 @@ public class MengineActivity extends SDLActivity {
     }
 
     public void onMengineInitializeBaseServices() {
-        m_initializeBaseServices = true;
-
         MengineLog.onMengineInitializeBaseServices(this);
 
         MengineLog.logInfo(TAG, "onMengineInitializeBaseServices");
@@ -391,8 +407,6 @@ public class MengineActivity extends SDLActivity {
         }
 
         MengineLog.onMenginePlatformStop(this);
-
-        m_initializeBaseServices = false;
     }
 
     public void onMengineCurrentSceneChange(String name) {

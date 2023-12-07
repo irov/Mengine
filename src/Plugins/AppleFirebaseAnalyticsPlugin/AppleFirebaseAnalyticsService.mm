@@ -1,5 +1,7 @@
 #include "AppleFirebaseAnalyticsService.h"
 
+#include "Environment/Apple/AppleString.h"
+
 #include "Kernel/Logger.h"
 
 #include "Config/Algorithm.h"
@@ -85,15 +87,15 @@ namespace Mengine
             );
         }
 
-        [FIRAnalytics logEventWithName:_name parameters:_parameters];
+        [FIRAnalytics logEventWithName:_name 
+                            parameters:_parameters];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseAnalyticsService::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
     {
-        MENGINE_UNUSED( _screenType );
-        MENGINE_UNUSED( _screenName );
-        
-        //Empty
+        [FIRAnalytics logEventWithName:kFIREventScreenView
+                            parameters:@{kFIRParameterScreenClass: Helper::stringToNSString( _screenType ),
+                                         kFIRParameterScreenName: Helper::stringToNSString( _screenName )}];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseAnalyticsService::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
@@ -181,7 +183,8 @@ namespace Mengine
             }
         } );
         
-        [FIRAnalytics logEventWithName:@(eventName_str) parameters:firebase_parameters];
+        [FIRAnalytics logEventWithName:@(eventName_str) 
+                            parameters:firebase_parameters];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseAnalyticsService::onAnalyticsFlush()

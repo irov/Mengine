@@ -4,7 +4,12 @@
 
 #include "Interface/ScriptServiceInterface.h"
 
+#include "AppleStoreInAppPurchasePaymentTransaction.h"
+#include "AppleStoreInAppPurchaseProduct.h"
+#include "AppleStoreInAppPurchaseProductsRequest.h"
+
 #include "Environment/Python/PythonIncluder.h"
+#include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -278,12 +283,12 @@ namespace Mengine
         pybind::def_function( _kernel, "appleStoreInAppPurchasePurchaseProduct", &Detail::s_AppleStoreInAppPurchase_purchaseProduct );
         pybind::def_function( _kernel, "appleStoreInAppPurchaseRestoreCompletedTransactions", &Detail::s_AppleStoreInAppPurchase_restoreCompletedTransactions );
 
-        pybind::interface_<AppleStoreInAppPurchasePaymentTransactionInterface, pybind::bases<Factorable>>( _kernel, "AppleStoreInAppPurchasePaymentTransactionInterface", false )
+        pybind::interface_<AppleStoreInAppPurchasePaymentTransactionInterface, pybind::bases<Factorable>>( _kernel, "AppleStoreInAppPurchasePaymentTransactionInterface", true )
             .def( "getProductIdentifier", &AppleStoreInAppPurchasePaymentTransactionInterface::getProductIdentifier )
             .def( "finish", &AppleStoreInAppPurchasePaymentTransactionInterface::finish )
             ;
         
-        pybind::interface_<AppleStoreInAppPurchaseProductInterface, pybind::bases<Factorable>>( _kernel, "AppleStoreInAppPurchaseProductInterface", false )
+        pybind::interface_<AppleStoreInAppPurchaseProductInterface, pybind::bases<Factorable>>( _kernel, "AppleStoreInAppPurchaseProductInterface", true )
             .def( "getProductIdentifier", &AppleStoreInAppPurchaseProductInterface::getProductIdentifier )
             .def( "getProductTitle", &AppleStoreInAppPurchaseProductInterface::getProductTitle )
             .def( "getProductDescription", &AppleStoreInAppPurchaseProductInterface::getProductDescription )
@@ -292,9 +297,24 @@ namespace Mengine
             .def( "getProductPrice", &AppleStoreInAppPurchaseProductInterface::getProductPrice )
             ;
         
-        pybind::interface_<AppleStoreInAppPurchaseProductsRequestInterface, pybind::bases<Factorable>>( _kernel, "AppleStoreInAppPurchaseProductsRequestInterface", false )
+        pybind::interface_<AppleStoreInAppPurchaseProductsRequestInterface, pybind::bases<Factorable>>( _kernel, "AppleStoreInAppPurchaseProductsRequestInterface", true )
             .def( "cancel", &AppleStoreInAppPurchaseProductsRequestInterface::cancel )
             ;
+  
+        pybind::interface_<AppleStoreInAppPurchasePaymentTransaction, pybind::bases<AppleStoreInAppPurchasePaymentTransactionInterface>>( _kernel,
+            "AppleStoreInAppPurchasePaymentTransaction", false )
+            ;
+        
+        pybind::interface_<AppleStoreInAppPurchaseProduct, pybind::bases<AppleStoreInAppPurchaseProductInterface>>( _kernel,
+            "AppleStoreInAppPurchaseProduct", false )
+            ;
+        
+        pybind::interface_<AppleStoreInAppPurchaseProductsRequest, pybind::bases<AppleStoreInAppPurchaseProductsRequestInterface>>( _kernel, "AppleStoreInAppPurchaseProductsRequest", false )
+            ;
+        
+        Helper::registerScriptWrapping<AppleStoreInAppPurchasePaymentTransaction>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<AppleStoreInAppPurchaseProduct>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerScriptWrapping<AppleStoreInAppPurchaseProductsRequest>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
         
         return true;
     }
@@ -304,6 +324,10 @@ namespace Mengine
         _kernel->remove_scope<AppleStoreInAppPurchasePaymentTransactionInterface>();
         _kernel->remove_scope<AppleStoreInAppPurchaseProductInterface>();
         _kernel->remove_scope<AppleStoreInAppPurchaseProductsRequestInterface>();
+        
+        Helper::unregisterScriptWrapping<AppleStoreInAppPurchasePaymentTransaction>();
+        Helper::unregisterScriptWrapping<AppleStoreInAppPurchaseProduct>();
+        Helper::unregisterScriptWrapping<AppleStoreInAppPurchaseProductsRequest>();
     }
     //////////////////////////////////////////////////////////////////////////
 }

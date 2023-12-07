@@ -2,7 +2,9 @@
 
 #include "AppleStoreInAppPurchaseInterface.h"
 
-#include "Kernel/Scriptable.h"
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#   include "Kernel/Scriptable.h"
+#endif
 
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
@@ -12,7 +14,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class AppleStoreInAppPurchaseProduct
         : public AppleStoreInAppPurchaseProductInterface
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         , public Scriptable
+#endif
     {
         DECLARE_FACTORABLE( AppleStoreInAppPurchaseProduct );
         

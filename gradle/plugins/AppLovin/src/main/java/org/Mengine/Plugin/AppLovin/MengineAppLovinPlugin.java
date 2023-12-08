@@ -222,9 +222,22 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             this.assertionError("already exist banner: %s", adUnitId);
         }
 
-        MengineAppLovinBanner banner = new MengineAppLovinBanner(this, adUnitId, placement);
+        this.logMessage("initBanner adUnitId: %s placement: %s"
+            , adUnitId
+            , placement
+        );
 
-        m_banners.put(adUnitId, banner);
+        try {
+            MengineAppLovinBanner banner = new MengineAppLovinBanner(this, adUnitId, placement);
+
+            m_banners.put(adUnitId, banner);
+        } catch (Exception e) {
+            this.logError("[ERROR] initBanner adUnitId: %s placement: %s catch exception: %s"
+                , adUnitId
+                , placement
+                , e.getMessage()
+            );
+        }
     }
 
     public boolean bannerVisible(String adUnitId, boolean show) {
@@ -235,6 +248,11 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
             return false;
         }
+
+        this.logMessage("bannerVisible adUnitId: %s show: %b"
+            , adUnitId
+            , show
+        );
 
         if (banner.bannerVisible(show) == false) {
             return false;
@@ -248,9 +266,20 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             this.assertionError("already exist interstitial: %s", adUnitId);
         }
 
-        MengineAppLovinInterstitial interstitial = new MengineAppLovinInterstitial(this, adUnitId);
+        this.logMessage("initInterstitial adUnitId: %s"
+            , adUnitId
+        );
 
-        m_interstitials.put(adUnitId, interstitial);
+        try {
+            MengineAppLovinInterstitial interstitial = new MengineAppLovinInterstitial(this, adUnitId);
+
+            m_interstitials.put(adUnitId, interstitial);
+        } catch (Exception e) {
+            this.logError("[ERROR] initInterstitial adUnitId: %s catch exception: %s"
+                , adUnitId
+                , e.getMessage()
+            );
+        }
     }
 
     public boolean canYouShowInterstitial(String adUnitId, String placement) {
@@ -278,6 +307,11 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             return false;
         }
 
+        this.logMessage("showInterstitial adUnitId: %s placement: %s"
+            , adUnitId
+            , placement
+        );
+
         if (interstitial.showInterstitial(placement) == false) {
             return false;
         }
@@ -290,9 +324,20 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             this.assertionError("already init rewarded: %s", adUnitId);
         }
 
-        MengineAppLovinRewarded rewarded = new MengineAppLovinRewarded(this, adUnitId);
+        this.logMessage("initRewarded adUnitId: %s"
+            , adUnitId
+        );
 
-        m_rewardeds.put(adUnitId, rewarded);
+        try {
+            MengineAppLovinRewarded rewarded = new MengineAppLovinRewarded(this, adUnitId);
+
+            m_rewardeds.put(adUnitId, rewarded);
+        } catch (Exception e) {
+            this.logError("[ERROR] initRewarded adUnitId: %s catch exception: %s"
+                , adUnitId
+                , e.getMessage()
+            );
+        }
     }
 
     public boolean canOfferRewarded(String adUnitId, String placement) {
@@ -335,6 +380,11 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
             return false;
         }
+
+        this.logMessage("showRewarded adUnitId: %s placement: %s"
+            , adUnitId
+            , placement
+        );
 
         if (rewarded.showRewarded(placement) == false) {
             return false;

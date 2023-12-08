@@ -4,10 +4,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+
+import androidx.annotation.NonNull;
 
 import com.applovin.mediation.MaxAd;
+import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxAdRequestListener;
 import com.applovin.mediation.MaxAdRevenueListener;
+import com.applovin.mediation.MaxAdReviewListener;
 import com.applovin.mediation.MaxAdViewAdListener;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxAdView;
@@ -17,7 +22,7 @@ import com.applovin.sdk.AppLovinSdkUtils;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineUtils;
 
-public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener {
+public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener, MaxAdReviewListener {
     private MaxAdView m_adView;
 
     private int m_enumeratorRequest;
@@ -38,36 +43,36 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         adView.setRequestListener(this);
         adView.setListener(this);
         adView.setRevenueListener(this);
+        adView.setAdReviewListener(this);
 
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
 
-        boolean tablet = AppLovinSdkUtils.isTablet(activity);
-        AppLovinAdSize size = tablet == true ? AppLovinAdSize.LEADER : AppLovinAdSize.BANNER;
-        int tablet_size_height = size.getHeight();
-        int heightPx = AppLovinSdkUtils.dpToPx(activity, tablet_size_height);
+        AppLovinSdkUtils.Size adaptiveSize = MaxAdFormat.BANNER.getAdaptiveSize(activity);
 
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(width, heightPx);
+        int widthDp = adaptiveSize.getWidth();
+        int heightDp = adaptiveSize.getHeight();
+        int widthPx = AppLovinSdkUtils.dpToPx(activity, widthDp);
+        int heightPx = AppLovinSdkUtils.dpToPx(activity, heightDp);
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, heightPx);
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         adView.setLayoutParams(params);
-
-        Window window = activity.getWindow();
-        View view = window.getDecorView();
-        int window_view_height = view.getHeight();
-        int translationY = window_view_height - heightPx;
-
-        adView.setTranslationY(translationY);
-
-        ViewGroup rootView = view.findViewById(android.R.id.content);
-        rootView.addView(adView);
+        adView.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+        adView.setExtraParameter("adaptive_banner", "true");
 
         adView.setVisibility(View.GONE);
+        adView.stopAutoRefresh();
+
+        ViewGroup viewGroup = MengineActivity.getContentViewGroup();
+        viewGroup.addView(adView);
 
         m_adView = adView;
 
         m_plugin.logMessage("[Banner] create adUnitId: %s placement: %s size: [%d, %d]"
             , adUnitId
             , placement
-            , size.getWidth()
-            , size.getHeight()
+            , widthPx
+            , heightPx
         );
 
         m_plugin.setState("applovin.banner.state." + m_adView.getAdUnitId(), "init");
@@ -344,5 +349,16 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         m_plugin.onEventRevenuePaid(ad);
 
         m_plugin.pythonCall("onApplovinBannerOnAdRevenuePaid", adUnitId);
+    }
+
+    @Override
+    public void onCreativeIdGenerated(@NonNull String creativeId, @NonNull MaxAd ad) {
+        this.logMaxAd("Banner", "onCreativeIdGenerated", ad);
+
+        m_plugin.logMessage("[Banner] onCreativeIdGenerated creativeId: %s"
+                , creativeId
+        );
+
+        //ToDo
     }
 }

@@ -4,11 +4,13 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.applovin.mediation.MaxAd;
+import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxAdWaterfallInfo;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.MaxMediatedNetworkInfo;
 import com.applovin.mediation.MaxNetworkResponseInfo;
 import com.applovin.mediation.MaxReward;
+import com.applovin.sdk.AppLovinSdkUtils;
 
 import org.Mengine.Base.MengineAnalyticsEventBuilder;
 
@@ -108,6 +110,8 @@ public class MengineAppLovinBase {
 
         sb.append(String.format(Locale.US, "[%s] callback: %s\n", type, callback));
 
+        this.writeMaxAdBaseInfo(sb, ad);
+
         MaxAdWaterfallInfo waterfall = ad.getWaterfall();
 
         this.writeMaxAdWaterfallInfo(sb, waterfall);
@@ -123,6 +127,8 @@ public class MengineAppLovinBase {
         StringBuilder sb = new StringBuilder(512);
 
         sb.append(String.format(Locale.US, "[%s] callback: %s\n", type, callback));
+
+        this.writeMaxAdBaseInfo(sb, ad);
 
         MaxAdWaterfallInfo waterfall = ad.getWaterfall();
 
@@ -158,6 +164,35 @@ public class MengineAppLovinBase {
         String message = sb.toString();
 
         m_plugin.logWarning(message);
+    }
+
+    protected void writeMaxAdBaseInfo(StringBuilder sb, MaxAd ad) {
+        MaxAdFormat format = ad.getFormat();
+        sb.append(String.format(Locale.US, "Format: %s\n", format.getLabel()));
+
+        AppLovinSdkUtils.Size size = ad.getSize();
+        sb.append(String.format(Locale.US, "Size: %d x %d\n", size.getWidth(), size.getHeight()));
+
+        String adUnitId = ad.getAdUnitId();
+        sb.append(String.format(Locale.US, "AdUnitId: %s\n", adUnitId));
+
+        String networkName = ad.getNetworkName();
+        sb.append(String.format(Locale.US, "NetworkName: %s\n", networkName));
+
+        String networkPlacement = ad.getNetworkPlacement();
+        sb.append(String.format(Locale.US, "NetworkPlacement: %s\n", networkPlacement));
+
+        String placement = ad.getPlacement();
+        sb.append(String.format(Locale.US, "Placement: %s\n", placement));
+
+        double revenue = ad.getRevenue();
+        sb.append(String.format(Locale.US, "Revenue: %f\n", revenue));
+
+        String revenuePrecision = ad.getRevenuePrecision();
+        sb.append(String.format(Locale.US, "RevenuePrecision: %s\n", revenuePrecision));
+
+        long requestLatencyMillis = ad.getRequestLatencyMillis();
+        sb.append(String.format(Locale.US, "RequestLatencyMillis: %d\n", requestLatencyMillis));
     }
 
     protected void writeMaxAdWaterfallInfo(StringBuilder sb, MaxAdWaterfallInfo waterfall) {

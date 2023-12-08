@@ -10,6 +10,9 @@ namespace Mengine
     class MovieEvent
         : public MovieNodeExtra
     {
+        DECLARE_FACTORABLE( MovieNodeExtra );
+        DECLARE_VISITABLE( Node );
+
     public:
         MovieEvent();
         ~MovieEvent() override;

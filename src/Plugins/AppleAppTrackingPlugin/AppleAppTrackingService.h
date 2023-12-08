@@ -4,6 +4,8 @@
 
 #include "Kernel/ServiceBase.h"
 
+#import <Foundation/Foundation.h>
+
 namespace Mengine
 {
 	class AppleAppTrackingService
@@ -32,6 +34,6 @@ namespace Mengine
     protected:
         EAppleAppTrackingAuthorization m_status;
 
-        Char m_idfa[64] = {'\0'};
+        NSString * m_idfa;
     };
 }

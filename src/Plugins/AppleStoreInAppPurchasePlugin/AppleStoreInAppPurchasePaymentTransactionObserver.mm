@@ -47,7 +47,7 @@
         return;
     }
     
-    const Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr & provider = m_service->getPaymentTransactionProvider();
+    Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr provider = m_service->getPaymentTransactionProvider();
     
     for (SKPaymentTransaction * skPaymentTransaction in transactions)
     {
@@ -59,26 +59,33 @@
         {
             case SKPaymentTransactionStatePurchasing:
             {
-                provider->onPaymentQueueUpdatedTransactionPurchasing( paymentTransaction );
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    provider->onPaymentQueueUpdatedTransactionPurchasing( paymentTransaction );
+                });
             } break;
             case SKPaymentTransactionStatePurchased:
             {
-                //[self sendMessage:HANDLE_TRANSACTION_SUCCESS withData:transaction.payment.productIdentifier];
-                provider->onPaymentQueueUpdatedTransactionPurchased( paymentTransaction );
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    provider->onPaymentQueueUpdatedTransactionPurchased( paymentTransaction );
+                });
             } break;
             case SKPaymentTransactionStateFailed:
             {
-                //[self sendMessage:HANDLE_TRANSACTION_FAILED withData:transaction.payment.productIdentifier];
-                provider->onPaymentQueueUpdatedTransactionFailed( paymentTransaction );
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    provider->onPaymentQueueUpdatedTransactionFailed( paymentTransaction );
+                });
             } break;
             case SKPaymentTransactionStateRestored:
             {
-                //[self sendMessage:HANDLE_RESTORE withData:transaction.originalTransaction.payment.productIdentifier];
-                provider->onPaymentQueueUpdatedTransactionRestored( paymentTransaction );
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    provider->onPaymentQueueUpdatedTransactionRestored( paymentTransaction );
+                });
             } break;
             case SKPaymentTransactionStateDeferred:
             {
-                provider->onPaymentQueueUpdatedTransactionDeferred( paymentTransaction );
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    provider->onPaymentQueueUpdatedTransactionDeferred( paymentTransaction );
+                });
             } break;
         }
     }

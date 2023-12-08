@@ -1,6 +1,7 @@
 #include "AppleAppTrackingService.h"
 
 #include "Environment/iOS/iOSUtils.h"
+#include "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
 
@@ -17,6 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AppleAppTrackingService::AppleAppTrackingService()
         : m_status( EAATA_NONE )
+        , m_idfa( nil )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -26,14 +28,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppTrackingService::_initializeService()
     {
-        MENGINE_STRCPY( m_idfa, "00000000-0000-0000-0000-000000000000" );
+        m_idfa = @"00000000-0000-0000-0000-000000000000";
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::_finalizeService()
     {
-        //Empty
+        m_idfa = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::authorization( const LambdaAuthorizationResponse & _response )
@@ -65,28 +67,49 @@ namespace Mengine
                     }break;
                 }
                 
-                copy_response( m_status, m_idfa );
+                EAppleAppTrackingAuthorization status_copy = m_status;
+                NSString * idfa_copy = m_idfa;
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    const Char * idfa_str = [idfa_copy UTF8String];
+                    
+                    copy_response( status_copy, idfa_str );
+                });
             }];
         }
         else
         {
             m_status = EAATA_AUTHORIZED;
-                
+            
             this->makeIDFA_();
-                
-            _response( m_status, m_idfa );
+
+            const Char * idfa_str = [m_idfa UTF8String];
+            
+            _response( m_status, idfa_str );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::getIDFA( EAppleAppTrackingAuthorization * const _status, Char * const _idfa ) const
     {
         *_status = m_status;
-        MENGINE_STRCPY( _idfa, m_idfa );
+        
+        const Char * idfa_str = [m_idfa UTF8String];
+        
+        MENGINE_STRCPY( _idfa, idfa_str );
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::makeIDFA_()
     {
-        Helper::iOSGetIDFA( m_idfa );
+        NSUUID * idfa_uuid = Helper::iOSGetAdIdentifier();
+
+        if( idfa_uuid == nil )
+        {
+            return;
+        }
+
+        NSString * idfa = [idfa_uuid UUIDString];
+        
+        m_idfa = idfa;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppTrackingService::isTrackingAllowed() const

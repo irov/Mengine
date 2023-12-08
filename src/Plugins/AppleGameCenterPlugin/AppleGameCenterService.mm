@@ -62,7 +62,11 @@ namespace Mengine
                 
                 if( m_provider != nullptr )
                 {
-                    m_provider->onAppleGameCenterAuthenticate( false );
+                    AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        provider_copy->onAppleGameCenterAuthenticate( false );
+                    });
                 }
                 
                 return;
@@ -76,7 +80,11 @@ namespace Mengine
                 
                 if( m_provider != nullptr )
                 {
-                    m_provider->onAppleGameCenterAuthenticate( true );
+                    AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        provider_copy->onAppleGameCenterAuthenticate( true );
+                    });
                 }
             }
             
@@ -85,7 +93,11 @@ namespace Mengine
             
             if( m_provider != nullptr )
             {
-                m_provider->onAppleGameCenterSynchronizate( false );
+                AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    provider_copy->onAppleGameCenterSynchronizate( false );
+                });
             }
             
             [m_gameCenterDelegate loadCompletedAchievements:^(NSError * _Nullable _error, NSArray * _Nullable _completedAchievements) {
@@ -99,7 +111,11 @@ namespace Mengine
                     
                     if( m_provider != nullptr )
                     {
-                        m_provider->onAppleGameCenterSynchronizate( false );
+                        AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            provider_copy->onAppleGameCenterSynchronizate( false );
+                        });
                     }
                     
                     return;
@@ -123,7 +139,11 @@ namespace Mengine
                 
                 if( m_provider != nullptr )
                 {
-                    m_provider->onAppleGameCenterSynchronizate( true );
+                    AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        provider_copy->onAppleGameCenterSynchronizate( true );
+                    });
                 }
             }] ;
         }];
@@ -162,7 +182,9 @@ namespace Mengine
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
-                copy_response( false );
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    copy_response( false );
+                });
                 
                 return;
             }
@@ -177,7 +199,9 @@ namespace Mengine
                 m_achievementsComplete.push_back( copy_achievementName );
             }
             
-            copy_response( true );
+            dispatch_async(dispatch_get_main_queue(), ^{
+                copy_response( true );
+            });
         }];
         
         if( result == FALSE )
@@ -251,7 +275,9 @@ namespace Mengine
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
-                copy_response( false );
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    copy_response( false );
+                });
                 
                 return;
             }
@@ -261,7 +287,9 @@ namespace Mengine
                 , _score
             );
             
-            copy_response( true );
+            dispatch_async(dispatch_get_main_queue(), ^{
+                copy_response( true );
+            });
         }];
         
         if( result == FALSE )

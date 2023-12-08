@@ -25,11 +25,13 @@
 - (BOOL)paymentQueue:(SKPaymentQueue *)paymentQueue shouldContinueTransaction:(SKPaymentTransaction *)transaction inStorefront:(SKStorefront *)newStorefront API_AVAILABLE(ios(13.0), macos(10.15), watchos(6.2)) {
     LOGGER_MESSAGE( "SKPaymentQueueDelegate paymentQueue shouldContinueTransaction" );
     
-    const Mengine::AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & provider = m_service->getPaymentQueueProvider();
+    Mengine::AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr provider = m_service->getPaymentQueueProvider();
     
     Mengine::AppleStoreInAppPurchasePaymentTransactionInterfacePtr paymentTransaction = m_factory->makePaymentTransaction( transaction );
     
-    provider->onPaymentQueueShouldContinueTransaction( paymentTransaction );
+    dispatch_async(dispatch_get_main_queue(), ^{
+        provider->onPaymentQueueShouldContinueTransaction( paymentTransaction );
+    });
 }
 
 // Sent if there is a pending price consent confirmation from the App Store for the current user. Return YES to immediately show the price consent UI. Return NO if you intend to show it at a later time. Defaults to YES.
@@ -37,9 +39,11 @@
 - (BOOL)paymentQueueShouldShowPriceConsent:(SKPaymentQueue *)paymentQueue {
     LOGGER_MESSAGE( "SKPaymentQueueDelegate paymentQueue paymentQueueShouldShowPriceConsent" );
     
-    const Mengine::AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr & provider = m_service->getPaymentQueueProvider();
+    Mengine::AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr provider = m_service->getPaymentQueueProvider();
     
-    provider->onPaymentQueueShouldShowPriceConsent();
+    dispatch_async(dispatch_get_main_queue(), ^{
+        provider->onPaymentQueueShouldShowPriceConsent();
+    });
 }
 
 @end

@@ -41,13 +41,24 @@
         products.emplace_back( product );
     }
     
-    self.m_cb->onProductResponse( self.m_request, products );
+    Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
+    Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        cb_copy->onProductResponse( request_copy, products );
+    });
 }
 //////////////////////////////////////////////////////////////////////////
 - (void)requestDidFinish:(SKRequest *)request {
     LOGGER_MESSAGE( "[SKProductsRequestDelegate] requestDidFinish" );
-                 
-    self.m_cb->onProductFinish( self.m_request );
+    
+    Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
+    Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        cb_copy->onProductFinish( request_copy );
+    });
+    
     self.m_cb = nullptr;
     self.m_request = nullptr;
 }
@@ -57,7 +68,13 @@
         , [error.localizedDescription UTF8String]
     );
     
-    self.m_cb->onProductFail( self.m_request );
+    Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
+    Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        cb_copy->onProductFail( request_copy );
+    });
+    
     self.m_cb = nullptr;
     self.m_request = nullptr;
 }

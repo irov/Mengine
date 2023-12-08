@@ -106,7 +106,7 @@ public class MengineAppLovinBase {
     }
 
     protected void logMaxAd(String type, String callback, MaxAd ad) {
-        StringBuilder sb = new StringBuilder(512);
+        StringBuilder sb = new StringBuilder(2048);
 
         sb.append(String.format(Locale.US, "[%s] callback: %s\n", type, callback));
 
@@ -124,7 +124,7 @@ public class MengineAppLovinBase {
     }
 
     protected void logMaxAdReward(String type, String callback, MaxAd ad, MaxReward reward) {
-        StringBuilder sb = new StringBuilder(512);
+        StringBuilder sb = new StringBuilder(2048);
 
         sb.append(String.format(Locale.US, "[%s] callback: %s\n", type, callback));
 
@@ -143,7 +143,7 @@ public class MengineAppLovinBase {
     }
 
     protected void logMaxError(String type, String callback, String adUnitId, MaxError error) {
-        StringBuilder sb = new StringBuilder(512);
+        StringBuilder sb = new StringBuilder(1024);
 
         int errorCode = error.getCode();
         String errorMessage = error.getMessage();

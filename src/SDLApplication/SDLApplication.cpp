@@ -82,7 +82,7 @@ namespace Mengine
                 return false;
             }
 
-            jobject j_MENGINE_APP_OPTIONS = _jenv->GetStaticObjectField( jclass_BuildConfig, jfield_MENGINE_APP_OPTIONS );
+            jstring j_MENGINE_APP_OPTIONS = (jstring)_jenv->GetStaticObjectField( jclass_BuildConfig, jfield_MENGINE_APP_OPTIONS );
 
             if( j_MENGINE_APP_OPTIONS == nullptr )
             {
@@ -91,11 +91,11 @@ namespace Mengine
                 return false;
             }
 
-            const Char * MENGINE_APP_OPTIONS_str = _jenv->GetStringUTFChars( (jstring)j_MENGINE_APP_OPTIONS, nullptr );
+            const Char * MENGINE_APP_OPTIONS_str = _jenv->GetStringUTFChars( j_MENGINE_APP_OPTIONS, nullptr );
 
             _arguments->addArguments( MENGINE_APP_OPTIONS_str );
 
-            _jenv->ReleaseStringUTFChars( (jstring)j_MENGINE_APP_OPTIONS, MENGINE_APP_OPTIONS_str );
+            _jenv->ReleaseStringUTFChars( j_MENGINE_APP_OPTIONS, MENGINE_APP_OPTIONS_str );
             _jenv->DeleteLocalRef( j_MENGINE_APP_OPTIONS );
             _jenv->DeleteLocalRef( jclass_BuildConfig );
 
@@ -125,6 +125,7 @@ namespace Mengine
 
         Detail::addAndroidBuildConfigOptions( jenv, "MENGINE_APP_OPTIONS", arguments );
 #endif
+
 
 #if defined(MENGINE_PLATFORM_APPLE) && !defined(MENGINE_BUILD_PUBLISH)
         Char MengineApplePersistentArguments[1024] = {'\0'};

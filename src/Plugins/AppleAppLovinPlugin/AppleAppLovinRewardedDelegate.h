@@ -25,9 +25,6 @@
 @property (assign) Mengine::AppleAppLovinRewardedProviderInterfacePtr m_provider;
 
 @property (nonatomic, strong) MARewardedAd * _Nullable m_rewardedAd;
-@property (nonatomic, assign) NSInteger m_retryAttempt;
-@property (nonatomic, assign) NSInteger m_enumeratorRequest;
-@property (nonatomic, assign) NSInteger m_requestId;
 
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
 @property (nonatomic, strong) AppleAppLovinRewardedAmazonLoader * _Nullable m_amazonLoader;

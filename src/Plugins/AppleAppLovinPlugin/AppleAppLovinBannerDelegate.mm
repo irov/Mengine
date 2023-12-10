@@ -1,6 +1,8 @@
 #import "AppleAppLovinBannerDelegate.h"
 
 #include "Environment/Apple/AppleString.h"
+#include "Environment/Apple/AppleAnalytics.h"
+
 #include "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
@@ -13,12 +15,13 @@
                                               rect:(CGRect) rect
                                           provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider
                                          analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
-    self = [super initWithAdUnitIdentifier:adUnitId analytics:analytics];
+    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.banner analytics:analytics];
     
     self.m_provider = provider;
     
     MAAdView * adView = [[MAAdView alloc] initWithAdUnitIdentifier:adUnitId];
     [adView setPlacement:placement];
+    
     adView.delegate = self;
     adView.revenueDelegate = self;
     adView.requestDelegate = self;
@@ -65,15 +68,32 @@
 }
 
 - (void) loadAd {
+    if( self.m_adView == nil )
+    {
+        return;
+    }
+    
+    self.m_requestId = self.m_enumeratorRequest++;
+    
+    [AppleAnalytics event:@"mng_ad_banner_load" params:@{
+        @"ad_unit_id": self.m_adUnitId,
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt)
+    }];
+    
     [self.m_adView loadAd];
 }
 
 #pragma mark - MAAdRequestDelegate Protocol
 
 - (void)didStartAdRequestForAdUnitIdentifier:(NSString *)adUnitIdentifier {
-    LOGGER_MESSAGE( "banner didStartAdRequestForAdUnitIdentifier: %s"
-        , [adUnitIdentifier UTF8String]
-    );
+    [self log:@"didStartAdRequestForAdUnitIdentifier"];
+    
+    [AppleAnalytics event:@"mng_ad_banner_request_started" params:@{
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt),
+        @"ad_unit_id": adUnitIdentifier
+    }];
     
     self.m_provider->onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier();
 }
@@ -81,29 +101,58 @@
 #pragma mark - MAAdDelegate Protocol
 
 - (void) didLoadAd:(MAAd *) ad {
-    CGSize adViewSize = ad.size;
-    CGFloat widthDp = adViewSize.width;
-    CGFloat heightDp = adViewSize.height;
-
-    LOGGER_MESSAGE( "banner didLoadAd" );
+    [self log:@"didLoadAd" withMAAd:ad];
+    
+    [AppleAnalytics event:@"mng_ad_banner_loaded" params:@{
+        @"ad_unit_id": self.m_adUnitId,
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt),
+        @"ad": [self getMAAdParams:ad]
+    }];
+    
+    self.m_retryAttempt = 0;
     
     self.m_provider->onAppleAppLovinBannerDidLoadAd();
 }
 
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *) adUnitIdentifier withError:(MAError *) error {
-    LOGGER_MESSAGE( "banner didFailToLoadAdForAdUnitIdentifier" );
+    [self log:@"didFailToLoadAdForAdUnitIdentifier" withMAError:error];
+    
+    [AppleAnalytics event:@"mng_ad_banner_load_failed" params:@{
+        @"ad_unit_id": adUnitIdentifier,
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt),
+        @"error": [self getMAErrorParams:error],
+        @"error_code": @(error.code)
+    }];
+    
+    self.m_retryAttempt++;
     
     self.m_provider->onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier();
 }
 
 - (void) didClickAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "banner didClickAd" );
+    [self log:@"didClickAd" withMAAd:ad];
+    
+    [AppleAnalytics event:@"mng_ad_banner_clicked" params:@{
+        @"ad_unit_id": self.m_adUnitId,
+        @"placement": ad.placement,
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad]
+    }];
     
     self.m_provider->onAppleAppLovinBannerDidClickAd();
 }
 
 - (void) didFailToDisplayAd:(MAAd *) ad withError:(MAError *) error {
-    LOGGER_MESSAGE( "banner didFailToDisplayAd" );
+    [self log:@"didFailToDisplayAd" withMAAd:ad withMAError:error];
+    
+    [AppleAnalytics event:@"mng_ad_banner_display_failed" params:@{
+        @"ad_unit_id": self.m_adUnitId,
+        @"placement": ad.placement,
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad]
+    }];
     
     self.m_provider->onAppleAppLovinBannerDidFailToDisplayAd();
 }
@@ -112,13 +161,27 @@
 #pragma mark - MAAdViewAdDelegate Protocol
 
 - (void) didExpandAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "banner didExpandAd" );
+    [self log:@"didExpandAd" withMAAd:ad];
+    
+    [AppleAnalytics event:@"mng_ad_banner_expand" params:@{
+        @"ad_unit_id": self.m_adUnitId,
+        @"placement": ad.placement,
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad]
+    }];
     
     self.m_provider->onAppleAppLovinBannerDidExpandAd();
 }
 
 - (void) didCollapseAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "banner didCollapseAd" );
+    [self log:@"didCollapseAd" withMAAd:ad];
+    
+    [AppleAnalytics event:@"mng_ad_banner_collapse" params:@{
+        @"ad_unit_id": self.m_adUnitId,
+        @"placement": ad.placement,
+        @"request_id": @(self.m_requestId),
+        @"ad": [self getMAAdParams:ad]
+    }];
     
     self.m_provider->onAppleAppLovinBannerDidCollapseAd();
 }
@@ -126,17 +189,30 @@
 #pragma mark - Deprecated Callbacks
 
 - (void) didDisplayAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "banner didDisplayAd [deprecated]" );
+    [self log:@"didDisplayAd" withMAAd:ad];
+    
+    //deprecated
 }
 
 - (void) didHideAd:(MAAd *) ad {
-    LOGGER_MESSAGE( "banner didHideAd [deprecated]" );
+    [self log:@"didHideAd" withMAAd:ad];
+    
+    //deprecated
 }
     
 #pragma mark - Revenue Callbacks
 
 - (void)didPayRevenueForAd:(MAAd *)ad {
-    LOGGER_MESSAGE( "banner didPayRevenueForAd" );
+    [self log:@"didPayRevenueForAd" withMAAd:ad];
+    
+    [AppleAnalytics event:@"mng_ad_banner_revenue_paid" params:@{
+        @"ad_unit_id": self.m_adUnitId,
+        @"placement": ad.placement,
+        @"request_id": @(self.m_requestId),
+        @"revenue_value": @(ad.revenue),
+        @"revenue_precision": ad.revenuePrecision,
+        @"ad": [self getMAAdParams:ad]
+    }];
     
     self.m_provider->onAppleAppLovinBannerDidPayRevenueForAd();
 }

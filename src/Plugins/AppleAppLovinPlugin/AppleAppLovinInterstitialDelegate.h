@@ -24,9 +24,6 @@
 @property (assign) Mengine::AppleAppLovinInterstitialProviderInterfacePtr m_provider;
 
 @property (nonatomic, strong) MAInterstitialAd * _Nullable m_interstitialAd;
-@property (nonatomic, assign) NSInteger m_retryAttempt;
-@property (nonatomic, assign) NSInteger m_enumeratorRequest;
-@property (nonatomic, assign) NSInteger m_requestId;
 
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
 @property (nonatomic, strong) AppleAppLovinInterstitialAmazonLoader * _Nullable m_amazonLoader;

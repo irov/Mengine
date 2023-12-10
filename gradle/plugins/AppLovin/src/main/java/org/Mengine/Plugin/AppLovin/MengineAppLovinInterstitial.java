@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.AppLovin;
 
 import com.applovin.mediation.MaxAd;
+import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxAdRequestListener;
 import com.applovin.mediation.MaxAdRevenueListener;
@@ -10,22 +11,13 @@ import com.applovin.mediation.ads.MaxInterstitialAd;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineUtils;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 public class MengineAppLovinInterstitial extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdListener, MaxAdRevenueListener {
     private MaxInterstitialAd m_interstitialAd;
 
-    private int m_retryAttempt;
-
-    private int m_enumeratorRequest;
-    private int m_requestId;
-
     public MengineAppLovinInterstitial(MengineAppLovinPlugin plugin, String adUnitId) {
-        super(plugin);
-
-        m_retryAttempt = 0;
-        m_enumeratorRequest = 0;
-        m_requestId = 0;
+        super(MaxAdFormat.INTERSTITIAL, plugin, adUnitId);
 
         MengineActivity activity = m_plugin.getMengineActivity();
 
@@ -37,7 +29,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_interstitialAd = interstitialAd;
 
-        m_plugin.logMessage("[Interstitial] create adUnitId: %s"
+        m_plugin.logMessage("[%s] create adUnitId: %s"
+            , m_adFormat.getLabel()
             , adUnitId
         );
 
@@ -66,32 +59,16 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             m_interstitialAd = null;
         }
     }
-
-    private void retryLoadAd() {
-        m_retryAttempt++;
-
-        long duration = (long) Math.pow(2, Math.min(6, m_retryAttempt));
-        long delayMillis = TimeUnit.SECONDS.toMillis(duration);
-
-        MengineUtils.performOnMainThreadDelayed(() -> {
-            this.loadAd();
-        }, delayMillis);
-    }
-
     public void loadAd() {
         if (m_interstitialAd == null) {
             return;
         }
 
+        this.increaseRequestId();
+
+        this.log("loadAd");
+
         String adUnitId = m_interstitialAd.getAdUnitId();
-
-        m_requestId = m_enumeratorRequest++;
-
-        m_plugin.logMessage("[Interstitial] loadAd adUnitId: %s request: %d attempt: %d"
-            , adUnitId
-            , m_requestId
-            , m_retryAttempt
-        );
 
         this.buildEvent("mng_ad_interstitial_load")
             .addParameterString("ad_unit_id", adUnitId)
@@ -104,11 +81,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         try {
             m_interstitialAd.loadAd();
         } catch (Exception e) {
-            m_plugin.logError("[Interstitial] loadAd adUnitId: %s attempt: %d exception: %s"
-                    , adUnitId
-                    , m_retryAttempt
-                    , e.getMessage()
-            );
+            this.logError("loadAd", e);
 
             this.buildEvent("mng_ad_interstitial_load_exception")
                 .addParameterString("ad_unit_id", adUnitId)
@@ -128,18 +101,13 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             return false;
         }
 
-        String adUnitId = m_interstitialAd.getAdUnitId();
-
         boolean ready = m_interstitialAd.isReady();
 
-        m_plugin.logMessage("[Interstitial] canYouShowInterstitial adUnitId: %s ready: %b request: %d attempt: %d"
-            , adUnitId
-            , ready
-            , m_requestId
-            , m_retryAttempt
-        );
+        this.log("canYouShowInterstitial", Map.of("placement", placement, "ready", ready));
 
         if (ready == false) {
+            String adUnitId = m_interstitialAd.getAdUnitId();
+
             this.buildEvent("mng_ad_interstitial_show")
                 .addParameterString("ad_unit_id", adUnitId)
                 .addParameterString("placement", placement)
@@ -159,16 +127,11 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             return false;
         }
 
-        String adUnitId = m_interstitialAd.getAdUnitId();
-
         boolean ready = m_interstitialAd.isReady();
 
-        m_plugin.logMessage("[Interstitial] showInterstitial adUnitId: %s ready: %b request: %d attempt: %d"
-            , adUnitId
-            , ready
-            , m_requestId
-            , m_retryAttempt
-        );
+        this.log("showInterstitial", Map.of("placement", placement, "ready", ready));
+
+        String adUnitId = m_interstitialAd.getAdUnitId();
 
         this.buildEvent("mng_ad_interstitial_show")
             .addParameterString("ad_unit_id", adUnitId)
@@ -189,11 +152,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
     @Override
     public void onAdRequestStarted(String adUnitId) {
-        m_plugin.logMessage("[Interstitial] onAdRequestStarted adUnitId: %s request: %d attempt: %d"
-            , adUnitId
-            , m_requestId
-            , m_retryAttempt
-        );
+        this.log("onAdRequestStarted");
 
         this.buildEvent("mng_ad_interstitial_request_started")
             .addParameterString("ad_unit_id", adUnitId)
@@ -208,12 +167,14 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
     @Override
     public void onAdLoaded(MaxAd ad) {
-        this.logMaxAd("Interstitial", "onAdLoaded", ad);
+        this.logMaxAd("onAdLoaded", ad);
 
         String adUnitId = ad.getAdUnitId();
+        String placement = ad.getPlacement();
 
         this.buildEvent("mng_ad_interstitial_loaded")
             .addParameterString("ad_unit_id", adUnitId)
+            .addParameterString("placement", placement)
             .addParameterLong("request_id", m_requestId)
             .addParameterLong("attempt", m_retryAttempt)
             .addParameterJSON("ad", this.getMAAdParams(ad))
@@ -228,7 +189,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
     @Override
     public void onAdDisplayed(MaxAd ad) {
-        this.logMaxAd("Interstitial", "onAdDisplayed", ad);
+        this.logMaxAd("onAdDisplayed", ad);
 
         String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
@@ -237,6 +198,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             .addParameterString("ad_unit_id", adUnitId)
             .addParameterString("placement", placement)
             .addParameterLong("request_id", m_requestId)
+            .addParameterLong("attempt", m_retryAttempt)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
@@ -247,7 +209,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
     @Override
     public void onAdHidden(MaxAd ad) {
-        this.logMaxAd("Interstitial", "onAdHidden", ad);
+        this.logMaxAd("onAdHidden", ad);
 
         String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
@@ -256,6 +218,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             .addParameterString("ad_unit_id", adUnitId)
             .addParameterString("placement", placement)
             .addParameterLong("request_id", m_requestId)
+            .addParameterLong("attempt", m_retryAttempt)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
@@ -270,7 +233,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
     @Override
     public void onAdClicked(MaxAd ad) {
-        this.logMaxAd("Interstitial", "onAdClicked", ad);
+        this.logMaxAd("onAdClicked", ad);
 
         String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
@@ -279,6 +242,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             .addParameterString("ad_unit_id", adUnitId)
             .addParameterString("placement", placement)
             .addParameterLong("request_id", m_requestId)
+            .addParameterLong("attempt", m_retryAttempt)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
@@ -289,7 +253,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
     @Override
     public void onAdLoadFailed(String adUnitId, MaxError error) {
-        this.logMaxError("Interstitial", "onAdLoadFailed", adUnitId, error);
+        this.logMaxError("onAdLoadFailed", error);
 
         int errorCode = error.getCode();
 
@@ -310,7 +274,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
     @Override
     public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-        this.logMaxError("Interstitial", "onAdDisplayFailed", ad.getAdUnitId(), error);
+        this.logMaxError("onAdDisplayFailed", error);
 
         String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
@@ -321,6 +285,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             .addParameterString("ad_unit_id", adUnitId)
             .addParameterString("placement", placement)
             .addParameterLong("request_id", m_requestId)
+            .addParameterLong("attempt", m_retryAttempt)
             .addParameterLong("error_code", errorCode)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .addParameterJSON("error", this.getMaxErrorParams(error))
@@ -337,7 +302,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
     @Override
     public void onAdRevenuePaid(MaxAd ad) {
-        this.logMaxAd("Interstitial", "onAdRevenuePaid", ad);
+        this.logMaxAd("onAdRevenuePaid", ad);
 
         String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
@@ -346,6 +311,9 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             .addParameterString("ad_unit_id", adUnitId)
             .addParameterString("placement", placement)
             .addParameterLong("request_id", m_requestId)
+            .addParameterLong("attempt", m_retryAttempt)
+            .addParameterDouble("revenue", ad.getRevenue())
+            .addParameterString("revenue_precision", ad.getRevenuePrecision())
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 

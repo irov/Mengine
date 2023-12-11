@@ -154,8 +154,7 @@ namespace Mengine
         
         if( strPicture.length <= 0 )
         {
-            Helper::dispatchMainThreadEvent([]()
-            {
+            Helper::dispatchMainThreadEvent([]() {
                 FBSDKShareLinkContent* content = [FBSDKShareLinkContent alloc];
                 content.contentURL = [NSURL URLWithString:strlink];
                 
@@ -212,8 +211,7 @@ namespace Mengine
                 return;
             }
             
-            Helper::dispatchMainThreadEvent([]()
-            {
+            Helper::dispatchMainThreadEvent([]() {
                 FBSDKSharePhoto *sharePhoto = [[FBSDKSharePhoto alloc] initWithImage: img isUserGenerated:true];
                 
                 FBSDKShareMediaContent *content = [FBSDKShareMediaContent alloc];

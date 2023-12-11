@@ -2,6 +2,7 @@
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
+#include "Kernel/PlatformHelper.h"
 
 @implementation AppleStoreInAppPurchasePaymentQueueDelegate
 

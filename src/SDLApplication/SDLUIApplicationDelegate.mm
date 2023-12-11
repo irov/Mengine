@@ -7,6 +7,9 @@
 
 #include "Environment/SDL/SDLIncluder.h"
 
+int MENGINE_MAIN_argc = 0;
+char ** MENGINE_MAIN_argv = nullptr;
+
 @implementation SDLUIApplicationDelegate
 
 - (id)init {
@@ -73,9 +76,9 @@
     
     SDL_SetMainReady();
     
-    SDL_iPhoneSetEventPump(SDL_TRUE);
+    SDL_iPhoneSetEventPump( SDL_TRUE );
     
-    bool initialize = self.m_application.initialize( 0, nullptr );
+    bool initialize = self.m_application.initialize( MENGINE_MAIN_argc, MENGINE_MAIN_argv );
 
     if( initialize == false ) {
         return NO;
@@ -143,7 +146,7 @@
     
     self.m_application.finalize();
     
-    SDL_iPhoneSetEventPump(SDL_FALSE);
+    SDL_iPhoneSetEventPump( SDL_FALSE );
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options API_AVAILABLE(ios(9.0)) {

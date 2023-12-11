@@ -76,11 +76,11 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
         this.setState("splashscreen.state", "init");
 
         Context context = MengineActivity.getContext();
-        ViewGroup view = (ViewGroup)MengineActivity.getContentView();
+        ViewGroup viewGroup = MengineActivity.getContentViewGroup();
 
         ImageView image = this.createBackground(context);
 
-        view.addView(image);
+        viewGroup.addView(image);
 
         m_image = image;
 
@@ -91,7 +91,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
 
         TextView text = this.createTextSessionId(context, message);
 
-        view.addView(text);
+        viewGroup.addView(text);
 
         m_text = text;
 
@@ -180,12 +180,12 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
     }
 
     private void removeSpash(@NonNull MengineActivity activity) {
-        ViewGroup view = (ViewGroup)MengineActivity.getContentView();
+        ViewGroup viewGroup = MengineActivity.getContentViewGroup();
 
-        view.removeView(m_image);
+        viewGroup.removeView(m_image);
         m_image = null;
 
-        view.removeView(m_text);
+        viewGroup.removeView(m_text);
         m_text = null;
 
         this.setState("splashscreen.state", "removed");

@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.AppLovin;
 
 import com.applovin.mediation.MaxAd;
+import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxAdRequestListener;
 import com.applovin.mediation.MaxAdRevenueListener;
 import com.applovin.mediation.MaxError;
@@ -11,22 +12,13 @@ import com.applovin.mediation.ads.MaxRewardedAd;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineUtils;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxAdRequestListener, MaxRewardedAdListener, MaxAdRevenueListener {
     private MaxRewardedAd m_rewardedAd;
 
-    private int m_retryAttempt;
-
-    private int m_enumeratorRequest;
-    private int m_requestId;
-
     public MengineAppLovinRewarded(MengineAppLovinPlugin plugin, String adUnitId) {
-        super(plugin);
-
-        m_retryAttempt = 0;
-        m_enumeratorRequest = 0;
-        m_requestId = 0;
+        super(MaxAdFormat.REWARDED, plugin, adUnitId);
 
         MengineActivity activity = m_plugin.getMengineActivity();
 
@@ -38,7 +30,8 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_rewardedAd = rewardedAd;
 
-        m_plugin.logMessage("[Rewarded] create adUnitId: %s"
+        m_plugin.logMessage("[%s] create adUnitId: %s"
+            , m_adFormat.getLabel()
             , adUnitId
         );
 
@@ -68,31 +61,16 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         }
     }
 
-    private void retryLoadAd() {
-        m_retryAttempt++;
-
-        long duration = (long) Math.pow(2, Math.min(6, m_retryAttempt));
-        long delayMillis = TimeUnit.SECONDS.toMillis(duration);
-
-        MengineUtils.performOnMainThreadDelayed(() -> {
-            this.loadAd();
-        }, delayMillis);
-    }
-
     public void loadAd() {
         if (m_rewardedAd == null) {
             return;
         }
 
+        this.log("loadAd");
+
+        this.increaseRequestId();
+
         String adUnitId = m_rewardedAd.getAdUnitId();
-
-        m_plugin.logMessage("[Rewarded] loadAd adUnitId: %s request: %d attempt: %d"
-            , adUnitId
-            , m_enumeratorRequest
-            , m_retryAttempt
-        );
-
-        m_requestId = m_enumeratorRequest++;
 
         this.buildEvent("mng_ad_rewarded_load")
             .addParameterString("ad_unit_id", adUnitId)
@@ -105,12 +83,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         try {
             m_rewardedAd.loadAd();
         } catch (Exception e) {
-            m_plugin.logError("[Rewarded] loadAd adUnitId: %s request: %d attempt: %d exception: %s"
-                , adUnitId
-                , m_enumeratorRequest
-                , m_retryAttempt
-                , e.getMessage()
-            );
+            this.logError("loadAd", e);
 
             this.buildEvent("mng_ad_rewarded_load_exception")
                 .addParameterString("ad_unit_id", adUnitId)
@@ -132,12 +105,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         boolean ready = m_rewardedAd.isReady();
 
-        m_plugin.logMessage("[Rewarded] canOfferRewarded adUnitId: %s ready: %b request: %d attempt: %d"
-            , adUnitId
-            , ready
-            , m_requestId
-            , m_retryAttempt
-        );
+        this.log("canOfferRewarded", Map.of("placement", placement, "ready", ready));
 
         this.buildEvent("mng_ad_rewarded_offer")
             .addParameterString("ad_unit_id", adUnitId)
@@ -159,18 +127,13 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             return false;
         }
 
-        String adUnitId = m_rewardedAd.getAdUnitId();
-
         boolean ready = m_rewardedAd.isReady();
 
-        m_plugin.logMessage("[Rewarded] canYouShowRewarded adUnitId: %s ready: %b request: %d attempt: %d"
-            , adUnitId
-            , ready
-            , m_requestId
-            , m_retryAttempt
-        );
+        this.log("canYouShowRewarded", Map.of("placement", placement, "ready", ready));
 
         if (ready == false) {
+            String adUnitId = m_rewardedAd.getAdUnitId();
+
             this.buildEvent("mng_ad_rewarded_show")
                 .addParameterString("ad_unit_id", adUnitId)
                 .addParameterString("placement", placement)
@@ -190,16 +153,11 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             return false;
         }
 
-        String adUnitId = m_rewardedAd.getAdUnitId();
-
         boolean ready = m_rewardedAd.isReady();
 
-        m_plugin.logMessage("[Rewarded] showRewarded adUnitId: %s ready: %b request: %d attempt: %d"
-            , adUnitId
-            , ready
-            , m_requestId
-            , m_retryAttempt
-        );
+        this.log("showRewarded", Map.of("placement", placement, "ready", ready));
+
+        String adUnitId = m_rewardedAd.getAdUnitId();
 
         this.buildEvent("mng_ad_rewarded_show")
             .addParameterString("ad_unit_id", adUnitId)
@@ -220,6 +178,8 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
     @Override
     public void onAdRequestStarted(String adUnitId) {
+        this.log("onAdRequestStarted");
+
         m_plugin.logMessage("[Rewarded] onAdRequestStarted adUnitId: %s request: %d attempt: %d"
             , adUnitId
             , m_requestId
@@ -240,18 +200,18 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     @SuppressWarnings("deprecation")
     @Override
     public void onRewardedVideoStarted(MaxAd ad) {
-        this.logMaxAd("Rewarded", "onRewardedVideoStarted", ad);
+        this.logMaxAd("onRewardedVideoStarted", ad);
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public void onRewardedVideoCompleted(MaxAd ad) {
-        this.logMaxAd("Rewarded", "onRewardedVideoCompleted", ad);
+        this.logMaxAd("onRewardedVideoCompleted", ad);
     }
 
     @Override
     public void onUserRewarded(MaxAd ad, MaxReward reward) {
-        this.logMaxAdReward("Rewarded", "onUserRewarded", ad, reward);
+        this.logMaxAdReward("onUserRewarded", ad, reward);
 
         String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
@@ -273,7 +233,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
     @Override
     public void onAdLoaded(MaxAd ad) {
-        this.logMaxAd("Rewarded", "onAdLoaded", ad);
+        this.logMaxAd("onAdLoaded", ad);
 
         String adUnitId = ad.getAdUnitId();
 
@@ -293,7 +253,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
     @Override
     public void onAdDisplayed(MaxAd ad) {
-        this.logMaxAd("Rewarded", "onAdDisplayed", ad);
+        this.logMaxAd("onAdDisplayed", ad);
 
         String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
@@ -312,7 +272,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
     @Override
     public void onAdHidden(MaxAd ad) {
-        this.logMaxAd("Rewarded", "onAdHidden", ad);
+        this.logMaxAd("onAdHidden", ad);
 
         String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
@@ -335,7 +295,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
     @Override
     public void onAdClicked(MaxAd ad) {
-        this.logMaxAd("Rewarded", "onAdClicked", ad);
+        this.logMaxAd("onAdClicked", ad);
 
         String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
@@ -354,7 +314,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
     @Override
     public void onAdLoadFailed(String adUnitId, MaxError error) {
-        this.logMaxError("Rewarded", "onAdLoadFailed", adUnitId, error);
+        this.logMaxError("onAdLoadFailed", error);
 
         int errorCode = error.getCode();
 
@@ -375,7 +335,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
     @Override
     public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-        this.logMaxError("Rewarded", "onAdDisplayFailed", ad.getAdUnitId(), error);
+        this.logMaxError("onAdDisplayFailed", error);
 
         String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
@@ -402,7 +362,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
     @Override
     public void onAdRevenuePaid(MaxAd ad) {
-        this.logMaxAd("Rewarded", "onAdRevenuePaid", ad);
+        this.logMaxAd("onAdRevenuePaid", ad);
 
         String adUnitId = ad.getAdUnitId();
 

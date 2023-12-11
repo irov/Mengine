@@ -791,7 +791,7 @@ public class MengineApplication extends Application {
         SharedPreferences.Editor editor = settings.edit();
 
         if (installKey == null) {
-            installKey = MengineUtils.getRandomUUIDString();
+            installKey = "MNIK" + MengineUtils.getRandomHexString(16).toUpperCase();
             installTimestamp = MengineUtils.getTimestamp();
             installVersion = this.getVersionName();
 
@@ -807,7 +807,7 @@ public class MengineApplication extends Application {
         }
 
         if (installRND == -1) {
-            installRND = MengineUtils.getRandomNumber();
+            installRND = MengineUtils.getSecureRandomNumber();
 
             if (installRND == 0) {
                 installRND = 1;

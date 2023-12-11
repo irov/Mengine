@@ -35,7 +35,7 @@ public class MengineAnalyticsEventBuilder {
         this.assertBases(key);
         this.assertParameters(key);
 
-        m_parameters.put(key, value);
+        m_parameters.put(key, Boolean.valueOf(value));
 
         return this;
     }
@@ -70,7 +70,7 @@ public class MengineAnalyticsEventBuilder {
         this.assertBases(key);
         this.assertParameters(key);
 
-        m_parameters.put(key, value);
+        m_parameters.put(key, Long.valueOf(value));
 
         return this;
     }
@@ -79,7 +79,7 @@ public class MengineAnalyticsEventBuilder {
         this.assertBases(key);
         this.assertParameters(key);
 
-        m_parameters.put(key, value);
+        m_parameters.put(key, Double.valueOf(value));
 
         return this;
     }

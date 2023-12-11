@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
@@ -227,10 +228,12 @@ public class MengineActivity extends SDLActivity {
         return value;
     }
 
-    public static View getContentView() {
+    public static ViewGroup getContentViewGroup() {
         View view = SDLActivity.getContentView();
 
-        return view;
+        ViewGroup viewGroup = (ViewGroup)view;
+
+        return viewGroup;
     }
 
     public static Context getContext() {

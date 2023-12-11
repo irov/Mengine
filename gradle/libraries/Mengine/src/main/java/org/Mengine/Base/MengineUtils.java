@@ -24,10 +24,12 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -148,16 +150,40 @@ public class MengineUtils {
         return duration;
     }
 
-    public static long getRandomNumber() {
+    public static long getThreadLocalRandomNumber() {
         long randomNumber = java.util.concurrent.ThreadLocalRandom.current().nextLong();
 
         return randomNumber;
     }
 
-    public static String getRandomUUIDString() {
-        String uuid = UUID.randomUUID().toString();
+    public static long getSecureRandomNumber() {
+        SecureRandom r = new SecureRandom();
 
-        return uuid;
+        long randomNumber = r.nextLong();
+
+        return randomNumber;
+    }
+
+    public static String getRandomUUIDString() {
+        UUID uuid = UUID.randomUUID();
+        String rand = uuid.toString();
+
+        return rand;
+    }
+
+    public static String getRandomHexString(int num) {
+        SecureRandom r = new SecureRandom();
+        StringBuffer sb = new StringBuffer();
+        while(sb.length() < num) {
+            int n = r.nextInt();
+            String h = Integer.toHexString(n);
+            sb.append(h);
+        }
+
+        String rand = sb.toString();
+        String randN = rand.substring(0, num);
+
+        return randN;
     }
 
     public static int getBatteryLevel(Context context) {

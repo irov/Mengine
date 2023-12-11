@@ -301,8 +301,7 @@ namespace Mengine
             .def( "cancel", &AppleStoreInAppPurchaseProductsRequestInterface::cancel )
             ;
   
-        pybind::interface_<AppleStoreInAppPurchasePaymentTransaction, pybind::bases<AppleStoreInAppPurchasePaymentTransactionInterface>>( _kernel,
-            "AppleStoreInAppPurchasePaymentTransaction", false )
+        pybind::interface_<AppleStoreInAppPurchasePaymentTransaction, pybind::bases<AppleStoreInAppPurchasePaymentTransactionInterface>>( _kernel, "AppleStoreInAppPurchasePaymentTransaction", false )
             ;
         
         pybind::interface_<AppleStoreInAppPurchaseProduct, pybind::bases<AppleStoreInAppPurchaseProductInterface>>( _kernel,

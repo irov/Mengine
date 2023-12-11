@@ -82,8 +82,6 @@ Mengine::SDLApplication MENGINE_application;
     bool initialize = MENGINE_application.initialize( MENGINE_MAIN_argc, MENGINE_MAIN_argv );
 
     if( initialize == false ) {
-        MENGINE_application.finalize();
-        
         return NO;
     }
     

@@ -20,12 +20,15 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
     {
         app.loop();
     }
-    else
-    {
-        ::MessageBoxA( NULL, "Mengine invalid initialization", "Mengine", MB_OK );
-    }
 
     app.finalize();
+
+    if( initialize == false )
+    {
+        ::MessageBoxA( NULL, "Mengine invalid initialization", "Mengine", MB_OK );
+
+        return EXIT_FAILURE;
+    }
 
     return EXIT_SUCCESS;
 }

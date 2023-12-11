@@ -12,12 +12,15 @@ int main( int argc, char * argv[] )
     {
         application.loop();
     }
-    else
-    {
-        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine initialize", "Mengine invalid initialization", NULL );
-    }
 
     application.finalize();
+
+    if( initialize == false )
+    {
+        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine initialize", "Mengine invalid initialization", NULL );
+
+        return EXIT_FAILURE;
+    }    
 
     return EXIT_SUCCESS;
 }

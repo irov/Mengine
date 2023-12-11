@@ -26,6 +26,6 @@ namespace Mengine
     protected:
         LambdaThreadRunner m_lambda;
 
-        AtomicBool m_process;
+        AtomicBool m_cancel;
     };
 }

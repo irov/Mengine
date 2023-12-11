@@ -67,6 +67,9 @@ namespace Mengine
         void removeTimer( uint32_t _id ) override;
 
     public:
+        void dispatchMainThreadEvent( const LambdaEvent & _event ) override;
+
+    public:
         void setSleepMode( bool _sleepMode ) override;
         bool getSleepMode() const override;
 
@@ -265,6 +268,12 @@ namespace Mengine
 
         typedef Vector<TimerDesc> VectorTimers;
         VectorTimers m_timers;
+
+        ThreadMutexInterfacePtr m_dispatchEventMutex;
+
+        typedef Vector<LambdaEvent> VectorEvents;
+        VectorEvents m_dispatchEvents;
+        VectorEvents m_dispatchEventsAux;
 
         struct UpdateDesc
         {

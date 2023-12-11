@@ -57,6 +57,10 @@ namespace Mengine
         virtual void removeTimer( UniqueId _id ) = 0;
 
     public:
+        typedef Lambda<void()> LambdaEvent;
+        virtual void dispatchMainThreadEvent( const LambdaEvent & _event ) = 0;
+
+    public:
         virtual void setSleepMode( bool _sleepMode ) = 0;
         virtual bool getSleepMode() const = 0;
 

@@ -779,6 +779,13 @@ namespace Mengine
 
         SDL_EventState( SDL_JOYAXISMOTION, SDL_FALSE );
 
+        ThreadMutexInterfacePtr dispatchEventMutex = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( dispatchEventMutex );
+
+        m_dispatchEventMutex = dispatchEventMutex;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1028,6 +1035,14 @@ namespace Mengine
 
         m_updates.clear();
 
+        m_dispatchEventMutex->lock();
+        m_dispatchEvents.clear();        
+        m_dispatchEventMutex->unlock();
+
+        m_dispatchEventsAux.clear();
+        
+        m_dispatchEventMutex = nullptr;
+
         this->destroyWindow_();
 
         if( m_sdlInput != nullptr )
@@ -1110,6 +1125,18 @@ namespace Mengine
         {
             return _desc.id == INVALID_UNIQUE_ID;
         } ), m_timers.end() );
+
+        m_dispatchEventMutex->lock();
+        std::swap( m_dispatchEventsAux, m_dispatchEvents );
+        m_dispatchEvents.clear();
+        m_dispatchEventMutex->unlock();
+
+        for( const LambdaEvent & event : m_dispatchEventsAux )
+        {
+            event();
+        }
+
+        m_dispatchEventsAux.clear();
 
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate();
@@ -1392,6 +1419,15 @@ namespace Mengine
         TimerDesc & desc = *it_found;
 
         desc.id = INVALID_UNIQUE_ID;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatformService::dispatchMainThreadEvent( const LambdaEvent & _event )
+    {
+        m_dispatchEventMutex->lock();
+
+        m_dispatchEvents.emplace_back( _event );
+
+        m_dispatchEventMutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::setSleepMode( bool _sleepMode )

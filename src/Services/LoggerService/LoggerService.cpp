@@ -280,8 +280,7 @@ namespace Mengine
 
         m_mutexLogger->unlock();
 
-        m_threadRunner->cancel();
-        m_threadLogger->join();
+        m_threadLogger->cancel();
 
         m_threadRunner = nullptr;
         m_threadLogger = nullptr;

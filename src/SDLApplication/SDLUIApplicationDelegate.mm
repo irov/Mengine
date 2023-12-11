@@ -9,6 +9,7 @@
 
 int MENGINE_MAIN_argc = 0;
 char ** MENGINE_MAIN_argv = nullptr;
+Mengine::SDLApplication MENGINE_application;
 
 @implementation SDLUIApplicationDelegate
 
@@ -78,9 +79,11 @@ char ** MENGINE_MAIN_argv = nullptr;
     
     SDL_iPhoneSetEventPump( SDL_TRUE );
     
-    bool initialize = self.m_application.initialize( MENGINE_MAIN_argc, MENGINE_MAIN_argv );
+    bool initialize = MENGINE_application.initialize( MENGINE_MAIN_argc, MENGINE_MAIN_argv );
 
     if( initialize == false ) {
+        MENGINE_application.finalize();
+        
         return NO;
     }
     
@@ -144,7 +147,7 @@ char ** MENGINE_MAIN_argv = nullptr;
         }
     }
     
-    self.m_application.finalize();
+    MENGINE_application.finalize();
     
     SDL_iPhoneSetEventPump( SDL_FALSE );
 }
@@ -186,7 +189,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (void)postFinishLaunch {
-    self.m_application.loop();
+    MENGINE_application.loop();
 }
 
 @end

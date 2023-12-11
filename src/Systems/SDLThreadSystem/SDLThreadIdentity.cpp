@@ -159,7 +159,7 @@ namespace Mengine
         
         if( status != 0 )
         {
-            LOGGER_ERROR( "invalid join thread error status [%d] (cancel)"
+            LOGGER_ERROR( "invalid cancel thread error status [%d]"
                 , status
             );
         }

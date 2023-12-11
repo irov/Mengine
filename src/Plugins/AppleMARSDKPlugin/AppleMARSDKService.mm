@@ -147,7 +147,7 @@ namespace Mengine
                     return;
                 }
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
+                Helper::dispatchMainThreadEvent([]() {
                     m_provider->onPropError( copy_orderId );
                 });
                 
@@ -166,7 +166,7 @@ namespace Mengine
                 return;
             }
                 
-            dispatch_async(dispatch_get_main_queue(), ^{
+            Helper::dispatchMainThreadEvent([]() {
                 m_provider->onPropComplete( copy_orderId );
             });
         }];
@@ -195,7 +195,7 @@ namespace Mengine
                 return;
             }
             
-            dispatch_async(dispatch_get_main_queue(), ^{
+            Helper::dispatchMainThreadEvent([]() {
                 m_provider->onPurchasedNonConsumable( purchased );
             });
         }];
@@ -234,7 +234,7 @@ namespace Mengine
             return;
         }
         
-        dispatch_async(dispatch_get_main_queue(), ^{
+        Helper::dispatchMainThreadEvent([]() {
             m_provider->onUserLogin( _params );
         });
     }
@@ -250,7 +250,7 @@ namespace Mengine
             return;
         }
         
-        dispatch_async(dispatch_get_main_queue(), ^{
+        Helper::dispatchMainThreadEvent([]() {
             m_provider->onUserLogout( _params );
         });
     }
@@ -266,7 +266,7 @@ namespace Mengine
             return;
         }
         
-        dispatch_async(dispatch_get_main_queue(), ^{
+        Helper::dispatchMainThreadEvent([]() {
             m_provider->onPayPaid( _params );
         });
     }

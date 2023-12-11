@@ -906,6 +906,9 @@ Core
     
     StatisticHelper.h
     
+    PlatformHelper.cpp
+    PlatformHelper.h
+    
     ReferenceCounterGuardScope.cpp
     ReferenceCounterGuardScope.h
     

@@ -29,7 +29,7 @@
     
     Mengine::AppleStoreInAppPurchasePaymentTransactionInterfacePtr paymentTransaction = m_factory->makePaymentTransaction( transaction );
     
-    dispatch_async(dispatch_get_main_queue(), ^{
+    Helper::dispatchMainThreadEvent([]() {
         provider->onPaymentQueueShouldContinueTransaction( paymentTransaction );
     });
 }
@@ -41,7 +41,7 @@
     
     Mengine::AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr provider = m_service->getPaymentQueueProvider();
     
-    dispatch_async(dispatch_get_main_queue(), ^{
+    Helper::dispatchMainThreadEvent([]() {
         provider->onPaymentQueueShouldShowPriceConsent();
     });
 }

@@ -7,6 +7,7 @@
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/ProfilerSystemInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/ServiceInterface.h"
 
@@ -401,6 +402,13 @@ namespace Mengine
             , deviceSeed
         );
 
+        ThreadMutexInterfacePtr dispatchEventMutex = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( dispatchEventMutex );
+
+        m_dispatchEventMutex = dispatchEventMutex;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -466,6 +474,12 @@ namespace Mengine
 #endif
 
         m_updates.clear();
+
+        m_dispatchEventMutex->lock();
+        m_dispatchEvents.clear();
+        m_dispatchEventMutex->unlock();
+
+        m_dispatchEventsAux.clear();
 
         if( m_hIcon != NULL )
         {
@@ -823,6 +837,15 @@ namespace Mengine
         desc.lambda = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32PlatformService::dispatchMainThreadEvent( const LambdaEvent & _event )
+    {
+        m_dispatchEventMutex->lock();
+
+        m_dispatchEvents.emplace_back( _event );
+
+        m_dispatchEventMutex->unlock();
+    }
+    //////////////////////////////////////////////////////////////////////////
     Timestamp Win32PlatformService::getPlatfomTime() const
     {
         Timestamp currentTime = Helper::getTimestamp();
@@ -921,6 +944,18 @@ namespace Mengine
         {
             return _desc.id == INVALID_UNIQUE_ID;
         } ), m_timers.end() );
+
+        m_dispatchEventMutex->lock();
+        std::swap( m_dispatchEventsAux, m_dispatchEvents );
+        m_dispatchEvents.clear();
+        m_dispatchEventMutex->unlock();
+
+        for( const LambdaEvent & ev : m_dispatchEventsAux )
+        {
+            ev();
+        }
+
+        m_dispatchEventsAux.clear();
 
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate();

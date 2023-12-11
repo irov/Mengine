@@ -64,7 +64,7 @@ namespace Mengine
                 {
                     AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
                     
-                    dispatch_async(dispatch_get_main_queue(), ^{
+                    Helper::dispatchMainThreadEvent([]() {
                         provider_copy->onAppleGameCenterAuthenticate( false );
                     });
                 }
@@ -82,7 +82,7 @@ namespace Mengine
                 {
                     AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
                     
-                    dispatch_async(dispatch_get_main_queue(), ^{
+                    Helper::dispatchMainThreadEvent([]() {
                         provider_copy->onAppleGameCenterAuthenticate( true );
                     });
                 }
@@ -95,7 +95,7 @@ namespace Mengine
             {
                 AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
+                Helper::dispatchMainThreadEvent([]() {
                     provider_copy->onAppleGameCenterSynchronizate( false );
                 });
             }
@@ -113,7 +113,7 @@ namespace Mengine
                     {
                         AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
                         
-                        dispatch_async(dispatch_get_main_queue(), ^{
+                        Helper::dispatchMainThreadEvent([]() {
                             provider_copy->onAppleGameCenterSynchronizate( false );
                         });
                     }
@@ -141,7 +141,7 @@ namespace Mengine
                 {
                     AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
                     
-                    dispatch_async(dispatch_get_main_queue(), ^{
+                    Helper::dispatchMainThreadEvent([]() {
                         provider_copy->onAppleGameCenterSynchronizate( true );
                     });
                 }
@@ -182,7 +182,7 @@ namespace Mengine
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
+                Helper::dispatchMainThreadEvent([]() {
                     copy_response( false );
                 });
                 
@@ -199,7 +199,7 @@ namespace Mengine
                 m_achievementsComplete.push_back( copy_achievementName );
             }
             
-            dispatch_async(dispatch_get_main_queue(), ^{
+            Helper::dispatchMainThreadEvent([]() {
                 copy_response( true );
             });
         }];
@@ -275,7 +275,7 @@ namespace Mengine
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
+                Helper::dispatchMainThreadEvent([]() {
                     copy_response( false );
                 });
                 
@@ -287,7 +287,7 @@ namespace Mengine
                 , _score
             );
             
-            dispatch_async(dispatch_get_main_queue(), ^{
+            Helper::dispatchMainThreadEvent([]() {
                 copy_response( true );
             });
         }];

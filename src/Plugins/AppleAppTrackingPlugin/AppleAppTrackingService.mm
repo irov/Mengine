@@ -70,7 +70,8 @@ namespace Mengine
                 EAppleAppTrackingAuthorization status_copy = m_status;
                 NSString * idfa_copy = m_idfa;
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
+                Helper::dispatchMainThreadEvent([]()
+                {
                     const Char * idfa_str = [idfa_copy UTF8String];
                     
                     copy_response( status_copy, idfa_str );

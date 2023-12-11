@@ -44,6 +44,9 @@ namespace Mengine
         void removeTimer( UniqueId _id ) override;
 
     public:
+        void dispatchMainThreadEvent( const LambdaEvent & _event ) override;
+
+    public:
         void setSleepMode( bool _sleepMode ) override;
         bool getSleepMode() const override;
 
@@ -284,6 +287,12 @@ namespace Mengine
 
         typedef Vector<UpdateDesc> VectorUpdates;
         VectorUpdates m_updates;
+
+        ThreadMutexInterfacePtr m_dispatchEventMutex;
+
+        typedef Vector<LambdaEvent> VectorEvents;
+        VectorEvents m_dispatchEvents;
+        VectorEvents m_dispatchEventsAux;
 
         HICON m_hIcon;
         StaticWString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;

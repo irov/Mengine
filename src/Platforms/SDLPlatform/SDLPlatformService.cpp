@@ -1131,9 +1131,9 @@ namespace Mengine
         m_dispatchEvents.clear();
         m_dispatchEventMutex->unlock();
 
-        for( const LambdaEvent & event : m_dispatchEventsAux )
+        for( const LambdaEvent & ev : m_dispatchEventsAux )
         {
-            event();
+            ev();
         }
 
         m_dispatchEventsAux.clear();

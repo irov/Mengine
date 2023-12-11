@@ -59,31 +59,31 @@
         {
             case SKPaymentTransactionStatePurchasing:
             {
-                dispatch_async(dispatch_get_main_queue(), ^{
+                Helper::dispatchMainThreadEvent([]() {
                     provider->onPaymentQueueUpdatedTransactionPurchasing( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStatePurchased:
             {
-                dispatch_async(dispatch_get_main_queue(), ^{
+                Helper::dispatchMainThreadEvent([]() {
                     provider->onPaymentQueueUpdatedTransactionPurchased( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStateFailed:
             {
-                dispatch_async(dispatch_get_main_queue(), ^{
+                Helper::dispatchMainThreadEvent([]() {
                     provider->onPaymentQueueUpdatedTransactionFailed( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStateRestored:
             {
-                dispatch_async(dispatch_get_main_queue(), ^{
+                Helper::dispatchMainThreadEvent([]() {
                     provider->onPaymentQueueUpdatedTransactionRestored( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStateDeferred:
             {
-                dispatch_async(dispatch_get_main_queue(), ^{
+                Helper::dispatchMainThreadEvent([]() {
                     provider->onPaymentQueueUpdatedTransactionDeferred( paymentTransaction );
                 });
             } break;

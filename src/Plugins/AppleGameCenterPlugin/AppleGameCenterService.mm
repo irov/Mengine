@@ -62,11 +62,7 @@ namespace Mengine
                 
                 if( m_provider != nullptr )
                 {
-                    AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
-                    
-                    Helper::dispatchMainThreadEvent([]() {
-                        provider_copy->onAppleGameCenterAuthenticate( false );
-                    });
+                    m_provider->onAppleGameCenterAuthenticate( false );
                 }
                 
                 return;
@@ -80,11 +76,7 @@ namespace Mengine
                 
                 if( m_provider != nullptr )
                 {
-                    AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
-                    
-                    Helper::dispatchMainThreadEvent([]() {
-                        provider_copy->onAppleGameCenterAuthenticate( true );
-                    });
+                    m_provider->onAppleGameCenterAuthenticate( true );
                 }
             }
             
@@ -93,11 +85,7 @@ namespace Mengine
             
             if( m_provider != nullptr )
             {
-                AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
-                
-                Helper::dispatchMainThreadEvent([]() {
-                    provider_copy->onAppleGameCenterSynchronizate( false );
-                });
+                m_provider->onAppleGameCenterSynchronizate( false );
             }
             
             [m_gameCenterDelegate loadCompletedAchievements:^(NSError * _Nullable _error, NSArray * _Nullable _completedAchievements) {
@@ -111,11 +99,7 @@ namespace Mengine
                     
                     if( m_provider != nullptr )
                     {
-                        AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
-                        
-                        Helper::dispatchMainThreadEvent([]() {
-                            provider_copy->onAppleGameCenterSynchronizate( false );
-                        });
+                        m_provider->onAppleGameCenterSynchronizate( false );
                     }
                     
                     return;
@@ -139,11 +123,7 @@ namespace Mengine
                 
                 if( m_provider != nullptr )
                 {
-                    AppleGameCenterProviderInterfacePtr provider_copy = m_provider;
-                    
-                    Helper::dispatchMainThreadEvent([]() {
-                        provider_copy->onAppleGameCenterSynchronizate( true );
-                    });
+                    m_provider->onAppleGameCenterSynchronizate( true );
                 }
             }] ;
         }];
@@ -182,9 +162,7 @@ namespace Mengine
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
-                Helper::dispatchMainThreadEvent([]() {
-                    copy_response( false );
-                });
+                copy_response( false );
                 
                 return;
             }
@@ -199,9 +177,7 @@ namespace Mengine
                 m_achievementsComplete.push_back( copy_achievementName );
             }
             
-            Helper::dispatchMainThreadEvent([]() {
-                copy_response( true );
-            });
+            copy_response( true );
         }];
         
         if( result == FALSE )
@@ -275,9 +251,7 @@ namespace Mengine
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
-                Helper::dispatchMainThreadEvent([]() {
-                    copy_response( false );
-                });
+                copy_response( false );
                 
                 return;
             }
@@ -287,9 +261,7 @@ namespace Mengine
                 , _score
             );
             
-            Helper::dispatchMainThreadEvent([]() {
-                copy_response( true );
-            });
+            copy_response( true );
         }];
         
         if( result == FALSE )

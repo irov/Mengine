@@ -4,6 +4,7 @@
 #include "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/PlatformHelper.h"
 
 #include "Config/StdString.h"
 
@@ -70,8 +71,7 @@ namespace Mengine
                 EAppleAppTrackingAuthorization status_copy = m_status;
                 NSString * idfa_copy = m_idfa;
                 
-                Helper::dispatchMainThreadEvent([]()
-                {
+                Helper::dispatchMainThreadEvent([copy_response, status_copy, idfa_copy]() {
                     const Char * idfa_str = [idfa_copy UTF8String];
                     
                     copy_response( status_copy, idfa_str );

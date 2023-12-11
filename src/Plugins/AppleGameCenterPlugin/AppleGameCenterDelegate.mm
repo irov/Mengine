@@ -1,5 +1,7 @@
 #import "AppleGameCenterDelegate.h"
 
+#include "Kernel/PlatformHelper.h"
+
 @implementation AppleGameCenterDelegate
 
 @synthesize m_authenticateSuccess;
@@ -20,14 +22,18 @@
         {
             m_authenticateSuccess = false;
             
-            handler( error );
+            Mengine::Helper::dispatchMainThreadEvent([handler, error]() {
+                handler( error );
+            });
             
             return;
         }
         
         m_authenticateSuccess = true;
         
-        handler( nil );
+        Mengine::Helper::dispatchMainThreadEvent([handler]() {
+            handler( nil );
+        });
     }];
     
     return YES;
@@ -42,14 +48,18 @@
     [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray<GKAchievement *> * _Nullable achievements, NSError * _Nullable error) {
         if( error != nil )
         {
-            handler( error, nil );
+            Mengine::Helper::dispatchMainThreadEvent([handler, error]() {
+                handler( error, nil );
+            });
             
             return;
         }
         
         if( achievements != nil )
         {
-            handler( nil, nil );
+            Mengine::Helper::dispatchMainThreadEvent([handler]() {
+                handler( nil, nil );
+            });
             
             return;
         }
@@ -64,7 +74,9 @@
             }
         }
         
-        handler( nil, cmpAch );
+        Mengine::Helper::dispatchMainThreadEvent([handler, cmpAch]() {
+            handler( nil, cmpAch );
+        });
     }];
     
     return YES;
@@ -77,7 +89,9 @@
     }
     
     [GKAchievement resetAchievementsWithCompletionHandler:^(NSError * _Nullable error) {
-        handler( error );
+        Mengine::Helper::dispatchMainThreadEvent([handler, error]() {
+            handler( error );
+        });
     }];
     
     return YES;
@@ -95,7 +109,9 @@
     
     NSArray * scores = @[scoreReporter];
     [GKScore reportScores:scores withCompletionHandler:^(NSError *error) {
-        handler(error);
+        Mengine::Helper::dispatchMainThreadEvent([handler, error]() {
+            handler(error);
+        });
 	}];
     
     return YES;
@@ -112,7 +128,9 @@
     [achievement setPercentComplete: percent];
     
     [GKAchievement reportAchievements:@[achievement] withCompletionHandler:^(NSError * _Nullable error) {
-        handler(error);
+        Mengine::Helper::dispatchMainThreadEvent([handler, error]() {
+            handler(error);
+        });
     }];
     
     return YES;

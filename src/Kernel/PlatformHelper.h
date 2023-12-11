@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/Lambda.h"
+#include "Config/Lambda.h"
 
 namespace Mengine
 {

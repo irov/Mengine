@@ -9,8 +9,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void dispatchMainThreadEvent( const LambdaDispatchMainThreadEvent & _event )
         {
-            PLATFORM_SERVICE()
-                ->dispatchMainThreadEvent( _event );
+            if( SERVICE_IS_INITIALIZE( PlatformServiceInterface ) == true )
+            {
+                PLATFORM_SERVICE()
+                    ->dispatchMainThreadEvent( _event );
+            };
         }
         //////////////////////////////////////////////////////////////////////////
     }

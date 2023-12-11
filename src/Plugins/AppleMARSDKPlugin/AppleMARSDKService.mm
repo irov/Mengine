@@ -6,6 +6,7 @@
 #include "Environment/Apple/AppleErrorHelper.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/PlatformHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -128,6 +129,7 @@ namespace Mengine
             , _orderId.c_str()
         );
         
+        AppleMARSDKProviderInterfacePtr copy_provider = m_provider;
         ConstString copy_orderId = _orderId;
         
         [[MARSDK sharedInstance] propComplete:Helper::stringToNSString(_orderId)
@@ -140,15 +142,15 @@ namespace Mengine
                     , Helper::AppleGetMessageFromNSError( _connectionError ).c_str()
                 );
                 
-                if( m_provider == nullptr )
+                if( copy_provider == nullptr )
                 {
                     LOGGER_ERROR( "not setup MARSDK provider" );
                     
                     return;
                 }
                 
-                Helper::dispatchMainThreadEvent([]() {
-                    m_provider->onPropError( copy_orderId );
+                Helper::dispatchMainThreadEvent([copy_provider, copy_orderId]() {
+                    copy_provider->onPropError( copy_orderId );
                 });
                 
                 return;
@@ -159,15 +161,15 @@ namespace Mengine
                 , Helper::NSIdToString( _data ).c_str()
             );
             
-            if( m_provider == nullptr )
+            if( copy_provider == nullptr )
             {
                 LOGGER_ERROR( "not setup MARSDK provider" );
                 
                 return;
             }
                 
-            Helper::dispatchMainThreadEvent([]() {
-                m_provider->onPropComplete( copy_orderId );
+            Helper::dispatchMainThreadEvent([copy_provider, copy_orderId]() {
+                copy_provider->onPropComplete( copy_orderId );
             });
         }];
     }
@@ -175,6 +177,8 @@ namespace Mengine
     void AppleMARSDKService::requestNonConsumablePurchased()
     {
         LOGGER_MESSAGE( "requestNonConsumablePurchased");
+        
+        AppleMARSDKProviderInterfacePtr copy_provider = m_provider;
         
         [[EP_AppStorePay sharedInstance] setPurchasedNonConsumableArray:^(NSArray * _Nonnull purchasedNonConsumableArray) {
             LOGGER_MESSAGE( "onPurchasedNonConsumable: %s"
@@ -188,15 +192,15 @@ namespace Mengine
                 purchased.emplace_back( purchase_cstr );
             }
             
-            if( m_provider == nullptr )
+            if( copy_provider == nullptr )
             {
                 LOGGER_ERROR( "not setup MARSDK provider" );
                 
                 return;
             }
             
-            Helper::dispatchMainThreadEvent([]() {
-                m_provider->onPurchasedNonConsumable( purchased );
+            Helper::dispatchMainThreadEvent([copy_provider, purchased]() {
+                copy_provider->onPurchasedNonConsumable( purchased );
             });
         }];
     }
@@ -234,8 +238,10 @@ namespace Mengine
             return;
         }
         
-        Helper::dispatchMainThreadEvent([]() {
-            m_provider->onUserLogin( _params );
+        AppleMARSDKProviderInterfacePtr copy_provider = m_provider;
+        
+        Helper::dispatchMainThreadEvent([copy_provider, _params]() {
+            copy_provider->onUserLogin( _params );
         });
     }
     //////////////////////////////////////////////////////////////////////////
@@ -250,8 +256,10 @@ namespace Mengine
             return;
         }
         
-        Helper::dispatchMainThreadEvent([]() {
-            m_provider->onUserLogout( _params );
+        AppleMARSDKProviderInterfacePtr copy_provider = m_provider;
+        
+        Helper::dispatchMainThreadEvent([copy_provider, _params]() {
+            copy_provider->onUserLogout( _params );
         });
     }
     //////////////////////////////////////////////////////////////////////////
@@ -266,8 +274,10 @@ namespace Mengine
             return;
         }
         
-        Helper::dispatchMainThreadEvent([]() {
-            m_provider->onPayPaid( _params );
+        AppleMARSDKProviderInterfacePtr copy_provider = m_provider;
+        
+        Helper::dispatchMainThreadEvent([copy_provider, _params]() {
+            copy_provider->onPayPaid( _params );
         });
     }
     //////////////////////////////////////////////////////////////////////////

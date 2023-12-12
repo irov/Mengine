@@ -211,7 +211,7 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
             list(GET APPLICATION_APPLE_SCRIPT_PHASES ${INDEX} SCRIPT_PHASES_INPUT_FILES)
             math(EXPR INDEX "${INDEX}+1")
 
-            STRING(APPEND PODFILE_BUFFER "  script_phase :name => '" ${SCRIPT_PHASES_NAME} "', :script => '" ${SCRIPT_PHASES_SCRIPT} ", :script => '" ${SCRIPT_PHASES_INPUT_FILES} "'")
+            STRING(APPEND PODFILE_BUFFER "  script_phase :name => '" ${SCRIPT_PHASES_NAME} "', :script => '" ${SCRIPT_PHASES_SCRIPT} "', :script => '" ${SCRIPT_PHASES_INPUT_FILES} "'")
             STRING(APPEND PODFILE_BUFFER "\n")
         endforeach()
     endif()

@@ -17,10 +17,12 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
     SET(LENGTH_APPLICATION_APPLE_COCOAPODS)
     list(LENGTH APPLICATION_APPLE_COCOAPODS LENGTH_APPLICATION_APPLE_COCOAPODS)
     
+    math(EXPR LENGTH_APPLICATION_APPLE_COCOAPODS "${LENGTH_APPLICATION_APPLE_COCOAPODS}-1")
+    
     SET(LENGTH_APPLICATION_APPLE_SCRIPT_PHASES)
     list(LENGTH APPLICATION_APPLE_SCRIPT_PHASES LENGTH_APPLICATION_APPLE_SCRIPT_PHASES)
     
-    math(EXPR LENGTH_APPLICATION_APPLE_COCOAPODS "${LENGTH_APPLICATION_APPLE_COCOAPODS}-1")
+    math(EXPR APPLICATION_APPLE_SCRIPT_PHASES "${APPLICATION_APPLE_SCRIPT_PHASES}-1")
     
     if(NOT ${LENGTH_APPLICATION_APPLE_COCOAPODS} EQUAL -1)
         SET(APPLICATION_APPLE_COCOAPODS_PROJECTS)
@@ -116,14 +118,14 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
                 
                 if(NOT COCOAPOD_NO_GIT)
                     STRING(APPEND PODFILE_BUFFER ", :git => '" ${COCOAPOD_GIT} "'")
-					
-					if(NOT COCOAPOD_NO_TAG)
-						STRING(APPEND PODFILE_BUFFER ", :tag => '" ${COCOAPOD_TAG} "'")
-					endif()
-				else()
-					if(NOT COCOAPOD_NO_TAG)
-						STRING(APPEND PODFILE_BUFFER ", '" ${COCOAPOD_TAG} "'")
-					endif()
+                    
+                    if(NOT COCOAPOD_NO_TAG)
+                        STRING(APPEND PODFILE_BUFFER ", :tag => '" ${COCOAPOD_TAG} "'")
+                    endif()
+                else()
+                    if(NOT COCOAPOD_NO_TAG)
+                        STRING(APPEND PODFILE_BUFFER ", '" ${COCOAPOD_TAG} "'")
+                    endif()
                 endif()
                 
                 if(NOT COCOAPOD_NO_PATCH)
@@ -171,14 +173,14 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
             
             if(NOT COCOAPOD_NO_GIT)
                 STRING(APPEND PODFILE_BUFFER ", :git => '" ${COCOAPOD_GIT} "'")
-				
-				if(NOT COCOAPOD_NO_TAG)
-					STRING(APPEND PODFILE_BUFFER ", :tag => '" ${COCOAPOD_TAG} "'")
-				endif()
-			else()
-				if(NOT COCOAPOD_NO_TAG)
-					STRING(APPEND PODFILE_BUFFER ", '" ${COCOAPOD_TAG} "'")
-				endif()
+                
+                if(NOT COCOAPOD_NO_TAG)
+                    STRING(APPEND PODFILE_BUFFER ", :tag => '" ${COCOAPOD_TAG} "'")
+                endif()
+            else()
+                if(NOT COCOAPOD_NO_TAG)
+                    STRING(APPEND PODFILE_BUFFER ", '" ${COCOAPOD_TAG} "'")
+                endif()
             endif()
             
             if(NOT COCOAPOD_NO_PATCH)
@@ -212,7 +214,7 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
             STRING(APPEND PODFILE_BUFFER "  script_phase :name => '" ${SCRIPT_PHASES_NAME} "', :script => '" ${SCRIPT_PHASES_SCRIPT} ", :script => '" ${SCRIPT_PHASES_INPUT_FILES} "'")
             STRING(APPEND PODFILE_BUFFER "\n")
         endforeach()
-    else()
+    endif()
     
     STRING(APPEND PODFILE_BUFFER "  use_frameworks!\n")
     STRING(APPEND PODFILE_BUFFER "end\n")

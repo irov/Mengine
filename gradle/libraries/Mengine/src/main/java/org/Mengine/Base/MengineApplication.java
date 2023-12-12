@@ -219,7 +219,9 @@ public class MengineApplication extends Application {
         return m_installTimestamp;
     }
 
-    public String getInstallVersion() { return m_installVersion; }
+    public String getInstallVersion() {
+        return m_installVersion;
+    }
 
     public long getInstallRND() {
         return m_installRND;

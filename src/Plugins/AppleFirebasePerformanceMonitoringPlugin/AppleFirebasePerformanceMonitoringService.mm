@@ -31,4 +31,11 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    AppleFirebasePerformanceMonitoringTraceInterfacePtr AppleFirebasePerformanceMonitoringService::createTrace( const ConstString & _name )
+    {
+        //FIRTrace *trace = [[FIRPerformance sharedInstance] traceWithName:name];
+        
+        return AppleFirebasePerformanceMonitoringTraceInterfacePtr::none();
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

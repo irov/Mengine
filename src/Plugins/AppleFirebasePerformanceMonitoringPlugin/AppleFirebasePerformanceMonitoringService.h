@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AppleFirebasePerformanceMonitoringServiceInterface.h"
+#include "AppleFirebasePerformanceMonitoringInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -16,5 +16,8 @@ namespace Mengine
     protected:
         bool _initializeService() override;
         void _finalizeService() override;
+        
+    public:
+        AppleFirebasePerformanceMonitoringTraceInterfacePtr createTrace( const ConstString & _name ) override;
     };
 }

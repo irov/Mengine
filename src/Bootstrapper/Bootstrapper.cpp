@@ -381,6 +381,10 @@ PLUGIN_EXPORT( AppleFirebaseMessaging );
 PLUGIN_EXPORT( AppleFirebaseRemoteConfig );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_PERFORMANCEMONITORING_STATIC
+PLUGIN_EXPORT( AppleFirebasePerformanceMonitoring );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC
 PLUGIN_EXPORT( AppleFacebook );
 #endif
@@ -1321,6 +1325,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_APPLE_FIREBASE_REMOTECONFIG_STATIC
         MENGINE_ADD_PLUGIN( AppleFirebaseRemoteConfig, "plugin AppleFirebaseRemoteConfig...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_PERFORMANCEMONITORING_STATIC
+        MENGINE_ADD_PLUGIN( AppleFirebasePerformanceMonitoring, "plugin AppleFirebasePerformanceMonitoring...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_FACEBOOK_STATIC

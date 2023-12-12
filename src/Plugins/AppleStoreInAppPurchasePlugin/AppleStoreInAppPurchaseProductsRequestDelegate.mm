@@ -1,6 +1,7 @@
 #import "AppleStoreInAppPurchaseProductsRequestDelegate.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/PlatformHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 @implementation AppleStoreInAppPurchaseProductsRequestDelegate
@@ -44,7 +45,7 @@
     Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
     Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
     
-    Helper::dispatchMainThreadEvent([]() {
+    Mengine::Helper::dispatchMainThreadEvent([cb_copy, request_copy, products]() {
         cb_copy->onProductResponse( request_copy, products );
     });
 }
@@ -55,7 +56,7 @@
     Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
     Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
     
-    Helper::dispatchMainThreadEvent([]() {
+    Mengine::Helper::dispatchMainThreadEvent([cb_copy, request_copy]() {
         cb_copy->onProductFinish( request_copy );
     });
     
@@ -71,7 +72,7 @@
     Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
     Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
     
-    Helper::dispatchMainThreadEvent([]() {
+    Mengine::Helper::dispatchMainThreadEvent([cb_copy, request_copy]() {
         cb_copy->onProductFail( request_copy );
     });
     

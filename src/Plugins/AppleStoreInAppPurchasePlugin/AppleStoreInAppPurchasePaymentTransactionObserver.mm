@@ -60,31 +60,31 @@
         {
             case SKPaymentTransactionStatePurchasing:
             {
-                Helper::dispatchMainThreadEvent([]() {
+                Mengine::Helper::dispatchMainThreadEvent([provider, paymentTransaction]() {
                     provider->onPaymentQueueUpdatedTransactionPurchasing( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStatePurchased:
             {
-                Helper::dispatchMainThreadEvent([]() {
+                Mengine::Helper::dispatchMainThreadEvent([provider, paymentTransaction]() {
                     provider->onPaymentQueueUpdatedTransactionPurchased( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStateFailed:
             {
-                Helper::dispatchMainThreadEvent([]() {
+                Mengine::Helper::dispatchMainThreadEvent([provider, paymentTransaction]() {
                     provider->onPaymentQueueUpdatedTransactionFailed( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStateRestored:
             {
-                Helper::dispatchMainThreadEvent([]() {
+                Mengine::Helper::dispatchMainThreadEvent([provider, paymentTransaction]() {
                     provider->onPaymentQueueUpdatedTransactionRestored( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStateDeferred:
             {
-                Helper::dispatchMainThreadEvent([]() {
+                Mengine::Helper::dispatchMainThreadEvent([provider, paymentTransaction]() {
                     provider->onPaymentQueueUpdatedTransactionDeferred( paymentTransaction );
                 });
             } break;

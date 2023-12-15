@@ -284,6 +284,7 @@ namespace Mengine
 
         m_threadRunner = nullptr;
         m_threadLogger = nullptr;
+        m_conditionLogger = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::setVerboseLevel( ELoggerLevel _level )
@@ -405,7 +406,10 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_END, _message );
 
-        m_conditionLogger->wake();
+        if( m_conditionLogger != nullptr )
+        {
+            m_conditionLogger->wake();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::logMessage_( const LoggerMessage & _message )

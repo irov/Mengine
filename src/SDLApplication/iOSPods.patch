@@ -23,7 +23,7 @@ post_install do |installer|
 
         File.open(sh_path, "w") do |file|
             file << lines
-        end        
+        end
     end
   end
   installer.generated_projects.each do |project|

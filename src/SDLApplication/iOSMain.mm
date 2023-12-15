@@ -22,11 +22,15 @@ int main( int argc, char * argv[] ) {
     
     MENGINE_MAIN_argv[argc] = NULL;
     
+    NSLog(@"Launch Megnine application");
+    
+    int result;
+    
     @autoreleasepool {
-        int result = UIApplicationMain(argc, argv, nil, NSStringFromClass([SDLUIApplicationDelegate class]));
-        
-        return result;
+        result = UIApplicationMain(argc, argv, nil, NSStringFromClass([SDLUIApplicationDelegate class]));
     }
+    
+    NSLog(@"Finish Megnine application: %d", result);
     
     for( int i = 0; i != argc; ++i )
     {
@@ -39,4 +43,6 @@ int main( int argc, char * argv[] ) {
     
     MENGINE_MAIN_argc = 0;
     MENGINE_MAIN_argv = nullptr;
+    
+    return result;
 }

@@ -168,6 +168,11 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             }
         });
 
+        if (m_loaded == false) {
+            MengineAppLovinNonetBanners nonetBanners = m_plugin.getNonetBanners();
+            nonetBanners.show();
+        }
+
         return true;
     }
 
@@ -205,6 +210,8 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         m_plugin.pythonCall("onApplovinBannerOnAdLoaded", m_adUnitId);
 
         if (m_visible == true) {
+            m_adView.setVisibility(View.VISIBLE);
+
             MengineAppLovinNonetBanners nonetBanners = m_plugin.getNonetBanners();
             nonetBanners.hide();
         }
@@ -278,6 +285,8 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         m_plugin.pythonCall("onApplovinBannerOnAdLoadFailed", m_adUnitId);
 
         if (m_visible == true) {
+            m_adView.setVisibility(View.GONE);
+
             MengineAppLovinNonetBanners nonetBanners = m_plugin.getNonetBanners();
             nonetBanners.show();
         }

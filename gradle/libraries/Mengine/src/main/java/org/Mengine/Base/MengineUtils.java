@@ -1,7 +1,11 @@
 package org.Mengine.Base;
 
 import android.app.ActivityManager;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -520,5 +524,35 @@ public class MengineUtils {
         }
 
         return null;
+    }
+
+    public static boolean openUrl(Context context, String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+
+        Uri uri = Uri.parse(url);
+        intent.setData(uri);
+
+        Intent chooser = Intent.createChooser(intent, "");
+
+        PackageManager packageManager = context.getPackageManager();
+
+        ComponentName componentName = intent.resolveActivity(packageManager);
+
+        if (componentName == null) {
+            return true;
+        }
+
+        try {
+            context.startActivity(chooser);
+        } catch (ActivityNotFoundException e) {
+            MengineLog.logWarning(TAG, "openUrl url: %s catch ActivityNotFoundException: %s"
+                , url
+                , e.getMessage()
+            );
+
+            return false;
+        }
+
+        return true;
     }
 }

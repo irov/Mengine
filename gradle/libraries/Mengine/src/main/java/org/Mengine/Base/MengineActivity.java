@@ -3,6 +3,7 @@ package org.Mengine.Base;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -871,21 +872,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("open.url", url);
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-
-        Uri uri = Uri.parse(url);
-        intent.setData(uri);
-
-        Intent chooser = Intent.createChooser(intent, "");
-
-        try {
-            this.startActivity(chooser);
-        } catch (ActivityNotFoundException e) {
-            MengineLog.logWarning(TAG, "linkingOpenURL url: %s catch ActivityNotFoundException: %s"
-                , url
-                , e.getMessage()
-            );
-
+        if (MengineUtils.openUrl(this, url) == false) {
             return false;
         }
 

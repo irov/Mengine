@@ -30,6 +30,7 @@ public class MengineAppLovinNonetBanners {
     protected long m_showBannerDurationTime;
 
     protected boolean m_visible;
+    protected int m_requestId;
 
     class NonetBanner {
         public ImageView view;
@@ -50,6 +51,7 @@ public class MengineAppLovinNonetBanners {
         m_showBannerDurationTime = showBannerDurationTime;
 
         m_visible = false;
+        m_requestId = 0;
     }
 
     public void initialize() {
@@ -105,14 +107,29 @@ public class MengineAppLovinNonetBanners {
                         return;
                     }
 
+                    m_requestId++;
+
                     ViewGroup viewGroup = MengineActivity.getContentViewGroup();
 
-                    viewGroup.removeView(m_showBanner.view);
+                    NonetBanner oldBanner = m_showBanner;
 
-                    NonetBanner banner = MengineAppLovinNonetBanners.this.getCurrentBanner();
-                    viewGroup.addView(banner.view);
+                    viewGroup.removeView(oldBanner.view);
 
-                    m_showBanner = banner;
+                    NonetBanner newBanner = MengineAppLovinNonetBanners.this.getCurrentBanner();
+                    viewGroup.addView(newBanner.view);
+
+                    m_showBanner = newBanner;
+
+                    m_plugin.logMessage("[NONET_BANNER] refresh banner request: %d old: %s new: %s"
+                        , m_requestId
+                        , oldBanner.url
+                        , newBanner.url
+                    );
+
+                    m_plugin.buildEvent("mng_ad_nonet_banner_displayed")
+                        .addParameterString("url", newBanner.url)
+                        .addParameterLong("request_id", m_requestId)
+                        .log();
                 }
             }
         });
@@ -142,11 +159,25 @@ public class MengineAppLovinNonetBanners {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                m_plugin.logMessage("[NONET_BANNER] click banner request: %d url: %s"
+                    , m_requestId
+                    , url
+                );
+
+                m_plugin.buildEvent("mng_ad_nonet_banner_clicked")
+                    .addParameterString("url", url)
+                    .addParameterLong("request_id", m_requestId)
+                    .log();
+
                 MengineActivity activity = m_plugin.getMengineActivity();
 
                 MengineUtils.openUrl(activity, url);
             }
         });
+
+        m_plugin.logMessage("[NONET_BANNER] add banner url: %s"
+            , url
+        );
 
         NonetBanner banner = new NonetBanner();
         banner.view = view;
@@ -161,13 +192,11 @@ public class MengineAppLovinNonetBanners {
 
         synchronized (this) {
             if (m_showBanner != null) {
-                return;
+                ViewGroup viewGroup = MengineActivity.getContentViewGroup();
+                viewGroup.removeView(m_showBanner.view);
+
+                m_showBanner = null;
             }
-
-            ViewGroup viewGroup = MengineActivity.getContentViewGroup();
-            viewGroup.removeView(m_showBanner.view);
-
-            m_showBanner = null;
         }
 
         if (m_refreshTimer != null) {
@@ -199,12 +228,24 @@ public class MengineAppLovinNonetBanners {
                 return;
             }
 
+            m_requestId++;
+
             NonetBanner banner = this.getCurrentBanner();
 
             ViewGroup viewGroup = MengineActivity.getContentViewGroup();
             viewGroup.addView(banner.view);
 
             m_showBanner = banner;
+
+            m_plugin.logMessage("[NONET_BANNER] show banner request: %d url: %s"
+                , m_requestId
+                , banner.url
+            );
+
+            m_plugin.buildEvent("mng_ad_nonet_banner_displayed")
+                .addParameterString("url", banner.url)
+                .addParameterLong("request_id", m_requestId)
+                .log();
         }
     }
 
@@ -220,10 +261,17 @@ public class MengineAppLovinNonetBanners {
                 return;
             }
 
+            NonetBanner oldBanner = m_showBanner;
+
             ViewGroup viewGroup = MengineActivity.getContentViewGroup();
-            viewGroup.removeView(m_showBanner.view);
+            viewGroup.removeView(oldBanner.view);
 
             m_showBanner = null;
+
+            m_plugin.logMessage("[NONET_BANNER] hide banner request: %d url: %s"
+                , m_requestId
+                , oldBanner.url
+            );
         }
     }
 }

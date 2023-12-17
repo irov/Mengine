@@ -155,7 +155,9 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
                 MengineAppLovinNonetBanners nonetBanners = m_plugin.getNonetBanners();
 
                 if (show == true) {
-                    nonetBanners.hide();
+                    if (m_loaded == true) {
+                        nonetBanners.hide();
+                    }
 
                     copy_adView.startAutoRefresh();
                     copy_adView.setVisibility(View.VISIBLE);
@@ -163,15 +165,12 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
                     copy_adView.stopAutoRefresh();
                     copy_adView.setVisibility(View.GONE);
 
-                    nonetBanners.show();
+                    if (m_loaded == true) {
+                        nonetBanners.show();
+                    }
                 }
             }
         });
-
-        if (m_loaded == false) {
-            MengineAppLovinNonetBanners nonetBanners = m_plugin.getNonetBanners();
-            nonetBanners.show();
-        }
 
         return true;
     }

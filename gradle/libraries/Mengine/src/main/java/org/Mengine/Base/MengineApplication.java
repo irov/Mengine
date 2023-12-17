@@ -207,6 +207,18 @@ public class MengineApplication extends Application {
         return value;
     }
 
+    public long getMetaDataLong(String name, long d) {
+        Bundle bundle = this.getMetaDataBundle();
+
+        if (bundle == null) {
+            return d;
+        }
+
+        long value = bundle.getLong(name, d);
+
+        return value;
+    }
+
     public String getAndroidId() {
         return m_androidId;
     }

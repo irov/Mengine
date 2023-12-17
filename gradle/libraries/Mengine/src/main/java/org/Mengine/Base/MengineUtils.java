@@ -14,25 +14,31 @@ import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class MengineUtils {
     public static final String TAG = "MengineUtils";
@@ -492,6 +498,25 @@ public class MengineUtils {
             }
 
             return info.processName;
+        }
+
+        return null;
+    }
+
+    public static Document parseDocument(InputStream stream) {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            Document document = builder.parse(stream);
+
+            return document;
+        } catch (ParserConfigurationException e) {
+            MengineLog.logError("[Banner] parseDocument catch ParserConfigurationException: %s", e.getMessage());
+        } catch (SAXException e) {
+            MengineLog.logError("[Banner] parseDocument catch SAXException: %s", e.getMessage());
+        } catch (IOException e) {
+            MengineLog.logError("[Banner] parseDocument catch IOException: %s", e.getMessage());
         }
 
         return null;

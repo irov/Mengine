@@ -1,6 +1,9 @@
 package org.Mengine.Plugin.AppLovin;
 
+import androidx.annotation.NonNull;
+
 import com.applovin.mediation.MaxAd;
+import com.applovin.mediation.MaxAdExpirationListener;
 import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxAdRequestListener;
@@ -13,7 +16,7 @@ import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineAppLovinInterstitial extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdListener, MaxAdRevenueListener {
+public class MengineAppLovinInterstitial extends MengineAppLovinBase implements MaxAdListener, MaxAdRequestListener, MaxAdRevenueListener, MaxAdExpirationListener {
     private MaxInterstitialAd m_interstitialAd;
 
     public MengineAppLovinInterstitial(MengineAppLovinPlugin plugin, String adUnitId) {
@@ -23,9 +26,10 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         MaxInterstitialAd interstitialAd = new MaxInterstitialAd(adUnitId, activity);
 
-        interstitialAd.setRequestListener(this);
         interstitialAd.setListener(this);
+        interstitialAd.setRequestListener(this);
         interstitialAd.setRevenueListener(this);
+        interstitialAd.setExpirationListener(this);
 
         m_interstitialAd = interstitialAd;
 
@@ -34,7 +38,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             , adUnitId
         );
 
-        m_plugin.setState("applovin.interstitial.state." + m_interstitialAd.getAdUnitId(), "init");
+        m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "init");
 
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
 
@@ -59,6 +63,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             m_interstitialAd = null;
         }
     }
+
     public void loadAd() {
         if (m_interstitialAd == null) {
             return;
@@ -68,29 +73,21 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         this.log("loadAd");
 
-        String adUnitId = m_interstitialAd.getAdUnitId();
-
-        this.buildEvent("mng_ad_interstitial_load")
-            .addParameterString("ad_unit_id", adUnitId)
-            .addParameterLong("request_id", m_requestId)
-            .addParameterLong("attempt", m_retryAttempt)
+        this.buildAdEvent("mng_ad_interstitial_load")
             .log();
 
-        m_plugin.setState("applovin.interstitial.state." + adUnitId, "load");
+        m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "load");
 
         try {
             m_interstitialAd.loadAd();
         } catch (Exception e) {
             this.logError("loadAd", e);
 
-            this.buildEvent("mng_ad_interstitial_load_exception")
-                .addParameterString("ad_unit_id", adUnitId)
-                .addParameterLong("request_id", m_requestId)
-                .addParameterLong("attempt", m_retryAttempt)
+            this.buildAdEvent("mng_ad_interstitial_load_exception")
                 .addParameterString("exception", e.getMessage())
                 .log();
 
-            m_plugin.setState("applovin.interstitial.state." + adUnitId, "load_exception");
+            m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "load_exception");
 
             this.retryLoadAd();
         }
@@ -106,13 +103,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         this.log("canYouShowInterstitial", Map.of("placement", placement, "ready", ready));
 
         if (ready == false) {
-            String adUnitId = m_interstitialAd.getAdUnitId();
-
-            this.buildEvent("mng_ad_interstitial_show")
-                .addParameterString("ad_unit_id", adUnitId)
+            this.buildAdEvent("mng_ad_interstitial_show")
                 .addParameterString("placement", placement)
-                .addParameterLong("request_id", m_requestId)
-                .addParameterLong("attempt", m_retryAttempt)
                 .addParameterBoolean("ready", false)
                 .log();
 
@@ -131,13 +123,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         this.log("showInterstitial", Map.of("placement", placement, "ready", ready));
 
-        String adUnitId = m_interstitialAd.getAdUnitId();
-
-        this.buildEvent("mng_ad_interstitial_show")
-            .addParameterString("ad_unit_id", adUnitId)
+        this.buildAdEvent("mng_ad_interstitial_show")
             .addParameterString("placement", placement)
-            .addParameterLong("request_id", m_requestId)
-            .addParameterLong("attempt", m_retryAttempt)
             .addParameterBoolean("ready", ready)
             .log();
 
@@ -151,83 +138,65 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     @Override
-    public void onAdRequestStarted(String adUnitId) {
+    public void onAdRequestStarted(@NonNull String adUnitId) {
         this.log("onAdRequestStarted");
 
-        this.buildEvent("mng_ad_interstitial_request_started")
-            .addParameterString("ad_unit_id", adUnitId)
-            .addParameterLong("request_id", m_requestId)
-            .addParameterLong("attempt", m_retryAttempt)
+        this.buildAdEvent("mng_ad_interstitial_request_started")
             .log();
 
-        m_plugin.setState("applovin.interstitial.state." + adUnitId, "request_started");
+        m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "request_started");
 
-        m_plugin.pythonCall("onApplovinBannerOnAdRequestStarted", adUnitId);
+        m_plugin.pythonCall("onApplovinBannerOnAdRequestStarted", m_adUnitId);
     }
 
     @Override
     public void onAdLoaded(MaxAd ad) {
         this.logMaxAd("onAdLoaded", ad);
 
-        String adUnitId = ad.getAdUnitId();
-        String placement = ad.getPlacement();
-
-        this.buildEvent("mng_ad_interstitial_loaded")
-            .addParameterString("ad_unit_id", adUnitId)
-            .addParameterString("placement", placement)
-            .addParameterLong("request_id", m_requestId)
-            .addParameterLong("attempt", m_retryAttempt)
+        this.buildAdEvent("mng_ad_interstitial_loaded")
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.interstitial.state." + adUnitId, "loaded." + ad.getNetworkName());
+        m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "loaded." + ad.getNetworkName());
 
         m_retryAttempt = 0;
 
-        m_plugin.pythonCall("onApplovinInterstitialOnAdLoaded", adUnitId);
+        m_plugin.pythonCall("onApplovinInterstitialOnAdLoaded", m_adUnitId);
     }
 
     @Override
     public void onAdDisplayed(MaxAd ad) {
         this.logMaxAd("onAdDisplayed", ad);
 
-        String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
 
-        this.buildEvent("mng_ad_interstitial_displayed")
-            .addParameterString("ad_unit_id", adUnitId)
+        this.buildAdEvent("mng_ad_interstitial_displayed")
             .addParameterString("placement", placement)
-            .addParameterLong("request_id", m_requestId)
-            .addParameterLong("attempt", m_retryAttempt)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.interstitial.state." + adUnitId, "displayed." + placement + "." + ad.getNetworkName());
+        m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "displayed." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinInterstitialOnAdDisplayed", adUnitId);
+        m_plugin.pythonCall("onApplovinInterstitialOnAdDisplayed", m_adUnitId);
     }
 
     @Override
     public void onAdHidden(MaxAd ad) {
         this.logMaxAd("onAdHidden", ad);
 
-        String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
 
-        this.buildEvent("mng_ad_interstitial_hidden")
-            .addParameterString("ad_unit_id", adUnitId)
+        this.buildAdEvent("mng_ad_interstitial_hidden")
             .addParameterString("placement", placement)
-            .addParameterLong("request_id", m_requestId)
-            .addParameterLong("attempt", m_retryAttempt)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.interstitial.state." + adUnitId, "hidden." + placement + "." + ad.getNetworkName());
+        m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "hidden." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinInterstitialOnAdHidden", adUnitId);
+        m_plugin.pythonCall("onApplovinInterstitialOnAdHidden", m_adUnitId);
 
         MengineUtils.performOnMainThread(() -> {
-            this.loadAd();
+            MengineAppLovinInterstitial.this.loadAd();
         });
     }
 
@@ -235,20 +204,16 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     public void onAdClicked(MaxAd ad) {
         this.logMaxAd("onAdClicked", ad);
 
-        String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
 
-        this.buildEvent("mng_ad_interstitial_clicked")
-            .addParameterString("ad_unit_id", adUnitId)
+        this.buildAdEvent("mng_ad_interstitial_clicked")
             .addParameterString("placement", placement)
-            .addParameterLong("request_id", m_requestId)
-            .addParameterLong("attempt", m_retryAttempt)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        m_plugin.setState("applovin.interstitial.state." + adUnitId, "clicked." + placement + "." + ad.getNetworkName());
+        m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "clicked." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinInterstitialOnAdClicked", adUnitId);
+        m_plugin.pythonCall("onApplovinInterstitialOnAdClicked", m_adUnitId);
     }
 
     @Override
@@ -257,17 +222,14 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         int errorCode = error.getCode();
 
-        this.buildEvent("mng_ad_interstitial_load_failed")
-            .addParameterString("ad_unit_id", adUnitId)
-            .addParameterLong("request_id", m_requestId)
-            .addParameterLong("attempt", m_retryAttempt)
+        this.buildAdEvent("mng_ad_interstitial_load_failed")
             .addParameterLong("error_code", errorCode)
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
-        m_plugin.setState("applovin.interstitial.state." + adUnitId, "load_failed");
+        m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "load_failed");
 
-        m_plugin.pythonCall("onApplovinInterstitialOnAdLoadFailed", adUnitId);
+        m_plugin.pythonCall("onApplovinInterstitialOnAdLoadFailed", m_adUnitId);
 
         this.retryLoadAd();
     }
@@ -276,27 +238,23 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     public void onAdDisplayFailed(MaxAd ad, MaxError error) {
         this.logMaxError("onAdDisplayFailed", error);
 
-        String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
 
         int errorCode = error.getCode();
 
-        this.buildEvent("mng_ad_interstitial_display_failed")
-            .addParameterString("ad_unit_id", adUnitId)
+        this.buildAdEvent("mng_ad_interstitial_display_failed")
             .addParameterString("placement", placement)
-            .addParameterLong("request_id", m_requestId)
-            .addParameterLong("attempt", m_retryAttempt)
             .addParameterLong("error_code", errorCode)
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
-        m_plugin.setState("applovin.interstitial.state." + adUnitId, "display_failed." + placement + "." + ad.getNetworkName());
+        m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinInterstitialOnAdDisplayFailed", adUnitId);
+        m_plugin.pythonCall("onApplovinInterstitialOnAdDisplayFailed", m_adUnitId);
 
         MengineUtils.performOnMainThread(() -> {
-            this.loadAd();
+            MengineAppLovinInterstitial.this.loadAd();
         });
     }
 
@@ -304,14 +262,10 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     public void onAdRevenuePaid(MaxAd ad) {
         this.logMaxAd("onAdRevenuePaid", ad);
 
-        String adUnitId = ad.getAdUnitId();
         String placement = ad.getPlacement();
 
-        this.buildEvent("mng_ad_interstitial_revenue_paid")
-            .addParameterString("ad_unit_id", adUnitId)
+        this.buildAdEvent("mng_ad_interstitial_revenue_paid")
             .addParameterString("placement", placement)
-            .addParameterLong("request_id", m_requestId)
-            .addParameterLong("attempt", m_retryAttempt)
             .addParameterDouble("revenue", ad.getRevenue())
             .addParameterString("revenue_precision", ad.getRevenuePrecision())
             .addParameterJSON("ad", this.getMAAdParams(ad))
@@ -319,6 +273,16 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_plugin.onEventRevenuePaid(ad);
 
-        m_plugin.pythonCall("onApplovinInterstitialOnAdRevenuePaid", adUnitId);
+        m_plugin.pythonCall("onApplovinInterstitialOnAdRevenuePaid", m_adUnitId);
+    }
+
+    @Override
+    public void onExpiredAdReloaded(@NonNull MaxAd adOld, @NonNull MaxAd adNew) {
+        this.logMaxAd("onExpiredAdReloaded", adOld);
+
+        this.buildAdEvent("mng_ad_interstitial_expired_reloaded")
+            .addParameterJSON("old_ad", this.getMAAdParams(adOld))
+            .addParameterJSON("new_ad", this.getMAAdParams(adNew))
+            .log();
     }
 }

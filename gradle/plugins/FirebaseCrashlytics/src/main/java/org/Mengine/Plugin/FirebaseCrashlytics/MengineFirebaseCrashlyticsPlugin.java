@@ -103,7 +103,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
             this.logError("[ERROR] unsupported custom key: %s value: %s class: %s"
                 , key
                 , value
-                , value.getClass()
+                , value == null ? "null" : value.getClass()
             );
         }
     }

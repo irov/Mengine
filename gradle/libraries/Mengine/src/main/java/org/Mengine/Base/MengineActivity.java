@@ -228,6 +228,18 @@ public class MengineActivity extends SDLActivity {
         return value;
     }
 
+    public long getMetaDataLong(String name, int d) {
+        if (m_destroy == true) {
+            return d;
+        }
+
+        MengineApplication application = this.getMengineApplication();
+
+        long value = application.getMetaDataLong(name, d);
+
+        return value;
+    }
+
     public static ViewGroup getContentViewGroup() {
         View view = SDLActivity.getContentView();
 

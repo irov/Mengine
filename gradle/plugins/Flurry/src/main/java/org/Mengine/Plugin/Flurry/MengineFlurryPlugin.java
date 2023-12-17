@@ -85,7 +85,7 @@ public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginA
             } else {
                 this.logError("[ERROR] unsupported parameter: %s class: %s"
                     , value
-                    , value.getClass()
+                    , value == null ? "null" : value.getClass()
                 );
 
                 return;
@@ -106,8 +106,8 @@ public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginA
                 params.put(key, String.valueOf(value));
             } else {
                 this.logError("[ERROR] unsupported parameter: %s class: %s"
-                        , value
-                        , value.getClass()
+                    , value
+                    , value == null ? "null" : value.getClass()
                 );
 
                 return;

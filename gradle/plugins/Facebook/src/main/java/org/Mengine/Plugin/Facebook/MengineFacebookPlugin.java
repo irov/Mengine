@@ -275,7 +275,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             } else {
                 this.logError("[ERROR] unsupported parameter: %s class: %s"
                     , value
-                    , value.getClass()
+                    , value == null ? "null" : value.getClass()
                 );
 
                 return;
@@ -301,7 +301,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             } else {
                 this.logError("[ERROR] unsupported parameter: %s class: %s"
                     , value
-                    , value.getClass()
+                    , value == null ? "null" : value.getClass()
                 );
 
                 return;

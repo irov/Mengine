@@ -13,7 +13,6 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
-import org.Mengine.Base.MengineAnalytics;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
@@ -32,6 +31,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
     public static final String PLUGIN_METADATA_IS_AGE_RESTRICTED_USER = "mengine.applovin.is_age_restricted_user";
     public static final String PLUGIN_METADATA_CCPA = "mengine.applovin.CCPA";
+    public static final String PLUGIN_METADATA_NONET_BANNER_DURATION_TIME = "mengine.applovin.nonet_banner_duration_time";
 
     /**
      * <p>
@@ -83,6 +83,8 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     private Map<String, MengineAppLovinRewarded> m_rewardeds;
 
     private MengineAppLovinMediationInterface m_mediationAmazon;
+
+    private MengineAppLovinNonetBanners m_nonetBanners;
 
     private ArrayList<MengineAppLovinAnalyticsListener> m_analytics;
 
@@ -183,6 +185,14 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         if (BuildConfig.DEBUG == true) {
             this.showMediationDebugger();
         }
+
+        long MengineAppLovinPlugin_NonetBannerDurationTime = activity.getMetaDataLong(PLUGIN_METADATA_NONET_BANNER_DURATION_TIME, 30);
+
+        MengineAppLovinNonetBanners nonetBanners = new MengineAppLovinNonetBanners(this, MengineAppLovinPlugin_NonetBannerDurationTime);
+
+        nonetBanners.initialize();
+
+        m_nonetBanners = nonetBanners;
     }
 
     @Override
@@ -211,10 +221,19 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         }
 
         m_rewardeds = null;
+
+        if (m_nonetBanners != null) {
+            m_nonetBanners.destroy();
+            m_nonetBanners = null;
+        }
     }
 
     public MengineAppLovinMediationInterface getMediationAmazon() {
         return m_mediationAmazon;
+    }
+
+    public MengineAppLovinNonetBanners getNonetBanners() {
+        return m_nonetBanners;
     }
 
     public void initBanner(String adUnitId, String placement) {

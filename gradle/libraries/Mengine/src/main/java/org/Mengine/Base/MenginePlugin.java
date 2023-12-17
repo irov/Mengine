@@ -10,6 +10,8 @@ import androidx.annotation.Size;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MenginePlugin implements MenginePluginInterface {
     private MengineApplication m_application;
@@ -94,6 +96,29 @@ public class MenginePlugin implements MenginePluginInterface {
         MengineApplication application = this.getMengineApplication();
 
         application.sendEvent(event, args);
+    }
+
+    public void runOnUiThread(Runnable action) {
+        if (m_activity == null) {
+            return;
+        }
+
+        m_activity.runOnUiThread(action);
+    }
+
+    public Timer scheduleAtFixedRate(long period, Runnable runnable) {
+        Timer timer = new Timer();
+
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                MenginePlugin.this.runOnUiThread(runnable);
+            }
+        };
+
+        timer.scheduleAtFixedRate(task, 0, period);
+
+        return timer;
     }
 
     public void setState(String name, Object value) {

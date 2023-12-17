@@ -2,6 +2,8 @@ package org.Mengine.Plugin.AppLovin;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxAdWaterfallInfo;
@@ -64,7 +66,7 @@ public class MengineAppLovinBase {
         return this.m_requestId;
     }
 
-    protected String getMAAdParams(MaxAd ad) {
+    protected String getMAAdParams(@NonNull MaxAd ad) {
         StringBuilder sb = new StringBuilder(512);
 
         sb.append("{");
@@ -113,7 +115,7 @@ public class MengineAppLovinBase {
         return params;
     }
 
-    protected String getMaxErrorParams(MaxError error) {
+    protected String getMaxErrorParams(@NonNull MaxError error) {
         StringBuilder sb = new StringBuilder(512);
 
         int code = error.getCode();
@@ -135,8 +137,12 @@ public class MengineAppLovinBase {
         return params;
     }
 
-    protected MengineAnalyticsEventBuilder buildEvent(String name) {
+    protected MengineAnalyticsEventBuilder buildAdEvent(String name) {
         MengineAnalyticsEventBuilder eventBuilder = m_plugin.buildEvent(name);
+
+        eventBuilder.addParameterString("ad_unit_id", m_adUnitId);
+        eventBuilder.addParameterLong("request_id", m_requestId);
+        eventBuilder.addParameterLong("attempt", m_retryAttempt);
 
         return eventBuilder;
     }
@@ -183,7 +189,7 @@ public class MengineAppLovinBase {
         m_plugin.logMessage(message);
     }
 
-    protected void logMaxAd(String callback, MaxAd ad) {
+    protected void logMaxAd(String callback, @NonNull MaxAd ad) {
         StringBuilder sb = new StringBuilder(2048);
 
         sb.append(String.format(Locale.US, "[%s] callback: %s\n", m_adFormat.getLabel(), callback));
@@ -202,7 +208,7 @@ public class MengineAppLovinBase {
         m_plugin.logMessage(message);
     }
 
-    protected void logMaxAd(String callback, MaxAd ad, Map<String, Object> params) {
+    protected void logMaxAd(String callback, @NonNull MaxAd ad, Map<String, Object> params) {
         StringBuilder sb = new StringBuilder(2048);
 
         sb.append(String.format(Locale.US, "[%s] callback: %s %s\n", m_adFormat.getLabel(), callback, params));
@@ -221,7 +227,7 @@ public class MengineAppLovinBase {
         m_plugin.logMessage(message);
     }
 
-    protected void logMaxAdReward(String callback, MaxAd ad, MaxReward reward) {
+    protected void logMaxAdReward(String callback, @NonNull MaxAd ad, MaxReward reward) {
         StringBuilder sb = new StringBuilder(2048);
 
         sb.append(String.format(Locale.US, "[%s] callback: %s\n", m_adFormat.getLabel(), callback));
@@ -242,7 +248,7 @@ public class MengineAppLovinBase {
         m_plugin.logMessage(message);
     }
 
-    protected void logMaxError(String callback, MaxError error) {
+    protected void logMaxError(String callback, @NonNull MaxError error) {
         StringBuilder sb = new StringBuilder(1024);
 
         int errorCode = error.getCode();
@@ -274,7 +280,7 @@ public class MengineAppLovinBase {
         sb.append(String.format(Locale.US, "RetryAttempt: %d\n", m_retryAttempt));
     }
 
-    protected void writeMaxAdBaseInfo(StringBuilder sb, MaxAd ad) {
+    protected void writeMaxAdBaseInfo(StringBuilder sb, @NonNull MaxAd ad) {
         MaxAdFormat format = ad.getFormat();
         sb.append(String.format(Locale.US, "Format: %s\n", format.getLabel()));
 

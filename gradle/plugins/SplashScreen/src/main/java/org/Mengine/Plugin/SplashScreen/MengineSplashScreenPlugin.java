@@ -60,9 +60,12 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         params.addRule(RelativeLayout.ALIGN_PARENT_START);
-        int mengine_splashscreen_text_margin_left = context.getResources().getInteger(R.integer.mengine_splashscreen_text_margin_left);
-        int mengine_splashscreen_text_margin_bottom = context.getResources().getInteger(R.integer.mengine_splashscreen_text_margin_bottom);
-        float density = context.getResources().getDisplayMetrics().density;
+
+        Resources resources = context.getResources();
+
+        int mengine_splashscreen_text_margin_left = resources.getInteger(R.integer.mengine_splashscreen_text_margin_left);
+        int mengine_splashscreen_text_margin_bottom = resources.getInteger(R.integer.mengine_splashscreen_text_margin_bottom);
+        float density = resources.getDisplayMetrics().density;
         int margin_left = (int)(mengine_splashscreen_text_margin_left * density);
         int margin_bottom = (int)(mengine_splashscreen_text_margin_bottom * density);
         params.setMargins(margin_left, 0, 0, margin_bottom);

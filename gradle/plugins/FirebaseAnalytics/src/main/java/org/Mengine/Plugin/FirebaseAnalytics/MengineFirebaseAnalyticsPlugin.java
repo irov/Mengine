@@ -91,7 +91,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
             } else {
                 this.logError("[ERROR] unsupported parameter: %s class: %s"
                     , value
-                    , value.getClass()
+                    , value == null ? "null" : value.getClass()
                 );
 
                 return;
@@ -121,7 +121,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
             } else {
                 this.logError("[ERROR] unsupported parameter: %s class: %s"
                     , value
-                    , value.getClass()
+                    , value == null ? "null" : value.getClass()
                 );
 
                 return;

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <meta-data android:name="mengine.applovin.nonet_banner_duration_time" android:value="@integer/mengine_applovin_nonet_banner_duration_time" />
+    </application>
+</manifest>

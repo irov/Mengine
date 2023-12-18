@@ -152,11 +152,15 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             public void run() {
                 MengineAppLovinBanner.this.log("bannerVisible", Map.of("show", show));
 
-                MengineAppLovinNonetBanners nonetBanners = m_plugin.getNonetBanners();
+                MengineAppLovinNonetBannersInterface nonetBanners = m_plugin.getNonetBanners();
 
                 if (show == true) {
-                    if (m_loaded == true) {
-                        nonetBanners.hide();
+                    if (nonetBanners != null) {
+                        if (m_loaded == true) {
+                            nonetBanners.hide();
+                        } else {
+                            nonetBanners.show();
+                        }
                     }
 
                     copy_adView.startAutoRefresh();
@@ -165,8 +169,8 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
                     copy_adView.stopAutoRefresh();
                     copy_adView.setVisibility(View.GONE);
 
-                    if (m_loaded == true) {
-                        nonetBanners.show();
+                    if (nonetBanners != null) {
+                        nonetBanners.hide();
                     }
                 }
             }
@@ -208,10 +212,11 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
         m_plugin.pythonCall("onApplovinBannerOnAdLoaded", m_adUnitId);
 
-        if (m_visible == true) {
+        MengineAppLovinNonetBannersInterface nonetBanners = m_plugin.getNonetBanners();
+
+        if (nonetBanners != null && m_visible == true) {
             m_adView.setVisibility(View.VISIBLE);
 
-            MengineAppLovinNonetBanners nonetBanners = m_plugin.getNonetBanners();
             nonetBanners.hide();
         }
     }
@@ -283,10 +288,11 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
         m_plugin.pythonCall("onApplovinBannerOnAdLoadFailed", m_adUnitId);
 
-        if (m_visible == true) {
+        MengineAppLovinNonetBannersInterface nonetBanners = m_plugin.getNonetBanners();
+
+        if (nonetBanners != null && m_visible == true) {
             m_adView.setVisibility(View.GONE);
 
-            MengineAppLovinNonetBanners nonetBanners = m_plugin.getNonetBanners();
             nonetBanners.show();
         }
     }

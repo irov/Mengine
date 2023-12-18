@@ -17,21 +17,18 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginExtension;
-import org.Mengine.Base.MenginePluginExtensionListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginExtensionListener, MenginePluginActivityListener {
+public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "AppLovin";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_IS_AGE_RESTRICTED_USER = "mengine.applovin.is_age_restricted_user";
     public static final String PLUGIN_METADATA_CCPA = "mengine.applovin.CCPA";
-    public static final String PLUGIN_METADATA_NONET_BANNER_DURATION_TIME = "mengine.applovin.nonet_banner_duration_time";
 
     /**
      * <p>
@@ -84,9 +81,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
     private MengineAppLovinMediationInterface m_mediationAmazon;
 
-    private MengineAppLovinNonetBanners m_nonetBanners;
-
-    private ArrayList<MengineAppLovinAnalyticsListener> m_analytics;
+    private MengineAppLovinNonetBannersInterface m_nonetBanners;
 
     @Override
     public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
@@ -116,21 +111,10 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onMenginePluginExtension(MengineApplication application, MengineActivity activity, MenginePlugin plugin, MenginePluginExtension extension) {
-        if (extension instanceof MengineAppLovinAnalyticsListener) {
-            MengineAppLovinAnalyticsListener listener = (MengineAppLovinAnalyticsListener)extension;
-
-            m_analytics.add(listener);
-        }
-    }
-
-    @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         m_banners = new HashMap<>();
         m_interstitials = new HashMap<>();
         m_rewardeds = new HashMap<>();
-
-        m_analytics = new ArrayList<>();
 
         final Context context = activity.getApplicationContext();
 
@@ -186,13 +170,13 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             this.showMediationDebugger();
         }
 
-        long MengineAppLovinPlugin_NonetBannerDurationTime = activity.getMetaDataLong(PLUGIN_METADATA_NONET_BANNER_DURATION_TIME, 30);
+        MengineAppLovinNonetBannersInterface nonetBanners = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinNonetBanners", false);
 
-        MengineAppLovinNonetBanners nonetBanners = new MengineAppLovinNonetBanners(this, MengineAppLovinPlugin_NonetBannerDurationTime);
+        if (nonetBanners != null) {
+            nonetBanners.initializeNonetBanners(activity, this);
 
-        nonetBanners.initialize();
-
-        m_nonetBanners = nonetBanners;
+            m_nonetBanners = nonetBanners;
+        }
     }
 
     @Override
@@ -201,8 +185,6 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             m_mediationAmazon.finalizeMediator(activity, this);
             m_mediationAmazon = null;
         }
-
-        m_analytics = null;
 
         for( MengineAppLovinBanner banner : m_banners.values() ) {
             banner.destroy();
@@ -223,7 +205,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         m_rewardeds = null;
 
         if (m_nonetBanners != null) {
-            m_nonetBanners.destroy();
+            m_nonetBanners.finalizeNonetBanners(activity, this);
             m_nonetBanners = null;
         }
     }
@@ -232,7 +214,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         return m_mediationAmazon;
     }
 
-    public MengineAppLovinNonetBanners getNonetBanners() {
+    public MengineAppLovinNonetBannersInterface getNonetBanners() {
         return m_nonetBanners;
     }
 

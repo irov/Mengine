@@ -9,8 +9,6 @@
 
 #pragma mark -
 
-@synthesize m_service;
-
 - (instancetype _Nonnull)initWithService: (Mengine::AppleMARSDKServiceInterface* _Nonnull)service {
     self = [super init];
     
@@ -38,7 +36,7 @@
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
-    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = self.m_service->getProvider();
     
     if( provider == nullptr )
     {
@@ -56,7 +54,7 @@
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
-    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = self.m_service->getProvider();
     
     if( provider == nullptr )
     {
@@ -75,7 +73,7 @@
         , [msg UTF8String]
     );
     
-    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = self.m_service->getProvider();
     
     if( provider == nullptr )
     {
@@ -93,7 +91,7 @@
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
-    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = self.m_service->getProvider();
     
     if( provider == nullptr )
     {
@@ -113,7 +111,7 @@
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
-    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = self.m_service->getProvider();
     
     if( provider == nullptr )
     {
@@ -131,7 +129,7 @@
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
-    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = self.m_service->getProvider();
     
     if( provider == nullptr )
     {
@@ -149,7 +147,7 @@
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
-    const Mengine::AppleMARSDKProviderInterfacePtr & provider = m_service->getProvider();
+    const Mengine::AppleMARSDKProviderInterfacePtr & provider = self.m_service->getProvider();
     
     if( provider == nullptr )
     {

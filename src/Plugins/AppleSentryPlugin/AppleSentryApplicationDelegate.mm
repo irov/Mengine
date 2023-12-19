@@ -1,6 +1,7 @@
 #import "AppleSentryApplicationDelegate.h"
 
 #import "Environment/Apple/AppleDetail.h"
+#import "Environment/Apple/AppleUserDefaults.h"
 
 #include "Kernel/BuildMode.h"
 
@@ -35,6 +36,14 @@
     
     if( AppleSentryPlugin_DSN == nil ) {
         return NO;
+    }
+    
+    bool passGDPR = Mengine::Helper::AppleGetUserDefaultsBoolean( "mengine.gdpr.pass", false );
+    
+    if( passGDPR == true ) {
+        self.m_sendAllow = YES;
+    } else {
+        self.m_sendAllow = NO;
     }
 
     const Mengine::Char * BUILD_VERSION = Mengine::Helper::getBuildVersion();

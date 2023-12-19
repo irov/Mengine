@@ -4,8 +4,6 @@
 
 @implementation AppleGameCenterDelegate
 
-@synthesize m_authenticateSuccess;
-
 #pragma mark -
 
 - (void) gameCenterViewControllerDidFinish:(GKGameCenterViewController *)gameCenterViewController {
@@ -20,7 +18,7 @@
     [localPlayer setAuthenticateHandler:^(UIViewController* v, NSError * error) {
         if( error != nil )
         {
-            m_authenticateSuccess = false;
+            self.m_authenticateSuccess = false;
             
             Mengine::Helper::dispatchMainThreadEvent([handler, error]() {
                 handler( error );
@@ -29,7 +27,7 @@
             return;
         }
         
-        m_authenticateSuccess = true;
+        self.m_authenticateSuccess = true;
         
         Mengine::Helper::dispatchMainThreadEvent([handler]() {
             handler( nil );
@@ -40,7 +38,7 @@
 }
 
 - (BOOL) loadCompletedAchievements:(void(^)(NSError * _Nullable, NSArray * _Nullable))handler {
-    if( m_authenticateSuccess == false )
+    if( self.m_authenticateSuccess == false )
     {
         return NO;
     }
@@ -83,7 +81,7 @@
 }
 
 - (BOOL) resetAchievements:(void(^ _Nonnull)(NSError * __nullable error))handler {
-    if( m_authenticateSuccess == false )
+    if( self.m_authenticateSuccess == false )
     {
         return NO;
     }
@@ -98,7 +96,7 @@
 }
 
 - (BOOL) reportScore:(NSString*)identifier score:(int64_t)score response:(void(^)(NSError * _Nullable))handler {
-	if( m_authenticateSuccess == false )
+	if( self.m_authenticateSuccess == false )
     {
         return NO;
     }
@@ -118,7 +116,7 @@
 }
 
 - (BOOL) reportAchievementIdentifier:(NSString*)identifier percentComplete:(double)percent withBanner:(BOOL)banner response:(void(^)(NSError * _Nullable))handler {
-    if( m_authenticateSuccess == false )
+    if( self.m_authenticateSuccess == false )
     {
         return NO;
     }

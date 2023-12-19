@@ -2,9 +2,6 @@
 #import <GameKit/GameKit.h>
 
 @interface AppleGameCenterDelegate : NSObject <GKGameCenterControllerDelegate>
-{
-    BOOL m_authenticateSuccess;
-}
 
 @property (assign) BOOL m_authenticateSuccess;
 

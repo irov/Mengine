@@ -39,7 +39,7 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 
-ADD_MENGINE_COCOAPOD(Sentry "https://github.com/getsentry/sentry-cocoa.git" "8.17.1")
+ADD_MENGINE_COCOAPOD(Sentry "https://github.com/getsentry/sentry-cocoa.git" "8.17.2")
 
 if(MENGINE_TARGET_IOS)
     if(MENGINE_BUILD_TYPE_RELEASE)

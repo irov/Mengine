@@ -9,6 +9,8 @@ namespace Mengine
 {
     namespace Helper
     {
+        UIWindow * iOSGetRootWindow();
+        UIView * iOSGetRootView();
         UIViewController * iOSGetRootViewController();
         NSUUID * iOSGetAdIdentifier();
         id iOSGetUIProxyApplicationDelegate( Class delegateClass );

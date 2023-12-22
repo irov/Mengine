@@ -88,12 +88,14 @@ Mengine::SDLApplication MENGINE_application;
     if( initialize == false ) {
         NSLog(@"Mengine application initialize [Failed]");
         
+        SDL_iPhoneSetEventPump( SDL_FALSE );
+        
         return NO;
     }
     
     NSLog(@"Mengine application initialize [Successful]");
     
-    [self performSelector:@selector(postFinishLaunch) withObject:self afterDelay:0.0];
+    [self performSelector:@selector(postFinishLaunch) withObject:nil afterDelay:0.0];
     
     return YES;
 }
@@ -166,14 +168,6 @@ Mengine::SDLApplication MENGINE_application;
             [delegate applicationWillTerminate:application];
         }
     }
-    
-    NSLog(@"Mengine application begin finalize");
-    
-    MENGINE_application.finalize();
-    
-    NSLog(@"Mengine application end finalize");
-    
-    SDL_iPhoneSetEventPump( SDL_FALSE );
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options API_AVAILABLE(ios(9.0)) {
@@ -218,6 +212,14 @@ Mengine::SDLApplication MENGINE_application;
     MENGINE_application.loop();
     
     NSLog(@"Mengine application end loop");
+    
+    NSLog(@"Mengine application begin finalize");
+    
+    MENGINE_application.finalize();
+    
+    NSLog(@"Mengine application end finalize");
+    
+    SDL_iPhoneSetEventPump( SDL_FALSE );
 }
 
 @end

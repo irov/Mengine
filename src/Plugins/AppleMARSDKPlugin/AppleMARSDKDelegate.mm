@@ -4,6 +4,7 @@
 #include "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/PlatformHelper.h"
 
 @implementation AppleMARSDKDelegate
 
@@ -18,9 +19,7 @@
 }
 
 - (UIView *)GetView {
-    UIWindow * appWindow = [UIApplication sharedApplication].delegate.window;
-    
-    UIView * view = [appWindow.subviews objectAtIndex:0];
+    UIView * view = [self GetViewController].view;
     
     return view;
 }
@@ -36,17 +35,19 @@
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
-    const Mengine::AppleMARSDKProviderInterfacePtr & provider = self.m_service->getProvider();
+    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
     
     if( provider == nullptr )
     {
         return;
     }
 
-    Mengine::MARSDKResultParams result_params;
-    Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
-    
-    provider->onPlatformInit( result_params );
+    Mengine::Helper::dispatchMainThreadEvent([provider, params]() {
+        Mengine::MARSDKResultParams result_params;
+        Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
+        
+        provider->onPlatformInit( result_params );
+    });
 }
 
 - (void) OnRealName:(NSDictionary*)params {
@@ -54,17 +55,19 @@
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
-    const Mengine::AppleMARSDKProviderInterfacePtr & provider = self.m_service->getProvider();
+    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
     
     if( provider == nullptr )
     {
         return;
     }
 
-    Mengine::MARSDKResultParams result_params;
-    Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
-    
-    provider->onRealName( result_params );
+    Mengine::Helper::dispatchMainThreadEvent([provider, params]() {
+        Mengine::MARSDKResultParams result_params;
+        Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
+        
+        provider->onRealName( result_params );
+    });
 }
 
 - (void) OnEventWithCode:(int)code msg: (NSString*)msg {
@@ -73,16 +76,18 @@
         , [msg UTF8String]
     );
     
-    const Mengine::AppleMARSDKProviderInterfacePtr & provider = self.m_service->getProvider();
+    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
     
     if( provider == nullptr )
     {
         return;
     }
-
-    const Mengine::Char * msg_str = [msg UTF8String];
     
-    provider->onEventWithCode( code, msg_str );
+    Mengine::Helper::dispatchMainThreadEvent([provider, code, msg]() {
+        const Mengine::Char * msg_str = [msg UTF8String];
+        
+        provider->onEventWithCode( code, msg_str );
+    });
 }
 
 - (void) OnEventCustom:(NSString*)eventName params:(NSDictionary*)params {
@@ -91,19 +96,21 @@
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
-    const Mengine::AppleMARSDKProviderInterfacePtr & provider = self.m_service->getProvider();
+    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
     
     if( provider == nullptr )
     {
         return;
     }
 
-    const Mengine::Char * eventName_str = [eventName UTF8String];
-    
-    Mengine::MARSDKResultParams result_params;
-    Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
-    
-    provider->onEventCustom( eventName_str, result_params );
+    Mengine::Helper::dispatchMainThreadEvent([provider, eventName, params]() {
+        const Mengine::Char * eventName_str = [eventName UTF8String];
+        
+        Mengine::MARSDKResultParams result_params;
+        Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
+        
+        provider->onEventCustom( eventName_str, result_params );
+    });
 }
 
 - (void) OnUserLogin: (NSDictionary *)params {
@@ -111,17 +118,19 @@
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
-    const Mengine::AppleMARSDKProviderInterfacePtr & provider = self.m_service->getProvider();
+    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
     
     if( provider == nullptr )
     {
         return;
     }
     
-    Mengine::MARSDKResultParams result_params;
-    Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
-    
-    provider->onUserLogin( result_params );
+    Mengine::Helper::dispatchMainThreadEvent([provider, params]() {
+        Mengine::MARSDKResultParams result_params;
+        Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
+        
+        provider->onUserLogin( result_params );
+    });
 }
 
 - (void) OnUserLogout: (NSDictionary *)params {
@@ -129,17 +138,19 @@
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
-    const Mengine::AppleMARSDKProviderInterfacePtr & provider = self.m_service->getProvider();
+    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
     
     if( provider == nullptr )
     {
         return;
     }
     
-    Mengine::MARSDKResultParams result_params;
-    Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
-    
-    provider->onUserLogout( result_params );
+    Mengine::Helper::dispatchMainThreadEvent([provider, params]() {
+        Mengine::MARSDKResultParams result_params;
+        Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
+        
+        provider->onUserLogout( result_params );
+    });
 }
 
 - (void) OnPayPaid: (NSDictionary *)params {
@@ -147,17 +158,19 @@
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
     
-    const Mengine::AppleMARSDKProviderInterfacePtr & provider = self.m_service->getProvider();
+    Mengine::AppleMARSDKProviderInterfacePtr provider = self.m_service->getProvider();
     
     if( provider == nullptr )
     {
         return;
     }
     
-    Mengine::MARSDKResultParams result_params;
-    Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
-    
-    provider->onPayPaid( result_params );
+    Mengine::Helper::dispatchMainThreadEvent([provider, params]() {
+        Mengine::MARSDKResultParams result_params;
+        Mengine::Helper::AppleGetMapNSDictionary( params, &result_params );
+        
+        provider->onPayPaid( result_params );
+    });
 }
 
 @end

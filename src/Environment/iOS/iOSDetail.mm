@@ -10,11 +10,27 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        UIViewController * iOSGetRootViewController()
+        UIWindow * iOSGetRootWindow()
         {
             UIApplication * application = [UIApplication sharedApplication];
             id<UIApplicationDelegate> delegate = application.delegate;
             UIWindow * window = delegate.window;
+            
+            return window;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        UIView * iOSGetRootView()
+        {
+            UIWindow * window = Helper::iOSGetRootWindow();
+            
+            UIView * view = [window.subviews objectAtIndex:0];
+            
+            return view;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        UIViewController * iOSGetRootViewController()
+        {
+            UIWindow * window = Helper::iOSGetRootWindow();
 
             UIViewController * viewController = window.rootViewController;
             

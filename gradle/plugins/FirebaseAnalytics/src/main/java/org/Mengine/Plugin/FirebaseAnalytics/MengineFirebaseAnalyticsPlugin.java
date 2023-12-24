@@ -43,10 +43,10 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        m_firebaseAnalytics = FirebaseAnalytics.getInstance(application);
+        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(application);
 
         String sessionId = application.getSessionId();
-        m_firebaseAnalytics.setUserId(sessionId);
+        firebaseAnalytics.setUserId(sessionId);
 
         String installKey = application.getInstallKey();
         long installTimestamp = application.getInstallTimestamp();
@@ -55,12 +55,14 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         long sessionIndex = application.getSessionIndex();
         long sessionTimestamp = application.getSessionTimestamp();
 
-        m_firebaseAnalytics.setUserProperty("is_dev", String.valueOf(BuildConfig.DEBUG));
-        m_firebaseAnalytics.setUserProperty("install_key", installKey);
-        m_firebaseAnalytics.setUserProperty("install_timestamp", String.valueOf(installTimestamp));
-        m_firebaseAnalytics.setUserProperty("install_rnd", String.valueOf(installRND));
-        m_firebaseAnalytics.setUserProperty("session_index", String.valueOf(sessionIndex));
-        m_firebaseAnalytics.setUserProperty("session_timestamp", String.valueOf(sessionTimestamp));
+        firebaseAnalytics.setUserProperty("is_dev", String.valueOf(BuildConfig.DEBUG));
+        firebaseAnalytics.setUserProperty("install_key", installKey);
+        firebaseAnalytics.setUserProperty("install_timestamp", String.valueOf(installTimestamp));
+        firebaseAnalytics.setUserProperty("install_rnd", String.valueOf(installRND));
+        firebaseAnalytics.setUserProperty("session_index", String.valueOf(sessionIndex));
+        firebaseAnalytics.setUserProperty("session_timestamp", String.valueOf(sessionTimestamp));
+
+        m_firebaseAnalytics = firebaseAnalytics;
     }
 
     @Override

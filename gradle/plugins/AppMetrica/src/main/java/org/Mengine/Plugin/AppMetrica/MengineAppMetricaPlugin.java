@@ -91,6 +91,12 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     }
 
     @Override
+    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+        String sessionId = application.getSessionId();
+        YandexMetrica.setUserProfileID(sessionId);
+    }
+
+    @Override
     public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         Map<String, Object> params = new HashMap<>();
 

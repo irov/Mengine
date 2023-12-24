@@ -114,6 +114,13 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
             scope.setExtra("Build Date", buildDate);
             scope.setExtra("Build Username", buildUsername);
         });
+
+        String sessionId = application.getSessionId();
+
+        User user = new User();
+        user.setId(sessionId);
+
+        Sentry.setUser(user);
     }
 
     @Override

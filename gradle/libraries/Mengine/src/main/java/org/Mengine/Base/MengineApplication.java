@@ -970,8 +970,6 @@ public class MengineApplication extends Application {
 
         this.setState("application.init", "plugins_prepare");
 
-        this.sendEvent(MengineEvent.EVENT_SESSION_ID, m_sessionId);
-
         long app_init_start_timestamp = MengineAnalytics.buildEvent("mng_app_init_start")
             .logAndFlush();
 

@@ -135,6 +135,9 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
         long sessionTimestamp = application.getSessionTimestamp();
         loggerDataDog.addAttribute("session_timestamp", sessionTimestamp);
 
+        String sessionId = application.getSessionId();
+        loggerDataDog.addAttribute("session_id", sessionId);
+
         m_loggerDataDog = loggerDataDog;
     }
 

@@ -52,6 +52,9 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
             , MengineDevToDevPlugin_AppId
         );
 
+        String sessionId = application.getSessionId();
+        DTDAnalytics.INSTANCE.setUserId(sessionId);
+
         DTDAnalytics.INSTANCE.setInitializationCompleteCallback(() -> {
             MengineDevToDevPlugin.this.logMessage("Initialized DevToDev has been finished");
 

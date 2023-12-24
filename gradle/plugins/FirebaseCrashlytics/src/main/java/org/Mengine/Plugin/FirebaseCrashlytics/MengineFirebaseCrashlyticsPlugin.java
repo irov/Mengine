@@ -39,6 +39,12 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     @Override
+    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+        String sessionId = application.getSessionId();
+        FirebaseCrashlytics.getInstance().setUserId(sessionId);
+    }
+
+    @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         if (BuildConfig.DEBUG == true) {
             if (FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution() == true) {

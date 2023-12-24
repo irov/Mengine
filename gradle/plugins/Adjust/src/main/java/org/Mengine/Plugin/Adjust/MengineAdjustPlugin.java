@@ -60,13 +60,7 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
             environment = AdjustConfig.ENVIRONMENT_SANDBOX;
         }
 
-        String MengineAdjustPlugin_AppToken = application.getMetaDataString(PLUGIN_METADATA_APP_TOKEN);
-
-        if (MengineAdjustPlugin_AppToken == null) {
-            this.invalidInitialize("invalid setup meta data [%s]", PLUGIN_METADATA_APP_TOKEN);
-
-            return;
-        }
+        String MengineAdjustPlugin_AppToken = this.getMetaDataString(PLUGIN_METADATA_APP_TOKEN);
 
         this.logInfo("%s: %s"
             , PLUGIN_METADATA_APP_TOKEN
@@ -104,16 +98,6 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
 
     @Override
     public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
-        //ToDo
-    }
-
-    @Override
-    public void onMengineAnalyticsScreenView(MengineApplication application, String screenType, String screenName) {
-        //ToDo
-    }
-
-    @Override
-    public void onMengineAnalyticsFlush(MengineApplication application) {
         //ToDo
     }
 

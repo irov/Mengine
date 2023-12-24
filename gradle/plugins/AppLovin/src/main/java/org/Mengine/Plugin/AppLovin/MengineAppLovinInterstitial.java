@@ -84,7 +84,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             this.logError("loadAd", e);
 
             this.buildAdEvent("mng_ad_interstitial_load_exception")
-                .addParameterString("exception", e.getMessage())
+                .addParameterException("exception", e)
                 .log();
 
             m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "load_exception");

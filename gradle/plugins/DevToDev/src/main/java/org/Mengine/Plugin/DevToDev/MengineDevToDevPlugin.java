@@ -45,13 +45,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         m_initializeSuccessful = false;
 
-        String MengineDevToDevPlugin_AppId = application.getMetaDataString(PLUGIN_METADATA_APP_ID);
-
-        if (MengineDevToDevPlugin_AppId == null) {
-            this.invalidInitialize("initialize unsetup [%s]", PLUGIN_METADATA_APP_ID);
-
-            return;
-        }
+        String MengineDevToDevPlugin_AppId = this.getMetaDataString(PLUGIN_METADATA_APP_ID);
 
         this.logInfo("%s: %s"
             , PLUGIN_METADATA_APP_ID
@@ -134,11 +128,6 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
         }
 
         DTDAnalytics.INSTANCE.customEvent(eventName, params);
-    }
-
-    @Override
-    public void onMengineAnalyticsScreenView(MengineApplication application, String screenType, String screenName) {
-        //ToDo
     }
 
     @Override

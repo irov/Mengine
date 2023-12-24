@@ -21,7 +21,7 @@ namespace Mengine
         ~ArrowInputMousePositionProvider() override;
 
     protected:
-        void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position, float _pressure ) override;
+        void onMousePositionChange( ETouchCode _touchId, const mt::vec2f & _position, float _pressure ) override;
 
     protected:
         Arrow * m_arrow;

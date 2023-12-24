@@ -56,6 +56,12 @@ public class MenginePlugin implements MenginePluginInterface {
         return instance;
     }
 
+    public boolean hasOption(String option) {
+        boolean value = m_application.hasOption(option);
+
+        return value;
+    }
+
     public SharedPreferences getPrivateSharedPreferences() {
         SharedPreferences settings = m_application.getPrivateSharedPreferences(m_pluginName);
 
@@ -183,6 +189,42 @@ public class MenginePlugin implements MenginePluginInterface {
         }
 
         m_activity.waitSemaphore(name, cb);
+    }
+
+    public boolean getMetaDataBoolean(String name) throws MenginePluginInvalidInitializeException {
+        try {
+            boolean value = m_application.getMetaDataBoolean(name);
+
+            return value;
+        } catch (RuntimeException e) {
+            this.invalidInitialize("invalid get meta data [%s]", name);
+        }
+
+        return false;
+    }
+
+    public int getMetaDataInteger(String name) throws MenginePluginInvalidInitializeException {
+        try {
+            int value = m_application.getMetaDataInteger(name);
+
+            return value;
+        } catch (RuntimeException e) {
+            this.invalidInitialize("invalid get meta data [%s]", name);
+        }
+
+        return 0;
+    }
+
+    public String getMetaDataString(String name) throws MenginePluginInvalidInitializeException {
+        try {
+            String value = m_application.getMetaDataString(name);
+
+            return value;
+        } catch (RuntimeException e) {
+            this.invalidInitialize("invalid get meta data [%s]", name);
+        }
+
+        return null;
     }
 
     public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {

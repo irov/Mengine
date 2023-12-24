@@ -45,6 +45,9 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         m_firebaseAnalytics = FirebaseAnalytics.getInstance(application);
 
+        String sessionId = application.getSessionId();
+        m_firebaseAnalytics.setUserId(sessionId);
+
         String installKey = application.getInstallKey();
         long installTimestamp = application.getInstallTimestamp();
         String installVersion = application.getInstallVersion();
@@ -143,15 +146,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         params.putString(FirebaseAnalytics.Param.SCREEN_NAME, screenName);
 
         m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, params);
-    }
-
-    @Override
-    public void onMengineAnalyticsFlush(MengineApplication application) {
-        if (m_firebaseAnalytics == null) {
-            return;
-        }
-
-        //Empty
     }
 
     private static String getAdFormat(MengineAdFormat adType) {

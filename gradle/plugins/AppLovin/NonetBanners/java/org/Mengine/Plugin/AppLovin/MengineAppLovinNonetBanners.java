@@ -57,7 +57,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         m_visible = false;
         m_requestId = 0;
 
-        int MengineAppLovinPlugin_NonetBannerDurationTime = activity.getMetaDataInteger(PLUGIN_METADATA_NONET_BANNER_DURATION_TIME, 30);
+        int MengineAppLovinPlugin_NonetBannerDurationTime = plugin.getMetaDataInteger(PLUGIN_METADATA_NONET_BANNER_DURATION_TIME);
 
         m_showBannerDurationTime = MengineAppLovinPlugin_NonetBannerDurationTime;
 

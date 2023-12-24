@@ -6,6 +6,7 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/base.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/androidx.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/minify.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/split.gradle'
+apply from: rootProject.projectDir.getAbsolutePath() + '/delivery.gradle'
 
 def ANDROID_APP_MANIFEST_CI = Utils.getBooleanProperty(project, "ANDROID_APP_MANIFEST_CI", false)
 def ANDROID_APP_ASSETS_RES_CI = Utils.getBooleanProperty(project, "ANDROID_APP_ASSETS_RES_CI", false)
@@ -86,6 +87,7 @@ if (MENGINE_APP_PLUGIN_APPLOVIN == true && project.hasProperty("MENGINE_APP_PLUG
 
 android {
     ext.plugins = []
+    ext.activities = []
 
     gradle.taskGraph.whenReady { taskGraph ->
         if (taskGraph.hasTask(assembleDebug)) {
@@ -667,6 +669,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_APPLOVIN", MENGINE_APP_PLUGIN_APPLOVIN)
 
 if (MENGINE_APP_PLUGIN_APPLOVIN == true) {
     android.ext.plugins += 'org.Mengine.Plugin.AppLovin.MengineAppLovinPlugin'
+    android.ext.activities += 'org.Mengine.Plugin.AppLovin.MengineAppLovinProxyActivity'
 
     dependencies {
         implementation project(':plugins:AppLovin')
@@ -731,7 +734,13 @@ android {
 
 android {
     defaultConfig {
-        buildConfigField "String[]", "MENGINE_GRADLE_ANDROID_PLUGINS", '{' + android.ext.plugins.collect {"\"${it}\""}.join(",") + '}'
+        buildConfigField "String[]", "MENGINE_ANDROID_PLUGINS", '{' + android.ext.plugins.collect {"\"${it}\""}.join(",") + '}'
+    }
+}
+
+android {
+    defaultConfig {
+        buildConfigField "String[]", "MENGINE_ANDROID_ACTIVITIES", '{' + android.ext.activities.collect {"\"${it}\""}.join(",") + '}'
     }
 }
 

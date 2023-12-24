@@ -23,13 +23,7 @@ public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginA
 
     @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String MengineAmazonPlugin_AppId = application.getMetaDataString(PLUGIN_METADATA_APP_ID);
-
-        if (MengineAmazonPlugin_AppId == null) {
-            this.invalidInitialize("invalid setup meta data [%s]", PLUGIN_METADATA_APP_ID);
-
-            return;
-        }
+        String MengineAmazonPlugin_AppId = this.getMetaDataString(PLUGIN_METADATA_APP_ID);
 
         this.logInfo("%s: %s"
             , PLUGIN_METADATA_APP_ID
@@ -51,7 +45,7 @@ public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginA
         AdRegistration.setMRAIDSupportedVersions(new String[]{"1.0", "2.0", "3.0"});
         AdRegistration.setMRAIDPolicy(MRAIDPolicy.CUSTOM);
 
-        boolean MengineAmazonPlugin_EnableTesting = application.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_TESTING, false);
+        boolean MengineAmazonPlugin_EnableTesting = this.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_TESTING);
 
         if (MengineAmazonPlugin_EnableTesting == true) {
             AdRegistration.enableTesting(true);
@@ -62,7 +56,7 @@ public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginA
             , MengineAmazonPlugin_EnableTesting
         );
 
-        boolean MengineAmazonPlugin_EnableLogging = application.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_LOGGING, BuildConfig.DEBUG);
+        boolean MengineAmazonPlugin_EnableLogging = this.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_LOGGING);
 
         if (MengineAmazonPlugin_EnableLogging == true) {
             AdRegistration.enableLogging(true);

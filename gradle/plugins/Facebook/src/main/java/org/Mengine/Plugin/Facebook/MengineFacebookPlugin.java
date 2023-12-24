@@ -312,11 +312,6 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onMengineAnalyticsScreenView(MengineApplication application, String screenType, String screenName) {
-        //ToDo
-    }
-
-    @Override
     public void onMengineAnalyticsFlush(MengineApplication application) {
         if (m_logger == null) {
             return;

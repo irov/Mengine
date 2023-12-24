@@ -1,15 +1,19 @@
 package org.Mengine.Base;
 
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
@@ -89,47 +93,47 @@ public class MengineActivity extends SDLActivity {
     }
 
     public MengineApplication getMengineApplication() {
-        MengineApplication app = (MengineApplication)this.getApplication();
+        MengineApplication application = (MengineApplication)this.getApplication();
 
-        return app;
+        return application;
     }
 
     public String getApplicationId() {
-        MengineApplication app = this.getMengineApplication();
+        MengineApplication application = this.getMengineApplication();
 
-        String applicationId = app.getApplicationId();
+        String applicationId = application.getApplicationId();
 
         return applicationId;
     }
 
     protected List<MenginePlugin> getPlugins() {
-        MengineApplication app = this.getMengineApplication();
+        MengineApplication application = this.getMengineApplication();
 
-        List<MenginePlugin> plugins = app.getPlugins();
+        List<MenginePlugin> plugins = application.getPlugins();
 
         return plugins;
     }
 
     protected List<MenginePluginKeyListener> getKeyListeners() {
-        MengineApplication app = this.getMengineApplication();
+        MengineApplication application = this.getMengineApplication();
 
-        List<MenginePluginKeyListener> listeners = app.getKeyListeners();
+        List<MenginePluginKeyListener> listeners = application.getKeyListeners();
 
         return listeners;
     }
 
     protected List<MenginePluginActivityListener> getActivityListeners() {
-        MengineApplication app = this.getMengineApplication();
+        MengineApplication application = this.getMengineApplication();
 
-        List<MenginePluginActivityListener> listeners = app.getActivityListeners();
+        List<MenginePluginActivityListener> listeners = application.getActivityListeners();
 
         return listeners;
     }
 
     protected List<MenginePluginEngineListener> getEngineListeners() {
-        MengineApplication app = this.getMengineApplication();
+        MengineApplication application = this.getMengineApplication();
 
-        List<MenginePluginEngineListener> listeners = app.getEngineListeners();
+        List<MenginePluginEngineListener> listeners = application.getEngineListeners();
 
         return listeners;
     }
@@ -140,9 +144,9 @@ public class MengineActivity extends SDLActivity {
             return null;
         }
 
-        MengineApplication app = this.getMengineApplication();
+        MengineApplication application = this.getMengineApplication();
 
-        T plugin = app.getPlugin(cls);
+        T plugin = application.getPlugin(cls);
 
         return plugin;
     }
@@ -152,9 +156,9 @@ public class MengineActivity extends SDLActivity {
             return "";
         }
 
-        MengineApplication app = this.getMengineApplication();
+        MengineApplication application = this.getMengineApplication();
 
-        String sessionId = app.getSessionId();
+        String sessionId = application.getSessionId();
 
         return sessionId;
     }
@@ -164,9 +168,9 @@ public class MengineActivity extends SDLActivity {
             return "";
         }
 
-        MengineApplication app = this.getMengineApplication();
+        MengineApplication application = this.getMengineApplication();
 
-        String versionName = app.getVersionName();
+        String versionName = application.getVersionName();
 
         return versionName;
     }
@@ -176,9 +180,9 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        MengineApplication app = this.getMengineApplication();
+        MengineApplication application = this.getMengineApplication();
 
-        app.setState(name, value);
+        application.setState(name, value);
     }
 
     public boolean hasMetaData(String name) {
@@ -205,38 +209,26 @@ public class MengineActivity extends SDLActivity {
         return value;
     }
 
-    public boolean getMetaDataBoolean(String name, boolean d) {
+    public boolean getMetaDataBoolean(String name) {
         if (m_destroy == true) {
-            return d;
+            return false;
         }
 
         MengineApplication application = this.getMengineApplication();
 
-        boolean value = application.getMetaDataBoolean(name, d);
+        boolean value = application.getMetaDataBoolean(name);
 
         return value;
     }
 
-    public int getMetaDataInteger(String name, int d) {
+    public int getMetaDataInteger(String name) {
         if (m_destroy == true) {
-            return d;
+            return 0;
         }
 
         MengineApplication application = this.getMengineApplication();
 
-        int value = application.getMetaDataInteger(name, d);
-
-        return value;
-    }
-
-    public long getMetaDataLong(String name, int d) {
-        if (m_destroy == true) {
-            return d;
-        }
-
-        MengineApplication application = this.getMengineApplication();
-
-        long value = application.getMetaDataLong(name, d);
+        int value = application.getMetaDataInteger(name);
 
         return value;
     }
@@ -255,6 +247,10 @@ public class MengineActivity extends SDLActivity {
         return context;
     }
 
+    protected void finishWithAlertDialog(String format, Object... args) {
+        MengineUtils.finishActivityWithAlertDialog(this, format, args);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         m_initializePython = false;
@@ -262,6 +258,36 @@ public class MengineActivity extends SDLActivity {
 
         m_semaphores = new HashMap<>();
         m_requestCodes = new HashMap<>();
+
+        MengineApplication application;
+
+        try {
+            application = this.getMengineApplication();
+        } catch (ClassCastException e) {
+            this.setState("activity.init", "application_cast_exception");
+
+            MengineAnalytics.buildEvent("mng_activity_init_failed")
+                .addParameterException("reason", e)
+                .logAndFlush();
+
+            this.finishWithAlertDialog("[ERROR] onCreate invalid application ClassCastException: %s"
+                , e.getMessage()
+            );
+
+            return;
+        }
+
+        if (application.isInvalidInitialize() == true) {
+            this.setState("activity.init", "application_invalid_initialize");
+
+            String reason = application.getInvalidInitializeReason();
+
+            this.finishWithAlertDialog("[ERROR] onCreate invalid application initialize: %s"
+                , reason
+            );
+
+            return;
+        }
 
         this.setState("activity.lifecycle", "create");
 
@@ -273,15 +299,15 @@ public class MengineActivity extends SDLActivity {
         try {
             super.onCreate(savedInstanceState);
         } catch (Exception e) {
-            MengineLog.logError(TAG, "[ERROR] onCreate SDL create exception: %s"
-                , e.getMessage()
-            );
+            this.setState("activity.init", "sdl_exception");
 
-            MengineAnalytics.buildEvent("mng_activity_init_sdl_exception")
-                .addParameterString("exception", e.getMessage())
+            MengineAnalytics.buildEvent("mng_activity_init_failed")
+                .addParameterException("reason", e)
                 .logAndFlush();
 
-            this.finish();
+            this.finishWithAlertDialog("[ERROR] onCreate SDL create exception: %s"
+                , e.getMessage()
+            );
 
             return;
         }
@@ -291,12 +317,13 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logMessage(TAG, "onCreate");
 
         if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onCreate broken libraries");
+            this.setState("activity.init", "sdl_broken_libraries");
 
-            MengineAnalytics.buildEvent("mng_activity_init_broken_libraries")
+            MengineAnalytics.buildEvent("mng_activity_init_failed")
+                .addParameterString("reason", "sdl broken libraries")
                 .logAndFlush();
 
-            this.finish();
+            this.finishWithAlertDialog("onCreate broken libraries");
 
             return;
         }
@@ -325,12 +352,16 @@ public class MengineActivity extends SDLActivity {
             try {
                 l.onCreate(this, savedInstanceState);
             } catch (MenginePluginInvalidInitializeException e) {
-                MengineLog.logError(TAG, "[ERROR] onCreate plugin: %s exception: %s"
+                this.setState("activity.init", "plugin_create_exception." + l.getPluginName());
+
+                MengineAnalytics.buildEvent("mng_activity_init_failed")
+                    .addParameterException("reason", e)
+                    .logAndFlush();
+
+                this.finishWithAlertDialog("[ERROR] onCreate plugin: %s exception: %s"
                     , l.getPluginName()
                     , e.getMessage()
                 );
-
-                this.finish();
 
                 return;
             }
@@ -351,12 +382,16 @@ public class MengineActivity extends SDLActivity {
 
                 p.onExtensionInitialize(this);
             } catch (MenginePluginInvalidInitializeException e) {
-                MengineLog.logError(TAG, "[ERROR] onExtensionInitialize plugin %s: exception: %s"
+                this.setState("activity.init", "plugin_initialize_exception." + p.getPluginName());
+
+                MengineAnalytics.buildEvent("mng_activity_init_failed")
+                    .addParameterException("reason", e)
+                    .logAndFlush();
+
+                this.finishWithAlertDialog("[ERROR] onExtensionInitialize plugin %s: exception: %s"
                     , p.getPluginName()
                     , e.getMessage()
                 );
-
-                this.finish();
 
                 return;
             }

@@ -47,12 +47,6 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
     public void initializeMediatorBanner(MengineActivity activity, MengineAppLovinPlugin plugin, MaxAdView adView, MengineAppLovinMediationLoadAdCallback loadAdCallback) {
         String MengineAppLovinPlugin_AmazonBannerSlotId = activity.getMetaDataString(MEDIATION_METADATA_BANNER_SLOT_ID);
 
-        if (MengineAppLovinPlugin_AmazonBannerSlotId == null) {
-            String message = MengineLog.buildTotalMsg("MengineAppLovinMediationAmazon need to add config value for [%s]", MEDIATION_METADATA_BANNER_SLOT_ID);
-
-            throw new RuntimeException(message);
-        }
-
         int width = activity.getWindow().getDecorView().getWidth();
         int height = activity.getWindow().getDecorView().getHeight();
 
@@ -111,12 +105,6 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
         switch (m_loadInterstitialStatus) {
             case ADLOAD_NONE:
                 String MengineAppLovinPlugin_AmazonInterstitialSlotId = activity.getMetaDataString(MEDIATION_METADATA_INTERSTITIAL_SLOT_ID);
-
-                if (MengineAppLovinPlugin_AmazonInterstitialSlotId == null) {
-                    String message = MengineLog.buildTotalMsg("MengineAppLovinMediationAmazon need to add config value for [%s]", MEDIATION_METADATA_INTERSTITIAL_SLOT_ID);
-
-                    throw new RuntimeException(message);
-                }
 
                 m_loadInterstitialStatus = ELoadAdStatus.ADLOAD_PROCESS;
 
@@ -177,12 +165,6 @@ public class MengineAppLovinMediationAmazon implements MengineAppLovinMediationI
         switch (m_loadRewardedStatus) {
             case ADLOAD_NONE:
                 String MengineAppLovinPlugin_AmazonRewardedSlotId = activity.getMetaDataString(MEDIATION_METADATA_REWARDED_SLOT_ID);
-
-                if (MengineAppLovinPlugin_AmazonRewardedSlotId == null) {
-                    String message = MengineLog.buildTotalMsg("MengineAppLovinMediationAmazon need to add config value for [%s]", MEDIATION_METADATA_REWARDED_SLOT_ID);
-
-                    throw new RuntimeException(message);
-                }
 
                 m_loadRewardedStatus = ELoadAdStatus.ADLOAD_PROCESS;
 

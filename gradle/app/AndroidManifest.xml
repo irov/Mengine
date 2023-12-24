@@ -33,14 +33,8 @@
         tools:replace="android:label">
 
         <activity
-            android:name="org.Mengine.Base.MengineActivity"
-            android:theme="@style/AppTheme"
-            android:clearTaskOnLaunch="true"
-            android:exported="true"
-            android:launchMode="singleTop"
-            android:keepScreenOn="true"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout"
-            android:screenOrientation="@integer/app_screen_orientation">
+            android:name="org.Mengine.Base.MengineLauncher"
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

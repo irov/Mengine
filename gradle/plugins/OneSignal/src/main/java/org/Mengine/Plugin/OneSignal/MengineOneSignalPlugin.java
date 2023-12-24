@@ -14,13 +14,7 @@ public class MengineOneSignalPlugin extends MenginePlugin implements MenginePlug
 
     @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String MengineOneSignalPlugin_AppId = application.getMetaDataString(PLUGIN_METADATA_APP_ID);
-
-        if (MengineOneSignalPlugin_AppId == null) {
-            this.invalidInitialize("invalid setup meta data [%s]", PLUGIN_METADATA_APP_ID);
-
-            return;
-        }
+        String MengineOneSignalPlugin_AppId = this.getMetaDataString(PLUGIN_METADATA_APP_ID);
 
         this.logInfo("%s: %s"
             , PLUGIN_METADATA_APP_ID

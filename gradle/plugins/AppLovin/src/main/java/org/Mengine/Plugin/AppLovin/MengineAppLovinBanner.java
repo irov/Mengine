@@ -129,7 +129,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
             this.buildAdEvent("mng_ad_banner_load_exception")
                 .addParameterString("placement", placement)
-                .addParameterString("exception", e.getMessage())
+                .addParameterException("exception", e)
                 .log();
 
             m_plugin.setState("applovin.banner.state." + m_adUnitId, "load_exception");

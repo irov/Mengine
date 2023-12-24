@@ -2,8 +2,13 @@ package org.Mengine.Project;
 
 public class FinalApplication extends org.Mengine.Base.MengineApplication {
     @Override
-    public String[] getGradleAndroidPlugins() {
-        return BuildConfig.MENGINE_GRADLE_ANDROID_PLUGINS;
+    public String[] getAndroidPlugins() {
+        return BuildConfig.MENGINE_ANDROID_PLUGINS;
+    }
+
+    @Override
+    public String[] getAndroidActivities() {
+        return BuildConfig.MENGINE_ANDROID_ACTIVITIES;
     }
 
     @Override
@@ -24,5 +29,10 @@ public class FinalApplication extends org.Mengine.Base.MengineApplication {
     @Override
     public boolean isBuildPublish() {
         return BuildConfig.ANDROID_APP_BUILD_PUBLISH;
+    }
+
+    @Override
+    public String getApplicationOptions() {
+        return BuildConfig.MENGINE_APP_OPTIONS;
     }
 }

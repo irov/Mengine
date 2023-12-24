@@ -44,13 +44,7 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String MengineAppsFlyerPlugin_ApiKey = application.getMetaDataString(PLUGIN_METADATA_API_KEY);
-
-        if (MengineAppsFlyerPlugin_ApiKey == null) {
-            this.invalidInitialize("invalid setup meta data [%s]", PLUGIN_METADATA_API_KEY);
-
-            return;
-        }
+        String MengineAppsFlyerPlugin_ApiKey = this.getMetaDataString(PLUGIN_METADATA_API_KEY);
 
         Context context = application.getApplicationContext();
 
@@ -93,16 +87,6 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
                     );
                 }
             });
-    }
-
-    @Override
-    public void onMengineAnalyticsScreenView(MengineApplication application, String screenType, String screenName) {
-        //ToDo
-    }
-
-    @Override
-    public void onMengineAnalyticsFlush(MengineApplication application) {
-        //Empty
     }
 
     private static String getAppsFlyerAdType(MengineAdFormat adType) {

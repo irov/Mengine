@@ -49,6 +49,28 @@ public class MengineAnalyticsEventBuilder {
         return this;
     }
 
+    public MengineAnalyticsEventBuilder addParameterException(String key, Exception e) {
+        this.assertBases(key);
+        this.assertParameters(key);
+
+        String message = e.getMessage();
+
+        m_parameters.put(key, message);
+
+        return this;
+    }
+
+    public MengineAnalyticsEventBuilder addParameterThrowable(String key, Throwable e) {
+        this.assertBases(key);
+        this.assertParameters(key);
+
+        String message = e.getMessage();
+
+        m_parameters.put(key, message);
+
+        return this;
+    }
+
     private void validateJSON(String key, String json) {
         if (json == null || json.isEmpty() == true || json.charAt(0) != '{' || json.charAt(json.length() - 1) != '}') {
             String msg = String.format(Locale.US, "event builder '%s' parameter '%s' invalid json", m_name, key);

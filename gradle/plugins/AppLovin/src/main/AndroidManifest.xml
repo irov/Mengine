@@ -3,9 +3,14 @@
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
     <application>
-        <meta-data android:name="mengine.applovin.is_age_restricted_user" android:value="@bool/mengine_applovin_is_age_restricted_user" />
-        <meta-data android:name="mengine.applovin.CCPA" android:value="@bool/mengine_applovin_CCPA" />
+        <meta-data android:name="mengine.applovin.is_age_restricted_user" android:value="@string/mengine_applovin_is_age_restricted_user" />
+        <meta-data android:name="mengine.applovin.CCPA" android:value="@string/mengine_applovin_CCPA" />
 
         <meta-data android:name="applovin.sdk.key" android:value="@string/mengine_applovin_sdk_key" />
+
+        <activity
+            android:name="org.Mengine.Plugin.AppLovin.MengineAppLovinProxyActivity"
+            android:exported="true">
+        </activity>
     </application>
 </manifest>

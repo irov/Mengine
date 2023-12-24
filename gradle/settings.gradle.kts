@@ -30,7 +30,7 @@ fun includeLibrary(name: String, path: String) {
 }
 
 fun includePlugin(name: String, path: String) {
-    if (getBooleanProperty("MENGINE_APP_PLUGIN_ALL", false) == false && getBooleanProperty(name, false) == false) {
+    if (getBooleanProperty("MENGINE_APP_PLUGIN_ENABLE_ALL", false) == false && getBooleanProperty(name, false) == false) {
         println("\u001b[31m" + "[-] Exclude plugin: $path" + "\u001b[0m")
 
         return;
@@ -52,7 +52,7 @@ if (extra.has("ANDROID_APP_DELIVERY_PACKAGES") == true) {
         var PACKAGE_NAME = PACKAGE_DESC.split(";").get(0)
         var PACKAGE_PATH = PACKAGE_DESC.split(";").getOrNull(1)
 
-        if (PACKAGE_PATH == null) {
+        if (PACKAGE_PATH == null || PACKAGE_PATH == "NO-PATH") {
             println("\u001b[32m" + "[+] Include delivery: :app:$PACKAGE_NAME" + "\u001b[0m")
         } else {
             println("\u001b[32m" + "[+] Include delivery: :app:$PACKAGE_NAME extra path $PACKAGE_PATH" + "\u001b[0m")
@@ -60,7 +60,7 @@ if (extra.has("ANDROID_APP_DELIVERY_PACKAGES") == true) {
 
         include(":app:$PACKAGE_NAME")
 
-        if (PACKAGE_PATH != null) {
+        if (PACKAGE_PATH != null && PACKAGE_PATH != "NO-PATH") {
             val f = File(PACKAGE_PATH)
 
             if (f.exists() == false) {

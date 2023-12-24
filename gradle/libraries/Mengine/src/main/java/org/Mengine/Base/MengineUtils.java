@@ -1,9 +1,12 @@
 package org.Mengine.Base;
 
+import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -13,7 +16,6 @@ import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
@@ -34,6 +36,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -52,7 +55,9 @@ public class MengineUtils {
 
         if (cl == null) {
             if (required == true) {
-                Log.e(TAG, "invalid create new instance: " + name + " ClassLoader is null");
+                MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s ClassLoader is null"
+                    , name
+                );
             }
 
             return null;
@@ -64,7 +69,10 @@ public class MengineUtils {
             return clazz;
         } catch (ClassNotFoundException e) {
             if (required == true) {
-                Log.e(TAG, "[ERROR] invalid create new instance: " + name + " ClassNotFoundException: " + e.getMessage());
+                MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s ClassNotFoundException: %s"
+                    , name
+                    , e.getMessage()
+                );
             }
         }
 
@@ -94,15 +102,30 @@ public class MengineUtils {
 
             return ob;
         } catch (NoSuchMethodException e) {
-            Log.e(TAG, "[ERROR] invalid create mediation extension: " + name + " NoSuchMethodException: " + e.getMessage());
+            MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s NoSuchMethodException: %s"
+                , name
+                , e.getMessage()
+            );
         } catch (IllegalAccessException e) {
-            Log.e(TAG, "[ERROR] invalid create mediation extension: " + name + " IllegalAccessException: " + e.getMessage());
+            MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s IllegalAccessException: %s"
+                , name
+                , e.getMessage()
+            );
         } catch (InstantiationException e) {
-            Log.e(TAG, "[ERROR] invalid create mediation extension: " + name + " InstantiationException: " + e.getMessage());
+            MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s InstantiationException: %s"
+                , name
+                , e.getMessage()
+            );
         } catch (InvocationTargetException e) {
-            Log.e(TAG, "[ERROR] invalid create mediation extension: " + name + " InvocationTargetException: " + e.getMessage());
+            MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s InvocationTargetException: %s"
+                , name
+                , e.getMessage()
+            );
         } catch (NullPointerException e) {
-            Log.e(TAG, "[ERROR] invalid create mediation extension: " + name + " NullPointerException: " + e.getMessage());
+            MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s NullPointerException: %s"
+                , name
+                , e.getMessage()
+            );
         }
 
         return null;
@@ -554,5 +577,74 @@ public class MengineUtils {
         }
 
         return true;
+    }
+
+    public static void startChainActivity(Activity activity, String className, ArrayList<String> activities) throws MengineChainActivityNotFoundException {
+        Class<?> intentClazz = MengineUtils.getClazz(TAG, className, true);
+
+        if (intentClazz == null) {
+            throw new MengineChainActivityNotFoundException(className, "not found chain activity class");
+        }
+
+        Intent intent = new Intent(activity, intentClazz);
+        intent.putStringArrayListExtra("MENGINE_NEXT_ACTIVITIES", activities);
+        activity.startActivity(intent);
+        activity.finish();
+    }
+
+    public static void nextChainActivity(Activity activity) throws MengineChainActivityNotFoundException {
+        Intent intent = activity.getIntent();
+
+        ArrayList<String> activities = intent.getStringArrayListExtra("MENGINE_NEXT_ACTIVITIES");
+
+        String nextClassName = activities.get(0);
+        activities.remove(0);
+
+        MengineUtils.startChainActivity(activity, nextClassName, activities);
+    }
+
+    public static void showToast(Context context, String format, Object ... args) {
+        String message = MengineLog.buildTotalMsg(format, args);
+
+        Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+
+        toast.show();
+    }
+
+    public static void showAlertDialog(Context context, Runnable cb, String format, Object ... args) {
+        String message = MengineLog.buildTotalMsg(format, args);
+
+        MengineLog.logMessage(TAG, "show alert dialog: %s"
+            , message
+        );
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                cb.run();
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+
+        alert.show();
+    }
+
+    public static void finishActivityWithAlertDialog(Activity activity, String format, Object... args) {
+        MengineLog.logError(TAG, format, args);
+
+        MengineUtils.performOnMainThreadDelayed(() -> {
+            MengineUtils.showAlertDialog(activity, new Runnable() {
+                @Override
+                public void run() {
+                    activity.finish();
+                }
+            }, format, args);
+        }, 0);
     }
 }

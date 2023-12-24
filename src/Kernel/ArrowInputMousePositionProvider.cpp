@@ -16,11 +16,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ArrowInputMousePositionProvider::onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position, float _pressure )
+    void ArrowInputMousePositionProvider::onMousePositionChange( ETouchCode _touchId, const mt::vec2f & _position, float _pressure )
     {
         MENGINE_UNUSED( _pressure );
 
-        if( _touchId != 0 )
+        if( _touchId != TC_TOUCH0 )
         {
             return;
         }

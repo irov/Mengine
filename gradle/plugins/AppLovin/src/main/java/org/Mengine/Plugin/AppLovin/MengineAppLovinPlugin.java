@@ -1,13 +1,19 @@
 package org.Mengine.Plugin.AppLovin;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
+import com.applovin.mediation.MaxMediatedNetworkInfo;
+import com.applovin.sdk.AppLovinCmpError;
+import com.applovin.sdk.AppLovinCmpService;
+import com.applovin.sdk.AppLovinMediationProvider;
 import com.applovin.sdk.AppLovinPrivacySettings;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
+import com.applovin.sdk.AppLovinSdkSettings;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
@@ -15,15 +21,20 @@ import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
+import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MenginePluginProxyActivity;
+import org.Mengine.Base.MenginePluginProxyActivityListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
-public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginActivityListener {
+public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginActivityListener, MenginePluginProxyActivityListener {
     public static final String PLUGIN_NAME = "AppLovin";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -75,6 +86,8 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
      * void showMediationDebugger()
      */
 
+    private AppLovinSdk m_appLovinSdk;
+
     private Map<String, MengineAppLovinBanner> m_banners;
     private Map<String, MengineAppLovinInterstitial> m_interstitials;
     private Map<String, MengineAppLovinRewarded> m_rewardeds;
@@ -85,29 +98,118 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
     @Override
     public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (event == MengineEvent.EVENT_ADVERTISING_ID) {
-            final Context context = application.getApplicationContext();
-
-            String advertisingId = (String)args[0];
-            boolean advertisingLimitTrackingEnabled = (boolean)args[1];
-
-            if (advertisingLimitTrackingEnabled == true) {
-                this.logMessage("setHasUserConsent: false");
-
-                AppLovinPrivacySettings.setHasUserConsent(false, context);
-            } else {
-                this.logMessage("setHasUserConsent: true");
-
-                AppLovinPrivacySettings.setHasUserConsent(true, context);
-            }
-        } else if (event == MengineEvent.EVENT_SESSION_ID) {
-            Context context = application.getApplicationContext();
-            AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(context);
-
+        if (event == MengineEvent.EVENT_SESSION_ID) {
             String sessionId = (String)args[0];
 
-            appLovinSdk.setUserIdentifier(sessionId);
+            if (m_appLovinSdk != null) {
+                m_appLovinSdk.setUserIdentifier(sessionId);
+            }
         }
+    }
+
+    @Override
+    public void onProxyActivityCreate(MenginePluginProxyActivity activity, Bundle savedInstanceState, Runnable complete) throws MenginePluginInvalidInitializeException {
+        String MengineAppLovinPlugin_IsAgeRestrictedUser = this.getMetaDataString(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER);
+
+        this.logMessage("%s: %b"
+            , PLUGIN_METADATA_IS_AGE_RESTRICTED_USER
+            , MengineAppLovinPlugin_IsAgeRestrictedUser
+        );
+
+        if (MengineAppLovinPlugin_IsAgeRestrictedUser.equalsIgnoreCase("YES") == true) {
+            AppLovinPrivacySettings.setIsAgeRestrictedUser(true, activity);
+        } else if (MengineAppLovinPlugin_IsAgeRestrictedUser.equalsIgnoreCase("NO") == true) {
+            AppLovinPrivacySettings.setIsAgeRestrictedUser(false, activity);
+        } else if (MengineAppLovinPlugin_IsAgeRestrictedUser.equalsIgnoreCase("UNKNOWN") == true) {
+            //Nothing
+        } else {
+            this.invalidInitialize("invalid %s: %s [YES|NO|UNKNOWN]"
+                , PLUGIN_METADATA_IS_AGE_RESTRICTED_USER
+                , MengineAppLovinPlugin_IsAgeRestrictedUser
+            );
+        }
+
+        String MengineAppLovinPlugin_CCPA = this.getMetaDataString(PLUGIN_METADATA_CCPA);
+
+        this.logMessage("%s: %b"
+            , PLUGIN_METADATA_CCPA
+            , MengineAppLovinPlugin_CCPA
+        );
+
+        if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("YES") == true) {
+            AppLovinPrivacySettings.setDoNotSell(true, activity);
+        } else if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("NO") == true) {
+            AppLovinPrivacySettings.setDoNotSell(false, activity);
+        } else if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("UNKNOWN") == true) {
+            //Nothing
+        } else {
+            this.invalidInitialize("invalid %s: %s [YES|NO|UNKNOWN]"
+                , PLUGIN_METADATA_CCPA
+                , MengineAppLovinPlugin_CCPA
+            );
+        }
+
+        AppLovinSdkSettings settings = new AppLovinSdkSettings(activity);
+
+        AppLovinSdkSettings.TermsAndPrivacyPolicyFlowSettings termsAndPrivacyPolicyFlowSettings = settings.getTermsAndPrivacyPolicyFlowSettings();
+
+        termsAndPrivacyPolicyFlowSettings.setEnabled(true);
+
+        String privacy_policy_url = activity.getString(R.string.privacy_policy_url);
+        termsAndPrivacyPolicyFlowSettings.setPrivacyPolicyUri(Uri.parse(privacy_policy_url));
+
+        String terms_of_service_url = activity.getString(R.string.terms_of_service_url);
+        termsAndPrivacyPolicyFlowSettings.setTermsOfServiceUri(Uri.parse(terms_of_service_url));
+
+        if (this.hasOption("applovinconsentflowusergeographygdpr") == true) {
+            termsAndPrivacyPolicyFlowSettings.setDebugUserGeography(AppLovinSdkConfiguration.ConsentFlowUserGeography.GDPR);
+        } else if (this.hasOption("applovinconsentflowusergeographyother") == true) {
+            termsAndPrivacyPolicyFlowSettings.setDebugUserGeography(AppLovinSdkConfiguration.ConsentFlowUserGeography.OTHER);
+        }
+
+        if (BuildConfig.DEBUG == true) {
+            settings.setCreativeDebuggerEnabled(true);
+        } else {
+            settings.setCreativeDebuggerEnabled(false);
+        }
+
+        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(settings, activity);
+
+        appLovinSdk.setMediationProvider(AppLovinMediationProvider.MAX);
+
+        MengineApplication application = this.getMengineApplication();
+
+        String sessionId = application.getSessionId();
+        appLovinSdk.setUserIdentifier(sessionId);
+
+        appLovinSdk.initializeSdk(new AppLovinSdk.SdkInitializationListener() {
+            @Override
+            public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
+                AppLovinCmpService cmpService = appLovinSdk.getCmpService();
+                boolean supportedCmp = cmpService.hasSupportedCmp();
+
+                MengineAppLovinPlugin.this.logMessage("AppLovinSdk initialized CMP: %b TestMode: %b CountryCode: %s AmazonAdUnitIds: %s ConsentFlowUserGeography: %s"
+                    , supportedCmp
+                    , configuration.isTestModeEnabled()
+                    , configuration.getCountryCode()
+                    , configuration.getEnabledAmazonAdUnitIds()
+                    , configuration.getConsentFlowUserGeography().toString()
+                );
+
+                List<MaxMediatedNetworkInfo> availableMediatedNetworks = appLovinSdk.getAvailableMediatedNetworks();
+
+                for (MaxMediatedNetworkInfo networkInfo : availableMediatedNetworks) {
+                    MengineAppLovinPlugin.this.logMessage("Available Mediated Network: %s [%s]"
+                        , networkInfo.getName()
+                        , networkInfo.getAdapterVersion()
+                    );
+                }
+
+                MengineAppLovinPlugin.this.m_appLovinSdk = appLovinSdk;
+
+                complete.run();
+            }
+        });
     }
 
     @Override
@@ -116,8 +218,6 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         m_interstitials = new HashMap<>();
         m_rewardeds = new HashMap<>();
 
-        final Context context = activity.getApplicationContext();
-
         MengineAppLovinMediationInterface mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
 
         if (mediationAmazon != null) {
@@ -125,46 +225,6 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
             m_mediationAmazon = mediationAmazon;
         }
-
-        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(context);
-
-        appLovinSdk.setMediationProvider("max");
-
-        boolean MengineAppLovinPlugin_IsAgeRestrictedUser = activity.getMetaDataBoolean(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER, false);
-
-        this.logMessage("%s: %b"
-            , PLUGIN_METADATA_IS_AGE_RESTRICTED_USER
-            , MengineAppLovinPlugin_IsAgeRestrictedUser
-        );
-
-        AppLovinPrivacySettings.setIsAgeRestrictedUser(MengineAppLovinPlugin_IsAgeRestrictedUser, context);
-
-        boolean MengineAppLovinPlugin_CCPA = activity.getMetaDataBoolean(PLUGIN_METADATA_CCPA, true);
-
-        this.logMessage("%s: %b"
-            , PLUGIN_METADATA_CCPA
-            , MengineAppLovinPlugin_CCPA
-        );
-
-        AppLovinPrivacySettings.setDoNotSell(MengineAppLovinPlugin_CCPA, context);
-
-        if (BuildConfig.DEBUG == true) {
-            appLovinSdk.getSettings().setCreativeDebuggerEnabled(true);
-        } else {
-            appLovinSdk.getSettings().setCreativeDebuggerEnabled(false);
-        }
-
-        AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
-            @Override
-            public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
-                MengineAppLovinPlugin.this.logMessage("AppLovinSdk initialized country: %s AmazonAdUnitIds: %s"
-                    , configuration.getCountryCode()
-                    , configuration.getEnabledAmazonAdUnitIds()
-                );
-
-                MengineAppLovinPlugin.this.activateSemaphore("AppLovinSdkInitialized");
-            }
-        });
 
         if (BuildConfig.DEBUG == true) {
             this.showMediationDebugger();
@@ -177,6 +237,8 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
             m_nonetBanners = nonetBanners;
         }
+
+        MengineAppLovinPlugin.this.activateSemaphore("AppLovinSdkInitialized");
     }
 
     @Override
@@ -442,21 +504,41 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         application.onMengineAdRevenue(revenue);
     }
 
-    public void showCreativeDebugger() {
+    public void showConsentFlow() {
         MengineActivity activity = this.getMengineActivity();
 
-        final Context context = activity.getBaseContext();
+        AppLovinCmpService cmpService = m_appLovinSdk.getCmpService();
 
-        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(context);
-        appLovinSdk.showCreativeDebugger();
+        cmpService.showCmpForExistingUser(activity, new AppLovinCmpService.OnCompletedListener() {
+            @Override
+            public void onCompleted(final AppLovinCmpError error) {
+                if (error != null) {
+                    MengineAppLovinPlugin.this.logError("Failed to show consent dialog error: %s [%d]"
+                        , error.getMessage()
+                        , error.getCode()
+                    );
+
+                    return;
+                }
+
+                MengineAppLovinPlugin.this.logMessage("Consent dialog was shown");
+            }
+        } );
+    }
+
+    public void showCreativeDebugger() {
+        if (m_appLovinSdk == null) {
+            return;
+        }
+
+        m_appLovinSdk.showCreativeDebugger();
     }
 
     public void showMediationDebugger() {
-        MengineActivity activity = this.getMengineActivity();
+        if (m_appLovinSdk == null) {
+            return;
+        }
 
-        final Context context = activity.getBaseContext();
-
-        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(context);
-        appLovinSdk.showMediationDebugger();
+        m_appLovinSdk.showMediationDebugger();
     }
 }

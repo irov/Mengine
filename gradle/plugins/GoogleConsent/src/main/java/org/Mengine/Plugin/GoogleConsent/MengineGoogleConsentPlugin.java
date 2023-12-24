@@ -2,6 +2,8 @@ package org.Mengine.Plugin.GoogleConsent;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MenginePluginActivityListener;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,11 +15,11 @@ import com.google.android.ump.ConsentRequestParameters;
 import com.google.android.ump.FormError;
 import com.google.android.ump.UserMessagingPlatform;
 
-public class MengineGoogleConsentPlugin extends MenginePlugin {
+public class MengineGoogleConsentPlugin extends MenginePlugin implements MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "GoogleConsent";
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         final Context context = activity.getBaseContext();
 
         ConsentRequestParameters.Builder builder = new ConsentRequestParameters.Builder();
@@ -96,7 +98,7 @@ public class MengineGoogleConsentPlugin extends MenginePlugin {
     }
 
     public void resetConsentInformation() {
-        MengineActivity activity = this.getActivity();
+        MengineActivity activity = this.getMengineActivity();
 
         ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(activity);
         consentInformation.reset();

@@ -3629,9 +3629,8 @@ namespace Mengine
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_CLOSE, "The window manager requests that the window be closed" );
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_TAKE_FOCUS, "Window is being offered a focus (should SetWindowInputFocus() on itself or a subwindow, or ignore)" );
                 MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_HIT_TEST, "Window had a hit test that wasn't SDL_HITTEST_NORMAL." );
-            default:
-                {
-                }break;
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_ICCPROF_CHANGED, "The ICC profile of the window's display has changed." );
+                MENGINE_MESSAGE_CASE( SDL_WINDOWEVENT_DISPLAY_CHANGED, "Window has been moved to display data1." );
             }
 
             return "Unknown";

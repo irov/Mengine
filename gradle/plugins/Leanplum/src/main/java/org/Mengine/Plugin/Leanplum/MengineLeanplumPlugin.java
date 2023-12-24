@@ -30,16 +30,10 @@ public class MengineLeanplumPlugin extends MenginePlugin implements MenginePlugi
 
     @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String AppId = application.getMetaDataString(PLUGIN_METADATA_APP_ID);
-        String DevKey = application.getMetaDataString(PLUGIN_METADATA_DEV_KEY);
-        String ProdKey = application.getMetaDataString(PLUGIN_METADATA_PROD_KEY);
-        String Environment = application.getMetaDataString(PLUGIN_METADATA_ENVIRONMENT);
-
-        if (AppId == null) {
-            this.invalidInitialize("invalid setup meta data [%s]", PLUGIN_METADATA_APP_ID);
-
-            return;
-        }
+        String AppId = this.getMetaDataString(PLUGIN_METADATA_APP_ID);
+        String DevKey = this.getMetaDataString(PLUGIN_METADATA_DEV_KEY);
+        String ProdKey = this.getMetaDataString(PLUGIN_METADATA_PROD_KEY);
+        String Environment = this.getMetaDataString(PLUGIN_METADATA_ENVIRONMENT);
 
         this.logInfo("%s: %s"
             , PLUGIN_METADATA_APP_ID
@@ -47,33 +41,15 @@ public class MengineLeanplumPlugin extends MenginePlugin implements MenginePlugi
         );
 
         if (BuildConfig.DEBUG) {
-            if (DevKey == null) {
-                this.invalidInitialize("invalid setup meta data [%s]", PLUGIN_METADATA_DEV_KEY);
-
-                return;
-            }
-
             this.logInfo("%s: %s"
                 , PLUGIN_METADATA_DEV_KEY
                 , DevKey
             );
         } else {
-            if (ProdKey == null) {
-                this.invalidInitialize("invalid setup meta data [%s]", PLUGIN_METADATA_PROD_KEY);
-
-                return;
-            }
-
             this.logInfo("%s: %s"
                 , PLUGIN_METADATA_PROD_KEY
                 , ProdKey
             );
-        }
-
-        if (AppId == null) {
-            this.invalidInitialize("invalid setup meta data [%s]", PLUGIN_METADATA_ENVIRONMENT);
-
-            return;
         }
 
         this.logInfo("%s: %s"
@@ -88,9 +64,9 @@ public class MengineLeanplumPlugin extends MenginePlugin implements MenginePlugi
 
         if (BuildConfig.DEBUG) {
             Leanplum.setLogLevel(Log.Level.DEBUG);
-            Leanplum.setAppIdForDevelopmentMode("Your App ID", "Your Development Key");
+            Leanplum.setAppIdForDevelopmentMode(AppId, DevKey);
         } else {
-            Leanplum.setAppIdForProductionMode("Your App ID", "Your Production Key");
+            Leanplum.setAppIdForProductionMode(AppId, ProdKey);
         }
 
         Leanplum.start(application);

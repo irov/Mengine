@@ -1,10 +1,12 @@
 package org.Mengine.Base;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -45,10 +47,6 @@ public class MengineApplication extends Application {
         return AndroidEnv_isMasterRelease();
     }
 
-    public boolean isBuildPublish() {
-        return false;
-    }
-
     public String getEngineGITSHA1() {
         return AndroidEnv_getEngineGITSHA1();
     }
@@ -70,6 +68,9 @@ public class MengineApplication extends Application {
     private long m_sessionIndex = -1;
     private String m_sessionId;
     private long m_sessionTimestamp = -1;
+
+    private boolean m_invalidInitialize = false;
+    private String m_invalidInitializeReason = null;
 
     private boolean m_networkAvailable = false;
     private boolean m_networkUnmetered = false;
@@ -94,10 +95,16 @@ public class MengineApplication extends Application {
     private final Object m_syncEvent = new Object();
     private final Object m_syncState = new Object();
 
-    public String[] getGradleAndroidPlugins() {
+    public String[] getAndroidPlugins() {
         String[] plugins = {};
 
         return plugins;
+    }
+
+    public String[] getAndroidActivities() {
+        String[] activities = {};
+
+        return activities;
     }
 
     public String getApplicationId() {
@@ -112,16 +119,26 @@ public class MengineApplication extends Application {
         return "";
     }
 
+    public boolean isBuildPublish() {
+        return false;
+    }
+
+    public String getApplicationOptions() {
+        return "";
+    }
+
     public MengineApplication() {
         super();
 
-        String[] plugins = this.getGradleAndroidPlugins();
+        String[] plugins = this.getAndroidPlugins();
 
         for (String namePlugin : plugins) {
             if (this.createPlugin(namePlugin) == false) {
                 this.invalidInitialize("invalid create plugin: %s"
                     , namePlugin
                 );
+
+                return;
             }
         }
     }
@@ -171,52 +188,67 @@ public class MengineApplication extends Application {
         return true;
     }
 
-    public String getMetaDataString(String name) {
+    private Bundle assertMetaDataBundle(String name) {
         Bundle bundle = this.getMetaDataBundle();
 
         if (bundle == null) {
-            return null;
+            String msg = String.format(Locale.US, "invalid get meta data bundle for [%s]", name);
+            throw new RuntimeException(msg);
         }
+
+        if (bundle.containsKey(name) == false) {
+            String msg = String.format(Locale.US, "invalid setup meta data [%s]", name);
+            throw new RuntimeException(msg);
+        }
+
+        return bundle;
+    }
+
+    public String getMetaDataString(String name) {
+        Bundle bundle = this.assertMetaDataBundle(name);
 
         String value = bundle.getString(name);
 
-        return value;
-    }
-
-    public boolean getMetaDataBoolean(String name, boolean d) {
-        Bundle bundle = this.getMetaDataBundle();
-
-        if (bundle == null) {
-            return d;
+        if (value == null) {
+            String msg = String.format(Locale.US, "invalid setup meta data [%s]", name);
+            throw new RuntimeException(msg);
         }
-
-        boolean value = bundle.getBoolean(name, d);
 
         return value;
     }
 
-    public int getMetaDataInteger(String name, int d) {
-        Bundle bundle = this.getMetaDataBundle();
+    public boolean getMetaDataBoolean(String name) {
+        Bundle bundle = this.assertMetaDataBundle(name);
 
-        if (bundle == null) {
-            return d;
-        }
-
-        int value = bundle.getInt(name, d);
+        boolean value = bundle.getBoolean(name);
 
         return value;
     }
 
-    public long getMetaDataLong(String name, long d) {
-        Bundle bundle = this.getMetaDataBundle();
+    public int getMetaDataInteger(String name) {
+        Bundle bundle = this.assertMetaDataBundle(name);
 
-        if (bundle == null) {
-            return d;
-        }
-
-        long value = bundle.getLong(name, d);
+        int value = bundle.getInt(name);
 
         return value;
+    }
+
+    public boolean hasOption(String option) {
+        String options_str = this.getApplicationOptions();
+
+        String [] options = options_str.split(" ");
+
+        for(String o : options) {
+            if (o.equals("-" + option) == true) {
+                return true;
+            }
+
+            if (o.equals("--" + option) == true) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public String getAndroidId() {
@@ -555,39 +587,6 @@ public class MengineApplication extends Application {
         return settings;
     }
 
-    public void showToast(String format, Object ... args) {
-        String message = MengineLog.buildTotalMsg(format, args);
-
-        Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
-
-        toast.show();
-    }
-
-    public void showAlertDialog(String format, Object ... args) {
-        String message = MengineLog.buildTotalMsg(format, args);
-
-        MengineLog.logMessage(TAG, "show alert dialog: %s"
-            , message
-        );
-
-        Context context = this.getApplicationContext();
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-        builder.setMessage(message);
-        builder.setCancelable(false);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog alert = builder.create();
-
-        alert.show();
-    }
-
     public void sendEvent(MengineEvent event, Object ... args) {
         List<MenginePlugin> plugins = this.getPlugins();
 
@@ -726,9 +725,21 @@ public class MengineApplication extends Application {
         m_networkCallback = null;
     }
 
+    public boolean isInvalidInitialize() {
+        return m_invalidInitialize;
+    }
+
+    public String getInvalidInitializeReason() {
+        return m_invalidInitializeReason;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (m_invalidInitialize == true) {
+            return;
+        }
 
         boolean isMainProcess = this.isMainProcess();
         String versionName = this.getVersionName();
@@ -755,6 +766,8 @@ public class MengineApplication extends Application {
                     , l.getPluginName()
                     , e.getMessage()
                 );
+
+                return;
             }
         }
 
@@ -771,13 +784,25 @@ public class MengineApplication extends Application {
         try {
             SDL.loadLibrary("SDLApplication");
         } catch (UnsatisfiedLinkError e) {
+            MengineAnalytics.buildEvent("mng_app_init_failed")
+                .addParameterThrowable("exception", e)
+                .logAndFlush();
+
             this.invalidInitialize("load library SDLApplication catch UnsatisfiedLinkError: %s"
                 , e.getMessage()
             );
+
+            return;
         } catch (Exception e) {
+            MengineAnalytics.buildEvent("mng_app_init_failed")
+                .addParameterException("exception", e)
+                .logAndFlush();
+
             this.invalidInitialize("load library SDLApplication catch Exception: %s"
                 , e.getMessage()
             );
+
+            return;
         }
 
         this.setState("application.init", "sdl_init");
@@ -787,7 +812,7 @@ public class MengineApplication extends Application {
         MengineLog.setMengineApplication(this);
         MengineAnalytics.setMengineApplication(this);
 
-        if (this.getMetaDataBoolean("mengine.secure.allow_android_id", true) == true) {
+        if (this.getMetaDataBoolean("mengine.secure.allow_android_id") == true) {
             m_androidId = this.getSecureAndroidId();
         } else {
             m_androidId = "0000000000000000";
@@ -925,15 +950,21 @@ public class MengineApplication extends Application {
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
                 MengineLog.logMessage(TAG, "onAppPrepare plugin: %s"
-                        , l.getPluginName()
+                    , l.getPluginName()
                 );
 
                 l.onAppPrepare(this);
             } catch (MenginePluginInvalidInitializeException e) {
+                MengineAnalytics.buildEvent("mng_app_init_failed")
+                    .addParameterException("exception", e)
+                    .logAndFlush();
+
                 this.invalidInitialize("onAppPrepare plugin: %s exception: %s"
                     , l.getPluginName()
                     , e.getMessage()
                 );
+
+                return;
             }
         }
 
@@ -965,10 +996,16 @@ public class MengineApplication extends Application {
                     .addParameterLong("time", MengineUtils.getDurationTimestamp(app_init_plugin_start_timestamp))
                     .logAndFlush();
             } catch (MenginePluginInvalidInitializeException e) {
+                MengineAnalytics.buildEvent("mng_app_init_failed")
+                    .addParameterException("exception", e)
+                    .logAndFlush();
+
                 this.invalidInitialize("onAppCreate plugin: %s exception: %s"
                     , l.getPluginName()
                     , e.getMessage()
                 );
+
+                return;
             }
         }
 
@@ -1148,6 +1185,7 @@ public class MengineApplication extends Application {
     private void invalidInitialize(String format, Object ... args) {
         String msg = MengineLog.logError(TAG, format, args);
 
-        throw new RuntimeException(msg);
+        m_invalidInitialize = true;
+        m_invalidInitializeReason = msg;
     }
 }

@@ -1,7 +1,7 @@
 package org.Mengine.Plugin.Flurry;
 
-import android.util.Log;
 import android.content.Context;
+import android.util.Log;
 
 import com.flurry.android.FlurryAgent;
 import com.flurry.android.FlurryAgentListener;
@@ -36,13 +36,7 @@ public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginA
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String metadata_api_key = application.getMetaDataString(PLUGIN_METADATA_API_KEY);
-
-        if (metadata_api_key == null) {
-            this.invalidInitialize("invalid setup meta data [%s]", PLUGIN_METADATA_API_KEY);
-
-            return;
-        }
+        String MengineFlurryPlugin_ApiKey = this.getMetaDataString(PLUGIN_METADATA_API_KEY);
 
         Context context = application.getApplicationContext();
 
@@ -51,24 +45,25 @@ public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginA
         builder.withIncludeBackgroundSessionsInMetrics(true);
         builder.withPerformanceMetrics(FlurryPerformance.ALL);
         builder.withLogEnabled(true);
+
         if (BuildConfig.DEBUG) {
             builder.withLogLevel(Log.VERBOSE);
         } else {
             builder.withLogLevel(Log.ERROR);
         }
+
         builder.withListener(this);
-        builder.build(context, metadata_api_key);
+        builder.build(context, MengineFlurryPlugin_ApiKey);
     }
 
     @Override
-    public void onSessionStarted()
-    {
+    public void onSessionStarted() {
         this.logInfo("Flurry session started");
     }
 
     @Override
     public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
 
         for (Map.Entry<String, Object> entry : bases.entrySet()) {
             String key = entry.getKey();
@@ -118,19 +113,9 @@ public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginA
 
         if (status != FlurryEventRecordStatus.kFlurryEventRecorded) {
             this.logError("[ERROR] failed to log event: %s status: %s"
-                    , eventName
-                    , status
+                , eventName
+                , status
             );
         }
-    }
-
-    @Override
-    public void onMengineAnalyticsScreenView(MengineApplication application, String screenType, String screenName) {
-        //ToDo
-    }
-
-    @Override
-    public void onMengineAnalyticsFlush(MengineApplication application) {
-        //ToDo
     }
 }

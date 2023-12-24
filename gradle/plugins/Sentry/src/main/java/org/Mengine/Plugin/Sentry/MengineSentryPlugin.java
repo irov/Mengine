@@ -45,20 +45,14 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
             return;
         }
 
-        String MengineSentryPlugin_DSN = application.getMetaDataString(PLUGIN_METADATA_DSN);
-
-        if (MengineSentryPlugin_DSN == null) {
-            this.invalidInitialize("invalid setup meta data [%s]", PLUGIN_METADATA_DSN);
-
-            return;
-        }
+        String MengineSentryPlugin_DSN = this.getMetaDataString(PLUGIN_METADATA_DSN);
 
         this.logInfo("%s: %s"
             , PLUGIN_METADATA_DSN
             , MengineSentryPlugin_DSN
         );
 
-        boolean MengineSentryPlugin_EnableUncaughtExceptionHandler = application.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER, true);
+        boolean MengineSentryPlugin_EnableUncaughtExceptionHandler = this.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER);
 
         this.logInfo("%s: %b"
             , PLUGIN_METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER

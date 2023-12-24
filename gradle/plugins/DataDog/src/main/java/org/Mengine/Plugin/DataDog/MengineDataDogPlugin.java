@@ -44,13 +44,7 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String MengineDataDogPlugin_Site = application.getMetaDataString(PLUGIN_METADATA_SITE);
-
-        if (MengineDataDogPlugin_Site == null) {
-            this.invalidInitialize("initialize unsetup [%s]", PLUGIN_METADATA_SITE);
-
-            return;
-        }
+        String MengineDataDogPlugin_Site = this.getMetaDataString(PLUGIN_METADATA_SITE);
 
         this.logInfo("%s: %s"
             , PLUGIN_METADATA_SITE
@@ -77,13 +71,7 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
             return;
         }
 
-        String MengineDataDogPlugin_ClientToken = application.getMetaDataString(PLUGIN_METADATA_CLIENT_TOKEN);
-
-        if (MengineDataDogPlugin_ClientToken == null) {
-            this.invalidInitialize("initialize unsetup [%s]", PLUGIN_METADATA_CLIENT_TOKEN);
-
-            return;
-        }
+        String MengineDataDogPlugin_ClientToken = this.getMetaDataString(PLUGIN_METADATA_CLIENT_TOKEN);
 
         this.logInfo("%s: %s"
             , PLUGIN_METADATA_CLIENT_TOKEN
@@ -99,7 +87,7 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
             .useSite(site)
             .build();
 
-        String MengineDataDogPlugin_ServiceName = application.getMetaDataString(PLUGIN_METADATA_SERVICE_NAME);
+        String MengineDataDogPlugin_ServiceName = this.getMetaDataString(PLUGIN_METADATA_SERVICE_NAME);
 
         this.logInfo("%s: %s"
             , PLUGIN_METADATA_SERVICE_NAME

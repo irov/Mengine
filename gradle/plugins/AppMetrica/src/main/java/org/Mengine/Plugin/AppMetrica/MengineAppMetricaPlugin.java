@@ -54,23 +54,17 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
 
     @Override
     public void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
-        String MengineAppMetricaPlugin_ApiKey = application.getMetaDataString(PLUGIN_METADATA_API_KEY);
-
-        if (MengineAppMetricaPlugin_ApiKey == null) {
-            this.invalidInitialize("invalid setup meta data [%s]", PLUGIN_METADATA_API_KEY);
-
-            return;
-        }
+        String MengineAppMetricaPlugin_ApiKey = this.getMetaDataString(PLUGIN_METADATA_API_KEY);
 
         String AppVersion = application.getVersionName();
 
-        boolean MengineAppMetricaPlugin_CrashReporting = application.getMetaDataBoolean(PLUGIN_METADATA_CRASH_REPORTING, true);
-        boolean MengineAppMetricaPlugin_NativeCrashReporting = application.getMetaDataBoolean(PLUGIN_METADATA_NATIVE_CRASH_REPORTING, true);
-        int MengineAppMetricaPlugin_SessionTimeout = application.getMetaDataInteger(PLUGIN_METADATA_SESSION_TIMEOUT, 300);
-        boolean MengineAppMetricaPlugin_LocationTracking = application.getMetaDataBoolean(PLUGIN_METADATA_LOCATION_TRACKING, false);
-        boolean MengineAppMetricaPlugin_Logs = application.getMetaDataBoolean(PLUGIN_METADATA_LOGS, true);
-        boolean MengineAppMetricaPlugin_HandleFirstActivationAsUpdate = application.getMetaDataBoolean(PLUGIN_METADATA_HANDLE_FIRST_ACTIVATION_AS_UPDATE, false);
-        boolean MengineAppMetricaPlugin_StatisticSending = application.getMetaDataBoolean(PLUGIN_METADATA_STATISTICS_SENDING, true);
+        boolean MengineAppMetricaPlugin_CrashReporting = this.getMetaDataBoolean(PLUGIN_METADATA_CRASH_REPORTING);
+        boolean MengineAppMetricaPlugin_NativeCrashReporting = this.getMetaDataBoolean(PLUGIN_METADATA_NATIVE_CRASH_REPORTING);
+        int MengineAppMetricaPlugin_SessionTimeout = this.getMetaDataInteger(PLUGIN_METADATA_SESSION_TIMEOUT);
+        boolean MengineAppMetricaPlugin_LocationTracking = this.getMetaDataBoolean(PLUGIN_METADATA_LOCATION_TRACKING);
+        boolean MengineAppMetricaPlugin_Logs = this.getMetaDataBoolean(PLUGIN_METADATA_LOGS);
+        boolean MengineAppMetricaPlugin_HandleFirstActivationAsUpdate = this.getMetaDataBoolean(PLUGIN_METADATA_HANDLE_FIRST_ACTIVATION_AS_UPDATE);
+        boolean MengineAppMetricaPlugin_StatisticSending = this.getMetaDataBoolean(PLUGIN_METADATA_STATISTICS_SENDING);
 
         YandexMetricaConfig.Builder builder = YandexMetricaConfig
             .newConfigBuilder(MengineAppMetricaPlugin_ApiKey)
@@ -104,11 +98,6 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
         params.putAll(parameters);
 
         YandexMetrica.reportEvent(eventName, params);
-    }
-
-    @Override
-    public void onMengineAnalyticsScreenView(MengineApplication application, String screenType, String screenName) {
-        //ToDo
     }
 
     @Override

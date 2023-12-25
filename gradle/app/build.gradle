@@ -724,6 +724,14 @@ if (project.hasProperty("MENGINE_APP_OPTIONS")) {
             buildConfigField "String", "MENGINE_APP_OPTIONS", "\"${MENGINE_APP_OPTIONS}\""
         }
     }
+} else {
+    println "MENGINE_APP_OPTIONS:"
+
+    android {
+        defaultConfig {
+            buildConfigField "String", "MENGINE_APP_OPTIONS", "\"\""
+        }
+    }
 }
 
 android {

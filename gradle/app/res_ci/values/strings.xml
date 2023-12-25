@@ -1,4 +1,5 @@
 <resources>
     <bool name="mengine_session_use_install_key" translatable="false">false</bool>
     <bool name="mengine_secure_allow_android_id" translatable="false">true</bool>
+    <integer name="app_screen_orientation">7</integer>
 </resources>

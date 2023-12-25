@@ -26,13 +26,16 @@ src
 
     AppleAppLovinAnalyticsService.h
     AppleAppLovinAnalyticsService.mm
+    
+    AppleAppLovinApplicationDelegate.h
+    AppleAppLovinApplicationDelegate.mm
 )
 
 if(MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS)
     ADD_FILTER(
-    firebase
-	AppleAppLovinFirebaseAnalytics.h
-	AppleAppLovinFirebaseAnalytics.mm
+        firebase
+        AppleAppLovinFirebaseAnalytics.h
+        AppleAppLovinFirebaseAnalytics.mm
     )
 endif()
 
@@ -67,6 +70,8 @@ ADD_MENGINE_APPLE_PLUGIN(MENGINE_PLUGIN_APPLE_APPLOVIN)
 
 ADD_MENGINE_COCOAPOD("GoogleUtilities" "NO-GIT" "NO-TAG")
 ADD_MENGINE_COCOAPOD("AppLovinSDK" "NO-GIT" "12.1.0")
+
+ADD_MENGINE_IOS_APPLICATION_DELEGATE("AppleAppLovinApplicationDelegate")
 
 macro(ADD_APPLOVIN_MEDIATION MEDIATION POD VERSION)
     ADD_PLUGIN_OPTION(MENGINE_PLUGIN_APPLE_APPLOVIN MEDIATION_${MEDIATION} OFF "MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_${MEDIATION}")

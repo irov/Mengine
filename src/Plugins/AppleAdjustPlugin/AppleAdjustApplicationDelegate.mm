@@ -11,8 +11,8 @@
         return NO;
     }
     
-    NSString * MengineAppleAdjustPlugin_AppToken = Mengine::Helper::iOSGetBundlePluginConfigString(@"MengineAppleAdjustPlugin", @"AppToken", nil);
-    double MengineAppleAdjustPlugin_DelayStart = Mengine::Helper::iOSGetBundlePluginConfigDouble(@"MengineAppleAdjustPlugin", @"DelayStart", 0.0);
+    NSString * MengineAppleAdjustPlugin_AppToken = Mengine::Helper::AppleGetBundlePluginConfigString(@"MengineAppleAdjustPlugin", @"AppToken", nil);
+    double MengineAppleAdjustPlugin_DelayStart = Mengine::Helper::AppleGetBundlePluginConfigDouble(@"MengineAppleAdjustPlugin", @"DelayStart", 0.0);
     
 #ifdef MENGINE_DEBUG
     NSString *environment = ADJEnvironmentSandbox;

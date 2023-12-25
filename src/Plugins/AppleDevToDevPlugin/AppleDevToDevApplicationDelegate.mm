@@ -13,7 +13,7 @@
         return NO;
     }
     
-    NSString * MengineAppleDevToDevPlugin_AppKey = Mengine::Helper::iOSGetBundlePluginConfigString(@"MengineAppleDevToDevPlugin", @"AppKey", nil);
+    NSString * MengineAppleDevToDevPlugin_AppKey = Mengine::Helper::AppleGetBundlePluginConfigString(@"MengineAppleDevToDevPlugin", @"AppKey", nil);
 
     DTDAnalyticsConfiguration * config = [[DTDAnalyticsConfiguration alloc] init];
 

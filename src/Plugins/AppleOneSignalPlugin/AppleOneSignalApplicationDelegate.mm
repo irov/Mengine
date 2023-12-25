@@ -13,7 +13,7 @@
         return NO;
     }
     
-    NSString * MengineAppleOneSignalPlugin_AppId = Mengine::Helper::iOSGetBundlePluginConfigString(@"MengineAppleOneSignalPlugin", @"AppId", nil);
+    NSString * MengineAppleOneSignalPlugin_AppId = Mengine::Helper::AppleGetBundlePluginConfigString(@"MengineAppleOneSignalPlugin", @"AppId", nil);
     
 #ifdef MENGINE_DEBUG
     [OneSignal setLogLevel:ONE_S_LL_VERBOSE visualLevel:ONE_S_LL_NONE];

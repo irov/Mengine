@@ -43,55 +43,6 @@ namespace Mengine
         m_interstitials = [[NSMutableDictionary alloc] init];
         m_rewardeds = [[NSMutableDictionary alloc] init];
         
-        bool OPTION_applovinverbose = HAS_OPTION( "applovinverbose" );
-        
-        if( OPTION_applovinverbose == true )
-        {
-            [ALSdk shared].settings.verboseLoggingEnabled = YES;
-        }
-
-        [ALSdk shared].mediationProvider = @"max";
-        
-        bool AppLovinPlugin_IsAgeRestrictedUser = CONFIG_VALUE( "AppLovinPlugin", "IsAgeRestrictedUser", false );
-        
-        if( AppLovinPlugin_IsAgeRestrictedUser == true )
-        {
-            [ALPrivacySettings setIsAgeRestrictedUser: YES];
-        }
-        else
-        {
-            [ALPrivacySettings setIsAgeRestrictedUser: NO];
-        }
-        
-        bool AppLovinPlugin_CCPA = CONFIG_VALUE( "AppLovinPlugin", "CCPA", true );
-        
-        if( AppLovinPlugin_CCPA == true )
-        {
-            [ALPrivacySettings setDoNotSell: YES];
-        }
-        else
-        {
-            [ALPrivacySettings setDoNotSell: NO];
-        }
-        
-#ifdef MENGINE_PLUGIN_APPLE_APPTRACKING
-        if( APPLE_APPTRACKING_SERVICE()
-           ->isTrackingAllowed() == true )
-        {
-            [ALPrivacySettings setHasUserConsent: YES];
-        }
-        else
-        {
-            [ALPrivacySettings setHasUserConsent: NO];
-        }
-#else
-        [ALPrivacySettings setHasUserConsent: YES];
-#endif
-    
-        [[ALSdk shared] initializeSdkWithCompletionHandler:^(ALSdkConfiguration *configuration) {
-            LOGGER_MESSAGE("AppLovin initialize");
-        }];
-        
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
         m_amazonService = [[AppleAppLovinAmazonService alloc] init];
 #endif

@@ -5,6 +5,8 @@
     <application>
         <meta-data android:name="mengine.session.use_install_key" android:value="@bool/mengine_session_use_install_key"/>
         <meta-data android:name="mengine.secure.allow_android_id" android:value="@bool/mengine_secure_allow_android_id"/>
+        <meta-data android:name="mengine.privacy.privacy_policy_url" android:value="@string/privacy_policy_url" />
+        <meta-data android:name="mengine.privacy.terms_of_service_url" android:value="@string/terms_of_service_url" />
 
         <activity
             android:name="org.Mengine.Base.MengineActivity"

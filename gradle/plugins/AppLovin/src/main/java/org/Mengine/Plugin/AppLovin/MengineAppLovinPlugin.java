@@ -40,6 +40,8 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
     public static final String PLUGIN_METADATA_IS_AGE_RESTRICTED_USER = "mengine.applovin.is_age_restricted_user";
     public static final String PLUGIN_METADATA_CCPA = "mengine.applovin.CCPA";
+    public static final String PLUGIN_METADATA_PRIVACY_POLICY_URL = "mengine.privacy.privacy_policy_url";
+    public static final String PLUGIN_METADATA_TERMS_OF_SERVICE_URL = "mengine.privacy.terms_of_service_url";
 
     /**
      * <p>
@@ -111,7 +113,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     public void onProxyActivityCreate(MenginePluginProxyActivity activity, Bundle savedInstanceState, Runnable complete) throws MenginePluginInvalidInitializeException {
         String MengineAppLovinPlugin_IsAgeRestrictedUser = this.getMetaDataString(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER);
 
-        this.logMessage("%s: %b"
+        this.logMessage("%s: %s"
             , PLUGIN_METADATA_IS_AGE_RESTRICTED_USER
             , MengineAppLovinPlugin_IsAgeRestrictedUser
         );
@@ -131,7 +133,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         String MengineAppLovinPlugin_CCPA = this.getMetaDataString(PLUGIN_METADATA_CCPA);
 
-        this.logMessage("%s: %b"
+        this.logMessage("%s: %s"
             , PLUGIN_METADATA_CCPA
             , MengineAppLovinPlugin_CCPA
         );
@@ -155,11 +157,19 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         termsAndPrivacyPolicyFlowSettings.setEnabled(true);
 
-        String privacy_policy_url = activity.getString(R.string.privacy_policy_url);
-        termsAndPrivacyPolicyFlowSettings.setPrivacyPolicyUri(Uri.parse(privacy_policy_url));
+        String MengineAppLovinPlugin_PrivacyPolicyUrl = this.getMetaDataString(PLUGIN_METADATA_PRIVACY_POLICY_URL);
+        termsAndPrivacyPolicyFlowSettings.setPrivacyPolicyUri(Uri.parse(MengineAppLovinPlugin_PrivacyPolicyUrl));
 
-        String terms_of_service_url = activity.getString(R.string.terms_of_service_url);
-        termsAndPrivacyPolicyFlowSettings.setTermsOfServiceUri(Uri.parse(terms_of_service_url));
+        String MengineAppLovinPlugin_TermsOfServiceUrl = this.getMetaDataString(PLUGIN_METADATA_TERMS_OF_SERVICE_URL);
+        termsAndPrivacyPolicyFlowSettings.setTermsOfServiceUri(Uri.parse(MengineAppLovinPlugin_TermsOfServiceUrl));
+
+        this.logMessage("privacy policy: %s"
+            , MengineAppLovinPlugin_PrivacyPolicyUrl
+        );
+
+        this.logMessage("term of service: %s"
+            , MengineAppLovinPlugin_TermsOfServiceUrl
+        );
 
         if (this.hasOption("applovinconsentflowusergeographygdpr") == true) {
             termsAndPrivacyPolicyFlowSettings.setDebugUserGeography(AppLovinSdkConfiguration.ConsentFlowUserGeography.GDPR);

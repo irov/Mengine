@@ -253,7 +253,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             const ConstString & s_TextField_getFontName( TextField * _textField )
             {
-                const FontInterfacePtr & font = _textField->getFont();
+                const FontInterfacePtr & font = _textField->calcFont();
 
                 const ConstString & fontName = font->getName();
 

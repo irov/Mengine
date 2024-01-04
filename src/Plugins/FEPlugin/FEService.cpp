@@ -1,5 +1,7 @@
 #include "FEService.h"
 
+#include "Interface/VocabularyServiceInterface.h"
+
 #include "FEFontEffectFile.h"
 #include "FEFontEffectCustom.h"
 
@@ -35,16 +37,17 @@ namespace Mengine
         m_factoryFEFontEffectCustom = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    FontEffectInterfacePtr FEService::createFontEffect( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _name, uint32_t _sample )
+    FontEffectInterfacePtr FEService::createFontEffect( const ContentInterfacePtr & _content, const ConstString & _name, uint32_t _sample )
     {
         FEFontEffectFilePtr fontEffet = m_factoryFEFontEffectFile->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( fontEffet );
 
-        const ContentInterfacePtr & content = fontEffet->getContent();
+        fontEffet->setContent( _content );
 
-        content->setFileGroup( _fileGroup );
-        content->setFilePath( _filePath );
+        //DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
+
+        //content->setDataflow( dataflow );
 
         fontEffet->setEffectName( _name );
         fontEffet->setEffectSample( _sample );

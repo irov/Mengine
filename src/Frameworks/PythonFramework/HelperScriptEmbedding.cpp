@@ -69,7 +69,6 @@
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/FactorableUnique.h"
 
-#include "Config/Typedef.h"
 #include "Config/StdString.h"
 #include "Config/StdMath.h"
 
@@ -1405,7 +1404,9 @@ namespace Mengine
                 RENDERTEXTURE_SERVICE()
                     ->foreachTexture( [&py_list]( const RenderTextureInterfacePtr & _texture )
                 {
-                    const FilePath & filePath = _texture->getFilePath();
+                    const ContentInterfacePtr & content = _texture->getContent();
+
+                    const FilePath & filePath = content->getFilePath();
 
                     py_list.append( filePath );
                 } );

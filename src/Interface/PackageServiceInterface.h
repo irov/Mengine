@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 #include "Interface/PackageInterface.h"
 
 #include "Kernel/ConstString.h"
@@ -16,7 +16,7 @@ namespace Mengine
         SERVICE_DECLARE( "PackageService" );
 
     public:
-        virtual bool loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool loadPackages( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual bool hasPackage( const ConstString & _name ) const = 0;

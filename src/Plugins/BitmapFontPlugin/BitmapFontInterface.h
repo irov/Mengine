@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "BitmapFontGlyphDescription.h"
 
@@ -17,7 +17,7 @@ namespace Mengine
         SERVICE_DECLARE( "BitmapFontService" )
 
     public:
-        virtual BitmapFontGlyphDescriptionPtr createGlyphDescription( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc ) = 0;
+        virtual BitmapFontGlyphDescriptionPtr createGlyphDescription( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

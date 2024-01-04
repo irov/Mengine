@@ -259,35 +259,7 @@ public class MengineActivity extends SDLActivity {
         m_semaphores = new HashMap<>();
         m_requestCodes = new HashMap<>();
 
-        MengineApplication application;
-
-        try {
-            application = this.getMengineApplication();
-        } catch (ClassCastException e) {
-            this.setState("activity.init", "application_cast_exception");
-
-            MengineAnalytics.buildEvent("mng_activity_init_failed")
-                .addParameterException("reason", e)
-                .logAndFlush();
-
-            this.finishWithAlertDialog("[ERROR] onCreate invalid application ClassCastException: %s"
-                , e.getMessage()
-            );
-
-            return;
-        }
-
-        if (application.isInvalidInitialize() == true) {
-            this.setState("activity.init", "application_invalid_initialize");
-
-            String reason = application.getInvalidInitializeReason();
-
-            this.finishWithAlertDialog("[ERROR] onCreate invalid application initialize: %s"
-                , reason
-            );
-
-            return;
-        }
+        MengineApplication application = this.getMengineApplication();
 
         this.setState("activity.lifecycle", "create");
 

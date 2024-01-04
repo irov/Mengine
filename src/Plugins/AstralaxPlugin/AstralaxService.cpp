@@ -118,7 +118,7 @@ namespace Mengine
         m_renderFragmentShaderCache.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterContainerInterfacePtr AstralaxService::createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
+    AstralaxEmitterContainerInterfacePtr AstralaxService::createEmitterContainerFromFile( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
         AstralaxEmitterContainerPtr container = m_factoryPoolAstralaxEmitterContainer->createObject( _doc );
 
@@ -126,7 +126,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        if( container->initialize( _fileGroup, _filePath, m_archivator ) == false )
+        if( container->initialize( _content, m_archivator ) == false )
         {
             LOGGER_ERROR( "invalid initialize container (doc: %s)"
                 , MENGINE_DOCUMENT_STR( _doc )
@@ -155,8 +155,8 @@ namespace Mengine
             new_desc.container = container.get();
 
 #if defined(MENGINE_DEBUG)
-            new_desc.fileGroupName = _fileGroup->getName();
-            new_desc.FilePath = _filePath;
+            new_desc.fileGroupName = _content->getFileGroup()->getName();
+            new_desc.FilePath = _content->getFilePath();
 #endif
 
 #if defined(MENGINE_DOCUMENT_ENABLE)

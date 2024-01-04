@@ -16,10 +16,6 @@ namespace Mengine
         ~ThreadTaskPrefetchDataflow() override;
 
     public:
-        void setDataflow( const DataflowInterfacePtr & _dataflow );
-        const DataflowInterfacePtr & getDataflow() const;
-
-    public:
         void setDataflowContext( const DataflowContext & _context );
         const DataflowContext & getDataflowContext() const;
 
@@ -35,8 +31,6 @@ namespace Mengine
         void _onThreadTaskComplete( bool _successful ) override;
 
     protected:
-        DataflowInterfacePtr m_dataflow;
-
         DataflowContext m_context;
 
     protected:

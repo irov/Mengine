@@ -32,10 +32,10 @@ namespace Mengine
         ConfigInterfacePtr createMemoryConfig( const DocumentInterfacePtr & _doc ) override;
 
     public:
-        ConfigInterfacePtr loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentInterfacePtr & _doc ) override;
+        ConfigInterfacePtr loadConfig( const ContentInterfacePtr & _content, const ConstString & _configType, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        bool loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentInterfacePtr & _doc ) override;
+        bool loadDefaultConfig( const ContentInterfacePtr & _content, const ConstString & _configType, const DocumentInterfacePtr & _doc ) override;
 
     public:
         const ConfigInterfacePtr & getDefaultConfig() const override;

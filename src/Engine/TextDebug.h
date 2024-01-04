@@ -7,7 +7,6 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/Color.h"
 
-#include "Config/Typedef.h"
 #include "Config/Char.h"
 
 #include "math/vec2.h"

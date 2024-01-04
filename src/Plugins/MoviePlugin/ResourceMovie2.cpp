@@ -14,6 +14,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -110,7 +111,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "resource movie2 '%s' file '%s' not found composition data '%s'"
                 , this->getName().c_str()
-                , this->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( this->getContent() )
                 , _compositionName.c_str()
             );
 
@@ -147,7 +148,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "resource movie2 '%s' path '%s' invalid get composition name '%s'"
                 , this->getName().c_str()
-                , this->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( this->getContent() )
                 , _compositionName.c_str()
             );
 
@@ -193,14 +194,11 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const DataflowInterfacePtr & dataflow = content->getDataflow();
-
         DataflowContext context;
         context.filePath = filePath;
         context.groupName = this->getGroupName();
 
-        Movie2DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, &context, MENGINE_DOCUMENT_FACTORABLE );
+        Movie2DataInterfacePtr data = Helper::getDataflow( content, &context, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, "resource '%s' group '%s' invalid compile data"
             , this->getName().c_str()

@@ -9,6 +9,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -37,7 +38,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't open sound file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
+                , Helper::getContentFullPath( _resource->getContent() )
             );
 
             return false;
@@ -53,7 +54,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't create sound decoder for file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
+                , Helper::getContentFullPath( _resource->getContent() )
             );
 
             return false;
@@ -64,7 +65,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't initialize sound decoder for file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
+                , Helper::getContentFullPath( _resource->getContent() )
             );
 
             return false;
@@ -81,7 +82,7 @@ namespace Mengine
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
                 , Limit_MinimalStreamSoundDuration
-                , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
+                , Helper::getContentFullPath( _resource->getContent() )
             );
 
             return false;
@@ -96,7 +97,7 @@ namespace Mengine
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
                 , limitNoStreamSoundDurationWarning
-                , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
+                , Helper::getContentFullPath( _resource->getContent() )
             );
         }
 
@@ -109,7 +110,7 @@ namespace Mengine
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
                 , Limit_NoStreamSoundDurationError
-                , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
+                , Helper::getContentFullPath( _resource->getContent() )
             );
 
             return false;
@@ -125,7 +126,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't create buffer '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , content->getFilePath().c_str()
+                , _resource->getContent()->getFilePath().c_str()
             );
 
             return false;

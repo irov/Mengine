@@ -48,12 +48,19 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ParticleConverterPTCToPTZ::convert()
     {
-        const FilePath & folderPath = m_options.fileGroup->getFolderPath();
+        const FileGroupInterfacePtr & inputFileGroup = m_options.inputContent->getFileGroup();
+        const FilePath & inputFilePath = m_options.inputContent->getFilePath();
 
-        FilePath full_inputFilePath = Helper::concatenationFilePath( folderPath, m_options.inputFilePath );
-        FilePath full_outputFilePath = Helper::concatenationFilePath( folderPath, m_options.outputFilePath );
+        const FileGroupInterfacePtr & outputFileGroup = m_options.outputContent->getFileGroup();
+        const FilePath & outputFilePath = m_options.outputContent->getFilePath();
 
-        MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_fileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        const FilePath & inputFolderPath = inputFileGroup->getFolderPath();
+        const FilePath & outputFolderPath = outputFileGroup->getFolderPath();
+
+        FilePath full_inputFilePath = Helper::concatenationFilePath( inputFolderPath, inputFilePath );
+        FilePath full_outputFilePath = Helper::concatenationFilePath( outputFolderPath, outputFilePath );
+
+        MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_devFileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data_cache );
 
@@ -64,7 +71,7 @@ namespace Mengine
             , full_inputFilePath.c_str()
         );
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_devFileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open '%s'"
             , full_outputFilePath.c_str()
@@ -79,7 +86,7 @@ namespace Mengine
             return false;
         }
 
-        if( Helper::closeOutputStreamFile( m_fileGroup, stream ) == false )
+        if( Helper::closeOutputStreamFile( m_devFileGroup, stream ) == false )
         {
             return false;
         }

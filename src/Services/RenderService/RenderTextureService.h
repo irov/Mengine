@@ -27,22 +27,22 @@ namespace Mengine
         RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        RenderTextureInterfacePtr loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, uint32_t _width, uint32_t _height, const DocumentInterfacePtr & _doc ) override;
+        RenderTextureInterfacePtr loadTexture( const ContentInterfacePtr & _content, uint32_t _codecFlags, uint32_t _width, uint32_t _height, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        RenderTextureInterfacePtr getTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) const override;
+        RenderTextureInterfacePtr getTexture( const ContentInterfacePtr & _content ) const override;
 
     public:
-        bool hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, RenderTextureInterfacePtr * const _texture ) const override;
+        bool hasTexture( const ContentInterfacePtr & _content, RenderTextureInterfacePtr * const _texture ) const override;
 
     public:
-        RenderImageLoaderInterfacePtr createDecoderRenderImageLoader( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, const DocumentInterfacePtr & _doc ) override;
+        RenderImageLoaderInterfacePtr createDecoderRenderImageLoader( const ContentInterfacePtr & _content, uint32_t _codecFlags, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        void cacheFileTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const RenderTextureInterfacePtr & _texture ) override;
+        void cacheFileTexture( const ContentInterfacePtr & _content, const RenderTextureInterfacePtr & _texture ) override;
 
     public:
-        bool saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecType, const FilePath & _filePath ) override;
+        bool saveImage( const RenderTextureInterfacePtr & _texture, const ContentInterfacePtr & _content ) override;
 
     public:
         void foreachTexture( const LambdaRenderTexture & _lambda ) const override;
@@ -51,7 +51,7 @@ namespace Mengine
         bool onRenderTextureDestroy_( RenderTextureInterface * _texture );
 
     protected:
-        typedef Hashtable2<ConstString, FilePath, RenderTextureInterface *> MapRenderTextureEntry;
+        typedef Hashtable2<FileGroupInterfacePtr, FilePath, RenderTextureInterface *> MapRenderTextureEntry;
         MapRenderTextureEntry m_textures;
 
         FactoryInterfacePtr m_factoryRenderTexture;

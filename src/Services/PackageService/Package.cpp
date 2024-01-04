@@ -22,6 +22,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -88,7 +89,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->loadPackage_() == false )
+        if( this->loadPackage_( _doc ) == false )
         {
             return false;
         }
@@ -136,21 +137,16 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::loadPackage_()
+    bool Package::loadPackage_( const DocumentInterfacePtr & _doc )
     {
         if( m_desc.fontsPath.empty() == false )
         {
-            this->addFontPath_( m_desc.fontsPath, Tags() );
+            this->addPackageFontPath( m_desc.fontsPath, Tags() );
         }
 
         if( m_desc.textsPath.empty() == false )
         {
-            this->addTextPath_( m_desc.textsPath, Tags() );
-        }
-
-        if( SERVICE_IS_INITIALIZE( LoaderServiceInterface ) == false )
-        {
-            return false;
+            this->addPackageTextPath( m_desc.textsPath, Tags() );
         }
 
         if( m_desc.descriptionPath.empty() == true )
@@ -158,160 +154,15 @@ namespace Mengine
             return true;
         }
 
-        Metacode::Meta_Data::Meta_Pak pak;
-
-        bool exist = false;
-        if( LOADER_SERVICE()
-            ->load( m_fileGroup, m_desc.descriptionPath, &pak, Metacode::Meta_Data::getVersion(), &exist ) == false )
-        {
-            LOGGER_ERROR( "invalid resource file '%s' name '%s' description '%s'"
-                , m_desc.path.c_str()
-                , m_desc.name.c_str()
-                , m_desc.descriptionPath.c_str()
-            );
-
-            return false;
-        }
-
         m_resourcesDesc.reserve( 32 );
 
-        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Scripts & includes_scripts = pak.get_Includes_Scripts();
+        PackageLoaderInterfacePtr loader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "PackageLoader" ), m_desc.format );
 
-        for( const Metacode::Meta_Data::Meta_Pak::Meta_Scripts & meta_scripts : includes_scripts )
+        MENGINE_ASSERTION_MEMORY_PANIC( loader );
+         
+        if( loader->load( PackageInterfacePtr::from( this ), _doc ) == false )
         {
-            Tags Platform;
-            meta_scripts.get_Platform( &Platform );
-
-            const Metacode::Meta_Data::Meta_Pak::Meta_Scripts::VectorMeta_Script & includes_script = meta_scripts.get_Includes_Script();
-
-            for( const Metacode::Meta_Data::Meta_Pak::Meta_Scripts::Meta_Script & meta_script : includes_script )
-            {
-                const FilePath & Path = meta_script.get_Path();
-
-                ConstString Module;
-                meta_script.get_Module( &Module );
-
-                ConstString Initializer;
-                meta_script.get_Initializer( &Initializer );
-
-                ConstString Finalizer;
-                meta_script.get_Finalizer( &Finalizer );
-
-
-                this->addScriptPackage_( Path, Module, Initializer, Finalizer, Platform );
-            }
-        }
-
-        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Fonts & includes_fonts = pak.get_Includes_Fonts();
-
-        for( const Metacode::Meta_Data::Meta_Pak::Meta_Fonts & meta_fonts : includes_fonts )
-        {
-            Tags Platform;
-            meta_fonts.get_Platform( &Platform );
-
-            const Metacode::Meta_Data::Meta_Pak::Meta_Fonts::VectorMeta_Font & includes_font = meta_fonts.get_Includes_Font();
-
-            for( const Metacode::Meta_Data::Meta_Pak::Meta_Fonts::Meta_Font & meta_font : includes_font )
-            {
-                const FilePath & Path = meta_font.get_Path();
-
-                this->addFontPath_( Path, Platform );
-            }
-        }
-
-        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Resources & includes_resources = pak.get_Includes_Resources();
-
-        for( const Metacode::Meta_Data::Meta_Pak::Meta_Resources & meta_resources : includes_resources )
-        {
-            bool ignored = false;
-            meta_resources.get_Ignored( &ignored );
-
-            bool demand = false;
-            meta_resources.get_Demand( &demand );
-
-            Tags platform;
-            meta_resources.get_Platform( &platform );
-
-            const Metacode::Meta_Data::Meta_Pak::Meta_Resources::VectorMeta_Resource & includes_resource = meta_resources.get_Includes_Resource();
-
-            for( const Metacode::Meta_Data::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource : includes_resource )
-            {
-                const FilePath & Path = meta_resource.get_Path();
-
-                Tags tags;
-                meta_resource.get_Tags( &tags );
-
-                this->addResource_( Path, tags, platform, demand, ignored );
-            }
-        }
-
-        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Texts & includes_tests = pak.get_Includes_Texts();
-
-        for( const Metacode::Meta_Data::Meta_Pak::Meta_Texts & meta_texts : includes_tests )
-        {
-            Tags platform;
-            meta_texts.get_Platform( &platform );
-
-            const Metacode::Meta_Data::Meta_Pak::Meta_Texts::VectorMeta_Text & includes_text = meta_texts.get_Includes_Text();
-
-            for( const Metacode::Meta_Data::Meta_Pak::Meta_Texts::Meta_Text & meta_text : includes_text )
-            {
-                const FilePath & Path = meta_text.get_Path();
-                this->addTextPath_( Path, platform );
-            }
-        }
-
-        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Datas & includes_datas = pak.get_Includes_Datas();
-
-        for( const Metacode::Meta_Data::Meta_Pak::Meta_Datas & meta_datas : includes_datas )
-        {
-            Tags platform;
-            meta_datas.get_Platform( &platform );
-
-            const Metacode::Meta_Data::Meta_Pak::Meta_Datas::VectorMeta_Data & includes_data = meta_datas.get_Includes_Data();
-
-            for( const Metacode::Meta_Data::Meta_Pak::Meta_Datas::Meta_Data & meta_data : includes_data )
-            {
-                const ConstString & name = meta_data.get_Name();
-                const FilePath & path = meta_data.get_Path();
-
-                this->addData_( name, path, platform );
-            }
-        }
-
-        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Materials & includes_materials = pak.get_Includes_Materials();
-
-        for( const Metacode::Meta_Data::Meta_Pak::Meta_Materials & meta_materials : includes_materials )
-        {
-            Tags platform;
-            meta_materials.get_Platform( &platform );
-
-            const Metacode::Meta_Data::Meta_Pak::Meta_Materials::VectorMeta_Material & includes_material = meta_materials.get_Includes_Material();
-
-            for( const Metacode::Meta_Data::Meta_Pak::Meta_Materials::Meta_Material & meta_material : includes_material )
-            {
-                const FilePath & path = meta_material.get_Path();
-
-                this->addMaterial_( path, platform );
-            }
-        }
-
-        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Settings & includes_settings = pak.get_Includes_Settings();
-
-        for( const Metacode::Meta_Data::Meta_Pak::Meta_Settings & meta_settings : includes_settings )
-        {
-            Tags platform;
-            meta_settings.get_Platform( &platform );
-
-            const Metacode::Meta_Data::Meta_Pak::Meta_Settings::VectorMeta_Setting & includes_setting = meta_settings.get_Includes_Setting();
-
-            for( const Metacode::Meta_Data::Meta_Pak::Meta_Settings::Meta_Setting & meta_setting : includes_setting )
-            {
-                const ConstString & name = meta_setting.get_Name();
-                const FilePath & path = meta_setting.get_Path();
-
-                this->addSetting_( name, path, platform );
-            }
+            return false;
         }
 
         return true;
@@ -350,12 +201,12 @@ namespace Mengine
                 continue;
             }
 
-            if( this->loadResources_( m_desc.locale, m_fileGroup, desc.path, desc.tags, desc.ignored ) == false )
+            if( this->enableResources_( m_desc.locale, desc ) == false )
             {
                 LOGGER_ERROR( "invalid load file '%s' name '%s' resource '%s'"
                     , m_desc.path.c_str()
                     , m_desc.name.c_str()
-                    , desc.path.c_str()
+                    , Helper::getContentFullPath( desc.content )
                 );
 
                 return false;
@@ -369,12 +220,12 @@ namespace Mengine
                 continue;
             }
 
-            if( this->loadFont_( desc.path ) == false )
+            if( this->enableFont_( desc ) == false )
             {
                 LOGGER_ERROR( "file '%s' package '%s' invalid load font '%s'"
                     , m_desc.path.c_str()
                     , m_desc.name.c_str()
-                    , desc.path.c_str()
+                    , Helper::getContentFullPath( desc.content )
                 );
 
                 return false;
@@ -388,12 +239,12 @@ namespace Mengine
                 continue;
             }
 
-            if( this->loadText_( desc.path ) == false )
+            if( this->enableText_( desc ) == false )
             {
                 LOGGER_ERROR( "file '%s' package '%s' invalid load text '%s'"
                     , m_desc.path.c_str()
                     , m_desc.name.c_str()
-                    , desc.path.c_str()
+                    , Helper::getContentFullPath( desc.content )
                 );
 
                 return false;
@@ -407,13 +258,13 @@ namespace Mengine
                 continue;
             }
 
-            if( this->loadData_( desc.name, desc.path ) == false )
+            if( this->enableData_( desc ) == false )
             {
                 LOGGER_ERROR( "file '%s' package '%s' invalid load userdata '%s' path '%s'"
                     , m_desc.path.c_str()
                     , m_desc.name.c_str()
                     , desc.name.c_str()
-                    , desc.path.c_str()
+                    , Helper::getContentFullPath( desc.content )
                 );
 
                 return false;
@@ -427,12 +278,12 @@ namespace Mengine
                 continue;
             }
 
-            if( this->loadMaterials_( m_fileGroup, desc.path ) == false )
+            if( this->enableMaterials_( desc ) == false )
             {
                 LOGGER_ERROR( "file '%s' package '%s' invalid load material '%s'"
                     , m_desc.path.c_str()
                     , m_desc.name.c_str()
-                    , desc.path.c_str()
+                    , Helper::getContentFullPath( desc.content )
                 );
 
                 return false;
@@ -446,13 +297,13 @@ namespace Mengine
                 continue;
             }
 
-            if( this->loadSetting_( desc.name, desc.path ) == false )
+            if( this->enableSetting_( desc ) == false )
             {
                 LOGGER_ERROR( "file '%s' package '%s' invalid load setting '%s' path '%s'"
                     , m_desc.path.c_str()
                     , m_desc.name.c_str()
                     , desc.name.c_str()
-                    , desc.path.c_str()
+                    , Helper::getContentFullPath( desc.content )
                 );
 
                 return false;
@@ -499,7 +350,7 @@ namespace Mengine
                 continue;
             }
 
-            if( this->unloadResources_( m_desc.locale, m_fileGroup, desc.path ) == false )
+            if( this->disableResources_( m_desc.locale, desc ) == false )
             {
                 return false;
             }
@@ -512,7 +363,7 @@ namespace Mengine
                 continue;
             }
 
-            if( this->unloadFont_( desc.path ) == false )
+            if( this->disableFont_( desc ) == false )
             {
                 return false;
             }
@@ -525,7 +376,7 @@ namespace Mengine
                 continue;
             }
 
-            if( this->unloadText_( desc.path ) == false )
+            if( this->disableText_( desc ) == false )
             {
                 return false;
             }
@@ -538,7 +389,7 @@ namespace Mengine
                 continue;
             }
 
-            if( this->unloadData_( desc.name ) == false )
+            if( this->disableData_( desc ) == false )
             {
                 return false;
             }
@@ -551,7 +402,7 @@ namespace Mengine
                 continue;
             }
 
-            if( this->unloadMaterials_( m_fileGroup, desc.path ) == false )
+            if( this->disableMaterials_( desc ) == false )
             {
                 return false;
             }
@@ -564,7 +415,7 @@ namespace Mengine
                 continue;
             }
 
-            if( this->unloadSetting_( desc.name ) == false )
+            if( this->disableSetting_( desc ) == false )
             {
                 return false;
             }
@@ -578,74 +429,76 @@ namespace Mengine
         return m_enable;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::loadText_( const FilePath & _filePath )
+    bool Package::enableText_( const PackageTextDesc & _desc )
     {
         bool successful = TEXT_SERVICE()
-            ->loadTextEntry( m_desc.locale, m_fileGroup, _filePath );
+            ->loadTextEntry( m_desc.locale, _desc.content, MENGINE_DOCUMENT_FACTORABLE );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::unloadText_( const FilePath & _filePath )
+    bool Package::disableText_( const PackageTextDesc & _desc )
     {
         bool successful = TEXT_SERVICE()
-            ->unloadTextEntry( m_desc.locale, m_fileGroup, _filePath );
+            ->unloadTextEntry( m_desc.locale, _desc.content );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::loadFont_( const FilePath & _filePath )
+    bool Package::enableFont_( const PackageFontDesc & _desc )
     {
         bool successful = FONT_SERVICE()
-            ->loadFonts( m_fileGroup, _filePath );
+            ->loadFonts( _desc.content, MENGINE_DOCUMENT_FACTORABLE );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::unloadFont_( const FilePath & _filePath )
+    bool Package::disableFont_( const PackageFontDesc & _desc )
     {
         bool successful = FONT_SERVICE()
-            ->unloadFonts( m_fileGroup, _filePath );
+            ->unloadFonts( _desc.content );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::loadData_( const ConstString & _name, const FilePath & _filePath )
+    bool Package::enableData_( const PackageDataDesc & _desc )
     {
         bool successful = USERDATA_SERVICE()
-            ->addUserdata( _name, m_fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+            ->addUserdata( _desc.name, _desc.content, MENGINE_DOCUMENT_FACTORABLE );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::unloadData_( const ConstString & _name )
+    bool Package::disableData_( const PackageDataDesc & _desc )
     {
         bool successful = USERDATA_SERVICE()
-            ->removeUserdata( _name );
+            ->removeUserdata( _desc.name );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::loadSetting_( const ConstString & _name, const FilePath & _filePath )
+    bool Package::enableSetting_( const PackageSettingDesc & _desc )
     {
         bool successful = SETTINGS_SERVICE()
-            ->loadSetting( _name, m_fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadSetting( _desc.name, _desc.content, MENGINE_DOCUMENT_FACTORABLE );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::unloadSetting_( const ConstString & _name )
+    bool Package::disableSetting_( const PackageSettingDesc & _desc )
     {
         bool successful = SETTINGS_SERVICE()
-            ->unloadSetting( _name );
+            ->unloadSetting( _desc.name );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addResource_( const FilePath & _filePath, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored )
+    void Package::addPackageResource( const FilePath & _filePath, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored )
     {
+        ContentInterfacePtr content = Helper::makeFileContent( m_fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+
         PackageResourceDesc desc;
-        desc.path = _filePath;
+        desc.content = content;
         desc.tags = _tags;
         desc.platform = _platform;
         desc.demand = _demand;
@@ -654,20 +507,23 @@ namespace Mengine
         m_resourcesDesc.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addTextPath_( const FilePath & _filePath, const Tags & _platform )
+    void Package::addPackageTextPath( const FilePath & _filePath, const Tags & _platform )
     {
+        ContentInterfacePtr content = Helper::makeFileContent( m_fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+
         PackageTextDesc desc;
-        desc.path = _filePath;
+        desc.content = content;
         desc.platform = _platform;
 
         m_textsDesc.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addScriptPackage_( const FilePath & _filePath, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform )
+    void Package::addPackageScript( const FilePath & _filePath, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform )
     {
+        ContentInterfacePtr content = Helper::makeFileContent( m_fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+
         ScriptModulePackage package;
-        package.fileGroup = m_fileGroup;
-        package.path = _filePath;
+        package.content = content;
         package.module = _module;
         package.initializer = _initializer;
         package.finalizer = _finalizer;
@@ -676,62 +532,70 @@ namespace Mengine
         m_scriptsPackages.emplace_back( package );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addFontPath_( const FilePath & _filePath, const Tags & _platform )
+    void Package::addPackageFontPath( const FilePath & _filePath, const Tags & _platform )
     {
+        ContentInterfacePtr content = Helper::makeFileContent( m_fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+
         PackageFontDesc desc;
-        desc.path = _filePath;
+        desc.content = content;
         desc.platform = _platform;
 
         m_fontsDesc.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addData_( const ConstString & _name, const FilePath & _filePath, const Tags & _platform )
+    void Package::addPackageData( const ConstString & _name, const FilePath & _filePath, const Tags & _platform )
     {
+        ContentInterfacePtr content = Helper::makeFileContent( m_fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+
         PackageDataDesc desc;
         desc.name = _name;
-        desc.path = _filePath;
+        desc.content = content;
         desc.platform = _platform;
 
         m_datasDesc.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addMaterial_( const FilePath & _filePath, const Tags & _platform )
+    void Package::addPackageMaterial( const FilePath & _filePath, const Tags & _platform )
     {
+        ContentInterfacePtr content = Helper::makeFileContent( m_fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+
         PackageMaterialDesc desc;
-        desc.path = _filePath;
+        desc.content = content;
         desc.platform = _platform;
 
         m_materialsDesc.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addSetting_( const ConstString & _name, const FilePath & _filePath, const Tags & _platform )
+    void Package::addPackageSetting( const ConstString & _name, const FilePath & _filePath, const Tags & _platform )
     {
+        ContentInterfacePtr content = Helper::makeFileContent( m_fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+
         PackageSettingDesc desc;
         desc.name = _name;
-        desc.path = _filePath;
+        desc.content = content;
         desc.platform = _platform;
 
         m_settingsDesc.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::loadResources_( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Tags & _tags, bool _ignored )
+    bool Package::enableResources_( const ConstString & _locale, const PackageResourceDesc & _desc )
     {
         Metacode::Meta_Data::Meta_DataBlock datablock;
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( _fileGroup, _filePath, &datablock, Metacode::Meta_Data::getVersion(), &exist ) == false )
+            ->load( _desc.content, &datablock, Metacode::Meta_Data::getVersion(), &exist, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             if( exist == false )
             {
                 LOGGER_ERROR( "resource '%s' not found"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                 );
             }
             else
             {
                 LOGGER_ERROR( "invalid parse resource '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                 );
             }
 
@@ -760,7 +624,7 @@ namespace Mengine
                 }
 
                 LOGGER_ERROR( "file '%s' already exist resource name '%s' in group '%s'\nhas resource group '%s' name '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                     , name.c_str()
                     , groupName.c_str()
                     , has_resource->getGroupName().c_str()
@@ -771,28 +635,25 @@ namespace Mengine
             }
 
             ResourcePtr resource = RESOURCE_SERVICE()
-                ->createResource( _locale, groupName, name, type, true, true, MENGINE_DOCUMENT_MESSAGE( "locale '%s' group '%s' name '%s' type '%s'", _locale.c_str(), groupName.c_str(), name.c_str(), type.c_str() ) );
+                ->createResource( _locale, groupName, name, type, true, true, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, "file '%s' group '%s' resource '%s' type '%s' invalid create"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _desc.content )
                 , groupName.c_str()
                 , name.c_str()
                 , type.c_str()
             );
 
-            resource->setTags( _tags );
+            resource->setTags( _desc.tags );
 
-            ContentInterfacePtr content = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-
-            content->setFileGroup( _fileGroup );
+            ContentInterfacePtr content = Helper::makeFileContent( m_fileGroup, FilePath::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             resource->setContent( content );
             
             MetabufLoaderInterfacePtr loader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), type );
 
             MENGINE_ASSERTION_MEMORY_PANIC( loader, "file '%s' group '%s' resource '%s' type '%s' invalid create loader"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _desc.content )
                 , groupName.c_str()
                 , resource->getName().c_str()
                 , resource->getType().c_str()
@@ -801,7 +662,7 @@ namespace Mengine
             if( loader->load( resource, meta_resource ) == false )
             {
                 LOGGER_ERROR( "file '%s' group '%s' resource '%s' type '%s' invalid load"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                     , groupName.c_str()
                     , resource->getName().c_str()
                     , resource->getType().c_str()
@@ -810,12 +671,12 @@ namespace Mengine
                 return false;
             }
 
-            resource->setIgnored( _ignored );
+            resource->setIgnored( _desc.ignored );
 
             if( resource->initialize() == false )
             {
                 LOGGER_ERROR( "file '%s' group '%s' resource '%s' type '%s' invalid initialize"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                     , groupName.c_str()
                     , resource->getName().c_str()
                     , resource->getType().c_str()
@@ -849,10 +710,19 @@ namespace Mengine
         {
             const FilePath & path = meta_include.get_Path();
 
-            if( this->loadResources_( _locale, _fileGroup, path, _tags, _ignored ) == false )
+            ContentInterfacePtr content = Helper::makeFileContent( m_fileGroup, path, MENGINE_DOCUMENT_FACTORABLE );
+
+            PackageResourceDesc desc;
+            desc.content = content;
+            desc.tags = _desc.tags;
+            desc.platform = _desc.platform;
+            desc.demand = _desc.demand;
+            desc.ignored = _desc.ignored;
+
+            if( this->enableResources_( _locale, desc ) == false )
             {
                 LOGGER_ERROR( "load '%s' resource invalid load include '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                     , path.c_str()
                 );
 
@@ -863,24 +733,24 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::unloadResources_( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    bool Package::disableResources_( const ConstString & _locale, const PackageResourceDesc & _desc )
     {
         Metacode::Meta_Data::Meta_DataBlock datablock;
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( _fileGroup, _filePath, &datablock, Metacode::Meta_Data::getVersion(), &exist ) == false )
+            ->load( _desc.content, &datablock, Metacode::Meta_Data::getVersion(), &exist, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             if( exist == false )
             {
                 LOGGER_ERROR( "file resources '%s' not found"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                 );
             }
             else
             {
                 LOGGER_ERROR( "invalid parse resources '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                 );
             }
 
@@ -895,10 +765,19 @@ namespace Mengine
         {
             const FilePath & path = meta_include.get_Path();
 
-            if( this->unloadResources_( _locale, _fileGroup, path ) == false )
+            ContentInterfacePtr content = Helper::makeFileContent( m_fileGroup, path, MENGINE_DOCUMENT_FACTORABLE );
+
+            PackageResourceDesc desc;
+            desc.content = content;
+            desc.tags = _desc.tags;
+            desc.platform = _desc.platform;
+            desc.demand = _desc.demand;
+            desc.ignored = _desc.ignored;
+
+            if( this->disableResources_( _locale, _desc ) == false )
             {
                 LOGGER_ERROR( "load '%s' resource invalid load include '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                     , path.c_str()
                 );
 
@@ -917,7 +796,7 @@ namespace Mengine
                 ->hasResource( groupName, name, false, &has_resource ) == false )
             {
                 LOGGER_ERROR( "path '%s' not found resource name '%s' in group '%s'\nhas resource group '%s' name '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                     , meta_resource->get_Name().c_str()
                     , groupName.c_str()
                     , has_resource->getGroupName().c_str()
@@ -942,24 +821,24 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::loadMaterials_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    bool Package::enableMaterials_( const PackageMaterialDesc & _desc )
     {
         Metacode::Meta_Data::Meta_DataBlock datablock;
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( _fileGroup, _filePath, &datablock, Metacode::Meta_Data::getVersion(), &exist ) == false )
+            ->load( _desc.content, &datablock, Metacode::Meta_Data::getVersion(), &exist, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             if( exist == false )
             {
                 LOGGER_ERROR( "materials '%s' not found"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                 );
             }
             else
             {
                 LOGGER_ERROR( "invalid parse materials '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                 );
             }
 
@@ -974,6 +853,7 @@ namespace Mengine
         for( const Metacode::Meta_Data::Meta_DataBlock::Meta_FragmentShader & meta_FragmentShader : includes_FragmentShader )
         {
             const ConstString & name = meta_FragmentShader.get_Name();
+
             const ConstString & renderPlatform = meta_FragmentShader.get_RenderPlatform();
 
             if( renderPlatform != renderPlatformName )
@@ -989,12 +869,16 @@ namespace Mengine
             bool isCompile = false;
             meta_FragmentShader.get_File_Compile( &isCompile );
 
+            ContentInterfacePtr fragmentShaderContent = Helper::makeFileContent( m_fileGroup, fragmentShaderFilePath, MENGINE_DOCUMENT_FACTORABLE );
+            
+            fragmentShaderContent->setConverterType( fileConverterType );
+
             RenderFragmentShaderInterfacePtr shader = RENDERMATERIAL_SERVICE()
-                ->createFragmentShader( name, _fileGroup, fragmentShaderFilePath, fileConverterType, isCompile, MENGINE_DOCUMENT_FACTORABLE );
+                ->createFragmentShader( name, fragmentShaderContent, isCompile, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( shader, "material '%s' invalid load '%s' fragment shader '%s' compile [%u]"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
-                , Helper::getFileGroupFullPath( _fileGroup, fragmentShaderFilePath )
+                , Helper::getContentFullPath( _desc.content )
+                , Helper::getContentFullPath( fragmentShaderContent )
                 , name.c_str()
                 , isCompile
             );
@@ -1006,29 +890,33 @@ namespace Mengine
 
         for( const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexShader & meta_VertexShader : includes_VertexShader )
         {
+            const ConstString & name = meta_VertexShader.get_Name();
+
             const ConstString & renderPlatform = meta_VertexShader.get_RenderPlatform();
 
             if( renderPlatform != renderPlatformName )
             {
                 continue;
-            }
+            }            
 
-            const ConstString & name = meta_VertexShader.get_Name();
+            const FilePath & vertexShaderFilePath = meta_VertexShader.get_File_Path();
 
-            const FilePath & filePath = meta_VertexShader.get_File_Path();
-
-            ConstString fileConverter;
-            meta_VertexShader.get_File_Converter( &fileConverter );
+            ConstString fileConverterType;
+            meta_VertexShader.get_File_Converter( &fileConverterType );
 
             bool isCompile = false;
             meta_VertexShader.get_File_Compile( &isCompile );
 
+            ContentInterfacePtr vertexShaderContent = Helper::makeFileContent( m_fileGroup, vertexShaderFilePath, MENGINE_DOCUMENT_FACTORABLE );
+
+            vertexShaderContent->setConverterType( fileConverterType );
+
             RenderVertexShaderInterfacePtr shader = RENDERMATERIAL_SERVICE()
-                ->createVertexShader( name, _fileGroup, filePath, fileConverter, isCompile, MENGINE_DOCUMENT_FACTORABLE );
+                ->createVertexShader( name, vertexShaderContent, isCompile, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( shader, "material '%s' invalid load '%s' vertex shader '%s' compile [%u]"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
-                , filePath.c_str()
+                , Helper::getContentFullPath( _desc.content )
+                , Helper::getContentFullPath( vertexShaderContent )
                 , name.c_str()
                 , isCompile
             );
@@ -1094,7 +982,7 @@ namespace Mengine
                 ->getVertexShader( vertexShaderName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( vertexShader, "material '%s' program '%s' not found vertex shader '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _desc.content )
                 , name.c_str()
                 , vertexShaderName.c_str()
             );
@@ -1103,7 +991,7 @@ namespace Mengine
                 ->getFragmentShader( fragmentShaderName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, "material '%s' program '%s' not found fragment shader '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _desc.content )
                 , name.c_str()
                 , fragmentShaderName.c_str()
             );
@@ -1112,7 +1000,7 @@ namespace Mengine
                 ->getVertexAttribute( vertexAttributeName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, "material '%s' program '%s' not found vertex attribute '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _desc.content )
                 , name.c_str()
                 , vertexAttributeName.c_str()
             );
@@ -1121,7 +1009,7 @@ namespace Mengine
                 ->createProgram( name, vertexShader, fragmentShader, vertexAttribute, samplerCount, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( program, "material '%s' invalid create program vertex '%s' fragment '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _desc.content )
                 , vertexShaderName.c_str()
                 , fragmentShaderName.c_str()
             );
@@ -1168,7 +1056,7 @@ namespace Mengine
                     ->getProgram( programName );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( program, "material '%s' invalid get program '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                     , programName.c_str()
                 );
 
@@ -1206,7 +1094,7 @@ namespace Mengine
                 ->createMaterialStage( name, stage, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( cache_stage, "material '%s' invalid create stage group '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _desc.content )
                 , name.c_str()
             );
 
@@ -1234,24 +1122,24 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::unloadMaterials_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    bool Package::disableMaterials_( const PackageMaterialDesc & _desc )
     {
         Metacode::Meta_Data::Meta_DataBlock datablock;
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( _fileGroup, _filePath, &datablock, Metacode::Meta_Data::getVersion(), &exist ) == false )
+            ->load( _desc.content, &datablock, Metacode::Meta_Data::getVersion(), &exist, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             if( exist == false )
             {
                 LOGGER_ERROR( "materials '%s' not found"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                 );
             }
             else
             {
                 LOGGER_ERROR( "invalid parse materials '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _desc.content )
                 );
             }
 

@@ -16,6 +16,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -218,18 +219,15 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const DataflowInterfacePtr & dataflow = content->getDataflow();
-
         DataflowContext context;
         context.filePath = filePath;
 
-        DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, &context, MENGINE_DOCUMENT_FACTORABLE );
+        DataInterfacePtr data = Helper::getDataflow( content, &context, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, "resource movie '%s' group '%s' can` t get frame pack '%s'"
             , this->getName().c_str()
             , this->getGroupName().c_str()
-            , this->getContent()->getFilePath().c_str()
+            , Helper::getContentFullPath( this->getContent() )
         );
 
         m_keyFramePack = data;

@@ -129,6 +129,7 @@
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ColorHelper.h"
 #include "Kernel/ResourcePacket.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Lambda.h"
@@ -1403,8 +1404,14 @@ namespace Mengine
 
                 const RenderTextureInterfacePtr & texture = resource->getTexture();
 
+                ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( content );
+
+                content->setCodecType( STRINGIZE_STRING_LOCAL( "pngImage" ) );
+
                 RENDERTEXTURE_SERVICE()
-                    ->saveImage( texture, fileGroup, STRINGIZE_STRING_LOCAL( "pngImage" ), _filePath );
+                    ->saveImage( texture, content );
 
                 resource->release();
             }
@@ -1535,12 +1542,6 @@ namespace Mengine
 
                 resource->setName( _resourceName );
 
-                ContentInterfacePtr content = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
-
-                content->setFileGroup( fileGroup );
-                content->setFilePath( _filePath );
-
                 const ConstString & newCodecType = CODEC_SERVICE()
                     ->findCodecType( _filePath );
 
@@ -1548,6 +1549,8 @@ namespace Mengine
                 {
                     return nullptr;
                 }
+
+                ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYBIND );
 
                 content->setCodecType( newCodecType );
 
@@ -3158,7 +3161,7 @@ namespace Mengine
                 return secureValue;
             }
             //////////////////////////////////////////////////////////////////////////
-            PythonFileLoggerPtr s_makeFileLogger( const FilePath & _path )
+            PythonFileLoggerPtr s_makeFileLogger( const FilePath & _filePath )
             {
                 PythonFileLoggerPtr logger = Helper::makeFactorableUnique<PythonFileLogger>( MENGINE_DOCUMENT_PYBIND );
 
@@ -3167,7 +3170,11 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( userFileGroup );
 
-                if( logger->initialize( userFileGroup, _path ) == false )
+                ContentInterfacePtr content = Helper::makeFileContent( userFileGroup, _filePath, MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( content );
+
+                if( logger->initialize( content ) == false )
                 {
                     return nullptr;
                 }
@@ -4176,7 +4183,7 @@ namespace Mengine
                         LOGGER_ERROR( "invalid direct compile resource '%s' type '%s' content '%s'"
                             , _resource->getName().c_str()
                             , _resource->getType().c_str()
-                            , _resource->getContent() != nullptr ? _resource->getContent()->getFilePath().c_str() : "[no content]"
+                            , _resource->getContent() != nullptr ? Helper::getContentFullPath( _resource->getContent() ) : "[no content]"
                         );
                     }
                 } );
@@ -4201,7 +4208,7 @@ namespace Mengine
                         LOGGER_ERROR( "invalid direct compile resource '%s' type '%s' content '%s'"
                             , _resource->getName().c_str()
                             , _resource->getType().c_str()
-                            , _resource->getContent() != nullptr ? _resource->getContent()->getFilePath().c_str() : "[no content]"
+                            , _resource->getContent() != nullptr ? Helper::getContentFullPath( _resource->getContent() ) : "[no content]"
                         );
                     }
                 } );

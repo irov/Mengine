@@ -1,4 +1,4 @@
-#include "MetabufLoaderPlugin.h"
+#include "MetabufPlugin.h"
 
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
@@ -20,6 +20,8 @@
 #include "MetabufLoaderResourceSound.h"
 #include "MetabufLoaderResourceWindow.h"
 
+#include "MetabufPackageLoader.h"
+
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
@@ -37,20 +39,20 @@ void _metabuf_free( void * _ptr )
     Mengine::Helper::deallocateMemory( _ptr, "metabuf" );
 }
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( MetabufLoader, Mengine::MetabufLoaderPlugin );
+PLUGIN_FACTORY( Metabuf, Mengine::MetabufPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    MetabufLoaderPlugin::MetabufLoaderPlugin()
+    MetabufPlugin::MetabufPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    MetabufLoaderPlugin::~MetabufLoaderPlugin()
+    MetabufPlugin::~MetabufPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MetabufLoaderPlugin::_initializePlugin()
+    bool MetabufPlugin::_initializePlugin()
     {
 #define SET_LOADER(T)\
         VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( #T ), Helper::makeFactorableUnique<MetabufLoader##T>(MENGINE_DOCUMENT_FACTORABLE), MENGINE_DOCUMENT_FACTORABLE )
@@ -73,10 +75,12 @@ namespace Mengine
 
 #undef SET_LOADER
 
+        VOCABULARY_SET( PackageLoaderInterface, STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "xml" ), Helper::makeFactorableUnique<MetabufPackageLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetabufLoaderPlugin::_finalizePlugin()
+    void MetabufPlugin::_finalizePlugin()
     {
 #define REMOVE_LOADER(T)\
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( #T ) )
@@ -98,6 +102,8 @@ namespace Mengine
         REMOVE_LOADER( ResourceWindow );
 
 #undef REMOVE_LOADER
+
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "xml" ) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

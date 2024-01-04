@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/ConverterFactoryInterface.h"
 #include "Interface/ConverterInterface.h"
 
 #include "Kernel/ConstString.h"
@@ -17,7 +16,7 @@ namespace Mengine
         virtual ConverterInterfacePtr createConverter( const ConstString & _type, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath * const _out, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool convert( const ConstString & converterType, const ContentInterfacePtr & _in, ContentInterfacePtr * const _out, const DocumentInterfacePtr & _doc ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

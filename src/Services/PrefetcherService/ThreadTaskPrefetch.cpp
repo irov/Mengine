@@ -12,10 +12,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPrefetch::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const PrefetcherObserverInterfacePtr & _observer )
+    void ThreadTaskPrefetch::initialize( const ContentInterfacePtr & _content, const PrefetcherObserverInterfacePtr & _observer )
     {
-        m_fileGroup = _fileGroup;
-        m_filePath = _filePath;
+        m_content = _content;
         m_observer = _observer;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -23,9 +22,10 @@ namespace Mengine
     {
         this->_finalize();
 
-        m_fileGroup = nullptr;
-        m_stream = nullptr;
+        m_content = nullptr;
         m_observer = nullptr;
+
+        m_stream = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetch::_finalize()
@@ -55,7 +55,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetch::_onThreadTaskComplete( bool _successful )
     {
-        m_fileGroup = nullptr;
+        m_content = nullptr;
         m_stream = nullptr;
 
         m_observer->onPrefetchComplete( _successful );

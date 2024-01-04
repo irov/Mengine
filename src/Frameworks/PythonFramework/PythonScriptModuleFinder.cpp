@@ -14,7 +14,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/MemoryCopy.h"
 #include "Kernel/Logger.h"
-#include "Kernel/MemoryCopy.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -107,7 +107,7 @@ namespace Mengine
 
         MENGINE_THREAD_GUARD_SCOPE( PythonScriptModuleFinder, this, "PythonScriptModuleFinder::find_module" );
 
-        static bool PythonScript_AvailableCompileZCode = CONFIG_VALUE( "PythonScript", "AvailableCompileZCode", true );
+        bool PythonScript_AvailableCompileZCode = CONFIG_VALUE( "PythonScript", "AvailableCompileZCode", true );
 
         if( PythonScript_AvailableCompileZCode == true )
         {
@@ -126,7 +126,7 @@ namespace Mengine
             loader->finalize();
         }
 
-        static bool PythonScript_AvailableSourceCode = CONFIG_VALUE( "PythonScript", "AvailableSourceCode", true );
+        bool PythonScript_AvailableSourceCode = CONFIG_VALUE( "PythonScript", "AvailableSourceCode", true );
 
         if( PythonScript_AvailableSourceCode == true )
         {
@@ -267,7 +267,9 @@ namespace Mengine
                     continue;
                 }
 
-                _loader->initialize( fileGroup, c_fullPath );
+                ContentInterfacePtr content = Helper::makeFileContent( fileGroup, c_fullPath, MENGINE_DOCUMENT_FACTORABLE );
+
+                _loader->initialize( content );
 
                 return true;
             }

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Config/Typedef.h"
-
 #include "Interface/Interface.h"
+
+#include "Config/Typedef.h"
 
 namespace Mengine
 {

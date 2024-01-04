@@ -16,6 +16,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/HttpCode.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {    
@@ -45,8 +46,12 @@ namespace Mengine
 
         receiver->initialize( _cb, _args );
 
+        ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYBIND );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( content );
+
         uint32_t id = HTTP_SYSTEM()
-            ->downloadAsset( _url, _login, _password, fileGroup, _filePath, _timeout, receiver, MENGINE_DOCUMENT_PYBIND );
+            ->downloadAsset( _url, _login, _password, content, _timeout, receiver, MENGINE_DOCUMENT_PYBIND );
 
         return id;
     }

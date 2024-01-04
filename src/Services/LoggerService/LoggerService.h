@@ -62,7 +62,7 @@ namespace Mengine
         void writeHistory( const LoggerInterfacePtr & _logger ) const override;
 
     public:
-        bool loadOldLogMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
+        bool loadOldLogMemory( const ContentInterfacePtr & _content ) override;
         const MemoryInterfacePtr & getOldLogMemory() const override;
 
     public:

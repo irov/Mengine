@@ -5,8 +5,6 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/VectorFilePath.h"
 
-#include "Config/Typedef.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

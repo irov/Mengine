@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
@@ -20,7 +20,7 @@ namespace Mengine
         SERVICE_DECLARE( "UserdataService" );
 
     public:
-        virtual bool addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & path, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool addUserdata( const ConstString & _name, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool removeUserdata( const ConstString & _name ) = 0;
         virtual bool hasUserdata( const ConstString & _name ) const = 0;
 

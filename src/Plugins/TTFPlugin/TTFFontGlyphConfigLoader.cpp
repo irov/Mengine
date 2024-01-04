@@ -3,6 +3,7 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Plugins/FEPlugin/FEInterface.h"
 
@@ -12,6 +13,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -24,7 +27,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFontGlyphConfigLoader::load( const FactorablePtr & _factorable, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
+    bool TTFFontGlyphConfigLoader::load( const FactorablePtr & _factorable, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config, const DocumentInterfacePtr & _doc )
     {
         TTFFontGlyphPtr glyph = TTFFontGlyphPtr::from( _factorable );
 
@@ -45,11 +48,13 @@ namespace Mengine
                 return false;
             }
 
-            ContentInterfacePtr glyphContent = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ContentInterfacePtr glyphContent = Helper::makeFileContent( _fileGroup, ttfPath, _doc );
 
-            glyphContent->setFileGroup( _fileGroup );
-            glyphContent->setFilePath( ttfPath );
+            DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( dataflow );
+
+            glyphContent->setDataflow( dataflow );
 
             glyph->setGlyphContent( glyphContent );
 
@@ -63,11 +68,7 @@ namespace Mengine
                 return false;
             }
 
-            ContentInterfacePtr licenseContent = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-
-            licenseContent->setFileGroup( _fileGroup );
-            licenseContent->setFilePath( ttfPath );
+            ContentInterfacePtr licenseContent = Helper::makeFileContent( _fileGroup, ttfLicense, _doc );
 
             glyph->setLicenseContent( licenseContent );
         }
@@ -101,11 +102,13 @@ namespace Mengine
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                 ->getFileGroup( groupName );
 
-            ContentInterfacePtr glyphContent = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ContentInterfacePtr glyphContent = Helper::makeFileContent( fileGroup, ttfPath, _doc );
 
-            glyphContent->setFileGroup( fileGroup );
-            glyphContent->setFilePath( ttfPath );
+            DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( dataflow );
+
+            glyphContent->setDataflow( dataflow );
 
             glyph->setGlyphContent( glyphContent );
         }

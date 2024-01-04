@@ -1,6 +1,5 @@
 #include "TTFFontGlyph.h"
 
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
@@ -62,17 +61,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFontGlyph::_compile()
     {
-        DataflowInterfacePtr dataflowTTF = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dataflowTTF );
-
-        const FileGroupInterfacePtr & fileGroup = m_glyphContent->getFileGroup();
         const FilePath & filePath = m_glyphContent->getFilePath();
 
         DataflowContext context;
         context.filePath = filePath;
 
-        TTFDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowTTF, &context, MENGINE_DOCUMENT_FACTORABLE );
+        TTFDataInterfacePtr data = Helper::getDataflow( m_glyphContent, &context, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data );
 
@@ -88,18 +82,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFontGlyph::prefetch( const PrefetcherObserverInterfacePtr & _observer )
     {
-        DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dataflow );
-
-        const FileGroupInterfacePtr & fileGroup = m_glyphContent->getFileGroup();
         const FilePath & filePath = m_glyphContent->getFilePath();
 
         DataflowContext context;
         context.filePath = filePath;
 
         if( PREFETCHER_SERVICE()
-            ->prefetchData( fileGroup, filePath, dataflow, &context, _observer ) == false )
+            ->prefetchData( m_glyphContent, &context, _observer ) == false )
         {
             return false;
         }
@@ -109,11 +98,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TTFFontGlyph::unfetch()
     {
-        const FileGroupInterfacePtr & fileGroup = m_glyphContent->getFileGroup();
-        const FilePath & filePath = m_glyphContent->getFilePath();
-
         PREFETCHER_SERVICE()
-            ->unfetch( fileGroup, filePath );
+            ->unfetch( m_glyphContent );
     }
     //////////////////////////////////////////////////////////////////////////
 }

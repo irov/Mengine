@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Interface/ServantInterface.h"
-#include "Interface/FileGroupInterface.h"
 
+#include "Interface/FileGroupInterface.h"
 #include "Interface/DataflowInterface.h"
 
 #include "Kernel/FilePath.h"
@@ -33,11 +33,11 @@ namespace Mengine
         virtual const DataflowInterfacePtr & getDataflow() const = 0;
 
     public:
-        virtual void setValidNoExist( bool _valid ) = 0;
+        virtual void setValidNoExist( bool _validNoExist ) = 0;
         virtual bool isValidNoExist() const = 0;
 
     public:
-        virtual bool existContent() const = 0;
+        virtual bool exist( bool _recursive ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ContentInterface> ContentInterfacePtr;

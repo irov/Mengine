@@ -2,6 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -20,23 +21,20 @@ namespace Mengine
 
         const ContentInterfacePtr & content = _resource->getContent();
 
-        const FilePath & filePath = content->getFilePath();
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
-            ->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
+            ->createEmitterContainerFromFile( content, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( container, "resource '%s' group '%s' can't create container file '%s'"
             , _resource->getName().c_str()
             , _resource->getGroupName().c_str()
-            , _resource->getContent()->getFilePath().c_str()
+            , Helper::getContentFullPath( _resource->getContent() )
         );
 
         if( container->isValid() == false )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' can't valid container '%s'"
                 , _resource->getName().c_str()
-                , _resource->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( _resource->getContent() )
             );
 
             successful = false;

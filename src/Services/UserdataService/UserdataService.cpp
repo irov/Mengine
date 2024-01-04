@@ -8,6 +8,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/ContentHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UserdataService, Mengine::UserdataService );
@@ -41,7 +42,7 @@ namespace Mengine
         m_datas.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool UserdataService::addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
+    bool UserdataService::addUserdata( const ConstString & _name, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -57,8 +58,7 @@ namespace Mengine
         }
 
         UserdataDesc desc;
-        desc.fileGroup = _fileGroup;
-        desc.path = _filePath;
+        desc.content = _content;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
@@ -94,7 +94,9 @@ namespace Mengine
 
         const UserdataDesc & desc = it_found->second;
 
-        if( desc.fileGroup->existFile( desc.path, true ) == false )
+        const ContentInterfacePtr & content = desc.content;
+
+        if( content->exist( true ) == false )
         {
             return false;
         }
@@ -117,18 +119,23 @@ namespace Mengine
 
         const UserdataDesc & desc = it_found->second;
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( desc.fileGroup, desc.path, false, false, _doc );
+        const ContentInterfacePtr & content = desc.content;
+
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
+
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "data '%s' invalid open file '%s'"
             , _name.c_str()
-            , desc.path.c_str()
+            , Helper::getContentFullPath( desc.content )
         );
 
         MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, "data '%s' invalid load stream archive '%s'"
             , _name.c_str()
-            , desc.path.c_str()
+            , Helper::getContentFullPath( desc.content )
         );
 
         return binaryBuffer;
@@ -153,17 +160,22 @@ namespace Mengine
         {
             LOGGER_ERROR( "data '%s' write empty file '%s'"
                 , _name.c_str()
-                , desc.path.c_str()
+                , Helper::getContentFullPath( desc.content )
             );
 
             return false;
         }
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( desc.fileGroup, desc.path, true, MENGINE_DOCUMENT_FACTORABLE );
+        const ContentInterfacePtr & content = desc.content;
+
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
+
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, filePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "data '%s' invalid open file '%s'"
             , _name.c_str()
-            , desc.path.c_str()
+            , Helper::getContentFullPath( desc.content )
         );
 
         const void * data_memory = _data;
@@ -173,17 +185,17 @@ namespace Mengine
         {
             LOGGER_ERROR( "data '%s' invalid write file '%s'"
                 , _name.c_str()
-                , desc.path.c_str()
+                , Helper::getContentFullPath( desc.content )
             );
 
             return false;
         }
 
-        if( Helper::closeOutputStreamFile( desc.fileGroup, stream ) == false )
+        if( Helper::closeOutputStreamFile( fileGroup, stream ) == false )
         {
             LOGGER_ERROR( "data '%s' invalid close file '%s'"
                 , _name.c_str()
-                , desc.path.c_str()
+                , Helper::getContentFullPath( desc.content )
             );
 
             return false;

@@ -159,7 +159,7 @@ namespace Mengine
             PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYBIND, ConstString::none(), _cb, _args );
 
             SCRIPT_SERVICE()
-                ->prefetchModules( observer );
+                ->prefetchModules( observer, MENGINE_DOCUMENT_PYBIND );
 
             uint32_t count = observer->getCount();
 

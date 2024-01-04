@@ -4,14 +4,14 @@
 
 namespace Mengine
 {
-    class MetabufLoaderPlugin
+    class MetabufPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "MetabufLoader" );
+        PLUGIN_DECLARE( "Metabuf" );
 
     public:
-        MetabufLoaderPlugin();
-        ~MetabufLoaderPlugin() override;
+        MetabufPlugin();
+        ~MetabufPlugin() override;
 
     protected:
         bool _initializePlugin() override;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/InputStreamInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/Params.h"
@@ -27,13 +27,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         struct IniStore
         {
-            FilePath path;
+            ContentInterfacePtr content;
             MemoryInterfacePtr memory;
 
             tinyini_t ini;
         };
         //////////////////////////////////////////////////////////////////////////
-        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc );
+        bool loadIni( IniStore & _ini, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc );
         bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc );
         //////////////////////////////////////////////////////////////////////////
         bool hasIniSection( const IniStore & _ini, const Char * _section );

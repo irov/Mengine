@@ -44,37 +44,25 @@ namespace Mengine
         bool isEnable() const override;
 
     protected:
+        void addPackageResource( const FilePath & _filePath, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored ) override;
+        void addPackageTextPath( const FilePath & _filePath, const Tags & _platform ) override;
+        void addPackageScript( const FilePath & _filePath, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform ) override;
+        void addPackageFontPath( const FilePath & _filePath, const Tags & _tags ) override;
+        void addPackageData( const ConstString & _name, const FilePath & _filePath, const Tags & _platform ) override;
+        void addPackageMaterial( const FilePath & _filePath, const Tags & _platform ) override;
+        void addPackageSetting( const ConstString & _name, const FilePath & _filePath, const Tags & _platform ) override;
+
+    protected:
         bool mountFileGroup_( const DocumentInterfacePtr & _doc );
         void unmountFileGroup_();
-        bool loadPackage_();
 
     protected:
-        void addResource_( const FilePath & _filePath, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored );
-        void addTextPath_( const FilePath & _filePath, const Tags & _platform );
-        void addScriptPackage_( const FilePath & _filePath, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform );
-        void addFontPath_( const FilePath & _filePath, const Tags & _tags );
-        void addData_( const ConstString & _name, const FilePath & _filePath, const Tags & _platform );
-        void addMaterial_( const FilePath & _filePath, const Tags & _platform );
-        void addSetting_( const ConstString & _name, const FilePath & _filePath, const Tags & _platform );
-
-    protected:
-        bool loadText_( const FilePath & _filePath );
-        bool unloadText_( const FilePath & _filePath );
-        bool loadFont_( const FilePath & _filePath );
-        bool unloadFont_( const FilePath & _filePath );
-        bool loadData_( const ConstString & _name, const FilePath & _filePath );
-        bool unloadData_( const ConstString & _name );
-        bool loadResources_( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Tags & _tags, bool _ignored );
-        bool unloadResources_( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
-        bool loadMaterials_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
-        bool unloadMaterials_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
-        bool loadSetting_( const ConstString & _name, const FilePath & _filePath );
-        bool unloadSetting_( const ConstString & _name );
+        bool loadPackage_( const DocumentInterfacePtr & _doc );
 
     protected:
         struct PackageResourceDesc
         {
-            FilePath path;
+            ContentInterfacePtr content;
             Tags tags;
             Tags platform;
             bool demand;
@@ -95,7 +83,7 @@ namespace Mengine
 
         struct PackageFontDesc
         {
-            FilePath path;
+            ContentInterfacePtr content;
             Tags platform;
         };
 
@@ -104,7 +92,7 @@ namespace Mengine
 
         struct PackageTextDesc
         {
-            FilePath path;
+            ContentInterfacePtr content;
             Tags platform;
         };
 
@@ -114,7 +102,7 @@ namespace Mengine
         struct PackageDataDesc
         {
             ConstString name;
-            FilePath path;
+            ContentInterfacePtr content;
             Tags platform;
         };
 
@@ -123,7 +111,7 @@ namespace Mengine
 
         struct PackageMaterialDesc
         {
-            FilePath path;
+            ContentInterfacePtr content;
             Tags platform;
         };
 
@@ -133,7 +121,7 @@ namespace Mengine
         struct PackageSettingDesc
         {
             ConstString name;
-            FilePath path;
+            ContentInterfacePtr content;
             Tags platform;
         };
 
@@ -142,6 +130,20 @@ namespace Mengine
 
         bool m_load;
         bool m_enable;
+
+    protected:
+        bool enableText_( const PackageTextDesc & _desc );
+        bool disableText_( const PackageTextDesc & _desc );
+        bool enableFont_( const PackageFontDesc & _desc );
+        bool disableFont_( const PackageFontDesc & _desc );
+        bool enableData_( const PackageDataDesc & _desc );
+        bool disableData_( const PackageDataDesc & _desc );
+        bool enableResources_( const ConstString & _locale, const PackageResourceDesc & _desc );
+        bool disableResources_( const ConstString & _locale, const PackageResourceDesc & _desc );
+        bool enableMaterials_( const PackageMaterialDesc & _desc );
+        bool disableMaterials_( const PackageMaterialDesc & _desc );
+        bool enableSetting_( const PackageSettingDesc & _desc );
+        bool disableSetting_( const PackageSettingDesc & _desc );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Package, PackageInterface> PackagePtr;

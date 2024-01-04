@@ -1,14 +1,10 @@
 #pragma once
 
-#include "Config/Typedef.h"
-
 #include "Interface/Interface.h"
 #include "Interface/InputStreamInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/ConstString.h"
-#include "Kernel/FilePath.h"
-#include "Kernel/String.h"
 #include "Kernel/Params.h"
 
 namespace Mengine
@@ -16,10 +12,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct ConverterOptions
     {
-        FileGroupInterfacePtr fileGroup;
-
-        FilePath inputFilePath;
-        FilePath outputFilePath;
+        ContentInterfacePtr inputContent;
+        ContentInterfacePtr outputContent;
 
         MapWParams params;
     };

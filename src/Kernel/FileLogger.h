@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 #include "Interface/OutputStreamInterface.h"
 
 #include "Kernel/LoggerBase.h"
@@ -16,11 +16,8 @@ namespace Mengine
         ~FileLogger() override;
 
     public:
-        void setFileGroup( const FileGroupInterfacePtr & _fileGroup );
-        const FileGroupInterfacePtr & getFileGroup() const;
-
-        void setFilePath( const FilePath & _filePath );
-        const FilePath & getFilePath() const;
+        void setContent( const ContentInterfacePtr & _content );
+        const ContentInterfacePtr & getContent() const;
 
     public:
         bool _initializeLogger() override;
@@ -36,8 +33,7 @@ namespace Mengine
         void _flush() override;
 
     protected:
-        FileGroupInterfacePtr m_fileGroup;
-        FilePath m_filePath;
+        ContentInterfacePtr m_content;
 
         OutputStreamInterfacePtr m_stream;
     };

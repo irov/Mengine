@@ -14,6 +14,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -26,7 +27,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFontConfigLoader::load( const FactorablePtr & _factorable, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
+    bool TTFFontConfigLoader::load( const FactorablePtr & _factorable, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config, const DocumentInterfacePtr & _doc )
     {
         TTFFontPtr font = TTFFontPtr::from( _factorable );
 
@@ -86,13 +87,11 @@ namespace Mengine
         if( _config->hasValue( name.c_str(), "FEPath", FilePath::none(), &FEPath ) == true )
         {
             FontEffectInterfacePtr fontEffet = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FEFile" ), MENGINE_DOCUMENT_FACTORABLE );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FEFile" ), _doc );
 
-            ContentInterfacePtr content = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ContentInterfacePtr content = Helper::makeFileContent( _fileGroup, FEPath, _doc );
 
-            content->setFilePath( FEPath );
-            content->setFileGroup( _fileGroup );
+            MENGINE_ASSERTION_MEMORY_PANIC( content );
 
             fontEffet->setContent( content );
 

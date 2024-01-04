@@ -26,7 +26,7 @@ namespace Mengine
         pybind::kernel_interface * getKernel() const;
 
     public:
-        void setJavaFunctor( jobject _functor );
+        void setJavaFunctor( JNIEnv * _jenv, jobject _functor );
         jobject getJavaFunctor() const;
 
     protected:

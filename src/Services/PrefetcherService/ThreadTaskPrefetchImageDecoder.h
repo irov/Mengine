@@ -17,10 +17,6 @@ namespace Mengine
         ~ThreadTaskPrefetchImageDecoder() override;
 
     public:
-        void setCodecType( const ConstString & _codec );
-        const ConstString & getCodecType() const;
-
-    public:
         const ImageDecoderInterfacePtr & getDecoder() const;
 
     protected:
@@ -31,8 +27,6 @@ namespace Mengine
         bool _onThreadTaskProcess() override;
 
     protected:
-        ConstString m_codecType;
-
         ImageDecoderInterfacePtr m_imageDecoder;
         MemoryInputInterfacePtr m_memoryInput;
     };

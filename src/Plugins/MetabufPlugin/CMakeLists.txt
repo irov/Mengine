@@ -1,7 +1,10 @@
-MENGINE_PROJECT(MetabufLoaderPlugin)
+MENGINE_PROJECT(MetabufPlugin)
 
 ADD_FILTER(
 src
+    MetabufPackageLoader.cpp
+    MetabufPackageLoader.h
+    
     MetabufLoaderResourceCursorICO.cpp
     MetabufLoaderResourceCursorICO.h
     MetabufLoaderResourceCursorSystem.cpp
@@ -15,7 +18,7 @@ src
     MetabufLoaderResourceImageDefault.cpp
     MetabufLoaderResourceImageDefault.h
     MetabufLoaderResourceImageEmpty.cpp
-    MetabufLoaderResourceImageEmpty.h    
+    MetabufLoaderResourceImageEmpty.h
     MetabufLoaderResourceImageSequence.cpp
     MetabufLoaderResourceImageSequence.h
     MetabufLoaderResourceImageSolid.cpp
@@ -33,15 +36,15 @@ src
     MetabufLoaderResourceWindow.cpp
     MetabufLoaderResourceWindow.h
 
-    MetabufLoaderPlugin.cpp
-    MetabufLoaderPlugin.h    
+    MetabufPlugin.cpp
+    MetabufPlugin.h
 )
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)
 
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/metabuf/include )
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_METABUFLOADER)
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_METABUF)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})

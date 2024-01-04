@@ -30,6 +30,7 @@
 #include "Kernel/ColorHelper.h"
 #include "Kernel/StaticString.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -407,7 +408,7 @@ namespace Mengine
             LOGGER_ERROR( "movie2 '%s' resource '%s' path '%s' invalid get composition name '%s' in [%s]"
                 , this->getName().c_str()
                 , this->getResourceMovie2()->getName().c_str()
-                , m_resourceMovie2->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( m_resourceMovie2->getContent() )
                 , m_compositionName.c_str()
                 , ss.str().c_str()
             );

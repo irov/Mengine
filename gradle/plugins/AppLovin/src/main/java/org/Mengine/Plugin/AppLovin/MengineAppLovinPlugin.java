@@ -123,7 +123,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         } else if (MengineAppLovinPlugin_IsAgeRestrictedUser.equalsIgnoreCase("NO") == true) {
             AppLovinPrivacySettings.setIsAgeRestrictedUser(false, activity);
         } else if (MengineAppLovinPlugin_IsAgeRestrictedUser.equalsIgnoreCase("UNKNOWN") == true) {
-            //Nothing
+            // Nothing
         } else {
             this.invalidInitialize("invalid %s: %s [YES|NO|UNKNOWN]"
                 , PLUGIN_METADATA_IS_AGE_RESTRICTED_USER
@@ -143,7 +143,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         } else if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("NO") == true) {
             AppLovinPrivacySettings.setDoNotSell(false, activity);
         } else if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("UNKNOWN") == true) {
-            //Nothing
+            // Nothing
         } else {
             this.invalidInitialize("invalid %s: %s [YES|NO|UNKNOWN]"
                 , PLUGIN_METADATA_CCPA
@@ -171,9 +171,9 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             , MengineAppLovinPlugin_TermsOfServiceUrl
         );
 
-        if (this.hasOption("applovinconsentflowusergeographygdpr") == true) {
+        if (this.hasOption("applovin.consentflow.user_geography.gdpr") == true) {
             termsAndPrivacyPolicyFlowSettings.setDebugUserGeography(AppLovinSdkConfiguration.ConsentFlowUserGeography.GDPR);
-        } else if (this.hasOption("applovinconsentflowusergeographyother") == true) {
+        } else if (this.hasOption("applovin.consentflow.user_geography.other") == true) {
             termsAndPrivacyPolicyFlowSettings.setDebugUserGeography(AppLovinSdkConfiguration.ConsentFlowUserGeography.OTHER);
         }
 
@@ -236,10 +236,6 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             m_mediationAmazon = mediationAmazon;
         }
 
-        if (BuildConfig.DEBUG == true) {
-            this.showMediationDebugger();
-        }
-
         MengineAppLovinNonetBannersInterface nonetBanners = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinNonetBanners", false);
 
         if (nonetBanners != null) {
@@ -249,6 +245,10 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         }
 
         MengineAppLovinPlugin.this.activateSemaphore("AppLovinSdkInitialized");
+
+        if (this.hasOption("applovin.show_mediation_debugger") == true) {
+            this.showMediationDebugger();
+        }
     }
 
     @Override

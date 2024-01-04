@@ -2,6 +2,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
@@ -36,16 +37,16 @@ namespace Mengine
         m_factoryBitmapFontSymbols = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    BitmapFontGlyphDescriptionPtr BitmapFontService::createGlyphDescription( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
+    BitmapFontGlyphDescriptionPtr BitmapFontService::createGlyphDescription( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
         BitmapFontGlyphDescriptionPtr glyph = m_factoryBitmapFontSymbols->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( glyph );
 
-        if( glyph->initialize( _fileGroup, _filePath ) == false )
+        if( glyph->initialize( _content ) == false )
         {
             LOGGER_ERROR("invalid create bitmap font symbols '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
             );
 
             return nullptr;

@@ -1,7 +1,5 @@
 #include "BitmapFont.h"
 
-#include "Interface/CodecServiceInterface.h"
-
 #include "Interface/RenderTextureServiceInterface.h"
 #include "Interface/RenderTextureInterface.h"
 
@@ -13,6 +11,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -76,18 +75,12 @@ namespace Mengine
     {
         const ContentInterfacePtr & content = m_glyph->getBitmapImageContent();
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
-        const ConstString & fontImageCodec = CODEC_SERVICE()
-            ->findCodecType( filePath );
-
         m_textureFont = RENDERTEXTURE_SERVICE()
-            ->loadTexture( fileGroup, filePath, fontImageCodec, DF_IMAGE_NONE, ~0U, ~0U, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadTexture( content, DF_IMAGE_NONE, ~0U, ~0U, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_textureFont, "font '%s' invalid loading font image '%s'"
             , m_name.c_str()
-            , Helper::getFileGroupFullPath( fileGroup, filePath )
+            , Helper::getContentFullPath( content )
         );
 
         return true;

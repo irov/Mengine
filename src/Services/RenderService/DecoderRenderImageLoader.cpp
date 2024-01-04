@@ -13,6 +13,7 @@
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/DocumentableHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 #include "Kernel/MemoryCopy.h"
 
 namespace Mengine
@@ -27,17 +28,17 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DecoderRenderImageLoader::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags )
+    bool DecoderRenderImageLoader::initialize( const ContentInterfacePtr & _content, uint32_t _codecFlags )
     {
         ImageDecoderInterfacePtr decoder;
         if( PREFETCHER_SERVICE()
-            ->getImageDecoder( _fileGroup, _filePath, &decoder ) == false )
+            ->getImageDecoder( _content, &decoder ) == false )
         {
-            decoder = this->createImageDecoder_( _fileGroup, _filePath, _codecType );
+            decoder = this->createImageDecoder_( _content );
 
             MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s' codec '%s' (doc: %s)"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
-                , _codecType.c_str()
+                , Helper::getContentFullPath( _content )
+                , _content->getCodecType().c_str()
                 , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
             );
         }
@@ -46,8 +47,8 @@ namespace Mengine
             if( decoder->rewind() == false )
             {
                 LOGGER_ERROR( "invalid rewind decoder '%s' codec '%s' (doc: %s)"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
-                    , _codecType.c_str()
+                    , Helper::getContentFullPath( _content )
+                    , _content->getCodecType().c_str()
                     , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
                 );
 
@@ -183,36 +184,41 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    ImageDecoderInterfacePtr DecoderRenderImageLoader::createImageDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType ) const
+    ImageDecoderInterfacePtr DecoderRenderImageLoader::createImageDecoder_( const ContentInterfacePtr & _content ) const
     {
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
+
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open stream '%s' codec '%s' (doc: %s)"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
-            , _codecType.c_str()
+            , Helper::getContentFullPath( _content )
+            , _content->getCodecType().c_str()
             , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
         );
 
         MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s' codec '%s' (doc: %s)"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
-            , _codecType.c_str()
+            , Helper::getContentFullPath( _content )
+            , _content->getCodecType().c_str()
             , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
         );
 
+        const ConstString & codecType = _content->getCodecType();
+
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoder( _codecType, MENGINE_DOCUMENT_FACTORABLE );
+            ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s' codec '%s' (doc: %s)"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
-            , _codecType.c_str()
+            , Helper::getContentFullPath( _content )
+            , _content->getCodecType().c_str()
             , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
         );
 
         if( decoder->prepareData( stream ) == false )
         {
             LOGGER_ERROR( "invalid prepare data '%s' codec '%s' (doc: %s)"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
-                , _codecType.c_str()
+                , Helper::getContentFullPath( _content )
+                , _content->getCodecType().c_str()
                 , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
             );
 

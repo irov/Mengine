@@ -24,6 +24,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/JSONHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
 
@@ -88,7 +89,7 @@ namespace Mengine
         {
             return false;
         }
-         
+
         bool GameAnalyticsPlugin_Available = CONFIG_VALUE( "GameAnalyticsPlugin", "Available", true );
 
         if( GameAnalyticsPlugin_Available == false )
@@ -132,7 +133,7 @@ namespace Mengine
         gameanalytics::GameAnalytics::configureWritablePath( analyticsPath );
 
         bool OPTION_gameanalyticslog = HAS_OPTION( "gameanalyticslog" );
-        
+
         if( OPTION_gameanalyticslog == true )
         {
             gameanalytics::GameAnalytics::setEnabledInfoLog( true );
@@ -178,13 +179,13 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [MENGINE_DEBUG_ARGUMENTS( this )]()
         {
             SCRIPT_SERVICE()
-            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "GameAnalyticsScriptEmbedding" ), Helper::makeFactorableUnique<GameAnalyticsScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+                ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "GameAnalyticsScriptEmbedding" ), Helper::makeFactorableUnique<GameAnalyticsScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
         {
             SCRIPT_SERVICE()
-            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "GameAnalyticsScriptEmbedding" ) );
+                ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "GameAnalyticsScriptEmbedding" ) );
         }, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
@@ -228,8 +229,10 @@ namespace Mengine
             return false;
         }
 
+        ContentInterfacePtr contentConfig = Helper::makeFileContent( fileGroupUser, configPath_f, MENGINE_DOCUMENT_FACTORABLE );
+
         ConfigInterfacePtr analyticsConfig = CONFIG_SERVICE()
-            ->loadConfig( fileGroupUser, configPath_f, STRINGIZE_STRING_LOCAL( "json" ), MENGINE_DOCUMENT_FACTORABLE );
+            ->loadConfig( contentConfig, STRINGIZE_STRING_LOCAL( "json" ), MENGINE_DOCUMENT_FACTORABLE );
 
         const Char * Config_UserId;
         if( analyticsConfig->hasValue( "Config", "UserId", "", &Config_UserId ) == false )

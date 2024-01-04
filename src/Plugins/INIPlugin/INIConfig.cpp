@@ -139,7 +139,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "invalid stream config" );
 
         INIUtils::IniStore store;
-        store.path = Helper::getInputStreamDebugFilePath( _stream );
 
         if( INIUtils::loadIni( store, _stream, _doc ) == false )
         {

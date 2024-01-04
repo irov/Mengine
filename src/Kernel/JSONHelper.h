@@ -11,11 +11,11 @@ namespace Mengine
 {
     namespace Helper
     {
-        jpp::object loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc );
+        jpp::object loadJSONFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc );
         jpp::object loadJSONStream( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc );
-        jpp::object loadJSONStreamFromMemory( const MemoryInterfacePtr & _memory, const DocumentInterfacePtr & _doc );
-        jpp::object loadJSONStreamFromString( const String & _value, const DocumentInterfacePtr & _doc );
-        jpp::object loadJSONStreamFromBuffer( const void * _buffer, size_t _size, const DocumentInterfacePtr & _doc );
+        jpp::object loadJSONMemory( const MemoryInterfacePtr & _memory, const DocumentInterfacePtr & _doc );
+        jpp::object loadJSONString( const String & _value, const DocumentInterfacePtr & _doc );
+        jpp::object loadJSONBuffer( const void * _buffer, size_t _size, const DocumentInterfacePtr & _doc );
 
         bool writeJSONFile( const jpp::object & _j, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const DocumentInterfacePtr & _doc );
         bool writeJSONFileCompact( const jpp::object & _j, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const DocumentInterfacePtr & _doc );

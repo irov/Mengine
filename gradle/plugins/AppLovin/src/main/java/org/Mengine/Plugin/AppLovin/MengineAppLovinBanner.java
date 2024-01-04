@@ -59,9 +59,6 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         adView.stopAutoRefresh();
         adView.setVisibility(View.GONE);
 
-        ViewGroup viewGroup = MengineActivity.getContentViewGroup();
-        viewGroup.addView(adView);
-
         m_adView = adView;
 
         m_plugin.logMessage("[%s] create adUnitId: %s placement: %s size: [%d, %d]"
@@ -109,6 +106,10 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             return;
         }
 
+        if (m_plugin.hasOption("applovin.banner.no_load") == true) {
+            return;
+        }
+
         this.log("loadAd");
 
         String placement = m_adView.getPlacement();
@@ -139,17 +140,13 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     }
 
     public boolean bannerVisible(boolean show) {
-        if(m_adView == null) {
-            return false;
-        }
-
-        m_visible = show;
-
         MaxAdView copy_adView = m_adView;
 
         m_plugin.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                m_visible = show;
+
                 MengineAppLovinBanner.this.log("bannerVisible", Map.of("show", show));
 
                 MengineAppLovinNonetBannersInterface nonetBanners = m_plugin.getNonetBanners();
@@ -163,11 +160,24 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
                         }
                     }
 
-                    copy_adView.startAutoRefresh();
-                    copy_adView.setVisibility(View.VISIBLE);
+                    if (copy_adView != null) {
+                        ViewGroup viewGroup = MengineActivity.getContentViewGroup();
+                        viewGroup.addView(copy_adView);
+
+                        if (m_plugin.hasOption("applovin.banner.no_load") == false) {
+                            copy_adView.startAutoRefresh();
+                        }
+
+                        copy_adView.setVisibility(View.VISIBLE);
+                    }
                 } else {
-                    copy_adView.stopAutoRefresh();
-                    copy_adView.setVisibility(View.GONE);
+                    if (copy_adView != null) {
+                        ViewGroup viewGroup = MengineActivity.getContentViewGroup();
+                        viewGroup.removeView(copy_adView);
+
+                        copy_adView.stopAutoRefresh();
+                        copy_adView.setVisibility(View.GONE);
+                    }
 
                     if (nonetBanners != null) {
                         nonetBanners.hide();

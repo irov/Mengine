@@ -13,7 +13,7 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual bool load( const FactorablePtr & _factorable, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config ) = 0;
+        virtual bool load( const FactorablePtr & _factorable, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config, const DocumentInterfacePtr & _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ConfigLoaderInterface> ConfigLoaderInterfacePtr;

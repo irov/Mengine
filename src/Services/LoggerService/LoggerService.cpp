@@ -595,14 +595,17 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoggerService::loadOldLogMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    bool LoggerService::loadOldLogMemory( const ContentInterfacePtr & _content )
     {
-        if( _fileGroup->existFile( _filePath, false ) == false )
+        if( _content->exist( false ) == false )
         {
             return false;
         }
 
-        MemoryInterfacePtr memory = Helper::createMemoryFileString( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
+
+        MemoryInterfacePtr memory = Helper::createMemoryFileString( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( memory == nullptr )
         {

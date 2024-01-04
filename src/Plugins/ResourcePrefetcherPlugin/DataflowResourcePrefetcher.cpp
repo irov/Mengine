@@ -26,9 +26,7 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
-        const DataflowInterfacePtr & dataflow = content->getDataflow();
 
         const ConstString & groupName = _resource->getGroupName();
 
@@ -37,7 +35,7 @@ namespace Mengine
         context.groupName = groupName;
 
         if( PREFETCHER_SERVICE()
-            ->prefetchData( fileGroup, filePath, dataflow, &context, _observer ) == false )
+            ->prefetchData( content, &context, _observer ) == false )
         {
             return false;
         }
@@ -53,11 +51,8 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
         bool successful = PREFETCHER_SERVICE()
-            ->unfetch( fileGroup, filePath );
+            ->unfetch( content );
 
         return successful;
     }

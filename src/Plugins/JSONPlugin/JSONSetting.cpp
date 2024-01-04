@@ -19,12 +19,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool JSONSetting::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
+    bool JSONSetting::initialize( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
-        m_fileGroup = _fileGroup;
-        m_filePath = _filePath;
+        m_content = _content;
 
-        jpp::object json = Helper::loadJSON( _fileGroup, _filePath, _doc );
+        const FileGroupInterfacePtr & fileGroup = m_content->getFileGroup();
+        const FilePath & filePath = m_content->getFilePath();
+
+        jpp::object json = Helper::loadJSONFile( fileGroup, filePath, _doc );
 
         MENGINE_ASSERTION_JSON_INVALID( json );
 
@@ -32,9 +34,9 @@ namespace Mengine
 
 #if defined(MENGINE_DEBUG)
         FILEMODIFYHOOK_SERVICE()
-            ->setFileModifyHook( m_fileGroup, m_filePath, [this, _doc]()
+            ->setFileModifyHook( fileGroup, filePath, [this, fileGroup, filePath, _doc]()
         {
-            jpp::object new_json = Helper::loadJSON( m_fileGroup, m_filePath, _doc );
+            jpp::object new_json = Helper::loadJSONFile( fileGroup, filePath, _doc );
 
             MENGINE_ASSERTION_JSON_INVALID( new_json );
 
@@ -48,22 +50,20 @@ namespace Mengine
     void JSONSetting::finalize()
     {
 #if defined(MENGINE_DEBUG)
+        const FileGroupInterfacePtr & fileGroup = m_content->getFileGroup();
+        const FilePath & filePath = m_content->getFilePath();
+
         FILEMODIFYHOOK_SERVICE()
-            ->removeFileModifyHook( m_fileGroup, m_filePath );
+            ->removeFileModifyHook( fileGroup, filePath );
 #endif
 
-        m_fileGroup = nullptr;
+        m_content = nullptr;
         m_json = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FileGroupInterfacePtr & JSONSetting::getFileGroup() const
+    const ContentInterfacePtr & JSONSetting::getContent() const
     {
-        return m_fileGroup;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & JSONSetting::getFilePath() const
-    {
-        return m_filePath;
+        return m_content;
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Detail

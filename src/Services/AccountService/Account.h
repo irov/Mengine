@@ -70,8 +70,9 @@ namespace Mengine
         uint32_t m_projectVersion;
 
         FilePath m_folderName;
-        FilePath m_settingsINIPath;
-        FilePath m_settingsJSONPath;
+
+        ContentInterfacePtr m_settingsJSONContent;
+        ContentInterfacePtr m_settingsINIContent;        
 
         struct Setting
         {

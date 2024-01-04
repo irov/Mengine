@@ -26,6 +26,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/TimestampHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -477,7 +478,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId cURLHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId cURLHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const ContentInterfacePtr & _content, int32_t _timeout, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -486,17 +487,19 @@ namespace Mengine
             return 0;
         }
 
-        if( _fileGroup->existFile( _filePath, true ) == true )
+        if( _content->exist( true ) == true )
         {
             LOGGER_ERROR( "url '%s' file already exist '%s'"
                 , _url.c_str()
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
             );
 
             return MENGINE_HTTP_REQUEST_INVALID;
         }
 
-        FilePath filePathTmp = Helper::stringizeFilePathFormat( "%s.~tmp", _filePath.c_str() );
+        const FilePath & filePath = _content->getFilePath();
+
+        FilePath filePathTmp = Helper::stringizeFilePathFormat( "%s.~tmp", filePath.c_str() );
 
         UniqueId task_id = Helper::generateUniqueIdentity();
 
@@ -518,11 +521,11 @@ namespace Mengine
 
         task->setReceiver( HttpReceiverInterfacePtr::from( this ) );
 
-        if( task->initialize( _login, _password, _fileGroup, _filePath, filePathTmp ) == false )
+        if( task->initialize( _login, _password, _content, filePathTmp ) == false )
         {
             LOGGER_ERROR( "url '%s' file '%s' invalid initialize task"
                 , _url.c_str()
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
             );
 
             return MENGINE_HTTP_REQUEST_INVALID;

@@ -10,6 +10,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -38,11 +39,11 @@ namespace Mengine
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "image file '%s' was not found"
-            , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
+            , Helper::getContentFullPath( this->getContent() )
         );
 
         MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty file '%s' codec '%s'"
-            , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
+            , Helper::getContentFullPath( this->getContent() )
             , this->getContent()->getCodecType().c_str()
         );
 
@@ -53,14 +54,14 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "image decoder '%s' for file '%s' was not found"
             , this->getContent()->getCodecType().c_str()
-            , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
+            , Helper::getContentFullPath( this->getContent() )
         );
 
         if( imageDecoder->prepareData( stream ) == false )
         {
             LOGGER_ERROR( "image decoder '%s' for file '%s' was not found"
                 , this->getContent()->getCodecType().c_str()
-                , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
+                , Helper::getContentFullPath( this->getContent() )
             );
 
             return false;
@@ -88,7 +89,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "image decoder '%s' for file '%s' invalid decode"
                 , this->getContent()->getCodecType().c_str()
-                , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
+                , Helper::getContentFullPath( this->getContent() )
             );
 
             return false;

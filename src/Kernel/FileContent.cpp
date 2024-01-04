@@ -11,4 +11,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    bool FileContent::exist( bool _recursive ) const
+    {
+        bool result = m_fileGroup->existFile( m_filePath, _recursive );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

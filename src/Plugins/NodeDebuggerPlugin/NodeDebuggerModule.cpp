@@ -1428,8 +1428,10 @@ namespace Mengine
         SETTINGS_SERVICE()
             ->foreachSettings( [&payloadNode]( const ConstString & _name, const SettingInterfacePtr & _settings )
         {
-            const FileGroupInterfacePtr & fileGroup = _settings->getFileGroup();
-            const FilePath & filePath = _settings->getFilePath();
+            const ContentInterfacePtr & content = _settings->getContent();
+
+            const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+            const FilePath & filePath = content->getFilePath();
 
             Char fullPath[MENGINE_MAX_PATH] = {'\0'};
             fileGroup->getFullPath( filePath, fullPath );

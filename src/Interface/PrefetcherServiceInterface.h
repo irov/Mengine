@@ -9,6 +9,7 @@
 #include "Interface/DataflowInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/MemoryInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/ConstString.h"
@@ -26,24 +27,24 @@ namespace Mengine
         SERVICE_DECLARE( "PrefetcherService" )
 
     public:
-        virtual bool prefetchImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer ) = 0;
-        virtual bool getImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, ImageDecoderInterfacePtr * const _decoder ) = 0;
+        virtual bool prefetchImageDecoder( const ContentInterfacePtr & _content, const PrefetcherObserverInterfacePtr & _observer ) = 0;
+        virtual bool getImageDecoder( const ContentInterfacePtr & _content, ImageDecoderInterfacePtr * const _decoder ) = 0;
 
     public:
-        virtual bool prefetchSoundDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer ) = 0;
-        virtual bool getSoundDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, SoundDecoderInterfacePtr * const _decoder ) = 0;
+        virtual bool prefetchSoundDecoder( const ContentInterfacePtr & _content, const PrefetcherObserverInterfacePtr & _observer ) = 0;
+        virtual bool getSoundDecoder( const ContentInterfacePtr & _content, SoundDecoderInterfacePtr * const _decoder ) = 0;
 
     public:
-        virtual bool prefetchData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const DataflowContext * _context, const PrefetcherObserverInterfacePtr & _observer ) = 0;
-        virtual bool getData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, DataInterfacePtr * const _data ) = 0;
-        virtual bool popData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, DataInterfacePtr * const _data ) = 0;
+        virtual bool prefetchData( const ContentInterfacePtr & _content, const DataflowContext * _context, const PrefetcherObserverInterfacePtr & _observer ) = 0;
+        virtual bool getData( const ContentInterfacePtr & _content, DataInterfacePtr * const _data ) = 0;
+        virtual bool popData( const ContentInterfacePtr & _content, DataInterfacePtr * const _data ) = 0;
 
     public:
-        virtual bool prefetchStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, uint32_t magic_number, uint32_t magic_version, const PrefetcherObserverInterfacePtr & _observer ) = 0;
-        virtual bool getStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, MemoryInterfacePtr * const _data ) = 0;
+        virtual bool prefetchStream( const ContentInterfacePtr & _content, const ArchivatorInterfacePtr & _archivator, uint32_t magic_number, uint32_t magic_version, const PrefetcherObserverInterfacePtr & _observer ) = 0;
+        virtual bool getStream( const ContentInterfacePtr & _content, MemoryInterfacePtr * const _data ) = 0;
 
     public:
-        virtual bool unfetch( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
+        virtual bool unfetch( const ContentInterfacePtr & _content ) = 0;
 
     public:
         typedef Lambda<void( const ThreadTaskPtr & )> LambdaPrefetchTask;

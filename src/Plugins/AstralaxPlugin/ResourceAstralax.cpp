@@ -5,6 +5,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -40,20 +41,17 @@ namespace Mengine
     {
         const ContentInterfacePtr & content = this->getContent();
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
-            ->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
+            ->createEmitterContainerFromFile( content, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( container, "resource '%s' can't create container file '%s'"
             , this->getName().c_str()
-            , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
+            , Helper::getContentFullPath( this->getContent() )
         );
 
         MENGINE_ASSERTION_FATAL( container->getAtlasResourceImageCount() == m_resourceImages.size(), "resource '%s' container '%s' has different image count '%u != %zu'"
             , this->getName().c_str()
-            , Helper::getFileGroupFullPath( this->getContent()->getFileGroup(), this->getContent()->getFilePath() )
+            , Helper::getContentFullPath( this->getContent() )
             , container->getAtlasResourceImageCount()
             , m_resourceImages.size()
         );
@@ -65,7 +63,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "resource astralax '%s' file '%s' can't invalid compile resource image '%s'"
                     , this->getName().c_str()
-                    , this->getContent()->getFilePath().c_str()
+                    , Helper::getContentFullPath( this->getContent() )
                     , resourceImage->getName().c_str()
                 );
 
@@ -76,7 +74,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "resource astralax '%s' file '%s' invalid set atlas resource image '%s'"
                     , this->getName().c_str()
-                    , this->getContent()->getFilePath().c_str()
+                    , Helper::getContentFullPath( this->getContent() )
                     , resourceImage->getName().c_str()
                 );
 

@@ -24,6 +24,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/JSONHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
 
@@ -657,13 +658,15 @@ namespace Mengine
 
         if( m_fileGroup->existFile( settingsJSONPath, true ) == true )
         {
+            ContentInterfacePtr settingsJSONContent = Helper::makeFileContent( m_fileGroup, settingsJSONPath, MENGINE_DOCUMENT_FACTORABLE );
+
             ConfigInterfacePtr config = CONFIG_SERVICE()
-                ->loadConfig( m_fileGroup, settingsJSONPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+                ->loadConfig( settingsJSONContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             if( config == nullptr )
             {
                 LOGGER_ERROR( "parsing accounts failed '%s'"
-                    , settingsJSONPath.c_str()
+                    , Helper::getContentFullPath( settingsJSONContent )
                 );
 
                 return nullptr;
@@ -676,13 +679,15 @@ namespace Mengine
 
         if( m_fileGroup->existFile( settingsINIPath, true ) == true )
         {
+            ContentInterfacePtr settingsINIContent = Helper::makeFileContent( m_fileGroup, settingsINIPath, MENGINE_DOCUMENT_FACTORABLE );
+
             ConfigInterfacePtr config = CONFIG_SERVICE()
-                ->loadConfig( m_fileGroup, settingsINIPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+                ->loadConfig( settingsINIContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             if( config == nullptr )
             {
                 LOGGER_ERROR( "parsing accounts failed '%s'"
-                    , settingsINIPath.c_str()
+                    , Helper::getContentFullPath( settingsINIContent )
                 );
 
                 return nullptr;

@@ -179,19 +179,25 @@ namespace Mengine
             this->append( _value );
         }
 
-        void operator += ( value_type * _value )
+        ArrayTString<T, Size> & operator += ( value_type * _value )
         {
             this->append( _value );
+
+            return *this;
         }
 
-        void operator += ( const value_type * _value )
+        ArrayTString<T, Size> & operator += ( const value_type * _value )
         {
             this->append( _value );
+
+            return *this;
         }
 
-        void operator += ( value_type _value )
+        ArrayTString<T, Size> & operator += ( value_type _value )
         {
             this->append( _value );
+
+            return *this;
         }
 
         template<class StringView>
@@ -202,13 +208,71 @@ namespace Mengine
         }
 
         template<class StringView>
-        void operator += ( const StringView & _value )
+        ArrayTString<T, Size> & operator += ( const StringView & _value )
         {
             this->append( _value );
+
+            return *this;
         }
 
     protected:
         value_type m_buffer[Size];
         size_type m_pos;
     };
+    //////////////////////////////////////////////////////////////////////////
+    template<class T, uint32_t SizeL, uint32_t SizeR>
+    ArrayTString<T, (SizeL > SizeR ? SizeL : SizeR)> operator + ( const ArrayTString<T, SizeL> & _left, const ArrayTString<T, SizeR> & _right )
+    {
+        ArrayTString<T, (SizeL > SizeR ? SizeL : SizeR)> str;
+
+        str += _left;
+        str += _right;
+
+        return str;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    template<class T, uint32_t Size>
+    ArrayTString<T, Size> operator + ( const ArrayTString<T, Size> & _left, const Char * _right )
+    {
+        ArrayTString<T, Size> str;
+
+        str += _left;
+        str += _right;
+
+        return str;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    template<class T, uint32_t Size>
+    ArrayTString<T, Size> operator + ( const Char * _left, const ArrayTString<T, Size> & _right )
+    {
+        ArrayTString<T, Size> str;
+
+        str += _left;
+        str += _right;
+
+        return str;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    template<class T, uint32_t Size, class R>
+    ArrayTString<T, Size> operator + ( const ArrayTString<T, Size> & _left, const R & _right )
+    {
+        ArrayTString<T, Size> str;
+
+        str += _left;
+        str += _right.c_str();
+
+        return str;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    template<class T, uint32_t Size, class R>
+    ArrayTString<T, Size> operator + ( const R & _left, const ArrayTString<T, Size> & _right )
+    {
+        ArrayTString<T, Size> str;
+
+        str += _left.c_str();
+        str += _right;
+
+        return str;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

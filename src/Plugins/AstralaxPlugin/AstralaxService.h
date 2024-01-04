@@ -30,7 +30,7 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc ) override;
+        AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) override;
 
     public:
         AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentInterfacePtr & _doc ) override;

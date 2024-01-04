@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ConfigInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 
 namespace Mengine
 {
@@ -16,10 +16,10 @@ namespace Mengine
         virtual ConfigInterfacePtr createMemoryConfig( const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual ConfigInterfacePtr loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentInterfacePtr & _doc ) = 0;
+        virtual ConfigInterfacePtr loadConfig( const ContentInterfacePtr & _content, const ConstString & _configType, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual bool loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool loadDefaultConfig( const ContentInterfacePtr & _content, const ConstString & _configType, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual const ConfigInterfacePtr & getDefaultConfig() const = 0;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 #include "Interface/OutputStreamInterface.h"
 
 #include "Kernel/FilePath.h"
@@ -23,7 +23,7 @@ namespace Mengine
         bool getTimestamp() const;
 
     public:
-        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
+        bool initialize( const ContentInterfacePtr & _content );
         void finalize();
 
     public:

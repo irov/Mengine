@@ -6,6 +6,8 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ResourceImageDefault.h"
 #include "Kernel/SurfaceImage.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -16,11 +18,9 @@ namespace Mengine
             ResourceImageDefaultPtr resource = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), _doc );
 
-            ContentInterfacePtr content = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), _doc );
-            
-            content->setFileGroup( _fileGroup );
-            content->setFilePath( _filePath );
+            ContentInterfacePtr content = Helper::makeFileContent( _fileGroup, _filePath, _doc );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( content );
 
             const ConstString & codecType = CODEC_SERVICE()
                 ->findCodecType( _filePath );

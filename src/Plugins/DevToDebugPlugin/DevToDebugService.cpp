@@ -551,7 +551,7 @@ namespace Mengine
                     break;
                 }
 
-                jpp::object j = Helper::loadJSONStreamFromString( responseData, MENGINE_DOCUMENT_FACTORABLE );
+                jpp::object j = Helper::loadJSONString( responseData, MENGINE_DOCUMENT_FACTORABLE );
 
                 m_workerURL = j.get( "url", "" );
 
@@ -606,7 +606,7 @@ namespace Mengine
                     break;
                 }
 
-                jpp::object j = Helper::loadJSONStreamFromString( responseData, MENGINE_DOCUMENT_FACTORABLE );
+                jpp::object j = Helper::loadJSONString( responseData, MENGINE_DOCUMENT_FACTORABLE );
 
                 bool is_watched = j.get( "is_watched" );
 
@@ -689,7 +689,7 @@ namespace Mengine
                     break;
                 }
 
-                jpp::object j = Helper::loadJSONStreamFromString( responseData, MENGINE_DOCUMENT_FACTORABLE );
+                jpp::object j = Helper::loadJSONString( responseData, MENGINE_DOCUMENT_FACTORABLE );
 
                 uint32_t revision_from = j.get( "revision_from", 0U );
                 uint32_t revision_to = j.get( "revision_to", 0U );

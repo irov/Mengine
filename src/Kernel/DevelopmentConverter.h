@@ -33,7 +33,10 @@ namespace Mengine
         bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
 
     protected:
-        FileGroupInterfacePtr m_fileGroup;
+        const FileGroupInterfacePtr & getDevFileGroup() const;
+
+    protected:
+        FileGroupInterfacePtr m_devFileGroup;
 
         ConverterOptions m_options;
 

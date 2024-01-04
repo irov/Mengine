@@ -12,6 +12,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
 
@@ -30,16 +31,19 @@ namespace Mengine
         MENGINE_ASSERTION( m_mf == 0, "astralax container is not finalized" );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitterContainer::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator )
+    bool AstralaxEmitterContainer::initialize( const ContentInterfacePtr & _content, const ArchivatorInterfacePtr & _archivator )
     {
         MemoryInterfacePtr memory;
         if( PREFETCHER_SERVICE()
-            ->getStream( _fileGroup, _filePath, &memory ) == false )
+            ->getStream( _content, &memory ) == false )
         {
-            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+            const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+            const FilePath & filePath = _content->getFilePath();
+
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't open file '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
             );
 
             memory = Helper::loadStreamArchiveMagicMemory( stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), MENGINE_DOCUMENT_FACTORABLE );
@@ -54,14 +58,14 @@ namespace Mengine
         if( this->loadContainer_( binary_memory, binary_size, &mf ) == false )
         {
             LOGGER_ERROR( "astralax emitter container '%s' invalid initialize "
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
             );
 
             return false;
         }
 
         MENGINE_ASSERTION_FATAL( Magic_HasTextures( m_mf ) == false, "astralax '%s' incorrect safe 'with textures'"
-            , _filePath.c_str()
+            , Helper::getContentFullPath( _content )
         );
 
         m_mf = mf;

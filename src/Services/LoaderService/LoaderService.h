@@ -33,15 +33,15 @@ namespace Mengine
         const FilePath & getProtocolPath() const override;
 
     public:
-        bool load( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _exist ) const override;
-        bool validation( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, uint32_t _metaVersion ) const override;
+        bool load( const ContentInterfacePtr & _content, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _exist, const DocumentInterfacePtr & _doc ) const override;
+        bool validation( const ContentInterfacePtr & _content, uint32_t _metaVersion ) const override;
 
     protected:
-        bool importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _reimport ) const;
-        bool openBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, InputStreamInterfacePtr * _stream, bool * const _exist ) const;
+        bool importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _reimport, const DocumentInterfacePtr & _doc ) const;
+        bool openBin_( const ContentInterfacePtr & _content, InputStreamInterfacePtr * _stream, bool * const _exist, const DocumentInterfacePtr & _doc ) const;
 
 #ifndef MENGINE_MASTER_RELEASE
-        bool makeBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _pathXml, const FilePath & _pathBin ) const;
+        bool makeBin_( const ContentInterfacePtr & _content, const FilePath & _pathBin ) const;
 #endif
 
     protected:

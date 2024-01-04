@@ -21,18 +21,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////    
-    void DecoderRenderImageProvider::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags )
+    void DecoderRenderImageProvider::initialize( const ContentInterfacePtr & _content, uint32_t _codecFlags )
     {
-        m_fileGroup = _fileGroup;
-        m_filePath = _filePath;
-        m_codecType = _codecType;
+        m_content = _content;
         m_codecFlags = _codecFlags;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderImageLoaderInterfacePtr DecoderRenderImageProvider::getLoader( const DocumentInterfacePtr & _doc ) const
     {
         RenderImageLoaderInterfacePtr loader = RENDERTEXTURE_SERVICE()
-            ->createDecoderRenderImageLoader( m_fileGroup, m_filePath, m_codecType, m_codecFlags, _doc );
+            ->createDecoderRenderImageLoader( m_content, m_codecFlags, _doc );
 
         return loader;
     }

@@ -16,6 +16,7 @@
 #include "Kernel/PathString.h"
 #include "Kernel/UID.h"
 #include "Kernel/JSONHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
 
@@ -54,13 +55,21 @@ namespace Mengine
         settingsJSONPath += m_folderName;
         settingsJSONPath += MENGINE_ACCOUNT_SETTINGS_JSON_PATH;
 
-        m_settingsJSONPath = Helper::stringizeFilePath( settingsJSONPath );
+        FilePath settingsJSONPath_f = Helper::stringizeFilePath( settingsJSONPath );
+
+        ContentInterfacePtr settingsJSONContent = Helper::makeFileContent( m_fileGroup, settingsJSONPath_f, MENGINE_DOCUMENT_FACTORABLE );
+
+        m_settingsJSONContent = settingsJSONContent;
 
         PathString settingsINIPath;
         settingsINIPath += m_folderName;
         settingsINIPath += MENGINE_ACCOUNT_SETTINGS_INI_PATH;
 
-        m_settingsINIPath = Helper::stringizeFilePath( settingsINIPath );
+        FilePath settingsINIPath_f = Helper::stringizeFilePath( settingsINIPath );
+
+        ContentInterfacePtr settingsINIContent = Helper::makeFileContent( m_fileGroup, settingsINIPath_f, MENGINE_DOCUMENT_FACTORABLE );
+
+        m_settingsINIContent = settingsINIContent;
 
         return true;
     }
@@ -69,6 +78,9 @@ namespace Mengine
     {
         m_archivator = nullptr;
         m_fileGroup = nullptr;
+
+        m_settingsJSONContent = nullptr;
+        m_settingsINIContent = nullptr;        
 
         m_settings.clear();
     }
@@ -258,16 +270,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ConfigInterfacePtr Account::getLoadSettingConfig_() const
     {
-        if( m_fileGroup->existFile( m_settingsJSONPath, true ) == true )
+        if( m_settingsJSONContent->exist( true ) == true )
         {
             ConfigInterfacePtr config = CONFIG_SERVICE()
-                ->loadConfig( m_fileGroup, m_settingsJSONPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+                ->loadConfig( m_settingsJSONContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             if( config == nullptr )
             {
                 LOGGER_ERROR( "get account '%s' settings failed load '%s'"
                     , m_id.c_str()
-                    , m_settingsJSONPath.c_str()
+                    , Helper::getContentFullPath( m_settingsJSONContent )
                 );
 
                 return nullptr;
@@ -276,16 +288,16 @@ namespace Mengine
             return config;
         }
 
-        if( m_fileGroup->existFile( m_settingsINIPath, true ) == true )
+        if( m_settingsINIContent->exist( true ) == true )
         {
             ConfigInterfacePtr config = CONFIG_SERVICE()
-                ->loadConfig( m_fileGroup, m_settingsINIPath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+                ->loadConfig( m_settingsINIContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
             if( config == nullptr )
             {
                 LOGGER_ERROR( "get account '%s' settings failed load '%s'"
                     , m_id.c_str()
-                    , m_settingsINIPath.c_str()
+                    , Helper::getContentFullPath( m_settingsINIContent )
                 );
 
                 return nullptr;
@@ -297,8 +309,8 @@ namespace Mengine
 
         LOGGER_ERROR( "account '%s' settings not found any config '%s' or '%s'"
             , m_id.c_str()
-            , m_settingsJSONPath.c_str()
-            , m_settingsINIPath.c_str()
+            , Helper::getContentFullPath( m_settingsJSONContent )
+            , Helper::getContentFullPath( m_settingsINIContent )
         );
 
         return nullptr;
@@ -306,13 +318,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Account::save()
     {
-        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, m_settingsJSONPath, true, MENGINE_DOCUMENT_FACTORABLE );
+        const FilePath & settingsJSONPath = m_settingsJSONContent->getFilePath();
+
+        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, settingsJSONPath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         if( file == nullptr )
         {
             LOGGER_ERROR( "can't open file for writing. Account '%s' settings not saved '%s'"
                 , m_id.c_str()
-                , m_settingsJSONPath.c_str()
+                , Helper::getContentFullPath( m_settingsJSONContent )
             );
 
             return false;

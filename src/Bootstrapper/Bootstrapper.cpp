@@ -15,6 +15,7 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/VectorConstString.h"
@@ -31,11 +32,16 @@
 #include "Kernel/FileLogger.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/FilePathDateTimeHelper.h"
+#include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/TimestampHelper.h"
+#include "Kernel/ContentHelper.h"
 #include "Kernel/Crash.h"
+#include "Kernel/FileContent.h"
+#include "Kernel/EntityEventable.h"
+#include "Kernel/MT19937Randomizer.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_BOOTSTRAPPER_LOAD_CONFIG
@@ -189,8 +195,8 @@ PLUGIN_EXPORT( ResourceValidate );
 PLUGIN_EXPORT( ResourceDebugger );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC
-PLUGIN_EXPORT( MetabufLoader );
+#ifdef MENGINE_PLUGIN_METABUF_STATIC
+PLUGIN_EXPORT( Metabuf );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_PVRTC_STATIC
@@ -590,18 +596,18 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        ConfigInterfacePtr loadApplicationConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
+        static ConfigInterfacePtr loadApplicationConfig( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
         {
-            if( _fileGroup->existFile( _filePath, true ) == false )
+            if( _content->exist( true ) == false )
             {
                 return nullptr;
             }
 
             ConfigInterfacePtr applicationConfig = CONFIG_SERVICE()
-                ->loadConfig( _fileGroup, _filePath, ConstString::none(), _doc );
+                ->loadConfig( _content, ConstString::none(), _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( applicationConfig, "invalid open application settings '%s'"
-                , _filePath.c_str()
+                , Helper::getContentFullPath( _content )
             );
 
             return applicationConfig;
@@ -611,12 +617,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::loadApplicationConfig_()
     {
-        FilePath applicationConfigPath = Helper::stringizeFilePath( MENGINE_BOOTSTRAPPER_CONFIG_PATH );
-
         const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        ConfigInterfacePtr applicationConfig = Detail::loadApplicationConfig( defaultFileGroup, applicationConfigPath, MENGINE_DOCUMENT_FACTORABLE );
+        FilePath applicationConfigPath = Helper::stringizeFilePath( MENGINE_BOOTSTRAPPER_CONFIG_PATH );
+
+        ContentInterfacePtr applicationConfigContent = Helper::makeFileContent( defaultFileGroup, applicationConfigPath, MENGINE_DOCUMENT_FACTORABLE );
+
+        ConfigInterfacePtr applicationConfig = Detail::loadApplicationConfig( applicationConfigContent, MENGINE_DOCUMENT_FACTORABLE );
 
         if( applicationConfig == nullptr )
         {
@@ -632,8 +640,10 @@ namespace Mengine
 
         for( const FilePath & filePath : configsPaths )
         {
+            ContentInterfacePtr content = Helper::makeFileContent( defaultFileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
+
             if( CONFIG_SERVICE()
-                ->loadDefaultConfig( defaultFileGroup, filePath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->loadDefaultConfig( content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load include config '%s'"
                     , filePath.c_str()
@@ -648,8 +658,10 @@ namespace Mengine
 
         for( const FilePath & filePath : credentialsPaths )
         {
+            ContentInterfacePtr content = Helper::makeFileContent( defaultFileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
+
             if( CONFIG_SERVICE()
-                ->loadDefaultConfig( defaultFileGroup, filePath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->loadDefaultConfig( content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load credential '%s'"
                     , filePath.c_str()
@@ -666,8 +678,10 @@ namespace Mengine
 
         if( option_config != nullptr )
         {
+            ContentInterfacePtr content = Helper::makeFileContent( defaultFileGroup, Helper::stringizeFilePath( option_config ), MENGINE_DOCUMENT_FACTORABLE );
+
             if( CONFIG_SERVICE()
-                ->loadDefaultConfig( defaultFileGroup, Helper::stringizeFilePath( option_config ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->loadDefaultConfig( content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load option config '%s'"
                     , option_config
@@ -778,14 +792,23 @@ namespace Mengine
 
         if( developmentLog == false )
         {
+            ContentInterfacePtr content = Helper::makeFileContent( userFileGroup, logFilename, MENGINE_DOCUMENT_FACTORABLE );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( content );
+
             LOGGER_SERVICE()
-                ->loadOldLogMemory( userFileGroup, logFilename );
+                ->loadOldLogMemory( content );
         }
 
         FileLoggerPtr fileLog = Helper::makeFactorableUnique<FileLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
-        fileLog->setFileGroup( userFileGroup );
-        fileLog->setFilePath( logFilename );
+        MENGINE_ASSERTION_MEMORY_PANIC( fileLog );
+
+        ContentInterfacePtr fileLogContent = Helper::makeFileContent( userFileGroup, logFilename, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( fileLogContent );
+
+        fileLog->setContent( fileLogContent );
 
         fileLog->setWriteHistory( true );
 
@@ -809,6 +832,45 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::registerBaseTypes_()
+    {
+        LOGGER_INFO( "bootstrapper", "register base generator..." );
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Content" ), STRINGIZE_STRING_LOCAL( "File" ), Helper::makeDefaultPrototypeGenerator<FileContent, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<EntityEventable, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), Helper::makeDefaultPrototypeGenerator<MT19937Randomizer, 8>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Bootstrapper::unregisterBaseTypes_()
+    {
+        LOGGER_INFO( "bootstrapper", "unregister base generator..." );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Content" ), STRINGIZE_STRING_LOCAL( "File" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_ADD_PLUGIN( Name, Info, Doc )\
@@ -919,6 +981,11 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( JSON, "plugin JSON...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+        if( this->registerBaseTypes_() == false )
+        {
+            return false;
+        }
+    
         Char currentPath[MENGINE_MAX_PATH] = {'\0'};
         PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
@@ -1143,8 +1210,8 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( Graphics, "plugin Graphics...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC
-        MENGINE_ADD_PLUGIN( MetabufLoader, "plugin MetabufLoader...", MENGINE_DOCUMENT_FACTORABLE );
+#ifdef MENGINE_PLUGIN_METABUF_STATIC
+        MENGINE_ADD_PLUGIN( Metabuf, "plugin Metabuf...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_IMAGE_CODEC_STATIC
@@ -1945,6 +2012,8 @@ namespace Mengine
             PLUGIN_SERVICE()
                 ->unloadPlugins();
         }
+
+        this->unregisterBaseTypes_();
 
         SERVICE_FINALIZE( LoaderService );
         SERVICE_FINALIZE( TimelineService );

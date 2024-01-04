@@ -8,6 +8,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -22,17 +23,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FEFontEffectFile::_compile()
     {
-        DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
-
         const ContentInterfacePtr & content = this->getContent();
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
         DataflowContext context;
         context.filePath = filePath;
 
-        FEDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowFE, &context, MENGINE_DOCUMENT_FACTORABLE );
+        FEDataInterfacePtr data = Helper::getDataflow( content, &context, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data );
 
@@ -41,7 +39,7 @@ namespace Mengine
         if( this->compileFEBundle( bundle ) == false )
         {
             LOGGER_ERROR( "invalid compile text font effect '%s'"
-                , Helper::getFileGroupFullPath( fileGroup, filePath )
+                , Helper::getContentFullPath( content )
             );
 
             return false;
@@ -59,20 +57,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FEFontEffectFile::_prefetch( const PrefetcherObserverInterfacePtr & _observer )
     {
-        DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dataflow );
-
         const ContentInterfacePtr & content = this->getContent();
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
         DataflowContext context;
         context.filePath = filePath;
 
         if( PREFETCHER_SERVICE()
-            ->prefetchData( fileGroup, filePath, dataflow, &context, _observer ) == false )
+            ->prefetchData( content, &context, _observer ) == false )
         {
             return false;
         }
@@ -84,11 +77,8 @@ namespace Mengine
     {
         const ContentInterfacePtr & content = this->getContent();
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
         if( PREFETCHER_SERVICE()
-            ->unfetch( fileGroup, filePath ) == false )
+            ->unfetch( content ) == false )
         {
             return false;
         }
@@ -98,17 +88,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FEFontEffectFile::isValid() const
     {
-        DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
-
         const ContentInterfacePtr & content = this->getContent();
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
         DataflowContext context;
         context.filePath = filePath;
 
-        FEDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowFE, &context, MENGINE_DOCUMENT_FACTORABLE );
+        FEDataInterfacePtr data = Helper::getDataflow( content, &context, MENGINE_DOCUMENT_FACTORABLE );
 
         if( data == nullptr )
         {

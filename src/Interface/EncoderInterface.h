@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Config/Typedef.h"
-
 #include "Interface/Interface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/OutputStreamInterface.h"
+
+#include "Config/Typedef.h"
 
 namespace Mengine
 {

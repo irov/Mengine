@@ -87,12 +87,9 @@ namespace Mengine
             , content->getConverterType().c_str()
         );
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
-        FilePath newFilePath;
+        ContentInterfacePtr newContent;
         if( CONVERTER_SERVICE()
-            ->convert( converterType, fileGroup, filePath, &newFilePath, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->convert( converterType, content, &newContent, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "resource '%s' group '%s' can't file '%s' convert '%s'"
                 , _resource->getName().c_str()
@@ -103,6 +100,8 @@ namespace Mengine
 
             throw ExceptionNotificationFailed();
         }
+
+        const FilePath & newFilePath = newContent->getFilePath();
 
         content->setFilePath( newFilePath );
 

@@ -34,14 +34,11 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
         uint32_t magicNumber = _resource->getMagicNumber();
         uint32_t magicVersion = _resource->getMagicVersion();
 
         if( PREFETCHER_SERVICE()
-            ->prefetchStream( fileGroup, filePath, m_archivator, magicNumber, magicVersion, _observer ) == false )
+            ->prefetchStream( content, m_archivator, magicNumber, magicVersion, _observer ) == false )
         {
             return false;
         }
@@ -57,11 +54,8 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
         bool successful = PREFETCHER_SERVICE()
-            ->unfetch( fileGroup, filePath );
+            ->unfetch( content );
 
         return successful;
     }

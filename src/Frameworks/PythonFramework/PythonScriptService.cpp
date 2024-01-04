@@ -43,6 +43,7 @@
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/StatisticHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -684,7 +685,11 @@ namespace Mengine
 
         for( const ScriptModulePackage & pack : _modules )
         {
-            pathes.emplace_back( pack.path );
+            const ContentInterfacePtr & content = pack.content;
+
+            const FilePath & filePath = content->getFilePath();
+
+            pathes.emplace_back( filePath );
         }
 
         for( const FilePath & filePath : pathes )
@@ -721,7 +726,10 @@ namespace Mengine
                     return false;
                 }
 
-                if( _pack.path < pack.path )
+                const FilePath & path1 = _pack.content->getFilePath();
+                const FilePath & path2 = pack.content->getFilePath();
+
+                if( path1 < path2 )
                 {
                     return false;
                 }
@@ -930,7 +938,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptService::prefetchModules( const PrefetcherObserverInterfacePtr & _cb )
+    void PythonScriptService::prefetchModules( const PrefetcherObserverInterfacePtr & _cb, const DocumentInterfacePtr & _doc )
     {
         DataflowInterfacePtr dataflowPY = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ) );
 
@@ -938,15 +946,22 @@ namespace Mengine
 
         for( const ScriptModulePackage & pack : m_bootstrapperModules )
         {
-            const FileGroupInterfacePtr & fileGroup = pack.fileGroup;
+            const FileGroupInterfacePtr & fileGroup = pack.content->getFileGroup();
+            const FilePath & filePath = pack.content->getFilePath();
 
-            fileGroup->findFiles( pack.path, "*.pyz", [&fileGroup, &dataflowPYZ, &_cb]( const FilePath & _filePath )
+            fileGroup->findFiles( filePath, "*.pyz", [fileGroup, dataflowPYZ, _cb, _doc]( const FilePath & _filePath )
             {
+                ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, _doc );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( content );
+
+                content->setDataflow( dataflowPYZ );
+
                 DataflowContext context;
                 context.filePath = _filePath;
 
                 if( PREFETCHER_SERVICE()
-                    ->prefetchData( fileGroup, _filePath, dataflowPYZ, &context, _cb ) == false )
+                    ->prefetchData( content, &context, _cb ) == false )
                 {
                     LOGGER_ERROR( "invalid prefetch data '%s'"
                         , _filePath.c_str()
@@ -956,17 +971,23 @@ namespace Mengine
                 return true;
             } );
 
-            static bool PythonScript_AvailableSourceCode = CONFIG_VALUE( "PythonScript", "AvailableSourceCode", true );
+            bool PythonScript_AvailableSourceCode = CONFIG_VALUE( "PythonScript", "AvailableSourceCode", true );
 
             if( PythonScript_AvailableSourceCode == true )
             {
-                fileGroup->findFiles( pack.path, "*.py", [&fileGroup, &dataflowPY, &_cb]( const FilePath & _filePath )
+                fileGroup->findFiles( filePath, "*.py", [fileGroup, dataflowPY, _cb, _doc]( const FilePath & _filePath )
                 {
+                    ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, _doc );
+
+                    MENGINE_ASSERTION_MEMORY_PANIC( content );
+
+                    content->setDataflow( dataflowPY );
+
                     DataflowContext context;
                     context.filePath = _filePath;
 
                     if( PREFETCHER_SERVICE()
-                        ->prefetchData( fileGroup, _filePath, dataflowPY, &context, _cb ) == false )
+                        ->prefetchData( content, &context, _cb ) == false )
                     {
                         LOGGER_ERROR( "invalid prefetch data '%s'"
                             , _filePath.c_str()

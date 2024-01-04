@@ -6,6 +6,7 @@
 #include "Interface/SoundIdentityInterface.h"
 #include "Interface/SoundBufferInterface.h"
 #include "Interface/SoundVolumeProviderInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
@@ -34,7 +35,7 @@ namespace Mengine
         virtual SoundIdentityInterfacePtr createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceCategory _type, bool _streamable, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual SoundBufferInterfacePtr createSoundBufferFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _isStream, const DocumentInterfacePtr & _doc ) = 0;
+        virtual SoundBufferInterfacePtr createSoundBufferFromFile( const ContentInterfacePtr & _content, bool _isStream, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual void setSoundVolume( const ConstString & _type, float _volume, float _default ) = 0;

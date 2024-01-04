@@ -121,6 +121,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/TimestampHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"
@@ -484,24 +485,6 @@ namespace Mengine
         LOGGER_INFO( "system", "register base generator..." );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<FileContent, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
-        {
-            return false;
-        }
-
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<EntityEventable, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
-        {
-            return false;
-        }
-
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), Helper::makeDefaultPrototypeGenerator<MT19937Randomizer, 8>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
-        {
-            return false;
-        }
-
-        if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<BaseAffectorHub, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
@@ -513,15 +496,6 @@ namespace Mengine
     void Application::unregisterBaseTypes_()
     {
         LOGGER_INFO( "system", "unregister base generator..." );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), nullptr );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), nullptr );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "BaseAffectorHub" ), ConstString::none(), nullptr );
@@ -883,11 +857,13 @@ namespace Mengine
 
         for( const FilePath & packagePath : _packagesPaths )
         {
+            ContentInterfacePtr content = Helper::makeFileContent( _fileGroup, packagePath, MENGINE_DOCUMENT_FACTORABLE );
+
             if( PACKAGE_SERVICE()
-                ->loadPackages( _fileGroup, packagePath, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->loadPackages( content, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load package '%s'"
-                    , packagePath.c_str()
+                    , Helper::getContentFullPath( content )
                 );
 
                 return false;
@@ -914,11 +890,13 @@ namespace Mengine
 
         for( const FilePath & settingPath : _settingsPaths )
         {
+            ContentInterfacePtr content = Helper::makeFileContent( _fileGroup, settingPath, MENGINE_DOCUMENT_FACTORABLE );
+
             if( SETTINGS_SERVICE()
-                ->loadSettings( _fileGroup, settingPath, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->loadSettings( content, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load setting '%s'"
-                    , settingPath.c_str()
+                    , Helper::getContentFullPath( content )
                 );
 
                 return false;

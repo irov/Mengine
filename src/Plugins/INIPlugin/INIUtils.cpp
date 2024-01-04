@@ -15,6 +15,7 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdIntTypes.h"
 #include "Config/StdString.h"
@@ -25,17 +26,20 @@ namespace Mengine
     namespace INIUtils
     {
         //////////////////////////////////////////////////////////////////////////
-        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
+        bool loadIni( IniStore & _ini, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
         {
             tinyini_initialize( &_ini.ini );
 
-            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
+            const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+            const FilePath & filePath = _content->getFilePath();
+
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, "open ini file '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
             );
 
-            _ini.path = _filePath;
+            _ini.content = _content;
 
             bool successful = INIUtils::loadIni( _ini, stream, _doc );
 
@@ -140,14 +144,14 @@ namespace Mengine
             if( MENGINE_STRCHR( ini_value, '\\' ) != nullptr )
             {
                 LOGGER_ERROR( "get ini '%s' filepath section '%s' key '%s' has invalid slash '%s'"
-                    , _ini.path.c_str()
+                    , Helper::getContentFullPath( _ini.content )
                     , _section
                     , _key
                     , ini_value
                 );
 
                 MENGINE_THROW_EXCEPTION( "get ini '%s' filepath section '%s' key '%s' has invalid slash '%s'"
-                    , _ini.path.c_str()
+                    , Helper::getContentFullPath( _ini.content )
                     , _section
                     , _key
                     , ini_value

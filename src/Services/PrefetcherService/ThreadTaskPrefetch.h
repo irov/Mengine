@@ -15,15 +15,14 @@ namespace Mengine
         ~ThreadTaskPrefetch() override;
 
     public:
-        void initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const PrefetcherObserverInterfacePtr & _observer );
+        void initialize( const ContentInterfacePtr & _content, const PrefetcherObserverInterfacePtr & _observer );
         void finalize();
 
     protected:
         virtual void _finalize();
 
     public:
-        MENGINE_INLINE const FilePath & getFilePath() const;
-        MENGINE_INLINE const FileGroupInterfacePtr & getFileGroup() const;
+        MENGINE_INLINE const ContentInterfacePtr & getContent() const;
 
     protected:
         void _onThreadTaskPreparation() override;
@@ -32,8 +31,7 @@ namespace Mengine
         void _onThreadTaskComplete( bool _successful ) override;
 
     protected:
-        FileGroupInterfacePtr m_fileGroup;
-        FilePath m_filePath;
+        ContentInterfacePtr m_content;
         PrefetcherObserverInterfacePtr m_observer;
 
         InputStreamInterfacePtr m_stream;
@@ -41,14 +39,9 @@ namespace Mengine
         FileGroupInterface * m_realFileGroup;
     };
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const FilePath & ThreadTaskPrefetch::getFilePath() const
+    MENGINE_INLINE const ContentInterfacePtr & ThreadTaskPrefetch::getContent() const
     {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const FileGroupInterfacePtr & ThreadTaskPrefetch::getFileGroup() const
-    {
-        return m_fileGroup;
+        return m_content;
     }
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadTaskPrefetch, ThreadTaskInterface> ThreadTaskPrefetchPtr;

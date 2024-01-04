@@ -23,7 +23,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        FontEffectInterfacePtr createFontEffect( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _name, uint32_t _sample ) override;
+        FontEffectInterfacePtr createFontEffect( const ContentInterfacePtr & _content, const ConstString & _name, uint32_t _sample ) override;
 
     protected:
         typedef Hashtable2<ConstString, FilePath, FEFontEffectFilePtr> HashtableFontEffects;

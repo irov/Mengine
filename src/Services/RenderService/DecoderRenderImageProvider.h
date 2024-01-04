@@ -2,10 +2,10 @@
 
 #include "Interface/RenderImageInterface.h"
 #include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/FilePath.h"
 
 namespace Mengine
 {
@@ -21,15 +21,13 @@ namespace Mengine
         ~DecoderRenderImageProvider() override;
 
     public:
-        void initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags );
+        void initialize( const ContentInterfacePtr & _content, uint32_t _codecFlags );
 
     public:
         RenderImageLoaderInterfacePtr getLoader( const DocumentInterfacePtr & _doc ) const override;
 
     protected:
-        FileGroupInterfacePtr m_fileGroup;
-        FilePath m_filePath;
-        ConstString m_codecType;
+        ContentInterfacePtr m_content;
         uint32_t m_codecFlags;
     };
     //////////////////////////////////////////////////////////////////////////

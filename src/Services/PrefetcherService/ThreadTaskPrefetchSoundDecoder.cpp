@@ -9,6 +9,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -19,16 +20,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadTaskPrefetchSoundDecoder::~ThreadTaskPrefetchSoundDecoder()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPrefetchSoundDecoder::setSoundCodec( const ConstString & _soundCodec )
-    {
-        m_soundCodec = _soundCodec;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & ThreadTaskPrefetchSoundDecoder::getSoundCodec() const
-    {
-        return m_soundCodec;
     }
     //////////////////////////////////////////////////////////////////////////
     const SoundDecoderInterfacePtr & ThreadTaskPrefetchSoundDecoder::getDecoder() const
@@ -49,19 +40,24 @@ namespace Mengine
             return false;
         }
 
-        InputStreamInterfacePtr stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
+        const FileGroupInterfacePtr & fileGroup = m_content->getFileGroup();
+        const FilePath & filePath = m_content->getFilePath();
+
+        InputStreamInterfacePtr stream = fileGroup->createInputFile( filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create sound file '%s'"
-            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+            , Helper::getContentFullPath( m_content )
         );
 
         m_stream = stream;
 
+        const ConstString & codecType = m_content->getCodecType();
+
         SoundDecoderInterfacePtr soundDecoder = CODEC_SERVICE()
-            ->createDecoder( m_soundCodec, MENGINE_DOCUMENT_FACTORABLE );
+            ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, "invalid create codec '%s'"
-            , m_soundCodec.c_str()
+            , m_content->getCodecType().c_str()
         );
 
         m_soundDecoder = soundDecoder;
@@ -79,13 +75,15 @@ namespace Mengine
     bool ThreadTaskPrefetchSoundDecoder::_onThreadTaskProcess()
     {
         LOGGER_INFO("prefetch", "prefetch sound file '%s'"
-            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+            , Helper::getContentFullPath( m_content )
         );
+
+        const FilePath & filePath = m_content->getFilePath();
         
-        if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, MENGINE_UNKNOWN_SIZE, false, false ) == false )
+        if( m_realFileGroup->openInputFile( filePath, m_stream, 0, MENGINE_UNKNOWN_SIZE, false, false ) == false )
         {
             LOGGER_ERROR( "invalid open file '%s'"
-                , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+                , Helper::getContentFullPath( m_content )
             );
 
             return false;
@@ -96,14 +94,14 @@ namespace Mengine
         void * memory = m_memoryInput->newBuffer( stream_size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "file '%s' invalid alloc memory '%zu'"
-            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+            , Helper::getContentFullPath( m_content )
             , stream_size
         );
 
         if( m_stream->read( memory, stream_size ) != stream_size )
         {
             LOGGER_ERROR( "file '%s' invalid read stream '%zu'"
-                , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+                , Helper::getContentFullPath( m_content )
                 , stream_size
             );
 
@@ -113,7 +111,7 @@ namespace Mengine
         if( m_soundDecoder->prepareData( m_memoryInput ) == false )
         {
             LOGGER_ERROR( "decoder for file '%s' was not initialize"
-                , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+                , Helper::getContentFullPath( m_content )
             );
 
             return false;

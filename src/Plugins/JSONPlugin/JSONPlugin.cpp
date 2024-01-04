@@ -12,12 +12,15 @@
 #endif
 
 #include "ResourceJSON.h"
+
 #include "MetabufLoaderResourceJSON.h"
 
 #include "JSONConfig.h"
 
 #include "JSONSetting.h"
 #include "JSONSettingPrototypeGenerator.h"
+
+#include "JSONPackageLoader.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
@@ -30,6 +33,8 @@
 #define MENGINE_PLUGIN_JSON_SEED 1
 #endif
 
+//////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( JSONService );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( JSON, Mengine::JSONPlugin );
 //////////////////////////////////////////////////////////////////////////
@@ -73,6 +78,11 @@ namespace Mengine
         );
 
         jpp::set_alloc_funcs( &Detail::my_jpp_malloc, &Detail::my_jpp_free );
+
+        if( SERVICE_CREATE( JSONService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
@@ -132,6 +142,8 @@ namespace Mengine
             return false;
         }
 
+        VOCABULARY_SET( PackageLoaderInterface, STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "json" ), Helper::makeFactorableUnique<JSONPackageLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -150,10 +162,16 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Setting" ), STRINGIZE_STRING_LOCAL( "json" ), nullptr );
+
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "json" ) );
+
+        SERVICE_FINALIZE( JSONService );
     }
     //////////////////////////////////////////////////////////////////////////
     void JSONPlugin::_destroyPlugin()
     {
+        SERVICE_DESTROY( JSONService );
+
         MENGINE_ASSERTION_ALLOCATOR( "json" );
     }
     //////////////////////////////////////////////////////////////////////////

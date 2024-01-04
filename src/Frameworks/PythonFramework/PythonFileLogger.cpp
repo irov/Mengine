@@ -31,9 +31,12 @@ namespace Mengine
         return m_timestamp;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonFileLogger::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    bool PythonFileLogger::initialize( const ContentInterfacePtr & _content )
     {
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FACTORABLE );
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
+
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream );
 

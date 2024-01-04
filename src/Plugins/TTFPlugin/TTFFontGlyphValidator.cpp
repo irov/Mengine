@@ -13,22 +13,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFontGlyphValidator::_validate( const TTFFontGlyphPtr & _glyph ) const
     {
-        DataflowInterfacePtr dataflowTTF = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
-
-        if( dataflowTTF == nullptr )
-        {
-            return false;
-        }
-
         const ContentInterfacePtr & content = _glyph->getGlyphContent();
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
         DataflowContext context;
         context.filePath = filePath;
 
-        TTFDataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflowTTF, &context, MENGINE_DOCUMENT_FACTORABLE );
+        TTFDataInterfacePtr data = Helper::getDataflow( content, &context, MENGINE_DOCUMENT_FACTORABLE );
 
         if( data == nullptr )
         {

@@ -8,6 +8,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -50,7 +51,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "resource '%s' container '%s' can't get atlas image '%s'"
                 , resource->getName().c_str()
-                , resource->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( resource->getContent() )
                 , resourceImageName.c_str()
             );
 

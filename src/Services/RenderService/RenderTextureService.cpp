@@ -20,6 +20,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 #include "Kernel/NotificationHelper.h"
 
 #include "Kernel/Logger.h"
@@ -55,14 +56,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureService::_finalizeService()
     {
-        for( MapRenderTextureEntry::const_iterator
-            it = m_textures.begin(),
-            it_end = m_textures.end();
-            it != it_end;
-            ++it )
+        for( const MapRenderTextureEntry::value_type & value : m_textures )
         {
-            const MapRenderTextureEntry::value_type & value = *it;
-
             RenderTextureInterface * texture = value.element;
 
             texture->release();
@@ -79,11 +74,12 @@ namespace Mengine
         m_factoryDecoderRenderImageLoader = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureService::hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, RenderTextureInterfacePtr * const _texture ) const
+    bool RenderTextureService::hasTexture( const ContentInterfacePtr & _content, RenderTextureInterfacePtr * const _texture ) const
     {
-        const ConstString & fileGroupName = _fileGroup->getName();
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
 
-        const RenderTextureInterface * texture = m_textures.find( fileGroupName, _filePath );
+        const RenderTextureInterface * texture = m_textures.find( fileGroup, filePath );
 
         if( texture == nullptr )
         {
@@ -103,11 +99,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::getTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) const
+    RenderTextureInterfacePtr RenderTextureService::getTexture( const ContentInterfacePtr & _content ) const
     {
-        const ConstString & fileGroupName = _fileGroup->getName();
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
 
-        const RenderTextureInterface * texture = m_textures.find( fileGroupName, _filePath );
+        const RenderTextureInterface * texture = m_textures.find( fileGroup, filePath );
 
         if( texture == nullptr )
         {
@@ -137,25 +134,30 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureService::saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecType, const FilePath & _filePath )
+    bool RenderTextureService::saveImage( const RenderTextureInterfacePtr & _texture, const ContentInterfacePtr & _content )
     {
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
+
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, filePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create file '%s'"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            , Helper::getContentFullPath( _content )
         );
 
+        const ConstString & codecType = _content->getCodecType();
+
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
-            ->createEncoder( _codecType, MENGINE_DOCUMENT_FACTORABLE );
+            ->createEncoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageEncoder, "can't create encoder for file '%s'"
-            , _filePath.c_str()
+            , Helper::getContentFullPath( _content )
         );
 
         if( imageEncoder->initialize( stream ) == false )
         {
             LOGGER_ERROR( "can't initialize encoder for file '%s'"
-                , _filePath.c_str()
+                , Helper::getContentFullPath( _content )
             );
 
             return false;
@@ -185,7 +187,7 @@ namespace Mengine
         void * buffer = locked->getBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, "can't lock texture '%s'"
-            , _filePath.c_str()
+            , Helper::getContentFullPath( _content )
         );
 
         size_t bufferSize = pitch * dataInfo.height;
@@ -201,10 +203,10 @@ namespace Mengine
 
         image->unlock( locked, 0, true );
 
-        if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
+        if( Helper::closeOutputStreamFile( fileGroup, stream ) == false )
         {
             LOGGER_ERROR( "can't close file '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
             );
 
             return false;
@@ -236,11 +238,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageLoaderInterfacePtr RenderTextureService::createDecoderRenderImageLoader( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, const DocumentInterfacePtr & _doc )
+    RenderImageLoaderInterfacePtr RenderTextureService::createDecoderRenderImageLoader( const ContentInterfacePtr & _content, uint32_t _codecFlags, const DocumentInterfacePtr & _doc )
     {
         DecoderRenderImageLoaderPtr loader = Helper::makeFactorableUnique<DecoderRenderImageLoader>( _doc );
 
-        if( loader->initialize( _fileGroup, _filePath, _codecType, _codecFlags ) == false )
+        if( loader->initialize( _content, _codecFlags ) == false )
         {
             return nullptr;
         }
@@ -248,27 +250,28 @@ namespace Mengine
         return loader;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureService::cacheFileTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const RenderTextureInterfacePtr & _texture )
+    void RenderTextureService::cacheFileTexture( const ContentInterfacePtr & _content, const RenderTextureInterfacePtr & _texture )
     {
-        _texture->setFileGroup( _fileGroup );
-        _texture->setFilePath( _filePath );
+        _texture->setContent( _content );
+
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
 
         RenderTextureInterface * texture_ptr = _texture.get();
 
-        const ConstString & fileGroupName = _fileGroup->getName();
-
-        m_textures.emplace( fileGroupName, _filePath, texture_ptr );
+        m_textures.emplace( fileGroup, filePath, texture_ptr );
 
         LOGGER_INFO( "texture", "cache texture '%s'"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            , Helper::getContentFullPath( _content )
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, uint32_t _width, uint32_t _height, const DocumentInterfacePtr & _doc )
+    RenderTextureInterfacePtr RenderTextureService::loadTexture( const ContentInterfacePtr & _content, uint32_t _codecFlags, uint32_t _width, uint32_t _height, const DocumentInterfacePtr & _doc )
     {
-        const ConstString & fileGroupName = _fileGroup->getName();
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
 
-        const RenderTextureInterface * texture = m_textures.find( fileGroupName, _filePath );
+        const RenderTextureInterface * texture = m_textures.find( fileGroup, filePath );
 
         if( texture != nullptr )
         {
@@ -278,26 +281,26 @@ namespace Mengine
         if( SERVICE_IS_INITIALIZE( GraveyardServiceInterface ) == true )
         {
             RenderTextureInterfacePtr resurrect_texture = GRAVEYARD_SERVICE()
-                ->resurrectTexture( _fileGroup, _filePath, _doc );
+                ->resurrectTexture( _content, _doc );
 
             if( resurrect_texture != nullptr )
             {
-                this->cacheFileTexture( _fileGroup, _filePath, resurrect_texture );
+                this->cacheFileTexture( _content, resurrect_texture );
 
                 return resurrect_texture;
             }
         }
 
         LOGGER_INFO( "texture", "load texture '%s' codec '%s'"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
-            , _codecType.c_str()
+            , Helper::getContentFullPath( _content )
+            , _content->getCodecType().c_str()
         );
 
         DecoderRenderImageProviderPtr imageProvider = m_factoryDecoderRenderImageProvider->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageProvider, "invalid create render image provider" );
 
-        imageProvider->initialize( _fileGroup, _filePath, _codecType, _codecFlags );
+        imageProvider->initialize( _content, _codecFlags );
 
         RenderImageLoaderInterfacePtr imageLoader = imageProvider->getLoader( _doc );
 
@@ -319,8 +322,8 @@ namespace Mengine
         RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.format, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_texture, "create texture '%s' codec '%s'"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
-            , _codecType.c_str()
+            , Helper::getContentFullPath( _content )
+            , _content->getCodecType().c_str()
         );
 
         const RenderImageInterfacePtr & image = new_texture->getImage();
@@ -330,8 +333,8 @@ namespace Mengine
         if( imageLoader->load( image ) == false )
         {
             LOGGER_ERROR( "invalid decode image '%s' codec '%s'"
-                , _filePath.c_str()
-                , _codecType.c_str()
+                , Helper::getContentFullPath( _content )
+                , _content->getCodecType().c_str()
             );
 
             return nullptr;
@@ -339,26 +342,29 @@ namespace Mengine
 
         image->setRenderImageProvider( imageProvider );
 
-        this->cacheFileTexture( _fileGroup, _filePath, new_texture );
+        this->cacheFileTexture( _content, new_texture );
 
         return new_texture;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::onRenderTextureDestroy_( RenderTextureInterface * _texture )
     {
-        const FileGroupInterfacePtr & fileGroup = _texture->getFileGroup();
-        const FilePath & filePath = _texture->getFilePath();
+        const ContentInterfacePtr & content = _texture->getContent();
 
-        if( filePath.empty() == false )
+        if( content != nullptr )
         {
-            const ConstString & fileGroupName = fileGroup->getName();
+            const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+            const FilePath & filePath = content->getFilePath();
 
-            RenderTextureInterface * erase_texture = m_textures.erase( fileGroupName, filePath );
-            MENGINE_UNUSED( erase_texture );
+            if( filePath.empty() == false )
+            {
+                RenderTextureInterface * erase_texture = m_textures.erase( fileGroup, filePath );
+                MENGINE_UNUSED( erase_texture );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( erase_texture );
+                MENGINE_ASSERTION_MEMORY_PANIC( erase_texture );
 
-            NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_TEXTURE_DESTROY, _texture );
+                NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_TEXTURE_DESTROY, _texture );
+            }
         }
 
         _texture->release();

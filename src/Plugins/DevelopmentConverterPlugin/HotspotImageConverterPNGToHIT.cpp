@@ -12,6 +12,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdMath.h"
 #include "Config/Algorithm.h"
@@ -77,23 +78,29 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool HotspotImageConverterPNGToHIT::convert()
     {
-        InputStreamInterfacePtr input_stream = Helper::openInputStreamFile( m_options.fileGroup, m_options.inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        const FileGroupInterfacePtr & inputFileGroup = m_options.inputContent->getFileGroup();
+        const FilePath & inputFilePath = m_options.inputContent->getFilePath();
+
+        const FileGroupInterfacePtr & outputFileGroup = m_options.outputContent->getFileGroup();
+        const FilePath & outputFilePath = m_options.outputContent->getFilePath();
+
+        InputStreamInterfacePtr input_stream = Helper::openInputStreamFile( inputFileGroup, inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( input_stream, "Image file '%s' was not found"
-            , m_options.inputFilePath.c_str()
+            , Helper::getContentFullPath( m_options.inputContent )
         );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoder( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "Image decoder for file '%s' was not found"
-            , m_options.inputFilePath.c_str()
+            , Helper::getContentFullPath( m_options.inputContent )
         );
 
         if( imageDecoder->prepareData( input_stream ) == false )
         {
             LOGGER_ERROR( "image initialize for file '%s' was not found"
-                , m_options.inputFilePath.c_str()
+                , Helper::getContentFullPath( m_options.inputContent )
             );
 
             return false;
@@ -127,7 +134,7 @@ namespace Mengine
         if( imageDecoder->decode( &data ) == 0 )
         {
             LOGGER_ERROR( "invalid decode '%s'"
-                , m_options.inputFilePath.c_str()
+                , Helper::getContentFullPath( m_options.inputContent )
             );
 
             return false;
@@ -137,23 +144,23 @@ namespace Mengine
 
         this->makeMipMapLevel_( buffer, width, height, mimmap_level );
 
-        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( m_options.fileGroup, m_options.outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( outputFileGroup, outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( output_stream, "HIT file '%s' not create (open file)"
-            , Helper::getFileGroupFullPath( m_options.fileGroup, m_options.outputFilePath )
+            , Helper::getContentFullPath( m_options.outputContent )
         );
 
         PickEncoderInterfacePtr encoder = CODEC_SERVICE()
             ->createEncoder( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( encoder, "HIT file '%s' not create (createEncoder hitPick)"
-            , m_options.outputFilePath.c_str()
+            , Helper::getContentFullPath( m_options.outputContent )
         );
 
         if( encoder->initialize( output_stream ) == false )
         {
             LOGGER_ERROR( "HIT file '%s' not initialize (createEncoder hitPick)"
-                , m_options.outputFilePath.c_str()
+                , Helper::getContentFullPath( m_options.outputContent )
             );
 
             return false;
@@ -173,10 +180,10 @@ namespace Mengine
 
         encoder->finalize();
 
-        if( Helper::closeOutputStreamFile( m_options.fileGroup, output_stream ) == false )
+        if( Helper::closeOutputStreamFile( outputFileGroup, output_stream ) == false )
         {
             LOGGER_ERROR( "HIT file '%s' invalid close"
-                , m_options.outputFilePath.c_str()
+                , Helper::getContentFullPath( m_options.outputContent )
             );
 
             return false;

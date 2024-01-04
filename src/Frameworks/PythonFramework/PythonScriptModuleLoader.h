@@ -3,6 +3,7 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/DataflowInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 
@@ -30,7 +31,7 @@ namespace Mengine
         const DataflowInterfacePtr & getDataflow() const;
 
     public:
-        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
+        bool initialize( const ContentInterfacePtr & _content );
         void finalize();
 
     public:
@@ -45,8 +46,7 @@ namespace Mengine
 
         DataflowInterfacePtr m_dataflow;
 
-        FileGroupInterfacePtr m_fileGroup;
-        FilePath m_filePath;
+        ContentInterfacePtr m_content;
 
         bool m_packagePath;
     };

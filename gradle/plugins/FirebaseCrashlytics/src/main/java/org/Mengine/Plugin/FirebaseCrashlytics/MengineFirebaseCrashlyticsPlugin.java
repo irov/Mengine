@@ -1,8 +1,6 @@
 package org.Mengine.Plugin.FirebaseCrashlytics;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
@@ -109,7 +107,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
             this.logError("[ERROR] unsupported custom key: %s value: %s class: %s"
                 , key
                 , value
-                , value == null ? "null" : value.getClass()
+                , value.getClass()
             );
         }
     }

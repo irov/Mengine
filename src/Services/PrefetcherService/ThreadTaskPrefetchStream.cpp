@@ -8,6 +8,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -70,10 +71,13 @@ namespace Mengine
             return false;
         }
 
-        InputStreamInterfacePtr stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
+        const FileGroupInterfacePtr & fileGroup = m_content->getFileGroup();
+        const FilePath & filePath = m_content->getFilePath();
+
+        InputStreamInterfacePtr stream = fileGroup->createInputFile( filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create input stream '%s'"
-            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+            , Helper::getContentFullPath( m_content )
         );
 
         m_stream = stream;
@@ -83,10 +87,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetchStream::_onThreadTaskProcess()
     {
-        if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, MENGINE_UNKNOWN_SIZE, false, false ) == false )
+        LOGGER_INFO( "prefetch", "prefetch stream file '%s'"
+            , Helper::getContentFullPath( m_content )
+        );
+
+        const FilePath & filePath = m_content->getFilePath();
+
+        if( m_realFileGroup->openInputFile( filePath, m_stream, 0, MENGINE_UNKNOWN_SIZE, false, false ) == false )
         {
             LOGGER_ERROR( "invalid open file '%s'"
-                , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+                , Helper::getContentFullPath( m_content )
             );
 
             return false;
@@ -95,7 +105,7 @@ namespace Mengine
         MemoryInterfacePtr memory = Helper::loadStreamArchiveMagicMemory( m_stream, m_archivator, m_magicNumber, m_magicVersion, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid stream archive magic memory '%s'"
-            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+            , Helper::getContentFullPath( m_content )
         );
 
         m_memory = memory;

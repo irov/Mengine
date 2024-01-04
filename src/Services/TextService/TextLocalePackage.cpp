@@ -8,6 +8,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -20,16 +21,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextLocalePackage::initialize( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    bool TextLocalePackage::initialize( const ConstString & _locale, const ContentInterfacePtr & _content )
     {
         m_locale = _locale;
-        m_fileGroup = _fileGroup;
-        m_filePath = _filePath;
+        m_content = _content;
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        const FileGroupInterfacePtr & fileGroup = m_content->getFileGroup();
+        const FilePath & filePath = m_content->getFilePath();
+
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s'"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            , Helper::getContentFullPath( m_content )
         );
 
         size_t xml_buffer_size = stream->size();
@@ -51,18 +54,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextLocalePackage::finalize()
     {
-        m_fileGroup = nullptr;
+        m_content = nullptr;
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FileGroupInterfacePtr & TextLocalePackage::getFileGroup() const
+    const ContentInterfacePtr & TextLocalePackage::getContent() const
     {
-        return m_fileGroup;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & TextLocalePackage::getFilePath() const
-    {
-        return m_filePath;
+        return m_content;
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr TextLocalePackage::getXmlBuffer() const

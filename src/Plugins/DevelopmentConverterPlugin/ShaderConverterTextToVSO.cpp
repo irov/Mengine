@@ -68,13 +68,20 @@ namespace Mengine
             }
         }
 
-        const ConstString & folderPath = m_options.fileGroup->getFolderPath();
+        const FileGroupInterfacePtr & inputFileGroup = m_options.inputContent->getFileGroup();
+        const FilePath & inputFilePath = m_options.inputContent->getFilePath();
 
-        String full_input = folderPath.c_str();
-        full_input += m_options.inputFilePath.c_str();
+        const FileGroupInterfacePtr & outputFileGroup = m_options.outputContent->getFileGroup();
+        const FilePath & outputFilePath = m_options.outputContent->getFilePath();
 
-        String full_output = folderPath.c_str();
-        full_output += m_options.outputFilePath.c_str();
+        const FilePath & inputFolderPath = inputFileGroup->getFolderPath();
+        const FilePath & outputFolderPath = outputFileGroup->getFolderPath();
+
+        String full_input = inputFolderPath.c_str();
+        full_input += inputFilePath.c_str();
+
+        String full_output = outputFolderPath.c_str();
+        full_output += outputFilePath.c_str();
 
         Char buffer[2048] = {'\0'};
         MENGINE_SNPRINTF( buffer, 2047, "/nologo /T vs_1_1 /O3 /Fo \"%s\" \"%s\""

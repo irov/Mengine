@@ -35,6 +35,10 @@ namespace Mengine
         bool createFrameworks_();
 
     protected:
+        bool registerBaseTypes_();
+        void unregisterBaseTypes_();
+
+    protected:
         void finalizeFrameworks_();
 
     protected:

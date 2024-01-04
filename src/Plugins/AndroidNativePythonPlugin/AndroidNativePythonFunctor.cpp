@@ -42,13 +42,9 @@ namespace Mengine
         return m_kernel;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonFunctor::setJavaFunctor( jobject _functor )
+    void AndroidNativePythonFunctor::setJavaFunctor( JNIEnv * _jenv, jobject _functor )
     {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        m_functor = jenv->NewGlobalRef( _functor );
+        m_functor = _jenv->NewGlobalRef( _functor );
     }
     //////////////////////////////////////////////////////////////////////////
     jobject AndroidNativePythonFunctor::getJavaFunctor() const

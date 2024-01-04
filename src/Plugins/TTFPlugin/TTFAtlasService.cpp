@@ -153,7 +153,6 @@ namespace Mengine
         }
 
         TTFAtlas newAtlas;
-
         newAtlas.channel = _channel;
         newAtlas.width = hw_width;
         newAtlas.height = hw_height;

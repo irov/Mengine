@@ -244,7 +244,7 @@ namespace Mengine
                 ->unprotectData( 1, memory_buffer, size, memory_buffer );
         }
 
-        jpp::object j = Helper::loadJSONStreamFromBuffer( memory_buffer, size, _doc );
+        jpp::object j = Helper::loadJSONBuffer( memory_buffer, size, _doc );
 
         if( j.invalid() == true )
         {

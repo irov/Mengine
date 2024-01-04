@@ -12,6 +12,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/ContentHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ConverterService, Mengine::ConverterService );
@@ -69,7 +70,7 @@ namespace Mengine
         return converter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConverterService::convert( const ConstString & _converterType, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath * const _out, const DocumentInterfacePtr & _doc )
+    bool ConverterService::convert( const ConstString & _converterType, const ContentInterfacePtr & _in, ContentInterfacePtr * const _out, const DocumentInterfacePtr & _doc )
     {
         if( _converterType.empty() == true )
         {
@@ -92,52 +93,61 @@ namespace Mengine
         );
 
         ConverterOptions options;
-        options.fileGroup = _fileGroup;
-        options.inputFilePath = _in;
+        options.inputContent = _in;
+
+        const FileGroupInterfacePtr & inputFileGroup = _in->getFileGroup();
+        const FilePath & inputFilePath = _in->getFilePath();
 
         PathString cache_path;
 
-        cache_path += _in;
+        cache_path += inputFilePath;
 
         cache_path.cut_before_last_of( '.' );
 
         const ConstString & ext = converter->getConvertExt();
         cache_path += ext;
 
-        options.outputFilePath = Helper::stringizeFilePath( cache_path );
+        FilePath cache_filePath = Helper::stringizeFilePath( cache_path );
+
+        const FileGroupInterfacePtr & outputFileGroup = inputFileGroup;
+        const FilePath & outputFilePath = cache_filePath;
+
+        ContentInterfacePtr outputContent = Helper::makeFileContent( outputFileGroup, outputFilePath, _doc );
+
+        options.outputContent = outputContent;
 
         converter->setOptions( &options );
 
-        if( options.inputFilePath.empty() == true )
+        if( inputFilePath.empty() == true )
         {
             LOGGER_ERROR( "input file is empty" );
 
             return false;
         }
 
-        if( options.outputFilePath.empty() == true )
+        if( outputFilePath.empty() == true )
         {
             LOGGER_ERROR( "output file is empty" );
 
             return false;
         }
 
-        if( options.fileGroup->existFile( options.inputFilePath, true ) == false )
+        if( options.inputContent->exist( true ) == false )
         {
             LOGGER_ERROR( "input file '%s' not found"
-                , Helper::getFileGroupFullPath( options.fileGroup, options.inputFilePath )
+                , Helper::getContentFullPath( _in )
             );
 
             return false;
         }
 
-        if( options.fileGroup->existFile( options.outputFilePath, true ) == true )
+        if( options.outputContent->exist( true ) == true )
         {
-            InputStreamInterfacePtr oldFile = Helper::openInputStreamFile( options.fileGroup, options.inputFilePath, false, false, _doc );
+            InputStreamInterfacePtr oldFile = Helper::openInputStreamFile( inputFileGroup, inputFilePath, false, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( oldFile, "converter '%s' can't open input file '%s' (time)"
                 , _converterType.c_str()
-                , Helper::getFileGroupFullPath( options.fileGroup, options.inputFilePath )
+                , Helper::getContentFullPath( options.inputContent )
             );
 
             uint64_t fileTimeInput;
@@ -145,11 +155,11 @@ namespace Mengine
 
             oldFile = nullptr;
 
-            InputStreamInterfacePtr newFile = Helper::openInputStreamFile( options.fileGroup, options.outputFilePath, false, false, _doc );
+            InputStreamInterfacePtr newFile = Helper::openInputStreamFile( outputFileGroup, outputFilePath, false, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( newFile, "converter '%s' can't open output file '%s' (time)"
                 , _converterType.c_str()
-                , Helper::getFileGroupFullPath( options.fileGroup, options.outputFilePath )
+                , Helper::getContentFullPath( options.outputContent )
             );
 
             uint64_t fileTimeOutput;
@@ -157,7 +167,7 @@ namespace Mengine
 
             if( fileTimeInput <= fileTimeOutput )
             {
-                *_out = options.outputFilePath;
+                *_out = options.outputContent;
 
                 if( converter->validateVersion( newFile ) == true )
                 {
@@ -165,29 +175,29 @@ namespace Mengine
                 }
 
                 LOGGER_WARNING( "file '%s' invalid version"
-                    , Helper::getFileGroupFullPath( options.fileGroup, options.outputFilePath )
+                    , Helper::getContentFullPath( options.outputContent )
                 );
             }
         }
 
         LOGGER_WARNING( "converter '%s'\nfrom: %s\nto: '%s'\n"
             , _converterType.c_str()
-            , Helper::getFileGroupFullPath( options.fileGroup, options.inputFilePath )
-            , Helper::getFileGroupFullPath( options.fileGroup, options.outputFilePath )
+            , Helper::getContentFullPath( options.inputContent )
+            , Helper::getContentFullPath( options.outputContent )
         );
 
         if( converter->convert() == false )
         {
             LOGGER_ERROR( "can't convert '%s'\nfrom: %s\nto: '%s'\n"
                 , _converterType.c_str()
-                , Helper::getFileGroupFullPath( options.fileGroup, options.inputFilePath )
-                , Helper::getFileGroupFullPath( options.fileGroup, options.outputFilePath )
+                , Helper::getContentFullPath( options.inputContent )
+                , Helper::getContentFullPath( options.outputContent )
             );
 
             return false;
         }
 
-        *_out = options.outputFilePath;
+        *_out = options.outputContent;
 
         return true;
     }

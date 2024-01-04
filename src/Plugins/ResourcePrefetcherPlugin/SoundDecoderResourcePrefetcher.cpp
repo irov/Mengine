@@ -21,12 +21,8 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-        const ConstString & codecType = content->getCodecType();
-
         if( PREFETCHER_SERVICE()
-            ->prefetchSoundDecoder( fileGroup, filePath, codecType, _observer ) == false )
+            ->prefetchSoundDecoder( content, _observer ) == false )
         {
             return false;
         }
@@ -42,11 +38,8 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
         bool successful = PREFETCHER_SERVICE()
-            ->unfetch( fileGroup, filePath );
+            ->unfetch( content );
 
         return successful;
     }

@@ -9,6 +9,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/PathString.h"
 
 #include "Config/StdIO.h"
 
@@ -68,13 +69,22 @@ namespace Mengine
             }
         }
 
-        const ConstString & folderPath = m_options.fileGroup->getFolderPath();
+        const FileGroupInterfacePtr & inputFileGroup = m_options.inputContent->getFileGroup();
+        const FilePath & inputFilePath = m_options.inputContent->getFilePath();
 
-        String full_input = folderPath.c_str();
-        full_input += m_options.inputFilePath.c_str();
+        const FileGroupInterfacePtr & outputFileGroup = m_options.outputContent->getFileGroup();
+        const FilePath & outputFilePath = m_options.outputContent->getFilePath();
 
-        String full_output = folderPath.c_str();
-        full_output += m_options.outputFilePath.c_str();
+        const FilePath & inputFolderPath = inputFileGroup->getFolderPath();
+        const FilePath & outputFolderPath = outputFileGroup->getFolderPath();
+
+        PathString full_input;
+        full_input += inputFolderPath;
+        full_input += inputFilePath;
+
+        PathString full_output;
+        full_output += outputFolderPath;
+        full_output += outputFilePath;
 
         Char buffer[2048] = {'\0'};
         MENGINE_SNPRINTF( buffer, 2047, "/nologo /T ps_1_1 /O3 /Gec /Fo \"%s\" \"%s\""

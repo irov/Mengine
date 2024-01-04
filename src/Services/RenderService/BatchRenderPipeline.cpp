@@ -9,6 +9,7 @@
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/MemoryCopy.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -311,7 +312,7 @@ namespace Mengine
                     {
                         LOGGER_MESSAGE_RELEASE( "index: %u texture: %s material: %s"
                             , m_debugLimitRenderObjects
-                            , texture->getFilePath().c_str()
+                            , Helper::getContentFullPath( texture->getContent() )
                             , _material->getName().c_str()
                         );
 

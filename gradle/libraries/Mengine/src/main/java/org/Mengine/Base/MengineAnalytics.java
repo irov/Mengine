@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class MengineAnalytics {
     private static MengineApplication m_application;
+
     private static Map<String, Object> m_bases = new HashMap<>();
     private static Map<String, Object> m_getter = new HashMap<>();
 
@@ -79,7 +80,7 @@ public class MengineAnalytics {
     }
 
     static private void collapseGetter(Map<String, Object> parameters) {
-        for (Map.Entry<String, Object> entry : m_getter.entrySet()) {
+        for (Map.Entry<String, Object> entry : MengineAnalytics.m_getter.entrySet()) {
             String key = entry.getKey();
             MengineAnalyticsGetter getter = (MengineAnalyticsGetter)entry.getValue();
 

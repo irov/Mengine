@@ -3,6 +3,7 @@
 #include "Interface/RenderImageInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
@@ -22,7 +23,7 @@ namespace Mengine
         ~DecoderRenderImageLoader() override;
 
     public:
-        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags );
+        bool initialize( const ContentInterfacePtr & _content, uint32_t _codecFlags );
 
     protected:
         void getImageDesc( RenderImageDesc * const _desc ) const override;
@@ -34,7 +35,7 @@ namespace Mengine
         MemoryInterfacePtr getMemory( uint32_t _codecFlags, const DocumentInterfacePtr & _doc ) const override;
 
     protected:
-        ImageDecoderInterfacePtr createImageDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType ) const;
+        ImageDecoderInterfacePtr createImageDecoder_( const ContentInterfacePtr & _content ) const;
 
     protected:
         ImageDecoderInterfacePtr m_decoder;

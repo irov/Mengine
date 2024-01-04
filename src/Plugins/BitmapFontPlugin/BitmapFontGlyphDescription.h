@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/GlyphCode.h"
@@ -32,7 +32,7 @@ namespace Mengine
         ~BitmapFontGlyphDescription() override;
 
     public:
-        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
+        bool initialize( const ContentInterfacePtr & _content );
 
     public:
         void setSize( float _size );

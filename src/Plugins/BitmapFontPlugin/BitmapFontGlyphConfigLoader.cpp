@@ -1,6 +1,6 @@
 #include "BitmapFontGlyphConfigLoader.h"
 
-#include "Interface/PrototypeServiceInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
 #include "BitmapFontInterface.h"
 
@@ -8,6 +8,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -20,7 +21,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFontGlyphConfigLoader::load( const FactorablePtr & _factorable, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
+    bool BitmapFontGlyphConfigLoader::load( const FactorablePtr & _factorable, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config, const DocumentInterfacePtr & _doc )
     {
         BitmapFontGlyphPtr glyph = BitmapFontGlyphPtr::from( _factorable );
 
@@ -36,8 +37,10 @@ namespace Mengine
             return false;
         }
 
+        ContentInterfacePtr descriptionContent = Helper::makeFileContent( _fileGroup, descriptionPath, _doc );
+
         BitmapFontGlyphDescriptionPtr description = BITMAPFONT_SERVICE()
-            ->createGlyphDescription( _fileGroup, descriptionPath, MENGINE_DOCUMENT_FACTORABLE );
+            ->createGlyphDescription( descriptionContent, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( description, "invalid bitmap font '%s' don't load Symbols '%s'"
             , glyphName.c_str()
@@ -56,11 +59,12 @@ namespace Mengine
             return false;
         }
 
-        ContentInterfacePtr imageContent = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        ContentInterfacePtr imageContent = Helper::makeFileContent( _fileGroup, imagePath, _doc );
 
-        imageContent->setFileGroup( _fileGroup );
-        imageContent->setFilePath( imagePath );
+        const ConstString & imageCodecType = CODEC_SERVICE()
+            ->findCodecType( imagePath );
+
+        imageContent->setCodecType( imageCodecType );
 
         glyph->setBitmapImageContent( imageContent );
 
@@ -74,11 +78,7 @@ namespace Mengine
             return false;
         }
 
-        ContentInterfacePtr licenseContent = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-
-        licenseContent->setFileGroup( _fileGroup );
-        licenseContent->setFilePath( licensePath );
+        ContentInterfacePtr licenseContent = Helper::makeFileContent( _fileGroup, licensePath, _doc );
 
         glyph->setBitmapLicenseContent( licenseContent );
 

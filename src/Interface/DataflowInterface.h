@@ -8,7 +8,6 @@
 
 #include "Kernel/FilePath.h"
 
-#include "Config/Typedef.h"
 #include "Config/Char.h"
 
 namespace Mengine

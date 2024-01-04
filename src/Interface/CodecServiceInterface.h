@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Config/Typedef.h"
-
 #include "Interface/ServiceInterface.h"
 #include "Interface/DecoderFactoryInterface.h"
 #include "Interface/EncoderFactoryInterface.h"

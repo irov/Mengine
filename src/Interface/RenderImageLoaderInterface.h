@@ -5,7 +5,6 @@
 
 #include "Kernel/Mixin.h"
 #include "Kernel/PixelFormat.h"
-
 #include "Config/Typedef.h"
 
 namespace Mengine

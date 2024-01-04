@@ -13,6 +13,7 @@
 #include "Kernel/AssertionResourceType.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "Interface/ScriptServiceInterface.h"
@@ -145,7 +146,6 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
-        const ConstString & codecType = content->getCodecType();
 
         bool external = resourceMusic->isExternal();
         float volume = resourceMusic->getVolume();
@@ -155,15 +155,17 @@ namespace Mengine
         if( fileGroup->isPacked() == false || external == false )
         {
             buffer = SOUND_SERVICE()
-                ->createSoundBufferFromFile( fileGroup, filePath, codecType, true, MENGINE_DOCUMENT_FACTORABLE );
+                ->createSoundBufferFromFile( content, true, MENGINE_DOCUMENT_FACTORABLE );
         }
         else
         {
             const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
                 ->getDefaultFileGroup();
 
+            ContentInterfacePtr externalContent = Helper::makeFileContent( defaultFileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
+
             buffer = SOUND_SERVICE()
-                ->createSoundBufferFromFile( defaultFileGroup, filePath, codecType, true, MENGINE_DOCUMENT_FACTORABLE );
+                ->createSoundBufferFromFile( externalContent, true, MENGINE_DOCUMENT_FACTORABLE );
         }
 
         if( buffer == nullptr )

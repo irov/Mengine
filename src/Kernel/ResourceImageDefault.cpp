@@ -13,6 +13,7 @@
 #include "Kernel/TextureHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -41,16 +42,6 @@ namespace Mengine
             return false;
         }
 
-        const ContentInterfacePtr & content = this->getContent();
-
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, "name '%s' group '%s' file path '%s' invalid setup category"
-            , this->getName().c_str()
-            , this->getGroupName().c_str()
-            , this->getContent()->getFilePath().c_str()
-        );
-
         uint32_t decoder_options = DF_IMAGE_NONE;
 
 #ifndef MENGINE_MASTER_RELEASE
@@ -73,9 +64,6 @@ namespace Mengine
         }
 #endif
 
-        const FilePath & filePath = m_content->getFilePath();
-        const ConstString & codecType = m_content->getCodecType();
-
         bool trimAtlas = this->isTrimAtlas();
         const mt::vec2f & maxSize = this->getMaxSize();
         uint32_t maxSize_width = (uint32_t)(maxSize.x + 0.5f);
@@ -84,14 +72,16 @@ namespace Mengine
         uint32_t width = trimAtlas == true ? maxSize_width : ~0U;
         uint32_t height = trimAtlas == true ? maxSize_height : ~0U;
 
+        const ContentInterfacePtr & content = this->getContent();
+
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->loadTexture( fileGroup, filePath, codecType, decoder_options, width, height, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadTexture( content, decoder_options, width, height, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, "name '%s' category '%s' group '%s' can't load image file '%s'"
             , this->getName().c_str()
             , this->getContent()->getFileGroup()->getName().c_str()
             , this->getGroupName().c_str()
-            , this->getContent()->getFilePath().c_str()
+            , Helper::getContentFullPath( this->getContent() )
         );
 
         this->setTexture( texture );

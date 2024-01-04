@@ -3,11 +3,12 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
+#include "Kernel/Logger.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
-#include "Kernel/Logger.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -34,7 +35,7 @@ namespace Mengine
             LOGGER_ERROR( "resource video '%s' group '%s' path '%s' invalid width or heigth [%u:%u] need [%u:%u] maybe div [%u]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( _resource->getContent() )
                 , dataInfo->frameWidth
                 , dataInfo->frameHeight
                 , (dataInfo->frameWidth / Limit_VideoSizeDiv + 1) * Limit_VideoSizeDiv
@@ -53,7 +54,7 @@ namespace Mengine
             LOGGER_ERROR( "resource video '%s' group '%s' path '%s' override size [%u:%u] limit [%u:%u]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( _resource->getContent() )
                 , dataInfo->width
                 , dataInfo->height
                 , Limit_VideoWidth
@@ -72,7 +73,7 @@ namespace Mengine
             LOGGER_ERROR( "resource video '%s' group '%s' path '%s' override frame rate %f more that %f"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( _resource->getContent() )
                 , frameRate
                 , Limit_VideoFrameRate
             );
@@ -105,7 +106,7 @@ namespace Mengine
             LOGGER_ERROR( "resource video '%s' group '%s' path '%s' override fillrate %f [coeff %f]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( _resource->getContent() )
                 , videoFillrate / resolutionFillrate
                 , Limit_VideoContentFillrateCoeff
             );
@@ -120,10 +121,7 @@ namespace Mengine
     {
         const ContentInterfacePtr & content = _resource->getContent();
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
-        if( fileGroup->existFile( filePath, true ) == false )
+        if( content->exist( true ) == false )
         {
             bool validNoExist = content->isValidNoExist();
 
@@ -135,11 +133,14 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' not exist file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getFileGroupFullPath( content->getFileGroup(), content->getFilePath() )
+                , Helper::getContentFullPath( _resource->getContent() )
             );
 
             return false;
         }
+
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
 
         InputStreamInterfacePtr videoStream = Helper::openInputStreamFile( fileGroup, filePath, true, false, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -148,7 +149,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't open video file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( _resource->getContent() )
             );
 
             return false;
@@ -164,7 +165,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't create video decoder for file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( _resource->getContent() )
             );
 
             return false;
@@ -175,7 +176,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't initialize video decoder for file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( _resource->getContent() )
             );
 
             return false;

@@ -21,9 +21,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFontConfigLoader::load( const FactorablePtr & _factorable, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
+    bool BitmapFontConfigLoader::load( const FactorablePtr & _factorable, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _fileGroup );
+        MENGINE_UNUSED( _doc );
 
         BitmapFontPtr font = BitmapFontPtr::from( _factorable );
 

@@ -8,6 +8,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -37,12 +38,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLHttpRequestGetAssetThreadTask::initialize( const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath, const FilePath & _filePathTemp )
+    bool cURLHttpRequestGetAssetThreadTask::initialize( const String & _login, const String & _password, const ContentInterfacePtr & _content, const FilePath & _filePathTemp )
     {
         m_login = _login;
         m_password = _password;
-        m_fileGroup = _fileGroup;
-        m_filePath = _filepath;
+        m_content = _content;
         m_filePathTemp = _filePathTemp;
 
         return true;
@@ -50,16 +50,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool cURLHttpRequestGetAssetThreadTask::_onThreadTaskRun()
     {
-        if( m_fileGroup->createDirectory( m_filePath ) == false )
+        const FileGroupInterfacePtr & fileGroup = m_content->getFileGroup();
+        const FilePath & filePath = m_content->getFilePath();
+
+        if( fileGroup->createDirectory( filePath ) == false )
         {
             return false;
         }
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, m_filePathTemp, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, m_filePathTemp, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "get asset url '%s' invalid open file '%s'"
             , m_url.c_str()
-            , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
+            , Helper::getContentFullPath( m_content )
         );
 
         m_stream = stream;
@@ -97,7 +100,7 @@ namespace Mengine
                 , m_url.c_str()
                 , m_login.c_str()
                 , m_password.c_str()
-                , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
+                , Helper::getContentFullPath( m_content )
             );
         }
     }
@@ -106,8 +109,9 @@ namespace Mengine
     {
         bool successful_stream_flush = true;
 
-        FileGroupInterfacePtr fileGroup = m_fileGroup;
-        m_fileGroup = nullptr;
+        FileGroupInterfacePtr fileGroup = m_content->getFileGroup();
+        FilePath filePath = m_content->getFilePath();
+        m_content = nullptr;
 
         if( m_stream != nullptr )
         {
@@ -126,7 +130,7 @@ namespace Mengine
             return;
         }
 
-        if( fileGroup->moveFile( m_filePathTemp, m_filePath ) == false )
+        if( fileGroup->moveFile( m_filePathTemp, filePath ) == false )
         {
             cURLHttpRequestThreadTask::_onThreadTaskComplete( false );
 

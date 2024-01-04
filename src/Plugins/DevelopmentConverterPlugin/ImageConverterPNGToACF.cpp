@@ -15,6 +15,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/ImageCodecHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -41,28 +42,35 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ImageConverterPNGToACF::convert()
     {
-        const FilePath & folderPath = m_options.fileGroup->getFolderPath();
+        const FileGroupInterfacePtr & inputFileGroup = m_options.inputContent->getFileGroup();
+        const FilePath & inputFilePath = m_options.inputContent->getFilePath();
 
-        FilePath full_inputFilePath = Helper::concatenationFilePath( folderPath, m_options.inputFilePath );
-        FilePath full_outputFilePath = Helper::concatenationFilePath( folderPath, m_options.outputFilePath );
+        const FileGroupInterfacePtr & outputFileGroup = m_options.outputContent->getFileGroup();
+        const FilePath & outputFilePath = m_options.outputContent->getFilePath();
 
-        InputStreamInterfacePtr stream_intput = Helper::openInputStreamFile( m_fileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        const FilePath & inputFolderPath = inputFileGroup->getFolderPath();
+        const FilePath & outputFolderPath = outputFileGroup->getFolderPath();
+
+        FilePath full_inputFilePath = Helper::concatenationFilePath( inputFolderPath, inputFilePath );
+        FilePath full_outputFilePath = Helper::concatenationFilePath( outputFolderPath, outputFilePath );
+
+        InputStreamInterfacePtr stream_intput = Helper::openInputStreamFile( m_devFileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, "invalid open input file '%s'"
-            , m_options.inputFilePath.c_str()
+            , Helper::getContentFullPath( m_options.inputContent )
         );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoder( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s'"
-            , m_options.inputFilePath.c_str()
+            , Helper::getContentFullPath( m_options.inputContent )
         );
 
         if( decoder->prepareData( stream_intput ) == false )
         {
             LOGGER_ERROR( "invalid prepare decoder '%s'"
-                , m_options.inputFilePath.c_str()
+                , Helper::getContentFullPath( m_options.inputContent )
             );
 
             return false;
@@ -87,30 +95,30 @@ namespace Mengine
         if( decoder->decode( &htfDecoderData ) == 0 )
         {
             LOGGER_ERROR( "invalid decode '%s'"
-                , m_options.inputFilePath.c_str()
+                , Helper::getContentFullPath( m_options.inputContent )
             );
 
             return false;
         }
 
-        OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_devFileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_output, "'%s' invalid open output '%s'"
-            , m_options.inputFilePath.c_str()
-            , full_outputFilePath.c_str()
+            , Helper::getContentFullPath( m_options.inputContent )
+            , Helper::getContentFullPath( m_options.outputContent )
         );
 
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
             ->createEncoder( STRINGIZE_STRING_LOCAL( "acfImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( encoder, "'%s' invalid create encoder"
-            , m_options.inputFilePath.c_str()
+            , Helper::getContentFullPath( m_options.inputContent )
         );
 
         if( encoder->initialize( stream_output ) == false )
         {
             LOGGER_ERROR( "%s invalid initialize encoder"
-                , m_options.inputFilePath.c_str()
+                , Helper::getContentFullPath( m_options.inputContent )
             );
 
             return false;
@@ -131,11 +139,11 @@ namespace Mengine
 
         encoder->finalize();
 
-        if( Helper::closeOutputStreamFile( m_fileGroup, stream_output ) == false )
+        if( Helper::closeOutputStreamFile( m_devFileGroup, stream_output ) == false )
         {
             LOGGER_ERROR( "%s invalid close output '%s'"
-                , m_options.inputFilePath.c_str()
-                , full_outputFilePath.c_str()
+                , Helper::getContentFullPath( m_options.inputContent )
+                , Helper::getContentFullPath( m_options.outputContent )
             );
 
             return false;
@@ -144,7 +152,7 @@ namespace Mengine
         if( encode_byte == 0 )
         {
             LOGGER_ERROR( "%s invalid encode"
-                , m_options.inputFilePath.c_str()
+                , Helper::getContentFullPath( m_options.inputContent )
             );
 
             return false;

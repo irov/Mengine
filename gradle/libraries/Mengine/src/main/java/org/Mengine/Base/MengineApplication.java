@@ -234,16 +234,27 @@ public class MengineApplication extends Application {
     }
 
     public boolean hasOption(String option) {
+        if (BuildConfig.DEBUG == false) {
+            return false;
+        }
+
         String options_str = this.getApplicationOptions();
 
         String [] options = options_str.split(" ");
 
+        if (options.length == 0) {
+            return false;
+        }
+
+        String hyphen_option = "-" + option;
+        String double_hyphen_option = "--" + option;
+
         for(String o : options) {
-            if (o.equals("-" + option) == true) {
+            if (o.equals(hyphen_option) == true) {
                 return true;
             }
 
-            if (o.equals("--" + option) == true) {
+            if (o.equals(double_hyphen_option) == true) {
                 return true;
             }
         }
@@ -775,6 +786,9 @@ public class MengineApplication extends Application {
             return;
         }
 
+        MengineLog.setMengineApplication(this);
+        MengineAnalytics.setMengineApplication(this);
+
         this.setState("build.debug", BuildConfig.DEBUG);
 
         this.setState("application.init", "started");
@@ -808,9 +822,6 @@ public class MengineApplication extends Application {
         this.setState("application.init", "sdl_init");
 
         AndroidEnv_setMengineAndroidApplicationJNI(this);
-
-        MengineLog.setMengineApplication(this);
-        MengineAnalytics.setMengineApplication(this);
 
         if (this.getMetaDataBoolean("mengine.secure.allow_android_id") == true) {
             m_androidId = this.getSecureAndroidId();

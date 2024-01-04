@@ -14,6 +14,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -725,27 +726,31 @@ namespace Mengine
         return vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr RenderMaterialService::createVertexShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentInterfacePtr & _doc )
+    RenderVertexShaderInterfacePtr RenderMaterialService::createVertexShader( const ConstString & _name, const ContentInterfacePtr & _content, bool _compile, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_UNUSED( _converterType );
-
         MENGINE_ASSERTION_FATAL( m_vertexShaders.exist( _name ) == false, "material '%s' already has vertex shader '%s' (doc: %s)"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            , Helper::getContentFullPath( _content )
             , _name.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        FilePath outFilePath = _filePath;
-
 #ifndef MENGINE_MASTER_RELEASE
+        const ConstString & converterType = _content->getConverterType();
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
+
+        ContentInterfacePtr convertContent = Helper::makeFileContent( fileGroup, filePath, _doc );
+
         if( CONVERTER_SERVICE()
-            ->convert( _converterType, _fileGroup, _filePath, &outFilePath, _doc ) == false )
+            ->convert( converterType, _content, &convertContent, _doc ) == false )
         {
             return nullptr;
         }
+#else
+        ContentInterfacePtr convertContent = _content;
 #endif
 
-        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, false, _doc );
+        MemoryInterfacePtr memory = Helper::createMemoryContent( convertContent, false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
@@ -770,27 +775,31 @@ namespace Mengine
         return vertexShader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr RenderMaterialService::createFragmentShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentInterfacePtr & _doc )
+    RenderFragmentShaderInterfacePtr RenderMaterialService::createFragmentShader( const ConstString & _name, const ContentInterfacePtr & _content, bool _compile, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_UNUSED( _converterType );
-
         MENGINE_ASSERTION_FATAL( m_fragmentShaders.exist( _name ) == false, "material '%s' already has fragment shader '%s' (doc: %s)"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            , Helper::getContentFullPath( _content )
             , _name.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        FilePath outFilePath = _filePath;
-
 #ifndef MENGINE_MASTER_RELEASE
+        const ConstString & converterType = _content->getConverterType();
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
+
+        ContentInterfacePtr convertContent = Helper::makeFileContent( fileGroup, filePath, _doc );
+
         if( CONVERTER_SERVICE()
-            ->convert( _converterType, _fileGroup, _filePath, &outFilePath, _doc ) == false )
+            ->convert( converterType, _content, &convertContent, _doc ) == false )
         {
             return nullptr;
         }
+#else
+        ContentInterfacePtr convertContent = _content;
 #endif
 
-        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, false, _doc );
+        MemoryInterfacePtr memory = Helper::createMemoryContent( convertContent, false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory );
 

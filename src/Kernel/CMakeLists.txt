@@ -835,6 +835,9 @@ Core
     
     FileGroupHelper.h
     FileGroupHelper.cpp
+    
+    ContentHelper.h
+    ContentHelper.cpp
 
     RandomDevice.h
     RandomDevice.cpp

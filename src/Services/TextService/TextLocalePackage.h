@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/MemoryInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
@@ -22,12 +22,11 @@ namespace Mengine
         ~TextLocalePackage() override;
 
     public:
-        bool initialize( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
+        bool initialize( const ConstString & _locale, const ContentInterfacePtr & _content );
         void finalize();
 
     public:
-        const FileGroupInterfacePtr & getFileGroup() const;
-        const FilePath & getFilePath() const;
+        const ContentInterfacePtr & getContent() const;
 
     public:
         MemoryInterfacePtr getXmlBuffer() const;
@@ -35,8 +34,7 @@ namespace Mengine
     protected:
         ConstString m_locale;
 
-        FileGroupInterfacePtr m_fileGroup;
-        FilePath m_filePath;
+        ContentInterfacePtr m_content;
 
         MemoryBufferInterfacePtr m_memory;
     };

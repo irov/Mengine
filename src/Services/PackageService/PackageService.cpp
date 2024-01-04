@@ -14,6 +14,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 
@@ -30,6 +31,7 @@ namespace Mengine
         {
             _config->hasValue( _name.c_str(), "Name", ConstString::none(), &_pack->name );
             _config->hasValue( _name.c_str(), "Type", STRINGIZE_STRING_LOCAL( "dir" ), &_pack->type );
+            _config->hasValue( _name.c_str(), "Format", STRINGIZE_STRING_LOCAL( "xml" ), &_pack->format );
             _config->hasValue( _name.c_str(), "Locale", ConstString::none(), &_pack->locale );
             _config->hasValue( _name.c_str(), "Platform", Tags(), &_pack->platform );
             _config->hasValue( _name.c_str(), "Tag", Tags(), &_pack->tags );
@@ -80,17 +82,17 @@ namespace Mengine
         m_factoryPackage = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
+    bool PackageService::loadPackages( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "package", "load packages... %s"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            , Helper::getContentFullPath( _content )
         );
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _fileGroup, _filePath, ConstString::none(), _doc );
+            ->loadConfig( _content, ConstString::none(), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load packages '%s'"
-            , _filePath.c_str()
+            , Helper::getContentFullPath( _content )
         );
 
         VectorString frameworkPacksSettings;
@@ -105,7 +107,7 @@ namespace Mengine
             if( config->hasSection( frameworkPack.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s' framework package no found section for '%s'"
-                    , _filePath.c_str()
+                    , Helper::getContentFullPath( _content )
                     , frameworkPack.c_str()
                 );
 
@@ -137,7 +139,7 @@ namespace Mengine
             if( config->hasSection( resourcePack.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s' resource package no found section for '%s'"
-                    , _filePath.c_str()
+                    , Helper::getContentFullPath( _content )
                     , resourcePack.c_str()
                 );
 
@@ -169,7 +171,7 @@ namespace Mengine
             if( config->hasSection( languagePack.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s' language package no found section for '%s'"
-                    , _filePath.c_str()
+                    , Helper::getContentFullPath( _content )
                     , languagePack.c_str()
                 );
 

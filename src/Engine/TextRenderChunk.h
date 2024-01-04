@@ -2,8 +2,6 @@
 
 #include "Kernel/IntrusivePtr.h"
 
-#include "Config/Typedef.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

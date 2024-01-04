@@ -14,6 +14,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -111,17 +112,20 @@ namespace Mengine
         return config;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConfigInterfacePtr ConfigService::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentInterfacePtr & _doc )
+    ConfigInterfacePtr ConfigService::loadConfig( const ContentInterfacePtr & _content, const ConstString & _configType, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "config", "load config '%s' (doc: %s)"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            , Helper::getContentFullPath( _content )
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
+
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open config '%s' (doc: %s)"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            , Helper::getContentFullPath( _content )
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
@@ -129,7 +133,7 @@ namespace Mengine
 
         if( _configType == ConstString::none() )
         {
-            configType = Helper::getFilePathExt( _filePath );
+            configType = Helper::getFilePathExt( filePath );
         }
 
         ConfigInterfacePtr config = PROTOTYPE_SERVICE()
@@ -145,7 +149,7 @@ namespace Mengine
         if( config->load( stream, _doc ) == false )
         {
             LOGGER_ERROR( "invalid load config '%s' (doc: %s)"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
@@ -155,18 +159,18 @@ namespace Mengine
         return config;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConfigService::loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _configType, const DocumentInterfacePtr & _doc )
+    bool ConfigService::loadDefaultConfig( const ContentInterfacePtr & _content, const ConstString & _configType, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "config", "load default config '%s'"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            , Helper::getContentFullPath( _content )
         );
 
-        ConfigInterfacePtr config = this->loadConfig( _fileGroup, _filePath, _configType, _doc );
+        ConfigInterfacePtr config = this->loadConfig( _content, _configType, _doc );
 
         if( config == nullptr )
         {
             LOGGER_ERROR( "invalid load default config '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
             );
 
             return false;

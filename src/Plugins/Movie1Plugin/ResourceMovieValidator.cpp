@@ -15,7 +15,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/ConfigHelper.h"
-#include "Kernel/ConfigHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/Algorithm.h"
 #include "Config/StdMath.h"
@@ -122,7 +122,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "release '%s' group '%s' invalid open file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( _resource->getContent() )
             );
 
             return false;
@@ -140,7 +140,7 @@ namespace Mengine
                 LOGGER_MESSAGE_RELEASE_ERROR( "release '%s' group '%s' you must determine codec for file '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
-                    , _resource->getContent()->getFilePath().c_str()
+                    , Helper::getContentFullPath( _resource->getContent() )
                 );
 
                 return false;

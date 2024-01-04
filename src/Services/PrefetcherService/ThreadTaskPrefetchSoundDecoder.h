@@ -16,10 +16,6 @@ namespace Mengine
         ~ThreadTaskPrefetchSoundDecoder() override;
 
     public:
-        void setSoundCodec( const ConstString & _soundCodec );
-        const ConstString & getSoundCodec() const;
-
-    public:
         const SoundDecoderInterfacePtr & getDecoder() const;
 
     protected:
@@ -28,9 +24,6 @@ namespace Mengine
     protected:
         bool _onThreadTaskRun() override;
         bool _onThreadTaskProcess() override;
-
-    protected:
-        ConstString m_soundCodec;
 
     protected:
         SoundDecoderInterfacePtr m_soundDecoder;

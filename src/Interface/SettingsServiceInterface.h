@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/SettingInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
@@ -17,11 +17,11 @@ namespace Mengine
         SERVICE_DECLARE( "SettingsService" );
 
     public:
-        virtual bool loadSetting( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool loadSetting( const ConstString & _name, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool unloadSetting( const ConstString & _name ) = 0;
 
     public:
-        virtual bool loadSettings( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool loadSettings( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual const SettingInterfacePtr & getSetting( const ConstString & _name ) const = 0;

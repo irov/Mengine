@@ -3,8 +3,9 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Interface/RenderTextureInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 #include "Interface/ImageCodecInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Config/Lambda.h"
 
@@ -20,20 +21,20 @@ namespace Mengine
         virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual RenderTextureInterfacePtr loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, uint32_t _width, uint32_t _height, const DocumentInterfacePtr & _doc ) = 0;
+        virtual RenderTextureInterfacePtr loadTexture( const ContentInterfacePtr & _content, uint32_t _codecFlags, uint32_t _width, uint32_t _height, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual RenderTextureInterfacePtr getTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) const = 0;
-        virtual bool hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, RenderTextureInterfacePtr * const _texture ) const = 0;
+        virtual RenderTextureInterfacePtr getTexture( const ContentInterfacePtr & _content ) const = 0;
+        virtual bool hasTexture( const ContentInterfacePtr & _content, RenderTextureInterfacePtr * const _texture ) const = 0;
 
     public:
-        virtual RenderImageLoaderInterfacePtr createDecoderRenderImageLoader( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, const DocumentInterfacePtr & _doc ) = 0;
+        virtual RenderImageLoaderInterfacePtr createDecoderRenderImageLoader( const ContentInterfacePtr & _content, uint32_t _codecFlags, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual void cacheFileTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const RenderTextureInterfacePtr & _texture ) = 0;
+        virtual void cacheFileTexture( const ContentInterfacePtr & _content, const RenderTextureInterfacePtr & _texture ) = 0;
 
     public:
-        virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecType, const FilePath & _filePath ) = 0;
+        virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const ContentInterfacePtr & _content ) = 0;
 
     public:
         typedef Lambda<void( const RenderTextureInterfacePtr & )> LambdaRenderTexture;

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Interface/ServantInterface.h"
-#include "Interface/FileGroupInterface.h"
 #include "Interface/RenderImageInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/Rect.h"
 
@@ -26,11 +26,8 @@ namespace Mengine
     public:
         virtual const mt::uv4f & getUV() const = 0;
 
-        virtual void setFileGroup( const FileGroupInterfacePtr & _fileGroup ) = 0;
-        virtual const FileGroupInterfacePtr & getFileGroup() const = 0;
-
-        virtual void setFilePath( const FilePath & _filePath ) = 0;
-        virtual const FilePath & getFilePath() const = 0;
+        virtual void setContent( const ContentInterfacePtr & _content ) = 0;
+        virtual const ContentInterfacePtr & getContent() const = 0;
 
     public:
         virtual uint32_t getWidth() const = 0;

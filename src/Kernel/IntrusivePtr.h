@@ -2,6 +2,8 @@
 
 #include "Config/Config.h"
 
+#include "Kernel/Hashgen.h"
+
 #include "stdex/intrusive_ptr.h"
 
 namespace Mengine
@@ -9,6 +11,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     template<class T, class D = void>
     using IntrusivePtr = stdex::intrusive_ptr<T, D>;
+    //////////////////////////////////////////////////////////////////////////
+    template<class T, class D>
+    struct Hashgen<IntrusivePtr<T, D>>
+    {
+        HashType operator()( const IntrusivePtr<T, D> & _value ) const
+        {
+            const typename IntrusivePtr<T, D>::value_type * ptr = _value.get();
+
+            return (HashType)ptr;
+        }
+    };
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {

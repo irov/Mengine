@@ -11,6 +11,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/JSONHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -32,18 +33,16 @@ namespace Mengine
     {
         const ContentInterfacePtr & content = this->getContent();
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
+        jpp::object json;
+        if( JSON_SERVICE()
+            ->load( content, &json, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            LOGGER_ERROR( "invalid load json '%s'"
+                , Helper::getContentFullPath( this->getContent() )
+            );
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
-
-        jpp::object json = Helper::loadJSONStream( stream, MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_JSON_INVALID( json, "invalid load json '%s'"
-            , this->getContent()->getFilePath().c_str()
-        );
+            return false;
+        }
 
         m_json = json;
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/SettingInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "JSONInterface.h"
 
@@ -17,12 +18,11 @@ namespace Mengine
         ~JSONSetting() override;
 
     public:
-        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc ) override;
+        bool initialize( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) override;
         void finalize() override;
 
     public:
-        const FileGroupInterfacePtr & getFileGroup() const override;
-        const FilePath & getFilePath() const override;
+        const ContentInterfacePtr & getContent() const override;
 
     public:
         bool getValue( const Char * _key, bool _default ) const override;
@@ -35,8 +35,7 @@ namespace Mengine
         Color getValue( const Char * _key, const Color & _default ) const override;
 
     protected:
-        FileGroupInterfacePtr m_fileGroup;
-        FilePath m_filePath;
+        ContentInterfacePtr m_content;
 
         jpp::object m_json;
     };

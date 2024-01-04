@@ -17,6 +17,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/ResourceImage.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -49,12 +50,19 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool DazzleEffectConverterDZBToDZZ::convert()
     {
-        const FilePath & folderPath = m_options.fileGroup->getFolderPath();
+        const FileGroupInterfacePtr & inputFileGroup = m_options.inputContent->getFileGroup();
+        const FilePath & inputFilePath = m_options.inputContent->getFilePath();
 
-        FilePath full_inputFilePath = Helper::concatenationFilePath( folderPath, m_options.inputFilePath );
-        FilePath full_outputFilePath = Helper::concatenationFilePath( folderPath, m_options.outputFilePath );
+        const FileGroupInterfacePtr & outputFileGroup = m_options.outputContent->getFileGroup();
+        const FilePath & outputFilePath = m_options.outputContent->getFilePath();
 
-        MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_fileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        const FilePath & inputFolderPath = inputFileGroup->getFolderPath();
+        const FilePath & outputFolderPath = outputFileGroup->getFolderPath();
+
+        FilePath full_inputFilePath = Helper::concatenationFilePath( inputFolderPath, inputFilePath );
+        FilePath full_outputFilePath = Helper::concatenationFilePath( outputFolderPath, outputFilePath );
+
+        MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_devFileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data_cache );
 
@@ -62,28 +70,28 @@ namespace Mengine
         size_t data_size = data_cache->getSize();
 
         MENGINE_ASSERTION_MEMORY_PANIC( data_memory, "invalid cache memory '%s'"
-            , full_inputFilePath.c_str()
+            , Helper::getContentFullPath( m_options.inputContent )
         );
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_devFileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open '%s'"
-            , full_outputFilePath.c_str()
+            , Helper::getContentFullPath( m_options.outputContent )
         );
 
         if( Helper::writeStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ), false, data_memory, data_size, EAC_BEST ) == false )
         {
             LOGGER_ERROR( "dazzle converter invalid write '%s'"
-                , full_outputFilePath.c_str()
+                , Helper::getContentFullPath( m_options.outputContent )
             );
 
             return false;
         }
 
-        if( Helper::closeOutputStreamFile( m_fileGroup, stream ) == false )
+        if( Helper::closeOutputStreamFile( m_devFileGroup, stream ) == false )
         {
             LOGGER_ERROR( "dazzle converter invalid close '%s'"
-                , full_outputFilePath.c_str()
+                , Helper::getContentFullPath( m_options.outputContent )
             );
 
             return false;

@@ -68,7 +68,7 @@ namespace Mengine
         bool finalizeModules() override;
 
     public:
-        void prefetchModules( const PrefetcherObserverInterfacePtr & _cb ) override;
+        void prefetchModules( const PrefetcherObserverInterfacePtr & _cb, const DocumentInterfacePtr & _doc ) override;
 
     protected:
         bool initializeModule_( const ScriptModulePackage & _pack );

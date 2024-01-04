@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/FileGroupInterface.h"
-
 #include "Kernel/BaseContent.h"
 #include "Kernel/FilePath.h"
 
@@ -16,6 +14,9 @@ namespace Mengine
     public:
         FileContent();
         ~FileContent() override;
+
+    public:
+        bool exist( bool _recursive ) const override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FileContent, ContentInterface> FileContentPtr;

@@ -84,7 +84,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
-        jpp::object loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
+        jpp::object loadJSONFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
         {
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
@@ -103,34 +103,34 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
-            jpp::object j = Helper::loadJSONStreamFromMemory( memory, _doc );
+            jpp::object j = Helper::loadJSONMemory( memory, _doc );
 
             return j;
         }
         //////////////////////////////////////////////////////////////////////////
-        jpp::object loadJSONStreamFromMemory( const MemoryInterfacePtr & _memory, const DocumentInterfacePtr & _doc )
+        jpp::object loadJSONMemory( const MemoryInterfacePtr & _memory, const DocumentInterfacePtr & _doc )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _memory );
 
             const void * memory_buffer = _memory->getBuffer();
             size_t memory_size = _memory->getSize();
 
-            jpp::object j = Helper::loadJSONStreamFromBuffer( memory_buffer, memory_size, _doc );
+            jpp::object j = Helper::loadJSONBuffer( memory_buffer, memory_size, _doc );
 
             return j;
         }
         //////////////////////////////////////////////////////////////////////////
-        jpp::object loadJSONStreamFromString( const String & _value, const DocumentInterfacePtr & _doc )
+        jpp::object loadJSONString( const String & _value, const DocumentInterfacePtr & _doc )
         {
             const String::value_type * value_buffer = _value.c_str();
             String::size_type value_size = _value.size();
 
-            jpp::object j = Helper::loadJSONStreamFromBuffer( value_buffer, value_size, _doc );
+            jpp::object j = Helper::loadJSONBuffer( value_buffer, value_size, _doc );
 
             return j;
         }
         //////////////////////////////////////////////////////////////////////////
-        jpp::object loadJSONStreamFromBuffer( const void * _buffer, size_t _size, const DocumentInterfacePtr & _doc )
+        jpp::object loadJSONBuffer( const void * _buffer, size_t _size, const DocumentInterfacePtr & _doc )
         {
             MENGINE_UNUSED( _doc );
 

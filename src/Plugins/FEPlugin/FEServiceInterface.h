@@ -16,7 +16,7 @@ namespace Mengine
         SERVICE_DECLARE( "FEService" )
 
     public:
-        virtual FontEffectInterfacePtr createFontEffect( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _name, uint32_t _sample ) = 0;
+        virtual FontEffectInterfacePtr createFontEffect( const ContentInterfacePtr & _content, const ConstString & _name, uint32_t _sample ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

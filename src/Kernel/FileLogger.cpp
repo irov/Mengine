@@ -7,6 +7,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/LoggerHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
 
@@ -21,41 +22,34 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void FileLogger::setFileGroup( const FileGroupInterfacePtr & _fileGroup )
+    void FileLogger::setContent( const ContentInterfacePtr & _content )
     {
-        m_fileGroup = _fileGroup;
+        m_content = _content;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FileGroupInterfacePtr & FileLogger::getFileGroup() const
+    const ContentInterfacePtr & FileLogger::getContent() const
     {
-        return m_fileGroup;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void FileLogger::setFilePath( const FilePath & _filePath )
-    {
-        m_filePath = _filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & FileLogger::getFilePath() const
-    {
-        return m_filePath;
+        return m_content;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileLogger::_initializeLogger()
     {
-        if( m_fileGroup == nullptr )
+        if( m_content == nullptr )
         {
-            LOGGER_ERROR( "invalid initialize file logger invalid file group" );
+            LOGGER_ERROR( "invalid initialize file logger invalid content" );
 
             return false;
         }
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, m_filePath, false, MENGINE_DOCUMENT_FACTORABLE );
+        const FileGroupInterfacePtr & fileGroup = m_content->getFileGroup();
+        const FilePath & filePath = m_content->getFilePath();
+
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( stream == nullptr )
         {
             LOGGER_ERROR( "invalid open file logger '%s'"
-                , Helper::getFileGroupFullPath( m_fileGroup, m_filePath )
+                , Helper::getContentFullPath( m_content )
             );
 
             return false;
@@ -72,11 +66,13 @@ namespace Mengine
         {
             m_stream->flush();
 
-            Helper::closeOutputStreamFile( m_fileGroup, m_stream );
+            const FileGroupInterfacePtr & fileGroup = m_content->getFileGroup();
+
+            Helper::closeOutputStreamFile( fileGroup, m_stream );
             m_stream = nullptr;
         }
 
-        m_fileGroup = nullptr;
+        m_content = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void FileLogger::_log( const LoggerMessage & _message )

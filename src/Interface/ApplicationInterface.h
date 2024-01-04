@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Config/Typedef.h"
-
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/VectorFilePath.h"

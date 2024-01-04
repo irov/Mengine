@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Config/Typedef.h"
-
 #include "Interface/Interface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/FactoryInterface.h"
+
+#include "Config/Typedef.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_DEBUG_FACTORY

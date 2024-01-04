@@ -126,7 +126,7 @@ namespace Mengine
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorVoid" ), _doc );
 
                 functor->setKernel( _kernel );
-                functor->setJavaFunctor( _obj );
+                functor->setJavaFunctor( _jenv, _obj );
 
                 PyObject * py_functor = pybind::ptr( _kernel, functor );
 
@@ -138,7 +138,7 @@ namespace Mengine
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ), _doc );
 
                 functor->setKernel( _kernel );
-                functor->setJavaFunctor( _obj );
+                functor->setJavaFunctor(  _jenv, _obj );
 
                 PyObject * py_functor = pybind::ptr( _kernel, functor );
 

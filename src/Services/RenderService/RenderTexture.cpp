@@ -51,7 +51,7 @@ namespace Mengine
     void RenderTexture::release()
     {
         m_image = nullptr;
-        m_fileGroup = nullptr;
+        m_content = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderImageInterfacePtr & RenderTexture::getImage() const
@@ -64,14 +64,14 @@ namespace Mengine
         return m_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTexture::setFileGroup( const FileGroupInterfacePtr & _fileGroup )
+    void RenderTexture::setContent( const ContentInterfacePtr & _content )
     {
-        m_fileGroup = _fileGroup;
+        m_content = _content;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTexture::setFilePath( const FilePath & _filePath )
+    const ContentInterfacePtr & RenderTexture::getContent() const
     {
-        m_filePath = _filePath;
+        return m_content;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t RenderTexture::getWidth() const

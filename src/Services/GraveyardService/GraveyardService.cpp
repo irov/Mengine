@@ -62,7 +62,7 @@ namespace Mengine
         {
             m_count--;
 
-            entry.fileGroup = nullptr;
+            entry.content = nullptr;
             entry.image = nullptr;
         }
 
@@ -101,8 +101,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GraveyardService::buryTexture( RenderTextureInterface * _texture )
     {
-        const FileGroupInterfacePtr & fileGroup = _texture->getFileGroup();
-        const FilePath & filePath = _texture->getFilePath();
+        const ContentInterfacePtr & content = _texture->getContent();
+
+        const FilePath & filePath = content->getFilePath();
 
         if( filePath.empty() == true )
         {
@@ -118,8 +119,7 @@ namespace Mengine
 
         RenderTextureGraveEntry entry;
 
-        entry.fileGroup = fileGroup;
-        entry.filePath = filePath;
+        entry.content = content;
 
         entry.image = _texture->getImage();
         entry.width = _texture->getWidth();
@@ -132,9 +132,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr GraveyardService::resurrectTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
+    RenderTextureInterfacePtr GraveyardService::resurrectTexture( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
-        if( _filePath.empty() == true )
+        const FilePath & filePath = _content->getFilePath();
+
+        if( filePath.empty() == true )
         {
             return nullptr;
         }
@@ -144,19 +146,9 @@ namespace Mengine
             return nullptr;
         }
 
-        VectorTextureGrave::iterator it_found = Algorithm::find_if( m_textures.begin(), m_textures.end(), [&_fileGroup, &_filePath]( const RenderTextureGraveEntry & _entry )
+        VectorTextureGrave::iterator it_found = Algorithm::find_if( m_textures.begin(), m_textures.end(), [_content]( const RenderTextureGraveEntry & _entry )
         {
-            if( _entry.fileGroup != _fileGroup )
-            {
-                return false;
-            }
-
-            if( _entry.filePath != _filePath )
-            {
-                return false;
-            }
-
-            return true;
+            return _entry.content == _content;
         } );
 
         if( it_found == m_textures.end() )

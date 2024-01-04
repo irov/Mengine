@@ -33,16 +33,25 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool VideoConverterFFMPEGToOGVA::convert()
     {
+        const FileGroupInterfacePtr & inputFileGroup = m_options.inputContent->getFileGroup();
+        const FilePath & inputFilePath = m_options.inputContent->getFilePath();
+
+        const FileGroupInterfacePtr & outputFileGroup = m_options.outputContent->getFileGroup();
+        const FilePath & outputFilePath = m_options.outputContent->getFilePath();
+
+        const FilePath & inputFolderPath = inputFileGroup->getFolderPath();
+        const FilePath & outputFolderPath = outputFileGroup->getFolderPath();
+
         Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
-        const ConstString & folderPath = m_options.fileGroup->getFolderPath();
+        String full_input;
+        full_input.append( inputFolderPath.c_str() );
+        full_input.append( inputFilePath.c_str() );
 
-        String full_input = folderPath.c_str();
-        full_input += m_options.inputFilePath.c_str();
-
-        String full_output = folderPath.c_str();
-        full_output += m_options.outputFilePath.c_str();
+        String full_output;
+        full_output.append( outputFolderPath.c_str() );
+        full_output.append( outputFilePath.c_str() );
 
         String quality = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "quality" ), "" );
 

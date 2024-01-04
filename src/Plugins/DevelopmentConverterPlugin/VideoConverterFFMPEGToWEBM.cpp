@@ -33,16 +33,23 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool VideoConverterFFMPEGToWEBM::convert()
     {
+        const FileGroupInterfacePtr & inputFileGroup = m_options.inputContent->getFileGroup();
+        const FilePath & inputFilePath = m_options.inputContent->getFilePath();
+
+        const FileGroupInterfacePtr & outputFileGroup = m_options.outputContent->getFileGroup();
+        const FilePath & outputFilePath = m_options.outputContent->getFilePath();
+
+        const FilePath & inputFolderPath = inputFileGroup->getFolderPath();
+        const FilePath & outputFolderPath = outputFileGroup->getFolderPath();
+
         Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
-        const ConstString & folderPath = m_options.fileGroup->getFolderPath();
+        String full_input = inputFolderPath.c_str();
+        full_input += inputFilePath.c_str();
 
-        String full_input = folderPath.c_str();
-        full_input += m_options.inputFilePath.c_str();
-
-        String full_output = folderPath.c_str();
-        full_output += m_options.outputFilePath.c_str();
+        String full_output = outputFolderPath.c_str();
+        full_output += outputFilePath.c_str();
 
         String buffer = "-loglevel error -y -i \"" + full_input + "\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 8 -max_muxing_queue_size 1024 \"" + full_output + "\"";
 

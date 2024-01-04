@@ -69,6 +69,10 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             return;
         }
 
+        if (m_plugin.hasOption("applovin.interstitial.no_load") == true) {
+            return;
+        }
+
         this.increaseRequestId();
 
         this.log("loadAd");

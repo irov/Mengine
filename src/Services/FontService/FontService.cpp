@@ -23,6 +23,7 @@
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -176,13 +177,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FontService::loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    bool FontService::loadFonts( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _fileGroup, _filePath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ->loadConfig( _content, ConstString::none(), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
-            , _filePath.c_str()
+            , Helper::getContentFullPath( _content )
         );
 
         VectorConstString glyphs;
@@ -202,10 +203,12 @@ namespace Mengine
         }
 #endif
 
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+
         for( const ConstString & glyphName : glyphs )
         {
             MENGINE_ASSERTION_FATAL( config->hasSection( glyphName.c_str() ) == true, "invalid '%s' section for [Glyph] '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
                 , glyphName.c_str()
             );
 
@@ -213,24 +216,24 @@ namespace Mengine
             config->hasValue( glyphName.c_str(), "Type", ConstString::none(), &glyphType );
 
             MENGINE_ASSERTION_FATAL( glyphType != ConstString::none(), "config '%s' font glyph '%s' not setup [Type]"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
                 , glyphName.c_str()
             );
 
             FontGlyphInterfacePtr glyph = this->createGlyph( glyphName, glyphType, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( glyph, "invalid create '%s' glyph '%s' not found type '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
                 , glyphName.c_str()
                 , glyphType.c_str()
             );
 
             ConfigLoaderInterfacePtr configLoader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FontGlyphConfigLoader" ), glyphType );
 
-            if( configLoader->load( glyph, _fileGroup, config ) == false )
+            if( configLoader->load( glyph, fileGroup, config, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s' glyph '%s' type '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _content )
                     , glyphName.c_str()
                     , glyphType.c_str()
                 );
@@ -241,7 +244,7 @@ namespace Mengine
             if( glyph->initialize() == false )
             {
                 LOGGER_ERROR( "invalid initialize '%s' glyph '%s' type '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _content )
                     , glyphName.c_str()
                     , glyphType.c_str()
                 );
@@ -266,7 +269,7 @@ namespace Mengine
         for( const ConstString & fontName : fonts )
         {
             MENGINE_ASSERTION_FATAL( config->hasSection( fontName.c_str() ) == true, "invalid '%s' section for [Font] '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
                 , fontName.c_str()
             );
 
@@ -274,24 +277,24 @@ namespace Mengine
             config->hasValue( fontName.c_str(), "Type", ConstString::none(), &fontType );
 
             MENGINE_ASSERTION_FATAL( fontType != ConstString::none(), "config '%s' font '%s' not setup [Type]"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
                 , fontName.c_str()
             );
 
             FontInterfacePtr font = this->createFont( fontName, fontType, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( font, "invalid create '%s' font '%s' not found type '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
                 , fontName.c_str()
                 , fontType.c_str()
             );
 
             ConfigLoaderInterfacePtr fontConfigLoader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FontConfigLoader" ), fontType );
 
-            if( fontConfigLoader->load( font, _fileGroup, config ) == false )
+            if( fontConfigLoader->load( font, fileGroup, config, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s' font '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _content )
                     , fontName.c_str()
                 );
 
@@ -301,7 +304,7 @@ namespace Mengine
             if( font->initialize() == false )
             {
                 LOGGER_ERROR( "invalid initialize '%s' font '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _content )
                     , fontName.c_str()
                 );
 
@@ -327,7 +330,7 @@ namespace Mengine
                 if( fontValidator->validate( font ) == false )
                 {
                     LOGGER_ERROR( "invalid initialize '%s' font '%s' type '%s' invalidate!"
-                        , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                        , Helper::getContentFullPath( _content )
                         , font->getName().c_str()
                         , fontType.c_str()
                     );
@@ -362,13 +365,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FontService::unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    bool FontService::unloadFonts( const ContentInterfacePtr & _content )
     {
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _fileGroup, _filePath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ->loadConfig( _content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
-            , _filePath.c_str()
+            , Helper::getContentFullPath( _content )
         );
 
 #ifndef MENGINE_MASTER_RELEASE
@@ -393,7 +396,7 @@ namespace Mengine
             if( config->hasSection( glyphName.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid '%s' section for [Glyph] '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _content )
                     , glyphName.c_str()
                 );
 
@@ -427,7 +430,7 @@ namespace Mengine
             if( config->hasSection( fontName.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid '%s' section for [Font] '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getContentFullPath( _content )
                     , fontName.c_str()
                 );
 

@@ -8,6 +8,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -18,16 +19,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadTaskPrefetchDataflow::~ThreadTaskPrefetchDataflow()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPrefetchDataflow::setDataflow( const DataflowInterfacePtr & _dataflow )
-    {
-        m_dataflow = _dataflow;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const DataflowInterfacePtr & ThreadTaskPrefetchDataflow::getDataflow() const
-    {
-        return m_dataflow;
     }
     //////////////////////////////////////////////////////////////////////////
     const DataInterfacePtr & ThreadTaskPrefetchDataflow::getData() const
@@ -47,8 +38,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetchDataflow::_finalize()
     {
-        m_dataflow = nullptr;
-
         m_data = nullptr;
         m_memory = nullptr;
     }
@@ -60,18 +49,23 @@ namespace Mengine
             return false;
         }
 
-        InputStreamInterfacePtr stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
+        const FileGroupInterfacePtr & fileGroup = m_content->getFileGroup();
+        const FilePath & filePath = m_content->getFilePath();
+
+        InputStreamInterfacePtr stream = fileGroup->createInputFile( filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create dataflow file '%s'"
-            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+            , Helper::getContentFullPath( m_content )
         );
 
         m_stream = stream;
 
-        DataInterfacePtr data = m_dataflow->create( MENGINE_DOCUMENT_FACTORABLE );
+        const DataflowInterfacePtr & dataflow = m_content->getDataflow();
+
+        DataInterfacePtr data = dataflow->create( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, "dataflow file '%s' invalid create data"
-            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+            , Helper::getContentFullPath( m_content )
         );
 
         m_data = data;
@@ -81,31 +75,35 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetchDataflow::_onThreadTaskProcess()
     {
-        LOGGER_INFO("prefetch", "prefetch dataflow file '%s'"
-            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+        LOGGER_INFO( "prefetch", "prefetch dataflow file '%s'"
+            , Helper::getContentFullPath( m_content )
         );
-        
-        if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, MENGINE_UNKNOWN_SIZE, false, false ) == false )
+
+        const FilePath & filePath = m_content->getFilePath();
+
+        if( m_realFileGroup->openInputFile( filePath, m_stream, 0, MENGINE_UNKNOWN_SIZE, false, false ) == false )
         {
             LOGGER_ERROR( "invalid open file '%s'"
-                , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+                , Helper::getContentFullPath( m_content )
             );
 
             return false;
         }
 
-        MemoryInterfacePtr memory = m_dataflow->load( m_stream, MENGINE_DOCUMENT_FACTORABLE );
+        const DataflowInterfacePtr & dataflow = m_content->getDataflow();
+
+        MemoryInterfacePtr memory = dataflow->load( m_stream, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid load file '%s'"
-            , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+            , Helper::getContentFullPath( m_content )
         );
 
-        if( m_dataflow->isThreadFlow() == true )
+        if( dataflow->isThreadFlow() == true )
         {
-            if( m_dataflow->flow( m_data, memory, &m_context, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            if( dataflow->flow( m_data, memory, &m_context, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid flow file '%s'"
-                    , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+                    , Helper::getContentFullPath( m_content )
                 );
 
                 return false;
@@ -121,14 +119,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetchDataflow::_onThreadTaskComplete( bool _successful )
     {
-        if( m_dataflow->isThreadFlow() == false && _successful == true )
+        const DataflowInterfacePtr & dataflow = m_content->getDataflow();
+
+        if( dataflow->isThreadFlow() == false && _successful == true )
         {
             MemoryInterfacePtr memory = std::move( m_memory );
 
-            if( m_dataflow->flow( m_data, memory, &m_context, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            if( dataflow->flow( m_data, memory, &m_context, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid flow file '%s'"
-                     , Helper::getFileGroupFullPath( this->getFileGroup(), this->getFilePath() )
+                    , Helper::getContentFullPath( m_content )
                 );
 
                 return;
@@ -136,8 +136,6 @@ namespace Mengine
         }
 
         ThreadTaskPrefetch::_onThreadTaskComplete( _successful );
-
-        m_dataflow = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
 }

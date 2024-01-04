@@ -8,6 +8,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -43,9 +44,11 @@ namespace Mengine
         m_settings.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SettingsService::loadSetting( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
+    bool SettingsService::loadSetting( const ConstString & _name, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
-        ConstString filePathExt = Helper::getFilePathExt( _filePath );
+        const FilePath & filePath = _content->getFilePath();
+
+        ConstString filePathExt = Helper::getFilePathExt( filePath );
 
         PrototypeGeneratorInterfacePtr generator;
         if( PROTOTYPE_SERVICE()
@@ -53,7 +56,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "setting '%s' file '%s' not found ext '%s' generator"
                 , _name.c_str()
-                , _filePath.c_str()
+                , Helper::getContentFullPath( _content )
                 , filePathExt.c_str()
             );
 
@@ -64,7 +67,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( setting );
 
-        if( setting->initialize( _fileGroup, _filePath, _doc ) == false )
+        if( setting->initialize( _content, _doc ) == false )
         {
             return false;
         }
@@ -88,17 +91,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SettingsService::loadSettings( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc )
+    bool SettingsService::loadSettings( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "settings", "load settings... '%s'"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            , Helper::getContentFullPath( _content )
         );
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _fileGroup, _filePath, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            ->loadConfig( _content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
-            , _filePath.c_str()
+            , Helper::getContentFullPath( _content )
         );
 
         VectorString settingSettings;
@@ -113,7 +116,7 @@ namespace Mengine
             if( config->hasSection( setting.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s' settings no found section for '%s'"
-                    , _filePath.c_str()
+                    , Helper::getContentFullPath( _content )
                     , setting.c_str()
                 );
 
@@ -125,7 +128,11 @@ namespace Mengine
             config->hasValue( setting.c_str(), "Name", ConstString::none(), &name );
             config->hasValue( setting.c_str(), "Path", FilePath::none(), &filePath );
 
-            if( this->loadSetting( name, _fileGroup, filePath, _doc ) == false )
+            const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+
+            ContentInterfacePtr settingContent = Helper::makeFileContent( fileGroup, filePath, _doc );
+
+            if( this->loadSetting( name, settingContent, _doc ) == false )
             {
                 LOGGER_ERROR( "invalid load setting '%s' file '%s'"
                     , name.c_str()

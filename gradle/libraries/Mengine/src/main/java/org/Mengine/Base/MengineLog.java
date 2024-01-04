@@ -42,16 +42,16 @@ public class MengineLog {
         MengineLog.m_initializeBaseServices = true;
 
         synchronized (MengineLog.m_lock) {
-            for (HistoryRecord record : m_history) {
+            for (HistoryRecord record : MengineLog.m_history) {
                 AndroidEnvironmentService_log(record.level, record.tag, record.message);
 
                 if (record.application == null) {
                     MengineLog.m_application.onMengineLogger(record.level, record.tag, record.message);
                 }
             }
-        }
 
-        m_history.clear();
+            m_history.clear();
+        }
     }
 
     public static void onMenginePlatformStop(MengineActivity activity) {

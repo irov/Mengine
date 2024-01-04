@@ -16,7 +16,27 @@ public class MengineLauncher extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        MengineApplication application = (MengineApplication)this.getApplication();
+        MengineApplication application;
+
+        try {
+            application = (MengineApplication) this.getApplication();
+        } catch (ClassCastException e) {
+            MengineUtils.finishActivityWithAlertDialog(this, "[ERROR] onCreate invalid application ClassCastException: %s"
+                , e.getMessage()
+            );
+
+            return;
+        }
+
+        if (application.isInvalidInitialize() == true) {
+            String reason = application.getInvalidInitializeReason();
+
+            MengineUtils.finishActivityWithAlertDialog(this, "[ERROR] onCreate invalid application initialize: %s"
+                , reason
+            );
+
+            return;
+        }
 
         String[] activities = application.getAndroidActivities();
 

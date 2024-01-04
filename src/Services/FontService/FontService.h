@@ -34,8 +34,8 @@ namespace Mengine
         bool removeFont( const ConstString & _fontName ) override;
 
     public:
-        bool loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
-        bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
+        bool loadFonts( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) override;
+        bool unloadFonts( const ContentInterfacePtr & _content ) override;
 
     public:
         bool existFont( const ConstString & _fontName, FontInterfacePtr * const _font ) const override;

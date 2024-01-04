@@ -8,6 +8,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/DocumentableHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -86,19 +87,15 @@ namespace Mengine
 
         const ContentInterfacePtr & content = this->getContent();
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-        const ConstString & codecType = content->getCodecType();
-
         SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE()
-            ->createSoundBufferFromFile( fileGroup, filePath, codecType, m_isStreamable, _doc );
+            ->createSoundBufferFromFile( content, m_isStreamable, _doc );
 
         if( soundBuffer == nullptr )
         {
             LOGGER_ERROR( "resource sound '%s' group '%s' can't load sound '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
-                , this->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( this->getContent() )
             );
 
             return nullptr;

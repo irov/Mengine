@@ -10,6 +10,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -110,7 +111,7 @@ namespace Mengine
                 LOGGER_ERROR( "resource video '%s' group '%s' invalid rewind cache video decoder for file '%s'"
                     , this->getName().c_str()
                     , this->getGroupName().c_str()                    
-                    , this->getContent()->getFilePath().c_str()
+                    , Helper::getContentFullPath( this->getContent() )
                 );
 
                 return nullptr;
@@ -129,7 +130,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( videoStream, "group '%s' name '%s' can't open video file '%s'"
             , this->getGroupName().c_str()
             , this->getName().c_str()
-            , this->getContent()->getFilePath().c_str()
+            , Helper::getContentFullPath( this->getContent() )
         );
 
         const ConstString & codecType = content->getCodecType();
@@ -140,7 +141,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( videoDecoder, "group '%s' name '%s' can't create video decoder for file '%s'"
             , this->getGroupName().c_str()
             , this->getName().c_str()
-            , this->getContent()->getFilePath().c_str()
+            , Helper::getContentFullPath( this->getContent() )
         );
 
         if( videoDecoder->prepareData( videoStream ) == false )
@@ -148,7 +149,7 @@ namespace Mengine
             LOGGER_ERROR( "resource video '%s' group '%s' can't initialize video decoder for file '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()                
-                , this->getContent()->getFilePath().c_str()
+                , Helper::getContentFullPath( this->getContent() )
             );
 
             return nullptr;

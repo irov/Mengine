@@ -20,7 +20,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        BitmapFontGlyphDescriptionPtr createGlyphDescription( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc ) override;
+        BitmapFontGlyphDescriptionPtr createGlyphDescription( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) override;
 
     protected:
         FactoryInterfacePtr m_factoryBitmapFontSymbols;

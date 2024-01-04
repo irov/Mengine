@@ -39,10 +39,9 @@ namespace Mengine
         return m_dataflow;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptModuleLoader::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    bool PythonScriptModuleLoader::initialize( const ContentInterfacePtr & _content )
     {
-        m_fileGroup = _fileGroup;
-        m_filePath = _filePath;
+        m_content = _content;
 
         return true;
     }
@@ -50,7 +49,7 @@ namespace Mengine
     void PythonScriptModuleLoader::finalize()
     {
         m_dataflow = nullptr;
-        m_fileGroup = nullptr;
+        m_content = nullptr;
 
         if( m_kernel != nullptr )
         {
@@ -66,10 +65,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * PythonScriptModuleLoader::load_module( pybind::kernel_interface * _kernel, PyObject * _moduleName )
     {
-        DataflowContext context;
-        context.filePath = m_filePath;
+        const FilePath & filePath = m_content->getFilePath();
 
-        ScriptCodeDataInterfacePtr codeData = Helper::popDataflow( m_fileGroup, m_filePath, m_dataflow, &context, MENGINE_DOCUMENT_FACTORABLE );
+        DataflowContext context;
+        context.filePath = filePath;
+
+        ScriptCodeDataInterfacePtr codeData = Helper::popDataflow( m_content, m_dataflow, &context, MENGINE_DOCUMENT_FACTORABLE );
 
         if( codeData == nullptr )
         {

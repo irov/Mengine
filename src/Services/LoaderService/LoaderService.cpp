@@ -20,6 +20,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #ifndef MENGINE_MASTER_RELEASE
 #   include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
@@ -83,26 +84,29 @@ namespace Mengine
         return m_protocolPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::load( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _exist ) const
+    bool LoaderService::load( const ContentInterfacePtr & _content, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _exist, const DocumentInterfacePtr & _doc ) const
     {
         LOGGER_INFO( "loader", "load bin '%s'"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+            , Helper::getContentFullPath( _content )
         );
 
-        if( _filePath.empty() == true )
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
+
+        if( filePath.empty() == true )
         {
             LOGGER_ERROR( "invalid open bin '%s' path is empty"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
             );
 
             return false;
         }
 
         InputStreamInterfacePtr file_bin;
-        if( this->openBin_( _fileGroup, _filePath, &file_bin, _exist ) == false )
+        if( this->openBin_( _content, &file_bin, _exist, _doc ) == false )
         {
             LOGGER_ERROR( "invalid open bin '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getContentFullPath( _content )
             );
 
             return false;
@@ -111,7 +115,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( file_bin );
 
         bool reimport = false;
-        bool done = this->importBin_( file_bin, _metadata, _metaVersion, &reimport );
+        bool done = this->importBin_( file_bin, _metadata, _metaVersion, &reimport, _doc );
 
 #ifndef MENGINE_MASTER_RELEASE
         if( reimport == true )
@@ -119,33 +123,38 @@ namespace Mengine
             file_bin = nullptr;
 
             PathString cache_path_xml;
-            cache_path_xml += _filePath;
+            cache_path_xml += filePath;
             cache_path_xml.replace_last( "xml" );
 
-            ConstString c_cache_path_xml = Helper::stringizeStringSize( cache_path_xml.c_str(), cache_path_xml.size() );
+            FilePath c_cache_path_xml = Helper::stringizeFilePath( cache_path_xml );
 
-            if( this->makeBin_( _fileGroup, FilePath( c_cache_path_xml ), _filePath ) == false )
+            ContentInterfacePtr content_xml = Helper::makeFileContent( fileGroup, c_cache_path_xml, _doc );
+
+            if( this->makeBin_( content_xml, filePath ) == false )
             {
                 LOGGER_ERROR( "invalid rebuild bin '%s' from xml '%s'"
-                    , _filePath.c_str()
-                    , c_cache_path_xml.c_str()
+                    , Helper::getContentFullPath( _content )
+                    , Helper::getContentFullPath( content_xml )
                 );
 
                 return false;
             }
 
-            file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+            file_bin = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-            done = this->importBin_( file_bin, _metadata, _metaVersion, nullptr );
+            done = this->importBin_( file_bin, _metadata, _metaVersion, nullptr, _doc );
         }
 #endif
 
         return done;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::validation( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, uint32_t _metaVersion ) const
+    bool LoaderService::validation( const ContentInterfacePtr & _content, uint32_t _metaVersion ) const
     {
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
+
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( stream == nullptr )
         {
@@ -180,7 +189,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _reimport ) const
+    bool LoaderService::importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _reimport, const DocumentInterfacePtr & _doc ) const
     {
         size_t size = _stream->size();
 
@@ -238,7 +247,7 @@ namespace Mengine
         uint32_t compress_size;
         _stream->read( &compress_size, sizeof( compress_size ) );
 
-        MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( bin_size, MENGINE_DOCUMENT_FACTORABLE );
+        MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( bin_size, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer );
 
@@ -319,26 +328,30 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_MASTER_RELEASE
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::openBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, InputStreamInterfacePtr * const _stream, bool * const _exist ) const
+    bool LoaderService::openBin_( const ContentInterfacePtr & _content, InputStreamInterfacePtr * const _stream, bool * const _exist, const DocumentInterfacePtr & _doc ) const
     {
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
+
         PathString cache_path_xml;
-        cache_path_xml += _filePath;
+        cache_path_xml += filePath;
         cache_path_xml.replace_last( "xml" );
 
         FilePath c_cache_path_xml = Helper::stringizeFilePath( cache_path_xml );
 
-        if( _fileGroup->existFile( c_cache_path_xml, true ) == false )
+        if( fileGroup->existFile( c_cache_path_xml, true ) == false )
         {
-            if( _fileGroup->existFile( _filePath, true ) == false )
+            if( _content->exist( true ) == false )
             {
                 *_exist = false;
 
                 return false;
             }
 
-            InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+            InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( fileGroup, filePath, false, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( file_bin );
 
@@ -349,19 +362,21 @@ namespace Mengine
 
         *_exist = true;
 
-        if( _fileGroup->existFile( _filePath, true ) == false )
+        if( _content->exist( true ) == false )
         {
-            if( this->makeBin_( _fileGroup, c_cache_path_xml, _filePath ) == false )
+            ContentInterfacePtr content_xml = Helper::makeFileContent( fileGroup, c_cache_path_xml, _doc );
+
+            if( this->makeBin_( content_xml, filePath ) == false )
             {
                 return false;
             }
         }
 
-        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( fileGroup, filePath, false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file_bin );
 
-        InputStreamInterfacePtr file_xml = Helper::openInputStreamFile( _fileGroup, c_cache_path_xml, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr file_xml = Helper::openInputStreamFile( fileGroup, c_cache_path_xml, false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file_xml );
 
@@ -378,14 +393,16 @@ namespace Mengine
             //Rebuild bin file from xml
             file_bin = nullptr;
 
-            if( this->makeBin_( _fileGroup, c_cache_path_xml, _filePath ) == false )
+            ContentInterfacePtr content_xml = Helper::makeFileContent( fileGroup, c_cache_path_xml, _doc );
+
+            if( this->makeBin_( content_xml, filePath ) == false )
             {
                 *_stream = nullptr;
 
                 return false;
             }
 
-            file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+            file_bin = Helper::openInputStreamFile( fileGroup, filePath, false, false, _doc );
         }
 
         *_stream = file_bin;
@@ -393,19 +410,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::makeBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePathXml, const FilePath & _pathBin ) const
+    bool LoaderService::makeBin_( const ContentInterfacePtr & _content, const FilePath & _pathBin ) const
     {
         XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoder( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder xml2bin for '%s'"
-            , Helper::getFileGroupFullPath( _fileGroup, _filePathXml )
+            , Helper::getContentFullPath( _content )
         );
 
         if( decoder->prepareData( nullptr ) == false )
         {
             LOGGER_ERROR( "invalid initialize decoder xml2bin for '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePathXml )
+                , Helper::getContentFullPath( _content )
             );
 
             return false;
@@ -416,9 +433,12 @@ namespace Mengine
         data.size = 0;
         data.pathProtocol = m_protocolPath;
 
-        const FilePath & folderPath = _fileGroup->getFolderPath();
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
 
-        data.pathXml = Helper::concatenationFilePath( folderPath, _filePathXml );
+        const FilePath & folderPath = fileGroup->getFolderPath();
+
+        data.pathXml = Helper::concatenationFilePath( folderPath, filePath );
         data.pathBin = Helper::concatenationFilePath( folderPath, _pathBin );
 
         data.useProtocolVersion = Metacode::get_metacode_protocol_version();
@@ -427,7 +447,7 @@ namespace Mengine
         if( decoder->decode( &data ) == 0 )
         {
             LOGGER_ERROR( "invalid make bin for '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePathXml )
+                , Helper::getContentFullPath( _content )
             );
 
             return false;
@@ -437,16 +457,19 @@ namespace Mengine
     }
 #else
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::openBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, InputStreamInterfacePtr * const _stream, bool * const _exist ) const
+    bool LoaderService::openBin_( const ContentInterfacePtr & _content, InputStreamInterfacePtr * const _stream, bool * const _exist ) const
     {
-        if( _fileGroup->existFile( _filePath, true ) == false )
+        if( _content->exist( true ) == false )
         {
             *_exist = false;
 
             return false;
         }
 
-        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
+        const FilePath & filePath = _content->getFilePath();
+
+        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file_bin );
 

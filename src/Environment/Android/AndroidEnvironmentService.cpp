@@ -743,7 +743,7 @@ namespace Mengine
 
         Timestamp eventTimestamp = _event->getTimestamp();
 
-        jobject bases_jobject = Helper::makeJObjectHashMap(jenv, 0 );
+        jobject bases_jobject = Helper::makeJObjectHashMap( jenv, 0 );
 
         uint32_t countParameters = _event->getCountParameters();
 
@@ -789,8 +789,8 @@ namespace Mengine
                    }break;
                case EAEPT_CONSTSTRING:
                    {
-                       AnalyticsEventParameterConstStringInterfacePtr parameter_string = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
-                       const ConstString & parameter_value = parameter_string->resolveValue();
+                       AnalyticsEventParameterConstStringInterfacePtr parameter_conststring = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
+                       const ConstString & parameter_value = parameter_conststring->resolveValue();
 
                        parameter_jobject = Helper::makeJObjectString( jenv, parameter_value );
                    }break;

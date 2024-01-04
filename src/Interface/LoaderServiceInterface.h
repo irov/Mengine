@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 #include "Interface/MetabufLoaderInterface.h"
 
 #include "Kernel/ConstString.h"
@@ -25,8 +25,8 @@ namespace Mengine
         virtual const FilePath & getProtocolPath() const = 0;
 
     public:
-        virtual bool load( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _exist ) const = 0;
-        virtual bool validation( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, uint32_t _metaVersion ) const = 0;
+        virtual bool load( const ContentInterfacePtr & _content, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _exist, const DocumentInterfacePtr & _doc ) const = 0;
+        virtual bool validation( const ContentInterfacePtr & _content, uint32_t _metaVersion ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

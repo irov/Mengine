@@ -16,7 +16,7 @@ namespace Mengine
         ~TTFFontGlyphConfigLoader() override;
 
     protected:
-        bool load( const FactorablePtr & _factorable, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config ) override;
+        bool load( const FactorablePtr & _factorable, const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config, const DocumentInterfacePtr & _doc ) override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<TTFFontGlyphConfigLoader, ConfigLoaderInterface> TTFFontGlyphConfigLoaderPtr;

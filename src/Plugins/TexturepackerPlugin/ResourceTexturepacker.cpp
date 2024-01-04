@@ -19,6 +19,7 @@
 #include "Kernel/ResourceImageSubstract.h"
 #include "Kernel/TextureHelper.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
 
@@ -243,13 +244,11 @@ namespace Mengine
             const FileGroupInterfacePtr & fileGroup = json_content->getFileGroup();
             const FilePath & filePath = json_content->getFilePath();
 
-            ContentInterfacePtr resource_content = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FileContent" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-
             FilePath newFilePath = Helper::replaceFileSpec( filePath, j_meta_image );
 
-            resource_content->setFileGroup( fileGroup );
-            resource_content->setFilePath( newFilePath );
+            ContentInterfacePtr resource_content = Helper::makeFileContent( fileGroup, newFilePath, MENGINE_DOCUMENT_FACTORABLE );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( resource_content );
 
             const ConstString & codecType = CODEC_SERVICE()
                 ->findCodecType( newFilePath );

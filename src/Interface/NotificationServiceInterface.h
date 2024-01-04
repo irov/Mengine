@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Config/Typedef.h"
 #include "Config/Lambda.h"
 
 #include "Interface/ServiceInterface.h"

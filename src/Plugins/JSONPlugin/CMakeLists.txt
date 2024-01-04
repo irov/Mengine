@@ -8,6 +8,12 @@ src
     JSONPlugin.cpp
     JSONPlugin.def
     
+    JSONService.h
+    JSONService.cpp
+    
+    JSONPackageLoader.h
+    JSONPackageLoader.cpp
+    
     ResourceJSON.cpp
     ResourceJSON.h
 

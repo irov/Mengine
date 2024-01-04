@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ServantInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/Color.h"
 #include "Kernel/ConstString.h"
@@ -17,12 +17,11 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool initialize( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) = 0;
         virtual void finalize() = 0;
 
     public:
-        virtual const FileGroupInterfacePtr & getFileGroup() const = 0;
-        virtual const FilePath & getFilePath() const = 0;
+        virtual const ContentInterfacePtr & getContent() const = 0;
 
     public:
         virtual bool getValue( const Char * _key, bool _default ) const = 0;

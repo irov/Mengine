@@ -3,7 +3,7 @@
 #include "cURLHttpRequestThreadTask.h"
 
 #include "Interface/OutputStreamInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 
 namespace Mengine
 {
@@ -18,7 +18,7 @@ namespace Mengine
         ~cURLHttpRequestGetAssetThreadTask() override;
 
     public:
-        bool initialize( const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath, const FilePath & _filePathTemp );
+        bool initialize( const String & _login, const String & _password, const ContentInterfacePtr & _content, const FilePath & _filePathTemp );
 
     protected:
         bool _onThreadTaskRun() override;
@@ -32,8 +32,7 @@ namespace Mengine
     protected:
         String m_login;
         String m_password;
-        FileGroupInterfacePtr m_fileGroup;
-        FilePath m_filePath;
+        ContentInterfacePtr m_content;
         FilePath m_filePathTemp;
 
         OutputStreamInterfacePtr m_stream;

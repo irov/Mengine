@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import androidx.core.content.res.ResourcesCompat;
 
 import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -39,31 +39,26 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         public String url;
     }
 
-    protected List<NonetBanner> m_nonetBanners;
+    protected List<NonetBanner> m_banners;
 
     protected NonetBanner m_showBanner;
 
     protected Timer m_refreshTimer;
 
-    public MengineAppLovinNonetBanners() {
-    }
-
     @Override
-    public void initializeNonetBanners(MengineActivity activity, MengineAppLovinPlugin plugin) {
+    public void initializeNonetBanners(MengineActivity activity, MengineAppLovinPlugin plugin) throws MenginePluginInvalidInitializeException {
         m_plugin = plugin;
 
-        m_nonetBanners = new ArrayList<>();
+        m_banners = new ArrayList<>();
 
         m_visible = false;
         m_requestId = 0;
 
-        int MengineAppLovinPlugin_NonetBannerDurationTime = plugin.getMetaDataInteger(PLUGIN_METADATA_NONET_BANNER_DURATION_TIME);
+        Resources resources = activity.getResources();
+
+        int MengineAppLovinPlugin_NonetBannerDurationTime = resources.getInteger(R.integer.mengine_applovin_nonet_banner_duration_time);
 
         m_showBannerDurationTime = MengineAppLovinPlugin_NonetBannerDurationTime;
-
-        MengineApplication application = m_plugin.getMengineApplication();
-
-        Resources resources = activity.getResources();
 
         try {
             XmlResourceParser parser = resources.getXml(R.xml.nonet_banners);
@@ -101,17 +96,16 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             e.printStackTrace();
         }
 
-        if (m_nonetBanners.isEmpty() == true) {
+        if (m_banners.isEmpty() == true) {
             return;
         }
 
-        Timer refreshTimer = m_plugin.scheduleAtFixedRate(m_showBannerDurationTime * 1000, new Runnable() {
+        Timer refreshTimer = m_plugin.scheduleAtFixedRate(m_showBannerDurationTime, new Runnable() {
             @Override
             public void run() {
                 int refreshRequestId;
                 String oldBanenrUrl;
                 String newBannerUrl;
-
 
                 synchronized (MengineAppLovinNonetBanners.this) {
                     if (m_showBanner == null) {
@@ -196,13 +190,15 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         banner.view = view;
         banner.url = url;
 
-        m_nonetBanners.add(banner);
+        m_banners.add(banner);
     }
 
     @Override
     public void finalizeNonetBanners(MengineActivity activity, MengineAppLovinPlugin plugin) {
-        m_plugin = null;
-        m_nonetBanners = null;
+        if (m_refreshTimer != null) {
+            m_refreshTimer.cancel();
+            m_refreshTimer = null;
+        }
 
         synchronized (this) {
             if (m_showBanner != null) {
@@ -213,26 +209,23 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             }
         }
 
-        if (m_refreshTimer != null) {
-            m_refreshTimer.cancel();
-            m_refreshTimer = null;
-        }
+        m_plugin = null;
+        m_banners = null;
     }
 
     protected NonetBanner getCurrentBanner() {
         long timestamp = MengineUtils.getTimestamp();
-        timestamp /= 1000;
         timestamp /= m_showBannerDurationTime;
 
-        int index = (int)timestamp % m_nonetBanners.size();
-        NonetBanner banner = m_nonetBanners.get(index);
+        int index = (int)timestamp % m_banners.size();
+        NonetBanner banner = m_banners.get(index);
 
         return banner;
     }
 
     @Override
     public void show() {
-        if (m_nonetBanners.isEmpty() == true) {
+        if (m_banners.isEmpty() == true) {
             return;
         }
 
@@ -272,7 +265,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
     @Override
     public void hide() {
-        if (m_nonetBanners.isEmpty() == true) {
+        if (m_banners.isEmpty() == true) {
             return;
         }
 

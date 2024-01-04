@@ -2,6 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
 #include "Interface/PrefetcherObserverInterface.h"
 #include "Interface/ScriptModuleInterface.h"
 #include "Interface/ScriptEmbeddingInterface.h"
@@ -25,8 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct ScriptModulePackage
     {
-        FileGroupInterfacePtr fileGroup;
-        FilePath path;
+        ContentInterfacePtr content;
         ConstString module;
         ConstString initializer;
         ConstString finalizer;
@@ -45,7 +45,7 @@ namespace Mengine
         virtual bool initializeModules() = 0;
         virtual bool finalizeModules() = 0;
 
-        virtual void prefetchModules( const PrefetcherObserverInterfacePtr & _cb ) = 0;
+        virtual void prefetchModules( const PrefetcherObserverInterfacePtr & _cb, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual void addModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules ) = 0;

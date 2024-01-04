@@ -10,6 +10,7 @@
 #include "Kernel/DocumentableHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionReferenceCount.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -178,7 +179,7 @@ namespace Mengine
             , this->getType().c_str()
             , this->getName().c_str()
             , this->getGroupName().c_str()
-            , this->getContent()->getFilePath().c_str()
+            , Helper::getContentFullPath( this->getContent() )
         );
 
         if( Compilable::compile() == false )
@@ -211,7 +212,7 @@ namespace Mengine
             , this->getType().c_str()
             , this->getName().c_str()
             , this->getGroupName().c_str()
-            , this->getContent()->getFilePath().c_str()
+            , Helper::getContentFullPath( this->getContent() )
         );
 
         Compilable::release();

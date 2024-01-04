@@ -3,7 +3,7 @@
 #include "BitmapFont.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -14,14 +14,11 @@ namespace Mengine
 
         const ContentInterfacePtr & imageContent = fontGlyph->getBitmapImageContent();
 
-        if( imageContent->existContent() == false )
+        if( imageContent->exist( true ) == false )
         {
-            const FileGroupInterfacePtr & fileGroup = imageContent->getFileGroup();
-            const FilePath & filePath = imageContent->getFilePath();
-
             LOGGER_ERROR( "bitmap font glyph '%s' not found image file '%s'"
                 , fontGlyph->getName().c_str()
-                , Helper::getFileGroupFullPath( fileGroup, filePath )
+                , Helper::getContentFullPath( imageContent )
             );
 
             return false;
@@ -29,14 +26,11 @@ namespace Mengine
 
         const ContentInterfacePtr & licenseContent = fontGlyph->getBitmapLicenseContent();
 
-        if( licenseContent->existContent() == false )
+        if( licenseContent->exist( true ) == false )
         {
-            const FileGroupInterfacePtr & fileGroup = licenseContent->getFileGroup();
-            const FilePath & filePath = licenseContent->getFilePath();
-
             LOGGER_ERROR( "bitmap font glyph '%s' not found license file '%s'"
                 , fontGlyph->getName().c_str()
-                , Helper::getFileGroupFullPath( fileGroup, filePath )
+                , Helper::getContentFullPath( licenseContent )
             );
 
             return false;

@@ -22,6 +22,7 @@
 #include "Kernel/Vector.h"
 #include "Kernel/ContainerWriter.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/Iterator.h"
 
@@ -120,29 +121,33 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MovieKeyConverterXMLToAEK::loadFramePackage_( Blobject & _buffer )
     {
+        const FileGroupInterfacePtr & inputFileGroup = m_options.inputContent->getFileGroup();
+        const FilePath & inputFilePath = m_options.inputContent->getFilePath();
+
         Metacode::Meta_Data::Meta_KeyFramesPack keyFramesPack;
 
-        PathString binPath;
+        PathString pathBinString;
+        pathBinString += inputFilePath;
+        pathBinString.replace_last( "bin" );
 
-        binPath += m_options.inputFilePath;
-        binPath.replace_last( "bin" );
+        FilePath pathBin = Helper::stringizeFilePath( pathBinString );
 
-        FilePath path_bin = Helper::stringizeFilePath( binPath );
+        ContentInterfacePtr pathBinContent = Helper::makeFileContent( inputFileGroup, pathBin, MENGINE_DOCUMENT_FACTORABLE );
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( m_options.fileGroup, path_bin, &keyFramesPack, Metacode::Meta_Data::getVersion(), &exist ) == false )
+            ->load( pathBinContent, &keyFramesPack, Metacode::Meta_Data::getVersion(), &exist, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             if( exist == false )
             {
                 LOGGER_ERROR( "KeyFramesFile '%s' not found"
-                    , m_options.inputFilePath.c_str()
+                    , Helper::getContentFullPath( m_options.inputContent )
                 );
             }
             else
             {
                 LOGGER_ERROR( "KeyFramesFile invalid parse '%s' "
-                    , m_options.inputFilePath.c_str()
+                    , Helper::getContentFullPath( m_options.inputContent )
                 );
             }
 
@@ -800,10 +805,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MovieKeyConverterXMLToAEK::writeFramePackage_( const Blobject & _buffer )
     {
-        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( m_options.fileGroup, m_options.outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        const FileGroupInterfacePtr & outputFileGroup = m_options.outputContent->getFileGroup();
+        const FilePath & outputFilePath = m_options.outputContent->getFilePath();
+
+        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( outputFileGroup, outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( output_stream, "invalid open file '%s'"
-            , Helper::getFileGroupFullPath( m_options.fileGroup, m_options.outputFilePath )
+            , Helper::getContentFullPath( m_options.outputContent )
         );
 
         const void * buffer_memory = _buffer.data();
@@ -812,16 +820,16 @@ namespace Mengine
         if( Helper::writeStreamArchiveData( output_stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), false, buffer_memory, buffer_size, EAC_BEST ) == false )
         {
             LOGGER_ERROR( "invalid write stream '%s'"
-                , Helper::getFileGroupFullPath( m_options.fileGroup, m_options.outputFilePath )
+                , Helper::getContentFullPath( m_options.outputContent )
             );
 
             return false;
         }
 
-        if( Helper::closeOutputStreamFile( m_options.fileGroup, output_stream ) == false )
+        if( Helper::closeOutputStreamFile( outputFileGroup, output_stream ) == false )
         {
             LOGGER_ERROR( "invalid close file '%s'"
-                , Helper::getFileGroupFullPath( m_options.fileGroup, m_options.outputFilePath )
+                , Helper::getContentFullPath( m_options.outputContent )
             );
 
             return false;

@@ -3,19 +3,34 @@
 #include "Environment/Apple/AppleString.h"
 #include "Environment/Apple/AppleAnalytics.h"
 
+#include "AppleAppLovinApplicationDelegate.h"
+
 #include "Kernel/Logger.h"
 
 @implementation AppleAppLovinRewardedDelegate
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
-                                      amazonSlotId:(NSString * _Nullable) amazonSlotId
-                                          provider:(const Mengine::AppleAppLovinRewardedProviderInterfacePtr &) provider
-                                         analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
+- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
+                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
+                                           provider:(const Mengine::AppleAppLovinRewardedProviderInterfacePtr &) provider
+                                          analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
     self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.interstitial analytics:analytics];
 
     self.m_provider = provider;
     
-    MARewardedAd * rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier: adUnitId];
+    MARewardedAd * rewardedAd;
+    
+    @try {
+        rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier: adUnitId sdk:AppleAppLovinApplicationDelegate.AppLovinSdk];
+    } @catch (NSException * ex) {
+        LOGGER_ERROR( "[Error] AppleAppLovinRewardedDelegate invalid create MARewardedAd adUnitId: %s exception: %s [%s]"
+            , [adUnitId UTF8String]
+            , [ex.reason UTF8String]
+            , [ex.name UTF8String]
+        );
+        
+        return nil;
+    }
+    
     rewardedAd.delegate = self;
     rewardedAd.requestDelegate = self;
     rewardedAd.revenueDelegate = self;

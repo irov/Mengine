@@ -5,21 +5,36 @@
 
 #include "Environment/iOS/iOSDetail.h"
 
+#include "AppleAppLovinApplicationDelegate.h"
+
 #include "Kernel/Logger.h"
 
 @implementation AppleAppLovinBannerDelegate
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
-                                         placement:(NSString * _Nonnull) placement
-                                      amazonSlotId:(NSString * _Nullable) amazonSlotId
-                                              rect:(CGRect) rect
-                                          provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider
-                                         analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
+- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
+                                          placement:(NSString * _Nonnull) placement
+                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
+                                               rect:(CGRect) rect
+                                           provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider
+                                          analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
     self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.banner analytics:analytics];
     
     self.m_provider = provider;
     
-    MAAdView * adView = [[MAAdView alloc] initWithAdUnitIdentifier:adUnitId];
+    MAAdView * adView;
+    
+    @try {
+        adView = [[MAAdView alloc] initWithAdUnitIdentifier:adUnitId sdk:AppleAppLovinApplicationDelegate.AppLovinSdk];
+    } @catch (NSException * ex) {
+        LOGGER_ERROR( "[Error] AppleAppLovinBannerDelegate invalid create MAAdView adUnitId: %s exception: %s [%s]"
+            , [adUnitId UTF8String]
+            , [ex.reason UTF8String]
+            , [ex.name UTF8String]
+        );
+        
+        return nil;
+    }
+    
     [adView setPlacement:placement];
     
     adView.delegate = self;

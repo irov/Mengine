@@ -11,12 +11,12 @@
 
 @interface AppleAppLovinBannerDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MAAdViewAdDelegate, MAAdRevenueDelegate>
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
-                                         placement:(NSString * _Nonnull) placement
-                                      amazonSlotId:(NSString * _Nullable) amazonSlotId
-                                              rect:(CGRect) rect
+- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
+                                          placement:(NSString * _Nonnull) placement
+                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
+                                               rect:(CGRect) rect
                                            provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider
-                                         analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
+                                          analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
 
 - (void) show;
 - (void) hide;

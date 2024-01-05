@@ -457,7 +457,7 @@ namespace Mengine
     }
 #else
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::openBin_( const ContentInterfacePtr & _content, InputStreamInterfacePtr * const _stream, bool * const _exist ) const
+    bool LoaderService::openBin_( const ContentInterfacePtr & _content, InputStreamInterfacePtr * const _stream, bool * const _exist, const DocumentInterfacePtr & _doc ) const
     {
         if( _content->exist( true ) == false )
         {
@@ -469,7 +469,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
         const FilePath & filePath = _content->getFilePath();
 
-        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( fileGroup, filePath, false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file_bin );
 

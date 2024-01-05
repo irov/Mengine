@@ -73,6 +73,8 @@ Mengine::SDLApplication MENGINE_application;
     
     for (id delegate in self.m_pluginDelegates) {
         if ([delegate application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
+            NSLog(@"Mengine application initialize plugin %@ failed", NSStringFromClass([delegate class]));
+            
             return NO;
         }
     }

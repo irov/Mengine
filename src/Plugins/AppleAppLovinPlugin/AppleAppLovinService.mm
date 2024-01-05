@@ -97,6 +97,11 @@ namespace Mengine
                                                                                                     provider:_provider
                                                                                                    analytics:m_analyticsService];
         
+        if( banner == nil )
+        {
+            return false;
+        }
+        
         [m_banners setValue:banner forKey:adUnitId];
         
         return true;
@@ -152,6 +157,11 @@ namespace Mengine
                                                                                                                   amazonSlotId:amazonInterstitialSlotId
                                                                                                                       provider:_provider
                                                                                                                      analytics:m_analyticsService];
+        
+        if( interstitial == nil )
+        {
+            return false;
+        }
         
         [m_interstitials setValue:interstitial forKey:adUnitId];
         
@@ -212,6 +222,11 @@ namespace Mengine
                                                                                                       amazonSlotId:amazonRewardedSlotId
                                                                                                           provider:_provider
                                                                                                          analytics:m_analyticsService];
+        
+        if( rewarded == nil )
+        {
+            return false;
+        }
         
         [m_rewardeds setValue:rewarded forKey:adUnitId];
         

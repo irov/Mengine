@@ -3,20 +3,35 @@
 #include "Environment/Apple/AppleString.h"
 #include "Environment/Apple/AppleAnalytics.h"
 
+#include "AppleAppLovinApplicationDelegate.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/AnalyticsHelper.h"
 
 @implementation AppleAppLovinInterstitialDelegate
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
-                                      amazonSlotId:(NSString * _Nullable) amazonSlotId
-                                          provider:(const Mengine::AppleAppLovinInterstitialProviderInterfacePtr &) provider
-                                         analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
+- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
+                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
+                                           provider:(const Mengine::AppleAppLovinInterstitialProviderInterfacePtr &) provider
+                                          analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
     self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.rewarded analytics:analytics];
     
     self.m_provider = provider;
     
-    MAInterstitialAd * interstitialAd = [[MAInterstitialAd alloc] initWithAdUnitIdentifier:adUnitId];
+    MAInterstitialAd * interstitialAd;
+    
+    @try {
+        interstitialAd = [[MAInterstitialAd alloc] initWithAdUnitIdentifier:adUnitId sdk:AppleAppLovinApplicationDelegate.AppLovinSdk];
+    } @catch (NSException * ex) {
+        LOGGER_ERROR( "[Error] AppleAppLovinInterstitialDelegate invalid create MAInterstitialAd adUnitId: %s exception: %s [%s]"
+            , [adUnitId UTF8String]
+            , [ex.reason UTF8String]
+            , [ex.name UTF8String]
+        );
+        
+        return nil;
+    }
+    
     interstitialAd.delegate = self;
     interstitialAd.revenueDelegate = self;
     interstitialAd.requestDelegate = self;

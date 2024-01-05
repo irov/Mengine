@@ -4,7 +4,7 @@
 
 @implementation AppleAppLovinBaseDelegate
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
+- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                           adFormat:(MAAdFormat * _Nonnull) adFormat
                                          analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
     self = [super init];

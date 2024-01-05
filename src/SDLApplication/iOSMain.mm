@@ -27,7 +27,13 @@ int main( int argc, char * argv[] ) {
     int result;
     
     @autoreleasepool {
-        result = UIApplicationMain(argc, argv, nil, NSStringFromClass([SDLUIApplicationDelegate class]));
+        @try {
+            result = UIApplicationMain(argc, argv, nil, NSStringFromClass([SDLUIApplicationDelegate class]));
+        } @catch (NSException * ex) {
+            result = EXIT_FAILURE;
+            
+            NSLog(@"Exception Megnine application: %@ [%@]", ex.description, ex.reason);
+        }
     }
     
     NSLog(@"Finish Megnine application: %d", result);

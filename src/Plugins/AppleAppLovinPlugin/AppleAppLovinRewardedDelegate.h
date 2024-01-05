@@ -11,10 +11,10 @@
 
 @interface AppleAppLovinRewardedDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MARewardedAdDelegate, MAAdRevenueDelegate>
 
-- (instancetype _Nonnull) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
-                                      amazonSlotId:(NSString * _Nullable) amazonSlotId
-                                          provider:(const Mengine::AppleAppLovinRewardedProviderInterfacePtr &) provider
-                                         analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
+- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
+                                       amazonSlotId:(NSString * _Nullable) amazonSlotId
+                                           provider:(const Mengine::AppleAppLovinRewardedProviderInterfacePtr &) provider
+                                          analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
 
 - (BOOL) canOffer:(NSString * _Nonnull) placement;
 - (BOOL) canYouShow:(NSString * _Nonnull) placement;

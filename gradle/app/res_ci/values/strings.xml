@@ -1,5 +1,9 @@
 <resources>
+    <integer name="app_screen_orientation">7</integer>
+
+    <string name="privacy_policy_url" translatable="false">https://en.wikipedia.org/wiki/Privacy_policy</string>
+    <string name="terms_of_service_url" translatable="false">https://en.wikipedia.org/wiki/Terms_of_service</string>
+    
     <bool name="mengine_session_use_install_key" translatable="false">false</bool>
     <bool name="mengine_secure_allow_android_id" translatable="false">true</bool>
-    <integer name="app_screen_orientation">7</integer>
 </resources>

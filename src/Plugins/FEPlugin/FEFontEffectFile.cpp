@@ -1,6 +1,5 @@
 #include "FEFontEffectFile.h"
 
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 
 #include "Kernel/ConstStringHelper.h"

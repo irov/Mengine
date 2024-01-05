@@ -4,6 +4,7 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Plugins/FEPlugin/FEInterface.h"
 
@@ -92,6 +93,10 @@ namespace Mengine
             ContentInterfacePtr content = Helper::makeFileContent( _fileGroup, FEPath, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( content );
+
+            DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
+
+            content->setDataflow( dataflowFE );
 
             fontEffet->setContent( content );
 

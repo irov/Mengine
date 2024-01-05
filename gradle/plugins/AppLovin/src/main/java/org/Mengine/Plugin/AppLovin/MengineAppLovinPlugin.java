@@ -244,7 +244,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             m_nonetBanners = nonetBanners;
         }
 
-        MengineAppLovinPlugin.this.activateSemaphore("AppLovinSdkInitialized");
+        this.activateSemaphore("AppLovinSdkInitialized");
 
         if (this.hasOption("applovin.show_mediation_debugger") == true) {
             this.showMediationDebugger();

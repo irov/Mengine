@@ -34,13 +34,6 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
 
     public static final String PLUGIN_METADATA_APP_TOKEN = "mengine.adjust.app_token";
 
-    /**
-     * событие
-     * void eventTraking(String token)
-     * событие о пукопку чего либо
-     * void revenueTracking(String token, double amount, String currency)
-     */
-
     @Override
     public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
         if (event == MengineEvent.EVENT_PUSH_TOKEN) {

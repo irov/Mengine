@@ -99,7 +99,7 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
         this.postAdInfo(adInfo);
     }
 
-    public void postAdInfo(AdvertisingIdClient.Info adInfo) {
+    private void postAdInfo(AdvertisingIdClient.Info adInfo) {
         String advertisingId;
         boolean advertisingLimitTrackingEnabled;
 

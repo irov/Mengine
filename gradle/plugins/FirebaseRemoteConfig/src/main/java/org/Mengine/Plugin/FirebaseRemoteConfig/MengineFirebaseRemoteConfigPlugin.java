@@ -26,12 +26,6 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
     public static final String PLUGIN_NAME = "FirebaseRemoteConfig";
     public static final boolean PLUGIN_EMBEDDING = true;
 
-    /**
-     * <p>
-     * void recordException(Throwable throwable)
-     * void recordLog(String msg)
-     */
-
     @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();

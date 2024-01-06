@@ -44,51 +44,6 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
     public static final String PLUGIN_NAME = "GooglePlayBilling";
     public static final boolean PLUGIN_EMBEDDING = true;
 
-    /**
-     * Метода для библиотеки
-     * <p>
-     * billingConnect
-     * - onGooglePlayBillingConnectServiceDisconnected
-     * - onGooglePlayBillingConnectSetupFinishedFailed
-     * - onGooglePlayBillingConnectSetupFinishedSuccessful
-     * <p>
-     * установить список покупок - по которому будут проходить вся логика
-     * + запрос на стоимость товаров
-     * queryProducts(List<String> products)
-     * - onGooglePlayBillingQueryProductFailed
-     * - onGooglePlayBillingQueryProductSuccessful
-     * <p>
-     * queryPurchases
-     * - onGooglePlayBillingQueryPurchasesFailed
-     * - onGooglePlayBillingQueryPurchasesSuccessful
-     * <p>
-     * Соверщить покупку товара
-     * boolean buyInApp(String productId)
-     * - onGooglePlayBillingBuyInAppFailed(String productId)
-     * - onGooglePlayBillingBuyInAppSuccess(String productId)
-     * <p>
-     * на оба метода падают все каллбеки - в зависимости от ситуации)
-     * - onGooglePlayBillingPurchaseIsConsumable(List<String> products, cb)
-     * - onGooglePlayBillingPurchaseAcknowledged(List<String> products)
-     * - onGooglePlayBillingPurchasesAcknowledgeFailed(List<String> products)
-     * - onGooglePlayBillingPurchasesAcknowledgeSuccessful(List<String> products)
-     * - onGooglePlayBillingPurchasesOnConsumeFailed(List<String> products)
-     * - onGooglePlayBillingPurchasesOnConsumeSuccessful(List<String> products)
-     * <p>
-     * - onGooglePlayBillingPurchasesUpdatedServiceTimeout
-     * - onGooglePlayBillingPurchasesUpdatedFeatureNotSupported
-     * - onGooglePlayBillingPurchasesUpdatedServiceDisconnected
-     * - onGooglePlayBillingPurchasesUpdatedOk
-     * - onGooglePlayBillingPurchasesUpdatedUserCanceled
-     * - onGooglePlayBillingPurchasesUpdatedServiceUnavailable
-     * - onGooglePlayBillingPurchasesUpdatedItemUnavailable
-     * - onGooglePlayBillingPurchasesUpdatedDeveloperError
-     * - onGooglePlayBillingPurchasesUpdatedError
-     * - onGooglePlayBillingPurchasesUpdatedItemAlreadyOwned
-     * - onGooglePlayBillingPurchasesUpdatedItemNotOwned
-     * - onGooglePlayBillingPurchasesUpdatedUnknown (int responseCode)
-     **/
-
     private List<ProductDetails> m_productsDetails;
     private BillingClient m_billingClient;
 

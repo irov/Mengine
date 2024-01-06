@@ -87,16 +87,22 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
 
         m_image = image;
 
-        String sessionId = activity.getSessionId();
-        String versionName = activity.getVersionName();
+        Resources resources = context.getResources();
 
-        String message = String.format("ID: %s | %s", sessionId, versionName);
+        boolean mengine_splashscreen_text_enable = resources.getBoolean(R.bool.mengine_splashscreen_text_enable);
 
-        TextView text = this.createTextSessionId(context, message);
+        if (mengine_splashscreen_text_enable == true) {
+            String sessionId = activity.getSessionId();
+            String versionName = activity.getVersionName();
 
-        viewGroup.addView(text);
+            String message = String.format("ID: %s | %s", sessionId, versionName);
 
-        m_text = text;
+            TextView text = this.createTextSessionId(context, message);
+
+            viewGroup.addView(text);
+
+            m_text = text;
+        }
 
         this.showSplash(activity);
     }
@@ -120,7 +126,10 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
                 MengineSplashScreenPlugin.this.logMessage("show splash screen");
 
                 m_image.setVisibility(View.VISIBLE);
-                m_text.setVisibility(View.VISIBLE);
+
+                if (m_text != null) {
+                    m_text.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -165,7 +174,10 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
                 MengineSplashScreenPlugin.this.logMessage("hided splash screen");
 
                 m_image.setVisibility(View.GONE);
-                m_text.setVisibility(View.GONE);
+
+                if (m_text != null) {
+                    m_text.setVisibility(View.GONE);
+                }
 
                 MengineUtils.performOnMainThread(() -> {
                     MengineSplashScreenPlugin.this.removeSpash(activity);
@@ -188,8 +200,10 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
         viewGroup.removeView(m_image);
         m_image = null;
 
-        viewGroup.removeView(m_text);
-        m_text = null;
+        if (m_text != null) {
+            viewGroup.removeView(m_text);
+            m_text = null;
+        }
 
         this.setState("splashscreen.state", "removed");
     }

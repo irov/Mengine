@@ -26,10 +26,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
     public static final String PLUGIN_NAME = "FirebaseAnalytics";
     public static final boolean PLUGIN_EMBEDDING = true;
 
-    /**
-     * void logEvent (String name, Bundle params)
-     */
-
     FirebaseAnalytics m_firebaseAnalytics;
 
     @Override

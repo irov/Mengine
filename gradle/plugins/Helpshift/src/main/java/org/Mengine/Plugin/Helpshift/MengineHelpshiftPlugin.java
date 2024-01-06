@@ -31,40 +31,6 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     public static final String PLUGIN_METADATA_PLATFORM_ID = "mengine.helpshift.platform_id";
     public static final String PLUGIN_METADATA_DOMAIN = "mengine.helpshift.domain";
 
-    /**
-     * <p>
-     * void showFAQs(Throwable throwable)
-     * void showConversation(String msg)
-     * <p>
-     * void showFAQSection(final String sectionPublishId)
-     * void showSingleFAQ(final String publishId)
-     * <p>
-     * language contains has
-     * [en, de, es, fr, it, ru, zh-Hans,zh-Hant, zh-HK, zh-Hant-HK, zh-SG, zh-Hant-SG, pt,
-     * ko, ja, tr, nl, cs, hu,, th, sl, vi, ar, pl, no, sv, fi, ro, el, da, ms, iw, sk, uk,
-     * ca, hr, bn, bg, gu, hi, kn, lv, ml, mr, pa, fa, ta, te]
-     * void setLanguage(final String language)
-     *
-     *
-     * Events
-     * -onHelpshiftSessionStarted
-     * -onHelpshiftSessionEnded
-     * -onHelpshiftReceivedUnreadMessage(int count, boolean fromCache)
-     * -onHelpshiftConversationStatus(String issueId,String publishId,boolean issueOpen)
-     * -onHelpshiftWidgetToggle(boolean visible);
-     * -onHelpshiftMessageAdd(String body,String type);
-     * -onHelpshiftConverstationStart(String text);
-     * -onHelpshiftCSATSubmit"(String rating,String feedback);
-     * -onHelpshiftConverstationEnded
-     * -onHelpshiftConverstationRejected
-     * -onHelpshiftConverstationResolved
-     * -onHelpshiftConverstationReopen
-
-     * -onHelpshiftAuthenticationFailureInvalidAuthToken
-     * -onHelpshiftAuthenticationFailureTokenNotProvided
-     * -onHelpshiftAuthenticationFailureUnknown
-     */
-
     @Override
     public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
         if (event == MengineEvent.EVENT_PUSH_TOKEN) {

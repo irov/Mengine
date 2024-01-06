@@ -16,16 +16,6 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin implements Me
     public static final String PLUGIN_NAME = "GoogleInAppReviews";
     public static final boolean PLUGIN_EMBEDDING = true;
 
-    /**
-     * <p>
-     * событие об успешном получении объекта - после которого можно вызвать Review
-     * - onGoogleInAppReviewsGettingReviewObject
-     * <p>
-     * Вызов окна Review
-     * void launchTheInAppReview()
-     * - onGoogleInAppReviewsLaunchingTheReviewCompleted
-     */
-
     private ReviewManager m_manager;
     private ReviewInfo m_reviewInfo;
 

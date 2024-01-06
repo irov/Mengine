@@ -21,12 +21,6 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     public static final String PLUGIN_NAME = "FirebaseCrashlytics";
     public static final boolean PLUGIN_EMBEDDING = true;
 
-    /**
-     * <p>
-     * void recordException(Throwable throwable)
-     * void recordLog(String msg)
-     */
-
     @Override
     public void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
         boolean isBuildPublish = application.isBuildPublish();

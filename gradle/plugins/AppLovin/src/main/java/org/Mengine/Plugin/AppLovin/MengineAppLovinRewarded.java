@@ -170,7 +170,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_plugin.setState("applovin.rewarded.state." + m_adUnitId, "request_started");
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdRequestStarted", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinRewardedOnAdRequestStarted", m_adUnitId);
     }
 
     @SuppressWarnings("deprecation")
@@ -205,7 +205,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             .addParameterLong("reward_amount", amount)
             .log();
 
-        m_plugin.pythonCall("onApplovinRewardedOnUserRewarded", m_adUnitId, label, amount);
+        m_plugin.pythonCall("onAppLovinRewardedOnUserRewarded", m_adUnitId, label, amount);
     }
 
     @Override
@@ -220,7 +220,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_retryAttempt = 0;
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdLoaded", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinRewardedOnAdLoaded", m_adUnitId);
     }
 
     @Override
@@ -236,7 +236,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_plugin.setState("applovin.rewarded.state." + m_adUnitId, "displayed." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdDisplayed", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinRewardedOnAdDisplayed", m_adUnitId);
     }
 
     @Override
@@ -252,7 +252,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_plugin.setState("applovin.rewarded.state." + m_adUnitId, "hidden." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdHidden", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinRewardedOnAdHidden", m_adUnitId);
 
         MengineUtils.performOnMainThread(() -> {
             MengineAppLovinRewarded.this.loadAd();
@@ -272,7 +272,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_plugin.setState("applovin.rewarded.state." + m_adUnitId, "clicked." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdClicked", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinRewardedOnAdClicked", m_adUnitId);
     }
 
     @Override
@@ -288,7 +288,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_plugin.setState("applovin.rewarded.state." + m_adUnitId, "load_failed");
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdLoadFailed", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinRewardedOnAdLoadFailed", m_adUnitId);
 
         this.retryLoadAd();
     }
@@ -310,7 +310,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_plugin.setState("applovin.rewarded.state." + m_adUnitId, "display_failed." + placement + "." + ad.getNetworkName());
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdDisplayFailed", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinRewardedOnAdDisplayFailed", m_adUnitId);
 
         MengineUtils.performOnMainThread(() -> {
             MengineAppLovinRewarded.this.loadAd();
@@ -327,7 +327,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_plugin.onEventRevenuePaid(ad);
 
-        m_plugin.pythonCall("onApplovinRewardedOnAdRevenuePaid", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinRewardedOnAdRevenuePaid", m_adUnitId);
     }
 
     @Override

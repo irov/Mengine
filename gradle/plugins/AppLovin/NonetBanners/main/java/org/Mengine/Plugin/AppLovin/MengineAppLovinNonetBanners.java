@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.Timer;
 
 public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersInterface {
-    public static final String PLUGIN_METADATA_NONET_BANNER_DURATION_TIME = "mengine.applovin.nonet_banner_duration_time";
-
     protected MengineAppLovinPlugin m_plugin;
 
     protected int m_showBannerDurationTime;
@@ -66,9 +64,9 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             while (parser.next() != XmlPullParser.END_DOCUMENT) {
                 String name = parser.getName();
 
-                int ac = parser.getAttributeCount();
+                int attributeCount = parser.getAttributeCount();
 
-                if (ac == -1) {
+                if (attributeCount == -1) {
                     continue;
                 }
 
@@ -78,7 +76,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
                 Map<String, String> attributes = new HashMap<>();
 
-                for(int index = 0; index != ac; ++index) {
+                for(int index = 0; index != attributeCount; ++index) {
                     String key = parser.getAttributeName(index);
                     String value = parser.getAttributeValue(index);
 
@@ -107,36 +105,40 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
                 String oldBanenrUrl;
                 String newBannerUrl;
 
+                if (MengineAppLovinNonetBanners.this.m_visible == false) {
+                    return;
+                }
+
                 synchronized (MengineAppLovinNonetBanners.this) {
-                    if (m_showBanner == null) {
+                    if (MengineAppLovinNonetBanners.this.m_showBanner == null) {
                         return;
                     }
 
-                    m_requestId++;
+                    MengineAppLovinNonetBanners.this.m_requestId++;
 
                     ViewGroup viewGroup = MengineActivity.getContentViewGroup();
 
-                    NonetBanner oldBanner = m_showBanner;
+                    NonetBanner oldBanner = MengineAppLovinNonetBanners.this.m_showBanner;
 
                     viewGroup.removeView(oldBanner.view);
 
                     NonetBanner newBanner = MengineAppLovinNonetBanners.this.getCurrentBanner();
                     viewGroup.addView(newBanner.view);
 
-                    m_showBanner = newBanner;
+                    MengineAppLovinNonetBanners.this.m_showBanner = newBanner;
 
-                    refreshRequestId = m_requestId;
+                    refreshRequestId = MengineAppLovinNonetBanners.this.m_requestId;
                     oldBanenrUrl = oldBanner.url;
                     newBannerUrl = newBanner.url;
                 }
 
-                m_plugin.logMessage("[NONET_BANNER] refresh banner request: %d old: %s new: %s"
+                MengineAppLovinNonetBanners.this.m_plugin.logMessage("[NONET_BANNER] refresh banner request: %d old: %s new: %s"
                     , refreshRequestId
                     , oldBanenrUrl
                     , newBannerUrl
                 );
 
-                m_plugin.buildEvent("mng_ad_nonet_banner_displayed")
+                MengineAppLovinNonetBanners.this.m_plugin.buildEvent("mng_ad_nonet_banner_displayed")
                     .addParameterString("url", newBannerUrl)
                     .addParameterLong("request_id", refreshRequestId)
                     .log();
@@ -229,6 +231,10 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             return;
         }
 
+        if (m_visible == true) {
+            return;
+        }
+
         m_visible = true;
 
         int showRequestId;
@@ -266,6 +272,10 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     @Override
     public void hide() {
         if (m_banners.isEmpty() == true) {
+            return;
+        }
+
+        if (m_visible == false) {
             return;
         }
 

@@ -68,6 +68,10 @@ if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
     apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/Amazon/amazon.gradle'
 }
 
+Utils.logAvailable("AppLovin add Consent Flow", MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW)
+Utils.logAvailable("AppLovin add Nonet Banners", MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS)
+Utils.logAvailable("AppLovin add Mediation Amazon", MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON)
+
 subprojects {
     repositories {
         maven { url 'https://artifacts.applovin.com/android' }
@@ -75,33 +79,19 @@ subprojects {
 }
 
 android {
-    namespace "org.Mengine.Plugin.AppLovin"
-}
-
-Utils.logAvailable("AppLovin add Consent Flow", MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW)
-
-Utils.logAvailable("AppLovin add Nonet Banners", MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS)
-
-if (MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS == true) {
-    android {
-        sourceSets {
-            main {
+    sourceSets {
+        main {
+            if (MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS == true) {
                 java.srcDirs += ['NonetBanners']
             }
-        }
-    }
-}
 
-Utils.logAvailable("AppLovin add Mediation Amazon", MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON)
-
-if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
-    android {
-        sourceSets {
-            main {
+            if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
                 java.srcDirs += ['Amazon']
             }
         }
     }
+
+    namespace "org.Mengine.Plugin.AppLovin"
 }
 
 dependencies {

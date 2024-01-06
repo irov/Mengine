@@ -39,10 +39,6 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     public static final String PLUGIN_METADATA_HANDLE_FIRST_ACTIVATION_AS_UPDATE = "mengine.appmetrica.handle_first_activation_as_update";
     public static final String PLUGIN_METADATA_STATISTICS_SENDING = "mengine.appmetrica.statistics_sending";
 
-    /**
-     * void logEvent (String name, Bundle params)
-     */
-
     @Override
     public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
         if (event == MengineEvent.EVENT_SESSION_ID) {

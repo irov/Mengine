@@ -795,39 +795,7 @@ public class MengineApplication extends Application {
 
         this.initializeMonitorConnectivityStatusAndConnectionMetering();
 
-        try {
-            SDL.loadLibrary("SDLApplication");
-        } catch (UnsatisfiedLinkError e) {
-            MengineAnalytics.buildEvent("mng_app_init_failed")
-                .addParameterThrowable("exception", e)
-                .logAndFlush();
-
-            this.invalidInitialize("load library SDLApplication catch UnsatisfiedLinkError: %s"
-                , e.getMessage()
-            );
-
-            return;
-        } catch (Exception e) {
-            MengineAnalytics.buildEvent("mng_app_init_failed")
-                .addParameterException("exception", e)
-                .logAndFlush();
-
-            this.invalidInitialize("load library SDLApplication catch Exception: %s"
-                , e.getMessage()
-            );
-
-            return;
-        }
-
-        this.setState("application.init", "sdl_init");
-
-        AndroidEnv_setMengineAndroidApplicationJNI(this);
-
-        if (this.getMetaDataBoolean("mengine.secure.allow_android_id") == true) {
-            m_androidId = this.getSecureAndroidId();
-        } else {
-            m_androidId = "0000000000000000";
-        }
+        this.setState("application.init", "load_preferences");
 
         SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
 
@@ -879,22 +847,6 @@ public class MengineApplication extends Application {
         m_sessionId = sessionId;
         m_sessionTimestamp = MengineUtils.getTimestamp();
 
-        MengineAnalytics.addContextParameterString("install_key", m_installKey);
-        MengineAnalytics.addContextParameterLong("install_timestamp", m_installTimestamp);
-        MengineAnalytics.addContextParameterString("install_version", m_installVersion);
-        MengineAnalytics.addContextParameterLong("install_rnd", m_installRND);
-        MengineAnalytics.addContextParameterLong("session_index", m_sessionIndex);
-        MengineAnalytics.addContextParameterLong("session_timestamp", m_sessionTimestamp);
-
-        String build_gitsha1 = this.getEngineGITSHA1();
-        this.setState("engine.build_gitsha1", build_gitsha1);
-
-        String build_date = this.getBuildDate();
-        this.setState("engine.build_date", build_date);
-
-        String build_username = this.getBuildUsername();
-        this.setState("engine.build_username", build_username);
-
         this.setState("user.install_key", m_installKey);
         this.setState("user.install_timestamp", m_installTimestamp);
         this.setState("user.install_version", m_installVersion);
@@ -909,7 +861,12 @@ public class MengineApplication extends Application {
         String sessionDate = MengineUtils.getDateFormat(m_sessionTimestamp, "d MMM yyyy HH:mm:ss");
         this.setState("user.session_date", sessionDate);
 
-        this.setState("application.init", "load");
+        MengineAnalytics.addContextParameterString("install_key", m_installKey);
+        MengineAnalytics.addContextParameterLong("install_timestamp", m_installTimestamp);
+        MengineAnalytics.addContextParameterString("install_version", m_installVersion);
+        MengineAnalytics.addContextParameterLong("install_rnd", m_installRND);
+        MengineAnalytics.addContextParameterLong("session_index", m_sessionIndex);
+        MengineAnalytics.addContextParameterLong("session_timestamp", m_sessionTimestamp);
 
         MengineAnalytics.addContextGetterParameterLong("connection", new MengineAnalyticsGetter<Long>() {
             @Override
@@ -958,6 +915,53 @@ public class MengineApplication extends Application {
             }
         });
 
+        this.setState("application.init", "get_android_id");
+
+        if (this.getMetaDataBoolean("mengine.secure.allow_android_id") == true) {
+            m_androidId = this.getSecureAndroidId();
+        } else {
+            m_androidId = "0000000000000000";
+        }
+
+        this.setState("application.init", "sdl_load_library");
+
+        try {
+            SDL.loadLibrary("SDLApplication");
+        } catch (UnsatisfiedLinkError e) {
+            MengineAnalytics.buildEvent("mng_app_init_failed")
+                .addParameterThrowable("exception", e)
+                .logAndFlush();
+
+            this.invalidInitialize("load library SDLApplication catch UnsatisfiedLinkError: %s"
+                , e.getMessage()
+            );
+
+            return;
+        } catch (Exception e) {
+            MengineAnalytics.buildEvent("mng_app_init_failed")
+                .addParameterException("exception", e)
+                .logAndFlush();
+
+            this.invalidInitialize("load library SDLApplication catch Exception: %s"
+                , e.getMessage()
+            );
+
+            return;
+        }
+
+        this.setState("application.init", "sdl_init");
+
+        AndroidEnv_setMengineAndroidApplicationJNI(this);
+
+        String build_gitsha1 = this.getEngineGITSHA1();
+        this.setState("engine.build_gitsha1", build_gitsha1);
+
+        String build_date = this.getBuildDate();
+        this.setState("engine.build_date", build_date);
+
+        String build_username = this.getBuildUsername();
+        this.setState("engine.build_username", build_username);
+
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
                 MengineLog.logMessage(TAG, "onAppPrepare plugin: %s"
@@ -979,7 +983,7 @@ public class MengineApplication extends Application {
             }
         }
 
-        this.setState("application.init", "plugins_prepare");
+        this.setState("application.init", "plugins_prepared");
 
         long app_init_start_timestamp = MengineAnalytics.buildEvent("mng_app_init_start")
             .logAndFlush();
@@ -1046,6 +1050,7 @@ public class MengineApplication extends Application {
 
         m_plugins = null;
         m_dictionaryPlugins = null;
+        m_states = null;
 
         m_loggerListeners = null;
         m_analyticsListeners = null;

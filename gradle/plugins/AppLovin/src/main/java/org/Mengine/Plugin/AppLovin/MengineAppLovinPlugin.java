@@ -40,53 +40,9 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
     public static final String PLUGIN_METADATA_IS_AGE_RESTRICTED_USER = "mengine.applovin.is_age_restricted_user";
     public static final String PLUGIN_METADATA_CCPA = "mengine.applovin.CCPA";
+    public static final String PLUGIN_METADATA_ENABLE_PRIVACY_POLICY_FLOW = "mengine.applovin.enable_privacy_policy_flow";
     public static final String PLUGIN_METADATA_PRIVACY_POLICY_URL = "mengine.privacy.privacy_policy_url";
     public static final String PLUGIN_METADATA_TERMS_OF_SERVICE_URL = "mengine.privacy.terms_of_service_url";
-
-    /**
-     * <p>
-     * void initialize()
-     * - onApplovinPluginOnSdkInitialized
-     * <p>
-     * установка Interstitial
-     * void initInterstitial(String adUnitId)
-     * boolean canYouShowInterstitial(String adUnitId, String placement)
-     * void showInterstitial(String adUnitId, String placement)
-     * - onApplovinInterstitialOnAdLoaded
-     * - onApplovinInterstitialOnAdDisplayed
-     * - onApplovinInterstitialOnAdHidden
-     * - onApplovinInterstitialOnAdClicked
-     * - onApplovinInterstitialOnAdLoadFailed
-     * - onApplovinInterstitialOnAdDisplayFailed
-     * <p>
-     * установка Rewarded
-     * void initRewarded(String adUnitId)
-     * boolean canOfferRewarded(String adUnitId, String placement)
-     * boolean canYouShowRewarded(String adUnitId, String placement)
-     * void showRewarded(String adUnitId, String placement)
-     * - onApplovinRewardedOnRewardedVideoStarted
-     * - onApplovinRewardedOnRewardedVideoCompleted
-     * - onApplovinRewardedOnUserRewarded
-     * - onApplovinRewardedOnAdLoaded
-     * - onApplovinRewardedOnAdDisplayed
-     * - onApplovinRewardedOnAdHidden
-     * - onApplovinRewardedOnAdClicked
-     * - onApplovinRewardedOnAdLoadFailed
-     * - onApplovinRewardedOnAdDisplayFailed
-     * <p>
-     * установка Banner
-     * void initBanner(String adUnitId)
-     * void bannerVisible(String adUnitId, boolean show)
-     * - onApplovinBannerOnAdDisplayed
-     * - onApplovinBannerOnAdHidden
-     * - onApplovinBannerOnAdClicked
-     * - onApplovinBannerOnAdLoadFailed
-     * - onApplovinBannerOnAdDisplayFailed
-     * - onApplovinBannerOnAdExpanded
-     * - onApplovinBannerOnAdCollapsed
-     * <p>
-     * void showMediationDebugger()
-     */
 
     private AppLovinSdk m_appLovinSdk;
 
@@ -153,28 +109,36 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         AppLovinSdkSettings settings = new AppLovinSdkSettings(activity);
 
-        AppLovinSdkSettings.TermsAndPrivacyPolicyFlowSettings termsAndPrivacyPolicyFlowSettings = settings.getTermsAndPrivacyPolicyFlowSettings();
+        boolean MengineAppLovinPlugin_EnablePrivacyPolicyFlow = this.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_PRIVACY_POLICY_FLOW);
 
-        termsAndPrivacyPolicyFlowSettings.setEnabled(true);
+        if (MengineAppLovinPlugin_EnablePrivacyPolicyFlow == true) {
+            AppLovinSdkSettings.TermsAndPrivacyPolicyFlowSettings termsAndPrivacyPolicyFlowSettings = settings.getTermsAndPrivacyPolicyFlowSettings();
 
-        String MengineAppLovinPlugin_PrivacyPolicyUrl = this.getMetaDataString(PLUGIN_METADATA_PRIVACY_POLICY_URL);
-        termsAndPrivacyPolicyFlowSettings.setPrivacyPolicyUri(Uri.parse(MengineAppLovinPlugin_PrivacyPolicyUrl));
+            termsAndPrivacyPolicyFlowSettings.setEnabled(true);
 
-        String MengineAppLovinPlugin_TermsOfServiceUrl = this.getMetaDataString(PLUGIN_METADATA_TERMS_OF_SERVICE_URL);
-        termsAndPrivacyPolicyFlowSettings.setTermsOfServiceUri(Uri.parse(MengineAppLovinPlugin_TermsOfServiceUrl));
+            String MengineAppLovinPlugin_PrivacyPolicyUrl = this.getMetaDataString(PLUGIN_METADATA_PRIVACY_POLICY_URL);
+            termsAndPrivacyPolicyFlowSettings.setPrivacyPolicyUri(Uri.parse(MengineAppLovinPlugin_PrivacyPolicyUrl));
 
-        this.logMessage("privacy policy: %s"
-            , MengineAppLovinPlugin_PrivacyPolicyUrl
-        );
+            String MengineAppLovinPlugin_TermsOfServiceUrl = this.getMetaDataString(PLUGIN_METADATA_TERMS_OF_SERVICE_URL);
+            termsAndPrivacyPolicyFlowSettings.setTermsOfServiceUri(Uri.parse(MengineAppLovinPlugin_TermsOfServiceUrl));
 
-        this.logMessage("term of service: %s"
-            , MengineAppLovinPlugin_TermsOfServiceUrl
-        );
+            this.logMessage("privacy policy: %s"
+                , MengineAppLovinPlugin_PrivacyPolicyUrl
+            );
 
-        if (this.hasOption("applovin.consentflow.user_geography.gdpr") == true) {
-            termsAndPrivacyPolicyFlowSettings.setDebugUserGeography(AppLovinSdkConfiguration.ConsentFlowUserGeography.GDPR);
-        } else if (this.hasOption("applovin.consentflow.user_geography.other") == true) {
-            termsAndPrivacyPolicyFlowSettings.setDebugUserGeography(AppLovinSdkConfiguration.ConsentFlowUserGeography.OTHER);
+            this.logMessage("term of service: %s"
+                , MengineAppLovinPlugin_TermsOfServiceUrl
+            );
+
+            if (this.hasOption("applovin.consentflow.user_geography.gdpr") == true) {
+                this.logMessage("[DEBUG] set debug user geography: GDPR");
+
+                termsAndPrivacyPolicyFlowSettings.setDebugUserGeography(AppLovinSdkConfiguration.ConsentFlowUserGeography.GDPR);
+            } else if (this.hasOption("applovin.consentflow.user_geography.other") == true) {
+                this.logMessage("[DEBUG] set debug user geography: OTHER");
+
+                termsAndPrivacyPolicyFlowSettings.setDebugUserGeography(AppLovinSdkConfiguration.ConsentFlowUserGeography.OTHER);
+            }
         }
 
         if (BuildConfig.DEBUG == true) {
@@ -197,21 +161,28 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
                 AppLovinCmpService cmpService = appLovinSdk.getCmpService();
                 boolean supportedCmp = cmpService.hasSupportedCmp();
+                boolean testModeEnabled = configuration.isTestModeEnabled();
+                String countryCode = configuration.getCountryCode();
+                List<String> enabledAmazonAdUnitIds = configuration.getEnabledAmazonAdUnitIds();
+                AppLovinSdkConfiguration.ConsentFlowUserGeography consentFlowUserGeography = configuration.getConsentFlowUserGeography();
 
                 MengineAppLovinPlugin.this.logMessage("AppLovinSdk initialized CMP: %b TestMode: %b CountryCode: %s AmazonAdUnitIds: %s ConsentFlowUserGeography: %s"
                     , supportedCmp
-                    , configuration.isTestModeEnabled()
-                    , configuration.getCountryCode()
-                    , configuration.getEnabledAmazonAdUnitIds()
-                    , configuration.getConsentFlowUserGeography().toString()
+                    , testModeEnabled
+                    , countryCode
+                    , enabledAmazonAdUnitIds
+                    , consentFlowUserGeography.toString()
                 );
 
                 List<MaxMediatedNetworkInfo> availableMediatedNetworks = appLovinSdk.getAvailableMediatedNetworks();
 
                 for (MaxMediatedNetworkInfo networkInfo : availableMediatedNetworks) {
+                    String name = networkInfo.getName();
+                    String adapterVersion = networkInfo.getAdapterVersion();
+
                     MengineAppLovinPlugin.this.logMessage("Available Mediated Network: %s [%s]"
-                        , networkInfo.getName()
-                        , networkInfo.getAdapterVersion()
+                        , name
+                        , adapterVersion
                     );
                 }
 
@@ -290,9 +261,11 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         return m_nonetBanners;
     }
 
-    public void initBanner(String adUnitId, String placement) {
+    public boolean initBanner(String adUnitId, String placement) {
         if (m_banners.containsKey(adUnitId) == true) {
             this.assertionError("already exist banner: %s", adUnitId);
+
+            return false;
         }
 
         this.logMessage("initBanner adUnitId: %s placement: %s"
@@ -310,7 +283,11 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
                 , placement
                 , e.getMessage()
             );
+
+            return false;
         }
+
+        return true;
     }
 
     public boolean bannerVisible(String adUnitId, boolean show) {
@@ -334,9 +311,11 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         return true;
     }
 
-    public void initInterstitial(String adUnitId) {
+    public boolean initInterstitial(String adUnitId) {
         if (m_interstitials.containsKey(adUnitId) == true) {
             this.assertionError("already exist interstitial: %s", adUnitId);
+
+            return false;
         }
 
         this.logMessage("initInterstitial adUnitId: %s"
@@ -352,7 +331,11 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
                 , adUnitId
                 , e.getMessage()
             );
+
+            return false;
         }
+
+        return true;
     }
 
     public boolean canYouShowInterstitial(String adUnitId, String placement) {
@@ -392,9 +375,11 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         return true;
     }
 
-    public void initRewarded(String adUnitId) {
+    public boolean initRewarded(String adUnitId) {
         if (m_rewardeds.containsKey(adUnitId) == true) {
             this.assertionError("already init rewarded: %s", adUnitId);
+
+            return false;
         }
 
         this.logMessage("initRewarded adUnitId: %s"
@@ -410,7 +395,11 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
                 , adUnitId
                 , e.getMessage()
             );
+
+            return false;
         }
+
+        return true;
     }
 
     public boolean canOfferRewarded(String adUnitId, String placement) {
@@ -514,6 +503,18 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         application.onMengineAdRevenue(revenue);
     }
 
+    public boolean isConsentFlowUserGeographyGDPR() {
+        AppLovinSdkConfiguration configuration = m_appLovinSdk.getConfiguration();
+
+        AppLovinSdkConfiguration.ConsentFlowUserGeography geography = configuration.getConsentFlowUserGeography();
+
+        if (geography != AppLovinSdkConfiguration.ConsentFlowUserGeography.GDPR) {
+            return false;
+        }
+
+        return true;
+    }
+
     public void showConsentFlow() {
         MengineActivity activity = this.getMengineActivity();
 
@@ -523,15 +524,21 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             @Override
             public void onCompleted(final AppLovinCmpError error) {
                 if (error != null) {
-                    MengineAppLovinPlugin.this.logError("Failed to show consent dialog error: %s [%d]"
+                    MengineAppLovinPlugin.this.logError("Failed to show consent dialog error: %s [%d] cmp: %s [%d]"
                         , error.getMessage()
                         , error.getCode()
+                        , error.getCmpMessage()
+                        , error.getCmpCode()
                     );
+
+                    MengineAppLovinPlugin.this.pythonCall("onAppLovinConsentFlowError");
 
                     return;
                 }
 
                 MengineAppLovinPlugin.this.logMessage("Consent dialog was shown");
+
+                MengineAppLovinPlugin.this.pythonCall("onAppLovinConsentFlowCompleted");
             }
         } );
     }

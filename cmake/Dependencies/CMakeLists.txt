@@ -426,9 +426,6 @@ endif()
 
 if(MENGINE_DEPENDENCE_OPENSSL AND (NOT MENGINE_TARGET_IOS AND NOT MENGINE_TARGET_IOS_SIMULATOR))
     message("================openssl================")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openssl/CMakeLists.txt ${THIRDPARTY_DIR}/openssl/CMakeLists.txt COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openssl/ssl/CMakeLists.txt ${THIRDPARTY_DIR}/openssl/ssl/CMakeLists.txt COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openssl/crypto/CMakeLists.txt ${THIRDPARTY_DIR}/openssl/crypto/CMakeLists.txt COPYONLY)
     
     set(WITH_APPS OFF CACHE BOOL "WITH_APPS" FORCE)
     set(MSVC_DYNAMIC_RUNTIME ${MENGINE_DYNAMIC_CRT} CACHE BOOL "MSVC_DYNAMIC_RUNTIME" FORCE)
@@ -457,7 +454,6 @@ endif()
 
 if(MENGINE_DEPENDENCE_CURL)
     message("================curl================")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/curl/CMakeLists.txt ${THIRDPARTY_DIR}/curl/CMakeLists.txt COPYONLY)
     
     set(LIBCURL_OUTPUT_NAME curl CACHE STRING "Basename of the curl library" FORCE)
     set(BUILD_CURL_EXE OFF CACHE BOOL "Set to ON to build curl executable." FORCE)

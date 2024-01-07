@@ -23,10 +23,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+cmake_minimum_required( VERSION 3.1.0 )
 set( CMAKE_LEGACY_CYGWIN_WIN32 0 )
 project( openssl )
-cmake_minimum_required( VERSION 3.1.0 )
 
 set( CMAKE_DISABLE_SOURCE_CHANGES ON )
 set( CMAKE_DISABLE_IN_SOURCE_BUILD ON )
@@ -203,6 +202,15 @@ install( FILES
   DESTINATION share/openssl )
 
 install( DIRECTORY doc DESTINATION share )
+
+set( prefix      "${CMAKE_INSTALL_PREFIX}" )
+set( includedir  "include" )
+set( libdir      "lib" )
+get_target_property( libcrypto crypto OUTPUT_NAME )
+get_target_property( libssl ssl OUTPUT_NAME )
+configure_file(openssl.pc.in.cmake openssl.pc @ONLY)
+install (FILES ${CMAKE_CURRENT_BINARY_DIR}/openssl.pc
+  DESTINATION lib/pkgconfig)
 
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in

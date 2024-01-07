@@ -9,7 +9,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool Utf8NextCode( const Utf8 ** _utf8, const Utf8 * _utf8End, uint32_t * const _utf8Code )
         {
-            uint32_t code;
+            utf8::utfchar32_t code;
             utf8::internal::utf_error err = utf8::internal::validate_next( *_utf8, _utf8End, code );
 
             if( err != utf8::internal::UTF8_OK )
@@ -17,7 +17,7 @@ namespace Mengine
                 return false;
             }
 
-            *_utf8Code = code;
+            *_utf8Code = (uint32_t)code;
 
             return true;
         }

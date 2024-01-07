@@ -336,10 +336,6 @@ PLUGIN_EXPORT( AndroidNativePython );
 PLUGIN_EXPORT( Optick );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC
-PLUGIN_EXPORT( GameAnalytics );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_APPLE_GENERALDATAPROTECTIONREGULATION_STATIC
 PLUGIN_EXPORT( AppleGeneralDataProtectionRegulation );
 #endif
@@ -1342,10 +1338,6 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativePython, "plugin AndroidKernelPython...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#ifdef MENGINE_PLUGIN_GAMEANALYTICS_STATIC
-        MENGINE_ADD_PLUGIN( GameAnalytics, "plugin GameAnalytics...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_GENERALDATAPROTECTIONREGULATION_STATIC

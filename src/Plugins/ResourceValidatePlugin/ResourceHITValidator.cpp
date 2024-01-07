@@ -31,10 +31,7 @@ namespace Mengine
             return false;
         }
 
-        const FilePath & filePath = content->getFilePath();
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( stream == nullptr )
         {

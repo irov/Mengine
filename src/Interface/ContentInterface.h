@@ -3,6 +3,9 @@
 #include "Interface/ServantInterface.h"
 
 #include "Interface/FileGroupInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/InputStreamInterface.h"
+#include "Interface/OutputStreamInterface.h"
 #include "Interface/DataflowInterface.h"
 
 #include "Kernel/FilePath.h"
@@ -38,6 +41,13 @@ namespace Mengine
 
     public:
         virtual bool exist( bool _recursive ) const = 0;
+
+    public:
+        virtual MemoryInterfacePtr createMemoryFile( bool _stream, bool _share, const DocumentInterfacePtr & _doc ) = 0;
+        virtual MemoryInterfacePtr createMemoryFileString( bool _stream, bool _share, const DocumentInterfacePtr & _doc ) = 0;
+        virtual InputStreamInterfacePtr openInputStreamFile( bool _streaming, bool _share, const DocumentInterfacePtr & _doc ) = 0;
+        virtual OutputStreamInterfacePtr openOutputStreamFile( bool _withTemp, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool closeOutputStreamFile( const OutputStreamInterfacePtr & _stream ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ContentInterface> ContentInterfacePtr;

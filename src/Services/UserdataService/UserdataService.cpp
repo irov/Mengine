@@ -121,10 +121,7 @@ namespace Mengine
 
         const ContentInterfacePtr & content = desc.content;
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, _doc );
+        InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "data '%s' invalid open file '%s'"
             , _name.c_str()
@@ -168,10 +165,7 @@ namespace Mengine
 
         const ContentInterfacePtr & content = desc.content;
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, filePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = content->openOutputStreamFile( true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "data '%s' invalid open file '%s'"
             , _name.c_str()
@@ -191,7 +185,7 @@ namespace Mengine
             return false;
         }
 
-        if( Helper::closeOutputStreamFile( fileGroup, stream ) == false )
+        if( content->closeOutputStreamFile( stream ) == false )
         {
             LOGGER_ERROR( "data '%s' invalid close file '%s'"
                 , _name.c_str()

@@ -805,10 +805,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MovieKeyConverterXMLToAEK::writeFramePackage_( const Blobject & _buffer )
     {
-        const FileGroupInterfacePtr & outputFileGroup = m_options.outputContent->getFileGroup();
-        const FilePath & outputFilePath = m_options.outputContent->getFilePath();
-
-        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( outputFileGroup, outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr output_stream = m_options.outputContent->openOutputStreamFile( true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( output_stream, "invalid open file '%s'"
             , Helper::getContentFullPath( m_options.outputContent )
@@ -826,7 +823,7 @@ namespace Mengine
             return false;
         }
 
-        if( Helper::closeOutputStreamFile( outputFileGroup, output_stream ) == false )
+        if( m_options.outputContent->closeOutputStreamFile( output_stream ) == false )
         {
             LOGGER_ERROR( "invalid close file '%s'"
                 , Helper::getContentFullPath( m_options.outputContent )

@@ -37,10 +37,7 @@ namespace Mengine
         if( PREFETCHER_SERVICE()
             ->getStream( _content, &memory ) == false )
         {
-            const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
-            const FilePath & filePath = _content->getFilePath();
-
-            InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+            InputStreamInterfacePtr stream = _content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't open file '%s'"
                 , Helper::getContentFullPath( _content )

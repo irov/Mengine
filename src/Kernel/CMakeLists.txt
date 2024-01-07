@@ -882,6 +882,9 @@ Core
     ResolutionHelper.cpp
     ResolutionHelper.h
     
+    SemaphoreHelper.cpp
+    SemaphoreHelper.h
+    
     SHA1.cpp
     SHA1.h
     

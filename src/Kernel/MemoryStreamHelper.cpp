@@ -121,16 +121,6 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryContent( const ContentInterfacePtr & _content, bool _stream, bool _share, const DocumentInterfacePtr & _doc )
-        {
-            const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
-            const FilePath & filePath = _content->getFilePath();
-
-            MemoryInterfacePtr memory = Helper::createMemoryFile( fileGroup, filePath, _stream, _share, _doc );
-
-            return memory;
-        }
-        //////////////////////////////////////////////////////////////////////////
         MemoryInterfacePtr createMemoryBuffer( size_t _size, const DocumentInterfacePtr & _doc )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()

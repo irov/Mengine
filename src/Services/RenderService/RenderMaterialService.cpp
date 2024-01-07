@@ -750,7 +750,7 @@ namespace Mengine
         ContentInterfacePtr convertContent = _content;
 #endif
 
-        MemoryInterfacePtr memory = Helper::createMemoryContent( convertContent, false, false, _doc );
+        MemoryInterfacePtr memory = convertContent->createMemoryFile( false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory );
 
@@ -799,7 +799,7 @@ namespace Mengine
         ContentInterfacePtr convertContent = _content;
 #endif
 
-        MemoryInterfacePtr memory = Helper::createMemoryContent( convertContent, false, false, _doc );
+        MemoryInterfacePtr memory = convertContent->createMemoryFile( false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory );
 

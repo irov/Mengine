@@ -336,7 +336,7 @@ namespace Mengine
 
         const ContentInterfacePtr & content = ttfGlyph->getGlyphContent();
 
-        MemoryInterfacePtr memory = Helper::createMemoryContent( content, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        MemoryInterfacePtr memory = content->createMemoryFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( memory == nullptr )
         {

@@ -41,10 +41,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & fileGroup = m_content->getFileGroup();
-        const FilePath & filePath = m_content->getFilePath();
-
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = m_content->openOutputStreamFile( false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( stream == nullptr )
         {
@@ -66,9 +63,7 @@ namespace Mengine
         {
             m_stream->flush();
 
-            const FileGroupInterfacePtr & fileGroup = m_content->getFileGroup();
-
-            Helper::closeOutputStreamFile( fileGroup, m_stream );
+            m_content->closeOutputStreamFile( m_stream );
             m_stream = nullptr;
         }
 

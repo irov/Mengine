@@ -22,10 +22,7 @@ namespace Mengine
     {
         const ContentInterfacePtr & content = this->getContent();
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
-        MemoryInterfacePtr buffer = Helper::createMemoryFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        MemoryInterfacePtr buffer = content->createMemoryFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 

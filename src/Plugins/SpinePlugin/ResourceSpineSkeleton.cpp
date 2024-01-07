@@ -6,6 +6,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
+#include "Kernel/ContentHelper.h"
 
 namespace Mengine
 {
@@ -50,8 +51,8 @@ namespace Mengine
 
         const ContentInterfacePtr & content = this->getContent();
 
-        const FilePath & filePath = content->getFilePath();
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
 
         MemoryInterfacePtr skeleton_memory = Helper::createMemoryCacheFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ASSERTION_MEMORY_PANIC( skeleton_memory );
@@ -74,7 +75,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "resource spine skeleton '%s' invalid read skeleton data, file path '%s'"
                 , this->getName().c_str()
-                , filePath.c_str()
+                , Helper::getContentFullPath( content )
             );
             return false;
         }

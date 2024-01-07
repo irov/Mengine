@@ -31,11 +31,8 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool JSONService::load( const ContentInterfacePtr & _content, jpp::object * const _obj, const DocumentInterfacePtr & _doc )
-    {
-        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
-        const FilePath & filePath = _content->getFilePath();
-
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, _doc );
+    {        
+        InputStreamInterfacePtr stream = _content->openInputStreamFile( false, false, _doc );
 
         if( stream == nullptr )
         {

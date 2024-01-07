@@ -136,10 +136,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::saveImage( const RenderTextureInterfacePtr & _texture, const ContentInterfacePtr & _content )
     {
-        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
-        const FilePath & filePath = _content->getFilePath();
-
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, filePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = _content->openOutputStreamFile( true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create file '%s'"
             , Helper::getContentFullPath( _content )
@@ -203,7 +200,7 @@ namespace Mengine
 
         image->unlock( locked, 0, true );
 
-        if( Helper::closeOutputStreamFile( fileGroup, stream ) == false )
+        if( _content->closeOutputStreamFile( stream ) == false )
         {
             LOGGER_ERROR( "can't close file '%s'"
                 , Helper::getContentFullPath( _content )

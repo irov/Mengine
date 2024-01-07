@@ -33,10 +33,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonFileLogger::initialize( const ContentInterfacePtr & _content )
     {
-        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
-        const FilePath & filePath = _content->getFilePath();
-
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = _content->openOutputStreamFile( false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream );
 

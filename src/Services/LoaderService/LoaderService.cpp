@@ -151,10 +151,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderService::validation( const ContentInterfacePtr & _content, uint32_t _metaVersion ) const
     {
-        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
-        const FilePath & filePath = _content->getFilePath();
-
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr stream = _content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( stream == nullptr )
         {
@@ -351,7 +348,7 @@ namespace Mengine
                 return false;
             }
 
-            InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( fileGroup, filePath, false, false, _doc );
+            InputStreamInterfacePtr file_bin = _content->openInputStreamFile( false, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( file_bin );
 
@@ -466,10 +463,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
-        const FilePath & filePath = _content->getFilePath();
-
-        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( fileGroup, filePath, false, false, _doc );
+        InputStreamInterfacePtr file_bin = _content->openInputStreamFile( false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file_bin );
 

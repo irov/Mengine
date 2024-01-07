@@ -78,13 +78,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool HotspotImageConverterPNGToHIT::convert()
     {
-        const FileGroupInterfacePtr & inputFileGroup = m_options.inputContent->getFileGroup();
-        const FilePath & inputFilePath = m_options.inputContent->getFilePath();
-
-        const FileGroupInterfacePtr & outputFileGroup = m_options.outputContent->getFileGroup();
-        const FilePath & outputFilePath = m_options.outputContent->getFilePath();
-
-        InputStreamInterfacePtr input_stream = Helper::openInputStreamFile( inputFileGroup, inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr input_stream = m_options.inputContent->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( input_stream, "Image file '%s' was not found"
             , Helper::getContentFullPath( m_options.inputContent )
@@ -144,7 +138,7 @@ namespace Mengine
 
         this->makeMipMapLevel_( buffer, width, height, mimmap_level );
 
-        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( outputFileGroup, outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr output_stream = m_options.outputContent->openOutputStreamFile( true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( output_stream, "HIT file '%s' not create (open file)"
             , Helper::getContentFullPath( m_options.outputContent )
@@ -180,7 +174,7 @@ namespace Mengine
 
         encoder->finalize();
 
-        if( Helper::closeOutputStreamFile( outputFileGroup, output_stream ) == false )
+        if( m_options.outputContent->closeOutputStreamFile( output_stream ) == false )
         {
             LOGGER_ERROR( "HIT file '%s' invalid close"
                 , Helper::getContentFullPath( m_options.outputContent )

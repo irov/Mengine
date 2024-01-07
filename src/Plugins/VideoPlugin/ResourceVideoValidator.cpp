@@ -139,10 +139,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-        const FilePath & filePath = content->getFilePath();
-
-        InputStreamInterfacePtr videoStream = Helper::openInputStreamFile( fileGroup, filePath, true, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr videoStream = content->openInputStreamFile( true, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( videoStream == nullptr )
         {

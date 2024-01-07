@@ -2262,10 +2262,7 @@ namespace Mengine
 
                 const ContentInterfacePtr & content = resource->getContent();
 
-                const FilePath & filePath = content->getFilePath();
-                const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-
-                InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_PYBIND );
+                InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_PYBIND );
 
                 if( stream == nullptr )
                 {

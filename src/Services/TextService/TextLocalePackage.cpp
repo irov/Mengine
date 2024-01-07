@@ -26,10 +26,7 @@ namespace Mengine
         m_locale = _locale;
         m_content = _content;
 
-        const FileGroupInterfacePtr & fileGroup = m_content->getFileGroup();
-        const FilePath & filePath = m_content->getFilePath();
-
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr stream = m_content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s'"
             , Helper::getContentFullPath( m_content )

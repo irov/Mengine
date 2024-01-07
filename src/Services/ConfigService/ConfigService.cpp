@@ -119,10 +119,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
-        const FilePath & filePath = _content->getFilePath();
-
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, _doc );
+        InputStreamInterfacePtr stream = _content->openInputStreamFile( false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open config '%s' (doc: %s)"
             , Helper::getContentFullPath( _content )
@@ -133,6 +130,8 @@ namespace Mengine
 
         if( _configType == ConstString::none() )
         {
+            const FilePath & filePath = _content->getFilePath();
+
             configType = Helper::getFilePathExt( filePath );
         }
 

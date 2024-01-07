@@ -602,10 +602,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
-        const FilePath & filePath = _content->getFilePath();
-
-        MemoryInterfacePtr memory = Helper::createMemoryFileString( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        MemoryInterfacePtr memory = _content->createMemoryFileString( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( memory == nullptr )
         {

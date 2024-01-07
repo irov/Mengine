@@ -452,10 +452,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SoundDecoderInterfacePtr SoundService::createSoundDecoder_( const ContentInterfacePtr & _content, bool _streamable, const DocumentInterfacePtr & _doc )
     {
-        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
-        const FilePath & filePath = _content->getFilePath();
-
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, _streamable, false, _doc );
+        InputStreamInterfacePtr stream = _content->openInputStreamFile( _streamable, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't open sound file '%s'"
             , Helper::getContentFullPath( _content )

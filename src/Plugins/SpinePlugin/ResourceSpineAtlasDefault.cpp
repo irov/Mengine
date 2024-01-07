@@ -110,7 +110,7 @@ namespace Mengine
         spAtlas * atlas = spAtlas_create( atlas_memory_buffer, (int)atlas_memory_size, "", this );
         MENGINE_ASSERTION_MEMORY_PANIC( atlas );
 
-        atlas_memory = nullptr;        
+        atlas_memory = nullptr;
 
         m_atlas = atlas;
 

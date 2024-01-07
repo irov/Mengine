@@ -26,12 +26,9 @@ namespace Mengine
     {
         const ContentInterfacePtr & content = _resource->getContent();
 
-        const FilePath & filePath = content->getFilePath();
-        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
-
         bool streamable = _resource->isStreamable();
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, streamable, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr stream = content->openInputStreamFile( streamable, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( stream == nullptr )
         {

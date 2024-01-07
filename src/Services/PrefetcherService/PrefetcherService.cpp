@@ -314,17 +314,17 @@ namespace Mengine
             return true;
         }
 
-        ThreadTaskPrefetchDataflowPtr prefetcherDataflow = m_factoryThreadTaskPrefetchDataflow->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( prefetcherDataflow );
+        MENGINE_ASSERTION_MEMORY_PANIC( task );
 
-        prefetcherDataflow->initialize( _content, _observer );
+        task->initialize( _content, _observer );
 
-        prefetcherDataflow->setDataflowContext( *_context );
+        task->setDataflowContext( *_context );
 
         PrefetchReceiverPtr new_receiver = m_factoryPrefetchReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        if( new_receiver->initialize( prefetcherDataflow ) == false )
+        if( new_receiver->initialize( task ) == false )
         {
             return false;
         }
@@ -334,7 +334,7 @@ namespace Mengine
 
         m_prefetchReceivers.emplace( fileGroup, filePath, new_receiver );
 
-        m_threadQueue->addTask( prefetcherDataflow );
+        m_threadQueue->addTask( task );
 
         return true;
     }

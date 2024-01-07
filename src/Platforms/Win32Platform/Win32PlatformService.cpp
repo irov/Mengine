@@ -8,6 +8,7 @@
 #include "Interface/ProfilerSystemInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/ServiceInterface.h"
 
@@ -839,6 +840,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::dispatchMainThreadEvent( const LambdaEvent & _event )
     {
+        bool isMainThread = THREAD_SERVICE()
+            ->isMainThread();
+
+        if( isMainThread == true )
+        {
+            _event();
+
+            return;
+        }
+
         m_dispatchEventMutex->lock();
 
         m_dispatchEvents.emplace_back( _event );

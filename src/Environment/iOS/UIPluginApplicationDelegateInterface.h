@@ -9,6 +9,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
 
 @optional
+- (BOOL)beginLoop;
+- (void)endLoop;
 
 - (void)event:(NSString *)name args:(NSArray *)args;
 

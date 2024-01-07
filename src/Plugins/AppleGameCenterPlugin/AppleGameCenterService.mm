@@ -3,6 +3,7 @@
 #include "Environment/Apple/AppleErrorHelper.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/PlatformHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -50,6 +51,8 @@ namespace Mengine
     bool AppleGameCenterService::connect()
     {
         [m_gameCenterDelegate login:^(NSError * _Nullable _error) {
+            AppleGameCenterProviderInterfacePtr provider = m_provider;
+            
             if( _error != nil )
             {
                 m_gameCenterAuthenticate = false;
@@ -60,9 +63,11 @@ namespace Mengine
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
-                if( m_provider != nullptr )
+                if( provider != nullptr )
                 {
-                    m_provider->onAppleGameCenterAuthenticate( false );
+                    Mengine::Helper::dispatchMainThreadEvent([provider]() {
+                        provider->onAppleGameCenterAuthenticate( false );
+                    });
                 }
                 
                 return;
@@ -74,21 +79,27 @@ namespace Mengine
             {
                 m_gameCenterAuthenticate = true;
                 
-                if( m_provider != nullptr )
+                if( provider != nullptr )
                 {
-                    m_provider->onAppleGameCenterAuthenticate( true );
+                    Mengine::Helper::dispatchMainThreadEvent([provider]() {
+                        provider->onAppleGameCenterAuthenticate( true );
+                    });
                 }
             }
             
             m_achievementsSynchronization = false;
             m_achievementsComplete.clear();
             
-            if( m_provider != nullptr )
+            if( provider != nullptr )
             {
-                m_provider->onAppleGameCenterSynchronizate( false );
+                Mengine::Helper::dispatchMainThreadEvent([provider]() {
+                    provider->onAppleGameCenterSynchronizate( false );
+                });
             }
             
             [m_gameCenterDelegate loadCompletedAchievements:^(NSError * _Nullable _error, NSArray * _Nullable _completedAchievements) {
+                AppleGameCenterProviderInterfacePtr provider = m_provider;
+                
                 if( _error != nil )
                 {
                     m_achievementsSynchronization = false;
@@ -97,9 +108,11 @@ namespace Mengine
                        , Helper::AppleGetMessageFromNSError(_error).c_str()
                     );
                     
-                    if( m_provider != nullptr )
+                    if( provider != nullptr )
                     {
-                        m_provider->onAppleGameCenterSynchronizate( false );
+                        Mengine::Helper::dispatchMainThreadEvent([provider]() {
+                            provider->onAppleGameCenterSynchronizate( false );
+                        });
                     }
                     
                     return;
@@ -121,9 +134,11 @@ namespace Mengine
                 
                 m_achievementsSynchronization = true;
                 
-                if( m_provider != nullptr )
+                if( provider != nullptr )
                 {
-                    m_provider->onAppleGameCenterSynchronizate( true );
+                    Mengine::Helper::dispatchMainThreadEvent([provider]() {
+                        provider->onAppleGameCenterSynchronizate( true );
+                    });
                 }
             }] ;
         }];
@@ -162,7 +177,9 @@ namespace Mengine
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
-                copy_response( false );
+                Mengine::Helper::dispatchMainThreadEvent([copy_response]() {
+                    copy_response( false );
+                });
                 
                 return;
             }
@@ -177,7 +194,9 @@ namespace Mengine
                 m_achievementsComplete.push_back( copy_achievementName );
             }
             
-            copy_response( true );
+            Mengine::Helper::dispatchMainThreadEvent([copy_response]() {
+                copy_response( true );
+            });
         }];
         
         if( result == FALSE )
@@ -251,7 +270,9 @@ namespace Mengine
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
-                copy_response( false );
+                Mengine::Helper::dispatchMainThreadEvent([copy_response]() {
+                    copy_response( false );
+                });
                 
                 return;
             }
@@ -261,7 +282,9 @@ namespace Mengine
                 , _score
             );
             
-            copy_response( true );
+            Mengine::Helper::dispatchMainThreadEvent([copy_response]() {
+                copy_response( true );
+            });
         }];
         
         if( result == FALSE )

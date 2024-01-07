@@ -2,6 +2,10 @@
 
 #include "Environment/Apple/AppleDetail.h"
 
+#include "Kernel/PlatformHelper.h"
+#include "Kernel/SemaphoreHelper.h"
+#include "Kernel/ConstStringHelper.h"
+
 @implementation AppleAppLovinApplicationDelegate
 
 static ALSdk * AppLovinSdk;
@@ -124,10 +128,14 @@ static ALSdk * AppLovinSdk;
         BOOL testModeEnabled = configuration.testModeEnabled;
         
         NSLog(@"AppLovin plugin initialize complete");
-        NSLog(@"consent flow user geography: %ld", consentFlowUserGeography);
-        NSLog(@"country code: %@", countryCode);
-        NSLog(@"app tracking transparency status: %ld", appTrackingTransparencyStatus);
-        NSLog(@"test mode enabled: %d", testModeEnabled);
+        NSLog(@"[AppLovin] consent flow user geography: %ld", consentFlowUserGeography);
+        NSLog(@"[AppLovin] country code: %@", countryCode);
+        NSLog(@"[AppLovin] app tracking transparency status: %ld", appTrackingTransparencyStatus);
+        NSLog(@"[AppLovin] test mode enabled: %d", testModeEnabled);
+        
+        Mengine::Helper::dispatchMainThreadEvent([]() {
+            Mengine::Helper::activateSemaphore(STRINGIZE_STRING_LOCAL("AppLovinSdkInitialized"));
+        });
     }];
     
     AppleAppLovinApplicationDelegate.AppLovinSdk = appLovinSdk;

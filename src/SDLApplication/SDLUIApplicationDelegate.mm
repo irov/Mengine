@@ -73,7 +73,7 @@ Mengine::SDLApplication MENGINE_application;
     
     for (id delegate in self.m_pluginDelegates) {
         if ([delegate application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
-            NSLog(@"Mengine application initialize plugin %@ failed", NSStringFromClass([delegate class]));
+            NSLog(@"Mengine application didFinishLaunchingWithOptions plugin %@ failed", NSStringFromClass([delegate class]));
             
             return NO;
         }
@@ -89,6 +89,12 @@ Mengine::SDLApplication MENGINE_application;
 
     if( initialize == false ) {
         NSLog(@"Mengine application initialize [Failed]");
+        
+        NSLog(@"Mengine application begin finalize");
+        
+        MENGINE_application.finalize();
+        
+        NSLog(@"Mengine application end finalize");
         
         SDL_iPhoneSetEventPump( SDL_FALSE );
         
@@ -106,9 +112,11 @@ Mengine::SDLApplication MENGINE_application;
     for (id delegate in self.m_pluginDelegates) {
         NSLog(@"Mengine application didRegisterForRemoteNotificationsWithDeviceToken");
         
-        if ([delegate respondsToSelector:@selector(application: didRegisterForRemoteNotificationsWithDeviceToken:)] == YES) {
-            [delegate application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+        if ([delegate respondsToSelector:@selector(application: didRegisterForRemoteNotificationsWithDeviceToken:)] == NO) {
+            continue;
         }
+        
+        [delegate application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
     }
 }
 
@@ -116,9 +124,11 @@ Mengine::SDLApplication MENGINE_application;
     NSLog(@"Mengine application didReceiveRemoteNotification");
     
     for (id delegate in self.m_pluginDelegates) {
-        if ([delegate respondsToSelector:@selector(application: didReceiveRemoteNotification: fetchCompletionHandler:)] == YES) {
-            [delegate application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+        if ([delegate respondsToSelector:@selector(application: didReceiveRemoteNotification: fetchCompletionHandler:)] == NO) {
+            continue;
         }
+        
+        [delegate application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
     }
 }
 
@@ -126,9 +136,11 @@ Mengine::SDLApplication MENGINE_application;
     NSLog(@"Mengine application applicationDidBecomeActive");
     
     for (id delegate in self.m_pluginDelegates) {
-        if ([delegate respondsToSelector:@selector(applicationDidBecomeActive:)] == YES) {
-            [delegate applicationDidBecomeActive:application];
+        if ([delegate respondsToSelector:@selector(applicationDidBecomeActive:)] == NO) {
+            continue;
         }
+        
+        [delegate applicationDidBecomeActive:application];
     }
 }
 
@@ -136,9 +148,11 @@ Mengine::SDLApplication MENGINE_application;
     NSLog(@"Mengine application applicationWillEnterForeground");
     
     for (id delegate in self.m_pluginDelegates) {
-        if ([delegate respondsToSelector:@selector(applicationWillEnterForeground:)] == YES) {
-            [delegate applicationWillEnterForeground:application];
+        if ([delegate respondsToSelector:@selector(applicationWillEnterForeground:)] == NO) {
+            continue;
         }
+        
+        [delegate applicationWillEnterForeground:application];
     }
 }
 
@@ -146,9 +160,11 @@ Mengine::SDLApplication MENGINE_application;
     NSLog(@"Mengine application applicationDidEnterBackground");
     
     for (id delegate in self.m_pluginDelegates) {
-        if ([delegate respondsToSelector:@selector(applicationDidEnterBackground:)] == YES) {
-            [delegate applicationDidEnterBackground:application];
+        if ([delegate respondsToSelector:@selector(applicationDidEnterBackground:)] == NO) {
+            continue;
         }
+        
+        [delegate applicationDidEnterBackground:application];
     }
 }
 
@@ -156,9 +172,11 @@ Mengine::SDLApplication MENGINE_application;
     NSLog(@"Mengine application applicationWillResignActive");
     
     for (id delegate in self.m_pluginDelegates) {
-        if ([delegate respondsToSelector:@selector(applicationWillResignActive:)] == YES) {
-            [delegate applicationWillResignActive:application];
+        if ([delegate respondsToSelector:@selector(applicationWillResignActive:)] == NO) {
+            continue;
         }
+        
+        [delegate applicationWillResignActive:application];
     }
 }
 
@@ -166,21 +184,25 @@ Mengine::SDLApplication MENGINE_application;
     NSLog(@"Mengine application applicationWillTerminate");
     
     for (id delegate in self.m_pluginDelegates) {
-        if ([delegate respondsToSelector:@selector(applicationWillTerminate:)] == YES) {
-            [delegate applicationWillTerminate:application];
+        if ([delegate respondsToSelector:@selector(applicationWillTerminate:)] == NO) {
+            continue;
         }
+        
+        [delegate applicationWillTerminate:application];
     }
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options API_AVAILABLE(ios(9.0)) {
     for (id delegate in self.m_pluginDelegates) {
-        if ([delegate respondsToSelector:@selector(application: openURL: options: handled:)] == YES) {
-            BOOL handler = NO;
-            BOOL result = [delegate application:application openURL:url options:options handled:&handler];
-            
-            if (handler == YES) {
-                return result;
-            }
+        if ([delegate respondsToSelector:@selector(application: openURL: options: handled:)] == NO) {
+            continue;
+        }
+        
+        BOOL handler = NO;
+        BOOL result = [delegate application:application openURL:url options:options handled:&handler];
+        
+        if (handler == YES) {
+            return result;
         }
     }
     
@@ -209,6 +231,14 @@ Mengine::SDLApplication MENGINE_application;
 }
 
 - (void)postFinishLaunch {
+    for (id delegate in self.m_pluginDelegates) {
+        if ([delegate respondsToSelector:@selector(beginLoop:)] == NO) {
+            continue;
+        }
+         
+        [delegate beginLoop];
+    }
+    
     NSLog(@"Mengine application start loop");
     
     MENGINE_application.loop();
@@ -222,6 +252,14 @@ Mengine::SDLApplication MENGINE_application;
     NSLog(@"Mengine application end finalize");
     
     SDL_iPhoneSetEventPump( SDL_FALSE );
+    
+    for (id delegate in self.m_pluginDelegates) {
+        if ([delegate respondsToSelector:@selector(endLoop:)] == NO) {
+            continue;
+        }
+         
+        [delegate endLoop];
+    }
 }
 
 @end

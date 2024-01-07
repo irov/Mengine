@@ -10,6 +10,7 @@
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Interface/AndroidEnvironmentServiceInterface.h"
@@ -1423,6 +1424,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::dispatchMainThreadEvent( const LambdaEvent & _event )
     {
+        bool isMainThread = THREAD_SERVICE()
+            ->isMainThread();
+
+        if( isMainThread == true )
+        {
+            _event();
+
+            return;
+        }
+        
         m_dispatchEventMutex->lock();
 
         m_dispatchEvents.emplace_back( _event );

@@ -15,6 +15,7 @@
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -43,8 +44,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ConfigService::_initializeService()
     {
-        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 

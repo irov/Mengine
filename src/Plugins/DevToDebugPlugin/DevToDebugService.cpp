@@ -40,6 +40,7 @@
 #include "Kernel/JSONHelper.h"
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -160,11 +161,8 @@ namespace Mengine
             , m_dsn.c_str()
         );
 
-        m_mutexTabs = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        m_mutexCommands = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        m_mutexTabs = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
+        m_mutexCommands = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE, &DevToDebugService::notifyBootstrapperRunComplete_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME, &DevToDebugService::notifyBootstrapperFinalizeGame_, MENGINE_DOCUMENT_FACTORABLE );

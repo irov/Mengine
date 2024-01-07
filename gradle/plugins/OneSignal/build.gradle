@@ -5,7 +5,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.onesignal:OneSignal:4.8.6'
+    implementation 'com.onesignal:OneSignal:4.8.7'
 }
-
-apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

@@ -11,5 +11,3 @@ dependencies {
     implementation 'com.facebook.android:facebook-android-sdk:16.2.0'
     implementation 'com.facebook.android:facebook-login:16.2.0'
 }
-
-apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

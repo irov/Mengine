@@ -9,7 +9,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.adjust.sdk:adjust-android:4.33.5'
+    implementation 'com.adjust.sdk:adjust-android:4.36.0'
 }
-
-apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

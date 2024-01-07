@@ -15,6 +15,9 @@ src
     AndroidEnvironmentService.h
     AndroidEnvironmentService.cpp
     
+    AndroidSemaphoreListener.h
+    AndroidSemaphoreListener.cpp
+    
     ConstStringHolderJString.h
     ConstStringHolderJString.cpp
     

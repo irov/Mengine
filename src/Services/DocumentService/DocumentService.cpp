@@ -8,6 +8,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdArg.h"
@@ -36,8 +37,7 @@ namespace Mengine
 
         SERVICE_WAIT( ThreadSystemInterface, [this]()
         {
-            ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-                ->createMutex( nullptr );
+            ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( DocumentInterfacePtr::none() );
 
             m_factoryDocument->setMutex( mutex );
 

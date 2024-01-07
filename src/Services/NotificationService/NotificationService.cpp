@@ -1,6 +1,5 @@
 #include "NotificationService.h"
 
-#include "Interface/ThreadSystemInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/Assertion.h"
@@ -8,6 +7,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/MixinDebug.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -41,8 +41,7 @@ namespace Mengine
         {
             NotificationArea & area = m_areas[index];
 
-            ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+            ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 

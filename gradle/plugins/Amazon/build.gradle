@@ -4,5 +4,3 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/Amazon/amazon.g
 android {
     namespace "org.Mengine.Plugin.Amazon"
 }
-
-apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

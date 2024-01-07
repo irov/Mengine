@@ -15,6 +15,7 @@
 #include "Kernel/FilePathDateTimeHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ProfilerSystem, Mengine::OptickProfilerSystem );
@@ -40,8 +41,7 @@ namespace Mengine
 
         SERVICE_WAIT( ThreadSystemInterface, [this]()
         {
-            ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+            ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             m_factoryThreadProfilers->setMutex( mutex );
             m_factoryFrameProfilers->setMutex( mutex );

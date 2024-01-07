@@ -1,13 +1,13 @@
 #include "FileModifyHookService.h"
 
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionContainer.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdString.h"
 
@@ -44,8 +44,7 @@ namespace Mengine
             this->checkFileModifies();
         }, MENGINE_DOCUMENT_FACTORABLE );
 
-        ThreadMutexInterfacePtr fileModifyMutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr fileModifyMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         m_fileModifyMutex = fileModifyMutex;
 

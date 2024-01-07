@@ -1,7 +1,5 @@
 #include "MemoryService.h"
 
-#include "Interface/ThreadSystemInterface.h"
-
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -10,6 +8,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -36,15 +35,13 @@ namespace Mengine
         m_factoryMemoryBuffer = Helper::makeFactoryPool<MemoryBuffer, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryMemoryProxy = Helper::makeFactoryPool<MemoryProxy, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
 
-        ThreadMutexInterfacePtr memoryCacheMutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr memoryCacheMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memoryCacheMutex );
 
         m_memoryCacheMutex = memoryCacheMutex;
 
-        ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr memoryFactoryMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memoryFactoryMutex );
 

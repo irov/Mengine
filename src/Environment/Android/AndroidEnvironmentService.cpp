@@ -8,10 +8,12 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
+#include "Interface/SemaphoreServiceInterface.h"
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
 
+#include "AndroidSemaphoreListener.h"
 #include "AndroidProxyLogger.h"
 
 #include "Kernel/AssertionObservable.h"
@@ -235,6 +237,32 @@ extern "C"
         jint result = (jint)projectVersion;
 
         return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AnroidEnvironmentService_1activateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
+    {
+        Mengine::ConstString name = Mengine::Helper::makeConstStringFromJString( env, _name );
+
+        SEMAPHORE_SERVICE()
+            ->activateSemaphore( name );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AnroidEnvironmentService_1deactivateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
+    {
+        Mengine::ConstString name = Mengine::Helper::makeConstStringFromJString( env, _name );
+
+        SEMAPHORE_SERVICE()
+                ->deactivateSemaphore( name );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AnroidEnvironmentService_1waitSemaphore )(JNIEnv * env, jclass cls, jstring _name, jobject _cb)
+    {
+        Mengine::ConstString name = Mengine::Helper::makeConstStringFromJString( env, _name );
+
+        Mengine::AndroidSemaphoreListenerPtr listener = Mengine::Helper::makeFactorableUnique<Mengine::AndroidSemaphoreListener>( MENGINE_DOCUMENT_FUNCTION, env, _cb );
+
+        SEMAPHORE_SERVICE()
+            ->waitSemaphore( name, listener );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1log )(JNIEnv * env, jclass cls, jint _level, jstring _tag, jstring _msg)

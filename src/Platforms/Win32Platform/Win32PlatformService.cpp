@@ -51,6 +51,7 @@
 #include "Kernel/ExecutorHelper.h"
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/Utf8Helper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -402,8 +403,7 @@ namespace Mengine
             , deviceSeed
         );
 
-        ThreadMutexInterfacePtr dispatchEventMutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr dispatchEventMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dispatchEventMutex );
 

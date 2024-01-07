@@ -9,6 +9,7 @@ import androidx.annotation.Size;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,7 +17,6 @@ import java.util.TimerTask;
 public class MenginePlugin implements MenginePluginInterface {
     private MengineApplication m_application;
     private MengineActivity m_activity;
-    private ArrayList<MenginePluginExtension> m_extensions;
     private String m_pluginName;
 
     public MengineApplication getMengineApplication() {
@@ -31,15 +31,11 @@ public class MenginePlugin implements MenginePluginInterface {
         m_application = application;
         m_pluginName = pluginName;
 
-        m_extensions = new ArrayList<>();
-
         return true;
     }
 
     public void onFinalize(MengineApplication application) {
         m_application = null;
-
-        m_extensions = null;
     }
 
     public void setActivity(MengineActivity activity) {
@@ -183,6 +179,14 @@ public class MenginePlugin implements MenginePluginInterface {
         m_activity.activateSemaphore(name);
     }
 
+    public void deactivateSemaphore(String name) {
+        if (m_activity == null) {
+            return;
+        }
+
+        m_activity.deactivateSemaphore(name);
+    }
+
     public void waitSemaphore(String name, MengineFunctorVoid cb) {
         if (m_activity == null) {
             return;
@@ -233,106 +237,5 @@ public class MenginePlugin implements MenginePluginInterface {
 
     public void onState(MengineApplication application, String name, Object value) {
         //Empty
-    }
-
-    public boolean createExtension(MengineActivity activity, String type) {
-        this.logMessage("plugin [%s] add extension: %s"
-            , m_pluginName
-            , type
-        );
-
-        MenginePluginExtension extension = m_application.createPluginExtension(activity, this, type);
-
-        if (extension == null) {
-            this.logError("[ERROR] plugin [%s] invalid create extension: %s"
-                , m_pluginName
-                , type
-            );
-
-            return false;
-        }
-
-        m_extensions.add(extension);
-
-        return true;
-    }
-
-    public void onExtensionInitialize(MengineActivity activity) throws MenginePluginInvalidInitializeException {
-        Class<?> c = this.getClass();
-        Package p = c.getPackage();
-
-        if (p == null) {
-            return;
-        }
-
-        Class<?> buildConfig = MengineUtils.getPackageBuildConfig(m_pluginName, p);
-
-        Field f;
-
-        try {
-            f = buildConfig.getField("MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS");
-        } catch (NoSuchFieldException e) {
-            return;
-        } catch (NullPointerException e) {
-            this.invalidInitialize("invalid get MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS plugin: %s exception: %s [NullPointerException]"
-                , m_pluginName
-                , e.getMessage()
-            );
-
-            return;
-        } catch (SecurityException e) {
-            this.invalidInitialize("invalid get MENGINE_GRADLE_ANDROID_PLUGIN_EXTENSIONS plugin: %s exception: %s [SecurityException]"
-                , m_pluginName
-                , e.getMessage()
-            );
-
-            return;
-        }
-
-        Object extension;
-
-        try {
-            extension = f.get(this);
-        } catch (IllegalArgumentException e) {
-            this.invalidInitialize("invalid get extension from this plugin: %s exception: %s [IllegalArgumentException]"
-                , m_pluginName
-                , e.getMessage()
-            );
-
-            return;
-        } catch (IllegalAccessException e) {
-            this.invalidInitialize("invalid get extension from this plugin: %s exception: %s [IllegalAccessException]"
-                , m_pluginName
-                , e.getMessage()
-            );
-
-            return;
-        }
-
-        if (extension == null) {
-            return;
-        }
-
-        for (String extensionName : (String[])extension) {
-            if (this.createExtension(activity, extensionName) == false) {
-                this.invalidInitialize("[ERROR] invalid create extension %s"
-                    , extensionName
-                );
-
-                return;
-            }
-        }
-    }
-
-    public void onExtensionRun(MengineActivity activity) {
-        for (MenginePluginExtension extension : m_extensions) {
-            extension.onPluginExtensionRun(activity, this);
-        }
-    }
-
-    public void onExtensionFinalize(MengineActivity activity) {
-        for (MenginePluginExtension extension : m_extensions) {
-            extension.onPluginExtensionFinalize(activity, this);
-        }
     }
 }

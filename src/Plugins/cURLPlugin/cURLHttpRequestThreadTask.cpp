@@ -1,7 +1,6 @@
 #include "cURLHttpRequestThreadTask.h"
 
 #include "Interface/FileGroupInterface.h"
-#include "Interface/ThreadSystemInterface.h"
 
 #include "cURLHttpErrorHelper.h"
 
@@ -10,6 +9,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdIntTypes.h"
 
@@ -210,8 +210,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLHttpRequestThreadTask::_onThreadTaskPreparation()
     {
-        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+        ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 

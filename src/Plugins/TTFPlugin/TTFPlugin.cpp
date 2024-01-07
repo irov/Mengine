@@ -1,7 +1,6 @@
 #include "TTFPlugin.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/ThreadSystemInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
@@ -12,6 +11,7 @@
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "TTFFontPrototypeGenerator.h"
 #include "TTFFontGlyphPrototypeGenerator.h"
@@ -118,8 +118,7 @@ namespace Mengine
         VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "FontValidator" ), STRINGIZE_STRING_LOCAL( "TTFFont" ), Helper::makeFactorableUnique<TTFFontValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "FontGlyphValidator" ), STRINGIZE_STRING_LOCAL( "TTFFont" ), Helper::makeFactorableUnique<TTFFontGlyphValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
-        m_ftMutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        m_ftMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         PLUGIN_SERVICE_WAIT( DataServiceInterface, [this]()
         {

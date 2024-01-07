@@ -48,14 +48,15 @@ public class MengineActivity extends SDLActivity {
     private static native boolean AndroidEnvironmentService_writeOldLogToFile(Writer writer);
     private static native int AndroidEnvironmentService_getProjectVersion();
 
+    private static native void AnroidEnvironmentService_activateSemaphore( String name );
+    private static native void AnroidEnvironmentService_deactivateSemaphore( String name );
+    private static native void AnroidEnvironmentService_waitSemaphore( String name, Object cb );
+
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
     private static native void AndroidNativePython_call(String plugin, String method, Object args[]);
-    private static native void AndroidNativePython_activateSemaphore(String name);
 
     private boolean m_initializePython;
     private boolean m_destroy;
-
-    private Map<String, MengineSemaphore> m_semaphores;
 
     private Map<String, Integer> m_requestCodes;
 
@@ -256,10 +257,7 @@ public class MengineActivity extends SDLActivity {
         m_initializePython = false;
         m_destroy = false;
 
-        m_semaphores = new HashMap<>();
         m_requestCodes = new HashMap<>();
-
-        MengineApplication application = this.getMengineApplication();
 
         this.setState("activity.lifecycle", "create");
 
@@ -344,31 +342,6 @@ public class MengineActivity extends SDLActivity {
                 .logAndFlush();
         }
 
-        this.setState("activity.init", "plugin_create");
-
-        for (MenginePlugin p : plugins) {
-            try {
-                MengineLog.logMessage(TAG, "onExtensionInitialize plugin: %s"
-                    , p.getPluginName()
-                );
-
-                p.onExtensionInitialize(this);
-            } catch (MenginePluginInvalidInitializeException e) {
-                this.setState("activity.init", "plugin_initialize_exception." + p.getPluginName());
-
-                MengineAnalytics.buildEvent("mng_activity_init_failed")
-                    .addParameterException("reason", e)
-                    .logAndFlush();
-
-                this.finishWithAlertDialog("[ERROR] onExtensionInitialize plugin %s: exception: %s"
-                    , p.getPluginName()
-                    , e.getMessage()
-                );
-
-                return;
-            }
-        }
-
         this.setState("activity.init", "completed");
 
         MengineAnalytics.buildEvent("mng_activity_init_completed")
@@ -401,12 +374,6 @@ public class MengineActivity extends SDLActivity {
 
         for (MenginePluginEngineListener l : listeners) {
             l.onMengineCreateApplication(this);
-        }
-
-        List<MenginePlugin> plugins = this.getPlugins();
-
-        for (MenginePlugin p : plugins) {
-            p.onExtensionRun(this);
         }
     }
 
@@ -593,23 +560,18 @@ public class MengineActivity extends SDLActivity {
 
         m_destroy = true;
 
-        List<MenginePlugin> plugins = this.getPlugins();
-
-        for (MenginePlugin p : plugins) {
-            p.onExtensionFinalize(this);
-        }
-
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
             l.onDestroy(this);
         }
 
+        List<MenginePlugin> plugins = this.getPlugins();
+
         for (MenginePlugin p : plugins) {
             p.setActivity(null);
         }
 
-        m_semaphores = null;
         m_requestCodes = null;
 
         AndroidEnv_removeMengineAndroidActivityJNI();
@@ -738,8 +700,8 @@ public class MengineActivity extends SDLActivity {
      * Python Methods
      **********************************************************************************************/
 
-    public void pythonInitializePlugins() {
-        MengineLog.logInfo(TAG, "pythonInitializePlugins");
+    public void onPythonEmbeddedInitialize() {
+        MengineLog.logInfo(TAG, "onPythonEmbeddedInitialize");
 
         m_initializePython = true;
 
@@ -771,7 +733,7 @@ public class MengineActivity extends SDLActivity {
         }
     }
 
-    public void pythonFinalizePlugins() {
+    public void onPythonEmbeddedFinalize() {
         m_initializePython = false;
     }
 
@@ -827,45 +789,31 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("python.semaphore", name);
 
-        MengineSemaphore semaphore = m_semaphores.get(name);
+        AnroidEnvironmentService_activateSemaphore(name);
+    }
 
-        if (semaphore == null) {
-            MengineSemaphore new_semaphore = new MengineSemaphore(true);
-
-            m_semaphores.put(name, new_semaphore);
-
+    public void deactivateSemaphore(String name) {
+        if (m_destroy == true) {
             return;
         }
 
-        semaphore.activate();
-    }
-
-    public void waitSemaphore(String name, MengineFunctorVoid cb) {
-        MengineSemaphore semaphore = m_semaphores.get(name);
-
-        if (semaphore == null) {
-            MengineSemaphore new_semaphore = new MengineSemaphore(false);
-
-            new_semaphore.addListener(cb);
-
-            m_semaphores.put(name, new_semaphore);
-
-            return;
-        }
-
-        semaphore.addListener(cb);
-    }
-
-    public void waitAndroidSemaphore(String name) {
-        MengineLog.logMessage(TAG, "waitAndroidSemaphore semaphore: %s"
+        MengineLog.logMessage(TAG, "deactivateSemaphore semaphore: %s"
             , name
         );
 
-        MengineFunctorVoid cb = () -> {
-            AndroidNativePython_activateSemaphore(name);
-        };
+        AnroidEnvironmentService_deactivateSemaphore(name);
+    }
 
-        this.waitSemaphore(name, cb);
+    public void waitSemaphore(String name, MengineFunctorVoid cb) {
+        if (m_destroy == true) {
+            return;
+        }
+
+        MengineLog.logMessage(TAG, "waitSemaphore semaphore: %s"
+            , name
+        );
+
+        AnroidEnvironmentService_waitSemaphore(name, cb);
     }
 
     /***********************************************************************************************

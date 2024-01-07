@@ -1,11 +1,11 @@
 #include "LoggerBase.h"
 
 #include "Interface/LoggerServiceInterface.h"
-#include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 namespace Mengine
 {
@@ -34,8 +34,7 @@ namespace Mengine
                 ->writeHistory( LoggerInterfacePtr::from( this ) );
         }
 
-        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 

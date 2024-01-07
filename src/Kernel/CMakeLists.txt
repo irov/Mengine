@@ -428,6 +428,8 @@ Thread
     ThreadTaskPacket.cpp
     ThreadHelper.h
     ThreadHelper.cpp
+    ThreadMutexHelper.h
+    ThreadMutexHelper.cpp
     ThreadGuard.h
     ThreadGuard.cpp
     ThreadGuardScope.h

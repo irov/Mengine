@@ -80,25 +80,6 @@ extern "C"
             _handler->addPlugin( name, new_plugin );
         } );
     }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1activateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
-    {
-        Mengine::ConstString name = Mengine::Helper::makeConstStringFromJString( env, _name );
-
-        if( s_androidNativePythonService == nullptr )
-        {
-            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "invalid android activate semaphore '%s'"
-                , name.c_str()
-            );
-
-            return;
-        }
-
-        s_androidNativePythonService->addCommand([name]( const Mengine::AndroidNativePythonEventHandlerInterfacePtr & _handler )
-        {
-            _handler->activateSemaphore( name );
-        } );
-    }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,7 +151,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
             ANDROID_ENVIRONMENT_SERVICE()
-                ->callVoidActivityMethod( jenv, "pythonInitializePlugins", "()V" );
+                ->callVoidActivityMethod( jenv, "onPythonEmbeddedInitialize", "()V" );
 
             ANDROID_ENVIRONMENT_SERVICE()
                 ->invokeAndroidEventations();
@@ -193,7 +174,7 @@ namespace Mengine
         if( Mengine_JNI_ExistMengineActivity() == JNI_TRUE )
         {
             ANDROID_ENVIRONMENT_SERVICE()
-                ->callVoidActivityMethod( jenv, "pythonFinalizePlugins", "()V" );
+                ->callVoidActivityMethod( jenv, "onPythonEmbeddedFinalize", "()V" );
 
             ANDROID_ENVIRONMENT_SERVICE()
                 ->invokeAndroidEventations();
@@ -203,7 +184,6 @@ namespace Mengine
 
         m_callbacksMutex = nullptr;
 
-        m_semaphoreListeners.clear();
         m_callbacks.clear();
 
         for( auto && [name, jplugin] : m_plugins )
@@ -940,56 +920,6 @@ namespace Mengine
 
         ANDROID_ENVIRONMENT_SERVICE()
             ->invokeAndroidEventations();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::waitAndroidSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
-    {
-        LOGGER_INFO( "android", "wait android semaphore '%s' cb '%s' args '%s'"
-            , _name.c_str()
-            , _cb.repr().c_str()
-            , _args.repr().c_str()
-        );
-
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
-        {
-            return;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        AndroidSemaphoreListenerDesc desc;
-        desc.name = _name;
-        desc.cb = _cb;
-        desc.args = _args;
-
-        m_semaphoreListeners.emplace_back( desc );
-
-        const Char * name_str = _name.c_str();
-
-        jstring name_jvalue = jenv->NewStringUTF( name_str );
-
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidActivityMethod( jenv, "waitAndroidSemaphore", "(Ljava/lang/String;)V", name_jvalue );
-
-        jenv->DeleteLocalRef( name_jvalue );
-
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->invokeAndroidEventations();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::activateSemaphore( const ConstString & _name )
-    {
-        for( const AndroidSemaphoreListenerDesc & desc : m_semaphoreListeners )
-        {
-            if( desc.name != _name.c_str() )
-            {
-                continue;
-            }
-
-            desc.cb.call_args( desc.args );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -33,7 +33,7 @@ namespace Mengine
 
         jmethodID jmethodID_Functor_call = jenv->GetMethodID( jclass_Functor, "call", "()V" );
 
-        jenv->CallVoidMethod( jclass_Functor, jmethodID_Functor_call );
+        jenv->CallVoidMethod( functor, jmethodID_Functor_call );
 
         Helper::jEnvExceptionCheck( jenv );
 

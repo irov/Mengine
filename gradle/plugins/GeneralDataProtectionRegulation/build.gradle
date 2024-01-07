@@ -3,5 +3,3 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 android {
     namespace "org.Mengine.Plugin.GeneralDataProtectionRegulation"
 }
-
-apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

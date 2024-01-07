@@ -58,6 +58,7 @@
 #include "Kernel/ResolutionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/StatisticHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -629,8 +630,7 @@ namespace Mengine
         THREAD_SERVICE()
             ->addTask( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), m_threadJob, MENGINE_DOCUMENT_FACTORABLE );
 
-        m_dataMutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        m_dataMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         UniqueId workerId = m_threadJob->addWorker( ThreadWorkerInterfacePtr( this ), MENGINE_DOCUMENT_FACTORABLE );
 

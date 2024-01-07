@@ -138,6 +138,8 @@ Common
     DateTimeSystemInterface.h
     HttpSystemInterface.h
     DebugFileInterface.h
+    SemaphoreServiceInterface.h
+    SemaphoreListenerInterface.h
 )
 
 ADD_FILTER(

@@ -7,5 +7,3 @@ android {
 dependencies {
     implementation 'com.helpshift:helpshift-sdkx:10.2.2'
 }
-
-apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

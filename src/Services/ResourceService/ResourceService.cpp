@@ -2,7 +2,6 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/ThreadSystemInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ContentInterface.h"
 
@@ -19,6 +18,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/Algorithm.h"
 #include "Config/Utility.h"
@@ -39,8 +39,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceService::_initializeService()
     {
-        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 

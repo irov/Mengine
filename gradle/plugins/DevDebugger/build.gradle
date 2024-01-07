@@ -5,5 +5,3 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 android {
     namespace "org.Mengine.Plugin.DevDebugger"
 }
-
-apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

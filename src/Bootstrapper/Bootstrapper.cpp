@@ -71,6 +71,7 @@ SERVICE_EXTERN( ConfigService );
 SERVICE_EXTERN( SettingsService );
 SERVICE_EXTERN( ArchiveService );
 SERVICE_EXTERN( AnalyticsService );
+SERVICE_EXTERN( SemaphoreService );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( MockupRenderSystem );
@@ -927,6 +928,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( SemaphoreService, MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         MENGINE_ADD_SERVICE( AndroidEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
@@ -2032,6 +2034,7 @@ namespace Mengine
         SERVICE_FINALIZE( RenderMaterialService );
         SERVICE_FINALIZE( RenderTextureService );
         SERVICE_FINALIZE( ArchiveService );
+        SERVICE_FINALIZE( SemaphoreService );
         SERVICE_FINALIZE( ThreadService );
         SERVICE_FINALIZE( EasingService );
 
@@ -2126,6 +2129,7 @@ namespace Mengine
         SERVICE_DESTROY( ConfigService );
         SERVICE_DESTROY( SettingsService );
         SERVICE_DESTROY( ArchiveService );
+        SERVICE_DESTROY( SemaphoreService );
         SERVICE_DESTROY( MemoryService );
         SERVICE_DESTROY( ThreadService );
         SERVICE_DESTROY( TimeSystem );

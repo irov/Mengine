@@ -19,6 +19,7 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/StatisticHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdString.h"
@@ -217,8 +218,7 @@ namespace Mengine
 
         m_mutexHistory = mutexHistory;
 
-        ThreadMutexInterfacePtr mutexMessageBlock = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr mutexMessageBlock = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutexMessageBlock );
 

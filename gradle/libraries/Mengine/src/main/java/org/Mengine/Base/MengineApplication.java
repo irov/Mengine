@@ -89,7 +89,6 @@ public class MengineApplication extends Application {
     private ArrayList<MenginePluginKeyListener> m_keyListeners = new ArrayList<>();
     private ArrayList<MenginePluginApplicationListener> m_applicationListeners = new ArrayList<>();
     private ArrayList<MenginePluginActivityListener> m_activityListeners = new ArrayList<>();
-    private ArrayList<MenginePluginExtensionListener> m_extensionListeners = new ArrayList<>();
     private ArrayList<MenginePluginEngineListener> m_engineListeners = new ArrayList<>();
 
     private final Object m_syncEvent = new Object();
@@ -419,10 +418,6 @@ public class MengineApplication extends Application {
         return m_activityListeners;
     }
 
-    public List<MenginePluginExtensionListener> getExtensionListeners() {
-        return m_extensionListeners;
-    }
-
     public List<MenginePluginEngineListener> getEngineListeners() {
         return m_engineListeners;
     }
@@ -536,10 +531,6 @@ public class MengineApplication extends Application {
             m_activityListeners.add(listener);
         }
 
-        if (plugin instanceof MenginePluginExtensionListener listener) {
-            m_extensionListeners.add(listener);
-        }
-
         if (plugin instanceof MenginePluginEngineListener listener) {
             m_engineListeners.add(listener);
         }
@@ -550,28 +541,6 @@ public class MengineApplication extends Application {
         );
 
         return true;
-    }
-
-    public MenginePluginExtension createPluginExtension(MengineActivity activity, MenginePlugin plugin, String type) {
-        String pluginName = plugin.getPluginName();
-
-        MenginePluginExtension extension = MengineUtils.newInstance(pluginName, type, false);
-
-        if (extension == null) {
-            return null;
-        }
-
-        if (extension.onPluginExtensionInitialize(this, activity, plugin) == false) {
-            return null;
-        }
-
-        List<MenginePluginExtensionListener> extensionListeners = this.getExtensionListeners();
-
-        for (MenginePluginExtensionListener l : extensionListeners) {
-            l.onMenginePluginExtension(this, activity, plugin, extension);
-        }
-
-        return extension;
     }
 
     public void onMengineCaughtException(Throwable throwable) {
@@ -1060,7 +1029,6 @@ public class MengineApplication extends Application {
         m_keyListeners = null;
         m_applicationListeners = null;
         m_activityListeners = null;
-        m_extensionListeners = null;
         m_engineListeners = null;
 
         AndroidEnv_removeMengineAndroidApplicationJNI();

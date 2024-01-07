@@ -46,5 +46,6 @@ ADD_SUBDIRECTORY(SettingsService)
 ADD_SUBDIRECTORY(DocumentService)
 ADD_SUBDIRECTORY(StatisticService)
 ADD_SUBDIRECTORY(AnalyticsService)
+ADD_SUBDIRECTORY(SemaphoreService)
 
 MENGINE_SUBFOLDER()

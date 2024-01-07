@@ -27,6 +27,7 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -152,8 +153,7 @@ namespace Mengine
             m_threadQueue->addThread( threadName );
         }
 
-        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 

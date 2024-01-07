@@ -40,7 +40,6 @@ namespace Mengine
         bool hasPythonMethod( const ConstString & _plugin, const ConstString & _method ) const override;
         void callPythonMethod( const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const override;
         void addPlugin( const ConstString & _name, jobject _plugin ) override;
-        void activateSemaphore( const ConstString & _name ) override;
 
     public:
         pybind::object addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args ) override;
@@ -55,9 +54,6 @@ namespace Mengine
         double androidDoubleMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         PyObject * androidStringMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
         PyObject * androidObjectMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
-
-    public:
-        void waitAndroidSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args ) override;
 
     protected:
         bool getAndroidMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const;
@@ -84,16 +80,6 @@ namespace Mengine
         MapAndroidCallbacks m_callbacks;
 
         ThreadMutexInterfacePtr m_callbacksMutex;
-
-        struct AndroidSemaphoreListenerDesc
-        {
-            ConstString name;
-            pybind::object cb;
-            pybind::args args;
-        };
-
-        typedef Vector<AndroidSemaphoreListenerDesc> VectorAndroidSemaphoreListeners;
-        VectorAndroidSemaphoreListeners m_semaphoreListeners;
 
         typedef Map<ConstString, jobject> MapAndroidPlugins;
         MapAndroidPlugins m_plugins;

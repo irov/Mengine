@@ -42,6 +42,7 @@ namespace Mengine
     void DataflowPY::finalize()
     {
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptCodeData );
+
         m_factoryScriptCodeData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

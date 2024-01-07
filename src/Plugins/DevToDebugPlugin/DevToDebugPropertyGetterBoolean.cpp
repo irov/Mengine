@@ -1,8 +1,7 @@
 #include "DevToDebugPropertyGetterBoolean.h"
 
-#include "Interface/ThreadSystemInterface.h"
-
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 namespace Mengine
 {
@@ -24,8 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugPropertyGetterBoolean::initialize()
     {
-        m_mutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        m_mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

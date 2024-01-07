@@ -1,16 +1,17 @@
 #include "OpenALSoundBufferStream.h"
-#include "OpenALSoundSystem.h"
-#include "OpenALSoundErrorHelper.h"
 
 #include "Interface/SoundCodecInterface.h"
-#include "Interface/ThreadSystemInterface.h"
 #include "Interface/MemoryServiceInterface.h"
+
+#include "OpenALSoundSystem.h"
+#include "OpenALSoundErrorHelper.h"
 
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -39,8 +40,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferStream::_acquireSoundBuffer()
     {
-        ThreadMutexInterfacePtr mutexUpdating = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr mutexUpdating = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutexUpdating );
 

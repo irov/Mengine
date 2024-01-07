@@ -13,6 +13,7 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
+import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePluginApplicationListener {
+public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginEngineListener {
     public static final String PLUGIN_NAME = "Advertising";
 
     private static final String LIMIT_ADVERTISING_ID = "00000000-0000-0000-0000-000000000000";
@@ -71,6 +72,7 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
         m_advertisingFuture = future;
     }
 
+    @Override
     public void onMengineInitializeBaseServices(MengineActivity activity) {
         if (m_advertisingFuture == null) {
             return;

@@ -11,9 +11,9 @@
 #include "Kernel/LoggerHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/StatisticHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdString.h"
-
 #include "Config/StdLib.h"
 
 #ifndef MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE
@@ -68,8 +68,7 @@ namespace Mengine
     {
         SERVICE_WAIT( ThreadSystemInterface, [this]()
         {
-            m_mutexReport = THREAD_SYSTEM()
-                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+            m_mutexReport = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );

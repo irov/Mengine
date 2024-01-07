@@ -9,5 +9,3 @@ android {
 dependencies {
     implementation 'com.flurry.android:analytics:14.4.0'
 }
-
-apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

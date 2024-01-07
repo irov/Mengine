@@ -24,6 +24,7 @@ import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
+import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginProxyActivity;
 import org.Mengine.Base.MenginePluginProxyActivityListener;
@@ -34,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
-public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginActivityListener, MenginePluginProxyActivityListener {
+public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginActivityListener, MenginePluginEngineListener, MenginePluginProxyActivityListener {
     public static final String PLUGIN_NAME = "AppLovin";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -215,11 +216,14 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             m_nonetBanners = nonetBanners;
         }
 
-        this.activateSemaphore("AppLovinSdkInitialized");
-
         if (this.hasOption("applovin.show_mediation_debugger") == true) {
             this.showMediationDebugger();
         }
+    }
+
+    @Override
+    public void onMengineInitializeBaseServices(MengineActivity activity) {
+        this.activateSemaphore("AppLovinSdkInitialized");
     }
 
     @Override

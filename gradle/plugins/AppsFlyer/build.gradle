@@ -10,5 +10,3 @@ dependencies {
     implementation 'com.appsflyer:af-android-sdk:6.12.1'
     implementation 'com.appsflyer:adrevenue:6.9.0'
 }
-
-apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

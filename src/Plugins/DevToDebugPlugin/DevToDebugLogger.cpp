@@ -13,6 +13,7 @@
 #include "Kernel/JSONHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/VectorHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 namespace Mengine
 {
@@ -40,8 +41,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugLogger::_initializeLogger()
     {
-        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 

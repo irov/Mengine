@@ -6,5 +6,3 @@ android {
 
 dependencies {
 }
-
-apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

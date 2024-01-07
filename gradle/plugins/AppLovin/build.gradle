@@ -198,5 +198,3 @@ dependencies {
         implementation 'com.applovin.mediation:yandex-adapter:6.1.0.0'
     }
 }
-
-apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

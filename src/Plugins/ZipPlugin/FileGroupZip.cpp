@@ -4,7 +4,6 @@
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -20,6 +19,7 @@
 #include "Kernel/PathString.h"
 #include "Kernel/StringFormat.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdIO.h"
 
@@ -266,13 +266,11 @@ namespace Mengine
             return false;
         }
 
-        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 
-        ThreadMutexInterfacePtr proxyMutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr proxyMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( proxyMutex );
 

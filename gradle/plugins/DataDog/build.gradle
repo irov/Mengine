@@ -19,5 +19,3 @@ android {
 dependencies {
     implementation 'com.datadoghq:dd-sdk-android:1.19.0'
 }
-
-apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin_extensions.gradle'

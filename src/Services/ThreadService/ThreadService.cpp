@@ -1,7 +1,6 @@
 #include "ThreadService.h"
 
 #include "Interface/ThreadSystemInterface.h"
-#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ThreadTask.h"
 #include "Kernel/ThreadTaskPacket.h"
@@ -14,6 +13,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -40,11 +40,9 @@ namespace Mengine
 
         m_threadCount = CONFIG_VALUE( "Engine", "ThreadCount", 16U );
 
-        m_mutexTasks = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        m_mutexTasks = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_mutexThreads = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        m_mutexThreads = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         m_mainThreadId = THREAD_SYSTEM()
             ->getCurrentThreadId();

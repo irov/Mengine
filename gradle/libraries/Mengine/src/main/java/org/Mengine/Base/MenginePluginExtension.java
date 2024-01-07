@@ -19,7 +19,7 @@ public class MenginePluginExtension {
         return m_plugin;
     }
 
-    public boolean onPluginExtensionInitialize(MengineApplication application, MengineActivity activity, MenginePlugin plugin) {
+    public boolean onPluginExtensionInitialize(MengineApplication application, MengineActivity activity, MenginePlugin plugin)  throws MenginePluginInvalidInitializeException {
         m_application = application;
         m_activity = activity;
         m_plugin = plugin;

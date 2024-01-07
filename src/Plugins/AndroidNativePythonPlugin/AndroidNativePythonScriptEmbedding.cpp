@@ -79,12 +79,6 @@ namespace Mengine
                 ->androidObjectMethod( _plugin, _method, _args );
         }
         ///////////////////////////////////////////////////////////////////////
-        static void AndroidNativePythonService_waitAndroidSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
-        {
-            ANDROID_NATIVEPYTHON_SERVICE()
-                ->waitAndroidSemaphore( _name, _cb, _args );
-        }
-        ///////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     AndroidNativePythonScriptEmbedding::AndroidNativePythonScriptEmbedding()
@@ -108,8 +102,6 @@ namespace Mengine
         pybind::def_function_args( _kernel, "androidDoubleMethod", &Detail::AndroidNativePythonService_androidDoubleMethod );
         pybind::def_function_args( _kernel, "androidStringMethod", &Detail::AndroidNativePythonService_androidStringMethod );
         pybind::def_function_args( _kernel, "androidObjectMethod", &Detail::AndroidNativePythonService_androidObjectMethod );
-
-        pybind::def_function_args( _kernel, "waitAndroidSemaphore", &Detail::AndroidNativePythonService_waitAndroidSemaphore );
 
         pybind::interface_<AndroidNativePythonFunctor, pybind::bases<Scriptable>>( _kernel, "AndroidNativePythonFunctor" )
             ;

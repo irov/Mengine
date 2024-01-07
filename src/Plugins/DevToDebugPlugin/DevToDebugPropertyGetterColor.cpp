@@ -1,8 +1,7 @@
 #include "DevToDebugPropertyGetterColor.h"
 
-#include "Interface/ThreadSystemInterface.h"
-
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdIO.h"
 
@@ -24,8 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugPropertyGetterColor::initialize()
     {
-        m_mutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+        m_mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

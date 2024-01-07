@@ -6,6 +6,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/EnumeratorHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 namespace Mengine
 {
@@ -285,15 +286,13 @@ namespace Mengine
         {
             ThreadJobWorkerDesc & desc = m_workers[i];
 
-            ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+            ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( mutex );
 
             desc.mutex = mutex;
 
-            ThreadMutexInterfacePtr mutex_progress = THREAD_SYSTEM()
-                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+            ThreadMutexInterfacePtr mutex_progress = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( mutex_progress );
 

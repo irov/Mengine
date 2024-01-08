@@ -10,6 +10,8 @@
 #   include "AppleAppLovinFirebaseAnalytics.h"
 #endif
 
+#include "AppleAppLovinApplicationDelegate.h"
+
 #include "Kernel/Assertion.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
@@ -289,7 +291,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::showMediationDebugger()
     {
-        [[ALSdk shared] showMediationDebugger];
+        [AppleAppLovinApplicationDelegate.AppLovinSdk showMediationDebugger];
     }
     //////////////////////////////////////////////////////////////////////////
 }

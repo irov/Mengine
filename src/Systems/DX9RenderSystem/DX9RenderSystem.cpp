@@ -695,6 +695,7 @@ namespace Mengine
 
         m_renderResourceHandlers.push_back( renderImage.get() );
 
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_NEW );
         STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
 
 #if defined(MENGINE_STATISTIC_ENABLE)
@@ -743,6 +744,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_NEW );
         STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
 
 #if defined(MENGINE_STATISTIC_ENABLE)
@@ -791,6 +793,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_NEW );
         STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
 
 #if defined(MENGINE_STATISTIC_ENABLE)
@@ -1967,6 +1970,7 @@ namespace Mengine
     {
         _image->finalize();
 
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_FREE );
         STATISTIC_DEC_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
 
 #if defined(MENGINE_STATISTIC_ENABLE)
@@ -1989,6 +1993,7 @@ namespace Mengine
     {
         _targetTexture->finalize();
 
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_FREE );
         STATISTIC_DEC_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
 
 #if defined(MENGINE_STATISTIC_ENABLE)
@@ -2006,6 +2011,7 @@ namespace Mengine
     {
         _targetOffscreen->finalize();
 
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_FREE );
         STATISTIC_DEC_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
 
 #if defined(MENGINE_STATISTIC_ENABLE)

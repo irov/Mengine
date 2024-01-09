@@ -525,9 +525,9 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             @Override
             public void onCompleted(final AppLovinCmpError error) {
                 if (error != null) {
-                    MengineAppLovinPlugin.this.logError("Failed to show consent dialog error: %s [%d] cmp: %s [%d]"
+                    MengineAppLovinPlugin.this.logError("Failed to show consent dialog error: %s [%s] cmp: %s [%d]"
                         , error.getMessage()
-                        , error.getCode()
+                        , error.getCode().toString()
                         , error.getCmpMessage()
                         , error.getCmpCode()
                     );

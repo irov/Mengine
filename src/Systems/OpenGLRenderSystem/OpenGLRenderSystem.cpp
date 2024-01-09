@@ -13,8 +13,10 @@
 #include "Kernel/AssertionContainer.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionNotImplemented.h"
+#include "Kernel/AssertionStatistic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/StatisticHelper.h"
 
 #include "Kernel/Logger.h"
 
@@ -37,11 +39,6 @@ namespace Mengine
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
         , m_vertexArrayId( 0 )
 #endif
-        , m_counterTexture( 0 )
-        , m_counterFramebuffer( 0 )
-        , m_counterBuffer( 0 )
-        , m_counterFragmentShader( 0 )
-        , m_counterVertexShader( 0 )
     {
         mt::ident_m4( &m_worldMatrix );
         mt::ident_m4( &m_viewMatrix );
@@ -135,11 +132,11 @@ namespace Mengine
         m_factoryRenderProgram = nullptr;
         m_factoryRenderProgramVariable = nullptr;
 
-        MENGINE_ASSERTION_FATAL( m_counterTexture == 0 );
-        MENGINE_ASSERTION_FATAL( m_counterFramebuffer == 0 );
-        MENGINE_ASSERTION_FATAL( m_counterBuffer == 0 );
-        MENGINE_ASSERTION_FATAL( m_counterFragmentShader == 0 );
-        MENGINE_ASSERTION_FATAL( m_counterVertexShader == 0 );
+        MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_TEXTURE_COUNT );
+        MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_OPENGL_FRAMEBUFFER_COUNT );
+        MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_OPENGL_BUFFER_COUNT );
+        MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_FRAGMENT_SHADER_COUNT );
+        MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_VERTEX_SHADER_COUNT );
 
         OpenGLRenderImageLockedFactoryStorage::finalize();
     }
@@ -1219,7 +1216,8 @@ namespace Mengine
         GLuint id = 0;
         MENGINE_GLCALL( glGenTextures, (1, &id) );
 
-        ++m_counterTexture;
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
 
         return id;
     }
@@ -1228,7 +1226,8 @@ namespace Mengine
     {
         MENGINE_GLCALL( glDeleteTextures, (1, &_id) );
 
-        --m_counterTexture;
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_FREE );
+        STATISTIC_DEC_INTEGER( STATISTIC_RENDER_TEXTURE_COUNT );
     }
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderSystem::genFramebuffer()
@@ -1236,7 +1235,8 @@ namespace Mengine
         GLuint id = 0;
         MENGINE_GLCALL( glGenFramebuffers, (1, &id) );
 
-        ++m_counterFramebuffer;
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_OPENGL_FRAMEBUFFER_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_OPENGL_FRAMEBUFFER_COUNT );
 
         return id;
     }
@@ -1245,7 +1245,8 @@ namespace Mengine
     {
         MENGINE_GLCALL( glDeleteFramebuffers, (1, &_id) );
 
-        --m_counterFramebuffer;
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_OPENGL_FRAMEBUFFER_FREE );
+        STATISTIC_DEC_INTEGER( STATISTIC_RENDER_OPENGL_FRAMEBUFFER_COUNT );
     }
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderSystem::genBuffer()
@@ -1253,7 +1254,8 @@ namespace Mengine
         GLuint id = 0;
         MENGINE_GLCALL( glGenBuffers, (1, &id) );
 
-        ++m_counterBuffer;
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_OPENGL_BUFFER_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_OPENGL_BUFFER_COUNT );
 
         return id;
     }
@@ -1262,7 +1264,8 @@ namespace Mengine
     {
         MENGINE_GLCALL( glDeleteBuffers, (1, &_id) );
 
-        --m_counterBuffer;
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_OPENGL_BUFFER_FREE );
+        STATISTIC_DEC_INTEGER( STATISTIC_RENDER_OPENGL_BUFFER_COUNT );
     }
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderSystem::genFragmentShader()
@@ -1270,7 +1273,8 @@ namespace Mengine
         GLuint id;
         MENGINE_GLCALLR( id, glCreateShader, (GL_FRAGMENT_SHADER) );
 
-        ++m_counterFragmentShader;
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_FRAGMENT_SHADER_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_FRAGMENT_SHADER_COUNT );
 
         return id;
     }
@@ -1279,7 +1283,8 @@ namespace Mengine
     {
         MENGINE_GLCALL( glDeleteShader, (_id) );
 
-        --m_counterFragmentShader;
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_FRAGMENT_SHADER_FREE );
+        STATISTIC_DEC_INTEGER( STATISTIC_RENDER_FRAGMENT_SHADER_COUNT );
     }
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderSystem::genVertexShader()
@@ -1287,7 +1292,8 @@ namespace Mengine
         GLuint id;
         MENGINE_GLCALLR( id, glCreateShader, (GL_VERTEX_SHADER) );
 
-        ++m_counterVertexShader;
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_VERTEX_SHADER_NEW );
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_VERTEX_SHADER_COUNT );
 
         return id;
     }
@@ -1296,7 +1302,8 @@ namespace Mengine
     {
         MENGINE_GLCALL( glDeleteShader, (_id) );
 
-        --m_counterVertexShader;
+        STATISTIC_INC_INTEGER( STATISTIC_RENDER_VERTEX_SHADER_FREE );
+        STATISTIC_DEC_INTEGER( STATISTIC_RENDER_VERTEX_SHADER_COUNT );
     }
     //////////////////////////////////////////////////////////////////////////
 }

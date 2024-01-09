@@ -1,10 +1,6 @@
 package org.Mengine.Base;
 
 public interface MenginePluginEngineListener extends MenginePluginInterface {
-    default void onMengineInitializeBaseServices(MengineActivity activity) {
-        //Empty
-    }
-
     default void onMengineCreateApplication(MengineActivity activity) {
         //Empty
     }

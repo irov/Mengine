@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginEngineListener {
+public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "Advertising";
 
     private static final String LIMIT_ADVERTISING_ID = "00000000-0000-0000-0000-000000000000";
@@ -46,6 +46,8 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
         Future<AdvertisingIdClient.Info> future = executor.submit(() -> {
             try {
                 AdvertisingIdClient.Info adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+
+                this.postAdInfo(adInfo);
 
                 return adInfo;
             } catch (IOException e) {
@@ -73,32 +75,13 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
     }
 
     @Override
-    public void onMengineInitializeBaseServices(MengineActivity activity) {
+    public void onAppTerminate(MengineApplication application) {
         if (m_advertisingFuture == null) {
             return;
         }
 
-        AdvertisingIdClient.Info adInfo = null;
-
-        try {
-            adInfo = m_advertisingFuture.get();
-        } catch (CancellationException ex) {
-            this.logError("[ERROR] invalid get advertising id CancellationException: %s"
-                , ex.getMessage()
-            );
-        } catch (InterruptedException ex) {
-            this.logError("[ERROR] invalid get advertising id InterruptedException: %s"
-                , ex.getMessage()
-            );
-        } catch (ExecutionException ex) {
-            this.logError("[ERROR] invalid get advertising id ExecutionException: %s"
-                , ex.getMessage()
-            );
-        }
-
+        m_advertisingFuture.cancel(true);
         m_advertisingFuture = null;
-
-        this.postAdInfo(adInfo);
     }
 
     private void postAdInfo(AdvertisingIdClient.Info adInfo) {

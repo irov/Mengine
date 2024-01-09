@@ -219,10 +219,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         if (this.hasOption("applovin.show_mediation_debugger") == true) {
             this.showMediationDebugger();
         }
-    }
 
-    @Override
-    public void onMengineInitializeBaseServices(MengineActivity activity) {
         this.activateSemaphore("AppLovinSdkInitialized");
     }
 

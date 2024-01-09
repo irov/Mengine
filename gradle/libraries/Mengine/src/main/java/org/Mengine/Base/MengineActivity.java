@@ -1,19 +1,14 @@
 package org.Mengine.Base;
 
-import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.hardware.Sensor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
@@ -21,7 +16,6 @@ import org.libsdl.app.SDLSurface;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
@@ -59,6 +53,8 @@ public class MengineActivity extends SDLActivity {
     private boolean m_destroy;
 
     private Map<String, Integer> m_requestCodes;
+
+    private Object m_semaphoreMengineInitializeBaseServices;
 
     public MengineActivity() {
     }
@@ -259,6 +255,8 @@ public class MengineActivity extends SDLActivity {
 
         m_requestCodes = new HashMap<>();
 
+        m_semaphoreMengineInitializeBaseServices = new Object();
+
         this.setState("activity.lifecycle", "create");
 
         this.setState("activity.init", "start");
@@ -282,10 +280,6 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        this.setState("activity.init", "create");
-
-        MengineLog.logMessage(TAG, "onCreate");
-
         if (mBrokenLibraries == true) {
             this.setState("activity.init", "sdl_broken_libraries");
 
@@ -298,7 +292,38 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
+        this.setState("activity.init", "create");
+
         AndroidEnv_setMengineAndroidActivityJNI(this);
+
+        String library = this.getMainSharedObject();
+        String[] arguments = this.getArguments();
+
+        mSDLThread = new Thread(new MengineMain(library, arguments), "MengineThread");
+        mSurface.enableSensor(Sensor.TYPE_ACCELEROMETER, true);
+        mSDLThread.start();
+
+        synchronized (m_semaphoreMengineInitializeBaseServices) {
+            try {
+                m_semaphoreMengineInitializeBaseServices.wait();
+            } catch (InterruptedException e) {
+                this.setState("activity.init", "sdl_interrupted");
+
+                MengineAnalytics.buildEvent("mng_activity_init_failed")
+                    .addParameterException("reason", e)
+                    .logAndFlush();
+
+                this.finishWithAlertDialog("[ERROR] onCreate SDL interrupted: %s"
+                    , e.getMessage()
+                );
+
+                return;
+            }
+        }
+
+        MengineLog.logMessage(TAG, "onCreate");
+
+        MengineLog.onMengineInitializeBaseServices(this);
 
         List<MenginePlugin> plugins = this.getPlugins();
 
@@ -356,14 +381,8 @@ public class MengineActivity extends SDLActivity {
     }
 
     public void onMengineInitializeBaseServices() {
-        MengineLog.onMengineInitializeBaseServices(this);
-
-        MengineLog.logInfo(TAG, "onMengineInitializeBaseServices");
-
-        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
-
-        for (MenginePluginEngineListener l : listeners) {
-            l.onMengineInitializeBaseServices(this);
+        synchronized (m_semaphoreMengineInitializeBaseServices) {
+            m_semaphoreMengineInitializeBaseServices.notify();
         }
     }
 
@@ -432,7 +451,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
 
         this.setState("activity.lifecycle", "start");
@@ -571,6 +590,8 @@ public class MengineActivity extends SDLActivity {
         for (MenginePlugin p : plugins) {
             p.setActivity(null);
         }
+
+        m_semaphoreMengineInitializeBaseServices = null;
 
         m_requestCodes = null;
 

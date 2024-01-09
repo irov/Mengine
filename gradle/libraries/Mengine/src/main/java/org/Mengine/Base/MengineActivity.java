@@ -299,9 +299,8 @@ public class MengineActivity extends SDLActivity {
         String library = this.getMainSharedObject();
         String[] arguments = this.getArguments();
 
-        mSDLThread = new Thread(new MengineMain(library, arguments), "MengineThread");
-        mSurface.enableSensor(Sensor.TYPE_ACCELEROMETER, true);
-        mSDLThread.start();
+        mSDLNewThread = new Thread(new MengineMain(library, arguments), "MengineThread");
+        mSDLNewThread.start();
 
         synchronized (m_semaphoreMengineInitializeBaseServices) {
             try {

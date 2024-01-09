@@ -500,7 +500,7 @@ namespace Mengine
             LOGGER_VERBOSE_LEVEL( "sdl", level, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("[%s] %s"
                 , category_str
                 , message
-                );
+            );
         }
         //////////////////////////////////////////////////////////////////////////
     }

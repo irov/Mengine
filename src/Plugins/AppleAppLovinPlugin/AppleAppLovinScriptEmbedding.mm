@@ -464,6 +464,65 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
+        class PythonAppleAppLovinConsentFlowProvider
+            : public AppleAppLovinConsentFlowProviderInterface
+            , public Factorable
+        {
+        public:
+            PythonAppleAppLovinConsentFlowProvider( const pybind::dict & _cbs, const pybind::args & _args )
+                : m_cbs( _cbs )
+                , m_args( _args )
+            {
+            }
+            
+            ~PythonAppleAppLovinConsentFlowProvider() override
+            {
+            }
+
+        protected:
+            void onAppleAppLovinConsentFlowShowSuccessful() override {
+                pybind::object cb = m_cbs["onAppleAppLovinConsentFlowShowSuccessful"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+            
+            void onAppleAppLovinConsentFlowShowFailed() override {
+                pybind::object cb = m_cbs["onAppleAppLovinConsentFlowShowFailed"];
+                
+                if( cb.is_none() == true )
+                {
+                    return;
+                }
+                
+                cb.call_args( m_args );
+            }
+
+        protected:
+            pybind::dict m_cbs;
+            pybind::args m_args;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        static void s_appleAppLovin_loadAndShowCMPFlow( const pybind::dict & _cbs, const pybind::args & _args )
+        {
+            AppleAppLovinConsentFlowProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleAppLovinConsentFlowProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+            
+            APPLE_APPLOVIN_SERVICE()
+                ->loadAndShowCMPFlow( provider );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_appleAppLovin_isConsentFlowUserGeographyGDPR()
+        {
+            bool result = APPLE_APPLOVIN_SERVICE()
+                ->isConsentFlowUserGeographyGDPR();
+            
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
         static void s_appleAppLovin_showMediationDebugger()
         {
             APPLE_APPLOVIN_SERVICE()
@@ -495,6 +554,8 @@ namespace Mengine
         pybind::def_function( _kernel, "appleAppLovinCanOfferRewarded", &Detail::s_appleAppLovin_canOfferRewarded );
         pybind::def_function( _kernel, "appleAppLovinCanYouShowRewarded", &Detail::s_appleAppLovin_canYouShowRewarded );
         pybind::def_function( _kernel, "appleAppLovinShowRewarded", &Detail::s_appleAppLovin_showRewarded );
+        pybind::def_function_args( _kernel, "appleAppLovinLoadAndShowCMPFlow", &Detail::s_appleAppLovin_loadAndShowCMPFlow );
+        pybind::def_function( _kernel, "appleAppLovinIsConsentFlowUserGeographyGDPR", &Detail::s_appleAppLovin_isConsentFlowUserGeographyGDPR );
         pybind::def_function( _kernel, "appleAppLovinShowMediationDebugger", &Detail::s_appleAppLovin_showMediationDebugger );
 
         return true;
@@ -512,6 +573,8 @@ namespace Mengine
         _kernel->remove_from_module( "appleAppLovinCanOfferRewarded", nullptr );
         _kernel->remove_from_module( "appleAppLovinCanYouShowRewarded", nullptr );
         _kernel->remove_from_module( "appleAppLovinShowRewarded", nullptr );
+        _kernel->remove_from_module( "appleAppLovinLoadAndShowCMPFlow", nullptr );
+        _kernel->remove_from_module( "appleAppLovinIsConsentFlowUserGeographyGDPR", nullptr );
         _kernel->remove_from_module( "appleAppLovinShowMediationDebugger", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////

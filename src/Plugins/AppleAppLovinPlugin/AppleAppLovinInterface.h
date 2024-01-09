@@ -56,6 +56,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleAppLovinRewardedProviderInterface> AppleAppLovinRewardedProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
+    class AppleAppLovinConsentFlowProviderInterface
+        : public Interface
+    {
+    public:
+        virtual void onAppleAppLovinConsentFlowShowSuccessful() = 0;
+        virtual void onAppleAppLovinConsentFlowShowFailed() = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<AppleAppLovinConsentFlowProviderInterface> AppleAppLovinConsentFlowProviderInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class AppleAppLovinServiceInterface
         : public ServiceInterface
     {
@@ -81,7 +91,11 @@ namespace Mengine
         virtual bool canOfferRewarded( const ConstString & _adUnitId, const ConstString & _placement ) const = 0;
         virtual bool canYouShowRewarded( const ConstString & _adUnitId, const ConstString & _placement ) const = 0;
         virtual bool showRewarded( const ConstString & _adUnitId, const ConstString & _placement ) = 0;
-
+        
+    public:
+        virtual bool isConsentFlowUserGeographyGDPR() const = 0;
+        virtual void loadAndShowCMPFlow( const AppleAppLovinConsentFlowProviderInterfacePtr & _provider ) = 0;
+        
     public:
         virtual void showMediationDebugger() = 0;
     };

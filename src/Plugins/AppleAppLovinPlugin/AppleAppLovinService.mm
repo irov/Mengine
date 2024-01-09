@@ -15,6 +15,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/PlatformHelper.h"
 #include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
@@ -287,6 +288,43 @@ namespace Mengine
         BOOL result = [rewarded show:placement];
         
         return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AppleAppLovinService::isConsentFlowUserGeographyGDPR() const
+    {
+        ALSdkConfiguration * configuration = AppleAppLovinApplicationDelegate.AppLovinSdk.configuration;
+        
+        return configuration.consentFlowUserGeography == ALConsentFlowUserGeographyGDPR;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AppleAppLovinService::loadAndShowCMPFlow( const AppleAppLovinConsentFlowProviderInterfacePtr & _provider )
+    {
+        ALCMPService * cmpService = AppleAppLovinApplicationDelegate.AppLovinSdk.cmpService;
+        
+        AppleAppLovinConsentFlowProviderInterfacePtr copy_provider = _provider;
+
+        [cmpService showCMPForExistingUserWithCompletion:^(ALCMPError * _Nullable error) {
+            if (error != nil)
+            {
+                LOGGER_ERROR( "AppLovin CMP show failed: %s [%ld] message: %s"
+                    , [error.message UTF8String]
+                    , error.code
+                    , [error.cmpMessage UTF8String]
+                );
+                
+                Mengine::Helper::dispatchMainThreadEvent([copy_provider]() {
+                    copy_provider->onAppleAppLovinConsentFlowShowFailed();
+                });
+                
+                return;
+            }
+            
+            LOGGER_MESSAGE( "AppLovin CMP show successful" );
+            
+            Mengine::Helper::dispatchMainThreadEvent([copy_provider]() {
+                copy_provider->onAppleAppLovinConsentFlowShowSuccessful();
+            });
+        }];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::showMediationDebugger()

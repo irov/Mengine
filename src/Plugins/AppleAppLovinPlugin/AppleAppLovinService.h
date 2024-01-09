@@ -46,10 +46,14 @@ namespace Mengine
         bool canOfferRewarded( const ConstString & _adUnitId, const ConstString & _placement ) const override;
         bool canYouShowRewarded( const ConstString & _adUnitId, const ConstString & _placement ) const override;
         bool showRewarded( const ConstString & _adUnitId, const ConstString & _placement ) override;
+        
+    public:
+        bool isConsentFlowUserGeographyGDPR() const override;
+        void loadAndShowCMPFlow( const AppleAppLovinConsentFlowProviderInterfacePtr & _provider ) override;
 
     public:
         void showMediationDebugger() override;
-
+        
     protected:
         AppleAppLovinAnalyticsService * m_analyticsService;
         

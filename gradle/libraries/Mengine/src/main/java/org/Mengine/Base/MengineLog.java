@@ -38,7 +38,7 @@ public class MengineLog {
         MengineLog.m_application = application;
     }
 
-    public static void onMengineInitializeBaseServices(MengineActivity activity) {
+    public static void initialize(MengineActivity activity) {
         MengineLog.m_initializeBaseServices = true;
 
         synchronized (MengineLog.m_lock) {
@@ -54,7 +54,7 @@ public class MengineLog {
         }
     }
 
-    public static void onMenginePlatformStop(MengineActivity activity) {
+    public static void finalize(MengineActivity activity) {
         MengineLog.m_initializeBaseServices = false;
     }
 

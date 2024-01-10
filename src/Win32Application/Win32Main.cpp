@@ -14,21 +14,18 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
 
     Mengine::Win32Application app;
 
-    bool initialize = app.initialize();
-
-    if( initialize == true )
-    {
-        app.loop();
-    }
-
-    app.finalize();
-
-    if( initialize == false )
+    if( app.initialize() == false )
     {
         ::MessageBoxA( NULL, "Mengine invalid initialization", "Mengine", MB_OK );
 
+        app.finalize();
+
         return EXIT_FAILURE;
     }
+
+    app.loop();
+
+    app.finalize();
 
     return EXIT_SUCCESS;
 }

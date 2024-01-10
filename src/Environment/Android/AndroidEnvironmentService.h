@@ -69,7 +69,6 @@ namespace Mengine
         void notifyPlatformStop_();
         void notifyApplicationBeginUpdate_();
         void notifyApplicationEndUpdate_();
-        void notifyBootstrapperInitializeBaseServices_();
         void notifyBootstrapperCreateApplication_();
 
     protected:

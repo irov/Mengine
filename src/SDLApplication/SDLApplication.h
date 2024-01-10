@@ -13,7 +13,10 @@ namespace Mengine
         ~SDLApplication();
 
     public:
-        bool initialize( int32_t _argc, Char ** const _argv );
+        bool bootstrap( int32_t _argc, Char ** const _argv );
+
+    public:
+        bool initialize();
         void finalize();
 
     public:

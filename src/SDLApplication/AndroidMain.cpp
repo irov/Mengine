@@ -4,24 +4,36 @@
 
 #include "SDLApplication.h"
 
+Mengine::SDLApplication MENGINE_application;
+
 int SDL_main( int argc, char * argv[] )
 {
-    Mengine::SDLApplication application;
-
-    bool initialize = application.initialize( argc, argv );
-
-    if( initialize == false )
+    if( MENGINE_application.bootstrap( argc, argv ) == false )
     {
         SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine initialize", "Mengine invalid initialization", NULL );
 
-        application.finalize();
+        MENGINE_application.finalize();
 
         return EXIT_FAILURE;
     }
 
-    application.loop();
+    return EXIT_SUCCESS;
+}
 
-    application.finalize();
+int SDL_loop(void)
+{
+    if( MENGINE_application.initialize() == false )
+    {
+        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine initialize", "Mengine invalid initialization", NULL );
+
+        MENGINE_application.finalize();
+
+        return EXIT_FAILURE;
+    }
+
+    MENGINE_application.loop();
+
+    MENGINE_application.finalize();
 
     return EXIT_SUCCESS;
 }

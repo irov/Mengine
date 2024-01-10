@@ -222,6 +222,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     // This is what SDL runs in. It invokes SDL_main(), eventually
     protected static Thread mSDLThread;
     protected static Thread mSDLNewThread;
+    protected static Object mSDLSemaphoreRun;
 
     protected static SDLGenericMotionListener_API12 getMotionListener() {
         if (mMotionListener == null) {
@@ -308,12 +309,13 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         mLastCursorID = 0;
         mSDLThread = null;
         mSDLNewThread = null;
+        mSDLSemaphoreRun = null;
         mIsResumedCalled = false;
         mHasFocus = true;
         mNextNativeState = NativeState.INIT;
         mCurrentNativeState = NativeState.INIT;
     }
-    
+
     protected SDLSurface createSDLSurface(Context context) {
         return new SDLSurface(context);
     }
@@ -713,7 +715,9 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
 
                     mSDLThread = mSDLNewThread;
                     mSurface.enableSensor(Sensor.TYPE_ACCELEROMETER, true);
-
+                    synchronized (mSDLSemaphoreRun) {
+                        mSDLSemaphoreRun.notifyAll();
+                    }
                     // No nativeResume(), don't signal Android_ResumeSem
                 } else {
                     nativeResume();
@@ -903,6 +907,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     public static native String nativeGetVersion();
     public static native int nativeSetupJNI();
     public static native int nativeRunMain(String library, String function, Object arguments);
+    public static native void nativeLoopMain(String function);
     public static native void nativeLowMemory();
     public static native void nativeSendQuit();
     public static native void nativeQuit();

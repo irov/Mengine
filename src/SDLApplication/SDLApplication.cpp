@@ -230,7 +230,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initialize( int32_t _argc, Char ** const _argv )
+    bool SDLApplication::bootstrap( int32_t _argc, Char ** const _argv )
     {
 #if defined(MENGINE_PLUGIN_MENGINE_DLL)
 #   error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
@@ -276,6 +276,11 @@ namespace Mengine
         }
 #endif
 
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLApplication::initialize()
+    {
         LOGGER_INFO( "application", "creating render window..." );
 
         const Char * projectTitle = nullptr;

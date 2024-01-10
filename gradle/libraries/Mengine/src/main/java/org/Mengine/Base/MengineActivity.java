@@ -3,7 +3,6 @@ package org.Mengine.Base;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.hardware.Sensor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -53,8 +52,6 @@ public class MengineActivity extends SDLActivity {
     private boolean m_destroy;
 
     private Map<String, Integer> m_requestCodes;
-
-    private Object m_semaphoreMengineInitializeBaseServices;
 
     public MengineActivity() {
     }
@@ -255,8 +252,6 @@ public class MengineActivity extends SDLActivity {
 
         m_requestCodes = new HashMap<>();
 
-        m_semaphoreMengineInitializeBaseServices = new Object();
-
         this.setState("activity.lifecycle", "create");
 
         this.setState("activity.init", "start");
@@ -296,15 +291,20 @@ public class MengineActivity extends SDLActivity {
 
         AndroidEnv_setMengineAndroidActivityJNI(this);
 
+        Object semaphoreInit = new Object();
+        Object semaphoreRun = new Object();
+
         String library = this.getMainSharedObject();
         String[] arguments = this.getArguments();
 
-        mSDLNewThread = new Thread(new MengineMain(library, arguments), "MengineThread");
+        mSDLSemaphoreRun = semaphoreRun;
+
+        mSDLNewThread = new Thread(new MengineMain(semaphoreInit, semaphoreRun, library, arguments), "MengineThread");
         mSDLNewThread.start();
 
-        synchronized (m_semaphoreMengineInitializeBaseServices) {
+        synchronized (semaphoreInit) {
             try {
-                m_semaphoreMengineInitializeBaseServices.wait();
+                semaphoreInit.wait();
             } catch (InterruptedException e) {
                 this.setState("activity.init", "sdl_interrupted");
 
@@ -322,7 +322,7 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logMessage(TAG, "onCreate");
 
-        MengineLog.onMengineInitializeBaseServices(this);
+        MengineLog.initialize(this);
 
         List<MenginePlugin> plugins = this.getPlugins();
 
@@ -379,12 +379,6 @@ public class MengineActivity extends SDLActivity {
         AndroidEnvironmentService_quitMengineAndroidActivityJNI();
     }
 
-    public void onMengineInitializeBaseServices() {
-        synchronized (m_semaphoreMengineInitializeBaseServices) {
-            m_semaphoreMengineInitializeBaseServices.notify();
-        }
-    }
-
     public void onMengineCreateApplication() {
         MengineLog.logInfo(TAG, "onMengineCreateApplication");
 
@@ -414,7 +408,7 @@ public class MengineActivity extends SDLActivity {
             l.onMenginePlatformStop(this);
         }
 
-        MengineLog.onMenginePlatformStop(this);
+        MengineLog.finalize(this);
     }
 
     public void onMengineCurrentSceneChange(String name) {
@@ -589,8 +583,6 @@ public class MengineActivity extends SDLActivity {
         for (MenginePlugin p : plugins) {
             p.setActivity(null);
         }
-
-        m_semaphoreMengineInitializeBaseServices = null;
 
         m_requestCodes = null;
 

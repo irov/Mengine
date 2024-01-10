@@ -85,9 +85,23 @@ Mengine::SDLApplication MENGINE_application;
     
     NSLog(@"Mengine application initialize");
     
-    bool initialize = MENGINE_application.initialize( MENGINE_MAIN_argc, MENGINE_MAIN_argv );
+    if( MENGINE_application.bootstrap( MENGINE_MAIN_argc, MENGINE_MAIN_argv ) == false ) {
+        NSLog(@"Mengine application bootstrap [Failed]");
+        
+        NSLog(@"Mengine application begin finalize");
+        
+        MENGINE_application.finalize();
+        
+        NSLog(@"Mengine application end finalize");
+        
+        SDL_iPhoneSetEventPump( SDL_FALSE );
+        
+        return NO;
+    }
+    
+    NSLog(@"Mengine application initialize [Successful]");
 
-    if( initialize == false ) {
+    if( MENGINE_application.initialize() == false ) {
         NSLog(@"Mengine application initialize [Failed]");
         
         NSLog(@"Mengine application begin finalize");

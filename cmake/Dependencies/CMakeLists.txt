@@ -603,10 +603,12 @@ if(MENGINE_DEPENDENCE_SDL)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/SDL2Config.cmake.in ${THIRDPARTY_DIR}/SDL/SDL2Config.cmake.in COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/src/SDL_error.c ${THIRDPARTY_DIR}/SDL/src/SDL_error.c COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/include/SDL_error.h ${THIRDPARTY_DIR}/SDL/include/SDL_error.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/include/SDL_main.h ${THIRDPARTY_DIR}/SDL/include/SDL_main.h COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/src/dynapi/SDL_dynapi_procs.h ${THIRDPARTY_DIR}/SDL/src/dynapi/SDL_dynapi_procs.h COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/src/dynapi/SDL_dynapi_overrides.h ${THIRDPARTY_DIR}/SDL/src/dynapi/SDL_dynapi_overrides.h COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/src/video/android/SDL_androidvideo.c ${THIRDPARTY_DIR}/SDL/src/video/android/SDL_androidvideo.c COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/android/SDLActivity.java ${THIRDPARTY_DIR}/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/src/core/android/SDL_android.c ${THIRDPARTY_DIR}/SDL/src/core/android/SDL_android.c COPYONLY)
 
     set(SDL_CMAKE_DEBUG_POSTFIX "d" CACHE STRING "Name suffix for debug builds" FORCE)
     

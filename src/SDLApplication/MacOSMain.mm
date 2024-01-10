@@ -39,21 +39,27 @@ int main( int argc, char * argv[] )
     
     Mengine::SDLApplication application;
 
-    bool initialize = application.initialize( argc, argv );
-
-    if( initialize == true )
-    {
-        application.loop();
-    }
-
-    application.finalize();
-
-    if( initialize == false )
+    if( bootstrap.bootstrap( argc, argv ) == false )
     {
         SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine initialize", "Mengine invalid initialization", NULL );
 
+        application.finalize();
+
         return EXIT_FAILURE;
-    }    
+    }
+
+    if( application.initialize() == false )
+    {
+        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine initialize", "Mengine invalid initialize", NULL );
+
+        application.finalize();
+
+        return EXIT_FAILURE;
+    }
+
+    application.loop();
+
+    application.finalize();
 
     return EXIT_SUCCESS;
 }

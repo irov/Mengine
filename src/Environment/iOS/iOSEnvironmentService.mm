@@ -40,12 +40,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSEnvironmentService::openMail( const Char * _email, const Char * _subject, const Char * _body )
     {
+        UIViewController * view = Helper::iOSGetRootViewController();
+        
         if( [iOSMailCompose canSendMail] == NO )
         {
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Yikes."
+                                                                                     message:@"This device is not configured to send email."
+                                                                              preferredStyle:UIAlertControllerStyleAlert];
+
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK"
+                                                               style:UIAlertActionStyleDefault
+                                                             handler:nil];
+            [alertController addAction:okAction];
+
+            [view presentViewController:alertController animated:YES completion:nil];
+            
             return false;
         }
-        
-        UIViewController * view = Helper::iOSGetRootViewController();
         
         iOSMailCompose * mailCompose = [[iOSMailCompose alloc] initWithViewController:view email:@(_email) subject:@(_subject) message:@(_body) completion:^{
             this->m_mailCompose = nullptr;

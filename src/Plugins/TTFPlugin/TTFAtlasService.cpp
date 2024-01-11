@@ -52,7 +52,7 @@ namespace Mengine
             return nullptr;
         }
 
-        TTFAtlas * atlas = this->getAtlas_( _width, _height, _channel, _doc );
+        TTFAtlas * atlas = this->getAtlas_( _width + _border * 2, _height + _border * 2, _channel, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( atlas );
 
@@ -66,8 +66,8 @@ namespace Mengine
         Rect rect;
         rect.left = index * atlas->width;
         rect.top = 0;
-        rect.right = rect.left + _width;
-        rect.bottom = rect.top + _height;
+        rect.right = rect.left + _width + _border * 2;
+        rect.bottom = rect.top + _height + _border * 2;
 
         const RenderImageInterfacePtr & texture_image = texture->getImage();
 
@@ -84,7 +84,7 @@ namespace Mengine
 
         uint32_t hwPixelChannels = Helper::getPixelFormatChannels( hwPixelFormat );
 
-        bool successful = _provider->onTextureGlyphFill( texture_memory, texture_pitch, hwPixelChannels );
+        bool successful = _provider->onTextureGlyphFill( texture_memory, texture_pitch, hwPixelChannels, _border );
 
         texture_image->unlock( texture_locked, 0, successful );
 

@@ -26,7 +26,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual bool onTextureGlyphFill( uint8_t * const _memory, size_t _pitch, uint32_t _channel ) const = 0;
+        virtual bool onTextureGlyphFill( uint8_t * const _memory, size_t _pitch, uint32_t _channel, uint32_t _border ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class TTFAtlasServiceInterface

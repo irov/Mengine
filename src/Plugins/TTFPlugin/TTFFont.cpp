@@ -283,15 +283,17 @@ namespace Mengine
             return true;
         }
 
+        uint32_t texture_border = 1;
+
         if( m_effect != nullptr )
         {
-            m_effect->apply( glyph_bitmap.width, glyph_bitmap.rows, glyph_bitmap.pitch, glyph_bitmap.buffer, bitmap_channel, glyph->bitmap_left, glyph->bitmap_top, m_height, [&ttf_glyph, sampleInv, _doc]( uint32_t _index, int32_t _x, int32_t _y, uint32_t _width, uint32_t _height, const void * _buffer, uint32_t _pitch, uint32_t _bytespp )
+            m_effect->apply( glyph_bitmap.width, glyph_bitmap.rows, glyph_bitmap.pitch, glyph_bitmap.buffer, bitmap_channel, glyph->bitmap_left, glyph->bitmap_top, m_height, [texture_border, &ttf_glyph, sampleInv, _doc]( uint32_t _index, int32_t _x, int32_t _y, uint32_t _width, uint32_t _height, const void * _buffer, uint32_t _pitch, uint32_t _bytespp )
             {
                 TTFFontTextureGlyphProvider provider( _width, _height, _buffer, _pitch, _bytespp );
 
                 mt::uv4f uv;
                 RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                    ->makeTextureGlyph( _width + 2, _height + 2, 1, _bytespp, &provider, &uv, _doc );
+                    ->makeTextureGlyph( _width, _height, texture_border, _bytespp, &provider, &uv, _doc );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( texture );
 
@@ -311,7 +313,7 @@ namespace Mengine
 
             mt::uv4f uv;
             RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                ->makeTextureGlyph( glyph_bitmap.width + 2, glyph_bitmap.rows + 2, 1, bitmap_channel, &provider, &uv, _doc );
+                ->makeTextureGlyph( glyph_bitmap.width, glyph_bitmap.rows, texture_border, bitmap_channel, &provider, &uv, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( texture );
 

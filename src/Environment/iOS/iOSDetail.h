@@ -16,5 +16,6 @@ namespace Mengine
         id iOSGetUIProxyApplicationDelegate( Class delegateClass );
         void iOSPluginApplicationDelegateEventNotify( NSString * name, id firstArg, ... );
         NSString * iOSPathForTemporaryFileWithPrefix( NSString * prefix, NSString * ext );
+        void iOSAlert( UIViewController * view, NSString * title, NSString * message );
     }
 }

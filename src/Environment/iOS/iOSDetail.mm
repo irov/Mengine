@@ -98,5 +98,19 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
+        void iOSAlert( UIViewController * view, NSString * title, NSString * message )
+        {
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
+                                                                                     message:message
+                                                                              preferredStyle:UIAlertControllerStyleAlert];
+
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK"
+                                                               style:UIAlertActionStyleDefault
+                                                             handler:nil];
+            [alertController addAction:okAction];
+
+            [view presentViewController:alertController animated:YES completion:nil];
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

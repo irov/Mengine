@@ -44,16 +44,7 @@ namespace Mengine
         
         if( [iOSMailCompose canSendMail] == NO )
         {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Yikes."
-                                                                                     message:@"This device is not configured to send email."
-                                                                              preferredStyle:UIAlertControllerStyleAlert];
-
-            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK"
-                                                               style:UIAlertActionStyleDefault
-                                                             handler:nil];
-            [alertController addAction:okAction];
-
-            [view presentViewController:alertController animated:YES completion:nil];
+            Helper::iOSAlert( view, @"Yikes.", @"Log into your mailbox using the standard Mail app" );
             
             return false;
         }

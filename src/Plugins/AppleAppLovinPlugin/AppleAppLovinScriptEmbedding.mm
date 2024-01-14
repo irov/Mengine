@@ -6,6 +6,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonCallbackProvider.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Factory.h"
@@ -19,112 +20,54 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleAppLovinBannerProvider
-            : public AppleAppLovinBannerProviderInterface
-            , public Factorable
+            : public PythonCallbackProvider<AppleAppLovinBannerProviderInterface>
         {
         public:
             PythonAppleAppLovinBannerProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : m_cbs( _cbs )
-                , m_args( _args )
-            {
-            }
-            
-            ~PythonAppleAppLovinBannerProvider() override
+                : PythonCallbackProvider<AppleAppLovinBannerProviderInterface>( _cbs, _args )
             {
             }
 
         protected:
-            void onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier() override {
-                pybind::object cb = m_cbs["onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier() override
+            {
+                this->call_cbs( "onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier" );
             }
             
-            void onAppleAppLovinBannerDidLoadAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinBannerDidLoadAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinBannerDidLoadAd() override
+            {
+                this->call_cbs( "onAppleAppLovinBannerDidLoadAd" );
             }
             
-            void onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier() override {
-                pybind::object cb = m_cbs["onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier() override
+            {
+                this->call_cbs( "onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier" );                
             }
             
-            void onAppleAppLovinBannerDidClickAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinBannerDidClickAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinBannerDidClickAd() override
+            {
+                this->call_cbs( "onAppleAppLovinBannerDidClickAd" );
             }
             
-            void onAppleAppLovinBannerDidFailToDisplayAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinBannerDidFailToDisplayAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinBannerDidFailToDisplayAd() override
+            {
+                this->call_cbs( "onAppleAppLovinBannerDidFailToDisplayAd" );
             }
             
-            void onAppleAppLovinBannerDidExpandAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinBannerDidExpandAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinBannerDidExpandAd() override
+            {
+                this->call_cbs( "onAppleAppLovinBannerDidExpandAd" );
             }
             
-            void onAppleAppLovinBannerDidCollapseAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinBannerDidCollapseAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinBannerDidCollapseAd() override
+            {
+                this->call_cbs( "onAppleAppLovinBannerDidCollapseAd" );
             }
             
-            void onAppleAppLovinBannerDidPayRevenueForAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinBannerDidPayRevenueForAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinBannerDidPayRevenueForAd() override
+            {
+                this->call_cbs( "onAppleAppLovinBannerDidPayRevenueForAd" );
             }
-
-        protected:
-            pybind::dict m_cbs;
-            pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
         static bool s_appleAppLovin_initBanner( const ConstString & _adUnitId, const ConstString & _placement, const pybind::dict & _cbs, const pybind::args & _args )
@@ -138,112 +81,54 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleAppLovinInterstitialProvider
-            : public AppleAppLovinInterstitailProviderInterface
-            , public Factorable
+            : public PythonCallbackProvider<AppleAppLovinInterstitailProviderInterface>
         {
         public:
             PythonAppleAppLovinInterstitialProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : m_cbs( _cbs )
-                , m_args( _args )
-            {
-            }
-            
-            ~PythonAppleAppLovinInterstitialProvider() override
+                : PythonCallbackProvider<AppleAppLovinInterstitailProviderInterface>( _cbs, _args )
             {
             }
 
         protected:
-            void onAppleAppLovinInterstitialDidStartAdRequestForAdUnitIdentifier() override {
-                pybind::object cb = m_cbs["onAppleAppLovinInterstitialDidStartAdRequestForAdUnitIdentifier"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinInterstitialDidStartAdRequestForAdUnitIdentifier() override
+            {
+                this->call_cbs( "onAppleAppLovinInterstitialDidStartAdRequestForAdUnitIdentifier" );
             }
             
-            void onAppleAppLovinInterstitialDidLoadAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinInterstitialDidLoadAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinInterstitialDidLoadAd() override
+            {
+                this->call_cbs( "onAppleAppLovinInterstitialDidLoadAd" );
             }
             
-            void onAppleAppLovinInterstitialDidFailToLoadAdForAdUnitIdentifier() override {
-                pybind::object cb = m_cbs["onAppleAppLovinInterstitialDidFailToLoadAdForAdUnitIdentifier"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinInterstitialDidFailToLoadAdForAdUnitIdentifier() override
+            {
+                this->call_cbs( "onAppleAppLovinInterstitialDidFailToLoadAdForAdUnitIdentifier" );
             }
             
-            void onAppleAppLovinInterstitialDidDisplayAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinInterstitialDidDisplayAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinInterstitialDidDisplayAd() override
+            {
+                this->call_cbs( "onAppleAppLovinInterstitialDidDisplayAd" );
             }
             
-            void onAppleAppLovinInterstitialDidClickAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinInterstitialDidClickAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinInterstitialDidClickAd() override
+            {
+                this->call_cbs( "onAppleAppLovinInterstitialDidClickAd" );
             }
             
-            void onAppleAppLovinInterstitialDidHideAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinInterstitialDidHideAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinInterstitialDidHideAd() override
+            {
+                this->call_cbs( "onAppleAppLovinInterstitialDidHideAd" );
             }
             
-            void onAppleAppLovinInterstitialDidFailToDisplayAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinInterstitialDidFailToDisplayAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinInterstitialDidFailToDisplayAd() override
+            {
+                this->call_cbs( "onAppleAppLovinInterstitialDidFailToDisplayAd" );
             }
             
-            void onAppleAppLovinInterstitialDidPayRevenueForAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinInterstitialDidPayRevenueForAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinInterstitialDidPayRevenueForAd() override
+            {
+                this->call_cbs( "onAppleAppLovinInterstitialDidPayRevenueForAd" );
             }
-
-        protected:
-            pybind::dict m_cbs;
-            pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
         static bool s_appleAppLovin_initInterstitial( const ConstString & _adUnitId, const pybind::dict & _cbs, const pybind::args & _args )
@@ -257,145 +142,69 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleAppLovinRewardedProvider
-            : public AppleAppLovinRewardedProviderInterface
-            , public Factorable
+            : public PythonCallbackProvider<AppleAppLovinRewardedProviderInterface>
         {
         public:
             PythonAppleAppLovinRewardedProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : m_cbs( _cbs )
-                , m_args( _args )
-            {
-            }
-            
-            ~PythonAppleAppLovinRewardedProvider() override
+                : PythonCallbackProvider<AppleAppLovinRewardedProviderInterface>( _cbs, _args )
             {
             }
 
         protected:
-            void onAppleAppLovinRewardedDidStartAdRequestForAdUnitIdentifier() override {
-                pybind::object cb = m_cbs["onAppleAppLovinRewardedDidStartAdRequestForAdUnitIdentifier"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinRewardedDidStartAdRequestForAdUnitIdentifier() override
+            {
+                this->call_cbs( "onAppleAppLovinRewardedDidStartAdRequestForAdUnitIdentifier" );
             }
             
-            void onAppleAppLovinRewardedDidLoadAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinRewardedDidLoadAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinRewardedDidLoadAd() override
+            {
+                this->call_cbs( "onAppleAppLovinRewardedDidLoadAd"];
             }
             
-            void onAppleAppLovinRewardedDidFailToLoadAdForAdUnitIdentifier() override {
-                pybind::object cb = m_cbs["onAppleAppLovinRewardedDidFailToLoadAdForAdUnitIdentifier"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinRewardedDidFailToLoadAdForAdUnitIdentifier() override
+            {
+                this->call_cbs( "onAppleAppLovinRewardedDidFailToLoadAdForAdUnitIdentifier" );
             }
             
-            void onAppleAppLovinRewardedDidDisplayAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinRewardedDidDisplayAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinRewardedDidDisplayAd() override
+            {
+                this->call_cbs( "onAppleAppLovinRewardedDidDisplayAd" );
             }
             
-            void onAppleAppLovinRewardedDidClickAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinRewardedDidClickAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinRewardedDidClickAd() override
+            {
+                this->call_cbs( "onAppleAppLovinRewardedDidClickAd" );
             }
             
-            void onAppleAppLovinRewardedDidHideAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinRewardedDidHideAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinRewardedDidHideAd() override
+            {
+                this->call_cbs( "onAppleAppLovinRewardedDidHideAd" );
             }
             
-            void onAppleAppLovinRewardedDidFailToDisplayAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinRewardedDidFailToDisplayAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinRewardedDidFailToDisplayAd() override
+            {
+                this->call_cbs( "onAppleAppLovinRewardedDidFailToDisplayAd" );
             }
             
-            void onAppleAppLovinRewardedDidStartRewardedVideoForAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinRewardedDidStartRewardedVideoForAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinRewardedDidStartRewardedVideoForAd() override
+            {
+                this->call_cbs( "onAppleAppLovinRewardedDidStartRewardedVideoForAd" );
             }
             
-            void onAppleAppLovinRewardedDidCompleteRewardedVideoForAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinRewardedDidCompleteRewardedVideoForAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinRewardedDidCompleteRewardedVideoForAd() override
+            {
+                this->call_cbs( "onAppleAppLovinRewardedDidCompleteRewardedVideoForAd" );
             }
             
-            void onAppleAppLovinRewardedDidRewardUserForAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinRewardedDidRewardUserForAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinRewardedDidRewardUserForAd() override
+            {
+                this->call_cbs( "onAppleAppLovinRewardedDidRewardUserForAd" );
             }
             
-            void onAppleAppLovinRewardedDidPayRevenueForAd() override {
-                pybind::object cb = m_cbs["onAppleAppLovinRewardedDidPayRevenueForAd"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinRewardedDidPayRevenueForAd() override
+            {
+                this->call_cbs( "onAppleAppLovinRewardedDidPayRevenueForAd" );
             }
-
-        protected:
-            pybind::dict m_cbs;
-            pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
         static bool s_appleAppLovin_initRewarded( const ConstString & _adUnitId, const pybind::dict & _cbs, const pybind::args & _args )
@@ -465,13 +274,11 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleAppLovinConsentFlowProvider
-            : public AppleAppLovinConsentFlowProviderInterface
-            , public Factorable
+            : public PythonCallbackProvider<AppleAppLovinConsentFlowProviderInterface>
         {
         public:
             PythonAppleAppLovinConsentFlowProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : m_cbs( _cbs )
-                , m_args( _args )
+                : PythonCallbackProvider<AppleAppLovinConsentFlowProviderInterface>( _cbs, _args )
             {
             }
             
@@ -480,31 +287,15 @@ namespace Mengine
             }
 
         protected:
-            void onAppleAppLovinConsentFlowShowSuccessful() override {
-                pybind::object cb = m_cbs["onAppleAppLovinConsentFlowShowSuccessful"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinConsentFlowShowSuccessful() override
+            {
+                this->call_cbs( "onAppleAppLovinConsentFlowShowSuccessful" );
             }
             
-            void onAppleAppLovinConsentFlowShowFailed() override {
-                pybind::object cb = m_cbs["onAppleAppLovinConsentFlowShowFailed"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+            void onAppleAppLovinConsentFlowShowFailed() override
+            {
+                this->call_cbs( "onAppleAppLovinConsentFlowShowFailed" );
             }
-
-        protected:
-            pybind::dict m_cbs;
-            pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
         static void s_appleAppLovin_loadAndShowCMPFlow( const pybind::dict & _cbs, const pybind::args & _args )

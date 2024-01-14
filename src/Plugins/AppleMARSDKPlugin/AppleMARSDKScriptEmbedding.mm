@@ -6,6 +6,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonCallbackProvider.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Factory.h"
@@ -19,266 +20,108 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleMARSDKProvider
-            : public AppleMARSDKProviderInterface
+            : public PythonCallbackProvider<AppleMARSDKProviderInterface>
         {
         public:
-            PythonAppleMARSDKProvider( pybind::kernel_interface * _kernel, const pybind::dict & _cbs, const pybind::args & _args )
-                : m_kernel( _kernel )
-                , m_cbs( _cbs )
-                , m_args( _args )
+            PythonAppleMARSDKProvider( const pybind::dict & _cbs, const pybind::args & _args )
+                : PythonCallbackProvider<AppleMARSDKProviderInterface>( _cbs, _args )
             {
             }
             
         protected:
             void onPlatformInit( const MARSDKResultParams & _params ) override
             {
-                pybind::object cb = m_cbs["onPlatformInit"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                pybind::dict d = this->makePyParams_( _params );
-                
-                cb.call_args( d, m_args );
+                this->call_cbs( "onPlatformInit", _params );
             }
             
             void onRealName( const MARSDKResultParams & _params ) override
             {
-                pybind::object cb = m_cbs["onRealName"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                pybind::dict d = this->makePyParams_( _params );
-                
-                cb.call_args( d, m_args );
+                this->call_cbs( "onRealName", _params );
             }
             
             void onEventWithCode( int32_t _code, const Char * _msg ) override
             {
-                pybind::object cb = m_cbs["onEventWithCode"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( _code, _msg, m_args );
+                this->call_cbs( "onEventWithCode", _code, _msg );
             }
             
             void onEventCustom( const Char * _eventName, const MARSDKResultParams & _params ) override
             {
-                pybind::object cb = m_cbs["onEventCustom"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                pybind::dict d = this->makePyParams_( _params );
-                
-                cb.call_args( _eventName, d, m_args );
+                this->call_cbs( "onEventCustom", _eventName, _params );
             }
 
         protected:
             void onUserLogin( const MARSDKResultParams & _params ) override
             {
-                pybind::object cb = m_cbs["onUserLogin"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                pybind::dict d = this->makePyParams_( _params );
-                
-                cb.call_args( d, m_args );
+                this->call_cbs( "onUserLogin", _params );
             }
 
             void onUserLogout( const MARSDKResultParams & _params ) override
             {
-                pybind::object cb = m_cbs["onUserLogout"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                pybind::dict d = this->makePyParams_( _params );
-                
-                cb.call_args( d, m_args );
+                this->call_cbs( "onUserLogout", _params );
             }
 
             void onPayPaid( const MARSDKResultParams & _params ) override
             {
-                pybind::object cb = m_cbs["onPayPaid"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                pybind::dict d = this->makePyParams_( _params );
-                
-                cb.call_args( d, m_args );
+                this->call_cbs( "onPayPaid", _params );
             }
             
         protected:
             void onPropComplete( const ConstString & _orderId ) override
             {
-                pybind::object cb = m_cbs["onPropComplete"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( _orderId, m_args );
+                this->call_cbs( "onPropComplete", _orderId );
             }
             
             void onPropError( const ConstString & _orderId ) override
             {
-                pybind::object cb = m_cbs["onPropError"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( _orderId, m_args );
+                this->call_cbs( "onPropError", _orderId );
             }
             
         protected:
             void onPurchasedNonConsumable( const VectorConstString & _purchased ) override
             {
-                pybind::object cb = m_cbs["onPurchasedNonConsumable"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( _purchased, m_args );
+                this->call_cbs( "onPurchasedNonConsumable", _purchased );
             }
             
         protected:
             void onAdRewardedDidFailed() override
             {
-                pybind::object cb = m_cbs["onAdRewardedDidFailed"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+                this->call_cbs( "onAdRewardedDidFailed" );
             }
             
             void onAdRewardedDidLoaded() override
             {
-                pybind::object cb = m_cbs.get("onAdRewardedDidLoaded");
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+                this->call_cbs( "onAdRewardedDidLoaded" );
             }
             
             void onAdRewardedDidShow() override
             {
-                pybind::object cb = m_cbs["onAdRewardedDidShow"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+                this->call_cbs( "onAdRewardedDidShow" );
             }
             
             void onAdRewardedDidShowFailed() override
             {
-                pybind::object cb = m_cbs["onAdRewardedDidShowFailed"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+                this->call_cbs( "onAdRewardedDidShowFailed" );
             }
             
             void onAdRewardedDidClicked() override
             {
-                pybind::object cb = m_cbs["onAdRewardedDidClicked"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+                this->call_cbs( "onAdRewardedDidClicked" );
             }
             
             void onAdRewardedDidClosed() override
             {
-                pybind::object cb = m_cbs["onAdRewardedDidClosed"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+                this->call_cbs( "onAdRewardedDidClosed" );
             }
             
             void onAdRewardedDidSkipped() override
             {
-                pybind::object cb = m_cbs["onAdRewardedDidSkipped"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+                this->call_cbs( "onAdRewardedDidSkipped" );
             }
             
             void onAdRewardedDidFinished( const Char * _itemName, uint32_t _itemNum ) override
             {
-                pybind::object cb = m_cbs["onAdRewardedDidFinished"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( _itemName, _itemNum, m_args );
+                this->call_cbs( "onAdRewardedDidFinished", _itemName, _itemNum );
             }
-            
-        protected:
-            pybind::dict makePyParams_( const MARSDKResultParams & _params ) const
-            {
-                pybind::dict d( m_kernel );
-                
-                for( auto && [key, value] : _params )
-                {
-                    d[key] = value;
-                }
-                
-                return d;
-            }
-            
-        protected:
-            pybind::kernel_interface * m_kernel;
-            pybind::dict m_cbs;
-            pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<PythonAppleMARSDKProvider, AppleMARSDKProviderInterface> PythonAppleMARSDKProviderPtr;

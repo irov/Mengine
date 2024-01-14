@@ -1,10 +1,6 @@
 #pragma once
 
-#include "Config/Config.h"
-
 #include "Kernel/StaticString.h"
-#include "Kernel/Map.h"
-#include "Kernel/String.h"
 
 #import <Foundation/Foundation.h>
 
@@ -18,7 +14,5 @@ namespace Mengine
     {
         typedef StaticString<MENGINE_APPLE_MESSAGE_NSERROR> NSErrorMessage;
         NSErrorMessage AppleGetMessageFromNSError( NSError * _error );
-        
-        void AppleGetMapNSDictionary( NSDictionary * _dictionary, Map<String, String> * const _map );
     }
 }

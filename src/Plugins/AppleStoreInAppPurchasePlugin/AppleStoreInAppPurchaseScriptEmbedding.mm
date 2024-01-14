@@ -24,48 +24,24 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleStoreInAppPurchasePaymentQueueProvider
-            : public AppleStoreInAppPurchasePaymentQueueProviderInterface
-            , public Factorable
+            : public PythonCallbackProvider<AppleStoreInAppPurchasePaymentQueueProviderInterface>
         {
         public:
             PythonAppleStoreInAppPurchasePaymentQueueProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : m_cbs( _cbs )
-                , m_args( _args )
-            {
-            }
-            
-            ~PythonAppleStoreInAppPurchasePaymentQueueProvider() override
+                : PythonCallbackProvider<AppleStoreInAppPurchasePaymentQueueProviderInterface>( _cbs, _args )
             {
             }
 
         protected:
             void onPaymentQueueShouldContinueTransaction( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                pybind::object cb = m_cbs["onPaymentQueueShouldContinueTransaction"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( _transaction, m_args );
+                this->call_cbs( "onPaymentQueueShouldContinueTransaction", _transaction );
             }
             
             void onPaymentQueueShouldShowPriceConsent() override
             {
-                pybind::object cb = m_cbs["onPaymentQueueShouldShowPriceConsent"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( m_args );
+                this->call_cbs( "onPaymentQueueShouldShowPriceConsent" );
             }
-
-        protected:
-            pybind::dict m_cbs;
-            pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
         static void s_AppleStoreInAppPurchase_setPaymentQueueProvider( const pybind::dict & _cbs, const pybind::args & _args )
@@ -77,84 +53,39 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleStoreInAppPurchasePaymentTransactionProvider
-            : public AppleStoreInAppPurchasePaymentTransactionProviderInterface
-            , public Factorable
+            : public PythonCallbackProvider<AppleStoreInAppPurchasePaymentTransactionProviderInterface>
         {
         public:
             PythonAppleStoreInAppPurchasePaymentTransactionProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : m_cbs( _cbs )
-                , m_args( _args )
+                : PythonCallbackProvider<AppleStoreInAppPurchasePaymentTransactionProviderInterface>( _cbs, _args )
             {
-            }
-            
-            ~PythonAppleStoreInAppPurchasePaymentTransactionProvider() override
-            {                
             }
 
         protected:
             void onPaymentQueueUpdatedTransactionPurchasing( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                pybind::object cb = m_cbs["onPaymentQueueUpdatedTransactionPurchasing"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( _transaction, m_args );
+                this->call_cbs( "onPaymentQueueUpdatedTransactionPurchasing", _transaction );
             }
             
             void onPaymentQueueUpdatedTransactionPurchased( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                pybind::object cb = m_cbs["onPaymentQueueUpdatedTransactionPurchased"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( _transaction, m_args );
+                this->call_cbs( "onPaymentQueueUpdatedTransactionPurchased", _transaction );
             }
             
             void onPaymentQueueUpdatedTransactionFailed( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                pybind::object cb = m_cbs["onPaymentQueueUpdatedTransactionFailed"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( _transaction, m_args );
+                this->call_cbs( "onPaymentQueueUpdatedTransactionFailed", _transaction );
             }
             
             void onPaymentQueueUpdatedTransactionRestored( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                pybind::object cb = m_cbs["onPaymentQueueUpdatedTransactionRestored"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( _transaction, m_args );
+                this->call_cbs( "onPaymentQueueUpdatedTransactionRestored", _transaction );
             }
             
             void onPaymentQueueUpdatedTransactionDeferred( const AppleStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) override
             {
-                pybind::object cb = m_cbs["onPaymentQueueUpdatedTransactionDeferred"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( _transaction, m_args );
+                this->call_cbs( "onPaymentQueueUpdatedTransactionDeferred", _transaction );
             }
-
-        protected:
-            pybind::dict m_cbs;
-            pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
         static void s_AppleStoreInAppPurchase_setPaymentTransactionProvider( const pybind::dict & _cbs, const pybind::args & _args )
@@ -180,60 +111,29 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleStoreInAppPurchaseProductsResponse
-            : public AppleStoreInAppPurchaseProductsResponseInterface
-            , public Factorable
+            : public PythonCallbackProvider<AppleStoreInAppPurchaseProductsResponseInterface>
         {
         public:
             PythonAppleStoreInAppPurchaseProductsResponse( const pybind::dict & _cbs, const pybind::args & _args )
-                : m_cbs( _cbs )
-                , m_args( _args )
-            {
-            }
-            
-            ~PythonAppleStoreInAppPurchaseProductsResponse() override
+                : PythonCallbackProvider<AppleStoreInAppPurchaseProductsResponseInterface>( _cbs, _args )
             {
             }
             
         protected:
             void onProductResponse( const AppleStoreInAppPurchaseProductsRequestInterfacePtr & _request, const VectorAppleStoreInAppPurchaseProducts & _products ) override
             {
-                pybind::object cb = m_cbs["onProductResponse"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( _request, _products, m_args );
+                this->call_cbs( "onProductResponse", _request, _products );
             }
             
             void onProductFinish( const AppleStoreInAppPurchaseProductsRequestInterfacePtr & _request ) override
             {
-                pybind::object cb = m_cbs["onProductFinish"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( _request, m_args );
+                this->call_cbs( "onProductFinish", _request );
             }
             
             void onProductFail( const AppleStoreInAppPurchaseProductsRequestInterfacePtr & _request ) override
             {
-                pybind::object cb = m_cbs["onProductFail"];
-                
-                if( cb.is_none() == true )
-                {
-                    return;
-                }
-                
-                cb.call_args( _request, m_args );
+                this->call_cbs( "onProductFail", _request );
             }
-
-        protected:
-            pybind::dict m_cbs;
-            pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
         static AppleStoreInAppPurchaseProductsRequestInterfacePtr s_AppleStoreInAppPurchase_requestProducts( const VectorConstString & _productIdentifiers, const pybind::dict & _cbs, const pybind::args & _args )

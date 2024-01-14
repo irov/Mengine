@@ -6,6 +6,7 @@
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonCallbackProvider.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Factory.h"
@@ -19,75 +20,54 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleFacebookProvider
-            : public AppleFacebookProviderInterface
+            : public PythonCallbackProvider<AppleAppLovinBannerProviderInterface>
         {
         public:
             PythonAppleFacebookProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : m_cbs( _cbs )
-                , m_args( _args )
+                : PythonCallbackProvider<AppleAppLovinBannerProviderInterface>( _cbs, _args )
             {
             }
 
         protected:
             void onFacebookLoginSuccess( const Char * _token ) override
             {
-                pybind::object cb = m_cbs["onFacebookLoginSuccess"];
-
-                cb.call_args( _token, m_args );
+                this->call_cbs( "onAppleFacebookLoginSuccess", _token );
             };
 
             void onFacebookLoginCancel() override
             {
-                pybind::object cb = m_cbs["onFacebookLoginCancel"];
-
-                cb.call_args( m_args );
+                this->call_cbs( onAppleFacebookLoginCancel" );
             }
 
             void onFacebookError( int32_t _code, const Char * _errorMessage ) override
             {
-                pybind::object cb = m_cbs["onFacebookError"];
-
-                cb.call_args( _code, _errorMessage, m_args );
+                this->call_cbs( "onAppleFacebookError", _code, _errorMessage );
             }
 
             void onFacebookShareSuccess( const Char * _postId ) override
             {
-                pybind::object cb = m_cbs["onFacebookShareSuccess"];
-
-                cb.call_args( _postId, m_args );
+                this->call_cbs( "onAppleFacebookShareSuccess", _postId );
             }
 
             void onFacebookShareCancel() override
             {
-                pybind::object cb = m_cbs["onFacebookShareCancel"];
-
-                cb.call_args( m_args );
+                this->call_cbs( "onAppleFacebookShareCancel" );
             }
 
             void onFacebookShareError( int32_t _code, const Char * _errorMessage ) override
             {
-                pybind::object cb = m_cbs["onFacebookShareError"];
-
-                cb.call_args( _code, _errorMessage, m_args );
+                this->call_cbs( "onAppleFacebookShareError", _code, _errorMessage );
             }
 
             void onFacebookProfilePictureLinkGet( const Char * _userId, bool _success, const Char * _pictureURL ) override
             {
-                pybind::object cb = m_cbs["onFacebookProfilePictureLinkGet"];
-
-                cb.call_args( _userId, _success, _pictureURL, m_args );
+                this->call_cbs( "onAppleFacebookProfilePictureLinkGet", _userId, _success, _pictureURL );
             }
-
-        protected:
-            pybind::dict m_cbs;
-            pybind::args m_args;
         };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PythonAppleFacebookProvider, AppleFacebookProviderInterface> PythonAppleFacebookProviderPtr;
         //////////////////////////////////////////////////////////////////////////
         static void s_AppleFacebook_setProvider( const pybind::dict & _cbs, const pybind::args & _args )
         {
-            PythonAppleFacebookProviderPtr provider = Helper::makeFactorableUnique<PythonAppleFacebookProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
+            AppleFacebookProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleFacebookProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
 
             APPLE_FACEBOOK_SERVICE()
                 ->setProvider( provider );

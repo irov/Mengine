@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/ServantInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/VectorConstString.h"
@@ -14,7 +13,7 @@ namespace Mengine
     typedef Map<String, String> MARSDKResultParams;
     //////////////////////////////////////////////////////////////////////////
     class AppleMARSDKProviderInterface
-        : public ServantInterface
+        : public Interface
     {
     public:
         virtual void onPlatformInit( const MARSDKResultParams & _params ) = 0;

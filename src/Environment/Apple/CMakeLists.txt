@@ -6,6 +6,8 @@ src
     AppleUtils.mm
     AppleDetail.h
     AppleDetail.mm
+    AppleBundle.h
+    AppleBundle.mm
     AppleErrorHelper.h
     AppleErrorHelper.mm
     AppleString.h

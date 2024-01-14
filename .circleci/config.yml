@@ -1,13 +1,13 @@
 version: 2.1
 
 orbs:
-  android: circleci/android@2.3.0
+  android: circleci/android@2.4.0
 
 jobs:
   build:
     executor:
       name: android/android-machine
-      tag: 2021.10.1
+      tag: 2023.11.1
 
     parallelism: 4
     

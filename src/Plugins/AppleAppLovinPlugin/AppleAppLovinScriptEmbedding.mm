@@ -158,7 +158,7 @@ namespace Mengine
             
             void onAppleAppLovinRewardedDidLoadAd() override
             {
-                this->call_cbs( "onAppleAppLovinRewardedDidLoadAd"];
+                this->call_cbs( "onAppleAppLovinRewardedDidLoadAd" );
             }
             
             void onAppleAppLovinRewardedDidFailToLoadAdForAdUnitIdentifier() override

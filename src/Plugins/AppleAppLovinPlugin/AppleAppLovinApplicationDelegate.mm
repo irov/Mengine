@@ -1,6 +1,6 @@
 #import "AppleAppLovinApplicationDelegate.h"
 
-#include "Environment/Apple/AppleDetail.h"
+#include "Environment/Apple/AppleBundle.h"
 
 #include "Kernel/PlatformHelper.h"
 #include "Kernel/SemaphoreHelper.h"

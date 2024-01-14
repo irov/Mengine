@@ -26,12 +26,12 @@
 - (BOOL)paymentQueue:(SKPaymentQueue *)paymentQueue shouldContinueTransaction:(SKPaymentTransaction *)transaction inStorefront:(SKStorefront *)newStorefront API_AVAILABLE(ios(13.0), macos(10.15), watchos(6.2)) {
     LOGGER_MESSAGE( "SKPaymentQueueDelegate paymentQueue shouldContinueTransaction" );
     
-    Mengine::AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr provider = m_service->getPaymentQueueProvider();
+    Mengine::AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr copy_provider = m_service->getPaymentQueueProvider();
     
     Mengine::AppleStoreInAppPurchasePaymentTransactionInterfacePtr paymentTransaction = m_factory->makePaymentTransaction( transaction );
     
-    Mengine::Helper::dispatchMainThreadEvent([provider, paymentTransaction]() {
-        provider->onPaymentQueueShouldContinueTransaction( paymentTransaction );
+    Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
+        copy_provider->onPaymentQueueShouldContinueTransaction( paymentTransaction );
     });
 }
 
@@ -40,10 +40,10 @@
 - (BOOL)paymentQueueShouldShowPriceConsent:(SKPaymentQueue *)paymentQueue {
     LOGGER_MESSAGE( "SKPaymentQueueDelegate paymentQueue paymentQueueShouldShowPriceConsent" );
     
-    Mengine::AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr provider = m_service->getPaymentQueueProvider();
+    Mengine::AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr copy_provider = m_service->getPaymentQueueProvider();
     
-    Mengine::Helper::dispatchMainThreadEvent([provider]() {
-        provider->onPaymentQueueShouldShowPriceConsent();
+    Mengine::Helper::dispatchMainThreadEvent([copy_provider]() {
+        copy_provider->onPaymentQueueShouldShowPriceConsent();
     });
 }
 

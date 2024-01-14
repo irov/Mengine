@@ -51,7 +51,7 @@ namespace Mengine
     bool AppleGameCenterService::connect()
     {
         [m_gameCenterDelegate login:^(NSError * _Nullable _error) {
-            AppleGameCenterProviderInterfacePtr provider = m_provider;
+            AppleGameCenterProviderInterfacePtr copy_provider = m_provider;
             
             if( _error != nil )
             {
@@ -63,10 +63,10 @@ namespace Mengine
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
-                if( provider != nullptr )
+                if( copy_provider != nullptr )
                 {
-                    Mengine::Helper::dispatchMainThreadEvent([provider]() {
-                        provider->onAppleGameCenterAuthenticate( false );
+                    Mengine::Helper::dispatchMainThreadEvent([copy_provider]() {
+                        copy_provider->onAppleGameCenterAuthenticate( false );
                     });
                 }
                 
@@ -79,10 +79,10 @@ namespace Mengine
             {
                 m_gameCenterAuthenticate = true;
                 
-                if( provider != nullptr )
+                if( copy_provider != nullptr )
                 {
-                    Mengine::Helper::dispatchMainThreadEvent([provider]() {
-                        provider->onAppleGameCenterAuthenticate( true );
+                    Mengine::Helper::dispatchMainThreadEvent([copy_provider]() {
+                        copy_provider->onAppleGameCenterAuthenticate( true );
                     });
                 }
             }
@@ -90,10 +90,10 @@ namespace Mengine
             m_achievementsSynchronization = false;
             m_achievementsComplete.clear();
             
-            if( provider != nullptr )
+            if( copy_provider != nullptr )
             {
-                Mengine::Helper::dispatchMainThreadEvent([provider]() {
-                    provider->onAppleGameCenterSynchronizate( false );
+                Mengine::Helper::dispatchMainThreadEvent([copy_provider]() {
+                    copy_provider->onAppleGameCenterSynchronizate( false );
                 });
             }
             
@@ -110,8 +110,8 @@ namespace Mengine
                     
                     if( provider != nullptr )
                     {
-                        Mengine::Helper::dispatchMainThreadEvent([provider]() {
-                            provider->onAppleGameCenterSynchronizate( false );
+                        Mengine::Helper::dispatchMainThreadEvent([copy_provider]() {
+                            copy_provider->onAppleGameCenterSynchronizate( false );
                         });
                     }
                     
@@ -136,8 +136,8 @@ namespace Mengine
                 
                 if( provider != nullptr )
                 {
-                    Mengine::Helper::dispatchMainThreadEvent([provider]() {
-                        provider->onAppleGameCenterSynchronizate( true );
+                    Mengine::Helper::dispatchMainThreadEvent([copy_provider]() {
+                        copy_provider->onAppleGameCenterSynchronizate( true );
                     });
                 }
             }] ;

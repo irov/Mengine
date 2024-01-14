@@ -48,7 +48,7 @@
         return;
     }
     
-    Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr provider = m_service->getPaymentTransactionProvider();
+    Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr copy_provider = m_service->getPaymentTransactionProvider();
     
     for (SKPaymentTransaction * skPaymentTransaction in transactions)
     {
@@ -60,32 +60,32 @@
         {
             case SKPaymentTransactionStatePurchasing:
             {
-                Mengine::Helper::dispatchMainThreadEvent([provider, paymentTransaction]() {
-                    provider->onPaymentQueueUpdatedTransactionPurchasing( paymentTransaction );
+                Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
+                    copy_provider->onPaymentQueueUpdatedTransactionPurchasing( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStatePurchased:
             {
-                Mengine::Helper::dispatchMainThreadEvent([provider, paymentTransaction]() {
-                    provider->onPaymentQueueUpdatedTransactionPurchased( paymentTransaction );
+                Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
+                    copy_provider->onPaymentQueueUpdatedTransactionPurchased( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStateFailed:
             {
-                Mengine::Helper::dispatchMainThreadEvent([provider, paymentTransaction]() {
-                    provider->onPaymentQueueUpdatedTransactionFailed( paymentTransaction );
+                Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
+                    copy_provider->onPaymentQueueUpdatedTransactionFailed( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStateRestored:
             {
-                Mengine::Helper::dispatchMainThreadEvent([provider, paymentTransaction]() {
-                    provider->onPaymentQueueUpdatedTransactionRestored( paymentTransaction );
+                Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
+                    copy_provider->onPaymentQueueUpdatedTransactionRestored( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStateDeferred:
             {
-                Mengine::Helper::dispatchMainThreadEvent([provider, paymentTransaction]() {
-                    provider->onPaymentQueueUpdatedTransactionDeferred( paymentTransaction );
+                Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
+                    copy_provider->onPaymentQueueUpdatedTransactionDeferred( paymentTransaction );
                 });
             } break;
         }

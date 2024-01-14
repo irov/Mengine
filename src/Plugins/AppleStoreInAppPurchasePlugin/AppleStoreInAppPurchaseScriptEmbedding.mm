@@ -11,6 +11,7 @@
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
+#include "Environment/Python/PythonCallbackProvider.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactorableUnique.h"

@@ -3097,9 +3097,6 @@ namespace Mengine
             return false;
         }
 #elif defined(MENGINE_PLATFORM_UWP)
-        SDL_bool sdl_fullscreen = _fullscreen == true ? SDL_TRUE : SDL_FALSE;
-        SDL_SetWindowFullscreen( m_sdlWindow, sdl_fullscreen );
-
         if( RENDER_SYSTEM()
             ->onWindowChangeFullscreen( _fullscreen ) == false )
         {

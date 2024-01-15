@@ -220,11 +220,5 @@ namespace Mengine
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
         GLuint m_vertexArrayId;
 #endif
-
-        //uint32_t m_counterTexture;
-        //uint32_t m_counterFramebuffer;
-        //uint32_t m_counterBuffer;
-        //uint32_t m_counterFragmentShader;
-        //uint32_t m_counterVertexShader;
     };
 }

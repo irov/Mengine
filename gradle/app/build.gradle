@@ -140,7 +140,7 @@ android {
                 def f = new File(ANDROID_APP_RELEASE_STORE_FILE)
 
                 if (f.exists() == false) {
-                    throw new GradleException("ANDROID_APP_DEBUG_STORE_FILE not found folder: $ANDROID_APP_RELEASE_STORE_FILE");
+                    throw new GradleException("ANDROID_APP_RELEASE_STORE_FILE not found folder: $ANDROID_APP_RELEASE_STORE_FILE");
                 }
 
                 storeFile file(ANDROID_APP_RELEASE_STORE_FILE)

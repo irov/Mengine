@@ -109,6 +109,7 @@ SERVICE_EXTERN( PickerService );
 SERVICE_EXTERN( PlayerService );
 SERVICE_EXTERN( AccountService );
 SERVICE_EXTERN( GameService );
+SERVICE_EXTERN( TimerService );
 SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( TimepipeService );
 SERVICE_EXTERN( StatisticService );
@@ -921,6 +922,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( AnalyticsService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( TimerService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
@@ -2010,6 +2012,7 @@ namespace Mengine
         this->unregisterBaseTypes_();
 
         SERVICE_FINALIZE( LoaderService );
+        SERVICE_FINALIZE( TimerService );
         SERVICE_FINALIZE( TimelineService );
         SERVICE_FINALIZE( WatchdogService );
         SERVICE_FINALIZE( ModuleService );
@@ -2100,6 +2103,7 @@ namespace Mengine
         SERVICE_DESTROY( FontService );
         SERVICE_DESTROY( DataService );
         SERVICE_DESTROY( LoaderService );
+        SERVICE_DESTROY( TimerService );
         SERVICE_DESTROY( TimelineService );
         SERVICE_DESTROY( WatchdogService );
         SERVICE_DESTROY( ModuleService );

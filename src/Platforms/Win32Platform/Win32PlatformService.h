@@ -36,17 +36,6 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        UniqueId addUpdate( const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) override;
-        void removeUpdate( UniqueId _id ) override;
-
-    public:
-        UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) override;
-        void removeTimer( UniqueId _id ) override;
-
-    public:
-        void dispatchMainThreadEvent( const LambdaEvent & _event ) override;
-
-    public:
         void setSleepMode( bool _sleepMode ) override;
         bool getSleepMode() const override;
 
@@ -259,40 +248,6 @@ namespace Mengine
 
         typedef Vector<Win32ProcessDesc> VectorWin32ProcessHandler;
         VectorWin32ProcessHandler m_win32ProcessHandlers;
-
-        struct TimerDesc
-        {
-            UniqueId id;
-            float milliseconds;
-            float time;
-            LambdaTimer lambda;
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentInterfacePtr doc;
-#endif
-        };
-
-        typedef Vector<TimerDesc> VectorTimers;
-        VectorTimers m_timers;
-
-        struct UpdateDesc
-        {
-            UniqueId id;
-            LambdaUpdate lambda;
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentInterfacePtr doc;
-#endif
-        };
-
-        typedef Vector<UpdateDesc> VectorUpdates;
-        VectorUpdates m_updates;
-
-        ThreadMutexInterfacePtr m_dispatchEventMutex;
-
-        typedef Vector<LambdaEvent> VectorEvents;
-        VectorEvents m_dispatchEvents;
-        VectorEvents m_dispatchEventsAux;
 
         HICON m_hIcon;
         StaticWString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;

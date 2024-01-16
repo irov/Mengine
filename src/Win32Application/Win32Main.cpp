@@ -16,7 +16,7 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
 
     if( app.initialize() == false )
     {
-        ::MessageBoxA( NULL, "Mengine invalid initialization", "Mengine", MB_OK );
+        ::MessageBoxA( NULL, "Invalid initialization", "Mengine", MB_OK );
 
         app.finalize();
 

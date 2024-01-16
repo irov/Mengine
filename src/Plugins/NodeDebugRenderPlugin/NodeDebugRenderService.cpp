@@ -15,6 +15,7 @@
 #include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
+#include "Interface/TimerServiceInterface.h"
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 
@@ -78,7 +79,7 @@ namespace Mengine
             this->toggleDebugText_();
         }, MENGINE_DOCUMENT_FACTORABLE );
 
-        m_timerFPS = PLATFORM_SERVICE()
+        m_timerFPS = TIMER_SERVICE()
             ->addTimer( 1000.f, [this]( UniqueId _id )
         {
             MENGINE_UNUSED( _id );
@@ -96,6 +97,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::_finalizeService()
     {
+        m_nodeDebugRenders.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::_stopService()
@@ -111,7 +113,7 @@ namespace Mengine
 
         if( m_timerFPS != INVALID_UNIQUE_ID )
         {
-            PLATFORM_SERVICE()
+            TIMER_SERVICE()
                 ->removeTimer( m_timerFPS );
 
             m_timerFPS = INVALID_UNIQUE_ID;

@@ -404,12 +404,6 @@ namespace Mengine
             , deviceSeed
         );
 
-        ThreadMutexInterfacePtr dispatchEventMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dispatchEventMutex );
-
-        m_dispatchEventMutex = dispatchEventMutex;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -443,44 +437,6 @@ namespace Mengine
 #endif
 
         m_win32ProcessHandlers.clear();
-
-#if defined(MENGINE_DEBUG)
-        for( const TimerDesc & desc : m_timers )
-        {
-            if( desc.id == INVALID_UNIQUE_ID )
-            {
-                continue;
-            }
-
-            LOGGER_ASSERTION( "forgot remove platform timer (doc: %s)"
-                , MENGINE_DOCUMENT_STR( desc.doc )
-            );
-        }
-#endif
-
-        m_timers.clear();
-
-#if defined(MENGINE_DEBUG)
-        for( const UpdateDesc & desc : m_updates )
-        {
-            if( desc.id == INVALID_UNIQUE_ID )
-            {
-                continue;
-            }
-
-            LOGGER_ASSERTION( "forgot remove platform update (doc: %s)"
-                , MENGINE_DOCUMENT_STR( desc.doc )
-            );
-        }
-#endif
-
-        m_updates.clear();
-
-        m_dispatchEventMutex->lock();
-        m_dispatchEvents.clear();
-        m_dispatchEventMutex->unlock();
-
-        m_dispatchEventsAux.clear();
 
         if( m_hIcon != NULL )
         {
@@ -754,63 +710,6 @@ namespace Mengine
         ::DebugBreak();
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId Win32PlatformService::addUpdate( const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc )
-    {
-        MENGINE_UNUSED( _doc );
-
-        UniqueId new_id = Helper::generateUniqueIdentity();
-
-        UpdateDesc desc;
-        desc.id = new_id;
-        desc.lambda = _lambda;
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-        desc.doc = _doc;
-#endif
-
-        m_updates.emplace_back( desc );
-
-        return new_id;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::removeUpdate( UniqueId _id )
-    {
-        VectorUpdates::iterator it_found = Algorithm::find_if( m_updates.begin(), m_updates.end(), [_id]( const UpdateDesc & _desc )
-        {
-            return _desc.id == _id;
-        } );
-
-        MENGINE_ASSERTION_FATAL( it_found != m_updates.end(), "not found update '%u'"
-            , _id
-        );
-
-        UpdateDesc & desc = *it_found;
-
-        desc.id = INVALID_UNIQUE_ID;
-        desc.lambda = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    UniqueId Win32PlatformService::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc )
-    {
-        MENGINE_UNUSED( _doc );
-
-        UniqueId new_id = Helper::generateUniqueIdentity();
-
-        TimerDesc desc;
-        desc.id = new_id;
-        desc.milliseconds = _milliseconds;
-        desc.time = _milliseconds;
-        desc.lambda = _lambda;
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-        desc.doc = _doc;
-#endif
-
-        m_timers.emplace_back( desc );
-
-        return new_id;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::setSleepMode( bool _sleepMode )
     {
         m_sleepMode = _sleepMode;
@@ -819,42 +718,6 @@ namespace Mengine
     bool Win32PlatformService::getSleepMode() const
     {
         return m_sleepMode;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::removeTimer( UniqueId _id )
-    {
-        VectorTimers::iterator it_found = Algorithm::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
-        {
-            return _desc.id == _id;
-        } );
-
-        MENGINE_ASSERTION_FATAL( it_found != m_timers.end(), "not found timer '%u'"
-            , _id
-        );
-
-        TimerDesc & desc = *it_found;
-
-        desc.id = INVALID_UNIQUE_ID;
-        desc.lambda = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::dispatchMainThreadEvent( const LambdaEvent & _event )
-    {
-        bool isMainThread = THREAD_SERVICE()
-            ->isMainThread();
-
-        if( isMainThread == true )
-        {
-            _event();
-
-            return;
-        }
-
-        m_dispatchEventMutex->lock();
-
-        m_dispatchEvents.emplace_back( _event );
-
-        m_dispatchEventMutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     Timestamp Win32PlatformService::getPlatfomTime() const
@@ -917,59 +780,8 @@ namespace Mengine
         }
 #endif
 
-        for( const UpdateDesc & desc : m_updates )
-        {
-            if( desc.id == INVALID_UNIQUE_ID )
-            {
-                continue;
-            }
-
-            desc.lambda( desc.id );
-        }
-
-        m_updates.erase( Algorithm::remove_if( m_updates.begin(), m_updates.end(), []( const UpdateDesc & _desc )
-        {
-            return _desc.id == INVALID_UNIQUE_ID;
-        } ), m_updates.end() );
-
-        for( TimerDesc & desc : m_timers )
-        {
-            if( desc.id == INVALID_UNIQUE_ID )
-            {
-                continue;
-            }
-
-            desc.time -= _frameTime;
-
-            if( desc.time > 0.f )
-            {
-                continue;
-            }
-
-            desc.time += desc.milliseconds;
-
-            desc.lambda( desc.id );
-        }
-
-        m_timers.erase( Algorithm::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
-        {
-            return _desc.id == INVALID_UNIQUE_ID;
-        } ), m_timers.end() );
-
-        m_dispatchEventMutex->lock();
-        std::swap( m_dispatchEventsAux, m_dispatchEvents );
-        m_dispatchEvents.clear();
-        m_dispatchEventMutex->unlock();
-
-        for( const LambdaEvent & ev : m_dispatchEventsAux )
-        {
-            ev();
-        }
-
-        m_dispatchEventsAux.clear();
-
         bool updating = APPLICATION_SERVICE()
-            ->beginUpdate();
+            ->beginUpdate( _frameTime );
 
         if( updating == true )
         {

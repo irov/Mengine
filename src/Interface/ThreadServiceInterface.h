@@ -30,6 +30,10 @@ namespace Mengine
         virtual bool hasThreadProcessor( const ConstString & _threadName ) const = 0;
 
     public:
+        typedef Lambda<void()> LambdaEvent;
+        virtual void dispatchMainThreadEvent( const LambdaEvent & _event ) = 0;
+
+    public:
         virtual bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool joinTask( const ThreadTaskInterfacePtr & _task ) = 0;
 

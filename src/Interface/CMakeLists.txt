@@ -40,7 +40,7 @@ Common
     SoundCodecInterface.h
     FontInterface.h
     FontGlyphInterface.h
-    FontEffectInterface.h    
+    FontEffectInterface.h
     TextEntryInterface.h
     TextServiceInterface.h
     ValidatorInterface.h
@@ -140,6 +140,7 @@ Common
     DebugFileInterface.h
     SemaphoreServiceInterface.h
     SemaphoreListenerInterface.h
+    TimerServiceInterface.h
 )
 
 ADD_FILTER(

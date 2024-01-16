@@ -31,6 +31,7 @@
 #include "Interface/PersistentSystemInterface.h"
 #include "Interface/DocumentInterface.h"
 #include "Interface/SemaphoreServiceInterface.h"
+#include "Interface/TimerServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
@@ -1111,7 +1112,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_addTimer( float _delay, const pybind::object & _timer, const pybind::args & _args )
             {
-                UniqueId id = PLATFORM_SERVICE()
+                UniqueId id = TIMER_SERVICE()
                     ->addTimer( _delay, [_timer, _args]( UniqueId _id )
                 {
                     MENGINE_UNUSED( _id );
@@ -1124,7 +1125,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_removeTimer( UniqueId _id )
             {
-                PLATFORM_SERVICE()
+                TIMER_SERVICE()
                     ->removeTimer( _id );
             }
             //////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,6 @@
 #include "PlatformHelper.h"
 
-#include "Interface/PlatformServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 namespace Mengine
 {
@@ -9,9 +9,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void dispatchMainThreadEvent( const LambdaDispatchMainThreadEvent & _event )
         {
-            if( SERVICE_IS_INITIALIZE( PlatformServiceInterface ) == true )
+            if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == true )
             {
-                PLATFORM_SERVICE()
+                THREAD_SERVICE()
                     ->dispatchMainThreadEvent( _event );
             };
         }

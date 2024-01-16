@@ -43,22 +43,8 @@ namespace Mengine
         virtual bool runPlatform() = 0;
         virtual void loopPlatform() = 0;
         virtual bool updatePlatform() = 0;
-        virtual bool tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause ) = 0;
+        virtual bool tickPlatform( float _time, bool _render, bool _flush, bool _pause ) = 0;
         virtual void stopPlatform() = 0;
-
-    public:
-        typedef Lambda<void( UniqueId _id )> LambdaUpdate;
-        virtual UniqueId addUpdate( const LambdaUpdate & _update, const DocumentInterfacePtr & _doc ) = 0;
-        virtual void removeUpdate( UniqueId _id ) = 0;
-
-    public:
-        typedef Lambda<void( UniqueId _id )> LambdaTimer;
-        virtual UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) = 0;
-        virtual void removeTimer( UniqueId _id ) = 0;
-
-    public:
-        typedef Lambda<void()> LambdaEvent;
-        virtual void dispatchMainThreadEvent( const LambdaEvent & _event ) = 0;
 
     public:
         virtual void setSleepMode( bool _sleepMode ) = 0;

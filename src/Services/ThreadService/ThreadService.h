@@ -37,6 +37,9 @@ namespace Mengine
         bool hasThreadProcessor( const ConstString & _threadName ) const override;
 
     public:
+        void dispatchMainThreadEvent( const LambdaEvent & _event ) override;
+
+    public:
         bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentInterfacePtr & _doc ) override;
         bool joinTask( const ThreadTaskInterfacePtr & _task ) override;
 
@@ -63,6 +66,11 @@ namespace Mengine
 
         ThreadMutexInterfacePtr m_mutexTasks;
         ThreadMutexInterfacePtr m_mutexThreads;
+        ThreadMutexInterfacePtr m_mutexDispatchEvents;
+
+        typedef Vector<LambdaEvent> VectorEvents;
+        VectorEvents m_dispatchEvents;
+        VectorEvents m_dispatchEventsAux;
 
         struct ThreadTaskDesc
         {

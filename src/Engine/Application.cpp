@@ -32,6 +32,7 @@
 #include "Interface/UpdateServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
+#include "Interface/TimerServiceInterface.h"
 
 #include "Isometric.h"
 #include "HotSpot.h"
@@ -1728,9 +1729,12 @@ namespace Mengine
             ->minimizeWindow();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::beginUpdate()
+    bool Application::beginUpdate( float _time )
     {
         MENGINE_PROFILER_CATEGORY();
+
+        TIMER_SERVICE()
+            ->update( _time );
 
         if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == true )
         {

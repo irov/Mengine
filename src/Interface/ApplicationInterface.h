@@ -12,6 +12,8 @@
 #include "Interface/GameServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 
+#include "Config/UniqueId.h"
+
 #ifndef MENGINE_APPLICATION_COMPANY_MAXNAME
 #define MENGINE_APPLICATION_COMPANY_MAXNAME 256
 #endif
@@ -42,7 +44,7 @@ namespace Mengine
     public:
         virtual bool render() = 0;
         virtual void flush() = 0;
-        virtual bool beginUpdate() = 0;
+        virtual bool beginUpdate( float _time ) = 0;
         virtual void tick( float _time ) = 0;
         virtual void endUpdate() = 0;
         virtual void setFocus( bool _focus ) = 0;

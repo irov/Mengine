@@ -839,6 +839,10 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("open.url", url);
 
+        MengineAnalytics.buildEvent("mng_open_url")
+            .addParameterString("url", url)
+            .log();
+
         if (MengineUtils.openUrl(this, url) == false) {
             return false;
         }
@@ -854,6 +858,10 @@ public class MengineActivity extends SDLActivity {
         );
 
         this.setState("open.mail", email);
+
+        MengineAnalytics.buildEvent("mng_open_mail")
+            .addParameterString("mail", email)
+            .log();
 
         Context context = this.getApplicationContext();
 

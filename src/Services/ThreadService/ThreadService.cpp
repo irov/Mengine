@@ -41,8 +41,8 @@ namespace Mengine
         m_threadCount = CONFIG_VALUE( "Engine", "ThreadCount", 16U );
 
         m_mutexTasks = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
-
         m_mutexThreads = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
+        m_mutexDispatchEvents = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         m_mainThreadId = THREAD_SYSTEM()
             ->getCurrentThreadId();
@@ -84,8 +84,15 @@ namespace Mengine
 
         m_threadProcessors.clear();
 
+        m_mutexDispatchEvents->lock();
+        m_dispatchEvents.clear();
+        m_mutexDispatchEvents->unlock();
+
+        m_dispatchEventsAux.clear();
+
         m_mutexTasks = nullptr;
         m_mutexThreads = nullptr;
+        m_mutexDispatchEvents = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadQueue );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadJob );
@@ -169,6 +176,22 @@ namespace Mengine
         }
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadService::dispatchMainThreadEvent( const LambdaEvent & _event )
+    {
+        if( this->isMainThread() == true )
+        {
+            _event();
+
+            return;
+        }
+
+        m_mutexDispatchEvents->lock();
+
+        m_dispatchEvents.emplace_back( _event );
+
+        m_mutexDispatchEvents->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentInterfacePtr & _doc )
@@ -330,6 +353,18 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////
     void ThreadService::update()
     {
+        m_mutexDispatchEvents->lock();
+        std::swap( m_dispatchEventsAux, m_dispatchEvents );
+        m_dispatchEvents.clear();
+        m_mutexDispatchEvents->unlock();
+
+        for( const LambdaEvent & ev : m_dispatchEventsAux )
+        {
+            ev();
+        }
+
+        m_dispatchEventsAux.clear();
+
         m_mutexTasks->lock();
 
         for( ThreadTaskDesc & desc_task : m_tasks )

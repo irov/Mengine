@@ -55,19 +55,8 @@ namespace Mengine
         bool runPlatform()	override;
         void loopPlatform() override;
         bool updatePlatform() override;
-        bool tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause ) override;
+        bool tickPlatform( float _time, bool _render, bool _flush, bool _pause ) override;
         void stopPlatform()	override;
-
-    public:
-        UniqueId addUpdate( const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) override;
-        void removeUpdate( UniqueId _id ) override;
-
-    public:
-        uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) override;
-        void removeTimer( uint32_t _id ) override;
-
-    public:
-        void dispatchMainThreadEvent( const LambdaEvent & _event ) override;
 
     public:
         void setSleepMode( bool _sleepMode ) override;
@@ -253,40 +242,6 @@ namespace Mengine
 
         typedef Vector<SDLEventHandlerDesc> VectorSDLEventHandlers;
         VectorSDLEventHandlers m_sdlEventHandlers;
-
-        struct TimerDesc
-        {
-            UniqueId id;
-            float milliseconds;
-            float time;
-            LambdaTimer lambda;
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentInterfacePtr doc;
-#endif
-        };
-
-        typedef Vector<TimerDesc> VectorTimers;
-        VectorTimers m_timers;
-
-        ThreadMutexInterfacePtr m_dispatchEventMutex;
-
-        typedef Vector<LambdaEvent> VectorEvents;
-        VectorEvents m_dispatchEvents;
-        VectorEvents m_dispatchEventsAux;
-
-        struct UpdateDesc
-        {
-            UniqueId id;
-            LambdaUpdate lambda;
-
-#if defined(MENGINE_DEBUG)
-            DocumentInterfacePtr doc;
-#endif
-        };
-
-        typedef Vector<UpdateDesc> VectorUpdates;
-        VectorUpdates m_updates;
 
         FactoryInterfacePtr m_factoryDynamicLibraries;
 

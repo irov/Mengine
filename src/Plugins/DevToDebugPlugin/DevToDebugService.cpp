@@ -1,9 +1,11 @@
 #include "DevToDebugService.h"
 
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/ApplicationInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/TimerServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Environment/Android/AndroidEnv.h"
@@ -249,7 +251,7 @@ namespace Mengine
 
         float DevToDebug_PropertySyncTime = CONFIG_VALUE( "DevToDebugPlugin", "PropertySyncTime", 1000.f );
 
-        UniqueId timerId = PLATFORM_SERVICE()
+        UniqueId timerId = TIMER_SERVICE()
             ->addTimer( DevToDebug_PropertySyncTime, [this]( UniqueId _id )
         {
             MENGINE_UNUSED( _id );
@@ -360,7 +362,7 @@ namespace Mengine
 
         if( m_timerId != INVALID_UNIQUE_ID )
         {
-            PLATFORM_SERVICE()
+            TIMER_SERVICE()
                 ->removeTimer( m_timerId );
             m_timerId = INVALID_UNIQUE_ID;
         }

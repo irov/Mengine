@@ -780,13 +780,6 @@ namespace Mengine
 
         SDL_EventState( SDL_JOYAXISMOTION, SDL_FALSE );
 
-        ThreadMutexInterfacePtr dispatchEventMutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dispatchEventMutex );
-
-        m_dispatchEventMutex = dispatchEventMutex;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1004,46 +997,6 @@ namespace Mengine
     {
         m_active = false;
 
-#if defined(MENGINE_DEBUG)
-        for( const TimerDesc & desc : m_timers )
-        {
-            if( desc.id == INVALID_UNIQUE_ID )
-            {
-                continue;
-            }
-
-            LOGGER_ASSERTION( "was forgotten remove platform timer (doc: %s)"
-                , MENGINE_DOCUMENT_STR( desc.doc )
-            );
-        }
-#endif
-
-        m_timers.clear();
-
-#if defined(MENGINE_DEBUG)
-        for( const UpdateDesc & desc : m_updates )
-        {
-            if( desc.id == INVALID_UNIQUE_ID )
-            {
-                continue;
-            }
-
-            LOGGER_ASSERTION( "was forgotten remove platform update (doc: %s)"
-                , MENGINE_DOCUMENT_STR( desc.doc )
-            );
-        }
-#endif
-
-        m_updates.clear();
-
-        m_dispatchEventMutex->lock();
-        m_dispatchEvents.clear();        
-        m_dispatchEventMutex->unlock();
-
-        m_dispatchEventsAux.clear();
-        
-        m_dispatchEventMutex = nullptr;
-
         this->destroyWindow_();
 
         if( m_sdlInput != nullptr )
@@ -1086,72 +1039,21 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
+    bool SDLPlatformService::tickPlatform( float _time, bool _render, bool _flush, bool _pause )
     {
-        for( const UpdateDesc & desc : m_updates )
-        {
-            if( desc.id == INVALID_UNIQUE_ID )
-            {
-                continue;
-            }
-
-            desc.lambda( desc.id );
-        }
-
-        m_updates.erase( Algorithm::remove_if( m_updates.begin(), m_updates.end(), []( const UpdateDesc & _desc )
-        {
-            return _desc.id == INVALID_UNIQUE_ID;
-        } ), m_updates.end() );
-
-        for( TimerDesc & desc : m_timers )
-        {
-            if( desc.id == INVALID_UNIQUE_ID )
-            {
-                continue;
-            }
-
-            desc.time -= _frameTime;
-
-            if( desc.time > 0.f )
-            {
-                continue;
-            }
-
-            desc.time += desc.milliseconds;
-
-            desc.lambda( desc.id );
-        }
-
-        m_timers.erase( Algorithm::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
-        {
-            return _desc.id == INVALID_UNIQUE_ID;
-        } ), m_timers.end() );
-
-        m_dispatchEventMutex->lock();
-        std::swap( m_dispatchEventsAux, m_dispatchEvents );
-        m_dispatchEvents.clear();
-        m_dispatchEventMutex->unlock();
-
-        for( const LambdaEvent & ev : m_dispatchEventsAux )
-        {
-            ev();
-        }
-
-        m_dispatchEventsAux.clear();
-
         bool updating = APPLICATION_SERVICE()
-            ->beginUpdate();
+            ->beginUpdate( _time );
 
         if( updating == true )
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
-                _frameTime = m_pauseUpdatingTime;
+                _time = m_pauseUpdatingTime;
                 m_pauseUpdatingTime = -1.f;
             }
 
             APPLICATION_SERVICE()
-                ->tick( _frameTime );
+                ->tick( _time );
         }
 
         if( this->isNeedWindowRender() == true && _render == true )
@@ -1188,7 +1090,7 @@ namespace Mengine
             {
                 if( m_pauseUpdatingTime < 0.f )
                 {
-                    m_pauseUpdatingTime = _frameTime;
+                    m_pauseUpdatingTime = _time;
                 }
 
                 if( m_sleepMode == true )
@@ -1347,98 +1249,6 @@ namespace Mengine
         }
         
         this->pushQuitEvent_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    UniqueId SDLPlatformService::addUpdate( const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc )
-    {
-        MENGINE_UNUSED( _doc );
-
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
-
-        UpdateDesc desc;
-        desc.id = new_id;
-        desc.lambda = _lambda;
-
-#if defined(MENGINE_DEBUG)
-        desc.doc = _doc;
-#endif
-
-        m_updates.emplace_back( desc );
-
-        return new_id;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::removeUpdate( UniqueId _id )
-    {
-        VectorUpdates::iterator it_found = Algorithm::find_if( m_updates.begin(), m_updates.end(), [_id]( const UpdateDesc & _desc )
-        {
-            return _desc.id == _id;
-        } );
-
-        MENGINE_ASSERTION_FATAL( it_found != m_updates.end(), "not found update '%u'"
-            , _id
-        );
-
-        UpdateDesc & desc = *it_found;
-
-        desc.id = INVALID_UNIQUE_ID;
-        desc.lambda = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t SDLPlatformService::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc )
-    {
-        MENGINE_UNUSED( _doc );
-
-        UniqueId new_id = ENUMERATOR_SERVICE()
-            ->generateUniqueIdentity();
-
-        TimerDesc desc;
-        desc.id = new_id;
-        desc.milliseconds = _milliseconds;
-        desc.time = _milliseconds;
-        desc.lambda = _lambda;
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-        desc.doc = _doc;
-#endif
-
-        m_timers.emplace_back( desc );
-
-        return new_id;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::removeTimer( uint32_t _id )
-    {
-        VectorTimers::iterator it_found = Algorithm::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
-        {
-            return _desc.id == _id;
-        } );
-
-        MENGINE_ASSERTION_FATAL( it_found != m_timers.end() );
-
-        TimerDesc & desc = *it_found;
-
-        desc.id = INVALID_UNIQUE_ID;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::dispatchMainThreadEvent( const LambdaEvent & _event )
-    {
-        bool isMainThread = THREAD_SERVICE()
-            ->isMainThread();
-
-        if( isMainThread == true )
-        {
-            _event();
-
-            return;
-        }
-        
-        m_dispatchEventMutex->lock();
-
-        m_dispatchEvents.emplace_back( _event );
-
-        m_dispatchEventMutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::setSleepMode( bool _sleepMode )

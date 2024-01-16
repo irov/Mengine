@@ -95,7 +95,7 @@ namespace Mengine
     public:
         bool render() override;
         void flush() override;
-        bool beginUpdate() override;
+        bool beginUpdate( float _time ) override;
         void tick( float _time ) override;
         void endUpdate() override;
         void setFocus( bool _focus ) override;

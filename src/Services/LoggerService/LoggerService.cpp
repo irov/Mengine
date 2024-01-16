@@ -432,7 +432,6 @@ namespace Mengine
         record.file = _message.file;
         record.line = _message.line;
         MENGINE_MEMCPY( record.data, _message.data, _message.size );
-        record.data[_message.size] = '\0';
         record.size = _message.size;
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexMessage );
@@ -528,7 +527,7 @@ namespace Mengine
                     msg.file = record.file;
                     msg.line = record.line;
                     msg.data = record.data;
-                    msg.size = MENGINE_STRLEN( record.data );
+                    msg.size = record.size;
 
                     if( logger->validMessage( msg ) == false )
                     {
@@ -631,6 +630,11 @@ namespace Mengine
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexLogger );
 
         m_loggers.emplace_back( _logger );
+
+        Algorithm::sort( m_loggers.begin(), m_loggers.end(), []( const LoggerInterfacePtr & _l, const LoggerInterfacePtr & _r )
+        {
+            return _l->getVerboseLevel() > _r->getVerboseLevel();
+        } );
 
         return true;
     }

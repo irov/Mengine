@@ -41,9 +41,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VideoPlugin::_availablePlugin() const
     {
+        if( HAS_OPTION( "novideo" ) == true )
+        {
+            return false;
+        }
+
         bool VideoPlugin_Available = CONFIG_VALUE( "VideoPlugin", "Available", true );
 
-        return VideoPlugin_Available;
+        if( VideoPlugin_Available == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool VideoPlugin::_initializePlugin()

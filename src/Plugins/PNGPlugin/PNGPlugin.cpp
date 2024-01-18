@@ -11,6 +11,8 @@
 #include "Kernel/EncoderFactory.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/OptionHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( PNG, Mengine::PNGPlugin );
@@ -24,6 +26,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PNGPlugin::~PNGPlugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PNGPlugin::_availablePlugin() const
+    {
+        if( HAS_OPTION( "nopng" ) == true )
+        {
+            return false;
+        }
+
+        bool PNGPlugin_Available = CONFIG_VALUE( "PNGPlugin", "Available", true );
+
+        if( PNGPlugin_Available == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PNGPlugin::_initializePlugin()

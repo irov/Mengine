@@ -4,6 +4,14 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
+#include "TTFFontPrototypeGenerator.h"
+#include "TTFFontGlyphPrototypeGenerator.h"
+#include "TTFFontConfigLoader.h"
+#include "TTFFontGlyphConfigLoader.h"
+#include "TTFDataflow.h"
+#include "TTFFontValidator.h"
+#include "TTFFontGlyphValidator.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/PixelFormat.h"
 #include "Kernel/DocumentHelper.h"
@@ -12,14 +20,8 @@
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ThreadMutexHelper.h"
-
-#include "TTFFontPrototypeGenerator.h"
-#include "TTFFontGlyphPrototypeGenerator.h"
-#include "TTFFontConfigLoader.h"
-#include "TTFFontGlyphConfigLoader.h"
-#include "TTFDataflow.h"
-#include "TTFFontValidator.h"
-#include "TTFFontGlyphValidator.h"
+#include "Kernel/OptionHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 void * _ft_malloc( size_t _size )
@@ -62,6 +64,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TTFPlugin::~TTFPlugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFPlugin::_availablePlugin() const
+    {
+        if( HAS_OPTION( "nottf" ) == true )
+        {
+            return false;
+        }
+
+        bool TTFPlugin_Available = CONFIG_VALUE( "TTFPlugin", "Available", true );
+
+        if( TTFPlugin_Available == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TTFPlugin::_initializePlugin()

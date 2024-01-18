@@ -48,6 +48,7 @@ namespace Mengine
         bool showRewarded( const ConstString & _adUnitId, const ConstString & _placement ) override;
         
     public:
+        bool hasSupportedCMP() const override;
         bool isConsentFlowUserGeographyGDPR() const override;
         void loadAndShowCMPFlow( const AppleAppLovinConsentFlowProviderInterfacePtr & _provider ) override;
 

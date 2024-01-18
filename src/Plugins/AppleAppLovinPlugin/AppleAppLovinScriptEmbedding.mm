@@ -217,62 +217,6 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_canYouShowInterstitial( const ConstString & _adUnit, const ConstString & _placement )
-        {
-            bool result = APPLE_APPLOVIN_SERVICE()
-                ->canYouShowInterstitial( _adUnit, _placement );
-            
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_showInterstitial( const ConstString & _adUnit, const ConstString & _placement )
-        {
-            bool result = APPLE_APPLOVIN_SERVICE()
-                ->showInterstitial( _adUnit, _placement );
-            
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_canOfferRewarded( const ConstString & _adUnit, const ConstString & _placement )
-        {
-            bool result = APPLE_APPLOVIN_SERVICE()
-                ->canOfferRewarded( _adUnit, _placement );
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_canYouShowRewarded( const ConstString & _adUnit, const ConstString & _placement )
-        {
-            bool result = APPLE_APPLOVIN_SERVICE()
-                ->canYouShowRewarded( _adUnit, _placement );
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_showRewarded( const ConstString & _adUnit, const ConstString & _placement )
-        {
-            bool result = APPLE_APPLOVIN_SERVICE()
-                ->showRewarded( _adUnit, _placement );
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_showBanner( const ConstString & _adUnit )
-        {
-            bool result = APPLE_APPLOVIN_SERVICE()
-                ->showBanner( _adUnit );
-            
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_hideBanner( const ConstString & _adUnit )
-        {
-            bool result = APPLE_APPLOVIN_SERVICE()
-                ->hideBanner( _adUnit );
-            
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
         class PythonAppleAppLovinConsentFlowProvider
             : public PythonCallbackProvider<AppleAppLovinConsentFlowProviderInterface>
         {
@@ -306,20 +250,6 @@ namespace Mengine
                 ->loadAndShowCMPFlow( provider );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_appleAppLovin_isConsentFlowUserGeographyGDPR()
-        {
-            bool result = APPLE_APPLOVIN_SERVICE()
-                ->isConsentFlowUserGeographyGDPR();
-            
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void s_appleAppLovin_showMediationDebugger()
-        {
-            APPLE_APPLOVIN_SERVICE()
-                ->showMediationDebugger();
-        }
-        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     AppleAppLovinScriptEmbedding::AppleAppLovinScriptEmbedding()
@@ -338,16 +268,17 @@ namespace Mengine
         pybind::def_function_args( _kernel, "appleAppLovinInitBanner", &Detail::s_appleAppLovin_initBanner );
         pybind::def_function_args( _kernel, "appleAppLovinInitInterstitial", &Detail::s_appleAppLovin_initInterstitial );
         pybind::def_function_args( _kernel, "appleAppLovinInitRewarded", &Detail::s_appleAppLovin_initRewarded );
-        pybind::def_function( _kernel, "appleAppLovinShowBanner", &Detail::s_appleAppLovin_showBanner );
-        pybind::def_function( _kernel, "appleAppLovinHideBanner", &Detail::s_appleAppLovin_hideBanner );
-        pybind::def_function( _kernel, "appleAppLovinCanYouShowInterstitial", &Detail::s_appleAppLovin_canYouShowInterstitial );
-        pybind::def_function( _kernel, "appleAppLovinShowInterstitial", &Detail::s_appleAppLovin_showInterstitial );
-        pybind::def_function( _kernel, "appleAppLovinCanOfferRewarded", &Detail::s_appleAppLovin_canOfferRewarded );
-        pybind::def_function( _kernel, "appleAppLovinCanYouShowRewarded", &Detail::s_appleAppLovin_canYouShowRewarded );
-        pybind::def_function( _kernel, "appleAppLovinShowRewarded", &Detail::s_appleAppLovin_showRewarded );
+        pybind::def_function_proxy( _kernel, "appleAppLovinShowBanner", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::showBanner );
+        pybind::def_function_proxy( _kernel, "appleAppLovinHideBanner", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::hideBanner );
+        pybind::def_function_proxy( _kernel, "appleAppLovinCanYouShowInterstitial", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::canYouShowInterstitial );
+        pybind::def_function_proxy( _kernel, "appleAppLovinShowInterstitial", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::showInterstitial );
+        pybind::def_function_proxy( _kernel, "appleAppLovinCanOfferRewarded", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::canOfferRewarded );
+        pybind::def_function_proxy( _kernel, "appleAppLovinCanYouShowRewarded", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::canYouShowRewarded );
+        pybind::def_function_proxy( _kernel, "appleAppLovinShowRewarded", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::showRewarded );
+        pybind::def_function_proxy( _kernel, "appleAppLovinHasSupportedCMP", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::hasSupportedCMP );
+        pybind::def_function_proxy( _kernel, "appleAppLovinIsConsentFlowUserGeographyGDPR", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::isConsentFlowUserGeographyGDPR );
         pybind::def_function_args( _kernel, "appleAppLovinLoadAndShowCMPFlow", &Detail::s_appleAppLovin_loadAndShowCMPFlow );
-        pybind::def_function( _kernel, "appleAppLovinIsConsentFlowUserGeographyGDPR", &Detail::s_appleAppLovin_isConsentFlowUserGeographyGDPR );
-        pybind::def_function( _kernel, "appleAppLovinShowMediationDebugger", &Detail::s_appleAppLovin_showMediationDebugger );
+        pybind::def_function_proxy( _kernel, "appleAppLovinShowMediationDebugger", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::showMediationDebugger );
 
         return true;
     }
@@ -365,6 +296,7 @@ namespace Mengine
         _kernel->remove_from_module( "appleAppLovinCanYouShowRewarded", nullptr );
         _kernel->remove_from_module( "appleAppLovinShowRewarded", nullptr );
         _kernel->remove_from_module( "appleAppLovinLoadAndShowCMPFlow", nullptr );
+        _kernel->remove_from_module( "appleAppLovinHasSupportedCMP", nullptr );
         _kernel->remove_from_module( "appleAppLovinIsConsentFlowUserGeographyGDPR", nullptr );
         _kernel->remove_from_module( "appleAppLovinShowMediationDebugger", nullptr );
     }

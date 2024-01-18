@@ -93,6 +93,7 @@ namespace Mengine
         virtual bool showRewarded( const ConstString & _adUnitId, const ConstString & _placement ) = 0;
         
     public:
+        virtual bool hasSupportedCMP() const = 0;
         virtual bool isConsentFlowUserGeographyGDPR() const = 0;
         virtual void loadAndShowCMPFlow( const AppleAppLovinConsentFlowProviderInterfacePtr & _provider ) = 0;
         

@@ -290,6 +290,18 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AppleAppLovinService::hasSupportedCMP() const
+    {
+        ALCMPService * cmpService = AppleAppLovinApplicationDelegate.AppLovinSdk.cmpService;
+        
+        if( [cmpService hasSupportedCMP] == NO )
+        {
+            return false;
+        }
+        
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::isConsentFlowUserGeographyGDPR() const
     {
         ALSdkConfiguration * configuration = AppleAppLovinApplicationDelegate.AppLovinSdk.configuration;

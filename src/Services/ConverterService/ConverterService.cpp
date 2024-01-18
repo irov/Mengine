@@ -180,7 +180,7 @@ namespace Mengine
             }
         }
 
-        LOGGER_WARNING( "converter '%s'\nfrom: %s\nto: '%s'\n"
+        LOGGER_MESSAGE( "converter '%s'\nfrom: %s\nto: '%s'\n"
             , _converterType.c_str()
             , Helper::getContentFullPath( options.inputContent )
             , Helper::getContentFullPath( options.outputContent )

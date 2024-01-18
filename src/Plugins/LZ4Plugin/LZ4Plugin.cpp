@@ -7,6 +7,8 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/OptionHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 extern "C"
@@ -44,6 +46,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     LZ4Plugin::~LZ4Plugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool LZ4Plugin::_availablePlugin() const
+    {
+        if( HAS_OPTION( "nolz4" ) == true )
+        {
+            return false;
+        }
+
+        bool LZ4Plugin_Available = CONFIG_VALUE( "LZ4Plugin", "Available", true );
+
+        if( LZ4Plugin_Available == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool LZ4Plugin::_initializePlugin()

@@ -9,6 +9,8 @@
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/OptionHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Zip, Mengine::ZipPlugin )
@@ -22,6 +24,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ZipPlugin::~ZipPlugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ZipPlugin::_availablePlugin() const
+    {
+        if( HAS_OPTION( "nozip" ) == true )
+        {
+            return false;
+        }
+
+        bool ZipPlugin_Available = CONFIG_VALUE( "ZipPlugin", "Available", true );
+
+        if( ZipPlugin_Available == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ZipPlugin::_initializePlugin()

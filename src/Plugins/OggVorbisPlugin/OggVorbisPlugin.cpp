@@ -8,6 +8,8 @@
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/OptionHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 void * _ogg_malloc( size_t _size )
@@ -47,6 +49,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OggVorbisPlugin::~OggVorbisPlugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OggVorbisPlugin::_availablePlugin() const
+    {
+        if( HAS_OPTION( "nooggvorbis" ) == true )
+        {
+            return false;
+        }
+
+        bool OggVorbisPlugin_Available = CONFIG_VALUE( "OggVorbisPlugin", "Available", true );
+
+        if( OggVorbisPlugin_Available == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OggVorbisPlugin::_initializePlugin()

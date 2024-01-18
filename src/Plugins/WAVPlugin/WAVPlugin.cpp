@@ -6,6 +6,8 @@
 
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/OptionHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( WAV, Mengine::WAVPlugin );
@@ -19,6 +21,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     WAVPlugin::~WAVPlugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool WAVPlugin::_availablePlugin() const
+    {
+        if( HAS_OPTION( "nowav" ) == true )
+        {
+            return false;
+        }
+
+        bool WAVPlugin_Available = CONFIG_VALUE( "WAVPlugin", "Available", true );
+
+        if( WAVPlugin_Available == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool WAVPlugin::_initializePlugin()

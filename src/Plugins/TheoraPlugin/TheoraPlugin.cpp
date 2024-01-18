@@ -6,6 +6,8 @@
 
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/OptionHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Theora, Mengine::TheoraPlugin );
@@ -19,6 +21,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TheoraPlugin::~TheoraPlugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TheoraPlugin::_availablePlugin() const
+    {
+        if( HAS_OPTION( "notheora" ) == true )
+        {
+            return false;
+        }
+
+        bool TheoraPlugin_Available = CONFIG_VALUE( "TheoraPlugin", "Available", true );
+
+        if( TheoraPlugin_Available == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TheoraPlugin::_initializePlugin()

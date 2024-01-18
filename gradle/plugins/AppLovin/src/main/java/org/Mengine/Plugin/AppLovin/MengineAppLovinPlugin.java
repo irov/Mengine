@@ -516,6 +516,14 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         return true;
     }
 
+    public boolean hasSupportedCmp() {
+        AppLovinCmpService cmpService = m_appLovinSdk.getCmpService();
+
+        boolean supportedCmp = cmpService.hasSupportedCmp();
+
+        return supportedCmp;
+    }
+
     public void showConsentFlow() {
         MengineActivity activity = this.getMengineActivity();
 

@@ -265,20 +265,22 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleAppLovin", true );
         
+        AppleAppLovinServiceInterface * appleAppLovinService = APPLE_APPLOVIN_SERVICE();
+        
         pybind::def_function_args( _kernel, "appleAppLovinInitBanner", &Detail::s_appleAppLovin_initBanner );
         pybind::def_function_args( _kernel, "appleAppLovinInitInterstitial", &Detail::s_appleAppLovin_initInterstitial );
         pybind::def_function_args( _kernel, "appleAppLovinInitRewarded", &Detail::s_appleAppLovin_initRewarded );
-        pybind::def_function_proxy( _kernel, "appleAppLovinShowBanner", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::showBanner );
-        pybind::def_function_proxy( _kernel, "appleAppLovinHideBanner", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::hideBanner );
-        pybind::def_function_proxy( _kernel, "appleAppLovinCanYouShowInterstitial", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::canYouShowInterstitial );
-        pybind::def_function_proxy( _kernel, "appleAppLovinShowInterstitial", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::showInterstitial );
-        pybind::def_function_proxy( _kernel, "appleAppLovinCanOfferRewarded", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::canOfferRewarded );
-        pybind::def_function_proxy( _kernel, "appleAppLovinCanYouShowRewarded", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::canYouShowRewarded );
-        pybind::def_function_proxy( _kernel, "appleAppLovinShowRewarded", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::showRewarded );
-        pybind::def_function_proxy( _kernel, "appleAppLovinHasSupportedCMP", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::hasSupportedCMP );
-        pybind::def_function_proxy( _kernel, "appleAppLovinIsConsentFlowUserGeographyGDPR", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::isConsentFlowUserGeographyGDPR );
+        pybind::def_functor( _kernel, "appleAppLovinShowBanner", appleAppLovinService, &AppleAppLovinServiceInterface::showBanner );
+        pybind::def_functor( _kernel, "appleAppLovinHideBanner", appleAppLovinService, &AppleAppLovinServiceInterface::hideBanner );
+        pybind::def_functor( _kernel, "appleAppLovinCanYouShowInterstitial", appleAppLovinService,  &AppleAppLovinServiceInterface::canYouShowInterstitial );
+        pybind::def_functor( _kernel, "appleAppLovinShowInterstitial", appleAppLovinService, &AppleAppLovinServiceInterface::showInterstitial );
+        pybind::def_functor( _kernel, "appleAppLovinCanOfferRewarded", appleAppLovinService, &AppleAppLovinServiceInterface::canOfferRewarded );
+        pybind::def_functor( _kernel, "appleAppLovinCanYouShowRewarded", appleAppLovinService, &AppleAppLovinServiceInterface::canYouShowRewarded );
+        pybind::def_functor( _kernel, "appleAppLovinShowRewarded", appleAppLovinService, &AppleAppLovinServiceInterface::showRewarded );
+        pybind::def_functor( _kernel, "appleAppLovinHasSupportedCMP", appleAppLovinService, &AppleAppLovinServiceInterface::hasSupportedCMP );
+        pybind::def_functor( _kernel, "appleAppLovinIsConsentFlowUserGeographyGDPR", appleAppLovinService, &AppleAppLovinServiceInterface::isConsentFlowUserGeographyGDPR );
         pybind::def_function_args( _kernel, "appleAppLovinLoadAndShowCMPFlow", &Detail::s_appleAppLovin_loadAndShowCMPFlow );
-        pybind::def_function_proxy( _kernel, "appleAppLovinShowMediationDebugger", APPLE_APPLOVIN_SERVICE(), &AppleAppLovinServiceInterface::showMediationDebugger );
+        pybind::def_functor( _kernel, "appleAppLovinShowMediationDebugger", appleAppLovinService, &AppleAppLovinServiceInterface::showMediationDebugger );
 
         return true;
     }

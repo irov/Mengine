@@ -16,10 +16,10 @@ namespace Mengine
         EAATA_NOT_DETERMINED
     };
     //////////////////////////////////////////////////////////////////////////
-    class AppleAppTrackingInterface
+    class AppleAppTrackingServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "AppleAppTracking" )
+        SERVICE_DECLARE( "AppleAppTrackingService" )
 
     public:
         typedef Lambda<void(EAppleAppTrackingAuthorization _status, const Char * _idfa)> LambdaAuthorizationResponse;
@@ -35,5 +35,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define APPLE_APPTRACKING_SERVICE()\
-    ((Mengine::AppleAppTrackingInterface *)SERVICE_GET(Mengine::AppleAppTrackingInterface))
+    ((Mengine::AppleAppTrackingServiceInterface *)SERVICE_GET(Mengine::AppleAppTrackingServiceInterface))
 //////////////////////////////////////////////////////////////////////////

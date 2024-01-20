@@ -15,25 +15,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static void s_AppleGeneralDataProtectionRegulation_setGDPRPass( bool _passGDPR )
-        {
-            APPLE_GENERALDATAPROTECTIONREGULATION_SERVICE()
-                ->setGDPRPass( _passGDPR );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void s_AppleGeneralDataProtectionRegulation_isGDPRPass()
-        {
-            bool passGDPR = APPLE_GENERALDATAPROTECTIONREGULATION_SERVICE()
-                ->isGDPRPass();
-            
-            return passGDPR;
-        }
-        //////////////////////////////////////////////////////////////////////////
-    }
-    //////////////////////////////////////////////////////////////////////////
     AppleGeneralDataProtectionRegulationScriptEmbedding::AppleGeneralDataProtectionRegulationScriptEmbedding()
     {
     }
@@ -46,9 +27,11 @@ namespace Mengine
     {
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleGeneralDataProtectionRegulation", true );
+        
+        AppleGeneralDataProtectionRegulationServiceInterface * service = APPLE_GENERALDATAPROTECTIONREGULATION_SERVICE();
 
-        pybind::def_function( _kernel, "appleSetGDPRPass", &Detail::s_AppleGeneralDataProtectionRegulation_setGDPRPass );
-        pybind::def_function( _kernel, "appleIsGDPRPass", &Detail::s_AppleGeneralDataProtectionRegulation_isGDPRPass );
+        pybind::def_functor( _kernel, "appleSetGDPRPass", service, &AppleGeneralDataProtectionRegulationServiceInterface::setGDPRPass );
+        pybind::def_functor( _kernel, "appleIsGDPRPass", service, &AppleGeneralDataProtectionRegulationServiceInterface::isGDPRPass );
 
         return true;
     }

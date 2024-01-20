@@ -10,7 +10,7 @@
 namespace Mengine
 {
 	class AppleGameCenterService
-		: public ServiceBase<AppleGameCenterInterface>
+		: public ServiceBase<AppleGameCenterServiceInterface>
 	{
 	public:
 		AppleGameCenterService();

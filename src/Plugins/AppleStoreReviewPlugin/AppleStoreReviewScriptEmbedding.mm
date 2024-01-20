@@ -14,16 +14,6 @@
 
 namespace Mengine
 {
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static void s_AppleStoreReview_launchTheInAppReview()
-        {
-            APPLE_STOREREVIEW_SERVICE()
-                ->launchTheInAppReview();
-        }
-        //////////////////////////////////////////////////////////////////////////
-    }
     //////////////////////////////////////////////////////////////////////////
     AppleStoreReviewScriptEmbedding::AppleStoreReviewScriptEmbedding()
     {
@@ -37,8 +27,10 @@ namespace Mengine
     {
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleStoreReview", true );
+        
+        AppleStoreReviewServiceInterface * service = APPLE_STOREREVIEW_SERVICE();
 
-        pybind::def_function( _kernel, "appleStoreReviewLaunchTheInAppReview", &Detail::s_AppleStoreReview_launchTheInAppReview );
+        pybind::def_functor( _kernel, "appleStoreReviewLaunchTheInAppReview", service, &AppleStoreReviewServiceInterface::launchTheInAppReview );
 
         return true;
     }

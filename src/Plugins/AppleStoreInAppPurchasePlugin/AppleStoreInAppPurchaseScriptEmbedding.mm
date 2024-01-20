@@ -175,14 +175,16 @@ namespace Mengine
     {
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleStoreInAppPurchase", true );
+        
+        AppleStoreInAppPurchaseServiceInterface * service = APPLE_STOREINAPPPURCHASE_SERVICE();
 
         pybind::def_function_args( _kernel, "appleStoreInAppPurchaseSetPaymentTransactionProvider", &Detail::s_AppleStoreInAppPurchase_setPaymentTransactionProvider );
         pybind::def_function( _kernel, "appleStoreInAppPurchaseRemovePaymentTransactionProvider", &Detail::s_AppleStoreInAppPurchase_removePaymentTransactionProvider );
         
-        pybind::def_function( _kernel, "appleStoreInAppPurchaseCanMakePayments", &Detail::s_AppleStoreInAppPurchase_canMakePayments );
+        pybind::def_functor( _kernel, "appleStoreInAppPurchaseCanMakePayments", service, &AppleStoreInAppPurchaseServiceInterface::canMakePayments );
         pybind::def_function_args( _kernel, "appleStoreInAppPurchaseRequestProducts", &Detail::s_AppleStoreInAppPurchase_requestProducts );
-        pybind::def_function( _kernel, "appleStoreInAppPurchasePurchaseProduct", &Detail::s_AppleStoreInAppPurchase_purchaseProduct );
-        pybind::def_function( _kernel, "appleStoreInAppPurchaseRestoreCompletedTransactions", &Detail::s_AppleStoreInAppPurchase_restoreCompletedTransactions );
+        pybind::def_functor( _kernel, "appleStoreInAppPurchasePurchaseProduct", service, &AppleStoreInAppPurchaseServiceInterface::purchaseProduct );
+        pybind::def_functor( _kernel, "appleStoreInAppPurchaseRestoreCompletedTransactions", service, &AppleStoreInAppPurchaseServiceInterface::restoreCompletedTransactions );
 
         pybind::interface_<AppleStoreInAppPurchasePaymentTransactionInterface, pybind::bases<Factorable>>( _kernel, "AppleStoreInAppPurchasePaymentTransactionInterface", true )
             .def( "getProductIdentifier", &AppleStoreInAppPurchasePaymentTransactionInterface::getProductIdentifier )

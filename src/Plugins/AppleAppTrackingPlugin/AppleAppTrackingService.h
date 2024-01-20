@@ -9,7 +9,7 @@
 namespace Mengine
 {
 	class AppleAppTrackingService
-		: public ServiceBase<AppleAppTrackingInterface>
+		: public ServiceBase<AppleAppTrackingServiceInterface>
 	{
 	public:
         AppleAppTrackingService();

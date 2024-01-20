@@ -7,7 +7,7 @@ namespace Mengine
     class AppleGeneralDataProtectionRegulationServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "AppleGeneralDataProtectionRegulationServiceInterface" )
+        SERVICE_DECLARE( "AppleGeneralDataProtectionRegulationService" )
             
     public:
         virtual void setGDPRPass( bool _passGDPR ) = 0;

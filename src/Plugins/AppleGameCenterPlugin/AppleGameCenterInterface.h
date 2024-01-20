@@ -20,10 +20,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleGameCenterProviderInterface> AppleGameCenterProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class AppleGameCenterInterface
+    class AppleGameCenterServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "AppleGameCenter" )
+        SERVICE_DECLARE( "AppleGameCenterService" )
 
     public:
         virtual void setProvider( const AppleGameCenterProviderInterfacePtr & _provider ) = 0;
@@ -49,5 +49,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define APPLE_GAMECENTER_SERVICE()\
-    ((Mengine::AppleGameCenterInterface *)SERVICE_GET(Mengine::AppleGameCenterInterface))
+    ((Mengine::AppleGameCenterServiceInterface *)SERVICE_GET(Mengine::AppleGameCenterServiceInterface))
 //////////////////////////////////////////////////////////////////////////

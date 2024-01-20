@@ -54,22 +54,6 @@ namespace Mengine
                 ->setProvider( nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleGameCenter_connect()
-        {
-            bool result = APPLE_GAMECENTER_SERVICE()
-                ->connect();
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleGameCenter_isConnect()
-        {
-            bool result = APPLE_GAMECENTER_SERVICE()
-                ->isConnect();
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
         static bool s_AppleGameCenter_reportAchievement( const ConstString & _achievementName, double _percentComplete, const pybind::object & _cb, const pybind::args & _args )
         {
             bool result = APPLE_GAMECENTER_SERVICE()
@@ -77,22 +61,6 @@ namespace Mengine
             {
                 _cb.call_args( _successful, _args );
             } );
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleGameCenter_checkAchievement( const ConstString & _achievementName )
-        {
-            bool result = APPLE_GAMECENTER_SERVICE()
-                ->checkAchievement( _achievementName );
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleGameCenter_resetAchievements()
-        {
-            bool result = APPLE_GAMECENTER_SERVICE()
-                ->resetAchievements();
 
             return result;
         }
@@ -122,14 +90,16 @@ namespace Mengine
     {
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleGameCenter", true );
+        
+        AppleGameCenterServiceInterface * service = APPLE_GAMECENTER_SERVICE();
 
         pybind::def_function_args( _kernel, "appleGameCenterSetProvider", &Detail::s_AppleGameCenter_setProvider );
         pybind::def_function( _kernel, "appleGameCenterRemoveProvider", &Detail::s_AppleGameCenter_removeProvider );
-        pybind::def_function( _kernel, "appleGameCenterConnect", &Detail::s_AppleGameCenter_connect );
-        pybind::def_function( _kernel, "appleGameCenterIsConnect", &Detail::s_AppleGameCenter_isConnect );
+        pybind::def_functor( _kernel, "appleGameCenterConnect", service, &AppleGameCenterServiceInterface::connect );
+        pybind::def_functor( _kernel, "appleGameCenterIsConnect", service, &AppleGameCenterServiceInterface::isConnect );
         pybind::def_function_args( _kernel, "appleGameCenterReportAchievement", &Detail::s_AppleGameCenter_reportAchievement );
-        pybind::def_function( _kernel, "appleGameCenterCheckAchievement", &Detail::s_AppleGameCenter_checkAchievement );
-        pybind::def_function( _kernel, "appleGameCenterResetAchievements", &Detail::s_AppleGameCenter_resetAchievements );
+        pybind::def_functor( _kernel, "appleGameCenterCheckAchievement", service, &AppleGameCenterServiceInterface::checkAchievement );
+        pybind::def_functor( _kernel, "appleGameCenterResetAchievements", service, &AppleGameCenterServiceInterface::resetAchievements );
         pybind::def_function_args( _kernel, "appleGameCenterReportScore", &Detail::s_AppleGameCenter_reportScore );
 
         return true;

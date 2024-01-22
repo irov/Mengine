@@ -187,7 +187,7 @@ namespace Mengine
             uint8_t sha1[MENGINE_SHA1_UINT8_COUNT];
             Helper::makeSHA1( _buffer, _size, sha1, MENGINE_SHA1_UINT8_COUNT );
 
-            Helper::encodeBase64( sha1, sizeof( sha1 ), true, _base64, ~0U, nullptr );
+            Helper::encodeBase64( sha1, sizeof( sha1 ), _base64 );
         }
         //////////////////////////////////////////////////////////////////////////
     }

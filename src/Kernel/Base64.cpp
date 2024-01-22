@@ -57,14 +57,9 @@ namespace Mengine
             return totalsize;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool encodeBase64( const void * _data, size_t _datasize, bool _mod, Char * const _base64, size_t _capacity, size_t * const _outsize )
+        void encodeBase64( const void * _data, size_t _datasize, Char * const _base64 )
         {
-            size_t totalsize = getBase64EncodeSize( _datasize );
-
-            if( totalsize > _capacity )
-            {
-                return false;
-            }
+            size_t totalsize = Helper::getBase64EncodeSize( _datasize );
 
             const uint8_t * data_u8 = static_cast<const uint8_t *>(_data);
 
@@ -86,34 +81,15 @@ namespace Mengine
 
             const uint32_t mod = mod_table[_datasize % 3];
 
-            if( _mod == true )
+            for( uint32_t i = 0; i != mod; ++i )
             {
-                for( uint32_t i = 0; i != mod; ++i )
-                {
-                    _base64[totalsize - 1 - i] = '=';
-                }
+                _base64[totalsize - 1 - i] = '=';
             }
-            else
-            {
-                totalsize -= mod;
-            }
-
-            if( _outsize != nullptr )
-            {
-                *_outsize = totalsize;
-            }
-
-            return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool decodeBase64( const Char * _base64, size_t _base64size, void * const _data, size_t _capacity, size_t * const _outsize )
+        void decodeBase64( const Char * _base64, size_t _base64size, void * const _data )
         {
-            size_t totalsize = getBase64DecodeSize( _base64, _base64size );
-
-            if( totalsize > _capacity )
-            {
-                return false;
-            }
+            size_t totalsize = Helper::getBase64DecodeSize( _base64, _base64size );
 
             uint8_t * const data_u8 = static_cast<uint8_t * const>(_data);
 
@@ -130,13 +106,6 @@ namespace Mengine
                 if( j < totalsize ) data_u8[j++] = (triple >> 1 * 8) & 0xFF;
                 if( j < totalsize ) data_u8[j++] = (triple >> 0 * 8) & 0xFF;
             }
-
-            if( _outsize != nullptr )
-            {
-                *_outsize = totalsize;
-            }
-
-            return true;
         }
         //////////////////////////////////////////////////////////////////////////
     }

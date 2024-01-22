@@ -21,29 +21,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * const _memory, size_t _capacity, size_t * const _uncompress )
-    {
-        MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, _size, MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, "invalid compress buffer %zu"
-            , _size
-        );
-
-        const void * compress_memory = compress_buffer->getBuffer();
-
-        size_t uncompressSize = 0;
-        if( _archivator->decompress( _memory, _capacity, compress_memory, _size, &uncompressSize ) == false )
-        {
-            LOGGER_ERROR( "invalid decompress" );
-
-            return false;
-        }
-
-        *_uncompress = uncompressSize;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     MemoryInputInterfacePtr ArchiveService::compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, EArchivatorCompress _compress )
     {
         MemoryInterfacePtr uncompress_buffer = Helper::createMemoryCacheStream( _stream, MENGINE_DOCUMENT_FACTORABLE );
@@ -56,6 +33,27 @@ namespace Mengine
         MemoryInputInterfacePtr compress_memory = this->compressBuffer( _archivator, uncompress_memory, uncompress_size, _compress );
 
         return compress_memory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * const _memory, size_t _capacity, size_t * const _uncompressSize )
+    {
+        MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, _size, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, "invalid compress buffer %zu"
+            , _size
+        );
+
+        const void * compress_memory = compress_buffer->getBuffer();
+
+        size_t uncompressSize = 0;
+        if( _archivator->decompress( _memory, _capacity, compress_memory, _size, &uncompressSize ) == false )
+        {
+            return false;
+        }
+
+        *_uncompressSize = uncompressSize;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryInputInterfacePtr ArchiveService::compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress )
@@ -76,8 +74,6 @@ namespace Mengine
         size_t compressSize;
         if( _archivator->compress( memory_buffer, compressSize2, _buffer, _size, &compressSize, _compress ) == false )
         {
-            LOGGER_ERROR( "invalid compress" );
-
             return nullptr;
         }
 
@@ -89,6 +85,19 @@ namespace Mengine
         );
 
         return memory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ArchiveService::decompressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, void * const _memory, size_t _capacity, size_t * const _uncompressSize )
+    {
+        size_t uncompressSize = 0;
+        if( _archivator->decompress( _memory, _capacity, _buffer, _size, &uncompressSize ) == false )
+        {
+            return false;
+        }
+
+        *_uncompressSize = uncompressSize;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

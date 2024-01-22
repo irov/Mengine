@@ -920,6 +920,12 @@ Core
     ReferenceCounterGuardScope.cpp
     ReferenceCounterGuardScope.h
     
+    ReadHelper.cpp
+    ReadHelper.h
+    
+    WriteHelper.cpp
+    WriteHelper.h
+    
     Validator.h
 )
 

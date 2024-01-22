@@ -23,6 +23,8 @@
 #include "Interface/StatisticServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
 #include "Interface/DocumentInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Interface/AndroidEnvironmentServiceInterface.h"
@@ -36,6 +38,8 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Node.h"
 #include "Kernel/NodeRenderHierarchy.h"
+#include "Kernel/WriteHelper.h"
+#include "Kernel/ReadHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TagsHelper.h"
@@ -764,6 +768,79 @@ namespace Mengine
                 }
 
                 return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * s_compressBase64( pybind::kernel_interface * _kernel, const ConstString & _archivatorType, PyObject * _object )
+            {
+                size_t size;
+                const char * str = _kernel->string_to_char_and_size( _object, &size );
+
+                ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), _archivatorType );
+
+                MemoryInputInterfacePtr memory = ARCHIVE_SERVICE()
+                    ->compressBuffer( archivator, str, size, EAC_BEST );
+
+                const void * memoryBuffer = memory->getBuffer();
+                size_t memorySize = memory->getSize();
+
+                size_t base64Size = Helper::getBase64EncodeSize( memorySize );
+
+                MemoryInterfacePtr base64Memory = Helper::createMemoryCacheBuffer( base64Size + sizeof( uint64_t ), MENGINE_DOCUMENT_PYBIND );
+
+                void * base64MemoryBuffer = base64Memory->getBuffer();
+                size_t base64MemorySize = base64Memory->getSize();
+
+                Helper::writeUint64( base64MemoryBuffer, size );
+
+                Helper::encodeBase64( memoryBuffer, memorySize, (char *)base64MemoryBuffer + sizeof( uint64_t ) );
+
+                PyObject * py_base64 = _kernel->string_from_char_size( (char *)base64MemoryBuffer + sizeof( uint64_t ), base64MemorySize );
+
+                return py_base64;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            PyObject * s_decompressBase64( pybind::kernel_interface * _kernel, const ConstString & _archivatorType, PyObject * _object )
+            {
+                size_t base64Size;
+                const char * base64String = _kernel->string_to_char_and_size( _object, &base64Size );
+
+                size_t size = Helper::getBase64DecodeSize( base64String, base64Size );
+
+                MemoryInterfacePtr dataMemory = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYBIND );
+
+                void * dataMemoryBuffer = dataMemory->getBuffer();
+                size_t dataMemorySize = dataMemory->getSize();
+
+                Helper::decodeBase64( base64String, base64Size, dataMemoryBuffer );
+
+                uint64_t decompressSize;
+                Helper::readUint64( dataMemoryBuffer, &decompressSize );
+
+                ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), _archivatorType );
+
+                MemoryBufferInterfacePtr decompressMemory = MEMORY_SERVICE()
+                    ->createMemoryCacheBuffer( MENGINE_DOCUMENT_PYBIND );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( decompressMemory, "invalid create memory cache" );
+
+                void * decompressMemoryBuffer = decompressMemory->newBuffer( (size_t)decompressSize );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( decompressMemoryBuffer, "invalid get memory '%zu' (binary)"
+                    , decompressSize
+                );
+
+                size_t uncompressSize;
+                if( ARCHIVE_SERVICE()
+                    ->decompressBuffer( archivator, MENGINE_PVOID_OFFSET( dataMemoryBuffer, sizeof( uint64_t ) ), dataMemorySize - sizeof( uint64_t ), decompressMemoryBuffer, (size_t)decompressSize, &uncompressSize ) == false )
+                {
+                    LOGGER_ERROR( "invalid decompress buffer" );
+
+                    return _kernel->ret_none();
+                }
+
+                PyObject * py_base64 = _kernel->string_from_char_size( (char *)decompressMemoryBuffer, uncompressSize );
+
+                return py_base64;
             }
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getClipboardText( pybind::kernel_interface * _kernel )
@@ -4241,6 +4318,9 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "setClipboardText", helperScriptMethod, &HelperScriptMethod::s_setClipboardText );
         pybind::def_functor_kernel( _kernel, "getClipboardText", helperScriptMethod, &HelperScriptMethod::s_getClipboardText );
+
+        pybind::def_functor_kernel( _kernel, "compressBase64", helperScriptMethod, &HelperScriptMethod::s_compressBase64 );
+        pybind::def_functor_kernel( _kernel, "decompressBase64", helperScriptMethod, &HelperScriptMethod::s_decompressBase64 );
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         pybind::def_functor( _kernel, "getAndroidId", helperScriptMethod, &HelperScriptMethod::s_getAndroidId );

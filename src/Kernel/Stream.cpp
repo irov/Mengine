@@ -136,9 +136,7 @@ namespace Mengine
             MemoryBufferInterfacePtr binaryBuffer = MEMORY_SERVICE()
                 ->createMemoryCacheBuffer( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, "invalid create memory cache [size: %zu]"
-                , binary_size
-            );
+            MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, "invalid create memory cache" );
 
             void * binaryMemory = binaryBuffer->newBuffer( binary_size );
 

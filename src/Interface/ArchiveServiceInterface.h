@@ -17,11 +17,11 @@ namespace Mengine
 
     public:
         virtual MemoryInputInterfacePtr compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, EArchivatorCompress _compress ) = 0;
-        virtual bool decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * const _memory, size_t _capacity, size_t * const _uncompressSize ) = 0;
+        virtual bool decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * const _memory, size_t _capacity, size_t * const _decompressSize ) = 0;
 
     public:
         virtual MemoryInputInterfacePtr compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress ) = 0;
-        virtual bool decompressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, void * const _memory, size_t _capacity, size_t * const _uncompressSize ) = 0;
+        virtual MemoryInputInterfacePtr compressBufferZ( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

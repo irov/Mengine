@@ -6,6 +6,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/WriteHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ArchiveService, Mengine::ArchiveService );
@@ -35,7 +36,7 @@ namespace Mengine
         return compress_memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * const _memory, size_t _capacity, size_t * const _uncompressSize )
+    bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * const _memory, size_t _capacity, size_t * const _decompressSize )
     {
         MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, _size, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -51,7 +52,7 @@ namespace Mengine
             return false;
         }
 
-        *_uncompressSize = uncompressSize;
+        *_decompressSize = uncompressSize;
 
         return true;
     }
@@ -87,17 +88,37 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchiveService::decompressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, void * const _memory, size_t _capacity, size_t * const _uncompressSize )
+    MemoryInputInterfacePtr ArchiveService::compressBufferZ( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress )
     {
-        size_t uncompressSize = 0;
-        if( _archivator->decompress( _memory, _capacity, _buffer, _size, &uncompressSize ) == false )
+        size_t compressSize2 = _archivator->compressBound( _size );
+
+        MemoryInputInterfacePtr memory = MEMORY_SERVICE()
+            ->createMemoryInput( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+
+        void * memory_buffer = memory->newBuffer( sizeof( uint64_t ) + compressSize2 );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, "invalid new memory size '%zu'"
+            , compressSize2
+        );
+
+        Helper::writeUint64( memory_buffer, _size );
+
+        size_t compressSize;
+        if( _archivator->compress( MENGINE_PVOID_OFFSET( memory_buffer, sizeof( uint64_t ) ), compressSize2, _buffer, _size, &compressSize, _compress ) == false )
         {
-            return false;
+            return nullptr;
         }
 
-        *_uncompressSize = uncompressSize;
+        void * new_memory = memory->newBuffer( sizeof( uint64_t ) + compressSize );
+        MENGINE_UNUSED( new_memory );
 
-        return true;
+        MENGINE_ASSERTION_MEMORY_PANIC( new_memory, "invalid new memory '%zu'"
+            , compressSize
+        );
+
+        return memory;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -16,10 +16,10 @@ namespace Mengine
 
     public:
         MemoryInputInterfacePtr compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, EArchivatorCompress _compress ) override;
-        bool decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * const _memory, size_t _capacity, size_t * const _uncompress ) override;
+        bool decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * const _memory, size_t _capacity, size_t * const _decompressSize ) override;
 
     public:
         MemoryInputInterfacePtr compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress ) override;
-        bool decompressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, void * const _memory, size_t _capacity, size_t * const _uncompress ) override;
+        MemoryInputInterfacePtr compressBufferZ( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress ) override;
     };
 }

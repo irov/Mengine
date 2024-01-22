@@ -778,7 +778,7 @@ namespace Mengine
                 ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), _archivatorType );
 
                 MemoryInputInterfacePtr memory = ARCHIVE_SERVICE()
-                    ->compressBuffer( archivator, str, size, EAC_BEST );
+                    ->compressBufferZ( archivator, str, size, EAC_BEST );
 
                 const void * memoryBuffer = memory->getBuffer();
                 size_t memorySize = memory->getSize();
@@ -787,14 +787,12 @@ namespace Mengine
 
                 MemoryInterfacePtr base64Memory = Helper::createMemoryCacheBuffer( base64Size + sizeof( uint64_t ), MENGINE_DOCUMENT_PYBIND );
 
-                void * base64MemoryBuffer = base64Memory->getBuffer();
+                Char * base64MemoryBuffer = base64Memory->getBuffer();
                 size_t base64MemorySize = base64Memory->getSize();
 
-                Helper::writeUint64( base64MemoryBuffer, size );
+                Helper::encodeBase64( memoryBuffer, memorySize, base64MemoryBuffer );
 
-                Helper::encodeBase64( memoryBuffer, memorySize, (char *)base64MemoryBuffer + sizeof( uint64_t ) );
-
-                PyObject * py_base64 = _kernel->string_from_char_size( (char *)base64MemoryBuffer + sizeof( uint64_t ), base64MemorySize );
+                PyObject * py_base64 = _kernel->string_from_char_size( base64MemoryBuffer, base64MemorySize );
 
                 return py_base64;
             }
@@ -813,8 +811,10 @@ namespace Mengine
 
                 Helper::decodeBase64( base64String, base64Size, dataMemoryBuffer );
 
-                uint64_t decompressSize;
-                Helper::readUint64( dataMemoryBuffer, &decompressSize );
+                uint64_t decompressSizeU64;
+                Helper::readUint64( dataMemoryBuffer, &decompressSizeU64 );
+
+                size_t decompressSize = (size_t)decompressSizeU64;
 
                 ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), _archivatorType );
 
@@ -823,15 +823,14 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( decompressMemory, "invalid create memory cache" );
 
-                void * decompressMemoryBuffer = decompressMemory->newBuffer( (size_t)decompressSize );
+                void * decompressMemoryBuffer = decompressMemory->newBuffer( decompressSize );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( decompressMemoryBuffer, "invalid get memory '%zu' (binary)"
                     , decompressSize
                 );
 
                 size_t uncompressSize;
-                if( ARCHIVE_SERVICE()
-                    ->decompressBuffer( archivator, MENGINE_PVOID_OFFSET( dataMemoryBuffer, sizeof( uint64_t ) ), dataMemorySize - sizeof( uint64_t ), decompressMemoryBuffer, (size_t)decompressSize, &uncompressSize ) == false )
+                if( archivator->decompress( MENGINE_PVOID_OFFSET( dataMemoryBuffer, sizeof( uint64_t ) ), dataMemorySize - sizeof( uint64_t ), decompressMemoryBuffer, decompressSize, &uncompressSize ) == false )
                 {
                     LOGGER_ERROR( "invalid decompress buffer" );
 

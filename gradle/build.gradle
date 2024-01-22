@@ -19,6 +19,10 @@ buildscript {
             classpath 'com.google.gms:google-services:4.3.15'
         }
 
+        if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_SENTRY") == true) {
+            classpath 'io.sentry:sentry-android-gradle-plugin:4.2.0'
+        }
+
         if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS") == true) {
             classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
         }

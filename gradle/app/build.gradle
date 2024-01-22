@@ -67,6 +67,10 @@ if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == true) {
     apply plugin: 'com.google.gms.google-services'
 }
 
+if (MENGINE_APP_PLUGIN_SENTRY == true) {
+    apply plugin: 'io.sentry.android.gradle'
+}
+
 if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
     apply plugin: 'com.google.firebase.crashlytics'
 }

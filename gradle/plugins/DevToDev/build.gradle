@@ -11,5 +11,5 @@ android {
 
 dependencies {
     implementation 'com.devtodev:android-google:1.0.0'
-    implementation 'com.devtodev:android-analytics:2.3.4'
+    implementation 'com.devtodev:android-analytics:2.4.0'
 }

@@ -794,7 +794,7 @@ namespace Mengine
                 );
 
                 Helper::writeUint32( memory_buffer, MENGINE_FOURCC( 'C', 'B', '6', '4' ) );
-                Helper::writeUint64( memory_buffer, size );
+                Helper::writeUint64( MENGINE_PVOID_OFFSET( memory_buffer, sizeof( uint32_t ) ), size );
 
                 size_t compressSize;
                 if( archivator->compress( MENGINE_PVOID_OFFSET( memory_buffer, sizeof( uint32_t ) + sizeof( uint64_t ) ), compressSize2, str, size, &compressSize, EAC_BEST ) == false )
@@ -855,7 +855,7 @@ namespace Mengine
                 }
 
                 uint64_t decompressSizeU64;
-                Helper::readUint64( dataMemoryBuffer, &decompressSizeU64 );
+                Helper::readUint64( MENGINE_PVOID_OFFSET( dataMemoryBuffer, sizeof( uint32_t ) ), &decompressSizeU64 );
 
                 size_t decompressSize = (size_t)decompressSizeU64;
 
@@ -873,7 +873,7 @@ namespace Mengine
                 );
 
                 size_t uncompressSize;
-                if( archivator->decompress( MENGINE_PVOID_OFFSET( dataMemoryBuffer, sizeof( uint64_t ) ), dataMemorySize - sizeof( uint64_t ), decompressMemoryBuffer, decompressSize, &uncompressSize ) == false )
+                if( archivator->decompress( decompressMemoryBuffer, decompressSize, MENGINE_PVOID_OFFSET( dataMemoryBuffer, sizeof( uint32_t ) + sizeof( uint64_t ) ), dataMemorySize - sizeof( uint32_t ) - sizeof( uint64_t ), &uncompressSize ) == false )
                 {
                     LOGGER_ERROR( "invalid decompress buffer" );
 

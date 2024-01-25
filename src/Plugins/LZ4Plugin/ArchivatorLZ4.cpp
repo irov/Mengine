@@ -67,20 +67,18 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchivatorLZ4::decompress( void * const _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t * const _decompressSize )
+    bool ArchivatorLZ4::decompress( void * const _distance, size_t _bufferCapacity, const void * _source, size_t _sourceSize, size_t * const _decompressSize)
     {
         MENGINE_PROFILER_CATEGORY();
 
         char * dst_buffer = (char *)_distance;
         const char * src_buffer = (const char *)_source;
 
-        int32_t readBytes = ::LZ4_decompress_safe( src_buffer, dst_buffer, (int32_t)_sourceSize, (int32_t)_bufferSize );
+        int32_t readBytes = ::LZ4_decompress_safe( src_buffer, dst_buffer, (int32_t)_sourceSize, (int32_t)_bufferCapacity );
 
         MENGINE_ASSERTION_FATAL( readBytes >= 0, "invalid uncompress code [%d]"
             , readBytes
         );
-
-        MENGINE_ASSERTION_FATAL( _bufferSize == (size_t)readBytes );
 
         *_decompressSize = (size_t)readBytes;
 

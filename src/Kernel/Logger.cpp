@@ -5,6 +5,7 @@
 #include "Interface/DateTimeSystemInterface.h"
 
 #include "Kernel/OptionHelper.h"
+#include "Kernel/ThreadHelper.h"
 #include "Kernel/LoggerHelper.h"
 
 #include "Config/StdIO.h"
@@ -88,6 +89,7 @@ namespace Mengine
         LoggerMessage msg;
         msg.category = m_category;
         msg.dateTime = dateTime;
+        msg.threadName = Helper::getCurrentThreadName();
         msg.level = m_level;
         msg.flag = m_flag;
         msg.filter = m_filter;

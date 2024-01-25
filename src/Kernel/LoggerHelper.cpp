@@ -104,18 +104,10 @@ namespace Mengine
             return (size_t)size;
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t makeLoggerThreadStamp( const Char * _format, Char * const _buffer, size_t _offset, size_t _capacity )
+        size_t makeLoggerThreadStamp( const ConstString & _threadName, const Char * _format, Char * const _buffer, size_t _offset, size_t _capacity )
         {
-            if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == false )
-            {
-                return 0;
-            }
-
-            const ConstString & threadName = THREAD_SERVICE()
-                ->getCurrentThreadName();
-
             int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, _format //"|%s|"
-                , threadName.c_str()
+                , _threadName.c_str()
             );
 
             return (size_t)size;

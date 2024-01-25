@@ -73,7 +73,7 @@ namespace Mengine
         if( _message.flag & LFLAG_THREADSTAMP )
         {
             Char threadstamp[256] = {'\0'};
-            Helper::makeLoggerThreadStamp( "|%s|", threadstamp, 0, 256 );
+            Helper::makeLoggerThreadStamp( _message.threadName, "|%s|", threadstamp, 0, 256 );
             this->writeMessage_( threadstamp );
             this->writeMessage_( " " );
         }

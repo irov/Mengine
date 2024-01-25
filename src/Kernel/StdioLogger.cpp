@@ -38,7 +38,7 @@ namespace Mengine
         if( _message.flag & LFLAG_THREADSTAMP )
         {
             Char threadstamp[256] = {'\0'};
-            size_t threadstampSize = Helper::makeLoggerThreadStamp( "|%s|", threadstamp, 0, 256 );
+            size_t threadstampSize = Helper::makeLoggerThreadStamp( _message.threadName, "|%s|", threadstamp, 0, 256 );
             std::cout.write( threadstamp, threadstampSize );
             std::cout.write( " ", 1 );
         }

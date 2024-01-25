@@ -14,6 +14,7 @@ namespace Mengine
     {
         const Char * category;
         PlatformDateTime dateTime;
+        ConstString threadName;
         ELoggerLevel level;
         uint32_t flag;
         uint32_t filter;

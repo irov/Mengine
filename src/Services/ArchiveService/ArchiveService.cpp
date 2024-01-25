@@ -88,37 +88,4 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInputInterfacePtr ArchiveService::compressBufferZ( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress )
-    {
-        size_t compressSize2 = _archivator->compressBound( _size );
-
-        MemoryInputInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryInput( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
-
-        void * memory_buffer = memory->newBuffer( sizeof( uint64_t ) + compressSize2 );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, "invalid new memory size '%zu'"
-            , compressSize2
-        );
-
-        Helper::writeUint64( memory_buffer, _size );
-
-        size_t compressSize;
-        if( _archivator->compress( MENGINE_PVOID_OFFSET( memory_buffer, sizeof( uint64_t ) ), compressSize2, _buffer, _size, &compressSize, _compress ) == false )
-        {
-            return nullptr;
-        }
-
-        void * new_memory = memory->newBuffer( sizeof( uint64_t ) + compressSize );
-        MENGINE_UNUSED( new_memory );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( new_memory, "invalid new memory '%zu'"
-            , compressSize
-        );
-
-        return memory;
-    }
-    //////////////////////////////////////////////////////////////////////////
 }

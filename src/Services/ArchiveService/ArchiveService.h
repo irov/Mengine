@@ -20,6 +20,5 @@ namespace Mengine
 
     public:
         MemoryInputInterfacePtr compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress ) override;
-        MemoryInputInterfacePtr compressBufferZ( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress ) override;
     };
 }

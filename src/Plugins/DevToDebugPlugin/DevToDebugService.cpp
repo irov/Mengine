@@ -40,7 +40,7 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/JSONHelper.h"
-#include "Kernel/ThreadHelper.h"
+#include "Kernel/ThreadWorkerHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 

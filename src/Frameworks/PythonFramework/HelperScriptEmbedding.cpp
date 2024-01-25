@@ -39,6 +39,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/WriteHelper.h"
+#include "Kernel/ThreadHelper.h"
 #include "Kernel/ReadHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -772,20 +773,48 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_compressBase64( pybind::kernel_interface * _kernel, const ConstString & _archivatorType, PyObject * _object )
             {
+                MENGINE_ASSERTION_FATAL( _kernel->string_check( _object ) == true, "invalid object" );
+
                 size_t size;
                 const char * str = _kernel->string_to_char_and_size( _object, &size );
 
                 ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), _archivatorType );
 
-                MemoryInputInterfacePtr memory = ARCHIVE_SERVICE()
-                    ->compressBufferZ( archivator, str, size, EAC_BEST );
+                size_t compressSize2 = archivator->compressBound( size );
+
+                MemoryInputInterfacePtr memory = MEMORY_SERVICE()
+                    ->createMemoryInput( MENGINE_DOCUMENT_FACTORABLE );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( memory );
+
+                void * memory_buffer = memory->newBuffer( sizeof( uint32_t ) + sizeof( uint64_t ) + compressSize2 );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, "invalid new memory size '%zu'"
+                    , compressSize2
+                );
+
+                Helper::writeUint32( memory_buffer, MENGINE_FOURCC( 'C', 'B', '6', '4' ) );
+                Helper::writeUint64( memory_buffer, size );
+
+                size_t compressSize;
+                if( archivator->compress( MENGINE_PVOID_OFFSET( memory_buffer, sizeof( uint32_t ) + sizeof( uint64_t ) ), compressSize2, str, size, &compressSize, EAC_BEST ) == false )
+                {
+                    return _kernel->get_none();
+                }
+
+                void * new_memory = memory->newBuffer( sizeof( uint32_t ) + sizeof( uint64_t ) + compressSize );
+                MENGINE_UNUSED( new_memory );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( new_memory, "invalid new memory '%zu'"
+                    , compressSize
+                );
 
                 const void * memoryBuffer = memory->getBuffer();
                 size_t memorySize = memory->getSize();
 
                 size_t base64Size = Helper::getBase64EncodeSize( memorySize );
 
-                MemoryInterfacePtr base64Memory = Helper::createMemoryCacheBuffer( base64Size + sizeof( uint64_t ), MENGINE_DOCUMENT_PYBIND );
+                MemoryInterfacePtr base64Memory = Helper::createMemoryCacheBuffer( base64Size, MENGINE_DOCUMENT_PYBIND );
 
                 Char * base64MemoryBuffer = base64Memory->getBuffer();
                 size_t base64MemorySize = base64Memory->getSize();
@@ -799,6 +828,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_decompressBase64( pybind::kernel_interface * _kernel, const ConstString & _archivatorType, PyObject * _object )
             {
+                MENGINE_ASSERTION_FATAL( _kernel->string_check( _object ) == true, "invalid object" );
+
                 size_t base64Size;
                 const char * base64String = _kernel->string_to_char_and_size( _object, &base64Size );
 
@@ -810,6 +841,18 @@ namespace Mengine
                 size_t dataMemorySize = dataMemory->getSize();
 
                 Helper::decodeBase64( base64String, base64Size, dataMemoryBuffer );
+
+                uint32_t magic;
+                Helper::readUint32( dataMemoryBuffer, &magic );
+
+                if( magic != MENGINE_FOURCC( 'C', 'B', '6', '4' ) )
+                {
+                    LOGGER_ERROR( "invalid magic '%u'"
+                        , magic
+                    );
+
+                    return _kernel->ret_none();
+                }
 
                 uint64_t decompressSizeU64;
                 Helper::readUint64( dataMemoryBuffer, &decompressSizeU64 );
@@ -909,6 +952,7 @@ namespace Mengine
                 DATETIME_SYSTEM()
                     ->getLocalDateTime( &msg.dateTime );
 
+                msg.threadName = Helper::getCurrentThreadName();
                 msg.level = LM_INFO;
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_GREEN | LCOLOR_BLUE;
@@ -930,6 +974,7 @@ namespace Mengine
                 DATETIME_SYSTEM()
                     ->getLocalDateTime( &msg.dateTime );
 
+                msg.threadName = Helper::getCurrentThreadName();
                 msg.level = LM_MESSAGE;
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED | LCOLOR_BLUE;
@@ -951,6 +996,7 @@ namespace Mengine
                 DATETIME_SYSTEM()
                     ->getLocalDateTime( &msg.dateTime );
 
+                msg.threadName = Helper::getCurrentThreadName();
                 msg.level = LM_WARNING;
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED | LCOLOR_GREEN;
@@ -972,6 +1018,7 @@ namespace Mengine
                 DATETIME_SYSTEM()
                     ->getLocalDateTime( &msg.dateTime );
 
+                msg.threadName = Helper::getCurrentThreadName();
                 msg.level = LM_ERROR;
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED;

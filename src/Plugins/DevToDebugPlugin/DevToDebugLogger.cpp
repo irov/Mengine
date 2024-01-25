@@ -9,7 +9,7 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConfigHelper.h"
-#include "Kernel/ThreadHelper.h"
+#include "Kernel/ThreadWorkerHelper.h"
 #include "Kernel/JSONHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/VectorHelper.h"
@@ -77,18 +77,12 @@ namespace Mengine
         Char loggerTimestamp[1024] = {'\0'};
         Helper::makeLoggerShortDate( _message.dateTime, "[%02u:%02u:%02u:%04u]", loggerTimestamp, 0, 1024 );
 
-        desc.timestamp = loggerTimestamp;
+        desc.dateTime = _message.dateTime;
         desc.tag = _message.category;
         desc.file = _message.file;
         desc.line = _message.line;
 
-        if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == true )
-        {
-            const ConstString & threadName = THREAD_SERVICE()
-                ->getCurrentThreadName();
-
-            desc.threadName = threadName;
-        }
+        desc.threadName = _message.threadName;
         
         desc.data.assign( data, data + size );
 
@@ -168,7 +162,10 @@ namespace Mengine
         {
             jpp::object j_desc = jpp::make_object();
 
-            j_desc.set( "ts", desc.timestamp );
+            Char loggerTimestamp[1024] = {'\0'};
+            Helper::makeLoggerShortDate( desc.dateTime, "[%02u:%02u:%02u:%04u]", loggerTimestamp, 0, 1024 );
+
+            j_desc.set( "ts", loggerTimestamp );
             j_desc.set( "tag", desc.tag );
             j_desc.set( "file", desc.file );
             j_desc.set( "line", desc.line );

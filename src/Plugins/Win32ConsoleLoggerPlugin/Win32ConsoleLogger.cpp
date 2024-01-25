@@ -218,7 +218,7 @@ namespace Mengine
         if( _message.flag & LFLAG_THREADSTAMP )
         {
             Char threadstamp[256] = {'\0'};
-            size_t threadstampSize = Helper::makeLoggerThreadStamp( "|%s|", threadstamp, 0, 256 );
+            size_t threadstampSize = Helper::makeLoggerThreadStamp( _message.threadName, "|%s|", threadstamp, 0, 256 );
             ::WriteConsoleA( output_handle, threadstamp, (DWORD)threadstampSize, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }

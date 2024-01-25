@@ -56,7 +56,7 @@ namespace Mengine
 
         struct MessageDesc
         {
-            String timestamp;
+            PlatformDateTime dateTime;
             const Char * tag;
             const Char * file;
             uint32_t line;

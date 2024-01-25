@@ -3,7 +3,7 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
-#include "Kernel/ThreadHelper.h"
+#include "Kernel/ThreadWorkerHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionContainer.h"
 #include "Kernel/ThreadMutexScope.h"

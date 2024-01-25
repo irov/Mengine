@@ -19,6 +19,7 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/StatisticHelper.h"
+#include "Kernel/ThreadHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdIO.h"
@@ -186,6 +187,7 @@ namespace Mengine
         LoggerMessage msg;
         msg.category = MENGINE_CODE_LIBRARY;
         msg.dateTime = dateTime;
+        msg.threadName = Helper::getCurrentThreadName();
         msg.level = LM_MESSAGE;
         msg.flag = LFLAG_SHORT;
         msg.filter = 0;
@@ -425,6 +427,7 @@ namespace Mengine
         LoggerMessageRecord record;
         MENGINE_STRNCPY( record.category, _message.category, sizeof( record.category ) );
         record.dateTime = _message.dateTime;
+        record.threadName = _message.threadName;
         record.level = _message.level;
         record.flag = _message.flag;
         record.filter = _message.filter;
@@ -461,6 +464,7 @@ namespace Mengine
         HistoryRecord history;
         history.category = _message.category;
         history.dateTime = _message.dateTime;
+        history.threadName = _message.threadName;
         history.level = _message.level;
         history.flag = _message.flag;
         history.filter = _message.filter;
@@ -520,6 +524,7 @@ namespace Mengine
                     LoggerMessage msg;
                     msg.category = record.category;
                     msg.dateTime = record.dateTime;
+                    msg.threadName = record.threadName;
                     msg.level = record.level;
                     msg.flag = record.flag;
                     msg.filter = record.filter;
@@ -576,6 +581,7 @@ namespace Mengine
             LoggerMessage msg;
             msg.category = record.category;
             msg.dateTime = record.dateTime;
+            msg.threadName = record.threadName;
             msg.level = record.level;
             msg.flag = record.flag;
             msg.filter = record.filter;

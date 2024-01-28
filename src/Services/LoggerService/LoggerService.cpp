@@ -21,6 +21,7 @@
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdString.h"
@@ -180,13 +181,9 @@ namespace Mengine
             , MENGINE_BUILD_PUBLISH_VALUE( "True", "False" )
         );
 
-        PlatformDateTime dateTime;
-        DATETIME_SYSTEM()
-            ->getLocalDateTime( &dateTime );
-
         LoggerMessage msg;
         msg.category = MENGINE_CODE_LIBRARY;
-        msg.dateTime = dateTime;
+        msg.timestamp = Helper::getTimestamp();
         msg.threadName = Helper::getCurrentThreadName();
         msg.level = LM_MESSAGE;
         msg.flag = LFLAG_SHORT;
@@ -424,18 +421,8 @@ namespace Mengine
 
         STATISTIC_INC_INTEGER( statisticId );
 
-        LoggerMessageRecord record;
-        MENGINE_STRNCPY( record.category, _message.category, sizeof( record.category ) );
-        record.dateTime = _message.dateTime;
-        record.threadName = _message.threadName;
-        record.level = _message.level;
-        record.flag = _message.flag;
-        record.filter = _message.filter;
-        record.color = _message.color;
-        record.file = _message.file;
-        record.line = _message.line;
-        MENGINE_MEMCPY( record.data, _message.data, _message.size );
-        record.size = _message.size;
+        LoggerRecord record;
+        Helper::recordLoggerMessage( _message, &record );
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexMessage );
 
@@ -461,19 +448,10 @@ namespace Mengine
             return;
         }
 
-        HistoryRecord history;
-        history.category = _message.category;
-        history.dateTime = _message.dateTime;
-        history.threadName = _message.threadName;
-        history.level = _message.level;
-        history.flag = _message.flag;
-        history.filter = _message.filter;
-        history.color = _message.color;
-        history.file = _message.file;
-        history.line = _message.line;
-        history.data.assign( _message.data, _message.data + _message.size );
+        LoggerRecord record;
+        Helper::recordLoggerMessage( _message, &record );
 
-        m_history.emplace_back( history );
+        m_history.emplace_back( record );
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::notifyConfigsLoad_()
@@ -519,20 +497,10 @@ namespace Mengine
 
             for( const LoggerInterfacePtr & logger : m_loggers )
             {
-                for( const LoggerMessageRecord & record : m_messagesAux )
+                for( const LoggerRecord & record : m_messagesAux )
                 {
                     LoggerMessage msg;
-                    msg.category = record.category;
-                    msg.dateTime = record.dateTime;
-                    msg.threadName = record.threadName;
-                    msg.level = record.level;
-                    msg.flag = record.flag;
-                    msg.filter = record.filter;
-                    msg.color = record.color;
-                    msg.file = record.file;
-                    msg.line = record.line;
-                    msg.data = record.data;
-                    msg.size = record.size;
+                    Helper::unrecordLoggerMessage( record, &msg );
 
                     if( logger->validMessage( msg ) == false )
                     {
@@ -576,20 +544,10 @@ namespace Mengine
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexHistory );
 
-        for( const HistoryRecord & record : m_history )
+        for( const LoggerRecord & record : m_history )
         {
             LoggerMessage msg;
-            msg.category = record.category;
-            msg.dateTime = record.dateTime;
-            msg.threadName = record.threadName;
-            msg.level = record.level;
-            msg.flag = record.flag;
-            msg.filter = record.filter;
-            msg.color = record.color;
-            msg.file = record.file;
-            msg.line = record.line;
-            msg.data = record.data.data();
-            msg.size = record.data.size();
+            Helper::unrecordLoggerMessage( record, &msg );
 
             if( _logger->validMessage( msg ) == false )
             {

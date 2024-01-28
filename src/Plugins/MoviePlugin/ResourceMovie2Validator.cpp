@@ -266,15 +266,15 @@ namespace Mengine
 
             const aeMovieLayerData * layer_data = _callbackData->layer_data;
 
-            if( _callbackData->track_matte_layer != AE_NULLPTR )
+            if( _callbackData->track_matte_layer_data != AE_NULLPTR )
             {
-                aeMovieLayerTypeEnum layer_data_type = ae_get_movie_layer_data_type( layer_data );
+                aeMovieLayerTypeEnum layer_type = ae_get_movie_layer_data_type( layer_data );
 
-                switch( layer_data_type )
+                switch( layer_type )
                 {
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
                     {
-                        aeMovieLayerTypeEnum track_matte_layer_type = ae_get_movie_layer_data_type( _callbackData->track_matte_layer );
+                        aeMovieLayerTypeEnum track_matte_layer_type = ae_get_movie_layer_data_type( _callbackData->track_matte_layer_data );
 
                         if( track_matte_layer_type != AE_MOVIE_LAYER_TYPE_IMAGE )
                         {
@@ -294,9 +294,9 @@ namespace Mengine
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                     {
-                        aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( _callbackData->track_matte_layer );
+                        aeMovieLayerTypeEnum track_matte_layer_type = ae_get_movie_layer_data_type( _callbackData->track_matte_layer_data );
 
-                        if( type != AE_MOVIE_LAYER_TYPE_IMAGE )
+                        if( track_matte_layer_type != AE_MOVIE_LAYER_TYPE_IMAGE )
                         {
                             const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( _callbackData->composition_data );
                             const ae_char_t * layerDataName = ae_get_movie_layer_data_name( _callbackData->layer_data );

@@ -1,11 +1,10 @@
 #include "PythonFileLogger.h"
 
-#include "Interface/DateTimeSystemInterface.h"
-
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/LoggerHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 #include "Config/StdString.h"
 
@@ -60,14 +59,12 @@ namespace Mengine
 
         if( m_timestamp == true )
         {
-            PlatformDateTime dateTime;
-            DATETIME_SYSTEM()
-                ->getLocalDateTime( &dateTime );
+            Timestamp timestamp = Helper::getTimestamp();
 
-            Char timestamp[128] = {'\0'};
-            size_t timestamp_len = Helper::makeLoggerShortDate( dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 128 );
+            Char shortDate[128] = {'\0'};
+            size_t shortDateLen = Helper::makeLoggerShortDate( timestamp, "[%02u:%02u:%02u:%04u]", shortDate, 0, 128 );
 
-            m_stream->write( timestamp, timestamp_len );
+            m_stream->write( shortDate, shortDateLen );
             m_stream->write( " ", 1 );
         }
 

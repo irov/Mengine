@@ -124,10 +124,10 @@ extern "C"
 
             if( _message.flag & Mengine::LFLAG_TIMESTAMP )
             {
-                Mengine::Char date[256] = {'\0'};
-                Mengine::Helper::makeLoggerShortDate( _message.dateTime, "[%02u:%02u:%02u:%04u]", date, 0, 256 );
+                Mengine::Char shortDate[256] = {'\0'};
+                Mengine::Helper::makeLoggerShortDate( _message.timestamp, "[%02u:%02u:%02u:%04u]", shortDate, 0, 256 );
 
-                jstring jvalue = env->NewStringUTF( date );
+                jstring jvalue = env->NewStringUTF( shortDate );
                 env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
                 env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ' ' );
                 env->DeleteLocalRef( jvalue );
@@ -136,7 +136,7 @@ extern "C"
             if( _message.flag & Mengine::LFLAG_THREADSTAMP )
             {
                 Mengine::Char threadstamp[256] = {'\0'};
-                Mengine::Helper::makeLoggerThreadStamp( "|%s|", threadstamp, 0, 256 );
+                Mengine::Helper::makeLoggerThreadStamp( _message.threadName, "|%s|", threadstamp, 0, 256 );
 
                 jstring jvalue = env->NewStringUTF( threadstamp );
                 env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );

@@ -150,6 +150,10 @@ namespace Mengine
         uint32_t getProjectVersion() const override;
 
     public:
+        void setSessionId( const ConstString & _sessionId ) override;
+        const ConstString & getSessionId() const override;
+
+    public:
         void setLocale( const ConstString & _locale ) override;
         const ConstString & getLocale() const override;
 
@@ -176,7 +180,7 @@ namespace Mengine
     public:
         void debugPause( bool _pause ) override;
 
-    protected:        
+    protected:
         void invalidateWindow_();
 
     protected:
@@ -209,7 +213,7 @@ namespace Mengine
         bool m_nopause;
 
         Resolution m_windowResolution;
-        
+
         uint32_t m_bits;
         bool m_fullscreen;
         bool m_alwaysfullscreen;
@@ -244,6 +248,8 @@ namespace Mengine
 
         ConstString m_projectCodename;
         uint32_t m_projectVersion;
+
+        ConstString m_sessionId;
 
         bool m_invalidateVsync;
         bool m_cursorMode;

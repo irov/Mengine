@@ -9,6 +9,7 @@
 #include "Kernel/Color.h"
 #include "Kernel/AspectRatioViewport.h"
 #include "Kernel/String.h"
+#include "Kernel/VectorChar.h"
 
 #include "jpp/jpp.hpp"
 
@@ -52,6 +53,12 @@ namespace jpp
     };
     //////////////////////////////////////////////////////////////////////////
     template<>
+    struct extract_object_extern<Mengine::VectorChar>
+    {
+        jpp::object operator()( const Mengine::VectorChar & _value ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
     struct cast_object_extern<Mengine::ConstString>
     {
         void operator()( const jpp::object & _obj, Mengine::ConstString * const _value ) const;
@@ -91,6 +98,12 @@ namespace jpp
     struct cast_object_extern<Mengine::String>
     {
         void operator()( const jpp::object & _obj, Mengine::String * const _value ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct cast_object_extern<Mengine::VectorChar>
+    {
+        void operator()( const jpp::object & _obj, Mengine::VectorChar * const _value ) const;
     };
     //////////////////////////////////////////////////////////////////////////    
     template<>
@@ -133,6 +146,12 @@ namespace jpp
     struct check_object_extern<Mengine::String>
     {
         bool operator()( const jpp::object & _obj, Mengine::String * const ) const;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct check_object_extern<Mengine::VectorChar>
+    {
+        bool operator()( const jpp::object & _obj, Mengine::VectorChar * const ) const;
     };
     //////////////////////////////////////////////////////////////////////////
 }

@@ -62,6 +62,9 @@ namespace Mengine
         SERVICE_DECLARE( "HttpSystem" );
 
     public:
+        virtual const HttpRequestHeaders & getApplicationJSONHeaders() const = 0;
+
+    public:
         virtual HttpRequestId getMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
         virtual HttpRequestId postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpRequestPostParams & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
         virtual HttpRequestId deleteMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;

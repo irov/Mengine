@@ -54,18 +54,7 @@ namespace Mengine
 
         UniqueId m_timerId;
 
-        struct MessageDesc
-        {
-            PlatformDateTime dateTime;
-            const Char * tag;
-            const Char * file;
-            uint32_t line;
-            ConstString threadName;
-            String data;
-            Char level;
-        };
-
-        typedef Vector<MessageDesc> VectorMessages;
+        typedef Vector<LoggerRecord> VectorMessages;
         VectorMessages m_messages;
     };
     //////////////////////////////////////////////////////////////////////////

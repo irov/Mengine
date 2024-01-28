@@ -1,12 +1,12 @@
 #include "Logger.h"
 
 #include "Interface/LoggerServiceInterface.h"
-#include "Interface/OptionsServiceInterface.h"
-#include "Interface/DateTimeSystemInterface.h"
+//#include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/OptionHelper.h"
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/LoggerHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 #include "Config/StdIO.h"
 
@@ -82,13 +82,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerOperator::logMessage( uint32_t _color, const Char * _data, size_t _size ) const
     {
-        PlatformDateTime dateTime;
-        DATETIME_SYSTEM()
-            ->getLocalDateTime( &dateTime );
-
         LoggerMessage msg;
+        msg.timestamp = Helper::getTimestamp();
         msg.category = m_category;
-        msg.dateTime = dateTime;
         msg.threadName = Helper::getCurrentThreadName();
         msg.level = m_level;
         msg.flag = m_flag;

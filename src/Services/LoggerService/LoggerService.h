@@ -94,24 +94,9 @@ namespace Mengine
         typedef Vector<LoggerInterfacePtr> VectorLoggers;
         VectorLoggers m_loggers;
 
-        struct LoggerMessageRecord
-        {
-            Char category[64];
-            PlatformDateTime dateTime;
-            ConstString threadName;
-            ELoggerLevel level;
-            uint32_t flag;
-            uint32_t filter;
-            uint32_t color;
-            const Char * file;
-            int32_t line;
-            Char data[MENGINE_LOGGER_MAX_MESSAGE];
-            size_t size;
-        };
-
-        typedef Vector<LoggerMessageRecord> VectorLoggerMessageRecords;
-        VectorLoggerMessageRecords m_messages;
-        VectorLoggerMessageRecords m_messagesAux;
+        typedef Vector<LoggerRecord> VectorLoggerRecords;
+        VectorLoggerRecords m_messages;
+        VectorLoggerRecords m_messagesAux;
 
         ThreadSharedMutexInterfacePtr m_mutexMessage;
         ThreadSharedMutexInterfacePtr m_mutexLogger;
@@ -131,21 +116,7 @@ namespace Mengine
 
         MemoryInterfacePtr m_memoryOldLog;
 
-        struct HistoryRecord
-        {
-            const Char * category;
-            PlatformDateTime dateTime;
-            ConstString threadName;
-            ELoggerLevel level;
-            uint32_t flag;
-            uint32_t filter;
-            uint32_t color;
-            const Char * file;
-            int32_t line;
-            VectorChar data;
-        };
-
-        typedef List<HistoryRecord> ListHistoryRecords;
+        typedef List<LoggerRecord> ListHistoryRecords;
         ListHistoryRecords m_history;
     };
 }

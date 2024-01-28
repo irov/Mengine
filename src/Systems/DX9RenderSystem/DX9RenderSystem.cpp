@@ -1153,6 +1153,18 @@ namespace Mengine
         return (uint32_t)MaxSimultaneousTextures;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::onDeviceLostPrepare()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderSystem::onDeviceLostRestore()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onWindowChangeFullscreenPrepare( bool _fullscreen )
     {
         MENGINE_UNUSED( _fullscreen );

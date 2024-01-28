@@ -115,6 +115,9 @@ namespace Mengine
         void onWindowMovedOrResized() override;
         void onWindowClose() override;
 
+        void onDeviceLostPrepare() override;
+        bool onDeviceLostRestore() override;
+
         void onWindowChangeFullscreenPrepare( bool _fullscreen ) override;
         bool onWindowChangeFullscreen( bool _fullscreen ) override;
 

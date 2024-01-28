@@ -948,10 +948,8 @@ namespace Mengine
             {
                 LoggerMessage msg;
 
+                msg.timestamp = Helper::getTimestamp();
                 msg.category = "python";
-                DATETIME_SYSTEM()
-                    ->getLocalDateTime( &msg.dateTime );
-
                 msg.threadName = Helper::getCurrentThreadName();
                 msg.level = LM_INFO;
                 msg.filter = LFILTER_NONE;
@@ -970,10 +968,8 @@ namespace Mengine
             {
                 LoggerMessage msg;
 
+                msg.timestamp = Helper::getTimestamp();
                 msg.category = "python";
-                DATETIME_SYSTEM()
-                    ->getLocalDateTime( &msg.dateTime );
-
                 msg.threadName = Helper::getCurrentThreadName();
                 msg.level = LM_MESSAGE;
                 msg.filter = LFILTER_NONE;
@@ -992,10 +988,8 @@ namespace Mengine
             {
                 LoggerMessage msg;
 
+                msg.timestamp = Helper::getTimestamp();
                 msg.category = "python";
-                DATETIME_SYSTEM()
-                    ->getLocalDateTime( &msg.dateTime );
-
                 msg.threadName = Helper::getCurrentThreadName();
                 msg.level = LM_WARNING;
                 msg.filter = LFILTER_NONE;
@@ -1014,10 +1008,8 @@ namespace Mengine
             {
                 LoggerMessage msg;
 
+                msg.timestamp = Helper::getTimestamp();
                 msg.category = "python";
-                DATETIME_SYSTEM()
-                    ->getLocalDateTime( &msg.dateTime );
-
                 msg.threadName = Helper::getCurrentThreadName();
                 msg.level = LM_ERROR;
                 msg.filter = LFILTER_NONE;
@@ -1605,14 +1597,12 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             String s_getLoggerTimestamp( const Char * _format )
             {
-                PlatformDateTime dateTime;
-                DATETIME_SYSTEM()
-                    ->getLocalDateTime( &dateTime );
+                Timestamp timestamp = Helper::getTimestamp();
 
-                Char loggerTimestamp[1024] = {'\0'};
-                Helper::makeLoggerShortDate( dateTime, _format, loggerTimestamp, 0, 1024 );
+                Char shortDate[1024] = {'\0'};
+                Helper::makeLoggerShortDate( timestamp, _format, shortDate, 0, 1024 );
 
-                return loggerTimestamp;
+                return shortDate;
             }
             //////////////////////////////////////////////////////////////////////////
             String s_getTimeString()

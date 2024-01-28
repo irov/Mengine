@@ -69,55 +69,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugLogger::_log( const LoggerMessage & _message )
     {
-        const Char * data = _message.data;
-        size_t size = _message.size;
-
-        MessageDesc desc;
-
-        Char loggerTimestamp[1024] = {'\0'};
-        Helper::makeLoggerShortDate( _message.dateTime, "[%02u:%02u:%02u:%04u]", loggerTimestamp, 0, 1024 );
-
-        desc.dateTime = _message.dateTime;
-        desc.tag = _message.category;
-        desc.file = _message.file;
-        desc.line = _message.line;
-
-        desc.threadName = _message.threadName;
-        
-        desc.data.assign( data, data + size );
-
-        switch( _message.level )
-        {
-        case LM_SILENT:
-            return;
-        case LM_FATAL:
-            desc.level = 'F';
-            break;
-        case LM_MESSAGE_RELEASE:
-            desc.level = 'R';
-            break;
-        case LM_ERROR:
-            desc.level = 'E';
-            break;
-        case LM_WARNING:
-            desc.level = 'W';
-            break;
-        case LM_MESSAGE:
-            desc.level = 'M';
-            break;
-        case LM_INFO:
-            desc.level = 'I';
-            break;
-        case LM_DEBUG:
-            desc.level = 'D';
-            break;
-        case LM_VERBOSE:
-            desc.level = 'V';
-            break;
-        }
+        LoggerRecord record;
+        Helper::recordLoggerMessage( _message, &record );
 
         m_mutex->lock();
-        m_messages.emplace_back( desc );
+        m_messages.emplace_back( record );
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -158,20 +114,53 @@ namespace Mengine
 
         jpp::array jlog = jpp::make_array();
 
-        for( const MessageDesc & desc : messages )
+        for( const LoggerRecord & record : messages )
         {
             jpp::object j_desc = jpp::make_object();
 
             Char loggerTimestamp[1024] = {'\0'};
-            Helper::makeLoggerShortDate( desc.dateTime, "[%02u:%02u:%02u:%04u]", loggerTimestamp, 0, 1024 );
+            Helper::makeLoggerShortDate( record.timestamp, "[%02u:%02u:%02u:%04u]", loggerTimestamp, 0, 1024 );
 
             j_desc.set( "ts", loggerTimestamp );
-            j_desc.set( "tag", desc.tag );
-            j_desc.set( "file", desc.file );
-            j_desc.set( "line", desc.line );
-            j_desc.set( "thread", desc.threadName );
-            j_desc.set( "data", desc.data );
-            j_desc.set( "level", desc.level );
+            j_desc.set( "tag", record.category );
+            j_desc.set( "file", record.file );
+            j_desc.set( "line", record.line );
+            j_desc.set( "thread", record.threadName );
+            j_desc.set( "data", record.data );
+
+            Char level = '-';
+
+            switch( record.level )
+            {
+            case LM_SILENT:
+                return;
+            case LM_FATAL:
+                level = 'F';
+                break;
+            case LM_MESSAGE_RELEASE:
+                level = 'R';
+                break;
+            case LM_ERROR:
+                level = 'E';
+                break;
+            case LM_WARNING:
+                level = 'W';
+                break;
+            case LM_MESSAGE:
+                level = 'M';
+                break;
+            case LM_INFO:
+                level = 'I';
+                break;
+            case LM_DEBUG:
+                level = 'D';
+                break;
+            case LM_VERBOSE:
+                level = 'V';
+                break;
+            }           
+
+            j_desc.set( "level", level );
 
             jlog.push_back( j_desc );
         }
@@ -180,8 +169,8 @@ namespace Mengine
 
         j.set( "logger", jlogger );
 
-        HttpRequestHeaders headers;
-        headers.push_back( "Content-Type:application/json" );
+        const HttpRequestHeaders & headers = HTTP_SYSTEM()
+            ->getApplicationJSONHeaders();
 
         String data;
         Helper::writeJSONStringCompact( j, &data );

@@ -71,6 +71,14 @@ namespace jpp
 
         return jpp::make_string( value_str );
     };
+    //////////////////////////////////////////////////////////////////////////    
+    jpp::object extract_object_extern<Mengine::VectorChar>::operator()( const Mengine::VectorChar & _value ) const
+    {
+        const Mengine::Char * value_str = _value.data();
+        Mengine::VectorChar::size_type value_size = _value.size();
+
+        return jpp::make_stringn( value_str, value_size );
+    };
     //////////////////////////////////////////////////////////////////////////
     void cast_object_extern<Mengine::ConstString>::operator()( const jpp::object & _obj, Mengine::ConstString * const _value ) const
     {
@@ -145,6 +153,14 @@ namespace jpp
         *_value = Mengine::String( value );
     };
     //////////////////////////////////////////////////////////////////////////
+    void cast_object_extern<Mengine::VectorChar>::operator()( const jpp::object & _obj, Mengine::VectorChar * const _value ) const
+    {
+        jpp_size_t size;
+        const Mengine::Char * value = jpp::get_string_and_size( _obj, &size );
+
+        *_value = Mengine::VectorChar( value, value + size );
+    };
+    //////////////////////////////////////////////////////////////////////////
     bool check_object_extern<Mengine::ConstString>::operator()( const jpp::object & _obj, Mengine::ConstString * const ) const
     {
         bool result = _obj.is_type_string();
@@ -188,6 +204,13 @@ namespace jpp
     };
     //////////////////////////////////////////////////////////////////////////
     bool check_object_extern<Mengine::String>::operator()( const jpp::object & _obj, Mengine::String * const ) const
+    {
+        bool result = _obj.is_type_string();
+
+        return result;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    bool check_object_extern<Mengine::VectorChar>::operator()( const jpp::object & _obj, Mengine::VectorChar * const ) const
     {
         bool result = _obj.is_type_string();
 

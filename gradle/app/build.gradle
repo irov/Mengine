@@ -258,7 +258,7 @@ android {
 
             println "add delivery asset pack: $PACKAGE_NAME"
 
-            assetPacks += [PACKAGE_NAME]
+            assetPacks += [":app:" + PACKAGE_NAME]
         }
     }
 

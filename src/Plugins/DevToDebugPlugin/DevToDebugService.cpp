@@ -448,8 +448,8 @@ namespace Mengine
             {
                 m_status = EDTDS_REGISTRATING;
 
-                HttpRequestHeaders headers;
-                headers.push_back( "Content-Type:application/json" );
+                const HttpRequestHeaders & headers = HTTP_SYSTEM()
+                    ->getApplicationJSONHeaders();
 
                 jpp::object j = this->makeJsonRegistrationData();
 
@@ -465,8 +465,8 @@ namespace Mengine
             {
                 m_status = EDTDS_WAITING;
 
-                HttpRequestHeaders headers;
-                headers.push_back( "Content-Type:application/json" );
+                const HttpRequestHeaders & headers = HTTP_SYSTEM()
+                    ->getApplicationJSONHeaders();
 
                 HttpRequestId id = HTTP_SYSTEM()
                     ->getMessage( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
@@ -477,8 +477,8 @@ namespace Mengine
             {
                 m_status = EDTDS_CONNECTING;
 
-                HttpRequestHeaders headers;
-                headers.push_back( "Content-Type:application/json" );
+                const HttpRequestHeaders & headers = HTTP_SYSTEM()
+                    ->getApplicationJSONHeaders();
 
                 jpp::object j = this->makeJsonConnectData();
 
@@ -492,8 +492,8 @@ namespace Mengine
             }break;
         case EDTDS_CONNECT:
             {
-                HttpRequestHeaders headers;
-                headers.push_back( "Content-Type:application/json" );
+                const HttpRequestHeaders & headers = HTTP_SYSTEM()
+                    ->getApplicationJSONHeaders();
 
                 jpp::object j = this->makeJsonProcessData();
 

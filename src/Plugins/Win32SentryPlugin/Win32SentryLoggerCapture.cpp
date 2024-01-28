@@ -36,9 +36,10 @@ namespace Mengine
 
         Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
-        Char timestamp[256] = {'\0'};
-        size_t timestampSize = Helper::makeLoggerShortDate( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
-        MENGINE_STRNCAT( message, timestamp, timestampSize );
+        Char shortDate[256] = {'\0'};
+        size_t shortDateSize = Helper::makeLoggerShortDate( _message.timestamp, "[%02u:%02u:%02u:%04u]", shortDate, 0, 256 );
+
+        MENGINE_STRNCAT( message, shortDate, shortDateSize );
         MENGINE_STRCAT( message, " " );
 
         MENGINE_STRCAT( message, "[" );

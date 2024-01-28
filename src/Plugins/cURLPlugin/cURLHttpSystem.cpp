@@ -159,6 +159,11 @@ namespace Mengine
 
         m_mutex = mutex;
 
+        HttpRequestHeaders applicationJSONHeaders;
+        applicationJSONHeaders.push_back( "Content-Type:application/json" );
+
+        m_applicationJSONHeaders = applicationJSONHeaders;
+
         m_factoryResponse = Helper::makeFactoryPool<cURLHttpResponse, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskGetMessage = Helper::makeFactoryPool<cURLHttpRequestGetMessageThreadTask, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskPostMessage = Helper::makeFactoryPool<cURLHttpRequestPostMessageThreadTask, 16>( MENGINE_DOCUMENT_FACTORABLE );
@@ -228,6 +233,11 @@ namespace Mengine
 
             m_threadQueue = nullptr;
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const HttpRequestHeaders & cURLHttpSystem::getApplicationJSONHeaders() const
+    {
+        return m_applicationJSONHeaders;
     }
     //////////////////////////////////////////////////////////////////////////
     HttpRequestId cURLHttpSystem::getMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )

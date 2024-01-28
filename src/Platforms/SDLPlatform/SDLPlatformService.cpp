@@ -2922,8 +2922,11 @@ namespace Mengine
         this->destroyWindow_();
         this->createWindow( _resolution, _fullscreen );
 
-        RENDER_SERVICE()
-            ->onDeviceLostRestore();
+        if( RENDER_SERVICE()
+            ->onDeviceLostRestore() == false )
+        {
+            return false;
+        }
 
         SDL_RaiseWindow( m_sdlWindow );
         SDL_ShowWindow( m_sdlWindow );

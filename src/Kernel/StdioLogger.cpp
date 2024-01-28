@@ -30,7 +30,7 @@ namespace Mengine
         if( _message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
-            size_t timestampSize = Helper::makeLoggerShortDate( _message.dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
+            size_t timestampSize = Helper::makeLoggerShortDate( _message.timestamp, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
             std::cout.write( timestamp, timestampSize );
             std::cout.write( " ", 1 );
         }

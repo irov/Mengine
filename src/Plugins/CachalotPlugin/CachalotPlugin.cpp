@@ -31,9 +31,9 @@ namespace Mengine
             return false;
         }
 
-        bool OPTION_cachalot = HAS_OPTION( "cachalot" );
+        bool OPTION_nocachalot = HAS_OPTION( "nocachalot" );
 
-        if( OPTION_cachalot == false )
+        if( OPTION_nocachalot == true )
         {
             return false;
         }

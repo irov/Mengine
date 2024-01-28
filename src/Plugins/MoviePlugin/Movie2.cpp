@@ -1242,9 +1242,9 @@ namespace Mengine
             return AE_TRUE;
         }
 
-        aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( layer_data );
+        aeMovieLayerTypeEnum layer_type = ae_get_movie_layer_data_type( layer_data );
 
-        switch( type )
+        switch( layer_type )
         {
         case AE_MOVIE_LAYER_TYPE_SPRITE:
             {
@@ -1404,9 +1404,9 @@ namespace Mengine
             break;
         };
 
-        if( _callbackData->track_matte_layer != AE_NULLPTR )
+        if( _callbackData->track_matte_layer_data != AE_NULLPTR )
         {
-            switch( type )
+            switch( layer_type )
             {
             case AE_MOVIE_LAYER_TYPE_IMAGE:
                 {
@@ -1418,12 +1418,20 @@ namespace Mengine
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
 
+                    MENGINE_ASSERTION_FATAL( ae_get_movie_layer_data_type( _callbackData->track_matte_layer_data ) == AE_MOVIE_RESOURCE_IMAGE, "Movie2 '%s' image layer '%s' [%u] has track_mate_layer '%s' [%u] not image type"
+                        , movie2->getName().c_str()
+                        , ae_get_movie_layer_data_name( _callbackData->layer_data )
+                        , ae_get_movie_layer_data_index( _callbackData->layer_data )
+                        , ae_get_movie_layer_data_name( _callbackData->track_matte_layer_data )
+                        , ae_get_movie_layer_data_index( _callbackData->track_matte_layer_data )
+                    );
+
                     Movie2Data::ImageDesc * imageDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer_data ));
                     ResourceImage * resourceImage = imageDesc->resourceImage;
 
                     surfaceTrackMatte->setResourceImage( ResourceImagePtr::from( resourceImage ) );
 
-                    Movie2Data::ImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
+                    Movie2Data::ImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer_data ));
                     ResourceImage * resourceTrackMatteImage = imageTrackMatteDesc->resourceImage;
 
                     surfaceTrackMatte->setResourceTrackMatteImage( ResourceImagePtr::from( resourceTrackMatteImage ) );
@@ -1472,7 +1480,15 @@ namespace Mengine
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
 
-                    Movie2Data::ImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
+                    MENGINE_ASSERTION_FATAL( ae_get_movie_layer_data_type( _callbackData->track_matte_layer_data ) == AE_MOVIE_RESOURCE_IMAGE, "Movie2 '%s' sequence layer '%s' [%u] has track_mate_layer '%s' [%u] not image type"
+                        , movie2->getName().c_str()
+                        , ae_get_movie_layer_data_name( _callbackData->layer_data )
+                        , ae_get_movie_layer_data_index( _callbackData->layer_data )
+                        , ae_get_movie_layer_data_name( _callbackData->track_matte_layer_data )
+                        , ae_get_movie_layer_data_index( _callbackData->track_matte_layer_data )
+                    );
+
+                    Movie2Data::ImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer_data ));
                     ResourceImage * resourceTrackMatteImage = imageTrackMatteDesc->resourceImage;
 
                     surfaceTrackMatte->setResourceTrackMatteImage( ResourceImagePtr::from( resourceTrackMatteImage ) );
@@ -1518,7 +1534,7 @@ namespace Mengine
         }
         else
         {
-            switch( type )
+            switch( layer_type )
             {
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
@@ -1616,11 +1632,11 @@ namespace Mengine
             return;
         }
 
-        aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( _callbackData->layer_data );
+        aeMovieLayerTypeEnum layer_type = ae_get_movie_layer_data_type( _callbackData->layer_data );
 
-        if( _callbackData->track_matte_layer != AE_NULLPTR )
+        if( _callbackData->track_matte_layer_data != AE_NULLPTR )
         {
-            switch( type )
+            switch( layer_type )
             {
             case AE_MOVIE_LAYER_TYPE_IMAGE:
                 {
@@ -1635,7 +1651,7 @@ namespace Mengine
         }
         else
         {
-            switch( type )
+            switch( layer_type )
             {
             case AE_MOVIE_LAYER_TYPE_PARTICLE:
                 {

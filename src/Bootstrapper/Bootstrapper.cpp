@@ -313,6 +313,10 @@ PLUGIN_EXPORT( GOAP );
 PLUGIN_EXPORT( DevToDebug );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_CACHALOT_STATIC
+PLUGIN_EXPORT( Cachalot );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_IMGUI_STATIC
 PLUGIN_EXPORT( ImGUI );
 #endif
@@ -1316,6 +1320,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_DEVTODEBUG_STATIC
         MENGINE_ADD_PLUGIN( DevToDebug, "plugin DevToDebug...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_CACHALOT_STATIC
+        MENGINE_ADD_PLUGIN( Cachalot, "plugin Cachalot...", MENGINE_DOCUMENT_FACTORABLE );        
 #endif
 
 #ifdef MENGINE_PLUGIN_IMGUI_STATIC

@@ -327,6 +327,18 @@ namespace Mengine
         return m_dxMaxCombinedTextureImageUnits;
     }
     //////////////////////////////////////////////////////////////////////////
+    void MockupRenderSystem::onDeviceLostPrepare()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MockupRenderSystem::onDeviceLostRestore()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void MockupRenderSystem::onWindowChangeFullscreenPrepare( bool _fullscreen )
     {
         MENGINE_UNUSED( _fullscreen );

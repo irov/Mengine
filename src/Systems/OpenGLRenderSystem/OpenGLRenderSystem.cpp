@@ -1017,10 +1017,8 @@ namespace Mengine
         //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::onWindowChangeFullscreenPrepare( bool _fullscreen )
+    void OpenGLRenderSystem::onDeviceLostPrepare()
     {
-        MENGINE_UNUSED( _fullscreen );
-
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
         if( m_vertexArrayId != 0 )
         {
@@ -1035,10 +1033,8 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderSystem::onWindowChangeFullscreen( bool _fullscreen )
+    bool OpenGLRenderSystem::onDeviceLostRestore()
     {
-        MENGINE_UNUSED( _fullscreen );
-
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
         GLuint vertexArrayId = 0;
         MENGINE_GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
@@ -1058,6 +1054,20 @@ namespace Mengine
                 return false;
             }
         }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::onWindowChangeFullscreenPrepare( bool _fullscreen )
+    {
+        MENGINE_UNUSED( _fullscreen );
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderSystem::onWindowChangeFullscreen( bool _fullscreen )
+    {
+        MENGINE_UNUSED( _fullscreen );
 
         return true;
     }

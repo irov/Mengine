@@ -20,10 +20,6 @@ namespace Mengine
         void _finalizeLogger() override;
 
     public:
-        void setDSN( const String & _dsn );
-        const String & getDSN() const;
-
-    public:
         void _log( const LoggerMessage & _message ) override;
 
     protected:
@@ -37,7 +33,7 @@ namespace Mengine
 
         ThreadMutexInterfacePtr m_mutex;
 
-        typedef Vector<LoggerMessage> VectorMessages;
+        typedef Vector<LoggerRecord> VectorMessages;
         VectorMessages m_messages;
     };
     //////////////////////////////////////////////////////////////////////////

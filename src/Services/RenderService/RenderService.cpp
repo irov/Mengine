@@ -411,6 +411,9 @@ namespace Mengine
         {
             batch->deviceLostPrepare();
         }
+
+        RENDER_SYSTEM()
+            ->onDeviceLostPrepare();
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::onDeviceLostRestore()
@@ -418,6 +421,12 @@ namespace Mengine
         if( m_windowCreated == false )
         {
             return true;
+        }
+
+        if( RENDER_SYSTEM()
+            ->onDeviceLostRestore() == false )
+        {
+            return false;
         }
 
         for( const RenderBatchPtr & batch : m_cacheRenderBatches )

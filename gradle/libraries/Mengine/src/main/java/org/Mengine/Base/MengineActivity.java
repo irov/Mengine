@@ -245,6 +245,39 @@ public class MengineActivity extends SDLActivity {
         MengineUtils.finishActivityWithAlertDialog(this, format, args);
     }
 
+    protected boolean startMainThread() {
+        Object semaphoreInit = new Object();
+        Object semaphoreRun = new Object();
+
+        String library = this.getMainSharedObject();
+        String[] arguments = this.getArguments();
+
+        mSDLSemaphoreRun = semaphoreRun;
+        Runnable target = new MengineMain(semaphoreInit, semaphoreRun, library, arguments);
+        mSDLNewThread = new Thread(target, "MengineMain");
+        mSDLNewThread.start();
+
+        synchronized (semaphoreInit) {
+            try {
+                semaphoreInit.wait();
+            } catch (InterruptedException e) {
+                this.setState("activity.init", "sdl_interrupted");
+
+                MengineAnalytics.buildEvent("mng_activity_init_failed")
+                    .addParameterException("reason", e)
+                    .logAndFlush();
+
+                this.finishWithAlertDialog("[ERROR] onCreate SDL interrupted: %s"
+                    , e.getMessage()
+                );
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         m_initializePython = false;
@@ -291,44 +324,19 @@ public class MengineActivity extends SDLActivity {
 
         AndroidEnv_setMengineAndroidActivityJNI(this);
 
-        Object semaphoreInit = new Object();
-        Object semaphoreRun = new Object();
-
-        String library = this.getMainSharedObject();
-        String[] arguments = this.getArguments();
-
-        mSDLSemaphoreRun = semaphoreRun;
-
-        mSDLNewThread = new Thread(new MengineMain(semaphoreInit, semaphoreRun, library, arguments), "MengineThread");
-        mSDLNewThread.start();
-
-        synchronized (semaphoreInit) {
-            try {
-                semaphoreInit.wait();
-            } catch (InterruptedException e) {
-                this.setState("activity.init", "sdl_interrupted");
-
-                MengineAnalytics.buildEvent("mng_activity_init_failed")
-                    .addParameterException("reason", e)
-                    .logAndFlush();
-
-                this.finishWithAlertDialog("[ERROR] onCreate SDL interrupted: %s"
-                    , e.getMessage()
-                );
-
-                return;
-            }
-        }
-
         MengineLog.logMessage(TAG, "onCreate");
-
-        MengineLog.initialize(this);
 
         List<MenginePlugin> plugins = this.getPlugins();
 
         for (MenginePlugin p : plugins) {
             p.setActivity(this);
         }
+
+        if( this.startMainThread() == false ) {
+            return;
+        }
+
+        MengineLog.initialize(this);
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -754,7 +762,7 @@ public class MengineActivity extends SDLActivity {
             MengineLog.logWarning(TAG,"pythonCall call before embedding plugin: %s method: %s args: %s"
                 , plugin
                 , method
-                , args
+                , Arrays.toString(args)
             );
 
             return;
@@ -764,7 +772,7 @@ public class MengineActivity extends SDLActivity {
             MengineLog.logInfo(TAG, "pythonCall plugin [%s] method [%s] args [%s]"
                 , plugin
                 , method
-                , args
+                , Arrays.toString(args)
             );
         }
 

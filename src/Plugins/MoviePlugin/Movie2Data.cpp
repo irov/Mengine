@@ -42,9 +42,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _data );
 
-        ae_userdata_t resource_ud = ae_get_movie_resource_userdata( (const aeMovieResource *)_resource );
-
-        Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);
+        Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_resource_userdata( (const aeMovieResource *)_resource ));
 
         ResourceImage * resourceImage = image_desc->resourceImage;
 
@@ -144,9 +142,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void __ae_movie_resource_image_release( const aeMovieResourceImage * _resource )
     {
-        ae_userdata_t resource_ud = ae_get_movie_resource_userdata( (const aeMovieResource *)_resource );
-
-        Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);
+        Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_resource_userdata( (const aeMovieResource *)_resource ));
 
         ResourceImage * resourceImage = image_desc->resourceImage;
 
@@ -244,9 +240,7 @@ namespace Mengine
                 {
                     const aeMovieResourceImage * resource_image = resource_sequence->images[index];
 
-                    ae_userdata_t resource_ud = ae_get_movie_resource_userdata( (const aeMovieResource *)resource_image );
-
-                    Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);
+                    Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_resource_userdata( (const aeMovieResource *)resource_image ));
 
                     ResourceImage * resourceImage = image_desc->resourceImage;
 
@@ -261,9 +255,7 @@ namespace Mengine
 
                 const aeMovieResourceImage * resource_image = reinterpret_cast<const aeMovieResourceImage *>(resource);
 
-                ae_userdata_t resource_ud = ae_get_movie_resource_userdata( (const aeMovieResource *)resource_image );
-
-                Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(resource_ud);
+                Movie2Data::ImageDesc * image_desc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_resource_userdata( (const aeMovieResource *)resource_image ));
 
                 ResourceImage * resourceImage = image_desc->resourceImage;
 

@@ -152,6 +152,9 @@ namespace Mengine
         virtual void onWindowMovedOrResized() = 0;
         virtual void onWindowClose() = 0;
 
+        virtual void onDeviceLostPrepare() = 0;
+        virtual bool onDeviceLostRestore() = 0;
+
         virtual void onWindowChangeFullscreenPrepare( bool _fullscreen ) = 0;
         virtual bool onWindowChangeFullscreen( bool _fullscreen ) = 0;
 

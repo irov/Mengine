@@ -50,8 +50,7 @@ namespace Mengine
         {
             Char date[256] = {'\0'};
 
-            const PlatformDateTime & dateTime = _message.dateTime;
-            size_t dateSize = Helper::makeLoggerShortDate( dateTime, "[%02u:%02u:%02u:%04u]", date, 0, 256 );
+            size_t dateSize = Helper::makeLoggerShortDate( _message.timestamp, "[%02u:%02u:%02u:%04u]", date, 0, 256 );
             MENGINE_UNUSED( dateSize );
 
             MENGINE_STRCAT( message, date );
@@ -61,7 +60,7 @@ namespace Mengine
         if( _message.flag & LFLAG_THREADSTAMP )
         {
             Char threadstamp[256] = {'\0'};
-            size_t threadstampSize = Helper::makeLoggerThreadStamp( "|%s|", threadstamp, 0, 256 );
+            size_t threadstampSize = Helper::makeLoggerThreadStamp( _message.threadName, "|%s|", threadstamp, 0, 256 );
             MENGINE_UNUSED( threadstampSize );
 
             MENGINE_STRCAT( message, threadstamp );

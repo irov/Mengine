@@ -3,7 +3,6 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/LoggerServiceInterface.h"
-#include "Interface/DateTimeSystemInterface.h"
 
 #if defined(MENGINE_WINDOWS_DEBUG)
 #   include "Environment/Windows/Win32Helper.h"
@@ -20,6 +19,7 @@
 #include "Kernel/BuildMode.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -468,12 +468,10 @@ namespace Mengine
 
         sentry_set_extra( "Content Commit", sentry_value_new_string( contentCommit ) );
 
-        PlatformDateTime dateTime;
-        DATETIME_SYSTEM()
-            ->getLocalDateTime( &dateTime );
+        Timestamp timestamp = Helper::getTimestamp();
 
         Char INIT_DATE[256] = {'\0'};
-        Helper::makeLoggerFullDate( dateTime, "%04u.%02u.%02u %02u:%02u:%02u:%04u", INIT_DATE, 0, 256 );
+        Helper::makeLoggerFullDate( timestamp, "%04u.%02u.%02u %02u:%02u:%02u:%04u", INIT_DATE, 0, 256 );
 
         LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Init Date: %s]"
             , INIT_DATE

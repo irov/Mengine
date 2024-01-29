@@ -398,6 +398,11 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( _message.category, "please setup category for log message" );
         MENGINE_ASSERTION_MEMORY_PANIC( _message.data, "please setup data for log message" );
 
+        if( _message.size == 0 )
+        {
+            return;
+        }
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _message );
 
         this->logMessage_( _message );

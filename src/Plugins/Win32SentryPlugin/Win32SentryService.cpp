@@ -270,10 +270,11 @@ namespace Mengine
             loggerCapture->setVerboseLevel( LM_ERROR );
             loggerCapture->setWriteHistory( true );
 
-            LOGGER_SERVICE()
-                ->registerLogger( loggerCapture );
-
-            m_loggerCapture = loggerCapture;
+            if( LOGGER_SERVICE()
+                ->registerLogger( loggerCapture ) == true )
+            {
+                m_loggerCapture = loggerCapture;
+            }            
         }
 
         return true;

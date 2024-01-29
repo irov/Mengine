@@ -145,20 +145,22 @@ namespace Mengine
 
         loggerMessageBox->setVerboseLevel( LM_FATAL );
 
-        LOGGER_SERVICE()
-            ->registerLogger( loggerMessageBox );
-
-        m_loggerMessageBox = loggerMessageBox;
+        if( LOGGER_SERVICE()
+            ->registerLogger( loggerMessageBox ) == true )
+        {
+            m_loggerMessageBox = loggerMessageBox;
+        }
 
 #if defined(MENGINE_WINDOWS_DEBUG)
         Win32OutputDebugLoggerPtr loggerOutputDebug = Helper::makeFactorableUnique<Win32OutputDebugLogger>( MENGINE_DOCUMENT_FUNCTION );
 
         loggerOutputDebug->setVerboseLevel( LM_MESSAGE );
 
-        LOGGER_SERVICE()
-            ->registerLogger( loggerOutputDebug );
-
-        m_loggerOutputDebug = loggerOutputDebug;
+        if( LOGGER_SERVICE()
+            ->registerLogger( loggerOutputDebug ) == true )
+        {
+            m_loggerOutputDebug = loggerOutputDebug;
+        }
 #endif
 
         if( HAS_OPTION( "extralog" ) == true )
@@ -167,10 +169,11 @@ namespace Mengine
 
             extraFileLogger->setVerboseLevel( LM_VERBOSE );
 
-            LOGGER_SERVICE()
-                ->registerLogger( extraFileLogger );
-
-            m_loggerExtraFile = extraFileLogger;
+            if( LOGGER_SERVICE()
+                ->registerLogger( extraFileLogger ) == true )
+            {
+                m_loggerExtraFile = extraFileLogger;
+            }
         }
 
         return true;

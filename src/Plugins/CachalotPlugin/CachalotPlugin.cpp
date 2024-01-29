@@ -45,22 +45,31 @@ namespace Mengine
     {
         CachalotLoggerPtr loggerCachalot = Helper::makeFactorableUnique<CachalotLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
+        uint32_t loggerFilter = ~0u & ~(LFILTER_PROTECTED);
+        loggerCachalot->setVerboseFilter( loggerFilter );
+
+        loggerCachalot->setVerboseLevel( LM_MESSAGE );
+
         loggerCachalot->setWriteHistory( true );
 
-        LOGGER_SERVICE()
-            ->registerLogger( loggerCachalot );
-
-        m_loggerCachalot = loggerCachalot;
+        if( LOGGER_SERVICE()
+            ->registerLogger( loggerCachalot ) == true )
+        {
+            m_loggerCachalot = loggerCachalot;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void CachalotPlugin::_finalizePlugin()
     {
-        LOGGER_SERVICE()
-            ->unregisterLogger( m_loggerCachalot );
+        if( m_loggerCachalot != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_loggerCachalot );
 
-        m_loggerCachalot = nullptr;
+            m_loggerCachalot = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

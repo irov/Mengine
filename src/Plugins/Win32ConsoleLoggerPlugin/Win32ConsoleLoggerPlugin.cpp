@@ -47,20 +47,24 @@ namespace Mengine
 
         loggerConsole->setWriteHistory( true );
 
-        LOGGER_SERVICE()
-            ->registerLogger( loggerConsole );
-
-        m_loggerConsole = loggerConsole;
+        if( LOGGER_SERVICE()
+            ->registerLogger( loggerConsole ) == true )
+        {
+            m_loggerConsole = loggerConsole;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ConsoleLoggerPlugin::_finalizePlugin()
     {
-        LOGGER_SERVICE()
-            ->unregisterLogger( m_loggerConsole );
+        if( m_loggerConsole != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_loggerConsole );
 
-        m_loggerConsole = nullptr;
+            m_loggerConsole = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

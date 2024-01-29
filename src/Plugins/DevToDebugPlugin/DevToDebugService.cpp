@@ -273,10 +273,11 @@ namespace Mengine
         logger->setVerboseLevel( LM_MESSAGE );
         logger->setWriteHistory( true );
 
-        LOGGER_SERVICE()
-            ->registerLogger( logger );
-
-        m_logger = logger;
+        if( LOGGER_SERVICE()
+            ->registerLogger( logger ) == true )
+        {
+            m_logger = logger;
+        }        
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()

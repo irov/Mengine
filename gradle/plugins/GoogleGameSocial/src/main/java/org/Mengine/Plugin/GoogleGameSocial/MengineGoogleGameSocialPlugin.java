@@ -232,14 +232,16 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
         String accountIdToken = account.getIdToken();
         String accountServerAuthCode = account.getServerAuthCode();
 
-        this.logInfo("PhotoUrl: %s", accountPhotoUrl);
-        this.logInfo("DisplayName: %s", accountDisplayName);
-        this.logInfo("Email: %s", accountEmail);
-        this.logInfo("FamilyName: %s", accountFamilyName);
-        this.logInfo("GivenName: %s", accountGivenName);
-        this.logInfo("Id: %s", accountId);
-        this.logInfo("IdToken: %s", accountIdToken);
-        this.logInfo("ServerAuthCode: %s", accountServerAuthCode);
+        this.logInfo("get achievement account PhotoUrl: %s DisplayName: %s Email: %s FamilyName: %s GivenName: %s Id: %s IdToken: %s ServerAuthCode: %s"
+            , accountPhotoUrl
+            , accountDisplayName
+            , accountEmail
+            , accountFamilyName
+            , accountGivenName
+            , accountId
+            , accountIdToken
+            , accountServerAuthCode
+        );
 
         this.pythonCall("onGoogleGameSocialOnSign", accountId);
     }

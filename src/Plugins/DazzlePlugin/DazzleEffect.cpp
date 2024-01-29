@@ -284,9 +284,11 @@ namespace Mengine
             return;
         }
 
-        float totalTime = this->calcTotalTime( _context ) * 0.001f;
+        float totalTime = this->calcTotalTime( _context );
 
-        dz_instance_update( m_service, m_instance, totalTime );
+        float totalTimeMilliseconds = totalTime * 0.001f;
+
+        dz_instance_update( m_service, m_instance, totalTimeMilliseconds );
     }
     //////////////////////////////////////////////////////////////////////////
     void DazzleEffect::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const

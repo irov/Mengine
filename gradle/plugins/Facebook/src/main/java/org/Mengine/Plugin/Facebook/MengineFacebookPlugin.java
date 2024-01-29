@@ -242,7 +242,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
+    public void onActivityResultBefore(MengineActivity activity, int requestCode, int resultCode, Intent data) {
         if (m_facebookCallbackManager != null) {
             m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
         }

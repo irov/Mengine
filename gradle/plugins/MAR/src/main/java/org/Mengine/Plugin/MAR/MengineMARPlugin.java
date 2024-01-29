@@ -406,7 +406,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
     }
 
     @Override
-    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
+    public void onActivityResultBefore(MengineActivity activity, int requestCode, int resultCode, Intent data) {
         MARSDK.getInstance().onActivityResult(requestCode, resultCode, data);
     }
 

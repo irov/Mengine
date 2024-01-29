@@ -9,6 +9,10 @@ public interface MenginePluginActivityListener extends MenginePluginInterface {
         //Empty
     }
 
+    default void onActivityResultBefore(MengineActivity activity, int requestCode, int resultCode, Intent data) {
+        //Empty
+    }
+
     default void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
         //Empty
     }

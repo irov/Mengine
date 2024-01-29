@@ -445,10 +445,14 @@ public class MengineActivity extends SDLActivity {
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
-            l.onActivityResult(this, requestCode, resultCode, data);
+            l.onActivityResultBefore(this, requestCode, resultCode, data);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+
+        for (MenginePluginActivityListener l : listeners) {
+            l.onActivityResult(this, requestCode, resultCode, data);
+        }
     }
 
     @Override

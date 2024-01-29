@@ -20,6 +20,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -55,6 +56,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::_initializeService()
     {
+        m_commonVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+        m_soundVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        m_musicVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+        m_voiceVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
         m_supportStream = THREAD_SERVICE()
             ->isAvailableService();
 
@@ -118,7 +125,7 @@ namespace Mengine
 
         this->stopSounds_();
 
-        for( const SoundIdentityPtr & identity : m_soundIdentities )
+        for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
         {
             this->stopSoundBufferUpdate_( identity );
 
@@ -150,6 +157,11 @@ namespace Mengine
 
             m_timepipeId = INVALID_UNIQUE_ID;
         }
+
+        m_commonVolume = nullptr;
+        m_soundVolume = nullptr;
+        m_musicVolume = nullptr;
+        m_voiceVolume = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundIdentity );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWorkerTaskSoundBufferUpdate );
@@ -186,11 +198,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundService::playSounds_()
     {
-        for( const SoundIdentityPtr & identity : m_soundIdentities )
+        for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
         {
-            identity->turn = true;
+            identity->setTurn( true );
 
-            if( identity->state != ESS_PLAY )
+            if( identity->getState() != ESS_PLAY )
             {
                 continue;
             }
@@ -212,11 +224,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundService::pauseSounds_()
     {
-        for( const SoundIdentityPtr & identity : m_soundIdentities )
+        for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
         {
-            identity->turn = false;
+            identity->setTurn( false );
 
-            if( identity->state != ESS_PLAY )
+            if( identity->getState() != ESS_PLAY )
             {
                 continue;
             }
@@ -231,11 +243,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundService::resumeSounds_()
     {
-        for( const SoundIdentityPtr & identity : m_soundIdentities )
+        for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
         {
-            identity->turn = true;
+            identity->setTurn( true );
 
-            if( identity->state != ESS_PLAY )
+            if( identity->getState() != ESS_PLAY )
             {
                 continue;
             }
@@ -271,11 +283,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundService::stopSounds_()
     {
-        for( const SoundIdentityPtr & identity : m_soundIdentities )
+        for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
         {
-            identity->turn = false;
+            identity->setTurn( false );
 
-            if( identity->state != ESS_PLAY )
+            if( identity->getState() != ESS_PLAY )
             {
                 continue;
             }
@@ -348,25 +360,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( identity );
 
-        UniqueId new_id = Helper::generateUniqueIdentity();
+        bool turn = _streamable ? m_turnStream : m_turnSound;
 
-        identity->setId( new_id );
-
-        identity->setSoundSource( source );
-        identity->listener = nullptr;
-        identity->worker = nullptr;
-        identity->workerId = 0;
-
-        identity->time_left = 0.f;
-
-        identity->state = ESS_STOP;
-        identity->category = _category;
-
-        identity->streamable = _streamable;
-        identity->looped = false;
-        identity->turn = _streamable ? m_turnStream : m_turnSound;
-
-        if( identity->initialize() == false )
+        if( identity->initialize( source, _category, _streamable, turn ) == false )
         {
             LOGGER_ERROR( "invalide initialize identity sound" );
 
@@ -380,7 +376,7 @@ namespace Mengine
         return identity;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundService::updateSourceVolume_( const SoundIdentityPtr & _emitter )
+    void SoundService::updateSourceVolume_( const SoundIdentityInterfacePtr & _emitter )
     {
         const SoundSourceInterfacePtr & source = _emitter->getSoundSource();
 
@@ -389,7 +385,7 @@ namespace Mengine
             return;
         }
 
-        bool streamable = _emitter->isStreamable();
+        bool streamable = _emitter->getStreamable();
 
         bool mute = this->isMute();
 
@@ -401,7 +397,7 @@ namespace Mengine
         }
         else
         {
-            const MixerValue & emitterVolume = _emitter->getVolume();
+            const MixerValueInterfacePtr & emitterVolume = _emitter->getMixerVolume();
 
             ESoundSourceCategory type = _emitter->getCategory();
 
@@ -409,9 +405,9 @@ namespace Mengine
             {
             case ES_SOURCE_CATEGORY_SOUND:
                 {
-                    float commonMixVolume = m_commonVolume.mixValue();
-                    float soundMixVolume = m_soundVolume.mixValue();
-                    float emitterMixVolume = emitterVolume.mixValue();
+                    float commonMixVolume = m_commonVolume->mixValue();
+                    float soundMixVolume = m_soundVolume->mixValue();
+                    float emitterMixVolume = emitterVolume->mixValue();
 
                     float mixVolume = 1.f;
                     mixVolume *= commonMixVolume;
@@ -422,9 +418,9 @@ namespace Mengine
                 }break;
             case ES_SOURCE_CATEGORY_MUSIC:
                 {
-                    float commonMixVolume = m_commonVolume.mixValue();
-                    float musicMixVolume = m_musicVolume.mixValue();
-                    float emitterMixVolume = emitterVolume.mixValue();
+                    float commonMixVolume = m_commonVolume->mixValue();
+                    float musicMixVolume = m_musicVolume->mixValue();
+                    float emitterMixVolume = emitterVolume->mixValue();
 
                     float mixVolume = 1.f;
                     mixVolume *= commonMixVolume;
@@ -435,9 +431,9 @@ namespace Mengine
                 }break;
             case ES_SOURCE_CATEGORY_VOICE:
                 {
-                    float commonMixVolume = m_commonVolume.mixValue();
-                    float voiceMixVolume = m_voiceVolume.mixValue();
-                    float emitterMixVolume = emitterVolume.mixValue();
+                    float commonMixVolume = m_commonVolume->mixValue();
+                    float voiceMixVolume = m_voiceVolume->mixValue();
+                    float emitterMixVolume = emitterVolume->mixValue();
 
                     float mixVolume = 1.f;
                     mixVolume *= commonMixVolume;
@@ -573,84 +569,84 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundService::setSoundVolume( const ConstString & _type, float _volume, float _default )
     {
-        m_soundVolume.setValue( _type, _volume, _default, true );
+        m_soundVolume->setValue( _type, _volume, _default, true );
 
         this->updateVolume();
     }
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getSoundVolume( const ConstString & _type ) const
     {
-        float volume = m_soundVolume.getValue( _type );
+        float volume = m_soundVolume->getValue( _type );
 
         return volume;
     }
     //////////////////////////////////////////////////////////////////////////
     float SoundService::mixSoundVolume() const
     {
-        float volume = m_soundVolume.mixValue();
+        float volume = m_soundVolume->mixValue();
 
         return volume;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::setCommonVolume( const ConstString & _type, float _volume, float _default )
     {
-        m_commonVolume.setValue( _type, _volume, _default, true );
+        m_commonVolume->setValue( _type, _volume, _default, true );
 
         this->updateVolume();
     }
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getCommonVolume( const ConstString & _type ) const
     {
-        float volume = m_commonVolume.getValue( _type );
+        float volume = m_commonVolume->getValue( _type );
 
         return volume;
     }
     //////////////////////////////////////////////////////////////////////////
     float SoundService::mixCommonVolume() const
     {
-        float volume = m_commonVolume.mixValue();
+        float volume = m_commonVolume->mixValue();
 
         return volume;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::setMusicVolume( const ConstString & _type, float _volume, float _default )
     {
-        m_musicVolume.setValue( _type, _volume, _default, true );
+        m_musicVolume->setValue( _type, _volume, _default, true );
 
         this->updateVolume();
     }
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getMusicVolume( const ConstString & _type ) const
     {
-        float volume = m_musicVolume.getValue( _type );
+        float volume = m_musicVolume->getValue( _type );
 
         return volume;
     }
     //////////////////////////////////////////////////////////////////////////
     float SoundService::mixMusicVolume() const
     {
-        float volume = m_musicVolume.mixValue();
+        float volume = m_musicVolume->mixValue();
 
         return volume;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::setVoiceVolume( const ConstString & _type, float _volume, float _default )
     {
-        m_voiceVolume.setValue( _type, _volume, _default, true );
+        m_voiceVolume->setValue( _type, _volume, _default, true );
 
         this->updateVolume();
     }
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getVoiceVolume( const ConstString & _type ) const
     {
-        float volume = m_voiceVolume.getValue( _type );
+        float volume = m_voiceVolume->getValue( _type );
 
         return volume;
     }
     //////////////////////////////////////////////////////////////////////////
     float SoundService::mixVoiceVolume() const
     {
-        float volume = m_voiceVolume.mixValue();
+        float volume = m_voiceVolume->mixValue();
 
         return volume;
     }
@@ -662,36 +658,38 @@ namespace Mengine
 
         bool process = false;
 
-        if( m_commonVolume.update( _context ) == true )
+        if( m_commonVolume->update( _context ) == true )
         {
             process = true;
         }
 
-        if( m_soundVolume.update( _context ) == true )
+        if( m_soundVolume->update( _context ) == true )
         {
             process = true;
         }
 
-        if( m_musicVolume.update( _context ) == true )
+        if( m_musicVolume->update( _context ) == true )
         {
             process = true;
         }
 
-        if( m_voiceVolume.update( _context ) == true )
+        if( m_voiceVolume->update( _context ) == true )
         {
             process = true;
         }
 
         for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
-            if( identity->state != ESS_PLAY )
+            if( identity->getState() != ESS_PLAY )
             {
                 continue;
             }
 
             bool source_process = process;
 
-            if( identity->volume.update( _context ) == true )
+            const MixerValueInterfacePtr & mixerVolume = identity->getMixerVolume();
+
+            if( mixerVolume->update( _context ) == true )
             {
                 source_process = true;
             }
@@ -701,25 +699,25 @@ namespace Mengine
                 this->updateSourceVolume_( identity );
             }
 
-            if( identity->looped == true )
+            if( identity->getLoop() == true )
             {
                 continue;
             }
 
-            if( identity->turn == false )
+            if( identity->getTurn() == false )
             {
                 continue;
             }
 
-            const ThreadWorkerSoundBufferUpdatePtr & worker = identity->worker;
+            const ThreadWorkerSoundBufferUpdatePtr & worker = identity->getWorkerUpdateBuffer();
 
-            float time_left = identity->time_left;
+            float time_left = identity->getTimeLeft();
 
             if( worker != nullptr )
             {
                 if( worker->isDone() == true )
                 {
-                    identity->state = ESS_STOP;
+                    identity->setState( ESS_STOP );
 
                     this->stopSoundBufferUpdate_( identity );
 
@@ -730,23 +728,25 @@ namespace Mengine
                         soundSource->stop();
                     }
 
-                    identity->time_left = 0.f;
+                    identity->setTimeLeft( 0.f );
 
-                    if( identity->listener != nullptr )
+                    if( identity->getSoundListener() != nullptr )
                     {
                         m_soundIdentitiesAux.emplace_back( identity );
                     }
                 }
                 else
                 {
-                    identity->time_left -= _context->time;
+                    float timeLeft = identity->getTimeLeft();
+                    float newTimeLeft = timeLeft - _context->time;
+                    identity->setTimeLeft( newTimeLeft );
                 }
             }
             else
             {
                 if( time_left - _context->time <= 0.f )
                 {
-                    identity->state = ESS_STOP;
+                    identity->setState( ESS_STOP );
 
                     const SoundSourceInterfacePtr & soundSource = identity->getSoundSource();
 
@@ -755,16 +755,18 @@ namespace Mengine
                         soundSource->stop();
                     }
 
-                    identity->time_left = 0.f;
+                    identity->setTimeLeft( 0.f );
 
-                    if( identity->listener != nullptr )
+                    if( identity->getSoundListener() != nullptr )
                     {
                         m_soundIdentitiesAux.emplace_back( identity );
                     }
                 }
                 else
                 {
-                    identity->time_left -= _context->time;
+                    float timeLeft = identity->getTimeLeft();
+                    float newTimeLeft = timeLeft - _context->time;
+                    identity->setTimeLeft( newTimeLeft );
                 }
             }
         }
@@ -802,7 +804,7 @@ namespace Mengine
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
-        ESoundSourceState state = identity->getState();
+        ESoundSourceState state = _identity->getState();
 
         switch( state )
         {
@@ -815,12 +817,12 @@ namespace Mengine
 
                 this->updateSourceVolume_( identity );
 
-                const SoundSourceInterfacePtr & source = identity->getSoundSource();
+                const SoundSourceInterfacePtr & source = _identity->getSoundSource();
 
                 if( source == nullptr )
                 {
                     LOGGER_ERROR( "invalid play %u source is nullptr"
-                        , identity->getId()
+                        , _identity->getId()
                     );
 
                     return false;
@@ -829,11 +831,13 @@ namespace Mengine
                 float duration = source->getDuration();
                 float position = source->getPosition();
 
-                identity->time_left = duration - position;
+                float timeLeft = duration - position;
 
-                identity->state = ESS_PLAY;
+                identity->setTimeLeft( timeLeft );
 
-                if( identity->turn == true )
+                identity->setState( ESS_PLAY );
+
+                if( identity->getTurn() == true )
                 {
                     if( source->play() == false )
                     {
@@ -861,11 +865,13 @@ namespace Mengine
                 float duration = source->getDuration();
                 float position = source->getPosition();
 
-                identity->time_left = duration - position;
+                float timeLeft = duration - position;
 
-                identity->state = ESS_PLAY;
+                identity->setTimeLeft( timeLeft );
 
-                if( identity->turn == true )
+                identity->setState( ESS_PLAY );
+
+                if( identity->getTurn() == true )
                 {
                     if( source->resume() == false )
                     {
@@ -891,7 +897,7 @@ namespace Mengine
             {
 #if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
-                    , identity->state
+                    , identity->getState()
                     , MENGINE_DOCUMENT_STR( identity->getDocument() )
                 );
 #endif
@@ -915,9 +921,9 @@ namespace Mengine
         {
         case ESS_PLAY:
             {
-                identity->state = ESS_PAUSE;
+                identity->setState( ESS_PAUSE );
 
-                if( identity->turn == true )
+                if( identity->getTurn() == true )
                 {
                     this->pauseSoundBufferUpdate_( identity );
                 }
@@ -929,7 +935,9 @@ namespace Mengine
                 float duration = source->getDuration();
                 float position = source->getPosition();
 
-                identity->time_left = duration - position;
+                float timeLeft = duration - position;
+
+                identity->setTimeLeft( timeLeft );
 
                 const SoundListenerInterfacePtr & listener = identity->getSoundListener();
 
@@ -943,7 +951,7 @@ namespace Mengine
             {
 #if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
-                    , identity->state
+                    , identity->getState()
                     , MENGINE_DOCUMENT_STR( identity->getDocument() )
                 );
 #endif
@@ -979,11 +987,12 @@ namespace Mengine
                 float duration = source->getDuration();
                 float position = source->getPosition();
 
-                identity->time_left = duration - position;
+                float timeLeft = duration - position;
 
-                identity->state = ESS_PLAY;
+                identity->setTimeLeft( timeLeft );
+                identity->setState( ESS_PLAY );
 
-                if( identity->turn == true )
+                if( identity->getTurn() == true )
                 {
                     if( source->resume() == false )
                     {
@@ -1009,7 +1018,7 @@ namespace Mengine
             {
 #if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
-                    , identity->state
+                    , identity->getState()
                     , MENGINE_DOCUMENT_STR( identity->getDocument() )
                 );
 #endif
@@ -1027,16 +1036,16 @@ namespace Mengine
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
-        ESoundSourceState state = identity->state;
+        ESoundSourceState state = identity->getState();
 
         switch( state )
         {
         case ESS_PLAY:
         case ESS_PAUSE:
             {
-                identity->state = ESS_STOP;
+                identity->setState( ESS_STOP );
 
-                if( identity->turn == true )
+                if( identity->getTurn() == true )
                 {
                     this->stopSoundBufferUpdate_( identity );
                 }
@@ -1048,12 +1057,13 @@ namespace Mengine
                     float duration = source->getDuration();
                     float position = source->getPosition();
 
-                    identity->time_left = duration - position;
+                    float timeLeft = duration - position;
+                    identity->setTimeLeft( timeLeft );
 
                     source->stop();
                 }
 
-                if( identity->listener != nullptr )
+                if( identity->getSoundListener() != nullptr )
                 {
                     SoundListenerInterfacePtr keep_listener = identity->getSoundListener();
                     keep_listener->onSoundStop( identity );
@@ -1063,7 +1073,7 @@ namespace Mengine
             {
 #if defined(MENGINE_DEBUG)
                 LOGGER_WARNING( "invalid state [%u] (doc: %s)"
-                    , identity->state
+                    , identity->getState()
                     , MENGINE_DOCUMENT_STR( identity->getDocument() )
                 );
 #endif
@@ -1081,7 +1091,7 @@ namespace Mengine
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
-        bool stopped = identity->state == ESS_STOP;
+        bool stopped = identity->getState() == ESS_STOP;
 
         return stopped;
     }
@@ -1092,7 +1102,7 @@ namespace Mengine
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
-        if( identity->state != ESS_PLAY )
+        if( identity->getState() != ESS_PLAY )
         {
             return false;
         }
@@ -1106,7 +1116,7 @@ namespace Mengine
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
-        if( identity->state != ESS_PAUSE )
+        if( identity->getState() != ESS_PAUSE )
         {
             return false;
         }
@@ -1118,7 +1128,7 @@ namespace Mengine
     {
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
-        identity->looped = _looped;
+        identity->setLoop( _looped );
 
         const SoundSourceInterfacePtr & source = identity->getSoundSource();
         source->setLoop( _looped );
@@ -1137,11 +1147,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundService::updateSoundVolumeProvider_( const SoundVolumeProviderInterfacePtr & _provider )
     {
-        float commonVolume = m_commonVolume.mixValue();
+        float commonVolume = m_commonVolume->mixValue();
 
-        float soundVolume = m_soundVolume.mixValue();
-        float musicVolume = m_musicVolume.mixValue();
-        float voiceVolume = m_voiceVolume.mixValue();
+        float soundVolume = m_soundVolume->mixValue();
+        float musicVolume = m_musicVolume->mixValue();
+        float voiceVolume = m_voiceVolume->mixValue();
 
         float mixSoundVolume = 1.f;
         mixSoundVolume *= commonVolume;
@@ -1160,7 +1170,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundService::updateVolume()
     {
-        for( const SoundIdentityPtr & identity : m_soundIdentities )
+        for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
         {
             this->updateSourceVolume_( identity );
         }
@@ -1173,7 +1183,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundService::notifyEnginePrepareFinalize()
     {
-        for( const SoundIdentityPtr & identity : m_soundIdentities )
+        for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
         {
             this->stopSoundBufferUpdate_( identity );
 
@@ -1185,11 +1195,11 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity );
 
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
+        const MixerValueInterfacePtr & mixerVolume = _identity->getMixerVolume();
 
-        identity->volume.setValue( STRINGIZE_STRING_LOCAL( "General" ), _volume, _default, _force );
+        mixerVolume->setValue( STRINGIZE_STRING_LOCAL( "General" ), _volume, _default, _force );
 
-        this->updateSourceVolume_( identity );
+        this->updateSourceVolume_( _identity );
 
         return true;
     }
@@ -1198,22 +1208,24 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity );
 
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
+        const MixerValueInterfacePtr & mixerVolume = _identity->getMixerVolume();
 
-        float volume = identity->volume.mixValue();
+        float volume = mixerVolume->mixValue();
 
         return volume;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::setSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer, float _volume, float _default )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "identity is nullptr (mixer '%s')"
+            , _mixer.c_str()
+        );
 
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
+        const MixerValueInterfacePtr & mixerVolume = _identity->getMixerVolume();
 
-        identity->volume.setValue( _mixer, _volume, _default, true );
+        mixerVolume->setValue( _mixer, _volume, _default, true );
 
-        this->updateSourceVolume_( identity );
+        this->updateSourceVolume_( _identity );
 
         return true;
     }
@@ -1224,9 +1236,9 @@ namespace Mengine
             , _mixer.c_str()
         );
 
-        SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
+        const MixerValueInterfacePtr & mixerVolume = _identity->getMixerVolume();
 
-        float volume = identity->volume.getValue( _mixer );
+        float volume = mixerVolume->getValue( _mixer );
 
         return volume;
     }
@@ -1285,9 +1297,10 @@ namespace Mengine
             _pos = duration;
         }
 
-        identity->time_left = duration - _pos;
+        float timeLeft = duration - _pos;
+        identity->setTimeLeft( timeLeft );
 
-        bool hasBufferUpdate = identity->worker != nullptr;
+        bool hasBufferUpdate = identity->getWorkerUpdateBuffer() != nullptr;
 
         if( hasBufferUpdate == true )
         {
@@ -1339,35 +1352,37 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::stopSoundBufferUpdate_( const SoundIdentityPtr & _identity )
     {
-        if( _identity->streamable == false )
+        if( _identity->getStreamable() == false )
         {
             return false;
         }
 
-        if( _identity->worker == nullptr )
+        if( _identity->getWorkerUpdateBuffer() == nullptr )
         {
             return false;
         }
 
         if( m_threadJobSoundBufferUpdate != nullptr )
         {
-            m_threadJobSoundBufferUpdate->removeWorker( _identity->workerId );
+            UniqueId workerId = _identity->getWorkerId();
+
+            m_threadJobSoundBufferUpdate->removeWorker( workerId );
         }
 
-        _identity->worker = nullptr;
-        _identity->workerId = 0;
+        _identity->setWorkerUpdateBuffer( nullptr );
+        _identity->setWorkerId( INVALID_UNIQUE_ID );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::playSoundBufferUpdate_( const SoundIdentityPtr & _identity )
     {
-        if( _identity->streamable == false )
+        if( _identity->getStreamable() == false )
         {
             return false;
         }
 
-        if( _identity->worker != nullptr )
+        if( _identity->getWorkerUpdateBuffer() != nullptr )
         {
             LOGGER_ERROR( "identity worker is not null" );
 
@@ -1384,9 +1399,9 @@ namespace Mengine
 
             worker->initialize( soundBuffer );
 
-            _identity->worker = worker;
+            _identity->setWorkerUpdateBuffer( worker );
 
-            UniqueId workerId = m_threadJobSoundBufferUpdate->addWorker( _identity->worker, MENGINE_DOCUMENT_FACTORABLE );
+            UniqueId workerId = m_threadJobSoundBufferUpdate->addWorker( worker, MENGINE_DOCUMENT_FACTORABLE );
 
             if( workerId == INVALID_UNIQUE_ID )
             {
@@ -1395,12 +1410,12 @@ namespace Mengine
                 return false;
             }
 
-            _identity->workerId = workerId;
+            _identity->setWorkerId( workerId );
         }
         else
         {
-            _identity->worker = nullptr;
-            _identity->workerId = 0;
+            _identity->setWorkerUpdateBuffer( nullptr );
+            _identity->setWorkerId( INVALID_UNIQUE_ID );
         }
 
         return true;
@@ -1408,19 +1423,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::pauseSoundBufferUpdate_( const SoundIdentityPtr & _identity )
     {
-        if( _identity->streamable == false )
+        if( _identity->getStreamable() == false )
         {
             return false;
         }
 
-        if( _identity->worker == nullptr )
+        if( _identity->getWorkerUpdateBuffer() == nullptr )
         {
             return false;
         }
 
         if( m_threadJobSoundBufferUpdate != nullptr )
         {
-            m_threadJobSoundBufferUpdate->pauseWorker( _identity->workerId );
+            UniqueId workerId = _identity->getWorkerId();
+
+            m_threadJobSoundBufferUpdate->pauseWorker( workerId );
         }
 
         return true;
@@ -1428,19 +1445,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::resumeSoundBufferUpdate_( const SoundIdentityPtr & _identity )
     {
-        if( _identity->streamable == false )
+        if( _identity->getStreamable() == false )
         {
             return false;
         }
 
-        if( _identity->worker == nullptr )
+        if( _identity->getWorkerUpdateBuffer() == nullptr )
         {
             return false;
         }
 
         if( m_threadJobSoundBufferUpdate != nullptr )
         {
-            m_threadJobSoundBufferUpdate->resumeWorker( _identity->workerId );
+            UniqueId workerId = _identity->getWorkerId();
+
+            m_threadJobSoundBufferUpdate->resumeWorker( workerId );
         }
 
         return true;
@@ -1450,7 +1469,7 @@ namespace Mengine
     {
         uint32_t playCount = (uint32_t)Algorithm::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity )
         {
-            return _Identity->state == ESS_PLAY;
+            return _Identity->getState() == ESS_PLAY;
         } );
 
         uint32_t Limit_MaxSoundPlay = CONFIG_VALUE( "Limit", "MaxSoundPlay", 16 );
@@ -1462,15 +1481,15 @@ namespace Mengine
             );
 
 #if defined(MENGINE_DEBUG)
-            for( const SoundIdentityPtr & identity : m_soundIdentities )
+            for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
             {
-                if( identity->streamable == false )
+                if( identity->getStreamable() == false )
                 {
                     continue;
                 }
 
                 LOGGER_ASSERTION( "sound: %s [%s] "
-                    , identity->streamable == true ? "streamable" : "instance"
+                    , identity->getStreamable() == true ? "streamable" : "instance"
                     , MENGINE_DOCUMENT_STR( identity->getDocument() )
                 );
             }
@@ -1493,7 +1512,7 @@ namespace Mengine
             return 0.f;
         }
 
-        bool hasBufferUpdate = identity->worker != nullptr;
+        bool hasBufferUpdate = identity->getWorkerUpdateBuffer() != nullptr;
 
         if( hasBufferUpdate == true )
         {
@@ -1514,7 +1533,7 @@ namespace Mengine
     {
         this->stopSounds_();
 
-        for( const SoundIdentityPtr & identity : m_soundIdentities )
+        for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
         {
             this->stopSoundBufferUpdate_( identity );
 

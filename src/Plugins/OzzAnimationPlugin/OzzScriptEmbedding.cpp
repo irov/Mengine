@@ -2,7 +2,6 @@
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/PrototypeServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
@@ -21,6 +20,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 namespace Mengine
 {
@@ -30,8 +30,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static SamplerOzzAnimationPtr s_createOzzSampler()
         {
-            SamplerOzzAnimationPtr sampler = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Sampler" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), MENGINE_DOCUMENT_PYBIND );
+            SamplerOzzAnimationPtr sampler = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Sampler" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( sampler );
 

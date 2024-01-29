@@ -1,7 +1,6 @@
 #include "VideoScriptEmbedding.h"
 
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
@@ -17,6 +16,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ShapeQuadFixed.h"
+#include "Kernel/PrototypeHelper.h"
 
 namespace Mengine
 {
@@ -58,16 +58,14 @@ namespace Mengine
                 , _name.c_str()
             );
 
-            SurfaceVideoPtr surface = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_PYBIND );
+            SurfaceVideoPtr surface = Helper::generateFactorable<Surface, SurfaceVideo>( MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( surface );
 
             surface->setName( _name );
             surface->setResourceVideo( _resource );
 
-            ShapePtr shape = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _shapeType, MENGINE_DOCUMENT_PYBIND );
+            ShapePtr shape = Helper::generatePrototype( Node::getFactorableType(), _shapeType, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( shape );
 

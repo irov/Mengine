@@ -1,6 +1,5 @@
 #include "SimpleSprite.h"
 
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/ConstStringHelper.h"
@@ -8,6 +7,7 @@
 #include "Kernel/SurfaceImage.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 namespace Mengine
 {
@@ -15,8 +15,7 @@ namespace Mengine
     {
         ShapeQuadSizePtr createSimpleSprite( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const mt::vec2f & _textureSize, const mt::vec2f & _size, const DocumentInterfacePtr & _doc )
         {
-            ResourceImageDefaultPtr resource = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), _doc );
+            ResourceImageDefaultPtr resource = Helper::generateFactorable<Resource, ResourceImageDefault>( _doc );
 
             ContentInterfacePtr content = Helper::makeFileContent( _fileGroup, _filePath, _doc );
 
@@ -37,8 +36,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            SurfaceImagePtr surface = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), _doc );
+            SurfaceImagePtr surface = Helper::generateFactorable<Surface, SurfaceImage>( _doc );
 
             surface->setResourceImage( resource );
 
@@ -47,8 +45,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            ShapeQuadSizePtr shape = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadSize" ), _doc );
+            ShapeQuadSizePtr shape = Helper::generateFactorable<Node, ShapeQuadSize>( _doc );
 
             shape->setSurface( surface );
             shape->setSize( _size );

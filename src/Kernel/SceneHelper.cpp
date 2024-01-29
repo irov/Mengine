@@ -1,12 +1,11 @@
 #include "SceneHelper.h"
 
-#include "Interface/PrototypeServiceInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/EntityEventable.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 namespace Mengine
 {
@@ -15,13 +14,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         ScenePtr makeScene( const SceneEventReceiverInterfacePtr & _eventReceiver, const DocumentInterfacePtr & _doc )
         {
-            ScenePtr scene = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none(), _doc );
+            ScenePtr scene = Helper::generatePrototype( Scene::getFactorableType(), ConstString::none(), _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( scene );
 
-            EntityEventablePtr eventable = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), _doc );
+            EntityEventablePtr eventable = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( eventable );
 

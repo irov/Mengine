@@ -4,7 +4,6 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/FileGroupInterface.h"
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigLoaderInterface.h"
 #include "Interface/ValidatorInterface.h"
@@ -24,6 +23,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -90,8 +90,7 @@ namespace Mengine
             , _glyphName.c_str()
         );
 
-        FontGlyphInterfacePtr glyph = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "FontGlyph" ), _glyphType, _doc );
+        FontGlyphInterfacePtr glyph = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "FontGlyph" ), _glyphType, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( glyph, "invalid create font glyph '%s' type '%s' (doc: %s)"
             , _glyphName.c_str()
@@ -139,8 +138,7 @@ namespace Mengine
             , _fontName.c_str()
         );
 
-        FontInterfacePtr font = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), _fontType, _doc );
+        FontInterfacePtr font = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), _fontType, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( font, "invalid create font '%s' type '%s' (doc: %s)"
             , _fontName.c_str()

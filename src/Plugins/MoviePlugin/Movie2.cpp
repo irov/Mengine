@@ -1,7 +1,6 @@
 #include "Movie2.h"
 
 #include "Interface/TimelineServiceInterface.h"
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
@@ -31,6 +30,7 @@
 #include "Kernel/StaticString.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -426,10 +426,7 @@ namespace Mengine
         {
             if( layer.type == STRINGIZE_STRING_LOCAL( "TextField" ) )
             {
-                TextFieldPtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" )
-                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
-                    );
+                TextFieldPtr node = Helper::generateFactorable<Node, TextField>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node );
 
@@ -465,8 +462,7 @@ namespace Mengine
 
                 this->addText_( layer.index, node );
 
-                MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FACTORABLE );
+                MatrixProxyPtr matrixProxy = Helper::generateFactorable<Node, MatrixProxy>( MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
 
@@ -485,10 +481,7 @@ namespace Mengine
             }
             else if( layer.type == STRINGIZE_STRING_LOCAL( "Movie2Slot" ) )
             {
-                Movie2SlotPtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" )
-                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
-                    );
+                Movie2SlotPtr node = Helper::generateFactorable<Node, Movie2Slot>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node );
 
@@ -507,8 +500,7 @@ namespace Mengine
 
                 this->addSlot_( layer.index, node );
 
-                MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FACTORABLE );
+                MatrixProxyPtr matrixProxy = Helper::generateFactorable<Node, MatrixProxy>( MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
 
@@ -527,10 +519,7 @@ namespace Mengine
             }
             else if( layer.type == STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) )
             {
-                HotSpotPolygonPtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" )
-                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
-                    );
+                HotSpotPolygonPtr node = Helper::generateFactorable<Node, HotSpotPolygon>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node );
 
@@ -538,10 +527,7 @@ namespace Mengine
 
                 this->addSocket_( layer.index, node );
 
-                MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" )
-                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
-                    );
+                MatrixProxyPtr matrixProxy = Helper::generateFactorable<Node, MatrixProxy>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
 
@@ -560,10 +546,7 @@ namespace Mengine
             }
             else if( layer.type == STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) || layer.type == STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) )
             {
-                NodePtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" )
-                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
-                    );
+                NodePtr node = Helper::generatePrototype( Node::getFactorableType(), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node );
 
@@ -574,10 +557,7 @@ namespace Mengine
 
                 this->addParticle_( layer.index, node );
 
-                MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" )
-                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
-                    );
+                MatrixProxyPtr matrixProxy = Helper::generateFactorable<Node, MatrixProxy>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
 
@@ -607,17 +587,13 @@ namespace Mengine
                     , layer.name.c_str()
                 );
 
-                SurfaceImagePtr surface = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" )
-                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
-                    );
+                SurfaceImagePtr surface = Helper::generateFactorable<Surface, SurfaceImage>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( surface );
 
                 surface->setResourceImage( resourceImage );
 
-                ShapeQuadFixedPtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), layer.type, MENGINE_DOCUMENT_FACTORABLE );
+                ShapeQuadFixedPtr node = Helper::generatePrototype( Node::getFactorableType(), layer.type, MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
                     , this->getName().c_str()
@@ -636,10 +612,7 @@ namespace Mengine
 
                 this->addSprite_( layer.index, node );
 
-                MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" )
-                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
-                    );
+                MatrixProxyPtr matrixProxy = Helper::generateFactorable<Node, MatrixProxy>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
 
@@ -660,8 +633,7 @@ namespace Mengine
 
         for( const ResourceMovie2::CompositionSubComposition & subcomposition : compositionDesc->subcompositions )
         {
-            Movie2SubCompositionPtr node = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), MENGINE_DOCUMENT_FACTORABLE );
+            Movie2SubCompositionPtr node = Helper::generateFactorable<Node, Movie2SubComposition>( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( node );
 
@@ -1087,8 +1059,7 @@ namespace Mengine
             return AE_TRUE;
         }
 
-        RenderCameraProjectionPtr renderCameraProjection = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
+        RenderCameraProjectionPtr renderCameraProjection = Helper::generateFactorable<Node, RenderCameraProjection>( MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
         renderCameraProjection->setName( c_name );
 
@@ -1107,8 +1078,7 @@ namespace Mengine
         renderCameraProjection->setCameraFOV( _callbackData->fov );
         renderCameraProjection->setCameraAspect( aspect );
 
-        RenderViewportPtr renderViewport = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
+        RenderViewportPtr renderViewport = Helper::generateFactorable<Node, RenderViewport>( MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
         renderViewport->setName( c_name );
 
@@ -1410,15 +1380,14 @@ namespace Mengine
             {
             case AE_MOVIE_LAYER_TYPE_IMAGE:
                 {
-                    SurfaceTrackMattePtr surfaceTrackMatte = PROTOTYPE_SERVICE()
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceTrackMatte" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
+                    SurfaceTrackMattePtr surfaceTrackMatte = Helper::generateFactorable<Surface, SurfaceTrackMatte>( MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( surfaceTrackMatte );
 
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
 
-                    MENGINE_ASSERTION_FATAL( ae_get_movie_layer_data_type( _callbackData->track_matte_layer_data ) == AE_MOVIE_RESOURCE_IMAGE, "Movie2 '%s' image layer '%s' [%u] has track_mate_layer '%s' [%u] not image type"
+                    MENGINE_ASSERTION_FATAL( ae_get_movie_layer_data_type( _callbackData->track_matte_layer_data ) == AE_MOVIE_LAYER_TYPE_IMAGE, "Movie2 '%s' image layer '%s' [%u] has track_mate_layer '%s' [%u] not image type"
                         , movie2->getName().c_str()
                         , ae_get_movie_layer_data_name( _callbackData->layer_data )
                         , ae_get_movie_layer_data_index( _callbackData->layer_data )
@@ -1472,15 +1441,14 @@ namespace Mengine
                 }break;
             case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 {
-                    SurfaceTrackMattePtr surfaceTrackMatte = PROTOTYPE_SERVICE()
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceTrackMatte" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
+                    SurfaceTrackMattePtr surfaceTrackMatte = Helper::generateFactorable<Surface, SurfaceTrackMatte>( MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( surfaceTrackMatte );
 
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
 
-                    MENGINE_ASSERTION_FATAL( ae_get_movie_layer_data_type( _callbackData->track_matte_layer_data ) == AE_MOVIE_RESOURCE_IMAGE, "Movie2 '%s' sequence layer '%s' [%u] has track_mate_layer '%s' [%u] not image type"
+                    MENGINE_ASSERTION_FATAL( ae_get_movie_layer_data_type( _callbackData->track_matte_layer_data ) == AE_MOVIE_LAYER_TYPE_IMAGE, "Movie2 '%s' sequence layer '%s' [%u] has track_mate_layer '%s' [%u] not image type"
                         , movie2->getName().c_str()
                         , ae_get_movie_layer_data_name( _callbackData->layer_data )
                         , ae_get_movie_layer_data_index( _callbackData->layer_data )
@@ -1538,8 +1506,7 @@ namespace Mengine
             {
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
-                    SurfacePtr surfaceVideo = PROTOTYPE_SERVICE()
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
+                    SurfacePtr surfaceVideo = Helper::generatePrototype( Surface::getFactorableType(), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( surfaceVideo );
 
@@ -1572,8 +1539,7 @@ namespace Mengine
                 }break;
             case AE_MOVIE_LAYER_TYPE_SOUND:
                 {
-                    SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE()
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
+                    SurfaceSoundPtr surfaceSound = Helper::generateFactorable<Surface, SurfaceSound >( MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( surfaceSound );
 

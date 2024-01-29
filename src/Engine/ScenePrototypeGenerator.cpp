@@ -1,10 +1,9 @@
 #include "ScenePrototypeGenerator.h"
 
-#include "Interface/PrototypeServiceInterface.h"
-
 #include "Kernel/Scene.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 namespace Mengine
 {
@@ -19,8 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer ScenePrototypeGenerator::generate( const DocumentInterfacePtr & _doc )
     {
-        ScenePtr scene = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), _doc );
+        ScenePtr scene = Helper::generateFactorable<Node, Scene>( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( scene, "can't create '%s' '%s' doc '%s'"
             , m_category.c_str()

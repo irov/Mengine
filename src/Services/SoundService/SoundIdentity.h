@@ -11,7 +11,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class SoundIdentity
         : public SoundIdentityInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( SoundIdentity );
 
@@ -20,15 +19,13 @@ namespace Mengine
         ~SoundIdentity() override;
 
     public:
-        bool initialize() override;
+        bool initialize( const SoundSourceInterfacePtr & _source, ESoundSourceCategory _category, bool _streamable, bool _turn ) override;
         void finalize() override;
 
     public:
-        void setId( UniqueId _id );
         UniqueId getId() const override;
 
     public:
-        void setSoundSource( const SoundSourceInterfacePtr & _source ) override;
         const SoundSourceInterfacePtr & getSoundSource() const override;
 
         void setSoundListener( const SoundListenerInterfacePtr & _listener ) override;
@@ -36,33 +33,55 @@ namespace Mengine
         SoundListenerInterfacePtr popSoundListener() override;
 
     public:
-        bool isStreamable() const override;
+        void setWorkerUpdateBuffer( const ThreadWorkerInterfacePtr & _worker ) override;
+        const ThreadWorkerInterfacePtr & getWorkerUpdateBuffer() const override;
+
+    public:
+        void setWorkerId( UniqueId _id ) override;
+        UniqueId getWorkerId() const override;
+
+    public:
+        void setStreamable( bool _value ) override;
+        bool getStreamable() const override;
+        
+        void setLoop( bool _value ) override;
         bool getLoop() const override;
+
+        void setTurn( bool _turn ) override;
+        bool getTurn() const override;
 
     public:
         ESoundSourceCategory getCategory() const override;
-        ESoundSourceState getState() const override;
-        const MixerValue & getVolume() const override;
-
-    protected:
-        uint32_t m_id;
 
     public:
-        SoundSourceInterfacePtr source;
-        SoundListenerInterfacePtr listener;
+        void setState( ESoundSourceState _state ) override;
+        ESoundSourceState getState() const override;
 
-        ThreadWorkerSoundBufferUpdatePtr worker;
-        UniqueId workerId;
+    public:
+        void setTimeLeft( float _time ) override;
+        float getTimeLeft() const override;
 
-        float time_left;
-        MixerValue volume;
+    public:
+        const MixerValueInterfacePtr & getMixerVolume() const override;
 
-        ESoundSourceState state;
-        ESoundSourceCategory category;
+    protected:
+        UniqueId m_id;
 
-        bool streamable;
-        bool looped;
-        bool turn;
+        SoundSourceInterfacePtr m_source;
+        SoundListenerInterfacePtr m_listener;
+
+        ThreadWorkerInterfacePtr m_worker;
+        UniqueId m_workerId;
+
+        float m_timeLeft;
+        MixerValueInterfacePtr m_mixerVolume;
+
+        ESoundSourceState m_state;
+        ESoundSourceCategory m_category;
+
+        bool m_streamable;
+        bool m_loop;
+        bool m_turn;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SoundIdentity, SoundIdentityInterface> SoundIdentityPtr;

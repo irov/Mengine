@@ -1,6 +1,5 @@
 #include "PythonEntityPrototypeGenerator.h"
 
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/DocumentInterface.h"
 
@@ -14,6 +13,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 namespace Mengine
 {
@@ -129,8 +129,7 @@ namespace Mengine
             return nullptr;
         }
 
-        EntityPtr entity = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), m_category, _doc );
+        EntityPtr entity = Helper::generatePrototype( Node::getFactorableType(), m_category, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( entity, "can't generate '%s' '%s' doc '%s'"
             , m_category.c_str()

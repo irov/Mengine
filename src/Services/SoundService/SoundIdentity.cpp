@@ -1,61 +1,83 @@
 #include "SoundIdentity.h"
 
+#include "Kernel/EnumeratorHelper.h"
+#include "Kernel/Assertion.h"
+#include "Kernel/DocumentHelper.h"
+#include "Kernel/PrototypeHelper.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SoundIdentity::SoundIdentity()
-        : m_id( 0 )
-        , workerId( 0 )
-        , time_left( 0.f )
-        , state( ESS_STOP )
-        , category( ES_SOURCE_CATEGORY_SOUND )
-        , streamable( false )
-        , looped( false )
-        , turn( false )
+        : m_id( INVALID_UNIQUE_ID )
+        , m_workerId( INVALID_UNIQUE_ID )
+        , m_timeLeft( 0.f )
+        , m_state( ESS_STOP )
+        , m_category( ES_SOURCE_CATEGORY_SOUND )
+        , m_streamable( false )
+        , m_loop( false )
+        , m_turn( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     SoundIdentity::~SoundIdentity()
     {
-        MENGINE_ASSERTION_FATAL( source == nullptr );
-        MENGINE_ASSERTION_FATAL( listener == nullptr );
-        MENGINE_ASSERTION_FATAL( worker == nullptr );
+        MENGINE_ASSERTION_FATAL( m_source == nullptr );
+        MENGINE_ASSERTION_FATAL( m_listener == nullptr );
+        MENGINE_ASSERTION_FATAL( m_worker == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundIdentity::initialize()
+    bool SoundIdentity::initialize( const SoundSourceInterfacePtr & _source, ESoundSourceCategory _category, bool _streamable, bool _turn )
     {
-        const SoundBufferInterfacePtr & soundBuffer = source->getSoundBuffer();
+        UniqueId new_id = Helper::generateUniqueIdentity();
+
+        m_id = new_id;
+
+        m_source = _source;
+        m_listener = nullptr;
+        m_worker = nullptr;
+        m_workerId = INVALID_UNIQUE_ID;
+
+        m_timeLeft = 0.f;
+
+        m_state = ESS_STOP;
+        m_category = _category;
+
+        m_streamable = _streamable;
+        m_loop = false;
+        m_turn = _turn;
+
+        const SoundBufferInterfacePtr & soundBuffer = m_source->getSoundBuffer();
 
         if( soundBuffer->acquireSoundBuffer() == false )
         {
             return false;
         }
 
+        m_mixerVolume = Helper::generatePrototype( MixerValue::getFactorableType(), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundIdentity::finalize()
     {
-        MENGINE_ASSERTION_FATAL( worker == nullptr );
+        MENGINE_ASSERTION_FATAL( m_worker == nullptr );
 
-        if( source != nullptr )
+        if( m_source != nullptr )
         {
-            source->stop();
+            m_source->stop();
 
-            const SoundBufferInterfacePtr & soundBuffer = source->getSoundBuffer();
+            const SoundBufferInterfacePtr & soundBuffer = m_source->getSoundBuffer();
             soundBuffer->releaseSoundBuffer();
-            source = nullptr;
+            m_source = nullptr;
         }
 
-        listener = nullptr;
-        worker = nullptr;
+        m_listener = nullptr;
+        m_worker = nullptr;
 
-        state = ESS_STOP;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SoundIdentity::setId( UniqueId _id )
-    {
-        m_id = _id;
+        m_state = ESS_STOP;
+
+        m_mixerVolume = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     UniqueId SoundIdentity::getId() const
@@ -63,54 +85,106 @@ namespace Mengine
         return m_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundIdentity::setSoundSource( const SoundSourceInterfacePtr & _source )
-    {
-        source = _source;
-    }
-    //////////////////////////////////////////////////////////////////////////
     const SoundSourceInterfacePtr & SoundIdentity::getSoundSource() const
     {
-        return source;
+        return m_source;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundIdentity::setSoundListener( const SoundListenerInterfacePtr & _listener )
     {
-        listener = _listener;
+        m_listener = _listener;
     }
     //////////////////////////////////////////////////////////////////////////
     const SoundListenerInterfacePtr & SoundIdentity::getSoundListener() const
     {
-        return listener;
+        return m_listener;
     }
     //////////////////////////////////////////////////////////////////////////
     SoundListenerInterfacePtr SoundIdentity::popSoundListener()
     {
-        return std::move( listener );
+        SoundListenerInterfacePtr listener = std::move( m_listener );
+
+        return listener;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundIdentity::isStreamable() const
+    void SoundIdentity::setWorkerUpdateBuffer( const ThreadWorkerInterfacePtr & _worker )
     {
-        return streamable;
+        m_worker = _worker;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ThreadWorkerInterfacePtr & SoundIdentity::getWorkerUpdateBuffer() const
+    {
+        return m_worker;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SoundIdentity::setWorkerId( UniqueId _id )
+    {
+        m_workerId = _id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    UniqueId SoundIdentity::getWorkerId() const
+    {
+        return m_workerId;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SoundIdentity::setStreamable( bool _value )
+    {
+        m_streamable = _value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SoundIdentity::getStreamable() const
+    {
+        return m_streamable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SoundIdentity::setLoop( bool _value )
+    {
+        m_loop = _value;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundIdentity::getLoop() const
     {
-        return looped;
+        return m_loop;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SoundIdentity::setTurn( bool _turn )
+    {
+        m_turn = _turn;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SoundIdentity::getTurn() const
+    {
+        return m_turn;
     }
     //////////////////////////////////////////////////////////////////////////
     ESoundSourceCategory SoundIdentity::getCategory() const
     {
-        return category;
+        return m_category;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SoundIdentity::setState( ESoundSourceState _state )
+    {
+        m_state = _state;
     }
     //////////////////////////////////////////////////////////////////////////
     ESoundSourceState SoundIdentity::getState() const
     {
-        return state;
+        return m_state;
     }
     //////////////////////////////////////////////////////////////////////////
-    const MixerValue & SoundIdentity::getVolume() const
+    void SoundIdentity::setTimeLeft( float _time )
     {
-        return volume;
+        m_timeLeft = _time;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float SoundIdentity::getTimeLeft() const
+    {
+        return m_timeLeft;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const MixerValueInterfacePtr & SoundIdentity::getMixerVolume() const
+    {
+        return m_mixerVolume;
     }
     //////////////////////////////////////////////////////////////////////////
 }

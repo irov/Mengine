@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MengineApplication extends Application {
     private static final String TAG = "MengineApplication";
@@ -79,7 +80,7 @@ public class MengineApplication extends Application {
 
     private ArrayList<MenginePlugin> m_plugins = new ArrayList<>();
     private Map<String, MenginePlugin> m_dictionaryPlugins = new HashMap<>();
-    private Map<String, Object> m_states = new HashMap<>();
+    private Map<String, Object> m_states = new ConcurrentHashMap<>();
 
     private ArrayList<MenginePluginLoggerListener> m_loggerListeners = new ArrayList<>();
     private ArrayList<MenginePluginAnalyticsListener> m_analyticsListeners = new ArrayList<>();
@@ -768,6 +769,9 @@ public class MengineApplication extends Application {
 
         SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
 
+        long MENGINE_APPLICATION_SAVE_VERSION = 1L;
+
+        long saveVersion = settings.getLong("save_version", MENGINE_APPLICATION_SAVE_VERSION);
         String installKey = settings.getString("install_key", null);
         long installTimestamp = settings.getLong("install_timestamp", -1);
         String installVersion = settings.getString("install_version", "");
@@ -776,6 +780,8 @@ public class MengineApplication extends Application {
         String sessionId = settings.getString("session_id", null);
 
         SharedPreferences.Editor editor = settings.edit();
+
+        editor.putLong("save_version", MENGINE_APPLICATION_SAVE_VERSION);
 
         if (installKey == null) {
             installKey = "MNIK" + MengineUtils.getRandomHexString(16).toUpperCase();

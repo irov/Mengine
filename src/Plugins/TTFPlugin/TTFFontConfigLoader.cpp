@@ -2,7 +2,6 @@
 
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
@@ -16,6 +15,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 namespace Mengine
 {
@@ -87,8 +87,7 @@ namespace Mengine
         FilePath FEPath;
         if( _config->hasValue( name.c_str(), "FEPath", FilePath::none(), &FEPath ) == true )
         {
-            FontEffectInterfacePtr fontEffet = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FEFile" ), _doc );
+            FontEffectInterfacePtr fontEffet = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FEFile" ), _doc );
 
             ContentInterfacePtr content = Helper::makeFileContent( _fileGroup, FEPath, _doc );
 

@@ -1,6 +1,5 @@
 #include "Layer2D.h"
 
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
 #include "Layer2DRenderTarget.h"
@@ -13,6 +12,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/PrototypeHelper.h"
 
 namespace Mengine
 {
@@ -111,8 +111,7 @@ namespace Mengine
     {
         if( m_renderCamera == nullptr )
         {
-            RenderCameraOrthogonalPtr renderCamera = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FACTORABLE );
+            RenderCameraOrthogonalPtr renderCamera = Helper::generateFactorable<Node, RenderCameraOrthogonal>( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( renderCamera, "name '%s' invalid create RenderCameraOrthogonal"
                 , this->getName().c_str()
@@ -129,8 +128,7 @@ namespace Mengine
 
         if( m_renderViewport == nullptr )
         {
-            RenderViewportPtr renderViewport = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FACTORABLE );
+            RenderViewportPtr renderViewport = Helper::generateFactorable<Node, RenderViewport>( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( renderViewport, "name '%s' invalid create RenderViewport"
                 , this->getName().c_str()

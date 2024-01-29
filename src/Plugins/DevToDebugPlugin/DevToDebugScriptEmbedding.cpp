@@ -1,6 +1,5 @@
 #include "DevToDebugScriptEmbedding.h"
 
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 
 #include "Environment/Python/PythonDocumentTraceback.h"
@@ -31,6 +30,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/PrototypeHelper.h"
 
 namespace Mengine
 {
@@ -39,8 +39,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugTabPtr s_addDevToDebugTab( const ConstString & _name )
         {
-            DevToDebugTabInterfacePtr tab = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugTabInterfacePtr tab = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_PYBIND );
 
             if( tab->initialize() == false )
             {
@@ -96,8 +95,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetTextPtr s_createDevToDebugWidgetText( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr widget = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetText" ), MENGINE_DOCUMENT_PYBIND );
 
             widget->setId( _id );
 
@@ -106,8 +104,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetButtonPtr s_createDevToDebugWidgetButton( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr widget = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_PYBIND );
 
             widget->setId( _id );
 
@@ -116,8 +113,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetCheckboxPtr s_createDevToDebugWidgetCheckbox( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr widget = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCheckbox" ), MENGINE_DOCUMENT_PYBIND );
 
             widget->setId( _id );
 
@@ -126,8 +122,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetCommandLinePtr s_createDevToDebugWidgetCommandLine( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr widget = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCommandLine" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetCommandLine" ), MENGINE_DOCUMENT_PYBIND );
 
             widget->setId( _id );
 
@@ -136,13 +131,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetRadioButtonPtr s_createDevToDebugWidgetRadioButton( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr widget = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetRadioButton" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetRadioButton" ), MENGINE_DOCUMENT_PYBIND );
 
             widget->setId( _id );
 
-            DevToDebugPropertyContentPtr property_content = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyContent" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugPropertyContentPtr property_content = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyContent" ), MENGINE_DOCUMENT_PYBIND );
 
             widget->setDataProperty( STRINGIZE_STRING_LOCAL( "content" ), property_content );
 
@@ -151,13 +144,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetSelectorPtr s_createDevToDebugWidgetSelector( const ConstString & _id )
         {
-            DevToDebugWidgetInterfacePtr widget = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetSelector" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugWidgetInterfacePtr widget = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetSelector" ), MENGINE_DOCUMENT_PYBIND );
 
             widget->setId( _id );
 
-            DevToDebugPropertyContentPtr property_content = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyContent" ), MENGINE_DOCUMENT_PYBIND );
+            DevToDebugPropertyContentPtr property_content = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyContent" ), MENGINE_DOCUMENT_PYBIND );
 
             widget->setDataProperty( STRINGIZE_STRING_LOCAL( "content" ), property_content );
 
@@ -170,8 +161,7 @@ namespace Mengine
 
             if( _cb.is_callable() == false )
             {
-                DevToDebugPropertyConstBooleanPtr property_const = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstBoolean" ), MENGINE_DOCUMENT_PYBIND );
+                DevToDebugPropertyConstBooleanPtr property_const = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstBoolean" ), MENGINE_DOCUMENT_PYBIND );
 
                 bool value = _cb.extract();
 
@@ -181,8 +171,7 @@ namespace Mengine
             }
             else
             {
-                DevToDebugPropertyGetterBooleanPtr property_getter = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterBoolean" ), MENGINE_DOCUMENT_PYBIND );
+                DevToDebugPropertyGetterBooleanPtr property_getter = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterBoolean" ), MENGINE_DOCUMENT_PYBIND );
 
                 if( property_getter->initialize() == false )
                 {
@@ -208,8 +197,7 @@ namespace Mengine
 
             if( _cb.is_callable() == false )
             {
-                DevToDebugPropertyConstStringPtr property_const = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_PYBIND );
+                DevToDebugPropertyConstStringPtr property_const = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_PYBIND );
 
                 String value = _cb.extract();
 
@@ -219,8 +207,7 @@ namespace Mengine
             }
             else
             {
-                DevToDebugPropertyGetterStringPtr property_getter = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterString" ), MENGINE_DOCUMENT_PYBIND );
+                DevToDebugPropertyGetterStringPtr property_getter = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterString" ), MENGINE_DOCUMENT_PYBIND );
 
                 if( property_getter->initialize() == false )
                 {
@@ -246,8 +233,7 @@ namespace Mengine
 
             if( _cb.is_callable() == false )
             {
-                DevToDebugPropertyConstColorPtr property_const = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstColor" ), MENGINE_DOCUMENT_PYBIND );
+                DevToDebugPropertyConstColorPtr property_const = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstColor" ), MENGINE_DOCUMENT_PYBIND );
 
                 Color value = _cb.extract();
 
@@ -257,8 +243,7 @@ namespace Mengine
             }
             else
             {
-                DevToDebugPropertyGetterColorPtr property_getter = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterColor" ), MENGINE_DOCUMENT_PYBIND );
+                DevToDebugPropertyGetterColorPtr property_getter = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyGetterColor" ), MENGINE_DOCUMENT_PYBIND );
 
                 if( property_getter->initialize() == false )
                 {

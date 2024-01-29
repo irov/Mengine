@@ -1,7 +1,5 @@
 #include "ResourceBank.h"
 
-#include "Interface/PrototypeServiceInterface.h"
-
 #include "Kernel/Resource.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
@@ -11,6 +9,7 @@
 #include "Kernel/AssertionMainThreadGuard.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadGuardScope.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -154,8 +153,7 @@ namespace Mengine
             , (_keep == true ? "true" : "false")
         );
 
-        ResourcePtr resource = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), _type, _doc );
+        ResourcePtr resource = Helper::generatePrototype( Resource::getFactorableType(), _type, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid generate resource name '%s' type '%s' locale '%s' group '%s' doc '%s'"
             , _name.c_str()

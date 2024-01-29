@@ -68,5 +68,18 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
+        FactorablePointer generatePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentInterfacePtr & _doc );
+        //////////////////////////////////////////////////////////////////////////
+        template<class Category, class Prototype>
+        FactorablePointer generateFactorable( const DocumentInterfacePtr & _doc )
+        {
+            const ConstString & CategoryType = Category::getFactorableType();
+            const ConstString & PrototypeType = Prototype::getFactorableType();
+
+            FactorablePointer pointer = Helper::generatePrototype( CategoryType, PrototypeType, _doc );
+
+            return pointer;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

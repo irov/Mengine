@@ -456,6 +456,13 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void soundFadeIn( const SoundIdentityInterfacePtr & _emitter, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
+                if( _emitter == nullptr )
+                {
+                    LOGGER_ERROR( "soundFadeIn invalid emitter" );
+
+                    return;
+                }
+
                 SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _emitter, _cb, _args );
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -527,6 +534,13 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void soundFadeInTo( const SoundIdentityInterfacePtr & _emitter, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
             {
+                if( _emitter == nullptr )
+                {
+                    LOGGER_ERROR( "soundFadeInTo invalid emitter" );
+
+                    return;
+                }
+
                 SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _emitter, _cb, _args );
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
@@ -747,7 +761,8 @@ namespace Mengine
 
         pybind::interface_<SoundIdentityInterface, pybind::bases<Mixin>>( _kernel, "SoundIdentity" )
             .def( "getId", &SoundIdentityInterface::getId )
-            .def( "isStreamable", &SoundIdentityInterface::isStreamable )
+            .def( "isStreamable", &SoundIdentityInterface::getStreamable )
+            .def( "getStreamable", &SoundIdentityInterface::getStreamable )
             .def( "getLoop", &SoundIdentityInterface::getLoop )
             ;
 

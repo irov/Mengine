@@ -1,12 +1,10 @@
 #include "GameService.h"
 
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/WatchdogServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/StatisticInterface.h"
-
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
@@ -31,6 +29,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/PrototypeHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( GameService, Mengine::GameService );
@@ -306,8 +305,7 @@ namespace Mengine
 
         ConstString DefaultArrow_Prototype = CONFIG_VALUE( "DefaultArrow", "Prototype", ConstString::none() );
 
-        ArrowPtr defaultArrow = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), DefaultArrow_Prototype, MENGINE_DOCUMENT_FACTORABLE );
+        ArrowPtr defaultArrow = Helper::generatePrototype( Arrow::getFactorableType(), DefaultArrow_Prototype, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( defaultArrow, "failed create defaultArrow 'Default'" );
 

@@ -496,7 +496,7 @@ namespace Mengine
         desc.imageCount = _mesh.textures;
 
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
-            ->getMaterial2( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), stage, PT_TRIANGLELIST, textures, desc.imageCount, MENGINE_DOCUMENT_FORWARD );
+            ->getMaterial2( STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), stage, PT_TRIANGLELIST, textures, desc.imageCount, MENGINE_DOCUMENT_FORWARD );
 
         desc.material = material;
 

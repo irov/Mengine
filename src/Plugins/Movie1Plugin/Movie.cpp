@@ -1,13 +1,22 @@
 #include "Movie.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 #include "Plugins/VideoPlugin/VideoInterface.h"
 
 #include "ResourceMovie.h"
+
+#include "MovieSceneEffect.h"
+#include "MovieSlot.h"
+#include "MovieNodeExtra.h"
+#include "MovieMesh2D.h"
+
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
+#   include "MovieInternalObject.h"
+#   include "MovieEvent.h"
+#endif
 
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceShape.h"
@@ -26,6 +35,7 @@
 #include "Kernel/ResourceSound.h"
 #include "Kernel/Layer.h"
 #include "Kernel/Scene.h"
+#include "Kernel/Interender.h"
 #include "Kernel/NodeHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/RenderCameraProjection.h"
@@ -35,16 +45,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EventableHelper.h"
-
-#include "MovieSceneEffect.h"
-#include "MovieSlot.h"
-#include "MovieNodeExtra.h"
-#include "MovieMesh2D.h"
-
-#if defined(MENGINE_USE_SCRIPT_SERVICE)
-#   include "MovieInternalObject.h"
-#   include "MovieEvent.h"
-#endif
+#include "Kernel/PrototypeHelper.h"
 
 #include "math/angle.h"
 
@@ -434,8 +435,7 @@ namespace Mengine
 
         if( _layer.hasViewport == true )
         {
-            RenderScissorPtr scissor = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderScissor" ), MENGINE_DOCUMENT_FACTORABLE );
+            RenderScissorPtr scissor = Helper::generateFactorable<Node, RenderScissor>( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( scissor );
 
@@ -1071,7 +1071,7 @@ namespace Mengine
             }
             else if( layer.type == STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) )
             {
-                if( this->createMovieParticleEmitter2_( layer ) == false )
+                if( this->createMovieAstralaxEmitter_( layer ) == false )
                 {
                     return false;
                 }
@@ -1193,8 +1193,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieSlot_( const MovieLayer & _layer )
     {
-        MovieSlotPtr layer_slot = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSlot" ), MENGINE_DOCUMENT_FACTORABLE );
+        MovieSlotPtr layer_slot = Helper::generateFactorable<Node, MovieSlot>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_slot );
 
@@ -1210,8 +1209,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieSceneEffect_( const MovieLayer & _layer )
     {
-        MovieSceneEffectPtr sceneeffect_slot = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), MENGINE_DOCUMENT_FACTORABLE );
+        MovieSceneEffectPtr sceneeffect_slot = Helper::generateFactorable<Node, MovieSceneEffect>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( sceneeffect_slot );
 
@@ -1225,8 +1223,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieNullObject_( const MovieLayer & _layer )
     {
-        NodePtr layer_slot = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), MENGINE_DOCUMENT_FACTORABLE );
+        NodePtr layer_slot = Helper::generateFactorable<Node, Interender>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_slot );
 
@@ -1247,8 +1244,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 
-        SurfaceImagePtr surface = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_FACTORABLE );
+        SurfaceImagePtr surface = Helper::generateFactorable<Surface, SurfaceImage>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( surface );
 
@@ -1259,8 +1255,7 @@ namespace Mengine
             return false;
         }
 
-        ShapeQuadFixedPtr layer_sprite = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FACTORABLE );
+        ShapeQuadFixedPtr layer_sprite = Helper::generateFactorable<Node, ShapeQuadFixed>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_sprite );
 
@@ -1283,8 +1278,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 
-        MovieMesh2DPtr layer_mesh = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), MENGINE_DOCUMENT_FACTORABLE );
+        MovieMesh2DPtr layer_mesh = Helper::generateFactorable<Node, MovieMesh2D>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_mesh );
 
@@ -1316,8 +1310,7 @@ namespace Mengine
             , _layer.name.c_str()
         );
 
-        SurfaceImagePtr surface = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_FACTORABLE );
+        SurfaceImagePtr surface = Helper::generateFactorable<Surface, SurfaceImage>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( surface );
 
@@ -1328,8 +1321,7 @@ namespace Mengine
             return false;
         }
 
-        ShapeQuadFixedPtr layer_sprite = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FACTORABLE );
+        ShapeQuadFixedPtr layer_sprite = Helper::generateFactorable<Node, ShapeQuadFixed>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_sprite );
 
@@ -1352,8 +1344,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 
-        MovieMesh2DPtr layer_mesh = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), MENGINE_DOCUMENT_FACTORABLE );
+        MovieMesh2DPtr layer_mesh = Helper::generateFactorable<Node, MovieMesh2D>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_mesh );
 
@@ -1381,8 +1372,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceHIT );
 
-        HotSpotImagePtr layer_hotspotimage = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotImage" ), MENGINE_DOCUMENT_FACTORABLE );
+        HotSpotImagePtr layer_hotspotimage = Helper::generateFactorable<Node, HotSpotImage>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_hotspotimage );
 
@@ -1398,8 +1388,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieSocketShape_( const MovieLayer & _layer )
     {
-        HotSpotResourceShapePtr layer_hotspotresourceshape = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotResourceShape" ), MENGINE_DOCUMENT_FACTORABLE );
+        HotSpotResourceShapePtr layer_hotspotresourceshape = Helper::generateFactorable<Node, HotSpotResourceShape>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_hotspotresourceshape );
 
@@ -1429,8 +1418,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImageSequence );
 
-        SurfaceImageSequencePtr surface = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImageSequence" ), MENGINE_DOCUMENT_FACTORABLE );
+        SurfaceImageSequencePtr surface = Helper::generateFactorable<Surface, SurfaceImageSequence>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( surface );
 
@@ -1449,8 +1437,7 @@ namespace Mengine
             return false;
         }
 
-        ShapeQuadFixedPtr layer_animation = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FACTORABLE );
+        ShapeQuadFixedPtr layer_animation = Helper::generateFactorable<Node, ShapeQuadFixed>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_animation );
 
@@ -1467,8 +1454,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieMovie_( const MovieLayer & _layer )
     {
-        MoviePtr layer_movie = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ), MENGINE_DOCUMENT_FACTORABLE );
+        MoviePtr layer_movie = Helper::generateFactorable<Node, Movie>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_movie );
 
@@ -1499,8 +1485,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieSubMovie_( const MovieLayer & _layer )
     {
-        MoviePtr layer_movie = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ), MENGINE_DOCUMENT_FACTORABLE );
+        MoviePtr layer_movie = Helper::generateFactorable<Node, Movie>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_movie );
 
@@ -1533,8 +1518,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieInternalObject_( const MovieLayer & _layer )
     {
-        MovieInternalObjectPtr movie_internal = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), MENGINE_DOCUMENT_FACTORABLE );
+        MovieInternalObjectPtr movie_internal = Helper::generateFactorable<Node, MovieInternalObject>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( movie_internal );
 
@@ -1567,8 +1551,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceVideo );
 
-        SurfacePtr surface = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FACTORABLE );
+        SurfacePtr surface = Helper::generatePrototype( Surface::getFactorableType(), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( surface );
 
@@ -1588,8 +1571,7 @@ namespace Mengine
             return false;
         }
 
-        ShapeQuadFixedPtr layer_video = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FACTORABLE );
+        ShapeQuadFixedPtr layer_video = Helper::generateFactorable<Node, ShapeQuadFixed>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_video );
 
@@ -1605,8 +1587,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieSound_( const MovieLayer & _layer )
     {
-        SoundEmitterPtr layer_sound = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "SoundEmitter" ), MENGINE_DOCUMENT_FACTORABLE );
+        SoundEmitterPtr layer_sound = Helper::generateFactorable<Node, SoundEmitter>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_sound );
 
@@ -1617,8 +1598,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceSound );
 
-        SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ), MENGINE_DOCUMENT_FACTORABLE );
+        SurfaceSoundPtr surfaceSound = Helper::generateFactorable<Surface, SurfaceSound>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( surfaceSound );
 
@@ -1643,8 +1623,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieSoundId_( const MovieLayer & _layer )
     {
-        SoundEmitterPtr layer_sound = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "SoundEmitter" ), MENGINE_DOCUMENT_FACTORABLE );
+        SoundEmitterPtr layer_sound = Helper::generateFactorable<Node, SoundEmitter>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_sound );
 
@@ -1655,8 +1634,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceSound );
 
-        SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ), MENGINE_DOCUMENT_FACTORABLE );
+        SurfaceSoundPtr surfaceSound = Helper::generateFactorable<Surface, SurfaceSound>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( surfaceSound );
 
@@ -1681,8 +1659,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieText_( const MovieLayer & _layer )
     {
-        TextFieldPtr layer_text = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ), MENGINE_DOCUMENT_FACTORABLE );
+        TextFieldPtr layer_text = Helper::generateFactorable<Node, TextField>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_text );
 
@@ -1713,8 +1690,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieTextCenter_( const MovieLayer & _layer )
     {
-        TextFieldPtr layer_text = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ), MENGINE_DOCUMENT_FACTORABLE );
+        TextFieldPtr layer_text = Helper::generateFactorable<Node, TextField>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_text );
 
@@ -1748,8 +1724,7 @@ namespace Mengine
             , _layer.name.c_str()
         );
 
-        SurfaceImagePtr surface = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_FACTORABLE );
+        SurfaceImagePtr surface = Helper::generateFactorable<Surface, SurfaceImage>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( surface );
 
@@ -1760,8 +1735,7 @@ namespace Mengine
             return false;
         }
 
-        ShapeQuadFixedPtr layer_sprite = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FACTORABLE );
+        ShapeQuadFixedPtr layer_sprite = Helper::generateFactorable<Node, ShapeQuadFixed>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_sprite, "movie '%s' resource '%s' layer '%s' invalid create 'Sprite'"
             , this->getName().c_str()
@@ -1838,8 +1812,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieEvent_( const MovieLayer & _layer )
     {
-        MovieEventPtr layer_event = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ), MENGINE_DOCUMENT_FACTORABLE );
+        MovieEventPtr layer_event = Helper::generateFactorable<Node, MovieEvent>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_event );
 
@@ -1855,10 +1828,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #endif
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::createMovieParticleEmitter2_( const MovieLayer & _layer )
+    bool Movie::createMovieAstralaxEmitter_( const MovieLayer & _layer )
     {
-        NodePtr layer_particles = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), MENGINE_DOCUMENT_FACTORABLE );
+        NodePtr layer_particles = Helper::generatePrototype( Node::getFactorableType(), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_particles );
 
@@ -2900,8 +2872,7 @@ namespace Mengine
             return;
         }
 
-        m_renderCameraProjection = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ), MENGINE_DOCUMENT_FACTORABLE );
+        m_renderCameraProjection = Helper::generateFactorable<Node, RenderCameraProjection>( MENGINE_DOCUMENT_FACTORABLE );
 
         const ConstString & name = this->getName();
         m_renderCameraProjection->setName( name );
@@ -2926,8 +2897,7 @@ namespace Mengine
 
         this->addChild( m_renderCameraProjection );
 
-        m_renderViewport = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FACTORABLE );
+        m_renderViewport = Helper::generateFactorable<Node, RenderViewport>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_renderViewport->setName( name );
 

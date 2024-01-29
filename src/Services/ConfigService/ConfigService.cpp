@@ -2,7 +2,6 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/Exception.h"
@@ -16,6 +15,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -135,8 +135,7 @@ namespace Mengine
             configType = Helper::getFilePathExt( filePath );
         }
 
-        ConfigInterfacePtr config = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Config" ), configType, _doc );
+        ConfigInterfacePtr config = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Config" ), configType, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config );
 

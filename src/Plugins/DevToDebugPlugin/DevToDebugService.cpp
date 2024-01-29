@@ -65,8 +65,7 @@ extern "C" {
             return JNI_FALSE;
         }
 
-        Mengine::DevToDebugTabInterfacePtr t = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FUNCTION );
+        Mengine::DevToDebugTabInterfacePtr t = Mengine::Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugTab" ), MENGINE_DOCUMENT_FUNCTION );
 
         DEVTODEBUG_SERVICE()
             ->addTab( STRINGIZE_STRING_LOCAL( "Platform" ), t );
@@ -83,13 +82,11 @@ extern "C" {
         const Mengine::DevToDebugTabInterfacePtr & t = DEVTODEBUG_SERVICE()
             ->getTab( tab );
 
-        Mengine::DevToDebugWidgetInterfacePtr button = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FUNCTION );
+        Mengine::DevToDebugWidgetInterfacePtr button = Mengine::Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugWidgetButton" ), MENGINE_DOCUMENT_FUNCTION );
 
         button->setId( id );
 
-        Mengine::DevToDebugPropertyInterfacePtr button_title = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_FUNCTION );
+        Mengine::DevToDebugPropertyInterfacePtr button_title = Mengine::Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "DevToDebug" ), STRINGIZE_STRING_LOCAL( "DevToDebugPropertyConstString" ), MENGINE_DOCUMENT_FUNCTION );
 
         Mengine::UnknownDevToDebugPropertyConstStringInterfacePtr unknown_button_title = button_title->getUnknown();
         unknown_button_title->setValue( "Change" );

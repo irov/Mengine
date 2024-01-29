@@ -141,6 +141,7 @@ Common
     SemaphoreServiceInterface.h
     SemaphoreListenerInterface.h
     TimerServiceInterface.h
+    MixerValueInterface.h
 )
 
 ADD_FILTER(

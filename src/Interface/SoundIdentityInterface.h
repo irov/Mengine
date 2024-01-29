@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Interface/SoundSourceInterface.h"
+#include "Interface/ThreadWorkerInterface.h"
+#include "Interface/MixerValueInterface.h"
 
 #include "Kernel/Mixin.h"
-#include "Kernel/MixerValue.h"
 
 #include "Config/UniqueId.h"
 
@@ -39,17 +40,16 @@ namespace Mengine
     typedef IntrusivePtr<class SoundListenerInterface> SoundListenerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class SoundIdentityInterface
-        : public Mixin
+        : public ServantInterface
     {
     public:
-        virtual bool initialize() = 0;
+        virtual bool initialize( const SoundSourceInterfacePtr & _source, ESoundSourceCategory _category, bool _streamable, bool _turn ) = 0;
         virtual void finalize() = 0;
 
     public:
         virtual UniqueId getId() const = 0;
 
     public:
-        virtual void setSoundSource( const SoundSourceInterfacePtr & _source ) = 0;
         virtual const SoundSourceInterfacePtr & getSoundSource() const = 0;
 
         virtual void setSoundListener( const SoundListenerInterfacePtr & _listener ) = 0;
@@ -57,15 +57,35 @@ namespace Mengine
         virtual SoundListenerInterfacePtr popSoundListener() = 0;
 
     public:
-        virtual bool isStreamable() const = 0;
+        virtual void setWorkerUpdateBuffer( const ThreadWorkerInterfacePtr & _worker ) = 0;
+        virtual const ThreadWorkerInterfacePtr & getWorkerUpdateBuffer() const = 0;
+
+    public:
+        virtual void setWorkerId( UniqueId _id ) = 0;
+        virtual UniqueId getWorkerId() const = 0;
+
+    public:
+        virtual void setStreamable( bool _value ) = 0;
+        virtual bool getStreamable() const = 0;
+
+        virtual void setLoop( bool _loop ) = 0;
         virtual bool getLoop() const = 0;
+
+        virtual void setTurn( bool _turn ) = 0;
+        virtual bool getTurn() const = 0;
 
     public:
         virtual ESoundSourceCategory getCategory() const = 0;
+
+        virtual void setState( ESoundSourceState _state ) = 0;
         virtual ESoundSourceState getState() const = 0;
 
     public:
-        virtual const MixerValue & getVolume() const = 0;
+        virtual void setTimeLeft( float _time ) = 0;
+        virtual float getTimeLeft() const = 0;
+
+    public:
+        virtual const MixerValueInterfacePtr & getMixerVolume() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SoundIdentityInterface> SoundIdentityInterfacePtr;

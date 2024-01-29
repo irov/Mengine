@@ -4,7 +4,6 @@
 #include "Interface/TimelineServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/InputServiceInterface.h"
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/PackageInterface.h"
 #include "Interface/SceneServiceInterface.h"
@@ -86,6 +85,7 @@
 #include "Kernel/ResourceImageSolid.h"
 #include "Kernel/ResourceImageDefault.h"
 #include "Kernel/ResourcePacket.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdMath.h"
@@ -497,17 +497,16 @@ namespace Mengine
             {
                 ConstString correct_type = _type;
 
-                if( correct_type == STRINGIZE_STRING_LOCAL( "Node" ) )
+                if( correct_type == Node::getFactorableType() )
                 {
                     LOGGER_WARNING( "type 'Node' is old deprecated type, use 'Interender' or other\ntraceback:\n%s"
                         , MENGINE_PYBIND_TRACEBACK()
                     );
 
-                    correct_type = STRINGIZE_STRING_LOCAL( "Interender" );
+                    correct_type = Interender::getFactorableType();
                 }
 
-                NodePtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), correct_type, MENGINE_DOCUMENT_PYBIND );
+                NodePtr node = Helper::generatePrototype( Node::getFactorableType(), correct_type, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node );
 

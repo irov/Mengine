@@ -3,7 +3,6 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/DocumentInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
@@ -22,6 +21,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -174,8 +174,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             pybind::object s_createEntity( const ConstString & _prototype )
             {
-                EntityPtr entity = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, MENGINE_DOCUMENT_PYBIND );
+                EntityPtr entity = Helper::generatePrototype( Entity::getFactorableType(), _prototype, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( entity, "can't create entity '%s'"
                     , _prototype.c_str()
@@ -229,8 +228,7 @@ namespace Mengine
                 MENGINE_UNUSED( _args );
                 MENGINE_UNUSED( _kwds );
 
-                EntityPtr entity = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Entity" ), MENGINE_DOCUMENT_PYBIND );
+                EntityPtr entity = Helper::generateFactorable<Node, Entity>( MENGINE_DOCUMENT_PYBIND );
 
                 entity->setEmbed( _kernel, _obj );
 
@@ -269,8 +267,7 @@ namespace Mengine
                 MENGINE_UNUSED( _args );
                 MENGINE_UNUSED( _kwds );
 
-                ArrowPtr arrow = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Arrow" ), MENGINE_DOCUMENT_PYBIND );
+                ArrowPtr arrow = Helper::generateFactorable<Node, Arrow>( MENGINE_DOCUMENT_PYBIND );
 
                 arrow->setEmbed( _kernel, _obj );
 
@@ -309,8 +306,7 @@ namespace Mengine
                 MENGINE_UNUSED( _args );
                 MENGINE_UNUSED( _kwds );
 
-                ScenePtr scene = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_PYBIND );
+                ScenePtr scene = Helper::generateFactorable<Node, Scene>( MENGINE_DOCUMENT_PYBIND );
 
                 scene->setEmbed( _kernel, _obj );
 

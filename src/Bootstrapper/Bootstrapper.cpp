@@ -858,6 +858,12 @@ namespace Mengine
             return false;
         }
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "MixerValue" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<MixerValue, 32>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -873,6 +879,9 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), nullptr );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "MixerValue" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_ADD_PLUGIN( Name, Info, Doc )\

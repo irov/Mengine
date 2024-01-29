@@ -1,15 +1,14 @@
 #include "Box2DWorld.h"
 
-#include "Interface/PrototypeServiceInterface.h"
+#include "Box2DBody.h"
+#include "Box2DJoint.h"
+#include "Box2DScaler.h"
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/DocumentHelper.h"
-
-#include "Box2DBody.h"
-#include "Box2DJoint.h"
-#include "Box2DScaler.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -103,8 +102,7 @@ namespace Mengine
         bodyDef.fixedRotation = _fixedRotation;
         bodyDef.type = _static ? b2_staticBody : b2_dynamicBody;
 
-        Box2DBodyPtr body = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ), _doc );
+        Box2DBodyPtr body = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( body );
 
@@ -528,8 +526,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Box2DJointInterfacePtr Box2DWorld::createJoint_( const b2JointDef * _jointDef, const DocumentInterfacePtr & _doc )
     {
-        Box2DJointPtr join = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DJoint" ), _doc );
+        Box2DJointPtr join = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DJoint" ), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( join );
 

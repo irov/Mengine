@@ -36,6 +36,7 @@ namespace Mengine
 #endif
     {
         DECLARE_VISITABLE_BASE();
+        DECLARE_FACTORABLE( Surface );
 
     public:
         Surface();

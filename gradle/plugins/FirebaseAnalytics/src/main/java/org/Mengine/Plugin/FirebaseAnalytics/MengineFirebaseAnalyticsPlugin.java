@@ -54,6 +54,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         firebaseAnalytics.setUserProperty("is_dev", String.valueOf(BuildConfig.DEBUG));
         firebaseAnalytics.setUserProperty("install_key", installKey);
         firebaseAnalytics.setUserProperty("install_timestamp", String.valueOf(installTimestamp));
+        firebaseAnalytics.setUserProperty("install_version", installVersion);
         firebaseAnalytics.setUserProperty("install_rnd", String.valueOf(installRND));
         firebaseAnalytics.setUserProperty("session_index", String.valueOf(sessionIndex));
         firebaseAnalytics.setUserProperty("session_timestamp", String.valueOf(sessionTimestamp));

@@ -1,16 +1,5 @@
 #include "NodeGenerators.h"
 
-#include "Interface/PrototypeServiceInterface.h"
-
-#include "Kernel/ConstStringHelper.h"
-
-#include "Kernel/Interender.h"
-#include "Kernel/RenderCameraOrthogonal.h"
-#include "Kernel/RenderCameraOrthogonalTarget.h"
-#include "Kernel/RenderCameraProjection.h"
-#include "Kernel/RenderViewport.h"
-#include "Kernel/RenderScissor.h"
-
 #include "Isometric.h"
 #include "Grid2D.h"
 #include "Gyroscope.h"
@@ -28,6 +17,14 @@
 #include "TextField.h"
 #include "Window.h"
 
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/Interender.h"
+#include "Kernel/RenderCameraOrthogonal.h"
+#include "Kernel/RenderCameraOrthogonalTarget.h"
+#include "Kernel/RenderCameraProjection.h"
+#include "Kernel/RenderViewport.h"
+#include "Kernel/RenderScissor.h"
+#include "Kernel/PrototypeHelper.h"
 #include "Kernel/ShapeCircle.h"
 #include "Kernel/ShapePacMan.h"
 #include "Kernel/ShapeQuadSize.h"
@@ -41,8 +38,7 @@ namespace Mengine
     {
         NodePtr generateNode( const DocumentInterfacePtr & _doc )
         {
-            NodePtr node = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), _doc );
+            NodePtr node = Helper::generateFactorable<Node, Interender>( _doc );
 
             return node;
         }
@@ -52,7 +48,7 @@ namespace Mengine
 #define MENGINE_NODE_GENERATE(X)\
 namespace Mengine::Helper{\
         X ## Ptr generate ## X( const DocumentInterfacePtr & _doc ){\
-            X ## Ptr node = PROTOTYPE_SERVICE()->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( #X ), _doc );\
+            X ## Ptr node = Helper::generateFactorable<Node, X>( _doc );\
             return node;\
         }}
 //////////////////////////////////////////////////////////////////////////

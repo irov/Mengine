@@ -48,6 +48,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/TimestampHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -396,8 +397,7 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->getGameViewport( &gameViewportAspect, &gameViewport );
 
-        m_defaultCamera2D = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FACTORABLE );
+        m_defaultCamera2D = Helper::generateFactorable<Node, RenderCameraOrthogonal>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_defaultCamera2D->setName( STRINGIZE_STRING_LOCAL( "DefaultCamera2D" ) );
 
@@ -406,8 +406,7 @@ namespace Mengine
 
         this->setRenderCamera( m_defaultCamera2D );
 
-        m_defaultViewport2D = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FACTORABLE );
+        m_defaultViewport2D = Helper::generateFactorable<Node, RenderViewport>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_defaultViewport2D->setName( STRINGIZE_STRING_LOCAL( "DefaultViewport2D" ) );
 
@@ -416,8 +415,7 @@ namespace Mengine
 
         this->setRenderViewport( m_defaultViewport2D );
 
-        m_defaultArrowCamera2D = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FACTORABLE );
+        m_defaultArrowCamera2D = Helper::generateFactorable<Node, RenderCameraOrthogonal>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_defaultArrowCamera2D->setName( STRINGIZE_STRING_LOCAL( "DefaultArrowCamera2D" ) );
 

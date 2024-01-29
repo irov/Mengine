@@ -1,7 +1,6 @@
 #include "SceneService.h"
 
 #include "Interface/ModuleServiceInterface.h"
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/Scene.h"
@@ -13,6 +12,7 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/VectorResources.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -370,8 +370,7 @@ namespace Mengine
             return true;
         }
 
-        ScenePtr scene = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_FACTORABLE );
+        ScenePtr scene = Helper::generateFactorable<Node, Scene>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( scene );
 

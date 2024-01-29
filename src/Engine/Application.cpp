@@ -123,6 +123,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"
@@ -402,8 +403,7 @@ namespace Mengine
 
         ConstString Engine_RenderPipeline = CONFIG_VALUE( "Engine", "RenderPipeline", STRINGIZE_STRING_LOCAL( "Batch" ) );
 
-        RenderPipelineInterfacePtr renderPipeline = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), Engine_RenderPipeline, MENGINE_DOCUMENT_FACTORABLE );
+        RenderPipelineInterfacePtr renderPipeline = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), Engine_RenderPipeline, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderPipeline );
 

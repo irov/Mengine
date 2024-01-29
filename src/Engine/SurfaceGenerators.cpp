@@ -1,8 +1,7 @@
 #include "SurfaceGenerators.h"
 
-#include "Interface/PrototypeServiceInterface.h"
-
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Kernel/SurfaceImage.h"
 #include "Kernel/SurfaceImageSequence.h"
@@ -14,7 +13,7 @@
 #define MENGINE_SURFACE_GENERATE(X)\
 namespace Mengine::Helper{\
         X ## Ptr generate ## X( const DocumentInterfacePtr & _doc ){\
-            X ## Ptr text = PROTOTYPE_SERVICE()->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( #X ), _doc );\
+            X ## Ptr text = Helper::generateFactorable<Surface, X>( _doc );\
             return text;\
         }}
 //////////////////////////////////////////////////////////////////////////

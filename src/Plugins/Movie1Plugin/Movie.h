@@ -208,7 +208,7 @@ namespace Mengine
         bool createMovieText_( const MovieLayer & _layer );
         bool createMovieTextCenter_( const MovieLayer & _layer );
         bool createMovieExtraSprite_( const MovieLayer & _layer );
-        bool createMovieParticleEmitter2_( const MovieLayer & _layer );
+        bool createMovieAstralaxEmitter_( const MovieLayer & _layer );
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         bool createMovieInternalObject_( const MovieLayer & _layer );

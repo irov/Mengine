@@ -116,7 +116,7 @@ namespace Mengine
 
     protected:
         void updateSoundVolumeProvider_( const SoundVolumeProviderInterfacePtr & _provider );
-        void updateSourceVolume_( const SoundIdentityPtr & _source );
+        void updateSourceVolume_( const SoundIdentityInterfacePtr & _source );
 
     protected:
         void playSounds_();
@@ -136,14 +136,14 @@ namespace Mengine
     protected:
         UniqueId m_timepipeId;
 
-        MixerValue m_commonVolume;
-        MixerValue m_soundVolume;
-        MixerValue m_musicVolume;
-        MixerValue m_voiceVolume;
+        MixerValueInterfacePtr m_commonVolume;
+        MixerValueInterfacePtr m_soundVolume;
+        MixerValueInterfacePtr m_musicVolume;
+        MixerValueInterfacePtr m_voiceVolume;
 
         FactoryInterfacePtr m_factorySoundIdentity;
 
-        typedef Vector<SoundIdentityPtr> VectorSoundIdentity;
+        typedef Vector<SoundIdentityInterfacePtr> VectorSoundIdentity;
         VectorSoundIdentity m_soundIdentities;
         VectorSoundIdentity m_soundIdentitiesAux;
 

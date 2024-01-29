@@ -21,7 +21,6 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
-#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -132,6 +131,7 @@
 #include "Kernel/ColorHelper.h"
 #include "Kernel/ResourcePacket.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/PrototypeHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Lambda.h"
@@ -758,8 +758,7 @@ namespace Mengine
                 }
                 else
                 {
-                    ScenePtr scene = PROTOTYPE_SERVICE()
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype, MENGINE_DOCUMENT_PYBIND );
+                    ScenePtr scene = Helper::generatePrototype( Scene::getFactorableType(), _prototype, MENGINE_DOCUMENT_PYBIND );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( scene );
 
@@ -873,8 +872,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             ScenePtr s_createScene( const ConstString & _name, const pybind::object & _type )
             {
-                ScenePtr scene = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_PYBIND );
+                ScenePtr scene = Helper::generateFactorable<Node, Scene>( MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( scene );
 
@@ -961,8 +959,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_setArrow( const ConstString & _prototype )
             {
-                ArrowPtr arrow = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype, MENGINE_DOCUMENT_PYBIND );
+                ArrowPtr arrow = Helper::generatePrototype( Arrow::getFactorableType(), _prototype, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( arrow, "Error: can't setup arrow '%s'"
                     , _prototype.c_str()
@@ -1092,8 +1089,7 @@ namespace Mengine
                     correct_type = STRINGIZE_STRING_LOCAL( "Interender" );
                 }
 
-                NodePtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), correct_type, MENGINE_DOCUMENT_PYBIND );
+                NodePtr node = Helper::generatePrototype( Node::getFactorableType(), correct_type, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node );
 
@@ -1102,8 +1098,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             SurfacePtr s_createSurface( const ConstString & _type )
             {
-                SurfacePtr surface = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), _type, MENGINE_DOCUMENT_PYBIND );
+                SurfacePtr surface = Helper::generatePrototype( Surface::getFactorableType(), _type, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( surface );
 
@@ -1131,8 +1126,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             RandomizerInterfacePtr s_generateRandomizer( const ConstString & _prototype )
             {
-                RandomizerInterfacePtr randomizer = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), _prototype, MENGINE_DOCUMENT_PYBIND );
+                RandomizerInterfacePtr randomizer = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), _prototype, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( randomizer );
 
@@ -1145,16 +1139,14 @@ namespace Mengine
                     , _name.c_str()
                 );
 
-                SurfaceImagePtr surface = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_PYBIND );
+                SurfaceImagePtr surface = Helper::generateFactorable<Surface, SurfaceImage>( MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( surface );
 
                 surface->setName( _name );
                 surface->setResourceImage( _resource );
 
-                ShapeQuadFixedPtr shape = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_PYBIND );
+                ShapeQuadFixedPtr shape = Helper::generateFactorable<Node, ShapeQuadFixed>( MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( shape );
 
@@ -3033,8 +3025,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PythonValueFollowerLinearPtr s_createValueFollowerLinear( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args )
             {
-                PythonValueFollowerLinearPtr follower = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), MENGINE_DOCUMENT_PYBIND );
+                PythonValueFollowerLinearPtr follower = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), MENGINE_DOCUMENT_PYBIND );
 
                 if( follower->initialize( _value, _speed, _cb, _args ) == false )
                 {
@@ -3051,8 +3042,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PythonValueFollowerAccelerationPtr s_createValueFollowerAcceleration( float _value, float _speed, float _acceleration, const pybind::object & _cb, const pybind::args & _args )
             {
-                PythonValueFollowerAccelerationPtr follower = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), MENGINE_DOCUMENT_PYBIND );
+                PythonValueFollowerAccelerationPtr follower = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), MENGINE_DOCUMENT_PYBIND );
 
                 if( follower->initialize( _value, _speed, _acceleration, _cb, _args ) == false )
                 {
@@ -3116,8 +3106,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             SecureUnsignedValuePtr s_makeSecureUnsignedValue( uint32_t _value )
             {
-                SecureUnsignedValuePtr secureValue = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "SecureUnsignedValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
+                SecureUnsignedValuePtr secureValue = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "SecureUnsignedValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( secureValue );
 
@@ -3150,8 +3139,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             SecureStringValuePtr s_makeSecureStringValue( const String & _value )
             {
-                SecureStringValuePtr secureValue = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "SecureStringValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
+                SecureStringValuePtr secureValue = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "SecureStringValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( secureValue );
 

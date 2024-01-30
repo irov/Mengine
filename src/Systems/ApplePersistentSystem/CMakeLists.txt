@@ -3,7 +3,7 @@ MENGINE_PROJECT(ApplePersistentSystem)
 ADD_FILTER(
 src
     ApplePersistentSystem.h
-    ApplePersistentSystem.cpp
+    ApplePersistentSystem.mm
 )
 
-ADD_MENGINE_LIBRARY(Systems)
+ADD_MENGINE_APPLE_LIBRARY(Systems)

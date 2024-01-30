@@ -162,14 +162,12 @@ namespace Mengine
         if( m_tuid != 0 )
         {
             extension->deleteTexture( m_tuid );
-
             m_tuid = 0;
         }
 
         if( m_fuid != 0 )
         {
             extension->deleteFramebuffer( m_fuid );
-
             m_fuid = 0;
         }
     }

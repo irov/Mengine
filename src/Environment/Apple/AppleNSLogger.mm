@@ -31,7 +31,7 @@ namespace Mengine
             int32_t line = _message.line;
             size_t functionstampSize = Helper::makeLoggerFunctionStamp( file, line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
             
-            MENGINE_UNUSED(functionstampSize);
+            MENGINE_UNUSED( functionstampSize );
 
             MENGINE_STRCAT( message, functionstamp );
             MENGINE_STRCAT( message, " " );
@@ -39,21 +39,19 @@ namespace Mengine
 
         if( _message.flag & LFLAG_TIMESTAMP )
         {
-            Char timestamp[256] = {'\0'};
+            Char datestamp[256] = {'\0'};
+            size_t datestampSize = Helper::makeLoggerShortDate( _message.timestamp, "[%02u:%02u:%02u:%04u]", datestamp, 0, 256 );
 
-            const PlatformDateTime & dateTime = _message.dateTime;
-            size_t timestampSize = Helper::makeLoggerShortDate( dateTime, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
-
-            MENGINE_UNUSED(timestampSize);
+            MENGINE_UNUSED( datestampSize );
             
-            MENGINE_STRCAT( message, timestamp );
+            MENGINE_STRCAT( message, datestamp );
             MENGINE_STRCAT( message, " " );
         }
 
         if( _message.flag & LFLAG_THREADSTAMP )
         {
             Char threadstamp[256] = {'\0'};
-            size_t threadstampSize = Helper::makeLoggerThreadStamp( "|%s|", threadstamp, 0, 256 );
+            size_t threadstampSize = Helper::makeLoggerThreadStamp( _message.threadName, "|%s|", threadstamp, 0, 256 );
 
             MENGINE_UNUSED(threadstampSize);
             

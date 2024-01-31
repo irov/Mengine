@@ -29,7 +29,12 @@ if(MENGINE_RENDER_DIRECTX11)
 endif()
 
 if(MENGINE_PLATFORM_SDL)
-    ADD_SUBDIRECTORY(POSIXAllocatorSystem)
+    if(MENGINE_BUILD_TYPE_DEBUG)
+        ADD_SUBDIRECTORY(DebugAllocatorSystem)
+    else()
+        ADD_SUBDIRECTORY(POSIXAllocatorSystem)
+    endif()
+
     ADD_SUBDIRECTORY(OpenALSoundSystem)
     ADD_SUBDIRECTORY(POSIXDateTimeSystem)
     ADD_SUBDIRECTORY(SDLUnicodeSystem)

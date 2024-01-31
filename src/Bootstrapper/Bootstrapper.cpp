@@ -329,7 +329,7 @@ PLUGIN_EXPORT( CameraDebugGizmo );
 PLUGIN_EXPORT( FileModifyHook );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLUGIN_WIN32_MEMORYUSAGEMONITOR_STATIC
+#ifdef MENGINE_PLUGIN_MEMORYUSAGEMONITOR_STATIC
 PLUGIN_EXPORT( MemoryUsageMonitor );
 #endif
 //////////////////////////////////////////////////////////////////////////
@@ -1360,7 +1360,7 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( FileModifyHook, "plugin FileModifyHook...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#ifdef MENGINE_PLUGIN_WIN32_MEMORYUSAGEMONITOR_STATIC
+#ifdef MENGINE_PLUGIN_MEMORYUSAGEMONITOR_STATIC
         MENGINE_ADD_PLUGIN( MemoryUsageMonitor, "plugin MemoryUsageMonitor...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 

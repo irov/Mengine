@@ -16,6 +16,18 @@
 #include "Config/StdString.h"
 #include "Config/StdLib.h"
 
+#ifndef MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION
+#   ifdef MENGINE_TARGET_WINDOWS
+#       define MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION 1
+#   else
+#       define MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION 0
+#   endif
+#endif
+
+#if MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION == 1
+#   define MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE
+#endif
+
 #ifndef MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE
 #define MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE 128
 #endif
@@ -42,7 +54,9 @@ namespace Mengine
 
             for( size_t index = 0; index != MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE; ++index )
             {
-                if( b[index] == 0xEF )
+                uint8_t v = b[index];
+                
+                if( v == 0xEF )
                 {
                     continue;
                 }
@@ -104,7 +118,9 @@ namespace Mengine
             , _doc
         );
 
+#if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE)
         Detail::setMemoryOverrideCorruptionTrap( new_mem, _size );
+#endif
 
         size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
 
@@ -133,6 +149,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( old_size != (size_t)-1 );
 
+#if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE)
         if( Detail::checkMemoryOverrideCorruptionTrap( _mem, old_size ) == true )
         {
             MENGINE_ERROR_FATAL( "memory corruption [%p] %s"
@@ -140,6 +157,7 @@ namespace Mengine
                 , _doc
             );
         }
+#endif
 
         MENGINE_FREE( _mem );
 
@@ -168,7 +186,9 @@ namespace Mengine
 
         MENGINE_MEMSET( new_mem, 0x00, calloc_size );
 
+#if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE)
         Detail::setMemoryOverrideCorruptionTrap( new_mem, calloc_size );
+#endif
 
         size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
 
@@ -200,7 +220,9 @@ namespace Mengine
                 , _doc
             );
 
+#if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE)
             Detail::setMemoryOverrideCorruptionTrap( mem, _size );
+#endif
 
             size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
@@ -218,12 +240,14 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( old_size != (size_t)-1 );
 
+#if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE)
         if( Detail::checkMemoryOverrideCorruptionTrap( _mem, old_size ) == true )
         {
             MENGINE_ERROR_FATAL( "memory corruption: %s"
                 , _doc
             );
         }
+#endif
 
         void * new_mem = MENGINE_REALLOC( _mem, total_size );
 
@@ -234,7 +258,9 @@ namespace Mengine
             , _doc
         );
 
+#if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE)
         Detail::setMemoryOverrideCorruptionTrap( new_mem, _size );
+#endif
 
         size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
 

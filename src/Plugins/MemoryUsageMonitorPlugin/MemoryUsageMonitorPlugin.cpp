@@ -7,7 +7,7 @@
 #include "Kernel/NotificationHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( MemoryUsageMonitorPlugin, Mengine::MemoryUsageMonitorPlugin )
+PLUGIN_FACTORY( MemoryUsageMonitor, Mengine::MemoryUsageMonitorPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

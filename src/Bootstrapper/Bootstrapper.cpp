@@ -481,6 +481,15 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic options plugins" );
+
+        if( this->createDynamicOptionsPlugins_() == false )
+        {
+            LOGGER_ERROR( "invalid create options plugins" );
+
+            return false;
+        }
+
         LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic static plugins" );
 
         if( this->createStaticPlugins_() == false )
@@ -1483,24 +1492,26 @@ namespace Mengine
             devplugins = false;
         }
 
-        if( devplugins == true )
+        if( devplugins == false )
         {
-            VectorString devPlugins;
-            CONFIG_VALUES( "DevPlugins", "Name", &devPlugins );
+            return true;
+        }
 
-            for( const String & pluginName : devPlugins )
+        VectorString devPlugins;
+        CONFIG_VALUES( "DevPlugins", "Name", &devPlugins );
+
+        for( const String & pluginName : devPlugins )
+        {
+            LOGGER_INFO( "bootstrapper", "create dynamic dev plugin: %s"
+                , pluginName.c_str()
+            );
+
+            if( PLUGIN_SERVICE()
+                ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_INFO( "bootstrapper", "create dynamic dev plugin: %s"
+                LOGGER_WARNING( "failed to load dynamic dev plugin '%s'"
                     , pluginName.c_str()
                 );
-
-                if( PLUGIN_SERVICE()
-                    ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
-                {
-                    LOGGER_WARNING( "failed to load dynamic dev plugin '%s'"
-                        , pluginName.c_str()
-                    );
-                }
             }
         }
 
@@ -1546,24 +1557,26 @@ namespace Mengine
             devplugins = false;
         }
 
-        if( devplugins == true )
+        if( devplugins == false )
         {
-            VectorString devPlugins;
-            CONFIG_VALUES( "SystemDevPlugins", "Name", &devPlugins );
+            return true;
+        }
 
-            for( const String & pluginName : devPlugins )
+        VectorString devPlugins;
+        CONFIG_VALUES( "SystemDevPlugins", "Name", &devPlugins );
+
+        for( const String & pluginName : devPlugins )
+        {
+            LOGGER_INFO( "bootstrapper", "create dynamic system dev plugin: %s"
+                , pluginName.c_str()
+            );
+
+            if( PLUGIN_SERVICE()
+                ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_INFO( "bootstrapper", "create dynamic system dev plugin: %s"
+                LOGGER_WARNING( "failed to load dynamic system dev plugin '%s'"
                     , pluginName.c_str()
                 );
-
-                if( PLUGIN_SERVICE()
-                    ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
-                {
-                    LOGGER_WARNING( "failed to load dynamic system dev plugin '%s'"
-                        , pluginName.c_str()
-                    );
-                }
             }
         }
 
@@ -1609,24 +1622,61 @@ namespace Mengine
             devplugins = false;
         }
 
-        if( devplugins == true )
+        if( devplugins == false )
         {
-            VectorString devPlugins;
-            CONFIG_VALUES( "PriorityDevPlugins", "Name", &devPlugins );
+            return true;
+        }
 
-            for( const String & pluginName : devPlugins )
+        VectorString devPlugins;
+        CONFIG_VALUES( "PriorityDevPlugins", "Name", &devPlugins );
+
+        for( const String & pluginName : devPlugins )
+        {
+            LOGGER_INFO( "bootstrapper", "create dynamic priority dev plugin: %s"
+                , pluginName.c_str()
+            );
+
+            if( PLUGIN_SERVICE()
+                ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
-                LOGGER_INFO( "bootstrapper", "create dynamic priority dev plugin: %s"
+                LOGGER_WARNING( "failed to load priority dev plugin '%s'"
                     , pluginName.c_str()
                 );
+            }
+        }
 
-                if( PLUGIN_SERVICE()
-                    ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
-                {
-                    LOGGER_WARNING( "failed to load priority dev plugin '%s'"
-                        , pluginName.c_str()
-                    );
-                }
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::createDynamicOptionsPlugins_()
+    {
+        const Char * optionsPlugins[MENGINE_OPTIONS_VALUES_MAX] = {nullptr};
+        uint32_t optionsPluginsCount;
+        if( OPTIONS_SERVICE()
+            ->getOptionValues( "plugins", optionsPlugins, &optionsPluginsCount ) == false )
+        {
+            return true;
+        }
+
+        for( const Char
+            ** it_plugin = optionsPlugins,
+            **it_plugin_end = optionsPlugins + optionsPluginsCount;
+            it_plugin != it_plugin_end; ++it_plugin )
+        {
+            const Char * pluginName = *it_plugin;
+
+            LOGGER_INFO( "bootstrapper", "create dynamic options plugin: %s"
+                , pluginName
+            );
+
+            if( PLUGIN_SERVICE()
+                ->loadPlugin( pluginName, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            {
+                LOGGER_ERROR( "failed to load dynamic options plugin '%s'"
+                    , pluginName
+                );
+
+                return false;
             }
         }
 

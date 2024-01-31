@@ -31,6 +31,7 @@ namespace Mengine
         bool createDynamicSystemDevPlugins_();
         bool createDynamicPriorityPlugins_();
         bool createDynamicPriorityDevPlugins_();
+        bool createDynamicOptionsPlugins_();
         bool createApplication_();
         bool createFrameworks_();
 

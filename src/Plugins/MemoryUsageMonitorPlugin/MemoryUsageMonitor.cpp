@@ -49,7 +49,7 @@ namespace Mengine
         m_threadJob = threadJob;
 
         if( THREAD_SERVICE()
-            ->createThreadProcessor( STRINGIZE_STRING_LOCAL( "MemoryUsageMonitor" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->createThreadProcessor( STRINGIZE_STRING_LOCAL( "MemoryUsageMonitor" ), ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -79,6 +79,8 @@ namespace Mengine
 
         THREAD_SERVICE()
             ->destroyThreadProcessor( STRINGIZE_STRING_LOCAL( "MemoryUsageMonitor" ) );
+
+        m_prevUsages.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void MemoryUsageMonitor::onThreadWorkerUpdate( uint32_t _id )
@@ -112,13 +114,6 @@ namespace Mengine
         {
             uint32_t allocatorReportCount = debugReport->getAllocatorReportCount();
 
-            struct MemoryUsageDesc
-            {
-                String name;
-                size_t count;
-            };
-
-            typedef Vector<MemoryUsageDesc> VectorMemoryUsages;
             VectorMemoryUsages usages;
 
             for( uint32_t index = 0; index != allocatorReportCount; ++index )
@@ -146,12 +141,53 @@ namespace Mengine
 
             for( const MemoryUsageDesc & desc : usages )
             {
-                LOGGER_MESSAGE_RELEASE( "  - %s [%zumb %zukb]"
-                    , desc.name.c_str()
-                    , (desc.count / (1000 * 1000))
-                    , ((desc.count / 1000) % 1000)
-                );
+                VectorMemoryUsages::const_iterator it_found = Algorithm::find_if( m_prevUsages.begin(), m_prevUsages.end(), [desc]( const MemoryUsageDesc & _desc )
+                {
+                    return _desc.name == desc.name;
+                } );
+
+                if( it_found == m_prevUsages.end() )
+                {
+                    LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, nullptr, 0, Mengine::LFLAG_NONE )("  - %s [%zumb %zukb]"
+                        , desc.name.c_str()
+                        , (desc.count / (1000 * 1000))
+                        , ((desc.count / 1000) % 1000)
+                    );
+                }
+                else
+                {
+                    const MemoryUsageDesc & prevDesc = *it_found;
+
+                    if( desc.count > prevDesc.count )
+                    {
+                        LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, Mengine::LFLAG_NONE )("  - %s [%zumb %zukb] +%zukb"
+                            , desc.name.c_str()
+                            , (desc.count / (1000 * 1000))
+                            , ((desc.count / 1000) % 1000)
+                            , ((desc.count - prevDesc.count) / 1000)
+                        );
+                    }
+                    else if( desc.count < prevDesc.count )
+                    {
+                        LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN, nullptr, 0, Mengine::LFLAG_NONE )("  - %s [%zumb %zukb] -%zukb"
+                            , desc.name.c_str()
+                            , (desc.count / (1000 * 1000))
+                            , ((desc.count / 1000) % 1000)
+                            , ((prevDesc.count - desc.count) / 1000)
+                        );
+                    }
+                    else
+                    {
+                        LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_NONE )("  - %s [%zumb %zukb]"
+                            , desc.name.c_str()
+                            , (desc.count / (1000 * 1000))
+                            , ((desc.count / 1000) % 1000)
+                            );
+                    }
+                }
             }
+
+            m_prevUsages = usages;
         }
 
         LOGGER_SERVICE()

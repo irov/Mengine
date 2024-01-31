@@ -36,6 +36,15 @@ namespace Mengine
 
         uint32_t m_seconds;
         UniqueId m_workerId;
+
+        struct MemoryUsageDesc
+        {
+            String name;
+            size_t count;
+        };
+
+        typedef Vector<MemoryUsageDesc> VectorMemoryUsages;
+        VectorMemoryUsages m_prevUsages;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryUsageMonitor, ThreadWorkerInterface> MemoryUsageMonitorPtr;

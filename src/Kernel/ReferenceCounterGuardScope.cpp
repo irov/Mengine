@@ -16,12 +16,9 @@ namespace Mengine
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
 
-        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
-        MENGINE_VSNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, _format, args );
+        MENGINE_VSNPRINTF( m_message, MENGINE_LOGGER_MAX_MESSAGE, _format, args );
 
         MENGINE_VA_LIST_END( args );
-
-        m_message.append( message );
     }
     //////////////////////////////////////////////////////////////////////////
     ReferenceCounterGuardScope::~ReferenceCounterGuardScope()
@@ -34,7 +31,7 @@ namespace Mengine
         }
 
         MENGINE_ERROR_FATAL( "ReferenceCounterGuardScope: %s"
-            , m_message.c_str()
+            , m_message
         );
     }
     //////////////////////////////////////////////////////////////////////////

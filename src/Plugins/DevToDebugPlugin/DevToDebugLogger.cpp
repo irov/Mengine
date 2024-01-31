@@ -73,7 +73,12 @@ namespace Mengine
         Helper::recordLoggerMessage( _message, &record );
 
         m_mutex->lock();
-        m_messages.emplace_back( record );
+
+        if( m_workerURL.empty() == false )
+        {
+            m_messages.emplace_back( record );
+        }
+
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////

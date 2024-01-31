@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Kernel/LoggerMessage.h"
 #include "Kernel/Factorable.h"
-#include "Kernel/String.h"
 
 namespace Mengine
 {
@@ -14,7 +14,7 @@ namespace Mengine
     protected:
         FactorablePtr m_factorable;
 
-        String m_message;
+        Char m_message[MENGINE_LOGGER_MAX_MESSAGE];
     };
 }
 

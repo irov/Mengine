@@ -430,6 +430,8 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         for( const Win32ProcessDesc & desc : m_win32ProcessHandlers )
         {
+            MENGINE_UNUSED( desc );
+
             LOGGER_ASSERTION( "forgot remove win32 process handler (doc: %s)"
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );

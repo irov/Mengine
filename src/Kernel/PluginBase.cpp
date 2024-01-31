@@ -191,7 +191,7 @@ namespace Mengine
 
         this->_destroyPlugin();
 
-#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
+#if defined(MENGINE_DEBUG_FACTORY_ENABLE) && defined(MENGINE_DOCUMENT_ENABLE)
         bool dynamicLoad = m_dynamicLoad;
 
         if( dynamicLoad == true )

@@ -62,7 +62,8 @@ namespace Mengine
     {
         MENGINE_PROFILER_CATEGORY();
 
-        m_events = std::move( m_eventsAux );
+        std::swap( m_events, m_eventsAux );
+        m_eventsAux.clear();
 
         for( const InputUnionEvent & ev : m_events )
         {

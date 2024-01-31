@@ -75,6 +75,7 @@ namespace Mengine
 
         uint32_t leakcount = 0;
 
+#ifdef MENGINE_DOCUMENT_ENABLE
         typedef Vector<DocumentInterfacePtr> VectorDocuments;
         typedef Map<const FactoryInterface *, VectorDocuments> MapObjectLeaks;
         MapObjectLeaks objectLeaks;
@@ -94,6 +95,15 @@ namespace Mengine
 
             ++leakcount;
         } );
+#else
+        this->debugFactoryForeachLeakObjects( 0, [&leakcount]( const FactoryInterface * _factory, const Factorable * _factorable )
+        {
+            MENGINE_UNUSED( _factory );
+            MENGINE_UNUSED( _factorable );
+
+            ++leakcount;
+        } );
+#endif
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
         if( m_memleakLogFileName.empty() == false )
@@ -112,6 +122,7 @@ namespace Mengine
 
                 ::fwrite( objectleakmsg, objectleakmsg_length, 1, f );
 
+#ifdef MENGINE_DOCUMENT_ENABLE
                 for( auto && [factory, objects] : objectLeaks )
                 {
                     const Char * factory_delimiter = "##########################################################\n";
@@ -142,6 +153,7 @@ namespace Mengine
                         ::fwrite( objmsg, objmsg_length, 1, f );
                     }
                 }
+#endif
 
                 ::fclose( f );
             }

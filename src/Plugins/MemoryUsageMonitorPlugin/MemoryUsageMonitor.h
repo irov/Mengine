@@ -45,6 +45,7 @@ namespace Mengine
 
         typedef Vector<MemoryUsageDesc> VectorMemoryUsages;
         VectorMemoryUsages m_prevUsages;
+        VectorMemoryUsages m_prevUsagesAux;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryUsageMonitor, ThreadWorkerInterface> MemoryUsageMonitorPtr;

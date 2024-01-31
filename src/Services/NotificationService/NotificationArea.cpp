@@ -235,23 +235,29 @@ namespace Mengine
             return;
         }
 
-        VectorObservers move_add = std::move( m_addObservers );
-
-        for( const ObserverDesc & desc : move_add )
+        if( m_addObservers.empty() == false )
         {
-            this->addObserver_( desc.observer, desc.callable, MENGINE_DOCUMENT_VALUE( desc.doc, nullptr ) );
+            for( const ObserverDesc & desc : m_addObservers )
+            {
+                this->addObserver_( desc.observer, desc.callable, MENGINE_DOCUMENT_VALUE( desc.doc, nullptr ) );
+            }
+
+            m_addObservers.clear();
         }
 
-        ++m_visiting;
-
-        m_addObservers.erase( Algorithm::remove_if( m_addObservers.begin(), m_addObservers.end(), []( const ObserverDesc & _desc )
+        if( m_observers.empty() == false )
         {
-            return _desc.observer == nullptr;
-        } ), m_addObservers.end() );
+            ++m_visiting;
 
-        MENGINE_ASSERTION_FATAL( m_visiting != 0 );
+            m_observers.erase( Algorithm::remove_if( m_observers.begin(), m_observers.end(), []( const ObserverDesc & _desc )
+            {
+                return _desc.observer == nullptr;
+            } ), m_observers.end() );
 
-        --m_visiting;
+            MENGINE_ASSERTION_FATAL( m_visiting != 0 );
+
+            --m_visiting;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NotificationArea::addObserver_( Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentInterfacePtr & _doc )

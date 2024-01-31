@@ -403,6 +403,11 @@ namespace Mengine
             return;
         }
 
+        if( m_commands.empty() == true )
+        {
+            return;
+        }
+
         ++m_process;
 
         VectorSceneCommandDesc commands = std::move( m_commands );

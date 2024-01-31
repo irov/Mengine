@@ -114,7 +114,7 @@ namespace Mengine
         {
             uint32_t allocatorReportCount = debugReport->getAllocatorReportCount();
 
-            VectorMemoryUsages usages;
+            m_prevUsagesAux.clear();
 
             for( uint32_t index = 0; index != allocatorReportCount; ++index )
             {
@@ -131,15 +131,15 @@ namespace Mengine
                     continue;
                 }
 
-                usages.emplace_back( MemoryUsageDesc{reportName, reportCount} );
+                m_prevUsagesAux.emplace_back( MemoryUsageDesc{reportName, reportCount} );
             }
 
-            Algorithm::sort( usages.begin(), usages.end(), []( const MemoryUsageDesc & _l, const MemoryUsageDesc & _r )
+            Algorithm::sort( m_prevUsagesAux.begin(), m_prevUsagesAux.end(), []( const MemoryUsageDesc & _l, const MemoryUsageDesc & _r )
             {
                 return _l.count > _r.count;
             } );
 
-            for( const MemoryUsageDesc & desc : usages )
+            for( const MemoryUsageDesc & desc : m_prevUsagesAux )
             {
                 VectorMemoryUsages::const_iterator it_found = Algorithm::find_if( m_prevUsages.begin(), m_prevUsages.end(), [desc]( const MemoryUsageDesc & _desc )
                 {
@@ -187,7 +187,7 @@ namespace Mengine
                 }
             }
 
-            m_prevUsages = usages;
+            std::swap( m_prevUsages, m_prevUsagesAux );
         }
 
         LOGGER_SERVICE()

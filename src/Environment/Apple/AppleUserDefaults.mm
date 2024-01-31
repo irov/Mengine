@@ -118,6 +118,23 @@ namespace Mengine
             return YES;
         }
         //////////////////////////////////////////////////////////////////////////
+        BOOL AppleHasUserDefaults( NSString * _key )
+        {
+            NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+            
+            if( defaults == nil )
+            {
+                return NO;
+            }
+            
+            if( [defaults objectForKey:_key] == nil )
+            {
+                return NO;
+            }
+            
+            return YES;
+        }
+        //////////////////////////////////////////////////////////////////////////
         BOOL AppleRemoveUserDefaults( NSString * _key )
         {
             NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];

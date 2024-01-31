@@ -16,6 +16,7 @@ namespace Mengine
         NSInteger AppleGetUserDefaultsInteger( NSString * _key, NSInteger _default );
         BOOL AppleSetUserDefaultsInteger( NSString * _key, NSInteger _value );
 
+        BOOL AppleHasUserDefaults( NSString * _key );
         BOOL AppleRemoveUserDefaults( NSString * _key );
     }
 }

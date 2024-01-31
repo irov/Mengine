@@ -274,7 +274,7 @@ namespace Mengine
             ->registerLogger( logger ) == true )
         {
             m_logger = logger;
-        }        
+        }
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()

@@ -7,6 +7,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Error.h"
+#include "Kernel/StringCopy.h"
 
 #include "Config/StdIntTypes.h"
 
@@ -231,6 +232,11 @@ namespace Mengine
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
+        void deleteLocalRef( JNIEnv * _jenv, jobject _jobject )
+        {
+            _jenv->DeleteLocalRef( _jobject );
+        }
+        //////////////////////////////////////////////////////////////////////////
         jboolean getJavaObjectValueBoolean( JNIEnv * _jenv, jobject _jobject )
         {
             jclass jclass_Boolean = _jenv->GetObjectClass( _jobject );
@@ -354,6 +360,15 @@ namespace Mengine
             _jenv->ReleaseStringUTFChars( _value, value_str );
 
             return value_string;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void copyStringFromJString( JNIEnv * _jenv, jstring _value, Char * const _str, size_t _capacity )
+        {
+            const Char * value_str = _jenv->GetStringUTFChars( _value, nullptr );
+
+            Helper::stringCopy( _str, value_str, _capacity );
+
+            _jenv->ReleaseStringUTFChars( _value, value_str );
         }
         //////////////////////////////////////////////////////////////////////////
         void foreachJavaMap( JNIEnv * _jenv, jobject _jmap, const LambdaJavaMapForeach & _lambda )

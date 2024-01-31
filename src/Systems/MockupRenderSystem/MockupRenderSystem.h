@@ -108,8 +108,8 @@ namespace Mengine
 
         uint32_t getMaxCombinedTextureImageUnits() const override;
 
-        void onDeviceLostPrepare();
-        bool onDeviceLostRestore();
+        void onDeviceLostPrepare() override;
+        bool onDeviceLostRestore() override;
 
         void onWindowChangeFullscreenPrepare( bool _fullscreen ) override;
         bool onWindowChangeFullscreen( bool _fullscreen ) override;

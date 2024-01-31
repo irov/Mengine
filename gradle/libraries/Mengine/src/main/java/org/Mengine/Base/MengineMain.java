@@ -26,16 +26,16 @@ class MengineMain implements Runnable {
         try {
             android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_DISPLAY);
         } catch (Exception e) {
-            Log.v(TAG, "modify thread properties failed " + e.toString());
+            Log.v(TAG, "modify thread properties failed: " + e.toString());
         }
 
         String function = "SDL_init";
 
-        Log.v(TAG, "Running init main function [SDL_main] from library " + library);
+        Log.v(TAG, "Running main function [SDL_main] from library: " + library);
 
         SDLActivity.nativeRunMain(library, "SDL_main", arguments);
 
-        Log.v(TAG, "Finished init main function");
+        Log.v(TAG, "Finished main function [SDL_main]");
 
         synchronized (m_semaphoreInit) {
             m_semaphoreInit.notifyAll();
@@ -45,17 +45,17 @@ class MengineMain implements Runnable {
             try {
                 m_semaphoreRun.wait();
             } catch (InterruptedException e) {
-                Log.e(TAG, "wait semaphore failed " + e.toString());
+                Log.e(TAG, "wait semaphore failed: " + e.toString());
 
                 return;
             }
         }
 
-        Log.v(TAG, "Running quit main function [SDL_loop] from library " + library);
+        Log.v(TAG, "Running loop function [SDL_loop] from library: " + library);
 
         SDLActivity.nativeLoopMain("SDL_loop");
 
-        Log.v(TAG, "Finished quit main function");
+        Log.v(TAG, "Finished loop function [SDL_loop]");
 
         /*
         if (SDLActivity.mSingleton != null && !SDLActivity.mSingleton.isFinishing()) {

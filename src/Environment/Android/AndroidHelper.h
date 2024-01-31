@@ -29,6 +29,8 @@ namespace Mengine
         jobject makeJObjectArrayList( JNIEnv * _jenv, int32_t _count );
         jobject makeJObjectHashMap( JNIEnv * _jenv, int32_t _count );
         //////////////////////////////////////////////////////////////////////////
+        void deleteLocalRef( JNIEnv * _jenv, jobject _jobject );
+        //////////////////////////////////////////////////////////////////////////
         jboolean getJavaObjectValueBoolean( JNIEnv * _jenv, jobject _jobject );
         jchar getJavaObjectValueCharacter( JNIEnv * _jenv, jobject _jobject );
         jint getJavaObjectValueInteger( JNIEnv * _jenv, jobject _jobject );
@@ -39,6 +41,7 @@ namespace Mengine
         ConstString makeConstStringFromJString( JNIEnv * _jenv, jstring _value );
         FilePath makeFilePathFromJString( JNIEnv * _jenv, jstring _value );
         String makeStringFromJString( JNIEnv * _jenv, jstring _value );
+        void copyStringFromJString( JNIEnv * _jenv, jstring _value, Char * const _str, size_t _capacity );
         //////////////////////////////////////////////////////////////////////////
         typedef Lambda<void( jobject key, jobject value)> LambdaJavaMapForeach;
         void foreachJavaMap( JNIEnv * _jenv, jobject _jmap, const LambdaJavaMapForeach & _lambda );

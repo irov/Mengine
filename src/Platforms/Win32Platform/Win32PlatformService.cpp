@@ -990,7 +990,7 @@ namespace Mengine
 
         HKEY hKey;
         LONG result;
-        result = ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, fontRegistryPath, 0, KEY_READ, &hKey );
+        result = ::RegOpenKeyExW( HKEY_LOCAL_MACHINE, fontRegistryPath, 0, KEY_READ, &hKey );
 
         if( result != ERROR_SUCCESS )
         {
@@ -3479,18 +3479,18 @@ namespace Mengine
         Helper::utf8ToUnicode( _key, unicode_key, MENGINE_MAX_PATH );
 
         HKEY hKey;
-        LSTATUS lRes = ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ, &hKey );
+        LSTATUS lRes = ::RegOpenKeyExW( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ, &hKey );
 
         if( lRes == ERROR_FILE_NOT_FOUND )
         {
-#if defined(MENGINE_COMPILER_MSVC)
-            lRes = ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey );
+#if defined(MENGINE_PLATFORM_WINDOWS64)
+            lRes = ::RegOpenKeyExW( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey );
 #endif
         }
 
         if( lRes != ERROR_SUCCESS )
         {
-            LOGGER_ERROR( "RegOpenKeyEx HKEY_LOCAL_MACHINE '%s' get Error [%ld]"
+            LOGGER_ERROR( "RegOpenKeyExW HKEY_LOCAL_MACHINE '%s' get Error [%ld]"
                 , _path
                 , lRes
             );
@@ -3500,13 +3500,13 @@ namespace Mengine
 
         WChar unicode_value[1024] = {L'\0'};
         DWORD dwBufferSize = 1024;
-        LSTATUS nError = ::RegQueryValueEx( hKey, unicode_key, 0, NULL, (LPBYTE)unicode_value, &dwBufferSize );
+        LSTATUS nError = ::RegQueryValueExW( hKey, unicode_key, 0, NULL, (LPBYTE)unicode_value, &dwBufferSize );
 
         ::RegCloseKey( hKey );
 
         if( nError != ERROR_SUCCESS )
         {
-            LOGGER_ERROR( "RegQueryValueEx HKEY_LOCAL_MACHINE '%s' get Error [%ld]"
+            LOGGER_ERROR( "RegQueryValueExW HKEY_LOCAL_MACHINE '%s' get Error [%ld]"
                 , _path
                 , nError
             );

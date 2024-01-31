@@ -9,7 +9,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/PersistentSystemInterface.h"
+#include "Interface/PreferencesSystemInterface.h"
 
 #include "SDLMessageBoxLogger.h"
 
@@ -127,10 +127,10 @@ namespace Mengine
 #endif
 
 
-#if defined(MENGINE_PLATFORM_APPLE) && !defined(MENGINE_BUILD_PUBLISH)
+#if !defined(MENGINE_BUILD_PUBLISH)
         Char MengineApplePersistentArguments[1024] = {'\0'};
-        if( PERSISTENT_SYSTEM()
-            ->getPersistentArguments( MengineApplePersistentArguments, 1024 ) == true )
+        if( PREFERENCES_SYSTEM()
+            ->getPreferenceString( "persistent_arguments", MengineApplePersistentArguments, 1024 ) == true )
         {
             arguments->addArguments( MengineApplePersistentArguments );
         }

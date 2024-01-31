@@ -2266,16 +2266,6 @@ namespace Mengine
         return m_projectVersion;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::setSessionId( const ConstString & _sessionId )
-    {
-        m_sessionId = _sessionId;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & Application::getSessionId() const
-    {
-        return m_sessionId;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Application::setLocale( const ConstString & _locale )
     {
         if( m_locale == _locale )
@@ -2296,9 +2286,9 @@ namespace Mengine
             , prevLocale.c_str()
         );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_PREPARE, prevLocale, m_locale );
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE, prevLocale, m_locale );
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_POST, prevLocale, m_locale );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_PREPARE, prevLocale, _locale );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE, prevLocale, _locale );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_POST, prevLocale, _locale );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Application::getLocale() const

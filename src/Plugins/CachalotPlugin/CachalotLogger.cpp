@@ -1,6 +1,7 @@
 #include "CachalotLogger.h"
 
 #include "Interface/ApplicationInterface.h"
+#include "Interface/PreferencesSystemInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -94,6 +95,9 @@ namespace Mengine
             return;
         }
 
+        ConstString sessionId = PREFERENCES_SYSTEM()
+            ->getPreferenceConstString( "session_id", ConstString::none() );
+
         jpp::object j = jpp::make_object();
 
         jpp::array jlog = jpp::make_array();
@@ -101,9 +105,6 @@ namespace Mengine
         for( const LoggerRecord & record : messages )
         {
             jpp::object j_desc = jpp::make_object();
-
-            const ConstString & sessionId = APPLICATION_SERVICE()
-                ->getSessionId();
 
             j_desc.set( "user.id", sessionId );
             switch( record.level )

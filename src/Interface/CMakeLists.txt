@@ -134,7 +134,6 @@ Common
     ExecutorInterface.h
     StatisticInterface.h
     StatisticServiceInterface.h
-    PersistentSystemInterface.h
     DateTimeSystemInterface.h
     HttpSystemInterface.h
     DebugFileInterface.h
@@ -142,6 +141,7 @@ Common
     SemaphoreListenerInterface.h
     TimerServiceInterface.h
     MixerValueInterface.h
+    PreferencesSystemInterface.h
 )
 
 ADD_FILTER(

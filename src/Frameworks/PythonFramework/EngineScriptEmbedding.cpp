@@ -27,10 +27,10 @@
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
-#include "Interface/PersistentSystemInterface.h"
 #include "Interface/DocumentInterface.h"
 #include "Interface/SemaphoreServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
+#include "Interface/PreferencesSystemInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
@@ -3171,8 +3171,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_setPersistentArguments( const Char * _arguments )
             {
-                PERSISTENT_SYSTEM()
-                    ->setPersistentArguments( _arguments );
+                PREFERENCES_SYSTEM()
+                    ->setPreferenceString( "persistent_arguments", _arguments );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_activateSemaphore( const ConstString & _name )
@@ -3222,8 +3222,8 @@ namespace Mengine
             PyObject * s_getPersistentArguments( pybind::kernel_interface * _kernel )
             {
                 Char persistentArguments[1024] = {'\0'};
-                if( PERSISTENT_SYSTEM()
-                    ->getPersistentArguments( persistentArguments, 1024 ) == false )
+                if( PREFERENCES_SYSTEM()
+                    ->getPreferenceString( "persistent_arguments", persistentArguments, 1024 ) == false )
                 {
                     return _kernel->ret_none();
                 }
@@ -3235,8 +3235,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_removePersistentArguments()
             {
-                PERSISTENT_SYSTEM()
-                    ->removePersistentArguments();
+                PREFERENCES_SYSTEM()
+                    ->removePreference( "persistent_arguments" );
             }
             //////////////////////////////////////////////////////////////////////////
             Scene * s_findNodeScene( Node * _node )

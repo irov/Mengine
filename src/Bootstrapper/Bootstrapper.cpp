@@ -58,7 +58,7 @@
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( SecureService );
 SERVICE_EXTERN( FactoryService );
-SERVICE_EXTERN( PersistentSystem );
+SERVICE_EXTERN( PreferencesSystem );
 SERVICE_EXTERN( DateTimeSystem );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( LoggerService );
@@ -924,7 +924,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( PersistentSystem, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( PreferencesSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
@@ -948,7 +948,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_APPLE)
         MENGINE_ADD_SERVICE( AppleEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
-        
+
 #if defined(MENGINE_PLATFORM_IOS)
         MENGINE_ADD_SERVICE( iOSEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -998,7 +998,7 @@ namespace Mengine
         {
             return false;
         }
-    
+
         Char currentPath[MENGINE_MAX_PATH] = {'\0'};
         PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
@@ -1332,7 +1332,7 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_PLUGIN_CACHALOT_STATIC
-        MENGINE_ADD_PLUGIN( Cachalot, "plugin Cachalot...", MENGINE_DOCUMENT_FACTORABLE );        
+        MENGINE_ADD_PLUGIN( Cachalot, "plugin Cachalot...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_IMGUI_STATIC
@@ -2084,7 +2084,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_APPLE)
         SERVICE_FINALIZE( AppleEnvironmentService );
 #endif
-        
+
 #if defined(MENGINE_PLATFORM_iOS)
         SERVICE_FINALIZE( iOSEnvironmentService );
 #endif
@@ -2102,7 +2102,7 @@ namespace Mengine
         SERVICE_FINALIZE( DateTimeSystem );
         SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( ThreadSystem );
-        SERVICE_FINALIZE( PersistentSystem );
+        SERVICE_FINALIZE( PreferencesSystem );
         SERVICE_FINALIZE( PlatformSystem );
 
         SERVICE_DESTROY( SceneService );
@@ -2164,7 +2164,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_APPLE)
         SERVICE_DESTROY( AppleEnvironmentService );
 #endif
-        
+
 #if defined(MENGINE_PLATFORM_IOS)
         SERVICE_DESTROY( iOSEnvironmentService );
 #endif
@@ -2174,7 +2174,7 @@ namespace Mengine
         SERVICE_DESTROY( LoggerService );
         SERVICE_DESTROY( FactoryService );
         SERVICE_DESTROY( OptionsService );
-        SERVICE_DESTROY( PersistentSystem );
+        SERVICE_DESTROY( PreferencesSystem );
         SERVICE_DESTROY( PlatformSystem );
     }
     //////////////////////////////////////////////////////////////////////////

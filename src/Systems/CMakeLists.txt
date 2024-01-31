@@ -8,7 +8,7 @@ if(MENGINE_PLATFORM_WIN32)
         ADD_SUBDIRECTORY(Win32AllocatorSystem)
     endif()
     
-    ADD_SUBDIRECTORY(DummyPersistentSystem)
+    ADD_SUBDIRECTORY(Win32PreferencesSystem)
     ADD_SUBDIRECTORY(OpenALSoundSystem)
     ADD_SUBDIRECTORY(Win32DateTimeSystem)
     ADD_SUBDIRECTORY(Win32UnicodeSystem)
@@ -35,11 +35,17 @@ if(MENGINE_PLATFORM_SDL)
     ADD_SUBDIRECTORY(SDLUnicodeSystem)
     ADD_SUBDIRECTORY(SDLThreadSystem)
     ADD_SUBDIRECTORY(C11TimeSystem)
-    
+
+    if(MENGINE_TARGET_WINDOWS)
+        ADD_SUBDIRECTORY(Win32PreferencesSystem)
+    endif()
+
     if(MENGINE_TARGET_APPLE)
-        ADD_SUBDIRECTORY(ApplePersistentSystem)
-    else()
-        ADD_SUBDIRECTORY(DummyPersistentSystem)
+        ADD_SUBDIRECTORY(ApplePreferencesSystem)
+    endif()
+    
+    if(MENGINE_TARGET_ANDROID)
+        ADD_SUBDIRECTORY(AndroidPreferencesSystem)
     endif()
 endif()
 

@@ -150,10 +150,6 @@ namespace Mengine
         uint32_t getProjectVersion() const override;
 
     public:
-        void setSessionId( const ConstString & _sessionId ) override;
-        const ConstString & getSessionId() const override;
-
-    public:
         void setLocale( const ConstString & _locale ) override;
         const ConstString & getLocale() const override;
 

@@ -22,9 +22,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryUsageMonitorPlugin::_availablePlugin() const
     {
-        if( HAS_OPTION( "memoryusagemonitor" ) == true )
+        if( HAS_OPTION( "memoryusagemonitor" ) == false )
         {
-            return true;
+            return false;
         }
 
         if( HAS_OPTION( "nomemoryusagemonitor" ) == true )

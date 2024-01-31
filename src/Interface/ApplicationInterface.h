@@ -66,10 +66,6 @@ namespace Mengine
         virtual uint32_t getProjectVersion() const = 0;
 
     public:
-        virtual void setSessionId( const ConstString & _sessionId ) = 0;
-        virtual const ConstString & getSessionId() const = 0;
-
-    public:
         virtual void setLocale( const ConstString & _locale ) = 0;
         virtual const ConstString & getLocale() const = 0;
 

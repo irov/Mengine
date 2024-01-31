@@ -568,6 +568,54 @@ public class MengineApplication extends Application {
         return settings;
     }
 
+    public boolean hasPreference(@NonNull String name) {
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+
+        boolean has = settings.contains(name);
+
+        return has;
+    }
+
+    public long getPreferenceInteger(@NonNull String name, long defaultValue) {
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+
+        long value = settings.getLong(name, defaultValue);
+
+        return value;
+    }
+
+    public void setPreferenceInteger(@NonNull String name, long value) {
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putLong(name, value);
+        editor.apply();
+    }
+
+    public String getPreferenceString(@NonNull String name, String defaultValue) {
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+
+        String value = settings.getString(name, defaultValue);
+
+        return value;
+    }
+
+    public void setPreferenceString(@NonNull String name, String value) {
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(name, value);
+        editor.apply();
+    }
+
+    public void removePreference(@NonNull String name) {
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.remove(name);
+        editor.apply();
+    }
+
     public void sendEvent(MengineEvent event, Object ... args) {
         List<MenginePlugin> plugins = this.getPlugins();
 
@@ -791,15 +839,7 @@ public class MengineApplication extends Application {
             editor.putString("install_key", installKey);
             editor.putLong("install_timestamp", installTimestamp);
             editor.putString("install_version", installVersion);
-        }
 
-        if (sessionId == null) {
-            sessionId = installKey;
-
-            editor.putString("session_id", sessionId);
-        }
-
-        if (installRND == -1) {
             installRND = MengineUtils.getSecureRandomNumber();
 
             if (installRND == 0) {
@@ -809,6 +849,12 @@ public class MengineApplication extends Application {
             }
 
             editor.putLong("install_rnd", installRND);
+        }
+
+        if (sessionId == null) {
+            sessionId = installKey;
+
+            editor.putString("session_id", sessionId);
         }
 
         editor.putLong("session_index", sessionIndex + 1);

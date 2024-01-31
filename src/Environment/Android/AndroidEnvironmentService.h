@@ -27,6 +27,8 @@ namespace Mengine
     public:
         void callVoidApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
         jobject callObjectApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
+        jboolean callBooleanApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
+        jlong callLongApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
 
     public:
         void callVoidActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;

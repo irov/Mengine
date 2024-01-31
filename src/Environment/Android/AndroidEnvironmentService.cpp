@@ -252,7 +252,7 @@ extern "C"
         Mengine::ConstString name = Mengine::Helper::makeConstStringFromJString( env, _name );
 
         SEMAPHORE_SERVICE()
-                ->deactivateSemaphore( name );
+            ->deactivateSemaphore( name );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AnroidEnvironmentService_1waitSemaphore )(JNIEnv * env, jclass cls, jstring _name, jobject _cb)
@@ -595,6 +595,24 @@ namespace Mengine
         return jmethodID_function;
     }
     //////////////////////////////////////////////////////////////////////////
+    jboolean AndroidEnvironmentService::callBooleanApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
+    {
+        jmethodID jmethodId = this->getApplicationMethodID( _jenv, _name, _signature );
+
+        jobject jobjectMengineApplication = Mengine_JNI_GetJObjectMengineApplication();
+
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _signature );
+
+        jboolean jresult = _jenv->CallBooleanMethodV( jobjectMengineApplication, jmethodId, args );
+
+        MENGINE_VA_LIST_END( args );
+
+        Helper::jEnvExceptionCheck( _jenv );
+
+        return jresult;
+    }
+    //////////////////////////////////////////////////////////////////////////
     jobject AndroidEnvironmentService::callObjectApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
     {
         jmethodID jmethodId = this->getApplicationMethodID( _jenv, _name, _signature );
@@ -605,6 +623,24 @@ namespace Mengine
         MENGINE_VA_LIST_START( args, _signature );
 
         jobject result_jobject = _jenv->CallObjectMethodV( jobjectMengineApplication, jmethodId, args );
+
+        MENGINE_VA_LIST_END( args );
+
+        Helper::jEnvExceptionCheck( _jenv );
+
+        return result_jobject;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jlong AndroidEnvironmentService::callLongApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
+    {
+        jmethodID jmethodId = this->getApplicationMethodID( _jenv, _name, _signature );
+
+        jobject jobjectMengineApplication = Mengine_JNI_GetJObjectMengineApplication();
+
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _signature );
+
+        jlong result_jobject = _jenv->CallLongMethodV( jobjectMengineApplication, jmethodId, args );
 
         MENGINE_VA_LIST_END( args );
 

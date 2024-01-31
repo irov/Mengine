@@ -17,6 +17,8 @@ namespace Mengine
     public:
         virtual void callVoidApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
         virtual jobject callObjectApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
+        virtual jboolean callBooleanApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
+        virtual jlong callLongApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
 
     public:
         virtual void callVoidActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;

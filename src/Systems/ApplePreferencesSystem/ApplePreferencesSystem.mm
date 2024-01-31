@@ -3,6 +3,8 @@
 #include "Environment/Apple/AppleUserDefaults.h"
 #include "Environment/Apple/AppleString.h"
 
+#include "Kernel/StringCopy.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PreferencesSystem, Mengine::ApplePreferencesSystem );
 //////////////////////////////////////////////////////////////////////////
@@ -31,7 +33,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int64_t ApplePreferencesSystem::getPreferenceInteger( const Char * _key, int64_t _default ) const
     {
-        NSInteger apple_value = Helper::AppleGetUserDefaults( _key, (NSInteger)_default );
+        NSString * apple_key = @(_key);
+        NSInteger apple_default = (NSInteger)_default;
+
+        NSInteger apple_value = Helper::AppleGetUserDefaults( apple_key, apple_default );
 
         int64_t value = (int64_t)apple_value;
 
@@ -40,9 +45,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ApplePreferencesSystem::setPreferenceInteger( const Char * _key, int64_t _value )
     {
+        NSString * apple_key = @(_key);
         NSInteger apple_value = (NSInteger)_value;
 
-        if( Helper::AppleSetUserDefaultsInteger( _key, apple_value ) == NO )
+        if( Helper::AppleSetUserDefaultsInteger( apple_key, apple_value ) == NO )
         {
             return false;
         }
@@ -50,27 +56,77 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConstString ApplePreferencesSystem::getPreferenceString( const Char * _key, const ConstString & _default ) const
+    bool ApplePreferencesSystem::getPreferenceString( const Char * _key, Char * const _value, size_t _capacity ) const
     {
+        NSString * apple_key = @(_key);
         NSString * apple_default = @(_default.c_str());
 
-        NSString * apple_value = Helper::AppleGetUserDefaultsString( _key, apple_default );
+        NSString * apple_value = Helper::AppleGetUserDefaultsString( apple_key, nil );
+
+        if( aplle_value == nil )
+        {
+            return false;
+        }
+
+        const Char * value_str = [apple_value UTF8String];
+
+        Helper::stringCopy( _value, value_str, _capacity );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ApplePreferencesSystem::setPreferenceString( const Char * _key, const Char * _value )
+    {
+        NSString * apple_key = @(_key);
+        NSString * apple_value = @(_value);
+
+        if( Helper::AppleSetUserDefaultsString( apple_key, apple_value ) == NO )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ConstString ApplePreferencesSystem::getPreferenceConstString( const Char * _key, const ConstString & _default ) const
+    {
+        NSString * apple_key = @(_key);
+        NSString * apple_default = @(_default.c_str());
+
+        NSString * apple_value = Helper::AppleGetUserDefaultsString( apple_key, apple_default );
 
         ConstString value = Helper::NSStringToConstString( apple_value );
 
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ApplePreferencesSystem::setPreferenceString( const Char * _key, const ConstString & _value )
+    bool ApplePreferencesSystem::setPreferenceConstString( const Char * _key, const ConstString & _value )
     {
+        NSString * apple_key = @(_key);
         NSString * apple_value = @(_default.c_str());
 
-        if( Helper::AppleSetUserDefaultsString( _key, apple_value ) == NO )
+        if( Helper::AppleSetUserDefaultsString( apple_key, apple_value ) == NO )
         {
             return false;
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ApplePreferencesSystem::hasPreference( const Char * _key ) const
+    {
+        NSString * apple_key = @(_key);
+
+        BOOL result = Helper::AppleHasUserDefaultsKey( apple_key );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ApplePreferencesSystem::removePreference( const Char * _key )
+    {
+        NSString * apple_key = @(_key);
+
+        Helper::AppleRemoveUserDefaultsKey( apple_key );
     }
     //////////////////////////////////////////////////////////////////////////
 }

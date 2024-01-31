@@ -20,7 +20,13 @@ namespace Mengine
     public:
         int64_t getPreferenceInteger( const Char * _key, int64_t _default ) const override;
         bool setPreferenceInteger( const Char * _key, int64_t _value ) override;
-        ConstString getPreferenceString( const Char * _key, const ConstString & _default ) const override;
-        bool setPreferenceString( const Char * _key, const ConstString & _value ) override;
+        bool getPreferenceString( const Char * _key, Char * const _value, size_t _capacity ) const override;
+        bool setPreferenceString( const Char * _key, const Char * _value ) override;
+        ConstString getPreferenceConstString( const Char * _key, const ConstString & _default ) const override;
+        bool setPreferenceConstString( const Char * _key, const ConstString & _value ) override;
+
+    public:
+        bool hasPreference( const Char * _key ) const override;
+        void removePreference( const Char * _key ) override;
     };
 };

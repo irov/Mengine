@@ -104,32 +104,34 @@ namespace Mengine
         return bank;
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourcePointer ResourceService::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const DocumentInterfacePtr & _doc )
+    ResourcePointer ResourceService::createResource( const ResourceCook & _cook, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( !(_name.empty() == true && _groupCache == true) );
+        MENGINE_ASSERTION_FATAL( !(_cook.name.empty() == true && _cook.groupCache == true) );
 
         Resource * prev_resource = nullptr;
-        ResourcePtr resource = m_globalBank->createResource( _locale, _groupName, _name, _type, _keep, &prev_resource, _doc );
+        ResourcePtr resource = m_globalBank->createResource( _cook, &prev_resource, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid generate resource locale '%s' group '%s' name '%s' type '%s' doc '%s'"
-            , _locale.c_str()
-            , _groupName.c_str()
-            , _name.c_str()
-            , _type.c_str()
+        //ToDo
+
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid generate resource group '%s' name '%s' type '%s' doc '%s'"
+            //, _locales.c_str()
+            , _cook.groupName.c_str()
+            , _cook.name.c_str()
+            , _cook.type.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        if( _name.empty() == false )
+        if( _cook.name.empty() == false )
         {
-            resource->setGroupCache( _groupCache );
+            resource->setGroupCache( _cook.groupCache );
 
-            if( _groupCache == true )
+            if( _cook.groupCache == true )
             {
-                MapResourceCache::iterator it_cache_found = m_resourcesCache.find( _groupName );
+                MapResourceCache::iterator it_cache_found = m_resourcesCache.find( _cook.groupName );
 
                 if( it_cache_found == m_resourcesCache.end() )
                 {
-                    it_cache_found = m_resourcesCache.insert( it_cache_found, Utility::make_pair( _groupName, VectorResources() ) );
+                    it_cache_found = m_resourcesCache.insert( it_cache_found, Utility::make_pair( _cook.groupName, VectorResources() ) );
                 }
 
                 VectorResources & cahce_resources = it_cache_found->second;

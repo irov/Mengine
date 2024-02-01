@@ -138,8 +138,8 @@ namespace Mengine
         bool disableFont_( const PackageFontDesc & _desc );
         bool enableData_( const PackageDataDesc & _desc );
         bool disableData_( const PackageDataDesc & _desc );
-        bool enableResources_( const ConstString & _locale, const PackageResourceDesc & _desc );
-        bool disableResources_( const ConstString & _locale, const PackageResourceDesc & _desc );
+        bool enableResources_( const VectorConstString & _locales, const PackageResourceDesc & _desc );
+        bool disableResources_( const VectorConstString & _locales, const PackageResourceDesc & _desc );
         bool enableMaterials_( const PackageMaterialDesc & _desc );
         bool disableMaterials_( const PackageMaterialDesc & _desc );
         bool enableSetting_( const PackageSettingDesc & _desc );

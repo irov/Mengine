@@ -451,11 +451,11 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::loadTextEntry( const ConstString & _locale, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
+    bool TextService::loadTextEntry( const VectorConstString & _locales, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
         TextLocalePackagePtr package = m_factoryTextLocalePackage->createObject( _doc );
 
-        if( package->initialize( _locale, _content ) == false )
+        if( package->initialize( _locales, _content ) == false )
         {
             LOGGER_ERROR( "text file '%s' invalid initialize text locale package"
                 , Helper::getContentFullPath( _content )
@@ -489,9 +489,11 @@ namespace Mengine
 
         if( xmlsax_parse( xml_buff, &callbacks, &tmsc ) == false )
         {
-            LOGGER_ERROR( "text file '%s' locale '%s' invalid parse text locale package"
+            //ToDo
+            
+            LOGGER_ERROR( "text file '%s' invalid parse text locale package"
                 , Helper::getContentFullPath( _content )
-                , _locale.c_str()
+                //, _locales.c_str()
             );
 
             return false;
@@ -499,9 +501,11 @@ namespace Mengine
 
         if( tmsc.isSuccessful() == false )
         {
-            LOGGER_ERROR( "text file '%s' invalid load locale '%s' text entry"
+            //ToDo
+
+            LOGGER_ERROR( "text file '%s' invalid load text entry"
                 , Helper::getContentFullPath( _content )
-                , _locale.c_str()
+                //, _locales.c_str()
             );
 
             return false;
@@ -510,11 +514,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::unloadTextEntry( const ConstString & _locale, const ContentInterfacePtr & _content )
+    bool TextService::unloadTextEntry( const VectorConstString & _locales, const ContentInterfacePtr & _content )
     {
         TextLocalePackagePtr package = m_factoryTextLocalePackage->createObject( MENGINE_DOCUMENT_FACTORABLE );
         
-        if( package->initialize( _locale, _content ) == false )
+        if( package->initialize( _locales, _content ) == false )
         {
             return false;
         }

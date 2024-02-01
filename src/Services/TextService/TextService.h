@@ -33,8 +33,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool loadTextEntry( const ConstString & _locale, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) override;
-        bool unloadTextEntry( const ConstString & _locale, const ContentInterfacePtr & _content ) override;
+        bool loadTextEntry( const VectorConstString & _locales, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) override;
+        bool unloadTextEntry( const VectorConstString & _locales, const ContentInterfacePtr & _content ) override;
 
     public:
         bool hasTextEntry( const ConstString & _textId, TextEntryInterfacePtr * const _entry ) const override;

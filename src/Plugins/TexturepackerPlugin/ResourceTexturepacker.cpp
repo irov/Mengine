@@ -227,7 +227,7 @@ namespace Mengine
             , m_resourceJSON->getName().c_str()
         );
 
-        const ConstString & locale = this->getLocale();
+        const VectorConstString & locales = this->getLocales();
         const ConstString & groupName = this->getGroupName();
 
         if( m_resourceImage == nullptr )
@@ -236,7 +236,9 @@ namespace Mengine
 
             const Char * j_meta_image = j_meta["image"];
 
-            ResourceImagePtr resourceImage = resourceBank->createResource( locale, groupName, ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            ResourceCook cook = {.locales = locales, .type = STRINGIZE_STRING_LOCAL( "ResourceImageDefault" )};
+
+            ResourceImagePtr resourceImage = resourceBank->createResource( cook, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 
@@ -372,7 +374,7 @@ namespace Mengine
                 }
             }
 
-            ResourceImageSubstractPtr resourceImage = resourceBank->createResource( locale, groupName, ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageSubstract" ), false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            ResourceImageSubstractPtr resourceImage = resourceBank->createResource( {.groupName = groupName, .type = STRINGIZE_STRING_LOCAL( "ResourceImageSubstract" )}, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 

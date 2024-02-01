@@ -1164,8 +1164,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             ResourcePtr s_createResource( const ConstString & _type )
             {
+                ResourceCook cook;
+                cook.type = _type;
+
                 ResourcePtr resource = RESOURCE_SERVICE()
-                    ->createResource( ConstString::none(), ConstString::none(), ConstString::none(), _type, false, false, MENGINE_DOCUMENT_PYBIND );
+                    ->createResource( cook, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid create resource '%s'"
                     , _type.c_str()
@@ -1529,8 +1532,11 @@ namespace Mengine
                     maxSize = _maxSize;
                 }
 
+                //ResourceCook cook;
+                //cook.type = STRINGIZE_STRING_LOCAL( "ResourceImageDefault" );
+
                 ResourceImageDefaultPtr resource = RESOURCE_SERVICE()
-                    ->createResource( ConstString::none(), ConstString::none(), ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), false, false, MENGINE_DOCUMENT_PYBIND );
+                    ->createResource( {.type = STRINGIZE_STRING_LOCAL( "ResourceImageDefault" )}, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource );
 
@@ -1569,9 +1575,9 @@ namespace Mengine
             }
             //////////////////////////////////////////////////////////////////////////
             ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const Color & _color, const mt::vec2f & _maxSize )
-            {
+            {                
                 ResourceImageSolidPtr resource = RESOURCE_SERVICE()
-                    ->createResource( ConstString::none(), ConstString::none(), ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageSolid" ), false, false, MENGINE_DOCUMENT_PYBIND );
+                    ->createResource( {.type = STRINGIZE_STRING_LOCAL( "ResourceImageSolid" )}, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource );
 

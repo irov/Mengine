@@ -59,9 +59,9 @@ namespace Mengine
         m_content = _content;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Resource::setLocale( const ConstString & _locale )
+    void Resource::setLocales( const VectorConstString & _locales )
     {
-        m_locale = _locale;
+        m_locales = _locales;
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::setGroupName( const ConstString & _groupName )

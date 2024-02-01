@@ -201,7 +201,7 @@ namespace Mengine
                 continue;
             }
 
-            if( this->enableResources_( m_desc.locale, desc ) == false )
+            if( this->enableResources_( m_desc.locales, desc ) == false )
             {
                 LOGGER_ERROR( "invalid load file '%s' name '%s' resource '%s'"
                     , m_desc.path.c_str()
@@ -350,7 +350,7 @@ namespace Mengine
                 continue;
             }
 
-            if( this->disableResources_( m_desc.locale, desc ) == false )
+            if( this->disableResources_( m_desc.locales, desc ) == false )
             {
                 return false;
             }
@@ -432,7 +432,7 @@ namespace Mengine
     bool Package::enableText_( const PackageTextDesc & _desc )
     {
         bool successful = TEXT_SERVICE()
-            ->loadTextEntry( m_desc.locale, _desc.content, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadTextEntry( m_desc.locales, _desc.content, MENGINE_DOCUMENT_FACTORABLE );
 
         return successful;
     }
@@ -440,7 +440,7 @@ namespace Mengine
     bool Package::disableText_( const PackageTextDesc & _desc )
     {
         bool successful = TEXT_SERVICE()
-            ->unloadTextEntry( m_desc.locale, _desc.content );
+            ->unloadTextEntry( m_desc.locales, _desc.content );
 
         return successful;
     }
@@ -578,7 +578,7 @@ namespace Mengine
         m_settingsDesc.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::enableResources_( const ConstString & _locale, const PackageResourceDesc & _desc )
+    bool Package::enableResources_( const VectorConstString & _locales, const PackageResourceDesc & _desc )
     {
         Metacode::Meta_Data::Meta_DataBlock datablock;
 
@@ -634,8 +634,16 @@ namespace Mengine
                 return false;
             }
 
+            ResourceCook cook;
+            cook.locales = _locales;
+            cook.groupName = groupName;
+            cook.name = name;
+            cook.type = type;
+            cook.groupCache = true;
+            cook.keep = true;
+
             ResourcePtr resource = RESOURCE_SERVICE()
-                ->createResource( _locale, groupName, name, type, true, true, MENGINE_DOCUMENT_FACTORABLE );
+                ->createResource( cook, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, "file '%s' group '%s' resource '%s' type '%s' invalid create"
                 , Helper::getContentFullPath( _desc.content )
@@ -719,7 +727,7 @@ namespace Mengine
             desc.demand = _desc.demand;
             desc.ignored = _desc.ignored;
 
-            if( this->enableResources_( _locale, desc ) == false )
+            if( this->enableResources_( _locales, desc ) == false )
             {
                 LOGGER_ERROR( "load '%s' resource invalid load include '%s'"
                     , Helper::getContentFullPath( _desc.content )
@@ -733,7 +741,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::disableResources_( const ConstString & _locale, const PackageResourceDesc & _desc )
+    bool Package::disableResources_( const VectorConstString & _locales, const PackageResourceDesc & _desc )
     {
         Metacode::Meta_Data::Meta_DataBlock datablock;
 
@@ -774,7 +782,7 @@ namespace Mengine
             desc.demand = _desc.demand;
             desc.ignored = _desc.ignored;
 
-            if( this->disableResources_( _locale, _desc ) == false )
+            if( this->disableResources_( _locales, _desc ) == false )
             {
                 LOGGER_ERROR( "load '%s' resource invalid load include '%s'"
                     , Helper::getContentFullPath( _desc.content )

@@ -141,52 +141,54 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourcePointer ResourceBank::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _keep, Resource ** const _override, const DocumentInterfacePtr & _doc )
+    ResourcePointer ResourceBank::createResource( const ResourceCook & _cook, Resource ** const _override, const DocumentInterfacePtr & _doc )
     {
         MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::createResource" );
 
-        LOGGER_INFO( "resource", "create resource '%s' group '%s' type '%s' locale '%s' keep [%s]"
-            , _name.c_str()
-            , _groupName.c_str()
-            , _type.c_str()
-            , _locale.c_str()
-            , (_keep == true ? "true" : "false")
+        //ToDo
+
+        LOGGER_INFO( "resource", "create resource '%s' group '%s' type '%s' keep [%s]"
+            , _cook.name.c_str()
+            , _cook.groupName.c_str()
+            , _cook.type.c_str()
+            //, _locale.c_str()
+            , (_cook.keep == true ? "true" : "false")
         );
 
-        ResourcePtr resource = Helper::generatePrototype( Resource::getFactorableType(), _type, _doc );
+        ResourcePtr resource = Helper::generatePrototype( Resource::getFactorableType(), _cook.type, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid generate resource name '%s' type '%s' locale '%s' group '%s' doc '%s'"
-            , _name.c_str()
-            , _type.c_str()
-            , _locale.c_str()
-            , _groupName.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid generate resource name '%s' type '%s' group '%s' doc '%s'"
+            , _cook.name.c_str()
+            , _cook.type.c_str()
+            //, _locales.c_str()
+            , _cook.groupName.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
         resource->setResourceBank( this );
-        resource->setLocale( _locale );
-        resource->setGroupName( _groupName );
-        resource->setName( _name );
+        resource->setLocales( _cook.locales );
+        resource->setGroupName( _cook.groupName );
+        resource->setName( _cook.name );
 
-        resource->setKeep( _keep );
+        resource->setKeep( _cook.keep );
 
-        if( _keep == true )
+        if( _cook.keep == true )
         {
             IntrusivePtrBase::intrusive_ptr_add_ref( resource.get() );
         }
 
-        if( _name == ConstString::none() )
+        if( _cook.name == ConstString::none() )
         {
             return resource;
         }
 
         resource->setMapping( true );
 
-        ResourcePtrView prev_resource = m_resources.change( _name, resource );
+        ResourcePtrView prev_resource = m_resources.change( _cook.name, resource );
 
-        if( _groupName != ConstString::none() )
+        if( _cook.groupName != ConstString::none() )
         {
-            prev_resource = m_resourcesGroup.change( _groupName, _name, resource );
+            prev_resource = m_resourcesGroup.change( _cook.groupName, _cook.name, resource );
         }
 
         if( prev_resource != nullptr )
@@ -237,11 +239,13 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        LOGGER_INFO( "resource", "remove resource '%s' group '%s' type '%s' locale '%s'"
+        //ToDo
+
+        LOGGER_INFO( "resource", "remove resource '%s' group '%s' type '%s'"
             , _resource->getName().c_str()
             , _resource->getGroupName().c_str()
             , _resource->getType().c_str()
-            , _resource->getLocale().c_str()
+            //, _resource->getLocale().c_str()
         );
 
         _resource->finalize();

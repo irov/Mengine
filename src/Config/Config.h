@@ -148,7 +148,7 @@
 #endif
 
 #ifndef MENGINE_UNUSED
-#define MENGINE_UNUSED(X) ((void)sizeof(X))
+#define MENGINE_UNUSED(X) ((void)(X))
 #endif
 
 #ifndef MENGINE_NOP

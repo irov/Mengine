@@ -58,11 +58,13 @@ namespace Mengine
             return true;
         }
 
+        //ToDo
+
         LOGGER_INFO( "validate", "validate resource '%s' type '%s' group '%s' locale '%s'"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             , _resource->getGroupName().c_str()
-            , _resource->getLocale().c_str()
+            //, _resource->getLocale().c_str()
         );
 
         bool successful = validator->validate( _resource );

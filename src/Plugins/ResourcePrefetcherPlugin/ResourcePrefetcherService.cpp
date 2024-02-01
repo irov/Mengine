@@ -103,11 +103,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourcePrefetcherService::prefetchResource( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer )
     {
-        LOGGER_INFO( "prefetch", "prefetch resource '%s' type '%s' group '%s' locale '%s'"
+        //ToDo
+
+        LOGGER_INFO( "prefetch", "prefetch resource '%s' type '%s' group '%s'"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             , _resource->getGroupName().c_str()
-            , _resource->getLocale().c_str()
+            //, _resource->getLocale().c_str()
         );
 
         const ConstString & resourceType = _resource->getType();
@@ -126,11 +128,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourcePrefetcherService::unfetchResource( const ResourcePtr & _resource )
     {
-        LOGGER_INFO( "prefetch", "unfetch resource '%s' type '%s' group '%s' locale '%s'"
+        //ToDo
+
+        LOGGER_INFO( "prefetch", "unfetch resource '%s' type '%s' group '%s'"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             , _resource->getGroupName().c_str()
-            , _resource->getLocale().c_str()
+            //, _resource->getLocale().c_str()
         );
 
         const ConstString & resourceType = _resource->getType();

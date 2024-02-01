@@ -16,7 +16,7 @@ namespace Mengine
         ConstString type;
         ConstString format;
 
-        ConstString locale;
+        VectorConstString locales;
         Tags platform;
         Tags tags;
 

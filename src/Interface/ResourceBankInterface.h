@@ -17,6 +17,16 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    struct ResourceCook
+    {
+        VectorConstString locales;
+        ConstString groupName;
+        ConstString name;
+        ConstString type;
+        bool groupCache = false;
+        bool keep = false;
+    };
+    //////////////////////////////////////////////////////////////////////////
     class ResourceBankInterface
         : public ServantInterface
     {
@@ -25,13 +35,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual ResourcePointer createResource( const ConstString & _locale
-            , const ConstString & _groupName
-            , const ConstString & _name
-            , const ConstString & _type
-            , bool _keep
-            , Resource ** const _prev
-            , const DocumentInterfacePtr & _doc ) = 0;
+        virtual ResourcePointer createResource( const ResourceCook & _cook, Resource ** const _prev, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual void removeResource( const ResourcePtr & _resource ) = 0;

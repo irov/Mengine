@@ -24,7 +24,7 @@ namespace Mengine
         virtual ResourceBankInterfacePtr createResourceBank( uint32_t _reserved, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual ResourcePointer createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const DocumentInterfacePtr & _doc ) = 0;
+        virtual ResourcePointer createResource( const ResourceCook & _cook, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual void removeResource( const ResourcePtr & _resource ) = 0;

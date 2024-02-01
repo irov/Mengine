@@ -3,7 +3,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/ContentInterface.h"
 
-#include "Kernel/ConstString.h"
+#include "Kernel/VectorConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Factorable.h"
 
@@ -22,7 +22,7 @@ namespace Mengine
         ~TextLocalePackage() override;
 
     public:
-        bool initialize( const ConstString & _locale, const ContentInterfacePtr & _content );
+        bool initialize( const VectorConstString & _locales, const ContentInterfacePtr & _content );
         void finalize();
 
     public:
@@ -32,7 +32,7 @@ namespace Mengine
         MemoryInterfacePtr getXmlBuffer() const;
 
     protected:
-        ConstString m_locale;
+        VectorConstString m_locales;
 
         ContentInterfacePtr m_content;
 

@@ -2335,8 +2335,8 @@ namespace Mengine
             .def( "getGroupName", &Resource::getGroupName )
             .def( "initialize", &Resource::initialize )
             .def( "finalize", &Resource::finalize )
-            .def( "setLocale", &Resource::setLocale )
-            .def( "getLocale", &Resource::getLocale )
+            //.def( "setLocale", &Resource::setLocale )
+            //.def( "getLocale", &Resource::getLocale )
             .def( "cache", &Resource::cache )
             .def( "uncache", &Resource::uncache )
             ;

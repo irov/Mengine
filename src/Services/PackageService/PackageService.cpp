@@ -18,6 +18,8 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 
+#include "Config/Algorithm.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PackageService, Mengine::PackageService );
 //////////////////////////////////////////////////////////////////////////
@@ -32,7 +34,17 @@ namespace Mengine
             _config->hasValue( _name.c_str(), "Name", ConstString::none(), &_pack->name );
             _config->hasValue( _name.c_str(), "Type", STRINGIZE_STRING_LOCAL( "dir" ), &_pack->type );
             _config->hasValue( _name.c_str(), "Format", STRINGIZE_STRING_LOCAL( "xml" ), &_pack->format );
-            _config->hasValue( _name.c_str(), "Locale", ConstString::none(), &_pack->locale );
+            
+            ConstString locale;
+            _config->hasValue( _name.c_str(), "Locale", ConstString::none(), &locale );
+
+            _config->getValues( _name.c_str(), "Locales", &_pack->locales );
+
+            if( locale.empty() == false )
+            {
+                _pack->locales.emplace_back( locale );
+            }
+            
             _config->hasValue( _name.c_str(), "Platform", Tags(), &_pack->platform );
             _config->hasValue( _name.c_str(), "Tag", Tags(), &_pack->tags );
             _config->hasValue( _name.c_str(), "Category", ConstString::none(), &_pack->fileGroupName ); //deprecated
@@ -352,12 +364,12 @@ namespace Mengine
                 return true;
             }
 
-            if( desc.locale.empty() == true )
+            if( desc.locales.empty() == true )
             {
                 continue;
             }
 
-            if( desc.locale != _locale )
+            if( Algorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
             {
                 continue;
             }
@@ -384,7 +396,7 @@ namespace Mengine
         {
             const PackageDesc & desc = package->getPackageDesc();
 
-            if( desc.locale != _locale )
+            if( Algorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
             {
                 continue;
             }
@@ -417,7 +429,7 @@ namespace Mengine
                 continue;
             }
 
-            if( desc.locale.empty() == false )
+            if( desc.locales.empty() == false )
             {
                 continue;
             }
@@ -483,7 +495,7 @@ namespace Mengine
                 continue;
             }
 
-            if( desc.locale != _locale )
+            if( Algorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
             {
                 continue;
             }
@@ -515,7 +527,7 @@ namespace Mengine
                 continue;
             }
 
-            if( desc.locale != _locale )
+            if( Algorithm::find( desc.locales.begin(), desc.locales.end(), _locale ) == desc.locales.end() )
             {
                 continue;
             }

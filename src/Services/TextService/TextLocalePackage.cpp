@@ -21,9 +21,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextLocalePackage::initialize( const ConstString & _locale, const ContentInterfacePtr & _content )
+    bool TextLocalePackage::initialize( const VectorConstString & _locales, const ContentInterfacePtr & _content )
     {
-        m_locale = _locale;
+        m_locales = _locales;
         m_content = _content;
 
         InputStreamInterfacePtr stream = m_content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );

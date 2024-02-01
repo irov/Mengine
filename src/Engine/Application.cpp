@@ -826,8 +826,14 @@ namespace Mengine
         GAME_SERVICE()
             ->setGameViewport( gameViewport, gameViewportAspect );
 
+        ResourceCook resourceWhitePixelDesk;
+        resourceWhitePixelDesk.name = STRINGIZE_STRING_LOCAL( "WhitePixel" );
+        resourceWhitePixelDesk.type = STRINGIZE_STRING_LOCAL( "ResourceImage" );
+        resourceWhitePixelDesk.groupCache = false;
+        resourceWhitePixelDesk.keep = false;
+
         ResourceImagePtr resourceWhitePixel = RESOURCE_SERVICE()
-            ->createResource( ConstString::none(), ConstString::none(), STRINGIZE_STRING_LOCAL( "WhitePixel" ), STRINGIZE_STRING_LOCAL( "ResourceImage" ), false, false, MENGINE_DOCUMENT_FACTORABLE );
+            ->createResource( resourceWhitePixelDesk, MENGINE_DOCUMENT_FACTORABLE );
 
         resourceWhitePixel->setMaxSize( mt::vec2f( 2.f, 2.f ) );
         resourceWhitePixel->setSize( mt::vec2f( 2.f, 2.f ) );

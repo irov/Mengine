@@ -49,8 +49,8 @@ namespace Mengine
         MENGINE_INLINE const ContentInterfacePtr & getContent() const;
 
     public:
-        void setLocale( const ConstString & _locale );
-        MENGINE_INLINE const ConstString & getLocale() const;
+        void setLocales( const VectorConstString & _locales );
+        MENGINE_INLINE const VectorConstString & getLocales() const;
 
         void setGroupName( const ConstString & _groupName );
         MENGINE_INLINE const ConstString & getGroupName() const;
@@ -119,7 +119,7 @@ namespace Mengine
         ReferenceCounter m_prefetchReferenceCount;
         ReferenceCounter m_cacheReferenceCount;
 
-        ConstString m_locale;
+        VectorConstString m_locales;
         ConstString m_groupName;
         Tags m_tags;
 
@@ -143,9 +143,9 @@ namespace Mengine
         return m_content;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const ConstString & Resource::getLocale() const
+    MENGINE_INLINE const VectorConstString & Resource::getLocales() const
     {
-        return m_locale;
+        return m_locales;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const ConstString & Resource::getGroupName() const

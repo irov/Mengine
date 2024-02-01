@@ -17,6 +17,9 @@
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
+#include "Environment/Android/AndroidActivityHelper.h"
+#include "Environment/Android/AndroidApplicationHelper.h"
+
 
 #include "AndroidNativePythonHelper.h"
 #include "AndroidNativePythonFunctorVoid.h"
@@ -150,8 +153,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-            ANDROID_ENVIRONMENT_SERVICE()
-                ->callVoidActivityMethod( jenv, "onPythonEmbeddedInitialize", "()V" );
+            Helper::AndroidCallVoidActivityMethod( jenv, "onPythonEmbeddedInitialize", "()V" );
 
             ANDROID_ENVIRONMENT_SERVICE()
                 ->invokeAndroidEventations();
@@ -173,8 +175,7 @@ namespace Mengine
 
         if( Mengine_JNI_ExistMengineActivity() == JNI_TRUE )
         {
-            ANDROID_ENVIRONMENT_SERVICE()
-                ->callVoidActivityMethod( jenv, "onPythonEmbeddedFinalize", "()V" );
+            Helper::AndroidCallVoidActivityMethod( jenv, "onPythonEmbeddedFinalize", "()V" );
 
             ANDROID_ENVIRONMENT_SERVICE()
                 ->invokeAndroidEventations();
@@ -504,7 +505,7 @@ namespace Mengine
         jmethodID jmethodID_method;
         if( this->getAndroidMethod( jenv, _plugin, _method, _args, "J", jargs, jfree, &freeCount, &jplugin, &jmethodID_method ) == false )
         {
-            return 0ULL;
+            return 0LL;
         }
 
         jlong jresult = jenv->CallLongMethodA( jplugin, jmethodID_method, jargs );
@@ -891,8 +892,7 @@ namespace Mengine
 
         jstring sceneName_jvalue = jenv->NewStringUTF( sceneName_str );
 
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidActivityMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
+        Helper::AndroidCallVoidActivityMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
 
         jenv->DeleteLocalRef( sceneName_jvalue );
 
@@ -913,8 +913,7 @@ namespace Mengine
 
         jstring sceneName_jvalue = jenv->NewStringUTF( "" );
 
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidActivityMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
+        Helper::AndroidCallVoidActivityMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
 
         jenv->DeleteLocalRef( sceneName_jvalue );
 

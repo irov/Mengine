@@ -4,6 +4,7 @@
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
+#include "Environment/Android/AndroidApplicationHelper.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 
@@ -47,8 +48,7 @@ namespace Mengine
         jstring jkey = jenv->NewStringUTF( _key );
         jlong jdefault = (jlong)_default;
 
-        jlong jvalue = ANDROID_ENVIRONMENT_SERVICE()
-            ->callLongApplicationMethod( jenv, "getPreferenceInteger", "(Ljava/lang/String;J)J", jkey, jdefault );
+        jlong jvalue = Helper::AndroidCallLongApplicationMethod( jenv, "getPreferenceInteger", "(Ljava/lang/String;J)J", jkey, jdefault );
 
         jenv->DeleteLocalRef( jkey );
 
@@ -71,8 +71,7 @@ namespace Mengine
         jstring jkey = jenv->NewStringUTF( _key );
         jlong jvalue = (jlong)_value;
 
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidApplicationMethod( jenv, "setPreferenceInteger", "(Ljava/lang/String;J)V", jkey, jvalue );
+        Helper::AndroidCallVoidApplicationMethod( jenv, "setPreferenceInteger", "(Ljava/lang/String;J)V", jkey, jvalue );
 
         jenv->DeleteLocalRef( jkey );
 
@@ -92,8 +91,7 @@ namespace Mengine
 
         jstring jkey = jenv->NewStringUTF( _key );
 
-        jboolean exist = ANDROID_ENVIRONMENT_SERVICE()
-            ->callBooleanApplicationMethod( jenv, "hasPreference", "(Ljava/lang/String;)Z", jkey );
+        jboolean exist = Helper::AndroidCallBooleanApplicationMethod( jenv, "hasPreference", "(Ljava/lang/String;)Z", jkey );
 
         if( exist == JNI_FALSE )
         {
@@ -102,8 +100,7 @@ namespace Mengine
             return false;
         }
 
-        jstring jvalue = (jstring)ANDROID_ENVIRONMENT_SERVICE()
-            ->callObjectApplicationMethod( jenv, "getPreferenceString", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", jkey, nullptr );
+        jstring jvalue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getPreferenceString", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", jkey, nullptr );
 
         jenv->DeleteLocalRef( jkey );
 
@@ -128,8 +125,7 @@ namespace Mengine
         jstring jkey = jenv->NewStringUTF( _key );
         jstring jvalue = jenv->NewStringUTF( _value );
 
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidApplicationMethod( jenv, "setPreferenceString", "(Ljava/lang/String;Ljava/lang/String;)V", jkey, jvalue );
+        Helper::AndroidCallVoidApplicationMethod( jenv, "setPreferenceString", "(Ljava/lang/String;Ljava/lang/String;)V", jkey, jvalue );
 
         jenv->DeleteLocalRef( jkey );
         jenv->DeleteLocalRef( jvalue );
@@ -151,8 +147,7 @@ namespace Mengine
         jstring jkey = jenv->NewStringUTF( _key );
         jstring jdefault = jenv->NewStringUTF( _default.c_str() );
 
-        jstring jvalue = (jstring)ANDROID_ENVIRONMENT_SERVICE()
-            ->callObjectApplicationMethod( jenv, "getPreferenceString", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", jkey, jdefault );
+        jstring jvalue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getPreferenceString", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", jkey, jdefault );
 
         jenv->DeleteLocalRef( jkey );
 
@@ -177,8 +172,7 @@ namespace Mengine
         jstring jkey = jenv->NewStringUTF( _key );
         jstring jvalue = jenv->NewStringUTF( _value.c_str() );
 
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidApplicationMethod( jenv, "setPreferenceString", "(Ljava/lang/String;Ljava/lang/String;)V", jkey, jvalue );
+        Helper::AndroidCallVoidApplicationMethod( jenv, "setPreferenceString", "(Ljava/lang/String;Ljava/lang/String;)V", jkey, jvalue );
 
         jenv->DeleteLocalRef( jkey );
         jenv->DeleteLocalRef( jvalue );
@@ -199,8 +193,7 @@ namespace Mengine
 
         jstring jkey = jenv->NewStringUTF( _key );
 
-        jboolean exist = ANDROID_ENVIRONMENT_SERVICE()
-            ->callBooleanApplicationMethod( jenv, "hasPreference", "(Ljava/lang/String;)Z", jkey );
+        jboolean exist = Helper::AndroidCallBooleanApplicationMethod( jenv, "hasPreference", "(Ljava/lang/String;)Z", jkey );
 
         jenv->DeleteLocalRef( jkey );
 
@@ -220,8 +213,7 @@ namespace Mengine
 
         jstring jkey = jenv->NewStringUTF( _key );
 
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidApplicationMethod( jenv, "removePreference", "(Ljava/lang/String;)V", jkey );
+        Helper::AndroidCallVoidApplicationMethod( jenv, "removePreference", "(Ljava/lang/String;)V", jkey );
 
         jenv->DeleteLocalRef( jkey );
     }

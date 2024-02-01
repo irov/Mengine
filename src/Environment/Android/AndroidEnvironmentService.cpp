@@ -12,6 +12,8 @@
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
+#include "Environment/Android/AndroidActivityHelper.h"
+#include "Environment/Android/AndroidApplicationHelper.h"
 
 #include "AndroidSemaphoreListener.h"
 #include "AndroidProxyLogger.h"
@@ -353,12 +355,12 @@ namespace Mengine
         ANALYTICS_SERVICE()
             ->addEventProvider( AnalyticsEventProviderInterfacePtr::from(this) );
 
-        AndroidProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<AndroidProxyLogger>(MENGINE_DOCUMENT_FACTORABLE);
+        SERVICE_PROVIDER_GET()->waitService( "AndroidEnvironmentService", SERVICE_ID( LoggerServiceInterface ), [this]()
+        {
+            this->initializeLoggerService_();
 
-        LOGGER_SERVICE()
-            ->registerLogger( proxyLogger );
-
-        m_proxyLogger = proxyLogger;
+            return true;
+        } );
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_RUN, &AndroidEnvironmentService::notifyPlatformRun_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_STOP, &AndroidEnvironmentService::notifyPlatformStop_, MENGINE_DOCUMENT_FACTORABLE );
@@ -377,10 +379,13 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_END_UPDATE );
 
-        LOGGER_SERVICE()
-            ->unregisterLogger( m_proxyLogger );
+        if( m_proxyLogger != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_proxyLogger );
 
-        m_proxyLogger = nullptr;
+            m_proxyLogger = nullptr;
+        }
 
         ANALYTICS_SERVICE()
             ->removeEventProvider( AnalyticsEventProviderInterfacePtr::from(this) );
@@ -425,7 +430,7 @@ namespace Mengine
 
         jstring jurl = jenv->NewStringUTF( _url );
 
-        jboolean jresult = this->callBooleanActivityMethod( jenv, "linkingOpenURL", "(Ljava/lang/String;)Z", jurl );
+        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenURL", "(Ljava/lang/String;)Z", jurl );
 
         jenv->DeleteLocalRef( jurl );
 
@@ -447,206 +452,13 @@ namespace Mengine
         jstring jsubject = jenv->NewStringUTF( _subject );
         jstring jbody = jenv->NewStringUTF( _body );
 
-        jboolean jresult = this->callBooleanActivityMethod( jenv, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z", jemail, jsubject, jbody );
+        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z", jemail, jsubject, jbody );
 
         jenv->DeleteLocalRef( jemail );
         jenv->DeleteLocalRef( jsubject );
         jenv->DeleteLocalRef( jbody );
 
         return jresult;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::callVoidApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
-    {
-        jmethodID jmethodId = this->getApplicationMethodID( _jenv, _name, _signature );
-
-        jobject jobjectMengineApplication = Mengine_JNI_GetJObjectMengineApplication();
-
-        MENGINE_VA_LIST_TYPE args;
-        MENGINE_VA_LIST_START( args, _signature );
-
-        _jenv->CallVoidMethodV( jobjectMengineApplication, jmethodId, args );
-
-        MENGINE_VA_LIST_END( args );
-
-        Helper::jEnvExceptionCheck( _jenv );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::callVoidActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
-    {
-        jmethodID jmethodId = this->getActivityMethodID( _jenv, _name, _signature );
-
-        jobject jobjectMengineActivity = Mengine_JNI_GetJObjectMengineActivity();
-
-        MENGINE_VA_LIST_TYPE args;
-        MENGINE_VA_LIST_START( args, _signature );
-
-        _jenv->CallVoidMethodV( jobjectMengineActivity, jmethodId, args );
-
-        MENGINE_VA_LIST_END( args );
-
-        Helper::jEnvExceptionCheck( _jenv );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jobject AndroidEnvironmentService::callObjectActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
-    {
-        jmethodID jmethodId = this->getActivityMethodID( _jenv, _name, _signature );
-
-        jobject jobjectMengineActivity = Mengine_JNI_GetJObjectMengineActivity();
-
-        MENGINE_VA_LIST_TYPE args;
-        MENGINE_VA_LIST_START( args, _signature );
-
-        jobject jresult = _jenv->CallObjectMethodV( jobjectMengineActivity, jmethodId, args );
-
-        MENGINE_VA_LIST_END( args );
-
-        Helper::jEnvExceptionCheck( _jenv );
-
-        return jresult;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jboolean AndroidEnvironmentService::callBooleanActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
-    {
-        jmethodID jmethodId = this->getActivityMethodID( _jenv, _name, _signature );
-
-        jobject jobjectMengineActivity = Mengine_JNI_GetJObjectMengineActivity();
-
-        MENGINE_VA_LIST_TYPE args;
-        MENGINE_VA_LIST_START( args, _signature );
-
-        jboolean jresult = _jenv->CallBooleanMethodV( jobjectMengineActivity, jmethodId, args );
-
-        MENGINE_VA_LIST_END( args );
-
-        Helper::jEnvExceptionCheck( _jenv );
-
-        return jresult;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jint AndroidEnvironmentService::callIntActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
-    {
-        jmethodID jmethodId = this->getActivityMethodID( _jenv, _name, _signature );
-
-        jobject jobjectMengineActivity = Mengine_JNI_GetJObjectMengineActivity();
-
-        MENGINE_VA_LIST_TYPE args;
-        MENGINE_VA_LIST_START( args, _signature );
-
-        jint jresult = _jenv->CallIntMethodV( jobjectMengineActivity, jmethodId, args );
-
-        MENGINE_VA_LIST_END( args );
-
-        Helper::jEnvExceptionCheck( _jenv );
-
-        return jresult;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jlong AndroidEnvironmentService::callLongActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
-    {
-        jmethodID jmethodId = this->getActivityMethodID( _jenv, _name, _signature );
-
-        jobject jobjectMengineActivity = Mengine_JNI_GetJObjectMengineActivity();
-
-        MENGINE_VA_LIST_TYPE args;
-        MENGINE_VA_LIST_START( args, _signature );
-
-        jlong jresult = _jenv->CallLongMethodV( jobjectMengineActivity, jmethodId, args );
-
-        MENGINE_VA_LIST_END( args );
-
-        Helper::jEnvExceptionCheck( _jenv );
-
-        return jresult;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jclass AndroidEnvironmentService::getJClass( JNIEnv * _jenv, const Char * _signature ) const
-    {
-        jclass clazz = _jenv->FindClass( _signature );
-
-        return clazz;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jmethodID AndroidEnvironmentService::getApplicationMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const
-    {
-        jclass jclassMengineApplication = Mengine_JNI_GetJClassMengineApplication();
-
-        jmethodID jmethodID_function = _jenv->GetMethodID( jclassMengineApplication, _name, _signature );
-
-        MENGINE_ASSERTION_FATAL( jmethodID_function != nullptr, "invalid get android application method '%s' with signature '%s'"
-            , _name
-            , _signature
-        );
-
-        return jmethodID_function;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jmethodID AndroidEnvironmentService::getActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const
-    {
-        jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
-
-        jmethodID jmethodID_function = _jenv->GetMethodID( jclassMengineActivity, _name, _signature );
-
-        MENGINE_ASSERTION_FATAL( jmethodID_function != nullptr, "invalid get android activity method '%s' with signature '%s'"
-        	, _name
-        	, _signature
-        );
-
-        return jmethodID_function;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jboolean AndroidEnvironmentService::callBooleanApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
-    {
-        jmethodID jmethodId = this->getApplicationMethodID( _jenv, _name, _signature );
-
-        jobject jobjectMengineApplication = Mengine_JNI_GetJObjectMengineApplication();
-
-        MENGINE_VA_LIST_TYPE args;
-        MENGINE_VA_LIST_START( args, _signature );
-
-        jboolean jresult = _jenv->CallBooleanMethodV( jobjectMengineApplication, jmethodId, args );
-
-        MENGINE_VA_LIST_END( args );
-
-        Helper::jEnvExceptionCheck( _jenv );
-
-        return jresult;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jobject AndroidEnvironmentService::callObjectApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
-    {
-        jmethodID jmethodId = this->getApplicationMethodID( _jenv, _name, _signature );
-
-        jobject jobjectMengineApplication = Mengine_JNI_GetJObjectMengineApplication();
-
-        MENGINE_VA_LIST_TYPE args;
-        MENGINE_VA_LIST_START( args, _signature );
-
-        jobject result_jobject = _jenv->CallObjectMethodV( jobjectMengineApplication, jmethodId, args );
-
-        MENGINE_VA_LIST_END( args );
-
-        Helper::jEnvExceptionCheck( _jenv );
-
-        return result_jobject;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jlong AndroidEnvironmentService::callLongApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const
-    {
-        jmethodID jmethodId = this->getApplicationMethodID( _jenv, _name, _signature );
-
-        jobject jobjectMengineApplication = Mengine_JNI_GetJObjectMengineApplication();
-
-        MENGINE_VA_LIST_TYPE args;
-        MENGINE_VA_LIST_START( args, _signature );
-
-        jlong result_jobject = _jenv->CallLongMethodV( jobjectMengineApplication, jmethodId, args );
-
-        MENGINE_VA_LIST_END( args );
-
-        Helper::jEnvExceptionCheck( _jenv );
-
-        return result_jobject;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidEnvironmentService::getAndroidId( Char * _androidId, size_t _capacity ) const
@@ -660,7 +472,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jstring jReturnValue = (jstring)this->callObjectApplicationMethod( jenv, "getAndroidId", "()Ljava/lang/String;" );
+        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getAndroidId", "()Ljava/lang/String;" );
 
         const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
         jsize jStringLen = jenv->GetStringLength( jReturnValue );
@@ -684,7 +496,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jstring jReturnValue = (jstring)this->callObjectApplicationMethod( jenv, "getDeviceName", "()Ljava/lang/String;" );
+        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getDeviceName", "()Ljava/lang/String;" );
 
         const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
         jsize jStringLen = jenv->GetStringLength( jReturnValue );
@@ -708,7 +520,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jstring jReturnValue = (jstring) this->callObjectApplicationMethod(jenv, "getDeviceLanguage", "()Ljava/lang/String;" );
+        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getDeviceLanguage", "()Ljava/lang/String;" );
 
         const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
         jsize jStringLen = jenv->GetStringLength( jReturnValue );
@@ -732,7 +544,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jstring jReturnValue = (jstring) this->callObjectApplicationMethod( jenv, "getPackageName", "()Ljava/lang/String;" );
+        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getPackageName", "()Ljava/lang/String;" );
 
         const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
         jsize jStringLen = jenv->GetStringLength( jReturnValue );
@@ -871,7 +683,7 @@ namespace Mengine
                jenv->DeleteLocalRef( jclass_Map );
            });
 
-        this->callVoidApplicationMethod( jenv, "onMengineAnalyticsEvent", "(Ljava/lang/String;JLjava/util/Map;Ljava/util/Map;)V", eventName_jobject, (jlong)eventTimestamp, bases_jobject, parameters_jobject );
+        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineAnalyticsEvent", "(Ljava/lang/String;JLjava/util/Map;Ljava/util/Map;)V", eventName_jobject, (jlong)eventTimestamp, bases_jobject, parameters_jobject );
 
         jenv->DeleteLocalRef( eventName_jobject );
         jenv->DeleteLocalRef(bases_jobject );
@@ -892,7 +704,7 @@ namespace Mengine
         jobject screenType_jobject = Helper::makeJObjectString( jenv, _screenType );
         jobject screenName_jobject = Helper::makeJObjectString( jenv, _screenName );
 
-        this->callVoidApplicationMethod( jenv, "onMengineAnalyticsScreenView", "(Ljava/lang/String;Ljava/lang/String;)V", screenType_jobject, screenName_jobject );
+        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineAnalyticsScreenView", "(Ljava/lang/String;Ljava/lang/String;)V", screenType_jobject, screenName_jobject );
 
         jenv->DeleteLocalRef( screenType_jobject );
         jenv->DeleteLocalRef(screenName_jobject );
@@ -909,7 +721,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        this->callVoidApplicationMethod( jenv, "onMengineAnalyticsFlush", "()V" );
+        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineAnalyticsFlush", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::notifyPlatformRun_()
@@ -923,7 +735,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        this->callVoidActivityMethod( jenv, "onMenginePlatformRun", "()V" );
+        Helper::AndroidCallVoidActivityMethod( jenv, "onMenginePlatformRun", "()V" );
 
         m_androidEventationHub->invoke();
     }
@@ -939,7 +751,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        this->callVoidActivityMethod( jenv, "onMenginePlatformStop", "()V" );
+        Helper::AndroidCallVoidActivityMethod( jenv, "onMenginePlatformStop", "()V" );
 
         m_androidEventationHub->invoke();
     }
@@ -975,9 +787,20 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        this->callVoidActivityMethod( jenv, "onMengineCreateApplication", "()V" );
+        Helper::AndroidCallVoidActivityMethod( jenv, "onMengineCreateApplication", "()V" );
 
         m_androidEventationHub->invoke();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidEnvironmentService::initializeLoggerService_()
+    {
+        AndroidProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<AndroidProxyLogger>(MENGINE_DOCUMENT_FACTORABLE);
+
+        if( LOGGER_SERVICE()
+            ->registerLogger( proxyLogger ) == true )
+        {
+            m_proxyLogger = proxyLogger;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

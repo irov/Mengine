@@ -1,8 +1,7 @@
 #include "AndroidProxyLogger.h"
 
-#include "Interface/AndroidEnvironmentServiceInterface.h"
-
 #include "Environment/Android/AndroidEnv.h"
+#include "Environment/Android/AndroidApplicationHelper.h"
 
 #include "Kernel/AssertionUtf8.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -67,8 +66,7 @@ namespace Mengine
 
         jstring data_jstring = jenv->NewStringUTF( msg );
 
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->callVoidApplicationMethod( jenv, "onMengineLogger", "(ILjava/lang/String;Ljava/lang/String;)V", level, category_jstring, data_jstring );
+        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineLogger", "(ILjava/lang/String;Ljava/lang/String;)V", level, category_jstring, data_jstring );
 
         jenv->DeleteLocalRef( category_jstring );
         jenv->DeleteLocalRef( data_jstring );

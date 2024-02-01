@@ -25,25 +25,6 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void callVoidApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
-        jobject callObjectApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
-        jboolean callBooleanApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
-        jlong callLongApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
-
-    public:
-        void callVoidActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
-        jobject callObjectActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
-        jboolean callBooleanActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
-        jint callIntActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
-        jlong callLongActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const override;
-
-
-    protected:
-        jclass getJClass( JNIEnv * _jenv, const Char * _signature ) const;
-        jmethodID getActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const;
-        jmethodID getApplicationMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature ) const;
-
-    public:
         size_t getAndroidId( Char * _androidId, size_t _capacity ) const override;
         size_t getDeviceName( Char * _deviceName, size_t _capacity ) const override;
         size_t getDeviceLanguage( Char * _deviceName, size_t _capacity ) const override;
@@ -72,6 +53,9 @@ namespace Mengine
         void notifyApplicationBeginUpdate_();
         void notifyApplicationEndUpdate_();
         void notifyBootstrapperCreateApplication_();
+
+    protected:
+        void initializeLoggerService_();
 
     protected:
         AndroidEventationHubPtr m_androidEventationHub;

@@ -126,7 +126,6 @@ namespace Mengine
         Detail::addAndroidBuildConfigOptions( jenv, "MENGINE_APP_OPTIONS", arguments );
 #endif
 
-
 #if !defined(MENGINE_BUILD_PUBLISH)
         Char MengineApplePersistentArguments[1024] = {'\0'};
         if( PREFERENCES_SYSTEM()
@@ -170,29 +169,32 @@ namespace Mengine
 
         loggerStdio->setWriteHistory( true );
 
-        LOGGER_SERVICE()
-            ->registerLogger( loggerStdio );
-
-        m_loggerStdio = loggerStdio;
+        if( LOGGER_SERVICE()
+            ->registerLogger( loggerStdio ) == true )
+        {
+            m_loggerStdio = loggerStdio;
+        }
 
         LoggerInterfacePtr loggerMessageBox = Helper::makeFactorableUnique<SDLMessageBoxLogger>( MENGINE_DOCUMENT_FUNCTION );
 
         loggerMessageBox->setVerboseLevel( LM_FATAL );
 
-        LOGGER_SERVICE()
-            ->registerLogger( loggerMessageBox );
-
-        m_loggerMessageBox = loggerMessageBox;
+        if( LOGGER_SERVICE()
+            ->registerLogger( loggerMessageBox ) == true )
+        {
+            m_loggerMessageBox = loggerMessageBox;
+        }
 
 #if defined(MENGINE_WINDOWS_DEBUG)
         Win32OutputDebugLoggerPtr loggerOutputDebug = Helper::makeFactorableUnique<Win32OutputDebugLogger>( MENGINE_DOCUMENT_FUNCTION );
 
         loggerOutputDebug->setVerboseLevel( LM_MESSAGE );
 
-        LOGGER_SERVICE()
-            ->registerLogger( loggerOutputDebug );
-
-        m_loggerOutputDebug = loggerOutputDebug;
+        if( LOGGER_SERVICE()
+            ->registerLogger( loggerOutputDebug ) == true )
+        {
+            m_loggerOutputDebug = loggerOutputDebug;
+        }
 #endif
 
         return true;

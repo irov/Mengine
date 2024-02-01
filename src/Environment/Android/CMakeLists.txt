@@ -9,6 +9,10 @@ src
     AndroidEventationHub.cpp
     AndroidEnv.h
     AndroidEnv.cpp
+    AndroidActivityHelper.h
+    AndroidActivityHelper.cpp
+    AndroidApplicationHelper.h
+    AndroidApplicationHelper.cpp
     AndroidHelper.h
     AndroidHelper.cpp
 

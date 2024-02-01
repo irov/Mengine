@@ -15,20 +15,6 @@ namespace Mengine
         SERVICE_DECLARE( "AndroidEnvironmentService" )
 
     public:
-        virtual void callVoidApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
-        virtual jobject callObjectApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
-        virtual jboolean callBooleanApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
-        virtual jlong callLongApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
-
-    public:
-        virtual void callVoidActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
-        virtual jobject callObjectActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
-        virtual jboolean callBooleanActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
-        virtual jint callIntActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
-        virtual jlong callLongActivityMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... ) const = 0;
-
-
-    public:
         virtual size_t getAndroidId( Char * _androidId, size_t _capacity ) const = 0;
         virtual size_t getDeviceName( Char * _androidId, size_t _capacity ) const = 0;
         virtual size_t getDeviceLanguage( Char * _deviceName, size_t _capacity ) const = 0;

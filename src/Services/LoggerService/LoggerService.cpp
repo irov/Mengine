@@ -250,8 +250,10 @@ namespace Mengine
     void LoggerService::_finalizeService()
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CONFIGS_LOAD );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE );
 
         m_memoryOldLog = nullptr;
+        m_currentContentLog = nullptr;
 
         m_mutexMessage = nullptr;
         m_mutexHistory = nullptr;

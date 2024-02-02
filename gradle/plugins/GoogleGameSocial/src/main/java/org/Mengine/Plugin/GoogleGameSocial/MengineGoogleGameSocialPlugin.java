@@ -45,7 +45,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
         RC_SIGN_IN = activity.genRequestCode("RC_SIGN_IN");
         RC_UNUSED = activity.genRequestCode("RC_UNUSED");
 
-        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
             .build();
 
         m_signInClient = GoogleSignIn.getClient(activity, signInOptions);

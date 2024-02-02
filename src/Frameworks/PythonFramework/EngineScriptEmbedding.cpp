@@ -1532,11 +1532,11 @@ namespace Mengine
                     maxSize = _maxSize;
                 }
 
-                //ResourceCook cook;
-                //cook.type = STRINGIZE_STRING_LOCAL( "ResourceImageDefault" );
-
+                ResourceCook cook;
+                cook.type = STRINGIZE_STRING_LOCAL( "ResourceImageDefault" );
+                
                 ResourceImageDefaultPtr resource = RESOURCE_SERVICE()
-                    ->createResource( {.type = STRINGIZE_STRING_LOCAL( "ResourceImageDefault" )}, MENGINE_DOCUMENT_PYBIND );
+                    ->createResource( cook, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource );
 
@@ -1576,8 +1576,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const Color & _color, const mt::vec2f & _maxSize )
             {                
+                ResourceCook cook;
+                cook.type = STRINGIZE_STRING_LOCAL( "ResourceImageSolid" );
+
                 ResourceImageSolidPtr resource = RESOURCE_SERVICE()
-                    ->createResource( {.type = STRINGIZE_STRING_LOCAL( "ResourceImageSolid" )}, MENGINE_DOCUMENT_PYBIND );
+                    ->createResource( cook, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( resource );
 

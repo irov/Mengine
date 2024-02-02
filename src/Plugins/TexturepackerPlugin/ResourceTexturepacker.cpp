@@ -236,7 +236,9 @@ namespace Mengine
 
             const Char * j_meta_image = j_meta["image"];
 
-            ResourceCook cook = {.locales = locales, .type = STRINGIZE_STRING_LOCAL( "ResourceImageDefault" )};
+            ResourceCook cook;
+            cook.locales = locales;
+            cook.type = STRINGIZE_STRING_LOCAL( "ResourceImageDefault" );
 
             ResourceImagePtr resourceImage = resourceBank->createResource( cook, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -374,7 +376,11 @@ namespace Mengine
                 }
             }
 
-            ResourceImageSubstractPtr resourceImage = resourceBank->createResource( {.groupName = groupName, .type = STRINGIZE_STRING_LOCAL( "ResourceImageSubstract" )}, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+            ResourceCook cook;
+            cook.groupName = groupName;
+            cook.type = STRINGIZE_STRING_LOCAL( "ResourceImageSubstract" );
+
+            ResourceImageSubstractPtr resourceImage = resourceBank->createResource( cook, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
 

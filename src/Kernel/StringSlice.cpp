@@ -15,7 +15,7 @@ namespace Mengine
 
             size_t data_index = 0;
 
-            for( ; data_index + 1024 < _capacity; data_index += _capacity )
+            for( ; data_index + _capacity < _size; data_index += _capacity )
             {
                 MENGINE_MEMCPY( _buffer, _in + data_index, _capacity );
                 _buffer[_capacity] = '\0';
@@ -23,12 +23,14 @@ namespace Mengine
                 _lambda( _buffer );
             }
 
-            if( data_index != _size )
+            if( data_index == _size )
             {
-                const Char * tail = _in + data_index;
-
-                _lambda( tail );
+                return;
             }
+             
+            const Char * tail = _in + data_index;
+
+            _lambda( tail );
         }
     }
 }

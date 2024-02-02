@@ -27,7 +27,6 @@
 #include "Kernel/ProxyLogger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/LoggerHelper.h"
-#include "Kernel/StringSlice.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"
@@ -99,96 +98,24 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1writeLoggerHistoryToFile )(JNIEnv * env, jclass cls, jobject _writer)
+    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1writeCurrentLogToFile )(JNIEnv * env, jclass cls, jobject _writer)
     {
-        Mengine::ProxyLoggerPtr proxyLog = Mengine::Helper::makeFactorableUnique<Mengine::ProxyLogger>( MENGINE_DOCUMENT_FUNCTION );
+        const Mengine::ContentInterfacePtr & content = LOGGER_SERVICE()
+            ->getCurrentContentLog();
 
-        if( proxyLog->initializeLogger() == false )
+        if( content == nullptr )
         {
             return JNI_FALSE;
         }
 
-        proxyLog->setLambda([env, _writer]( const Mengine::LoggerMessage & _message ) {
-            jclass jclass_Writer = env->GetObjectClass( _writer );
-            jmethodID jmethodID_Writer_write_String = env->GetMethodID( jclass_Writer, "write", "(Ljava/lang/String;)V" );
-            jmethodID jmethodID_Writer_write_Char = env->GetMethodID( jclass_Writer, "write", "(I)V" );
+        Mengine::MemoryInterfacePtr memory = content->createMemoryFile( false, true, MENGINE_DOCUMENT_FUNCTION );
 
-            if( _message.flag & Mengine::LFLAG_FUNCTIONSTAMP )
-            {
-                Mengine::Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
-                Mengine::Helper::makeLoggerFunctionStamp( _message.file, _message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+        if( memory == nullptr )
+        {
+            return JNI_FALSE;
+        }
 
-                jstring jvalue = env->NewStringUTF( functionstamp );
-                env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
-                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ' ' );
-                env->DeleteLocalRef( jvalue );
-            }
-
-            if( _message.flag & Mengine::LFLAG_TIMESTAMP )
-            {
-                Mengine::Char shortDate[256] = {'\0'};
-                Mengine::Helper::makeLoggerShortDate( _message.timestamp, "[%02u:%02u:%02u:%04u]", shortDate, 0, 256 );
-
-                jstring jvalue = env->NewStringUTF( shortDate );
-                env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
-                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ' ' );
-                env->DeleteLocalRef( jvalue );
-            }
-
-            if( _message.flag & Mengine::LFLAG_THREADSTAMP )
-            {
-                Mengine::Char threadstamp[256] = {'\0'};
-                Mengine::Helper::makeLoggerThreadStamp( _message.threadName, "|%s|", threadstamp, 0, 256 );
-
-                jstring jvalue = env->NewStringUTF( threadstamp );
-                env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
-                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ' ' );
-                env->DeleteLocalRef( jvalue );
-            }
-
-            if( _message.flag & Mengine::LFLAG_SYMBOLSTAMP )
-            {
-                Mengine::ELoggerLevel level = _message.level;
-
-                Mengine::Char symbol = Mengine::Helper::getLoggerLevelSymbol( level );
-
-                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, symbol );
-                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ' ' );
-            }
-
-            if( _message.flag & Mengine::LFLAG_CATEGORYSTAMP )
-            {
-                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, '[' );
-
-                jstring jvalue = env->NewStringUTF( _message.category );
-                env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
-                env->DeleteLocalRef( jvalue );
-
-                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ']' );
-                env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, ' ' );
-            }
-
-            const Mengine::Char * data_value = _message.data;
-            size_t data_size = _message.size;
-
-            Mengine::Char msg[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
-            MENGINE_MEMCPY( msg, data_value, data_size * sizeof(Mengine::Char) );
-            msg[data_size] = '\0';
-
-            jstring jvalue = env->NewStringUTF( msg );
-            env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
-            env->DeleteLocalRef( jvalue );
-
-            env->CallVoidMethod( _writer, jmethodID_Writer_write_Char, '\n' );
-
-            env->DeleteLocalRef( jclass_Writer );
-        });
-
-        LOGGER_SERVICE()
-            ->writeHistory( proxyLog );
-
-        proxyLog->flush();
-        proxyLog = nullptr;
+        Mengine::Helper::AndroidWriteMemory( env, memory, _writer );
 
         return JNI_TRUE;
     }
@@ -203,21 +130,7 @@ extern "C"
             return JNI_FALSE;
         }
 
-        jclass jclass_Writer = env->GetObjectClass( _writer );
-        jmethodID jmethodID_Writer_write_String = env->GetMethodID( jclass_Writer, "write", "(Ljava/lang/String;)V" );
-
-        const Mengine::Char * data_value = memory->getBuffer();
-        size_t data_size = memory->getSize();
-
-        Mengine::Char jvalue_str[1024 + 1] = {'\0'};
-        Mengine::Helper::stringSlice( data_value, data_size, jvalue_str, 1024, [env, _writer, jmethodID_Writer_write_String]( const Mengine::Char * _str )
-        {
-            jstring jvalue = env->NewStringUTF( _str );
-            env->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
-            env->DeleteLocalRef( jvalue );
-        });
-
-        env->DeleteLocalRef( jclass_Writer );
+        Mengine::Helper::AndroidWriteMemory( env, memory, _writer );
 
         return JNI_TRUE;
     }
@@ -243,7 +156,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AnroidEnvironmentService_1activateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
     {
-        Mengine::ConstString name = Mengine::Helper::makeConstStringFromJString( env, _name );
+        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString(env, _name);
 
         SEMAPHORE_SERVICE()
             ->activateSemaphore( name );
@@ -251,7 +164,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AnroidEnvironmentService_1deactivateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
     {
-        Mengine::ConstString name = Mengine::Helper::makeConstStringFromJString( env, _name );
+        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString(env, _name);
 
         SEMAPHORE_SERVICE()
             ->deactivateSemaphore( name );
@@ -259,7 +172,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AnroidEnvironmentService_1waitSemaphore )(JNIEnv * env, jclass cls, jstring _name, jobject _cb)
     {
-        Mengine::ConstString name = Mengine::Helper::makeConstStringFromJString( env, _name );
+        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString(env, _name);
 
         Mengine::AndroidSemaphoreListenerPtr listener = Mengine::Helper::makeFactorableUnique<Mengine::AndroidSemaphoreListener>( MENGINE_DOCUMENT_FUNCTION, env, _cb );
 
@@ -613,19 +526,19 @@ namespace Mengine
 
         const ConstString & eventName = _event->getName();
 
-        jobject eventName_jobject = Helper::makeJObjectString( jenv, eventName );
+        jobject eventName_jobject = Helper::AndroidMakeJObjectString(jenv, eventName);
 
         Timestamp eventTimestamp = _event->getTimestamp();
 
-        jobject bases_jobject = Helper::makeJObjectHashMap( jenv, 0 );
+        jobject bases_jobject = Helper::AndroidMakeJObjectHashMap(jenv, 0);
 
         uint32_t countParameters = _event->getCountParameters();
 
-        jobject parameters_jobject = Helper::makeJObjectHashMap( jenv, countParameters );
+        jobject parameters_jobject = Helper::AndroidMakeJObjectHashMap(jenv, countParameters);
 
         _event->foreachParameters( [parameters_jobject, jenv]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
            {
-               jobject name_jvalue = Helper::makeJObjectString( jenv, _name );
+               jobject name_jvalue = Helper::AndroidMakeJObjectString(jenv, _name);
 
                EAnalyticsEventParameterType parameterType = _parameter->getType();
 
@@ -638,35 +551,35 @@ namespace Mengine
                        AnalyticsEventParameterBooleanInterfacePtr parameter_boolean = AnalyticsEventParameterBooleanInterfacePtr::from( _parameter );
                        bool parameter_value = parameter_boolean->resolveValue();
 
-                       parameter_jobject = Helper::makeJObjectBoolean( jenv, parameter_value );
+                       parameter_jobject = Helper::AndroidMakeJObjectBoolean(jenv, parameter_value);
                    }break;
                case EAEPT_INTEGER:
                    {
                        AnalyticsEventParameterIntegerInterfacePtr parameter_integer = AnalyticsEventParameterIntegerInterfacePtr::from( _parameter );
                        int64_t parameter_value = parameter_integer->resolveValue();
 
-                       parameter_jobject = Helper::makeJObjectLong( jenv, parameter_value );
+                       parameter_jobject = Helper::AndroidMakeJObjectLong(jenv, parameter_value);
                    }break;
                case EAEPT_DOUBLE:
                    {
                        AnalyticsEventParameterDoubleInterfacePtr parameter_double = AnalyticsEventParameterDoubleInterfacePtr::from( _parameter );
                        double parameter_value = parameter_double->resolveValue();
 
-                       parameter_jobject = Helper::makeJObjectDouble( jenv, parameter_value );
+                       parameter_jobject = Helper::AndroidMakeJObjectDouble(jenv, parameter_value);
                    }break;
                case EAEPT_STRING:
                    {
                        AnalyticsEventParameterStringInterfacePtr parameter_string = AnalyticsEventParameterStringInterfacePtr::from( _parameter );
                        const String & parameter_value = parameter_string->resolveValue();
 
-                       parameter_jobject = Helper::makeJObjectString( jenv, parameter_value );
+                       parameter_jobject = Helper::AndroidMakeJObjectString(jenv, parameter_value);
                    }break;
                case EAEPT_CONSTSTRING:
                    {
                        AnalyticsEventParameterConstStringInterfacePtr parameter_conststring = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
                        const ConstString & parameter_value = parameter_conststring->resolveValue();
 
-                       parameter_jobject = Helper::makeJObjectString( jenv, parameter_value );
+                       parameter_jobject = Helper::AndroidMakeJObjectString(jenv, parameter_value);
                    }break;
                }
 
@@ -676,7 +589,7 @@ namespace Mengine
 
                jobject result_jobject = jenv->CallObjectMethod( parameters_jobject, jmethodID_Map_put, name_jvalue, parameter_jobject );
 
-               Helper::jEnvExceptionCheck( jenv );
+               Helper::AndroidEnvExceptionCheck(jenv);
 
                jenv->DeleteLocalRef( result_jobject );
                jenv->DeleteLocalRef( parameter_jobject );
@@ -701,8 +614,8 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jobject screenType_jobject = Helper::makeJObjectString( jenv, _screenType );
-        jobject screenName_jobject = Helper::makeJObjectString( jenv, _screenName );
+        jobject screenType_jobject = Helper::AndroidMakeJObjectString(jenv, _screenType);
+        jobject screenName_jobject = Helper::AndroidMakeJObjectString(jenv, _screenName);
 
         Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineAnalyticsScreenView", "(Ljava/lang/String;Ljava/lang/String;)V", screenType_jobject, screenName_jobject );
 

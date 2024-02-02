@@ -28,7 +28,7 @@ namespace Mengine
 
         jenv->CallVoidMethod( m_cb, jclass_Listener_call );
 
-        Helper::jEnvExceptionCheck( jenv );
+        Helper::AndroidEnvExceptionCheck(jenv);
 
         jenv->DeleteLocalRef( jclass_Listener );
     }

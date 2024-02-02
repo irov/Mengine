@@ -201,7 +201,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutexMessage );
 
-        m_mutexMessage = mutexMessage;        
+        m_mutexMessage = mutexMessage;
 
         ThreadSharedMutexInterfacePtr mutexLogger = THREAD_SYSTEM()
             ->createSharedMutex( MENGINE_DOCUMENT_FACTORABLE );
@@ -224,6 +224,7 @@ namespace Mengine
         m_mutexMessageBlock = mutexMessageBlock;
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CONFIGS_LOAD, &LoggerService::notifyConfigsLoad_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE, &LoggerService::notifyBootstrapperRunCompete_, MENGINE_DOCUMENT_FACTORABLE );
 
         ThreadConditionVariableInterfacePtr conditionLogger = THREAD_SYSTEM()
             ->createConditionVariable( MENGINE_DOCUMENT_FACTORABLE );
@@ -469,6 +470,14 @@ namespace Mengine
         m_verboses.insert( m_verboses.begin(), verboses.begin(), verboses.end() );
     }
     //////////////////////////////////////////////////////////////////////////
+    void LoggerService::notifyBootstrapperRunCompete_()
+    {
+        m_historically = false;
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexHistory );
+        m_history.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void LoggerService::processMessages_( const ThreadIdentityRunnerInterfacePtr & _runner )
     {
         for( ;; )
@@ -585,6 +594,16 @@ namespace Mengine
     const MemoryInterfacePtr & LoggerService::getOldLogMemory() const
     {
         return m_memoryOldLog;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerService::setCurrentContentLog( const ContentInterfacePtr & _content )
+    {
+        m_currentContentLog = _content;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ContentInterfacePtr & LoggerService::getCurrentContentLog() const
+    {
+        return m_currentContentLog;
     }
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::registerLogger( const LoggerInterfacePtr & _logger )

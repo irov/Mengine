@@ -53,7 +53,8 @@ extern "C" {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidDevDebuggerMengine_1createDevTab )(JNIEnv * env, jclass cls, jstring _tab)
     {
-        Mengine::ConstString tab_cstr = Mengine::Helper::makeConstStringFromJString( env, _tab );
+        Mengine::ConstString tab_cstr = Mengine::Helper::AndroidMakeConstStringFromJString(env,
+                                                                                           _tab);
 
         if( DEVTODEBUG_SERVICE()
             ->hasTab( tab_cstr ) == false )
@@ -75,9 +76,9 @@ extern "C" {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidDevDebuggerMengine_1addDevButton )(JNIEnv * env, jclass cls, jstring _tab, jstring _id, jstring _title, jobject _cb)
     {
-        Mengine::ConstString tab = Mengine::Helper::makeConstStringFromJString( env, _tab );
-        Mengine::ConstString id = Mengine::Helper::makeConstStringFromJString( env, _id );
-        Mengine::String title = Mengine::Helper::makeStringFromJString( env, _title );
+        Mengine::ConstString tab = Mengine::Helper::AndroidMakeConstStringFromJString(env, _tab);
+        Mengine::ConstString id = Mengine::Helper::AndroidMakeConstStringFromJString(env, _id);
+        Mengine::String title = Mengine::Helper::AndroidMakeStringFromJString(env, _title);
 
         const Mengine::DevToDebugTabInterfacePtr & t = DEVTODEBUG_SERVICE()
             ->getTab( tab );

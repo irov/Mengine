@@ -37,7 +37,7 @@ public class MengineActivity extends SDLActivity {
     private static native String AndroidEnvironmentService_getExtraPreferencesFolderName();
     private static native boolean AndroidEnvironmentService_hasCurrentAccount();
     private static native String AndroidEnvironmentService_getCurrentAccountFolderName();
-    private static native boolean AndroidEnvironmentService_writeLoggerHistoryToFile(Writer writer);
+    private static native boolean AndroidEnvironmentService_writeCurrentLogToFile(Writer writer);
     private static native boolean AndroidEnvironmentService_writeOldLogToFile(Writer writer);
     private static native int AndroidEnvironmentService_getProjectVersion();
 
@@ -941,7 +941,7 @@ public class MengineActivity extends SDLActivity {
 
                 OutputStreamWriter logFileStream = new OutputStreamWriter(new FileOutputStream(logFile));
 
-                if (AndroidEnvironmentService_writeLoggerHistoryToFile(logFileStream) == true) {
+                if (AndroidEnvironmentService_writeCurrentLogToFile(logFileStream) == true) {
                     logFileStream.flush();
                     logFileStream.close();
 

@@ -37,8 +37,10 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, jobjectArray _args)
     {
-        Mengine::ConstString plugin = Mengine::Helper::makeConstStringFromJString( env, _plugin );
-        Mengine::ConstString method = Mengine::Helper::makeConstStringFromJString( env, _method );
+        Mengine::ConstString plugin = Mengine::Helper::AndroidMakeConstStringFromJString(env,
+                                                                                         _plugin);
+        Mengine::ConstString method = Mengine::Helper::AndroidMakeConstStringFromJString(env,
+                                                                                         _method);
 
         if( s_androidNativePythonService == nullptr )
         {
@@ -65,7 +67,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1addPlugin )(JNIEnv * env, jclass cls, jstring _name, jobject _plugin)
     {
-        Mengine::ConstString name = Mengine::Helper::makeConstStringFromJString( env, _name );
+        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString(env, _name);
 
         if( s_androidNativePythonService == nullptr )
         {
@@ -392,7 +394,7 @@ namespace Mengine
 
         jenv->CallVoidMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::jEnvExceptionCheck( jenv );
+        Helper::AndroidEnvExceptionCheck(jenv);
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -430,7 +432,7 @@ namespace Mengine
 
         jboolean jresult = jenv->CallBooleanMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::jEnvExceptionCheck( jenv );
+        Helper::AndroidEnvExceptionCheck(jenv);
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -470,7 +472,7 @@ namespace Mengine
 
         jint jresult = jenv->CallIntMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::jEnvExceptionCheck( jenv );
+        Helper::AndroidEnvExceptionCheck(jenv);
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -510,7 +512,7 @@ namespace Mengine
 
         jlong jresult = jenv->CallLongMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::jEnvExceptionCheck( jenv );
+        Helper::AndroidEnvExceptionCheck(jenv);
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -550,7 +552,7 @@ namespace Mengine
 
         jfloat jresult = jenv->CallFloatMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::jEnvExceptionCheck( jenv );
+        Helper::AndroidEnvExceptionCheck(jenv);
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -590,7 +592,7 @@ namespace Mengine
 
         jdouble jresult = jenv->CallDoubleMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::jEnvExceptionCheck( jenv );
+        Helper::AndroidEnvExceptionCheck(jenv);
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -630,7 +632,7 @@ namespace Mengine
 
         jstring jresult = (jstring)jenv->CallObjectMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::jEnvExceptionCheck( jenv );
+        Helper::AndroidEnvExceptionCheck(jenv);
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -678,7 +680,7 @@ namespace Mengine
 
         jobject jresult = jenv->CallObjectMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::jEnvExceptionCheck( jenv );
+        Helper::AndroidEnvExceptionCheck(jenv);
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -722,7 +724,7 @@ namespace Mengine
 
         if( jplugin == nullptr )
         {
-            Helper::jEnvExceptionCheck( _jenv );
+            Helper::AndroidEnvExceptionCheck(_jenv);
 
             LOGGER_ERROR( "android not found java plugin '%s' (call method '%s' args '%s')"
                 , _plugin.c_str()
@@ -817,7 +819,7 @@ namespace Mengine
 
                     jboolean result = _jenv->CallBooleanMethod( jlist, jmethodID_List_add, jelement );
 
-                    Helper::jEnvExceptionCheck( _jenv );
+                    Helper::AndroidEnvExceptionCheck(_jenv);
 
                     _jenv->DeleteLocalRef( jelement );
 
@@ -853,7 +855,7 @@ namespace Mengine
 
         if( jmethodId == nullptr )
         {
-            Helper::jEnvExceptionCheck( _jenv );
+            Helper::AndroidEnvExceptionCheck(_jenv);
 
             _jenv->DeleteLocalRef( plugin_class );
 

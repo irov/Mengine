@@ -41,7 +41,7 @@ namespace Mengine
 
             MENGINE_VA_LIST_END( args );
 
-            Helper::jEnvExceptionCheck( _jenv );
+            Helper::AndroidEnvExceptionCheck(_jenv);
         }
         //////////////////////////////////////////////////////////////////////////
         jobject AndroidCallObjectApplicationMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
@@ -57,7 +57,7 @@ namespace Mengine
 
             MENGINE_VA_LIST_END( args );
 
-            Helper::jEnvExceptionCheck( _jenv );
+            Helper::AndroidEnvExceptionCheck(_jenv);
 
             return jresult;
         }
@@ -75,7 +75,7 @@ namespace Mengine
 
             MENGINE_VA_LIST_END( args );
 
-            Helper::jEnvExceptionCheck( _jenv );
+            Helper::AndroidEnvExceptionCheck(_jenv);
 
             return jresult;
         }
@@ -93,7 +93,7 @@ namespace Mengine
 
             MENGINE_VA_LIST_END( args );
 
-            Helper::jEnvExceptionCheck( _jenv );
+            Helper::AndroidEnvExceptionCheck(_jenv);
 
             return jresult;
         }
@@ -111,7 +111,7 @@ namespace Mengine
 
             MENGINE_VA_LIST_END( args );
 
-            Helper::jEnvExceptionCheck( _jenv );
+            Helper::AndroidEnvExceptionCheck(_jenv);
 
             return jresult;
         }

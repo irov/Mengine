@@ -8,7 +8,6 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
-#include "Kernel/List.h"
 #include "Kernel/VectorChar.h"
 
 namespace Mengine
@@ -66,6 +65,10 @@ namespace Mengine
         const MemoryInterfacePtr & getOldLogMemory() const override;
 
     public:
+        void setCurrentContentLog( const ContentInterfacePtr & _content ) override;
+        const ContentInterfacePtr & getCurrentContentLog() const override;
+
+    public:
         bool registerLogger( const LoggerInterfacePtr & _logger ) override;
         void unregisterLogger( const LoggerInterfacePtr & _logger ) override;
 
@@ -78,6 +81,7 @@ namespace Mengine
 
     protected:
         void notifyConfigsLoad_();
+        void notifyBootstrapperRunCompete_();
 
     protected:
         void processMessages_( const ThreadIdentityRunnerInterfacePtr & _runner );
@@ -115,8 +119,9 @@ namespace Mengine
         uint32_t m_historyLimit;
 
         MemoryInterfacePtr m_memoryOldLog;
+        ContentInterfacePtr m_currentContentLog;
 
-        typedef List<LoggerRecord> ListHistoryRecords;
-        ListHistoryRecords m_history;
+        typedef Vector<LoggerRecord> VectorHistoryRecords;
+        VectorHistoryRecords m_history;
     };
 }

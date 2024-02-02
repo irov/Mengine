@@ -52,6 +52,10 @@ namespace Mengine
         virtual const MemoryInterfacePtr & getOldLogMemory() const = 0;
 
     public:
+        virtual void setCurrentContentLog( const ContentInterfacePtr & _content ) = 0;
+        virtual const ContentInterfacePtr & getCurrentContentLog() const = 0;
+
+    public:
         virtual void writeHistory( const LoggerInterfacePtr & _logger ) const = 0;
 
     public:

@@ -807,12 +807,12 @@ namespace Mengine
 
         if( developmentLog == false )
         {
-            ContentInterfacePtr content = Helper::makeFileContent( userFileGroup, logFilename, MENGINE_DOCUMENT_FACTORABLE );
+            ContentInterfacePtr fileOldLogContent = Helper::makeFileContent( userFileGroup, logFilename, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( content );
+            MENGINE_ASSERTION_MEMORY_PANIC( fileOldLogContent );
 
             LOGGER_SERVICE()
-                ->loadOldLogMemory( content );
+                ->loadOldLogMemory( fileOldLogContent );
         }
 
         FileLoggerPtr fileLog = Helper::makeFactorableUnique<FileLogger>( MENGINE_DOCUMENT_FACTORABLE );
@@ -844,6 +844,9 @@ namespace Mengine
             LOGGER_INFO_PROTECTED( "bootstrapper", "write file log to: %s"
                 , fullLogFilename
             );
+
+            LOGGER_SERVICE()
+                ->setCurrentContentLog( fileLogContent );
         }
 
         return true;

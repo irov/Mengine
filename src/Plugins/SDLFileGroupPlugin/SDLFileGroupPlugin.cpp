@@ -11,6 +11,8 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 
+#include "Config/StdString.h"
+
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( SDLFileGroup, Mengine::SDLFileGroupPlugin )
 //////////////////////////////////////////////////////////////////////////
@@ -30,8 +32,14 @@ namespace Mengine
         VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), Helper::makeFactory<SDLFileGroupDirectoryFactory>( MENGINE_DOCUMENT_FACTORABLE, STRINGIZE_FILEPATH_LOCAL( "" ) ), MENGINE_DOCUMENT_FACTORABLE );
 
         Char utf8_currentPath[MENGINE_MAX_PATH] = {'\0'};
-        size_t utf8_currentPathLen = PLATFORM_SERVICE()
+        PLATFORM_SERVICE()
             ->getCurrentPath( utf8_currentPath );
+        
+#if defined(MENGINE_PLATFORM_IOS)
+        MENGINE_STRCAT( utf8_currentPath, "Data/" );
+#endif
+        
+        size_t utf8_currentPathLen = MENGINE_STRLEN( utf8_currentPath );
 
         FilePath relationPath = Helper::stringizeFilePathSize( utf8_currentPath, (FilePath::size_type)utf8_currentPathLen );
 

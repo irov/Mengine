@@ -171,7 +171,7 @@ if(MENGINE_TARGET_APPLE)
             file(RELATIVE_PATH RES ${MENGINE_DEPLOY_PATH}/${FOLDER} ${FILE})
             get_filename_component(RES_LOC ${RES} PATH)
             
-            set_source_files_properties(${FILE} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources/${RES_LOC}" HEADER_FILE_ONLY TRUE)
+            set_source_files_properties(${FILE} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources/Data/${RES_LOC}" HEADER_FILE_ONLY TRUE)
             string(REPLACE "/" "\\" ide_group_name "deploy_data/${RES_LOC}")
             source_group(${ide_group_name} FILES ${FILE})
         endforeach()

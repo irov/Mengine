@@ -14,7 +14,7 @@ namespace Mengine
         namespace Detail
         {
             //////////////////////////////////////////////////////////////////////////
-            struct my_json_load_data_t
+            struct json_load_data
             {
                 const uint8_t * buffer;
                 size_t carriage;
@@ -25,11 +25,11 @@ namespace Mengine
 #endif
             };
             //////////////////////////////////////////////////////////////////////////
-            static void my_jpp_error( int32_t _line, int32_t _column, int32_t _position, const char * _source, const char * _text, void * _ud )
+            static void __jpp_error( int32_t _line, int32_t _column, int32_t _position, const char * _source, const char * _text, void * _ud )
             {
                 MENGINE_UNUSED( _ud );
 
-                my_json_load_data_t * jd = static_cast<my_json_load_data_t *>(_ud);
+                json_load_data * jd = static_cast<json_load_data *>(_ud);
 
                 MENGINE_UNUSED( jd );
 
@@ -43,9 +43,9 @@ namespace Mengine
                 );
             }
             //////////////////////////////////////////////////////////////////////////
-            static size_t my_jpp_load_callback( void * _buffer, size_t _buflen, void * _ud )
+            static size_t __jpp_load_callback( void * _buffer, size_t _buflen, void * _ud )
             {
-                my_json_load_data_t * jd = static_cast<my_json_load_data_t *>(_ud);
+                json_load_data * jd = static_cast<json_load_data *>(_ud);
 
                 if( _buflen > jd->capacity - jd->carriage )
                 {
@@ -64,7 +64,7 @@ namespace Mengine
                 return _buflen;
             }
             //////////////////////////////////////////////////////////////////////////
-            static int my_jpp_dump_stream_callback( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
+            static int __jpp_dump_stream_callback( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
             {
                 OutputStreamInterface * stream = static_cast<OutputStreamInterface *>(_ud);
 
@@ -73,11 +73,20 @@ namespace Mengine
                 return 0;
             }
             //////////////////////////////////////////////////////////////////////////
-            static int my_jpp_dump_string_callback( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
+            static int __jpp_dump_string_callback( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
             {
                 String * string = static_cast<String *>(_ud);
 
                 string->append( _buffer, _size );
+
+                return 0;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static int __jpp_dump_data_callback( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
+            {
+                Data * data = static_cast<Data *>(_ud);
+
+                data->insert( data->end(), _buffer, _buffer + _size );
 
                 return 0;
             }
@@ -134,7 +143,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _doc );
 
-            Detail::my_json_load_data_t jd;
+            Detail::json_load_data jd;
             jd.buffer = static_cast<const uint8_t *>(_buffer);
             jd.carriage = 0;
             jd.capacity = _size;
@@ -143,7 +152,7 @@ namespace Mengine
             jd.doc = _doc;
 #endif
 
-            jpp::object json = jpp::load( &Detail::my_jpp_load_callback, jpp::JPP_LOAD_MODE_DISABLE_EOF_CHECK, &Detail::my_jpp_error, &jd );
+            jpp::object json = jpp::load( &Detail::__jpp_load_callback, jpp::JPP_LOAD_MODE_DISABLE_EOF_CHECK, &Detail::__jpp_error, &jd );
 
             if( json == jpp::detail::invalid )
             {
@@ -199,7 +208,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool writeJSONStream( const jpp::object & _j, const OutputStreamInterfacePtr & _stream )
         {
-            if( jpp::dump( _j, &Detail::my_jpp_dump_stream_callback, _stream.get() ) == false )
+            if( jpp::dump( _j, &Detail::__jpp_dump_stream_callback, _stream.get() ) == false )
             {
                 return false;
             }
@@ -209,7 +218,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool writeJSONStreamCompact( const jpp::object & _j, const OutputStreamInterfacePtr & _stream )
         {
-            if( jpp::dump_compact( _j, &Detail::my_jpp_dump_stream_callback, _stream.get() ) == false )
+            if( jpp::dump_compact( _j, &Detail::__jpp_dump_stream_callback, _stream.get() ) == false )
             {
                 return false;
             }
@@ -219,7 +228,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool writeJSONString( const jpp::object & _j, String * const _string )
         {
-            if( jpp::dump( _j, &Detail::my_jpp_dump_string_callback, _string ) == false )
+            if( jpp::dump( _j, &Detail::__jpp_dump_string_callback, _string ) == false )
             {
                 return false;
             }
@@ -229,7 +238,27 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool writeJSONStringCompact( const jpp::object & _j, String * const _string )
         {
-            if( jpp::dump_compact( _j, &Detail::my_jpp_dump_string_callback, _string ) == false )
+            if( jpp::dump_compact( _j, &Detail::__jpp_dump_string_callback, _string ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool writeJSONData( const jpp::object & _j, Data * const _data )
+        {
+            if( jpp::dump( _j, &Detail::__jpp_dump_data_callback, _data ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool writeJSONDataCompact( const jpp::object & _j, Data * const _data )
+        {
+            if( jpp::dump_compact( _j, &Detail::__jpp_dump_data_callback, _data ) == false )
             {
                 return false;
             }

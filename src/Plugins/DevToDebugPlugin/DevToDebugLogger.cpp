@@ -177,8 +177,8 @@ namespace Mengine
         const HttpRequestHeaders & headers = HTTP_SYSTEM()
             ->getApplicationJSONHeaders();
 
-        String data;
-        Helper::writeJSONStringCompact( j, &data );
+        Data data;
+        Helper::writeJSONDataCompact( j, &data );
 
         HttpRequestId id = HTTP_SYSTEM()
             ->headerData( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );

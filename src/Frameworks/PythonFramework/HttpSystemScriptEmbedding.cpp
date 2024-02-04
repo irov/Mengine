@@ -76,7 +76,7 @@ namespace Mengine
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpSystemScriptEmbedding::headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
+    HttpRequestId HttpSystemScriptEmbedding::headerData( const String & _url, const VectorString & _headers, const Data & _data, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
         PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
 

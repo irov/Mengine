@@ -6,5 +6,5 @@
 
 namespace Mengine
 {
-    typedef Vector<uint8_t> Blobject;
+    typedef Vector<uint8_t> Data;
 }

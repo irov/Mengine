@@ -50,7 +50,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Stringstream.h"
-#include "Kernel/Blobject.h"
+#include "Kernel/Data.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/ResourceImageSubstract.h"
@@ -676,7 +676,7 @@ namespace Mengine
         else
         {
             const size_t maxCompressedSize = m_archivator->compressBound( payloadSize );
-            Blobject compressedPayload( maxCompressedSize );
+            Data compressedPayload( maxCompressedSize );
             size_t compressedSize = 0;
             bool success = m_archivator->compress( compressedPayload.data(), maxCompressedSize, _packet.payload.data(), payloadSize, &compressedSize, EAC_NORMAL );
             if( success == false || compressedSize >= payloadSize )

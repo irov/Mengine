@@ -6,6 +6,7 @@
 
 #include "Kernel/JSON.h"
 #include "Kernel/String.h"
+#include "Kernel/Data.h"
 
 namespace Mengine
 {
@@ -23,5 +24,7 @@ namespace Mengine
         bool writeJSONStreamCompact( const jpp::object & _j, const OutputStreamInterfacePtr & _stream );
         bool writeJSONString( const jpp::object & _j, String * const _string );
         bool writeJSONStringCompact( const jpp::object & _j, String * const _string );
+        bool writeJSONData( const jpp::object & _j, Data * const _data );
+        bool writeJSONDataCompact( const jpp::object & _j, Data * const _data );
     }
 }

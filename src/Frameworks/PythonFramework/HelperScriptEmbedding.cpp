@@ -60,7 +60,7 @@
 #include "Kernel/UID.h"
 #include "Kernel/VectorRenderIndex.h"
 #include "Kernel/ResolutionHelper.h"
-#include "Kernel/Blobject.h"
+#include "Kernel/Data.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ResourceImageSequence.h"
@@ -3562,7 +3562,7 @@ namespace Mengine
         typedef IntrusivePtr<HelperScriptMethod> HelperScriptMethodPtr;
         //////////////////////////////////////////////////////////////////////////
         struct extract_Blobject_type
-            : public pybind::type_cast_result<Blobject>
+            : public pybind::type_cast_result<Data>
         {
             bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, value_type & _value, bool _nothrow ) override
             {
@@ -3997,7 +3997,7 @@ namespace Mengine
 
         pybind::registration_stl_optional_type_cast<Optional<mt::box2f>>(_kernel);
 
-        pybind::registration_type_cast<Blobject>(_kernel, pybind::make_type_cast<extract_Blobject_type>(_kernel));
+        pybind::registration_type_cast<Data>(_kernel, pybind::make_type_cast<extract_Blobject_type>(_kernel));
         pybind::registration_type_cast<Tags>(_kernel, pybind::make_type_cast<extract_Tags_type>(_kernel));
 
         pybind::registration_stl_vector_type_cast<VectorResourceImages>(_kernel);
@@ -4373,7 +4373,7 @@ namespace Mengine
 
         pybind::unregistration_stl_optional_type_cast<Optional<mt::box2f>>(_kernel);
 
-        pybind::unregistration_type_cast<Blobject>(_kernel);
+        pybind::unregistration_type_cast<Data>(_kernel);
         pybind::unregistration_type_cast<Tags>(_kernel);
 
         pybind::unregistration_stl_vector_type_cast<VectorResourceImages>(_kernel);

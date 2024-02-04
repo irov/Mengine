@@ -95,11 +95,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
 #   endif
         //////////////////////////////////////////////////////////////////////////
-        class My_observer_bind_call
+        class MengineObserverBindCall
             : public pybind::observer_bind_call
         {
         public:
-            explicit My_observer_bind_call( PythonScriptService * _scriptService )
+            explicit MengineObserverBindCall( PythonScriptService * _scriptService )
                 : m_scriptService( _scriptService )
 #   if defined(MENGINE_WINDOWS_DEBUG)
                 , m_prev_handler( nullptr )
@@ -109,7 +109,7 @@ namespace Mengine
             {
             }
 
-            virtual ~My_observer_bind_call()
+            virtual ~MengineObserverBindCall()
             {
 #   if defined(MENGINE_WINDOWS_DEBUG)
                 MENGINE_ASSERTION_FATAL( m_prev_handler_count == 0 );
@@ -373,7 +373,7 @@ namespace Mengine
         m_loggerError = loggerError;
 
 #if defined(MENGINE_DEBUG)
-        pybind::observer_bind_call * bind_call = Helper::newT<Detail::My_observer_bind_call>( this );
+        pybind::observer_bind_call * bind_call = Helper::newT<Detail::MengineObserverBindCall>( this );
         m_kernel->set_observer_bind_call( bind_call );
 #endif
 
@@ -582,8 +582,8 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         pybind::observer_bind_call * observer = m_kernel->get_observer_bind_call();
 
-        Detail::My_observer_bind_call * observer_bind_call = static_cast<Detail::My_observer_bind_call *>(observer);
-        Helper::deleteT( static_cast<Detail::My_observer_bind_call *>(observer_bind_call) );
+        Detail::MengineObserverBindCall * observer_bind_call = static_cast<Detail::MengineObserverBindCall *>(observer);
+        Helper::deleteT( static_cast<Detail::MengineObserverBindCall *>(observer_bind_call) );
 
         m_kernel->set_observer_bind_call( nullptr );
 

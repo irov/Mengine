@@ -48,7 +48,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct NodeDebuggerPacket
     {
-        Blobject payload;
+        Data payload;
     };
     //////////////////////////////////////////////////////////////////////////
     struct NodeDebuggerRequestData
@@ -195,8 +195,8 @@ namespace Mengine
         Atomic<ENodeDebuggerServerState> m_serverState;
         Deque<NodeDebuggerPacket> m_incomingPackets;
         Deque<NodeDebuggerPacket> m_outgoingPackets;
-        Blobject m_receivedData;
-        Blobject m_receivedDataAux;
+        Data m_receivedData;
+        Data m_receivedDataAux;
         VectorNodePath m_selectedNodePath;
         ArchivatorInterfacePtr m_archivator;
         String m_currentTab;

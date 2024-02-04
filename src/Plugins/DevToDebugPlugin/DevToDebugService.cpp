@@ -452,8 +452,8 @@ namespace Mengine
 
                 jpp::object j = this->makeJsonRegistrationData();
 
-                String data;
-                Helper::writeJSONStringCompact( j, &data );
+                Data data;
+                Helper::writeJSONDataCompact( j, &data );
 
                 HttpRequestId id = HTTP_SYSTEM()
                     ->headerData( m_dsn, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
@@ -481,8 +481,8 @@ namespace Mengine
 
                 jpp::object j = this->makeJsonConnectData();
 
-                String data;
-                Helper::writeJSONStringCompact( j, &data );
+                Data data;
+                Helper::writeJSONDataCompact( j, &data );
 
                 HttpRequestId id = HTTP_SYSTEM()
                     ->headerData( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
@@ -496,8 +496,8 @@ namespace Mengine
 
                 jpp::object j = this->makeJsonProcessData();
 
-                String data;
-                Helper::writeJSONStringCompact( j, &data );
+                Data data;
+                Helper::writeJSONDataCompact( j, &data );
 
                 HttpRequestId id = HTTP_SYSTEM()
                     ->headerData( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );

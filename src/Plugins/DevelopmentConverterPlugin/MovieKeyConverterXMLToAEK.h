@@ -5,7 +5,7 @@
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/DataflowInterface.h"
 
-#include "Kernel/Blobject.h"
+#include "Kernel/Data.h"
 
 namespace Mengine
 {
@@ -29,8 +29,8 @@ namespace Mengine
         bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
 
     protected:
-        bool loadFramePackage_( Blobject & _buffer );
-        bool writeFramePackage_( const Blobject & _buffer );
+        bool loadFramePackage_( Data & _buffer );
+        bool writeFramePackage_( const Data & _buffer );
 
     protected:
         ArchivatorInterfacePtr m_archivator;

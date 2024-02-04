@@ -15,14 +15,14 @@ namespace Mengine
         ~cURLHttpRequestHeaderDataThreadTask() override;
 
     public:
-        bool initialize( const String & _data );
+        bool initialize( const Data & _data );
 
     protected:
         void _onCURL( CURL * _curl ) override;
         void _onCURLCleanup( CURL * _curl ) override;
 
     protected:
-        String m_data;
+        Data m_data;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLHttpRequestHeaderDataThreadTask, ThreadTaskInterface> cURLHttpRequestHeaderDataThreadTaskPtr;

@@ -426,7 +426,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId cURLHttpSystem::headerData( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId cURLHttpSystem::headerData( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const Data & _data, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {

@@ -26,7 +26,7 @@ namespace Mengine
     protected:
         HttpRequestId downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _fileGroupName, const FilePath & _filepath, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args );
         HttpRequestId postMessage( const String & _url, const MapParams & _params, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args );
-        HttpRequestId headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args );
+        HttpRequestId headerData( const String & _url, const VectorString & _headers, const Data & _data, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args );
         HttpRequestId getMessage( const String & _url, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args );
         void cancelRequest( HttpRequestId _id );
 

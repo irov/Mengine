@@ -35,7 +35,7 @@ namespace Mengine
     struct LoggerRecord
     {
         Timestamp timestamp;
-        Char category[MENGINE_LOGGER_MAX_CATEGORY];        
+        Char category[MENGINE_LOGGER_MAX_CATEGORY];
         ConstString threadName;
         ELoggerLevel level;
         uint32_t flag;

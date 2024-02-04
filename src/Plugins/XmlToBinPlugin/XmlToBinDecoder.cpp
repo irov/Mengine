@@ -22,7 +22,7 @@
 #include "xml2metabuf/Xml2Metabuf.hpp"
 #include "xml2metabuf/Xml2Metacode.hpp"
 
-#include "Kernel/Blobject.h"
+#include "Kernel/Data.h"
 
 #include "Config/StdString.h"
 

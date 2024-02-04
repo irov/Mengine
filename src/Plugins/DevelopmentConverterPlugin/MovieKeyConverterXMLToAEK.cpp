@@ -92,7 +92,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool MovieKeyConverterXMLToAEK::convert()
     {
-        Blobject buffer;
+        Data buffer;
         if( this->loadFramePackage_( buffer ) == false )
         {
             return false;
@@ -119,7 +119,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MovieKeyConverterXMLToAEK::loadFramePackage_( Blobject & _buffer )
+    bool MovieKeyConverterXMLToAEK::loadFramePackage_( Data & _buffer )
     {
         const FileGroupInterfacePtr & inputFileGroup = m_options.inputContent->getFileGroup();
         const FilePath & inputFilePath = m_options.inputContent->getFilePath();
@@ -154,7 +154,7 @@ namespace Mengine
             return false;
         }
 
-        ContainerWriter<Blobject> aw( _buffer );
+        ContainerWriter<Data> aw( _buffer );
 
         uint32_t true_metacode_version = Metacode::get_metacode_version();
 
@@ -803,7 +803,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MovieKeyConverterXMLToAEK::writeFramePackage_( const Blobject & _buffer )
+    bool MovieKeyConverterXMLToAEK::writeFramePackage_( const Data & _buffer )
     {
         OutputStreamInterfacePtr output_stream = m_options.outputContent->openOutputStreamFile( true, MENGINE_DOCUMENT_FACTORABLE );
 

@@ -12,7 +12,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/VectorHelper.h"
 
-#include "Kernel/JSONHelper.h"
+#include "Kernel/JSON2Helper.h"
 
 #include "Config/StdString.h"
 
@@ -70,6 +70,9 @@ namespace Mengine
         Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL( "CachalotLogger" ) );
 
         m_mutex = nullptr;
+
+        m_dsn.clear();
+        m_messages.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void CachalotLogger::_log( const LoggerMessage & _message )
@@ -98,57 +101,72 @@ namespace Mengine
         ConstString sessionId = PREFERENCES_SYSTEM()
             ->getPreferenceConstString( "session_id", ConstString::none() );
 
-        jpp::object j = jpp::make_object();
+        js_element_t * j = Helper::createJSON2();
 
-        jpp::array jlog = jpp::make_array();
+        MENGINE_ASSERTION_MEMORY_PANIC( j );
+
+        js_element_t * jrecords;
+        if( js_object_add_field_array( j, j, JS_CONST_STRING( "records" ), &jrecords ) == JS_FAILURE )
+        {
+            return;
+        }
 
         for( const LoggerRecord & record : messages )
         {
-            jpp::object j_desc = jpp::make_object();
+            js_element_t * jrecord;
+            if( js_array_push_object( j, jrecords, &jrecord ) == JS_FAILURE )
+            {
+                return;
+            }
 
-            j_desc.set( "user.id", sessionId );
+            js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "user.id" ), JS_MAKE_STRING( sessionId.c_str(), sessionId.size() ) );
+
             switch( record.level )
             {
             case LM_FATAL:
             case LM_ERROR:
                 {
-                    j_desc.set( "level", 0 );
+                    js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "level" ), 0 );
                 }break;
             case LM_WARNING:
                 {
-                    j_desc.set( "level", 1 );
+                    js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "level" ), 1 );
                 }break;
             case LM_MESSAGE_RELEASE:
             case LM_MESSAGE:
                 {
-                    j_desc.set( "level", 2 );
+                    js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "level" ), 2 );
                 }break;
             case LM_INFO:
             case LM_DEBUG:
             case LM_VERBOSE:
                 {
-                    j_desc.set( "level", 3 );
+                    js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "level" ), 3 );
                 }break;
             default:
                 break;
             }
 
-            j_desc.set( "service", record.category );
-            j_desc.set( "message", record.data );
-            j_desc.set( "file", record.file );
-            j_desc.set( "line", record.line );
-            j_desc.set( "timestamp", record.timestamp );
+            js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "service" ), JS_MAKE_STRING( record.category, MENGINE_STRLEN( record.category ) ) );
+            js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "message" ), JS_MAKE_STRING( record.data.data(), record.data.size() ) );
 
-            jlog.push_back( j_desc );
+            if( record.file != nullptr )
+            {
+                js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "file" ), JS_MAKE_STRING( record.file, MENGINE_STRLEN( record.file ) ) );
+            }
+
+            js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "line" ), record.line );
+            js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "timestamp" ), record.timestamp );
         }
 
-        j.set( "records", jlog );
+        Data data;
+        if( Helper::writeJSON2DataCompact( j, &data ) == false )
+        {
+            return;
+        }
 
         const HttpRequestHeaders & headers = HTTP_SYSTEM()
             ->getApplicationJSONHeaders();
-
-        String data;
-        Helper::writeJSONStringCompact( j, &data );
 
         HttpRequestId id = HTTP_SYSTEM()
             ->headerData( m_dsn, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );

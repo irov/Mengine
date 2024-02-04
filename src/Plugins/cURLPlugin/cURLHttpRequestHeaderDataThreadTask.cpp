@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLHttpRequestHeaderDataThreadTask::initialize( const String & _data )
+    bool cURLHttpRequestHeaderDataThreadTask::initialize( const Data & _data )
     {
         m_data = _data;
 
@@ -28,8 +28,8 @@ namespace Mengine
     {
         MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_CUSTOMREQUEST, "POST") );
 
-        const String::value_type * data_buffer = m_data.c_str();
-        String::size_type data_size = m_data.size();
+        const Data::value_type * data_buffer = m_data.data();
+        Data::size_type data_size = m_data.size();
 
         MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDS, data_buffer) );
         MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDSIZE, (long)data_size) );

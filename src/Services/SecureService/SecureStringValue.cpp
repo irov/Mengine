@@ -3,7 +3,7 @@
 #include "Interface/SecureServiceInterface.h"
 
 #include "Kernel/CRC32.h"
-#include "Kernel/Blobject.h"
+#include "Kernel/Data.h"
 #include "Kernel/ContainerReader.h"
 #include "Kernel/ContainerWriter.h"
 #include "Kernel/Ravingcode.h"
@@ -156,15 +156,15 @@ namespace Mengine
     {
         uint32_t value_size = (uint32_t)m_value.size();
 
-        Blobject blob;
-        ContainerWriter<Blobject> writer( blob );
+        Data blob;
+        ContainerWriter<Data> writer( blob );
 
         writer.writePOD( m_hash );
         writer.writePOD( value_size );
         writer.writeBuffer( m_value.c_str(), m_value.size() );
         writer.writeBuffer( m_buffer.c_str(), m_buffer.size() );
 
-        Blobject blob_raving;
+        Data blob_raving;
         blob_raving.resize( blob.size() );
 
         SECURE_SERVICE()
@@ -195,16 +195,16 @@ namespace Mengine
             return false;
         }
 
-        Blobject blob_raving;
+        Data blob_raving;
         blob_raving.resize( hexadecimal_size / 2 );
         
         void * blob_raving_data = blob_raving.data();
-        Blobject::size_type blob_raving_capacity = blob_raving.size();
+        Data::size_type blob_raving_capacity = blob_raving.size();
 
         size_t blob_raving_size;
         Helper::decodeHexadecimal( hexadecimal_str, hexadecimal_size, blob_raving_data, blob_raving_capacity, &blob_raving_size );
 
-        Blobject blob;
+        Data blob;
         blob.resize( blob_raving_size );
         
         void * blob_data = blob.data();
@@ -212,7 +212,7 @@ namespace Mengine
         SECURE_SERVICE()
             ->unprotectData( 1, blob_raving_data, blob_raving_size, blob_data );
 
-        ContainerReader<Blobject> reader( blob );
+        ContainerReader<Data> reader( blob );
         
         uint32_t load_hash;
         uint32_t value_size;

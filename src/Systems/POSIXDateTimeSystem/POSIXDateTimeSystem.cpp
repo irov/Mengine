@@ -24,7 +24,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void localTime( time_t _time, tm * const _tm )
         {
-#if defined(MENGINE_PLATFORM_ANDROID)
+#if defined(MENGINE_PLATFORM_ANDROID) || defined(MENGINE_PLATFORM_APPLE)
             ::localtime_r( &_time, _tm );
 #else
             ::localtime_s( _tm, &_time );
@@ -33,7 +33,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void gmTime( time_t _time, tm * const _tm )
         {
-#if defined(MENGINE_PLATFORM_ANDROID)
+#if defined(MENGINE_PLATFORM_ANDROID) || defined(MENGINE_PLATFORM_APPLE)
             ::gmtime_r( &_time, _tm );
 #else
             ::gmtime_s( _tm, &_time );
@@ -42,7 +42,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void getTime( timespec * const _ts )
         {
-#if defined(MENGINE_PLATFORM_ANDROID)
+#if defined(MENGINE_PLATFORM_ANDROID) || defined(MENGINE_PLATFORM_APPLE)
             ::clock_gettime( CLOCK_REALTIME, _ts );
 #else
             ::timespec_get( _ts, TIME_UTC );
@@ -94,8 +94,10 @@ namespace Mengine
 
         tm sTime = {0};
         Detail::gmTime( t, &sTime );
+        
+        uint32_t milliseconds = (uint32_t)(tv.tv_nsec / 1000000);
 
-        Detail::convertTMToDateTime( sTime, tv.tv_nsec / 1000000, _dateTime );
+        Detail::convertTMToDateTime( sTime, milliseconds, _dateTime );
     }
     //////////////////////////////////////////////////////////////////////////
     void POSIXDateTimeSystem::getLocalDateTime( PlatformDateTime * const _dateTime ) const
@@ -107,8 +109,10 @@ namespace Mengine
 
         tm sTime = {0};
         Detail::localTime( t, &sTime );
+        
+        uint32_t milliseconds = (uint32_t)(tv.tv_nsec / 1000000);
 
-        Detail::convertTMToDateTime( sTime, tv.tv_nsec / 1000000, _dateTime );
+        Detail::convertTMToDateTime( sTime, milliseconds, _dateTime );
     }
     //////////////////////////////////////////////////////////////////////////
     void POSIXDateTimeSystem::getDateTimeFromMilliseconds( Timestamp _time, PlatformDateTime * const _dateTime ) const

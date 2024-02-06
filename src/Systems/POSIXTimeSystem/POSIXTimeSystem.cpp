@@ -30,7 +30,7 @@ namespace Mengine
     {
         struct timespec tv;
 
-#if defined(MENGINE_PLATFORM_ANDROID)
+#if defined(MENGINE_PLATFORM_ANDROID) || defined(MENGINE_PLATFORM_APPLE)
         ::clock_gettime( CLOCK_REALTIME, &tv );
 #else
         ::timespec_get( &tv, TIME_UTC );

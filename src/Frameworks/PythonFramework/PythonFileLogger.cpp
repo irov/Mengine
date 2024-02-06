@@ -59,7 +59,7 @@ namespace Mengine
 
         if( m_timestamp == true )
         {
-            Timestamp timestamp = Helper::getTimestamp();
+            Timestamp timestamp = Helper::getLocalTimestamp();
 
             Char shortDate[128] = {'\0'};
             size_t shortDateLen = Helper::makeLoggerShortDate( timestamp, "[%02u:%02u:%02u:%04u]", shortDate, 0, 128 );

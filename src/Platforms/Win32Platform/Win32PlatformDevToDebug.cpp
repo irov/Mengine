@@ -66,7 +66,7 @@ namespace Mengine
         {
             Char buffer[64] = {'\0'};
             MENGINE_SNPRINTF( buffer, 64, "Bye Bye! %" MENGINE_PRIu64 ""
-                , Helper::getTimestamp()
+                , Helper::getSystemTimestamp()
             );
 
             unknown_text1_content->setValue( buffer );

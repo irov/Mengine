@@ -119,7 +119,7 @@ namespace Mengine
             event->setLocalContext( resolve_localContext );
         }
 
-        Timestamp timestamp = Helper::getTimestamp();
+        Timestamp timestamp = Helper::getSystemTimestamp();
         event->setTimestamp( timestamp );
 
         ANALYTICS_SERVICE()

@@ -469,7 +469,7 @@ namespace Mengine
 
         sentry_set_extra( "Content Commit", sentry_value_new_string( contentCommit ) );
 
-        Timestamp timestamp = Helper::getTimestamp();
+        Timestamp timestamp = Helper::getLocalTimestamp();
 
         Char INIT_DATE[256] = {'\0'};
         Helper::makeLoggerFullDate( timestamp, "%04u.%02u.%02u %02u:%02u:%02u:%04u", INIT_DATE, 0, 256 );

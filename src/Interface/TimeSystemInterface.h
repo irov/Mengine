@@ -12,7 +12,7 @@ namespace Mengine
         SERVICE_DECLARE( "TimeSystem" );
 
     public:
-        virtual Timestamp getTimestamp() const = 0;
+        virtual Timestamp getSystemTimestamp() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

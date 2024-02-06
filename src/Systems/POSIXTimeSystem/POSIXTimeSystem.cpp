@@ -1,41 +1,44 @@
-#include "C11TimeSystem.h"
+#include "POSIXTimeSystem.h"
 
-#include <chrono>
+#include <time.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( TimeSystem, Mengine::C11TimeSystem );
+SERVICE_FACTORY( TimeSystem, Mengine::POSIXTimeSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    C11TimeSystem::C11TimeSystem()
+    POSIXTimeSystem::POSIXTimeSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    C11TimeSystem::~C11TimeSystem()
+    POSIXTimeSystem::~POSIXTimeSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool C11TimeSystem::_initializeService()
+    bool POSIXTimeSystem::_initializeService()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void C11TimeSystem::_finalizeService()
+    void POSIXTimeSystem::_finalizeService()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    Timestamp C11TimeSystem::getTimestamp() const
+    Timestamp POSIXTimeSystem::getSystemTimestamp() const
     {
-        std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
-        std::chrono::system_clock::time_point::duration epoch = tp.time_since_epoch();
+        struct timespec tv;
 
-        std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
+#if defined(MENGINE_PLATFORM_ANDROID)
+        ::clock_gettime( CLOCK_REALTIME, &tv );
+#else
+        ::timespec_get( &tv, TIME_UTC );
+#endif
 
-        Timestamp ms64 = (Timestamp)ms.count();
+        Timestamp milliseconds = tv.tv_sec * 1000LL + tv.tv_nsec / 1000000;
 
-        return ms64;
+        return milliseconds;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     double WatchdogService::watch( const ConstString & _tag )
     {
-        Timestamp ms = Helper::getTimestamp();
+        Timestamp ms = Helper::getSystemTimestamp();
 
         MapWatchers::iterator it_found = m_watchers.find( _tag );
 

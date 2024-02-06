@@ -82,7 +82,7 @@ namespace Mengine
         MENGINE_UNUSED( _looped );
         MENGINE_UNUSED( _pos );
 
-        Timestamp time = Helper::getTimestamp();
+        Timestamp time = Helper::getSystemTimestamp();
 
         m_playTime = time;
         m_pauseTime = 0UL;
@@ -92,7 +92,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _id );
 
-        Timestamp time = Helper::getTimestamp();
+        Timestamp time = Helper::getSystemTimestamp();
 
         Timestamp deltha = m_pauseTime - m_playTime;
 
@@ -106,7 +106,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _id );
 
-        Timestamp time = Helper::getTimestamp();
+        Timestamp time = Helper::getSystemTimestamp();
 
         m_pauseTime = time;
     }
@@ -130,7 +130,7 @@ namespace Mengine
             return (float)timePos;
         }
 
-        Timestamp time = Helper::getTimestamp();
+        Timestamp time = Helper::getSystemTimestamp();
 
         Timestamp timePos = time - m_playTime;
 

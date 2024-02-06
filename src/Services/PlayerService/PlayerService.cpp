@@ -107,7 +107,7 @@ namespace Mengine
         }
         else
         {
-            Timestamp milliseconds = Helper::getTimestamp();
+            Timestamp milliseconds = Helper::getSystemTimestamp();
 
             uint32_t randomSeed = (uint32_t)milliseconds;
 

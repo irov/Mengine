@@ -283,7 +283,7 @@ namespace Mengine
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_GET_MESSAGE;
-        desc.timestamp = Helper::getTimestamp();
+        desc.timestamp = Helper::getSystemTimestamp();
         desc.task = task;
         desc.receiver = _receiver;
 
@@ -345,7 +345,7 @@ namespace Mengine
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_POST_MESSAGE;
-        desc.timestamp = Helper::getTimestamp();
+        desc.timestamp = Helper::getSystemTimestamp();
         desc.task = task;
         desc.receiver = _receiver;
 
@@ -407,7 +407,7 @@ namespace Mengine
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_POST_MESSAGE;
-        desc.timestamp = Helper::getTimestamp();
+        desc.timestamp = Helper::getSystemTimestamp();
         desc.task = task;
         desc.receiver = _receiver;
 
@@ -469,7 +469,7 @@ namespace Mengine
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_HEADER_DATA;
-        desc.timestamp = Helper::getTimestamp();
+        desc.timestamp = Helper::getSystemTimestamp();
         desc.task = task;
         desc.receiver = _receiver;
 
@@ -544,7 +544,7 @@ namespace Mengine
         ReceiverDesc desc;
         desc.id = task_id;
         desc.type = ERT_DOWNLOAD_ASSET;
-        desc.timestamp = Helper::getTimestamp();
+        desc.timestamp = Helper::getSystemTimestamp();
         desc.task = task;
         desc.receiver = _receiver;
 

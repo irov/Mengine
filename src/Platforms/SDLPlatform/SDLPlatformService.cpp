@@ -507,7 +507,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::_initializeService()
     {
-        m_beginTime = Helper::getTimestamp();
+        m_beginTime = Helper::getSystemTimestamp();
 
 #if defined(MENGINE_SETLOCALE_ENABLE)
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
@@ -1120,7 +1120,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::loopPlatform()
     {
-        m_prevTime = Helper::getTimestamp();
+        m_prevTime = Helper::getSystemTimestamp();
 
         for( ;; )
         {
@@ -1129,7 +1129,7 @@ namespace Mengine
                 break;
             }
 
-            Timestamp currentTime = Helper::getTimestamp();
+            Timestamp currentTime = Helper::getSystemTimestamp();
 
             float frameTime = (float)(currentTime - m_prevTime);
 
@@ -1263,7 +1263,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Timestamp SDLPlatformService::getPlatfomTime() const
     {
-        Timestamp currentTime = Helper::getTimestamp();
+        Timestamp currentTime = Helper::getSystemTimestamp();
 
         Timestamp platformTime = currentTime - m_beginTime;
 

@@ -6,18 +6,18 @@
 
 namespace Mengine
 {
-    class C11TimeSystem
+    class POSIXTimeSystem
         : public ServiceBase<TimeSystemInterface>
     {
     public:
-        C11TimeSystem();
-        ~C11TimeSystem() override;
+        POSIXTimeSystem();
+        ~POSIXTimeSystem() override;
 
     public:
         bool _initializeService() override;
         void _finalizeService() override;
 
     public:
-        Timestamp getTimestamp() const override;
+        Timestamp getSystemTimestamp() const override;
     };
 };

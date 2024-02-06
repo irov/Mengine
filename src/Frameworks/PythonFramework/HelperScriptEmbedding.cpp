@@ -948,7 +948,7 @@ namespace Mengine
             {
                 LoggerMessage msg;
 
-                msg.timestamp = Helper::getTimestamp();
+                msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
                 msg.threadName = Helper::getCurrentThreadName();
                 msg.level = LM_INFO;
@@ -968,7 +968,7 @@ namespace Mengine
             {
                 LoggerMessage msg;
 
-                msg.timestamp = Helper::getTimestamp();
+                msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
                 msg.threadName = Helper::getCurrentThreadName();
                 msg.level = LM_MESSAGE;
@@ -988,7 +988,7 @@ namespace Mengine
             {
                 LoggerMessage msg;
 
-                msg.timestamp = Helper::getTimestamp();
+                msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
                 msg.threadName = Helper::getCurrentThreadName();
                 msg.level = LM_WARNING;
@@ -1008,7 +1008,7 @@ namespace Mengine
             {
                 LoggerMessage msg;
 
-                msg.timestamp = Helper::getTimestamp();
+                msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
                 msg.threadName = Helper::getCurrentThreadName();
                 msg.level = LM_ERROR;
@@ -1547,7 +1547,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             Timestamp s_getTimeMs()
             {
-                Timestamp ms = Helper::getTimestamp();
+                Timestamp ms = Helper::getSystemTimestamp();
 
                 return ms;
             }
@@ -1563,8 +1563,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             Timestamp s_getLocalDateTimeMs()
             {
-                Timestamp timestamp = DATETIME_SYSTEM()
-                    ->getLocalDateTimeMilliseconds();
+                Timestamp timestamp = Helper::getLocalTimestamp();
 
                 return timestamp;
             }
@@ -1582,7 +1581,7 @@ namespace Mengine
             {
                 PlatformDateTime dateTime;
                 DATETIME_SYSTEM()
-                    ->getLocalDateTimeFromMilliseconds( _time, &dateTime );
+                    ->getDateTimeFromMilliseconds( _time, &dateTime );
 
                 return dateTime;
             }
@@ -1597,7 +1596,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             String s_getLoggerTimestamp( const Char * _format )
             {
-                Timestamp timestamp = Helper::getTimestamp();
+                Timestamp timestamp = Helper::getLocalTimestamp();
 
                 Char shortDate[1024] = {'\0'};
                 Helper::makeLoggerShortDate( timestamp, _format, shortDate, 0, 1024 );

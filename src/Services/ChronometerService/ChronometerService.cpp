@@ -80,7 +80,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ChronometerService::update()
     {
-        Timestamp currentTime = Helper::getTimestamp();
+        Timestamp currentTime = Helper::getSystemTimestamp();
 
         if( m_oldTime == 0 || currentTime - m_oldTime >= 1000 )
         {

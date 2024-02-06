@@ -14,16 +14,14 @@ namespace Mengine
         SERVICE_DECLARE( "DateTimeSystem" )
 
     public:
+        virtual void getSystemDateTime( PlatformDateTime * const _dateTime ) const = 0;
         virtual void getLocalDateTime( PlatformDateTime * const _dateTime ) const = 0;
 
     public:
-        virtual Timestamp getLocalDateTimeMilliseconds() const = 0;
+        virtual void getDateTimeFromMilliseconds( Timestamp _time, PlatformDateTime * const _dateTime ) const = 0;
 
     public:
-        virtual void getLocalDateTimeFromMilliseconds( Timestamp _time, PlatformDateTime * const _dateTime ) const = 0;
-
-    public:
-        virtual int32_t getTimeZoneOffset() const = 0;
+        virtual int64_t getTimeZoneOffsetMilliseconds() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -6,7 +6,10 @@ namespace Mengine
 {
     namespace Helper
     {
-        Timestamp getTimestamp();
-        Timestamp getDurationTimestamp( Timestamp _timestamp );
+        Timestamp getSystemTimestamp();
+        Timestamp getLocalTimestamp();
+
+        Timestamp getSystemDurationTimestamp( Timestamp _timestamp );
+        Timestamp getLocalDurationTimestamp( Timestamp _timestamp );
     }
 }

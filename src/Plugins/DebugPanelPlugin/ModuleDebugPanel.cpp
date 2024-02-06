@@ -85,9 +85,9 @@ namespace Mengine
     {
         MENGINE_UNUSED( _focus );
 
-        static Timestamp old_Time = Helper::getTimestamp();
+        static Timestamp old_Time = Helper::getSystemTimestamp();
 
-        Timestamp current_Time = Helper::getTimestamp();
+        Timestamp current_Time = Helper::getSystemTimestamp();
 
         Timestamp deltha_Time = current_Time - old_Time;
 

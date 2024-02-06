@@ -13,16 +13,21 @@ namespace Mengine
         Win32DateTimeSystem();
         ~Win32DateTimeSystem() override;
 
+    public:
+        bool _initializeService() override;
+        void _finalizeService() override;
+
     protected:
+        void getSystemDateTime( PlatformDateTime * const _dateTime ) const override;
         void getLocalDateTime( PlatformDateTime * const _dateTime ) const override;
 
     protected:
-        Timestamp getLocalDateTimeMilliseconds() const override;
+        void getDateTimeFromMilliseconds( Timestamp _time, PlatformDateTime * const _dateTime ) const override;
 
     protected:
-        void getLocalDateTimeFromMilliseconds( Timestamp _time, PlatformDateTime * const _dateTime ) const override;
+        int64_t getTimeZoneOffsetMilliseconds() const override;
 
     protected:
-        int32_t getTimeZoneOffset() const override;
+        int64_t m_timeZoneOffset;
     };
 }

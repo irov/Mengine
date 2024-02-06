@@ -43,7 +43,7 @@ namespace Mengine
         {
             PlatformDateTime dateTime;
             DATETIME_SYSTEM()
-                ->getLocalDateTimeFromMilliseconds( _timestamp, &dateTime );
+                ->getDateTimeFromMilliseconds( _timestamp, &dateTime );
 
             int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, _format //"[%02u:%02u:%02u:%04u]"
                 , dateTime.year
@@ -62,7 +62,7 @@ namespace Mengine
         {
             PlatformDateTime dateTime;
             DATETIME_SYSTEM()
-                ->getLocalDateTimeFromMilliseconds( _timestamp, &dateTime );
+                ->getDateTimeFromMilliseconds( _timestamp, &dateTime );
 
             int32_t size = MENGINE_SNPRINTF( _buffer + _offset, _capacity - _offset, _format //"[%02u:%02u:%02u:%04u]"
                 , dateTime.hour

@@ -133,7 +133,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::_initializeService()
     {
-        m_beginTime = Helper::getTimestamp();
+        m_beginTime = Helper::getSystemTimestamp();
 
 #if defined(MENGINE_SETLOCALE_ENABLE)
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
@@ -724,7 +724,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Timestamp Win32PlatformService::getPlatfomTime() const
     {
-        Timestamp currentTime = Helper::getTimestamp();
+        Timestamp currentTime = Helper::getSystemTimestamp();
 
         Timestamp platformTime = currentTime - m_beginTime;
 
@@ -849,7 +849,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::loopPlatform()
     {
-        m_prevTime = Helper::getTimestamp();
+        m_prevTime = Helper::getSystemTimestamp();
 
         while( m_close == false )
         {
@@ -862,7 +862,7 @@ namespace Mengine
                 break;
             }
 
-            Timestamp currentTime = Helper::getTimestamp();
+            Timestamp currentTime = Helper::getSystemTimestamp();
 
             float frameTime = (float)(currentTime - m_prevTime);
 

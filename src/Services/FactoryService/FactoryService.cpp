@@ -75,7 +75,7 @@ namespace Mengine
 
         uint32_t leakcount = 0;
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         typedef Vector<DocumentInterfacePtr> VectorDocuments;
         typedef Map<const FactoryInterface *, VectorDocuments> MapObjectLeaks;
         MapObjectLeaks objectLeaks;
@@ -122,7 +122,7 @@ namespace Mengine
 
                 ::fwrite( objectleakmsg, objectleakmsg_length, 1, f );
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
                 for( auto && [factory, objects] : objectLeaks )
                 {
                     const Char * factory_delimiter = "##########################################################\n";

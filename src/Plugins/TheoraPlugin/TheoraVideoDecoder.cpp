@@ -8,11 +8,10 @@
 
 #include "Config/StdString.h"
 
-//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_THEORA_OGG_BUFFER_SIZE
 #define MENGINE_THEORA_OGG_BUFFER_SIZE 4096
 #endif
-//////////////////////////////////////////////////////////////////////////
+
 #if defined(MENGINE_RENDER_TEXTURE_RGBA)
 #   define THEORA_COLOR_R 0
 #   define THEORA_COLOR_G 1
@@ -24,7 +23,7 @@
 #   define THEORA_COLOR_B 0
 #   define THEORA_COLOR_A 3
 #endif
-//////////////////////////////////////////////////////////////////////////
+
 namespace Mengine
 {
     namespace Detail

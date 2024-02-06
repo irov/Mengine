@@ -203,7 +203,7 @@ namespace Mengine
 
         Color m_clearColor;
 
-#ifndef MENGINE_RENDER_OPENGL_ES
+#if !defined(MENGINE_RENDER_OPENGL_ES)
         GLclampd m_clearDepth;
 #endif
 

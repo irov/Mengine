@@ -7,7 +7,7 @@
 #include "MemoryConfig.h"
 #include "MultiConfig.h"
 
-#ifndef MENGINE_BUILD_PUBLISH
+#if !defined(MENGINE_BUILD_PUBLISH)
 #   include "PersistentConfig.h"
 #endif
 
@@ -40,7 +40,7 @@ namespace Mengine
     public:
         const ConfigInterfacePtr & getDefaultConfig() const override;
 
-#ifndef MENGINE_BUILD_PUBLISH
+#if !defined(MENGINE_BUILD_PUBLISH)
     public:
         const ConfigInterfacePtr & getPersistentConfig() const override;
 #endif
@@ -50,7 +50,7 @@ namespace Mengine
 
         MultiConfigPtr m_defaultConfig;
 
-#ifndef MENGINE_BUILD_PUBLISH
+#if !defined(MENGINE_BUILD_PUBLISH)
         PersistentConfigPtr m_persistentConfig;
 #endif
 

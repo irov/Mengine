@@ -3728,7 +3728,7 @@ namespace Mengine
             return false;
         }
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
@@ -3747,7 +3747,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::finalizeFileService_()
     {
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         FILE_SERVICE()
             ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 #endif

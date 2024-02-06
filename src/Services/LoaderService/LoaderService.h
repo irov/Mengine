@@ -40,7 +40,7 @@ namespace Mengine
         bool importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _reimport, const DocumentInterfacePtr & _doc ) const;
         bool openBin_( const ContentInterfacePtr & _content, InputStreamInterfacePtr * _stream, bool * const _exist, const DocumentInterfacePtr & _doc ) const;
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         bool makeBin_( const ContentInterfacePtr & _content, const FilePath & _pathBin ) const;
 #endif
 

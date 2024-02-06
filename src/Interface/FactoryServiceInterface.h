@@ -7,7 +7,7 @@
 #include "Config/Typedef.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_DEBUG_FACTORY
+#if !defined(MENGINE_DEBUG_FACTORY)
 #   if defined(MENGINE_DEBUG)
 #       define MENGINE_DEBUG_FACTORY 1
 #   else

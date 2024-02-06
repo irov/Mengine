@@ -12,11 +12,10 @@
 #include "Config/StdArg.h"
 #include "Config/StdString.h"
 
-//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_DECODER_JPEG_INPUT_BUF_SIZE
 #define MENGINE_DECODER_JPEG_INPUT_BUF_SIZE 4096
 #endif
-//////////////////////////////////////////////////////////////////////////
+
 namespace Mengine
 {
     namespace Detail

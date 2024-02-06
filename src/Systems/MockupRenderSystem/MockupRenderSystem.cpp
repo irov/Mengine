@@ -63,7 +63,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ERenderPlatform MockupRenderSystem::getRenderPlatformType() const
     {
+#if defined(MENGINE_PLATFORM_WINDOWS)
         return RP_DX9;
+#else
+#   if defined(MENGINE_RENDER_OPENGL_ES)
+        return RP_OPENGLES;
+#   else
+        return RP_OPENGL;
+#   endif
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & MockupRenderSystem::getRenderPlatformName() const
@@ -77,7 +85,15 @@ namespace Mengine
 
         m_dxMaxCombinedTextureImageUnits = MENGINE_MAX_TEXTURE_STAGES;
 
-        m_renderSystemName = CONFIG_VALUE( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "Mockup" ) );
+#if defined(MENGINE_PLATFORM_WINDOWS)
+        m_renderSystemName = CONFIG_VALUE( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "DX9" ) );
+#else
+#   if defined(MENGINE_RENDER_OPENGL_ES)
+        m_renderSystemName = CONFIG_VALUE( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "OpenGLES" ) );
+#   else
+        m_renderSystemName = CONFIG_VALUE( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "OpenGL" ) );
+#   endif
+#endif
 
         m_factoryRenderVertexAttribute = Helper::makeFactoryPool<MockupRenderVertexAttribute, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderVertexShader = Helper::makeFactoryPool<MockupRenderVertexShader, 16>( MENGINE_DOCUMENT_FACTORABLE );

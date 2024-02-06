@@ -187,11 +187,11 @@ namespace Mengine
         VectorConstString glyphs;
         config->getValues( "GAME_FONTS", "Glyph", &glyphs );
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         bool developmentMode = Helper::isDevelopmentMode();
 #endif
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         if( developmentMode == true )
         {
             VectorConstString glyphsDev;
@@ -254,7 +254,7 @@ namespace Mengine
         VectorConstString fonts;
         config->getValues( "GAME_FONTS", "Font", &fonts );
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         if( developmentMode == true )
         {
             VectorConstString fontsDev;
@@ -310,7 +310,7 @@ namespace Mengine
             }
         }
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         bool OPTION_noresourceCheck = HAS_OPTION( "noresourcecheck" );
 
         if( OPTION_noresourceCheck == false )
@@ -372,14 +372,14 @@ namespace Mengine
             , Helper::getContentFullPath( _content )
         );
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         bool developmentMode = Helper::isDevelopmentMode();
 #endif
 
         VectorConstString glyphs;
         config->getValues( "GAME_FONTS", "Glyph", &glyphs );
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         if( developmentMode == true )
         {
             VectorConstString glyphsDev;
@@ -413,7 +413,7 @@ namespace Mengine
         VectorConstString fonts;
         config->getValues( "GAME_FONTS", "Font", &fonts );
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         if( developmentMode == true )
         {
             VectorConstString fontsDev;

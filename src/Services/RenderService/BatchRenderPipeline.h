@@ -171,7 +171,7 @@ namespace Mengine
         DynamicArrayRenderIndices m_indicesQuad;
         DynamicArrayRenderIndices m_indicesLine;
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         struct DebugRenderObject
         {
             RenderContext context;

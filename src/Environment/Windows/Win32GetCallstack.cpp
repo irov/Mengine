@@ -1,6 +1,6 @@
 #include "Win32GetCallstack.h"
 
-#ifndef MENGINE_PLATFORM_UWP
+#if !defined(MENGINE_PLATFORM_UWP)
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #       pragma warning(push, 0)
 #   endif
@@ -20,7 +20,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_PLATFORM_UWP
+#if !defined(MENGINE_PLATFORM_UWP)
         //////////////////////////////////////////////////////////////////////////
         namespace Detail
         {

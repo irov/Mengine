@@ -67,7 +67,7 @@ namespace Mengine
         ::InitializeCriticalSection( &m_taskLock );
         ::InitializeCriticalSection( &m_processLock );
 
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         ::InitializeCriticalSection( &m_conditionLock );
         ::InitializeConditionVariable( &m_conditionVariable );
 #endif
@@ -141,7 +141,7 @@ namespace Mengine
         ::DeleteCriticalSection( &m_taskLock );
         ::DeleteCriticalSection( &m_processLock );
 
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         ::DeleteCriticalSection( &m_conditionLock );
 #endif
 
@@ -159,7 +159,7 @@ namespace Mengine
 
         while( m_exit == false )
         {
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
             ::EnterCriticalSection( &m_conditionLock );
             ::SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, 1000 );
             ::LeaveCriticalSection( &m_conditionLock );
@@ -197,7 +197,7 @@ namespace Mengine
                 break;
             }
 
-#ifndef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+#if !defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
             ::Sleep( 10 );
 #endif
         }
@@ -240,7 +240,7 @@ namespace Mengine
                 LOGGER_ASSERTION( "invalid run" );
             }
 
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
             ::WakeConditionVariable( &m_conditionVariable );
 #endif
 
@@ -280,7 +280,7 @@ namespace Mengine
 
         m_exit = true;
 
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         ::WakeConditionVariable( &m_conditionVariable );
 #endif
 

@@ -6,7 +6,7 @@
 #include "Kernel/ReferenceCounter.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_FACTORABLE_DEBUG
+#if !defined(MENGINE_FACTORABLE_DEBUG)
 #   if defined(MENGINE_DEBUG)
 #       define MENGINE_FACTORABLE_DEBUG 1
 #   else

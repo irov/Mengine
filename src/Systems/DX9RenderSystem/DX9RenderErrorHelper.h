@@ -6,7 +6,7 @@
 
 #include "Kernel/Assertion.h"
 
-#ifndef MENGINE_DXRENDER_CHECK_ERROR
+#if !defined(MENGINE_DXRENDER_CHECK_ERROR)
 #   if defined(MENGINE_DEBUG)
 #       define MENGINE_DXRENDER_CHECK_ERROR 1
 #   else

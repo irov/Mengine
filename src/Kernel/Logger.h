@@ -10,7 +10,7 @@
 #include "Config/StdArg.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_LOGGER_INFO
+#if !defined(MENGINE_LOGGER_INFO)
 #   if defined(MENGINE_DEBUG)
 #       define MENGINE_LOGGER_INFO 1
 #   else
@@ -22,7 +22,7 @@
 #   define MENGINE_LOGGER_INFO_ENABLE
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_LOGGER_ANALYZE
+#if !defined(MENGINE_LOGGER_ANALYZE)
 #   if defined(MENGINE_DEBUG)
 #       define MENGINE_LOGGER_ANALYZE 1
 #   else

@@ -55,10 +55,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::_initializeService()
     {
-#ifndef MENGINE_RENDER_OPENGL_ES
-        m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGL" );
-#else
+#if defined(MENGINE_RENDER_OPENGL_ES)
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGLES" );
+#else
+        m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGL" );
 #endif
 
         m_factoryRenderVertexBuffer = Helper::makeFactoryPoolWithListener<OpenGLRenderVertexBuffer, 8>( this, &OpenGLRenderSystem::onRenderVertexBufferDestroy_, MENGINE_DOCUMENT_FACTORABLE );
@@ -143,7 +143,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ERenderPlatform OpenGLRenderSystem::getRenderPlatformType() const
     {
-#ifndef MENGINE_RENDER_OPENGL_ES
+#if !defined(MENGINE_RENDER_OPENGL_ES)
         return RP_OPENGL;
 #else
         return RP_OPENGLES;
@@ -225,7 +225,7 @@ namespace Mengine
 
         MENGINE_GLCALL( glClearColor, (r, g, b, a) );
 
-#ifndef MENGINE_RENDER_OPENGL_ES
+#if !defined(MENGINE_RENDER_OPENGL_ES)
         MENGINE_GLCALL( glClearDepth, (m_clearDepth) );
 #endif
 
@@ -807,7 +807,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _mode );
 
-#ifndef MENGINE_RENDER_OPENGL_ES
+#if !defined(MENGINE_RENDER_OPENGL_ES)
         GLenum mode = Helper::toGLFillMode( _mode );
 
         MENGINE_GLCALL( glPolygonMode, (GL_FRONT_AND_BACK, mode) );
@@ -954,7 +954,7 @@ namespace Mengine
                 MENGINE_GLCALL( glDepthMask, (GL_TRUE) );
             }
 
-#ifndef MENGINE_RENDER_OPENGL_ES
+#if !defined(MENGINE_RENDER_OPENGL_ES)
             GLclampd depth = static_cast<GLclampd>(_depth);
 
             if( m_clearDepth != depth )

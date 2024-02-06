@@ -22,7 +22,7 @@ namespace Mengine
         , m_alpha( false )
         , m_premultiply( false )
         , m_noSeek( false )
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         , m_forcePremultiply( false )
 #endif
     {
@@ -64,7 +64,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceVideo::_compile()
     {
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         bool VideoPlugin_ForcePremultiplyAlpha = CONFIG_VALUE( "VideoPlugin", "ForcePremultiplyAlpha", false );
 
         if( VideoPlugin_ForcePremultiplyAlpha == true )
@@ -88,7 +88,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceVideo::_release()
     {
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         if( m_forcePremultiply == true )
         {
             this->setPremultiply( false );

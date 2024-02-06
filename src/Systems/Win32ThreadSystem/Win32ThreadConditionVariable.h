@@ -33,7 +33,7 @@ namespace Mengine
         void _destroy() override;
 
     protected:
-#ifdef MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         CRITICAL_SECTION m_conditionLock;
         CONDITION_VARIABLE m_conditionVariable;
 #endif

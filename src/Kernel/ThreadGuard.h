@@ -5,7 +5,7 @@
 #include "Config/Thread.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_THREAD_GUARD
+#if !defined(MENGINE_THREAD_GUARD)
 #   if defined(MENGINE_DEBUG)
 #       define MENGINE_THREAD_GUARD 1
 #   else

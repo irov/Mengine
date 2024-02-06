@@ -2,13 +2,13 @@
 
 #include "Config/Config.h"
 
-#ifndef MENGINE_PLATFORM_WINDOWS
+#if !defined(MENGINE_PLATFORM_WINDOWS)
 #error "include only for 'Windows' platform"
 #endif
 
 #include <sdkddkver.h>
 
-#ifndef MENGINE_WINDOWS_MIN_VERSION
+#if !defined(MENGINE_WINDOWS_MIN_VERSION)
 #   if defined(MENGINE_WINDOWS_MIN_VERSION_WINXP)
 #       define MENGINE_WINDOWS_MIN_VERSION _WIN32_WINNT_WINXP
 #   elif defined(MENGINE_WINDOWS_MIN_VERSION_VISTA)

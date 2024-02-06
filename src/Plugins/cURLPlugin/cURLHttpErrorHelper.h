@@ -6,7 +6,7 @@
 #include "curl/curl.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_CURL_CHECK_ERROR
+#if !defined(MENGINE_CURL_CHECK_ERROR)
 #   if defined(MENGINE_DEBUG)
 #       define MENGINE_CURL_CHECK_ERROR 1
 #   else

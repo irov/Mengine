@@ -139,7 +139,7 @@ namespace Mengine
 
             widget->setDataProperty( STRINGIZE_STRING_LOCAL( "content" ), property_content );
 
-            return DevToDebugWidgetCommandLinePtr::dynamic_from( widget );
+            return DevToDebugWidgetRadioButtonPtr::dynamic_from( widget );
         }
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugWidgetSelectorPtr s_createDevToDebugWidgetSelector( const ConstString & _id )
@@ -152,7 +152,7 @@ namespace Mengine
 
             widget->setDataProperty( STRINGIZE_STRING_LOCAL( "content" ), property_content );
 
-            return DevToDebugWidgetCommandLinePtr::dynamic_from( widget );
+            return DevToDebugWidgetSelectorPtr::dynamic_from( widget );
         }
         //////////////////////////////////////////////////////////////////////////
         static DevToDebugPropertyInterfacePtr s_createDevToDebugPropertyBoolean( const pybind::object & _cb, const pybind::args & _args )

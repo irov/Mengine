@@ -5,7 +5,7 @@
 #include "Kernel/Deque.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#if !defined(MENGINE_UNSUPPORT_PRAGMA_WARNING)
 #   pragma warning(push, 0)
 #   pragma warning(disable:4800)
 #   pragma warning(disable:4702)
@@ -20,7 +20,7 @@
 
 #include "boost/geometry/strategies/agnostic/point_in_poly_winding.hpp"
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#if !defined(MENGINE_UNSUPPORT_PRAGMA_WARNING)
 #   pragma warning(pop)
 #endif
 //////////////////////////////////////////////////////////////////////////

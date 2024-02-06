@@ -693,6 +693,16 @@ namespace Mengine
                 uint32_t revision_from = j.get( "revision_from", 0U );
                 uint32_t revision_to = j.get( "revision_to", 0U );
 
+                if( revision_from == revision_to )
+                {
+                    break;
+                }
+
+                if( m_revision == revision_to )
+                {
+                    break;
+                }
+
                 if( m_revision != revision_from )
                 {
                     LOGGER_ERROR( "connect out of sync revision %u != from %u: %s [code %u] [id %u]"
@@ -705,11 +715,6 @@ namespace Mengine
 
                     this->stop();
 
-                    break;
-                }
-
-                if( revision_from == revision_to )
-                {
                     break;
                 }
 

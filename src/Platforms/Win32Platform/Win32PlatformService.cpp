@@ -4438,7 +4438,7 @@ namespace Mengine
             return false;
         }
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         if( FILE_SERVICE()
             ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
@@ -4499,7 +4499,7 @@ namespace Mengine
         FILE_SERVICE()
             ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "windows" ) );
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         FILE_SERVICE()
             ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 #endif

@@ -197,14 +197,14 @@ namespace Mengine
         case PNG_COLOR_TYPE_PALETTE:
             {
                 png_set_palette_to_rgb( m_png_ptr );
-#ifndef MENGINE_RENDER_TEXTURE_RGBA
+#if !defined(MENGINE_RENDER_TEXTURE_RGBA)
                 png_set_bgr( m_png_ptr );
 #endif
             }break;
         case PNG_COLOR_TYPE_RGB:
         case PNG_COLOR_TYPE_RGB_ALPHA:
             {
-#ifndef MENGINE_RENDER_TEXTURE_RGBA
+#if !defined(MENGINE_RENDER_TEXTURE_RGBA)
                 png_set_bgr( m_png_ptr );
 #endif
             }break;

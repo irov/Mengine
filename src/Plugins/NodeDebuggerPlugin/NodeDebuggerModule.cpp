@@ -1553,7 +1553,7 @@ namespace Mengine
 
         payloadNode.append_attribute( "Generation" ).set_value( generation - 1 );
 
-#ifdef MENGINE_DOCUMENT_ENABLE
+#if defined(MENGINE_DOCUMENT_ENABLE)
         typedef Vector<DocumentInterfacePtr> VectorDocuments;
         typedef Map<const FactoryInterface *, VectorDocuments> MapObjectLeaks;
         MapObjectLeaks objectLeaks;

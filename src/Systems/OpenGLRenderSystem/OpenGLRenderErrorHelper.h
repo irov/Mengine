@@ -6,7 +6,7 @@
 
 #include "Config/Char.h"
 
-#ifndef MENGINE_OPENGL_RENDER_CHECK_ERROR
+#if !defined(MENGINE_OPENGL_RENDER_CHECK_ERROR)
 #   if defined(MENGINE_DEBUG)
 #       define MENGINE_OPENGL_RENDER_CHECK_ERROR 1
 #   else

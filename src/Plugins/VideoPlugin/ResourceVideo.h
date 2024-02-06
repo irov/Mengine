@@ -69,7 +69,7 @@ namespace Mengine
         bool m_premultiply;
         bool m_noSeek;
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
     protected:
         bool m_forcePremultiply;
 #endif

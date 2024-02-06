@@ -734,7 +734,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         const ConstString & converterType = _content->getConverterType();
         const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
         const FilePath & filePath = _content->getFilePath();
@@ -783,7 +783,7 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-#ifndef MENGINE_MASTER_RELEASE
+#if !defined(MENGINE_MASTER_RELEASE)
         const ConstString & converterType = _content->getConverterType();
         const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
         const FilePath & filePath = _content->getFilePath();

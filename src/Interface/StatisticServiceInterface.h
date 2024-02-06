@@ -5,7 +5,7 @@
 #include "Kernel/ConstString.h"
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_STATISTIC
+#if !defined(MENGINE_STATISTIC)
 #   if defined(MENGINE_DEBUG)
 #       define MENGINE_STATISTIC 1
 #   else

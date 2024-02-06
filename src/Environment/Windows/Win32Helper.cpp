@@ -124,7 +124,7 @@ namespace Mengine
         {
            MENGINE_UNUSED( _message );
 
-#ifndef MENGINE_PLATFORM_UWP
+#if !defined(MENGINE_PLATFORM_UWP)
             ::MessageBoxW( NULL, _message, L"Mengine", MB_OK );
 #endif
         }

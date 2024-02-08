@@ -47,6 +47,7 @@
 #if defined(MENGINE_PLUGIN_MENGINE_STATIC)
 extern Mengine::ServiceProviderInterface * initializeMengine();
 extern bool bootstrapMengine();
+extern bool runMengine();
 extern void finalizeMengine();
 #endif
 //////////////////////////////////////////////////////////////////////////
@@ -57,6 +58,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef ServiceProviderInterface * (*FMengineInitialize)(void);
     typedef bool (*FMengineBootstrap)(void);
+    typedef bool (*FMengineRun)(void);
     typedef void (*FMengineFinalize)(void);
     //////////////////////////////////////////////////////////////////////////
 #endif
@@ -241,9 +243,9 @@ namespace Mengine
 
         m_hInstance = hInstance;
 
-        FARPROC dllInitializeMengine = ::GetProcAddress( m_hInstance, "initializeMengine" );
+        FARPROC dllMengineCreate = ::GetProcAddress( m_hInstance, "API_MengineCreate" );
 
-        if( dllInitializeMengine == nullptr )
+        if( dllMengineCreate == nullptr )
         {
             DWORD error_code = ::GetLastError();
 
@@ -261,16 +263,16 @@ namespace Mengine
             return false;
         }
 
-        FMengineInitialize dlMengineInitialize = (FMengineInitialize)dllInitializeMengine;
+        FMengineInitialize dlMengineCreate = (FMengineInitialize)dllMengineCreate;
 
-        ServiceProviderInterface * serviceProvider = (*dlMengineInitialize)();
+        ServiceProviderInterface * serviceProvider = (*dlMengineCreate)();
 
         if( serviceProvider == nullptr )
         {
             return false;
         }
 #else
-        ServiceProviderInterface * serviceProvider = initializeMengine();
+        ServiceProviderInterface * serviceProvider = API_MengineCreate();
 #endif
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
@@ -301,21 +303,42 @@ namespace Mengine
         } );
 
 #if defined(MENGINE_PLUGIN_MENGINE_DLL)
-        FARPROC dllBootstrapMengine = ::GetProcAddress( m_hInstance, "bootstrapMengine" );
+        FARPROC dllMengineBootstrap = ::GetProcAddress( m_hInstance, "API_MengineBootstrap" );
 
-        if( dllBootstrapMengine == nullptr )
+        if( dllMengineBootstrap == nullptr )
         {
             return false;
         }
 
-        FMengineBootstrap dlmengineBootstrap = (FMengineBootstrap)dllBootstrapMengine;
+        FMengineBootstrap dlMengineBootstrap = (FMengineBootstrap)dllMengineBootstrap;
 
-        if( (*dlmengineBootstrap)() == false )
+        if( (*dlMengineBootstrap)() == false )
         {
             return false;
         }        
 #else
-        if( bootstrapMengine() == false )
+        if( API_MengineBootstrap() == false )
+        {
+            return false;
+        }
+#endif
+
+#if defined(MENGINE_PLUGIN_MENGINE_DLL)
+        FARPROC dllMengineRun = ::GetProcAddress( m_hInstance, "API_MengineRun" );
+
+        if( dllMengineRun == nullptr )
+        {
+            return false;
+        }
+
+        FMengineRun dlMengineRun = (FMengineRun)dllMengineRun;
+
+        if( (*dlMengineRun)() == false )
+        {
+            return false;
+        }
+#else
+        if( API_MengineRun() == false )
         {
             return false;
         }
@@ -436,13 +459,13 @@ namespace Mengine
         }
 
 #if defined(MENGINE_PLUGIN_MENGINE_DLL)
-        FARPROC dllFinalizeMengine = ::GetProcAddress( m_hInstance, "finalizeMengine" );
+        FARPROC dllMengineFinalize = ::GetProcAddress( m_hInstance, "API_MengineFinalize" );
 
-        if( dllFinalizeMengine != nullptr )
+        if( dllMengineFinalize != nullptr )
         {
-            FMengineFinalize dlmengineFinalize = (FMengineFinalize)dllFinalizeMengine;
+            FMengineFinalize dlMengineFinalize = (FMengineFinalize)dllMengineFinalize;
 
-            (*dlmengineFinalize)();
+            (*dlMengineFinalize)();
         }
 
         ::FreeLibrary( m_hInstance );

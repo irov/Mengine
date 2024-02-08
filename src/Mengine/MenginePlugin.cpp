@@ -18,7 +18,7 @@ extern "C"
 {
 #endif
     //////////////////////////////////////////////////////////////////////////
-    Mengine::ServiceProviderInterface * initializeMengine()
+    Mengine::ServiceProviderInterface * API_MengineCreate()
     {
         Mengine::ServiceProviderInterface * serviceProvider;
         if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
@@ -46,13 +46,24 @@ extern "C"
         return serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool bootstrapMengine()
+    bool API_MengineBootstrap()
     {
         if( SERVICE_CREATE( Bootstrapper, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }
 
+        if( BOOTSTRAPPER_SERVICE()
+            ->initialize() == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool API_MengineRun()
+    {
         if( BOOTSTRAPPER_SERVICE()
             ->run() == false )
         {
@@ -62,7 +73,7 @@ extern "C"
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void finalizeMengine()
+    void API_MengineFinalize()
     {
         SERVICE_FINALIZE( Bootstrapper );
         SERVICE_DESTROY( Bootstrapper );

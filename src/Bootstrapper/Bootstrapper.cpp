@@ -454,7 +454,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Bootstrapper::run()
+    bool Bootstrapper::initialize()
     {
         if( this->createServices_() == false )
         {
@@ -463,8 +463,8 @@ namespace Mengine
             return false;
         }
 
-        Timestamp mengine_run_timestamp = ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_run_start" ), MENGINE_DOCUMENT_FACTORABLE )
+        Timestamp mengine_initialize_timestamp = ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_start" ), MENGINE_DOCUMENT_FACTORABLE )
             ->log();
 
         LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority plugins" );
@@ -557,7 +557,21 @@ namespace Mengine
             return false;
         }
 
+        ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_completed" ), MENGINE_DOCUMENT_FACTORABLE )
+            ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getSystemDurationTimestamp( mengine_initialize_timestamp ) )
+            ->log();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::run()
+    {
         LOGGER_INFO( "bootstrapper", "bootstrapper run frameworks" );
+
+        Timestamp mengine_run_timestamp = ANALYTICS_SERVICE()
+            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_start" ), MENGINE_DOCUMENT_FACTORABLE )
+            ->log();
 
         if( this->runFrameworks_() == false )
         {

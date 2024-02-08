@@ -41,9 +41,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_MENGINE_STATIC)
-extern Mengine::ServiceProviderInterface * initializeMengine();
-extern bool bootstrapMengine();
-extern void finalizeMengine();
+extern Mengine::ServiceProviderInterface * API_MengineCreate();
+extern bool API_MengineBootstrap();
+extern bool API_MengineRun();
+extern void API_MengineFinalize();
 #endif
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
@@ -237,7 +238,7 @@ namespace Mengine
 #if defined(MENGINE_PLUGIN_MENGINE_DLL)
 #   error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
 #elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        ServiceProviderInterface * serviceProvider = initializeMengine();
+        ServiceProviderInterface * serviceProvider = API_MengineCreate();
 #else
         ServiceProviderInterface * serviceProvider = nullptr;
 #endif
@@ -272,7 +273,7 @@ namespace Mengine
 #if defined(MENGINE_PLUGIN_MENGINE_DLL)
 #error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
 #elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        if( bootstrapMengine() == false )
+        if( ::API_MengineBootstrap() == false )
         {
             return false;
         }
@@ -283,6 +284,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initialize()
     {
+#if defined(MENGINE_PLUGIN_MENGINE_DLL)
+#error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
+#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
+        if( ::API_MengineRun() == false )
+        {
+            return false;
+        }
+#endif
+
         LOGGER_INFO( "application", "creating render window..." );
 
         const Char * projectTitle = nullptr;
@@ -409,7 +419,7 @@ namespace Mengine
 #if defined(MENGINE_PLUGIN_MENGINE_DLL)
 #   error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
 #elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        finalizeMengine();
+        API_MengineFinalize();
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

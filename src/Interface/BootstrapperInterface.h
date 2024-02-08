@@ -14,6 +14,7 @@ namespace Mengine
         SERVICE_DECLARE( "Bootstrapper" );
 
     public:
+        virtual bool initialize() = 0;
         virtual bool run() = 0;
         virtual void stop() = 0;
     };

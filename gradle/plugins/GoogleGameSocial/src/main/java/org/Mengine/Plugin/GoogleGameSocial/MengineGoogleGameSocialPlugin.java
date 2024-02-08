@@ -17,8 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.games.AchievementsClient;
-import com.google.android.gms.games.Games;
+import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,7 +37,6 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
     private int RC_UNUSED;
 
     private GoogleSignInClient m_signInClient;
-    private AchievementsClient m_achievementsClient;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
@@ -62,8 +60,6 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
             m_signInClient.signOut();
             m_signInClient = null;
         }
-
-        m_achievementsClient = null;
     }
 
     public void startSignInIntent() {
@@ -221,8 +217,6 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
 
         MengineActivity activity = this.getMengineActivity();
 
-        m_achievementsClient = Games.getAchievementsClient(activity, account);
-
         Uri accountPhotoUrl = account.getPhotoUrl();
         String accountDisplayName = account.getDisplayName();
         String accountEmail = account.getEmail();
@@ -295,15 +289,12 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
     }
 
     public boolean showAchievements() {
-        if (m_achievementsClient == null) {
-            this.logWarning("showAchievements achievements client not created");
-
-            return false;
-        }
-
         this.logMessage("showAchievements");
 
-        m_achievementsClient.getAchievementsIntent()
+        MengineActivity activity = this.getMengineActivity();
+
+        PlayGames.getAchievementsClient(activity)
+            .getAchievementsIntent()
             .addOnSuccessListener(new OnSuccessListener<Intent>() {
                 @Override
                 public void onSuccess(Intent intent) {
@@ -337,17 +328,13 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
     }
 
     public boolean unlockAchievement(String achievementId) {
-        if (m_achievementsClient == null) {
-            this.logWarning("unlockAchievement achievements client not created");
-
-            return false;
-        }
+        MengineActivity activity = this.getMengineActivity();
 
         this.logMessage("unlockAchievement: %s"
             , achievementId
         );
 
-        m_achievementsClient.unlockImmediate(achievementId)
+        PlayGames.getAchievementsClient(activity).unlockImmediate(achievementId)
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
@@ -374,18 +361,14 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
     }
 
     public boolean incrementAchievement(String achievementId, int numSteps) {
-        if (m_achievementsClient == null) {
-            this.logWarning("incrementAchievement achievements client not created");
-
-            return false;
-        }
+        MengineActivity activity = this.getMengineActivity();
 
         this.logMessage("incrementAchievement achievementId: %s numSteps: %d"
             , achievementId
             , numSteps
         );
 
-        m_achievementsClient.incrementImmediate(achievementId, numSteps)
+        PlayGames.getAchievementsClient(activity).incrementImmediate(achievementId, numSteps)
             .addOnSuccessListener(new OnSuccessListener<Boolean>() {
                 @Override
                 public void onSuccess(Boolean aBoolean) {

@@ -1,4 +1,5 @@
 LIBRARY "Mengine"
-EXPORTS initializeMengine @1
-EXPORTS bootstrapMengine @2
-EXPORTS finalizeMengine @3
+EXPORTS API_MengineCreate @1
+EXPORTS API_MengineBootstrap @2
+EXPORTS API_MengineRun @3
+EXPORTS API_MengineFinalize @4

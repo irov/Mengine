@@ -338,7 +338,7 @@ namespace Mengine
         }
 
         if( SOUND_SERVICE()
-            ->setSourceVolume( m_soundIdentity, m_volume, m_volume, forceVolume ) == false )
+            ->setSourceVolume( m_soundIdentity, m_volume, m_volume, MENGINE_MIXER_VALUE_DEFAULT_SPEED, forceVolume ) == false )
         {
             LOGGER_ERROR( "surface sound '%s' resource '%s' identity [%u] invalid set source volume %f"
                 , this->getName().c_str()

@@ -57,24 +57,24 @@ namespace Mengine
         SoundDecoderInterfacePtr createSoundDecoder_( const ContentInterfacePtr & _content, bool _streamable, const DocumentInterfacePtr & _doc );
 
     public:
-        void setSoundVolume( const ConstString & _type, float _volume, float _default ) override;
+        void setSoundVolume( const ConstString & _type, float _volume, float _from, float _speed ) override;
         float getSoundVolume( const ConstString & _type ) const override;
         float mixSoundVolume() const override;
 
-        void setCommonVolume( const ConstString & _type, float _volume, float _default ) override;
+        void setCommonVolume( const ConstString & _type, float _volume, float _from, float _speed ) override;
         float getCommonVolume( const ConstString & _type ) const override;
         float mixCommonVolume() const override;
 
-        void setMusicVolume( const ConstString & _type, float _volume, float _default ) override;
+        void setMusicVolume( const ConstString & _type, float _volume, float _from, float _speed ) override;
         float getMusicVolume( const ConstString & _type ) const override;
         float mixMusicVolume() const override;
 
-        void setVoiceVolume( const ConstString & _type, float _volume, float _default ) override;
+        void setVoiceVolume( const ConstString & _type, float _volume, float _from, float _speed ) override;
         float getVoiceVolume( const ConstString & _type ) const override;
         float mixVoiceVolume() const override;
 
     public:
-        bool setSourceVolume( const SoundIdentityInterfacePtr & _identity, float _volume, float _default, bool _force ) override;
+        bool setSourceVolume( const SoundIdentityInterfacePtr & _identity, float _volume, float _from, float _speed, bool _force ) override;
         float getSourceVolume( const SoundIdentityInterfacePtr & _identity ) const override;
 
     public:

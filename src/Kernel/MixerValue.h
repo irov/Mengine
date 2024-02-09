@@ -18,11 +18,7 @@ namespace Mengine
         ~MixerValue();
 
     public:
-        void setSpeed( float _speed ) override;
-        float getSpeed() const override;
-
-    public:
-        void setValue( const ConstString & _type, float _value, float _from, bool _force ) override;
+        void setValue( const ConstString & _type, float _value, float _from, float _speed, bool _force ) override;
         float getValue( const ConstString & _type ) const override;
 
     public:
@@ -32,8 +28,6 @@ namespace Mengine
         bool update( const UpdateContext * _context ) override;
 
     protected:
-        float m_speed;
-
         struct Element
         {
             ConstString type;

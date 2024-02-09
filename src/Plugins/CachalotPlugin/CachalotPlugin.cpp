@@ -48,7 +48,11 @@ namespace Mengine
         uint32_t loggerFilter = ~0u & ~(LFILTER_PROTECTED);
         loggerCachalot->setVerboseFilter( loggerFilter );
 
+#if defined(MENGINE_MASTER_RELEASE)
+        loggerCachalot->setVerboseLevel( LM_ERROR );
+#else
         loggerCachalot->setVerboseLevel( LM_MESSAGE );
+#endif#
 
         loggerCachalot->setWriteHistory( true );
 

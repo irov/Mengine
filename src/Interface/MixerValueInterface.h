@@ -5,6 +5,10 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/UpdateContext.h"
 
+#ifndef MENGINE_MIXER_VALUE_DEFAULT_SPEED
+#define MENGINE_MIXER_VALUE_DEFAULT_SPEED 0.0005f
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -12,11 +16,7 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void setSpeed( float _speed ) = 0;
-        virtual float getSpeed() const = 0;
-
-    public:
-        virtual void setValue( const ConstString & _type, float _value, float _from, bool _force ) = 0;
+        virtual void setValue( const ConstString & _type, float _value, float _from, float _speed, bool _force) = 0;
         virtual float getValue( const ConstString & _type ) const = 0;
 
     public:

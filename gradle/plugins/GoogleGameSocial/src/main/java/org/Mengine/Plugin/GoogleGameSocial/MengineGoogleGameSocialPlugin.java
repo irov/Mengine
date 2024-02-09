@@ -34,14 +34,14 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
     public static final boolean PLUGIN_EMBEDDING = true;
 
     private int RC_SIGN_IN;
-    private int RC_UNUSED;
+    private int RC_ACHIEVEMENT_UI;
 
     private GoogleSignInClient m_signInClient;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         RC_SIGN_IN = activity.genRequestCode("RC_SIGN_IN");
-        RC_UNUSED = activity.genRequestCode("RC_UNUSED");
+        RC_ACHIEVEMENT_UI = activity.genRequestCode("RC_ACHIEVEMENT_UI");
 
         GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
             .build();
@@ -305,7 +305,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
                     MengineActivity activity = MengineGoogleGameSocialPlugin.this.getMengineActivity();
 
                     try {
-                        activity.startActivityForResult(intent, RC_UNUSED);
+                        activity.startActivityForResult(intent, RC_ACHIEVEMENT_UI);
                     } catch (ActivityNotFoundException e) {
                         MengineGoogleGameSocialPlugin.this.logError("[ERROR] showAchievements catch ActivityNotFoundException: %s"
                             , e.getMessage()

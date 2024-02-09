@@ -88,22 +88,22 @@ namespace Mengine
         }
 
         float Engine_CommonVolume = CONFIG_VALUE( "Engine", "CommonVolume", 1.f );
-        this->setCommonVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_CommonVolume, 0.f );
+        this->setCommonVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_CommonVolume, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
 
         float Engine_SoundVolume = CONFIG_VALUE( "Engine", "SoundVolume", 1.f );
-        this->setSoundVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_SoundVolume, 0.f );
+        this->setSoundVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_SoundVolume, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
 
         float Engine_MusicVolume = CONFIG_VALUE( "Engine", "MusicVolume", 1.f );
-        this->setMusicVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_MusicVolume, 0.f );
+        this->setMusicVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_MusicVolume, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
 
         float Engine_VoiceVolume = CONFIG_VALUE( "Engine", "VoiceVolume", 1.f );
-        this->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_VoiceVolume, 0.f );
+        this->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ), Engine_VoiceVolume, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
 
         bool OPTION_musicoff = HAS_OPTION( "musicoff" ) || HAS_OPTION( "nomusic" );
 
         if( OPTION_musicoff == true )
         {
-            this->setMusicVolume( STRINGIZE_STRING_LOCAL( "__MusicOFF__" ), 0.f, 0.f );
+            this->setMusicVolume( STRINGIZE_STRING_LOCAL( "__MusicOFF__" ), 0.f, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
         }
 
         m_factoryWorkerTaskSoundBufferUpdate = Helper::makeFactoryPool<ThreadWorkerSoundBufferUpdate, 32>( MENGINE_DOCUMENT_FACTORABLE );
@@ -567,9 +567,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundService::setSoundVolume( const ConstString & _type, float _volume, float _default )
+    void SoundService::setSoundVolume( const ConstString & _type, float _volume, float _from, float _speed )
     {
-        m_soundVolume->setValue( _type, _volume, _default, true );
+        m_soundVolume->setValue( _type, _volume, _from, _speed, true );
 
         this->updateVolume();
     }
@@ -588,9 +588,9 @@ namespace Mengine
         return volume;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundService::setCommonVolume( const ConstString & _type, float _volume, float _default )
+    void SoundService::setCommonVolume( const ConstString & _type, float _volume, float _from, float _speed )
     {
-        m_commonVolume->setValue( _type, _volume, _default, true );
+        m_commonVolume->setValue( _type, _volume, _from, _speed, true );
 
         this->updateVolume();
     }
@@ -609,9 +609,9 @@ namespace Mengine
         return volume;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundService::setMusicVolume( const ConstString & _type, float _volume, float _default )
+    void SoundService::setMusicVolume( const ConstString & _type, float _volume, float _from, float _speed )
     {
-        m_musicVolume->setValue( _type, _volume, _default, true );
+        m_musicVolume->setValue( _type, _volume, _from, _speed, true );
 
         this->updateVolume();
     }
@@ -630,9 +630,9 @@ namespace Mengine
         return volume;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundService::setVoiceVolume( const ConstString & _type, float _volume, float _default )
+    void SoundService::setVoiceVolume( const ConstString & _type, float _volume, float _from, float _speed )
     {
-        m_voiceVolume->setValue( _type, _volume, _default, true );
+        m_voiceVolume->setValue( _type, _volume, _from, _speed, true );
 
         this->updateVolume();
     }
@@ -1191,13 +1191,13 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundService::setSourceVolume( const SoundIdentityInterfacePtr & _identity, float _volume, float _default, bool _force )
+    bool SoundService::setSourceVolume( const SoundIdentityInterfacePtr & _identity, float _volume, float _from, float _speed, bool _force )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity );
 
         const MixerValueInterfacePtr & mixerVolume = _identity->getMixerVolume();
 
-        mixerVolume->setValue( STRINGIZE_STRING_LOCAL( "General" ), _volume, _default, _force );
+        mixerVolume->setValue( STRINGIZE_STRING_LOCAL( "General" ), _volume, _from, _speed, _force );
 
         this->updateSourceVolume_( _identity );
 
@@ -1215,7 +1215,7 @@ namespace Mengine
         return volume;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundService::setSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer, float _volume, float _default )
+    bool SoundService::setSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer, float _volume, float _from )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "identity is nullptr (mixer '%s')"
             , _mixer.c_str()
@@ -1223,7 +1223,7 @@ namespace Mengine
 
         const MixerValueInterfacePtr & mixerVolume = _identity->getMixerVolume();
 
-        mixerVolume->setValue( _mixer, _volume, _default, true );
+        mixerVolume->setValue( _mixer, _volume, _from, MENGINE_MIXER_VALUE_DEFAULT_SPEED, true );
 
         this->updateSourceVolume_( _identity );
 

@@ -4,7 +4,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MixerValue::MixerValue()
-        : m_speed( 0.0005f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -12,17 +11,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MixerValue::setSpeed( float _speed )
-    {
-        m_speed = _speed;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float MixerValue::getSpeed() const
-    {
-        return m_speed;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MixerValue::setValue( const ConstString & _type, float _value, float _from, bool _force )
+    void MixerValue::setValue( const ConstString & _type, float _value, float _from, float _speed, bool _force )
     {
         for( Element & mixer : m_mixer )
         {
@@ -37,7 +26,7 @@ namespace Mengine
             }
 
             mixer.follower.setFollow( _value );
-            mixer.follower.setSpeed( m_speed );
+            mixer.follower.setSpeed( _speed );
 
             return;
         }
@@ -51,7 +40,7 @@ namespace Mengine
         el.type = _type;
         el.follower.setValue( _from );
         el.follower.setFollow( _value );
-        el.follower.setSpeed( m_speed );
+        el.follower.setSpeed( _speed );
 
         m_mixer.emplace_back( el );
     }

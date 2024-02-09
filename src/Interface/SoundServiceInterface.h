@@ -38,24 +38,24 @@ namespace Mengine
         virtual SoundBufferInterfacePtr createSoundBufferFromFile( const ContentInterfacePtr & _content, bool _isStream, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual void setSoundVolume( const ConstString & _type, float _volume, float _default ) = 0;
+        virtual void setSoundVolume( const ConstString & _type, float _volume, float _from, float _speed ) = 0;
         virtual float getSoundVolume( const ConstString & _type ) const = 0;
         virtual float mixSoundVolume() const = 0;
 
-        virtual void setCommonVolume( const ConstString & _type, float _volume, float _default ) = 0;
+        virtual void setCommonVolume( const ConstString & _type, float _volume, float _from, float _speed ) = 0;
         virtual float getCommonVolume( const ConstString & _type ) const = 0;
         virtual float mixCommonVolume() const = 0;
 
-        virtual void setMusicVolume( const ConstString & _type, float _volume, float _default ) = 0;
+        virtual void setMusicVolume( const ConstString & _type, float _volume, float _from, float _speed ) = 0;
         virtual float getMusicVolume( const ConstString & _type ) const = 0;
         virtual float mixMusicVolume() const = 0;
 
-        virtual void setVoiceVolume( const ConstString & _type, float _volume, float _default ) = 0;
+        virtual void setVoiceVolume( const ConstString & _type, float _volume, float _from, float _speed ) = 0;
         virtual float getVoiceVolume( const ConstString & _type ) const = 0;
         virtual float mixVoiceVolume() const = 0;
 
     public:
-        virtual bool setSourceVolume( const SoundIdentityInterfacePtr & _identity, float _volume, float _default, bool _force ) = 0;
+        virtual bool setSourceVolume( const SoundIdentityInterfacePtr & _identity, float _volume, float _from, float _speed, bool _force ) = 0;
         virtual float getSourceVolume( const SoundIdentityInterfacePtr & _identity ) const = 0;
 
     public:

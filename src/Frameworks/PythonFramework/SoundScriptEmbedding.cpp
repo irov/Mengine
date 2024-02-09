@@ -235,7 +235,7 @@ namespace Mengine
                 float volume = resource->getDefaultVolume();
 
                 if( SOUND_SERVICE()
-                    ->setSourceVolume( soundIdentity, volume, volume, true ) == false )
+                    ->setSourceVolume( soundIdentity, volume, volume, MENGINE_MIXER_VALUE_DEFAULT_SPEED, true ) == false )
                 {
                     LOGGER_ERROR( "resource sound '%s' invalid set volume %f"
                         , _resourceName.c_str()
@@ -661,7 +661,7 @@ namespace Mengine
             void soundSourceSetVolume( const SoundIdentityInterfacePtr & _emitter, float _volume )
             {
                 if( SOUND_SERVICE()
-                    ->setSourceVolume( _emitter, _volume, _volume, true ) == false )
+                    ->setSourceVolume( _emitter, _volume, _volume, MENGINE_MIXER_VALUE_DEFAULT_SPEED, true ) == false )
                 {
                     LOGGER_ERROR( "sound emitter [%u] invalid set source volume [%f]"
                         , _emitter->getId()
@@ -681,7 +681,7 @@ namespace Mengine
             void soundSetVolume( float _volume )
             {
                 SOUND_SERVICE()
-                    ->setSoundVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, 0.f );
+                    ->setSoundVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
             }
             //////////////////////////////////////////////////////////////////////////
             float soundGetVolume()
@@ -695,7 +695,7 @@ namespace Mengine
             void commonSetVolume( float _volume )
             {
                 SOUND_SERVICE()
-                    ->setCommonVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, _volume );
+                    ->setCommonVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, _volume, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
             }
             //////////////////////////////////////////////////////////////////////////
             float commonGetVolume()
@@ -707,7 +707,7 @@ namespace Mengine
             void voiceSetVolume( float _volume )
             {
                 SOUND_SERVICE()
-                    ->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, _volume );
+                    ->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, _volume, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
             }
             //////////////////////////////////////////////////////////////////////////
             float voiceGetVolume()

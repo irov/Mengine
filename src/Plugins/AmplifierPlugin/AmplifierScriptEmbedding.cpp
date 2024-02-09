@@ -119,7 +119,7 @@ namespace Mengine
             void musicSetVolume( float _volume )
             {
                 SOUND_SERVICE()
-                    ->setMusicVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, _volume );
+                    ->setMusicVolume( STRINGIZE_STRING_LOCAL( "Generic" ), _volume, _volume, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
             }
             //////////////////////////////////////////////////////////////////////////
             float musicGetVolume()
@@ -128,10 +128,10 @@ namespace Mengine
                     ->getMusicVolume( STRINGIZE_STRING_LOCAL( "Generic" ) );
             }
             //////////////////////////////////////////////////////////////////////////
-            void musicSetVolumeTag( const ConstString & _tag, float _volume, float _default )
+            void musicSetVolumeTag( const ConstString & _tag, float _volume, float _from )
             {
                 SOUND_SERVICE()
-                    ->setMusicVolume( _tag, _volume, _default );
+                    ->setMusicVolume( _tag, _volume, _from, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
             }
             //////////////////////////////////////////////////////////////////////////
             float musicGetVolumeTag( const ConstString & _tag )
@@ -187,7 +187,7 @@ namespace Mengine
             void ___musicFade( float _volume )
             {
                 SOUND_SERVICE()
-                    ->setMusicVolume( STRINGIZE_STRING_LOCAL( "Fade" ), _volume, _volume );
+                    ->setMusicVolume( STRINGIZE_STRING_LOCAL( "Fade" ), _volume, _volume, MENGINE_MIXER_VALUE_DEFAULT_SPEED );
             }
             //////////////////////////////////////////////////////////////////////////
             class MusicAffectorCallback

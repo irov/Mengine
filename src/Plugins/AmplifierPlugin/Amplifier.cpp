@@ -193,7 +193,7 @@ namespace Mengine
         }
 
         if( SOUND_SERVICE()
-            ->setSourceVolume( soundIdentity, volume, 0.f, false ) == false )
+            ->setSourceVolume( soundIdentity, volume, 0.f, MENGINE_MIXER_VALUE_DEFAULT_SPEED, false ) == false )
         {
             LOGGER_ASSERTION( "amplifier can't set sound '%s' volume '%f'"
                 , filePath.c_str()

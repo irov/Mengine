@@ -253,8 +253,8 @@ public class MengineActivity extends SDLActivity {
         String[] arguments = this.getArguments();
 
         mSDLSemaphoreRun = semaphoreRun;
-        Runnable target = new MengineMain(semaphoreInit, semaphoreRun, library, arguments);
-        mSDLNewThread = new Thread(target, "MengineMain");
+        MengineMain main = new MengineMain(this, semaphoreInit, semaphoreRun, library, arguments);
+        mSDLNewThread = new Thread(main, "MengineMain");
         mSDLNewThread.start();
 
         synchronized (semaphoreInit) {
@@ -267,12 +267,28 @@ public class MengineActivity extends SDLActivity {
                     .addParameterException("reason", e)
                     .logAndFlush();
 
-                this.finishWithAlertDialog("[ERROR] onCreate SDL interrupted: %s"
+                this.finishWithAlertDialog("[ERROR] SDL init interrupted: %s"
                     , e.getMessage()
                 );
 
                 return false;
             }
+        }
+
+        int status = main.getStatusInit();
+
+        if (status != 0) {
+            this.setState("activity.init", "sdl_status: " + status);
+
+            MengineAnalytics.buildEvent("mng_activity_init_failed")
+                .addParameterLong("init_status", status)
+                .logAndFlush();
+
+            this.finishWithAlertDialog("[ERROR] SDL init status: %d"
+                , status
+            );
+
+            return false;
         }
 
         return true;
@@ -301,7 +317,7 @@ public class MengineActivity extends SDLActivity {
                 .addParameterException("reason", e)
                 .logAndFlush();
 
-            this.finishWithAlertDialog("[ERROR] onCreate SDL create exception: %s"
+            this.finishWithAlertDialog("[ERROR] SDL create exception: %s"
                 , e.getMessage()
             );
 
@@ -315,7 +331,7 @@ public class MengineActivity extends SDLActivity {
                 .addParameterString("reason", "sdl broken libraries")
                 .logAndFlush();
 
-            this.finishWithAlertDialog("onCreate broken libraries");
+            this.finishWithAlertDialog("[ERROR] SDL broken libraries");
 
             return;
         }
@@ -360,7 +376,7 @@ public class MengineActivity extends SDLActivity {
                     .addParameterException("reason", e)
                     .logAndFlush();
 
-                this.finishWithAlertDialog("[ERROR] onCreate plugin: %s exception: %s"
+                this.finishWithAlertDialog("[ERROR] plugin: %s exception: %s"
                     , l.getPluginName()
                     , e.getMessage()
                 );

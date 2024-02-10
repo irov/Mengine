@@ -1,5 +1,6 @@
 package org.Mengine.Base;
 
+import android.app.Activity;
 import android.util.Log;
 
 import org.libsdl.app.SDLActivity;
@@ -7,18 +8,26 @@ import org.libsdl.app.SDLActivity;
 class MengineMain implements Runnable {
     public static final String TAG = "MengineMain";
 
-    protected String library;
-    protected String[] arguments;
+    Activity m_activity;
+
+    protected String m_library;
+    protected String[] m_arguments;
 
     private Object m_semaphoreInit;
     private Object m_semaphoreRun;
 
-    MengineMain(Object semaphoreInit, Object semaphoreRun, String library, String [] arguments) {
-        this.library = library;
-        this.arguments = arguments;
+    private int m_statusInit;
+
+    MengineMain(Activity activity, Object semaphoreInit, Object semaphoreRun, String library, String [] arguments) {
+        m_activity = activity;
 
         m_semaphoreInit = semaphoreInit;
         m_semaphoreRun = semaphoreRun;
+
+        m_library = library;
+        m_arguments = arguments;
+
+        m_statusInit = 0;
     }
 
     @Override
@@ -31,38 +40,46 @@ class MengineMain implements Runnable {
 
         String function = "SDL_init";
 
-        Log.v(TAG, "Running main function [SDL_main] from library: " + library);
+        MengineLog.logInfo(TAG, "Running main function [SDL_main] from library: " + m_library);
 
-        SDLActivity.nativeRunMain(library, "SDL_main", arguments);
+        m_statusInit = SDLActivity.nativeRunMain(m_library, "SDL_main", m_arguments);
 
-        Log.v(TAG, "Finished main function [SDL_main]");
+        MengineLog.logInfo(TAG, "Finished main function [SDL_main] status: " + m_statusInit);
 
         synchronized (m_semaphoreInit) {
             m_semaphoreInit.notifyAll();
+        }
+
+        if(m_statusInit != 0) {
+            return;
         }
 
         synchronized (m_semaphoreRun) {
             try {
                 m_semaphoreRun.wait();
             } catch (InterruptedException e) {
-                Log.e(TAG, "wait semaphore failed: " + e.toString());
+                MengineLog.logError(TAG, "wait semaphore failed: " + e);
 
                 return;
             }
         }
 
-        Log.v(TAG, "Running loop function [SDL_loop] from library: " + library);
+        MengineLog.logInfo(TAG, "Running loop function [SDL_loop] from library: " + m_library);
 
-        SDLActivity.nativeLoopMain("SDL_loop");
+        int statusRun = SDLActivity.nativeLoopMain("SDL_loop");
 
-        Log.v(TAG, "Finished loop function [SDL_loop]");
+        MengineLog.logInfo(TAG, "Finished loop function [SDL_loop]");
 
-        /*
-        if (SDLActivity.mSingleton != null && !SDLActivity.mSingleton.isFinishing()) {
-            // Let's finish the Activity
-            SDLActivity.mSDLThread = null;
-            SDLActivity.mSingleton.finish();
-        }  // else: Activity is already being destroyed
-         */
+        if (statusRun != 0) {
+            MengineAnalytics.buildEvent("mng_activity_init_failed")
+                .addParameterLong("run_status", statusRun)
+                .logAndFlush();
+
+            MengineUtils.finishActivityWithAlertDialog(m_activity, "[ERROR] SDL run failed with status: " + statusRun);
+        }
+    }
+
+    public int getStatusInit() {
+        return m_statusInit;
     }
 }

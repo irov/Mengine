@@ -10,8 +10,6 @@ int SDL_main( int argc, char * argv[] )
 {
     if( MENGINE_application.bootstrap( argc, argv ) == false )
     {
-        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine initialize", "Mengine invalid initialization", NULL );
-
         MENGINE_application.finalize();
 
         return EXIT_FAILURE;
@@ -24,8 +22,6 @@ int SDL_loop(void)
 {
     if( MENGINE_application.initialize() == false )
     {
-        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine initialize", "Mengine invalid initialization", NULL );
-
         MENGINE_application.finalize();
 
         return EXIT_FAILURE;

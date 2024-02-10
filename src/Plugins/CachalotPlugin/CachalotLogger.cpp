@@ -44,6 +44,10 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_MESSAGE( "Cachalot DSN: %s"
+            , CachalotPlugin_DSN.c_str()
+        );
+
         m_dsn = CachalotPlugin_DSN;
 
         ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );

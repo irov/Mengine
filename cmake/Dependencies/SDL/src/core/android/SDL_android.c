@@ -74,7 +74,7 @@ JNIEXPORT int JNICALL SDL_JAVA_INTERFACE(nativeRunMain)(
         JNIEnv *env, jclass cls,
         jstring library, jstring function, jobject array);
 
-JNIEXPORT void JNICALL SDL_JAVA_INTERFACE(nativeLoopMain)(
+JNIEXPORT int JNICALL SDL_JAVA_INTERFACE(nativeLoopMain)(
     JNIEnv *env, jclass cls,
     jstring function);
 
@@ -178,7 +178,7 @@ static JNINativeMethod SDLActivity_tab[] = {
     { "nativeGetVersion", "()Ljava/lang/String;", SDL_JAVA_INTERFACE(nativeGetVersion) },
     { "nativeSetupJNI", "()I", SDL_JAVA_INTERFACE(nativeSetupJNI) },
     { "nativeRunMain", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)I", SDL_JAVA_INTERFACE(nativeRunMain) },
-    { "nativeLoopMain", "(Ljava/lang/String;)V", SDL_JAVA_INTERFACE(nativeLoopMain) },
+    { "nativeLoopMain", "(Ljava/lang/String;)I", SDL_JAVA_INTERFACE(nativeLoopMain) },
     { "onNativeDropFile", "(Ljava/lang/String;)V", SDL_JAVA_INTERFACE(onNativeDropFile) },
     { "nativeSetScreenResolution", "(IIIIF)V", SDL_JAVA_INTERFACE(nativeSetScreenResolution) },
     { "onNativeResize", "()V", SDL_JAVA_INTERFACE(onNativeResize) },
@@ -832,12 +832,14 @@ JNIEXPORT int JNICALL SDL_JAVA_INTERFACE(nativeRunMain)(JNIEnv *env, jclass cls,
 }
 
 /* Start up the SDL app */
-JNIEXPORT void JNICALL SDL_JAVA_INTERFACE(nativeLoopMain)(JNIEnv *env, jclass cls, jstring function)
+JNIEXPORT int JNICALL SDL_JAVA_INTERFACE(nativeLoopMain)(JNIEnv *env, jclass cls, jstring function)
 {
     __android_log_print(ANDROID_LOG_VERBOSE, "SDL", "nativeLoopMain()");
 
     /* Save JNIEnv of SDLThread */
     Android_JNI_SetEnv(env);
+
+    int status = -1;
 
     if (SDL_library_handle) {
         const char *function_name;
@@ -847,7 +849,7 @@ JNIEXPORT void JNICALL SDL_JAVA_INTERFACE(nativeLoopMain)(JNIEnv *env, jclass cl
         SDL_loop = (SDL_loop_func)dlsym(SDL_library_handle, function_name);
         if (SDL_loop) {
             /* Run the application. */
-            SDL_loop();
+            status = SDL_loop();
         } else {
             __android_log_print(ANDROID_LOG_ERROR, "SDL", "nativeLoopMain(): Couldn't find function %s err %s", function_name, dlerror());
         }
@@ -861,6 +863,8 @@ JNIEXPORT void JNICALL SDL_JAVA_INTERFACE(nativeLoopMain)(JNIEnv *env, jclass cl
     /* This is a Java thread, it doesn't need to be Detached from the JVM.
      * Set to mThreadKey value to NULL not to call pthread_create destructor 'Android_JNI_ThreadDestroyed' */
     Android_JNI_SetEnv(NULL);
+
+    return status;
 }
 
 /* Drop file */

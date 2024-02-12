@@ -214,7 +214,7 @@ namespace Mengine
                     }
                 }
 
-                LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
+                LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FILE, MENGINE_CODE_LINE, LFLAG_SHORT )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
                     , _className
                     , _functionName
                     , ss_args.str().c_str()
@@ -224,7 +224,7 @@ namespace Mengine
                 Char traceback[4096] = {'\0'};
                 _kernel->get_traceback( traceback, 4095 );
 
-                LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("traceback:\n%s"
+                LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FILE, MENGINE_CODE_LINE, LFLAG_SHORT )("traceback:\n%s"
                     , traceback
                     );
             }
@@ -310,7 +310,7 @@ namespace Mengine
 
             this->addGlobalModuleT( "_BUILD_MODE", buildMode );
         }
-        
+
         const Char * buildProjectName = Helper::getBuildSolutionName();
         this->addGlobalModuleT( "_BUILD_PROJECTNAME", buildProjectName );
 
@@ -606,7 +606,7 @@ namespace Mengine
         m_embeddings.clear();
 
         m_kernel->remove_module_finder();
-                
+
         this->removeGlobalModule( "Mengine" );
         this->removeGlobalModule( "_PLUGINS" );
 
@@ -1186,7 +1186,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, Mengine::LFLAG_SHORT )("traceback:\n%s", traceback);
+        LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, Mengine::LFLAG_SHORT )("traceback:\n%s", traceback);
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_DEBUG)

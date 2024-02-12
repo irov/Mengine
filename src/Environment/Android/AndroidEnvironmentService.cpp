@@ -422,6 +422,30 @@ namespace Mengine
         return jStringLen;
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t AndroidEnvironmentService::getDeviceModel( Char * _deviceModel, size_t _capacity ) const
+    {
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
+        {
+            return 0;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getDeviceModel", "()Ljava/lang/String;" );
+
+        const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
+        jsize jStringLen = jenv->GetStringLength( jReturnValue );
+
+        MENGINE_STRNCPY( _deviceModel, jStringValue, _capacity );
+
+        jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
+        jenv->DeleteLocalRef( jReturnValue );
+
+        return jStringLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t AndroidEnvironmentService::getDeviceLanguage( Char * _deviceLanguage, size_t _capacity ) const
     {
         if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
@@ -439,6 +463,30 @@ namespace Mengine
         jsize jStringLen = jenv->GetStringLength( jReturnValue );
 
         MENGINE_STRNCPY( _deviceLanguage, jStringValue, _capacity );
+
+        jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
+        jenv->DeleteLocalRef( jReturnValue );
+
+        return jStringLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t AndroidEnvironmentService::getOSVersion( Char * _osVersion, size_t _capacity ) const
+    {
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
+        {
+            return 0;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getOSVersion", "()Ljava/lang/String;" );
+
+        const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
+        jsize jStringLen = jenv->GetStringLength( jReturnValue );
+
+        MENGINE_STRNCPY( _osVersion, jStringValue, _capacity );
 
         jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
         jenv->DeleteLocalRef( jReturnValue );
@@ -708,6 +756,8 @@ namespace Mengine
     void AndroidEnvironmentService::initializeLoggerService_()
     {
         AndroidProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<AndroidProxyLogger>(MENGINE_DOCUMENT_FACTORABLE);
+
+        proxyLogger->setVerboseFilter( Mengine::LFILTER_ANDROID );
 
         if( LOGGER_SERVICE()
             ->registerLogger( proxyLogger ) == true )

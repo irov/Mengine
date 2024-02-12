@@ -148,7 +148,7 @@ namespace Mengine
 
                 if( it_found == m_prevUsages.end() )
                 {
-                    LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, nullptr, 0, Mengine::LFLAG_NONE )("  - %s [%zumb %zukb]"
+                    LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, Mengine::LFLAG_NONE )("  - %s [%zumb %zukb]"
                         , desc.name.c_str()
                         , (desc.count / (1000 * 1000))
                         , ((desc.count / 1000) % 1000)
@@ -160,7 +160,7 @@ namespace Mengine
 
                     if( desc.count > prevDesc.count )
                     {
-                        LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, Mengine::LFLAG_NONE )("  - %s [%zumb %zukb] +%zukb"
+                        LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, Mengine::LFLAG_NONE )("  - %s [%zumb %zukb] +%zukb"
                             , desc.name.c_str()
                             , (desc.count / (1000 * 1000))
                             , ((desc.count / 1000) % 1000)
@@ -169,7 +169,7 @@ namespace Mengine
                     }
                     else if( desc.count < prevDesc.count )
                     {
-                        LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN, nullptr, 0, Mengine::LFLAG_NONE )("  - %s [%zumb %zukb] -%zukb"
+                        LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN, Mengine::LFLAG_NONE )("  - %s [%zumb %zukb] -%zukb"
                             , desc.name.c_str()
                             , (desc.count / (1000 * 1000))
                             , ((desc.count / 1000) % 1000)
@@ -178,7 +178,7 @@ namespace Mengine
                     }
                     else
                     {
-                        LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_NONE )("  - %s [%zumb %zukb]"
+                        LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, Mengine::LFLAG_NONE )("  - %s [%zumb %zukb]"
                             , desc.name.c_str()
                             , (desc.count / (1000 * 1000))
                             , ((desc.count / 1000) % 1000)

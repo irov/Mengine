@@ -31,6 +31,18 @@
 #define MENGINE_PLATFORM_FINGERPRINT_MAXNAME 41
 #endif
 
+#ifndef MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME
+#define MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME 128
+#endif
+
+#ifndef MENGINE_PLATFORM_OS_FAMILY_MAXNAME
+#define MENGINE_PLATFORM_OS_FAMILY_MAXNAME 128
+#endif
+
+#ifndef MENGINE_PLATFORM_OS_VERSION_MAXNAME
+#define MENGINE_PLATFORM_OS_VERSION_MAXNAME 128
+#endif
+
 namespace Mengine
 {
     class PlatformServiceInterface
@@ -91,6 +103,10 @@ namespace Mengine
         virtual size_t getUserName( Char * const _userName ) const = 0;
         virtual size_t getDeviceLanguage( Char * const _deviceLanguage ) const = 0;
         virtual size_t getFingerprint( Char * const _fingerprint ) const = 0;
+
+        virtual size_t getDeviceModel( Char * const _deviceModel ) const = 0;
+        virtual size_t getOsFamily( Char * const _osFamily ) const = 0;
+        virtual size_t getOsVersion( Char * const _osVersion ) const = 0;
 
         virtual void closeWindow() = 0;
         virtual void minimizeWindow() = 0;

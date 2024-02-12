@@ -2,8 +2,6 @@
 
 #include "Kernel/Assertion.h"
 
-#include "Config/StdIO.h"
-
 namespace Mengine
 {
     namespace Helper
@@ -45,6 +43,15 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
+            static Char uint8ToHexadecimal( uint8_t _u8 )
+            {
+                const Char hex[] = "0123456789abcdef";
+
+                Char c = hex[_u8];
+
+                return c;
+            }
+            //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
         bool encodeHexadecimal( const void * _data, size_t _datasize, Char * const _hexadecimal, size_t _capacity, size_t * const _outsize )
@@ -61,10 +68,14 @@ namespace Mengine
             {
                 uint8_t d = data_u8[i];
 
-                MENGINE_SNPRINTF( c, 3, "%02x", d );
+                uint8_t d0 = d / 16;
+                uint8_t d1 = d % 16;
 
-                c += 2;
+                *c++ = Detail::uint8ToHexadecimal( d0 );
+                *c++ = Detail::uint8ToHexadecimal( d1 );
             }
+
+            *c++ = '\0';
 
             if( _outsize != nullptr )
             {

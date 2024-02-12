@@ -8,9 +8,6 @@ src
     Win32SentryPlugin.def
     Win32SentryPlugin.cpp
     
-    Win32SentryLoggerCapture.h
-    Win32SentryLoggerCapture.cpp
-    
     Win32SentryService.h
     Win32SentryService.cpp
 )

@@ -34,7 +34,7 @@ namespace Mengine
                     THREAD_SYSTEM()
                         ->sleep( 1 );
 
-                    seed += locale_seed;
+                    seed ^= locale_seed;
                 }
 
                 return seed;

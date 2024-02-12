@@ -96,7 +96,7 @@ namespace Mengine
 
         if( OPTION_curltrace == true )
         {
-            LOGGER_STATISTIC( "HTTP: get asset url '%s' login '%s' password '%s'\nfile: '%s'"
+            LOGGER_HTTP_STATISTIC( "[HTTP] get asset url '%s' login '%s' password '%s'\nfile: '%s'"
                 , m_url.c_str()
                 , m_login.c_str()
                 , m_password.c_str()

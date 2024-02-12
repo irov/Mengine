@@ -71,28 +71,28 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define LOGGER_VERBOSE_LEVEL( CATEGORY, LEVEL, FILTER, COLOR, FILE, LINE, FLAG )\
-    if( Mengine::Detail::loggerValidMessage(CATEGORY, LEVEL, FILTER) == false) {} else Mengine::LoggerOperator(CATEGORY, (LEVEL), (FILTER), (COLOR), (FILE), (LINE), (FLAG))
+#define LOGGER_VERBOSE_LEVEL( CATEGORY, LEVEL, FILTER, COLOR, FUNCTION, LINE, FLAG )\
+    if( Mengine::Detail::loggerValidMessage(CATEGORY, LEVEL, FILTER) == false) {} else Mengine::LoggerOperator(CATEGORY, (LEVEL), (FILTER), (COLOR), (FUNCTION), (LINE), (FLAG))
 //////////////////////////////////////////////////////////////////////////
-#define LOGGER_CATEGORY_VERBOSE_LEVEL( LEVEL, FILTER, COLOR, FILE, LINE, FLAG )\
-    LOGGER_VERBOSE_LEVEL( MENGINE_CODE_LIBRARY, (LEVEL), (FILTER), (COLOR), (FILE), (LINE), (FLAG) )
+#define LOGGER_CATEGORY_VERBOSE_LEVEL( LEVEL, FILTER, COLOR, FLAG )\
+    LOGGER_VERBOSE_LEVEL( MENGINE_CODE_LIBRARY, (LEVEL), (FILTER), (COLOR), MENGINE_CODE_FILE, MENGINE_CODE_LINE, (FLAG) )
 //////////////////////////////////////////////////////////////////////////
-#define LOGGER_FATAL( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_FATAL, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE, Mengine::LFLAG_FULL )( __VA_ARGS__ )
-#define LOGGER_ERROR( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE, Mengine::LFLAG_FULL )( __VA_ARGS__ )
-#define LOGGER_ASSERTION( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE, Mengine::LFLAG_FULL )( __VA_ARGS__ )
-#define LOGGER_MESSAGE_RELEASE( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
-#define LOGGER_MESSAGE_RELEASE_PROTECTED( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_PROTECTED, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
-#define LOGGER_MESSAGE_RELEASE_ERROR( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
-#define LOGGER_MESSAGE_RELEASE_WARNING( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
-#define LOGGER_WARNING( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_WARNING, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE, Mengine::LFLAG_FULL )( __VA_ARGS__ )
-#define LOGGER_MESSAGE( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
-#define LOGGER_MESSAGE_ERROR( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#define LOGGER_FATAL( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_FATAL, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, Mengine::LFLAG_FULL )( __VA_ARGS__ )
+#define LOGGER_ERROR( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, Mengine::LFLAG_FULL )( __VA_ARGS__ )
+#define LOGGER_ASSERTION( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, Mengine::LFLAG_FULL )( __VA_ARGS__ )
+#define LOGGER_MESSAGE_RELEASE( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#define LOGGER_MESSAGE_RELEASE_PROTECTED( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_PROTECTED, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#define LOGGER_MESSAGE_RELEASE_ERROR( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#define LOGGER_MESSAGE_RELEASE_WARNING( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#define LOGGER_WARNING( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_WARNING, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN, Mengine::LFLAG_FULL )( __VA_ARGS__ )
+#define LOGGER_MESSAGE( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#define LOGGER_MESSAGE_ERROR( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_LOGGER_INFO_ENABLE)
-#   define LOGGER_INFO( Category, ... ) LOGGER_VERBOSE_LEVEL( Category, Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
-#   define LOGGER_INFO_PROTECTED( Category, ... ) LOGGER_VERBOSE_LEVEL( Category, Mengine::LM_INFO, Mengine::LFILTER_PROTECTED, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
-#   define LOGGER_DEBUG( Category, ... ) LOGGER_VERBOSE_LEVEL( Category, Mengine::LM_DEBUG, Mengine::LFILTER_NONE, Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
-#   define LOGGER_VERBOSE( Category, ... ) LOGGER_VERBOSE_LEVEL( Category, Mengine::LM_VERBOSE, Mengine::LFILTER_NONE, Mengine::LCOLOR_NONE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#   define LOGGER_INFO( Category, ... ) LOGGER_VERBOSE_LEVEL( Category, Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, MENGINE_CODE_FILE, MENGINE_CODE_LINE, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#   define LOGGER_INFO_PROTECTED( Category, ... ) LOGGER_VERBOSE_LEVEL( Category, Mengine::LM_INFO, Mengine::LFILTER_PROTECTED, Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE, MENGINE_CODE_FILE, MENGINE_CODE_LINE, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#   define LOGGER_DEBUG( Category, ... ) LOGGER_VERBOSE_LEVEL( Category, Mengine::LM_DEBUG, Mengine::LFILTER_NONE, Mengine::LCOLOR_BLUE, MENGINE_CODE_FILE, MENGINE_CODE_LINE, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#   define LOGGER_VERBOSE( Category, ... ) LOGGER_VERBOSE_LEVEL( Category, Mengine::LM_VERBOSE, Mengine::LFILTER_NONE, Mengine::LCOLOR_NONE, MENGINE_CODE_FILE, MENGINE_CODE_LINE, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
 #else
 #   define LOGGER_INFO( Category, ... )
 #   define LOGGER_INFO_PROTECTED( Category, ... )
@@ -101,8 +101,8 @@ namespace Mengine
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_LOGGER_ANALYZE_ENABLE)
-#   define LOGGER_PERFORMANCE( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_BLUE, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
-#   define LOGGER_STATISTIC( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN, nullptr, 0, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#   define LOGGER_PERFORMANCE( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_BLUE, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
+#   define LOGGER_STATISTIC( ... ) LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_INFO, Mengine::LFILTER_NONE, Mengine::LCOLOR_GREEN, Mengine::LFLAG_SHORT )( __VA_ARGS__ )
 #else
 #   define LOGGER_PERFORMANCE( ... )
 #   define LOGGER_STATISTIC( ... )

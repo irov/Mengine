@@ -33,7 +33,7 @@ namespace Mengine
 
         if( OPTION_curltrace == true )
         {
-            LOGGER_STATISTIC( "HTTP: get message url '%s'"
+            LOGGER_HTTP_STATISTIC( "[HTTP] get message url '%s'"
                 , m_url.c_str()
             );
         }

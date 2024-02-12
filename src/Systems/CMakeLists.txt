@@ -14,6 +14,7 @@ if(MENGINE_PLATFORM_WIN32)
     ADD_SUBDIRECTORY(Win32UnicodeSystem)
     ADD_SUBDIRECTORY(Win32ThreadSystem)
     ADD_SUBDIRECTORY(Win32TimeSystem)
+    ADD_SUBDIRECTORY(Win32CryptographySystem)
 endif()
 
 if(MENGINE_RENDER_OPENGL)
@@ -43,14 +44,17 @@ if(MENGINE_PLATFORM_SDL)
 
     if(MENGINE_TARGET_WINDOWS)
         ADD_SUBDIRECTORY(Win32PreferencesSystem)
+        ADD_SUBDIRECTORY(Win32CryptographySystem)
     endif()
 
     if(MENGINE_TARGET_APPLE)
         ADD_SUBDIRECTORY(ApplePreferencesSystem)
+        ADD_SUBDIRECTORY(AppleCryptographySystem)
     endif()
     
     if(MENGINE_TARGET_ANDROID)
         ADD_SUBDIRECTORY(AndroidPreferencesSystem)
+        ADD_SUBDIRECTORY(AndroidCryptographySystem)
     endif()
 endif()
 

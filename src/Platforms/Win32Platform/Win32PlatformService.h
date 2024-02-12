@@ -88,6 +88,10 @@ namespace Mengine
         size_t getDeviceLanguage( Char * const _deviceLanguage ) const override;
         size_t getFingerprint( Char * const _fingerprint ) const override;
 
+        size_t getDeviceModel( Char * const _deviceModel ) const override;
+        size_t getOsFamily( Char * const _osFamily ) const override;
+        size_t getOsVersion( Char * const _osVersion ) const override;
+
         void closeWindow() override;
         void minimizeWindow() override;
 
@@ -251,6 +255,10 @@ namespace Mengine
 
         HICON m_hIcon;
         StaticWString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
+
+        StaticString< MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME> m_deviceModel;
+        StaticString< MENGINE_PLATFORM_OS_FAMILY_MAXNAME> m_osFamily;
+        StaticString< MENGINE_PLATFORM_OS_VERSION_MAXNAME> m_osVersion;
 
         Timestamp m_prevTime;
 

@@ -50,7 +50,7 @@ namespace Mengine
 
             String header_str = ss.str();
 
-            LOGGER_STATISTIC( "HTTP: header data url '%s' header:\n %s"
+            LOGGER_HTTP_STATISTIC( "[HTTP] header data url '%s' header:\n %s"
                 , m_url.c_str()
                 , header_str.c_str()
             );

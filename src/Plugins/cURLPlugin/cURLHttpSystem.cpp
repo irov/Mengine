@@ -109,7 +109,7 @@ namespace Mengine
 
         if( code != CURLE_OK )
         {
-            LOGGER_ERROR( "invalid initialize curl '%s' [%u]"
+            LOGGER_HTTP_ERROR( "invalid initialize curl '%s' [%u]"
                 , curl_easy_strerror( code )
                 , code
             );
@@ -121,7 +121,7 @@ namespace Mengine
 
         MENGINE_UNUSED( info );
 
-        LOGGER_MESSAGE( "cURL version: %s host: %s ssl: %s"
+        LOGGER_HTTP_MESSAGE( "cURL version: %s host: %s ssl: %s"
             , info->version
             , info->host
             , info->ssl_version
@@ -244,7 +244,7 @@ namespace Mengine
     {
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "curl service is stop" );
+            LOGGER_HTTP_ERROR( "curl service is stop" );
 
             return MENGINE_HTTP_REQUEST_INVALID;
         }
@@ -273,7 +273,7 @@ namespace Mengine
 
         if( task->initialize() == false )
         {
-            LOGGER_ERROR( "url '%s' invalid initialize task"
+            LOGGER_HTTP_ERROR( "url '%s' invalid initialize task"
                 , _url.c_str()
             );
 
@@ -306,7 +306,7 @@ namespace Mengine
     {
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "curl service is stop" );
+            LOGGER_HTTP_ERROR( "curl service is stop" );
 
             return MENGINE_HTTP_REQUEST_INVALID;
         }
@@ -335,7 +335,7 @@ namespace Mengine
 
         if( task->initialize( _params ) == false )
         {
-            LOGGER_ERROR( "url '%s' invalid initialize task"
+            LOGGER_HTTP_ERROR( "url '%s' invalid initialize task"
                 , _url.c_str()
             );
 
@@ -368,7 +368,7 @@ namespace Mengine
     {
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "curl service is stop" );
+            LOGGER_HTTP_ERROR( "curl service is stop" );
 
             return MENGINE_HTTP_REQUEST_INVALID;
         }
@@ -397,7 +397,7 @@ namespace Mengine
 
         if( task->initialize() == false )
         {
-            LOGGER_ERROR( "url '%s' invalid initialize task"
+            LOGGER_HTTP_ERROR( "url '%s' invalid initialize task"
                 , _url.c_str()
             );
 
@@ -430,7 +430,7 @@ namespace Mengine
     {
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "curl service is stop" );
+            LOGGER_HTTP_ERROR( "curl service is stop" );
 
             return MENGINE_HTTP_REQUEST_INVALID;
         }
@@ -459,7 +459,7 @@ namespace Mengine
 
         if( task->initialize( _data ) == false )
         {
-            LOGGER_ERROR( "url '%s' invalid initialize task"
+            LOGGER_HTTP_ERROR( "url '%s' invalid initialize task"
                 , _url.c_str()
             );
 
@@ -492,14 +492,14 @@ namespace Mengine
     {
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "curl service is stop" );
+            LOGGER_HTTP_ERROR( "curl service is stop" );
 
             return 0;
         }
 
         if( _content->exist( true ) == true )
         {
-            LOGGER_ERROR( "url '%s' file already exist '%s'"
+            LOGGER_HTTP_ERROR( "url '%s' file already exist '%s'"
                 , _url.c_str()
                 , Helper::getContentFullPath( _content )
             );
@@ -533,7 +533,7 @@ namespace Mengine
 
         if( task->initialize( _login, _password, _content, filePathTmp ) == false )
         {
-            LOGGER_ERROR( "url '%s' file '%s' invalid initialize task"
+            LOGGER_HTTP_ERROR( "url '%s' file '%s' invalid initialize task"
                 , _url.c_str()
                 , Helper::getContentFullPath( _content )
             );
@@ -567,7 +567,7 @@ namespace Mengine
     {
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "curl service is stop" );
+            LOGGER_HTTP_ERROR( "curl service is stop" );
 
             return false;
         }
@@ -588,7 +588,7 @@ namespace Mengine
             return true;
         }
 
-        LOGGER_ERROR( "curl request [%u] not found"
+        LOGGER_HTTP_ERROR( "curl request [%u] not found"
             , _id
         );
 
@@ -638,7 +638,7 @@ namespace Mengine
 
         m_mutex->unlock();
 
-        LOGGER_ERROR( "curl invalid request '%u' %s (status [%u] error '%.2048s' response '%.2048s' code [%u])"
+        LOGGER_HTTP_ERROR( "curl invalid request '%u' %s (status [%u] error '%.2048s' response '%.2048s' code [%u])"
             , _response->getRequestId()
             , _response->isSuccessful() ? "complete" : "failure"
             , _response->getStatus()

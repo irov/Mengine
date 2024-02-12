@@ -26,9 +26,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptickPlugin::_availablePlugin() const
     {
-        if( HAS_OPTION( "optick" ) == true )
+        if( HAS_OPTION( "optick" ) == false )
         {
-            return true;
+            return false;
         }
 
         if( HAS_OPTION( "nooptick" ) == true )

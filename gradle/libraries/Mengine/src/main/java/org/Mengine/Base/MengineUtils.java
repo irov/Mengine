@@ -204,7 +204,7 @@ public class MengineUtils {
         return rand;
     }
 
-    public static String getRandomHexString(int num) {
+    public static String getSecureRandomHexString(int num) {
         SecureRandom r = new SecureRandom();
         StringBuffer sb = new StringBuffer();
         while(sb.length() < num) {
@@ -550,23 +550,23 @@ public class MengineUtils {
     }
 
     public static boolean openUrl(Context context, String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-
         Uri uri = Uri.parse(url);
-        intent.setData(uri);
-
-        Intent chooser = Intent.createChooser(intent, "");
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
         PackageManager packageManager = context.getPackageManager();
 
         ComponentName componentName = intent.resolveActivity(packageManager);
 
         if (componentName == null) {
-            return true;
+            MengineLog.logWarning(TAG, "openUrl url: %s not found activity"
+                , url
+            );
+
+            return false;
         }
 
         try {
-            context.startActivity(chooser);
+            context.startActivity(intent);
         } catch (ActivityNotFoundException e) {
             MengineLog.logWarning(TAG, "openUrl url: %s catch ActivityNotFoundException: %s"
                 , url

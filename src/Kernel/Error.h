@@ -27,6 +27,6 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-#define MENGINE_ERROR_MESSAGE(...) Mengine::Helper::ErrorOperator( MENGINE_CODE_LIBRARY, ERROR_LEVEL_MESSAGE, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )(__VA_ARGS__)
-#define MENGINE_ERROR_FATAL(...) Mengine::Helper::ErrorOperator( MENGINE_CODE_LIBRARY, ERROR_LEVEL_FATAL, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )(__VA_ARGS__)
+#define MENGINE_ERROR_MESSAGE(...) Mengine::Helper::ErrorOperator( MENGINE_CODE_LIBRARY, ERROR_LEVEL_MESSAGE, MENGINE_CODE_FILE, MENGINE_CODE_LINE )(__VA_ARGS__)
+#define MENGINE_ERROR_FATAL(...) Mengine::Helper::ErrorOperator( MENGINE_CODE_LIBRARY, ERROR_LEVEL_FATAL, MENGINE_CODE_FILE, MENGINE_CODE_LINE )(__VA_ARGS__)
 //////////////////////////////////////////////////////////////////////////

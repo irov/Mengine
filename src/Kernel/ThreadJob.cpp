@@ -441,15 +441,15 @@ namespace Mengine
                 Detail::threadWorkerProcess( desc );
             }
 
-            if( m_sleep <= 100 )
+            const uint32_t sleep_partition = 100;
+
+            if( m_sleep <= sleep_partition )
             {
                 THREAD_SYSTEM()
                     ->sleep( m_sleep );
             }
             else
             {
-                uint32_t sleep_partition = 100;
-
                 for( uint32_t sleep = 0; sleep <= m_sleep; sleep += sleep_partition )
                 {
                     if( this->isCancel() == true )

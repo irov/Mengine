@@ -2,6 +2,7 @@
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/PreferencesSystemInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -11,16 +12,10 @@
 #include "Kernel/ThreadWorkerHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/VectorHelper.h"
-
 #include "Kernel/JSON2Helper.h"
+#include "Kernel/BuildMode.h"
 
 #include "Config/StdString.h"
-
-#include <clocale>
-#include <iostream>
-
-#include <io.h>
-#include <fcntl.h>
 
 namespace Mengine
 {
@@ -102,8 +97,46 @@ namespace Mengine
             return;
         }
 
-        ConstString sessionId = PREFERENCES_SYSTEM()
+        ConstString session_id = PREFERENCES_SYSTEM()
             ->getPreferenceConstString( "session_id", ConstString::none() );
+
+        if( session_id.empty() == true )
+        {
+            return;
+        }
+
+        ConstString install_key = PREFERENCES_SYSTEM()
+            ->getPreferenceConstString( "install_key", ConstString::none() );
+
+        int64_t install_timestamp = PREFERENCES_SYSTEM()
+            ->getPreferenceInteger( "install_timestamp", 0L );
+
+        ConstString install_version = PREFERENCES_SYSTEM()
+            ->getPreferenceConstString( "install_version", ConstString::none() );
+
+        int64_t install_rnd = PREFERENCES_SYSTEM()
+            ->getPreferenceInteger( "install_rnd", 0L );
+
+        int64_t session_index = PREFERENCES_SYSTEM()
+            ->getPreferenceInteger( "session_index", 0L );
+
+        Timestamp live = PLATFORM_SERVICE()
+            ->getPlatfomTime();
+
+        Char device_model[MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME] = {'\0'};
+        PLATFORM_SERVICE()
+            ->getDeviceModel( device_model );
+
+        Char os_family[MENGINE_PLATFORM_OS_FAMILY_MAXNAME] = {'\0'};
+        PLATFORM_SERVICE()
+            ->getOsFamily( os_family );
+
+        Char os_version[MENGINE_PLATFORM_OS_VERSION_MAXNAME] = {'\0'};
+        PLATFORM_SERVICE()
+            ->getOsVersion( os_version );
+
+        const Char * build_version = Helper::getBuildVersion();
+        uint64_t build_number = Helper::getBuildNumber();
 
         js_element_t * j = Helper::createJSON2();
 
@@ -123,7 +156,7 @@ namespace Mengine
                 return;
             }
 
-            js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "user.id" ), JS_MAKE_STRING( sessionId.c_str(), sessionId.size() ) );
+            js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "user.id" ), JS_MAKE_STRING( session_id.c_str(), session_id.size() ) );
 
             switch( record.level )
             {
@@ -151,16 +184,38 @@ namespace Mengine
                 break;
             }
 
-            js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "service" ), JS_MAKE_STRING( record.category, MENGINE_STRLEN( record.category ) ) );
+            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "service" ), record.category );
             js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "message" ), JS_MAKE_STRING( record.data.data(), record.data.size() ) );
 
-            if( record.file != nullptr )
+#if defined(MENGINE_MASTER_RELEASE)
+            js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "build.environment" ), JS_CONST_STRING( "master" ) );
+#else
+            js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "build.environment" ), JS_CONST_STRING( "dev" ) );
+#endif
+
+            js_object_add_field_boolean( j, jrecord, JS_CONST_STRING( "build.release" ), MENGINE_RELEASE_VALUE( JS_TRUE, JS_FALSE ) );
+
+            js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "timestamp" ), record.timestamp );
+            js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "live" ), live );
+
+            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "build.version" ), build_version );
+            js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "build.number" ), build_number );
+
+            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "device.model" ), device_model );
+            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "os.family" ), os_family );
+            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "os.version" ), os_version );
+
+            js_element_t * jattributes;
+            if( js_object_add_field_object( j, jrecord, JS_CONST_STRING( "attributes" ), &jattributes ) == JS_FAILURE )
             {
-                js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "file" ), JS_MAKE_STRING( record.file, MENGINE_STRLEN( record.file ) ) );
+                return;
             }
 
-            js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "line" ), record.line );
-            js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "timestamp" ), record.timestamp );
+            js_object_add_field_stringn( j, jattributes, JS_CONST_STRING( "install.key" ), JS_MAKE_STRING( install_key.c_str(), install_key.size() ) );
+            js_object_add_field_integer( j, jattributes, JS_CONST_STRING( "install.timestamp" ), install_timestamp );
+            js_object_add_field_stringn( j, jattributes, JS_CONST_STRING( "install.version" ), JS_MAKE_STRING( install_version.c_str(), install_version.size() ) );
+            js_object_add_field_integer( j, jattributes, JS_CONST_STRING( "install.rnd" ), install_rnd );
+            js_object_add_field_integer( j, jattributes, JS_CONST_STRING( "session.index" ), session_index );
         }
 
         Data data;

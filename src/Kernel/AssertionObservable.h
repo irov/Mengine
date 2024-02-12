@@ -13,7 +13,7 @@ namespace Mengine
     }
 }
 
-#   define MENGINE_ASSERTION_OBSERVABLE(Ptr, ...) if( Mengine::Helper::assertionHasObserver( Ptr ) == true ) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, "observer", MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ) (__VA_ARGS__)
+#   define MENGINE_ASSERTION_OBSERVABLE(Ptr, ...) if( Mengine::Helper::assertionHasObserver( Ptr ) == true ) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, "observer", MENGINE_CODE_FILE, MENGINE_CODE_LINE ) (__VA_ARGS__)
 #else
 #   define MENGINE_ASSERTION_OBSERVABLE(Ptr, ...)
 #endif

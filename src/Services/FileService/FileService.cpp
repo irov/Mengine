@@ -45,6 +45,7 @@ namespace Mengine
     {
         m_defaultFileGroup = nullptr;
         m_globalFileGroup = nullptr;
+        m_userFileGroup = nullptr;
 
 #if defined(MENGINE_DEBUG)
         for( const HashtableFileGroups::value_type & value : m_fileGroups )
@@ -142,6 +143,10 @@ namespace Mengine
         {
             m_globalFileGroup = fileGroup;
         }
+        else if( _name == STRINGIZE_STRING_LOCAL( "user" ) )
+        {
+            m_userFileGroup = fileGroup;
+        }
 
         if( _outFileGroup != nullptr )
         {
@@ -202,19 +207,14 @@ namespace Mengine
         return fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FileService::setDefaultFileGroup( const FileGroupInterfacePtr & _fileGroup )
-    {
-        m_defaultFileGroup = _fileGroup;
-    }
-    //////////////////////////////////////////////////////////////////////////
     const FileGroupInterfacePtr & FileService::getDefaultFileGroup() const
     {
         return m_defaultFileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FileService::setGlobalFileGroup( const FileGroupInterfacePtr & _fileGroup )
+    const FileGroupInterfacePtr & FileService::getUserFileGroup() const
     {
-        m_globalFileGroup = _fileGroup;
+        return m_userFileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
     const FileGroupInterfacePtr & FileService::getGlobalFileGroup() const

@@ -1,12 +1,8 @@
 package org.Mengine.Base;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -18,7 +14,6 @@ import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.multidex.MultiDex;
@@ -231,6 +226,18 @@ public class MengineApplication extends Application {
         int value = bundle.getInt(name);
 
         return value;
+    }
+
+    public long getSecureRandomNumber() {
+        long rnd = MengineUtils.getSecureRandomNumber();
+
+        return rnd;
+    }
+
+    public String getSecureRandomHexString(int length) {
+        String hex = MengineUtils.getSecureRandomHexString(length);
+
+        return hex;
     }
 
     public boolean hasOption(String option) {
@@ -832,7 +839,7 @@ public class MengineApplication extends Application {
         editor.putLong("save_version", MENGINE_APPLICATION_SAVE_VERSION);
 
         if (installKey == null) {
-            installKey = "MNIK" + MengineUtils.getRandomHexString(16).toUpperCase();
+            installKey = "MNIK" + MengineUtils.getSecureRandomHexString(16).toUpperCase();
             installTimestamp = MengineUtils.getTimestamp();
             installVersion = this.getVersionName();
 

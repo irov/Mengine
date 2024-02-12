@@ -34,7 +34,7 @@ namespace Mengine
         ThreadMutexInterfacePtr m_mutex;
 
         typedef Vector<LoggerRecord> VectorMessages;
-        VectorMessages m_messages;        
+        VectorMessages m_messages;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<CachalotLogger, LoggerInterface> CachalotLoggerPtr;

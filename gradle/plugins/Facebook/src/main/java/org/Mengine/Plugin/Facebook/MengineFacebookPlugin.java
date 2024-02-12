@@ -1,6 +1,5 @@
 package org.Mengine.Plugin.Facebook;
 
-import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +19,6 @@ import com.facebook.LoggingBehavior;
 import com.facebook.LoginStatusCallback;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
-import com.facebook.appevents.AppEventsConstants;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -86,7 +84,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         if (BuildConfig.DEBUG == true) {
             FacebookSdk.setIsDebugEnabled(true);
 
-            FacebookSdk.addLoggingBehavior(LoggingBehavior.APP_EVENTS);
+            //FacebookSdk.addLoggingBehavior(LoggingBehavior.APP_EVENTS);
             FacebookSdk.addLoggingBehavior(LoggingBehavior.DEVELOPER_ERRORS);
         }
 

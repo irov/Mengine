@@ -51,7 +51,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
 
     @Override
     public void onResume(MengineActivity activity) {
-        this.signInSilently();
+        //this.signInSilently();
     }
 
     @Override

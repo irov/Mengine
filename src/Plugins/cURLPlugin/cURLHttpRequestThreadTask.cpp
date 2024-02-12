@@ -21,46 +21,64 @@ namespace Mengine
         static int cURL_trace( CURL * handle, curl_infotype type, char * data, size_t size, void * userp )
         {
             MENGINE_UNUSED( handle );
-            MENGINE_UNUSED( data );
-            MENGINE_UNUSED( size );
             MENGINE_UNUSED( userp );
-
-            const Char * text;
 
             switch( type )
             {
             case CURLINFO_TEXT:
-                LOGGER_MESSAGE_RELEASE( "== Info: %s", data );
-            case CURLINFO_HEADER_OUT:
-                text = "=> Send header";
-                break;
-            case CURLINFO_DATA_OUT:
-                text = "=> Send data";
-                break;
-            case CURLINFO_SSL_DATA_OUT:
-                text = "=> Send SSL data";
-                break;
+                {
+                    LOGGER_HTTP_MESSAGE_RELEASE( "== Info, %.*s"
+                        , (int32_t)size - 1
+                        , data
+                    );
+                }break;
             case CURLINFO_HEADER_IN:
-                text = "<= Recv header";
-                break;
+                {
+                    LOGGER_HTTP_MESSAGE_RELEASE( "<= Recv header, %.*s"
+                        , (int32_t)size - 1
+                        , data
+                    );
+                }break;
+            case CURLINFO_HEADER_OUT:
+                {
+                    LOGGER_HTTP_MESSAGE_RELEASE( "=> Send header, %.*s"
+                        , (int32_t)size - 1
+                        , data
+                    );
+                }break;
             case CURLINFO_DATA_IN:
-                text = "<= Recv data";
-                break;
+                {
+                    LOGGER_HTTP_MESSAGE_RELEASE( "<= Recv data, %zu bytes %.*s"
+                        , size
+                        , (int32_t)size
+                        , data
+                    );
+                }break;
+            case CURLINFO_DATA_OUT:
+                {
+                    LOGGER_HTTP_MESSAGE_RELEASE( "=> Send data, %zu bytes %.*s"
+                        , size
+                        , (int32_t)size
+                        , data
+                    );
+                }break;
             case CURLINFO_SSL_DATA_IN:
-                text = "<= Recv SSL data";
-                break;
-            default:
-                return 0;
+                {
+                    LOGGER_HTTP_MESSAGE_RELEASE( "<= Recv SSL data, %zu bytes %.*s"
+                        , size
+                        , (int32_t)size
+                        , data
+                    );
+                }break;
+            case CURLINFO_SSL_DATA_OUT:
+                {
+                    LOGGER_HTTP_MESSAGE_RELEASE( "=> Send SSL data, %zu bytes %.*s"
+                        , size
+                        , (int32_t)size
+                        , data
+                    );
+                }break;
             }
-
-            LOGGER_MESSAGE_RELEASE( "%s, %10.10zu bytes (0x%8.8zu)"
-                , text, size, size
-            );
-
-            LOGGER_MESSAGE_RELEASE( "%.*s"
-                , (int32_t)size
-                , data 
-            );
 
             return 0;
         }
@@ -220,7 +238,7 @@ namespace Mengine
     bool cURLHttpRequestThreadTask::_onThreadTaskRun()
     {
         //Empty
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -274,23 +292,18 @@ namespace Mengine
         Char errorbuf[CURL_ERROR_SIZE] = {'\0'};
         MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_ERRORBUFFER, errorbuf) );
 
-        bool OPTION_curlverbose = HAS_OPTION( "curlverbose" );
-
-        if( OPTION_curlverbose == true )
-        {
-            MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_VERBOSE, 1) );
-        }
-
         bool OPTION_curltrace = HAS_OPTION( "curltrace" );
 
         if( OPTION_curltrace == true )
         {
+            MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_VERBOSE, 1) );
+
             MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGDATA, nullptr) );
-            MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGFUNCTION, &Detail::cURL_trace) );            
+            MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGFUNCTION, &Detail::cURL_trace) );
         }
 
         MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_XFERINFODATA, (void *)this) );
-        MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_XFERINFOFUNCTION, &Detail::cURL_XFERInfoCallback) );        
+        MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_XFERINFOFUNCTION, &Detail::cURL_XFERInfoCallback) );
 
         MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_NOPROGRESS, 0L) );
 

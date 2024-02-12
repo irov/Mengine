@@ -53,6 +53,7 @@
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/Utf8Helper.h"
 #include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/Hexadecimal.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -398,6 +399,12 @@ namespace Mengine
         }
 #endif
 
+        m_deviceModel = "PC";
+        m_osFamily = "Windows";
+
+        const Char * osVersion = Helper::Win32GetVersionName();
+        m_osVersion = osVersion;
+
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
         LOGGER_INFO_PROTECTED( "platform", "device seed: %u"
@@ -626,7 +633,7 @@ namespace Mengine
             , ComputerNameBuffer
         );
 
-        WChar fingerprintGarbage[UNLEN + MAX_COMPUTERNAME_LENGTH + 1] = {'\0'};
+        WChar fingerprintGarbage[UNLEN + MAX_COMPUTERNAME_LENGTH + 1] = {'F'};
         MENGINE_WCSCPY( fingerprintGarbage, UserNameBuffer );
         MENGINE_WCSCAT( fingerprintGarbage, ComputerNameBuffer );
 
@@ -3660,13 +3667,13 @@ namespace Mengine
 
                 if( successful == TRUE )
                 {
-                    LOGGER_CATEGORY_VERBOSE_LEVEL( LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("%s"
+                    LOGGER_CATEGORY_VERBOSE_LEVEL( LM_ERROR, LFILTER_NONE, LCOLOR_RED, LFLAG_SHORT )("%s"
                         , tempFileBuffer
                         );
                 }
                 else
                 {
-                    LOGGER_CATEGORY_VERBOSE_LEVEL( LM_ERROR, LFILTER_NONE, LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("invalid read file '%ls'"
+                    LOGGER_CATEGORY_VERBOSE_LEVEL( LM_ERROR, LFILTER_NONE, LCOLOR_RED, LFLAG_SHORT )("invalid read file '%ls'"
                         , tempFileNameBuffer
                         );
                 }
@@ -4003,6 +4010,33 @@ namespace Mengine
         m_fingerprint.copy( _fingerprint );
 
         return MENGINE_SHA1_HEX_COUNT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t Win32PlatformService::getDeviceModel( Char * const _deviceModel ) const
+    {
+        m_deviceModel.copy( _deviceModel );
+        
+        size_t deviceModelLen = m_deviceModel.size();
+
+        return deviceModelLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t Win32PlatformService::getOsFamily( Char * const _osFamily ) const
+    {
+        m_osFamily.copy( _osFamily );
+
+        size_t osFamilyLen = m_osFamily.size();
+
+        return osFamilyLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t Win32PlatformService::getOsVersion( Char * const _osVersion ) const
+    {
+        m_osVersion.copy( _osVersion );
+
+        size_t osVersionLen = m_osVersion.size();
+
+        return osVersionLen;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::closeWindow()

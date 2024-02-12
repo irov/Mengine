@@ -27,7 +27,9 @@ namespace Mengine
     public:
         size_t getAndroidId( Char * _androidId, size_t _capacity ) const override;
         size_t getDeviceName( Char * _deviceName, size_t _capacity ) const override;
+        size_t getDeviceModel( Char * _deviceName, size_t _capacity ) const override;
         size_t getDeviceLanguage( Char * _deviceName, size_t _capacity ) const override;
+        size_t getOSVersion( Char * _deviceName, size_t _capacity ) const override;
         size_t getAndroidPackageName( Char * _packageName, size_t _capacity ) const override;
 
     public:

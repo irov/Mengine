@@ -45,14 +45,14 @@ namespace Mengine
     {
         CachalotLoggerPtr loggerCachalot = Helper::makeFactorableUnique<CachalotLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
-        uint32_t loggerFilter = ~0u & ~(LFILTER_PROTECTED);
+        uint32_t loggerFilter = MAKE_LOGGER_FILTER( LFILTER_PROTECTED | LFILTER_HTTP );
         loggerCachalot->setVerboseFilter( loggerFilter );
 
 #if defined(MENGINE_MASTER_RELEASE)
         loggerCachalot->setVerboseLevel( LM_ERROR );
 #else
         loggerCachalot->setVerboseLevel( LM_MESSAGE );
-#endif#
+#endif
 
         loggerCachalot->setWriteHistory( true );
 

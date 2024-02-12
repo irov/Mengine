@@ -104,7 +104,7 @@ namespace Mengine
             return true;
         }
 
-        if( (m_verboseFilter & _message.filter) == 0 )
+        if( (m_verboseFilter & _message.filter) != _message.filter )
         {
             return false;
         }

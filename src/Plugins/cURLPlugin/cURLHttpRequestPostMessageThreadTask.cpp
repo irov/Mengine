@@ -43,7 +43,7 @@ namespace Mengine
 
             if( code_formadd != CURL_FORMADD_OK )
             {
-                LOGGER_ERROR( "url '%s' param '%s' value '%s' get formadd error [%u]"
+                LOGGER_HTTP_ERROR( "[HTTP] url '%s' param '%s' value '%s' get formadd error [%u]"
                     , m_url.c_str()
                     , key.c_str()
                     , value.c_str()
@@ -73,7 +73,7 @@ namespace Mengine
 
             String params_str = ss.str();
 
-            LOGGER_STATISTIC( "HTTP: post message url '%s' params:\n %s"
+            LOGGER_HTTP_STATISTIC( "[HTTP] post message url '%s' params:\n %s"
                 , m_url.c_str()
                 , params_str.c_str()
             );

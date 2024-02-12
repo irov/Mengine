@@ -34,15 +34,13 @@ namespace Mengine
         const FileGroupInterfacePtr & getFileGroup( const ConstString & _fileGroupName ) const override;
 
     public:
-        void setDefaultFileGroup( const FileGroupInterfacePtr & _fileGroup ) override;
         const FileGroupInterfacePtr & getDefaultFileGroup() const override;
-
-    public:
-        void setGlobalFileGroup( const FileGroupInterfacePtr & _fileGroup ) override;
+        const FileGroupInterfacePtr & getUserFileGroup() const override;
         const FileGroupInterfacePtr & getGlobalFileGroup() const override;
 
     protected:
         FileGroupInterfacePtr m_defaultFileGroup;
+        FileGroupInterfacePtr m_userFileGroup;
         FileGroupInterfacePtr m_globalFileGroup;
 
         typedef Hashtable<ConstString, FileGroupInterfacePtr> HashtableFileGroups;

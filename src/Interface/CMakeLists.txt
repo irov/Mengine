@@ -142,6 +142,7 @@ Common
     TimerServiceInterface.h
     MixerValueInterface.h
     PreferencesSystemInterface.h
+    CryptographySystemInterface.h
 )
 
 ADD_FILTER(

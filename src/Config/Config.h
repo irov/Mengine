@@ -169,8 +169,10 @@
 
 #if defined(MENGINE_DEBUG)
 #   define MENGINE_DEBUG_VALUE(X, Y) (X)
+#   define MENGINE_RELEASE_VALUE(X, Y) (Y)
 #else
 #   define MENGINE_DEBUG_VALUE(X, Y) (Y)
+#   define MENGINE_RELEASE_VALUE(X, Y) (X)
 #endif
 
 #if defined(MENGINE_MASTER_RELEASE)

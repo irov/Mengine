@@ -53,8 +53,7 @@ extern "C" {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidDevDebuggerMengine_1createDevTab )(JNIEnv * env, jclass cls, jstring _tab)
     {
-        Mengine::ConstString tab_cstr = Mengine::Helper::AndroidMakeConstStringFromJString(env,
-                                                                                           _tab);
+        Mengine::ConstString tab_cstr = Mengine::Helper::AndroidMakeConstStringFromJString( env, _tab );
 
         if( DEVTODEBUG_SERVICE()
             ->hasTab( tab_cstr ) == false )
@@ -76,9 +75,9 @@ extern "C" {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidDevDebuggerMengine_1addDevButton )(JNIEnv * env, jclass cls, jstring _tab, jstring _id, jstring _title, jobject _cb)
     {
-        Mengine::ConstString tab = Mengine::Helper::AndroidMakeConstStringFromJString(env, _tab);
-        Mengine::ConstString id = Mengine::Helper::AndroidMakeConstStringFromJString(env, _id);
-        Mengine::String title = Mengine::Helper::AndroidMakeStringFromJString(env, _title);
+        Mengine::ConstString tab = Mengine::Helper::AndroidMakeConstStringFromJString( env, _tab );
+        Mengine::ConstString id = Mengine::Helper::AndroidMakeConstStringFromJString( env, _id );
+        Mengine::String title = Mengine::Helper::AndroidMakeStringFromJString( env, _title );
 
         const Mengine::DevToDebugTabInterfacePtr & t = DEVTODEBUG_SERVICE()
             ->getTab( tab );
@@ -265,7 +264,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( logger );
 
-        uint32_t loggerFilter = ~0u & ~(LFILTER_PROTECTED);
+        uint32_t loggerFilter = MAKE_LOGGER_FILTER( LFILTER_PROTECTED | LFILTER_HTTP );
         logger->setVerboseFilter( loggerFilter );
 
         logger->setVerboseLevel( LM_MESSAGE );

@@ -256,26 +256,6 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &Win32SentryService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &Win32SentryService::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
 
-        bool Win32SentryPlugin_LoggerCapture = CONFIG_VALUE( "Win32SentryPlugin", "LoggerCapture", MENGINE_MASTER_RELEASE_VALUE( true, false ) );
-
-        if( OPTION_sentrydebug == true || Win32SentryPlugin_LoggerCapture == true )
-        {
-            Win32SentryLoggerCapturePtr loggerCapture = Helper::makeFactorableUnique<Win32SentryLoggerCapture>( MENGINE_DOCUMENT_FACTORABLE );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( loggerCapture );
-
-            uint32_t loggerFilter = ~0u & ~(LFILTER_PROTECTED);
-            loggerCapture->setVerboseFilter( loggerFilter );
-            loggerCapture->setVerboseLevel( LM_ERROR );
-            loggerCapture->setWriteHistory( true );
-
-            if( LOGGER_SERVICE()
-                ->registerLogger( loggerCapture ) == true )
-            {
-                m_loggerCapture = loggerCapture;
-            }            
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -293,14 +273,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ASSERTION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ERROR );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_STOP );
-
-        if( m_loggerCapture != nullptr )
-        {
-            LOGGER_SERVICE()
-                ->unregisterLogger( m_loggerCapture );
-
-            m_loggerCapture = nullptr;
-        }
 
         sentry_close();
     }

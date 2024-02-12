@@ -309,7 +309,7 @@ namespace Mengine
         return 2;
 #elif defined(MENGINE_PLATFORM_ANDROID)
         ANDROID_ENVIRONMENT_SERVICE()
-            ->getDeviceName( _deviceLanguage, 16 );
+            ->getDeviceLanguage( _deviceLanguage, 16 );
 
         size_t deviceLanguageLen = MENGINE_STRLEN( _deviceLanguage );
 
@@ -326,6 +326,33 @@ namespace Mengine
         m_fingerprint.copy( _fingerprint );
 
         return MENGINE_SHA1_HEX_COUNT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t SDLPlatformService::getDeviceModel( Char * const _deviceModel ) const
+    {
+        m_deviceModel.copy( _deviceModel );
+
+        size_t deviceModelLen = m_deviceModel.size();
+
+        return deviceModelLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t SDLPlatformService::getOsFamily( Char * const _osFamily ) const
+    {
+        m_osFamily.copy( _osFamily );
+
+        size_t osFamilyLen = m_osFamily.size();
+
+        return osFamilyLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t SDLPlatformService::getOsVersion( Char * const _osVersion ) const
+    {
+        m_osVersion.copy( _osVersion );
+
+        size_t osVersionLen = m_osVersion.size();
+
+        return osVersionLen;
     }
     //////////////////////////////////////////////////////////////////////////
     float SDLPlatformService::getJoystickAxis( uint32_t _index ) const
@@ -779,6 +806,32 @@ namespace Mengine
         );
 
         SDL_EventState( SDL_JOYAXISMOTION, SDL_FALSE );
+
+#if defined(MENGINE_PLATFORM_WINDOWS)
+        m_deviceModel = "PC";
+#elif defined(MENGINE_PLATFORM_MACOS)
+        m_deviceModel = "Mac";
+#elif defined(MENGINE_PLATFORM_IOS)
+        m_deviceModel = "iOS";
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->getDeviceModel( m_deviceModel.data(), MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME );
+#endif
+
+#if defined(MENGINE_PLATFORM_WINDOWS)
+        m_osFamily = "Windows";
+#elif defined(MENGINE_PLATFORM_MACOS)
+        m_osFamily = "MacOS";
+#elif defined(MENGINE_PLATFORM_IOS)
+        m_osFamily = "iOS";
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        m_osFamily = "Android";
+#endif
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->getOSVersion( m_osVersion.data(), MENGINE_PLATFORM_OS_VERSION_MAXNAME );
+#endif
 
         return true;
     }

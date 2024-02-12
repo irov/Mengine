@@ -92,4 +92,5 @@
 #include <windowsx.h>
 #include <wtsapi32.h>
 #include <libloaderapi.h>
+#include <wincrypt.h>
 #pragma warning(pop) 

@@ -30,7 +30,7 @@ import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineGoogleGameSocialPlugin extends MenginePlugin implements MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "GoogleGameSocial";
+    public static final String PLUGIN_NAME = "MengineGGameSocial";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     private int RC_SIGN_IN;

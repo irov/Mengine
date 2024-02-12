@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginEngineListener {
-    public static final String PLUGIN_NAME = "AppMetrica";
+    public static final String PLUGIN_NAME = "MengineAppMetrica";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_API_KEY = "mengine.appmetrica.api_key";

@@ -496,6 +496,14 @@ public class MengineApplication extends Application {
             return false;
         }
 
+        if (name.length() > 23) {
+            MengineLog.logError(TAG, "[ERROR] plugin [%s] invalid name length > 23"
+                , type
+            );
+
+            return false;
+        }
+
         if (plugin.onInitialize(this, name) == false) {
             MengineLog.logError(TAG, "[ERROR] plugin [%s] invalid initialize"
                 , type

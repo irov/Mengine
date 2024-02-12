@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener, FlurryAgentListener {
-    public static final String PLUGIN_NAME = "Flurry";
+    public static final String PLUGIN_NAME = "MengineFlurry";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_API_KEY = "mengine.flurry.api_key";

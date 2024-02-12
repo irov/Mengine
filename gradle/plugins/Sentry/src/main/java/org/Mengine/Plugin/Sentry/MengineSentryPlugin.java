@@ -15,7 +15,7 @@ import io.sentry.android.core.SentryAndroid;
 import io.sentry.protocol.User;
 
 public class MengineSentryPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginEngineListener {
-    public static final String PLUGIN_NAME = "Sentry";
+    public static final String PLUGIN_NAME = "MengineSentry";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_DSN = "mengine.sentry.dsn";

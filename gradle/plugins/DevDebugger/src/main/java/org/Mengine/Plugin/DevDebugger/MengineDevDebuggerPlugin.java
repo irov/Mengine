@@ -7,7 +7,7 @@ import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import android.os.Bundle;
 
 public class MengineDevDebuggerPlugin extends MenginePlugin {
-    public static final String PLUGIN_NAME = "DevDebugger";
+    public static final String PLUGIN_NAME = "MengineDevDebugger";
 
     @FunctionalInterface
     public interface DevButtonCallbackInterface {

@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginActivityListener, MenginePluginEngineListener, MenginePluginProxyActivityListener {
-    public static final String PLUGIN_NAME = "AppLovin";
+    public static final String PLUGIN_NAME = "MengineAppLovin";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_IS_AGE_RESTRICTED_USER = "mengine.applovin.is_age_restricted_user";

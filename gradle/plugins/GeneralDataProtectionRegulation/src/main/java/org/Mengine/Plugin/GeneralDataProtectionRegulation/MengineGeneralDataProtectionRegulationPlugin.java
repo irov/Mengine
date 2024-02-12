@@ -16,7 +16,7 @@ import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineGeneralDataProtectionRegulationPlugin extends MenginePlugin implements MenginePluginApplicationListener {
-    public static final String PLUGIN_NAME = "GDPR";
+    public static final String PLUGIN_NAME = "MengineGDPR";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     private boolean m_passGDPR = false;

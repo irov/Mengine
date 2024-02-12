@@ -8,7 +8,7 @@ import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import com.google.firebase.FirebaseApp;
 
 public class MengineFirebasePlugin extends MenginePlugin implements MenginePluginApplicationListener {
-    public static final String PLUGIN_NAME = "Firebase";
+    public static final String PLUGIN_NAME = "MengineFB";
 
     @Override
     public void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {

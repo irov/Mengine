@@ -23,7 +23,7 @@ import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import java.util.Map;
 
 public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener {
-    public static final String PLUGIN_NAME = "FirebaseAnalytics";
+    public static final String PLUGIN_NAME = "MengineFBAnalytics";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     FirebaseAnalytics m_firebaseAnalytics;

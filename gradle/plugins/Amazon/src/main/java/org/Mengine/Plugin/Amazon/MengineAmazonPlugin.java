@@ -15,7 +15,7 @@ import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginApplicationListener {
-    public static final String PLUGIN_NAME = "Amazon";
+    public static final String PLUGIN_NAME = "MengineAmazon";
 
     public static final String PLUGIN_METADATA_APP_ID = "mengine.amazon.app_id";
     public static final String PLUGIN_METADATA_ENABLE_TESTING = "mengine.amazon.enable_testing";

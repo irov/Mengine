@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener {
-    public static final String PLUGIN_NAME = "AppsFlyer";
+    public static final String PLUGIN_NAME = "MengineAppsFlyer";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_API_KEY = "mengine.appsflyer.api_key";

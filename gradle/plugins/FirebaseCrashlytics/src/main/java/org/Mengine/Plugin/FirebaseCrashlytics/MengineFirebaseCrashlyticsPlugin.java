@@ -18,7 +18,7 @@ import org.Mengine.Base.MenginePluginLoggerListener;
 import org.Mengine.Base.MengineUtils;
 
 public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginEngineListener {
-    public static final String PLUGIN_NAME = "FirebaseCrashlytics";
+    public static final String PLUGIN_NAME = "MengineFBCrashlytics";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     @Override

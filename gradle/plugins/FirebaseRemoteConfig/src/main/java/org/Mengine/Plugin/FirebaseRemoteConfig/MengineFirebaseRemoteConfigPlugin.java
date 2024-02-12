@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "FirebaseRemoteConfig";
+    public static final String PLUGIN_NAME = "MegineFBRemoteConfig";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     @Override

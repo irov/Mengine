@@ -25,7 +25,7 @@ import android.os.SystemClock;
 import android.os.Bundle;
 
 public class MengineLocalNotificationsPlugin extends MenginePlugin implements MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "LocalNotifications";
+    public static final String PLUGIN_NAME = "MengineLNotifications";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     private static final String CHANNEL_ID = "mengine_channel_id";

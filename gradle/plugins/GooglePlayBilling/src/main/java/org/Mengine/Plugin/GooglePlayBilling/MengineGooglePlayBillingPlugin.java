@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MengineGooglePlayBillingPlugin extends MenginePlugin implements MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "GooglePlayBilling";
+    public static final String PLUGIN_NAME = "MengineGPlayBilling";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     private List<ProductDetails> m_productsDetails;

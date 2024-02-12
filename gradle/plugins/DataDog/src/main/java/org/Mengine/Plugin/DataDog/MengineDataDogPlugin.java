@@ -24,7 +24,7 @@ import org.Mengine.Base.MenginePluginLoggerListener;
 import java.util.Map;
 
 public class MengineDataDogPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "DevToDev";
+    public static final String PLUGIN_NAME = "MengineDataDog";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_SITE = "mengine.datadog.site";

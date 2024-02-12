@@ -29,7 +29,7 @@ import org.Mengine.Base.MenginePluginRemoteMessageListener;
 import java.util.Map;
 
 public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginAdRevenueListener, MenginePluginRemoteMessageListener, MenginePluginAnalyticsListener {
-    public static final String PLUGIN_NAME = "Adjust";
+    public static final String PLUGIN_NAME = "MengineAdjust";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_APP_TOKEN = "mengine.adjust.app_token";

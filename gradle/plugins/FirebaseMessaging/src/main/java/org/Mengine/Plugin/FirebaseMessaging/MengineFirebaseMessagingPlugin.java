@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MengineFirebaseMessagingPlugin extends MenginePlugin implements MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "FirebaseMessaging";
+    public static final String PLUGIN_NAME = "MengineFBMessaging";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     @Override

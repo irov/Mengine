@@ -25,7 +25,7 @@ import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MengineUtils;
 
 public class MengineSplashScreenPlugin extends MenginePlugin implements MenginePluginEngineListener, MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "SplashScreen";
+    public static final String PLUGIN_NAME = "MengineSplashScreen";
     public static final boolean PLUGIN_EMBEDDING = false;
 
     protected ImageView m_image;

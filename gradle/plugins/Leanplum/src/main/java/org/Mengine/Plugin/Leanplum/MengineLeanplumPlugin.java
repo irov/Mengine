@@ -12,7 +12,7 @@ import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineLeanplumPlugin extends MenginePlugin implements MenginePluginApplicationListener {
-    public static final String PLUGIN_NAME = "Leanplum";
+    public static final String PLUGIN_NAME = "MengineLeanplum";
 
     public static final String PLUGIN_METADATA_APP_ID = "mengine.leanplum.app_id";
     public static final String PLUGIN_METADATA_DEV_KEY = "mengine.leanplum.dev_key";

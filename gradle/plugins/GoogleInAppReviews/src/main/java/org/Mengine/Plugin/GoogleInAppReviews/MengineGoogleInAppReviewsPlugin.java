@@ -13,7 +13,7 @@ import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineGoogleInAppReviewsPlugin extends MenginePlugin implements MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "GoogleInAppReviews";
+    public static final String PLUGIN_NAME = "MengineGInAppReviews";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     private ReviewManager m_manager;

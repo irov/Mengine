@@ -11,7 +11,7 @@ import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineFirebasePerformanceMonitoringPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginEngineListener {
-    public static final String PLUGIN_NAME = "FirebasePerformanceMonitoring";
+    public static final String PLUGIN_NAME = "MengineFBPMonitoring";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     private static final String PLUGIN_STARTUP_TRACE = "mng_startup_trace";

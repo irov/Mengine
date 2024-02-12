@@ -1029,7 +1029,18 @@ public class MengineActivity extends SDLActivity {
         }
 
         Intent chooser = Intent.createChooser(intent, "Send Email");
-        this.startActivity(chooser);
+
+        try {
+            this.startActivity(chooser);
+        } catch (Exception e) {
+            MengineLog.logError(TAG, "[ERROR] linkingOpenMail failed start mail: %s subject: %s exception: %s"
+                , email
+                , subject
+                , e.getMessage()
+            );
+
+            return false;
+        }
 
         return true;
     }

@@ -554,18 +554,6 @@ public class MengineUtils {
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.addCategory(Intent.CATEGORY_BROWSABLE);
 
-        PackageManager packageManager = context.getPackageManager();
-
-        ComponentName componentName = intent.resolveActivity(packageManager);
-
-        if (componentName == null) {
-            MengineLog.logWarning(TAG, "openUrl url: %s not found activity"
-                , url
-            );
-
-            return false;
-        }
-
         try {
             context.startActivity(intent);
         } catch (ActivityNotFoundException e) {

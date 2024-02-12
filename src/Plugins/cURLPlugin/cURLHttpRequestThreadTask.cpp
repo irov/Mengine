@@ -78,6 +78,10 @@ namespace Mengine
                         , data
                     );
                 }break;
+            case CURLINFO_END:
+                {
+                    //Empty
+                }break;
             }
 
             return 0;

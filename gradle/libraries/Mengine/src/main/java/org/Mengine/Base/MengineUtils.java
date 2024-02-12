@@ -552,6 +552,7 @@ public class MengineUtils {
     public static boolean openUrl(Context context, String url) {
         Uri uri = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.addCategory(Intent.CATEGORY_BROWSABLE);
 
         PackageManager packageManager = context.getPackageManager();
 

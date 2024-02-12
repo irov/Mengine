@@ -36,44 +36,29 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
     private int RC_SIGN_IN;
     private int RC_ACHIEVEMENT_UI;
 
-    private GoogleSignInClient m_signInClient;
-
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         RC_SIGN_IN = activity.genRequestCode("RC_SIGN_IN");
         RC_ACHIEVEMENT_UI = activity.genRequestCode("RC_ACHIEVEMENT_UI");
-
-        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-            .build();
-
-        m_signInClient = GoogleSignIn.getClient(activity, signInOptions);
     }
 
     @Override
     public void onResume(MengineActivity activity) {
-        //this.signInSilently();
+        this.signInSilently();
     }
 
     @Override
     public void onDestroy(MengineActivity activity) {
-        if (m_signInClient == null) {
-            m_signInClient.signOut();
-            m_signInClient = null;
-        }
     }
 
     public void startSignInIntent() {
-        if (m_signInClient == null) {
-            this.logWarning("startSignInIntent google client not created");
-
-            return;
-        }
-
         this.logMessage("startSignInIntent");
 
         MengineActivity activity = this.getMengineActivity();
 
-        Intent intent = m_signInClient.getSignInIntent();
+        GoogleSignInClient signInClient = GoogleSignIn.getClient(activity, GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+
+        Intent intent = signInClient.getSignInIntent();
 
         try {
             activity.startActivityForResult(intent, RC_SIGN_IN);
@@ -85,17 +70,13 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
     }
 
     public void signOut() {
-        if (m_signInClient == null) {
-            this.logWarning("signOut google client not created");
-
-            return;
-        }
-
         this.logMessage("signOut");
 
         MengineActivity activity = this.getMengineActivity();
 
-        m_signInClient.signOut()
+        GoogleSignInClient signInClient = GoogleSignIn.getClient(activity, GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+
+        signInClient.signOut()
             .addOnCompleteListener(activity, new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
@@ -130,17 +111,13 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
     }
 
     public void revokeAccess() {
-        if (m_signInClient == null) {
-            this.logWarning("revokeAccess google client not created");
-
-            return;
-        }
-
         this.logMessage("revokeAccess");
 
         MengineActivity activity = this.getMengineActivity();
 
-        m_signInClient.revokeAccess()
+        GoogleSignInClient signInClient = GoogleSignIn.getClient(activity, GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+
+        signInClient.revokeAccess()
             .addOnCompleteListener(activity, new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
@@ -214,8 +191,6 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
         }
 
         this.logMessage("signInCallback");
-
-        MengineActivity activity = this.getMengineActivity();
 
         Uri accountPhotoUrl = account.getPhotoUrl();
         String accountDisplayName = account.getDisplayName();

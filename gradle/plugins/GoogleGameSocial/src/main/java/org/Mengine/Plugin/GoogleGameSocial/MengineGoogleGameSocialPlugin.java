@@ -40,6 +40,8 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         RC_SIGN_IN = activity.genRequestCode("RC_SIGN_IN");
         RC_ACHIEVEMENT_UI = activity.genRequestCode("RC_ACHIEVEMENT_UI");
+
+        this.signInSilently();
     }
 
     @Override

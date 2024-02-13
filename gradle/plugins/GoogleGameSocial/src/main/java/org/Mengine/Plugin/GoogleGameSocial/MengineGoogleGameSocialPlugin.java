@@ -44,7 +44,9 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
 
     @Override
     public void onResume(MengineActivity activity) {
-        this.signInSilently();
+        // FIXME sign-in loop:
+        //  resume - silence sign in - fail - intent sign in - resume - silence sign in ...
+        //this.signInSilently();
     }
 
     @Override
@@ -149,7 +151,9 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
 
             switch (statusCode) {
                 case CommonStatusCodes.SIGN_IN_REQUIRED: {
-                    this.logError("[ERROR] google game social signIn required" );
+                    this.logError("[ERROR] google game social signIn SIGN_IN_REQUIRED [hasResolution %s]",
+                            status.hasResolution()
+                    );
 
                     if (status.hasResolution() == true) {
                         try {
@@ -159,8 +163,6 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
                                 , ex.getMessage()
                             );
                         }
-                    } else {
-                        this.logError("[ERROR] google game social signIn required failed has resolution" );
                     }
                 }break;
                 default: {
@@ -254,10 +256,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
                         // and [Performing Interactive Sign-in](http://developers.google.com/games/services/android/signin#performing_interactive_sign-in) for details on how to implement
                         // Interactive Sign-in.
 
-                        MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialOnSignError");
-
-                        //[ToDo]
-                        //MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialNeedIntentSign");
+                        MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialNeedIntentSign");
                     }
                 }
             });

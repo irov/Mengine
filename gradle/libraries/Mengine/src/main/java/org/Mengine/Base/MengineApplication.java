@@ -897,6 +897,7 @@ public class MengineApplication extends Application {
         String sessionDate = MengineUtils.getDateFormat(m_sessionTimestamp, "d MMM yyyy HH:mm:ss");
         this.setState("user.session_date", sessionDate);
 
+        MengineAnalytics.addContextParameterBoolean("is_dev", BuildConfig.DEBUG);
         MengineAnalytics.addContextParameterString("install_key", m_installKey);
         MengineAnalytics.addContextParameterLong("install_timestamp", m_installTimestamp);
         MengineAnalytics.addContextParameterString("install_version", m_installVersion);

@@ -36,20 +36,6 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         String sessionId = application.getSessionId();
         FirebaseCrashlytics.getInstance().setUserId(sessionId);
-
-        String installKey = application.getInstallKey();
-        long installTimestamp = application.getInstallTimestamp();
-        String installVersion = application.getInstallVersion();
-        long installRND = application.getInstallRND();
-        long sessionIndex = application.getSessionIndex();
-        long sessionTimestamp = application.getSessionTimestamp();
-
-        FirebaseCrashlytics.getInstance().setCustomKey("install_key", installKey);
-        FirebaseCrashlytics.getInstance().setCustomKey("install_timestamp", installTimestamp);
-        FirebaseCrashlytics.getInstance().setCustomKey("install_version", installVersion);
-        FirebaseCrashlytics.getInstance().setCustomKey("install_rnd", installRND);
-        FirebaseCrashlytics.getInstance().setCustomKey("session_index", sessionIndex);
-        FirebaseCrashlytics.getInstance().setCustomKey("session_timestamp", sessionTimestamp);
     }
 
     @Override

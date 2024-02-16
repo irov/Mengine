@@ -35,7 +35,7 @@ class MengineMain implements Runnable {
         try {
             android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_DISPLAY);
         } catch (Exception e) {
-            Log.v(TAG, "modify thread properties failed: " + e.toString());
+            MengineLog.logWarning(TAG, "modify thread properties failed: %s", e);
         }
 
         String function = "SDL_init";
@@ -44,7 +44,7 @@ class MengineMain implements Runnable {
 
         m_statusInit = SDLActivity.nativeRunMain(m_library, "SDL_main", m_arguments);
 
-        MengineLog.logInfo(TAG, "Finished main function [SDL_main] status: " + m_statusInit);
+        MengineLog.logInfo(TAG, "Finished main function [SDL_main] status: %s", m_statusInit);
 
         synchronized (m_semaphoreInit) {
             m_semaphoreInit.notifyAll();
@@ -58,7 +58,7 @@ class MengineMain implements Runnable {
             try {
                 m_semaphoreRun.wait();
             } catch (InterruptedException e) {
-                MengineLog.logError(TAG, "wait semaphore failed: " + e);
+                MengineLog.logError(TAG, "wait semaphore failed: %s", e);
 
                 return;
             }
@@ -76,6 +76,10 @@ class MengineMain implements Runnable {
                 .logAndFlush();
 
             MengineUtils.finishActivityWithAlertDialog(m_activity, "[ERROR] SDL run failed with status: " + statusRun);
+        }
+
+        if (m_activity.isFinishing() == false) {
+            m_activity.finish();
         }
     }
 

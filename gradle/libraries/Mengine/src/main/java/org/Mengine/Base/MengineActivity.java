@@ -569,6 +569,8 @@ public class MengineActivity extends SDLActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
+        this.setState("activity.intent_action", intent.getAction() );
+
         MengineLog.logMessage(TAG, "onNewIntent intent: %s", intent);
 
         if (mBrokenLibraries == true) {
@@ -586,6 +588,8 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected void onDestroy() {
+        m_destroy = true;
+
         this.setState("activity.lifecycle", "destroy");
 
         MengineLog.logMessage(TAG, "onDestroy");
@@ -597,8 +601,6 @@ public class MengineActivity extends SDLActivity {
 
             return;
         }
-
-        m_destroy = true;
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 

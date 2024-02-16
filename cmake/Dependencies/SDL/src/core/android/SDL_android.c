@@ -813,6 +813,7 @@ JNIEXPORT int JNICALL SDL_JAVA_INTERFACE(nativeRunMain)(JNIEnv *env, jclass cls,
 
         } else {
             __android_log_print(ANDROID_LOG_ERROR, "SDL", "nativeRunMain(): Couldn't find function %s in library %s err %s", function_name, library_file, dlerror());
+            dlclose( SDL_library_handle );
         }
         (*env)->ReleaseStringUTFChars(env, function, function_name);
 

@@ -1,14 +1,8 @@
 package org.Mengine.Plugin.GeneralDataProtectionRegulation;
 
-import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 
-import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2024 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -85,9 +85,9 @@
 
 #elif defined(__NACL__)
 /* On NACL we use ppapi_simple to set up the application helper code,
-   then wait for the first PSE_INSTANCE_DIDCHANGEVIEW event before
+   then wait for the first PSE_INSTANCE_DIDCHANGEVIEW event before 
    starting the user main function.
-   All user code is run in a separate thread by ppapi_simple, thus
+   All user code is run in a separate thread by ppapi_simple, thus 
    allowing for blocking io to take place via nacl_io
 */
 #define SDL_MAIN_NEEDED
@@ -156,7 +156,6 @@ extern SDLMAIN_DECLSPEC int SDL_main(int argc, char *argv[]);
 
 typedef int (*SDL_loop_func)(void);
 extern SDLMAIN_DECLSPEC int SDL_loop(void);
-
 
 /**
  * Circumvent failure of SDL_Init() when not using SDL_main() as an entry

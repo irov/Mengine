@@ -1,6 +1,5 @@
 package org.Mengine.Plugin.AppLovin;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -21,7 +20,6 @@ import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
-import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginEngineListener;
@@ -29,11 +27,9 @@ import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginProxyActivity;
 import org.Mengine.Base.MenginePluginProxyActivityListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
 
 public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginActivityListener, MenginePluginEngineListener, MenginePluginProxyActivityListener {
     public static final String PLUGIN_NAME = "MengineAppLovin";

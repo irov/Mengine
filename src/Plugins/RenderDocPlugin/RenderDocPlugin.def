@@ -1,0 +1,2 @@
+LIBRARY "RenderDocPlugin"
+EXPORTS dllCreatePlugin @1

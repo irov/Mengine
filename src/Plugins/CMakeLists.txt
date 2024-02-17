@@ -242,6 +242,10 @@ if(MENGINE_PLUGIN_OPTICK)
     ADD_SUBDIRECTORY(OptickPlugin)
 endif()
 
+if(MENGINE_PLUGIN_RENDERDOC)
+    ADD_SUBDIRECTORY(RenderDocPlugin)
+endif()
+
 if(MENGINE_PLUGIN_DEVTODEBUG)
     ADD_SUBDIRECTORY(DevToDebugPlugin)
 endif()

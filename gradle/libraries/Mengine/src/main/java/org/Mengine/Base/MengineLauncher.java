@@ -1,14 +1,10 @@
 package org.Mengine.Base;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class MengineLauncher extends Activity {
     public static final String TAG = "MengineLauncher";
 

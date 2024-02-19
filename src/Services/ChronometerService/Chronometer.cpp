@@ -21,6 +21,8 @@ namespace Mengine
     void Chronometer::initialize( const LambdaChronometer & _lambda )
     {
         m_lambda = _lambda;
+
+        m_timeBegin = Helper::getSystemTimestamp();
     }
     //////////////////////////////////////////////////////////////////////////
     void Chronometer::update( Timestamp _currentTime )

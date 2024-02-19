@@ -17,20 +17,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLMessageBoxLogger::_log( const LoggerMessage & _message )
+    void SDLMessageBoxLogger::_log( const LoggerRecordInterfacePtr & _record )
     {
-        const Char * data = _message.data;
-        size_t size = _message.size;
-
-        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
-        MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s"
-            , (int32_t)size
-            , data
-        );
+        LoggerMessage message;
+        _record->getMessage( &message );
 
         Helper::debuggerBreak();
 
-        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine fatal error", message, NULL );
+        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine fatal error", message.data, NULL );
     }
     //////////////////////////////////////////////////////////////////////////
 }

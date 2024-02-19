@@ -11,19 +11,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ProxyLogger::setLambda( const LambdaLoggerMessage & _lambda )
+    void ProxyLogger::setLambda( const LambdaLoggerRecord & _lambda )
     {
         m_lambda = _lambda;
     }
     //////////////////////////////////////////////////////////////////////////
-    const LambdaLoggerMessage & ProxyLogger::getLambda() const
+    const LambdaLoggerRecord & ProxyLogger::getLambda() const
     {
         return m_lambda;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ProxyLogger::_log( const LoggerMessage & _message )
+    void ProxyLogger::_log( const LoggerRecordInterfacePtr & _record )
     {
-        m_lambda( _message );
+        m_lambda( _record );
     }
     //////////////////////////////////////////////////////////////////////////
 }

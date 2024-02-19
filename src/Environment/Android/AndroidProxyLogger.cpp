@@ -34,12 +34,15 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidProxyLogger::_log( const LoggerMessage & _message )
+    void AndroidProxyLogger::_log( const LoggerRecordInterfacePtr & _record )
     {
-        MENGINE_ASSERTION_VALIDATE_UTF8( _message.category, MENGINE_UNKNOWN_SIZE );
-        MENGINE_ASSERTION_VALIDATE_UTF8( _message.data, _message.size );
+        LoggerMessage message;
+        _record->getMessage( &message );
 
-        if( (_message.filter & Mengine::LFILTER_ANDROID) == Mengine::LFILTER_ANDROID )
+        MENGINE_ASSERTION_VALIDATE_UTF8( message.category, MENGINE_UNKNOWN_SIZE );
+        MENGINE_ASSERTION_VALIDATE_UTF8( message.data, MENGINE_UNKNOWN_SIZE );
+
+        if((message.filter & Mengine::LFILTER_ANDROID) == Mengine::LFILTER_ANDROID )
         {
             return;
         }
@@ -53,18 +56,11 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jstring category_jstring = jenv->NewStringUTF( _message.category );
+        jstring category_jstring = jenv->NewStringUTF(message.category );
 
-        ELoggerLevel level = _message.level;
+        ELoggerLevel level = message.level;
 
-        const Char * data_value = _message.data;
-        size_t data_size = _message.size;
-
-        Char msg[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
-        MENGINE_MEMCPY( msg, data_value, data_size * sizeof(Char) );
-        msg[data_size] = '\0';
-
-        jstring data_jstring = jenv->NewStringUTF( msg );
+        jstring data_jstring = jenv->NewStringUTF( message.data );
 
         Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineLogger", "(ILjava/lang/String;Ljava/lang/String;)V", level, category_jstring, data_jstring );
 

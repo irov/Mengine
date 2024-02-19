@@ -617,21 +617,21 @@ namespace Mengine
                 return axis;
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addChronometer( const pybind::object & _cb, const pybind::args & _args )
+            ChronometerInterfacePtr s_addChronometer( const pybind::object & _cb, const pybind::args & _args )
             {
-                uint32_t id = CHRONOMETER_SERVICE()
-                    ->addChronometer( [_cb, _args]( UniqueId _id, Timestamp _time )
+                ChronometerInterfacePtr chronometer = CHRONOMETER_SERVICE()
+                    ->addChronometer( [_cb, _args]( Timestamp _time )
                 {
-                    _cb.call_args( _id, _time, _args );
+                    _cb.call_args( _time, _args );
                 }, MENGINE_DOCUMENT_PYBIND );
 
-                return id;
+                return chronometer;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_removeChronometer( uint32_t _id )
+            bool s_removeChronometer( const ChronometerInterfacePtr & _chronometer )
             {
                 bool successful = CHRONOMETER_SERVICE()
-                    ->removeChronometer( _id );
+                    ->removeChronometer( _chronometer );
 
                 return successful;
             }
@@ -944,7 +944,7 @@ namespace Mengine
                     ->addGlobalModule( _name, _module );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_logInfo( const Char * _message )
+            void s_logInfo( pybind::kernel_interface * _kernel, PyObject * _message )
             {
                 LoggerMessage msg;
 
@@ -955,16 +955,19 @@ namespace Mengine
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_GREEN | LCOLOR_BLUE;
                 msg.flag = LFLAG_SHORT;
-                msg.file = "";
+                msg.function = "";
                 msg.line = 0;
-                msg.data = _message;
-                msg.size = MENGINE_STRLEN( _message );
+
+                size_t size;
+                const Char * data = _kernel->string_to_char_and_size( _message, &size );
+
+                msg.data = data;
 
                 LOGGER_SERVICE()
                     ->logMessage( msg );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_logMessage( const Char * _message )
+            void s_logMessage( pybind::kernel_interface * _kernel, PyObject * _message )
             {
                 LoggerMessage msg;
 
@@ -975,16 +978,19 @@ namespace Mengine
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED | LCOLOR_BLUE;
                 msg.flag = LFLAG_SHORT;
-                msg.file = "";
+                msg.function = "";
                 msg.line = 0;
-                msg.data = _message;
-                msg.size = MENGINE_STRLEN( _message );
+
+                size_t size;
+                const Char * data = _kernel->string_to_char_and_size( _message, &size );
+
+                msg.data = data;
 
                 LOGGER_SERVICE()
                     ->logMessage( msg );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_logWarning( const Char * _message )
+            void s_logWarning( pybind::kernel_interface * _kernel, PyObject * _message )
             {
                 LoggerMessage msg;
 
@@ -995,16 +1001,19 @@ namespace Mengine
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED | LCOLOR_GREEN;
                 msg.flag = LFLAG_SHORT;
-                msg.file = "";
+                msg.function = "";
                 msg.line = 0;
-                msg.data = _message;
-                msg.size = MENGINE_STRLEN( _message );
+
+                size_t size;
+                const Char * data = _kernel->string_to_char_and_size( _message, &size );
+
+                msg.data = data;
 
                 LOGGER_SERVICE()
                     ->logMessage( msg );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_logError( const Char * _message )
+            void s_logError( pybind::kernel_interface * _kernel, PyObject * _message )
             {
                 LoggerMessage msg;
 
@@ -1015,10 +1024,13 @@ namespace Mengine
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED;
                 msg.flag = LFLAG_SHORT;
-                msg.file = "";
+                msg.function = "";
                 msg.line = 0;
-                msg.data = _message;
-                msg.size = MENGINE_STRLEN( _message );
+
+                size_t size;
+                const Char * data = _kernel->string_to_char_and_size( _message, &size );
+
+                msg.data = data;
 
                 LOGGER_SERVICE()
                     ->logMessage( msg );
@@ -4041,10 +4053,10 @@ namespace Mengine
 
         HelperScriptMethodPtr helperScriptMethod = Helper::makeFactorableUnique<HelperScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
 
-        pybind::def_functor( _kernel, "logInfo", helperScriptMethod, &HelperScriptMethod::s_logInfo );
-        pybind::def_functor( _kernel, "logMessage", helperScriptMethod, &HelperScriptMethod::s_logMessage );
-        pybind::def_functor( _kernel, "logWarning", helperScriptMethod, &HelperScriptMethod::s_logWarning );
-        pybind::def_functor( _kernel, "logError", helperScriptMethod, &HelperScriptMethod::s_logError );
+        pybind::def_functor_kernel( _kernel, "logInfo", helperScriptMethod, &HelperScriptMethod::s_logInfo );
+        pybind::def_functor_kernel( _kernel, "logMessage", helperScriptMethod, &HelperScriptMethod::s_logMessage );
+        pybind::def_functor_kernel( _kernel, "logWarning", helperScriptMethod, &HelperScriptMethod::s_logWarning );
+        pybind::def_functor_kernel( _kernel, "logError", helperScriptMethod, &HelperScriptMethod::s_logError );
 
         pybind::def_functor( _kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
         pybind::def_functor( _kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::s_enumerator );

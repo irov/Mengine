@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/Scheduler.h"
+#include "Interface/SchedulerInterface.h"
 
 #include "GOAP/TaskInterface.h"
 

@@ -17,20 +17,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32MessageBoxLogger::_log( const LoggerMessage & _message )
+    void Win32MessageBoxLogger::_log( const LoggerRecordInterfacePtr & _record )
     {
-        const Char * data = _message.data;
-        size_t size = _message.size;
-
-        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
-        MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s"
-            , size
-            , data
-        );
-
         Helper::debuggerBreak();
 
-        ::MessageBoxA( NULL, message, "Mengine critical error", MB_OK );
+        LoggerMessage message;
+        _record->getMessage( &message );
+
+        ::MessageBoxA( NULL, message.data, "Mengine critical error", MB_OK );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "GOAP/TaskInterface.h"
+#include "Interface/SchedulerInterface.h"
 
-#include "Kernel/Scheduler.h"
+#include "GOAP/TaskInterface.h"
 
 namespace Mengine
 {

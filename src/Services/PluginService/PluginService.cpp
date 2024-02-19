@@ -11,14 +11,6 @@
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
 
-#ifndef MENGINE_PLUGIN_CREATE_FUNCTION_NAME
-#define MENGINE_PLUGIN_CREATE_FUNCTION_NAME "dllCreatePlugin"
-#endif
-
-#ifndef MENGINE_PLUGIN_DESTROY_FUNCTION_NAME
-#define MENGINE_PLUGIN_DESTROY_FUNCTION_NAME "dllDestroyPlugin"
-#endif
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PluginService, Mengine::PluginService );
 //////////////////////////////////////////////////////////////////////////
@@ -59,7 +51,7 @@ namespace Mengine
             return false;
         }
 
-        const Char * symbol = MENGINE_PLUGIN_CREATE_FUNCTION_NAME;
+        const Char * symbol = MENGINE_PP_STRINGIZE( PLUGIN_FACTORY_CREATE_FUNCTION_NAME );
 
         TDynamicLibraryFunction function_dllCreatePlugin = dynamicLibrary->getSymbol( symbol );
 

@@ -30,5 +30,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_VECTOR_AUX_I(Vector, Line) Helper::VectorAuxScope<decltype(Vector)::value_type> scope_##Line( Vector ) 
-#define MENGINE_VECTOR_AUX(Vector) MENGINE_VECTOR_AUX_I(Vector, MENGINE_CODE_FILE)
+#define MENGINE_VECTOR_AUX(Vector) MENGINE_VECTOR_AUX_I(Vector, MENGINE_CODE_LINE)
 //////////////////////////////////////////////////////////////////////////

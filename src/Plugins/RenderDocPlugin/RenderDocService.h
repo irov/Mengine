@@ -1,6 +1,10 @@
 #pragma once
 
+#include "Interface/RenderPipelineInterface.h"
+
 #include "RenderDocInterface.h"
+
+#include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -20,6 +24,13 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        RENDERDOC_API_1_1_2 * m_renderDocAPI;
+        void notifyCreateRenderWindow_();
+        void notifyRenderSceneBegin_( const RenderPipelineInterfacePtr & _pipeline );
+        void notifyRenderSceneEnd_( const RenderPipelineInterfacePtr & _pipeline );
+
+    protected:
+        HMODULE m_renderDocModule;
+
+        RENDERDOC_API_1_6_0 * m_renderDocAPI;
     };
 }

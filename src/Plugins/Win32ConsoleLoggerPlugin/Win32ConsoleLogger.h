@@ -19,7 +19,7 @@ namespace Mengine
         void _finalizeLogger() override;
 
     public:
-        void _log( const LoggerMessage & _message ) override;
+        void _log( const LoggerRecordInterfacePtr & _record ) override;
         void _flush() override;
 
     protected:

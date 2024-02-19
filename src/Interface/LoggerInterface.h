@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/Interface.h"
+#include "Interface/LoggerRecordInterface.h"
 
 #include "Kernel/LoggerMessage.h"
 #include "Kernel/LoggerLevel.h"
@@ -32,10 +33,10 @@ namespace Mengine
         virtual uint32_t getVerboseFilter() const = 0;
 
     public:
-        virtual bool validMessage( const LoggerMessage & _message ) const = 0;
+        virtual bool validMessage( const LoggerRecordInterfacePtr & _record ) const = 0;
 
     public:
-        virtual void log( const LoggerMessage & _message ) = 0;
+        virtual void log( const LoggerRecordInterfacePtr & _record ) = 0;
         virtual void flush() = 0;
     };
     //////////////////////////////////////////////////////////////////////////

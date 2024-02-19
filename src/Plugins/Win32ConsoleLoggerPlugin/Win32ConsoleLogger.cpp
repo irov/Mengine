@@ -158,8 +158,11 @@ namespace Mengine
         m_createConsole = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ConsoleLogger::_log( const LoggerMessage & _message )
+    void Win32ConsoleLogger::_log( const LoggerRecordInterfacePtr & _record )
     {
+        LoggerMessage message;
+        _record->getMessage( &message );
+
         HANDLE output_handle = ::GetStdHandle( STD_OUTPUT_HANDLE );
 
         CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
@@ -170,7 +173,7 @@ namespace Mengine
 
         WORD textColor = 0;
 
-        uint32_t color = _message.color;
+        uint32_t color = message.color;
 
         if( color & LCOLOR_NONE )
         {
@@ -194,55 +197,54 @@ namespace Mengine
 
         ::SetConsoleTextAttribute( output_handle, textColor );
 
-        const Char * data = _message.data;
-        size_t size = _message.size;
-
         DWORD dWritten;
 
-        if( _message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
+        if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
             Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
-            size_t functionstampSize = Helper::makeLoggerFunctionStamp( _message.file, _message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+            size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH);
             ::WriteConsoleA( output_handle, functionstamp, (DWORD)functionstampSize, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
-        if( _message.flag & LFLAG_TIMESTAMP )
+        if( message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
-            size_t timestampSize = Helper::makeLoggerShortDate( _message.timestamp, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
+            size_t timestampSize = Helper::makeLoggerShortDate( message.timestamp, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
             ::WriteConsoleA( output_handle, timestamp, (DWORD)timestampSize, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
-        if( _message.flag & LFLAG_THREADSTAMP )
+        if( message.flag & LFLAG_THREADSTAMP )
         {
             Char threadstamp[256] = {'\0'};
-            size_t threadstampSize = Helper::makeLoggerThreadStamp( _message.threadName, "|%s|", threadstamp, 0, 256 );
+            size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
             ::WriteConsoleA( output_handle, threadstamp, (DWORD)threadstampSize, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
-        if( _message.flag & LFLAG_SYMBOLSTAMP )
+        if( message.flag & LFLAG_SYMBOLSTAMP )
         {
-            ELoggerLevel level = _message.level;
+            ELoggerLevel level = message.level;
 
             Char symbol = Helper::getLoggerLevelSymbol( level );
             ::WriteConsoleA( output_handle, &symbol, 1, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
-        if( _message.flag & LFLAG_CATEGORYSTAMP )
+        if( message.flag & LFLAG_CATEGORYSTAMP )
         {
-            size_t category_size = MENGINE_STRLEN( _message.category );
+            size_t category_size = MENGINE_STRLEN( message.category );
 
             ::WriteConsoleA( output_handle, "[", 1, &dWritten, NULL );
-            ::WriteConsoleA( output_handle, _message.category, (DWORD)category_size, &dWritten, NULL );
+            ::WriteConsoleA( output_handle, message.category, (DWORD)category_size, &dWritten, NULL );
             ::WriteConsoleA( output_handle, "]", 1, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
-        ::WriteConsoleA( output_handle, data, (DWORD)size, &dWritten, NULL );
+        size_t data_size = MENGINE_STRLEN( message.data );
+
+        ::WriteConsoleA( output_handle, message.data, (DWORD)data_size, &dWritten, NULL );
         ::WriteConsoleA( output_handle, "\n", 1, &dWritten, NULL );
 
         ::SetConsoleTextAttribute( output_handle, consoleInfo.wAttributes );

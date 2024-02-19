@@ -7,7 +7,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<void(const LoggerMessage &)> LambdaLoggerMessage;
+    typedef Lambda<void( const LoggerRecordInterfacePtr & )> LambdaLoggerRecord;
     //////////////////////////////////////////////////////////////////////////
     class ProxyLogger
         : public LoggerBase
@@ -17,14 +17,14 @@ namespace Mengine
         ~ProxyLogger() override;
 
     public:        
-        void setLambda( const LambdaLoggerMessage & _lambda );
-        const LambdaLoggerMessage & getLambda() const;
+        void setLambda( const LambdaLoggerRecord & _lambda );
+        const LambdaLoggerRecord & getLambda() const;
 
     public:
-        void _log( const LoggerMessage & _message ) override;
+        void _log( const LoggerRecordInterfacePtr & _record ) override;
 
     protected:
-        LambdaLoggerMessage m_lambda;
+        LambdaLoggerRecord m_lambda;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ProxyLogger, LoggerInterface> ProxyLoggerPtr;

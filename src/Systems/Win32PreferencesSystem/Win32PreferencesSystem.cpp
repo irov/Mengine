@@ -57,6 +57,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int64_t Win32PreferencesSystem::getPreferenceInteger( const Char * _key, int64_t _default ) const
     {
+        if( SERVICE_IS_INITIALIZE( FileServiceInterface ) == false )
+        {
+            return _default;
+        }
+
         const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
             ->getUserFileGroup();
 
@@ -88,6 +93,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PreferencesSystem::setPreferenceInteger( const Char * _key, int64_t _value )
     {
+        if( SERVICE_IS_INITIALIZE( FileServiceInterface ) == false )
+        {
+            return false;
+        }
+
         const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
             ->getUserFileGroup();
 
@@ -124,6 +134,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PreferencesSystem::getPreferenceString( const Char * _key, Char * const _value, size_t _capacity ) const
     {
+        if( SERVICE_IS_INITIALIZE( FileServiceInterface ) == false )
+        {
+            return false;
+        }
+
         const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
             ->getUserFileGroup();
 
@@ -181,6 +196,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ConstString Win32PreferencesSystem::getPreferenceConstString( const Char * _key, const ConstString & _default ) const
     {
+        if( SERVICE_IS_INITIALIZE( FileServiceInterface ) == false )
+        {
+            return _default;
+        }
+
         const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
             ->getUserFileGroup();
 
@@ -208,6 +228,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PreferencesSystem::setPreferenceConstString( const Char * _key, const ConstString & _value )
     {
+        if( SERVICE_IS_INITIALIZE( FileServiceInterface ) == false )
+        {
+            return false;
+        }
+
         const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
             ->getUserFileGroup();
 
@@ -239,6 +264,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PreferencesSystem::hasPreference( const Char * _key ) const
     {
+        if( SERVICE_IS_INITIALIZE( FileServiceInterface ) == false )
+        {
+            return false;
+        }
+
         const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
             ->getUserFileGroup();
 

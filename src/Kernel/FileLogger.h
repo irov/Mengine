@@ -27,7 +27,7 @@ namespace Mengine
         const OutputStreamInterfacePtr & getStream() const;
 
     public:
-        void _log( const LoggerMessage & _message ) override;
+        void _log( const LoggerRecordInterfacePtr & _record ) override;
 
     public:
         void _flush() override;

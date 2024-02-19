@@ -27,12 +27,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    LoggerOperator::LoggerOperator( const Char * _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _file, uint32_t _line, uint32_t _flag )
+    LoggerOperator::LoggerOperator( const Char * _category, ELoggerLevel _level, uint32_t _filter, uint32_t _color, const Char * _function, uint32_t _line, uint32_t _flag )
         : m_category( _category )
         , m_level( _level )
         , m_filter( _filter )
         , m_color( _color )
-        , m_file( _file )
+        , m_function( _function )
         , m_line( _line )
         , m_flag( _flag )
     {
@@ -59,11 +59,7 @@ namespace Mengine
         Char str[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
         int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_LOGGER_MAX_MESSAGE - 2, _format, _args );
 
-        if( size_vsnprintf >= 0 )
-        {
-            this->logMessage( m_color, str, size_vsnprintf );
-        }
-        else
+        if( size_vsnprintf < 0 )
         {
             int32_t size_snprintf = MENGINE_SNPRINTF( str, MENGINE_LOGGER_MAX_MESSAGE - 2, "invalid message format: %s"
                 , _format
@@ -74,13 +70,20 @@ namespace Mengine
                 return;
             }
 
-            this->logMessage( LCOLOR_RED, str, size_vsnprintf );
+            this->logMessage( LCOLOR_RED, str );
 
             return;
         }
+
+        if( size_vsnprintf == 0 )
+        {
+            return;
+        }
+
+        this->logMessage( m_color, str );
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerOperator::logMessage( uint32_t _color, const Char * _data, size_t _size ) const
+    void LoggerOperator::logMessage( uint32_t _color, const Char * _data ) const
     {
         LoggerMessage msg;
         msg.timestamp = Helper::getLocalTimestamp();
@@ -90,10 +93,9 @@ namespace Mengine
         msg.flag = m_flag;
         msg.filter = m_filter;
         msg.color = _color;
-        msg.file = m_file;
+        msg.function = m_function;
         msg.line = m_line;
         msg.data = _data;
-        msg.size = _size;
 
         LOGGER_SERVICE()
             ->logMessage( msg );

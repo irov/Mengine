@@ -802,7 +802,6 @@ Core
 
     LoggerLevel.h
     LoggerMessage.h
-    LoggerMessage.cpp
     
     KeyCode.h
     MouseButtonCode.h

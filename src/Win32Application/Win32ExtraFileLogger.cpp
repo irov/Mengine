@@ -52,35 +52,38 @@ namespace Mengine
         m_hLogFile = INVALID_HANDLE_VALUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ExtraFileLogger::_log( const LoggerMessage & _message )
+    void Win32ExtraFileLogger::_log( const LoggerRecordInterfacePtr & _record )
     {
-        if( _message.flag & LFLAG_FUNCTIONSTAMP )
+        LoggerMessage message;
+        _record->getMessage( &message );
+
+        if( message.flag & LFLAG_FUNCTIONSTAMP )
         {
             Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
-            Helper::makeLoggerFunctionStamp( _message.file, _message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+            Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH);
             this->writeMessage_( functionstamp );
             this->writeMessage_( " " );
         }
 
-        if( _message.flag & LFLAG_TIMESTAMP )
+        if( message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
-            Helper::makeLoggerShortDate( _message.timestamp, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
+            Helper::makeLoggerShortDate( message.timestamp, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
             this->writeMessage_( timestamp );
             this->writeMessage_( " " );
         }
 
-        if( _message.flag & LFLAG_THREADSTAMP )
+        if( message.flag & LFLAG_THREADSTAMP )
         {
             Char threadstamp[256] = {'\0'};
-            Helper::makeLoggerThreadStamp( _message.threadName, "|%s|", threadstamp, 0, 256 );
+            Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
             this->writeMessage_( threadstamp );
             this->writeMessage_( " " );
         }
 
-        if( _message.flag & LFLAG_SYMBOLSTAMP )
+        if( message.flag & LFLAG_SYMBOLSTAMP )
         {
-            ELoggerLevel level = _message.level;
+            ELoggerLevel level = message.level;
 
             Char symbol = Helper::getLoggerLevelSymbol( level );
             Char symbol_str[] = {symbol, '\0'};
@@ -88,24 +91,15 @@ namespace Mengine
             this->writeMessage_( " " );
         }
 
-        if( _message.flag & LFLAG_CATEGORYSTAMP )
+        if( message.flag & LFLAG_CATEGORYSTAMP )
         {
             this->writeMessage_( "[" );
-            this->writeMessage_( _message.category );
+            this->writeMessage_( message.category );
             this->writeMessage_( "]" );
             this->writeMessage_( " " );
         }
 
-        const Char * data = _message.data;
-        size_t size = _message.size;
-
-        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
-        MENGINE_SNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, "%.*s"
-            , (int32_t)size
-            , data 
-        );
-
-        this->writeMessage_( message );
+        this->writeMessage_( message.data );
         this->writeMessage_( "\n" );
     }
     //////////////////////////////////////////////////////////////////////////

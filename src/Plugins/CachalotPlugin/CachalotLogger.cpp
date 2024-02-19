@@ -74,13 +74,10 @@ namespace Mengine
         m_messages.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void CachalotLogger::_log( const LoggerMessage & _message )
+    void CachalotLogger::_log( const LoggerRecordInterfacePtr & _record )
     {
-        LoggerRecord record;
-        Helper::recordLoggerMessage( _message, &record );
-
         m_mutex->lock();
-        m_messages.emplace_back( record );
+        m_messages.emplace_back( _record );
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -148,8 +145,11 @@ namespace Mengine
             return;
         }
 
-        for( const LoggerRecord & record : messages )
+        for( const LoggerRecordInterfacePtr & record : messages )
         {
+            LoggerMessage message;
+            record->getMessage( &message );
+
             js_element_t * jrecord;
             if( js_array_push_object( j, jrecords, &jrecord ) == JS_FAILURE )
             {
@@ -158,7 +158,7 @@ namespace Mengine
 
             js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "user.id" ), JS_MAKE_STRING( session_id.c_str(), session_id.size() ) );
 
-            switch( record.level )
+            switch( message.level )
             {
             case LM_FATAL:
             case LM_ERROR:
@@ -184,8 +184,8 @@ namespace Mengine
                 break;
             }
 
-            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "service" ), record.category );
-            js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "message" ), JS_MAKE_STRING( record.data.data(), record.data.size() ) );
+            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "service" ), message.category );
+            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "message" ), message.data );
 
 #if defined(MENGINE_MASTER_RELEASE)
             js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "build.environment" ), JS_CONST_STRING( "master" ) );
@@ -195,7 +195,7 @@ namespace Mengine
 
             js_object_add_field_boolean( j, jrecord, JS_CONST_STRING( "build.release" ), MENGINE_RELEASE_VALUE( JS_TRUE, JS_FALSE ) );
 
-            js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "timestamp" ), record.timestamp );
+            js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "timestamp" ), message.timestamp );
             js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "live" ), live );
 
             js_object_add_field_string( j, jrecord, JS_CONST_STRING( "build.version" ), build_version );

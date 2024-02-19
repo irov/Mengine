@@ -92,19 +92,22 @@ namespace Mengine
         return m_verboseFilter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoggerBase::validMessage( const LoggerMessage & _message ) const
+    bool LoggerBase::validMessage( const LoggerRecordInterfacePtr & _record ) const
     {
-        if( m_verboseLevel < _message.level )
+        LoggerMessage message;
+        _record->getMessage( &message );
+
+        if( m_verboseLevel < message.level )
         {
             return false;
         }
 
-        if( _message.filter == 0 )
+        if( message.filter == 0 )
         {
             return true;
         }
 
-        if( (m_verboseFilter & _message.filter) != _message.filter )
+        if( (m_verboseFilter & message.filter) != message.filter )
         {
             return false;
         }
@@ -112,11 +115,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerBase::log( const LoggerMessage & _message )
+    void LoggerBase::log( const LoggerRecordInterfacePtr & _record )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
         
-        this->_log( _message );
+        this->_log( _record );
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerBase::flush()

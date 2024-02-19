@@ -35,14 +35,14 @@ namespace Mengine
         uint32_t getVerboseFilter() const override;
 
     public:
-        bool validMessage( const LoggerMessage & _message ) const override;
+        bool validMessage( const LoggerRecordInterfacePtr & _record ) const override;
 
     public:
-        void log( const LoggerMessage & _message ) override final;
+        void log( const LoggerRecordInterfacePtr & _record ) override final;
         void flush() override final;
 
     protected:
-        virtual void _log( const LoggerMessage & _message ) = 0;
+        virtual void _log( const LoggerRecordInterfacePtr & _record ) = 0;
         virtual void _flush();
 
     protected:

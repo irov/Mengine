@@ -33,10 +33,10 @@ namespace Mengine
         void _finalizeLogger() override;
 
     protected:
-        void _log( const LoggerMessage & _message ) override;
+        void _log( const LoggerRecordInterfacePtr & _record ) override;
 
     protected:
-        bool validMessage( const LoggerMessage & _message ) const override;
+        bool validMessage( const LoggerRecordInterfacePtr & _record ) const override;
 
     protected:
         void _flush() override;
@@ -54,7 +54,7 @@ namespace Mengine
 
         UniqueId m_timerId;
 
-        typedef Vector<LoggerRecord> VectorMessages;
+        typedef Vector<LoggerRecordInterfacePtr> VectorMessages;
         VectorMessages m_messages;
     };
     //////////////////////////////////////////////////////////////////////////

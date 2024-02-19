@@ -118,6 +118,6 @@ namespace Mengine
         bool findSchedulerEvent_( UniqueId _id, SchedulerEventDesc ** const _desc );
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Scheduler> SchedulerPtr;
+    typedef IntrusivePtr<Scheduler, SchedulerInterface> SchedulerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

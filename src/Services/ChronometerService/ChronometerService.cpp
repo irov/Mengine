@@ -1,9 +1,14 @@
 #include "ChronometerService.h"
 
 #include "Kernel/EnumeratorHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionFactory.h"
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/FactoryPool.h"
+
+#include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ChronometerService, Mengine::ChronometerService );
@@ -12,7 +17,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ChronometerService::ChronometerService()
-        : m_oldTime( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -22,7 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ChronometerService::_initializeService()
     {
-        //Empty
+        m_factoryChronometer = Helper::makeFactoryPool<Chronometer, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -30,71 +34,70 @@ namespace Mengine
     void ChronometerService::_finalizeService()
     {
 #if defined(MENGINE_DOCUMENT_ENABLE)
-        for( const ChronometerDesc & desc : m_chronometers )
+        for( const ChronometerPtr & chronometer : m_chronometers )
         {
             LOGGER_ASSERTION( "Not remove chronometer '%s'"
-                , MENGINE_DOCUMENT_STR( desc.doc )
+                , MENGINE_DOCUMENT_STR( chronometer->getDocument() )
             );
         }
 #endif
 
         m_chronometers.clear();
+        m_chronometersProcess.clear();
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryChronometer );
+        m_factoryChronometer = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId ChronometerService::addChronometer( const LambdaChronometer & _lambda, const DocumentInterfacePtr & _doc )
+    ChronometerInterfacePtr ChronometerService::addChronometer( const LambdaChronometer & _lambda, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId new_id = Helper::generateUniqueIdentity();
+        MENGINE_ASSERTION_MEMORY_PANIC( _lambda );
 
-        ChronometerDesc desc;
-        desc.id = new_id;
-        desc.lambda = _lambda;
+        ChronometerPtr chronometer = m_factoryChronometer->createObject( _doc );
 
-#if defined(MENGINE_DOCUMENT_ENABLE)
-        desc.doc = _doc;
-#endif
+        chronometer->initialize( _lambda );
 
-        m_chronometers.emplace_back( desc );
+        m_chronometers.emplace_back( chronometer );
 
-        return new_id;
+        return chronometer;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ChronometerService::removeChronometer( UniqueId _id )
+    bool ChronometerService::removeChronometer( const ChronometerInterfacePtr & _chronometer )
     {
-        for( ChronometerDesc & desc : m_chronometers )
+        VectorChronometers::iterator it_found = Algorithm::find( m_chronometers.begin(), m_chronometers.end(), _chronometer );
+
+        if( it_found == m_chronometers.end() )
         {
-            if( desc.id != _id )
-            {
-                continue;
-            }
+            LOGGER_ERROR( "not found remove chronometer" );
 
-            desc = m_chronometers.back();
-            m_chronometers.pop_back();
-
-            return true;
+            return false;
         }
+
+        *it_found = m_chronometers.back();
+        m_chronometers.pop_back();
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void ChronometerService::update()
     {
+        if( m_chronometers.empty() == true )
+        {
+            return;
+        }
+
         Timestamp currentTime = Helper::getSystemTimestamp();
 
-        if( m_oldTime == 0 || currentTime - m_oldTime >= 1000 )
+        m_chronometersProcess = m_chronometers;
+
+        for( const ChronometerPtr & chronometer : m_chronometersProcess )
         {
-            m_chronometersProcess = m_chronometers;
-
-            for( const ChronometerDesc & desc : m_chronometersProcess )
-            {
-                desc.lambda( desc.id, currentTime );
-            }
-
-            m_chronometersProcess.clear();
-
-            m_oldTime = currentTime - currentTime % 1000;
+            chronometer->update( currentTime );
         }
+
+        m_chronometersProcess.clear();
     }
     //////////////////////////////////////////////////////////////////////////
 }

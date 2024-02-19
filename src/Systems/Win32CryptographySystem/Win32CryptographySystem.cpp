@@ -49,6 +49,8 @@ namespace Mengine
                 , Helper::Win32GetLastErrorMessage()
             );
         }
+
+        m_hCryptProv = NULL;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32CryptographySystem::generateRandomSeed( uint64_t * const _seed ) const

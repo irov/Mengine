@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Interface/ChronometerServiceInterface.h"
+#include "Interface/FactoryInterface.h"
+
+#include "Chronometer.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
-
-#include "Config/Timestamp.h"
 
 namespace Mengine
 {
@@ -24,24 +25,14 @@ namespace Mengine
         void update() override;
 
     public:
-        UniqueId addChronometer( const LambdaChronometer & _lambda, const DocumentInterfacePtr & _doc ) override;
-        bool removeChronometer( UniqueId _id ) override;
+        ChronometerInterfacePtr addChronometer( const LambdaChronometer & _lambda, const DocumentInterfacePtr & _doc ) override;
+        bool removeChronometer( const ChronometerInterfacePtr & _chronometer ) override;
 
     protected:
-        Timestamp m_oldTime;
+        FactoryInterfacePtr m_factoryChronometer;
 
-        struct ChronometerDesc
-        {
-            UniqueId id;
-            LambdaChronometer lambda;
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-            DocumentInterfacePtr doc;
-#endif
-        };
-
-        typedef Vector<ChronometerDesc> VectorChronometerDesc;
-        VectorChronometerDesc m_chronometersProcess;
-        VectorChronometerDesc m_chronometers;
+        typedef Vector<ChronometerPtr> VectorChronometers;
+        VectorChronometers m_chronometers;
+        VectorChronometers m_chronometersProcess;
     };
 };

@@ -77,6 +77,7 @@ src
     Utf8.h
     Utf16.h
     Utf32.h
+    Stringz.h
     Typedef.h
     Typeinfo.h
     Atomic.h

@@ -63,28 +63,27 @@ namespace Mengine
     void DevToDebugLogger::_finalizeLogger()
     {
         Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugLogger" ) );
-
+        
         m_mutex = nullptr;
+
+        m_messages.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugLogger::_log( const LoggerMessage & _message )
+    void DevToDebugLogger::_log( const LoggerRecordInterfacePtr & _record )
     {
-        LoggerRecord record;
-        Helper::recordLoggerMessage( _message, &record );
-
         m_mutex->lock();
 
         if( m_workerURL.empty() == false )
         {
-            m_messages.emplace_back( record );
+            m_messages.emplace_back( _record );
         }
 
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DevToDebugLogger::validMessage( const LoggerMessage & _message ) const
+    bool DevToDebugLogger::validMessage( const LoggerRecordInterfacePtr & _record ) const
     {
-        MENGINE_UNUSED( _message );
+        MENGINE_UNUSED( _record );
 
         //Empty
 
@@ -119,23 +118,26 @@ namespace Mengine
 
         jpp::array jlog = jpp::make_array();
 
-        for( const LoggerRecord & record : messages )
+        for( const LoggerRecordInterfacePtr & record : messages )
         {
+            LoggerMessage message;
+            record->getMessage( &message );
+
             jpp::object j_desc = jpp::make_object();
 
             Char loggerTimestamp[1024] = {'\0'};
-            Helper::makeLoggerShortDate( record.timestamp, "[%02u:%02u:%02u:%04u]", loggerTimestamp, 0, 1024 );
+            Helper::makeLoggerShortDate( message.timestamp, "[%02u:%02u:%02u:%04u]", loggerTimestamp, 0, 1024 );
 
             j_desc.set( "ts", loggerTimestamp );
-            j_desc.set( "tag", record.category );
-            j_desc.set( "file", record.file );
-            j_desc.set( "line", record.line );
-            j_desc.set( "thread", record.threadName );
-            j_desc.set( "data", record.data );
+            j_desc.set( "tag", message.category );
+            j_desc.set( "file", message.function );
+            j_desc.set( "line", message.line );
+            j_desc.set( "thread", message.threadName );
+            j_desc.set( "data", message.data );
 
             Char level = '-';
 
-            switch( record.level )
+            switch( message.level )
             {
             case LM_SILENT:
                 return;

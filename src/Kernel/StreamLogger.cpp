@@ -46,52 +46,57 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void StreamLogger::_log( const LoggerMessage & _message )
+    void StreamLogger::_log( const LoggerRecordInterfacePtr & _record )
     {
-        if( _message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
+        LoggerMessage message;
+        _record->getMessage( &message );
+
+        if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
             Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
-            size_t functionstampSize = Helper::makeLoggerFunctionStamp( _message.file, _message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+            size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
             m_stream->write( functionstamp, functionstampSize );
             m_stream->write( " ", 1 );
         }
 
-        if( _message.flag & LFLAG_TIMESTAMP )
+        if( message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
-            size_t timestampSize = Helper::makeLoggerShortDate( _message.timestamp, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
+            size_t timestampSize = Helper::makeLoggerShortDate( message.timestamp, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
             m_stream->write( timestamp, timestampSize );
             m_stream->write( " ", 1 );
         }
 
-        if( _message.flag & LFLAG_THREADSTAMP )
+        if( message.flag & LFLAG_THREADSTAMP )
         {
             Char threadstamp[256] = {'\0'};
-            size_t threadstampSize = Helper::makeLoggerThreadStamp( _message.threadName, "|%s|", threadstamp, 0, 256 );
+            size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
             m_stream->write( threadstamp, threadstampSize );
             m_stream->write( " ", 1 );
         }
 
-        if(_message.flag & LFLAG_SYMBOLSTAMP )
+        if(message.flag & LFLAG_SYMBOLSTAMP )
         {
-            ELoggerLevel level = _message.level;
+            ELoggerLevel level = message.level;
 
             Char symbol = Helper::getLoggerLevelSymbol( level );
             m_stream->write( &symbol, 1 );
             m_stream->write( " ", 1 );
         }
 
-        if(_message.flag & LFLAG_CATEGORYSTAMP )
+        if(message.flag & LFLAG_CATEGORYSTAMP )
         {
-            size_t category_size = MENGINE_STRLEN( _message.category );
+            size_t category_size = MENGINE_STRLEN( message.category );
 
             m_stream->write( "[", 1 );
-            m_stream->write( _message.category, category_size );
+            m_stream->write( message.category, category_size );
             m_stream->write( "]", 1 );
             m_stream->write( " ", 1 );
         }
 
-        m_stream->write( _message.data, _message.size );
+        size_t data_size = MENGINE_STRLEN( message.data );
+
+        m_stream->write( message.data, data_size );
         m_stream->write( "\n", 1 );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -563,6 +563,8 @@ namespace Mengine
             ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getSystemDurationTimestamp( mengine_initialize_timestamp ) )
             ->log();
 
+        NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_COMPLETE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

@@ -5,6 +5,7 @@
 #include "Interface/ThreadSharedMutexInterface.h"
 #include "Interface/ThreadConditionVariableInterface.h"
 #include "Interface/ThreadIdentityInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
@@ -76,8 +77,11 @@ namespace Mengine
         bool hasVerbose( const Char * _category ) const;
 
     protected:
-        void logMessage_( const LoggerMessage & _message );
-        void logHistory_( const LoggerMessage & _message );
+        LoggerRecordInterfacePtr makeLoggerRecord( const LoggerMessage & _message, const DocumentInterfacePtr & _doc );
+
+    protected:
+        void logMessage_( const LoggerRecordInterfacePtr & _record );
+        void logHistory_( const LoggerRecordInterfacePtr & _record );
 
     protected:
         void notifyConfigsLoad_();
@@ -87,6 +91,8 @@ namespace Mengine
         void processMessages_( const ThreadIdentityRunnerInterfacePtr & _runner );
 
     protected:
+        FactoryInterfacePtr m_factoryLoggerRecord;
+
         ELoggerLevel m_verboseLevel;
         uint32_t m_verboseFilter;
         bool m_silent;
@@ -98,7 +104,7 @@ namespace Mengine
         typedef Vector<LoggerInterfacePtr> VectorLoggers;
         VectorLoggers m_loggers;
 
-        typedef Vector<LoggerRecord> VectorLoggerRecords;
+        typedef Vector<LoggerRecordInterfacePtr> VectorLoggerRecords;
         VectorLoggerRecords m_messages;
         VectorLoggerRecords m_messagesAux;
 
@@ -116,12 +122,9 @@ namespace Mengine
 
         bool m_historically;
 
-        uint32_t m_historyLimit;
-
         MemoryInterfacePtr m_memoryOldLog;
         ContentInterfacePtr m_currentContentLog;
 
-        typedef Vector<LoggerRecord> VectorHistoryRecords;
-        VectorHistoryRecords m_history;
+        VectorLoggerRecords m_history;
     };
 }

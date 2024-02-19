@@ -64,10 +64,18 @@ namespace Mengine
     *_plugin = plugin;\
     return true;}}
 //////////////////////////////////////////////////////////////////////////
+#ifndef PLUGIN_FACTORY_CREATE_FUNCTION_NAME
+#define PLUGIN_FACTORY_CREATE_FUNCTION_NAME dllCreatePlugin
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifndef PLUGIN_FACTORY_DESTROY_FUNCTION_NAME
+#define PLUGIN_FACTORY_DESTROY_FUNCTION_NAME dllDestroyPlugin
+#endif
+//////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FACTORY_DYNAMIC(Name, Type)\
     extern "C"\
     {\
-        MENGINE_DLL_EXPORT bool dllCreatePlugin( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, Mengine::UniqueId _uid )\
+        MENGINE_DLL_EXPORT bool PLUGIN_FACTORY_CREATE_FUNCTION_NAME( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, Mengine::UniqueId _uid )\
         {\
             return PLUGIN_FUNCTION(Name)( _serviceProvider, _plugin, _uid, true );\
         }\

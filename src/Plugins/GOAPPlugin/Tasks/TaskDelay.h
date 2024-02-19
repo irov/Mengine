@@ -3,8 +3,7 @@
 #include "GOAP/TaskInterface.h"
 
 #include "Interface/DocumentInterface.h"
-
-#include "Kernel/Scheduler.h"
+#include "Interface/SchedulerInterface.h"
 
 namespace Mengine
 {

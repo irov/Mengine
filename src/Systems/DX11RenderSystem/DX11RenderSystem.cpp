@@ -6,7 +6,7 @@
 #include "Interface/OptionsServiceInterface.h"
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-#   include "Interface/Win32PlatformExtensionInterface.h"
+#   include "Interface/Win32PlatformServiceExtensionInterface.h"
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
 #   include "Interface/SDLPlatformServiceExtensionInterface.h"
 #endif
@@ -863,6 +863,18 @@ namespace Mengine
     uint32_t DX11RenderSystem::getMaxCombinedTextureImageUnits() const
     {
         return (uint32_t)D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX11RenderSystem::onDeviceLostPrepare()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX11RenderSystem::onDeviceLostRestore()
+    {
+        //Empty
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::onWindowChangeFullscreenPrepare( bool _fullscreen )

@@ -20,7 +20,7 @@ namespace Mengine
         void _finalizeLogger() override;
 
     public:
-        void _log( const LoggerMessage & _message ) override;
+        void _log( const LoggerRecordInterfacePtr & _record ) override;
 
     protected:
         void process();
@@ -33,7 +33,7 @@ namespace Mengine
 
         ThreadMutexInterfacePtr m_mutex;
 
-        typedef Vector<LoggerRecord> VectorMessages;
+        typedef Vector<LoggerRecordInterfacePtr> VectorMessages;
         VectorMessages m_messages;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -2,6 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/DocumentInterface.h"
+#include "Interface/ChronometerInterface.h"
 
 #include "Config/Lambda.h"
 #include "Config/UniqueId.h"
@@ -19,10 +20,8 @@ namespace Mengine
         virtual void update() = 0;
 
     public:
-        typedef Lambda<void( UniqueId _id, Timestamp _milliseconds )> LambdaChronometer;
-
-        virtual UniqueId addChronometer( const LambdaChronometer & _lambda, const DocumentInterfacePtr & _doc ) = 0;
-        virtual bool removeChronometer( UniqueId _id ) = 0;
+        virtual ChronometerInterfacePtr addChronometer( const LambdaChronometer & _lambda, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool removeChronometer( const ChronometerInterfacePtr & _chronometer ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

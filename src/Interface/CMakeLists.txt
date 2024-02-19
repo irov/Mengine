@@ -48,8 +48,6 @@ Common
     InputStreamInterface.h
     OutputStreamInterface.h
     MappedInterface.h
-    LoggerInterface.h
-    LoggerServiceInterface.h
     ApplicationInterface.h
     InputMousePositionProviderInterface.h
     InputServiceInterface.h
@@ -115,6 +113,7 @@ Common
     ServantInterface.h
     EnumeratorServiceInterface.h
     SceneServiceInterface.h
+    ChronometerInterface.h
     ChronometerServiceInterface.h
     ArgumentsInterface.h
     FrameworkInterface.h
@@ -167,6 +166,13 @@ Profiler
     ProfilerInterface.h
     ProfilerDescriptionInterface.h
     ProfilerSystemInterface.h
+)
+
+ADD_FILTER(
+Logger
+    LoggerInterface.h
+    LoggerRecordInterface.h
+    LoggerServiceInterface.h
 )
 
 ADD_FILTER(

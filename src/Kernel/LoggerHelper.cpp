@@ -74,14 +74,14 @@ namespace Mengine
             return (size_t)size;
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t makeLoggerFunctionStamp( const Char * _file, uint32_t _line, const Char * _format, Char * const _buffer, size_t _offset, size_t _capacity )
+        size_t makeLoggerFunctionStamp( const Char * _function, uint32_t _line, const Char * _format, Char * const _buffer, size_t _offset, size_t _capacity )
         {
-            if( _file == nullptr )
+            if( _function == nullptr )
             {
                 return 0;
             }
 
-            String str_function = _file;
+            String str_function( _function );
 
             StringRegex regex_lambda_remove( "::<lambda_.*>::operator \\(\\)" );
 

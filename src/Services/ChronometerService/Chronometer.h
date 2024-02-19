@@ -23,6 +23,9 @@ namespace Mengine
     public:
         bool pause() override;
         bool resume() override;
+
+        bool isPause() const override;
+
         Timestamp getTime() const override;
 
     protected:

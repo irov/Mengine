@@ -17,6 +17,8 @@ namespace Mengine
         virtual bool pause() = 0;
         virtual bool resume() = 0;
 
+        virtual bool isPause() const = 0;
+
     public:
         virtual Timestamp getTime() const = 0;
     };

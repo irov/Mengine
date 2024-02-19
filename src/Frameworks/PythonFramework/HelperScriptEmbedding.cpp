@@ -4346,6 +4346,13 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "getJoystickAxis", helperScriptMethod, &HelperScriptMethod::s_getJoystickAxis );
 
+        pybind::interface_<ChronometerInterface, pybind::bases<Mixin>>( _kernel, "ChronometerInterface", false )
+            .def( "pause", &ChronometerInterface::pause )
+            .def( "resume", &ChronometerInterface::resume )
+            .def( "isPause", &ChronometerInterface::isPause )
+            .def( "getTime", &ChronometerInterface::getTime )
+            ;
+
         pybind::def_functor_args( _kernel, "addChronometer", helperScriptMethod, &HelperScriptMethod::s_addChronometer );
         pybind::def_functor( _kernel, "removeChronometer", helperScriptMethod, &HelperScriptMethod::s_removeChronometer );
 

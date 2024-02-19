@@ -67,6 +67,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Chronometer::isPause() const
+    {
+        return m_timePauseBegin != 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
     Timestamp Chronometer::getTime() const
     {
         if( m_timePauseBegin != 0 )

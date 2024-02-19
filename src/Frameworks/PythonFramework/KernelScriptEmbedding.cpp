@@ -2633,7 +2633,7 @@ namespace Mengine
             .def_deprecated( "getTiming", &SchedulerInterface::getTime, "use getTime")
             ;
 
-        pybind::interface_<ChronometerInterface, pybind::bases<Mixin>>( _kernel, "ChronometerInterface", false )
+        pybind::interface_<ChronometerInterface, pybind::bases<Mixin>>( _kernel, "ChronometerInterface", true )
             .def( "pause", &ChronometerInterface::pause )
             .def( "resume", &ChronometerInterface::resume )
             .def( "isPause", &ChronometerInterface::isPause )

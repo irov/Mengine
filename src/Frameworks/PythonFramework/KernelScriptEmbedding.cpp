@@ -16,6 +16,7 @@
 #include "Interface/AnimationInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
+#include "Interface/ChronometerInterface.h"
 
 #include "Plugins/MoviePlugin/ResourceMovie2.h"
 
@@ -2630,6 +2631,13 @@ namespace Mengine
             .def( "getSpeedFactor", &SchedulerInterface::getSpeedFactor )
             .def( "getTime", &SchedulerInterface::getTime )
             .def_deprecated( "getTiming", &SchedulerInterface::getTime, "use getTime")
+            ;
+
+        pybind::interface_<ChronometerInterface, pybind::bases<Mixin>>( _kernel, "ChronometerInterface", false )
+            .def( "pause", &ChronometerInterface::pause )
+            .def( "resume", &ChronometerInterface::resume )
+            .def( "isPause", &ChronometerInterface::isPause )
+            .def( "getTime", &ChronometerInterface::getTime )
             ;
 
         m_implement = scriptMethod;

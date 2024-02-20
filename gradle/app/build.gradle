@@ -376,6 +376,16 @@ if (MENGINE_APP_LIBRARY_MENGINE == true) {
     }
 }
 
+Utils.logAvailable("MENGINE_APP_PLUGIN_SPLASHSCREEN", MENGINE_APP_PLUGIN_SPLASHSCREEN)
+
+if (MENGINE_APP_PLUGIN_SPLASHSCREEN == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.SplashScreen.MengineSplashScreenPlugin'
+
+    dependencies {
+        implementation project(':plugins:SplashScreen')
+    }
+}
+
 Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_SERVICE", MENGINE_APP_PLUGIN_GOOGLE_SERVICE)
 
 if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == true) {
@@ -563,16 +573,6 @@ if (MENGINE_APP_PLUGIN_ADJUST == true) {
     }
 }
 
-Utils.logAvailable("MENGINE_APP_PLUGIN_SPLASHSCREEN", MENGINE_APP_PLUGIN_SPLASHSCREEN)
-
-if (MENGINE_APP_PLUGIN_SPLASHSCREEN == true) {
-    android.ext.plugins += 'org.Mengine.Plugin.SplashScreen.MengineSplashScreenPlugin'
-
-    dependencies {
-        implementation project(':plugins:SplashScreen')
-    }
-}
-
 Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL)
 
 if (MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL == true) {
@@ -673,7 +673,6 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_APPLOVIN", MENGINE_APP_PLUGIN_APPLOVIN)
 
 if (MENGINE_APP_PLUGIN_APPLOVIN == true) {
     android.ext.plugins += 'org.Mengine.Plugin.AppLovin.MengineAppLovinPlugin'
-    android.ext.activities += 'org.Mengine.Plugin.AppLovin.MengineAppLovinProxyActivity'
 
     dependencies {
         implementation project(':plugins:AppLovin')

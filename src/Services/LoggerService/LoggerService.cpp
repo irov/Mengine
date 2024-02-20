@@ -59,6 +59,7 @@ namespace Mengine
         , m_silent( false )
         , m_silentMessageRelease( false )
         , m_historically( true )
+        , m_threadly( false )
     {
         m_staticsticLevel[LM_SILENT] = STATISTIC_LOGGER_MESSAGE_SILENT;
         m_staticsticLevel[LM_FATAL] = STATISTIC_LOGGER_MESSAGE_FATAL;
@@ -453,12 +454,27 @@ namespace Mengine
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexMessage );
 
-        if( m_messages.size() >= MENGINE_LOGGER_MESSAGE_BUFFER_MAX )
+        if( m_threadly == true )
         {
-            return;
-        }
+            if( m_messages.size() >= MENGINE_LOGGER_MESSAGE_BUFFER_MAX )
+            {
+                return;
+            }
 
-        m_messages.emplace_back( _record );
+            m_messages.emplace_back( _record );
+        }
+        else
+        {
+            for( const LoggerInterfacePtr & logger : m_loggers )
+            {
+                if( logger->validMessage( _record ) == false )
+                {
+                    continue;
+                }
+
+                logger->log( _record );
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::logHistory_( const LoggerRecordInterfacePtr & _record )
@@ -486,6 +502,10 @@ namespace Mengine
         this->setHistorically( false );
 
         this->clearHistory();
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexMessageBlock );
+
+        m_threadly = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::processMessages_( const ThreadIdentityRunnerInterfacePtr & _runner )

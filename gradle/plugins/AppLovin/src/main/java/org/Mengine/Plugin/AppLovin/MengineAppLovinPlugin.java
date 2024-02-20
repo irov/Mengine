@@ -24,14 +24,12 @@ import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MenginePluginProxyActivity;
-import org.Mengine.Base.MenginePluginProxyActivityListener;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginActivityListener, MenginePluginEngineListener, MenginePluginProxyActivityListener {
+public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginActivityListener, MenginePluginEngineListener {
     public static final String PLUGIN_NAME = "MengineAppLovin";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -63,7 +61,11 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onProxyActivityCreate(MenginePluginProxyActivity activity, Bundle savedInstanceState, Runnable complete) throws MenginePluginInvalidInitializeException {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+        m_banners = new HashMap<>();
+        m_interstitials = new HashMap<>();
+        m_rewardeds = new HashMap<>();
+
         String MengineAppLovinPlugin_IsAgeRestrictedUser = this.getMetaDataString(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER);
 
         this.logMessage("%s: %s"
@@ -183,18 +185,15 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
                     );
                 }
 
-                MengineAppLovinPlugin.this.m_appLovinSdk = appLovinSdk;
+                if (MengineAppLovinPlugin.this.hasOption("applovin.show_mediation_debugger") == true) {
+                    MengineAppLovinPlugin.this.showMediationDebugger();
+                }
 
-                complete.run();
+                MengineAppLovinPlugin.this.activateSemaphore("AppLovinSdkInitialized");
             }
         });
-    }
 
-    @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        m_banners = new HashMap<>();
-        m_interstitials = new HashMap<>();
-        m_rewardeds = new HashMap<>();
+        m_appLovinSdk = appLovinSdk;
 
         MengineAppLovinMediationInterface mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
 
@@ -211,12 +210,6 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
             m_nonetBanners = nonetBanners;
         }
-
-        if (this.hasOption("applovin.show_mediation_debugger") == true) {
-            this.showMediationDebugger();
-        }
-
-        this.activateSemaphore("AppLovinSdkInitialized");
     }
 
     @Override

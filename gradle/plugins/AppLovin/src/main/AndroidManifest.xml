@@ -8,10 +8,5 @@
         <meta-data android:name="mengine.applovin.enable_privacy_policy_flow" android:value="@bool/mengine_applovin_enable_privacy_policy_flow" />
 
         <meta-data android:name="applovin.sdk.key" android:value="@string/mengine_applovin_sdk_key" />
-
-        <activity
-            android:name="org.Mengine.Plugin.AppLovin.MengineAppLovinProxyActivity"
-            android:exported="true">
-        </activity>
     </application>
 </manifest>

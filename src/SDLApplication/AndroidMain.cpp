@@ -4,9 +4,7 @@
 
 #include "SDLApplication.h"
 
-#include "Config/StdLib.h"
-
-Mengine::SDLApplication * MENGINE_application;
+Mengine::SDLApplication * MENGINE_application = nullptr;
 
 int SDL_main( int argc, char * argv[] )
 {
@@ -48,6 +46,7 @@ int SDL_loop(void)
         MENGINE_application->finalize();
 
         delete MENGINE_application;
+        MENGINE_application = nullptr;
 
         return EXIT_FAILURE;
     }

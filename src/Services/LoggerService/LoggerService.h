@@ -121,6 +121,7 @@ namespace Mengine
         uint32_t m_staticsticLevel[LOGGER_LEVEL_COUNT];
 
         bool m_historically;
+        bool m_threadly;
 
         MemoryInterfacePtr m_memoryOldLog;
         ContentInterfacePtr m_currentContentLog;

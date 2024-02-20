@@ -7,23 +7,5 @@
         <meta-data android:name="mengine.secure.allow_android_id" android:value="@bool/mengine_secure_allow_android_id"/>
         <meta-data android:name="mengine.privacy.privacy_policy_url" android:value="@string/privacy_policy_url" />
         <meta-data android:name="mengine.privacy.terms_of_service_url" android:value="@string/terms_of_service_url" />
-
-        <activity
-            android:name="org.Mengine.Base.MengineActivity"
-            android:theme="@style/AppTheme"
-            android:clearTaskOnLaunch="true"
-            android:exported="true"
-            android:launchMode="singleTop"
-            android:keepScreenOn="true"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout"
-            android:screenOrientation="@integer/app_screen_orientation">
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-            </intent-filter>
-        </activity>
     </application>
 </manifest>

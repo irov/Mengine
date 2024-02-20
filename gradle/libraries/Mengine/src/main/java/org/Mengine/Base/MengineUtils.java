@@ -539,11 +539,11 @@ public class MengineUtils {
 
             return document;
         } catch (ParserConfigurationException e) {
-            MengineLog.logError("[Banner] parseDocument catch ParserConfigurationException: %s", e.getMessage());
+            MengineLog.logError("parseDocument catch ParserConfigurationException: %s", e.getMessage());
         } catch (SAXException e) {
-            MengineLog.logError("[Banner] parseDocument catch SAXException: %s", e.getMessage());
+            MengineLog.logError("parseDocument catch SAXException: %s", e.getMessage());
         } catch (IOException e) {
-            MengineLog.logError("[Banner] parseDocument catch IOException: %s", e.getMessage());
+            MengineLog.logError("parseDocument catch IOException: %s", e.getMessage());
         }
 
         return null;
@@ -566,30 +566,6 @@ public class MengineUtils {
         }
 
         return true;
-    }
-
-    public static void startChainActivity(Activity activity, String className, ArrayList<String> activities) throws MengineChainActivityNotFoundException {
-        Class<?> intentClazz = MengineUtils.getClazz(TAG, className, true);
-
-        if (intentClazz == null) {
-            throw new MengineChainActivityNotFoundException(className, "not found chain activity class");
-        }
-
-        Intent intent = new Intent(activity, intentClazz);
-        intent.putStringArrayListExtra("MENGINE_NEXT_ACTIVITIES", activities);
-        activity.startActivity(intent);
-        activity.finish();
-    }
-
-    public static void nextChainActivity(Activity activity) throws MengineChainActivityNotFoundException {
-        Intent intent = activity.getIntent();
-
-        ArrayList<String> activities = intent.getStringArrayListExtra("MENGINE_NEXT_ACTIVITIES");
-
-        String nextClassName = activities.get(0);
-        activities.remove(0);
-
-        MengineUtils.startChainActivity(activity, nextClassName, activities);
     }
 
     public static void showToast(Context context, String format, Object ... args) {

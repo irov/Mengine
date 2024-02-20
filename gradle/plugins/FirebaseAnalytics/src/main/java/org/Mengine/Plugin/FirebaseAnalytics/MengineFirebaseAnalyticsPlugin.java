@@ -164,8 +164,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
             return "REWARDED_INTERSTITIAL";
         } else if (adType == MengineAdFormat.ADFORMAT_NATIVE) {
             return "NATIVE";
-        } else if (adType == MengineAdFormat.ADFORMAT_CROSS_PROMO) {
-            return "CROSS_PROMO";
         }
 
         return "UNKNOWN";

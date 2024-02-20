@@ -469,8 +469,6 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             return MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL;
         } else if (format == MaxAdFormat.NATIVE) {
             return MengineAdFormat.ADFORMAT_NATIVE;
-        } else if (format == MaxAdFormat.CROSS_PROMO) {
-            return MengineAdFormat.ADFORMAT_CROSS_PROMO;
         }
 
         return MengineAdFormat.ADFORMAT_UNKNOWN;

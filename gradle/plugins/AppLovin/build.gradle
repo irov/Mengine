@@ -93,18 +93,18 @@ android {
 }
 
 dependencies {
-    implementation 'com.applovin:applovin-sdk:12.1.0'
+    implementation 'com.applovin:applovin-sdk:12.2.0'
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW) {
         implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
-        implementation 'com.applovin.mediation:amazon-tam-adapter:9.9.0.0'
+        implementation 'com.applovin.mediation:amazon-tam-adapter:9.9.2.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE == true) {
-        implementation 'com.applovin.mediation:bidmachine-adapter:2.4.2.0'
+        implementation 'com.applovin.mediation:bidmachine-adapter:2.5.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CHARTBOOST == true) {
@@ -112,7 +112,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_DTEXCHANGE == true) {
-        implementation 'com.applovin.mediation:fyber-adapter:8.2.5.0'
+        implementation 'com.applovin.mediation:fyber-adapter:8.2.6.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_GOOGLEADMANAGER == true) {
@@ -128,12 +128,12 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_INMOBI == true) {
-        implementation 'com.applovin.mediation:inmobi-adapter:10.6.3.1'
+        implementation 'com.applovin.mediation:inmobi-adapter:10.6.6.0'
         implementation 'com.squareup.picasso:picasso:2.71828'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE == true) {
-        implementation 'com.applovin.mediation:ironsource-adapter:7.6.0.0.0'
+        implementation 'com.applovin.mediation:ironsource-adapter:7.7.0.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LIFTOFF == true) {
@@ -141,7 +141,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LINE == true) {
-        implementation 'com.applovin.mediation:line-adapter:2024.1.12.0'
+        implementation 'com.applovin.mediation:line-adapter:2024.1.14.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MAIO == true) {
@@ -169,7 +169,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY == true) {
-        implementation 'com.applovin.mediation:ogury-presage-adapter:5.6.2.0'
+        implementation 'com.applovin.mediation:ogury-presage-adapter:5.6.2.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE == true) {

@@ -10,7 +10,7 @@ namespace Mengine
         : m_timeBegin( 0 )
         , m_timePauseBegin( 0 )
         , m_timePauseCollect( 0 )
-        , m_oldTime( 0 )
+        , m_timeBase( ~0ULL )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -34,11 +34,11 @@ namespace Mengine
 
         Timestamp chronometerTime = _currentTime - m_timeBegin - m_timePauseCollect;
 
-        if( m_oldTime == 0 || chronometerTime - m_oldTime >= 1000 )
+        if( m_timeBase == ~0ULL || chronometerTime - m_timeBase >= 1000 )
         {
             m_lambda( chronometerTime );
 
-            m_oldTime = chronometerTime - chronometerTime % 1000;
+            m_timeBase = chronometerTime - chronometerTime % 1000;
         }
     }
     //////////////////////////////////////////////////////////////////////////

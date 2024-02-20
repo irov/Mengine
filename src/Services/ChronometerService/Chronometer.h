@@ -35,7 +35,7 @@ namespace Mengine
         Timestamp m_timePauseBegin;
         Timestamp m_timePauseCollect;
 
-        Timestamp m_oldTime;
+        Timestamp m_timeBase;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Chronometer, ChronometerInterface> ChronometerPtr;

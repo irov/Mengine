@@ -155,7 +155,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         String sessionId = application.getSessionId();
         appLovinSdk.setUserIdentifier(sessionId);
 
-        appLovinSdk.initializeSdk(new AppLovinSdk.SdkInitializationListener() {
+        appLovinSdk.initializeSdk(activity, new AppLovinSdk.SdkInitializationListener() {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
                 AppLovinCmpService cmpService = appLovinSdk.getCmpService();

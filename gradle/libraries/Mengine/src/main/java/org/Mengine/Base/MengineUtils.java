@@ -612,4 +612,12 @@ public class MengineUtils {
             }, format, args);
         }, 0);
     }
+
+    public static void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            MengineLog.logWarning(TAG, "sleep %d catch InterruptedException: %s", millis, e.getMessage());
+        }
+    }
 }

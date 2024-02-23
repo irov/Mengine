@@ -278,7 +278,7 @@ namespace Mengine
 
         this->addGlobalModule( "Mengine", m_moduleMengine );
 
-        kernel->set_currentmodule( m_moduleMengine );
+        kernel->set_current_module( m_moduleMengine );
 
         uint32_t python_version = kernel->get_python_version();
         this->addGlobalModuleT( "_PYTHON_VERSION", python_version );

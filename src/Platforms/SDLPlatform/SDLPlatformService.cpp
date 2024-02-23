@@ -3347,6 +3347,9 @@ namespace Mengine
 
         m_sdlWindow = window;
 
+        //ToDo https://github.com/libsdl-org/SDL/issues/9068
+        SDL_StopTextInput();
+
         LOGGER_INFO( "platform", "SDL_HINT_RENDER_DRIVER: %s", SDL_GetHint( SDL_HINT_RENDER_DRIVER ) );
         LOGGER_INFO( "platform", "SDL_HINT_RENDER_SCALE_QUALITY: %s", SDL_GetHint( SDL_HINT_RENDER_SCALE_QUALITY ) );
         LOGGER_INFO( "platform", "SDL_HINT_ORIENTATIONS: %s", SDL_GetHint( SDL_HINT_ORIENTATIONS ) );

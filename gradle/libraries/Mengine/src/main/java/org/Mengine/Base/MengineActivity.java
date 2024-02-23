@@ -831,7 +831,9 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("python.semaphore", name);
 
-        AnroidEnvironmentService_activateSemaphore(name);
+        MengineUtils.performOnMainThread(() -> {
+            AnroidEnvironmentService_activateSemaphore(name);
+        });
     }
 
     public void deactivateSemaphore(String name) {
@@ -843,7 +845,9 @@ public class MengineActivity extends SDLActivity {
             , name
         );
 
-        AnroidEnvironmentService_deactivateSemaphore(name);
+        MengineUtils.performOnMainThread(() -> {
+            AnroidEnvironmentService_deactivateSemaphore(name);
+        });
     }
 
     public void waitSemaphore(String name, MengineFunctorVoid cb) {
@@ -855,7 +859,9 @@ public class MengineActivity extends SDLActivity {
             , name
         );
 
-        AnroidEnvironmentService_waitSemaphore(name, cb);
+        MengineUtils.performOnMainThread(() -> {
+            AnroidEnvironmentService_waitSemaphore(name, cb);
+        });
     }
 
     /***********************************************************************************************

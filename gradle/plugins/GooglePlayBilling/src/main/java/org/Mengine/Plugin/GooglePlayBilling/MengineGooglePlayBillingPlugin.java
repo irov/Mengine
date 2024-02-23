@@ -205,9 +205,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
                     return;
                 }
 
-                MengineGooglePlayBillingPlugin.this.logMessage("billing setup finished message: %s"
-                    , billingResult.getDebugMessage()
-                );
+                MengineGooglePlayBillingPlugin.this.logMessage("billing setup finished");
 
                 MengineGooglePlayBillingPlugin.this.pythonCall("onGooglePlayBillingConnectSetupFinishedSuccessful");
             }

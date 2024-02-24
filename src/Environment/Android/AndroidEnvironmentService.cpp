@@ -156,7 +156,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AnroidEnvironmentService_1activateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
     {
-        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString(env, _name);
+        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString( env, _name );
 
         SEMAPHORE_SERVICE()
             ->activateSemaphore( name );
@@ -164,7 +164,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AnroidEnvironmentService_1deactivateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
     {
-        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString(env, _name);
+        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString( env, _name );
 
         SEMAPHORE_SERVICE()
             ->deactivateSemaphore( name );
@@ -172,7 +172,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AnroidEnvironmentService_1waitSemaphore )(JNIEnv * env, jclass cls, jstring _name, jobject _cb)
     {
-        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString(env, _name);
+        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString( env, _name );
 
         Mengine::AndroidSemaphoreListenerPtr listener = Mengine::Helper::makeFactorableUnique<Mengine::AndroidSemaphoreListener>( MENGINE_DOCUMENT_FUNCTION, env, _cb );
 
@@ -182,7 +182,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1log )(JNIEnv * env, jclass cls, jint _level, jstring _tag, jstring _msg)
     {
-        if( SERVICE_IS_INITIALIZE(Mengine::LoggerServiceInterface) == false )
+        if( SERVICE_IS_INITIALIZE( Mengine::LoggerServiceInterface ) == false )
         {
             return;
         }
@@ -266,7 +266,7 @@ namespace Mengine
         m_androidEventationHub = androidEventationHub;
 
         ANALYTICS_SERVICE()
-            ->addEventProvider( AnalyticsEventProviderInterfacePtr::from(this) );
+            ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
 
         SERVICE_PROVIDER_GET()->waitService( "AndroidEnvironmentService", SERVICE_ID( LoggerServiceInterface ), [this]()
         {

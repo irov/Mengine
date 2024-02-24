@@ -27,5 +27,16 @@ namespace Mengine
             return threadName;
         }
         //////////////////////////////////////////////////////////////////////////
+        void dispatchMainThreadEvent( const LambdaDispatchMainThreadEvent & _event )
+        {
+            if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == false )
+            {
+                return;
+            }
+
+            THREAD_SERVICE()
+                ->dispatchMainThreadEvent( _event );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

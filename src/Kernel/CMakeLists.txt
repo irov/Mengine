@@ -901,7 +901,6 @@ Core
     StatisticName.cpp
     StatisticName.h
 
-    
     ExecutorHelper.h
     
     PrototypeHelper.cpp
@@ -917,9 +916,6 @@ Core
     CharacterHelper.h
     
     StatisticHelper.h
-    
-    PlatformHelper.cpp
-    PlatformHelper.h
     
     ReferenceCounterGuardScope.cpp
     ReferenceCounterGuardScope.h

@@ -4,6 +4,8 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionFactory.h"
+#include "Kernel/ThreadHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SemaphoreService, Mengine::SemaphoreService );
@@ -72,14 +74,17 @@ namespace Mengine
             return;
         }
 
-        VectorSemaphoreListeners listeners = semaphore->activate();
+        VectorSemaphoreListeners copy_listeners = semaphore->activate();
 
         m_mutex->unlock();
 
-        for( const SemaphoreListenerInterfacePtr & listener : listeners )
+        Helper::dispatchMainThreadEvent( [copy_listeners]()
         {
-            listener->onActivated();
-        }
+            for( const SemaphoreListenerInterfacePtr & listener : copy_listeners )
+            {
+                listener->onActivated();
+            }
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     void SemaphoreService::deactivateSemaphore( const ConstString & _name )
@@ -131,7 +136,12 @@ namespace Mengine
 
         m_mutex->unlock();
 
-        _listener->onActivated();
+        SemaphoreListenerInterfacePtr copy_listener = _listener;
+
+        Helper::dispatchMainThreadEvent( [copy_listener]()
+        {
+            copy_listener->onActivated();
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
 }

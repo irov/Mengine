@@ -31,6 +31,8 @@ namespace Mengine
         {
             if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == false )
             {
+                _event();
+
                 return;
             }
 

@@ -133,9 +133,7 @@ static ALSdk * AppLovinSdk;
         NSLog(@"[AppLovin] app tracking transparency status: %ld", appTrackingTransparencyStatus);
         NSLog(@"[AppLovin] test mode enabled: %d", testModeEnabled);
         
-        Mengine::Helper::dispatchMainThreadEvent([]() {
-            Mengine::Helper::activateSemaphore(STRINGIZE_STRING_LOCAL("AppLovinSdkInitialized"));
-        });
+        Mengine::Helper::activateSemaphore(STRINGIZE_STRING_LOCAL("AppLovinSdkInitialized"));
     }];
     
     AppleAppLovinApplicationDelegate.AppLovinSdk = appLovinSdk;

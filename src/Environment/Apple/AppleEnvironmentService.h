@@ -8,6 +8,8 @@
 #include "Kernel/Pool.h"
 #include "Kernel/IntrusiveList.h"
 
+#import <Foundation/Foundation.h>
+
 namespace Mengine
 {
     class AppleEnvironmentService
@@ -21,6 +23,9 @@ namespace Mengine
         bool _initializeService() override;
         void _finalizeService() override;
 
+    public:
+        bool openUrlInDefaultBrowser( const Char * _url ) override;
+        
     public:
         void stringize( NSString * _value, ConstString * const _cstr ) override;
 

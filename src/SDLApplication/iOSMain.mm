@@ -32,7 +32,7 @@ int main( int argc, char * argv[] ) {
         } @catch (NSException * ex) {
             result = EXIT_FAILURE;
             
-            NSLog(@"Exception Megnine application: %@ [%@]", ex.description, ex.reason);
+            NSLog(@"🔴 [ERROR] Exception Megnine application: %@ [%@]", ex.description, ex.reason);
         }
     }
     

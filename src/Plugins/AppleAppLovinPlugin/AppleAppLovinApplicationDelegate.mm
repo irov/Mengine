@@ -1,6 +1,7 @@
 #import "AppleAppLovinApplicationDelegate.h"
 
 #include "Environment/Apple/AppleBundle.h"
+#include "Environment/Apple/AppleLog.h"
 
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/SemaphoreHelper.h"
@@ -25,7 +26,7 @@ static ALSdk * AppLovinSdk;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if( Mengine::Helper::AppleHasBundlePluginConfig(PLUGIN_BUNDLE_NAME) == NO )
     {
-        NSLog(@"AppLovin plugin not found bundle config [%@]", PLUGIN_BUNDLE_NAME);
+        Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin not found bundle config [%@]", PLUGIN_BUNDLE_NAME);
         
         return NO;
     }
@@ -46,7 +47,7 @@ static ALSdk * AppLovinSdk;
     }
     else
     {
-        NSLog(@"AppLovin plugin invalid config [%@.IsAgeRestrictedUser] value %@ [YES|NO|UNKNOWN]", PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_IsAgeRestrictedUser);
+        Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin invalid config [%@.IsAgeRestrictedUser] value %@ [YES|NO|UNKNOWN]", PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_IsAgeRestrictedUser);
         
         return NO;
     }
@@ -67,7 +68,7 @@ static ALSdk * AppLovinSdk;
     }
     else
     {
-        NSLog(@"AppLovin plugin invalid config [%@.CCPA] value %@ [YES|NO|UNKNOWN]", PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_CCPA);
+        Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin invalid config [%@.CCPA] value %@ [YES|NO|UNKNOWN]", PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_CCPA);
         
         return NO;
     }
@@ -91,14 +92,14 @@ static ALSdk * AppLovinSdk;
         
         if( MengineAppleAppLovinPlugin_PrivacyPolicyURL == nil )
         {
-            NSLog(@"AppLovin plugin missed required config [%@.PrivacyPolicyURL]", PLUGIN_BUNDLE_NAME);
+            Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin missed required config [%@.PrivacyPolicyURL]", PLUGIN_BUNDLE_NAME);
             
             return NO;
         }
         
         if( MengineAppleAppLovinPlugin_TermsOfServiceURL == nil )
         {
-            NSLog(@"AppLovin plugin missed required config [%@.TermsOfServiceURL]", PLUGIN_BUNDLE_NAME);
+            Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin missed required config [%@.TermsOfServiceURL]", PLUGIN_BUNDLE_NAME);
             
             return NO;
         }
@@ -112,7 +113,7 @@ static ALSdk * AppLovinSdk;
     
     if( MengineAppleAppLovinPlugin_SdkKey == nil )
     {
-        NSLog(@"AppLovin plugin missed required config [%@.SdkKey]", PLUGIN_BUNDLE_NAME);
+        Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin missed required config [%@.SdkKey]", PLUGIN_BUNDLE_NAME);
         
         return NO;
     }
@@ -127,11 +128,11 @@ static ALSdk * AppLovinSdk;
         ALAppTrackingTransparencyStatus appTrackingTransparencyStatus = configuration.appTrackingTransparencyStatus;
         BOOL testModeEnabled = configuration.testModeEnabled;
         
-        NSLog(@"AppLovin plugin initialize complete");
-        NSLog(@"[AppLovin] consent flow user geography: %ld", consentFlowUserGeography);
-        NSLog(@"[AppLovin] country code: %@", countryCode);
-        NSLog(@"[AppLovin] app tracking transparency status: %ld", appTrackingTransparencyStatus);
-        NSLog(@"[AppLovin] test mode enabled: %d", testModeEnabled);
+        Mengine::Helper::AppleLog(@"[AppLovin] plugin initialize complete");
+        Mengine::Helper::AppleLog(@"[AppLovin] consent flow user geography: %ld", consentFlowUserGeography);
+        Mengine::Helper::AppleLog(@"[AppLovin] country code: %@", countryCode);
+        Mengine::Helper::AppleLog(@"[AppLovin] app tracking transparency status: %ld", appTrackingTransparencyStatus);
+        Mengine::Helper::AppleLog(@"[AppLovin] test mode enabled: %d", testModeEnabled);
         
         Mengine::Helper::activateSemaphore(STRINGIZE_STRING_LOCAL("AppLovinSdkInitialized"));
     }];

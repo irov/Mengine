@@ -1,7 +1,5 @@
 #include "AppleStoreReviewService.h"
 
-#include "Environment/Apple/AppleUtils.h"
-
 #include "Kernel/Logger.h"
 
 #import <Foundation/Foundation.h>

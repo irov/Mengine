@@ -2,6 +2,12 @@
 
 #include "Interface/StringizeServiceInterface.h"
 
+#if defined(MENGINE_PLATFORM_MACOS)
+#   import <AppKit/AppKit.h>
+#else
+#   import <UIKit/UIKit.h>
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleEnvironmentService, Mengine::AppleEnvironmentService );
 //////////////////////////////////////////////////////////////////////////
@@ -41,6 +47,29 @@ namespace Mengine
 
         m_holdersNSString.clear();
         m_poolNSString.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AppleEnvironmentService::openUrlInDefaultBrowser( const Char * _url )
+    {
+        NSString * url = [NSString stringWithUTF8String: _url];
+
+    #if defined(MENGINE_PLATFORM_MACOS)
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
+    #else
+        if( [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:url]] == TRUE )
+        {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url] options:@{} completionHandler:^(BOOL success)
+            {
+                //ToDo callback
+            }];
+        }
+        else
+        {
+            return false;
+        }
+    #endif
+        
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleEnvironmentService::stringize( NSString * _value, ConstString * const _cstr )

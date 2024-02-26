@@ -16,6 +16,10 @@
 #   include "Interface/AndroidEnvironmentServiceInterface.h"
 #endif
 
+#if defined(MENGINE_PLATFORM_APPLE)
+#   include "Interface/AppleEnvironmentServiceInterface.h"
+#endif
+
 #if defined(MENGINE_PLATFORM_IOS)
 #   include "Interface/iOSEnvironmentServiceInterface.h"
 #endif
@@ -23,7 +27,6 @@
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
 #elif defined(MENGINE_PLATFORM_APPLE)
-#   include "Environment/Apple/AppleUtils.h"
 #   if defined(MENGINE_PLATFORM_MACOS)
 #       include "Environment/MacOS/MacOSUtils.h"
 #   elif defined(MENGINE_PLATFORM_IOS)
@@ -1212,7 +1215,8 @@ namespace Mengine
         MENGINE_UNUSED( _url );
 
 #if defined(MENGINE_PLATFORM_APPLE)
-        if( Helper::AppleOpenUrlInDefaultBrowser( _url ) == false )
+        if( APPLE_ENVIRONMENT_SERVICE()
+           ->openUrlInDefaultBrowser( _url ) == false )
         {
             LOGGER_ERROR( "error open url in default browser '%s'"
                 , _url
@@ -1227,7 +1231,7 @@ namespace Mengine
 
         return true;
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        if(ANDROID_ENVIRONMENT_SERVICE()
+        if( ANDROID_ENVIRONMENT_SERVICE()
             ->openUrlInDefaultBrowser( _url ) == false )
         {
             LOGGER_ERROR( "error open url in default browser '%s'"

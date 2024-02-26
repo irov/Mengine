@@ -1,6 +1,5 @@
 #include "AppleStoreInAppPurchaseService.h"
 
-#include "Environment/Apple/AppleUtils.h"
 #include "Environment/Apple/AppleString.h"
 
 #include "AppleStoreInAppPurchasePaymentTransaction.h"

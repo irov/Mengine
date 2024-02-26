@@ -15,8 +15,6 @@
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Environment/Android/AndroidEnv.h"
-#elif defined(MENGINE_PLATFORM_APPLE)
-#   include "Environment/Apple/AppleUtils.h"
 #endif
 
 #if defined(MENGINE_PLATFORM_ANDROID)

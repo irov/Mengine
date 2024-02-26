@@ -2,8 +2,8 @@ MENGINE_PROJECT(Apple)
 
 ADD_FILTER(
 src
-    AppleUtils.h
-    AppleUtils.mm
+    AppleLog.h
+    AppleLog.mm
     AppleDetail.h
     AppleDetail.mm
     AppleBundle.h

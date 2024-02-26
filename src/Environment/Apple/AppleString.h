@@ -10,7 +10,6 @@
 #define MENGINE_APPLE_MESSAGE_NSID 1024
 #endif
 
-
 namespace Mengine
 {
     namespace Helper

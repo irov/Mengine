@@ -15,7 +15,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
-#include "Kernel/PlatformHelper.h"
+#include "Kernel/ThreadHelper.h"
 #include "Kernel/Logger.h"
 
 #include "Config/StdString.h"

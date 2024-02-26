@@ -4,7 +4,7 @@
 #include "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/PlatformHelper.h"
+#include "Kernel/ThreadHelper.h"
 
 #include "Config/StdString.h"
 

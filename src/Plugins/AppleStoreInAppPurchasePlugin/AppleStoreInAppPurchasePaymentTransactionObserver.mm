@@ -5,7 +5,7 @@
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
-#include "Kernel/PlatformHelper.h"
+#include "Kernel/ThreadHelper.h"
 
 @implementation AppleStoreInAppPurchasePaymentTransactionObserver
 

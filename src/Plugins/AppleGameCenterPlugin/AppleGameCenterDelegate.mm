@@ -1,6 +1,6 @@
 #import "AppleGameCenterDelegate.h"
 
-#include "Kernel/PlatformHelper.h"
+#include "Kernel/ThreadHelper.h"
 
 @implementation AppleGameCenterDelegate
 

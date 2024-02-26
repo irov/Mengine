@@ -2,7 +2,7 @@
 
 #include "Environment/Apple/AppleBundle.h"
 
-#include "Kernel/PlatformHelper.h"
+#include "Kernel/ThreadHelper.h"
 #include "Kernel/SemaphoreHelper.h"
 #include "Kernel/ConstStringHelper.h"
 

@@ -3,7 +3,7 @@
 #include "Environment/Apple/AppleErrorHelper.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/PlatformHelper.h"
+#include "Kernel/ThreadHelper.h"
 
 #include "Config/Algorithm.h"
 

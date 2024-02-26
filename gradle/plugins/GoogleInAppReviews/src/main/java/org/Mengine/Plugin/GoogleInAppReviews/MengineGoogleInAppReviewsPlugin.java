@@ -23,8 +23,7 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin implements Me
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         m_manager = ReviewManagerFactory.create(activity);
 
-        Task<ReviewInfo> request = m_manager.requestReviewFlow();
-        request.addOnCompleteListener(task -> {
+        m_manager.requestReviewFlow().addOnCompleteListener(task -> {
             if (task.isSuccessful() == true) {
                 MengineGoogleInAppReviewsPlugin.this.logMessage("requestReviewFlow successful");
 
@@ -36,8 +35,8 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin implements Me
 
                 if (exception != null) {
                     MengineGoogleInAppReviewsPlugin.this.logWarning("requestReviewFlow error message: %s trace: %s"
-                        , task.getException().getMessage()
-                        , task.getException().fillInStackTrace()
+                        , exception.getMessage()
+                        , exception.fillInStackTrace()
                     );
                 } else {
                     MengineGoogleInAppReviewsPlugin.this.logWarning("requestReviewFlow unknown error");
@@ -60,9 +59,7 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin implements Me
 
         MengineActivity activity = this.getMengineActivity();
 
-        Task<Void> flow = m_manager.launchReviewFlow(activity, m_reviewInfo);
-
-        flow.addOnCompleteListener(task -> {
+        m_manager.launchReviewFlow(activity, m_reviewInfo).addOnCompleteListener(task -> {
             MengineGoogleInAppReviewsPlugin.this.logMessage("Launching the review completed");
 
             MengineGoogleInAppReviewsPlugin.this.buildEvent("mng_inapp_review_completed")

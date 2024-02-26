@@ -42,7 +42,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         if (BuildConfig.DEBUG == true) {
             if (FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution() == true) {
-                MengineUtils.makeToastLong(activity, "Last launch ended in a crash", 10000L);
+                MengineUtils.makeToastDelayed(activity, "Last launch ended in a crash", 10000L);
             }
         }
     }

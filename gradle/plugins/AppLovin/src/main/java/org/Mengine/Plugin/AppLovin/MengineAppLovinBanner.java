@@ -23,8 +23,8 @@ import java.util.Map;
 public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener, MaxAdReviewListener {
     protected MaxAdView m_adView;
 
-    protected boolean m_visible;
-    protected boolean m_loaded;
+    protected volatile boolean m_visible;
+    protected volatile boolean m_loaded;
 
     public MengineAppLovinBanner(MengineAppLovinPlugin plugin, String adUnitId, String placement) {
         super(MaxAdFormat.BANNER, plugin, adUnitId);
@@ -92,11 +92,6 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         super.destroy();
 
         if (m_adView != null) {
-            m_adView.setRequestListener(null);
-            m_adView.setListener(null);
-            m_adView.setRevenueListener(null);
-            m_adView.setAdReviewListener(null);
-
             m_adView.destroy();
             m_adView = null;
         }

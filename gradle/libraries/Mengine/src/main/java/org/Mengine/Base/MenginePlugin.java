@@ -1,15 +1,9 @@
 package org.Mengine.Base;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.os.Bundle;
 
 import androidx.annotation.Size;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -91,7 +85,7 @@ public class MenginePlugin implements MenginePluginInterface {
             return;
         }
 
-        MengineUtils.makeToastLong(m_activity, text, delayed);
+        MengineUtils.makeToastDelayed(m_activity, text, delayed);
     }
 
     public void sendEvent(MengineEvent event, Object ... args) {

@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -36,7 +34,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -149,7 +146,7 @@ public class MengineUtils {
         return handler;
     }
 
-    public static void makeToastLong(Context context, String text, long delayed) {
+    public static void makeToastDelayed(Context context, String text, long delayed) {
         MengineLog.logMessage(TAG, "Toast show after %d milliseconds text: %s"
             , delayed
             , text

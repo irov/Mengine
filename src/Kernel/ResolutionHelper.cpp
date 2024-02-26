@@ -29,7 +29,7 @@ namespace Mengine
             *_adaptScreenPoint = (_screenPoint - windowOffset) / windowScale;
         }
         //////////////////////////////////////////////////////////////////////////
-        void adaptScreenDeltha( const mt::vec2f & _screenDeltha, mt::vec2f * const _adaptScreenDeltha )
+        void adaptScreenDelta( const mt::vec2f & _screenDelta, mt::vec2f * const _adaptScreenDelta )
         {
             const Viewport & renderViewport = APPLICATION_SERVICE()
                 ->getRenderViewport();
@@ -45,7 +45,7 @@ namespace Mengine
 
             mt::vec2f windowScale = renderViewportSize / currentResolutionSize;
 
-            *_adaptScreenDeltha = _screenDeltha / windowScale;
+            *_adaptScreenDelta = _screenDelta / windowScale;
         }
         //////////////////////////////////////////////////////////////////////////
         void adaptWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _adaptScreenPoint )

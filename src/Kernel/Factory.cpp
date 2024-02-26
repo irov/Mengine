@@ -104,7 +104,9 @@ namespace Mengine
         DocumentInterfacePtr doc = _object->getDocument();
         MENGINE_UNUSED( doc );
 
+#if defined(MENGINE_RELEASE)
         _object->setDocument( nullptr );
+#endif
 #endif
 
         this->_destroyObject( _object );

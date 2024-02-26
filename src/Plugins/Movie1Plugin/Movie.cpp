@@ -125,7 +125,7 @@ namespace Mengine
         return m_parentMovie;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::getFrameTime_( float _time, uint32_t * const _frame, float * const _delthaTime ) const
+    void Movie::getFrameTime_( float _time, uint32_t * const _frame, float * const _deltaTime ) const
     {
         float duration = m_resourceMovie->getDuration();
 
@@ -142,24 +142,24 @@ namespace Mengine
         if( frameCount == 0 )
         {
             *_frame = 0;
-            *_delthaTime = 0.f;
+            *_deltaTime = 0.f;
         }
         else if( loop == true )
         {
             *_frame = frame % frameCount;
-            *_delthaTime = crop_timing - *_frame * frameDuration;
+            *_deltaTime = crop_timing - *_frame * frameDuration;
         }
         else
         {
             if( frame >= frameCount )
             {
                 *_frame = frameCount - 1;
-                *_delthaTime = 0.f;
+                *_deltaTime = 0.f;
             }
             else
             {
                 *_frame = frame;
-                *_delthaTime = crop_timing - *_frame * frameDuration;
+                *_deltaTime = crop_timing - *_frame * frameDuration;
             }
         }
     }

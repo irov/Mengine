@@ -18,14 +18,14 @@ namespace Mengine
 
             for( auto && [aspect, viewport] : _aspectRatioViewports )
             {
-                float deltha_aspect = MENGINE_FABSF( _aspect - aspect );
+                float delta_aspect = MENGINE_FABSF( _aspect - aspect );
 
-                if( deltha_aspect >= minimal_aspect )
+                if( delta_aspect >= minimal_aspect )
                 {
                     continue;
                 }
 
-                minimal_aspect = deltha_aspect;
+                minimal_aspect = delta_aspect;
 
                 if( _bestAspect != nullptr )
                 {

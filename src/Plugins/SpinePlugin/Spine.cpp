@@ -606,14 +606,16 @@ namespace Mengine
 
         for( const SamplerSpineAnimationPtr & sampler : m_samplers )
         {
-            bool autoPlay = sampler->isAutoPlay();
+            AnimationInterface * animation = sampler->getAnimation();
+
+            bool autoPlay = animation->isAutoPlay();
 
             if( autoPlay == true )
             {
                 float time = TIMELINE_SERVICE()
                     ->getTotalTime();
 
-                if( sampler->play( time ) == 0 )
+                if( animation->play( time ) == 0 )
                 {
                     LOGGER_ERROR( "spine '%s' sampler '%s' resource '%s' auto play return 0"
                         , this->getName().c_str()

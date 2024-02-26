@@ -699,6 +699,9 @@ Core
     RenderHelper.h
     RenderHelper.cpp
     
+    RenderRoot.h
+    RenderRoot.cpp
+    
     RenderPrimitive.h
     
     ThreadMutexDummy.h

@@ -74,9 +74,6 @@ namespace Mengine
         virtual const Resolution & getWindowResolution() const = 0;
 
     public:
-        virtual const RenderPipelineInterfacePtr & getRenderPipeline() const = 0;
-
-    public:
         virtual void setFullscreenMode( bool _fullscreen ) = 0;
         virtual bool getFullscreenMode() const = 0;
 

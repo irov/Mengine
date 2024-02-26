@@ -235,12 +235,9 @@ namespace Mengine
             return;
         }
 
-        const RenderPipelineInterfacePtr & renderPipeline = APPLICATION_SERVICE()
-            ->getRenderPipeline();
-
         if( m_showDebugText == 0 )
         {
-            renderPipeline->enableDebugFillrateCalcMode( false );
+            _renderPipeline->enableDebugFillrateCalcMode( false );
         }
 
         if( m_showDebugText != 0 )
@@ -251,7 +248,7 @@ namespace Mengine
 
             if( m_showDebugText > 1 )
             {
-                renderPipeline->enableDebugFillrateCalcMode( true );
+                _renderPipeline->enableDebugFillrateCalcMode( true );
 
                 const Resolution & contentResolution = APPLICATION_SERVICE()
                     ->getContentResolution();

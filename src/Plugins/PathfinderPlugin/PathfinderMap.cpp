@@ -7,12 +7,12 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         static const uint16_t cell_matrix_to_angle[9] = {3, 2, 1, 4, 8, 0, 5, 6, 7};
-        static const int16_t cell_next_point_deltha[8] = {0, -1, 1, -2, 2, -3, 3, 4};
+        static const int16_t cell_next_point_delta[8] = {0, -1, 1, -2, 2, -3, 3, 4};
         static const uint16_t cell_angle_to_matrix[9] = {5, 2, 1, 0, 3, 6, 7, 8, 4};
-        static const int16_t cell_angle_to_deltha_x[8] = {1, 1, 0, -1, -1, -1, 0, 1};
-        static const int16_t cell_angle_to_deltha_y[8] = {0, -1, -1, -1, 0, 1, 1, 1};
-        static const int16_t cell_matrix_to_deltha_x[9] = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
-        static const int16_t cell_matrix_to_deltha_y[9] = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
+        static const int16_t cell_angle_to_delta_x[8] = {1, 1, 0, -1, -1, -1, 0, 1};
+        static const int16_t cell_angle_to_delta_y[8] = {0, -1, -1, -1, 0, 1, 1, 1};
+        static const int16_t cell_matrix_to_delta_x[9] = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
+        static const int16_t cell_matrix_to_delta_y[9] = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
         //////////////////////////////////////////////////////////////////////////
         static const uint32_t cell_diagonal_cost = 140;
         static const uint32_t cell_line_cost = 99;
@@ -73,9 +73,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE static uint16_t get_next_foreach_angle( uint16_t _angle, uint32_t _index )
         {
-            int16_t deltha = Detail::cell_next_point_deltha[_index];
+            int16_t delta = Detail::cell_next_point_delta[_index];
 
-            uint16_t next_angle = (_angle + 8 + deltha) % 8;
+            uint16_t next_angle = (_angle + 8 + delta) % 8;
 
             return next_angle;
         }
@@ -84,8 +84,8 @@ namespace Mengine
         {
             uint16_t matrix = cell_angle_to_matrix[_angle];
 
-            int16_t dx = Detail::cell_matrix_to_deltha_x[matrix];
-            int16_t dy = Detail::cell_matrix_to_deltha_y[matrix];
+            int16_t dx = Detail::cell_matrix_to_delta_x[matrix];
+            int16_t dy = Detail::cell_matrix_to_delta_y[matrix];
 
             uint16_t nx = _point.x + dx;
             uint16_t ny = _point.y + dy;
@@ -336,8 +336,8 @@ namespace Mengine
         {
             uint16_t angle = Detail::get_next_foreach_angle( bresenham_best_angle, index );
 
-            int16_t dx = Detail::cell_angle_to_deltha_x[angle];
-            int16_t dy = Detail::cell_angle_to_deltha_y[angle];
+            int16_t dx = Detail::cell_angle_to_delta_x[angle];
+            int16_t dy = Detail::cell_angle_to_delta_y[angle];
 
             uint16_t step_x = _x + dx;
             uint16_t step_y = _y + dy;

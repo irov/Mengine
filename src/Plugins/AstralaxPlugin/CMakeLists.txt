@@ -34,7 +34,7 @@ if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
         AstralaxScriptEmbedding.cpp
-        AstralaxScriptEmbedding.h    
+        AstralaxScriptEmbedding.h
         )
         
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

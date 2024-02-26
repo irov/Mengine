@@ -20,7 +20,7 @@ namespace Mengine
             *_worldPoint = worldPosition.to_vec2f();
         }
         //////////////////////////////////////////////////////////////////////////
-        void screenToWorldDelta( const RenderContext * _context, const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDelta )
+        void screenToWorldDelta( const RenderContext * _context, const mt::vec2f & _screenDelta, mt::vec2f * const _worldDelta )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _context );
             MENGINE_ASSERTION_MEMORY_PANIC( _context->camera );
@@ -28,7 +28,7 @@ namespace Mengine
             const RenderCameraInterface * renderCamera = _context->camera;
 
             mt::vec3f worldDelta;
-            renderCamera->fromScreenToWorldDelta( _screenDeltha, 0.f, &worldDelta );
+            renderCamera->fromScreenToWorldDelta( _screenDelta, 0.f, &worldDelta );
 
             *_worldDelta = worldDelta.to_vec2f();
         }

@@ -693,7 +693,7 @@ namespace Mengine
             m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
 
             mt::vec2f dp;
-            m_arrow->calcPointDeltha( &desc.context, mt::vec2f( _event.dx, _event.dy ), &dp );
+            m_arrow->calcPointDelta( &desc.context, mt::vec2f( _event.dx, _event.dy ), &dp );
 
             InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 

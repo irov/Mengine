@@ -42,7 +42,7 @@ namespace Mengine
 
     public:
         virtual void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) = 0;
-        virtual void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha ) = 0;
+        virtual void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDelta, mt::vec2f * const _worldDelta ) = 0;
 
     public:
         virtual SchedulerInterfacePtr createScheduler( const ConstString & _name, const DocumentInterfacePtr & _doc ) = 0;
@@ -75,6 +75,9 @@ namespace Mengine
 
     public:
         virtual const RenderContext * getRenderContext() const = 0;
+
+    public:
+        virtual const RenderInterface * getRenderExtra() const = 0;
 
     public:
         virtual const GlobalInputHandlerInterfacePtr & getGlobalInputHandler() const = 0;

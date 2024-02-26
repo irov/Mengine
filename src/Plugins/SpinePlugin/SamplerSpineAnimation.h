@@ -16,9 +16,9 @@ namespace Mengine
 {
     class SamplerSpineAnimation
         : public SamplerSpineAnimationInterface
-        , public BaseAnimation
-        , public BaseUpdation
-        , public BaseEventation
+        , protected BaseAnimation
+        , protected BaseUpdation
+        , protected BaseEventation
     {
         DECLARE_FACTORABLE( SamplerSpineAnimation );
         DECLARE_ANIMATABLE();

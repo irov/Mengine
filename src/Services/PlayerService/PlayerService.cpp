@@ -119,6 +119,8 @@ namespace Mengine
 
         Helper::clearRenderContext( &m_renderContext );
 
+        m_renderExtra = Helper::makeFactorableUnique<RenderRoot>( MENGINE_DOCUMENT_FACTORABLE );
+
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, &PlayerService::notifyChangeScenePrepareDestroy, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY, &PlayerService::notifyChangeSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, &PlayerService::notifyChangeScenePrepareInitialize, MENGINE_DOCUMENT_FACTORABLE );
@@ -145,6 +147,8 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RESTART_SCENE_ENABLE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_PREPARE_DESTROY );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY );
+
+        m_renderExtra = nullptr;
 
         m_globalInputHandler = nullptr;
 
@@ -306,9 +310,9 @@ namespace Mengine
         Helper::screenToWorldPosition( &m_renderContext, _screenPoint, _worldPoint );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha )
+    void PlayerService::calcGlobalMouseWorldDelta( const mt::vec2f & _screenDelta, mt::vec2f * const _worldDelta )
     {
-        Helper::screenToWorldDelta( &m_renderContext, _screenDeltha, _worldDeltha );
+        Helper::screenToWorldDelta( &m_renderContext, _screenDelta, _worldDelta );
     }
     //////////////////////////////////////////////////////////////////////////
     SchedulerInterfacePtr PlayerService::createScheduler( const ConstString & _name, const DocumentInterfacePtr & _doc )
@@ -686,6 +690,13 @@ namespace Mengine
         return &m_renderContext;
     }
     //////////////////////////////////////////////////////////////////////////
+    const RenderInterface * PlayerService::getRenderExtra() const
+    {
+        const RenderInterface * render = m_renderExtra->getRender();
+
+        return render;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PlayerService::render( const RenderPipelineInterfacePtr & _renderPipeline )
     {
         MENGINE_PROFILER_CATEGORY();
@@ -732,6 +743,9 @@ namespace Mengine
                 }
             }
         }
+
+        const RenderInterface * render = m_renderExtra->getRender();
+        render->render( _renderPipeline, &m_renderContext );
 
         if( SERVICE_IS_INITIALIZE( NodeDebugRenderServiceInterface ) == true )
         {

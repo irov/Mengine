@@ -23,9 +23,9 @@ namespace Mengine
     class Spine
         : public Node
         , public UnknownSpineInterface
-        , public BaseUpdation
-        , public BaseRender
-        , public BaseTransformation
+        , protected BaseUpdation
+        , protected BaseRender
+        , protected BaseTransformation
     {
         DECLARE_FACTORABLE( Spine );
         DECLARE_VISITABLE( Node );

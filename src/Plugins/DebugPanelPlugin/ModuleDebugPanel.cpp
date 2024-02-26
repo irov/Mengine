@@ -51,10 +51,10 @@ namespace Mengine
 
         int64_t Statistic_Value = STATISTIC_GET_INTEGER( _statisticId );
 
-        int64_t deltha_value = Statistic_Value - old_value[_statisticId];
+        int64_t delta_value = Statistic_Value - old_value[_statisticId];
         old_value[_statisticId] = Statistic_Value;
 
-        float value = float( deltha_value ) * _coeffTime * _multiplier;
+        float value = float( delta_value ) * _coeffTime * _multiplier;
 
         _histogram->add( value );
     }
@@ -89,13 +89,13 @@ namespace Mengine
 
         Timestamp current_Time = Helper::getSystemTimestamp();
 
-        Timestamp deltha_Time = current_Time - old_Time;
+        Timestamp delta_Time = current_Time - old_Time;
 
-        if( deltha_Time > 1000 )
+        if( delta_Time > 1000 )
         {
             old_Time = current_Time;
 
-            float coeffTime = 1000.f / (float)deltha_Time;
+            float coeffTime = 1000.f / (float)delta_Time;
 
             this->updateHistogramUpdate( &m_histogramFPS, STATISTIC_RENDER_FRAME_COUNT, coeffTime, 1.f );
             this->updateHistogramUpdate( &m_histogramAllocatorNew, STATISTIC_ALLOCATOR_NEW, coeffTime, 1.f / 1024.f );

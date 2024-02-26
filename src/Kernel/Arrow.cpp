@@ -229,9 +229,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::calcPointDeltha( const RenderContext * _context, const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha ) const
+    void Arrow::calcPointDelta( const RenderContext * _context, const mt::vec2f & _screenDelta, mt::vec2f * const _worldDelta ) const
     {
-        Helper::screenToWorldDelta( _context, _screenDeltha, _worldDeltha );
+        Helper::screenToWorldDelta( _context, _screenDelta, _worldDelta );
     }
     //////////////////////////////////////////////////////////////////////////
     void Arrow::calcMouseScreenPosition( const RenderContext * _context, const mt::vec2f & _worldPoint, mt::vec2f * const _screenPoint ) const

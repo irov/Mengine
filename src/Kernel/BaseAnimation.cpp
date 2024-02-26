@@ -325,8 +325,8 @@ namespace Mengine
 
         if( m_playTime > _context->current )
         {
-            float deltha = m_playTime - _context->current;
-            totalTime -= deltha;
+            float delta = m_playTime - _context->current;
+            totalTime -= delta;
 
             MENGINE_ASSERTION_FATAL( totalTime >= 0.f, "totalTime %f < 0.f ['%s:%s']"
                 , totalTime

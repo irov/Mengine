@@ -14,6 +14,7 @@
 #include "Kernel/Affectorable.h"
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderViewport.h"
+#include "Kernel/RenderRoot.h"
 
 namespace Mengine
 {
@@ -35,7 +36,7 @@ namespace Mengine
 
     public:
         void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) override;
-        void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f * const _worldDeltha ) override;
+        void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDelta, mt::vec2f * const _worldDelta ) override;
 
     public:
         SchedulerInterfacePtr createScheduler( const ConstString & _name, const DocumentInterfacePtr & _doc ) override;
@@ -82,6 +83,9 @@ namespace Mengine
 
     public:
         const RenderContext * getRenderContext() const override;
+
+    public:
+        const RenderInterface * getRenderExtra() const override;
 
     public:
         void initializeRenderResources() override;
@@ -137,6 +141,8 @@ namespace Mengine
         RenderTargetInterfacePtr m_renderTarget;
 
         RenderContext m_renderContext;
+
+        RenderRootPtr m_renderExtra;
 
         GlobalInputHandlerInterfacePtr m_globalInputHandler;
 

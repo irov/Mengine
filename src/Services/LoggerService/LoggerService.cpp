@@ -452,10 +452,10 @@ namespace Mengine
 
         STATISTIC_INC_INTEGER( statisticId );
 
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutexMessage );
-
         if( m_threadly == true )
         {
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutexMessage );
+
             if( m_messages.size() >= MENGINE_LOGGER_MESSAGE_BUFFER_MAX )
             {
                 return;
@@ -519,12 +519,12 @@ namespace Mengine
                     return true;
                 }
 
-                if( m_messages.empty() == true )
+                if( m_messages.empty() == false )
                 {
-                    return false;
+                    return true;
                 }
 
-                return true;
+                return false;
             } );
 
             if( _runner->isCancel() == true )

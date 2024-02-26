@@ -42,7 +42,7 @@ namespace Mengine
     public:
         void calcMouseWorldPosition( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const;
         void calcPointClick( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const;
-        void calcPointDeltha( const RenderContext * _context, const mt::vec2f & _screenDeltha, mt::vec2f * _worldDeltha ) const;
+        void calcPointDelta( const RenderContext * _context, const mt::vec2f & _screenDelta, mt::vec2f * _worldDelta ) const;
 
     public:
         void calcMouseScreenPosition( const RenderContext * _context, const mt::vec2f & _worldPoint, mt::vec2f * const _screenPoint ) const;

@@ -94,9 +94,9 @@ namespace Mengine
 
         Timestamp time = Helper::getSystemTimestamp();
 
-        Timestamp deltha = m_pauseTime - m_playTime;
+        Timestamp delta = m_pauseTime - m_playTime;
 
-        m_playTime = time - deltha;
+        m_playTime = time - delta;
         m_pauseTime = 0UL;
 
         return true;

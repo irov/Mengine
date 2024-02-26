@@ -21,9 +21,9 @@ namespace Mengine
     {
         float time = _context->time;
 
-        float deltha = m_to - m_from;
+        float delta = m_to - m_from;
 
-        float add = deltha * m_speed * time;
+        float add = delta * m_speed * time;
 
         if( m_progress + add < m_to )
         {

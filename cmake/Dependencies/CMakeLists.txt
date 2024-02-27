@@ -52,6 +52,8 @@ if(MENGINE_DEPENDENCE_ZLIB)
     message("================zlib================")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib/CMakeLists.txt ${THIRDPARTY_DIR}/zlib/CMakeLists.txt COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib/gzguts.h ${THIRDPARTY_DIR}/zlib/gzguts.h COPYONLY)
+    
+    set(ZLIB_BUILD_EXAMPLES OFF CACHE BOOL "ZLIB_BUILD_EXAMPLES" FORCE)
 
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/zlib ${THIRDPARTY_CONFIG_DIR}/zlib)
     
@@ -465,6 +467,7 @@ if(MENGINE_DEPENDENCE_CURL)
     
     set(LIBCURL_OUTPUT_NAME curl CACHE STRING "Basename of the curl library" FORCE)
     set(BUILD_CURL_EXE OFF CACHE BOOL "Set to ON to build curl executable." FORCE)
+    set(BUILD_LIBCURL_DOCS OFF CACHE BOOL "to build libcurl man pages" FORCE)
     if(MENGINE_TOOLCHAIN_MSVC)
         set(CURL_STATIC_CRT ${MENGINE_STATIC_CRT} CACHE BOOL "Set to ON to build libcurl with static CRT on Windows (/MT)." FORCE)
     endif()
@@ -566,6 +569,8 @@ if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_UNIX)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/external/crashpad/snapshot/win/process_reader_win.cc ${THIRDPARTY_DIR}/sentry/external/crashpad/snapshot/win/process_reader_win.cc COPYONLY)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/external/crashpad/snapshot/minidump/process_snapshot_minidump.cc ${THIRDPARTY_DIR}/sentry/external/crashpad/snapshot/minidump/process_snapshot_minidump.cc COPYONLY)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/external/crashpad/client/crashpad_client_win.cc ${THIRDPARTY_DIR}/sentry/external/crashpad/client/crashpad_client_win.cc COPYONLY)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/external/crashpad/compat/mingw/werapi.h ${THIRDPARTY_DIR}/sentry/external/crashpad/compat/mingw/werapi.h COPYONLY)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/external/crashpad/util/file/filesystem.h ${THIRDPARTY_DIR}/sentry/external/crashpad/util/file/filesystem.h COPYONLY)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/external/crashpad/CMakeLists.txt ${THIRDPARTY_DIR}/sentry/external/crashpad/CMakeLists.txt COPYONLY)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sentry/src/backends/sentry_backend_crashpad.cpp ${THIRDPARTY_DIR}/sentry/src/backends/sentry_backend_crashpad.cpp COPYONLY)
         

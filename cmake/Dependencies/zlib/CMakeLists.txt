@@ -3,7 +3,9 @@ set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
 
 project(zlib C)
 
-set(VERSION "1.3")
+set(VERSION "1.3.1")
+
+option(ZLIB_BUILD_EXAMPLES "Enable Zlib Examples" ON)
 
 set(INSTALL_BIN_DIR "${CMAKE_INSTALL_PREFIX}/bin" CACHE PATH "Installation directory for executables")
 set(INSTALL_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib" CACHE PATH "Installation directory for libraries")
@@ -107,10 +109,4 @@ set(ZLIB_SRCS
     zutil.c
 )
 
-if(WIN32 AND NOT MINGW)
-    set(ZLIB_DLL_SRCS
-        win32/zlib1.rc # If present will override custom build rule below.
-    )
-endif()
-
-add_library(zlib STATIC ${ZLIB_SRCS} ${ZLIB_DLL_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
+add_library(zlib STATIC ${ZLIB_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})

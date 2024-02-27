@@ -351,7 +351,7 @@ public class MengineActivity extends SDLActivity {
             String pluginName = l.getPluginName();
 
             MengineLog.logMessage(TAG, "onPreCreate plugin: %s"
-                    , pluginName
+                , pluginName
             );
 
             try {

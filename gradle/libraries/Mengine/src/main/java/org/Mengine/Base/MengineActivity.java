@@ -305,9 +305,6 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.init", "start");
 
-        long activity_init_start_timestamp = MengineAnalytics.buildEvent("mng_activity_init_start")
-            .logAndFlush();
-
         try {
             super.onCreate(savedInstanceState);
         } catch (Exception e) {
@@ -348,13 +345,38 @@ public class MengineActivity extends SDLActivity {
             p.setActivity(this);
         }
 
+        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
+
+        for (MenginePluginActivityListener l : listeners) {
+            String pluginName = l.getPluginName();
+
+            MengineLog.logMessage(TAG, "onPreCreate plugin: %s"
+                    , pluginName
+            );
+
+            try {
+                l.onPreCreate(this, savedInstanceState);
+            } catch (MenginePluginInvalidInitializeException e) {
+                this.setState("activity.init", "plugin_precreate_exception." + l.getPluginName());
+
+                MengineAnalytics.buildEvent("mng_activity_init_failed")
+                    .addParameterException("reason", e)
+                    .logAndFlush();
+
+                this.finishWithAlertDialog("[ERROR] onPreCreate plugin: %s exception: %s"
+                    , l.getPluginName()
+                    , e.getMessage()
+                );
+
+                return;
+            }
+        }
+
         if( this.startMainThread() == false ) {
             return;
         }
 
         MengineLog.initialize(this);
-
-        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
             String pluginName = l.getPluginName();
@@ -362,10 +384,6 @@ public class MengineActivity extends SDLActivity {
             MengineLog.logMessage(TAG, "onCreate plugin: %s"
                 , pluginName
             );
-
-            long plugin_init_plugin_start_timestamp = MengineAnalytics.buildEvent("mng_activity_init_plugin_start")
-                .addParameterString("name", pluginName)
-                .logAndFlush();
 
             try {
                 l.onCreate(this, savedInstanceState);
@@ -376,25 +394,16 @@ public class MengineActivity extends SDLActivity {
                     .addParameterException("reason", e)
                     .logAndFlush();
 
-                this.finishWithAlertDialog("[ERROR] plugin: %s exception: %s"
+                this.finishWithAlertDialog("[ERROR] onCreate plugin: %s exception: %s"
                     , l.getPluginName()
                     , e.getMessage()
                 );
 
                 return;
             }
-
-            MengineAnalytics.buildEvent("mng_activity_init_plugin_completed")
-                .addParameterString("name", pluginName)
-                .addParameterLong("time", MengineUtils.getDurationTimestamp(plugin_init_plugin_start_timestamp))
-                .logAndFlush();
         }
 
         this.setState("activity.init", "completed");
-
-        MengineAnalytics.buildEvent("mng_activity_init_completed")
-            .addParameterLong("time", MengineUtils.getDurationTimestamp(activity_init_start_timestamp))
-            .logAndFlush();
 
         this.setState("activity.lifecycle", "created");
     }

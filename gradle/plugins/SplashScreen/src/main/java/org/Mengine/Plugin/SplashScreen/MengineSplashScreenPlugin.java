@@ -75,7 +75,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+    public void onPreCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         this.setState("splashscreen.state", "init");
 
         Context context = MengineActivity.getContext();

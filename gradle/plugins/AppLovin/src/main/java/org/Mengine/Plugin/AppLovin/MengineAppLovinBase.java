@@ -72,22 +72,22 @@ public class MengineAppLovinBase {
         sb.append("{");
         sb.append(String.format(Locale.US, "\"format\": \"%s\"", ad.getFormat().getLabel()));
         sb.append(String.format(Locale.US, ", \"size\": [%d, %d]", ad.getSize().getWidth(), ad.getSize().getHeight()));
-        sb.append(String.format(Locale.US, ", \"adUnitIdentifier\": \"%s\"", ad.getAdUnitId()));
-        sb.append(String.format(Locale.US, ", \"networkName\": \"%s\"", ad.getNetworkName()));
-        sb.append(String.format(Locale.US, ", \"networkPlacement\": \"%s\"", ad.getNetworkPlacement()));
+        sb.append(String.format(Locale.US, ", \"ad_unit_id\": \"%s\"", ad.getAdUnitId()));
+        sb.append(String.format(Locale.US, ", \"network_name\": \"%s\"", ad.getNetworkName()));
+        sb.append(String.format(Locale.US, ", \"network_placement\": \"%s\"", ad.getNetworkPlacement()));
         sb.append(String.format(Locale.US, ", \"revenue\": %f", ad.getRevenue()));
-        sb.append(String.format(Locale.US, ", \"revenuePrecision\": \"%s\"", ad.getRevenuePrecision()));
+        sb.append(String.format(Locale.US, ", \"revenue_precision\": \"%s\"", ad.getRevenuePrecision()));
 
         String creativeId = ad.getCreativeId();
 
         if (creativeId != null) {
-            sb.append(String.format(Locale.US, ", \"creativeIdentifier\": \"%s\"", creativeId));
+            sb.append(String.format(Locale.US, ", \"creative_identifier\": \"%s\"", creativeId));
         }
 
         String adReviewCreativeId = ad.getAdReviewCreativeId();
 
         if (adReviewCreativeId != null) {
-            sb.append(String.format(Locale.US, ", \"adReviewCreativeIdentifier\": \"%s\"", adReviewCreativeId));
+            sb.append(String.format(Locale.US, ", \"ad_review_creative_id\": \"%s\"", adReviewCreativeId));
         }
 
         String placement = ad.getPlacement();
@@ -99,13 +99,13 @@ public class MengineAppLovinBase {
         String dspName = ad.getDspName();
 
         if (dspName != null) {
-            sb.append(String.format(Locale.US, ", \"DSPName\": \"%s\"", dspName));
+            sb.append(String.format(Locale.US, ", \"dsp_name\": \"%s\"", dspName));
         }
 
         String dspId = ad.getDspId();
 
         if (dspId != null) {
-            sb.append(String.format(Locale.US, ", \"DSPIdentifier\": \"%s\"", dspName));
+            sb.append(String.format(Locale.US, ", \"dsp_id\": \"%s\"", dspId));
         }
 
         sb.append("}");
@@ -150,11 +150,11 @@ public class MengineAppLovinBase {
     protected void log(String callback) {
         StringBuilder sb = new StringBuilder(512);
 
-        sb.append(String.format(Locale.US, "[%s] callback: %s\n", m_adFormat.getLabel(), callback));
+        sb.append(String.format(Locale.US, "[%s] callback: %s ", m_adFormat.getLabel(), callback));
 
         this.writeBaseInfo(sb);
 
-        sb.setLength(sb.length() - 1); //remove last '\n'
+        sb.setLength(sb.length() - 1); //remove last ' '
 
         String message = sb.toString();
 
@@ -164,11 +164,11 @@ public class MengineAppLovinBase {
     protected void logError(String callback, Exception e) {
         StringBuilder sb = new StringBuilder(1024);
 
-        sb.append(String.format(Locale.US, "[%s] callback: %s exception: %s\n", m_adFormat.getLabel(), callback, e.getMessage()));
+        sb.append(String.format(Locale.US, "[%s] callback: %s exception: %s ", m_adFormat.getLabel(), callback, e.getMessage()));
 
         this.writeBaseInfo(sb);
 
-        sb.setLength(sb.length() - 1); //remove last '\n'
+        sb.setLength(sb.length() - 1); //remove last ' '
 
         String message = sb.toString();
 
@@ -178,11 +178,11 @@ public class MengineAppLovinBase {
     protected void log(String callback, Map<String, Object> params) {
         StringBuilder sb = new StringBuilder(512);
 
-        sb.append(String.format(Locale.US, "[%s] callback: %s %s\n", m_adFormat.getLabel(), callback, params));
+        sb.append(String.format(Locale.US, "[%s] callback: %s %s ", m_adFormat.getLabel(), callback, params));
 
         this.writeBaseInfo(sb);
 
-        sb.setLength(sb.length() - 1); //remove last '\n'
+        sb.setLength(sb.length() - 1); //remove last ' '
 
         String message = sb.toString();
 
@@ -192,7 +192,7 @@ public class MengineAppLovinBase {
     protected void logMaxAd(String callback, @NonNull MaxAd ad) {
         StringBuilder sb = new StringBuilder(2048);
 
-        sb.append(String.format(Locale.US, "[%s] callback: %s\n", m_adFormat.getLabel(), callback));
+        sb.append(String.format(Locale.US, "[%s] callback: %s ", m_adFormat.getLabel(), callback));
 
         this.writeBaseInfo(sb);
         this.writeMaxAdBaseInfo(sb, ad);
@@ -201,7 +201,7 @@ public class MengineAppLovinBase {
 
         this.writeMaxAdWaterfallInfo(sb, waterfall);
 
-        sb.setLength(sb.length() - 1); //remove last '\n'
+        sb.setLength(sb.length() - 1); //remove last ' '
 
         String message = sb.toString();
 
@@ -211,7 +211,7 @@ public class MengineAppLovinBase {
     protected void logMaxAd(String callback, @NonNull MaxAd ad, Map<String, Object> params) {
         StringBuilder sb = new StringBuilder(2048);
 
-        sb.append(String.format(Locale.US, "[%s] callback: %s %s\n", m_adFormat.getLabel(), callback, params));
+        sb.append(String.format(Locale.US, "[%s] callback: %s %s ", m_adFormat.getLabel(), callback, params));
 
         this.writeBaseInfo(sb);
         this.writeMaxAdBaseInfo(sb, ad);
@@ -220,7 +220,7 @@ public class MengineAppLovinBase {
 
         this.writeMaxAdWaterfallInfo(sb, waterfall);
 
-        sb.setLength(sb.length() - 1); //remove last '\n'
+        sb.setLength(sb.length() - 1); //remove last ' '
 
         String message = sb.toString();
 
@@ -230,7 +230,7 @@ public class MengineAppLovinBase {
     protected void logMaxAdReward(String callback, @NonNull MaxAd ad, MaxReward reward) {
         StringBuilder sb = new StringBuilder(2048);
 
-        sb.append(String.format(Locale.US, "[%s] callback: %s\n", m_adFormat.getLabel(), callback));
+        sb.append(String.format(Locale.US, "[%s] callback: %s ", m_adFormat.getLabel(), callback));
 
         this.writeBaseInfo(sb);
         this.writeMaxAdBaseInfo(sb, ad);
@@ -241,7 +241,7 @@ public class MengineAppLovinBase {
         this.writeMaxAdWaterfallInfo(sb, waterfall);
         this.writeMaxReward(sb, reward);
 
-        sb.setLength(sb.length() - 1); //remove last '\n'
+        sb.setLength(sb.length() - 1); //remove last ' '
 
         String message = sb.toString();
 
@@ -256,18 +256,18 @@ public class MengineAppLovinBase {
         int mediatedNetworkErrorCode = error.getMediatedNetworkErrorCode();
         String mediatedNetworkErrorMessage = error.getMediatedNetworkErrorMessage();
 
-        sb.append(String.format(Locale.US, "[%s] callback: %s\n", m_adFormat.getLabel(), callback));
+        sb.append(String.format(Locale.US, "[%s] callback: %s ", m_adFormat.getLabel(), callback));
 
         this.writeBaseInfo(sb);
 
-        sb.append(String.format(Locale.US, "MaxError: code: %d message: %s\n", errorCode, errorMessage));
-        sb.append(String.format(Locale.US, "MediatedNetwork: code: %d message: %s\n", mediatedNetworkErrorCode, mediatedNetworkErrorMessage));
+        sb.append(String.format(Locale.US, "MaxError: code: %d message: %s ", errorCode, errorMessage));
+        sb.append(String.format(Locale.US, "MediatedNetwork: code: %d message: %s ", mediatedNetworkErrorCode, mediatedNetworkErrorMessage));
 
         MaxAdWaterfallInfo waterfall = error.getWaterfall();
 
         this.writeMaxAdWaterfallInfo(sb, waterfall);
 
-        sb.setLength(sb.length() - 1); //remove last '\n'
+        sb.setLength(sb.length() - 1); //remove last ' '
 
         String message = sb.toString();
 
@@ -275,35 +275,37 @@ public class MengineAppLovinBase {
     }
 
     protected void writeBaseInfo(StringBuilder sb) {
-        sb.append(String.format(Locale.US, "AdUnitId: %s\n", m_adUnitId));
-        sb.append(String.format(Locale.US, "RequestId: %d\n", m_requestId));
-        sb.append(String.format(Locale.US, "RetryAttempt: %d\n", m_retryAttempt));
+        sb.append(String.format(Locale.US, "AdUnitId: %s ", m_adUnitId));
+        sb.append(String.format(Locale.US, "RequestId: %d ", m_requestId));
+        sb.append(String.format(Locale.US, "RetryAttempt: %d ", m_retryAttempt));
     }
 
     protected void writeMaxAdBaseInfo(StringBuilder sb, @NonNull MaxAd ad) {
+        sb.append("{Ad} -> ");
+
         MaxAdFormat format = ad.getFormat();
-        sb.append(String.format(Locale.US, "Format: %s\n", format.getLabel()));
+        sb.append(String.format(Locale.US, "Format: %s ", format.getLabel()));
 
         AppLovinSdkUtils.Size size = ad.getSize();
-        sb.append(String.format(Locale.US, "Size: %d x %d\n", size.getWidth(), size.getHeight()));
+        sb.append(String.format(Locale.US, "Size: %d x %d ", size.getWidth(), size.getHeight()));
 
         String networkName = ad.getNetworkName();
-        sb.append(String.format(Locale.US, "NetworkName: %s\n", networkName));
+        sb.append(String.format(Locale.US, "NetworkName: %s ", networkName));
 
         String networkPlacement = ad.getNetworkPlacement();
-        sb.append(String.format(Locale.US, "NetworkPlacement: %s\n", networkPlacement));
+        sb.append(String.format(Locale.US, "NetworkPlacement: %s ", networkPlacement));
 
         String placement = ad.getPlacement();
-        sb.append(String.format(Locale.US, "Placement: %s\n", placement));
+        sb.append(String.format(Locale.US, "Placement: %s ", placement));
 
         double revenue = ad.getRevenue();
-        sb.append(String.format(Locale.US, "Revenue: %f\n", revenue));
+        sb.append(String.format(Locale.US, "Revenue: %f ", revenue));
 
         String revenuePrecision = ad.getRevenuePrecision();
-        sb.append(String.format(Locale.US, "RevenuePrecision: %s\n", revenuePrecision));
+        sb.append(String.format(Locale.US, "RevenuePrecision: %s ", revenuePrecision));
 
         long requestLatencyMillis = ad.getRequestLatencyMillis();
-        sb.append(String.format(Locale.US, "RequestLatencyMillis: %d\n", requestLatencyMillis));
+        sb.append(String.format(Locale.US, "RequestLatencyMillis: %d ", requestLatencyMillis));
     }
 
     protected void writeMaxAdWaterfallInfo(StringBuilder sb, MaxAdWaterfallInfo waterfall) {
@@ -315,8 +317,10 @@ public class MengineAppLovinBase {
         String waterfallTestName = waterfall.getTestName();
         long waterfallLatencyMillis = waterfall.getLatencyMillis();
 
-        sb.append(String.format(Locale.US, "Waterfall Name: %s and Test Name: %s\n", waterfallName, waterfallTestName));
-        sb.append(String.format(Locale.US, "Waterfall latency was: %d milliseconds\n", waterfallLatencyMillis));
+        sb.append("{Waterfall} -> ");
+        sb.append(String.format(Locale.US, "Name: %s ", waterfallName));
+        sb.append(String.format(Locale.US, "TestName: %s ", waterfallTestName));
+        sb.append(String.format(Locale.US, "Latency: %d ", waterfallLatencyMillis));
 
         List<MaxNetworkResponseInfo> responses = waterfall.getNetworkResponses();
 
@@ -333,7 +337,8 @@ public class MengineAppLovinBase {
         String label = reward.getLabel();
         int amount = reward.getAmount();
 
-        sb.append(String.format(Locale.US, "Reward Label: %s Amount: %d\n", label, amount));
+        sb.append("{Reward} -> ");
+        sb.append(String.format(Locale.US, "Label: %s Amount: %d ", label, amount));
     }
 
     protected void writeMaxNetworkResponseInfo(StringBuilder sb, MaxNetworkResponseInfo networkResponse) {
@@ -346,15 +351,16 @@ public class MengineAppLovinBase {
         long responseLatencyMillis = networkResponse.getLatencyMillis();
         Bundle responseCredentials = networkResponse.getCredentials();
 
-        sb.append(String.format(Locale.US, "Network -> %s\n", responseMediatedNetwork));
-        sb.append(String.format(Locale.US, "...adLoadState: %s\n", responseAdLoadState));
-        sb.append(String.format(Locale.US, "...latency: %d milliseconds\n", responseLatencyMillis));
-        sb.append(String.format(Locale.US, "...credentials: %s\n", responseCredentials));
+        sb.append("{NetworkResponse} -> ");
+        sb.append(String.format(Locale.US, "MediatedNetwork: %s ", responseMediatedNetwork));
+        sb.append(String.format(Locale.US, "AdLoadState: %s ", responseAdLoadState));
+        sb.append(String.format(Locale.US, "LatencyMillis: %d ", responseLatencyMillis));
+        sb.append(String.format(Locale.US, "Credentials: %s ", responseCredentials));
 
         MaxError error = networkResponse.getError();
 
         if (error != null) {
-            sb.append(String.format(Locale.US, "...error: %s\n", error));
+            sb.append(String.format(Locale.US, "Error: %s ", error));
         }
     }
 }

@@ -24,28 +24,28 @@
     NSMutableString * params = [NSMutableString stringWithCapacity:1024];
     
     [params appendString:@"{"];
-    [params appendFormat:@"\"format\": \"%@\",", ad.format.label];
-    [params appendFormat:@", \"size\": [%f, %f],", ad.size.width, ad.size.height];
-    [params appendFormat:@", \"adUnitIdentifier\": \"%@\",", ad.adUnitIdentifier];
-    [params appendFormat:@", \"networkName\": \"%@\",", ad.networkName];
-    [params appendFormat:@", \"networkPlacement\": \"%@\",", ad.networkPlacement];
-    [params appendFormat:@", \"revenue\": \"%lf\",", ad.revenue];
-    [params appendFormat:@", \"revenuePrecision\": \"%@\",", ad.revenuePrecision];
+    [params appendFormat:@"\"format\": \"%@\"", ad.format.label];
+    [params appendFormat:@", \"size\": [%f, %f]", ad.size.width, ad.size.height];
+    [params appendFormat:@", \"adUnitIdentifier\": \"%@\"", ad.adUnitIdentifier];
+    [params appendFormat:@", \"networkName\": \"%@\"", ad.networkName];
+    [params appendFormat:@", \"networkPlacement\": \"%@\"", ad.networkPlacement];
+    [params appendFormat:@", \"revenue\": \"%lf\"", ad.revenue];
+    [params appendFormat:@", \"revenuePrecision\": \"%@\"", ad.revenuePrecision];
     
     if (ad.creativeIdentifier) {
-        [params appendFormat:@", \"creativeIdentifier\": \"%@\",", ad.creativeIdentifier];
+        [params appendFormat:@", \"creativeIdentifier\": \"%@\"", ad.creativeIdentifier];
     }
     
     if (ad.adReviewCreativeIdentifier) {
-        [params appendFormat:@", \"adReviewCreativeIdentifier\": \"%@\",", ad.adReviewCreativeIdentifier];
+        [params appendFormat:@", \"adReviewCreativeIdentifier\": \"%@\"", ad.adReviewCreativeIdentifier];
     }
     
     if (ad.placement) {
-        [params appendFormat:@", \"placement\": \"%@\",", ad.placement];
+        [params appendFormat:@", \"placement\": \"%@\"", ad.placement];
     }
     
     if (ad.DSPName) {
-        [params appendFormat:@", \"DSPName\": \"%@\",", ad.DSPName];
+        [params appendFormat:@", \"DSPName\": \"%@\"", ad.DSPName];
     }
     
     if (ad.DSPIdentifier) {
@@ -61,11 +61,11 @@
     NSMutableString * params = [NSMutableString stringWithCapacity:1024];
     
     [params appendString:@"{"];
-    [params appendFormat:@"\"code\": \"%ld\",", error.code];
-    [params appendFormat:@"\"message\": \"%@\",", error.message];
-    [params appendFormat:@"\"mediated_network_error_code\": \"%ld\",", error.mediatedNetworkErrorCode];
-    [params appendFormat:@"\"mediated_network_error_message\": \"%@\",", error.mediatedNetworkErrorMessage];
-    [params appendFormat:@"\"latency\": \"%lf\"", error.requestLatency];
+    [params appendFormat:@"\"code\": \"%ld\"", error.code];
+    [params appendFormat:@", \"message\": \"%@\"", error.message];
+    [params appendFormat:@", \"mediated_network_error_code\": \"%ld\"", error.mediatedNetworkErrorCode];
+    [params appendFormat:@", \"mediated_network_error_message\": \"%@\"", error.mediatedNetworkErrorMessage];
+    [params appendFormat:@", \"latency\": \"%lf\"", error.requestLatency];
     [params appendString:@"}"];
 
     return params;
@@ -75,8 +75,8 @@
     NSMutableString * params = [NSMutableString stringWithCapacity:256];
     
     [params appendString:@"{"];
-    [params appendFormat:@"\"label\": \"%@\",", reward.label];
-    [params appendFormat:@"\"amount\": \"%ld\"", reward.amount];
+    [params appendFormat:@"\"label\": \"%@\"", reward.label];
+    [params appendFormat:@", \"amount\": \"%ld\"", reward.amount];
     [params appendString:@"}"];
 
     return params;
@@ -114,9 +114,9 @@
 
 - (void) log:(NSString * _Nonnull) callback withMAAd:(MAAd * _Nonnull) ad withMAError:(MAError * _Nonnull) error {
     LOGGER_MESSAGE( "[%s] %s: adUnitId: %s request: %ld ad: %s with error: %s"
-        , [self.m_adFormat.label UTF8String]
+        , [ad.format.label UTF8String]
         , [callback UTF8String]
-        , [self.m_adUnitId UTF8String]
+        , [ad.adUnitIdentifier UTF8String]
         , self.m_requestId
         , [[self getMAAdParams:ad] UTF8String]
         , [[self getMAErrorParams:error] UTF8String]
@@ -135,9 +135,9 @@
 
 - (void) log:(NSString * _Nonnull) callback withMAAd:(MAAd * _Nonnull) ad withMAReward:(MAReward * _Nonnull) reward {
     LOGGER_MESSAGE( "[%s] %s: adUnitId: %s request: %ld with reward lable: %s amount: %ld"
-        , [self.m_adFormat.label UTF8String]
+        , [ad.format.label UTF8String]
         , [callback UTF8String]
-        , [self.m_adUnitId UTF8String]
+        , [ad.adUnitIdentifier UTF8String]
         , self.m_requestId
         , [reward.label UTF8String]
         , reward.amount

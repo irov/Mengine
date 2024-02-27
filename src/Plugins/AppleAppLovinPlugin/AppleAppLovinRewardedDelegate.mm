@@ -13,7 +13,7 @@
                                        amazonSlotId:(NSString * _Nullable) amazonSlotId
                                            provider:(const Mengine::AppleAppLovinRewardedProviderInterfacePtr &) provider
                                           analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
-    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.interstitial analytics:analytics];
+    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.rewarded analytics:analytics];
 
     self.m_provider = provider;
     
@@ -117,7 +117,7 @@
         return NO;
     }
     
-    [self.m_rewardedAd showAd];
+    [self.m_rewardedAd showAdForPlacement:placement];
 
     return YES;
 }
@@ -147,9 +147,9 @@
     [self log:@"didStartAdRequestForAdUnitIdentifier"];
     
     [AppleAnalytics event:@"mng_ad_rewarded_request_started" params:@{
+        @"ad_unit_id": adUnitIdentifier,
         @"request_id": @(self.m_requestId),
-        @"attempt": @(self.m_retryAttempt),
-        @"ad_unit_id": adUnitIdentifier
+        @"attempt": @(self.m_retryAttempt)
     }];
     
     self.m_provider->onAppleAppLovinRewardedDidStartAdRequestForAdUnitIdentifier();
@@ -162,7 +162,7 @@
     [self log:@"didLoadAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_interstitial_loaded" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
         @"ad": [self getMAAdParams:ad]
@@ -177,9 +177,9 @@
     [self log:@"didFailToLoadAdForAdUnitIdentifier" withMAError:error];
     
     [AppleAnalytics event:@"mng_ad_rewarded_load_failed" params:@{
+        @"ad_unit_id": adUnitIdentifier,
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
-        @"ad_unit_id": adUnitIdentifier,
         @"error": [self getMAErrorParams:error],
         @"error_code": @(error.code)
     }];
@@ -193,7 +193,7 @@
     [self log:@"didDisplayAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_rewarded_displayed" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
@@ -206,7 +206,7 @@
     [self log:@"didClickAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_rewarded_clicked" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
@@ -219,7 +219,7 @@
     [self log:@"didHideAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_rewarded_hidden" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
@@ -234,7 +234,7 @@
     [self log:@"didFailToDisplayAd" withMAAd:ad withMAError:error];
     
     [AppleAnalytics event:@"mng_ad_rewarded_display_failed" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
@@ -247,13 +247,13 @@
 
 #pragma mark - MARewardedAdDelegate Protocol
 
-- (void) didStartRewardedVideoForAd:(MAAd *)ad {
+- (void) didStartRewardedVideoForAd:(MAAd *) ad {
     [self log:@"didStartRewardedVideoForAd" withMAAd:ad];
     
     self.m_provider->onAppleAppLovinRewardedDidStartRewardedVideoForAd();
 }
 
-- (void) didCompleteRewardedVideoForAd:(MAAd *)ad {
+- (void) didCompleteRewardedVideoForAd:(MAAd *) ad {
     [self log:@"didCompleteRewardedVideoForAd" withMAAd:ad];
     
     self.m_provider->onAppleAppLovinRewardedDidCompleteRewardedVideoForAd();
@@ -263,7 +263,7 @@
     [self log:@"didRewardUserForAd" withMAAd:ad withMAReward:reward];
     
     [AppleAnalytics event:@"mng_ad_rewarded_reward_user" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad],
@@ -276,11 +276,11 @@
 
 #pragma mark - Revenue Callbacks
 
-- (void)didPayRevenueForAd:(MAAd *)ad {
+- (void)didPayRevenueForAd:(MAAd *) ad {
     [self log:@"didPayRevenueForAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_rewarded_revenue_paid" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"revenue_value": @(ad.revenue),

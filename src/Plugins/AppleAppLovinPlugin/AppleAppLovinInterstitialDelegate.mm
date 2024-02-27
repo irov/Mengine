@@ -14,7 +14,7 @@
                                        amazonSlotId:(NSString * _Nullable) amazonSlotId
                                            provider:(const Mengine::AppleAppLovinInterstitialProviderInterfacePtr &) provider
                                           analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
-    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.rewarded analytics:analytics];
+    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.interstitial analytics:analytics];
     
     self.m_provider = provider;
     
@@ -128,9 +128,9 @@
     [self log:@"didStartAdRequestForAdUnitIdentifier"];
     
     [AppleAnalytics event:@"mng_ad_interstitial_request_started" params:@{
+        @"ad_unit_id": adUnitIdentifier,
         @"request_id": @(self.m_requestId),
-        @"attempt": @(self.m_retryAttempt),
-        @"ad_unit_id": adUnitIdentifier
+        @"attempt": @(self.m_retryAttempt)        
     }];
     
     self.m_provider->onAppleAppLovinInterstitialDidStartAdRequestForAdUnitIdentifier();
@@ -142,7 +142,7 @@
     [self log:@"didLoadAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_interstitial_loaded" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
         @"ad": [self getMAAdParams:ad]
@@ -173,7 +173,7 @@
     [self log:@"didDisplayAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_interstitial_displayed" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
@@ -186,7 +186,7 @@
     [self log:@"didClickAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_interstitial_clicked" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
@@ -199,7 +199,7 @@
     [self log:@"didHideAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_interstitial_hidden" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
@@ -214,7 +214,7 @@
     [self log:@"didFailToDisplayAd" withMAAd:ad withMAError:error];
         
     [AppleAnalytics event:@"mng_ad_interstitial_display_failed" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
@@ -227,11 +227,11 @@
 
 #pragma mark - Revenue Callbacks
 
-- (void)didPayRevenueForAd:(MAAd *)ad {
+- (void)didPayRevenueForAd:(MAAd *) ad {
     [self log:@"didPayRevenueForAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_interstitial_revenue_paid" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"revenue_value": @(ad.revenue),

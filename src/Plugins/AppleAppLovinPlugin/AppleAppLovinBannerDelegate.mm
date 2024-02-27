@@ -105,9 +105,9 @@
     [self log:@"didStartAdRequestForAdUnitIdentifier"];
     
     [AppleAnalytics event:@"mng_ad_banner_request_started" params:@{
+        @"ad_unit_id": adUnitIdentifier,
         @"request_id": @(self.m_requestId),
-        @"attempt": @(self.m_retryAttempt),
-        @"ad_unit_id": adUnitIdentifier
+        @"attempt": @(self.m_retryAttempt)        
     }];
     
     self.m_provider->onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier();
@@ -119,7 +119,7 @@
     [self log:@"didLoadAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_banner_loaded" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"request_id": @(self.m_requestId),
         @"attempt": @(self.m_retryAttempt),
         @"ad": [self getMAAdParams:ad]
@@ -150,7 +150,7 @@
     [self log:@"didClickAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_banner_clicked" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
@@ -163,7 +163,7 @@
     [self log:@"didFailToDisplayAd" withMAAd:ad withMAError:error];
     
     [AppleAnalytics event:@"mng_ad_banner_display_failed" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
@@ -179,7 +179,7 @@
     [self log:@"didExpandAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_banner_expand" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
@@ -192,7 +192,7 @@
     [self log:@"didCollapseAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_banner_collapse" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"ad": [self getMAAdParams:ad]
@@ -221,7 +221,7 @@
     [self log:@"didPayRevenueForAd" withMAAd:ad];
     
     [AppleAnalytics event:@"mng_ad_banner_revenue_paid" params:@{
-        @"ad_unit_id": self.m_adUnitId,
+        @"ad_unit_id": ad.adUnitIdentifier,
         @"placement": ad.placement,
         @"request_id": @(self.m_requestId),
         @"revenue_value": @(ad.revenue),

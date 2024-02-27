@@ -50,7 +50,9 @@ class MengineMain implements Runnable {
             m_semaphoreInit.notifyAll();
         }
 
-        if(m_statusInit != 0) {
+        if (m_statusInit != 0) {
+            //Logging in MengineActivity
+
             return;
         }
 
@@ -59,6 +61,10 @@ class MengineMain implements Runnable {
                 m_semaphoreRun.wait();
             } catch (InterruptedException e) {
                 MengineLog.logError(TAG, "wait semaphore failed: %s", e);
+
+                MengineAnalytics.buildEvent("mng_activity_init_failed")
+                    .addParameterException("run_wait", e)
+                    .logAndFlush();
 
                 return;
             }

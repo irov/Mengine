@@ -216,11 +216,11 @@ namespace Mengine
 
         Char environment[128] = {'\0'};
 
-#if defined(MENGINE_BUILD_PUBLISH)
+#if defined(MENGINE_BUILD_PUBLISH_ENABLE)
         MENGINE_STRCAT( environment, "publish_" );
 #endif
 
-#if defined(MENGINE_MASTER_RELEASE)
+#if defined(MENGINE_MASTER_RELEASE_ENABLE)
         MENGINE_STRCAT( environment, "master_" );
 #endif
 

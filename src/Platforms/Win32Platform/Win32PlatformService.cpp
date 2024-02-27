@@ -4533,7 +4533,7 @@ namespace Mengine
         FILE_SERVICE()
             ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "windows" ) );
 
-#if !defined(MENGINE_MASTER_RELEASE)
+#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
         FILE_SERVICE()
             ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 #endif

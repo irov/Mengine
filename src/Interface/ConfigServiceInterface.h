@@ -24,7 +24,7 @@ namespace Mengine
     public:
         virtual const ConfigInterfacePtr & getDefaultConfig() const = 0;
 
-#if !defined(MENGINE_BUILD_PUBLISH)
+#if !defined(MENGINE_BUILD_PUBLISH_ENABLE)
     public:
         virtual const ConfigInterfacePtr & getPersistentConfig() const = 0;
 #endif

@@ -22,7 +22,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ContentHelper.h"
 
-#if !defined(MENGINE_MASTER_RELEASE)
+#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
 #   include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
 #endif
 
@@ -117,7 +117,7 @@ namespace Mengine
         bool reimport = false;
         bool done = this->importBin_( file_bin, _metadata, _metaVersion, &reimport, _doc );
 
-#if !defined(MENGINE_MASTER_RELEASE)
+#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
         if( reimport == true )
         {
             file_bin = nullptr;
@@ -326,7 +326,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-#if !defined(MENGINE_MASTER_RELEASE)
+#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
     //////////////////////////////////////////////////////////////////////////
     bool LoaderService::openBin_( const ContentInterfacePtr & _content, InputStreamInterfacePtr * const _stream, bool * const _exist, const DocumentInterfacePtr & _doc ) const
     {

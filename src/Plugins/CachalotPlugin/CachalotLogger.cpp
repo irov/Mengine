@@ -187,7 +187,7 @@ namespace Mengine
             js_object_add_field_string( j, jrecord, JS_CONST_STRING( "service" ), message.category );
             js_object_add_field_string( j, jrecord, JS_CONST_STRING( "message" ), message.data );
 
-#if defined(MENGINE_MASTER_RELEASE)
+#if defined(MENGINE_MASTER_RELEASE_ENABLE)
             js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "build.environment" ), JS_CONST_STRING( "master" ) );
 #else
             js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "build.environment" ), JS_CONST_STRING( "dev" ) );

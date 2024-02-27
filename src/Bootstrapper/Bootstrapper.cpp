@@ -1793,7 +1793,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::runDevModules_()
     {
-#if defined(MENGINE_MASTER_RELEASE)
+#if defined(MENGINE_MASTER_RELEASE_ENABLE)
         bool devmodules = false;
 #else
 #   if defined(MENGINE_DEBUG)
@@ -1909,7 +1909,7 @@ namespace Mengine
             return;
         }
 
-#if defined(MENGINE_MASTER_RELEASE)
+#if defined(MENGINE_MASTER_RELEASE_ENABLE)
         bool devmodules = false;
 #else
 #   if defined(MENGINE_DEBUG)

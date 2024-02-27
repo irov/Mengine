@@ -559,13 +559,13 @@ namespace Mengine
             this->addGlobalModuleT( "_MOBILE", false );
 #endif
 
-#if defined(MENGINE_MASTER_RELEASE)
+#if defined(MENGINE_MASTER_RELEASE_ENABLE)
             this->addGlobalModuleT( "_MASTER_RELEASE", true );
 #else
             this->addGlobalModuleT( "_MASTER_RELEASE", false );
 #endif
 
-#if defined(MENGINE_BUILD_PUBLISH)
+#if defined(MENGINE_BUILD_PUBLISH_ENABLE)
             this->addGlobalModuleT( "_BUILD_PUBLISH", true );
 #else
             this->addGlobalModuleT( "_BUILD_PUBLISH", false );

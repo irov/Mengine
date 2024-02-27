@@ -503,9 +503,11 @@ namespace Mengine
 
         this->clearHistory();
 
+#if defined(MENGINE_BUILD_PUBLISH_ENABLE)
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexMessageBlock );
 
         m_threadly = true;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::processMessages_( const ThreadIdentityRunnerInterfacePtr & _runner )

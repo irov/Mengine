@@ -19,7 +19,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ResourceImageDefault::ResourceImageDefault()
-#if !defined(MENGINE_MASTER_RELEASE)
+#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
         : m_forcePremultiply( false )
 #endif
     {
@@ -44,7 +44,7 @@ namespace Mengine
 
         uint32_t decoder_options = DF_IMAGE_NONE;
 
-#if !defined(MENGINE_MASTER_RELEASE)
+#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
         bool Engine_ForcePremultiplyAlpha = CONFIG_VALUE( "Engine", "ForcePremultiplyAlpha", false );
 
         if( Engine_ForcePremultiplyAlpha == true )
@@ -95,7 +95,7 @@ namespace Mengine
     {
         ResourceImage::_release();
 
-#if !defined(MENGINE_MASTER_RELEASE)
+#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
         if( m_forcePremultiply == true )
         {
             this->setPremultiply( false );

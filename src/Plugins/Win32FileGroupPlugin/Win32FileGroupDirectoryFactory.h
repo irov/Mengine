@@ -1,10 +1,10 @@
-#include "Kernel/Factory.h"
+#include "Kernel/FactoryWithoutMutex.h"
 #include "Kernel/FilePath.h"
 
 namespace Mengine
 {
     class Win32FileGroupDirectoryFactory
-        : public Factory
+        : public FactoryWithoutMutex
     {
         DECLARE_FACTORABLE( Win32FileGroupDirectoryFactory );
 

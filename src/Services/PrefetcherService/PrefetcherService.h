@@ -10,8 +10,7 @@
 #include "Kernel/Hashtable2.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class PrefetcherService
         : public ServiceBase<PrefetcherServiceInterface>
     {
@@ -69,6 +68,5 @@ namespace Mengine
 
         typedef Hashtable2<FileGroupInterfacePtr, FilePath, PrefetchReceiverPtr> HashtablePrefetchReceiver;
         HashtablePrefetchReceiver m_prefetchReceivers;
-    };
-    //////////////////////////////////////////////////////////////////////////
+    };    
 }

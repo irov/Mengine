@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/Factory.h"
+#include "Kernel/FactoryWithoutMutex.h"
 #include "Kernel/Typename.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryAllocator.h"
@@ -9,7 +9,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    template<class Type, uint32_t Count, class F = Factory>
+    template<class Type, uint32_t Count, class F = FactoryWithoutMutex>
     class FactoryPool
         : public F
     {
@@ -44,18 +44,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        template<class Type, uint32_t Count, class F = Factory>
-        IntrusivePtr<F> makeFactoryPool( const DocumentInterfacePtr & _doc )
+        template<class Type, uint32_t Count, class F = FactoryWithoutMutex>
+        FactoryInterfacePtr makeFactoryPool( const DocumentInterfacePtr & _doc )
         {
-            IntrusivePtr<F> factory = Helper::makeFactorableUnique<FactoryPool<Type, Count, F>>( _doc );
+            FactoryInterfacePtr factory = Helper::makeFactorableUnique<FactoryPool<Type, Count, F>>( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory );
 
             const ConstString & type = Type::getFactorableType();
 
-            factory->initialize( type );
+            factory->setType( type );
 
-            return IntrusivePtr<F>( factory );
+            return factory;
         }
     }
     //////////////////////////////////////////////////////////////////////////

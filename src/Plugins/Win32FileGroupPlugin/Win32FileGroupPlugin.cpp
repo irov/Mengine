@@ -5,11 +5,13 @@
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Win32FileGroupDirectoryFactory.h"
+#include "Win32FileGroupDirectory.h"
 
-#include "Kernel/FactoryDefault.h"
+#include "Kernel/FactoryHelper.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/DocumentHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Win32FileGroup, Mengine::Win32FileGroupPlugin )
@@ -27,7 +29,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupPlugin::_initializePlugin()
     {
-        VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), Helper::makeFactory<Win32FileGroupDirectoryFactory>( MENGINE_DOCUMENT_FACTORABLE, FilePath::none() ), MENGINE_DOCUMENT_FACTORABLE );
+        FactoryInterfacePtr factoryGlobalFileGroupDirectory = Helper::makeFactory<Win32FileGroupDirectoryFactory, Win32FileGroupDirectory>( MENGINE_DOCUMENT_FACTORABLE, FilePath::none() );
+
+        VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), factoryGlobalFileGroupDirectory, MENGINE_DOCUMENT_FACTORABLE );
 
         Char currentPath[MENGINE_MAX_PATH] = {'\0'};
         size_t currentPathLen = PLATFORM_SERVICE()
@@ -35,7 +39,9 @@ namespace Mengine
 
         FilePath relationPath = Helper::stringizeFilePathSize( currentPath, (FilePath::size_type)currentPathLen );
 
-        VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ), Helper::makeFactory<Win32FileGroupDirectoryFactory>( MENGINE_DOCUMENT_FACTORABLE, relationPath ), MENGINE_DOCUMENT_FACTORABLE );
+        FactoryInterfacePtr factoryDirFileGroupDirectory = Helper::makeFactory<Win32FileGroupDirectoryFactory, Win32FileGroupDirectory>( MENGINE_DOCUMENT_FACTORABLE, relationPath );
+
+        VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ), factoryDirFileGroupDirectory, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

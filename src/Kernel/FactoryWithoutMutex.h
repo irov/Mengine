@@ -1,16 +1,17 @@
 #pragma once
 
 #include "Kernel/FactoryBase.h"
+#include "Kernel/ThreadGuard.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class FactoryWithMutex
+    class FactoryWithoutMutex
         : public FactoryBase
     {
     public:
-        FactoryWithMutex();
-        ~FactoryWithMutex() override;
+        FactoryWithoutMutex();
+        ~FactoryWithoutMutex() override;
 
     public:
         FactorablePointer createObject( const DocumentInterfacePtr & _doc ) override;
@@ -21,9 +22,9 @@ namespace Mengine
         const ThreadMutexInterfacePtr & getMutex() const override;
 
     protected:
-        ThreadMutexInterfacePtr m_mutex;
+        MENGINE_THREAD_GUARD_INIT( FactoryWithoutMutex );
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<FactoryWithMutex, FactoryInterface> FactoryWithMutexPtr;
+    typedef IntrusivePtr<FactoryWithoutMutex, FactoryInterface> FactoryWithoutMutexPtr;
     //////////////////////////////////////////////////////////////////////////
 }

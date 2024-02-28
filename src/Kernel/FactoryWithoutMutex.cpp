@@ -1,45 +1,38 @@
-#include "FactoryWithMutex.h"
+#include "FactoryWithoutMutex.h"
 
-#include "Kernel/ThreadMutexScope.h"
+#include "ThreadGuardScope.h"
+#include "Kernel/AssertionNotImplemented.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    FactoryWithMutex::FactoryWithMutex()
+    FactoryWithoutMutex::FactoryWithoutMutex()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    FactoryWithMutex::~FactoryWithMutex()
+    FactoryWithoutMutex::~FactoryWithoutMutex()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer FactoryWithMutex::createObject( const DocumentInterfacePtr & _doc )
+    FactorablePointer FactoryWithoutMutex::createObject( const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
-        MENGINE_ASSERTION_FATAL( m_type.empty() == false );
+        MENGINE_THREAD_GUARD_SCOPE( FactoryWithoutMutex, this, "FactoryWithoutMutex::createObject" );
 
-        if( m_mutex != nullptr )
-        {
-            m_mutex->lock();
-        }
+        MENGINE_ASSERTION_FATAL( m_type.empty() == false );
 
         Factorable * object = this->_createObject();
 
         MENGINE_ASSERTION_MEMORY_PANIC( object );
+
+        m_count.incref();
 
         IntrusivePtrBase::intrusive_ptr_add_ref( this );
 
 #if defined(MENGINE_DEBUG)
         m_factorables.push_back( object );
 #endif
-
-        if( m_mutex != nullptr )
-        {
-            m_mutex->unlock();
-        }
-
-        m_count.incref();
 
         object->setFactory( this );
 
@@ -50,21 +43,12 @@ namespace Mengine
         return object;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryWithMutex::destroyObject( Factorable * _object )
+    void FactoryWithoutMutex::destroyObject( Factorable * _object )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+        MENGINE_THREAD_GUARD_SCOPE( FactoryWithoutMutex, this, "FactoryWithoutMutex::destroyObject" );
 
 #if defined(MENGINE_DEBUG)
         m_factorables.remove( _object );
-#endif
-
-#if defined(MENGINE_DOCUMENT_ENABLE)
-        DocumentInterfacePtr doc = _object->getDocument();
-        MENGINE_UNUSED( doc );
-
-#if defined(MENGINE_RELEASE)
-        _object->setDocument( nullptr );
-#endif
 #endif
 
         this->_destroyObject( _object );
@@ -74,14 +58,20 @@ namespace Mengine
         IntrusivePtrBase::intrusive_ptr_dec_ref( this );
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryWithMutex::setMutex( const ThreadMutexInterfacePtr & _mutex )
+    void FactoryWithoutMutex::setMutex( const ThreadMutexInterfacePtr & _mutex )
     {
-        m_mutex = _mutex;
+        MENGINE_UNUSED( _mutex );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    const ThreadMutexInterfacePtr & FactoryWithMutex::getMutex() const
+    const ThreadMutexInterfacePtr & FactoryWithoutMutex::getMutex() const
     {
-        return m_mutex;
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return ThreadMutexInterfacePtr::none();
     }
     //////////////////////////////////////////////////////////////////////////
 }

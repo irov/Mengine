@@ -21,7 +21,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class RenderMaterialService
         : public ServiceBase<RenderMaterialServiceInterface>
     {

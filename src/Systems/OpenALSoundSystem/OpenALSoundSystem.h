@@ -11,8 +11,7 @@
 #include "Kernel/ServiceBase.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class OpenALSoundSystem
         : public ServiceBase<SoundSystemInterface>
     {
@@ -61,6 +60,5 @@ namespace Mengine
         FactoryInterfacePtr m_factoryOpenALSoundBuffer;
         FactoryInterfacePtr m_factoryOpenALSoundBufferStream;
         FactoryInterfacePtr m_factoryOpenALSoundSource;
-    };
-    //////////////////////////////////////////////////////////////////////////
+    };    
 }

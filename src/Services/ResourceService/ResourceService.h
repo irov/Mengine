@@ -16,7 +16,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class ResourceService
         : public ServiceBase<ResourceServiceInterface>
     {

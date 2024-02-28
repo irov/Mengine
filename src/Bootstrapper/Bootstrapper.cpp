@@ -2107,8 +2107,6 @@ namespace Mengine
                 ->unloadPlugins();
         }
 
-        this->unregisterBaseTypes_();
-
         SERVICE_FINALIZE( LoaderService );
         SERVICE_FINALIZE( TimerService );
         SERVICE_FINALIZE( TimelineService );
@@ -2122,8 +2120,7 @@ namespace Mengine
         SERVICE_FINALIZE( CodecService );
         SERVICE_FINALIZE( SoundService );
         SERVICE_FINALIZE( ConverterService );
-        SERVICE_FINALIZE( RenderService );
-        SERVICE_FINALIZE( PrototypeService );
+        SERVICE_FINALIZE( RenderService );        
         SERVICE_FINALIZE( RenderMaterialService );
         SERVICE_FINALIZE( RenderTextureService );
         SERVICE_FINALIZE( ArchiveService );
@@ -2170,15 +2167,15 @@ namespace Mengine
         SERVICE_FINALIZE( iOSEnvironmentService );
 #endif
 
+        this->unregisterBaseTypes_();
+
         SERVICE_FINALIZE( AnalyticsService );
         SERVICE_FINALIZE( StatisticService );
 
         SERVICE_FINALIZE( PlatformService );
         SERVICE_FINALIZE( LoggerService );
         SERVICE_FINALIZE( MemoryService );
-        SERVICE_FINALIZE( FactoryService );
         SERVICE_FINALIZE( OptionsService );
-        SERVICE_FINALIZE( NotificationService );
         SERVICE_FINALIZE( TimeSystem );
         SERVICE_FINALIZE( DateTimeSystem );
         SERVICE_FINALIZE( UnicodeSystem );
@@ -2186,6 +2183,9 @@ namespace Mengine
         SERVICE_FINALIZE( PreferencesSystem );
         SERVICE_FINALIZE( CryptographySystem );
         SERVICE_FINALIZE( PlatformSystem );
+        SERVICE_FINALIZE( NotificationService );
+        SERVICE_FINALIZE( PrototypeService );
+        SERVICE_FINALIZE( FactoryService );
 
         SERVICE_DESTROY( SceneService );
         SERVICE_DESTROY( GameService );

@@ -48,7 +48,7 @@ namespace Mengine
             factorable->setDocument( _doc );
 #endif
 
-            return IntrusivePtr<Type>( factorable );
+            return IntrusivePtr<Type>::from( factorable );
         }
     }
     //////////////////////////////////////////////////////////////////////////

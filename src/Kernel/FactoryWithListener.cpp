@@ -23,7 +23,7 @@ namespace Mengine
             m_destroyListener->onFactoryDestroyObject( _object );
         }
 
-        Factory::destroyObject( _object );
+        FactoryWithoutMutex::destroyObject( _object );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -1,9 +1,6 @@
 #pragma once
 
 #include "Config/Atomic.h"
-#include "Config/Char.h"
-
-#include <thread>
 
 //////////////////////////////////////////////////////////////////////////
 #if !defined(MENGINE_THREAD_GUARD)
@@ -27,15 +24,9 @@ namespace Mengine
         ~ThreadGuard();
 
     public:
-        std::thread::id getLockThreadId() const;
-
-    public:
-        void check( const Char * _doc ) const;
         bool lock( bool _value ) const;
 
     protected:
-        std::thread::id m_initThreadId;
-        mutable std::thread::id m_lockThreadId;
         mutable AtomicBool m_lock;
     };
 }
@@ -46,17 +37,7 @@ namespace Mengine
     public:\
     Mengine::ThreadGuard __mengine_thread_guard##Type\
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_THREAD_GUARD_CHECK(Type, Self, Doc)\
-    Self->__mengine_thread_guard##Type.check( Doc )
-    //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_THREAD_GUARD_RESET(Type, Self)\
-    Self->__mengine_thread_guard##Type.reset()
-    //////////////////////////////////////////////////////////////////////////
 #else
-    //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_THREAD_GUARD_INIT(Type)
-    //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_THREAD_GUARD_CHECK(Type, Self, Doc)
     //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_THREAD_GUARD_RESET(Type, Self)
     //////////////////////////////////////////////////////////////////////////

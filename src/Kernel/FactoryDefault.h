@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/Factory.h"
+#include "Kernel/FactoryWithoutMutex.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Typename.h"
 
@@ -9,7 +9,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     template<class Type>
     class FactoryDefault
-        : public Factory
+        : public FactoryWithoutMutex
     {
     public:
         FactoryDefault()
@@ -36,18 +36,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        template<class Type>
-        FactoryInterfacePtr makeFactoryDefault( const DocumentInterfacePtr & _doc )
+        template<class Type, class ... Args>
+        FactoryInterfacePtr makeFactoryDefault( const DocumentInterfacePtr & _doc, Args && ... _args )
         {
             MENGINE_UNUSED( _doc );
 
-            FactoryPtr factory = Helper::makeFactorableUnique<FactoryDefault<Type>>( _doc );
+            FactoryInterfacePtr factory = Helper::makeFactorableUnique<FactoryDefault<Type>>( _doc, std::forward<Args &&>( _args ) ... );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory );
 
             const ConstString & type = Type::getFactorableType();
 
-            factory->initialize( type );
+            factory->setType( type );
 
             return factory;
         }

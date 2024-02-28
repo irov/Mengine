@@ -18,6 +18,7 @@ namespace Mengine
         : public ServantInterface
     {
     public:
+        virtual void setType( const ConstString & _type ) = 0;
         virtual const ConstString & getType() const = 0;
 
     public:

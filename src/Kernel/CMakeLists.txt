@@ -987,16 +987,19 @@ Factory
     FactorablePointer.h
     FactorableUnique.h
     FactorablePlugin.h
-    Factory.h
-    Factory.cpp
+    FactoryBase.h
+    FactoryBase.cpp
     FactoryStorage.h
     FactoryWithListener.h
     FactoryWithListener.cpp
     FactoryWithMutex.h
     FactoryWithMutex.cpp
+    FactoryWithoutMutex.h
+    FactoryWithoutMutex.cpp
     FactoryDefault.h
     FactoryPool.h
     FactoryPoolWithListener.h
+    FactoryHelper.h
 )
 
 ADD_FILTER(

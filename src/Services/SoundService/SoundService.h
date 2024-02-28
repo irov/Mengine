@@ -16,7 +16,6 @@
 
 namespace Mengine
 {
-    ////////////////////////////////////////////////////////////////////////
     class SoundService
         : public ServiceBase<SoundServiceInterface>
         , public TimepipeInterface

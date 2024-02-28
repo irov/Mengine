@@ -9,6 +9,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/FactoryWithMutex.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdArg.h"

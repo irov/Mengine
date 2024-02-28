@@ -15,8 +15,8 @@ namespace Mengine
         ~FactoryWithMutex() override;
 
     public:
-        void setMutex( const ThreadMutexInterfacePtr & _mutex );
-        const ThreadMutexInterfacePtr & getMutex() const;
+        void setMutex( const ThreadMutexInterfacePtr & _mutex ) override;
+        const ThreadMutexInterfacePtr & getMutex() const override;
 
     public:
         FactorablePointer createObject( const DocumentInterfacePtr & _doc ) override;

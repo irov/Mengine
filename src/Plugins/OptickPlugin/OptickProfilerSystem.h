@@ -1,12 +1,11 @@
 #pragma once
 
 #include "Interface/ProfilerSystemInterface.h"
-#include "Interface/ThreadMutexInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "OptickProfilerDescription.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/FactoryWithMutex.h"
 #include "Kernel/Vector.h"
 
 #include "Config/Atomic.h"
@@ -42,12 +41,12 @@ namespace Mengine
 
         ThreadMutexInterfacePtr m_mutex;
 
-        FactoryWithMutexPtr m_factoryThreadProfilers;
-        FactoryWithMutexPtr m_factoryFrameProfilers;
-        FactoryWithMutexPtr m_factoryCategoryProfilers;
-        FactoryWithMutexPtr m_factoryDescriptions;
+        FactoryInterfacePtr m_factoryThreadProfilers;
+        FactoryInterfacePtr m_factoryFrameProfilers;
+        FactoryInterfacePtr m_factoryCategoryProfilers;
+        FactoryInterfacePtr m_factoryDescriptions;
 
         typedef Vector<OptickProfilerDescriptionPtr> VectorProfilerDescriptions;
-        VectorProfilerDescriptions m_descriptions;        
+        VectorProfilerDescriptions m_descriptions;
     };
 }

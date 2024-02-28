@@ -4,6 +4,7 @@
 #include "Interface/FactoryServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionNotImplemented.h"
 
 #if defined(MENGINE_DEBUG)
 #   include "Kernel/NotificationHelper.h"
@@ -133,6 +134,22 @@ namespace Mengine
         uint32_t count = m_count.getReferenceCount();
 
         return count;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Factory::setMutex( const ThreadMutexInterfacePtr & _mutex )
+    {
+        MENGINE_UNUSED( _mutex );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ThreadMutexInterfacePtr & Factory::getMutex() const
+    {
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return ThreadMutexInterfacePtr::none();
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_DEBUG)

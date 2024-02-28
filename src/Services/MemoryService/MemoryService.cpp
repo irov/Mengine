@@ -9,6 +9,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/FactoryWithMutex.h"
 
 #include "Config/Algorithm.h"
 

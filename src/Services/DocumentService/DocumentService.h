@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Interface/DocumentServiceInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/FactoryWithMutex.h"
 
 namespace Mengine
 {
@@ -22,6 +22,6 @@ namespace Mengine
         DocumentInterfacePtr createDocument( const DocumentInterfacePtr & _parent, const Char * _modulePath, const Char * _file, const Char * _function, uint32_t _line, const Char * _format, ... ) override;
 
     protected:
-        FactoryWithMutexPtr m_factoryDocument;
+        FactoryInterfacePtr m_factoryDocument;
     };
 }

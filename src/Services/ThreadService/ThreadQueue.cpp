@@ -5,6 +5,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/FactoryWithMutex.h"
 
 #include "Kernel/DocumentHelper.h"
 

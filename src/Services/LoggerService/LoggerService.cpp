@@ -9,6 +9,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/FactoryWithMutex.h"
 #include "Kernel/ThreadSharedMutexScope.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
@@ -78,7 +79,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::_initializeService()
     {
-        m_factoryLoggerRecord = Helper::makeFactoryPool<LoggerRecord, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryLoggerRecord = Helper::makeFactoryPool<LoggerRecord, 32, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+
+        ThreadMutexInterfacePtr loggerFactoryMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( loggerFactoryMutex );
+
+        m_factoryLoggerRecord->setMutex( loggerFactoryMutex );
 
         bool OPTION_nologs = HAS_OPTION( "nologs" );
 

@@ -45,6 +45,10 @@ namespace Mengine
         bool isEmptyObjects() const override;
         uint32_t getCountObject() const override;
 
+    public:
+        void setMutex( const ThreadMutexInterfacePtr & _mutex ) override;
+        const ThreadMutexInterfacePtr & getMutex() const override;
+
     protected:
         virtual Factorable * _createObject() = 0;
         virtual void _destroyObject( Factorable * _object ) = 0;

@@ -67,11 +67,11 @@ namespace Mengine
         ThreadMutexInterfacePtr m_memoryFactoryMutex;
         ThreadMutexInterfacePtr m_memoryCacheMutex;
 
-        FactoryWithMutexPtr m_factoryMemoryBuffer;
-        FactoryWithMutexPtr m_factoryMemoryProxy;
-        FactoryWithMutexPtr m_factoryMemoryCacheBuffer;
-        FactoryWithMutexPtr m_factoryMemoryCacheInput;
-        FactoryWithMutexPtr m_factoryMemoryProxyInput;
-        FactoryWithMutexPtr m_factoryMemoryInput;
+        FactoryInterfacePtr m_factoryMemoryBuffer;
+        FactoryInterfacePtr m_factoryMemoryProxy;
+        FactoryInterfacePtr m_factoryMemoryCacheBuffer;
+        FactoryInterfacePtr m_factoryMemoryCacheInput;
+        FactoryInterfacePtr m_factoryMemoryProxyInput;
+        FactoryInterfacePtr m_factoryMemoryInput;
     };
 }

@@ -1,9 +1,8 @@
 #pragma once
 
 #include "Interface/ThreadQueueInterface.h"
-#include "Interface/ThreadMutexInterface.h"
+#include "Interface/FactoryInterface.h"
 
-#include "Kernel/FactoryWithMutex.h"
 #include "Kernel/ThreadTaskPacket.h"
 #include "Kernel/ConstString.h"
 
@@ -60,7 +59,7 @@ namespace Mengine
         typedef Vector<ThreadTaskInterfacePtr> VectorThreadTasks;
         VectorThreadTasks m_currentThreadTasks;
 
-        FactoryWithMutexPtr m_factoryPoolTaskPacket;
+        FactoryInterfacePtr m_factoryPoolTaskPacket;
 
         bool m_cancel;
     };

@@ -16,6 +16,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/FactoryWithMutex.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ProfilerSystem, Mengine::OptickProfilerSystem );

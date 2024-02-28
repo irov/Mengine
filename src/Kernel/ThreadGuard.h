@@ -2,7 +2,8 @@
 
 #include "Config/Atomic.h"
 #include "Config/Char.h"
-#include "Config/Thread.h"
+
+#include <thread>
 
 //////////////////////////////////////////////////////////////////////////
 #if !defined(MENGINE_THREAD_GUARD)
@@ -26,16 +27,15 @@ namespace Mengine
         ~ThreadGuard();
 
     public:
-        ThreadId getLockThreadId() const;
+        std::thread::id getLockThreadId() const;
 
     public:
-        void reset();
         void check( const Char * _doc ) const;
         bool lock( bool _value ) const;
 
     protected:
-        ThreadId m_initThreadId;
-        mutable ThreadId m_lockThreadId;
+        std::thread::id m_initThreadId;
+        mutable std::thread::id m_lockThreadId;
         mutable AtomicBool m_lock;
     };
 }

@@ -40,29 +40,16 @@ namespace Mengine
         m_factoryCategoryProfilers = Helper::makeFactoryPool<OptickCategoryProfiler, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryDescriptions = Helper::makeFactoryPool<OptickProfilerDescription, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
 
-        SERVICE_WAIT( ThreadSystemInterface, [this]()
-        {
-            ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr mutexFactory = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-            m_factoryThreadProfilers->setMutex( mutex );
-            m_factoryFrameProfilers->setMutex( mutex );
-            m_factoryCategoryProfilers->setMutex( mutex );
-            m_factoryDescriptions->setMutex( mutex );
+        m_factoryThreadProfilers->setMutex( mutexFactory );
+        m_factoryFrameProfilers->setMutex( mutexFactory );
+        m_factoryCategoryProfilers->setMutex( mutexFactory );
+        m_factoryDescriptions->setMutex( mutexFactory );
 
-            m_mutex = mutex;
+        ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-            return true;
-        } );
-
-        SERVICE_LEAVE( ThreadSystemInterface, [this]()
-        {
-            m_factoryThreadProfilers->setMutex( nullptr );
-            m_factoryFrameProfilers->setMutex( nullptr );
-            m_factoryCategoryProfilers->setMutex( nullptr );
-            m_factoryDescriptions->setMutex( nullptr );
-
-            m_mutex = nullptr;
-        } );
+        m_mutex = mutex;
 
         return true;
     }
@@ -75,6 +62,11 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryFrameProfilers );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryCategoryProfilers );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDescriptions );
+
+        m_factoryThreadProfilers->setMutex( nullptr );
+        m_factoryFrameProfilers->setMutex( nullptr );
+        m_factoryCategoryProfilers->setMutex( nullptr );
+        m_factoryDescriptions->setMutex( nullptr );
 
         m_factoryThreadProfilers = nullptr;
         m_factoryFrameProfilers = nullptr;

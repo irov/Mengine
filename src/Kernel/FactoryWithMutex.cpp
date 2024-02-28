@@ -13,21 +13,42 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     FactoryWithMutex::FactoryWithMutex()
+#if defined(MENGINE_DEBUG)
+        : m_register( false )
+#endif
     {
+#if defined(MENGINE_DEBUG)
+        if( SERVICE_IS_INITIALIZE( FactoryServiceInterface ) == true )
+        {
+            FACTORY_SERVICE()
+                ->registerFactory( this );
+
+            m_register = true;
+        }
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     FactoryWithMutex::~FactoryWithMutex()
     {
+#if defined(MENGINE_DEBUG)
+        if( m_register == true )
+        {
+            FACTORY_SERVICE()
+                ->unregisterFactory( this );
+        }
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryWithMutex::setMutex( const ThreadMutexInterfacePtr & _mutex )
+    bool FactoryWithMutex::initialize( const ConstString & _type )
     {
-        m_mutex = _mutex;
+        m_type = _type;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ThreadMutexInterfacePtr & FactoryWithMutex::getMutex() const
+    void FactoryWithMutex::finalize()
     {
-        return m_mutex;
+        m_type.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer FactoryWithMutex::createObject( const DocumentInterfacePtr & _doc )
@@ -64,31 +85,11 @@ namespace Mengine
         object->setDocument( _doc );
 #endif
 
-        //FixMe rework to intrusive list
-
-//#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
-//        if( SERVICE_IS_INITIALIZE( FactoryServiceInterface ) == true )
-//        {
-//            FACTORY_SERVICE()
-//                ->debugFactoryCreateObject( this, object );
-//        }
-//#endif
-
         return object;
     }
     //////////////////////////////////////////////////////////////////////////
     void FactoryWithMutex::destroyObject( Factorable * _object )
     {
-        //FixMe rework to intrusive list
-        
-//#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
-//        if( SERVICE_IS_INITIALIZE( FactoryServiceInterface ) == true )
-//        {
-//            FACTORY_SERVICE()
-//                ->debugFactoryDestroyObject( this, _object );
-//        }
-//#endif
-
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
 #if defined(MENGINE_DEBUG)
@@ -101,5 +102,49 @@ namespace Mengine
 
         IntrusivePtrBase::intrusive_ptr_dec_ref( this );
     }
+    //////////////////////////////////////////////////////////////////////////
+    bool FactoryWithMutex::isEmptyObjects() const
+    {
+        uint32_t counter = m_count.getReferenceCount();
+
+        if( counter != 0 )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t FactoryWithMutex::getCountObject() const
+    {
+        uint32_t count = m_count.getReferenceCount();
+
+        return count;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FactoryWithMutex::setMutex( const ThreadMutexInterfacePtr & _mutex )
+    {
+        m_mutex = _mutex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ThreadMutexInterfacePtr & FactoryWithMutex::getMutex() const
+    {
+        return m_mutex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_DEBUG)
+    //////////////////////////////////////////////////////////////////////////
+    void FactoryWithMutex::foreachFactorables( const LambdaFactorable & _lambda )
+    {
+        for( Factorable * factorable : m_factorables )
+        {
+            if( _lambda( factorable ) == false )
+            {
+                break;
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
 }

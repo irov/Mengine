@@ -1,7 +1,5 @@
 #include "ThreadGuard.h"
 
-#include "Interface/ThreadSystemInterface.h"
-
 #include "Kernel/Crash.h"
 
 namespace Mengine
@@ -9,37 +7,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadGuard::ThreadGuard()
         : m_lock( false )
-        , m_lockThreadId( 0 )
+        , m_lockThreadId( std::this_thread::get_id() )
     {
-        ThreadId id = THREAD_SYSTEM()
-            ->getCurrentThreadId();
-
-        m_initThreadId = id;
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadGuard::~ThreadGuard()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadId ThreadGuard::getLockThreadId() const
+    std::thread::id ThreadGuard::getLockThreadId() const
     {
         return m_lockThreadId;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadGuard::reset()
-    {
-        m_initThreadId = 0;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void ThreadGuard::check( const Char * _doc ) const
     {
-        if( m_initThreadId == 0 )
-        {
-            return;
-        }
-
-        ThreadId id = THREAD_SYSTEM()
-            ->getCurrentThreadId();
+        std::thread::id id = std::this_thread::get_id();
 
         if( m_initThreadId == id )
         {
@@ -54,8 +37,7 @@ namespace Mengine
         bool lock = m_lock;
 
         //ToDo
-        m_lockThreadId = THREAD_SYSTEM()
-            ->getCurrentThreadId();
+        m_lockThreadId = std::this_thread::get_id();;
 
         m_lock = _value;
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
 #include "Interface/DocumentInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
@@ -15,7 +15,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class FactoryInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual const ConstString & getType() const = 0;

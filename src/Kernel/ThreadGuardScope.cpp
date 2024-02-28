@@ -1,8 +1,5 @@
 #include "ThreadGuardScope.h"
 
-#include "Interface/ThreadSystemInterface.h"
-#include "Interface/ThreadServiceInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Crash.h"
 
@@ -16,23 +13,6 @@ namespace Mengine
     {
         if( m_guard.lock( true ) == true )
         {
-            ThreadId lockThreadId = m_guard.getLockThreadId();
-
-            const ConstString & lockThreadName = THREAD_SERVICE()
-                ->findThreadNameById( lockThreadId );
-
-            ThreadId currentThreadId = THREAD_SYSTEM()
-                ->getCurrentThreadId();
-
-            const ConstString & currentThreadName = THREAD_SERVICE()
-                ->findThreadNameById( currentThreadId );
-
-            LOGGER_ASSERTION( "thread safe issue: [%s] current thread '%s' lock thread '%s'"
-                , _doc
-                , currentThreadName.c_str()
-                , lockThreadName.c_str()
-            );
-
             Helper::crash( m_doc );
         }
     }
@@ -41,23 +21,6 @@ namespace Mengine
     {
         if( m_guard.lock( false ) == false )
         {
-            ThreadId lockThreadId = m_guard.getLockThreadId();
-
-            const ConstString & lockThreadName = THREAD_SERVICE()
-                ->findThreadNameById( lockThreadId );
-
-            ThreadId currentThreadId = THREAD_SYSTEM()
-                ->getCurrentThreadId();
-
-            const ConstString & currentThreadName = THREAD_SERVICE()
-                ->findThreadNameById( currentThreadId );
-
-            LOGGER_ASSERTION( "thread safe issue: [%s] current thread '%s' lock thread '%s'"
-                , m_doc
-                , currentThreadName.c_str()
-                , lockThreadName.c_str()
-            );
-
             Helper::crash( m_doc );
         }
     }

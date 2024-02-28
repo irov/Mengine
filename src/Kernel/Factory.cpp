@@ -5,10 +5,7 @@
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionNotImplemented.h"
-
-#if defined(MENGINE_DEBUG)
-#   include "Kernel/NotificationHelper.h"
-#endif
+#include "Kernel/ThreadGuardScope.h"
 
 namespace Mengine
 {
@@ -56,6 +53,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
+        MENGINE_THREAD_GUARD_SCOPE( Factory, this, "Factory::createObject" );
+
         MENGINE_ASSERTION_FATAL( m_type.empty() == false );
 
         Factorable * object = this->_createObject();
@@ -76,26 +75,12 @@ namespace Mengine
         m_factorables.push_back( object );
 #endif
 
-//#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
-//        if( SERVICE_IS_INITIALIZE( FactoryServiceInterface ) == true )
-//        {
-//            FACTORY_SERVICE()
-//                ->debugFactoryCreateObject( this, object );
-//        }
-//#endif
-
         return object;
     }
     //////////////////////////////////////////////////////////////////////////
     void Factory::destroyObject( Factorable * _object )
     {
-//#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
-//        if( SERVICE_IS_INITIALIZE( FactoryServiceInterface ) == true )
-//        {
-//            FACTORY_SERVICE()
-//                ->debugFactoryDestroyObject( this, _object );
-//        }
-//#endif
+        MENGINE_THREAD_GUARD_SCOPE( Factory, this, "Factory::createObject" );
 
 #if defined(MENGINE_DEBUG)
         m_factorables.remove( _object );

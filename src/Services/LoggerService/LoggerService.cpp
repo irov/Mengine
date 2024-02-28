@@ -81,11 +81,11 @@ namespace Mengine
     {
         m_factoryLoggerRecord = Helper::makeFactoryPool<LoggerRecord, 32, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
 
-        ThreadMutexInterfacePtr loggerFactoryMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr factoryMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( loggerFactoryMutex );
+        MENGINE_ASSERTION_MEMORY_PANIC( factoryMutex );
 
-        m_factoryLoggerRecord->setMutex( loggerFactoryMutex );
+        m_factoryLoggerRecord->setMutex( factoryMutex );
 
         bool OPTION_nologs = HAS_OPTION( "nologs" );
 
@@ -286,6 +286,8 @@ namespace Mengine
         m_messagesAux.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryLoggerRecord );
+        
+        m_factoryLoggerRecord->setMutex( nullptr );
         m_factoryLoggerRecord = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

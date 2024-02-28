@@ -12,6 +12,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Pointer.h"
+#include "Kernel/ThreadGuard.h"
 
 #include "Kernel/ReferenceCounter.h"
 
@@ -24,7 +25,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Factory
         : public FactoryInterface
-        , public Factorable
     {
     public:
         Factory();
@@ -71,6 +71,8 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         bool m_register;
 #endif
+
+        MENGINE_THREAD_GUARD_INIT( Factory );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Factory, FactoryInterface> FactoryPtr;

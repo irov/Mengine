@@ -84,12 +84,7 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-        SDLPlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-            ->getDynamicUnknown();
-
-        SDL_Window * window = sdlPlatform->getWindow();
-
-        ImGui_ImplSDL2_NewFrame( window );
+        ImGui_ImplSDL2_NewFrame();
 #endif
 
         ImGui::NewFrame();

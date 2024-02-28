@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Kernel/Factory.h"
+#include "Kernel/FactoryWithoutMutex.h"
 #include "Kernel/FilePath.h"
 
 namespace Mengine
 {
     class SDLFileGroupDirectoryFactory
-        : public Factory
+        : public FactoryWithoutMutex
     {
         DECLARE_FACTORABLE( SDLFileGroupDirectoryFactory );
 

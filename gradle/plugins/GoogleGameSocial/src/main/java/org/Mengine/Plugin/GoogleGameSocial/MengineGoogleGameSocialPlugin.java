@@ -8,11 +8,12 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
@@ -27,7 +28,6 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MengineUtils;
 
 public class MengineGoogleGameSocialPlugin extends MenginePlugin implements MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "MengineGGameSocial";
@@ -138,31 +138,55 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
             return;
         }
 
-        Task<GoogleSignInAccount> result = GoogleSignIn.getSignedInAccountFromIntent(data);
+        GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
         if (result == null) {
-            this.logError("[ERROR] getSignedInAccountFromIntent result == null");
+            this.logError("[ERROR] getSignInResultFromIntent result == null");
 
             return;
         }
 
-        try {
-            GoogleSignInAccount account = result.getResult(ApiException.class);
+        if (result.isSuccess() == false) {
+            this.logMessage("onActivityResult sign in failed");
 
-            this.logMessage("onActivityResult sign in success account: %s"
-                , account
-            );
+            Status status = result.getStatus();
 
-            this.signInCallback(account);
-        } catch (ApiException e) {
-            this.logError("[ERROR] getSignedInAccountFromIntent catch ApiException: %s"
-                , e.getMessage()
-            );
+            int statusCode = status.getStatusCode();
 
-            MengineUtils.makeToastDelayed(activity, "Google Game Social sign in failed", 1000);
+            switch (statusCode) {
+                case CommonStatusCodes.SIGN_IN_REQUIRED: {
+                    this.logError("[ERROR] google game social signIn SIGN_IN_REQUIRED [hasResolution %s]"
+                        , status.hasResolution()
+                    );
+
+                    if (status.hasResolution() == true) {
+                        try {
+                            status.startResolutionForResult(activity, RC_SIGN_IN);
+                        } catch (IntentSender.SendIntentException ex) {
+                            this.logError("[ERROR] start resolution for result RC_SIGN_IN catch SendIntentException: %s"
+                                , ex.getMessage()
+                            );
+                        }
+                    }
+                }break;
+                default: {
+                    this.logWarning("google game social signIn failed status error message: %s code: %d"
+                        , status.getStatusMessage()
+                        , status.getStatusCode()
+                    );
+                }break;
+            }
 
             this.pythonCall("onGoogleGameSocialOnSignError");
+
+            return;
         }
+
+        this.logMessage("onActivityResult resign");
+
+        GoogleSignInAccount account = result.getSignInAccount();
+
+        this.signInCallback(account);
     }
 
     private void signInCallback(GoogleSignInAccount account) {

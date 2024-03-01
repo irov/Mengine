@@ -36,7 +36,7 @@ namespace Mengine
         ::timespec_get( &tv, TIME_UTC );
 #endif
 
-        Timestamp milliseconds = tv.tv_sec * 1000LL + tv.tv_nsec / 1000000;
+        Timestamp milliseconds = tv.tv_sec * 1000LL + tv.tv_nsec / 1000000LL;
 
         return milliseconds;
     }

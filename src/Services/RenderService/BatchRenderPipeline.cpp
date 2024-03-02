@@ -377,13 +377,13 @@ namespace Mengine
             const Viewport & vp = viewport->getViewport();
 
             mt::box2f bb_homogenize;
-            mt::set_box_homogenize( &bb_homogenize, bb.minimum, bb.maximum, vpm );
+            mt::box2_homogenize( &bb_homogenize, bb.minimum, bb.maximum, vpm );
 
             mt::vec2f vp_scale;
             vp.calcSize( &vp_scale );
 
-            mt::scale_box( &bb_homogenize, vp_scale );
-            mt::transpose_box( &bb_homogenize, vp.begin );
+            mt::box2_scale( &bb_homogenize, vp_scale );
+            mt::box2_transpose( &bb_homogenize, vp.begin );
 
             ro.bb = bb_homogenize;
         }
@@ -872,7 +872,7 @@ namespace Mengine
                 continue;
             }
 
-            if( mt::is_intersect( ro_bath->bb, _ro->bb ) == true )
+            if( mt::box2_intersect( ro_bath->bb, _ro->bb ) == true )
             {
                 return true;
             }

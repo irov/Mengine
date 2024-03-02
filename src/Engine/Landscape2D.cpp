@@ -105,7 +105,7 @@ namespace Mengine
             v_wvp_maximum_norm.x = (1.f + v_wvp_maximum.x) * 0.5f;
             v_wvp_maximum_norm.y = (1.f - v_wvp_maximum.y) * 0.5f;
 
-            if( mt::is_intersect( v_wvp_minimum_norm, v_wvp_maximum_norm, min_screen, max_screen ) == false )
+            if( mt::box2_intersect( v_wvp_minimum_norm, v_wvp_maximum_norm, min_screen, max_screen ) == false )
             {
                 if( el.material != nullptr )
                 {
@@ -204,10 +204,10 @@ namespace Mengine
             p4.x = (i + 0) * m_elementWidth;
             p4.y = (j + 1) * m_elementHeight;
 
-            mt::reset( &el.bb, p1 );
-            mt::add_internal_point( &el.bb, p2 );
-            mt::add_internal_point( &el.bb, p3 );
-            mt::add_internal_point( &el.bb, p4 );
+            mt::box2_reset( &el.bb, p1 );
+            mt::box2_add_internal_point( &el.bb, p2 );
+            mt::box2_add_internal_point( &el.bb, p3 );
+            mt::box2_add_internal_point( &el.bb, p4 );
 
             el.i = i;
             el.j = j;

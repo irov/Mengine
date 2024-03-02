@@ -183,7 +183,7 @@ namespace Mengine
 
         if( _bb != nullptr )
         {
-            mt::insideout_box( _bb );
+            mt::box2_insideout( _bb );
         }
 
         const mt::mat4f & wm = this->getWorldMatrix();
@@ -219,7 +219,7 @@ namespace Mengine
 
             if( _bb != nullptr )
             {
-                mt::add_internal_point( _bb, v_screen );
+                mt::box2_add_internal_point( _bb, v_screen );
             }
         }
     }

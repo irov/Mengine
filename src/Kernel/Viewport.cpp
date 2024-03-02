@@ -179,7 +179,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Viewport::testRectangle( const mt::vec2f & _min, const mt::vec2f & _max ) const
     {
-        return mt::is_intersect( _min, _max, begin, end );
+        return mt::box2_intersect( _min, _max, begin, end );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Viewport::testBBox( const mt::box2f & _bbox ) const
@@ -189,7 +189,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Viewport::existRectangle( const mt::vec2f & _min, const mt::vec2f & _max ) const
     {
-        return mt::is_exist( _min, _max, begin, end );
+        return mt::box2_exist( _min, _max, begin, end );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Viewport::existBBox( const mt::box2f & _bbox ) const
@@ -199,19 +199,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Viewport::toBBox( mt::box2f * const _box ) const
     {
-        mt::set_box_from_min_max( _box, begin, end );
+        mt::box2_set_from_min_max( _box, begin, end );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Viewport::intersectBBox( const mt::box2f & _bbox ) const
     {
-        bool result = mt::is_intersect( _bbox.minimum, _bbox.maximum, this->begin, this->end );
+        bool result = mt::box2_intersect( _bbox.minimum, _bbox.maximum, this->begin, this->end );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
     float Viewport::getIntersectionSquareBBox( const mt::box2f & _bbox ) const
     {
-        if( mt::is_intersect( _bbox.minimum, _bbox.maximum, this->begin, this->end ) == false )
+        if( mt::box2_intersect( _bbox.minimum, _bbox.maximum, this->begin, this->end ) == false )
         {
             return 0.f;
         }

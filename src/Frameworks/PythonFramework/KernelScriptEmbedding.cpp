@@ -236,7 +236,7 @@ namespace Mengine
                 if( bb == nullptr )
                 {
                     mt::box2f infinity_bb;
-                    mt::infinity_box( &infinity_bb );
+                    mt::box2_infinity( &infinity_bb );
 
                     return infinity_bb;
                 }

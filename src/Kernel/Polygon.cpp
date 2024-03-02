@@ -139,11 +139,11 @@ namespace Mengine
     {
         const mt::vec2f & base_v = m_points.front();
 
-        mt::reset( _box2f, base_v );
+        mt::box2_reset( _box2f, base_v );
 
         for( const mt::vec2f & v : m_points )
         {
-            mt::add_internal_point( _box2f, v );
+            mt::box2_add_internal_point( _box2f, v );
         }
     }
     //////////////////////////////////////////////////////////////////////////

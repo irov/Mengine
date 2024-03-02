@@ -107,7 +107,7 @@ namespace Mengine
         mt::mul_v2_v2_m4( &maximal_wm, maximal, wm );
 
         mt::box2f bb;
-        mt::set_box_from_two_point( &bb, minimal_wm, maximal_wm );
+        mt::box2_set_from_two_point( &bb, minimal_wm, maximal_wm );
 
         *_bb = bb;
     }

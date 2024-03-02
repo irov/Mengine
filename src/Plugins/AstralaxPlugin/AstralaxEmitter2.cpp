@@ -63,7 +63,7 @@ namespace Mengine
             return false;
         }
 
-        mt::infinity_box( &m_box );
+        mt::box2_infinity( &m_box );
 
         return true;
     }

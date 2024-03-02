@@ -171,7 +171,7 @@ namespace Mengine
         }
 
         mt::box2f bb;
-        mt::insideout_box( &bb );
+        mt::box2_insideout( &bb );
 
         int slotCount = m_skeleton->slotsCount;
 
@@ -221,13 +221,13 @@ namespace Mengine
             {
                 const mt::vec2f & v = attachment_vertices[index_vertex];
 
-                mt::add_internal_point( &bb, v );
+                mt::box2_add_internal_point( &bb, v );
             }
         }
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        mt::mul_box2_m4( _box, bb, wm );
+        mt::box2_mul_m4( _box, bb, wm );
 
         return true;
     }

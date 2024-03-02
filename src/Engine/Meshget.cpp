@@ -141,7 +141,7 @@ namespace Mengine
 
         const VectorRenderVertex2D & vertices = this->getVerticesWM();
 
-        mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
+        mt::box2_reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
         VectorPositions::size_type vertexCount = m_positions.size();
 
@@ -149,7 +149,7 @@ namespace Mengine
         {
             const mt::vec3f & v = m_positions[i];
 
-            mt::add_internal_point( _boundingBox, v.x, v.y );
+            mt::box2_add_internal_point( _boundingBox, v.x, v.y );
         }
 
         *_boundingBoxCurrent = _boundingBox;

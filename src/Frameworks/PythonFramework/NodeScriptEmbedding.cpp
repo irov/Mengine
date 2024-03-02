@@ -267,7 +267,7 @@ namespace Mengine
                 if( bb == nullptr )
                 {
                     mt::box2f infinity_bb;
-                    mt::infinity_box( &infinity_bb );
+                    mt::box2_infinity( &infinity_bb );
 
                     return infinity_bb;
                 }
@@ -302,7 +302,7 @@ namespace Mengine
                 polygon.to_box2f( &bb );
 
                 mt::vec2f c;
-                mt::get_center_box( bb, &c );
+                mt::box2_get_center( bb, &c );
 
                 return c;
             }
@@ -312,7 +312,7 @@ namespace Mengine
                 const Polygon & polygon = _hs->getPolygon();
 
                 mt::box2f bb;
-                mt::insideout_box( &bb );
+                mt::box2_insideout( &bb );
 
                 const TransformationInterface * transformation = _hs->getTransformation();
 
@@ -323,11 +323,11 @@ namespace Mengine
                     mt::vec2f v_wm;
                     mt::mul_v2_v2_m4( &v_wm, v, wm );
 
-                    mt::add_internal_point( &bb, v_wm );
+                    mt::box2_add_internal_point( &bb, v_wm );
                 }
 
                 mt::vec2f c;
-                mt::get_center_box( bb, &c );
+                mt::box2_get_center( bb, &c );
 
                 return c;
             }
@@ -358,7 +358,7 @@ namespace Mengine
                 _hs->getScreenPolygon( &context, contentResolution, &b1, nullptr );
 
                 mt::vec2f c;
-                mt::get_center_box( b1, &c );
+                mt::box2_get_center( b1, &c );
 
                 return c;
             }

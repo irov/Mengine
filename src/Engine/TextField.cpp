@@ -814,11 +814,11 @@ namespace Mengine
         }
 
         mt::box2f box;
-        mt::insideout_box( &box );
+        mt::box2_insideout( &box );
 
         for( const RenderVertex2D & vertex : textVertices )
         {
-            mt::add_internal_point( &box, vertex.position.x, vertex.position.y );
+            mt::box2_add_internal_point( &box, vertex.position.x, vertex.position.y );
         }
 
         _viewport->begin = box.minimum;

@@ -639,7 +639,7 @@ namespace Mengine
             mt::box2f s_getHotSpotPolygonBoundingBox( const HotSpotPolygonPtr & _hotspotPolygon )
             {
                 mt::box2f bb;
-                mt::insideout_box( &bb );
+                mt::box2_insideout( &bb );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( _hotspotPolygon, "hotspot is nullptr" );
 
@@ -661,7 +661,7 @@ namespace Mengine
                     mt::vec2f wmp_it;
                     mt::mul_v2_v2_m4( &wmp_it, v, wm );
 
-                    mt::add_internal_point( &bb, wmp_it );
+                    mt::box2_add_internal_point( &bb, wmp_it );
                 }
 
                 return bb;
@@ -1361,7 +1361,7 @@ namespace Mengine
                 mt::box2f box_first( _minFirst, _maxFirst );
                 mt::box2f box_second( _minSecond, _maxSecond );
 
-                bool result = mt::is_intersect( box_first, box_second );
+                bool result = mt::box2_intersect( box_first, box_second );
 
                 return result;
             }

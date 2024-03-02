@@ -134,7 +134,7 @@ namespace Mengine
         mt::box2f bb_screen;
         this->getScreenBoundingBox( _context, _contentResolution, &bb_screen );
 
-        if( mt::is_intersect( bb_screen, _point ) == false )
+        if( mt::box2_intersect( bb_screen, _point ) == false )
         {
             return m_outward;
         }
@@ -192,7 +192,7 @@ namespace Mengine
         mt::box2f bb_screen;
         this->getScreenBoundingBox( _context, _contentResolution, &bb_screen );
 
-        if( mt::is_intersect( bb_screen, _point, rxy.x, rxy.y ) == false )
+        if( mt::box2_intersect( bb_screen, _point, rxy.x, rxy.y ) == false )
         {
             return m_outward;
         }
@@ -258,9 +258,9 @@ namespace Mengine
         mt::box2f bb_polygon_screen;
         Helper::worldToScreenBox( _context, _contentResolution, bb_polygon, &bb_polygon_screen );
 
-        mt::transpose_box( &bb_polygon_screen, _point );
+        mt::box2_transpose( &bb_polygon_screen, _point );
 
-        if( mt::is_intersect( bb_screen, bb_polygon_screen ) == false )
+        if( mt::box2_intersect( bb_screen, bb_polygon_screen ) == false )
         {
             return m_outward;
         }
@@ -318,7 +318,7 @@ namespace Mengine
         mt::mul_v2_v2_m4( &maximal_wm, maximal, wm );
 
         mt::box2f bb;
-        mt::set_box_from_two_point( &bb, minimal_wm, maximal_wm );
+        mt::box2_set_from_two_point( &bb, minimal_wm, maximal_wm );
 
         *_bb = bb;
     }

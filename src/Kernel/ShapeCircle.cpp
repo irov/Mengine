@@ -135,13 +135,13 @@ namespace Mengine
         uint32_t vertexCount;
         const RenderVertex2D * vertices = this->getVerticesWM( &vertexCount );
 
-        mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
+        mt::box2_reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
         for( uint32_t index = 1; index != vertexCount; ++index )
         {
             const RenderVertex2D & v = vertices[index];
 
-            mt::add_internal_point( _boundingBox, v.position.x, v.position.y );
+            mt::box2_add_internal_point( _boundingBox, v.position.x, v.position.y );
         }
 
         *_boundingBoxCurrent = _boundingBox;

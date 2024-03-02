@@ -964,7 +964,7 @@ namespace Mengine
             Polygon p2;
             shape2->getScreenPolygon( &shape2_context, contentResolution, &b2, &p2 );
 
-            if( mt::is_intersect( b1, b2 ) == false )
+            if( mt::box2_intersect( b1, b2 ) == false )
             {
                 return false;
             }

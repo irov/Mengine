@@ -4,13 +4,16 @@
 #include "Kernel/StlAllocator.h"
 #include "Kernel/Deque.h"
 
-//////////////////////////////////////////////////////////////////////////
+#include "math/segment2.h"
+#include "math/polygon2.h"
+#include "stdex/span.h"
+
 #if !defined(MENGINE_UNSUPPORT_PRAGMA_WARNING)
 #   pragma warning(push, 0)
 #   pragma warning(disable:4800)
 #   pragma warning(disable:4702)
 #endif
-//////////////////////////////////////////////////////////////////////////
+
 #include "boost/geometry/geometry.hpp"
 #include "boost/geometry/core/tag.hpp"
 #include "boost/geometry/geometries/polygon.hpp"
@@ -19,14 +22,11 @@
 #include "boost/geometry/geometries/segment.hpp"
 
 #include "boost/geometry/strategies/agnostic/point_in_poly_winding.hpp"
-//////////////////////////////////////////////////////////////////////////
+
 #if !defined(MENGINE_UNSUPPORT_PRAGMA_WARNING)
 #   pragma warning(pop)
 #endif
-//////////////////////////////////////////////////////////////////////////
-#include "math/segment2.h"
-#include "stdex/span.h"
-//////////////////////////////////////////////////////////////////////////
+
 namespace boost
 {
     namespace geometry
@@ -149,7 +149,6 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            typedef boost::geometry::model::point<float, 2, boost::geometry::cs::cartesian> BoostPoint;
             typedef boost::geometry::model::polygon<mt::vec2f, true, true, Vector, Vector, StlAllocator, StlAllocator> BoostPolygon;
             typedef boost::geometry::model::box<mt::vec2f> BoostBox;
             typedef boost::geometry::model::segment<mt::vec2f> BoostSegment;
@@ -263,7 +262,7 @@ namespace Mengine
                 const mt::vec2f & v1 = _polygon[(index + 1) % polygon_size];
 
                 mt::vec2f projection;
-                mt::segment2_projection_point( mt::segment2( v0, v1 ), _point, &projection );
+                mt::segment2_projection_v2( mt::segment2( v0, v1 ), _point, &projection );
 
                 mt::vec2f dp = _point - projection;
 
@@ -511,51 +510,32 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool intersects( const Polygon & _lhs, const Polygon & _rhs )
         {
-            //mt::box2f bb_lhs;
-            //_lhs.to_box2f( &bb_lhs );
+            mt::box2f bb_lhs;
+            _lhs.to_box2f( &bb_lhs );
 
-            //mt::box2f bb_rhs;
-            //_rhs.to_box2f( &bb_rhs );
+            mt::box2f bb_rhs;
+            _rhs.to_box2f( &bb_rhs );
 
-            //if( mt::is_intersect( bb_lhs, bb_rhs ) == false )
-            //{
-            //    return false;
-            //}
+            if( mt::box2_intersect( bb_lhs, bb_rhs ) == false )
+            {
+                return false;
+            }
 
-            //for( Polygon::size_type index = 1, index_end = _lhs.size(); index != index_end; ++index )
-            //{
+            const VectorPoints & lhs_points = _lhs.getPoints();
+            const VectorPoints & rhs_points = _rhs.getPoints();
 
-            //}
+            const mt::vec2f * lhs_points_data = lhs_points.data();
+            VectorPoints::size_type lhs_points_size = lhs_points.size();
 
-            //for( const mt::vec2f & point : _lhs )
-            //{
-            //    if( mt::is_point_inside_box( point, bb_rhs ) == true )
-            //    {
-            //        return true;
-            //    }
-            //}
+            const mt::vec2f * rhs_points_data = rhs_points.data();
+            VectorPoints::size_type rhs_points_size = rhs_points.size();
 
-            Detail::BoostPolygon blhs;
-            Detail::makeBoostPolygon( &blhs, _lhs );
+            if( mt::polygon2_intersect( lhs_points_data, lhs_points_size, rhs_points_data, rhs_points_size ) == false )
+            {
+                return false;
+            }
 
-            Detail::BoostPolygon brhs;
-            Detail::makeBoostPolygon( &brhs, _rhs );
-
-            bool successful = boost::geometry::intersects( blhs, brhs );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool intersects( const Polygon & _lhs, const mt::box2f & _rhs )
-        {
-            Detail::BoostPolygon blhs;
-            Detail::makeBoostPolygon( &blhs, _lhs );
-
-            Detail::BoostBox boost_box( _rhs.minimum, _rhs.maximum );
-
-            bool successful = boost::geometry::intersects( blhs, boost_box );
-
-            return successful;
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
         bool intersection( const Polygon & _lhs, const Polygon & _rhs, VectorGeolygon * const _out )

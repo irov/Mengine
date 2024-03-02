@@ -262,7 +262,7 @@ namespace Mengine
         const mt::mat4f & wm = this->getWorldMatrix();
 
         mt::box2f bbwm;
-        mt::insideout_box( &bbwm );
+        mt::box2_insideout( &bbwm );
 
         ae_uint32_t compute_movie_mesh_iterator = 0;
 
@@ -289,7 +289,7 @@ namespace Mengine
 
                         if( bb != nullptr )
                         {
-                            mt::merge_box( &bbwm, *bb );
+                            mt::box2_merge( &bbwm, *bb );
 
                             successful = true;
                         }
@@ -304,7 +304,7 @@ namespace Mengine
 
                         if( bb != nullptr )
                         {
-                            mt::merge_box( &bbwm, *bb );
+                            mt::box2_merge( &bbwm, *bb );
 
                             successful = true;
                         }
@@ -339,7 +339,7 @@ namespace Mengine
                             mt::vec2f pwm;
                             mt::mul_v2_v3_m4( &pwm, p, wm );
 
-                            mt::add_internal_point( &bbwm, pwm );
+                            mt::box2_add_internal_point( &bbwm, pwm );
                         }
 
                         successful = true;
@@ -368,7 +368,7 @@ namespace Mengine
                             mt::vec2f pwm;
                             mt::mul_v2_v3_m4( &pwm, p, wm );
 
-                            mt::add_internal_point( &bbwm, pwm );
+                            mt::box2_add_internal_point( &bbwm, pwm );
                         }
 
                         successful = true;
@@ -3017,7 +3017,7 @@ namespace Mengine
                             resourceImage->correctUVImage( vuv, v.uv + 0 );
 
                             mt::vec2f uv_track_matte;
-                            mt::calc_point_uv(
+                            mt::uv4_calc_point(
                                 mt::vec2f( track_matte_mesh->position[0] ), 
                                 mt::vec2f( track_matte_mesh->position[1] ), 
                                 mt::vec2f( track_matte_mesh->position[2] ),
@@ -3142,7 +3142,7 @@ namespace Mengine
                             resourceImage->correctUVImage( vuv, v.uv + 0 );
 
                             mt::vec2f uv_track_matte;
-                            mt::calc_point_uv(
+                            mt::uv4_calc_point(
                                 mt::vec2f( track_matte_mesh->position[0] ), 
                                 mt::vec2f( track_matte_mesh->position[1] ), 
                                 mt::vec2f( track_matte_mesh->position[2] ),

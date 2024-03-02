@@ -52,7 +52,7 @@ namespace Mengine
         mt::box2f bb;
         this->getScreenPolygon( _context, _contentResolution, &bb, &m_polygonScreen );
 
-        if( mt::is_intersect( bb, _point ) == false )
+        if( mt::box2_intersect( bb, _point ) == false )
         {
             return m_outward;
         }
@@ -83,7 +83,7 @@ namespace Mengine
         mt::box2f bb;
         this->getScreenPolygon( _context, _contentResolution, &bb, &m_polygonScreen );
 
-        if( mt::is_intersect( bb, _point, rxy.x, rxy.y ) == false )
+        if( mt::box2_intersect( bb, _point, rxy.x, rxy.y ) == false )
         {
             return m_outward;
         }
@@ -121,7 +121,7 @@ namespace Mengine
         mt::box2f bb_screen;
         this->getScreenPolygon( _context, _contentResolution, &bb_screen, &m_polygonScreen );
 
-        if( mt::is_intersect( bb_screen, bb_polygon ) == false )
+        if( mt::box2_intersect( bb_screen, bb_polygon ) == false )
         {
             return m_outward;
         }
@@ -179,7 +179,7 @@ namespace Mengine
 
         if( _bb != nullptr )
         {
-            mt::insideout_box( _bb );
+            mt::box2_insideout( _bb );
         }
 
         if( _screen != nullptr )
@@ -219,7 +219,7 @@ namespace Mengine
 
             if( _bb != nullptr )
             {
-                mt::add_internal_point( _bb, v_screen );
+                mt::box2_add_internal_point( _bb, v_screen );
             }
 
             if( _screen != nullptr )

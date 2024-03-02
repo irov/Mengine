@@ -116,11 +116,11 @@ namespace Mengine
             const mt::mat4f & vpm = renderCamera->getCameraViewProjectionMatrix();
 
             mt::box2f bb_screen;
-            mt::set_box_homogenize( &bb_screen, _worldBox.minimum, _worldBox.maximum, vpm );
+            mt::box2_homogenize( &bb_screen, _worldBox.minimum, _worldBox.maximum, vpm );
 
-            mt::scale_box( &bb_screen, vp_size );
-            mt::transpose_box( &bb_screen, vp.begin );
-            mt::scale_box( &bb_screen, contentResolutionInvSize );
+            mt::box2_scale( &bb_screen, vp_size );
+            mt::box2_transpose( &bb_screen, vp.begin );
+            mt::box2_scale( &bb_screen, contentResolutionInvSize );
 
             *_screenBox = bb_screen;
         }

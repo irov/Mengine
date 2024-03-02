@@ -456,7 +456,7 @@ namespace Mengine
         bool successul = false;
 
         mt::box2f absorb_bb;
-        mt::insideout_box( &absorb_bb );
+        mt::box2_insideout( &absorb_bb );
 
         const ConstString & type = _node->getType();
 
@@ -467,7 +467,7 @@ namespace Mengine
             mt::box2f bbox;
             if( boundingBox->getBoundingBox( _node, &bbox ) == true )
             {
-                mt::merge_box( &absorb_bb, bbox );
+                mt::box2_merge( &absorb_bb, bbox );
 
                 successul = true;
             }
@@ -482,7 +482,7 @@ namespace Mengine
 
                 if( rbbox != nullptr )
                 {
-                    mt::merge_box( &absorb_bb, *rbbox );
+                    mt::box2_merge( &absorb_bb, *rbbox );
 
                     successul = true;
                 }
@@ -494,7 +494,7 @@ namespace Mengine
             mt::box2f child_bb;
             if( s_absorbBoundingBox( _child, &child_bb ) == true )
             {
-                mt::merge_box( &absorb_bb, child_bb );
+                mt::box2_merge( &absorb_bb, child_bb );
 
                 successul = true;
             }
@@ -551,7 +551,7 @@ namespace Mengine
         mt::mul_v2_v2_m4( &bcrop.minimum, mt::vec2f( -1.f, 1.f ), vpminv );
         mt::mul_v2_v2_m4( &bcrop.maximum, mt::vec2f( 1.f, -1.f ), vpminv );
 
-        mt::crop_box( &bbox, bcrop );
+        mt::box2_crop( &bbox, bcrop );
 
         const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
             ->getDebugTriangleMaterial();
@@ -2263,7 +2263,7 @@ namespace Mengine
                 mt::box2f bbox;
                 if( boundingBoxInterfacePtr->getBoundingBox( _child, &bbox ) == true )
                 {
-                    if( mt::is_intersect( bbox, m_cursorWorldPosition ) == true && mt::is_infinity_box( bbox ) == false )
+                    if( mt::box2_intersect( bbox, m_cursorWorldPosition ) == true && mt::box2_is_infinity( bbox ) == false )
                     {
                         m_selectedNode = _child;
 
@@ -2303,12 +2303,12 @@ namespace Mengine
                 return true;
             }
 
-            if( mt::is_infinity_box( *rbb ) == true )
+            if( mt::box2_is_infinity( *rbb ) == true )
             {
                 return true;
             }
 
-            if( mt::is_intersect( *rbb, m_cursorWorldPosition ) == false )
+            if( mt::box2_intersect( *rbb, m_cursorWorldPosition ) == false )
             {
                 return true;
             }
@@ -2363,7 +2363,7 @@ namespace Mengine
         mt::box2f bb_screen;
         this->getScreenBoundingBox( _currentNode, imageDesc, &bb_screen );
 
-        if( mt::is_intersect( bb_screen, _point ) == false && mt::is_infinity_box( bb_screen ) == true )
+        if( mt::box2_intersect( bb_screen, _point ) == false && mt::box2_is_infinity( bb_screen ) == true )
         {
             return false;
         }
@@ -2517,7 +2517,7 @@ namespace Mengine
         mt::mul_v2_v2_m4( &maximal_wm, maximal, worldMatrix );
 
         mt::box2f bb;
-        mt::set_box_from_two_point( &bb, minimal_wm, maximal_wm );
+        mt::box2_set_from_two_point( &bb, minimal_wm, maximal_wm );
 
         *_bb = bb;
     }

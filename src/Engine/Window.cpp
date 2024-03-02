@@ -434,11 +434,11 @@ namespace Mengine
     {
         const RenderVertex2D * vertices = this->getVertices();
 
-        mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
+        mt::box2_reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
         for( uint32_t i = 1; i != 4; ++i )
         {
-            mt::add_internal_point( _boundingBox, vertices[i].position.x, vertices[i].position.y );
+            mt::box2_add_internal_point( _boundingBox, vertices[i].position.x, vertices[i].position.y );
         }
 
         *_boundingBoxCurrent = _boundingBox;

@@ -8,7 +8,6 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/SemaphoreServiceInterface.h"
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
@@ -17,6 +16,7 @@
 
 #include "AndroidSemaphoreListener.h"
 #include "AndroidProxyLogger.h"
+#include "AndroidFunctorVoidInterface.h"
 
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/FactorableUnique.h"
@@ -87,7 +87,8 @@ extern "C"
         const Mengine::AccountInterfacePtr & account = ACCOUNT_SERVICE()
             ->getCurrentAccount();
 
-        if (account == nullptr) {
+        if( account == nullptr )
+        {
             return env->NewStringUTF( "" );
         }
 
@@ -154,30 +155,22 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AnroidEnvironmentService_1activateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
+    JNIEXPORT void JNICALL MENGINE_FUNCTION_VOID_JAVA_INTERFACE( AnroidEnvironmentService_1callMengineFunctorVoid )(JNIEnv * env, jclass cls, jobject _impl)
     {
-        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString( env, _name );
+        void * impl_MengineFunctorVoid = env->GetDirectBufferAddress( _impl );
 
-        SEMAPHORE_SERVICE()
-            ->activateSemaphore( name );
+        Mengine::AndroidFunctorVoidInterface * functor = reinterpret_cast<Mengine::AndroidFunctorVoidInterface *>(impl_MengineFunctorVoid);
+
+        functor->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AnroidEnvironmentService_1deactivateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
+    JNIEXPORT void JNICALL MENGINE_FUNCTION_VOID_JAVA_INTERFACE( AnroidEnvironmentService_1destroyMengineFunctorVoid )(JNIEnv * env, jclass cls, jobject _impl)
     {
-        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString( env, _name );
+        void * impl_MengineFunctorVoid = env->GetDirectBufferAddress( _impl );
 
-        SEMAPHORE_SERVICE()
-            ->deactivateSemaphore( name );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AnroidEnvironmentService_1waitSemaphore )(JNIEnv * env, jclass cls, jstring _name, jobject _cb)
-    {
-        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString( env, _name );
+        Mengine::AndroidFunctorVoidInterface * functor = reinterpret_cast<Mengine::AndroidFunctorVoidInterface *>(impl_MengineFunctorVoid);
 
-        Mengine::AndroidSemaphoreListenerPtr listener = Mengine::Helper::makeFactorableUnique<Mengine::AndroidSemaphoreListener>( MENGINE_DOCUMENT_FUNCTION, env, _cb );
-
-        SEMAPHORE_SERVICE()
-            ->waitSemaphore( name, listener );
+        Mengine::IntrusivePtrBase::intrusive_ptr_dec_ref( functor );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1log )(JNIEnv * env, jclass cls, jint _level, jstring _tag, jstring _msg)
@@ -277,6 +270,7 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_RUN, &AndroidEnvironmentService::notifyPlatformRun_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_STOP, &AndroidEnvironmentService::notifyPlatformStop_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES, &AndroidEnvironmentService::notifyBootstrapperInitializeBaseServices_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AndroidEnvironmentService::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE, &AndroidEnvironmentService::notifyApplicationBeginUpdate_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_END_UPDATE, &AndroidEnvironmentService::notifyApplicationEndUpdate_, MENGINE_DOCUMENT_FACTORABLE );
@@ -288,6 +282,7 @@ namespace Mengine
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_RUN );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_STOP );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_END_UPDATE );
@@ -733,6 +728,22 @@ namespace Mengine
         {
             return;
         }
+
+        m_androidEventationHub->invoke();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidEnvironmentService::notifyBootstrapperInitializeBaseServices_()
+    {
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        {
+            return;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        Helper::AndroidCallVoidActivityMethod( jenv, "onMengineInitializeBaseServices", "()V" );
 
         m_androidEventationHub->invoke();
     }

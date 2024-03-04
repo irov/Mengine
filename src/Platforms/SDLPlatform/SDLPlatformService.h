@@ -17,8 +17,9 @@
 #include "Interface/DataInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
-#include "Interface/SDLPlatformServiceExtensionInterface.h"
 #include "Interface/FactoryInterface.h"
+
+#include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
 
 #if defined(MENGINE_PLATFORM_MACOS)
 #   import "SDLPlatformMacOSWorkspace.h"

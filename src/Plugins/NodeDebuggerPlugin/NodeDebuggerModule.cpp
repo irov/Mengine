@@ -27,7 +27,7 @@
 #include "Interface/ThreadServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-#   include "Interface/Win32PlatformServiceExtensionInterface.h"
+#include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 #endif
 
 #include "NodeDebuggerSerialization.h"
@@ -103,7 +103,7 @@ namespace Mengine
                 ->getUnknown();
 
             uint32_t exitCode;
-            win32Platform->createProcess( "NodeDebugger.exe", "127.0.0.1:18790", false, &exitCode );
+            win32Platform->createProcess( "NodeDebugger.exe", L"127.0.0.1:18790", false, &exitCode );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         m_globalKeyHandlerF2 = globalKeyHandlerF2;

@@ -1176,6 +1176,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::loopPlatform()
     {
+        THREAD_SERVICE()
+            ->updateMainThread();
+
         m_prevTime = Helper::getSystemTimestamp();
 
         for( ;; )

@@ -2,9 +2,9 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/Win32PlatformServiceExtensionInterface.h"
 
 #include "Environment/Windows/Win32Helper.h"
+#include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 
 #include "Win32ConcatenateFileHelper.h"
 

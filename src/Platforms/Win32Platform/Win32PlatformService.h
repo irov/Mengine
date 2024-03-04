@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/Win32PlatformServiceExtensionInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/FactoryInterface.h"
+
+#include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 
 #include "Win32MouseEvent.h"
 #include "Win32AlreadyRunningMonitor.h"
@@ -163,8 +164,8 @@ namespace Mengine
 
     protected:
         void sleep( uint32_t _ms ) override;
-        bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * const _value, size_t _size ) override;
-        bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * const _exitCode ) override;
+        bool getLocalMachineRegValue( const WChar * _path, const WChar * _key, Char * const _value, size_t _size ) override;
+        bool createProcess( const Char * _process, const WChar * _command, bool _wait, uint32_t * const _exitCode ) override;
 
     protected:
         bool setProcessDPIAware() override;

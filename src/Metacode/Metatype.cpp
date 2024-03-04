@@ -97,7 +97,7 @@ namespace Metabuf
 #if defined(MENGINE_DEBUG)
         const Mengine::Char * test_value = value.c_str();
 
-        const Mengine::Char * s = MENGINE_STRCHR( test_value, '\\' );
+        const Mengine::Char * s = MENGINE_STRCHR( test_value, MENGINE_WIN32_PATH_DELIM );
 
         if( s != nullptr )
         {

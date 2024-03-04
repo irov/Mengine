@@ -3,16 +3,15 @@
 #include "Interface/RenderMaterialServiceInterface.h"
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-#include "Interface/PlatformServiceInterface.h"
-#include "Interface/SDLPlatformServiceExtensionInterface.h"
+#include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-#include "Interface/DX9RenderImageExtensionInterface.h"
+#include "Environment/DirectX9/DX9RenderImageExtensionInterface.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-#include "Interface/OpenGLRenderImageExtensionInterface.h"
+#include "Environment/OpenGL/OpenGLRenderImageExtensionInterface.h"
 #endif
 
 #include "Config/UInt32ToPointer.h"

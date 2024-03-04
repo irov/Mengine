@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/OpenGLRenderSystemExtensionInterface.h"
 #include "Interface/FactoryInterface.h"
+
+#include "Environment/OpenGL/OpenGLRenderSystemExtensionInterface.h"
 
 #include "OpenGLRenderImage.h"
 #include "OpenGLRenderImageTarget.h"

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Interface/RenderImageInterface.h"
-#include "Interface/OpenGLRenderImageExtensionInterface.h"
 
 #include "Environment/OpenGL/OpenGLRenderIncluder.h"
+#include "Environment/OpenGL/OpenGLRenderImageExtensionInterface.h"
 
 #include "OpenGLRenderTargetTexture.h"
 #include "OpenGLRenderResourceHandler.h"

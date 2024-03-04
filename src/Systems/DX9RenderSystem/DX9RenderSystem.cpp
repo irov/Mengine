@@ -2,7 +2,8 @@
 
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/Win32PlatformServiceExtensionInterface.h"
+
+#include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 
 #include "DX9RenderEnum.h"
 #include "DX9RenderErrorHelper.h"

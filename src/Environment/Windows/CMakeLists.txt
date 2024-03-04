@@ -4,6 +4,8 @@ ADD_FILTER(
 src
     WindowsIncluder.h
     
+    Win32PlatformServiceExtensionInterface.h
+    
     DbgHelp.h
     
     Win32Helper.h

@@ -2,7 +2,8 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/Win32PlatformServiceExtensionInterface.h"
+
+#include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
@@ -76,21 +77,27 @@ namespace Mengine
             resize_cmd = buffer;
         }
 
-        String buffer = "-loglevel error -y -threads 8 -i \"" + full_input + "\"" + resize_cmd + " -vcodec libtheora -f ogg -map_metadata -1 -an" + quality_cmd + " -pix_fmt yuv420p -max_muxing_queue_size 1024 \"" + full_output + "\"";
+        WChar command[MENGINE_MAX_COMMAND_LENGTH] = {'\0'};
+        MENGINE_WNSPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"-loglevel error -y -threads 8 -i \"%S\"%S -vcodec libtheora -f ogg -map_metadata -1 -an%S -pix_fmt yuv420p -max_muxing_queue_size 1024 \"%S\""
+            , full_input.c_str()
+            , resize_cmd.c_str()
+            , quality_cmd.c_str()
+            , full_output.c_str()
+        );
 
         LOGGER_MESSAGE_RELEASE( "converting file '%s' to '%s'\n%s"
             , full_input.c_str()
             , full_output.c_str()
-            , buffer.c_str()
+            , command
         );
 
         String ffmpeg = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ffmpeg" ), "ffmpeg.exe" );
 
         uint32_t exitCode;
-        if( win32Platform->createProcess( ffmpeg.c_str(), buffer.c_str(), true, &exitCode ) == false )
+        if( win32Platform->createProcess( ffmpeg.c_str(), command, true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
-                , buffer.c_str()
+                , command
             );
 
             return false;

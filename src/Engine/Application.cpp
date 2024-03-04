@@ -858,10 +858,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths, const VectorFilePath & _settingsPaths )
     {
-        Timestamp mengine_initialize_game_timestamp = ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_game_start" ), MENGINE_DOCUMENT_FACTORABLE )
-            ->log();
-
         for( const FilePath & packagePath : _packagesPaths )
         {
             ContentInterfacePtr content = Helper::makeFileContent( _fileGroup, packagePath, MENGINE_DOCUMENT_FACTORABLE );
@@ -922,11 +918,6 @@ namespace Mengine
         {
             return false;
         }
-
-        ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_game_completed" ), MENGINE_DOCUMENT_FACTORABLE )
-            ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getSystemDurationTimestamp( mengine_initialize_game_timestamp ) )
-            ->log();
 
         return true;
     }

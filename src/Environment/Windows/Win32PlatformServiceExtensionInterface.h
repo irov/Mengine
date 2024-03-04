@@ -36,9 +36,9 @@ namespace Mengine
         virtual time_t getFileUnixTime( const FILETIME * filetime ) const = 0;
 
     public:
-        virtual bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * const _value, size_t _size ) = 0;
+        virtual bool getLocalMachineRegValue( const WChar * _path, const WChar * _key, Char * const _value, size_t _size ) = 0;
 
     public:
-        virtual bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * const _exitCode ) = 0;
+        virtual bool createProcess( const Char * _process, const WChar * _command, bool _wait, uint32_t * const _exitCode ) = 0;
     };
 }

@@ -221,8 +221,6 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
 
     // This is what SDL runs in. It invokes SDL_main(), eventually
     protected static Thread mSDLThread;
-    protected static Thread mSDLNewThread;
-    protected static Object mSDLSemaphoreRun;
 
     protected static SDLGenericMotionListener_API12 getMotionListener() {
         if (mMotionListener == null) {
@@ -308,8 +306,6 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         mCursors = new Hashtable<Integer, PointerIcon>();
         mLastCursorID = 0;
         mSDLThread = null;
-        mSDLNewThread = null;
-        mSDLSemaphoreRun = null;
         mIsResumedCalled = false;
         mHasFocus = true;
         mNextNativeState = NativeState.INIT;
@@ -713,11 +709,10 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
                     // Start up the C app thread and enable sensor input for the first time
                     // FIXME: Why aren't we enabling sensor input at start?
 
-                    mSDLThread = mSDLNewThread;
+                    mSDLThread = new Thread(new SDLMain(), "SDLThread");
                     mSurface.enableSensor(Sensor.TYPE_ACCELEROMETER, true);
-                    synchronized (mSDLSemaphoreRun) {
-                        mSDLSemaphoreRun.notifyAll();
-                    }
+                    mSDLThread.start();
+
                     // No nativeResume(), don't signal Android_ResumeSem
                 } else {
                     nativeResume();
@@ -907,7 +902,6 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     public static native String nativeGetVersion();
     public static native int nativeSetupJNI();
     public static native int nativeRunMain(String library, String function, Object arguments);
-    public static native int nativeLoopMain(String function);
     public static native void nativeLowMemory();
     public static native void nativeSendQuit();
     public static native void nativeQuit();
@@ -1894,7 +1888,6 @@ class SDLMain implements Runnable {
         if (SDLActivity.mSingleton != null && !SDLActivity.mSingleton.isFinishing()) {
             // Let's finish the Activity
             SDLActivity.mSDLThread = null;
-            SDLActivity.mSDLNewThread = null;
             SDLActivity.mSingleton.finish();
         }  // else: Activity is already being destroyed
 

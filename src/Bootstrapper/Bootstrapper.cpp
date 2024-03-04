@@ -72,7 +72,6 @@ SERVICE_EXTERN( ConfigService );
 SERVICE_EXTERN( SettingsService );
 SERVICE_EXTERN( ArchiveService );
 SERVICE_EXTERN( AnalyticsService );
-SERVICE_EXTERN( SemaphoreService );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( MockupRenderSystem );
@@ -464,10 +463,6 @@ namespace Mengine
             return false;
         }
 
-        Timestamp mengine_initialize_timestamp = ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_start" ), MENGINE_DOCUMENT_FACTORABLE )
-            ->log();
-
         LOGGER_INFO( "bootstrapper", "bootstrapper create dynamic priority plugins" );
 
         if( this->createDynamicPriorityPlugins_() == false )
@@ -558,11 +553,6 @@ namespace Mengine
             return false;
         }
 
-        ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_completed" ), MENGINE_DOCUMENT_FACTORABLE )
-            ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getSystemDurationTimestamp( mengine_initialize_timestamp ) )
-            ->log();
-
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_COMPLETE );
 
         return true;
@@ -571,10 +561,6 @@ namespace Mengine
     bool Bootstrapper::run()
     {
         LOGGER_INFO( "bootstrapper", "bootstrapper run frameworks" );
-
-        Timestamp mengine_run_timestamp = ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_start" ), MENGINE_DOCUMENT_FACTORABLE )
-            ->log();
 
         if( this->runFrameworks_() == false )
         {
@@ -609,11 +595,6 @@ namespace Mengine
         }
 
         LOGGER_INFO( "bootstrapper", "bootstrapper run" );
-
-        ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_run_completed" ), MENGINE_DOCUMENT_FACTORABLE )
-            ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getSystemDurationTimestamp( mengine_run_timestamp ) )
-            ->log();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE );
 
@@ -975,7 +956,6 @@ namespace Mengine
         MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( SemaphoreService, MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         MENGINE_ADD_SERVICE( AndroidEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1073,10 +1053,6 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_OPTICK_STATIC
         MENGINE_ADD_PLUGIN( Optick, "initialize Optick...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
-
-        Timestamp mengine_initialize_services_timestamp = ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_services_start" ), MENGINE_DOCUMENT_FACTORABLE )
-            ->log();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
 
@@ -1182,11 +1158,6 @@ namespace Mengine
         }
 
 #undef BOOTSTRAPPER_SERVICE_CREATE
-
-        ANALYTICS_SERVICE()
-            ->buildEvent( STRINGIZE_STRING_LOCAL( "mng_initialize_services_completed" ), MENGINE_DOCUMENT_FACTORABLE )
-            ->addParameterInteger( STRINGIZE_STRING_LOCAL( "time" ), Helper::getSystemDurationTimestamp( mengine_initialize_services_timestamp ) )
-            ->log();
 
         return true;
     }
@@ -2124,7 +2095,6 @@ namespace Mengine
         SERVICE_FINALIZE( RenderMaterialService );
         SERVICE_FINALIZE( RenderTextureService );
         SERVICE_FINALIZE( ArchiveService );
-        SERVICE_FINALIZE( SemaphoreService );
         SERVICE_FINALIZE( ThreadService );
         SERVICE_FINALIZE( EasingService );
 
@@ -2224,7 +2194,6 @@ namespace Mengine
         SERVICE_DESTROY( ConfigService );
         SERVICE_DESTROY( SettingsService );
         SERVICE_DESTROY( ArchiveService );
-        SERVICE_DESTROY( SemaphoreService );
         SERVICE_DESTROY( MemoryService );
         SERVICE_DESTROY( ThreadService );
         SERVICE_DESTROY( TimeSystem );

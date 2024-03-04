@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.Set;
 
 public class MengineActivity extends SDLActivity {
     public static final String TAG = "MengineActivity";
@@ -41,10 +42,6 @@ public class MengineActivity extends SDLActivity {
     private static native boolean AndroidEnvironmentService_writeOldLogToFile(Writer writer);
     private static native int AndroidEnvironmentService_getProjectVersion();
 
-    private static native void AnroidEnvironmentService_activateSemaphore( String name );
-    private static native void AnroidEnvironmentService_deactivateSemaphore( String name );
-    private static native void AnroidEnvironmentService_waitSemaphore( String name, Object cb );
-
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
     private static native void AndroidNativePython_call(String plugin, String method, Object args[]);
 
@@ -52,6 +49,7 @@ public class MengineActivity extends SDLActivity {
     private boolean m_destroy;
 
     private Map<String, Integer> m_requestCodes;
+    private Map<String, MengineSemaphore> m_semaphores;
 
     public MengineActivity() {
     }
@@ -245,61 +243,13 @@ public class MengineActivity extends SDLActivity {
         MengineUtils.finishActivityWithAlertDialog(this, format, args);
     }
 
-    protected boolean startMainThread() {
-        Object semaphoreInit = new Object();
-        Object semaphoreRun = new Object();
-
-        String library = this.getMainSharedObject();
-        String[] arguments = this.getArguments();
-
-        mSDLSemaphoreRun = semaphoreRun;
-        MengineMain main = new MengineMain(this, semaphoreInit, semaphoreRun, library, arguments);
-        mSDLNewThread = new Thread(main, "MengineMain");
-        mSDLNewThread.start();
-
-        synchronized (semaphoreInit) {
-            try {
-                semaphoreInit.wait();
-            } catch (InterruptedException e) {
-                this.setState("activity.init", "sdl_interrupted");
-
-                MengineAnalytics.buildEvent("mng_activity_init_failed")
-                    .addParameterException("reason", e)
-                    .logAndFlush();
-
-                this.finishWithAlertDialog("[ERROR] SDL init interrupted: %s"
-                    , e.getMessage()
-                );
-
-                return false;
-            }
-        }
-
-        int status = main.getStatusInit();
-
-        if (status != 0) {
-            this.setState("activity.init", "sdl_status: " + status);
-
-            MengineAnalytics.buildEvent("mng_activity_init_failed")
-                .addParameterLong("init_status", status)
-                .logAndFlush();
-
-            this.finishWithAlertDialog("[ERROR] SDL init status: %d"
-                , status
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         m_initializePython = false;
         m_destroy = false;
 
         m_requestCodes = new HashMap<>();
+        m_semaphores = new HashMap<>();
 
         this.setState("activity.lifecycle", "create");
 
@@ -350,37 +300,6 @@ public class MengineActivity extends SDLActivity {
         for (MenginePluginActivityListener l : listeners) {
             String pluginName = l.getPluginName();
 
-            MengineLog.logMessage(TAG, "onPreCreate plugin: %s"
-                , pluginName
-            );
-
-            try {
-                l.onPreCreate(this, savedInstanceState);
-            } catch (MenginePluginInvalidInitializeException e) {
-                this.setState("activity.init", "plugin_precreate_exception." + l.getPluginName());
-
-                MengineAnalytics.buildEvent("mng_activity_init_failed")
-                    .addParameterException("reason", e)
-                    .logAndFlush();
-
-                this.finishWithAlertDialog("[ERROR] onPreCreate plugin: %s exception: %s"
-                    , l.getPluginName()
-                    , e.getMessage()
-                );
-
-                return;
-            }
-        }
-
-        if( this.startMainThread() == false ) {
-            return;
-        }
-
-        MengineLog.initialize(this);
-
-        for (MenginePluginActivityListener l : listeners) {
-            String pluginName = l.getPluginName();
-
             MengineLog.logMessage(TAG, "onCreate plugin: %s"
                 , pluginName
             );
@@ -410,6 +329,18 @@ public class MengineActivity extends SDLActivity {
 
     public void quitMengineApplication() {
         AndroidEnvironmentService_quitMengineAndroidActivityJNI();
+    }
+
+    public void onMengineInitializeBaseServices() {
+        MengineLog.logInfo(TAG, "onMengineInitializeBaseServices");
+
+        MengineLog.initialize(this);
+
+        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
+
+        for (MenginePluginEngineListener l : listeners) {
+            l.onMengineInitializeBaseServices(this);
+        }
     }
 
     public void onMengineCreateApplication() {
@@ -624,6 +555,7 @@ public class MengineActivity extends SDLActivity {
         }
 
         m_requestCodes = null;
+        m_semaphores = null;
 
         AndroidEnv_removeMengineAndroidActivityJNI();
 
@@ -840,9 +772,29 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("python.semaphore", name);
 
-        MengineUtils.performOnMainThread(() -> {
-            AnroidEnvironmentService_activateSemaphore(name);
-        });
+        ArrayList<MengineFunctorVoid> activate_listeners = null;
+
+        synchronized (m_semaphores) {
+            MengineSemaphore semaphore = m_semaphores.get(name);
+
+            if (semaphore == null) {
+                semaphore = new MengineSemaphore(true);
+
+                m_semaphores.put(name, semaphore);
+
+                return;
+            }
+
+            if (semaphore.isActivated() == true) {
+                return;
+            }
+
+            activate_listeners = semaphore.activate();
+        }
+
+        for( MengineFunctorVoid listener : activate_listeners) {
+            listener.call();
+        }
     }
 
     public void deactivateSemaphore(String name) {
@@ -854,9 +806,9 @@ public class MengineActivity extends SDLActivity {
             , name
         );
 
-        MengineUtils.performOnMainThread(() -> {
-            AnroidEnvironmentService_deactivateSemaphore(name);
-        });
+        synchronized (m_semaphores) {
+            m_semaphores.remove(name);
+        }
     }
 
     public void waitSemaphore(String name, MengineFunctorVoid cb) {
@@ -868,9 +820,24 @@ public class MengineActivity extends SDLActivity {
             , name
         );
 
-        MengineUtils.performOnMainThread(() -> {
-            AnroidEnvironmentService_waitSemaphore(name, cb);
-        });
+        synchronized (m_semaphores) {
+            MengineSemaphore semaphore = m_semaphores.get(name);
+
+            if (semaphore == null) {
+                semaphore = new MengineSemaphore(false);
+                semaphore.addListener(cb);
+
+                m_semaphores.put(name, semaphore);
+                return;
+            }
+
+            if (semaphore.isActivated() == false) {
+                semaphore.addListener(cb);
+                return;
+            }
+        }
+
+        cb.call();
     }
 
     /***********************************************************************************************

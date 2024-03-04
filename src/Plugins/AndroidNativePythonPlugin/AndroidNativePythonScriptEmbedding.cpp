@@ -2,13 +2,14 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 
+#include "Environment/Android/AndroidFunctorVoidInterface.h"
+
 #include "Environment/Python/PythonScriptWrapper.h"
 
 #include "AndroidNativePythonInterface.h"
 #include "AndroidNativePythonFunctorVoid.h"
 #include "AndroidNativePythonFunctorBoolean.h"
 
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ScriptablePrototypeGenerator.h"
 
 namespace Mengine
@@ -78,6 +79,37 @@ namespace Mengine
             return ANDROID_NATIVEPYTHON_SERVICE()
                 ->androidObjectMethod( _plugin, _method, _args );
         }
+        //////////////////////////////////////////////////////////////////////////
+        class PythonAndroidFunctorVoid
+            : public AndroidFunctorVoidInterface
+        {
+        public:
+            PythonAndroidFunctorVoid( const pybind::object & _cb, const pybind::args & _args )
+                : m_cb( _cb )
+                , m_args( _args )
+            {
+            }
+
+        protected:
+            void invoke() override
+            {
+                m_cb.call_args( m_args );
+            }
+
+        protected:
+            pybind::object m_cb;
+            pybind::args m_args;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<PythonAndroidFunctorVoid, AndroidFunctorVoidInterface> PythonAndroidFunctorVoidPtr;
+        //////////////////////////////////////////////////////////////////////////
+        void AndroidNativePythonService_waitSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
+        {
+            AndroidFunctorVoidInterfacePtr listener = Helper::makeFactorableUnique<PythonAndroidFunctorVoid>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
+
+            ANDROID_NATIVEPYTHON_SERVICE()
+                ->waitSemaphore( _name, listener );
+        }
         ///////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
@@ -113,6 +145,8 @@ namespace Mengine
         pybind::interface_<AndroidNativePythonFunctorBoolean, pybind::bases<AndroidNativePythonFunctor>>( _kernel, "AndroidNativePythonFunctorBoolean" )
             .def_call( &AndroidNativePythonFunctorBoolean::call )
             ;
+
+        pybind::def_function_args( _kernel, "waitSemaphore", &Detail::AndroidNativePythonService_waitSemaphore );
 
         Helper::registerScriptWrapping<AndroidNativePythonFunctorVoid>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<AndroidNativePythonFunctorBoolean>( _kernel, MENGINE_DOCUMENT_FACTORABLE );

@@ -3,8 +3,6 @@
 #include "Kernel/PluginBase.h"
 #include "Kernel/ConstString.h"
 
-#include "XlsScriptLogger.h"
-
 namespace Mengine
 {
     class XlsExportPlugin
@@ -23,17 +21,15 @@ namespace Mengine
 
     protected:
         void notifyBootstrapperCreateApplication_();
-        void notifyReloadLocale();
+        void notifyReloadLocale_();
 
     protected:
         bool proccess_();
 
     protected:
-        void warning_( const WChar * _msg );
-        void error_( const WChar * _msg );
+        bool findPythonPath_();
 
     protected:
-        XlsScriptLogger * m_warninglogger;
-        XlsScriptLogger * m_errorLogger;
+        Char m_pythonPath[MENGINE_MAX_PATH] = {L'\0'};
     };
 }

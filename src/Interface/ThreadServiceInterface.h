@@ -45,6 +45,7 @@ namespace Mengine
         virtual void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) = 0;
 
     public:
+        virtual void updateMainThread() = 0;
         virtual bool isMainThread() const = 0;
         virtual ThreadId getMainThreadId() const = 0;
 

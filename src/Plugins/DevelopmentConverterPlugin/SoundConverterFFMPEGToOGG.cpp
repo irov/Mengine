@@ -2,11 +2,14 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/Win32PlatformServiceExtensionInterface.h"
+
+#include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ParamsHelper.h"
+
+#include "Config/StdIO.h"
 
 namespace Mengine
 {
@@ -72,7 +75,14 @@ namespace Mengine
             aq = " -aq " + aq;
         }
 
-        String buffer = "-loglevel error -y -threads 8 -i \"" + full_input + "\" -map_metadata -1" + ac + ar + aq + " -acodec libvorbis -max_muxing_queue_size 1024 \"" + full_output + "\"";
+        WChar command[MENGINE_MAX_COMMAND_LENGTH] = {'\0'};
+        MENGINE_WNSPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"-loglevel error -y -threads 8 -i \"%S\" -map_metadata -1%S%S%S -acodec libvorbis -max_muxing_queue_size 1024 \"%S\""
+            , full_input.c_str()
+            , ac.c_str()
+            , ar.c_str()
+            , aq.c_str()
+            , full_output.c_str()
+        );
 
         LOGGER_MESSAGE_RELEASE( "converting file '%s' to '%s'"
             , full_input.c_str()
@@ -82,10 +92,10 @@ namespace Mengine
         String ffmpeg = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ffmpeg" ), "ffmpeg.exe" );
 
         uint32_t exitCode;
-        if( win32Platform->createProcess( ffmpeg.c_str(), buffer.c_str(), true, &exitCode ) == false )
+        if( win32Platform->createProcess( ffmpeg.c_str(), command, true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
-                , buffer.c_str()
+                , command
             );
 
             return false;

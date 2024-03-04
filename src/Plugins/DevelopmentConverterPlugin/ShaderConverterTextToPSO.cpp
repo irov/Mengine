@@ -2,7 +2,8 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/Win32PlatformServiceExtensionInterface.h"
+
+#include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/FilePath.h"
@@ -45,8 +46,8 @@ namespace Mengine
 
         if( fxcPath == STRINGIZE_FILEPATH_LOCAL( "REGISTER" ) )
         {
-            Char WindowsKitsInstallationFolder[256] = {'\0'};
-            if( win32Platform->getLocalMachineRegValue( "SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots", "KitsRoot10", WindowsKitsInstallationFolder, 255 ) == false )
+            Char WindowsKitsInstallationFolder[MENGINE_MAX_PATH] = {'\0'};
+            if( win32Platform->getLocalMachineRegValue( L"SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots", L"KitsRoot10", WindowsKitsInstallationFolder, MENGINE_MAX_PATH ) == false )
             {
                 LOGGER_ERROR( "not found REGISTER Windows Kits installed roots" );
 
@@ -86,8 +87,8 @@ namespace Mengine
         full_output += outputFolderPath;
         full_output += outputFilePath;
 
-        Char buffer[2048] = {'\0'};
-        MENGINE_SNPRINTF( buffer, 2047, "/nologo /T ps_1_1 /O3 /Gec /Fo \"%s\" \"%s\""
+        WChar command[MENGINE_MAX_COMMAND_LENGTH] = {'\0'};
+        MENGINE_WNSPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"/nologo /T ps_1_1 /O3 /Gec /Fo \"%S\" \"%S\""
             , full_output.c_str()
             , full_input.c_str()
         );
@@ -95,14 +96,14 @@ namespace Mengine
         LOGGER_MESSAGE_RELEASE( "converting file '%s' to '%s'\n%s"
             , full_input.c_str()
             , full_output.c_str()
-            , buffer
+            , command
         );
 
         uint32_t exitCode;
-        if( win32Platform->createProcess( fxcPath.c_str(), buffer, true, &exitCode ) == false )
+        if( win32Platform->createProcess( fxcPath.c_str(), command, true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
-                , buffer
+                , command
             );
 
             return false;

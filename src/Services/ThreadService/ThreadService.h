@@ -54,6 +54,7 @@ namespace Mengine
         void update() override;
 
     public:
+        void updateMainThread() override;
         bool isMainThread() const override;
         ThreadId getMainThreadId() const override;
 
@@ -62,8 +63,6 @@ namespace Mengine
         const ConstString & findThreadNameById( ThreadId _id ) const override;
 
     protected:
-        uint32_t m_threadCount;
-
         ThreadMutexInterfacePtr m_mutexTasks;
         ThreadMutexInterfacePtr m_mutexThreads;
         ThreadMutexInterfacePtr m_mutexDispatchEvents;

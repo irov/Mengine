@@ -5,10 +5,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 
 public interface MenginePluginActivityListener extends MenginePluginInterface {
-    default void onPreCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        //Empty
-    }
-
     default void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         //Empty
     }

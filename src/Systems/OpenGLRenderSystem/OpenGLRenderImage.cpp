@@ -1,7 +1,8 @@
 #include "OpenGLRenderImage.h"
 
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/OpenGLRenderSystemExtensionInterface.h"
+
+#include "Environment/OpenGL/OpenGLRenderSystemExtensionInterface.h"
 
 #include "OpenGLRenderImageLockedFactoryStorage.h"
 

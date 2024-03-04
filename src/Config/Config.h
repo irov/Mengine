@@ -325,12 +325,28 @@
 #   endif
 #endif
 
+#ifndef MENGINE_MAX_COMMAND_LENGTH
+#   if defined(MENGINE_PLATFORM_WINDOWS)
+#       define MENGINE_MAX_COMMAND_LENGTH 32768
+#   else
+#       define MENGINE_MAX_COMMAND_LENGTH 1024
+#   endif
+#endif
+
 #ifndef MENGINE_PATH_DELIM
 #define MENGINE_PATH_DELIM '/'
 #endif
 
 #ifndef MENGINE_PATH_WDELIM
 #define MENGINE_PATH_WDELIM L'/'
+#endif
+
+#ifndef MENGINE_WIN32_PATH_DELIM
+#define MENGINE_WIN32_PATH_DELIM '\\'
+#endif
+
+#ifndef MENGINE_WIN32_PATH_WDELIM
+#define MENGINE_WIN32_PATH_WDELIM L'\\'
 #endif
 
 #ifndef MENGINE_OFFSETOF

@@ -856,6 +856,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::loopPlatform()
     {
+        THREAD_SERVICE()
+            ->updateMainThread();
+
         m_prevTime = Helper::getSystemTimestamp();
 
         while( m_close == false )
@@ -2793,9 +2796,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::existDirectory( const Char * _path, const Char * _directory ) const
     {
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0 || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM ) || _path[MENGINE_STRLEN( _path ) - 1] == '/' || _path[MENGINE_STRLEN( _path ) - 1] == '\\') );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0
+            || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM )
+                || _path[MENGINE_STRLEN( _path ) - 1] == MENGINE_PATH_DELIM
+                || _path[MENGINE_STRLEN( _path ) - 1] == MENGINE_WIN32_PATH_DELIM)
+        );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/' || _directory[MENGINE_STRLEN( _directory ) - 1] == '\\') );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 
+            || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM )
+                || _directory[MENGINE_STRLEN( _directory ) - 1] == MENGINE_PATH_DELIM
+                || _directory[MENGINE_STRLEN( _directory ) - 1] == MENGINE_WIN32_PATH_DELIM) );
 
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
@@ -2854,9 +2864,17 @@ namespace Mengine
             , _directory
         );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0 || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM ) || _path[MENGINE_STRLEN( _path ) - 1] == '/' || _path[MENGINE_STRLEN( _path ) - 1] == '\\') );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0 
+            || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM ) 
+                || _path[MENGINE_STRLEN( _path ) - 1] == MENGINE_PATH_DELIM
+                || _path[MENGINE_STRLEN( _path ) - 1] == MENGINE_WIN32_PATH_DELIM)
+        );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) || _directory[MENGINE_STRLEN( _directory ) - 1] == '/' || _directory[MENGINE_STRLEN( _directory ) - 1] == '\\') );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 
+            || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) 
+                || _directory[MENGINE_STRLEN( _directory ) - 1] == MENGINE_PATH_DELIM
+                || _directory[MENGINE_STRLEN( _directory ) - 1] == MENGINE_WIN32_PATH_DELIM)
+        );
 
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
         if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
@@ -3479,22 +3497,14 @@ namespace Mengine
         ::Sleep( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32PlatformService::getLocalMachineRegValue( const Char * _path, const Char * _key, Char * const _value, size_t _size )
+    bool Win32PlatformService::getLocalMachineRegValue( const WChar * _path, const WChar * _key, Char * const _value, size_t _size )
     {
-        WChar unicode_path[MENGINE_MAX_PATH] = {'\0'};
-        Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH );
-
-        WChar unicode_key[MENGINE_MAX_PATH] = {'\0'};
-        Helper::utf8ToUnicode( _key, unicode_key, MENGINE_MAX_PATH );
-
         HKEY hKey;
-        LSTATUS lRes = ::RegOpenKeyExW( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ, &hKey );
+        LSTATUS lRes = ::RegOpenKeyExW( HKEY_LOCAL_MACHINE, _path, 0, KEY_READ, &hKey );
 
         if( lRes == ERROR_FILE_NOT_FOUND )
         {
-#if defined(MENGINE_PLATFORM_WINDOWS64)
-            lRes = ::RegOpenKeyExW( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey );
-#endif
+            lRes = ::RegOpenKeyExW( HKEY_LOCAL_MACHINE, _path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey );
         }
 
         if( lRes != ERROR_SUCCESS )
@@ -3509,7 +3519,7 @@ namespace Mengine
 
         WChar unicode_value[1024] = {L'\0'};
         DWORD dwBufferSize = 1024;
-        LSTATUS nError = ::RegQueryValueExW( hKey, unicode_key, 0, NULL, (LPBYTE)unicode_value, &dwBufferSize );
+        LSTATUS nError = ::RegQueryValueExW( hKey, _key, 0, NULL, (LPBYTE)unicode_value, &dwBufferSize );
 
         ::RegCloseKey( hKey );
 
@@ -3528,7 +3538,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32PlatformService::createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * const _exitCode )
+    bool Win32PlatformService::createProcess( const Char * _process, const WChar * _command, bool _wait, uint32_t * const _exitCode )
     {
         if( _command == nullptr )
         {
@@ -3548,9 +3558,9 @@ namespace Mengine
         WChar unicode_process[MENGINE_MAX_PATH] = {L'\0'};
         Helper::utf8ToUnicode( _process, unicode_process, MENGINE_MAX_PATH );
 
-        WChar unicode_command[4096] = {L'\0'};
-        unicode_command[0] = ' ';
-        Helper::utf8ToUnicode( _command, unicode_command + 1, 4096 );
+        WChar unicode_command[MENGINE_MAX_COMMAND_LENGTH] = {L'\0'};
+        MENGINE_WCSCHR( unicode_command, L' ' );
+        MENGINE_WCSCAT( unicode_command, _command );
 
         if( _wait == true )
         {
@@ -3563,18 +3573,18 @@ namespace Mengine
             ::GetTempPath( MENGINE_MAX_PATH, tempPathBuffer );
 
             WChar tempFileNameBuffer[MENGINE_MAX_PATH] = {L'\0'};
-            ::GetTempFileName( tempPathBuffer,
-                L"Process",
-                0,
-                tempFileNameBuffer );
+            ::GetTempFileName( tempPathBuffer
+                , L"Process"
+                , 0
+                , tempFileNameBuffer );
 
-            HANDLE hWriteTempFile = ::CreateFile( tempFileNameBuffer,
-                FILE_APPEND_DATA,
-                FILE_SHARE_WRITE | FILE_SHARE_READ,
-                &sa,
-                OPEN_ALWAYS,
-                FILE_ATTRIBUTE_TEMPORARY,
-                NULL );
+            HANDLE hWriteTempFile = ::CreateFile( tempFileNameBuffer
+                , FILE_APPEND_DATA
+                , FILE_SHARE_WRITE | FILE_SHARE_READ
+                , &sa
+                , OPEN_ALWAYS
+                , FILE_ATTRIBUTE_TEMPORARY
+                , NULL );
 
             if( hWriteTempFile == INVALID_HANDLE_VALUE )
             {
@@ -3636,50 +3646,47 @@ namespace Mengine
                 , exitCode
             );
 
-            if( exitCode != 0 )
+            HANDLE hReadTempFile = ::CreateFile( tempFileNameBuffer
+                , FILE_GENERIC_READ
+                , FILE_SHARE_WRITE | FILE_SHARE_READ
+                , &sa
+                , OPEN_ALWAYS
+                , FILE_ATTRIBUTE_TEMPORARY
+                , NULL );
+
+            if( hReadTempFile == INVALID_HANDLE_VALUE )
             {
-                HANDLE hReadTempFile = ::CreateFile( tempFileNameBuffer,
-                    FILE_GENERIC_READ,
-                    FILE_SHARE_WRITE | FILE_SHARE_READ,
-                    &sa,
-                    OPEN_ALWAYS,
-                    FILE_ATTRIBUTE_TEMPORARY,
-                    NULL );
+                LOGGER_ERROR( "CreateFile '%ls' get error %ls"
+                    , tempFileNameBuffer
+                    , Helper::Win32GetLastErrorMessage()
+                );
 
-                if( hReadTempFile == INVALID_HANDLE_VALUE )
-                {
-                    LOGGER_ERROR( "CreateFile '%ls' get error %ls"
-                        , tempFileNameBuffer
-                        , Helper::Win32GetLastErrorMessage()
-                    );
-
-                    return false;
-                }
-
-                DWORD tempFileSizeHigh;
-                DWORD tempFileSize = ::GetFileSize( hReadTempFile, &tempFileSizeHigh );
-
-                Char tempFileBuffer[4096] = {'\0'};
-
-                DWORD dwBytesRead;
-                DWORD nNumberOfBytesToRead = MENGINE_MIN( tempFileSize, 4095 );
-                BOOL successful = ::ReadFile( hReadTempFile, tempFileBuffer, nNumberOfBytesToRead, &dwBytesRead, NULL );
-
-                if( successful == TRUE )
-                {
-                    LOGGER_CATEGORY_VERBOSE_LEVEL( LM_ERROR, LFILTER_NONE, LCOLOR_RED, LFLAG_SHORT )("%s"
-                        , tempFileBuffer
-                        );
-                }
-                else
-                {
-                    LOGGER_CATEGORY_VERBOSE_LEVEL( LM_ERROR, LFILTER_NONE, LCOLOR_RED, LFLAG_SHORT )("invalid read file '%ls'"
-                        , tempFileNameBuffer
-                        );
-                }
-
-                ::CloseHandle( hReadTempFile );
+                return false;
             }
+
+            DWORD tempFileSizeHigh;
+            DWORD tempFileSize = ::GetFileSize( hReadTempFile, &tempFileSizeHigh );
+
+            Char tempFileBuffer[4096] = {'\0'};
+
+            DWORD dwBytesRead;
+            DWORD nNumberOfBytesToRead = MENGINE_MIN( tempFileSize, 4095 );
+            BOOL successful = ::ReadFile( hReadTempFile, tempFileBuffer, nNumberOfBytesToRead, &dwBytesRead, NULL );
+
+            if( successful == TRUE )
+            {
+                LOGGER_CATEGORY_VERBOSE_LEVEL( LM_ERROR, LFILTER_NONE, LCOLOR_RED, LFLAG_SHORT )("%s"
+                    , tempFileBuffer
+                    );
+            }
+            else
+            {
+                LOGGER_CATEGORY_VERBOSE_LEVEL( LM_ERROR, LFILTER_NONE, LCOLOR_RED, LFLAG_SHORT )("invalid read file '%ls'"
+                    , tempFileNameBuffer
+                    );
+            }
+
+            ::CloseHandle( hReadTempFile );
 
             if( _exitCode != nullptr )
             {

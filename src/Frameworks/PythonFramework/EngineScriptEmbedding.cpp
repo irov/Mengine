@@ -28,7 +28,6 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
 #include "Interface/DocumentInterface.h"
-#include "Interface/SemaphoreServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
 #include "Interface/PreferencesSystemInterface.h"
 
@@ -3184,50 +3183,6 @@ namespace Mengine
                     ->setPreferenceString( "persistent_arguments", _arguments );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_activateSemaphore( const ConstString & _name )
-            {
-                SEMAPHORE_SERVICE()
-                    ->activateSemaphore( _name );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_deactivateSemaphore( const ConstString & _name )
-            {
-                SEMAPHORE_SERVICE()
-                    ->deactivateSemaphore( _name );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            class PythonSemaphoreListener
-                : public SemaphoreListenerInterface
-                , public Factorable
-            {
-            public:
-                PythonSemaphoreListener( const pybind::object & _cb, const pybind::args & _args )
-                    : m_cb( _cb )
-                    , m_args( _args )
-                {
-                }
-
-            protected:
-                void onActivated() override
-                {
-                    m_cb.call_args( m_args );
-                }
-
-            protected:
-                pybind::object m_cb;
-                pybind::args m_args;
-            };
-            //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<PythonSemaphoreListener, SemaphoreListenerInterface> PythonSemaphoreListenerPtr;
-            //////////////////////////////////////////////////////////////////////////
-            void s_waitSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
-            {
-                PythonSemaphoreListenerPtr listener = Helper::makeFactorableUnique<PythonSemaphoreListener>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
-
-                SEMAPHORE_SERVICE()
-                    ->waitSemaphore( _name, listener );
-            }
-            //////////////////////////////////////////////////////////////////////////
             PyObject * s_getPersistentArguments( pybind::kernel_interface * _kernel )
             {
                 Char persistentArguments[1024] = {'\0'};
@@ -4760,10 +4715,6 @@ namespace Mengine
         pybind::def_functor( _kernel, "setPersistentArguments", nodeScriptMethod, &EngineScriptMethod::s_setPersistentArguments );
         pybind::def_functor_kernel( _kernel, "getPersistentArguments", nodeScriptMethod, &EngineScriptMethod::s_getPersistentArguments );
         pybind::def_functor( _kernel, "removePersistentArguments", nodeScriptMethod, &EngineScriptMethod::s_removePersistentArguments );
-
-        pybind::def_functor(_kernel, "activateSemaphore", nodeScriptMethod, &EngineScriptMethod::s_activateSemaphore );
-        pybind::def_functor( _kernel, "deactivateSemaphore", nodeScriptMethod, &EngineScriptMethod::s_deactivateSemaphore );
-        pybind::def_functor_args( _kernel, "waitSemaphore", nodeScriptMethod, &EngineScriptMethod::s_waitSemaphore );
 
         return true;
     }

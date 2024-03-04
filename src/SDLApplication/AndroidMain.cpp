@@ -4,59 +4,27 @@
 
 #include "SDLApplication.h"
 
-Mengine::SDLApplication * MENGINE_application = nullptr;
-
 int SDL_main( int argc, char * argv[] )
 {
-    if( MENGINE_application == nullptr )
-    {
-        MENGINE_application = new Mengine::SDLApplication;
-    }
-    else
-    {
-        return EXIT_FAILURE;
-    }
+    Mengine::SDLApplication application;
 
-    if( MENGINE_application == nullptr )
+    if( application.bootstrap( argc, argv ) == false )
     {
-        return EXIT_FAILURE;
-    }
-
-    if( MENGINE_application->bootstrap( argc, argv ) == false )
-    {
-        MENGINE_application->finalize();
-
-        delete MENGINE_application;
+        application.finalize();
 
         return EXIT_FAILURE;
     }
 
-    return EXIT_SUCCESS;
-}
-
-int SDL_loop(void)
-{
-    if( MENGINE_application == nullptr )
+    if( application.initialize() == false )
     {
-        return EXIT_FAILURE;
-    }
-
-    if( MENGINE_application->initialize() == false )
-    {
-        MENGINE_application->finalize();
-
-        delete MENGINE_application;
-        MENGINE_application = nullptr;
+        application.finalize();
 
         return EXIT_FAILURE;
     }
 
-    MENGINE_application->loop();
+    application.loop();
 
-    MENGINE_application->finalize();
-
-    delete MENGINE_application;
-    MENGINE_application = nullptr;
+    application.finalize();
 
     return EXIT_SUCCESS;
 }

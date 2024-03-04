@@ -5,15 +5,15 @@
 #include "Interface/PlatformServiceInterface.h"
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-#include "Interface/Win32PlatformServiceExtensionInterface.h"
+#include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-#include "Interface/SDLPlatformServiceExtensionInterface.h"
+#include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-#include "Interface/DX9RenderSystemExtensionInterface.h"
+#include "Environment/DirectX9/DX9RenderSystemExtensionInterface.h"
 #endif
 
 #include "Interface/RenderSystemInterface.h"

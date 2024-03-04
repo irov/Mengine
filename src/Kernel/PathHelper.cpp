@@ -54,8 +54,8 @@ namespace Mengine
         {
             const Char * str_fullpath = _fullpath.c_str();
 
-            const Char * folder_delimiter_1 = MENGINE_STRRCHR( str_fullpath, '\\' );
-            const Char * folder_delimiter_2 = MENGINE_STRRCHR( str_fullpath, '/' );
+            const Char * folder_delimiter_1 = MENGINE_STRRCHR( str_fullpath, MENGINE_WIN32_PATH_DELIM );
+            const Char * folder_delimiter_2 = MENGINE_STRRCHR( str_fullpath, MENGINE_PATH_DELIM );
 
             const Char * folder_delimiter = (folder_delimiter_1 > folder_delimiter_2) ? folder_delimiter_1 : folder_delimiter_2;
 
@@ -111,13 +111,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashW( WChar * const _filePath )
         {
-            WChar * pch = MENGINE_WCSCHR( _filePath, L'\\' );
+            WChar * pch = MENGINE_WCSCHR( _filePath, MENGINE_WIN32_PATH_WDELIM );
 
             while( pch != nullptr )
             {
                 *pch = MENGINE_PATH_WDELIM;
 
-                pch = MENGINE_WCSCHR( pch, L'\\' );
+                pch = MENGINE_WCSCHR( pch, MENGINE_WIN32_PATH_WDELIM );
             }
         }
         //////////////////////////////////////////////////////////////////////////
@@ -141,7 +141,7 @@ namespace Mengine
 
             while( pch != nullptr )
             {
-                *pch = L'\\';
+                *pch = MENGINE_WIN32_PATH_WDELIM;
 
                 pch = MENGINE_WCSCHR( pch, MENGINE_PATH_WDELIM );
             }
@@ -153,7 +153,7 @@ namespace Mengine
 
             while( pch != nullptr )
             {
-                *pch = '\\';
+                *pch = MENGINE_WIN32_PATH_DELIM;
 
                 pch = MENGINE_STRCHR( pch, MENGINE_PATH_DELIM );
             }
@@ -210,13 +210,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashA( Char * const _filePath )
         {
-            Char * pch = MENGINE_STRCHR( _filePath, '\\' );
+            Char * pch = MENGINE_STRCHR( _filePath, MENGINE_WIN32_PATH_DELIM );
 
             while( pch != nullptr )
             {
                 *pch = MENGINE_PATH_DELIM;
 
-                pch = MENGINE_STRCHR( pch, '\\' );
+                pch = MENGINE_STRCHR( pch, MENGINE_WIN32_PATH_DELIM );
             }
         }
         //////////////////////////////////////////////////////////////////////////

@@ -2,13 +2,12 @@
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/AllocatorSystemInterface.h"
-
-#include "Environment/Python/PythonIncluder.h"
+#include "Interface/PlatformServiceInterface.h"
 
 #define MENGINE_WINDOWS_MIN_VERSION_WIN8
 #include "Environment/Windows/WindowsIncluder.h"
 #include "Environment/Windows/Win32Helper.h"
+#include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/UnicodeHelper.h"
@@ -17,69 +16,15 @@
 #include "Kernel/NotificationHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/StdIO.h"
 
-//////////////////////////////////////////////////////////////////////////
-FILE _iob[] = {*stdin, *stdout, *stderr};
-//////////////////////////////////////////////////////////////////////////
-extern "C" FILE * __cdecl __iob_func( void )
-{
-    return _iob;
-}
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( XlsExport, Mengine::XlsExportPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    namespace Detail
-    {
-        class MyXlsAllocator
-            : public pybind::allocator_interface
-        {
-        public:
-            MyXlsAllocator()
-            {
-            }
-
-            ~MyXlsAllocator() override
-            {
-            }
-
-        protected:
-            void * malloc( size_t _size ) override
-            {
-                void * p = ALLOCATOR_SYSTEM()
-                    ->malloc( _size, "python3" );
-
-                return p;
-            }
-
-            void * calloc( size_t _num, size_t _size ) override
-            {
-                void * p = ALLOCATOR_SYSTEM()
-                    ->calloc( _num, _size, "python3" );
-
-                return p;
-            }
-
-            void * realloc( void * _ptr, size_t _size ) override
-            {
-                void * p = ALLOCATOR_SYSTEM()
-                    ->realloc( _ptr, _size, "python3" );
-
-                return p;
-            }
-
-            void free( void * _ptr ) override
-            {
-                ALLOCATOR_SYSTEM()
-                    ->free( _ptr, "python3" );
-            }
-        };
-    }
     //////////////////////////////////////////////////////////////////////////
     XlsExportPlugin::XlsExportPlugin()
-        : m_warninglogger( nullptr )
-        , m_errorLogger( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -99,135 +44,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool XlsExportPlugin::_initializePlugin()
     {
-        if( HAS_OPTION( "noxlsexport" ) == true )
-        {
-            return true;
-        }
-
-        //Py_IgnoreEnvironmentFlag = 1;
-        //Py_VerboseFlag = 1;
-        //Py_NoUserSiteDirectory = 1;
-        //Py_NoSiteFlag = 1;
-
-        WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
-        DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
-
-        if( len == 0 )
+        if( this->findPythonPath_() == false )
         {
             return false;
         }
-
-        currentPath[len + 0] = MENGINE_PATH_WDELIM;
-        currentPath[len + 1] = L'\0';
-
-        WChar exportPath[MENGINE_MAX_PATH] = {L'\0'};
-        MENGINE_WCSCPY( exportPath, currentPath );
-        MENGINE_WCSCAT( exportPath, L"Python3Lib/" );
-
-        WChar shortpath_exportPath[MENGINE_MAX_PATH] = {L'\0'};
-        DWORD ShortPathNameLen = ::GetShortPathName( exportPath, shortpath_exportPath, MENGINE_MAX_PATH );
-
-        if( ShortPathNameLen == 0 )
-        {
-            LOGGER_ERROR( "invalid GetShortPathName '%ls' get error %ls"
-                , exportPath
-                , Helper::Win32GetLastErrorMessage()
-            );
-
-            return false;
-        }
-
-        Detail::MyXlsAllocator * allocator = Helper::newT<Detail::MyXlsAllocator>();
-
-#if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
-        int32_t crt_warn = _CrtSetReportMode( _CRT_WARN, _CRTDBG_REPORT_MODE );
-        int32_t crt_error = _CrtSetReportMode( _CRT_ERROR, _CRTDBG_REPORT_MODE );
-        int32_t crt_assert = _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_REPORT_MODE );
-#endif
-
-        pybind::kernel_interface * kernel = pybind::initialize( allocator, shortpath_exportPath, false, false, true );
-
-#if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
-        _CrtSetReportMode( _CRT_WARN, crt_warn );
-        _CrtSetReportMode( _CRT_ERROR, crt_error );
-        _CrtSetReportMode( _CRT_ASSERT, crt_assert );
-#endif
-
-        //PyObject * xls_module = pybind::module_init( "Xls" );
-
-        //pybind::set_currentmodule( xls_module );
-
-        PyObject * module_builtins = kernel->get_builtins();
-
-        pybind::interface_<XlsScriptLogger>( kernel, "XlsScriptLogger", true, module_builtins )
-            .def_native_silent_kernel( "write", &XlsScriptLogger::py_write )
-            .def_native_kernel( "flush", &XlsScriptLogger::py_flush )
-            .def_property( "softspace", &XlsScriptLogger::getSoftspace, &XlsScriptLogger::setSoftspace )
-            ;
-
-        m_warninglogger = Helper::newT<XlsScriptLogger>( LM_WARNING, LCOLOR_RED | LCOLOR_GREEN );
-
-        PyObject * pyWarningLogger = pybind::ptr( kernel, m_warninglogger );
-        kernel->setStdOutHandle( pyWarningLogger );
-
-        m_errorLogger = Helper::newT<XlsScriptLogger>( LM_ERROR, LCOLOR_RED );
-
-        PyObject * pyErrorLogger = pybind::ptr( kernel, m_warninglogger );
-        kernel->setStdErrorHandle( pyErrorLogger );
-
-        pybind::list py_syspath( kernel );
-
-        {
-            WChar stdPath[MENGINE_MAX_PATH] = {L'\0'};
-            MENGINE_WCSCPY( stdPath, currentPath );
-            MENGINE_WCSCAT( stdPath, L"Python3Lib/" );
-
-            WChar shortpath_stdPath[MENGINE_MAX_PATH] = {L'\0'};
-            ::GetShortPathName( stdPath, shortpath_stdPath, MENGINE_MAX_PATH );
-
-            py_syspath.append( shortpath_stdPath );
-        }
-
-        {
-            WChar xlsxPath[MENGINE_MAX_PATH] = {L'\0'};
-            MENGINE_WCSCPY( xlsxPath, currentPath );
-            MENGINE_WCSCAT( xlsxPath, L"XlsxExport/" );
-
-            WChar shortpath_xlsxPath[MENGINE_MAX_PATH] = {L'\0'};
-            ::GetShortPathName( xlsxPath, shortpath_xlsxPath, MENGINE_MAX_PATH );
-
-            py_syspath.append( shortpath_xlsxPath );
-        }
-
-        kernel->set_syspath( py_syspath.ptr() );
-
-        pybind::def_functor( kernel, "Warning", this, &XlsExportPlugin::warning_, module_builtins );
-        pybind::def_functor( kernel, "Error", this, &XlsExportPlugin::error_, module_builtins );
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &XlsExportPlugin::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RELOAD_LOCALE, &XlsExportPlugin::notifyReloadLocale, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RELOAD_LOCALE, &XlsExportPlugin::notifyReloadLocale_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void XlsExportPlugin::_finalizePlugin()
     {
-        pybind::kernel_interface * kernel = pybind::get_kernel();
-
-        kernel->setStdOutHandle( nullptr );
-        kernel->setStdErrorHandle( nullptr );
-
-        kernel->remove_scope<XlsScriptLogger>();
-
-        pybind::allocator_interface * allocator = kernel->get_allocator();
-
-        kernel->destroy();
-
-        Helper::deleteT( static_cast<Detail::MyXlsAllocator *>(allocator) );
-
-        Helper::deleteT( m_warninglogger );
-        Helper::deleteT( m_errorLogger );
-
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RELOAD_LOCALE );
     }
@@ -246,20 +75,13 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void XlsExportPlugin::notifyReloadLocale()
+    void XlsExportPlugin::notifyReloadLocale_()
     {
         this->proccess_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool XlsExportPlugin::proccess_()
     {
-        if( HAS_OPTION( "noxlsexport" ) == true )
-        {
-            return true;
-        }
-
-        pybind::kernel_interface * kernel = pybind::get_kernel();
-
         const ConstString & Project_Codename = APPLICATION_SERVICE()
             ->getProjectCodename();
 
@@ -268,53 +90,122 @@ namespace Mengine
             return true;
         }
 
-        bool exist = false;
-        PyObject * py_xlsxExporter = kernel->module_import( "xlsxExporter", exist );
+        WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
+        DWORD currentPathLen = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
-        if( py_xlsxExporter == nullptr )
+        if( currentPathLen == 0 )
         {
-            return true;
+            LOGGER_ERROR( "invalid get current directory" );
+
+            return false;
         }
 
-        PyObject * py_result = kernel->ask_method( py_xlsxExporter, "export", "(s)"
+        WChar xlsxExporterModulePath[MENGINE_MAX_PATH] = {L'\0'};
+        ::PathCombine( xlsxExporterModulePath, currentPath, L"XlsxExport" );
+        ::PathCombine( xlsxExporterModulePath, xlsxExporterModulePath, L"xlsxExporter.py" );
+
+        WChar shortpath_xlsxExporterModulePath[MENGINE_MAX_PATH] = {L'\0'};
+        DWORD ShortPathNameLen = ::GetShortPathName( xlsxExporterModulePath, shortpath_xlsxExporterModulePath, MENGINE_MAX_PATH );
+
+        if( ShortPathNameLen == 0 )
+        {
+            LOGGER_ERROR( "invalid GetShortPathName '%ls' get error %ls"
+                , xlsxExporterModulePath
+                , Helper::Win32GetLastErrorMessage()
+            );
+
+            return false;
+        }
+
+        Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
+        
+        WChar command[MENGINE_MAX_COMMAND_LENGTH] = {'\0'};
+        MENGINE_WNSPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"-m %ls %S"
+            , shortpath_xlsxExporterModulePath
             , Project_Codename.c_str()
         );
 
-        bool successful = false;
-
-        if( py_result != nullptr )
+        uint32_t exitCode;
+        if( win32Platform->createProcess( m_pythonPath, command, true, &exitCode ) == false )
         {
-            if( kernel->is_true( py_result ) == true )
-            {
-                successful = true;
-            }
+            LOGGER_ERROR( "invalid xlsx exporter: %ls"
+                , command
+            );
 
-            kernel->decref( py_result );
+            return true;
         }
 
-        kernel->decref( py_xlsxExporter );
+        if( exitCode != 0 )
+        {
+            LOGGER_ERROR( "failed xlsx exporter: %ls code: %u"
+                , command
+                , exitCode
+            );
 
-        return successful;
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void XlsExportPlugin::warning_( const WChar * _msg )
+    bool XlsExportPlugin::findPythonPath_()
     {
-        Char utf8_msg[2048] = {'\0'};
-        Helper::unicodeToUtf8( _msg, utf8_msg, 2047 );
+        Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
+            ->getDynamicUnknown();
 
-        LOGGER_MESSAGE_RELEASE( "XlsExport[Warning]: %s"
-            , utf8_msg
-        );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void XlsExportPlugin::error_( const WChar * _msg )
-    {
-        Char utf8_msg[2048] = {'\0'};
-        Helper::unicodeToUtf8( _msg, utf8_msg, 2047 );
+        HKEY hKey;
+        if( ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, L"SOFTWARE\\Python\\PythonCore", 0, KEY_READ | KEY_WOW64_64KEY, &hKey ) != ERROR_SUCCESS )
+        {
+            LOGGER_ERROR( "invalid open registry key 'SOFTWARE\\Python\\PythonCore' error: %ls"
+                , Helper::Win32GetLastErrorMessage()
+            );
 
-        LOGGER_MESSAGE_ERROR( "XlsExport[Error]: %s"
-            , utf8_msg
-        );
+            return false;
+        }
+
+        WChar subKeyName[MENGINE_MAX_PATH] = {L'\0'};
+        WChar latestVersion[MENGINE_MAX_PATH] = {L'\0'};
+
+        DWORD index = 0;
+        while( true )
+        {
+            DWORD subKeyNameSize = sizeof( subKeyName ) / sizeof( TCHAR );
+            FILETIME lastWriteTime;
+            if( ::RegEnumKeyEx( hKey, index, subKeyName, &subKeyNameSize, NULL, NULL, NULL, &lastWriteTime ) != ERROR_SUCCESS )
+            {
+                break;
+            }
+
+            if( MENGINE_WCSNCMP( subKeyName, latestVersion, subKeyNameSize ) > 0 )
+            {
+                MENGINE_WCSNCPY( latestVersion, subKeyName, subKeyNameSize );
+            }
+
+            index++;
+        }
+
+        if( MENGINE_WCSLEN( latestVersion ) == 0 )
+        {
+            LOGGER_ERROR( "not found python version" );
+
+            return false;
+        }
+
+        WChar subKeyPath[MENGINE_MAX_PATH] = {L'\0'};
+        MENGINE_WNSPRINTF( subKeyPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s\\InstallPath", latestVersion );
+
+        Char latestVersionPath[MENGINE_MAX_PATH] = {'\0'};
+        if( win32Platform->getLocalMachineRegValue( subKeyPath, NULL, latestVersionPath, MENGINE_MAX_PATH ) == false )
+        {
+            LOGGER_ERROR( "not found python version path" );
+
+            return false;
+        }
+
+        ::PathCombineA( m_pythonPath, latestVersionPath, "python.exe" );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

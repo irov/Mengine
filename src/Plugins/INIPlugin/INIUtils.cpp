@@ -138,7 +138,7 @@ namespace Mengine
             }
 
 #if defined(MENGINE_DEBUG)
-            if( MENGINE_STRCHR( ini_value, '\\' ) != nullptr )
+            if( MENGINE_STRCHR( ini_value, MENGINE_WIN32_PATH_DELIM ) != nullptr )
             {
                 LOGGER_ERROR( "get ini '%s' filepath section '%s' key '%s' has invalid slash '%s'"
                     , Helper::getContentFullPath( _ini.content )

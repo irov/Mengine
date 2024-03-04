@@ -24,8 +24,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ThreadService::ThreadService()
-        : m_threadCount( 0 )
-        , m_mainThreadId( ~0U )
+        : m_mainThreadId( ~0U )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -38,14 +37,14 @@ namespace Mengine
         m_factoryThreadQueue = Helper::makeFactoryPool<ThreadQueue, 4>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryThreadJob = Helper::makeFactoryPool<ThreadJob, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_threadCount = CONFIG_VALUE( "Engine", "ThreadCount", 16U );
-
         m_mutexTasks = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_mutexThreads = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_mutexDispatchEvents = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_mainThreadId = THREAD_SYSTEM()
+        ThreadId mainThreadId = THREAD_SYSTEM()
             ->getCurrentThreadId();
+
+        m_mainThreadId = mainThreadId;
 
         return true;
     }
@@ -466,6 +465,14 @@ namespace Mengine
                 --it_task_end;
             }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadService::updateMainThread()
+    {
+        ThreadId mainThreadId = THREAD_SYSTEM()
+            ->getCurrentThreadId();
+
+        m_mainThreadId = mainThreadId;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::isMainThread() const

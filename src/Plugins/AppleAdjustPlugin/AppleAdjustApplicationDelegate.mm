@@ -19,7 +19,7 @@
 #else
     NSString *environment = ADJEnvironmentProduction;
 #endif
-        
+    
     ADJConfig *adjustConfig = [ADJConfig configWithAppToken:MengineAppleAdjustPlugin_AppToken
                                                 environment:environment];
     

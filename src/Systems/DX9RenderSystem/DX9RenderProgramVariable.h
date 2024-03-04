@@ -2,7 +2,7 @@
 
 #include "Interface/RenderProgramVariableInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX9/DX9RenderIncluder.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Vector.h"

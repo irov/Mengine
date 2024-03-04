@@ -6,9 +6,9 @@
 #include "Interface/OptionsServiceInterface.h"
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-#   include "Interface/Win32PlatformServiceExtensionInterface.h"
+#   include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
-#   include "Interface/SDLPlatformServiceExtensionInterface.h"
+#   include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
 #endif
 
 #include "DX11RenderEnum.h"

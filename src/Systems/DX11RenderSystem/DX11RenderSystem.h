@@ -1,15 +1,15 @@
 #pragma once
 
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/DX11RenderSystemExtensionInterface.h"
+#include "Interface/FactoryInterface.h"
 
-#include "Environment/DirectX11/DirectX11RenderIncluder.h"
+#include "Environment/DirectX11/DX11RenderIncluder.h"
+#include "Environment/DirectX11/DX11RenderSystemExtensionInterface.h"
 
 #include "DX11RenderResourceHandler.h"
 
 #include "Kernel/IntrusiveList.h"
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 #include "Kernel/Vector.h"
 
 namespace Mengine
@@ -214,18 +214,18 @@ namespace Mengine
 
         Viewport m_viewport;
 
-        FactoryPtr m_factoryRenderVertexAttribute;
-        FactoryPtr m_factoryRenderVertexShader;
-        FactoryPtr m_factoryRenderFragmentShader;
-        FactoryPtr m_factoryRenderProgram;
-        FactoryPtr m_factoryRenderProgramVariable;
-        FactoryPtr m_factoryVertexBuffer;
-        FactoryPtr m_factoryIndexBuffer;
-        FactoryPtr m_factoryRenderImage;
-        FactoryPtr m_factoryRenderImageTarget;
-        FactoryPtr m_factoryRenderTargetTexture;
-        FactoryPtr m_factoryRenderTargetOffscreen;
-        FactoryPtr m_factoryRenderMaterialStageCache;
+        FactoryInterfacePtr m_factoryRenderVertexAttribute;
+        FactoryInterfacePtr m_factoryRenderVertexShader;
+        FactoryInterfacePtr m_factoryRenderFragmentShader;
+        FactoryInterfacePtr m_factoryRenderProgram;
+        FactoryInterfacePtr m_factoryRenderProgramVariable;
+        FactoryInterfacePtr m_factoryVertexBuffer;
+        FactoryInterfacePtr m_factoryIndexBuffer;
+        FactoryInterfacePtr m_factoryRenderImage;
+        FactoryInterfacePtr m_factoryRenderImageTarget;
+        FactoryInterfacePtr m_factoryRenderTargetTexture;
+        FactoryInterfacePtr m_factoryRenderTargetOffscreen;
+        FactoryInterfacePtr m_factoryRenderMaterialStageCache;
 
         typedef Vector<DX11RenderProgramPtr> VectorRenderPrograms;
         VectorRenderPrograms m_deferredCompilePrograms;

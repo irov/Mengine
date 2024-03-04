@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX9/DX9RenderIncluder.h"
 
 #include "DX9RenderTargetTexture.h"
 

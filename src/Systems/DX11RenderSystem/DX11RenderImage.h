@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Interface/RenderImageInterface.h"
-#include "Interface/DX11RenderImageExtensionInterface.h"
 
-#include "Environment/DirectX11/DirectX11RenderIncluder.h"
+#include "Environment/DirectX11/DX11RenderIncluder.h"
+#include "Environment/DirectX11/DX11RenderImageExtensionInterface.h"
 
 #include "DX11RenderResourceHandler.h"
 

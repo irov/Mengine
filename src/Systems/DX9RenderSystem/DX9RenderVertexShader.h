@@ -3,7 +3,7 @@
 #include "Interface/RenderVertexShaderInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX9/DX9RenderIncluder.h"
 
 #include "Kernel/Factorable.h"
 

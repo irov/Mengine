@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Interface/RenderImageInterface.h"
-#include "Interface/DX9RenderImageExtensionInterface.h"
 
-#include "Environment/DirectX9/DirectX9RenderIncluder.h"
+#include "Environment/DirectX9/DX9RenderIncluder.h"
+#include "Environment/DirectX9/DX9RenderImageExtensionInterface.h"
 
 #include "Kernel/Factorable.h"
 

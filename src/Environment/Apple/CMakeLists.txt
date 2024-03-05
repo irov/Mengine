@@ -27,6 +27,8 @@ src
     AppleEnvironmentService.h
     AppleEnvironmentService.mm
     
+    AppleSemaphoreListenerInterface.h
+    
     AppleNSLogger.h
     AppleNSLogger.mm
     

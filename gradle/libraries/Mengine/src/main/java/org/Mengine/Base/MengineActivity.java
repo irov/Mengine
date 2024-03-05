@@ -772,7 +772,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("python.semaphore", name);
 
-        ArrayList<MengineFunctorVoid> activate_listeners = null;
+        ArrayList<MengineSemaphoreListener> activate_listeners = null;
 
         synchronized (m_semaphores) {
             MengineSemaphore semaphore = m_semaphores.get(name);
@@ -792,7 +792,7 @@ public class MengineActivity extends SDLActivity {
             activate_listeners = semaphore.activate();
         }
 
-        for( MengineFunctorVoid listener : activate_listeners) {
+        for (MengineSemaphoreListener listener : activate_listeners) {
             listener.call();
         }
     }
@@ -811,7 +811,7 @@ public class MengineActivity extends SDLActivity {
         }
     }
 
-    public void waitSemaphore(String name, MengineFunctorVoid cb) {
+    public void waitSemaphore(String name, MengineSemaphoreListener cb) {
         if (m_destroy == true) {
             return;
         }

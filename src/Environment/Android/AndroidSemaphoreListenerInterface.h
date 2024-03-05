@@ -5,13 +5,13 @@
 namespace Mengine
 {
     ////////////////////////////////////////////////////////////////////
-    class AndroidFunctorVoidInterface
+    class AndroidSemaphoreListenerInterface
         : public ServantInterface
     {
     public:
         virtual void invoke() = 0;
     };
     ////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AndroidFunctorVoidInterface> AndroidFunctorVoidInterfacePtr;
+    typedef IntrusivePtr<AndroidSemaphoreListenerInterface> AndroidSemaphoreListenerInterfacePtr;
     ////////////////////////////////////////////////////////////////////
 }

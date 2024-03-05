@@ -181,14 +181,6 @@ public class MenginePlugin implements MenginePluginInterface {
         m_activity.deactivateSemaphore(name);
     }
 
-    public void waitSemaphore(String name, MengineFunctorVoid cb) {
-        if (m_activity == null) {
-            return;
-        }
-
-        m_activity.waitSemaphore(name, cb);
-    }
-
     public boolean getMetaDataBoolean(String name) throws MenginePluginInvalidInitializeException {
         try {
             boolean value = m_application.getMetaDataBoolean(name);

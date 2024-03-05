@@ -14,9 +14,8 @@
 #include "Environment/Android/AndroidActivityHelper.h"
 #include "Environment/Android/AndroidApplicationHelper.h"
 
-#include "AndroidSemaphoreListener.h"
+#include "AndroidSemaphoreListenerInterface.h"
 #include "AndroidProxyLogger.h"
-#include "AndroidFunctorVoidInterface.h"
 
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/FactorableUnique.h"
@@ -155,20 +154,20 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_FUNCTION_VOID_JAVA_INTERFACE( AnroidEnvironmentService_1callMengineFunctorVoid )(JNIEnv * env, jclass cls, jobject _impl)
+    JNIEXPORT void JNICALL MENGINE_SEMAPHORE_LISTENER_JAVA_INTERFACE( AnroidEnvironmentService_1callMengineSemaphoreListener )(JNIEnv * env, jclass cls, jobject _impl)
     {
         void * impl_MengineFunctorVoid = env->GetDirectBufferAddress( _impl );
 
-        Mengine::AndroidFunctorVoidInterface * functor = reinterpret_cast<Mengine::AndroidFunctorVoidInterface *>(impl_MengineFunctorVoid);
+        Mengine::AndroidSemaphoreListenerInterface * functor = reinterpret_cast<Mengine::AndroidSemaphoreListenerInterface *>(impl_MengineFunctorVoid);
 
         functor->invoke();
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_FUNCTION_VOID_JAVA_INTERFACE( AnroidEnvironmentService_1destroyMengineFunctorVoid )(JNIEnv * env, jclass cls, jobject _impl)
+    JNIEXPORT void JNICALL MENGINE_SEMAPHORE_LISTENER_JAVA_INTERFACE( AnroidEnvironmentService_1destroyMengineSemaphoreListener )(JNIEnv * env, jclass cls, jobject _impl)
     {
         void * impl_MengineFunctorVoid = env->GetDirectBufferAddress( _impl );
 
-        Mengine::AndroidFunctorVoidInterface * functor = reinterpret_cast<Mengine::AndroidFunctorVoidInterface *>(impl_MengineFunctorVoid);
+        Mengine::AndroidSemaphoreListenerInterface * functor = reinterpret_cast<Mengine::AndroidSemaphoreListenerInterface *>(impl_MengineFunctorVoid);
 
         Mengine::IntrusivePtrBase::intrusive_ptr_dec_ref( functor );
     }

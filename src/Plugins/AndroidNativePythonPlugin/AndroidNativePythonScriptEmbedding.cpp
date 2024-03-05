@@ -2,8 +2,7 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 
-#include "Environment/Android/AndroidFunctorVoidInterface.h"
-
+#include "Environment/Android/AndroidSemaphoreListenerInterface.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
 #include "AndroidNativePythonInterface.h"
@@ -80,11 +79,11 @@ namespace Mengine
                 ->androidObjectMethod( _plugin, _method, _args );
         }
         //////////////////////////////////////////////////////////////////////////
-        class PythonAndroidFunctorVoid
-            : public AndroidFunctorVoidInterface
+        class PythonAndroidSemaphoreListener
+            : public AndroidSemaphoreListenerInterface
         {
         public:
-            PythonAndroidFunctorVoid( const pybind::object & _cb, const pybind::args & _args )
+            PythonAndroidSemaphoreListener( const pybind::object & _cb, const pybind::args & _args )
                 : m_cb( _cb )
                 , m_args( _args )
             {
@@ -101,11 +100,11 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PythonAndroidFunctorVoid, AndroidFunctorVoidInterface> PythonAndroidFunctorVoidPtr;
+        typedef IntrusivePtr<PythonAndroidSemaphoreListener, AndroidSemaphoreListenerInterface> PythonAndroidSemaphoreListenerPtr;
         //////////////////////////////////////////////////////////////////////////
         void AndroidNativePythonService_waitSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
         {
-            AndroidFunctorVoidInterfacePtr listener = Helper::makeFactorableUnique<PythonAndroidFunctorVoid>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
+            AndroidSemaphoreListenerInterfacePtr listener = Helper::makeFactorableUnique<PythonAndroidSemaphoreListener>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
 
             ANDROID_NATIVEPYTHON_SERVICE()
                 ->waitSemaphore( _name, listener );

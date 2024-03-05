@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Environment/Android/AndroidIncluder.h"
-#include "Environment/Android/AndroidFunctorVoidInterface.h"
+#include "Environment/Android/AndroidSemaphoreListenerInterface.h"
 #include "Environment/Python/PythonIncluder.h"
 
 #include "Kernel/ConstString.h"
@@ -30,7 +30,7 @@ namespace Mengine
         virtual PyObject * androidObjectMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const = 0;
 
     public:
-        virtual void waitSemaphore( const ConstString & _name, const AndroidFunctorVoidInterfacePtr & _listener ) = 0;
+        virtual void waitSemaphore( const ConstString & _name, const AndroidSemaphoreListenerInterfacePtr & _listener ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

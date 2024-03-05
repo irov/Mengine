@@ -697,7 +697,7 @@ namespace Mengine
         return py_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::waitSemaphore( const ConstString & _name, const AndroidFunctorVoidInterfacePtr & _listener )
+    void AndroidNativePythonService::waitSemaphore( const ConstString & _name, const AndroidSemaphoreListenerInterfacePtr & _listener )
     {
         LOGGER_INFO( "android", "wait semaphore '%s'"
             , _name.c_str()
@@ -709,22 +709,22 @@ namespace Mengine
 
         jstring jname = jenv->NewStringUTF( _name.c_str() );
 
-        jclass jclass_MengineFunctorVoid = jenv->FindClass( "org/Mengine/Base/MengineFunctorVoid" );
+        jclass jclass_MengineSemaphoreListener = jenv->FindClass( "org/Mengine/Base/MengineSemaphoreListener" );
 
-        jmethodID jmethodID_MengineFunctorVoid_constructor = jenv->GetMethodID( jclass_MengineFunctorVoid, "<init>", "(Ljava/lang/Object;)V" );
+        jmethodID jmethodID_MengineSemaphoreListener_constructor = jenv->GetMethodID( jclass_MengineSemaphoreListener, "<init>", "(Ljava/lang/Object;)V" );
 
-        AndroidFunctorVoidInterface * listener_ptr = _listener.get();
-        AndroidFunctorVoidInterface::intrusive_ptr_add_ref( listener_ptr );
+        AndroidSemaphoreListenerInterface * listener_ptr = _listener.get();
+        AndroidSemaphoreListenerInterface::intrusive_ptr_add_ref( listener_ptr );
         jobject jpoint_listener = jenv->NewDirectByteBuffer( listener_ptr, sizeof(listener_ptr) );
 
-        jobject jfunctor = jenv->NewObject( jclass_MengineFunctorVoid, jmethodID_MengineFunctorVoid_constructor, jpoint_listener );
+        jobject jfunctor = jenv->NewObject( jclass_MengineSemaphoreListener, jmethodID_MengineSemaphoreListener_constructor, jpoint_listener );
 
-        Helper::AndroidCallVoidActivityMethod( jenv, "waitSemaphore", "(Ljava/lang/String;Lorg/Mengine/Base/MengineFunctorVoid;)V", jname, jfunctor );
+        Helper::AndroidCallVoidActivityMethod( jenv, "waitSemaphore", "(Ljava/lang/String;Lorg/Mengine/Base/MengineSemaphoreListener;)V", jname, jfunctor );
 
         jenv->DeleteLocalRef( jname );
         jenv->DeleteLocalRef( jfunctor );
         jenv->DeleteLocalRef( jpoint_listener );
-        jenv->DeleteLocalRef( jclass_MengineFunctorVoid );
+        jenv->DeleteLocalRef( jclass_MengineSemaphoreListener );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonService::getAndroidMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const
@@ -754,7 +754,7 @@ namespace Mengine
 
         if( jplugin == nullptr )
         {
-            Helper::AndroidEnvExceptionCheck(_jenv);
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             LOGGER_ERROR( "android not found java plugin '%s' (call method '%s' args '%s')"
                 , _plugin.c_str()

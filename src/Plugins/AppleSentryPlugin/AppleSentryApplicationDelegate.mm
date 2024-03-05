@@ -1,6 +1,6 @@
 #import "AppleSentryApplicationDelegate.h"
 
-#import "Environment/Apple/AppleDetail.h"
+#import "Environment/Apple/AppleBundle.h"
 #import "Environment/Apple/AppleUserDefaults.h"
 
 #include "Kernel/BuildMode.h"
@@ -38,9 +38,9 @@
         return NO;
     }
     
-    bool passGDPR = Mengine::Helper::AppleGetUserDefaultsBoolean( "mengine.gdpr.pass", false );
+    BOOL passGDPR = Mengine::Helper::AppleGetUserDefaultsBoolean( @("mengine.gdpr.pass"), NO );
     
-    if( passGDPR == true ) {
+    if( passGDPR == YES ) {
         self.m_sendAllow = YES;
     } else {
         self.m_sendAllow = NO;

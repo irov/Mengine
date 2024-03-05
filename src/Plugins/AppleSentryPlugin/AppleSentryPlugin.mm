@@ -1,6 +1,6 @@
 #include "AppleSentryPlugin.h"
 
-#include "Environment/Apple/AppleDetail.h"
+#include "Environment/Apple/AppleBundle.h"
 
 #include "Kernel/OptionHelper.h"
 

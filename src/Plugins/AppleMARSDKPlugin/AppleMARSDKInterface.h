@@ -6,25 +6,24 @@
 #include "Kernel/VectorConstString.h"
 #include "Kernel/Map.h"
 #include "Kernel/String.h"
+#include "Kernel/Params.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef Map<String, String> MARSDKResultParams;
     //////////////////////////////////////////////////////////////////////////
     class AppleMARSDKProviderInterface
         : public Interface
     {
     public:
-        virtual void onPlatformInit( const MARSDKResultParams & _params ) = 0;
-        virtual void onRealName( const MARSDKResultParams & _params ) = 0;
+        virtual void onPlatformInit( const MapParams & _params ) = 0;
+        virtual void onRealName( const MapParams & _params ) = 0;
         virtual void onEventWithCode( int32_t _code, const Char * _msg ) = 0;
-        virtual void onEventCustom( const Char * _eventName, const MARSDKResultParams & _params ) = 0;
+        virtual void onEventCustom( const Char * _eventName, const MapParams & _params ) = 0;
         
     public:
-        virtual void onUserLogin( const MARSDKResultParams & _params ) = 0;
-        virtual void onUserLogout( const MARSDKResultParams & _params ) = 0;
-        virtual void onPayPaid( const MARSDKResultParams & _params ) = 0;
+        virtual void onUserLogin( const MapParams & _params ) = 0;
+        virtual void onUserLogout( const MapParams & _params ) = 0;
+        virtual void onPayPaid( const MapParams & _params ) = 0;
         
     public:
         virtual void onPropComplete( const ConstString & _orderId ) = 0;

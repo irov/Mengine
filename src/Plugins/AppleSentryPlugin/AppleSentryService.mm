@@ -5,7 +5,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
 
-#include "Environment/Apple/AppleDetail.h"
+#include "Environment/Apple/AppleBundle.h"
 
 #include "Kernel/Crash.h"
 #include "Kernel/Stringalized.h"
@@ -18,6 +18,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -174,14 +175,12 @@ namespace Mengine
 
             [scope setExtraValue:@(contentCommit) forKey:@"Content Commit"];
             
-            PlatformDateTime dateTime;
-            DATETIME_SYSTEM()
-                ->getLocalDateTime( &dateTime );
+            Timestamp timestamp = Helper::getLocalTimestamp();
 
-            Char LOG_TIMESTAMP[256] = {'\0'};
-            Helper::makeLoggerShortDate( dateTime, "%02u:%02u:%02u:%04u", LOG_TIMESTAMP, 0, 256 );
+            Char LOG_DATE[256] = {'\0'};
+            Helper::makeLoggerShortDate( timestamp, "%02u:%02u:%02u:%04u", LOG_DATE, 0, 256 );
 
-            [scope setExtraValue:@(LOG_TIMESTAMP) forKey:@"Log Timestamp"];
+            [scope setExtraValue:@(LOG_DATE) forKey:@"Log Date"];
             
             [scope setExtraValue:@NO forKey:@"Engine Stop"];
         }];

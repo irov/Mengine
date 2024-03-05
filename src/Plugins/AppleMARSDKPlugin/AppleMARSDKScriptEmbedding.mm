@@ -9,7 +9,6 @@
 #include "Environment/Python/PythonCallbackProvider.h"
 
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/Factory.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
@@ -19,9 +18,12 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         class PythonAppleMARSDKProvider
             : public PythonCallbackProvider<AppleMARSDKProviderInterface>
         {
+            DECLARE_FACTORABLE( PythonAppleMARSDKProvider );
+            
         public:
             PythonAppleMARSDKProvider( const pybind::dict & _cbs, const pybind::args & _args )
                 : PythonCallbackProvider<AppleMARSDKProviderInterface>( _cbs, _args )
@@ -29,12 +31,12 @@ namespace Mengine
             }
             
         protected:
-            void onPlatformInit( const MARSDKResultParams & _params ) override
+            void onPlatformInit( const MapParams & _params ) override
             {
                 this->call_cbs( "onPlatformInit", _params );
             }
             
-            void onRealName( const MARSDKResultParams & _params ) override
+            void onRealName( const MapParams & _params ) override
             {
                 this->call_cbs( "onRealName", _params );
             }
@@ -44,23 +46,23 @@ namespace Mengine
                 this->call_cbs( "onEventWithCode", _code, _msg );
             }
             
-            void onEventCustom( const Char * _eventName, const MARSDKResultParams & _params ) override
+            void onEventCustom( const Char * _eventName, const MapParams & _params ) override
             {
                 this->call_cbs( "onEventCustom", _eventName, _params );
             }
 
         protected:
-            void onUserLogin( const MARSDKResultParams & _params ) override
+            void onUserLogin( const MapParams & _params ) override
             {
                 this->call_cbs( "onUserLogin", _params );
             }
 
-            void onUserLogout( const MARSDKResultParams & _params ) override
+            void onUserLogout( const MapParams & _params ) override
             {
                 this->call_cbs( "onUserLogout", _params );
             }
 
-            void onPayPaid( const MARSDKResultParams & _params ) override
+            void onPayPaid( const MapParams & _params ) override
             {
                 this->call_cbs( "onPayPaid", _params );
             }
@@ -128,7 +130,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void s_AppleMARSDK_setProvider( pybind::kernel_interface * _kernel, const pybind::dict & _cbs, const pybind::args & _args )
         {
-            PythonAppleMARSDKProviderPtr provider = Helper::makeFactorableUnique<PythonAppleMARSDKProvider>( MENGINE_DOCUMENT_PYBIND, _kernel, _cbs, _args );
+            AppleMARSDKProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleMARSDKProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
 
             APPLE_MARSDK_SERVICE()
                 ->setProvider( provider );

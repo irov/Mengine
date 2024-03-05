@@ -2,11 +2,11 @@
 
 #include "Environment/iOS/iOSDetail.h"
 #include "Environment/Apple/AppleString.h"
-#include "Environment/Apple/AppleDetail.h"
+#include "Environment/Apple/AppleBundle.h"
 #include "Environment/Apple/AppleErrorHelper.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/PlatformHelper.h"
+#include "Kernel/ThreadHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -227,7 +227,7 @@ namespace Mengine
         return date;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleMARSDKService::onUserLogin( const MARSDKResultParams & _params )
+    void AppleMARSDKService::onUserLogin( const MapParams & _params )
     {
         LOGGER_MESSAGE( "onUserLogin" );
         
@@ -245,7 +245,7 @@ namespace Mengine
         });
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleMARSDKService::onUserLogout( const MARSDKResultParams & _params )
+    void AppleMARSDKService::onUserLogout( const MapParams & _params )
     {
         LOGGER_MESSAGE( "onUserLogout" );
         
@@ -263,7 +263,7 @@ namespace Mengine
         });
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleMARSDKService::onPayPaid( const MARSDKResultParams & _params )
+    void AppleMARSDKService::onPayPaid( const MapParams & _params )
     {
         LOGGER_MESSAGE( "onPayPaid" );
         

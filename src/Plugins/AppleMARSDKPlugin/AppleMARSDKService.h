@@ -47,9 +47,9 @@ namespace Mengine
         int64_t getInternetDate() const override;
         
     public:
-        void onUserLogin( const MARSDKResultParams & _params );
-        void onUserLogout( const MARSDKResultParams & _params );
-        void onPayPaid( const MARSDKResultParams & _params );
+        void onUserLogin( const MapParams & _params );
+        void onUserLogout( const MapParams & _params );
+        void onPayPaid( const MapParams & _params );
 
 	protected:
         AppleMARSDKProviderInterfacePtr m_provider;

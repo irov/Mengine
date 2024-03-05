@@ -18,6 +18,11 @@ src
     
     AppleAnalytics.h
     AppleAnalytics.mm
+
+    AppleSemaphore.h
+    AppleSemaphore.mm
+    AppleSemaphoreService.h
+    AppleSemaphoreService.mm
     
     AppleEnvironmentService.h
     AppleEnvironmentService.mm

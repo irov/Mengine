@@ -2,9 +2,9 @@
 
 #include "Environment/Apple/AppleBundle.h"
 #include "Environment/Apple/AppleLog.h"
+#include "Environment/Apple/AppleSemaphoreService.h"
 
 #include "Kernel/ThreadHelper.h"
-#include "Kernel/SemaphoreHelper.h"
 #include "Kernel/ConstStringHelper.h"
 
 @implementation AppleAppLovinApplicationDelegate
@@ -13,7 +13,7 @@ static ALSdk * AppLovinSdk;
 
 #define PLUGIN_BUNDLE_NAME @"MengineAppleAppLovinPlugin"
 
-+ (ALSdk * _Nonnull) AppLovinSdk {    
++ (ALSdk * _Nonnull) AppLovinSdk {
     return AppLovinSdk;
 }
 
@@ -134,7 +134,7 @@ static ALSdk * AppLovinSdk;
         Mengine::Helper::AppleLog(@"[AppLovin] app tracking transparency status: %ld", appTrackingTransparencyStatus);
         Mengine::Helper::AppleLog(@"[AppLovin] test mode enabled: %d", testModeEnabled);
         
-        Mengine::Helper::activateSemaphore(STRINGIZE_STRING_LOCAL("AppLovinSdkInitialized"));
+        [AppleSemaphoreService.sharedInstance activateSemaphore:@"AppLovinSdkInitialized"];
     }];
     
     AppleAppLovinApplicationDelegate.AppLovinSdk = appLovinSdk;

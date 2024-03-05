@@ -3,16 +3,15 @@
 #import "MengineAppleApplicationDelegates.h"
 
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/SDLPlatformServiceExtensionInterface.h"
 
 #include "Environment/SDL/SDLIncluder.h"
+#include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
 #include "Environment/Apple/AppleUserDefaults.h"
 #include "Environment/Apple/AppleDetail.h"
 #include "Environment/Apple/AppleLog.h"
 
 int MENGINE_MAIN_argc = 0;
 char ** MENGINE_MAIN_argv = nullptr;
-Mengine::SDLApplication MENGINE_application;
 
 @implementation SDLUIApplicationDelegate
 
@@ -34,10 +33,6 @@ Mengine::SDLApplication MENGINE_application;
     }
     
     return [super init];
-}
-
-- (void)dealloc {
-    self.m_pluginDelegates = nil;
 }
 
 #pragma mark - UIMainApplicationDelegateInterface Protocol
@@ -118,26 +113,6 @@ Mengine::SDLApplication MENGINE_application;
     SDL_SetMainReady();
     
     SDL_iPhoneSetEventPump( SDL_TRUE );
-        
-    if( MENGINE_application.bootstrap( MENGINE_MAIN_argc, MENGINE_MAIN_argv ) == false ) {
-        Mengine::Helper::AppleLog(@"🔴 [ERROR] Mengine application bootstrap [Failed]");
-        
-        MENGINE_application.finalize();
-        
-        SDL_iPhoneSetEventPump( SDL_FALSE );
-        
-        return NO;
-    }
-
-    if( MENGINE_application.initialize() == false ) {
-        Mengine::Helper::AppleLog(@"🔴 [ERROR] Mengine application initialize [Failed]");
-                
-        MENGINE_application.finalize();
-        
-        SDL_iPhoneSetEventPump( SDL_FALSE );
-        
-        return NO;
-    }
     
     [self performSelector:@selector(postFinishLaunch) withObject:nil afterDelay:0.0];
     
@@ -275,9 +250,31 @@ Mengine::SDLApplication MENGINE_application;
         [delegate beginLoop];
     }
     
-    MENGINE_application.loop();
+    Mengine::SDLApplication application;
+        
+    if( application.bootstrap( MENGINE_MAIN_argc, MENGINE_MAIN_argv ) == false ) {
+        Mengine::Helper::AppleLog(@"🔴 [ERROR] Mengine application bootstrap [Failed]");
+        
+        application.finalize();
+        
+        SDL_iPhoneSetEventPump( SDL_FALSE );
+        
+        return NO;
+    }
+
+    if( application.initialize() == false ) {
+        Mengine::Helper::AppleLog(@"🔴 [ERROR] Mengine application initialize [Failed]");
+                
+        application.finalize();
+        
+        SDL_iPhoneSetEventPump( SDL_FALSE );
+        
+        return NO;
+    }
     
-    MENGINE_application.finalize();
+    application.loop();
+    
+    application.finalize();
     
     SDL_iPhoneSetEventPump( SDL_FALSE );
     

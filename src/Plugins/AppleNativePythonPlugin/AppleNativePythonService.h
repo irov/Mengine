@@ -20,6 +20,6 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void waitSemaphore( const ConstString & _name, const AndroidFunctorVoidInterfacePtr & _listener ) override;
+        void waitSemaphore( const ConstString & _name, const AppleSemaphoreListenerInterfacePtr & _listener ) override;
     };
 }

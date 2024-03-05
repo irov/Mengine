@@ -21,7 +21,7 @@
 - (void)activateSemaphore:(NSString *)name {
     AppleSemaphore *semaphore = self.m_semaphores[name];
     
-    NSMutableArray<void (^)(void)> * listeners = nil;
+    NSMutableArray<AppleSemaphoreListenerNSProxy *> * listeners = nil;
     
     @synchronized(self) {
         if (semaphore == nil) {
@@ -39,8 +39,8 @@
         listeners = [semaphore activate];
     }
     
-    for (void (^listener)(void) in listeners) {
-        listener();
+    for (AppleSemaphoreListenerNSProxy * proxy in listeners) {
+        [proxy invoke];
     }
 }
 
@@ -50,25 +50,25 @@
     }
 }
 
-- (void)waitSemaphore:(NSString *)name listener:(void (^)(void))cb {
+- (void)waitSemaphore:(NSString *)name withListener:(AppleSemaphoreListenerNSProxy * _Nonnull)listener {
     @synchronized(self) {
-        AppleSemaphore *semaphore = self.m_semaphores[name];
+        AppleSemaphore * semaphore = self.m_semaphores[name];
         
         if (semaphore == nil) {
             semaphore = [[AppleSemaphore alloc] initWithActivated:NO];
-            [semaphore addListener:cb];
+            [semaphore addListener:listener];
             
             self.m_semaphores[name] = semaphore;
             return;
         }
         
         if ([semaphore isActivated] == NO) {
-            [semaphore addListener:cb];
+            [semaphore addListener:listener];
             return;
         }
     }
     
-    cb();
+    [listener invoke];
 }
 
 @end

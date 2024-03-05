@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config/Config.h"
+#import "Environment/Apple/AppleSemaphoreListenerNSProxy.h"
 
 #import <Foundation/Foundation.h>
 
@@ -9,10 +9,10 @@
 - (instancetype _Nonnull) initWithActivated:(BOOL)activated;
 
 - (BOOL)isActivated;
-- (NSMutableArray<void (^)()>* _Nonnull)activate;
-- (void)addListener:(void (^ _Nonnull)())listener;
+- (NSMutableArray<AppleSemaphoreListenerNSProxy *> * _Nonnull)activate;
+- (void)addListener:(AppleSemaphoreListenerNSProxy * _Nonnull)listener;
 
 @property (nonatomic) BOOL m_activated;
-@property (nonatomic, strong) NSMutableArray<void (^)()> * _Nullable m_listeners;
+@property (nonatomic, strong) NSMutableArray<AppleSemaphoreListenerNSProxy *> * _Nullable m_listeners;
 
 @end

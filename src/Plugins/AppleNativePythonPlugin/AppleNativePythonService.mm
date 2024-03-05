@@ -1,5 +1,15 @@
 #include "AppleNativePythonService.h"
 
+#include "Interface/ScriptServiceInterface.h"
+
+#import "Environment/Apple/AppleSemaphoreListenerNSProxy.h"
+#import "Environment/Apple/AppleSemaphoreService.h"
+#import "Environment/Apple/AppleString.h"
+
+#include "AppleNativePythonScriptEmbedding.h"
+
+#include "Kernel/NotificationHelper.h"
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleNativePythonService, Mengine::AppleNativePythonService );
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,12 +47,17 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleNativePythonService::waitSemaphore( const ConstString & _name, const AndroidFunctorVoidInterfacePtr & _listener )
+    void AppleNativePythonService::waitSemaphore( const ConstString & _name, const AppleSemaphoreListenerInterfacePtr & _listener )
     {
         LOGGER_INFO( "apple", "wait semaphore '%s'"
             , _name.c_str()
         );
+        
+        NSString * ns_name = Helper::stringToNSString( _name );
 
+        AppleSemaphoreListenerNSProxy * proxy = [[AppleSemaphoreListenerNSProxy alloc] initWithListener:_listener];
+        
+        [AppleSemaphoreService.sharedInstance waitSemaphore:ns_name withListener:proxy];
     }
     //////////////////////////////////////////////////////////////////////////
 }

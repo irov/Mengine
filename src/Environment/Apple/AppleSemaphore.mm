@@ -15,18 +15,18 @@
     return self.m_activated;
 }
 
-- (NSMutableArray<void (^)()> *)activate {
+- (NSMutableArray<AppleSemaphoreListenerNSProxy *> *)activate {
     self.m_activated = YES;
     
-    NSMutableArray<void (^)()> *listeners = self.m_listeners;
+    NSMutableArray<AppleSemaphoreListenerNSProxy*> * listeners = self.m_listeners;
     
     self.m_listeners = nil;
     
     return listeners;
 }
 
-- (void)addListener:(void (^)(void))listener {
-    [self.m_listeners addObject:[listener copy]];
+- (void)addListener:(AppleSemaphoreListenerNSProxy *)listener {
+    [self.m_listeners addObject:listener];
 }
 
 @end

@@ -21,6 +21,8 @@ src
 
     AppleSemaphore.h
     AppleSemaphore.mm
+    AppleSemaphoreListenerNSProxy.h
+    AppleSemaphoreListenerNSProxy.mm
     AppleSemaphoreService.h
     AppleSemaphoreService.mm
     

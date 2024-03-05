@@ -341,6 +341,10 @@ PLUGIN_EXPORT( Win32AntifreezeMonitor );
 PLUGIN_EXPORT( AndroidNativePython );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_APPLE_NATIVE_PYTHON_STATIC
+PLUGIN_EXPORT( AppleNativePython );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_OPTICK_STATIC
 PLUGIN_EXPORT( Optick );
 #endif
@@ -1368,6 +1372,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativePython, "plugin AndroidKernelPython...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+        
+#ifdef MENGINE_PLUGIN_APPLE_NATIVE_PYTHON_STATIC
+        MENGINE_ADD_PLUGIN( AppleNativePython, "plugin AppleNativePython...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_APPLE_GENERALDATAPROTECTIONREGULATION_STATIC

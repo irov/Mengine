@@ -3,15 +3,15 @@ MENGINE_PROJECT(AppleNativePythonPlugin)
 ADD_FILTER(
 src
     AppleNativePythonPlugin.h
-    AppleNativePythonPlugin.cpp
+    AppleNativePythonPlugin.mm
     
     AppleNativePythonInterface.h
     
     AppleNativePythonService.h
-    AppleNativePythonService.cpp
+    AppleNativePythonService.mm
     
     AppleNativePythonScriptEmbedding.h
-    AppleNativePythonScriptEmbedding.cpp
+    AppleNativePythonScriptEmbedding.mm
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

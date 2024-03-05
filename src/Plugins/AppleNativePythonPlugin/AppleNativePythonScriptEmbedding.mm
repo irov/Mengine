@@ -1,6 +1,11 @@
 #include "AppleNativePythonScriptEmbedding.h"
 
+#include "Environment/Apple/AppleSemaphoreListenerInterface.h"
 #include "Environment/Python/PythonScriptWrapper.h"
+
+#include "AppleNativePythonInterface.h"
+
+#include "Kernel/ThreadHelper.h"
 
 namespace Mengine
 {
@@ -11,6 +16,8 @@ namespace Mengine
         class PythonAppleSemaphoreListener
             : public AppleSemaphoreListenerInterface
         {
+            DECLARE_FACTORABLE("PythonAppleSemaphoreListener")
+            
         public:
             PythonAppleSemaphoreListener( const pybind::object & _cb, const pybind::args & _args )
                 : m_cb( _cb )
@@ -21,7 +28,9 @@ namespace Mengine
         protected:
             void invoke() override
             {
-                m_cb.call_args( m_args );
+                Helper::dispatchMainThreadEvent([this]() {
+                    m_cb.call_args( m_args );
+                });
             }
 
         protected:
@@ -56,7 +65,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonScriptEmbedding::eject( pybind::kernel_interface * _kernel )
+    void AppleNativePythonScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         MENGINE_UNUSED( _kernel );
 

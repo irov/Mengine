@@ -112,8 +112,6 @@ char ** MENGINE_MAIN_argv = nullptr;
     
     SDL_SetMainReady();
     
-    SDL_iPhoneSetEventPump( SDL_TRUE );
-    
     [self performSelector:@selector(postFinishLaunch) withObject:nil afterDelay:0.0];
     
     return YES;
@@ -249,6 +247,8 @@ char ** MENGINE_MAIN_argv = nullptr;
          
         [delegate beginLoop];
     }
+    
+    SDL_iPhoneSetEventPump( SDL_TRUE );
     
     Mengine::SDLApplication application;
         

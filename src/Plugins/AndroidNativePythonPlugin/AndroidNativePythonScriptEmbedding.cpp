@@ -10,6 +10,7 @@
 #include "AndroidNativePythonFunctorBoolean.h"
 
 #include "Kernel/ScriptablePrototypeGenerator.h"
+#include "Kernel/ThreadHelper.h"
 
 namespace Mengine
 {
@@ -92,7 +93,9 @@ namespace Mengine
         protected:
             void invoke() override
             {
-                m_cb.call_args( m_args );
+                Helper::dispatchMainThreadEvent([this]() {
+                    m_cb.call_args(m_args);
+                });
             }
 
         protected:

@@ -45,7 +45,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FactoryWithoutMutex::destroyObject( Factorable * _object )
     {
-        MENGINE_THREAD_GUARD_SCOPE( FactoryWithoutMutex, this, "FactoryWithoutMutex::destroyObject" );
+        MENGINE_THREAD_GUARD_BEGIN( FactoryWithoutMutex, this, "FactoryWithoutMutex::destroyObject" );
 
 #if defined(MENGINE_DEBUG)
         m_factorables.remove( _object );
@@ -54,6 +54,8 @@ namespace Mengine
         this->_destroyObject( _object );
 
         m_count.decref();
+
+        MENGINE_THREAD_GUARD_END( FactoryWithoutMutex, this, "FactoryWithoutMutex::destroyObject" );
 
         IntrusivePtrBase::intrusive_ptr_dec_ref( this );
     }

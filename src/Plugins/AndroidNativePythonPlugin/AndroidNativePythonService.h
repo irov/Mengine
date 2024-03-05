@@ -56,7 +56,7 @@ namespace Mengine
         PyObject * androidObjectMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const override;
 
     public:
-        void waitSemaphore( const ConstString & _name, const AndroidFunctorVoidInterfacePtr & _listener ) override;
+        void waitSemaphore( const ConstString & _name, const AndroidSemaphoreListenerInterfacePtr & _listener ) override;
 
     protected:
         bool getAndroidMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const;

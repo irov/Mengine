@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class MengineSemaphore {
     private boolean m_activated = false;
-    private ArrayList<MengineFunctorVoid> m_listeners = new ArrayList<>();
+    private ArrayList<MengineSemaphoreListener> m_listeners = new ArrayList<>();
 
     MengineSemaphore(boolean _activated) {
         m_activated = _activated;
@@ -14,16 +14,16 @@ public class MengineSemaphore {
         return m_activated;
     }
 
-    public ArrayList<MengineFunctorVoid> activate() {
+    public ArrayList<MengineSemaphoreListener> activate() {
         m_activated = true;
 
-        ArrayList<MengineFunctorVoid> listeners = m_listeners;
+        ArrayList<MengineSemaphoreListener> listeners = m_listeners;
         m_listeners = null;
 
         return listeners;
     }
 
-    public void addListener(MengineFunctorVoid _listener) {
+    public void addListener(MengineSemaphoreListener _listener) {
         m_listeners.add(_listener);
     }
 }

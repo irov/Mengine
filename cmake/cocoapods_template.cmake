@@ -291,10 +291,14 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
     SET(PODS_END_PATCH)
     
     if(APPLE AND IOS)
-        file(STRINGS "iOSPods.patch" PODS_END_PATCH NEWLINE_CONSUME)
+        configure_file("iOSPods.patch.in" "${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/iOSPods.patch" @ONLY)
+        
+        file(STRINGS "${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/iOSPods.patch" PODS_END_PATCH NEWLINE_CONSUME)
     endif()
     
     if(APPLE AND NOT IOS)
+        configure_file("MacOSPods.patch.in" "${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/MacOSPods.patch" @ONLY)
+        
         file(STRINGS "MacOSPods.patch" PODS_END_PATCH NEWLINE_CONSUME)
     endif()
             

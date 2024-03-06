@@ -18,10 +18,17 @@ namespace Mengine
         SERVICE_DECLARE( "AppleEnvironmentService" )
 
     public:
-        virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
+        virtual size_t getDeviceName( Char * _deviceName, size_t _capacity ) const = 0;
+        virtual size_t getDeviceModel( Char * _deviceModel, size_t _capacity ) const = 0;
+        virtual size_t getDeviceLanguage( Char * _deviceName, size_t _capacity ) const = 0;
+        virtual size_t getOSVersion( Char * _deviceName, size_t _capacity ) const = 0;
+        virtual size_t getBundleId( Char * _bundleId, size_t _capacity ) const = 0;
         
     public:
         virtual void stringize( NSString * _value, ConstString * const _cstr ) = 0;
+
+    public:
+        virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

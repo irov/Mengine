@@ -109,6 +109,7 @@ namespace Mengine
         size_t getDeviceModel( Char * const _deviceModel ) const override;
         size_t getOsFamily( Char * const _osFamily ) const override;
         size_t getOsVersion( Char * const _osVersion ) const override;
+        size_t getBundleId( Char * const _osVersion ) const override;
 
         void closeWindow() override;
         void minimizeWindow() override;
@@ -267,9 +268,10 @@ namespace Mengine
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
         StaticString<MENGINE_SHA1_HEX_COUNT + 1> m_fingerprint; //SHA1
 
-        StaticString< MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME> m_deviceModel;
-        StaticString< MENGINE_PLATFORM_OS_FAMILY_MAXNAME> m_osFamily;
-        StaticString< MENGINE_PLATFORM_OS_VERSION_MAXNAME> m_osVersion;
+        StaticString<MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME> m_deviceModel;
+        StaticString<MENGINE_PLATFORM_OS_FAMILY_MAXNAME> m_osFamily;
+        StaticString<MENGINE_PLATFORM_OS_VERSION_MAXNAME> m_osVersion;
+        StaticString<MENGINE_PLATFORM_BUNDLEID_MAXNAME> m_bundleId;
 
         Timestamp m_prevTime;
 

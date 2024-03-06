@@ -488,7 +488,7 @@ namespace Mengine
         return jStringLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t AndroidEnvironmentService::getAndroidPackageName( Char * _packageName, size_t _capacity ) const
+    size_t AndroidEnvironmentService::getBundleId( Char * _packageName, size_t _capacity ) const
     {
         if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {

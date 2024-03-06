@@ -30,7 +30,7 @@ namespace Mengine
         size_t getDeviceModel( Char * _deviceName, size_t _capacity ) const override;
         size_t getDeviceLanguage( Char * _deviceName, size_t _capacity ) const override;
         size_t getOSVersion( Char * _deviceName, size_t _capacity ) const override;
-        size_t getAndroidPackageName( Char * _packageName, size_t _capacity ) const override;
+        size_t getBundleId( Char * _packageName, size_t _capacity ) const override;
 
     public:
         void stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr ) override;

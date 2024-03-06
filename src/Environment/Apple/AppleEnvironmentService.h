@@ -24,10 +24,17 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool openUrlInDefaultBrowser( const Char * _url ) override;
+        size_t getDeviceName( Char * _deviceName, size_t _capacity ) const override;
+        size_t getDeviceModel( Char * _deviceModel, size_t _capacity ) const override;
+        size_t getDeviceLanguage( Char * _deviceName, size_t _capacity ) const override;
+        size_t getOSVersion( Char * _deviceName, size_t _capacity ) const override;
+        size_t getBundleId( Char * _bundleId, size_t _capacity ) const override;
         
     public:
         void stringize( NSString * _value, ConstString * const _cstr ) override;
+
+    public:
+        bool openUrlInDefaultBrowser( const Char * _url ) override;
 
     protected:
         typedef Pool<ConstStringHolderNSString, 256> PoolConstStringHolderNSString;

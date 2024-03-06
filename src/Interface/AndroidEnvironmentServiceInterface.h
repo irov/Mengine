@@ -16,11 +16,13 @@ namespace Mengine
 
     public:
         virtual size_t getAndroidId( Char * _androidId, size_t _capacity ) const = 0;
+
+    public:
         virtual size_t getDeviceName( Char * _deviceName, size_t _capacity ) const = 0;
         virtual size_t getDeviceModel( Char * _deviceModel, size_t _capacity ) const = 0;
         virtual size_t getDeviceLanguage( Char * _deviceName, size_t _capacity ) const = 0;
         virtual size_t getOSVersion( Char * _deviceName, size_t _capacity ) const = 0;
-        virtual size_t getAndroidPackageName( Char * _packageName, size_t _capacity ) const = 0;
+        virtual size_t getBundleId( Char * _packageName, size_t _capacity ) const = 0;
 
     public:
         virtual void stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr ) = 0;

@@ -358,6 +358,15 @@ namespace Mengine
         return osVersionLen;
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t SDLPlatformService::getBundleId( Char * const _osVersion ) const
+    {
+        m_bundleId.copy( _osVersion );
+
+        size_t bundleIdLen = m_bundleId.size();
+
+        return bundleIdLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
     float SDLPlatformService::getJoystickAxis( uint32_t _index ) const
     {
         if( m_sdlAccelerometer == nullptr )
@@ -815,7 +824,8 @@ namespace Mengine
 #elif defined(MENGINE_PLATFORM_MACOS)
         m_deviceModel = "Mac";
 #elif defined(MENGINE_PLATFORM_IOS)
-        m_deviceModel = "iOS";
+        APPLE_ENVIRONMENT_SERVICE()
+            ->getDeviceModel( m_deviceModel.data(), MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME );
 #elif defined(MENGINE_PLATFORM_ANDROID)
         ANDROID_ENVIRONMENT_SERVICE()
             ->getDeviceModel( m_deviceModel.data(), MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME );
@@ -831,9 +841,20 @@ namespace Mengine
         m_osFamily = "Android";
 #endif
 
-#if defined(MENGINE_PLATFORM_ANDROID)
+#if defined(MENGINE_PLATFORM_IOS)
+        APPLE_ENVIRONMENT_SERVICE()
+            ->getOSVersion( m_osVersion.data(), MENGINE_PLATFORM_OS_VERSION_MAXNAME );
+#elif defined(MENGINE_PLATFORM_ANDROID)
         ANDROID_ENVIRONMENT_SERVICE()
             ->getOSVersion( m_osVersion.data(), MENGINE_PLATFORM_OS_VERSION_MAXNAME );
+#endif
+
+#if defined(MENGINE_PLATFORM_IOS)
+        APPLE_ENVIRONMENT_SERVICE()
+            ->getBundleId( m_bundleId.data(), MENGINE_PLATFORM_BUNDLEID_MAXNAME );
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->getBundleId( m_bundleId.data(), MENGINE_PLATFORM_BUNDLEID_MAXNAME );
 #endif
 
         return true;

@@ -6,6 +6,8 @@ extern int MENGINE_MAIN_argc;
 extern char ** MENGINE_MAIN_argv;
 
 int main( int argc, char * argv[] ) {
+    NSLog(@"🟢 Launch Megnine application");
+    
     MENGINE_MAIN_argc = argc;
     MENGINE_MAIN_argv = (char **)malloc( (argc + 1) * sizeof(char *) );
     
@@ -22,8 +24,6 @@ int main( int argc, char * argv[] ) {
     
     MENGINE_MAIN_argv[argc] = NULL;
     
-    NSLog(@"Launch Megnine application");
-    
     int result;
     
     @autoreleasepool {
@@ -36,8 +36,6 @@ int main( int argc, char * argv[] ) {
         }
     }
     
-    NSLog(@"Finish Megnine application: %d", result);
-    
     for( int i = 0; i != argc; ++i )
     {
         char * copy_arg = MENGINE_MAIN_argv[i];
@@ -49,6 +47,8 @@ int main( int argc, char * argv[] ) {
     
     MENGINE_MAIN_argc = 0;
     MENGINE_MAIN_argv = nullptr;
+    
+    NSLog(@"🟢 Finish Megnine application: %d", result);
     
     return result;
 }

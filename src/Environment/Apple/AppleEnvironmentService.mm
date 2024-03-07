@@ -2,6 +2,8 @@
 
 #include "Interface/StringizeServiceInterface.h"
 
+#include "Config/StdString.h"
+
 #if defined(MENGINE_PLATFORM_MACOS)
 #   import <AppKit/AppKit.h>
 #else
@@ -53,16 +55,16 @@ namespace Mengine
     {
         NSString * name = [[UIDevice currentDevice] name];
 
-        MENGINE_STRCPY( _deviceName, [name UTF8String], _capacity );
+        MENGINE_STRNCPY( _deviceName, [name UTF8String], _capacity );
 
         return name.length;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AppleEnvironmentService::getDeviceModel( Char * _deviceModel, size_t _capacity ) const
     {
-        NSString * platformString = [[UIDevice currentDevice] platformString];
+        NSString * platformString = [[UIDevice currentDevice] model];
 
-        MENGINE_STRCPY( _deviceModel, [platformString UTF8String], _capacity );
+        MENGINE_STRNCPY( _deviceModel, [platformString UTF8String], _capacity );
 
         return platformString.length;
     }
@@ -71,7 +73,7 @@ namespace Mengine
     {
         NSString * language = [[NSLocale preferredLanguages] firstObject];
 
-        MENGINE_STRCPY( _deviceName, [language UTF8String], _capacity );
+        MENGINE_STRNCPY( _deviceName, [language UTF8String], _capacity );
 
         return language.length;
     }
@@ -80,7 +82,7 @@ namespace Mengine
     {
         NSString * systemVersion = [[UIDevice currentDevice] systemVersion];
 
-        MENGINE_STRCPY( _deviceName, [systemVersion UTF8String], _capacity );
+        MENGINE_STRNCPY( _deviceName, [systemVersion UTF8String], _capacity );
 
         return systemVersion.length;
     }
@@ -89,7 +91,7 @@ namespace Mengine
     {
         NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
 
-        MENGINE_STRCPY( _bundleId, [bundleIdentifier UTF8String], _capacity );
+        MENGINE_STRNCPY( _bundleId, [bundleIdentifier UTF8String], _capacity );
 
         return bundleIdentifier.length;
     }

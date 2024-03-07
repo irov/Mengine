@@ -131,6 +131,10 @@ namespace Mengine
         Char os_version[MENGINE_PLATFORM_OS_VERSION_MAXNAME] = {'\0'};
         PLATFORM_SERVICE()
             ->getOsVersion( os_version );
+        
+        Char build_bundle[MENGINE_PLATFORM_BUNDLEID_MAXNAME] = {'\0'};
+        PLATFORM_SERVICE()
+            ->getBundleId( build_bundle );
 
         const Char * build_version = Helper::getBuildVersion();
         uint64_t build_number = Helper::getBuildNumber();
@@ -187,19 +191,22 @@ namespace Mengine
             js_object_add_field_string( j, jrecord, JS_CONST_STRING( "service" ), message.category );
             js_object_add_field_string( j, jrecord, JS_CONST_STRING( "message" ), message.data );
 
+            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "build.version" ), build_version );
+            
+            
 #if defined(MENGINE_MASTER_RELEASE_ENABLE)
             js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "build.environment" ), JS_CONST_STRING( "master" ) );
 #else
             js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "build.environment" ), JS_CONST_STRING( "dev" ) );
 #endif
 
+            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "build.bundle" ), build_bundle );
+            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "build.version" ), build_version );
+            js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "build.number" ), build_number );
             js_object_add_field_boolean( j, jrecord, JS_CONST_STRING( "build.release" ), MENGINE_RELEASE_VALUE( JS_TRUE, JS_FALSE ) );
 
             js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "timestamp" ), message.timestamp );
             js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "live" ), live );
-
-            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "build.version" ), build_version );
-            js_object_add_field_integer( j, jrecord, JS_CONST_STRING( "build.number" ), build_number );
 
             js_object_add_field_string( j, jrecord, JS_CONST_STRING( "device.model" ), device_model );
             js_object_add_field_string( j, jrecord, JS_CONST_STRING( "os.family" ), os_family );

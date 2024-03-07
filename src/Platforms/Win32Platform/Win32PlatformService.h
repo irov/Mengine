@@ -92,6 +92,7 @@ namespace Mengine
         size_t getDeviceModel( Char * const _deviceModel ) const override;
         size_t getOsFamily( Char * const _osFamily ) const override;
         size_t getOsVersion( Char * const _osVersion ) const override;
+        size_t getBundleId( Char * const _osVersion ) const override;
 
         void closeWindow() override;
         void minimizeWindow() override;

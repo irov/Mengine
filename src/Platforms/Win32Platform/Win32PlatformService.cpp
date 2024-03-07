@@ -4046,6 +4046,15 @@ namespace Mengine
         return osVersionLen;
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t Win32PlatformService::getBundleId( Char * const _osVersion ) const
+    {
+        MENGINE_UNUSED( _osVersion );
+
+        //ToDo
+
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::closeWindow()
     {
         m_close = true;

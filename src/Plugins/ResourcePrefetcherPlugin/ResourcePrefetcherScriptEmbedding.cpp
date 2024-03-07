@@ -69,7 +69,9 @@ namespace Mengine
 
                 if( --m_count == 0 )
                 {
-                    m_cb.call_args( m_successful, m_args );
+                    bool successful = m_successful;
+                    
+                    m_cb.call_args( successful, m_args );
                     m_cb.reset();
                     m_args.reset();
                 }
@@ -77,11 +79,13 @@ namespace Mengine
 
             void onPrefetchComplete( bool _successful ) override
             {
-                m_successful &= _successful;
+                m_successful = m_successful && _successful;
 
                 if( --m_count == 0 )
                 {
-                    m_cb.call_args( m_successful, m_args );
+                    bool successful = m_successful;
+                    
+                    m_cb.call_args( successful, m_args );
                     m_cb.reset();
                     m_args.reset();
                 }
@@ -93,8 +97,8 @@ namespace Mengine
             pybind::object m_cb;
             pybind::args m_args;
 
-            uint32_t m_count;
-            bool m_successful;
+            AtomicUInt32 m_count;
+            AtomicBool m_successful;
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<PyPrefetcherObserver> PyPrefetcherObserverPtr;

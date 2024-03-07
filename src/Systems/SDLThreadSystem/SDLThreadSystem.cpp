@@ -7,6 +7,7 @@
 #include "SDLThreadConditionVariable.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryWithMutex.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
@@ -28,17 +29,31 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadSystem::_initializeService()
     {
-        m_factoryThreadIdentity = Helper::makeFactoryPool<SDLThreadIdentity, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryThreadProcessor = Helper::makeFactoryPool<SDLThreadProcessor, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryThreadMutex = Helper::makeFactoryPool<SDLThreadMutex, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryThreadSharedMutex = Helper::makeFactoryPool<SDLThreadSharedMutex, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryThreadConditionVariable = Helper::makeFactoryPool<SDLThreadConditionVariable, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadIdentity = Helper::makeFactoryPool<SDLThreadIdentity, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadProcessor = Helper::makeFactoryPool<SDLThreadProcessor, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadMutex = Helper::makeFactoryPool<SDLThreadMutex, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadSharedMutex = Helper::makeFactoryPool<SDLThreadSharedMutex, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadConditionVariable = Helper::makeFactoryPool<SDLThreadConditionVariable, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
 
+        SDLThreadMutexPtr mutex =  m_factoryThreadMutex->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        
+        m_factoryThreadIdentity->setMutex( mutex );
+        m_factoryThreadProcessor->setMutex( mutex );
+        m_factoryThreadMutex->setMutex( mutex );
+        m_factoryThreadSharedMutex->setMutex( mutex );
+        m_factoryThreadConditionVariable->setMutex( mutex );
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadSystem::_finalizeService()
     {
+        m_factoryThreadIdentity->setMutex( nullptr );
+        m_factoryThreadProcessor->setMutex( nullptr );
+        m_factoryThreadMutex->setMutex( nullptr );
+        m_factoryThreadSharedMutex->setMutex( nullptr );
+        m_factoryThreadConditionVariable->setMutex( nullptr );
+        
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadIdentity );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadProcessor );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadMutex );

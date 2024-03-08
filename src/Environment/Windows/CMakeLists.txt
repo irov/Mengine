@@ -14,11 +14,17 @@ src
     Win32GetCallstack.h
     Win32GetCallstack.cpp
     
+    Win32CreateProcess.h
+    Win32CreateProcess.cpp
+    
     Win32CreateProcessDump.h
     Win32CreateProcessDump.cpp
     
     Win32OutputDebugLogger.h
     Win32OutputDebugLogger.cpp
+    
+    Win32Register.h
+    Win32Register.cpp
 )
 
 if(NOT MENGINE_TARGET_UWP)

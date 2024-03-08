@@ -3,7 +3,7 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 
-#include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
+#include "Environment/Windows/Win32CreateProcess.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
@@ -44,9 +44,6 @@ namespace Mengine
 
         const FilePath & inputFolderPath = inputFileGroup->getFolderPath();
         const FilePath & outputFolderPath = outputFileGroup->getFolderPath();
-
-        Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getDynamicUnknown();
 
         String full_input;
         full_input.append( inputFolderPath.c_str() );
@@ -94,7 +91,7 @@ namespace Mengine
         String ffmpeg = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ffmpeg" ), "ffmpeg.exe" );
 
         uint32_t exitCode;
-        if( win32Platform->createProcess( ffmpeg.c_str(), command, true, &exitCode ) == false )
+        if( Helper::Win32CreateProcess( ffmpeg.c_str(), command, true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
                 , command

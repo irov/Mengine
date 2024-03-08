@@ -16,8 +16,6 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadMutexHelper.h"
-#include "Kernel/FactoryWithMutex.h"
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ProfilerSystem, Mengine::OptickProfilerSystem );
 //////////////////////////////////////////////////////////////////////////
@@ -35,17 +33,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptickProfilerSystem::_initializeService()
     {
-        m_factoryThreadProfilers = Helper::makeFactoryPool<OptickThreadProfiler, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryFrameProfilers = Helper::makeFactoryPool<OptickFrameProfiler, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryCategoryProfilers = Helper::makeFactoryPool<OptickCategoryProfiler, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryDescriptions = Helper::makeFactoryPool<OptickProfilerDescription, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-
-        ThreadMutexInterfacePtr mutexFactory = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        m_factoryThreadProfilers->setMutex( mutexFactory );
-        m_factoryFrameProfilers->setMutex( mutexFactory );
-        m_factoryCategoryProfilers->setMutex( mutexFactory );
-        m_factoryDescriptions->setMutex( mutexFactory );
+        m_factoryThreadProfilers = Helper::makeFactoryPool<OptickThreadProfiler, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryFrameProfilers = Helper::makeFactoryPool<OptickFrameProfiler, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryCategoryProfilers = Helper::makeFactoryPool<OptickCategoryProfiler, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryDescriptions = Helper::makeFactoryPool<OptickProfilerDescription, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -62,11 +53,6 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryFrameProfilers );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryCategoryProfilers );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDescriptions );
-
-        m_factoryThreadProfilers->setMutex( nullptr );
-        m_factoryFrameProfilers->setMutex( nullptr );
-        m_factoryCategoryProfilers->setMutex( nullptr );
-        m_factoryDescriptions->setMutex( nullptr );
 
         m_factoryThreadProfilers = nullptr;
         m_factoryFrameProfilers = nullptr;

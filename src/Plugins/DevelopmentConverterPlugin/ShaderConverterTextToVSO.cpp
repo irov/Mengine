@@ -3,7 +3,8 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 
-#include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
+#include "Environment/Windows/Win32Register.h"
+#include "Environment/Windows/Win32CreateProcess.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/FilePath.h"
@@ -38,15 +39,12 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ShaderConverterTextToVSO::convert()
     {
-        Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getDynamicUnknown();
-
         FilePath fxcPath = CONFIG_VALUE( "Engine", "FxcPath", STRINGIZE_FILEPATH_LOCAL( "REGISTER" ) );
 
         if( fxcPath == STRINGIZE_FILEPATH_LOCAL( "REGISTER" ) )
         {
             Char WindowsKitsInstallationFolder[MENGINE_MAX_PATH] = {'\0'};
-            if( win32Platform->getLocalMachineRegValue( L"SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots", L"KitsRoot10", WindowsKitsInstallationFolder, MENGINE_MAX_PATH ) == false )
+            if( Helper::Win32GetLocalMachineRegValue( L"SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots", L"KitsRoot10", WindowsKitsInstallationFolder, MENGINE_MAX_PATH ) == false )
             {
                 LOGGER_ERROR( "not found REGISTER Windows Kits installed roots" );
 
@@ -96,7 +94,7 @@ namespace Mengine
         );
 
         uint32_t exitCode;
-        if( win32Platform->createProcess( fxcPath.c_str(), command, true, &exitCode ) == false )
+        if( Helper::Win32CreateProcess( fxcPath.c_str(), command, true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
                 , command

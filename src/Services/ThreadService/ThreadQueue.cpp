@@ -5,7 +5,6 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/ThreadMutexHelper.h"
-#include "Kernel/FactoryWithMutex.h"
 
 #include "Kernel/DocumentHelper.h"
 
@@ -26,14 +25,9 @@ namespace Mengine
     bool ThreadQueue::initialize()
     {
         m_threadTasksMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
-
         m_currentThreadTasksMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryPoolTaskPacket = Helper::makeFactoryPool<ThreadTaskPacket, 4, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-
-        m_factoryPoolTaskPacketMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        m_factoryPoolTaskPacket->setMutex( m_factoryPoolTaskPacketMutex );
+        m_factoryPoolTaskPacket = Helper::makeFactoryPool<ThreadTaskPacket, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -42,13 +36,10 @@ namespace Mengine
     {
         m_threadTasksMutex = nullptr;
         m_currentThreadTasksMutex = nullptr;
-        m_factoryPoolTaskPacketMutex = nullptr;
 
         m_threads.clear();
         m_threadTasks.clear();
         m_currentThreadTasks.clear();
-
-        m_factoryPoolTaskPacket->setMutex( nullptr );
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolTaskPacket );
 

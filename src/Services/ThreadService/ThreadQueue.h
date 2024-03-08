@@ -48,7 +48,6 @@ namespace Mengine
 
         ThreadMutexInterfacePtr m_threadTasksMutex;
         ThreadMutexInterfacePtr m_currentThreadTasksMutex;
-        ThreadMutexInterfacePtr m_factoryPoolTaskPacketMutex;
 
         typedef Vector<ConstString> VectorThreads;
         VectorThreads m_threads;

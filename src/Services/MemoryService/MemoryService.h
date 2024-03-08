@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Interface/MemoryServiceInterface.h"
+#include "Interface/ThreadMutexInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -11,7 +13,6 @@
 #include "MemoryProxyInput.h"
 #include "MemoryInput.h"
 
-#include "Kernel/FactoryWithMutex.h"
 #include "Kernel/Vector.h"
 
 #include "Config/UniqueId.h"
@@ -64,7 +65,6 @@ namespace Mengine
         typedef Vector<CacheBufferMemory> VectorCacheBufferMemory;
         VectorCacheBufferMemory m_buffers;
 
-        ThreadMutexInterfacePtr m_memoryFactoryMutex;
         ThreadMutexInterfacePtr m_memoryCacheMutex;
 
         FactoryInterfacePtr m_factoryMemoryBuffer;

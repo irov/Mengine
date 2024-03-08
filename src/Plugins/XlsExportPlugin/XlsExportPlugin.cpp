@@ -6,8 +6,9 @@
 
 #define MENGINE_WINDOWS_MIN_VERSION_WIN8
 #include "Environment/Windows/WindowsIncluder.h"
+#include "Environment/Windows/Win32Register.h"
+#include "Environment/Windows/Win32CreateProcess.h"
 #include "Environment/Windows/Win32Helper.h"
-#include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/UnicodeHelper.h"
@@ -116,9 +117,6 @@ namespace Mengine
 
             return false;
         }
-
-        Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getDynamicUnknown();
         
         WChar command[MENGINE_MAX_COMMAND_LENGTH] = {'\0'};
         MENGINE_WNSPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"-m %ls %S"
@@ -127,7 +125,7 @@ namespace Mengine
         );
 
         uint32_t exitCode;
-        if( win32Platform->createProcess( m_pythonPath, command, true, &exitCode ) == false )
+        if( Helper::Win32CreateProcess( m_pythonPath, command, true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid xlsx exporter: %ls"
                 , command
@@ -151,9 +149,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool XlsExportPlugin::findPythonPath_()
     {
-        Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getDynamicUnknown();
-
         HKEY hKey;
         if( ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, L"SOFTWARE\\Python\\PythonCore", 0, KEY_READ | KEY_WOW64_64KEY, &hKey ) != ERROR_SUCCESS )
         {
@@ -168,7 +163,7 @@ namespace Mengine
         WChar latestVersion[MENGINE_MAX_PATH] = {L'\0'};
 
         DWORD index = 0;
-        while( true )
+        for( ;; )
         {
             DWORD subKeyNameSize = sizeof( subKeyName ) / sizeof( TCHAR );
             FILETIME lastWriteTime;
@@ -196,7 +191,7 @@ namespace Mengine
         MENGINE_WNSPRINTF( subKeyPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s\\InstallPath", latestVersion );
 
         Char latestVersionPath[MENGINE_MAX_PATH] = {'\0'};
-        if( win32Platform->getLocalMachineRegValue( subKeyPath, NULL, latestVersionPath, MENGINE_MAX_PATH ) == false )
+        if( Helper::Win32GetLocalMachineRegValue( subKeyPath, NULL, latestVersionPath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "not found python version path" );
 

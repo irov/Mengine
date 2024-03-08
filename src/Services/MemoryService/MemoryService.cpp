@@ -9,7 +9,6 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadMutexHelper.h"
-#include "Kernel/FactoryWithMutex.h"
 
 #include "Config/Algorithm.h"
 
@@ -29,31 +28,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryService::_initializeService()
     {
-        m_factoryMemoryCacheBuffer = Helper::makeFactoryPool<MemoryCacheBuffer, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryMemoryCacheInput = Helper::makeFactoryPool<MemoryCacheInput, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryMemoryProxyInput = Helper::makeFactoryPool<MemoryProxyInput, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryMemoryInput = Helper::makeFactoryPool<MemoryInput, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryMemoryBuffer = Helper::makeFactoryPool<MemoryBuffer, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryMemoryProxy = Helper::makeFactoryPool<MemoryProxy, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryCacheBuffer = Helper::makeFactoryPool<MemoryCacheBuffer, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryCacheInput = Helper::makeFactoryPool<MemoryCacheInput, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryProxyInput = Helper::makeFactoryPool<MemoryProxyInput, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryInput = Helper::makeFactoryPool<MemoryInput, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryBuffer = Helper::makeFactoryPool<MemoryBuffer, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryProxy = Helper::makeFactoryPool<MemoryProxy, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         ThreadMutexInterfacePtr memoryCacheMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memoryCacheMutex );
 
         m_memoryCacheMutex = memoryCacheMutex;
-
-        ThreadMutexInterfacePtr memoryFactoryMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( memoryFactoryMutex );
-
-        m_factoryMemoryBuffer->setMutex( memoryFactoryMutex );
-        m_factoryMemoryProxy->setMutex( memoryFactoryMutex );
-        m_factoryMemoryCacheBuffer->setMutex( memoryFactoryMutex );
-        m_factoryMemoryCacheInput->setMutex( memoryFactoryMutex );
-        m_factoryMemoryProxyInput->setMutex( memoryFactoryMutex );
-        m_factoryMemoryInput->setMutex( memoryFactoryMutex );
-
-        m_memoryFactoryMutex = memoryFactoryMutex;
 
         return true;
     }
@@ -68,15 +54,6 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryInput );
 
         m_memoryCacheMutex = nullptr;
-
-        m_factoryMemoryBuffer->setMutex( nullptr );
-        m_factoryMemoryProxy->setMutex( nullptr );
-        m_factoryMemoryCacheBuffer->setMutex( nullptr );
-        m_factoryMemoryCacheInput->setMutex( nullptr );
-        m_factoryMemoryProxyInput->setMutex( nullptr );
-        m_factoryMemoryInput->setMutex( nullptr );
-        
-        m_memoryFactoryMutex = nullptr;
 
         m_factoryMemoryBuffer = nullptr;
         m_factoryMemoryProxy = nullptr;

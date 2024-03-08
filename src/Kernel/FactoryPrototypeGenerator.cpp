@@ -34,6 +34,8 @@ namespace Mengine
     {
         this->_finalizeFactory();
 
+        m_prototypeFactory->setMutex( nullptr );
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_prototypeFactory );
         m_prototypeFactory = nullptr;
     }

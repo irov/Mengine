@@ -5,8 +5,6 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
-#include "Kernel/FactoryWithMutex.h"
-
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
 

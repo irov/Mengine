@@ -165,8 +165,6 @@ namespace Mengine
 
     protected:
         void sleep( uint32_t _ms ) override;
-        bool getLocalMachineRegValue( const WChar * _path, const WChar * _key, Char * const _value, size_t _size ) override;
-        bool createProcess( const Char * _process, const WChar * _command, bool _wait, uint32_t * const _exitCode ) override;
 
     protected:
         bool setProcessDPIAware() override;

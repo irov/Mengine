@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/FactoryWithoutMutex.h"
+#include "Kernel/FactoryWithMutex.h"
 
 namespace Mengine
 {
@@ -15,7 +15,7 @@ namespace Mengine
     typedef IntrusivePtr<FactoryDestroyListenerInterface> FactoryDestroyListenerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class FactoryWithListener
-        : public FactoryWithoutMutex
+        : public FactoryWithMutex
     {
     public:
         FactoryWithListener();

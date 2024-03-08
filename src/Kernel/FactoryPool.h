@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Kernel/FactoryWithoutMutex.h"
+#include "Kernel/FactoryWithMutex.h"
+#include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/Typename.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryAllocator.h"
@@ -9,7 +10,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    template<class Type, uint32_t Count, class F = FactoryWithoutMutex>
+    template<class Type, uint32_t Count, class F = FactoryWithMutex>
     class FactoryPool
         : public F
     {
@@ -44,8 +45,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        template<class Type, uint32_t Count, class F = FactoryWithoutMutex>
-        FactoryInterfacePtr makeFactoryPool( const DocumentInterfacePtr & _doc )
+        //////////////////////////////////////////////////////////////////////////
+        template<class Type, uint32_t Count, class F = FactoryWithMutex>
+        FactoryInterfacePtr makeFactoryPoolWithoutMutex( const DocumentInterfacePtr & _doc )
         {
             FactoryInterfacePtr factory = Helper::makeFactorableUnique<FactoryPool<Type, Count, F>>( _doc );
 
@@ -57,6 +59,27 @@ namespace Mengine
 
             return factory;
         }
+        //////////////////////////////////////////////////////////////////////////
+        template<class Type, uint32_t Count, class F = FactoryWithMutex>
+        FactoryInterfacePtr makeFactoryPoolWithMutex( const ThreadMutexInterfacePtr & _mutex, const DocumentInterfacePtr & _doc )
+        {
+            FactoryInterfacePtr factory = Helper::makeFactoryPoolWithoutMutex<Type, Count, F>( _doc );
+
+            factory->setMutex( _mutex );
+
+            return factory;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class Type, uint32_t Count, class F = FactoryWithMutex>
+        FactoryInterfacePtr makeFactoryPool( const DocumentInterfacePtr & _doc )
+        {
+            ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( _doc );
+
+            FactoryInterfacePtr factory = Helper::makeFactoryPoolWithMutex<Type, Count, F>( mutex, _doc );
+
+            return factory;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
 }

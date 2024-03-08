@@ -27,7 +27,7 @@
 #include "Interface/ThreadServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-#include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
+#include "Environment/Windows/Win32CreateProcess.h"
 #endif
 
 #include "NodeDebuggerSerialization.h"
@@ -99,11 +99,8 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_WINDOWS)
         UniqueId globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
         {
-            Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
-                ->getUnknown();
-
             uint32_t exitCode;
-            win32Platform->createProcess( "NodeDebugger.exe", L"127.0.0.1:18790", false, &exitCode );
+            Helper::Win32CreateProcess( "NodeDebugger.exe", L"127.0.0.1:18790", false, &exitCode );
         }, MENGINE_DOCUMENT_FACTORABLE );
 
         m_globalKeyHandlerF2 = globalKeyHandlerF2;

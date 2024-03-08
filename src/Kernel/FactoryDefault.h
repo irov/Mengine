@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Kernel/FactoryWithoutMutex.h"
+#include "Kernel/FactoryWithMutex.h"
+#include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Typename.h"
 
@@ -9,7 +10,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     template<class Type>
     class FactoryDefault
-        : public FactoryWithoutMutex
+        : public FactoryWithMutex
     {
     public:
         FactoryDefault()
@@ -48,6 +49,10 @@ namespace Mengine
             const ConstString & type = Type::getFactorableType();
 
             factory->setType( type );
+
+            ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( _doc );
+
+            factory->setMutex( mutex );
 
             return factory;
         }

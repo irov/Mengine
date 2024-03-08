@@ -7,7 +7,6 @@
 #include "Win32ThreadConditionVariable.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryWithMutex.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
@@ -34,31 +33,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadSystem::_initializeService()
     {
-        m_factoryThreadIdentity = Helper::makeFactoryPool<Win32ThreadIdentity, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryThreadProcessor = Helper::makeFactoryPool<Win32ThreadProcessor, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryThreadMutex = Helper::makeFactoryPool<Win32ThreadMutex, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryThreadSharedMutex = Helper::makeFactoryPool<Win32ThreadSharedMutex, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryThreadConditionVariable = Helper::makeFactoryPool<Win32ThreadConditionVariable, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr mutex = Helper::makeFactorableUnique<Win32ThreadMutex>( MENGINE_DOCUMENT_FACTORABLE );
 
-        Win32ThreadMutexPtr mutex = m_factoryThreadMutex->createObject( MENGINE_DOCUMENT_FACTORABLE );
-
-        m_factoryThreadIdentity->setMutex( mutex );
-        m_factoryThreadProcessor->setMutex( mutex );
-        m_factoryThreadMutex->setMutex( mutex );
-        m_factoryThreadSharedMutex->setMutex( mutex );
-        m_factoryThreadConditionVariable->setMutex( mutex );
+        m_factoryThreadMutex = Helper::makeFactoryPoolWithMutex<Win32ThreadMutex, 16>( mutex, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadIdentity = Helper::makeFactoryPoolWithMutex<Win32ThreadIdentity, 16>( mutex, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadProcessor = Helper::makeFactoryPoolWithMutex<Win32ThreadProcessor, 16>( mutex, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadSharedMutex = Helper::makeFactoryPoolWithMutex<Win32ThreadSharedMutex, 16>( mutex, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadConditionVariable = Helper::makeFactoryPoolWithMutex<Win32ThreadConditionVariable, 16>( mutex, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadSystem::_finalizeService()
     {
-        m_factoryThreadIdentity->setMutex( nullptr );
-        m_factoryThreadProcessor->setMutex( nullptr );
-        m_factoryThreadMutex->setMutex( nullptr );
-        m_factoryThreadSharedMutex->setMutex( nullptr );
-        m_factoryThreadConditionVariable->setMutex( nullptr );
-
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadIdentity );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadProcessor );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadMutex );

@@ -9,7 +9,6 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexHelper.h"
-#include "Kernel/FactoryWithMutex.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdArg.h"
@@ -34,7 +33,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DocumentService::_initializeService()
     {
-        m_factoryDocument = Helper::makeFactoryPool<Document, 1024, FactoryWithMutex>( nullptr );
+        m_factoryDocument = Helper::makeFactoryPoolWithoutMutex<Document, 1024>( nullptr );
 
         SERVICE_WAIT( ThreadSystemInterface, [this]()
         {

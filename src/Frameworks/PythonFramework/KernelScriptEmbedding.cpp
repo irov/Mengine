@@ -7,7 +7,6 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/PackageInterface.h"
 #include "Interface/SceneServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/SchedulerInterface.h"
 #include "Interface/FontInterface.h"

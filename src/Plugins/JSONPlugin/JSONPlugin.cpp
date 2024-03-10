@@ -3,7 +3,6 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 
@@ -28,6 +27,7 @@
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #ifndef MENGINE_PLUGIN_JSON_SEED
 #define MENGINE_PLUGIN_JSON_SEED 1

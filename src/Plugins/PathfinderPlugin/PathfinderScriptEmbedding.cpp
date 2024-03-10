@@ -1,7 +1,5 @@
 #include "PathfinderScriptEmbedding.h"
 
-#include "Interface/VocabularyServiceInterface.h"
-
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"

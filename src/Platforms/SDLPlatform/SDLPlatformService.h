@@ -111,6 +111,13 @@ namespace Mengine
         size_t getOsVersion( Char * const _osVersion ) const override;
         size_t getBundleId( Char * const _osVersion ) const override;
 
+        size_t getSessionId( Char * const _sessionId ) const override;
+        size_t getInstallKey( Char * const _installKey ) const override;
+        int64_t getInstallTimestamp() const override;
+        size_t getInstallVersion( Char * const _installVersion ) const override;
+        int64_t getInstallRND() const override;
+        int64_t getSessionIndex() const override;
+
         void closeWindow() override;
         void minimizeWindow() override;
 
@@ -272,6 +279,13 @@ namespace Mengine
         StaticString<MENGINE_PLATFORM_OS_FAMILY_MAXNAME> m_osFamily;
         StaticString<MENGINE_PLATFORM_OS_VERSION_MAXNAME> m_osVersion;
         StaticString<MENGINE_PLATFORM_BUNDLEID_MAXNAME> m_bundleId;
+
+        StaticString<MENGINE_PLATFORM_SESSIONID_MAXNAME> m_sessionId;
+        StaticString<MENGINE_PLATFORM_INSTALLKEY_MAXNAME> m_installKey;
+        int64_t m_installTimestamp;
+        StaticString<MENGINE_PLATFORM_INSTALLVERSION_MAXNAME> m_installVersion;
+        int64_t m_installRND;
+        int64_t m_sessionIndex;
 
         Timestamp m_prevTime;
 

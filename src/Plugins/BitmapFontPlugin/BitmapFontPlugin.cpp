@@ -1,11 +1,6 @@
 #include "BitmapFontPlugin.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
-
-#include "Kernel/Logger.h"
-#include "Kernel/ConstStringHelper.h"
-#include "Kernel/FactorableUnique.h"
 
 #include "BitmapFontService.h"
 #include "BitmapFontConfigLoader.h"
@@ -14,6 +9,11 @@
 #include "BitmapFontGlyphPrototypeGenerator.h"
 #include "BitmapFontValidator.h"
 #include "BitmapFontGlyphValidator.h"
+
+#include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FactorableUnique.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( BitmapFontService );

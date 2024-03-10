@@ -1,13 +1,12 @@
 #include "ImageDecoderHTF.h"
 #include "ImageVerifyHTF.h"
 
-#include "Interface/VocabularyServiceInterface.h"
-
 #include "Kernel/Stream.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 namespace Mengine
 {

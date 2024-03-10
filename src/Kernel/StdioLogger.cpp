@@ -65,9 +65,7 @@ namespace Mengine
             std::cout.write( " ", 1 );
         }
 
-        size_t data_size = MENGINE_STRLEN( message.data );
-
-        std::cout.write( message.data, data_size );
+        std::cout.write( message.data, message.size );
         std::cout.write( "\n", 1 );
     }
     //////////////////////////////////////////////////////////////////////////

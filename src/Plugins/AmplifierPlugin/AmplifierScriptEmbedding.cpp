@@ -3,7 +3,6 @@
 #include "AmplifierInterface.h"
 
 #include "Interface/SoundServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/FactoryInterface.h"
@@ -16,6 +15,7 @@
 #include "Kernel/AffectorHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/VocabularyHelper.h"
 
 namespace Mengine
 {    

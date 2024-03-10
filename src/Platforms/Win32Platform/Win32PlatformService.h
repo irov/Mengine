@@ -94,6 +94,14 @@ namespace Mengine
         size_t getOsVersion( Char * const _osVersion ) const override;
         size_t getBundleId( Char * const _osVersion ) const override;
 
+        size_t getSessionId( Char * const _sessionId ) const override;
+        size_t getInstallKey( Char * const _installKey ) const override;
+        int64_t getInstallTimestamp() const override;
+        size_t getInstallVersion( Char * const _installVersion ) const override;
+        int64_t getInstallRND() const override;
+        int64_t getSessionIndex() const override;
+
+
         void closeWindow() override;
         void minimizeWindow() override;
 
@@ -256,9 +264,11 @@ namespace Mengine
         HICON m_hIcon;
         StaticWString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
 
-        StaticString< MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME> m_deviceModel;
-        StaticString< MENGINE_PLATFORM_OS_FAMILY_MAXNAME> m_osFamily;
-        StaticString< MENGINE_PLATFORM_OS_VERSION_MAXNAME> m_osVersion;
+        StaticString<MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME> m_deviceModel;
+        StaticString<MENGINE_PLATFORM_OS_FAMILY_MAXNAME> m_osFamily;
+        StaticString<MENGINE_PLATFORM_OS_VERSION_MAXNAME> m_osVersion;
+
+        StaticString<MENGINE_PLATFORM_BUNDLEID_MAXNAME> m_bundleId;
 
         Timestamp m_prevTime;
 

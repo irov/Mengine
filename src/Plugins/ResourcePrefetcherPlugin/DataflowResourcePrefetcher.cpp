@@ -1,7 +1,6 @@
 #include "DataflowResourcePrefetcher.h"
 
 #include "Interface/PrefetcherServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ContentInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"

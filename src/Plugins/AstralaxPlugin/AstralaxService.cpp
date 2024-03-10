@@ -1,7 +1,5 @@
 #include "AstralaxService.h"
 
-#include "Interface/VocabularyServiceInterface.h"
-
 #include "Kernel/ResourceImage.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
@@ -12,6 +10,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"

@@ -1,7 +1,5 @@
 #include "ResourceValidatePlugin.h"
 
-#include "Interface/VocabularyServiceInterface.h"
-
 #include "ResourceValidateServiceInterface.h"
 
 #include "ResourceImageDefaultValidator.h"
@@ -14,6 +12,7 @@
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ResourceValidateService );

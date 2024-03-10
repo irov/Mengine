@@ -2,7 +2,6 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
 #include "DazzleInterface.h"
@@ -12,7 +11,7 @@
 #include "ResourceDazzleEffect.h"
 #include "DazzleEffectPrototypeGenerator.h"
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
 #   include "DazzleEffectConverterDZBToDZZ.h"
 #endif
 
@@ -135,7 +134,7 @@ namespace Mengine
         CODEC_SERVICE()
             ->registerCodecExt( STRINGIZE_STRING_LOCAL( "dzz" ), STRINGIZE_STRING_LOCAL( "dazzle" ) );
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         Helper::registerConverter<DazzleEffectConverterDZBToDZZ>( "dzb2dzz", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
@@ -171,7 +170,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DazzlePlugin::_finalizePlugin()
     {
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         Helper::unregisterConverter( "dzb2dzz" );
 #endif
 

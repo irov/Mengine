@@ -122,7 +122,7 @@ namespace Mengine
         m_renderObjects.clear();
         m_renderPrimitives.clear();
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         m_debugRenderObjects.clear();
 #endif
 
@@ -483,7 +483,7 @@ namespace Mengine
             return;
         }
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         DebugRenderObject dro;
         dro.context = *_context;
         dro.material = _material;
@@ -648,7 +648,7 @@ namespace Mengine
         m_renderObjects.clear();
         m_renderPrimitives.clear();
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         m_debugRenderObjects.clear();
 #endif
 
@@ -660,7 +660,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::flush()
     {
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         for( const DebugRenderObject & dro : m_debugRenderObjects )
         {
             this->addRenderObject( &dro.context, dro.material, nullptr, dro.vertices, dro.vertexCount, dro.indices, dro.indexCount, nullptr, true, MENGINE_DOCUMENT_VALUE( dro.doc, nullptr ) );
@@ -736,7 +736,7 @@ namespace Mengine
     {
         m_renderPrimitives.clear();
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         m_debugRenderObjects.clear();
 #endif
     }

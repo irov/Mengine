@@ -1,7 +1,6 @@
 #include "TTFPlugin.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
 #include "TTFFontPrototypeGenerator.h"
@@ -22,6 +21,7 @@
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 void * _ft_malloc( size_t _size )

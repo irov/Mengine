@@ -3,7 +3,6 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
@@ -25,6 +24,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/JSONHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdString.h"
 

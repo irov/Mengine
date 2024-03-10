@@ -1,12 +1,12 @@
 #include "FrameworkService.h"
 
 #include "Interface/FrameworkFactoryInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionVocabulary.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/Algorithm.h"
 

@@ -2,7 +2,6 @@
 
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"

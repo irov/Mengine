@@ -30,5 +30,6 @@ namespace Mengine
         Char m_function[MENGINE_MAX_PATH] = {'\0'};
         int32_t m_line;
         Char m_data[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        size_t m_size;
     };
 }

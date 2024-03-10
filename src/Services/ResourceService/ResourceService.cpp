@@ -2,7 +2,6 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ContentInterface.h"
 
 #include "Kernel/Assertion.h"

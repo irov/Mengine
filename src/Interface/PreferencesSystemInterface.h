@@ -17,7 +17,7 @@ namespace Mengine
     public:
         virtual int64_t getPreferenceInteger( const Char * _key, int64_t _default ) const = 0;
         virtual bool setPreferenceInteger( const Char * _key, int64_t _value ) = 0;
-        virtual bool getPreferenceString( const Char * _key, Char * const _value, size_t _capacity ) const = 0;
+        virtual bool getPreferenceString( const Char * _key, Char * const _value, size_t _capacity, size_t * const _size ) const = 0;
         virtual bool setPreferenceString( const Char * _key, const Char * _value ) = 0;
         virtual ConstString getPreferenceConstString( const Char * _key, const ConstString & _default ) const = 0;
         virtual bool setPreferenceConstString( const Char * _key, const ConstString & _value ) = 0;

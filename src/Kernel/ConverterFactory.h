@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Interface/ConverterFactoryInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
@@ -9,6 +8,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 namespace Mengine
 {

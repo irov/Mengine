@@ -1,7 +1,6 @@
 #include "LoaderService.h"
 
 #include "Interface/CodecServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
@@ -21,8 +20,9 @@
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
 #   include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
 #endif
 
@@ -117,7 +117,7 @@ namespace Mengine
         bool reimport = false;
         bool done = this->importBin_( file_bin, _metadata, _metaVersion, &reimport, _doc );
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         if( reimport == true )
         {
             file_bin = nullptr;
@@ -326,7 +326,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
     //////////////////////////////////////////////////////////////////////////
     bool LoaderService::openBin_( const ContentInterfacePtr & _content, InputStreamInterfacePtr * const _stream, bool * const _exist, const DocumentInterfacePtr & _doc ) const
     {

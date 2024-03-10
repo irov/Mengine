@@ -2,7 +2,6 @@
 
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "SDLFileGroupDirectory.h"
 #include "SDLFileGroupDirectoryFactory.h"
@@ -10,6 +9,7 @@
 #include "Kernel/FactoryHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdString.h"
 

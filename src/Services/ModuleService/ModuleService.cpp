@@ -1,6 +1,5 @@
 #include "ModuleService.h"
 
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ModuleFactoryInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
 
@@ -8,6 +7,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionVocabulary.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/Algorithm.h"
 

@@ -2,7 +2,6 @@
 
 #include "Interface/CodecInterface.h"
 #include "Interface/DecoderFactoryInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Factorable.h"
@@ -10,6 +9,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 namespace Mengine
 {

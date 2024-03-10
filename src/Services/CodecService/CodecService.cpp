@@ -1,7 +1,6 @@
 #include "CodecService.h"
 
 #include "Interface/CodecInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/FilePathHelper.h"
@@ -9,6 +8,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( CodecService, Mengine::CodecService );

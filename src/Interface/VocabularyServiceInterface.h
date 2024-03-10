@@ -18,29 +18,17 @@ namespace Mengine
         SERVICE_DECLARE( "VocabularyService" )
 
     public:
-        virtual void setFactorable( const ConstString & _category, const ConstString & _prototype, const MixinPtr & _factorable, const DocumentInterfacePtr & _doc ) = 0;
+        virtual void setFactorable( const ConstString & _category, const ConstString & _prototype, const MixinPtr & _value, const DocumentInterfacePtr & _doc ) = 0;
         virtual MixinPointer removeFactorable( const ConstString & _category, const ConstString & _prototype ) = 0;
         virtual MixinPointer getFactorable( const ConstString & _category, const ConstString & _prototype ) const = 0;
         virtual bool hasFactorable( const ConstString & _category, const ConstString & _prototype ) const = 0;
 
     public:
-        typedef Lambda<void( const ConstString & _category, const ConstString & _prototype, const MixinPtr & )> LambdaVocabulary;
+        typedef Lambda<void( const ConstString & _category, const ConstString & _prototype, const MixinPtr & _value )> LambdaVocabulary;
         virtual void foreachVocabulary( const LambdaVocabulary & _lambda ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////
 #define VOCABULARY_SERVICE()\
     ((Mengine::VocabularyServiceInterface *)SERVICE_GET(Mengine::VocabularyServiceInterface))
-//////////////////////////////////////////////////////////////////////////
-#define VOCABULARY_SET(Interface, Category, Prototype, Factorable, Document)\
-    VOCABULARY_SERVICE()->setFactorable(Category, Prototype, Mengine::IntrusivePtr<Interface>::from(Factorable), Document)
-//////////////////////////////////////////////////////////////////////////
-#define VOCABULARY_REMOVE(Category, Prototype)\
-    VOCABULARY_SERVICE()->removeFactorable(Category, Prototype)
-//////////////////////////////////////////////////////////////////////////
-#define VOCABULARY_GET(Category, Prototype)\
-    VOCABULARY_SERVICE()->getFactorable(Category, Prototype)
-//////////////////////////////////////////////////////////////////////////
-#define VOCABULARY_HAS(Category, Prototype)\
-    VOCABULARY_SERVICE()->hasFactorable(Category, Prototype)
 //////////////////////////////////////////////////////////////////////////

@@ -2,7 +2,6 @@
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/Logger.h"
@@ -16,6 +15,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/ResourceImage.h"
+#include "Kernel/VocabularyHelper.h"
 
 namespace Mengine
 {

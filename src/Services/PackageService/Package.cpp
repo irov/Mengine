@@ -10,7 +10,6 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/SettingsServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 
@@ -23,6 +22,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 namespace Mengine
 {

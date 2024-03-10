@@ -3,7 +3,6 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Plugins/FEPlugin/FEInterface.h"
 
@@ -15,6 +14,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 namespace Mengine
 {

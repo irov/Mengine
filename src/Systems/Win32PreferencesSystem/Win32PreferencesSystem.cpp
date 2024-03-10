@@ -8,6 +8,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdString.h"
 
@@ -62,8 +63,7 @@ namespace Mengine
             return _default;
         }
 
-        const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
-            ->getUserFileGroup();
+        FileGroupInterfacePtr userFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "user" ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( userFileGroup, "invalid get user file group" );
 
@@ -98,8 +98,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
-            ->getUserFileGroup();
+        FileGroupInterfacePtr userFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "user" ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( userFileGroup, "invalid get user file group" );
 
@@ -132,15 +131,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32PreferencesSystem::getPreferenceString( const Char * _key, Char * const _value, size_t _capacity ) const
+    bool Win32PreferencesSystem::getPreferenceString( const Char * _key, Char * const _value, size_t _capacity, size_t * const _size ) const
     {
         if( SERVICE_IS_INITIALIZE( FileServiceInterface ) == false )
         {
             return false;
         }
 
-        const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
-            ->getUserFileGroup();
+        FileGroupInterfacePtr userFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "user" ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( userFileGroup, "invalid get user file group" );
 
@@ -158,16 +156,21 @@ namespace Mengine
         );
 
         const Char * memory_buffer = preferenceMemory->getBuffer();
+        size_t memory_size = preferenceMemory->getSize();
 
         MENGINE_STRNCPY( _value, memory_buffer, _capacity );
+
+        if( _size != nullptr )
+        {
+            *_size = memory_size;
+        }
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PreferencesSystem::setPreferenceString( const Char * _key, const Char * _value )
     {
-        const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
-            ->getUserFileGroup();
+        FileGroupInterfacePtr userFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "user" ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( userFileGroup, "invalid get user file group" );
 
@@ -201,8 +204,7 @@ namespace Mengine
             return _default;
         }
 
-        const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
-            ->getUserFileGroup();
+        FileGroupInterfacePtr userFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "user" ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( userFileGroup, "invalid get user file group" );
 
@@ -233,8 +235,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
-            ->getUserFileGroup();
+        FileGroupInterfacePtr userFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "user" ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( userFileGroup, "invalid get user file group" );
 
@@ -269,8 +270,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
-            ->getUserFileGroup();
+        FileGroupInterfacePtr userFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "user" ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( userFileGroup, "invalid get user file group" );
 

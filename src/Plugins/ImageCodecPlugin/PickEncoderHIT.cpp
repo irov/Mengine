@@ -1,13 +1,12 @@
 #include "PickEncoderHIT.h"
 #include "PickVerifyHIT.h"
 
-#include "Interface/VocabularyServiceInterface.h"
-
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 namespace Mengine
 {

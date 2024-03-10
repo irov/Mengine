@@ -25,12 +25,20 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        size_t getAndroidId( Char * _androidId, size_t _capacity ) const override;
-        size_t getDeviceName( Char * _deviceName, size_t _capacity ) const override;
-        size_t getDeviceModel( Char * _deviceName, size_t _capacity ) const override;
-        size_t getDeviceLanguage( Char * _deviceName, size_t _capacity ) const override;
-        size_t getOSVersion( Char * _deviceName, size_t _capacity ) const override;
-        size_t getBundleId( Char * _packageName, size_t _capacity ) const override;
+        size_t getAndroidId( Char * const _androidId, size_t _capacity ) const override;
+        size_t getDeviceName( Char * const _deviceName, size_t _capacity ) const override;
+        size_t getDeviceModel( Char * const _deviceName, size_t _capacity ) const override;
+        size_t getDeviceLanguage( Char * const _deviceName, size_t _capacity ) const override;
+        size_t getOSVersion( Char * const _deviceName, size_t _capacity ) const override;
+        size_t getBundleId( Char * const _packageName, size_t _capacity ) const override;
+
+    public:
+        size_t getSessionId( Char * const _sessionId, size_t _capacity ) const override;
+        size_t getInstallKey( Char * const _installKey, size_t _capacity ) const override;
+        int64_t getInstallTimestamp() const override;
+        size_t getInstallVersion( Char * const _installVersion, size_t _capacity ) const override;
+        int64_t getInstallRND() const override;
+        int64_t getSessionIndex() const override;
 
     public:
         void stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr ) override;

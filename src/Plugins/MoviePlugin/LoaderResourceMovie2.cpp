@@ -1,12 +1,11 @@
 #include "LoaderResourceMovie2.h"
 
-#include "Interface/VocabularyServiceInterface.h"
-
 #include "ResourceMovie2.h"
 
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Metacode/Metacode.h"
 
@@ -38,7 +37,7 @@ namespace Mengine
             dataflowType = STRINGIZE_FILEPATH_LOCAL( "aezMovie" );
         }
 
-        const DataflowInterfacePtr & dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
+        DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dataflow );
 

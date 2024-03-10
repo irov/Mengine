@@ -4,7 +4,6 @@
 
 #include "Interface/FileGroupInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 
 #include "TTFDataInterface.h"

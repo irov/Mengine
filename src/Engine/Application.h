@@ -242,8 +242,6 @@ namespace Mengine
         ConstString m_projectCodename;
         uint32_t m_projectVersion;
 
-        ConstString m_sessionId;
-
         bool m_invalidateVsync;
         bool m_cursorMode;
         bool m_invalidateCursorMode;

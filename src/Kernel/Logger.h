@@ -55,7 +55,7 @@ namespace Mengine
         void logMessageArgs( const Char * _format, MENGINE_VA_LIST_TYPE _args ) const;
 
     protected:
-        void logMessage( uint32_t _color, const Char * _data ) const;
+        void logMessage( uint32_t _color, const Char * _data, size_t _size ) const;
 
     protected:
         const Char * m_category;

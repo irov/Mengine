@@ -3,7 +3,6 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Plugins/Movie1Plugin/MovieKeyFrameInterface.h"
 
@@ -23,6 +22,7 @@
 #include "Kernel/ContainerWriter.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/Iterator.h"
 

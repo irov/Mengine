@@ -22,7 +22,6 @@
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
@@ -3186,13 +3185,14 @@ namespace Mengine
             PyObject * s_getPersistentArguments( pybind::kernel_interface * _kernel )
             {
                 Char persistentArguments[1024] = {'\0'};
+                size_t persistentArgumentsLen = 0;
                 if( PREFERENCES_SYSTEM()
-                    ->getPreferenceString( "persistent_arguments", persistentArguments, 1024 ) == false )
+                    ->getPreferenceString( "persistent_arguments", persistentArguments, 1024, &persistentArgumentsLen ) == false )
                 {
                     return _kernel->ret_none();
                 }
 
-                PyObject * py_persistentArguments = _kernel->string_from_char( persistentArguments );
+                PyObject * py_persistentArguments = _kernel->string_from_char_size( persistentArguments, persistentArgumentsLen );
 
                 return py_persistentArguments;
             }

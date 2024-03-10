@@ -1,8 +1,6 @@
 #include "ImageDecoderACF.h"
 #include "ImageVerifyACF.h"
 
-#include "Interface/VocabularyServiceInterface.h"
-
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/DocumentHelper.h"
@@ -12,6 +10,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/MemoryCopy.h"
+#include "Kernel/VocabularyHelper.h"
 
 namespace Mengine
 {

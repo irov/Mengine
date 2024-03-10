@@ -2,14 +2,13 @@
 
 #include "EasingHelper.h"
 
-#include "Interface/VocabularyServiceInterface.h"
-
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( EasingService, Mengine::EasingService );

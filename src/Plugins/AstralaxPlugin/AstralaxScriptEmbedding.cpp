@@ -1,7 +1,6 @@
 #include "AstralaxScriptEmbedding.h"
 
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"

@@ -6,7 +6,6 @@
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/AllocatorSystemInterface.h"
 
@@ -38,6 +37,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/PrototypeHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdIO.h"
 

@@ -1,6 +1,6 @@
 #include "LoggerRecord.h"
 
-#include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/StdString.h"
 
@@ -14,6 +14,7 @@ namespace Mengine
         , m_filter( 0 )
         , m_color( 0 )
         , m_line( 0 )
+        , m_size( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -23,8 +24,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerRecord::initialize( const LoggerMessage & _message )
     {
-        MENGINE_ASSERTION_FATAL( _message.category != nullptr );
-        MENGINE_ASSERTION_FATAL( _message.data != nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( _message.category );
+        MENGINE_ASSERTION_MEMORY_PANIC( _message.data );
 
         m_timestamp = _message.timestamp;
         MENGINE_STRNCPY( m_category, _message.category, MENGINE_LOGGER_MAX_CATEGORY );
@@ -45,7 +46,9 @@ namespace Mengine
 
         m_line = _message.line;
 
-        MENGINE_STRNCPY( m_data, _message.data, MENGINE_LOGGER_MAX_MESSAGE );
+        MENGINE_STRNCPY( m_data, _message.data, _message.size );
+
+        m_size = _message.size;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerRecord::getMessage( LoggerMessage * const _message ) const
@@ -60,6 +63,7 @@ namespace Mengine
         _message->function = m_function;
         _message->line = m_line;
         _message->data = m_data;
+        _message->size = m_size;
     }
     //////////////////////////////////////////////////////////////////////////
 }

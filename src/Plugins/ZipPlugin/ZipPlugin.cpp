@@ -1,7 +1,6 @@
 #include "ZipPlugin.h"
 
 #include "Interface/FileServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "FileGroupZip.h"
 #include "ArchivatorZip.h"
@@ -11,6 +10,7 @@
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Zip, Mengine::ZipPlugin )
@@ -46,7 +46,10 @@ namespace Mengine
     bool ZipPlugin::_initializePlugin()
     {
         VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "zip" ), Helper::makeFactoryDefault<FileGroupZip>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( ArchivatorInterface, STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "zip" ), Helper::makeFactorableUnique<ArchivatorZip>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+
+        ArchivatorInterfacePtr archivator = Helper::makeFactorableUnique<ArchivatorZip>( MENGINE_DOCUMENT_FACTORABLE );
+
+        VOCABULARY_SET( ArchivatorInterface, STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "zip" ), archivator, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

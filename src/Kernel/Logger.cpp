@@ -70,7 +70,7 @@ namespace Mengine
                 return;
             }
 
-            this->logMessage( LCOLOR_RED, str );
+            this->logMessage( LCOLOR_RED, str, size_snprintf );
 
             return;
         }
@@ -80,10 +80,10 @@ namespace Mengine
             return;
         }
 
-        this->logMessage( m_color, str );
+        this->logMessage( m_color, str, size_vsnprintf );
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerOperator::logMessage( uint32_t _color, const Char * _data ) const
+    void LoggerOperator::logMessage( uint32_t _color, const Char * _data, size_t _size ) const
     {
         LoggerMessage msg;
         msg.timestamp = Helper::getLocalTimestamp();
@@ -96,6 +96,7 @@ namespace Mengine
         msg.function = m_function;
         msg.line = m_line;
         msg.data = _data;
+        msg.size = _size;
 
         LOGGER_SERVICE()
             ->logMessage( msg );

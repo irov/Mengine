@@ -974,6 +974,9 @@ Codec
     
     SecureStaticString.cpp
     SecureStaticString.h
+    
+    VocabularyHelper.cpp
+    VocabularyHelper.h
 )
 
 ADD_FILTER(

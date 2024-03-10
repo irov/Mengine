@@ -4,7 +4,6 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
@@ -16,6 +15,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/Algorithm.h"
 #include "Config/StdMath.h"

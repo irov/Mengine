@@ -128,7 +128,7 @@ namespace Mengine
 #if !defined(MENGINE_BUILD_PUBLISH)
         Char MengineApplePersistentArguments[1024] = {'\0'};
         if( PREFERENCES_SYSTEM()
-            ->getPreferenceString( "persistent_arguments", MengineApplePersistentArguments, 1024 ) == true )
+            ->getPreferenceString( "persistent_arguments", MengineApplePersistentArguments, 1024, nullptr ) == true )
         {
             arguments->addArguments( MengineApplePersistentArguments );
         }

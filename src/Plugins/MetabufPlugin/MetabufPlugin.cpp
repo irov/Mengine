@@ -1,7 +1,6 @@
 #include "MetabufPlugin.h"
 
 #include "Interface/LoaderServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "MetabufLoaderResourceCursorICO.h"
 #include "MetabufLoaderResourceCursorSystem.h"
@@ -25,6 +24,7 @@
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 void * _metabuf_malloc( size_t _size )

@@ -1,7 +1,6 @@
 #include "ConverterService.h"
 
 #include "Interface/ConverterFactoryInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -13,6 +12,7 @@
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ConverterService, Mengine::ConverterService );

@@ -2,8 +2,6 @@
 
 #include "Interface/FileGroupInterface.h"
 #include "Interface/OptionsServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "Interface/ScriptServiceInterface.h"
@@ -22,6 +20,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ResourcePrefetcherService, Mengine::ResourcePrefetcherService );

@@ -8,7 +8,6 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigLoaderInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"

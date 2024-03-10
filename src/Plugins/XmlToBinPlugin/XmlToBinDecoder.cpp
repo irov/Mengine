@@ -1,7 +1,6 @@
 #include "XmlToBinDecoder.h"
 
 #include "Interface/LoaderServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
@@ -14,6 +13,10 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
 #include "Kernel/Utf8Helper.h"
+#include "Kernel/VocabularyHelper.h"
+#include "Kernel/Data.h"
+
+#include "Config/StdString.h"
 
 #include "Metacode/Metacode.h"
 
@@ -21,10 +24,6 @@
 
 #include "xml2metabuf/Xml2Metabuf.hpp"
 #include "xml2metabuf/Xml2Metacode.hpp"
-
-#include "Kernel/Data.h"
-
-#include "Config/StdString.h"
 
 namespace Mengine
 {

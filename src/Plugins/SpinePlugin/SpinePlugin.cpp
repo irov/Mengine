@@ -3,7 +3,6 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DebuggerBoundingBoxInterface.h"
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
@@ -29,6 +28,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "spine/extension.h"
 

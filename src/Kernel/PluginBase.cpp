@@ -1,7 +1,6 @@
 #include "PluginBase.h"
 
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FactoryServiceInterface.h"
 
 #include "Kernel/Logger.h"
@@ -9,6 +8,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdString.h"
 

@@ -1,7 +1,6 @@
 #include "ResourceValidateService.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ValidatorInterface.h"
 
 #include "Kernel/Assertion.h"
@@ -11,6 +10,7 @@
 #include "Kernel/BuildMode.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ResourceValidateService, Mengine::ResourceValidateService );
@@ -51,7 +51,7 @@ namespace Mengine
     {
         const ConstString & resourceType = _resource->getType();
 
-        const ValidatorInterfacePtr & validator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Validator" ), resourceType );
+        ValidatorInterfacePtr validator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Validator" ), resourceType );
 
         if( validator == nullptr )
         {

@@ -2,7 +2,6 @@
 
 #include "Interface/ScriptWrapperInterface.h"
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Environment/Python/PythonDocumentTraceback.h"
 
@@ -14,6 +13,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/Typeinfo.h"
 

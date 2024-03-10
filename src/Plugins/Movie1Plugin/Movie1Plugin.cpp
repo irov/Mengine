@@ -6,7 +6,6 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
@@ -51,6 +50,7 @@
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Movie1, Mengine::Movie1Plugin )

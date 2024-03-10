@@ -1,11 +1,10 @@
 #include "LoaderResourceMovie.h"
 
-#include "Interface/VocabularyServiceInterface.h"
-
 #include "ResourceMovie.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Metacode/Metacode.h"
 

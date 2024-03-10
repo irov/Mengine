@@ -3,7 +3,6 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/AssertionVocabulary.h"
@@ -13,6 +12,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ResourceConvertService );

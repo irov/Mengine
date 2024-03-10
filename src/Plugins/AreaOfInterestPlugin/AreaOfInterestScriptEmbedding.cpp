@@ -1,6 +1,5 @@
 #include "AreaOfInterestScriptEmbedding.h"
 
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DocumentInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"

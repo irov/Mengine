@@ -1,7 +1,5 @@
 #include "DataService.h"
 
-#include "Interface/VocabularyServiceInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/AssertionMemoryPanic.h"

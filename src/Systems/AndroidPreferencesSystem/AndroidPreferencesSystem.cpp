@@ -78,7 +78,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidPreferencesSystem::getPreferenceString( const Char * _key, Char * const _value, size_t _capacity ) const
+    bool AndroidPreferencesSystem::getPreferenceString( const Char * _key, Char * const _value, size_t _capacity, size_t * const _size ) const
     {
         if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {

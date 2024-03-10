@@ -2,7 +2,6 @@
 
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Win32FileGroupDirectoryFactory.h"
 #include "Win32FileGroupDirectory.h"
@@ -12,6 +11,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Win32FileGroup, Mengine::Win32FileGroupPlugin )

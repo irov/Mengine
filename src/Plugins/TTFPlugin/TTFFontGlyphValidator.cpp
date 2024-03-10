@@ -1,7 +1,5 @@
 #include "TTFFontGlyphValidator.h"
 
-#include "Interface/VocabularyServiceInterface.h"
-
 #include "TTFFont.h"
 
 #include "Kernel/ConstStringHelper.h"

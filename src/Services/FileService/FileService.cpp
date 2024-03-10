@@ -2,7 +2,6 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 
@@ -17,6 +16,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/PathString.h"
+#include "Kernel/VocabularyHelper.h"
+#include "Kernel/AssertionVocabulary.h"
 
 #include "Config/StdString.h"
 
@@ -43,9 +44,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileService::_finalizeService()
     {
-        m_defaultFileGroup = nullptr;
-        m_globalFileGroup = nullptr;
-        m_userFileGroup = nullptr;
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "FileGroup" ) );
 
 #if defined(MENGINE_DEBUG)
         for( const HashtableFileGroups::value_type & value : m_fileGroups )
@@ -135,19 +134,6 @@ namespace Mengine
             }
         }
 
-        if( _name.empty() == true )
-        {
-            m_defaultFileGroup = fileGroup;
-        }
-        else if( _name == STRINGIZE_STRING_LOCAL( "dev" ) )
-        {
-            m_globalFileGroup = fileGroup;
-        }
-        else if( _name == STRINGIZE_STRING_LOCAL( "user" ) )
-        {
-            m_userFileGroup = fileGroup;
-        }
-
         if( _outFileGroup != nullptr )
         {
             *_outFileGroup = fileGroup;
@@ -172,11 +158,6 @@ namespace Mengine
         }
 
         groupInterface->finalize();
-
-        if( _name.empty() == true )
-        {
-            m_defaultFileGroup = nullptr;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileService::hasFileGroup( const ConstString & _name, FileGroupInterfacePtr * const _fileGroup ) const
@@ -205,21 +186,6 @@ namespace Mengine
         );
 
         return fileGroup;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FileGroupInterfacePtr & FileService::getDefaultFileGroup() const
-    {
-        return m_defaultFileGroup;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FileGroupInterfacePtr & FileService::getUserFileGroup() const
-    {
-        return m_userFileGroup;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FileGroupInterfacePtr & FileService::getGlobalFileGroup() const
-    {
-        return m_globalFileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
 }

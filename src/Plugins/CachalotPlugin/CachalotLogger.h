@@ -35,6 +35,8 @@ namespace Mengine
 
         typedef Vector<LoggerRecordInterfacePtr> VectorMessages;
         VectorMessages m_messages;
+
+        Data m_dataAux;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<CachalotLogger, LoggerInterface> CachalotLoggerPtr;

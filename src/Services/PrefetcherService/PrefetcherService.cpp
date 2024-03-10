@@ -2,7 +2,6 @@
 
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "ThreadTaskPrefetchImageDecoder.h"
 #include "ThreadTaskPrefetchSoundDecoder.h"

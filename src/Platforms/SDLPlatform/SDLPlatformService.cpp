@@ -65,6 +65,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -107,9 +108,6 @@ namespace Mengine
         : m_beginTime( 0 )
         , m_sdlWindow( nullptr )
         , m_sdlAccelerometer( nullptr )
-#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
-        , m_glContext( nullptr )
-#endif
         , m_sdlInput( nullptr )
         , m_prevTime( 0 )
         , m_pauseUpdatingTime( -1.f )
@@ -117,6 +115,13 @@ namespace Mengine
         , m_sleepMode( true )
         , m_desktop( false )
         , m_touchpad( false )
+        , m_installTimestamp( 0L )
+        , m_installVersion( 0L )
+        , m_installRND( 0L )
+        , m_sessionIndex( 0L )
+#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
+        , m_glContext( nullptr )
+#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -128,7 +133,7 @@ namespace Mengine
     {
 #if defined(MENGINE_PLATFORM_WINDOWS)
         WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
-        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH - 1, unicode_path );
+        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH - 2, unicode_path );
 
         if( len == 0 )
         {
@@ -299,9 +304,14 @@ namespace Mengine
     size_t SDLPlatformService::getDeviceLanguage( Char * const _deviceLanguage ) const
     {
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        MENGINE_STRCPY( _deviceLanguage, "en" );
+        WCHAR unicode_localeName[LOCALE_NAME_MAX_LENGTH];
+        ::GetSystemDefaultLocaleName( unicode_localeName, LOCALE_NAME_MAX_LENGTH );
 
-        return 2;
+        Helper::unicodeToUtf8( unicode_localeName, _deviceLanguage, LOCALE_NAME_MAX_LENGTH, nullptr );
+
+        size_t deviceLanguageLen = MENGINE_STRLEN( _deviceLanguage );
+
+        return deviceLanguageLen;
 #elif defined(MENGINE_PLATFORM_MACOS)
         MENGINE_STRCPY( _deviceLanguage, "en" );
 
@@ -365,6 +375,48 @@ namespace Mengine
         size_t bundleIdLen = m_bundleId.size();
 
         return bundleIdLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t SDLPlatformService::getSessionId( Char * const _sessionId ) const
+    {
+        m_sessionId.copy( _sessionId );
+
+        size_t sessionIdLen = m_sessionId.size();
+
+        return sessionIdLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t SDLPlatformService::getInstallKey( Char * const _installKey ) const
+    {
+        m_installKey.copy( _installKey );
+
+        size_t installKeyLen = m_installKey.size();
+
+        return installKeyLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t SDLPlatformService::getInstallTimestamp() const
+    {
+        return m_installTimestamp;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t SDLPlatformService::getInstallVersion( Char * const _installVersion ) const
+    {
+        m_installVersion.copy( _installVersion );
+
+        size_t installVersionLen = m_installVersion.size();
+
+        return installVersionLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t SDLPlatformService::getInstallRND() const
+    {
+        return m_installRND;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t SDLPlatformService::getSessionIndex() const
+    {
+        return m_sessionIndex;
     }
     //////////////////////////////////////////////////////////////////////////
     float SDLPlatformService::getJoystickAxis( uint32_t _index ) const
@@ -857,6 +909,66 @@ namespace Mengine
             ->getBundleId( m_bundleId.data(), MENGINE_PLATFORM_BUNDLEID_MAXNAME );
 #endif
 
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
+        m_sessionId.assign( m_fingerprint );
+#elif defined(MENGINE_PLATFORM_IOS)
+        APPLE_ENVIRONMENT_SERVICE()
+            ->getSessionId( m_sessionId.data(), MENGINE_PLATFORM_SESSIONID_MAXNAME );
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->getSessionId( m_sessionId.data(), MENGINE_PLATFORM_SESSIONID_MAXNAME );
+#endif
+
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
+        m_installKey.assign( m_fingerprint );
+#elif defined(MENGINE_PLATFORM_IOS)
+        APPLE_ENVIRONMENT_SERVICE()
+            ->getInstallKey( m_installKey.data(), MENGINE_PLATFORM_INSTALLKEY_MAXNAME );
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->getInstallKey( m_installKey.data(), MENGINE_PLATFORM_INSTALLKEY_MAXNAME );
+#endif
+
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
+        m_installTimestamp = 0;
+#elif defined(MENGINE_PLATFORM_IOS)
+        m_installTimestamp = APPLE_ENVIRONMENT_SERVICE()
+            ->getInstallTimestamp();
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        m_installTimestamp = ANDROID_ENVIRONMENT_SERVICE()
+            ->getInstallTimestamp();
+#endif
+
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
+        m_installVersion = "0.0.0";
+#elif defined(MENGINE_PLATFORM_IOS)
+        APPLE_ENVIRONMENT_SERVICE()
+            ->getInstallVersion( m_installVersion.data(), MENGINE_PLATFORM_INSTALLVERSION_MAXNAME );
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        ANDROID_ENVIRONMENT_SERVICE()
+            ->getInstallVersion( m_installVersion.data(), MENGINE_PLATFORM_INSTALLVERSION_MAXNAME );
+#endif
+
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
+        m_installRND = 0;
+#elif defined(MENGINE_PLATFORM_IOS)
+        m_installRND = APPLE_ENVIRONMENT_SERVICE()
+            ->getInstallRND();
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        m_installRND = ANDROID_ENVIRONMENT_SERVICE()
+            ->getInstallRND();
+#endif
+
+#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
+        m_sessionIndex = 0;
+#elif defined(MENGINE_PLATFORM_IOS)
+        m_sessionIndex = APPLE_ENVIRONMENT_SERVICE()
+            ->getSessionIndex();
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        m_sessionIndex = ANDROID_ENVIRONMENT_SERVICE()
+            ->getSessionIndex();
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1002,10 +1114,6 @@ namespace Mengine
                 , Helper::Win32GetLastErrorMessage()
             );
         }
-
-        LOGGER_INFO_PROTECTED( "platform", "ComputerName: %ls"
-            , ComputerNameBuffer
-        );
 
         WChar fingerprintGarbage[UNLEN + MAX_COMPUTERNAME_LENGTH + 1] = {'\0'};
         MENGINE_WCSCPY( fingerprintGarbage, UserNameBuffer );
@@ -3801,26 +3909,30 @@ namespace Mengine
 
         PLUGIN_CREATE( SDLFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
+        FileGroupInterfacePtr defaultFileGroup = nullptr;
+
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), &defaultFileGroup, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "failed to mount application directory" );
 
             return false;
         }
 
-#if !defined(MENGINE_MASTER_RELEASE)
-        const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
+        VOCABULARY_SET( FileGroupInterface, STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none(), defaultFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
-        // mount root
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
+        FileGroupInterfacePtr globalFileGroup = nullptr;
+
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), defaultFileGroup, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), &globalFileGroup, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "failed to mount dev directory" );
 
             return false;
         }
+
+        VOCABULARY_SET( FileGroupInterface, STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ), globalFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;
@@ -3828,13 +3940,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::finalizeFileService_()
     {
-#if !defined(MENGINE_MASTER_RELEASE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         FILE_SERVICE()
             ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 #endif
 
         FILE_SERVICE()
             ->unmountFileGroup( ConstString::none() );
+
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

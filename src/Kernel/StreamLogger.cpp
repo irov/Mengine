@@ -94,9 +94,7 @@ namespace Mengine
             m_stream->write( " ", 1 );
         }
 
-        size_t data_size = MENGINE_STRLEN( message.data );
-
-        m_stream->write( message.data, data_size );
+        m_stream->write( message.data, message.size );
         m_stream->write( "\n", 1 );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -106,4 +104,3 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
 }
-

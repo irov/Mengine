@@ -4,7 +4,6 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
@@ -44,6 +43,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"

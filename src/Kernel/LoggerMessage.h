@@ -29,5 +29,6 @@ namespace Mengine
         const Char * function;
         int32_t line;
         const Char * data;
+        size_t size;
     };
 }

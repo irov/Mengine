@@ -1,7 +1,5 @@
 #include "LZ4Plugin.h"
 
-#include "Interface/VocabularyServiceInterface.h"
-
 #include "ArchivatorLZ4.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -9,6 +7,7 @@
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 extern "C"

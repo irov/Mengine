@@ -19,7 +19,6 @@
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/StatisticServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
 #include "Interface/DocumentInterface.h"
@@ -73,6 +72,7 @@
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdMath.h"
@@ -962,6 +962,7 @@ namespace Mengine
                 const Char * data = _kernel->string_to_char_and_size( _message, &size );
 
                 msg.data = data;
+                msg.size = size;
 
                 LOGGER_SERVICE()
                     ->logMessage( msg );
@@ -985,6 +986,7 @@ namespace Mengine
                 const Char * data = _kernel->string_to_char_and_size( _message, &size );
 
                 msg.data = data;
+                msg.size = size;
 
                 LOGGER_SERVICE()
                     ->logMessage( msg );
@@ -1008,6 +1010,7 @@ namespace Mengine
                 const Char * data = _kernel->string_to_char_and_size( _message, &size );
 
                 msg.data = data;
+                msg.size = size;
 
                 LOGGER_SERVICE()
                     ->logMessage( msg );
@@ -1031,6 +1034,7 @@ namespace Mengine
                 const Char * data = _kernel->string_to_char_and_size( _message, &size );
 
                 msg.data = data;
+                msg.size = size;
 
                 LOGGER_SERVICE()
                     ->logMessage( msg );
@@ -3378,10 +3382,9 @@ namespace Mengine
                 return py_data;
             }
             //////////////////////////////////////////////////////////////////////////
-            const FileGroupInterfacePtr & s_getDefaultFileGroup()
+            FileGroupInterfacePtr s_getDefaultFileGroup()
             {
-                const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                    ->getDefaultFileGroup();
+                FileGroupInterfacePtr fileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );;
 
                 return fileGroup;
             }

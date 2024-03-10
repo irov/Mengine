@@ -14,6 +14,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "Interface/ScriptServiceInterface.h"
@@ -159,8 +160,7 @@ namespace Mengine
         }
         else
         {
-            const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
-                ->getDefaultFileGroup();
+            FileGroupInterfacePtr defaultFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );;
 
             ContentInterfacePtr externalContent = Helper::makeFileContent( defaultFileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
 

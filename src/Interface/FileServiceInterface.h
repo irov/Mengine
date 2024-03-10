@@ -20,11 +20,6 @@ namespace Mengine
     public:
         virtual bool hasFileGroup( const ConstString & _fileGroupName, FileGroupInterfacePtr * const _fileGroup ) const = 0;
         virtual const FileGroupInterfacePtr & getFileGroup( const ConstString & _fileGroupName ) const = 0;
-
-    public:
-        virtual const FileGroupInterfacePtr & getDefaultFileGroup() const = 0;
-        virtual const FileGroupInterfacePtr & getUserFileGroup() const = 0;
-        virtual const FileGroupInterfacePtr & getGlobalFileGroup() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

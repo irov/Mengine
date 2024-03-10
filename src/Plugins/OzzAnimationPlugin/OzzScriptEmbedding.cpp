@@ -1,7 +1,6 @@
 #include "OzzScriptEmbedding.h"
 
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"

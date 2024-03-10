@@ -7,7 +7,6 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Engine/ResourceShape.h"
 

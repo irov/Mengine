@@ -1,6 +1,5 @@
 #include "SpineScriptEmbedding.h"
 
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"

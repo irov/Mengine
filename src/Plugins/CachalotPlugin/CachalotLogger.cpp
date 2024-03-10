@@ -1,7 +1,6 @@
 #include "CachalotLogger.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/PreferencesSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 
 #include "Kernel/Logger.h"
@@ -94,28 +93,31 @@ namespace Mengine
             return;
         }
 
-        ConstString session_id = PREFERENCES_SYSTEM()
-            ->getPreferenceConstString( "session_id", ConstString::none() );
+        Char session_id[64] = {'\0'};
+        size_t session_id_length = PLATFORM_SERVICE()
+            ->getSessionId( session_id );
 
-        if( session_id.empty() == true )
+        if( session_id_length == 0 )
         {
             return;
         }
 
-        ConstString install_key = PREFERENCES_SYSTEM()
-            ->getPreferenceConstString( "install_key", ConstString::none() );
+        Char install_key[64] = {'\0'};
+        size_t install_key_length = PLATFORM_SERVICE()
+            ->getInstallKey( install_key );
 
-        int64_t install_timestamp = PREFERENCES_SYSTEM()
-            ->getPreferenceInteger( "install_timestamp", 0L );
+        int64_t install_timestamp = PLATFORM_SERVICE()
+            ->getInstallTimestamp();
 
-        ConstString install_version = PREFERENCES_SYSTEM()
-            ->getPreferenceConstString( "install_version", ConstString::none() );
+        Char install_version[64] = {'\0'};
+        size_t install_version_length = PLATFORM_SERVICE()
+            ->getInstallVersion( install_version );
 
-        int64_t install_rnd = PREFERENCES_SYSTEM()
-            ->getPreferenceInteger( "install_rnd", 0L );
+        int64_t install_rnd = PLATFORM_SERVICE()
+            ->getInstallRND();
 
-        int64_t session_index = PREFERENCES_SYSTEM()
-            ->getPreferenceInteger( "session_index", 0L );
+        int64_t session_index = PLATFORM_SERVICE()
+            ->getSessionIndex();
 
         Timestamp live = PLATFORM_SERVICE()
             ->getPlatfomTime();
@@ -160,7 +162,7 @@ namespace Mengine
                 return;
             }
 
-            js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "user.id" ), JS_MAKE_STRING( session_id.c_str(), session_id.size() ) );
+            js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "user.id" ), JS_MAKE_STRING( session_id, session_id_length ) );
 
             switch( message.level )
             {
@@ -189,7 +191,15 @@ namespace Mengine
             }
 
             js_object_add_field_string( j, jrecord, JS_CONST_STRING( "service" ), message.category );
-            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "message" ), message.data );
+
+            if( message.size < 4096 )
+            {
+                js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "message" ), JS_MAKE_STRING( message.data, message.size ) );
+            }
+            else
+            {
+                js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "message" ), JS_MAKE_STRING( message.data, 4096 ) );
+            }
 
             js_object_add_field_string( j, jrecord, JS_CONST_STRING( "build.version" ), build_version );
             
@@ -218,15 +228,16 @@ namespace Mengine
                 return;
             }
 
-            js_object_add_field_stringn( j, jattributes, JS_CONST_STRING( "install.key" ), JS_MAKE_STRING( install_key.c_str(), install_key.size() ) );
+            js_object_add_field_stringn( j, jattributes, JS_CONST_STRING( "install.key" ), JS_MAKE_STRING( install_key, install_key_length ) );
             js_object_add_field_integer( j, jattributes, JS_CONST_STRING( "install.timestamp" ), install_timestamp );
-            js_object_add_field_stringn( j, jattributes, JS_CONST_STRING( "install.version" ), JS_MAKE_STRING( install_version.c_str(), install_version.size() ) );
+            js_object_add_field_stringn( j, jattributes, JS_CONST_STRING( "install.version" ), JS_MAKE_STRING( install_version, install_version_length ) );
             js_object_add_field_integer( j, jattributes, JS_CONST_STRING( "install.rnd" ), install_rnd );
             js_object_add_field_integer( j, jattributes, JS_CONST_STRING( "session.index" ), session_index );
         }
 
-        Data data;
-        if( Helper::writeJSON2DataCompact( j, &data ) == false )
+        m_dataAux.clear();
+
+        if( Helper::writeJSON2DataCompact( j, &m_dataAux ) == false )
         {
             return;
         }
@@ -235,7 +246,7 @@ namespace Mengine
             ->getApplicationJSONHeaders();
 
         HttpRequestId id = HTTP_SYSTEM()
-            ->headerData( m_dsn, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+            ->headerData( m_dsn, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, m_dataAux, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_UNUSED( id );
     }

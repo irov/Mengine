@@ -42,6 +42,7 @@
 #include "Kernel/FileContent.h"
 #include "Kernel/EntityEventable.h"
 #include "Kernel/MT19937Randomizer.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_BOOTSTRAPPER_LOAD_CONFIG
@@ -577,8 +578,7 @@ namespace Mengine
 
         LOGGER_INFO( "bootstrapper", "bootstrapper initialize game" );
 
-        const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
+        FileGroupInterfacePtr defaultFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
 
         if( APPLICATION_SERVICE()
             ->initializeGame( defaultFileGroup, m_packagesPaths, m_settingsPaths ) == false )
@@ -634,8 +634,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::loadApplicationConfig_()
     {
-        const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
+        FileGroupInterfacePtr defaultFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
 
         FilePath applicationConfigPath = Helper::stringizeFilePath( MENGINE_BOOTSTRAPPER_CONFIG_PATH );
 
@@ -742,9 +741,10 @@ namespace Mengine
             LOGGER_INFO_PROTECTED( "bootstrapper", "user folder: %s", cs_userPath.c_str() );
         }
 
-        // mount user directory
+        FileGroupInterfacePtr userFileGroup = nullptr;
+
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, true, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), &userFileGroup, true, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "failed to mount user directory '%s'"
                 , userPath
@@ -752,6 +752,8 @@ namespace Mengine
 
             return false;
         }
+
+        VOCABULARY_SET( FileGroupInterface, STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "user" ), userFileGroup, MENGINE_DOCUMENT_FACTORABLE );
         
         NOTIFICATION_NOTIFY( NOTIFICATOR_MOUNT_USER_FILEGROUP );
 
@@ -2108,8 +2110,6 @@ namespace Mengine
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ) );
 
-        SERVICE_FINALIZE( VocabularyService );
-        SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( PluginService );
         SERVICE_FINALIZE( TimepipeService );
 
@@ -2128,6 +2128,8 @@ namespace Mengine
             FILE_SERVICE()
                 ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
         }
+
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "user" ) );
 
         SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( RenderSystem );
@@ -2154,6 +2156,11 @@ namespace Mengine
         SERVICE_FINALIZE( LoggerService );
         SERVICE_FINALIZE( MemoryService );
         SERVICE_FINALIZE( OptionsService );
+        SERVICE_FINALIZE( VocabularyService );
+        SERVICE_FINALIZE( EnumeratorService );
+        SERVICE_FINALIZE( NotificationService );
+        SERVICE_FINALIZE( PrototypeService );
+        SERVICE_FINALIZE( FactoryService );
         SERVICE_FINALIZE( TimeSystem );
         SERVICE_FINALIZE( DateTimeSystem );
         SERVICE_FINALIZE( UnicodeSystem );
@@ -2161,9 +2168,6 @@ namespace Mengine
         SERVICE_FINALIZE( PreferencesSystem );
         SERVICE_FINALIZE( CryptographySystem );
         SERVICE_FINALIZE( PlatformSystem );
-        SERVICE_FINALIZE( NotificationService );
-        SERVICE_FINALIZE( PrototypeService );
-        SERVICE_FINALIZE( FactoryService );
 
         SERVICE_DESTROY( SceneService );
         SERVICE_DESTROY( GameService );

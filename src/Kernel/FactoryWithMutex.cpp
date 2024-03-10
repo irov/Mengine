@@ -26,9 +26,7 @@ namespace Mengine
 
         Factorable * object = this->_createObject();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( object );
-
-        IntrusivePtrBase::intrusive_ptr_add_ref( this );
+        MENGINE_ASSERTION_MEMORY_PANIC( object );        
 
 #if defined(MENGINE_DEBUG)
         m_factorables.push_back( object );
@@ -47,12 +45,17 @@ namespace Mengine
         object->setDocument( _doc );
 #endif
 
+        IntrusivePtrBase::intrusive_ptr_add_ref( this );
+
         return object;
     }
     //////////////////////////////////////////////////////////////////////////
     void FactoryWithMutex::destroyObject( Factorable * _object )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+        if( m_mutex != nullptr )
+        {
+            m_mutex->lock();
+        }
 
 #if defined(MENGINE_DEBUG)
         m_factorables.remove( _object );
@@ -69,7 +72,12 @@ namespace Mengine
 
         this->_destroyObject( _object );
 
-        m_count.decref();
+        if( m_mutex != nullptr )
+        {
+            m_mutex->unlock();
+        }
+
+        m_count.decref();        
 
         IntrusivePtrBase::intrusive_ptr_dec_ref( this );
     }

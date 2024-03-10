@@ -1,6 +1,5 @@
 #include "TexturepackerScriptEmbedding.h"
 
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"

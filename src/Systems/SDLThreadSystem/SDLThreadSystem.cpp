@@ -28,7 +28,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadSystem::_initializeService()
     {
-        ThreadMutexInterfacePtr mutex = Helper::makeFactorableUnique<SDLThreadMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        SDLThreadMutexPtr mutex = Helper::makeFactorableUnique<SDLThreadMutex>( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create main mutex" );
+
+        if( mutex->initialize() == false )
+        {
+            LOGGER_ERROR( "invalid initialize main mutex" );
+
+            return false;
+        }
 
         m_factoryThreadIdentity = Helper::makeFactoryPoolWithMutex<SDLThreadIdentity, 16>( mutex, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryThreadProcessor = Helper::makeFactoryPoolWithMutex<SDLThreadProcessor, 16>( mutex, MENGINE_DOCUMENT_FACTORABLE );

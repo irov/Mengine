@@ -3,12 +3,12 @@
 #include "Interface/FrameworkFactoryInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "PythonFramework.h"
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FrameworkFactory.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ScriptProviderService );

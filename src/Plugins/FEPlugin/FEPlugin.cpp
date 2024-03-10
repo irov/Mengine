@@ -1,6 +1,5 @@
 #include "FEPlugin.h"
 
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
@@ -12,6 +11,7 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "FEDataflow.h"
 #include "FEFontEffectFile.h"

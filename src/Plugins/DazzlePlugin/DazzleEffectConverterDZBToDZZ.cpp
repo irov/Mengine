@@ -3,7 +3,6 @@
 #include "DazzleInterface.h"
 
 #include "Interface/FileServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/Logger.h"
@@ -18,6 +17,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 namespace Mengine
 {

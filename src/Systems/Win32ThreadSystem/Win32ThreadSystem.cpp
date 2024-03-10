@@ -33,7 +33,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadSystem::_initializeService()
     {
-        ThreadMutexInterfacePtr mutex = Helper::makeFactorableUnique<Win32ThreadMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        Win32ThreadMutexPtr mutex = Helper::makeFactorableUnique<Win32ThreadMutex>( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex" );
+
+        if( mutex->initialize() == false )
+        {
+            LOGGER_ERROR( "invalid initialize mutex" );
+
+            return nullptr;
+        }
 
         m_factoryThreadMutex = Helper::makeFactoryPoolWithMutex<Win32ThreadMutex, 16>( mutex, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryThreadIdentity = Helper::makeFactoryPoolWithMutex<Win32ThreadIdentity, 16>( mutex, MENGINE_DOCUMENT_FACTORABLE );
@@ -51,6 +60,12 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadMutex );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadSharedMutex );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadConditionVariable );
+
+        m_factoryThreadIdentity->setMutex( nullptr );
+        m_factoryThreadProcessor->setMutex( nullptr );
+        m_factoryThreadMutex->setMutex( nullptr );
+        m_factoryThreadSharedMutex->setMutex( nullptr );
+        m_factoryThreadConditionVariable->setMutex( nullptr );
 
         m_factoryThreadIdentity = nullptr;
         m_factoryThreadProcessor = nullptr;

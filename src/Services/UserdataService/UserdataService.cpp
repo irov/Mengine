@@ -1,7 +1,5 @@
 #include "UserdataService.h"
 
-#include "Interface/VocabularyServiceInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Stream.h"
@@ -9,6 +7,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UserdataService, Mengine::UserdataService );

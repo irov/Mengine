@@ -54,6 +54,7 @@
 #include "Kernel/Utf8Helper.h"
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/Hexadecimal.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -3830,6 +3831,42 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t Win32PlatformService::getSessionId( Char * const _sessionId ) const
+    {
+        m_fingerprint.copy( _sessionId );
+
+        return MENGINE_SHA1_HEX_COUNT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t Win32PlatformService::getInstallKey( Char * const _installKey ) const
+    {
+        m_fingerprint.copy( _installKey );
+
+        return MENGINE_SHA1_HEX_COUNT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t Win32PlatformService::getInstallTimestamp() const
+    {
+        return 0LL;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t Win32PlatformService::getInstallVersion( Char * const _installVersion ) const
+    {
+        MENGINE_UNUSED( _installVersion );
+
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t Win32PlatformService::getInstallRND() const
+    {
+        return 0LL;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t Win32PlatformService::getSessionIndex() const
+    {
+        return 0LL;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::closeWindow()
     {
         m_close = true;
@@ -4253,8 +4290,10 @@ namespace Mengine
             , currentPath
         );
 
+        FileGroupInterfacePtr defaultFileGroup = nullptr;
+
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), &defaultFileGroup, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "failed to mount application directory: '%s'"
                 , currentPath
@@ -4263,9 +4302,13 @@ namespace Mengine
             return false;
         }
 
+        VOCABULARY_SET( FileGroupInterface, STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none(), defaultFileGroup, MENGINE_DOCUMENT_FACTORABLE );
+
 #if !defined(MENGINE_MASTER_RELEASE)
+        FileGroupInterfacePtr globalFileGroup = nullptr;
+
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), &globalFileGroup, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "failed to mount dev directory: '%s'"
                 , currentPath
@@ -4273,6 +4316,8 @@ namespace Mengine
 
             return false;
         }
+
+        VOCABULARY_SET( FileGroupInterface, STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ), globalFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         WChar winDir[MENGINE_MAX_PATH] = {L'\0'};
@@ -4306,8 +4351,10 @@ namespace Mengine
 
         FilePath winDirPath = Helper::stringizeFilePath( utf8_winDir );
 
+        FileGroupInterfacePtr windowsFileGroup;
+
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "windows" ), nullptr, nullptr, winDirPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "windows" ), nullptr, nullptr, winDirPath, STRINGIZE_STRING_LOCAL( "global" ), &windowsFileGroup, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "failed to mount dev directory: '%s'"
                 , currentPath
@@ -4315,6 +4362,8 @@ namespace Mengine
 
             return false;
         }
+
+        VOCABULARY_SET( FileGroupInterface, STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "windows" ), windowsFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -4324,13 +4373,17 @@ namespace Mengine
         FILE_SERVICE()
             ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "windows" ) );
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         FILE_SERVICE()
             ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 #endif
 
         FILE_SERVICE()
             ->unmountFileGroup( ConstString::none() );
+
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "windows" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

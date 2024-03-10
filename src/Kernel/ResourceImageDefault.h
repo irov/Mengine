@@ -29,7 +29,7 @@ namespace Mengine
     protected:
         void prepareImageFrame_();
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
     protected:
         bool m_forcePremultiply;
 #endif

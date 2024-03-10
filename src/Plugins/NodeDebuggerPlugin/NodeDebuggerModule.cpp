@@ -14,7 +14,6 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/SocketSystemInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
@@ -59,6 +58,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"

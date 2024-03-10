@@ -5,7 +5,6 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DocumentInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
@@ -21,6 +20,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ResourceHelper.h"
 #include "Kernel/ResourceSound.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/Lambda.h"
 

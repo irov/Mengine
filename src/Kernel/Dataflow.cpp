@@ -1,7 +1,6 @@
 #include "Dataflow.h"
 
 #include "Interface/PrefetcherServiceInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
 #include "Kernel/Logger.h"

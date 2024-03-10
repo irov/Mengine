@@ -7,7 +7,6 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigLoaderInterface.h"
 #include "Interface/ValidatorInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Assertion.h"
@@ -24,6 +23,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/PrototypeHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -187,11 +187,11 @@ namespace Mengine
         VectorConstString glyphs;
         config->getValues( "GAME_FONTS", "Glyph", &glyphs );
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         bool developmentMode = Helper::isDevelopmentMode();
 #endif
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         if( developmentMode == true )
         {
             VectorConstString glyphsDev;
@@ -254,7 +254,7 @@ namespace Mengine
         VectorConstString fonts;
         config->getValues( "GAME_FONTS", "Font", &fonts );
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         if( developmentMode == true )
         {
             VectorConstString fontsDev;
@@ -310,7 +310,7 @@ namespace Mengine
             }
         }
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         bool OPTION_noresourceCheck = HAS_OPTION( "noresourcecheck" );
 
         if( OPTION_noresourceCheck == false )
@@ -372,14 +372,14 @@ namespace Mengine
             , Helper::getContentFullPath( _content )
         );
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         bool developmentMode = Helper::isDevelopmentMode();
 #endif
 
         VectorConstString glyphs;
         config->getValues( "GAME_FONTS", "Glyph", &glyphs );
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         if( developmentMode == true )
         {
             VectorConstString glyphsDev;
@@ -413,7 +413,7 @@ namespace Mengine
         VectorConstString fonts;
         config->getValues( "GAME_FONTS", "Font", &fonts );
 
-#if !defined(MENGINE_MASTER_RELEASE_ENABLE)
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         if( developmentMode == true )
         {
             VectorConstString fontsDev;

@@ -242,9 +242,7 @@ namespace Mengine
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
-        size_t data_size = MENGINE_STRLEN( message.data );
-
-        ::WriteConsoleA( output_handle, message.data, (DWORD)data_size, &dWritten, NULL );
+        ::WriteConsoleA( output_handle, message.data, (DWORD)message.size, &dWritten, NULL );
         ::WriteConsoleA( output_handle, "\n", 1, &dWritten, NULL );
 
         ::SetConsoleTextAttribute( output_handle, consoleInfo.wAttributes );

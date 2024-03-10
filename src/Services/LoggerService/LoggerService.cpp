@@ -184,7 +184,7 @@ namespace Mengine
         const Char * loggerLevel = loggerLevels[level];
 
         Char loggerLevelMessage[256] = {'\0'};
-        MENGINE_SNPRINTF( loggerLevelMessage, 255, "start logger with verbose level [%s] Mode [%s] Debug [%s] Master [%s] Publish [%s]"
+        size_t loggerLevelMessageLen = MENGINE_SNPRINTF( loggerLevelMessage, 255, "start logger with verbose level [%s] Mode [%s] Debug [%s] Master [%s] Publish [%s]"
             , loggerLevel
             , developmentMode == true ? "Dev" : "Normal"
             , MENGINE_DEBUG_VALUE( "True", "False" )
@@ -203,6 +203,7 @@ namespace Mengine
         msg.function = "";
         msg.line = 0;
         msg.data = loggerLevelMessage;
+        msg.size = loggerLevelMessageLen;
 
         LoggerRecordInterfacePtr record = this->makeLoggerRecord( msg, MENGINE_DOCUMENT_FACTORABLE );
 

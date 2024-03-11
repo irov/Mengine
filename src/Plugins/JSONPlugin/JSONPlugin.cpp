@@ -173,6 +173,7 @@ namespace Mengine
         SERVICE_DESTROY( JSONService );
 
         MENGINE_ASSERTION_ALLOCATOR( "json" );
+        MENGINE_ASSERTION_ALLOCATOR( "json2" );
     }
     //////////////////////////////////////////////////////////////////////////
 }

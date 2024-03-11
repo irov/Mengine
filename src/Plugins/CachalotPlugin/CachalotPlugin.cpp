@@ -49,7 +49,7 @@ namespace Mengine
         loggerCachalot->setVerboseFilter( loggerFilter );
 
 #if defined(MENGINE_MASTER_RELEASE_ENABLE)
-        loggerCachalot->setVerboseLevel( LM_WARNING );
+        loggerCachalot->setVerboseLevel( LM_ERROR );
 #else
         loggerCachalot->setVerboseLevel( LM_MESSAGE );
 #endif

@@ -93,7 +93,7 @@ namespace Mengine
             return;
         }
 
-        Char session_id[64] = {'\0'};
+        Char session_id[MENGINE_PLATFORM_SESSIONID_MAXNAME] = {'\0'};
         size_t session_id_length = PLATFORM_SERVICE()
             ->getSessionId( session_id );
 
@@ -102,14 +102,14 @@ namespace Mengine
             return;
         }
 
-        Char install_key[64] = {'\0'};
+        Char install_key[MENGINE_PLATFORM_INSTALLKEY_MAXNAME] = {'\0'};
         size_t install_key_length = PLATFORM_SERVICE()
             ->getInstallKey( install_key );
 
         int64_t install_timestamp = PLATFORM_SERVICE()
             ->getInstallTimestamp();
 
-        Char install_version[64] = {'\0'};
+        Char install_version[MENGINE_PLATFORM_INSTALLVERSION_MAXNAME] = {'\0'};
         size_t install_version_length = PLATFORM_SERVICE()
             ->getInstallVersion( install_version );
 

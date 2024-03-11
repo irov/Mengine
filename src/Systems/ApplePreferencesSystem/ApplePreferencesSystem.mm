@@ -56,7 +56,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ApplePreferencesSystem::getPreferenceString( const Char * _key, Char * const _value, size_t _capacity ) const
+    bool ApplePreferencesSystem::getPreferenceString( const Char * _key, Char * const _value, size_t _capacity, size_t * const _size ) const
     {
         NSString * apple_key = [@("mengine.") stringByAppendingString:@(_key)];
         
@@ -70,6 +70,11 @@ namespace Mengine
         const Char * value_str = [apple_value UTF8String];
 
         Helper::stringCopy( _value, value_str, _capacity );
+        
+        if( _size != nullptr )
+        {
+            *_size = apple_value.length;
+        }
 
         return true;
     }

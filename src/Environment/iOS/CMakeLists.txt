@@ -10,8 +10,8 @@ src
     
     iOSIncluder.h
     
-    iOSEnv.h
-    iOSEnv.mm
+    iOSApplication.h
+    iOSApplication.mm
     
     iOSEnvironmentService.h
     iOSEnvironmentService.mm

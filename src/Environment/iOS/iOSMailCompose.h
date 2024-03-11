@@ -1,3 +1,7 @@
+#pragma once
+
+#include "Config/Config.h"
+
 #import <MessageUI/MessageUI.h>
 #import <UIKit/UIKit.h>
 

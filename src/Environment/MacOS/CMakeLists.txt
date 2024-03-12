@@ -5,6 +5,12 @@ src
     MacOSUtils.h
     MacOSUtils.mm
     
+    MacOSApplication.h
+    MacOSApplication.mm
+    
+    MacOSEnvironmentService.h
+    MacOSEnvironmentService.mm
+    
     MacOSProxyApplicationDelegateInterface.h
 )
 

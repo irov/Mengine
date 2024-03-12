@@ -292,7 +292,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::hasSupportedCMP() const
     {
-        ALCMPService * cmpService = AppleAppLovinApplicationDelegate.AppLovinSdk.cmpService;
+        ALCMPService * cmpService = [ALSdk shared].cmpService;
         
         if( [cmpService hasSupportedCMP] == NO )
         {
@@ -304,14 +304,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::isConsentFlowUserGeographyGDPR() const
     {
-        ALSdkConfiguration * configuration = AppleAppLovinApplicationDelegate.AppLovinSdk.configuration;
+        ALSdkConfiguration * configuration = [ALSdk shared].configuration;
         
         return configuration.consentFlowUserGeography == ALConsentFlowUserGeographyGDPR;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::loadAndShowCMPFlow( const AppleAppLovinConsentFlowProviderInterfacePtr & _provider )
     {
-        ALCMPService * cmpService = AppleAppLovinApplicationDelegate.AppLovinSdk.cmpService;
+        ALCMPService * cmpService = [ALSdk shared].cmpService;
         
         AppleAppLovinConsentFlowProviderInterfacePtr copy_provider = _provider;
 
@@ -341,7 +341,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::showMediationDebugger()
     {
-        [AppleAppLovinApplicationDelegate.AppLovinSdk showMediationDebugger];
+        [[ALSdk shared] showMediationDebugger];
     }
     //////////////////////////////////////////////////////////////////////////
 }

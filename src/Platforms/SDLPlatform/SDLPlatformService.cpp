@@ -1348,8 +1348,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _url );
 
-#if defined(MENGINE_PLATFORM_APPLE)
-        if( APPLE_ENVIRONMENT_SERVICE()
+#if defined(MENGINE_PLATFORM_IOS)
+        if( IOS_ENVIRONMENT_SERVICE()
            ->openUrlInDefaultBrowser( _url ) == false )
         {
             LOGGER_ERROR( "error open url in default browser '%s'"

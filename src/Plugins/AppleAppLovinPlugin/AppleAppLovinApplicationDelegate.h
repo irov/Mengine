@@ -4,9 +4,6 @@
 
 @interface AppleAppLovinApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface>
 
-+ (ALSdk * _Nonnull) AppLovinSdk;
-+ (void) setAppLovinSdk:(ALSdk * _Nonnull) value;
-
 @end
 
 

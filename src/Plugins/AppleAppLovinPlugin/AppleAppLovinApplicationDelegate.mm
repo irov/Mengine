@@ -7,19 +7,9 @@
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/ConstStringHelper.h"
 
-@implementation AppleAppLovinApplicationDelegate
-
-static ALSdk * AppLovinSdk;
-
 #define PLUGIN_BUNDLE_NAME @"MengineAppleAppLovinPlugin"
 
-+ (ALSdk * _Nonnull) AppLovinSdk {
-    return AppLovinSdk;
-}
-
-+ (void) setAppLovinSdk:(ALSdk * _Nonnull) value {
-    AppLovinSdk = value;
-}
+@implementation AppleAppLovinApplicationDelegate
 
 #pragma mark - UIPluginApplicationDelegateInterface
 
@@ -73,42 +63,6 @@ static ALSdk * AppLovinSdk;
         return NO;
     }
     
-    ALSdkSettings * settings = [[ALSdkSettings alloc] init];
-    
-    BOOL MengineAppleAppLovinPlugin_Verbose = Mengine::Helper::AppleGetBundlePluginConfigBoolean(PLUGIN_BUNDLE_NAME, @"Verbose", NO);
-    
-    if( MengineAppleAppLovinPlugin_Verbose == YES )
-    {
-        settings.verboseLoggingEnabled = YES;
-    }
-    
-    BOOL MengineAppleAppLovinPlugin_TermsAndPrivacyPolicyFlow = Mengine::Helper::AppleGetBundlePluginConfigBoolean(PLUGIN_BUNDLE_NAME, @"TermsAndPrivacyPolicyFlow", NO);
-    
-    if( MengineAppleAppLovinPlugin_TermsAndPrivacyPolicyFlow == YES )
-    {
-        NSString * MengineAppleAppLovinPlugin_PrivacyPolicyURL = Mengine::Helper::AppleGetBundlePluginConfigString(PLUGIN_BUNDLE_NAME, @"PrivacyPolicyURL", nil);
-        
-        NSString * MengineAppleAppLovinPlugin_TermsOfServiceURL = Mengine::Helper::AppleGetBundlePluginConfigString(PLUGIN_BUNDLE_NAME, @"TermsOfServiceURL", nil);
-        
-        if( MengineAppleAppLovinPlugin_PrivacyPolicyURL == nil )
-        {
-            Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin missed required config [%@.PrivacyPolicyURL]", PLUGIN_BUNDLE_NAME);
-            
-            return NO;
-        }
-        
-        if( MengineAppleAppLovinPlugin_TermsOfServiceURL == nil )
-        {
-            Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin missed required config [%@.TermsOfServiceURL]", PLUGIN_BUNDLE_NAME);
-            
-            return NO;
-        }
-        
-        settings.termsAndPrivacyPolicyFlowSettings.enabled = YES;
-        settings.termsAndPrivacyPolicyFlowSettings.privacyPolicyURL = [NSURL URLWithString: MengineAppleAppLovinPlugin_PrivacyPolicyURL];
-        settings.termsAndPrivacyPolicyFlowSettings.termsOfServiceURL = [NSURL URLWithString: MengineAppleAppLovinPlugin_TermsOfServiceURL];
-    }
-    
     NSString * MengineAppleAppLovinPlugin_SdkKey = Mengine::Helper::AppleGetBundlePluginConfigString(PLUGIN_BUNDLE_NAME, @"SdkKey", nil);
     
     if( MengineAppleAppLovinPlugin_SdkKey == nil )
@@ -118,11 +72,45 @@ static ALSdk * AppLovinSdk;
         return NO;
     }
     
-    ALSdk * appLovinSdk = [ALSdk sharedWithKey:MengineAppleAppLovinPlugin_SdkKey settings:settings];
+    ALSdkInitializationConfiguration * initConfig = [ALSdkInitializationConfiguration configurationWithSdkKey:MengineAppleAppLovinPlugin_SdkKey builderBlock:^(ALSdkInitializationConfigurationBuilder * _Nonnull builder) {
+        
+        BOOL MengineAppleAppLovinPlugin_Verbose = Mengine::Helper::AppleGetBundlePluginConfigBoolean(PLUGIN_BUNDLE_NAME, @"Verbose", NO);
+        
+        if( MengineAppleAppLovinPlugin_Verbose == YES )
+        {
+            builder.settings.verboseLoggingEnabled = YES;
+        }
+        
+        BOOL MengineAppleAppLovinPlugin_TermsAndPrivacyPolicyFlow = Mengine::Helper::AppleGetBundlePluginConfigBoolean(PLUGIN_BUNDLE_NAME, @"TermsAndPrivacyPolicyFlow", NO);
+        
+        if( MengineAppleAppLovinPlugin_TermsAndPrivacyPolicyFlow == YES )
+        {
+            NSString * MengineAppleAppLovinPlugin_PrivacyPolicyURL = Mengine::Helper::AppleGetBundlePluginConfigString(PLUGIN_BUNDLE_NAME, @"PrivacyPolicyURL", nil);
+            NSString * MengineAppleAppLovinPlugin_TermsOfServiceURL = Mengine::Helper::AppleGetBundlePluginConfigString(PLUGIN_BUNDLE_NAME, @"TermsOfServiceURL", nil);
+            
+            if( MengineAppleAppLovinPlugin_PrivacyPolicyURL == nil )
+            {
+                Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin missed required config [%@.PrivacyPolicyURL]", PLUGIN_BUNDLE_NAME);
+                
+                return;
+            }
+            
+            if( MengineAppleAppLovinPlugin_TermsOfServiceURL == nil )
+            {
+                Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin missed required config [%@.TermsOfServiceURL]", PLUGIN_BUNDLE_NAME);
+                
+                return;
+            }
+            
+            builder.settings.termsAndPrivacyPolicyFlowSettings.enabled = YES;
+            builder.settings.termsAndPrivacyPolicyFlowSettings.privacyPolicyURL = [NSURL URLWithString:MengineAppleAppLovinPlugin_PrivacyPolicyURL];
+            builder.settings.termsAndPrivacyPolicyFlowSettings.termsOfServiceURL = [NSURL URLWithString:MengineAppleAppLovinPlugin_TermsOfServiceURL];
+        }
+        
+        builder.mediationProvider = @"max";
+    }];
     
-    appLovinSdk.mediationProvider = @"max";
-
-    [appLovinSdk initializeSdkWithCompletionHandler:^(ALSdkConfiguration *configuration) {
+    [[ALSdk shared] initializeWithConfiguration:initConfig completionHandler:^(ALSdkConfiguration *configuration) {
         ALConsentFlowUserGeography consentFlowUserGeography = configuration.consentFlowUserGeography;
         NSString * countryCode = configuration.countryCode;
         ALAppTrackingTransparencyStatus appTrackingTransparencyStatus = configuration.appTrackingTransparencyStatus;
@@ -136,8 +124,6 @@ static ALSdk * AppLovinSdk;
         
         [AppleSemaphoreService.sharedInstance activateSemaphore:@"AppLovinSdkInitialized"];
     }];
-    
-    AppleAppLovinApplicationDelegate.AppLovinSdk = appLovinSdk;
     
     return YES;
 }

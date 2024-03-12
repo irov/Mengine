@@ -21,7 +21,7 @@
     MAInterstitialAd * interstitialAd;
     
     @try {
-        interstitialAd = [[MAInterstitialAd alloc] initWithAdUnitIdentifier:adUnitId sdk:AppleAppLovinApplicationDelegate.AppLovinSdk];
+        interstitialAd = [[MAInterstitialAd alloc] initWithAdUnitIdentifier:adUnitId];
     } @catch (NSException * ex) {
         LOGGER_ERROR( "[Error] AppleAppLovinInterstitialDelegate invalid create MAInterstitialAd adUnitId: %s exception: %s [%s]"
             , [adUnitId UTF8String]

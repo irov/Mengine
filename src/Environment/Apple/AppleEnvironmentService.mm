@@ -74,16 +74,5 @@ namespace Mengine
 
         m_holdersNSString.push_back( holder );
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool AppleEnvironmentService::openUrlInDefaultBrowser( const Char * _url )
-    {
-        NSString * url = [NSString stringWithUTF8String: _url];
-
-    #if defined(MENGINE_PLATFORM_MACOS)
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:url]];
-    #endif
-        
-        return true;
-    }
     //////////////////////////////////////////////////////////////////////////    
 }

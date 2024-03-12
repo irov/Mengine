@@ -26,9 +26,6 @@ namespace Mengine
     public:
         void stringize( NSString * _value, ConstString * const _cstr ) override;
 
-    public:
-        bool openUrlInDefaultBrowser( const Char * _url ) override;
-
     protected:
         typedef Pool<ConstStringHolderNSString, 256> PoolConstStringHolderNSString;
         PoolConstStringHolderNSString m_poolNSString;

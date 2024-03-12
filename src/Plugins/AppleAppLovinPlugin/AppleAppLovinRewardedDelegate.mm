@@ -20,7 +20,7 @@
     MARewardedAd * rewardedAd;
     
     @try {
-        rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier:adUnitId sdk:AppleAppLovinApplicationDelegate.AppLovinSdk];
+        rewardedAd = [MARewardedAd sharedWithAdUnitIdentifier:adUnitId];
     } @catch (NSException * ex) {
         LOGGER_ERROR( "[Error] AppleAppLovinRewardedDelegate invalid create MARewardedAd adUnitId: %s exception: %s [%s]"
             , [adUnitId UTF8String]

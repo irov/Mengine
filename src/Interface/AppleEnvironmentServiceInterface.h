@@ -19,9 +19,6 @@ namespace Mengine
         
     public:
         virtual void stringize( NSString * _value, ConstString * const _cstr ) = 0;
-
-    public:
-        virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -242,6 +242,8 @@ namespace Mengine
             return;
         }
 
+        Helper::destroyJSON2( j );
+
         const HttpRequestHeaders & headers = HTTP_SYSTEM()
             ->getApplicationJSONHeaders();
 

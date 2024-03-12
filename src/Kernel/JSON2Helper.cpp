@@ -59,6 +59,11 @@ namespace Mengine
             return j;
         }
         //////////////////////////////////////////////////////////////////////////
+        void destroyJSON2( js_element_t * j )
+        {
+             js_free( j );
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool writeJSON2DataCompact( js_element_t * _j, Data * const _data )
         {
             js_dump_ctx_t dump_ctx;

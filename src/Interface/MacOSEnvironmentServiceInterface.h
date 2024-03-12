@@ -6,10 +6,10 @@
 
 namespace Mengine
 {
-    class iOSEnvironmentServiceInterface
+    class MacOSEnvironmentServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "iOSEnvironmentService" )
+        SERVICE_DECLARE( "MacOSEnvironmentService" )
 
     public:
         virtual size_t getDeviceName( Char * _deviceName, size_t _capacity ) const = 0;
@@ -32,6 +32,6 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define IOS_ENVIRONMENT_SERVICE()\
-    ((Mengine::iOSEnvironmentServiceInterface *)SERVICE_GET(Mengine::iOSEnvironmentServiceInterface))
+#define MACOS_ENVIRONMENT_SERVICE()\
+    ((Mengine::MacOSEnvironmentServiceInterface *)SERVICE_GET(Mengine::MacOSEnvironmentServiceInterface))
 //////////////////////////////////////////////////////////////////////////

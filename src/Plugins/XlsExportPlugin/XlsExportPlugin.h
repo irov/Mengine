@@ -27,9 +27,9 @@ namespace Mengine
         bool proccess_();
 
     protected:
-        bool findPythonPath_();
+        bool findPython3Path_();
 
     protected:
-        Char m_pythonPath[MENGINE_MAX_PATH] = {L'\0'};
+        Char m_python3Path[MENGINE_MAX_PATH] = {L'\0'};
     };
 }

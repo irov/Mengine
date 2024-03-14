@@ -45,10 +45,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool XlsExportPlugin::_initializePlugin()
     {
-        if( this->findPythonPath_() == false )
+        if( this->findPython3Path_() == false )
         {
             return false;
         }
+
+        LOGGER_MESSAGE( "Found python3: %s"
+            , m_python3Path
+        );
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &XlsExportPlugin::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RELOAD_LOCALE, &XlsExportPlugin::notifyReloadLocale_, MENGINE_DOCUMENT_FACTORABLE );
@@ -125,7 +129,7 @@ namespace Mengine
         );
 
         uint32_t exitCode;
-        if( Helper::Win32CreateProcess( m_pythonPath, command, true, &exitCode ) == false )
+        if( Helper::Win32CreateProcess( m_python3Path, command, true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid xlsx exporter: %ls"
                 , command
@@ -147,7 +151,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool XlsExportPlugin::findPythonPath_()
+    bool XlsExportPlugin::findPython3Path_()
     {
         HKEY hKey;
         if( ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, L"SOFTWARE\\Python\\PythonCore", 0, KEY_READ | KEY_WOW64_64KEY, &hKey ) != ERROR_SUCCESS )
@@ -162,8 +166,7 @@ namespace Mengine
         WChar subKeyName[MENGINE_MAX_PATH] = {L'\0'};
         WChar latestVersion[MENGINE_MAX_PATH] = {L'\0'};
 
-        DWORD index = 0;
-        for( ;; )
+        for( DWORD index = 0;; ++index )
         {
             DWORD subKeyNameSize = sizeof( subKeyName ) / sizeof( TCHAR );
             FILETIME lastWriteTime;
@@ -172,12 +175,26 @@ namespace Mengine
                 break;
             }
 
+            WChar KeySysVersionPath[MENGINE_MAX_PATH] = {L'\0'};
+            MENGINE_WNSPRINTF( KeySysVersionPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s", subKeyName );
+
+            HKEY hKeySysVersion;
+            if( ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, KeySysVersionPath, 0, KEY_READ | KEY_WOW64_64KEY, &hKeySysVersion ) != ERROR_SUCCESS )
+            {
+                continue;
+            }
+
+            DWORD dataType;
+            DWORD dataSize;
+            if( RegQueryValueExW( hKeySysVersion, L"SysVersion", NULL, &dataType, NULL, &dataSize ) != ERROR_SUCCESS )
+            {
+                continue;
+            }
+
             if( MENGINE_WCSNCMP( subKeyName, latestVersion, subKeyNameSize ) > 0 )
             {
                 MENGINE_WCSNCPY( latestVersion, subKeyName, subKeyNameSize );
             }
-
-            index++;
         }
 
         if( MENGINE_WCSLEN( latestVersion ) == 0 )
@@ -198,7 +215,7 @@ namespace Mengine
             return false;
         }
 
-        ::PathCombineA( m_pythonPath, latestVersionPath, "python.exe" );
+        ::PathCombineA( m_python3Path, latestVersionPath, "python.exe" );
 
         return true;
     }

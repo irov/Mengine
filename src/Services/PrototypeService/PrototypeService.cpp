@@ -147,7 +147,7 @@ namespace Mengine
     {
         const PrototypeGeneratorInterfacePtr & generator = m_generators.find( _category, _prototype );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( generator, "prototype not found category '%s' prototype '%s' (doc: %s)"
+        MENGINE_ASSERTION_MEMORY_PANIC_SAFE( generator, nullptr, "prototype not found category '%s' prototype '%s' (doc: %s)"
             , _category.c_str()
             , _prototype.c_str()
             , MENGINE_DOCUMENT_STR( _doc )

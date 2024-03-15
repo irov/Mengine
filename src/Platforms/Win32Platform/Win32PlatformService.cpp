@@ -3500,7 +3500,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr Win32PlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )
     {
-        LOGGER_INFO( "platform", "load dynamic library '%s'"
+        LOGGER_MESSAGE( "load dynamic library '%s'"
             , _dynamicLibraryName
         );
 

@@ -90,11 +90,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32XlsExportPlugin::proccess_()
     {
+        LOGGER_MESSAGE( "xls export process..." );
+
         const ConstString & Project_Codename = APPLICATION_SERVICE()
             ->getProjectCodename();
 
         if( Project_Codename.empty() == true )
         {
+            LOGGER_MESSAGE( "not found project codename" );
+
             return true;
         }
 

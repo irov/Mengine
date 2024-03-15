@@ -83,10 +83,6 @@ namespace Mengine
             HKEY hKey;
             if( ::RegOpenKeyEx( hBase, L"SOFTWARE\\Python\\PythonCore", 0, KEY_READ | KEY_WOW64_64KEY, &hKey ) != ERROR_SUCCESS )
             {
-                LOGGER_ERROR( "invalid open registry key 'SOFTWARE\\Python\\PythonCore' error: %ls"
-                    , Helper::Win32GetLastErrorMessage()
-                );
-
                 continue;
             }
 

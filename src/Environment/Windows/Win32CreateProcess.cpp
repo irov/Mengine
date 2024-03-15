@@ -15,7 +15,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool Win32CreateProcess( const Char * _process, const WChar * _command, bool _wait, uint32_t * const _exitCode )
         {
-            LOGGER_INFO( "platform", "create process: %s command: %s"
+            LOGGER_INFO( "platform", "create process: %s command: %ls"
                 , _process
                 , _command
             );
@@ -103,7 +103,7 @@ namespace Mengine
 
                 if( result == FALSE )
                 {
-                    LOGGER_ERROR( "CreateProcess execute invalid get exit code\n[%s %s]\n"
+                    LOGGER_ERROR( "CreateProcess execute invalid get exit code\nprocess: %s\ncommand: %s"
                         , _process
                         , _command
                     );
@@ -111,7 +111,7 @@ namespace Mengine
                     return false;
                 }
 
-                LOGGER_INFO( "platform", "process result '%s' command '%s' [%lu]"
+                LOGGER_INFO( "platform", "process result '%s' command '%ls' [%lu]"
                     , _process
                     , _command
                     , exitCode

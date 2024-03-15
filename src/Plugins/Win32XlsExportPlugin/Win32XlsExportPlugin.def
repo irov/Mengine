@@ -1,0 +1,3 @@
+LIBRARY "Win32XlsExportPlugin"
+EXPORTS
+    dllCreatePlugin @1

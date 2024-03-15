@@ -3,7 +3,6 @@
 #include "Interface/SocketSystemInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 
 namespace Mengine
 {
@@ -22,6 +21,6 @@ namespace Mengine
         SocketInterfacePtr createSocket( const DocumentInterfacePtr & _doc ) override;
 
     protected:
-        FactoryPtr m_factorySocket;
+        FactoryInterfacePtr m_factorySocket;
     };
 }

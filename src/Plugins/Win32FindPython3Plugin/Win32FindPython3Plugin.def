@@ -1,0 +1,3 @@
+LIBRARY "Win32FindPython3Plugin"
+EXPORTS 
+    dllCreatePlugin @1

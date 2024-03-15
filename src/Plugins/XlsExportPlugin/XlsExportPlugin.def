@@ -1,3 +1,0 @@
-LIBRARY "XlsExportPlugin"
-EXPORTS
-    dllCreatePlugin @1

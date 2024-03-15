@@ -1,4 +1,4 @@
-#include "XlsExportPlugin.h"
+#include "Win32XlsExportPlugin.h"
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
@@ -10,6 +10,8 @@
 #include "Environment/Windows/Win32CreateProcess.h"
 #include "Environment/Windows/Win32Helper.h"
 
+#include "Plugins/Win32FindPython3Plugin/Win32FindPython3Interface.h"
+
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/OptionHelper.h"
@@ -20,20 +22,20 @@
 #include "Config/StdIO.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( XlsExport, Mengine::XlsExportPlugin );
+PLUGIN_FACTORY( Win32XlsExport, Mengine::Win32XlsExportPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    XlsExportPlugin::XlsExportPlugin()
+    Win32XlsExportPlugin::Win32XlsExportPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    XlsExportPlugin::~XlsExportPlugin()
+    Win32XlsExportPlugin::~Win32XlsExportPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool XlsExportPlugin::_availablePlugin() const
+    bool Win32XlsExportPlugin::_availablePlugin() const
     {
         if( HAS_OPTION( "noxlsexport" ) == true )
         {
@@ -43,30 +45,31 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool XlsExportPlugin::_initializePlugin()
+    bool Win32XlsExportPlugin::_initializePlugin()
     {
-        if( this->findPython3Path_() == false )
+        WIN32_FINDPYTHON3_SERVICE()
+            ->getPython3Path( m_python3Path );
+
+        if( MENGINE_STRLEN( m_python3Path ) == 0 )
         {
+            LOGGER_ERROR( "not found python3" );
+
             return false;
         }
 
-        LOGGER_MESSAGE( "Found python3: %s"
-            , m_python3Path
-        );
-
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &XlsExportPlugin::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RELOAD_LOCALE, &XlsExportPlugin::notifyReloadLocale_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &Win32XlsExportPlugin::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RELOAD_LOCALE, &Win32XlsExportPlugin::notifyReloadLocale_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void XlsExportPlugin::_finalizePlugin()
+    void Win32XlsExportPlugin::_finalizePlugin()
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RELOAD_LOCALE );
     }
     //////////////////////////////////////////////////////////////////////////
-    void XlsExportPlugin::notifyBootstrapperCreateApplication_()
+    void Win32XlsExportPlugin::notifyBootstrapperCreateApplication_()
     {
         if( this->proccess_() == false )
         {
@@ -80,12 +83,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void XlsExportPlugin::notifyReloadLocale_()
+    void Win32XlsExportPlugin::notifyReloadLocale_()
     {
         this->proccess_();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool XlsExportPlugin::proccess_()
+    bool Win32XlsExportPlugin::proccess_()
     {
         const ConstString & Project_Codename = APPLICATION_SERVICE()
             ->getProjectCodename();
@@ -147,75 +150,6 @@ namespace Mengine
 
             return false;
         }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool XlsExportPlugin::findPython3Path_()
-    {
-        HKEY hKey;
-        if( ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, L"SOFTWARE\\Python\\PythonCore", 0, KEY_READ | KEY_WOW64_64KEY, &hKey ) != ERROR_SUCCESS )
-        {
-            LOGGER_ERROR( "invalid open registry key 'SOFTWARE\\Python\\PythonCore' error: %ls"
-                , Helper::Win32GetLastErrorMessage()
-            );
-
-            return false;
-        }
-
-        WChar subKeyName[MENGINE_MAX_PATH] = {L'\0'};
-        WChar latestVersion[MENGINE_MAX_PATH] = {L'\0'};
-
-        for( DWORD index = 0;; ++index )
-        {
-            DWORD subKeyNameSize = sizeof( subKeyName ) / sizeof( TCHAR );
-            FILETIME lastWriteTime;
-            if( ::RegEnumKeyEx( hKey, index, subKeyName, &subKeyNameSize, NULL, NULL, NULL, &lastWriteTime ) != ERROR_SUCCESS )
-            {
-                break;
-            }
-
-            WChar KeySysVersionPath[MENGINE_MAX_PATH] = {L'\0'};
-            MENGINE_WNSPRINTF( KeySysVersionPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s", subKeyName );
-
-            HKEY hKeySysVersion;
-            if( ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, KeySysVersionPath, 0, KEY_READ | KEY_WOW64_64KEY, &hKeySysVersion ) != ERROR_SUCCESS )
-            {
-                continue;
-            }
-
-            DWORD dataType;
-            DWORD dataSize;
-            if( RegQueryValueExW( hKeySysVersion, L"SysVersion", NULL, &dataType, NULL, &dataSize ) != ERROR_SUCCESS )
-            {
-                continue;
-            }
-
-            if( MENGINE_WCSNCMP( subKeyName, latestVersion, subKeyNameSize ) > 0 )
-            {
-                MENGINE_WCSNCPY( latestVersion, subKeyName, subKeyNameSize );
-            }
-        }
-
-        if( MENGINE_WCSLEN( latestVersion ) == 0 )
-        {
-            LOGGER_ERROR( "not found python version" );
-
-            return false;
-        }
-
-        WChar subKeyPath[MENGINE_MAX_PATH] = {L'\0'};
-        MENGINE_WNSPRINTF( subKeyPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s\\InstallPath", latestVersion );
-
-        Char latestVersionPath[MENGINE_MAX_PATH] = {'\0'};
-        if( Helper::Win32GetLocalMachineRegValue( subKeyPath, NULL, latestVersionPath, MENGINE_MAX_PATH ) == false )
-        {
-            LOGGER_ERROR( "not found python version path" );
-
-            return false;
-        }
-
-        ::PathCombineA( m_python3Path, latestVersionPath, "python.exe" );
 
         return true;
     }

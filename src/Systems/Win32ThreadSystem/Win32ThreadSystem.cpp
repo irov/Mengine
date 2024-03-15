@@ -41,7 +41,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid initialize mutex" );
 
-            return nullptr;
+            return false;
         }
 
         m_factoryThreadMutex = Helper::makeFactoryPoolWithMutex<Win32ThreadMutex, 16>( mutex, MENGINE_DOCUMENT_FACTORABLE );

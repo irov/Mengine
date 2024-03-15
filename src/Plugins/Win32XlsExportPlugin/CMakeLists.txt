@@ -1,13 +1,13 @@
-MENGINE_PROJECT(XlsExportPlugin)
+MENGINE_PROJECT(Win32XlsExportPlugin)
 
 ADD_FILTER(
 src
-    XlsExportPlugin.h
-    XlsExportPlugin.cpp
-    XlsExportPlugin.def
+    Win32XlsExportPlugin.h
+    Win32XlsExportPlugin.cpp
+    Win32XlsExportPlugin.def
 )
 
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_XLS_EXPORT)
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_WIN32_XLSEXPORT)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Windows)

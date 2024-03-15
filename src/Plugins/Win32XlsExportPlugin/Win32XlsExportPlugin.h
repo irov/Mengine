@@ -5,14 +5,14 @@
 
 namespace Mengine
 {
-    class XlsExportPlugin
+    class Win32XlsExportPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "XlsExport" )
+        PLUGIN_DECLARE( "Win32XlsExport" )
 
     public:
-        XlsExportPlugin();
-        ~XlsExportPlugin() override;
+        Win32XlsExportPlugin();
+        ~Win32XlsExportPlugin() override;
 
     protected:
         bool _availablePlugin() const override;

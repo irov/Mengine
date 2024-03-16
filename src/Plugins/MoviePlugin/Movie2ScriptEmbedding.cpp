@@ -226,6 +226,112 @@ namespace Mengine
             return l;
         }
         //////////////////////////////////////////////////////////////////////////
+        struct movie_desc_t
+        {
+            pybind::kernel_interface * kernel;
+            pybind::dict result;
+            pybind::list frames;
+            ae_float_t frame_duration;
+            ae_float_t in_time;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        static ae_void_t __movie_layer_data_matrix_visitor( ae_uint32_t _index, const aeMovieLayerDataMatrixCallbackData * _callbackData, ae_userdata_t _ud )
+        {
+            movie_desc_t * d = reinterpret_cast<movie_desc_t *>(_ud);
+
+            pybind::dict frame( d->kernel );
+
+            ae_float_t time = d->in_time + _index * d->frame_duration;
+
+            frame["time"] = time;
+
+            ae_color_channel_t r = _callbackData->r;
+            
+            frame["r"] = r;
+
+            ae_color_channel_t g = _callbackData->g;
+
+            frame["g"] = g;
+
+            ae_color_channel_t b = _callbackData->b;
+
+            frame["b"] = b;
+
+            ae_color_channel_t opacity = _callbackData->opacity;
+
+            frame["opacity"] = opacity;
+
+            ae_float_t volume = _callbackData->volume;
+
+            frame["volume"] = volume;
+
+            ae_float_t ax = _callbackData->anchor_point[0];
+            ae_float_t ay = _callbackData->anchor_point[1];
+
+            frame["anchor_point"] = pybind::make_tuple_t( d->kernel, ax, ay );
+
+            ae_float_t px = _callbackData->position[0];
+            ae_float_t py = _callbackData->position[1];
+
+            frame["position"] = pybind::make_tuple_t( d->kernel, px, py );
+
+            ae_float_t sx = _callbackData->scale[0];
+            ae_float_t sy = _callbackData->scale[1];
+
+            frame["scale"] = pybind::make_tuple_t( d->kernel, sx, sy );
+
+            ae_float_t quaternionz = _callbackData->quaternion[0];
+            ae_float_t quaternionw = _callbackData->quaternion[1];
+
+            frame["quaternion"] = pybind::make_tuple_t( d->kernel, quaternionz, quaternionw );
+
+            d->frames.append( frame );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static ae_bool_t __movie_layer_data_visitor( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layerData, ae_userdata_t _ud )
+        {
+            aeMovieLayerTypeEnum layer_type = ae_get_movie_layer_data_type( _layerData );
+
+            if( layer_type != AE_MOVIE_LAYER_TYPE_SLOT )
+            {
+                return AE_TRUE;
+            }
+
+            ae_float_t frame_duration = ae_get_movie_composition_data_frame_duration( _compositionData );
+            ae_float_t in_time = ae_get_movie_layer_data_in_time( _layerData );
+
+            movie_desc_t * d = reinterpret_cast<movie_desc_t *>(_ud);
+
+            d->frames = pybind::list( d->kernel );
+            d->frame_duration = frame_duration;
+            d->in_time = in_time;
+
+            ae_visit_movie_layer_data_matrix( _layerData, &__movie_layer_data_matrix_visitor, _ud );
+
+            const ae_char_t * layer_name = ae_get_movie_layer_data_name( _layerData );
+
+            d->result[layer_name] = d->frames;
+
+            return AE_TRUE;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static pybind::dict s_getNullObjectsFromResourceMovie2( pybind::kernel_interface * _kernel, ResourceMovie2 * _resourceMovie2, const ConstString & _compositionName )
+        {
+            MENGINE_ASSERTION_MEMORY_PANIC( _resourceMovie2 );
+
+            const aeMovieCompositionData * compositionData = _resourceMovie2->getCompositionData( _compositionName );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( compositionData );
+
+            movie_desc_t desc;
+            desc.result = pybind::dict( _kernel );
+            desc.kernel = _kernel;
+
+            ae_visit_composition_layer_data( compositionData, &__movie_layer_data_visitor, &desc );
+
+            return desc.result;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     Movie2ScriptEmbedding::Movie2ScriptEmbedding()
@@ -296,6 +402,8 @@ namespace Mengine
             .def_static_kernel( "getCompositionLayers", &Detail::s_ResourceMovie2_getCompositionLayers )
             .def_static_kernel( "getCompositions", &Detail::s_ResourceMovie2_getCompositions )
             ;
+
+        pybind::def_function_kernel( _kernel, "getNullObjectsFromResourceMovie2", &Detail::s_getNullObjectsFromResourceMovie2 );
 
         Helper::registerScriptWrapping<Movie2>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<Movie2Slot>( _kernel, MENGINE_DOCUMENT_FACTORABLE );

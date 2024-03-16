@@ -121,7 +121,7 @@ namespace Mengine
 
         if( ShortPathNameLen == 0 )
         {
-            LOGGER_ERROR( "invalid GetShortPathName '%ls' get error %ls"
+            LOGGER_ERROR( "invalid GetShortPathName '%ls' get error: %ls"
                 , xlsxExporterModulePath
                 , Helper::Win32GetLastErrorMessage()
             );

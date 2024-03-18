@@ -222,6 +222,9 @@ namespace Mengine
         bool isNeedWindowRender() const;
 
     protected:
+        void generateFingerprint_();
+
+    protected:
         bool initializeFileService_();
         void finalizeFileService_();
 

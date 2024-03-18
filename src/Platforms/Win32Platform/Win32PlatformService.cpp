@@ -612,35 +612,7 @@ namespace Mengine
             LOGGER_INFO( "platform", "application not setup Process DPI Aware" );
         }
 
-        WChar UserNameBuffer[UNLEN + 1] = {L'\0'};
-        DWORD UserNameLen = UNLEN + 1;
-        if( ::GetUserName( UserNameBuffer, &UserNameLen ) == FALSE )
-        {
-            LOGGER_ERROR( "GetUserName invalid %ls"
-                , Helper::Win32GetLastErrorMessage()
-            );
-        }
-
-        WChar ComputerNameBuffer[MAX_COMPUTERNAME_LENGTH + 1] = {'\0'};
-        DWORD ComputerNameLen = MAX_COMPUTERNAME_LENGTH + 1;
-        if( ::GetComputerName( ComputerNameBuffer, &ComputerNameLen ) == FALSE )
-        {
-            LOGGER_ERROR( "GetComputerName invalid %ls"
-                , Helper::Win32GetLastErrorMessage()
-            );
-        }
-
-        LOGGER_INFO_PROTECTED( "platform", "computer name: %ls"
-            , ComputerNameBuffer
-        );
-
-        WChar fingerprintGarbage[UNLEN + MAX_COMPUTERNAME_LENGTH + 1] = {'F'};
-        MENGINE_WCSCPY( fingerprintGarbage, UserNameBuffer );
-        MENGINE_WCSCAT( fingerprintGarbage, ComputerNameBuffer );
-
-        Helper::makeSHA1HEX( fingerprintGarbage, sizeof( fingerprintGarbage ), m_fingerprint.data() );
-
-        m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
+        this->generateFingerprint_();
 
         return true;
     }
@@ -4262,6 +4234,67 @@ namespace Mengine
         time_t time = ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
 
         return time;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32PlatformService::generateFingerprint_()
+    {
+        WChar fingerprintGarbage[UNLEN + MAX_COMPUTERNAME_LENGTH + 1] = {L'\0'};
+
+        MENGINE_WCSCPY( fingerprintGarbage, L"FINGERPRINT" );
+
+        WChar UserNameBuffer[UNLEN + 1] = {L'\0'};
+        DWORD UserNameLen = UNLEN + 1;
+        if( ::GetUserName( UserNameBuffer, &UserNameLen ) == TRUE )
+        {
+            LOGGER_INFO_PROTECTED( "platform", "user name: %ls"
+                , UserNameLen
+            );
+
+            MENGINE_WCSCAT( fingerprintGarbage, L"_" );
+            MENGINE_WCSCAT( fingerprintGarbage, UserNameBuffer );
+        }
+
+        WChar ComputerNameBuffer[MAX_COMPUTERNAME_LENGTH + 1] = {'\0'};
+        DWORD ComputerNameLen = MAX_COMPUTERNAME_LENGTH + 1;
+        if( ::GetComputerName( ComputerNameBuffer, &ComputerNameLen ) == TRUE )
+        {
+            LOGGER_INFO_PROTECTED( "platform", "computer name: %ls"
+                , ComputerNameBuffer
+            );
+
+            MENGINE_WCSCAT( fingerprintGarbage, L"_" );
+            MENGINE_WCSCAT( fingerprintGarbage, ComputerNameBuffer );
+        }
+
+        DWORD VolumeSerialNumber = 0;
+        DWORD VolumeMaxComponentLen = 0;
+        DWORD VolumeFileSystemFlags = 0;
+        WCHAR VolumeFileSystemNameBuffer[255] = {0};
+        WCHAR VolumeNameBuffer[255] = {0};
+
+        if( ::GetVolumeInformation( NULL
+            , VolumeNameBuffer
+            , sizeof( VolumeNameBuffer ) / sizeof( WCHAR )
+            , &VolumeSerialNumber
+            , &VolumeMaxComponentLen
+            , &VolumeFileSystemFlags
+            , VolumeFileSystemNameBuffer
+            , sizeof( VolumeFileSystemNameBuffer ) / sizeof( WCHAR ) ) == TRUE )
+        {
+            LOGGER_INFO_PROTECTED( "platform", "system volume serial number: %u"
+                , VolumeSerialNumber
+            );
+
+            WChar VolumeSerialNumberBuffer[255] = {L'\0'};
+            MENGINE_WNSPRINTF( VolumeSerialNumberBuffer, 255, L"%u", VolumeSerialNumber );
+
+            MENGINE_WCSCAT( fingerprintGarbage, L"_" );
+            MENGINE_WCSCAT( fingerprintGarbage, VolumeSerialNumberBuffer );
+        }
+
+        Helper::makeSHA1HEX( fingerprintGarbage, sizeof( fingerprintGarbage ), m_fingerprint.data() );
+
+        m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::initializeFileService_()

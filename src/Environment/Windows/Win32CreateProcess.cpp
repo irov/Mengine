@@ -140,7 +140,7 @@ namespace Mengine
 
                 if( tempFileSize != 0 )
                 {
-                    Char tempFileBuffer[4096] = { '\0' };
+                    Char tempFileBuffer[4096] = {'\0'};
 
                     DWORD dwBytesRead;
                     DWORD nNumberOfBytesToRead = MENGINE_MIN( tempFileSize, 4095 );
@@ -148,15 +148,15 @@ namespace Mengine
 
                     if( successful == TRUE )
                     {
-                        LOGGER_CATEGORY_VERBOSE_LEVEL(LM_ERROR, LFILTER_NONE, LCOLOR_RED, LFLAG_SHORT)("%s"
+                        LOGGER_MESSAGE( "%s"
                             , tempFileBuffer
-                            );
+                        );
                     }
                     else
                     {
-                        LOGGER_CATEGORY_VERBOSE_LEVEL(LM_ERROR, LFILTER_NONE, LCOLOR_RED, LFLAG_SHORT)("invalid read file '%ls'"
+                        LOGGER_ERROR( "invalid read file '%ls'"
                             , tempFileNameBuffer
-                            );
+                        );
                     }
                 }
 

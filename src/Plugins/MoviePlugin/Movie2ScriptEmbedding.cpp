@@ -246,44 +246,34 @@ namespace Mengine
             frame["time"] = time;
 
             ae_color_channel_t r = _callbackData->r;
-            
-            frame["r"] = r;
-
             ae_color_channel_t g = _callbackData->g;
-
-            frame["g"] = g;
-
             ae_color_channel_t b = _callbackData->b;
-
-            frame["b"] = b;
-
             ae_color_channel_t opacity = _callbackData->opacity;
 
-            frame["opacity"] = opacity;
+            frame["color"] = Color( r, g, b, opacity );
 
             ae_float_t volume = _callbackData->volume;
-
             frame["volume"] = volume;
 
             ae_float_t ax = _callbackData->anchor_point[0];
             ae_float_t ay = _callbackData->anchor_point[1];
 
-            frame["anchor_point"] = pybind::make_tuple_t( d->kernel, ax, ay );
+            frame["anchor_point"] = mt::vec2f( ax, ay );
 
             ae_float_t px = _callbackData->position[0];
             ae_float_t py = _callbackData->position[1];
 
-            frame["position"] = pybind::make_tuple_t( d->kernel, px, py );
+            frame["position"] = mt::vec2f( px, py );
 
             ae_float_t sx = _callbackData->scale[0];
             ae_float_t sy = _callbackData->scale[1];
 
-            frame["scale"] = pybind::make_tuple_t( d->kernel, sx, sy );
+            frame["scale"] = mt::vec2f( sx, sy );
 
             ae_float_t quaternionz = _callbackData->quaternion[0];
             ae_float_t quaternionw = _callbackData->quaternion[1];
 
-            frame["quaternion"] = pybind::make_tuple_t( d->kernel, quaternionz, quaternionw );
+            frame["quaternion"] = mt::vec2f( quaternionz, quaternionw );
 
             d->frames.append( frame );
         }

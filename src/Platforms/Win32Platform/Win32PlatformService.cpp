@@ -4295,6 +4295,10 @@ namespace Mengine
         Helper::makeSHA1HEX( fingerprintGarbage, sizeof( fingerprintGarbage ), m_fingerprint.data() );
 
         m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
+
+        LOGGER_MESSAGE( "fingerprint: %s"
+            , m_fingerprint.c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::initializeFileService_()
@@ -4303,7 +4307,7 @@ namespace Mengine
 
         if( PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
-            LOGGER_ERROR( "Plugin Win32FileGroup... [invalid initialize]" );
+            LOGGER_ERROR( "plugin Win32FileGroup... [invalid initialize]" );
 
             return false;
         }

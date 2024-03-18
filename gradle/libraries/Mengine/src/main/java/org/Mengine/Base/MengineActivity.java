@@ -243,6 +243,14 @@ public class MengineActivity extends SDLActivity {
         MengineUtils.finishActivityWithAlertDialog(this, format, args);
     }
 
+    public MengineTransparencyConsentParam makeTransparencyConsentParam() {
+        MengineApplication application = this.getMengineApplication();
+
+        MengineTransparencyConsentParam consent = application.makeTransparencyConsentParam();
+
+        return consent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         m_initializePython = false;

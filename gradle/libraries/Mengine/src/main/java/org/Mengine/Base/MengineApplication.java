@@ -17,6 +17,7 @@ import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.multidex.MultiDex;
+import androidx.preference.PreferenceManager;
 
 import org.libsdl.app.SDL;
 
@@ -767,6 +768,34 @@ public class MengineApplication extends Application {
         connectivityManager.registerDefaultNetworkCallback(m_networkCallback);
 
         m_networkCallback = null;
+    }
+
+    public MengineTransparencyConsentParam makeTransparencyConsentParam() {
+        MengineTransparencyConsentParam consent = new MengineTransparencyConsentParam();
+
+        Context context = this.getApplicationContext();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        consent.TRANSPARENCYCONSENT_CMPSDKID = preferences.getInt("IABTCF_CmpSdkID", 0);
+        consent.TRANSPARENCYCONSENT_CMPSDKVERSION = preferences.getInt("IABTCF_CmpSdkVersion", 0);
+        consent.TRANSPARENCYCONSENT_POLICYVERSION = preferences.getInt("IABTCF_PolicyVersion", 0);
+        consent.TRANSPARENCYCONSENT_GDPRAPPLIES = preferences.getInt("IABTCF_gdprApplies", 0);
+        consent.TRANSPARENCYCONSENT_PUBLISHERCC = preferences.getString("IABTCF_PublisherCC", "AA");
+        consent.TRANSPARENCYCONSENT_PURPOSEONETREATMENT = preferences.getInt("IABTCF_PurposeOneTreatment", 0);
+        consent.TRANSPARENCYCONSENT_USENONSTANDARTTEXTS = preferences.getInt("IABTCF_UseNonStandardStacks", 0);
+        consent.TRANSPARENCYCONSENT_TCSTRING = preferences.getString("IABTCF_TCString", "");
+        consent.TRANSPARENCYCONSENT_VENDORCONSENTS = preferences.getString("IABTCF_VendorConsents", "");
+        consent.TRANSPARENCYCONSENT_VEMDORLEGITIMATEINTERESTS = preferences.getString("IABTCF_VendorLegitimateInterests", "");
+        consent.TRANSPARENCYCONSENT_PURPOSECONSENTS = preferences.getString("IABTCF_PurposeConsents", "");
+        consent.TRANSPARENCYCONSENT_PURPOSELEGITIMATEINTERESTS = preferences.getString("IABTCF_PurposeLegitimateInterests", "");
+        consent.TRANSPARENCYCONSENT_SPECIALFEATURESOPTINS = preferences.getString("IABTCF_SpecialFeaturesOptins", "");
+        consent.TRANSPARENCYCONSENT_PUBLISHERRESTRICTIONS = preferences.getString("IABTCF_PublisherRestrictions", "");
+        consent.TRANSPARENCYCONSENT_PUBLISHERCONSENTS = preferences.getString("IABTCF_PublisherConsents", "");
+        consent.TRANSPARENCYCONSENT_PUBLISHERLEGITIMATEINTERESTS = preferences.getString("IABTCF_PublisherLegitimateInterests", "");
+        consent.TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESCONSENTS = preferences.getString("IABTCF_PublisherCustomPurposesConsents", "");
+        consent.TRANSPARENCYCONSENT_PUBLISHERCUSTOMPURPOSESLEGITIMATEINTERESTS = preferences.getString("IABTCF_PublisherCustomPurposesLegitimateInterests", "");
+
+        return consent;
     }
 
     public boolean isInvalidInitialize() {

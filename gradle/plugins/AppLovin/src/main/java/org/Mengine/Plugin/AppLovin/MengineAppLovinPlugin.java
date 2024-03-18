@@ -1,7 +1,11 @@
 package org.Mengine.Plugin.AppLovin;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.preference.Preference;
+import androidx.preference.PreferenceManager;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
@@ -18,6 +22,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
+import org.Mengine.Base.MengineTransparencyConsentParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
@@ -184,6 +189,10 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
                         , adapterVersion
                     );
                 }
+
+                MengineTransparencyConsentParam consent = activity.makeTransparencyConsentParam();
+
+                MengineAppLovinPlugin.this.sendEvent(MengineEvent.EVENT_TRANSPARENCY_CONSENT, consent);
 
                 if (MengineAppLovinPlugin.this.hasOption("applovin.show_mediation_debugger") == true) {
                     MengineAppLovinPlugin.this.showMediationDebugger();

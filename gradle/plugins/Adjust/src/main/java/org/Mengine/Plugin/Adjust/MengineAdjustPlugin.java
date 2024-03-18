@@ -1,18 +1,18 @@
 package org.Mengine.Plugin.Adjust;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAdRevenue;
 import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.AdjustEvent;
+import com.adjust.sdk.AdjustThirdPartySharing;
 import com.adjust.sdk.BuildConfig;
 import com.adjust.sdk.LogLevel;
 
-import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
@@ -21,18 +21,53 @@ import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginAdRevenueListener;
-import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginRemoteMessageListener;
+import org.Mengine.Base.MengineTransparencyConsentParam;
 
-import java.util.Map;
-
-public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginAdRevenueListener, MenginePluginRemoteMessageListener, MenginePluginAnalyticsListener {
+public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginAdRevenueListener, MenginePluginRemoteMessageListener {
     public static final String PLUGIN_NAME = "MengineAdjust";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_APP_TOKEN = "mengine.adjust.app_token";
+
+    private static final class AdjustLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
+        @Override
+        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+            //Empty
+        }
+
+        @Override
+        public void onActivityStarted(Activity activity) {
+            //Empty
+        }
+
+        @Override
+        public void onActivityResumed(Activity activity) {
+            Adjust.onResume();
+        }
+
+        @Override
+        public void onActivityPaused(Activity activity) {
+            Adjust.onPause();
+        }
+
+        @Override
+        public void onActivityStopped(Activity activity) {
+            //Empty
+        }
+
+        @Override
+        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+            //Empty
+        }
+
+        @Override
+        public void onActivityDestroyed(Activity activity) {
+            //Empty
+        }
+    }
 
     @Override
     public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
@@ -42,6 +77,23 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
             final Context context = application.getApplicationContext();
 
             Adjust.setPushToken(token, context);
+        } else if (event == MengineEvent.EVENT_TRANSPARENCY_CONSENT) {
+            MengineTransparencyConsentParam consent = (MengineTransparencyConsentParam)args[0];
+
+            boolean EEA = consent.isEEA();
+            boolean AD_PERSONALIZATION = consent.getConsentAdPersonalization();
+            boolean AD_USER_DATA = consent.getConsentAdUserData();
+
+            AdjustThirdPartySharing adjustThirdPartySharing = new AdjustThirdPartySharing(null);
+            adjustThirdPartySharing.addGranularOption("google_dma", "eea", EEA ? "1" : "0");
+            adjustThirdPartySharing.addGranularOption("google_dma", "ad_personalization", AD_PERSONALIZATION ? "1" : "0");
+            adjustThirdPartySharing.addGranularOption("google_dma", "ad_user_data", AD_USER_DATA ? "1" : "0");
+
+            this.logMessage("AdjustThirdPartySharing: %s"
+                , adjustThirdPartySharing.getGranularOptions()
+            );
+
+            Adjust.trackThirdPartySharing(adjustThirdPartySharing);
         }
     }
 
@@ -63,7 +115,7 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
         AdjustConfig config = new AdjustConfig(application, MengineAdjustPlugin_AppToken, environment);
 
         if (BuildConfig.DEBUG == true) {
-            config.setLogLevel(LogLevel.VERBOSE);
+            config.setLogLevel(LogLevel.INFO);
         }
 
         config.setPreinstallTrackingEnabled(true);
@@ -72,26 +124,8 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
         this.logMessage("Adjust Adid: %s"
             , Adjust.getAdid()
         );
-    }
 
-    @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        Adjust.gdprForgetMe(activity);
-    }
-
-    @Override
-    public void onResume(MengineActivity activity) {
-        Adjust.onResume();
-    }
-
-    @Override
-    public void onPause(MengineActivity activity) {
-        Adjust.onPause();
-    }
-
-    @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
-        //ToDo
+        application.registerActivityLifecycleCallbacks(new MengineAdjustPlugin.AdjustLifecycleCallbacks());
     }
 
     private static String getAdjustMediation(MengineAdMediation adMediation) {

@@ -64,7 +64,7 @@ namespace Mengine
                 }
 
                 STARTUPINFO startupInfo;
-                ZeroMemory( &startupInfo, sizeof( STARTUPINFO ) );
+                ::ZeroMemory( &startupInfo, sizeof( STARTUPINFO ) );
 
                 startupInfo.cb = sizeof( STARTUPINFO );
                 startupInfo.dwFlags = STARTF_USESTDHANDLES;
@@ -73,7 +73,7 @@ namespace Mengine
                 startupInfo.hStdInput = NULL;
 
                 PROCESS_INFORMATION processInfo;
-                ZeroMemory( &processInfo, sizeof( PROCESS_INFORMATION ) );
+                ::ZeroMemory( &processInfo, sizeof( PROCESS_INFORMATION ) );
 
                 if( ::CreateProcess( unicode_process, unicode_command
                     , NULL
@@ -103,7 +103,7 @@ namespace Mengine
 
                 if( result == FALSE )
                 {
-                    LOGGER_ERROR( "CreateProcess execute invalid get exit code\nprocess: %s\ncommand: %s"
+                    LOGGER_ERROR( "CreateProcess execute invalid get exit code\nprocess: %s\ncommand: %ls"
                         , _process
                         , _command
                     );
@@ -138,23 +138,26 @@ namespace Mengine
                 DWORD tempFileSizeHigh;
                 DWORD tempFileSize = ::GetFileSize( hReadTempFile, &tempFileSizeHigh );
 
-                Char tempFileBuffer[4096] = {'\0'};
-
-                DWORD dwBytesRead;
-                DWORD nNumberOfBytesToRead = MENGINE_MIN( tempFileSize, 4095 );
-                BOOL successful = ::ReadFile( hReadTempFile, tempFileBuffer, nNumberOfBytesToRead, &dwBytesRead, NULL );
-
-                if( successful == TRUE )
+                if( tempFileSize != 0 )
                 {
-                    LOGGER_CATEGORY_VERBOSE_LEVEL( LM_ERROR, LFILTER_NONE, LCOLOR_RED, LFLAG_SHORT )("%s"
-                        , tempFileBuffer
-                        );
-                }
-                else
-                {
-                    LOGGER_CATEGORY_VERBOSE_LEVEL( LM_ERROR, LFILTER_NONE, LCOLOR_RED, LFLAG_SHORT )("invalid read file '%ls'"
-                        , tempFileNameBuffer
-                        );
+                    Char tempFileBuffer[4096] = { '\0' };
+
+                    DWORD dwBytesRead;
+                    DWORD nNumberOfBytesToRead = MENGINE_MIN( tempFileSize, 4095 );
+                    BOOL successful = ::ReadFile( hReadTempFile, tempFileBuffer, nNumberOfBytesToRead, &dwBytesRead, NULL );
+
+                    if( successful == TRUE )
+                    {
+                        LOGGER_CATEGORY_VERBOSE_LEVEL(LM_ERROR, LFILTER_NONE, LCOLOR_RED, LFLAG_SHORT)("%s"
+                            , tempFileBuffer
+                            );
+                    }
+                    else
+                    {
+                        LOGGER_CATEGORY_VERBOSE_LEVEL(LM_ERROR, LFILTER_NONE, LCOLOR_RED, LFLAG_SHORT)("invalid read file '%ls'"
+                            , tempFileNameBuffer
+                            );
+                    }
                 }
 
                 ::CloseHandle( hReadTempFile );

@@ -6,7 +6,7 @@
 
 #include "Config/Algorithm.h"
 
-#import <Firebase/Firebase.h>
+#import <FirebaseCrashlytics/FirebaseCrashlytics.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleFirebaseCrashlyticsService, Mengine::AppleFirebaseCrashlyticsService );

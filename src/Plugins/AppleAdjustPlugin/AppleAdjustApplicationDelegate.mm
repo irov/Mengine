@@ -1,18 +1,20 @@
 #import "AppleAdjustApplicationDelegate.h"
 
-#include "Environment/iOS/iOSDetail.h"
+#include "Environment/Apple/AppleBundle.h"
+
+#define PLUGIN_BUNDLE_NAME @"MengineAppleAdjustPlugin"
 
 @implementation AppleAdjustApplicationDelegate
 
 #pragma mark - UIPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    if (Mengine::Helper::iOSHasBundlePluginConfig(@"MengineAppleAdjustPlugin") == NO) {
+    if (Mengine::Helper::AppleHasBundlePluginConfig(PLUGIN_BUNDLE_NAME) == NO) {
         return NO;
     }
     
-    NSString * MengineAppleAdjustPlugin_AppToken = Mengine::Helper::AppleGetBundlePluginConfigString(@"MengineAppleAdjustPlugin", @"AppToken", nil);
-    double MengineAppleAdjustPlugin_DelayStart = Mengine::Helper::AppleGetBundlePluginConfigDouble(@"MengineAppleAdjustPlugin", @"DelayStart", 0.0);
+    NSString * MengineAppleAdjustPlugin_AppToken = Mengine::Helper::AppleGetBundlePluginConfigString(PLUGIN_BUNDLE_NAME, @"AppToken", nil);
+    double MengineAppleAdjustPlugin_DelayStart = Mengine::Helper::AppleGetBundlePluginConfigDouble(PLUGIN_BUNDLE_NAME, @"DelayStart", 0.0);
     
 #ifdef MENGINE_DEBUG
     NSString *environment = ADJEnvironmentSandbox;

@@ -2,7 +2,6 @@
 
 #include "Environment/Apple/AppleString.h"
 
-#import <Firebase/Firebase.h>
 #import <FirebasePerformance/FirebasePerformance.h>
 
 //////////////////////////////////////////////////////////////////////////

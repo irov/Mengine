@@ -71,11 +71,11 @@ endif()
 ADD_MENGINE_APPLE_PLUGIN(MENGINE_PLUGIN_APPLE_APPLOVIN)
 
 if(MENGINE_PLUGIN_APPLE_APPLOVIN_CONSENT_FLOW)
-    ADD_MENGINE_COCOAPOD("GoogleUserMessagingPlatform" "NO-GIT" "2.2.0")
+    ADD_MENGINE_COCOAPOD("GoogleUserMessagingPlatform" "NO-GIT" "2.3.0")
 endif()
 
 ADD_MENGINE_COCOAPOD("GoogleUtilities" "NO-GIT" "7.13.0")
-ADD_MENGINE_COCOAPOD("AppLovinSDK" "NO-GIT" "12.3.0")
+ADD_MENGINE_COCOAPOD("AppLovinSDK" "NO-GIT" "12.3.1")
 
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleAppLovinApplicationDelegate")
 
@@ -92,8 +92,8 @@ ADD_APPLOVIN_MEDIATION(BIDMACHINE "AppLovinMediationBidMachineAdapter" "2.5.1.0.
 ADD_APPLOVIN_MEDIATION(CHARTBOOST "AppLovinMediationChartboostAdapter" "9.6.0.0")
 ADD_APPLOVIN_MEDIATION(CSJ "AppLovinMediationCSJAdapter" "4.9.0.7.2")
 ADD_APPLOVIN_MEDIATION(DTEXCHANGE "AppLovinMediationFyberAdapter" "8.2.5.2")
-ADD_APPLOVIN_MEDIATION(GOOGLEADMANAGER "AppLovinMediationGoogleAdManagerAdapter" "11.1.0.0")
-ADD_APPLOVIN_MEDIATION(ADMOB "AppLovinMediationGoogleAdapter" "11.1.0.0")
+ADD_APPLOVIN_MEDIATION(GOOGLEADMANAGER "AppLovinMediationGoogleAdManagerAdapter" "11.2.0.0")
+ADD_APPLOVIN_MEDIATION(ADMOB "AppLovinMediationGoogleAdapter" "11.2.0.0")
 ADD_APPLOVIN_MEDIATION(HYPRMX "AppLovinMediationHyprMXAdapter" "6.3.0.1")
 ADD_APPLOVIN_MEDIATION(INMOBI "AppLovinMediationInMobiAdapter" "10.6.4.0")
 ADD_APPLOVIN_MEDIATION(IRONSOURCE "AppLovinMediationIronSourceAdapter" "7.9.0.0.0")

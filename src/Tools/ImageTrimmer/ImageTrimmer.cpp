@@ -21,6 +21,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
 {
@@ -126,10 +127,9 @@ namespace Mengine
 
         FilePath c_in = Helper::stringizeFilePath( utf8_in );
 
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getGlobalFileGroup();
+        FileGroupInterfacePtr globalFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        InputStreamInterfacePtr input_stream = Helper::openInputStreamFile( fileGroup, c_in, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr input_stream = Helper::openInputStreamFile( globalFileGroup, c_in, false, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( input_stream == nullptr )
         {
@@ -537,7 +537,7 @@ namespace Mengine
 
             FilePath c_out = Helper::stringizeFilePath( utf8_out );
 
-            OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( fileGroup, c_out, true, MENGINE_DOCUMENT_FUNCTION );
+            OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( globalFileGroup, c_out, true, MENGINE_DOCUMENT_FUNCTION );
 
             if( output_stream == nullptr )
             {

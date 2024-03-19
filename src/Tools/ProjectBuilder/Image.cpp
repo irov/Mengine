@@ -2,7 +2,6 @@
 
 #include "Interface/InputServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
-#include "Interface/FileServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
@@ -11,20 +10,21 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/ImageCodecHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static const FactoryPtr & getFactoryImage()
+    static const FactoryInterfacePtr & getFactoryImage()
     {
-        static FactoryPtr factoryLoader = Helper::makeFactoryDefault<Image>( nullptr );
+        static FactoryInterfacePtr factoryLoader = Helper::makeFactoryDefault<Image>( nullptr );
 
         return factoryLoader;
     }
     //////////////////////////////////////////////////////////////////////////
     ImagePtr newImage()
     {
-        const FactoryPtr & factory = getFactoryImage();
+        const FactoryInterfacePtr & factory = getFactoryImage();
 
         ImagePtr image = factory->createObject( MENGINE_DOCUMENT_FUNCTION );
 
@@ -44,10 +44,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Image::load( const FilePath & _path )
     {
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getGlobalFileGroup();
+        FileGroupInterfacePtr globalFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _path, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( globalFileGroup, _path, false, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -113,10 +112,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Image::save( const FilePath & _path )
     {
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getGlobalFileGroup();
+        FileGroupInterfacePtr globalFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( globalFileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {

@@ -24,14 +24,12 @@ src
     ShaderConverterTextToPSO11.h
     ShaderConverterTextToVSO11.cpp
     ShaderConverterTextToVSO11.h
-    MovieKeyConverterXMLToAEK.cpp
-    MovieKeyConverterXMLToAEK.h
     ImageConverterPVRToHTF.cpp
     ImageConverterPVRToHTF.h
     ImageConverterDDSToHTF.cpp
     ImageConverterDDSToHTF.h
     ImageConverterPNGToACF.cpp
-    ImageConverterPNGToACF.h    
+    ImageConverterPNGToACF.h
 )
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)

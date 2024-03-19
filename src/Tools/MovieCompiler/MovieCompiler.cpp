@@ -2,7 +2,7 @@
 
 #include "Plugins/MoviePlugin/Movie2Interface.h"
 
-#include "Kernel/Blobject.h"
+#include "Kernel/Data.h"
 
 #include "lz4.h"
 #include "lz4hc.h"
@@ -11,8 +11,6 @@
 #include <string>
 #include <sstream>
 
-//////////////////////////////////////////////////////////////////////////
-typedef std::vector<uint8_t> Blobject;
 //////////////////////////////////////////////////////////////////////////
 extern "C"
 {
@@ -38,7 +36,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
-static bool loadFile( const std::wstring & _filepath, Blobject & _buffer )
+static bool loadFile( const std::wstring & _filepath, std::vector<uint8_t> & _buffer )
 {
     FILE * f = ::_wfopen( _filepath.c_str(), L"rb" );
 
@@ -76,7 +74,7 @@ static bool loadFile( const std::wstring & _filepath, Blobject & _buffer )
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-static bool writeCompress( const std::wstring & _filepath, const Blobject & _buffer, Mengine::magic_number_type numberz, Mengine::magic_version_type versionz )
+static bool writeCompress( const std::wstring & _filepath, const std::vector<uint8_t> & _buffer, Mengine::magic_number_type numberz, Mengine::magic_version_type versionz )
 {
     FILE * fz = ::_wfopen( _filepath.c_str(), L"wb" );
 
@@ -156,7 +154,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         return EXIT_FAILURE;
     }
 
-    Blobject buffer;
+    std::vector<uint8_t> buffer;
     if( loadFile( in_path, buffer ) == false )
     {
         return EXIT_FAILURE;

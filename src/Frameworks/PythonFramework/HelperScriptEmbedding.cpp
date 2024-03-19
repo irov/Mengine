@@ -1436,21 +1436,6 @@ namespace Mengine
                 return py_list;
             }
             //////////////////////////////////////////////////////////////////////////
-            const Polygon & s_intersectionPolygons( const Polygon & _p1, const Polygon & _p2 )
-            {
-                VectorGeolygon output;
-                Helper::difference( _p1, _p2, &output );
-
-                if( output.empty() == true )
-                {
-                    return _p1;
-                }
-
-                const Polygon & outer = output[0].getOuter();
-
-                return outer;
-            }
-            //////////////////////////////////////////////////////////////////////////
             bool s_intersectsPolygons( const Polygon & _p1, const Polygon & _p2 )
             {
                 bool intersect = Helper::intersects( _p1, _p2 );
@@ -4249,7 +4234,6 @@ namespace Mengine
         pybind::def_functor( _kernel, "intersectsBoxes", helperScriptMethod, &HelperScriptMethod::s_intersectsBoxes );
 
         pybind::def_functor_kernel( _kernel, "getPolygonPoints", helperScriptMethod, &HelperScriptMethod::s_getPolygonPoints );
-        pybind::def_functor( _kernel, "intersectionPolygons", helperScriptMethod, &HelperScriptMethod::s_intersectionPolygons );
         pybind::def_functor( _kernel, "intersectsPolygons", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygons );
         pybind::def_functor( _kernel, "intersectsPolygonsWM", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWM );
         pybind::def_functor( _kernel, "intersectsPolygonsWMP", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWMP );

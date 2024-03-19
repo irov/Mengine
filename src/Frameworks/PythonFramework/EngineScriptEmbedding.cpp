@@ -2215,30 +2215,6 @@ namespace Mengine
                 return trimetric;
             }
             //////////////////////////////////////////////////////////////////////////
-            Polygon s_hotspotCorrect( HotSpotPolygon * _base, const VectorHotSpotPolygons & _overlap )
-            {
-                MENGINE_UNUSED( _base );
-
-                Polygon correct_polygon;
-
-                for( const HotSpotPolygonPtr & overlap_hotspot : _overlap )
-                {
-                    const Polygon & overlap_polygon = overlap_hotspot->getPolygon();
-
-                    VectorGeolygon output;
-                    Helper::intersection( correct_polygon, overlap_polygon, &output );
-
-                    if( output.empty() == true )
-                    {
-                        return Polygon();
-                    }
-
-                    correct_polygon = output[0].getOuter();
-                }
-
-                return correct_polygon;
-            }
-            //////////////////////////////////////////////////////////////////////////
             bool s_copyFile_( const ConstString & _resourceFilePath, const MemoryBufferInterfacePtr & _memory )
             {
                 MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( _resourceFilePath, ResourceFilePtr, false, "resource '%s' type does not match 'ResourceFile'"
@@ -4526,8 +4502,6 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "rotateToTrimetric", nodeScriptMethod, &EngineScriptMethod::s_rotateToTrimetric );
         pybind::def_functor( _kernel, "rotateToTrimetric2", nodeScriptMethod, &EngineScriptMethod::s_rotateToTrimetric2 );
-
-        pybind::def_functor( _kernel, "hotspotCorrect", nodeScriptMethod, &EngineScriptMethod::s_hotspotCorrect );
 
         pybind::def_functor( _kernel, "updateUserWallpaper", nodeScriptMethod, &EngineScriptMethod::s_updateUserWallpaper );
         pybind::def_functor( _kernel, "copyUserPicture", nodeScriptMethod, &EngineScriptMethod::s_copyUserPicture );

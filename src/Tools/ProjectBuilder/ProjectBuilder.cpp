@@ -42,6 +42,9 @@
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/ContentHelper.h"
+#include "Kernel/TimestampHelper.h"
+#include "Kernel/ThreadHelper.h"
 
 #include "ToolUtils/ToolLogger.h"
 
@@ -59,7 +62,6 @@
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( ImageCodec );
-PLUGIN_EXPORT( Movie1 );
 PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
@@ -213,6 +215,7 @@ namespace Mengine
 
         SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( LoaderService, MENGINE_DOCUMENT_FUNCTION );
 
         PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FUNCTION );
@@ -222,10 +225,7 @@ namespace Mengine
         PLUGIN_CREATE( Theora, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( OggVorbis, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( ImageCodec, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( Movie1, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( Movie, MENGINE_DOCUMENT_FUNCTION );
-
-        SERVICE_CREATE( LoaderService, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( MetabufLoader, MENGINE_DOCUMENT_FUNCTION );
 
         if( PLUGIN_SERVICE()
@@ -299,12 +299,13 @@ namespace Mengine
 
         ConverterOptions options;
 
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getGlobalFileGroup();
+        FileGroupInterfacePtr globalFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        options.fileGroup = fileGroup;
-        options.inputFilePath = Helper::stringizeFilePath( utf8_fromPath );
-        options.outputFilePath = Helper::stringizeFilePath( utf8_toPath );
+        ContentInterfacePtr inputContent = Helper::makeFileContent( globalFileGroup, Helper::stringizeFilePath( utf8_fromPath ), MENGINE_DOCUMENT_FUNCTION );
+        ContentInterfacePtr outputContent = Helper::makeFileContent( globalFileGroup, Helper::stringizeFilePath( utf8_toPath ), MENGINE_DOCUMENT_FUNCTION );
+
+        options.inputContent = inputContent;
+        options.outputContent = outputContent;
         options.params = _params;
 
         ConverterInterfacePtr converter = CONVERTER_SERVICE()
@@ -314,8 +315,8 @@ namespace Mengine
         {
             LOGGER_ERROR( "can't create convert '%s'\nfrom: %s\nto: %s\n"
                 , utf8_convertType.c_str()
-                , options.inputFilePath.c_str()
-                , options.outputFilePath.c_str()
+                , Helper::getContentFullPath( options.inputContent )
+                , Helper::getContentFullPath( options.outputContent )
             );
 
             return false;
@@ -327,8 +328,8 @@ namespace Mengine
         {
             LOGGER_ERROR( "can't convert '%s'\nfrom: %s\nto: %s\n"
                 , utf8_convertType.c_str()
-                , options.inputFilePath.c_str()
-                , options.outputFilePath.c_str()
+                , Helper::getContentFullPath( options.inputContent )
+                , Helper::getContentFullPath( options.outputContent )
             );
 
             return false;
@@ -367,10 +368,9 @@ namespace Mengine
 
         FilePath c_path = Helper::stringizeFilePath( utf8_path );
 
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getGlobalFileGroup();
+        FileGroupInterfacePtr globalFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, c_path, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( globalFileGroup, c_path, false, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -559,10 +559,9 @@ namespace Mengine
 
         FilePath c_path = Helper::stringizeFilePath( utf8_path );
 
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getGlobalFileGroup();
+        FileGroupInterfacePtr globalFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, c_path, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( globalFileGroup, c_path, false, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -607,13 +606,14 @@ namespace Mengine
         void write( const char * _data, size_t _size )
         {
             LoggerMessage msg;
+            msg.timestamp = Helper::getLocalTimestamp();
             msg.category = "python";
-            msg.dateTime = PlatformDateTime();
+            msg.threadName = Helper::getCurrentThreadName();
             msg.level = LM_ERROR;
             msg.flag = 0;
             msg.filter = 0;
             msg.color = LCOLOR_NONE;
-            msg.file = nullptr;
+            msg.function = nullptr;
             msg.line = 0;
             msg.data = _data;
             msg.size = _size;

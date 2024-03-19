@@ -8,72 +8,6 @@
 #include "math/polygon2.h"
 #include "stdex/span.h"
 
-#if !defined(MENGINE_UNSUPPORT_PRAGMA_WARNING)
-#   pragma warning(push, 0)
-#   pragma warning(disable:4800)
-#   pragma warning(disable:4702)
-#endif
-
-#include "boost/geometry/geometry.hpp"
-#include "boost/geometry/core/tag.hpp"
-#include "boost/geometry/geometries/polygon.hpp"
-#include "boost/geometry/geometries/box.hpp"
-#include "boost/geometry/geometries/point_xy.hpp"
-#include "boost/geometry/geometries/segment.hpp"
-
-#include "boost/geometry/strategies/agnostic/point_in_poly_winding.hpp"
-
-#if !defined(MENGINE_UNSUPPORT_PRAGMA_WARNING)
-#   pragma warning(pop)
-#endif
-
-namespace boost
-{
-    namespace geometry
-    {
-        namespace traits
-        {
-            template <>
-            struct tag<mt::vec2f>
-            {
-                typedef boost::geometry::point_tag type;
-            };
-
-            template<>
-            struct coordinate_type<mt::vec2f>
-            {
-                typedef float type;
-            };
-
-            template<>
-            struct coordinate_system<mt::vec2f>
-            {
-                typedef boost::geometry::cs::cartesian type;
-            };
-
-            template<>
-            struct dimension<mt::vec2f>
-                : boost::mpl::int_<2>
-            {
-            };
-
-            template<size_t Dimension>
-            struct access<mt::vec2f, Dimension >
-            {
-                static float get( mt::vec2f const & p )
-                {
-                    return p.template get<Dimension>();
-                }
-
-                static void set( mt::vec2f & p, float const & value )
-                {
-                    p.template set<Dimension>( value );
-                }
-            };
-
-        }
-    }
-}
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -128,7 +62,7 @@ namespace Mengine
                     return false;
                 }
 
-                for( Polygon::size_type p = 0; p < n; p++ )
+                for( Polygon::size_type p = 0; p != n; ++p )
                 {
                     if( (p == u) || (p == v) || (p == w) )
                     {
@@ -147,54 +81,6 @@ namespace Mengine
                 }
 
                 return true;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            typedef boost::geometry::model::polygon<mt::vec2f, true, true, Vector, Vector, StlAllocator, StlAllocator> BoostPolygon;
-            typedef boost::geometry::model::box<mt::vec2f> BoostBox;
-            typedef boost::geometry::model::segment<mt::vec2f> BoostSegment;
-            //////////////////////////////////////////////////////////////////////////
-            static void makeBoostPolygon( BoostPolygon * const _bp, const Polygon & _p )
-            {
-                for( const mt::vec2f & v : _p )
-                {
-                    boost::geometry::append( *_bp, v );
-                }
-
-                boost::geometry::correct( *_bp );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            static void makeMengineGeolygon( Geolygon * const _mg, const BoostPolygon & _bp )
-            {
-                const BoostPolygon::ring_type & ring = _bp.outer();
-                BoostPolygon::ring_type::size_type ring_size = ring.size();
-
-                Polygon outer_polygon;
-                outer_polygon.reserve( (Mengine::Polygon::size_type)ring_size );
-
-                for( const mt::vec2f & v : stdex::span::range( ring, 0, -1 ) )
-                {
-                    outer_polygon.append( v );
-                }
-
-                const BoostPolygon::inner_container_type & inners = _bp.inners();
-
-                VectorPolygon inners_polygon;
-                for( const BoostPolygon::ring_type & ring_inner : inners )
-                {
-                    BoostPolygon::ring_type::size_type ring_inner_size = ring_inner.size();
-
-                    Polygon inner_polygon;
-                    inner_polygon.reserve( (Mengine::Polygon::size_type)ring_inner_size );
-
-                    for( const mt::vec2f & v : stdex::span::range( ring_inner, 0, -1 ) )
-                    {
-                        inner_polygon.append( v );
-                    }
-
-                    inners_polygon.emplace_back( inner_polygon );
-                }
-
-                *_mg = Geolygon( outer_polygon, inners_polygon );
             }
             //////////////////////////////////////////////////////////////////////////
         }
@@ -533,66 +419,6 @@ namespace Mengine
             if( mt::polygon2_intersect( lhs_points_data, lhs_points_size, rhs_points_data, rhs_points_size ) == false )
             {
                 return false;
-            }
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool intersection( const Polygon & _lhs, const Polygon & _rhs, VectorGeolygon * const _out )
-        {
-            Detail::BoostPolygon blhs;
-            Detail::makeBoostPolygon( &blhs, _lhs );
-
-            Detail::BoostPolygon brhs;
-            Detail::makeBoostPolygon( &brhs, _rhs );
-
-            Deque<Detail::BoostPolygon> output;
-
-            try
-            {
-                boost::geometry::intersection( blhs, brhs, output );
-            }
-            catch( const std::exception & )
-            {
-                return false;
-            }
-
-            for( const Detail::BoostPolygon & bp : output )
-            {
-                Geolygon mg;
-                Detail::makeMengineGeolygon( &mg, bp );
-
-                _out->emplace_back( mg );
-            }
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool difference( const Polygon & _lhs, const Polygon & _rhs, VectorGeolygon * const _out )
-        {
-            Detail::BoostPolygon blhs;
-            Detail::makeBoostPolygon( &blhs, _lhs );
-
-            Detail::BoostPolygon brhs;
-            Detail::makeBoostPolygon( &brhs, _rhs );
-
-            Deque<Detail::BoostPolygon> output;
-
-            try
-            {
-                boost::geometry::difference( blhs, brhs, output );
-            }
-            catch( const std::exception & )
-            {
-                return false;
-            }
-
-            for( const Detail::BoostPolygon & bp : output )
-            {
-                Geolygon mg;
-                Detail::makeMengineGeolygon( &mg, bp );
-
-                _out->emplace_back( mg );
             }
 
             return true;

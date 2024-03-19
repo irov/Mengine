@@ -21,6 +21,9 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/UnicodeHelper.h"
+#include "Kernel/VocabularyHelper.h"
+#include "Kernel/ConfigHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Xml2Metabuf.hpp"
 #include "Xml2Metacode.hpp"
@@ -53,16 +56,15 @@ namespace Mengine
         framePackPath[size - 2] = L'm';
         framePackPath[size - 1] = L'l';
 
-        FilePath path_xml = Helper::stringizeFilePath( framePackPath );
-
         ConverterOptions options;
 
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getGlobalFileGroup();
+        FileGroupInterfacePtr globalFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        options.fileGroup = fileGroup;
-        options.inputFilePath = path_xml;
-        options.outputFilePath = Helper::stringizeFilePath( utf8_aekPath );
+        ContentInterfacePtr inputContent = Helper::makeFileContent( globalFileGroup, Helper::stringizeFilePath( framePackPath ), MENGINE_DOCUMENT_FUNCTION );
+        ContentInterfacePtr outputContent = Helper::makeFileContent( globalFileGroup, Helper::stringizeFilePath( utf8_aekPath ), MENGINE_DOCUMENT_FUNCTION );
+
+        options.inputContent = inputContent;
+        options.outputContent = outputContent;
 
         ConverterInterfacePtr converter = CONVERTER_SERVICE()
             ->createConverter( STRINGIZE_STRING_LOCAL( "xmlToAekMovie" ), MENGINE_DOCUMENT_FUNCTION );
@@ -71,8 +73,8 @@ namespace Mengine
         {
             LOGGER_ERROR( "writeAek can't create convert '%s'\nfrom: %s\nto: %s\n"
                 , "xmlToAekMovie"
-                , options.inputFilePath.c_str()
-                , options.outputFilePath.c_str()
+                , Helper::getContentFullPath( options.inputContent )
+                , Helper::getContentFullPath( options.outputContent )
             );
 
             return false;
@@ -84,8 +86,8 @@ namespace Mengine
         {
             LOGGER_ERROR( "can't convert '%s'\nfrom: %s\nto: %s\n"
                 , "xmlToAekMovie"
-                , options.inputFilePath.c_str()
-                , options.outputFilePath.c_str()
+                , Helper::getContentFullPath( options.inputContent )
+                , Helper::getContentFullPath( options.outputContent )
             );
 
             return false;

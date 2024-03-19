@@ -5,7 +5,7 @@
 #include "Kernel/String.h"
 #include "Kernel/VectorString.h"
 #include "Kernel/Deque.h"
-#include "Kernel/Blobject.h"
+#include "Kernel/Data.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/RenderContext.h"
 
@@ -35,7 +35,7 @@ namespace Mengine
 
     struct NodeDebuggerPacket
     {
-        Blobject payload;
+        Data payload;
     };
 
 #define DESERIALIZE_PROP(NAME)\
@@ -769,7 +769,7 @@ namespace Mengine
         zed_net_socket_t m_socket;
         Deque<NodeDebuggerPacket> m_incomingPackets;
         Deque<NodeDebuggerPacket> m_outgoingPackets;
-        Mengine::Blobject m_receivedData;
+        Mengine::Data m_receivedData;
 
         std::thread m_networkThread;
         std::mutex m_dataMutex;

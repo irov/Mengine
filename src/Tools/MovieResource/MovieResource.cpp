@@ -309,7 +309,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             xmlResource.append_attribute( "Type" ).set_value( "ResourceImageSequence" );
             xmlResource.append_attribute( "Unique" ).set_value( 0U );
 
-            float frameDuration = 1.f / resource_sequence->frameDurationInv;
+            float frameDuration = 1.f / resource_sequence->frame_duration_inv;
 
             for( ae_uint32_t index = 0; index != resource_sequence->image_count; ++index )
             {

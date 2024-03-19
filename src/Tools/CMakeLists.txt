@@ -16,6 +16,5 @@ ADD_SUBDIRECTORY(AstralaxCompiler)
 ADD_SUBDIRECTORY(ImagePolygonize)
 ADD_SUBDIRECTORY(ImageTrimmer)
 ADD_SUBDIRECTORY(TexturePacker)
-ADD_SUBDIRECTORY(TriangulatePolygon)
 
 MENGINE_SUBFOLDER()

@@ -12,11 +12,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ToolLogger::_log( const LoggerMessage & _message )
+    void ToolLogger::_log( const LoggerRecordInterfacePtr & _record )
     {
-        printf( "%.*s"
-            , _message.size
-            , _message.data
+        LoggerMessage message;
+        _record->getMessage( &message );
+
+        ::printf( "%.*s"
+            , message.size
+            , message.data
         );
     };
     //////////////////////////////////////////////////////////////////////////

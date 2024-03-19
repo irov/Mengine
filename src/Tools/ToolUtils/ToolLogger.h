@@ -12,6 +12,6 @@ namespace Mengine
         ~ToolLogger() override;
 
     public:
-        void _log( const LoggerMessage & _message ) override;
+        void _log( const LoggerRecordInterfacePtr & _record ) override;
     };
 }

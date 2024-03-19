@@ -38,10 +38,6 @@ if(MENGINE_PLUGIN_JSON)
     ADD_SUBDIRECTORY(JSONPlugin)
 endif()
 
-if(MENGINE_PLUGIN_MOVIE1)
-    ADD_SUBDIRECTORY(Movie1Plugin)
-endif()
-
 if(MENGINE_PLUGIN_MOVIE)
     ADD_SUBDIRECTORY(MoviePlugin)
 endif()

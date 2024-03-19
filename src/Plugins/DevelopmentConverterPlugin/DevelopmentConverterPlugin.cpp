@@ -14,7 +14,6 @@
 #include "ShaderConverterTextToPSO.h"
 #include "ShaderConverterTextToVSO11.h"
 #include "ShaderConverterTextToPSO11.h"
-#include "MovieKeyConverterXMLToAEK.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
@@ -41,7 +40,6 @@ namespace Mengine
         Helper::registerConverter<VideoConverterFFMPEGToWEBM>( "ffmpegToWebM", MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<VideoConverterFFMPEGToOGV>( "ffmpegToOGV", MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<VideoConverterFFMPEGToOGVA>( "ffmpegToOGVA", MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerConverter<MovieKeyConverterXMLToAEK>( "xmlToAekMovie", MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ImageConverterPVRToHTF>( "pvr2htf", MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ImageConverterDDSToHTF>( "dds2htf", MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ImageConverterPNGToACF>( "png2acf", MENGINE_DOCUMENT_FACTORABLE );

@@ -9,7 +9,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        String stringFormat( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 1, 2 );
+        String stringFormat( const Char * _format, ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 1, 2 );
         //////////////////////////////////////////////////////////////////////////
         String stringInt32( int32_t _value );
         String stringFloat( float _value );

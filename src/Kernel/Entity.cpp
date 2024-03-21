@@ -16,8 +16,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Entity::~Entity()
     {
-        MENGINE_ASSERTION_FATAL( m_behaviorEventable == nullptr );
-        MENGINE_ASSERTION_FATAL( m_behavior == nullptr );
+        MENGINE_ASSERTION_FATAL( m_behaviorEventable == nullptr, "entity behavior eventable not NULL" );
+        MENGINE_ASSERTION_FATAL( m_behavior == nullptr, "entity behavior not NULL" );
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::setPrototype( const ConstString & _prototype )

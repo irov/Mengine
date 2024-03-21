@@ -22,7 +22,7 @@ namespace Mengine
     public:
         size_t encode( const EncoderData * _encoderData, const CodecDataInfo * _bufferDataInfo ) override;
 
-    private:
+    protected:
         png_structp m_png_ptr;
         png_infop m_info_ptr;
     };

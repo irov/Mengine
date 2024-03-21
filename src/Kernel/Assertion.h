@@ -5,6 +5,10 @@
 #include "Config/Typedef.h"
 #include "Config/Char.h"
 
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
+#   include "Config/StdIO.h"
+#endif
+
 #ifndef MENGINE_ASSERTION_MAX_MESSAGE
 #define MENGINE_ASSERTION_MAX_MESSAGE 8192
 #endif
@@ -19,7 +23,7 @@ namespace Mengine
         bool AssertionGetNotDebugBreak();
         //////////////////////////////////////////////////////////////////////////
         void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line );
-        void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 6, 7 );
+        void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 6, 7 );
         //////////////////////////////////////////////////////////////////////////
         class AssertionOperator
         {
@@ -29,7 +33,7 @@ namespace Mengine
 
         public:
             const AssertionOperator & operator()() const;
-            const AssertionOperator & operator()( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) const MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
+            const AssertionOperator & operator()( const Char * _format, ... ) const MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
 
         private:
             template<class T>
@@ -102,10 +106,12 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
-#   define MENGINE_ASSERTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_ERROR, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) (__VA_ARGS__)
-#   define MENGINE_ASSERTION_FATAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) (__VA_ARGS__)
-#   define MENGINE_ASSERTION_EXCEPTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_EXCEPTION, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) (__VA_ARGS__)
-#   define MENGINE_ASSERTION_CRITICAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_CRITICAL, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) (__VA_ARGS__)
+#   define MENGINE_ASSERTION_CALL( ... ) (__VA_ARGS__ ) ;static_assert(sizeof(printf(__VA_ARGS__)))
+
+#   define MENGINE_ASSERTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_ERROR, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) MENGINE_ASSERTION_CALL(__VA_ARGS__)
+#   define MENGINE_ASSERTION_FATAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) MENGINE_ASSERTION_CALL(__VA_ARGS__)
+#   define MENGINE_ASSERTION_EXCEPTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_EXCEPTION, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) MENGINE_ASSERTION_CALL(__VA_ARGS__)
+#   define MENGINE_ASSERTION_CRITICAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_CRITICAL, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) MENGINE_ASSERTION_CALL(__VA_ARGS__)
 #else
 #   define MENGINE_ASSERTION(Condition, ...)
 #   define MENGINE_ASSERTION_FATAL(Condition, ...)

@@ -68,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void StringizeService::stringize( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash, ConstString * const _cstr )
     {
-        MENGINE_ASSERTION_FATAL( _str != nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( _str );
 
         if( _size == MENGINE_STRINGIZE_UNKNOWN_SIZE )
         {

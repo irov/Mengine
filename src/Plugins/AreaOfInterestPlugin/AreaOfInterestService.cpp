@@ -96,7 +96,7 @@ namespace Mengine
 
         VectorAreaOfInterestZones::iterator it_found = Algorithm::find( m_zones.begin(), m_zones.end(), zone );
 
-        MENGINE_ASSERTION_FATAL( it_found != m_zones.end() );
+        MENGINE_ASSERTION_FATAL( it_found != m_zones.end(), "zone not found" );
 
         m_zones.erase( it_found );
 

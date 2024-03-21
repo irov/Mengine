@@ -116,7 +116,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TTFAtlasService::TTFAtlas * TTFAtlasService::getAtlas_( uint32_t _width, uint32_t _height, uint32_t _channel, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( _channel < 5 );
+        MENGINE_ASSERTION_FATAL( _channel < 5, "invalid channel %u"
+            , _channel
+        );
 
         uint32_t hw_width = Helper::getTexturePow2( _width );
         uint32_t hw_height = Helper::getTexturePow2( _height );

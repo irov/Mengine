@@ -15,7 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderFragmentShader::~OpenGLRenderFragmentShader()
     {
-        MENGINE_ASSERTION_FATAL( m_shaderId == 0 );
+        MENGINE_ASSERTION_FATAL( m_shaderId == 0, "shader is not release" );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & OpenGLRenderFragmentShader::getName() const
@@ -33,7 +33,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderFragmentShader::finalize()
     {
-        MENGINE_ASSERTION_FATAL( this->getCompileReferenceCount() == 0 );
+        MENGINE_ASSERTION_FATAL( this->getCompileReferenceCount() == 0, "shader '%s' is used"
+            , m_name.c_str()
+        );
 
         m_memory = nullptr;
     }

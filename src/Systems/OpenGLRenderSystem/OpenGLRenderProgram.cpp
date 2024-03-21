@@ -18,7 +18,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderProgram::~OpenGLRenderProgram()
     {
-        MENGINE_ASSERTION_FATAL( m_programId == 0 );
+        MENGINE_ASSERTION_FATAL( m_programId == 0, "program '%u' is not released"
+            , m_programId
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderProgram::getProgramId() const
@@ -62,7 +64,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgram::finalize()
     {
-        MENGINE_ASSERTION_FATAL( this->getCompileReferenceCount() == 0 );
+        MENGINE_ASSERTION_FATAL( this->getCompileReferenceCount() == 0, "program '%s' is used"
+            , m_name.c_str()
+        );
 
         m_vertexShader = nullptr;
         m_fragmentShader = nullptr;

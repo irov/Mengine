@@ -42,13 +42,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderImage::~OpenGLRenderImage()
     {
-        MENGINE_ASSERTION_FATAL( m_uid == 0 );
+        MENGINE_ASSERTION_FATAL( m_uid == 0, "texture is not released" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
     {
-        MENGINE_ASSERTION_FATAL( _width != 0 );
-        MENGINE_ASSERTION_FATAL( _height != 0 );
+        MENGINE_ASSERTION_FATAL( _width != 0, "invalid create texture width == 0" );
+        MENGINE_ASSERTION_FATAL( _height != 0, "invalid create texture height == 0" );
 
         switch( _internalFormat )
         {
@@ -189,7 +189,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImage::create()
     {
-        MENGINE_ASSERTION_FATAL( m_uid == 0 );
+        MENGINE_ASSERTION_FATAL( m_uid == 0, "texture already created" );
 
         OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
             ->getUnknown();

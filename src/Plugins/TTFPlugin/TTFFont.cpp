@@ -87,7 +87,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TTFFont::finalize()
     {
-        MENGINE_ASSERTION_FATAL( this->isCompile() == false );
+        MENGINE_ASSERTION_FATAL( this->isCompile() == false, "font '%s' not stop compile"
+            , this->getName().c_str()
+        );
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
 

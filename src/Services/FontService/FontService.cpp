@@ -168,7 +168,9 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( font->isCompileFont() == false );
+        MENGINE_ASSERTION_FATAL( font->isCompileFont() == false, "remove font '%s' is compile font"
+            , _fontName.c_str()
+        );
 
         font->finalize();
 

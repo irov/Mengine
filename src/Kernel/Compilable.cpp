@@ -12,7 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Compilable::~Compilable()
     {
-        MENGINE_ASSERTION_FATAL( m_compile == false );
+        MENGINE_ASSERTION_FATAL( m_compile == false, "object not released" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Compilable::compile()

@@ -28,9 +28,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderTargetTexture::~DX9RenderTargetTexture()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
-        MENGINE_ASSERTION_FATAL( m_pD3DSurfaceOld == nullptr );
-        MENGINE_ASSERTION_FATAL( m_pD3DSurfaceCurrent == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr, "texture not released" );
+        MENGINE_ASSERTION_FATAL( m_pD3DSurfaceOld == nullptr, "surface not released" );
+        MENGINE_ASSERTION_FATAL( m_pD3DSurfaceCurrent == nullptr, "surface not released" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetTexture::initialize( uint32_t _width, uint32_t _height, EPixelFormat _format )
@@ -92,8 +92,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderTargetTexture::finalize()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DSurfaceOld == nullptr );
-        MENGINE_ASSERTION_FATAL( m_pD3DSurfaceCurrent == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DSurfaceOld == nullptr, "surface not released" );
+        MENGINE_ASSERTION_FATAL( m_pD3DSurfaceCurrent == nullptr, "surface not released" );
 
         MENGINE_DXRELEASE( m_pD3DTexture );
 
@@ -228,7 +228,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetTexture::onRenderRestore()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr, "texture is already restored" );
 
         D3DFORMAT D3DFormat = Helper::toD3DFormat( m_hwPixelFormat );
 

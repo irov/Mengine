@@ -57,7 +57,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtr & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid, const DocumentInterfacePtr & _doc )
         {
-            MENGINE_ASSERTION_FATAL( _resourceImage->isCompile() == true );
+            MENGINE_ASSERTION_FATAL( _resourceImage->isCompile() == true, "resource '%s' not compile"
+                , _resourceImage->getName().c_str()
+            );
 
             uint32_t texturesNum = 0;
             RenderTextureInterfacePtr textures[2];

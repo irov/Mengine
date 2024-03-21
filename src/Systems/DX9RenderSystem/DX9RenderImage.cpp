@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderImage::~DX9RenderImage()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DTexture == nullptr, "image not released" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat )
@@ -57,8 +57,8 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( texDesc.Width != 0 );
-        MENGINE_ASSERTION_FATAL( texDesc.Height != 0 );
+        MENGINE_ASSERTION_FATAL( texDesc.Width != 0, "invalid width" );
+        MENGINE_ASSERTION_FATAL( texDesc.Height != 0, "invalid height" );
 
         m_pD3DTexture = pD3DTexture;
 

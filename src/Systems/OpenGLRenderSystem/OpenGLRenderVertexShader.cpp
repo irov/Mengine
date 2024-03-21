@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderVertexShader::~OpenGLRenderVertexShader()
     {
-        MENGINE_ASSERTION_FATAL( m_shaderId == 0 );
+        MENGINE_ASSERTION_FATAL( m_shaderId == 0, "shader is not release" );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & OpenGLRenderVertexShader::getName() const
@@ -35,7 +35,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexShader::finalize()
     {
-        MENGINE_ASSERTION_FATAL( this->getCompileReferenceCount() == 0 );
+        MENGINE_ASSERTION_FATAL( this->getCompileReferenceCount() == 0, "shader '%s' is used"
+            , m_name.c_str()
+        );
 
         m_memory = nullptr;
     }

@@ -799,19 +799,17 @@ namespace Mengine
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
         }
 
-        LOGGER_INFO( "platform", "platform tags: %s"
-            , [this]()
+        Char platformTags[1024] = {'\0'};
+
+        for( const ConstString & tag : m_platformTags.getValues() )
         {
-            static Char cache_value[1024] = {'\0'};
+            MENGINE_STRCAT( platformTags, tag.c_str() );
+            MENGINE_STRCAT( platformTags, "-" );
+        }
 
-            for( const ConstString & tag : m_platformTags.getValues() )
-            {
-                MENGINE_STRCAT( cache_value, tag.c_str() );
-                MENGINE_STRCAT( cache_value, "-" );
-            }
-
-            return cache_value;
-        }() );
+        LOGGER_INFO( "platform", "platform tags: %s"
+            , platformTags
+        );
 
         if( HAS_OPTION( "touchpad" ) == true )
         {
@@ -3055,7 +3053,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #endif
     //////////////////////////////////////////////////////////////////////////
-    uint32_t SDLPlatformService::addSDLEventHandler( const LambdaSDLEventHandler & _handler )
+    UniqueId SDLPlatformService::addSDLEventHandler( const LambdaSDLEventHandler & _handler )
     {
         UniqueId id = ENUMERATOR_SERVICE()
             ->generateUniqueIdentity();
@@ -3069,14 +3067,16 @@ namespace Mengine
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::removeSDLEventHandler( uint32_t _handlerId )
+    void SDLPlatformService::removeSDLEventHandler( UniqueId _handlerId )
     {
         VectorSDLEventHandlers::iterator it_found = Algorithm::find_if( m_sdlEventHandlers.begin(), m_sdlEventHandlers.end(), [_handlerId]( const SDLEventHandlerDesc & _desc )
         {
             return _desc.id == _handlerId;
         } );
 
-        MENGINE_ASSERTION_FATAL( it_found != m_sdlEventHandlers.end() );
+        MENGINE_ASSERTION_FATAL( it_found != m_sdlEventHandlers.end(), "not found handler '%u'"
+            , _handlerId
+        );
 
         m_sdlEventHandlers.erase( it_found );
     }

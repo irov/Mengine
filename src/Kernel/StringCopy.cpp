@@ -12,7 +12,7 @@ namespace Mengine
         {
             size_t in_size = MENGINE_STRLEN( _in );
 
-            MENGINE_ASSERTION_FATAL( in_size < _capacity );
+            MENGINE_ASSERTION_FATAL( in_size < _capacity, "string copy overflow" );
 
             if( in_size >= _capacity )
             {

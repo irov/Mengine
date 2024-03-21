@@ -98,7 +98,7 @@ namespace Mengine
     void DebugAllocatorSystem::_finalizeService()
     {
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        MENGINE_ASSERTION_FATAL( ::_heapchk() == _HEAPOK );
+        MENGINE_ASSERTION_FATAL( ::_heapchk() == _HEAPOK, "heap corruption" );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -124,7 +124,7 @@ namespace Mengine
 
         size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
 
-        MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
+        MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "invalid get memory size" );
 
         this->report( _doc, usage_size, 0 );
 
@@ -147,7 +147,7 @@ namespace Mengine
 
         size_t old_size = MENGINE_MALLOC_SIZE( _mem );
 
-        MENGINE_ASSERTION_FATAL( old_size != (size_t)-1 );
+        MENGINE_ASSERTION_FATAL( old_size != (size_t)-1, "invalid get memory size" );
 
 #if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE)
         if( Detail::checkMemoryOverrideCorruptionTrap( _mem, old_size ) == true )
@@ -192,7 +192,7 @@ namespace Mengine
 
         size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
 
-        MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
+        MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "invalid get memory size" );
 
         this->report( _doc, usage_size, 0 );
 
@@ -226,7 +226,7 @@ namespace Mengine
 
             size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
-            MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
+            MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "invalid get memory size" );
 
             this->report( _doc, usage_size, 0 );
 
@@ -238,7 +238,7 @@ namespace Mengine
  
         size_t old_size = MENGINE_MALLOC_SIZE( _mem );
 
-        MENGINE_ASSERTION_FATAL( old_size != (size_t)-1 );
+        MENGINE_ASSERTION_FATAL( old_size != (size_t)-1, "invalid get memory size" );
 
 #if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE)
         if( Detail::checkMemoryOverrideCorruptionTrap( _mem, old_size ) == true )
@@ -264,7 +264,7 @@ namespace Mengine
 
         size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
 
-        MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
+        MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "invalid get memory size" );
 
         this->report( _doc, usage_size, old_size );
 
@@ -305,7 +305,7 @@ namespace Mengine
         uint32_t report_add = (uint32_t)_add;
         uint32_t report_minus = (uint32_t)_minus;
 
-        MENGINE_ASSERTION_FATAL( m_memoryUsage + report_add >= report_minus );
+        MENGINE_ASSERTION_FATAL( m_memoryUsage + report_add >= report_minus, "invalid memory usage" );
 
         m_memoryUsage += report_add;
         m_memoryUsage -= report_minus;
@@ -324,9 +324,13 @@ namespace Mengine
                 continue;
             }
 
-            MENGINE_ASSERTION_FATAL( r.block == false );
+            MENGINE_ASSERTION_FATAL( r.block == false, "doc '%s' block"
+                , _doc
+            );
 
-            MENGINE_ASSERTION_FATAL( r.count + report_add >= report_minus );
+            MENGINE_ASSERTION_FATAL( r.count + report_add >= report_minus, "doc '%s' invalid report"
+                , _doc
+            );
 
             r.count += report_add;
             r.count -= report_minus;
@@ -343,9 +347,13 @@ namespace Mengine
                 continue;
             }
 
-            MENGINE_ASSERTION_FATAL( r.block == false );
+            MENGINE_ASSERTION_FATAL( r.block == false, "doc '%s' block"
+                , _doc
+            );
 
-            MENGINE_ASSERTION_FATAL( r.count + report_add >= report_minus );
+            MENGINE_ASSERTION_FATAL( r.count + report_add >= report_minus, "doc '%s' invalid report"
+                , _doc
+            );
 
             r.doc.assign( _doc );
 

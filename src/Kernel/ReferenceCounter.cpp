@@ -17,7 +17,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ReferenceCounter::~ReferenceCounter()
     {
-        MENGINE_ASSERTION_FATAL( m_counter == 0 );
+        MENGINE_ASSERTION_FATAL( m_counter == 0, "reference count is not zero '%u'"
+            , m_counter.load()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     void ReferenceCounter::setReferenceCount( uint32_t _counter )
@@ -29,7 +31,9 @@ namespace Mengine
     {
         if( ++m_counter == 1 )
         {
-            MENGINE_ASSERTION_FATAL( m_counter == 1 );
+            MENGINE_ASSERTION_FATAL( m_counter == 1, "reference count is not one '%u'"
+                , m_counter.load()
+            );
 
             return true;
         }
@@ -39,7 +43,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ReferenceCounter::decref()
     {
-        MENGINE_ASSERTION_FATAL( m_counter > 0 );
+        MENGINE_ASSERTION_FATAL( m_counter > 0, "reference count is already zero" );
 
         if( --m_counter != 0 )
         {

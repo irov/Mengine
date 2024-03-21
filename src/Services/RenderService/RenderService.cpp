@@ -1231,7 +1231,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Viewport & RenderService::getRenderViewport() const
     {
-        MENGINE_ASSERTION_FATAL( m_renderViewport.end.x != 0.f && m_renderViewport.end.y != 0.f );
+        MENGINE_ASSERTION_FATAL( m_renderViewport.end.x != 0.f && m_renderViewport.end.y != 0.f, "render viewport not set" );
 
         return m_renderViewport;
     }

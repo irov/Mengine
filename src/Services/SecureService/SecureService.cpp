@@ -65,14 +65,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SecureService::protectData( uint32_t _complexity, const void * _in, size_t _size, void * const _out ) const
     {
-        MENGINE_ASSERTION_FATAL( _complexity <= 1 );
+        MENGINE_ASSERTION_FATAL( _complexity <= 1, "complexity %u"
+            , _complexity
+        );
 
         Helper::ravingcode( m_secureHash, _complexity, _in, _size, _out );
     }
     //////////////////////////////////////////////////////////////////////////
     void SecureService::unprotectData( uint32_t _complexity, const void * _in, size_t _size, void * const _out ) const
     {
-        MENGINE_ASSERTION_FATAL( _complexity <= 1 );
+        MENGINE_ASSERTION_FATAL( _complexity <= 1, "complexity %u"
+            , _complexity
+        );
 
         Helper::ravingcode( m_secureHash, _complexity, _in, _size, _out );
     }

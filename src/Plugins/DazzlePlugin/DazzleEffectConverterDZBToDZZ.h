@@ -15,7 +15,7 @@ namespace Mengine
         DazzleEffectConverterDZBToDZZ();
         ~DazzleEffectConverterDZBToDZZ() override;
 
-    private:
+    protected:
         bool _initialize() override;
         void _finalize() override;
 

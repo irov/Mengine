@@ -21,7 +21,7 @@ namespace Mengine
 
             if( lRes != ERROR_SUCCESS )
             {
-                LOGGER_ERROR( "RegOpenKeyExW HKEY_LOCAL_MACHINE '%s' get Error [%ld]"
+                LOGGER_ERROR( "RegOpenKeyExW HKEY_LOCAL_MACHINE '%ls' get Error [%ld]"
                     , _path
                     , lRes
                 );
@@ -37,7 +37,7 @@ namespace Mengine
 
             if( nError != ERROR_SUCCESS )
             {
-                LOGGER_ERROR( "RegQueryValueExW HKEY_LOCAL_MACHINE '%s' get Error [%ld]"
+                LOGGER_ERROR( "RegQueryValueExW HKEY_LOCAL_MACHINE '%ls' get Error [%ld]"
                     , _path
                     , nError
                 );

@@ -112,7 +112,9 @@ namespace Mengine
             virtual ~MengineObserverBindCall()
             {
 #   if defined(MENGINE_WINDOWS_DEBUG)
-                MENGINE_ASSERTION_FATAL( m_prev_handler_count == 0 );
+                MENGINE_ASSERTION_FATAL( m_prev_handler_count == 0, "invalid end bind call count %u"
+                    , m_prev_handler_count
+                );
 #   endif
             }
 
@@ -750,7 +752,9 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( Algorithm::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
         {
             return _desc.name == _name;
-        } ) == m_embeddings.end() );
+        } ) == m_embeddings.end(), "embedding '%s' already exist"
+            , _name.c_str()
+            );
 
         ScriptEmbeddingDesc desc;
         desc.name = _name;
@@ -773,7 +777,9 @@ namespace Mengine
             return _desc.name == _name;
         } );
 
-        MENGINE_ASSERTION_FATAL( it_found != m_embeddings.end() );
+        MENGINE_ASSERTION_FATAL( it_found != m_embeddings.end(), "embedding '%s' not found"
+            , _name.c_str()
+        );
 
         const ScriptEmbeddingDesc & desc = *it_found;
 

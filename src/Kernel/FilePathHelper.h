@@ -15,7 +15,7 @@ namespace Mengine
         FilePath stringizeFilePath( const Char * _value );
         FilePath stringizeFilePathSize( const Char * _value, FilePath::size_type _size );
         FilePath stringizeFilePathLocal( const Char * _value, FilePath::size_type _size );
-        FilePath stringizeFilePathFormat( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 1, 2 );
+        FilePath stringizeFilePathFormat( const Char * _format, ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 1, 2 );
         FilePath stringizeFileHashUnique( const Char * _value, FilePath::size_type _size, FilePath::hash_type _hash );
         //////////////////////////////////////////////////////////////////////////
         namespace Detail

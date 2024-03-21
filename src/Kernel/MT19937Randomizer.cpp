@@ -86,7 +86,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float MT19937Randomizer::getRandomf( float _max ) const
     {
-        MENGINE_ASSERTION_FATAL( _max >= 0.f );
+        MENGINE_ASSERTION_FATAL( _max >= 0.f, "invalid max value %f"
+            , _max
+        );
 
         if( _max < m_epsilon )
         {
@@ -102,8 +104,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float MT19937Randomizer::getRandomRangef( float _min, float _max ) const
     {
-        MENGINE_ASSERTION_FATAL( _min >= 0.f );
-        MENGINE_ASSERTION_FATAL( _max >= 0.f );
+        MENGINE_ASSERTION_FATAL( _min >= 0.f, "invalid min value %f"
+            , _min
+        );
+
+        MENGINE_ASSERTION_FATAL( _max >= 0.f, "invalid max value %f"
+            , _max
+        );
 
         if( _max < m_epsilon )
         {

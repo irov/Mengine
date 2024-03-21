@@ -99,7 +99,7 @@ namespace Mengine
             return _desc.handler == _inputHandler;
         } );
 
-        MENGINE_ASSERTION_FATAL( it_found != m_inputHandlers.end() );
+        MENGINE_ASSERTION_FATAL( it_found != m_inputHandlers.end(), "input handler not found" );
 
         m_inputHandlers.erase( it_found );
     }

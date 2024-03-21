@@ -359,7 +359,7 @@ namespace Mengine
 
         for( const SamplerOzzAnimationPtr & sampler : m_samplers )
         {
-            MENGINE_ASSERTION_FATAL( layers_iterator != 32 );
+            MENGINE_ASSERTION_FATAL( layers_iterator != 32, "too many layers" );
 
             if( sampler->isCompile() == false )
             {

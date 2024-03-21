@@ -70,7 +70,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NotificationService::addObserver( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
+        MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT, "id '%u' out of range '%u'"
+            , _id
+            , MENGINE_NOTIFICATOR_MAX_COUNT
+        );
 
         NotificationArea & area = m_areas[_id];
 
@@ -79,7 +82,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NotificationService::removeObserver( uint32_t _id, Observable * _observer )
     {
-        MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
+        MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT, "id '%u' out of range '%u'"
+            , _id
+            , MENGINE_NOTIFICATOR_MAX_COUNT
+        );
 
         NotificationArea & area = m_areas[_id];
 
@@ -103,7 +109,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NotificationService::foreachObservers( uint32_t _id, const LambdaObserver & _lambda )
     {
-        MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
+        MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT, "id '%u' out of range '%u'"
+            , _id
+            , MENGINE_NOTIFICATOR_MAX_COUNT
+        );
 
         NotificationArea & area = m_areas[_id];
 

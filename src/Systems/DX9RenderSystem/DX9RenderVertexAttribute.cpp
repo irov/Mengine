@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexAttribute::~DX9RenderVertexAttribute()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr, "vertex declaration not released" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexAttribute::initialize( const ConstString & _name, uint32_t _elementSize )
@@ -32,7 +32,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::finalize()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr, "vertex declaration not released" );
 
         //Empty
     }
@@ -41,7 +41,7 @@ namespace Mengine
     {
         if( m_compileReferenceCount == 0 )
         {
-            MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr );
+            MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr, "vertex declaration is already compile" );
 
             D3DVERTEXELEMENT9 declaration[64];
 
@@ -126,7 +126,7 @@ namespace Mengine
 
         m_attributes.emplace_back( desc );
 
-        MENGINE_ASSERTION_FATAL( m_attributes.size() < 64 );
+        MENGINE_ASSERTION_FATAL( m_attributes.size() < 64, "too many attributes" );
     }
     //////////////////////////////////////////////////////////////////////////
 }

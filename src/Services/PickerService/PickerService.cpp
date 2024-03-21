@@ -160,7 +160,7 @@ namespace Mengine
         m_scissor = nullptr;
         m_target = nullptr;
 
-        MENGINE_ASSERTION_FATAL( m_states.empty() == true );
+        MENGINE_ASSERTION_FATAL( m_states.empty() == true, "not all pickers removed" );
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::setBlock( bool _value )
@@ -867,7 +867,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::pickStates_( float _x, float _y, ETouchCode _touchId, float _pressure, const InputSpecialData & _special, VectorPickerStates * const _states ) const
     {
-        MENGINE_ASSERTION_FATAL( _states->empty() );
+        MENGINE_ASSERTION_FATAL( _states->empty() == true, "states not empty" );
 
         MENGINE_PROFILER_CATEGORY();
 
@@ -1018,7 +1018,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::getStates_( float _x, float _y, VectorPickerStates * const _states ) const
     {
-        MENGINE_ASSERTION_FATAL( _states->empty() );
+        MENGINE_ASSERTION_FATAL( _states->empty() == true, "states not empty" );
 
         if( m_arrow == nullptr )
         {

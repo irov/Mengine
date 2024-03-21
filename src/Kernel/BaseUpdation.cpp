@@ -14,12 +14,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BaseUpdation::~BaseUpdation()
     {
-        MENGINE_ASSERTION_FATAL( m_updatableProxyId == INVALID_UPDATABLE_ID );
+        MENGINE_ASSERTION_FATAL( m_updatableProxyId == INVALID_UPDATABLE_ID, "updatable id '%u' not removed"
+            , m_updatableProxyId
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool BaseUpdation::activate( EUpdateMode _mode, uint32_t _deep )
     {
-        MENGINE_ASSERTION_FATAL( m_updatableProxyId == INVALID_UPDATABLE_ID );
+        MENGINE_ASSERTION_FATAL( m_updatableProxyId == INVALID_UPDATABLE_ID, "updatable id '%u' already activate"
+            , m_updatableProxyId
+        );
 
         uint32_t updatableProxyId = UPDATE_SERVICE()
             ->createUpdatater( _mode, _deep, UpdationInterfacePtr::from( this ) );
@@ -36,7 +40,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseUpdation::deactivate()
     {
-        MENGINE_ASSERTION_FATAL( m_updatableProxyId != INVALID_UPDATABLE_ID );
+        MENGINE_ASSERTION_FATAL( m_updatableProxyId != INVALID_UPDATABLE_ID, "updatable id '%u' not activate"
+            , m_updatableProxyId
+        );
 
         UPDATE_SERVICE()
             ->removeUpdatater( m_updatableProxyId );

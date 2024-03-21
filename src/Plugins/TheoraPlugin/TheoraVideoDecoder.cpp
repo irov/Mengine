@@ -80,6 +80,7 @@ namespace Mengine
         static const Array<int32_t, 256> GUTable = Detail::createCoefUVTable<256>( 0.391f );
         static const Array<int32_t, 256> GVTable = Detail::createCoefUVTable<256>( 0.813f );
         static const Array<int32_t, 256> BUTable = Detail::createCoefUVTable<256>( 2.018f );
+        static const Char * pixelformats[] = {"OC_PF_420", "OC_PF_RSVD", "OC_PF_422", "OC_PF_444"};
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
@@ -244,11 +245,8 @@ namespace Mengine
         }
 
         MENGINE_ASSERTION_FATAL( m_theoraInfo.pixelformat == OC_PF_420, "invalid support pixel format '%s' pls use OC_PF_420"
-            , [this]() -> const Char *
-        {
-            const Char * pixelformat[] = {"OC_PF_420", "OC_PF_RSVD", "OC_PF_422", "OC_PF_444"};
-            return pixelformat[m_theoraInfo.pixelformat];
-        }() );
+            , Detail::pixelformats[m_theoraInfo.pixelformat]
+        );
 
         MENGINE_ASSERTION_FATAL( m_theoraInfo.fps_denominator != 0, "invalid fps denominator" );
 

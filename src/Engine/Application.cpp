@@ -468,6 +468,8 @@ namespace Mengine
     {
         if( m_resourceWhitePixel != nullptr )
         {
+            m_resourceWhitePixel->setTexture( nullptr );
+
             RESOURCE_SERVICE()
                 ->removeResource( m_resourceWhitePixel );
 
@@ -1999,7 +2001,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Resolution & Application::getCurrentWindowResolution() const
     {
-        MENGINE_ASSERTION_FATAL( m_currentWindowResolution.getWidth() != 0 && m_currentWindowResolution.getHeight() != 0 );
+        MENGINE_ASSERTION_FATAL( m_currentWindowResolution.getWidth() != 0 && m_currentWindowResolution.getHeight() != 0, "current window resolution is invalid" );
 
         return m_currentWindowResolution;
     }

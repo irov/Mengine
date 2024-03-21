@@ -68,7 +68,7 @@ namespace Mengine
             , full_output.c_str()
         );
 
-        LOGGER_MESSAGE_RELEASE( "converting file '%s' to '%s'\n%s"
+        LOGGER_MESSAGE_RELEASE( "converting file '%s' to '%s'\n%ls"
             , full_input.c_str()
             , full_output.c_str()
             , command
@@ -79,7 +79,7 @@ namespace Mengine
         uint32_t exitCode;
         if( Helper::Win32CreateProcess( ffmpeg.c_str(), command, true, &exitCode ) == false )
         {
-            LOGGER_ERROR( "invalid convert:\n%s"
+            LOGGER_ERROR( "invalid convert:\n%ls"
                 , command
             );
 

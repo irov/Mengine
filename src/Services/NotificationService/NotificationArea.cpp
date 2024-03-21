@@ -194,7 +194,7 @@ namespace Mengine
             }
         }
 
-        MENGINE_ASSERTION_FATAL( m_visiting != 0 );
+        MENGINE_ASSERTION_FATAL( m_visiting != 0, "invalid visiting" );
 
         --m_visiting;
 
@@ -254,7 +254,7 @@ namespace Mengine
                 return _desc.observer == nullptr;
             } ), m_observers.end() );
 
-            MENGINE_ASSERTION_FATAL( m_visiting != 0 );
+            MENGINE_ASSERTION_FATAL( m_visiting != 0, "invalid visiting" );
 
             --m_visiting;
         }

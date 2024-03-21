@@ -97,8 +97,8 @@ namespace Mengine
 
         stream->read( &m_header, 52 );
 
-        MENGINE_ASSERTION_FATAL( m_header.numFaces == 1 );
-        MENGINE_ASSERTION_FATAL( m_header.numSurfaces == 1 );
+        MENGINE_ASSERTION_FATAL( m_header.numFaces == 1, "pvr file has more than one face" );
+        MENGINE_ASSERTION_FATAL( m_header.numSurfaces == 1, "pvr file has more than one surface" );
 
         switch( m_header.pixelFormat )
         {

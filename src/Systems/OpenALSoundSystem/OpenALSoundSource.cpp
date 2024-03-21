@@ -26,7 +26,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundSource::~OpenALSoundSource()
     {
-        MENGINE_ASSERTION_FATAL( m_sourceId == 0 );
+        MENGINE_ASSERTION_FATAL( m_sourceId == 0, "sound source id '%u' not released"
+            , m_sourceId
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSource::setSoundSystem( OpenALSoundSystem * _soundSystem )

@@ -27,7 +27,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderIndexBuffer::~OpenGLRenderIndexBuffer()
     {
-        MENGINE_ASSERTION_FATAL( m_id == 0 );
+        MENGINE_ASSERTION_FATAL( m_id == 0, "index buffer '%u' is not released"
+            , m_id
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderIndexBuffer::initialize( uint32_t _indexSize, EBufferType _bufferType )
@@ -207,7 +209,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderIndexBuffer::onRenderRestore()
     {
-        MENGINE_ASSERTION_FATAL( m_id == 0 );
+        MENGINE_ASSERTION_FATAL( m_id == 0, "index buffer '%u' is not release"
+            , m_id
+        );
 
         OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
             ->getUnknown();

@@ -1,6 +1,7 @@
 #include "StaticWString.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/StdString.h"
 
@@ -15,7 +16,11 @@ namespace Mengine
 
             size_t buffer_size = MENGINE_WCSLEN( _buffer );
 
-            MENGINE_ASSERTION_FATAL( buffer_size < _capacity );
+            MENGINE_ASSERTION_FATAL( buffer_size < _capacity, "static wstring buffer '%ls' [size %zu] > [capacity %zu]"
+                , _buffer
+                , buffer_size
+                , _capacity
+            );
 
             return buffer_size;
         }
@@ -24,7 +29,11 @@ namespace Mengine
         {
             MENGINE_UNUSED( _capacity );
 
-            MENGINE_ASSERTION_FATAL( _index < _capacity );
+            MENGINE_ASSERTION_FATAL( _index < _capacity, "static wstring buffer '%ls' [index %zu] > [capacity %zu]"
+                , _buffer
+                , _index
+                , _capacity
+            );
 
             WChar c = _buffer[_index];
 
@@ -35,14 +44,18 @@ namespace Mengine
         {
             MENGINE_UNUSED( _capacity );
 
-            MENGINE_ASSERTION_FATAL( _index < _capacity );
+            MENGINE_ASSERTION_FATAL( _index < _capacity, "static wstring buffer '%ls' [index %zu] > [capacity %zu]"
+                , _buffer
+                , _index
+                , _capacity
+            );
 
             _buffer[_index] = _ch;
         }
         //////////////////////////////////////////////////////////////////////////
         void staticWStringAssign( WChar * _buffer, size_t _capacity, const WChar * _value, size_t _size )
         {
-            MENGINE_ASSERTION_FATAL( _value != nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( _value );
 
             size_t value_size = _size;
 
@@ -67,7 +80,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void staticWStringAppend( WChar * _buffer, size_t _capacity, const WChar * _value, size_t _size )
         {
-            MENGINE_ASSERTION_FATAL( _value != nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( _value );
 
             size_t value_size = _size;
 
@@ -104,7 +117,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         int32_t staticWStringCompare( const WChar * _buffer, size_t _capacity, const WChar * _value )
         {
-            MENGINE_ASSERTION_FATAL( _value != nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( _value );
 
             int32_t result = MENGINE_WCSNCMP( _buffer, _value, _capacity );
 

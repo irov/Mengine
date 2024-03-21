@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderTargetOffscreen::~DX9RenderTargetOffscreen()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DSurfacePlain == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DSurfacePlain == nullptr, "surface is not released" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetOffscreen::_initialize()

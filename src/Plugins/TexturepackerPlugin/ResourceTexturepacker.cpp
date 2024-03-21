@@ -80,7 +80,7 @@ namespace Mengine
             return;
         }
 
-        MENGINE_ASSERTION_FATAL( m_extraResourceImage == false );
+        MENGINE_ASSERTION_FATAL( m_extraResourceImage == false, "already set resource image" );
 
         m_resourceImage = _resourceImage;
 
@@ -174,7 +174,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::_initialize()
     {
-        MENGINE_ASSERTION_FATAL( m_resourceJSON != nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceJSON );
 
         if( m_resourceJSON->compile() == false )
         {

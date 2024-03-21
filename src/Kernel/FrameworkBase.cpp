@@ -49,8 +49,13 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( m_initialize == false );
-        MENGINE_ASSERTION_FATAL( m_running == false );
+        MENGINE_ASSERTION_FATAL( m_initialize == false, "framework '%s' already initialized"
+            , this->getName().c_str()
+        );
+
+        MENGINE_ASSERTION_FATAL( m_running == false, "framework '%s' already running"
+            , this->getName().c_str()
+        );
 
         m_initialize = this->_initializeFramework();
 
@@ -64,16 +69,26 @@ namespace Mengine
             return;
         }
 
-        MENGINE_ASSERTION_FATAL( m_initialize == true );
-        MENGINE_ASSERTION_FATAL( m_running == false );
+        MENGINE_ASSERTION_FATAL( m_initialize == true, "framework '%s' not initialized"
+            , this->getName().c_str()
+        );
+
+        MENGINE_ASSERTION_FATAL( m_running == false, "framework '%s' is still running"
+            , this->getName().c_str()
+        );
 
         this->_finalizeFramework();
     }
     //////////////////////////////////////////////////////////////////////////
     bool FrameworkBase::runFramework()
     {
-        MENGINE_ASSERTION_FATAL( m_initialize == true );
-        MENGINE_ASSERTION_FATAL( m_running == false );
+        MENGINE_ASSERTION_FATAL( m_initialize == true, "framework '%s' not initialized"
+            , this->getName().c_str()
+        );
+
+        MENGINE_ASSERTION_FATAL( m_running == false, "framework '%s' already running"
+            , this->getName().c_str()
+        );
 
         m_running = this->_runFramework();
 
@@ -82,8 +97,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FrameworkBase::stopFramework()
     {
-        MENGINE_ASSERTION_FATAL( m_initialize == true );
-        MENGINE_ASSERTION_FATAL( m_running == true );
+        MENGINE_ASSERTION_FATAL( m_initialize == true, "framework '%s' not initialized"
+            , this->getName().c_str()
+        );
+
+        MENGINE_ASSERTION_FATAL( m_running == true, "framework '%s' not running"
+            , this->getName().c_str()
+        );
 
         this->_stopFramework();
 

@@ -13,7 +13,7 @@ namespace Mengine
     public:
         void start( const T & _pos, const T & _acc, float _speed )
         {
-            MENGINE_ASSERTION( _speed >= 0.f );
+            MENGINE_ASSERTION( _speed >= 0.f, "speed must be more or equal 0.f" );
 
             ValueAccumulator<T>::m_started = false;
 

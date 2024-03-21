@@ -105,7 +105,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourcePointer ResourceService::createResource( const ResourceCook & _cook, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( !(_cook.name.empty() == true && _cook.groupCache == true) );
+        MENGINE_ASSERTION_FATAL( !(_cook.name.empty() == true && _cook.groupCache == true), "resource '%s' can't be cacheable group '%s'"
+            , _cook.name.c_str()
+            , _cook.groupName.c_str()
+        );
 
         Resource * prev_resource = nullptr;
         ResourcePtr resource = m_globalBank->createResource( _cook, &prev_resource, _doc );
@@ -143,7 +146,10 @@ namespace Mengine
 
                     MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( insert_group );
 
-                    MENGINE_ASSERTION_FATAL( it_remove_cache_found != m_resourcesCache.end() );
+                    MENGINE_ASSERTION_FATAL( it_remove_cache_found != m_resourcesCache.end(), "resource '%s' group '%s' not found"
+                        , prev_resource->getName().c_str()
+                        , insert_group.c_str()
+                    );
 
                     VectorResources & cache_resources = it_remove_cache_found->second;
 
@@ -166,7 +172,10 @@ namespace Mengine
 
             MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( group );
 
-            MENGINE_ASSERTION_FATAL( it_remove_cache_found != m_resourcesCache.end() );
+            MENGINE_ASSERTION_FATAL( it_remove_cache_found != m_resourcesCache.end(), "resource '%s' group '%s' not found"
+                , _resource->getName().c_str()
+                , group.c_str()
+            );
 
             VectorResources & cache_resources = it_remove_cache_found->second;
 

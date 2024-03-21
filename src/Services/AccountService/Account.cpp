@@ -233,7 +233,10 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( uid ) == 20 );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( uid ) == 20, "account '%s' invalid uid '%s'"
+            , m_id.c_str()
+            , uid
+        );
 
         MENGINE_MEMCPY( m_uid.data, uid, 20 );
 

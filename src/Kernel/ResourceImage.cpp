@@ -49,15 +49,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImage::_release()
     {
-        if( m_texture != nullptr )
-        {
-            m_texture = nullptr;
-        }
-
-        if( m_textureAlpha != nullptr )
-        {
-            m_textureAlpha = nullptr;
-        }
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceImage::correctUVImage( const mt::vec2f & _in, mt::vec2f * const _out ) const

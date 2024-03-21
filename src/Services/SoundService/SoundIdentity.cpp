@@ -22,9 +22,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SoundIdentity::~SoundIdentity()
     {
-        MENGINE_ASSERTION_FATAL( m_source == nullptr );
-        MENGINE_ASSERTION_FATAL( m_listener == nullptr );
-        MENGINE_ASSERTION_FATAL( m_worker == nullptr );
+        MENGINE_ASSERTION_FATAL( m_source == nullptr, "sound identity '%d' source not null"
+            , m_id
+        );
+
+        MENGINE_ASSERTION_FATAL( m_listener == nullptr, "sound identity '%d' listener not null"
+            , m_id
+        );
+
+        MENGINE_ASSERTION_FATAL( m_worker == nullptr, "sound identity '%d' worker not null"
+            , m_id
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundIdentity::initialize( const SoundSourceInterfacePtr & _source, ESoundSourceCategory _category, bool _streamable, bool _turn )
@@ -61,7 +69,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundIdentity::finalize()
     {
-        MENGINE_ASSERTION_FATAL( m_worker == nullptr );
+        MENGINE_ASSERTION_FATAL( m_worker == nullptr, "sound identity '%d' worker not null"
+            , m_id
+        );
 
         if( m_source != nullptr )
         {

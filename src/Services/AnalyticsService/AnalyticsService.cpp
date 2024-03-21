@@ -59,7 +59,7 @@ namespace Mengine
     {
         VectorAnalyticsEventProvider::iterator it_found = Algorithm::find( m_eventProviders.begin(), m_eventProviders.end(), _provider );
 
-        MENGINE_ASSERTION( it_found != m_eventProviders.end() );
+        MENGINE_ASSERTION( it_found != m_eventProviders.end(), "event provider not found" );
 
         m_eventProviders.erase( it_found );
     }

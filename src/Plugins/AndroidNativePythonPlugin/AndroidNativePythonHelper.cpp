@@ -97,7 +97,7 @@ namespace Mengine
                                                    PyObject *py_obj = Helper::androidNativePythonMakePyObject(
                                                            _kernel, _jenv, _jvalue, _doc);
 
-                                                   MENGINE_ASSERTION_FATAL(py_obj != nullptr);
+                                                   MENGINE_ASSERTION_MEMORY_PANIC( py_obj );
 
                                                    _kernel->list_setitem(py_list, _index, py_obj);
 

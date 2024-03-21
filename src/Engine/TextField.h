@@ -75,7 +75,7 @@ namespace Mengine
         const String & getText() const;
 
     public:
-        void setTextFormat( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
+        void setTextFormat( const Char * _format, ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 2, 3 );
         void removeText();
 
     public:

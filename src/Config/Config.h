@@ -281,25 +281,6 @@
 #endif
 
 #if defined(MENGINE_DEBUG)
-#   if defined(MENGINE_TOOLCHAIN_MSVC)
-#       if _MSC_VER >= 1400
-#           include <sal.h>
-#           if _MSC_VER > 1400
-#               define MENGINE_CHECK_FORMAT_STRING(Format) _Printf_format_string_ Format
-#           else
-#               define MENGINE_CHECK_FORMAT_STRING(Format) __format_string Format
-#           endif
-#       else
-#           define MENGINE_CHECK_FORMAT_STRING(Format) Format
-#       endif
-#   else
-#       define MENGINE_CHECK_FORMAT_STRING(Format) Format
-#   endif
-#else
-#   define MENGINE_CHECK_FORMAT_STRING(Format) Format
-#endif
-
-#if defined(MENGINE_DEBUG)
 #   if defined(MENGINE_COMPILER_GCC)
 #       define MENGINE_ATTRIBUTE_FORMAT_STRING(Format, Args) __attribute__ (( __format__ (printf, Format, Args) ))
 #   else

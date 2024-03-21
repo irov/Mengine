@@ -193,7 +193,9 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( Detail::test_value( m_json, _key, jpp::e_type::JPP_FALSE ) == true
             || Detail::test_value( m_json, _key, jpp::e_type::JPP_TRUE ) == true
-            || Detail::test_value( m_json, _key, jpp::e_type::JPP_INTEGER ) == true );
+            || Detail::test_value( m_json, _key, jpp::e_type::JPP_INTEGER ) == true
+            , "key ['%s'] is not boolean"
+            , _key );
 
         bool value = Detail::get_value( m_json, _key, _default );
 
@@ -202,7 +204,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int32_t JSONSetting::getValue( const Char * _key, int32_t _default ) const
     {
-        MENGINE_ASSERTION_FATAL( Detail::test_value( m_json, _key, jpp::e_type::JPP_INTEGER ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::test_value( m_json, _key, jpp::e_type::JPP_INTEGER ) == true, "key ['%s'] is not integer"
+            , _key
+        );
 
         int32_t value = Detail::get_value( m_json, _key, _default );
 
@@ -254,11 +258,25 @@ namespace Mengine
             return _default;
         }
 
-        MENGINE_ASSERTION_FATAL( Detail::exist_value( m_json, _key ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "x" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "y" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "x", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "y", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value( m_json, _key ) == true, "key ['%s'] is not exist"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "x" ) == true, "key ['%s'] attribute 'x' is not exist"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "y" ) == true, "key ['%s'] attribute 'y' is not exist"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "x", jpp::e_type::JPP_REAL ) == true, "key ['%s'] attribute 'x' is not real"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "y", jpp::e_type::JPP_REAL ) == true, "key ['%s'] attribute 'y' is not real"
+            , _key
+        );
 
         jpp::object jv2 = k["value"];
 
@@ -279,13 +297,33 @@ namespace Mengine
             return _default;
         }
 
-        MENGINE_ASSERTION_FATAL( Detail::exist_value( m_json, _key ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "x" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "y" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "z" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "x", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "y", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "z", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value( m_json, _key ) == true, "key ['%s'] is not exist"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "x" ) == true, "key ['%s'] attribute 'x' is not exist"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "y" ) == true, "key ['%s'] attribute 'y' is not exist"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "z" ) == true, "key ['%s'] attribute 'z' is not exist"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "x", jpp::e_type::JPP_REAL ) == true, "key ['%s'] attribute 'x' is not real"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "y", jpp::e_type::JPP_REAL ) == true, "key ['%s'] attribute 'y' is not real"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "z", jpp::e_type::JPP_REAL ) == true, "key ['%s'] attribute 'z' is not real"
+            , _key
+        );
 
         jpp::object jv3 = k["value"];
 
@@ -306,13 +344,33 @@ namespace Mengine
             return _default;
         }
 
-        MENGINE_ASSERTION_FATAL( Detail::exist_value( m_json, _key ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "r" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "g" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "b" ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "r", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "g", jpp::e_type::JPP_REAL ) == true );
-        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "b", jpp::e_type::JPP_REAL ) == true );
+        MENGINE_ASSERTION_FATAL( Detail::exist_value( m_json, _key ) == true, "key ['%s'] is not exist"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "r" ) == true, "key ['%s'] attribute 'r' is not exist"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "g" ) == true, "key ['%s'] attribute 'g' is not exist"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::exist_value_attribute( m_json, _key, "b" ) == true, "key ['%s'] attribute 'b' is not exist"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "r", jpp::e_type::JPP_REAL ) == true, "key ['%s'] attribute 'r' is not real"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "g", jpp::e_type::JPP_REAL ) == true, "key ['%s'] attribute 'g' is not real"
+            , _key
+        );
+
+        MENGINE_ASSERTION_FATAL( Detail::test_value_attribute( m_json, _key, "b", jpp::e_type::JPP_REAL ) == true, "key ['%s'] attribute 'b' is not real"
+            , _key
+        );
 
         jpp::object jc = k["value"];
 

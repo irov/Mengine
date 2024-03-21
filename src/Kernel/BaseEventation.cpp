@@ -33,8 +33,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EventReceiverInterfacePtr BaseEventation::addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver )
     {
-        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1) );
-        MENGINE_ASSERTION_FATAL( (m_receiverMask & (1ULL << _event)) == 0 );
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1), "event %u overflow [0, %u]"
+            , _event
+            , (sizeof( m_receiversMask ) * 8 - 1)
+        );
+
+        MENGINE_ASSERTION_FATAL( (m_receiverMask & (1ULL << _event)) == 0, "event %u already bind receiver"
+            , _event
+        );
 
         uint64_t flag = m_receiversMask & (1ULL << _event);
 
@@ -45,7 +51,9 @@ namespace Mengine
                 return _desc.event == _event;
             } );
 
-            MENGINE_ASSERTION_FATAL( it_found != m_receivers.end() );
+            MENGINE_ASSERTION_FATAL( it_found != m_receivers.end(), "event %u not found"
+                , _event
+            );
 
             EventReceiverDesc & desc = *it_found;
 
@@ -68,8 +76,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EventReceiverInterfacePtr BaseEventation::removeEventReceiver( uint32_t _event )
     {
-        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1) );
-        MENGINE_ASSERTION_FATAL( (m_receiverMask & (1ULL << _event)) == 0 );
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1), "event %u overflow [0, %u]"
+            , _event
+            , (sizeof( m_receiversMask ) * 8 - 1)
+        );
+
+        MENGINE_ASSERTION_FATAL( (m_receiverMask & (1ULL << _event)) == 0, "event %u already bind receiver"
+            , _event
+        );
 
         VectorEventReceivers::iterator it_found = Algorithm::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
         {
@@ -94,7 +108,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const EventReceiverInterfacePtr & BaseEventation::getEventReceiver( uint32_t _event ) const
     {
-        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1) );
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1), "event %u overflow [0, %u]"
+            , _event
+            , (sizeof( m_receiversMask ) * 8 - 1)
+        );
 
         if( (m_receiverMask & (1ULL << _event)) != 0 )
         {
@@ -118,7 +135,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BaseEventation::hasEventReceiver( uint32_t _event ) const
     {
-        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1) );
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1), "event %u overflow [0, %u]"
+            , _event
+            , (sizeof( m_receiversMask ) * 8 - 1)
+        );
 
         uint64_t flag = (m_receiverMask | m_receiversMask) & (1ULL << _event);
 

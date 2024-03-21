@@ -28,7 +28,7 @@ namespace Mengine
     protected:
         bool _rewind() override;
 
-    private:
+    protected:
         jpeg_decompress_struct m_jpegObject;
         jpeg_error_mgr m_errorMgr;
     };

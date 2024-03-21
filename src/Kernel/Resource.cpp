@@ -106,7 +106,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Resource::initialize()
     {
-        MENGINE_ASSERTION_FATAL( m_initialize == false );
+        MENGINE_ASSERTION_FATAL( m_initialize == false, "resource '%s' type '%s' already initialize"
+            , this->getName().c_str()
+            , this->getType().c_str()
+        );
 
         if( this->_initialize() == false )
         {
@@ -142,7 +145,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Resource::finalize()
     {
-        MENGINE_ASSERTION_FATAL( m_initialize == true );
+        MENGINE_ASSERTION_FATAL( m_initialize == true, "resource '%s' type '%s' not initialize"
+            , this->getName().c_str()
+            , this->getType().c_str()
+        );
 
         MENGINE_ASSERTION_FATAL( this->isCompile() == false, "resource '%s' type '%s' not release before finalize"
             , this->getName().c_str()

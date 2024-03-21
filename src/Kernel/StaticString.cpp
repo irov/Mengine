@@ -1,6 +1,7 @@
 #include "StaticString.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionVSNPRINTF.h"
 
 #include "Config/StdString.h"
@@ -17,7 +18,11 @@ namespace Mengine
 
             size_t buffer_size = MENGINE_STRLEN( _buffer );
 
-            MENGINE_ASSERTION_FATAL( buffer_size < _capacity );
+            MENGINE_ASSERTION_FATAL( buffer_size < _capacity, "static string buffer '%s' [size %zu] > [capacity %zu]"
+                , _buffer
+                , buffer_size
+                , _capacity
+            );
 
             return buffer_size;
         }
@@ -26,7 +31,10 @@ namespace Mengine
         {
             MENGINE_UNUSED( _capacity );
 
-            MENGINE_ASSERTION_FATAL( _index < _capacity );
+            MENGINE_ASSERTION_FATAL( _index < _capacity, "static string buffer index [index %zu] > [capacity %zu]"
+                , _index
+                , _capacity
+            );
 
             Char c = _buffer[_index];
 
@@ -37,14 +45,17 @@ namespace Mengine
         {
             MENGINE_UNUSED( _capacity );
 
-            MENGINE_ASSERTION_FATAL( _index < _capacity );
+            MENGINE_ASSERTION_FATAL( _index < _capacity, "static string buffer change index [index %zu] > [capacity %zu]"
+                , _index
+                , _capacity
+            );
 
             _buffer[_index] = _ch;
         }
         //////////////////////////////////////////////////////////////////////////
         void staticStringAssign( Char * _buffer, size_t _capacity, const Char * _value, size_t _size )
         {
-            MENGINE_ASSERTION_FATAL( _value != nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( _value );
 
             size_t value_size = _size;
 
@@ -70,7 +81,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void staticStringAppend( Char * _buffer, size_t _capacity, const Char * _value, size_t _size )
         {
-            MENGINE_ASSERTION_FATAL( _value != nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( _value );
 
             size_t value_size = _size;
 
@@ -112,7 +123,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         int32_t staticStringCompare( const Char * _buffer, size_t _capacity, const Char * _value )
         {
-            MENGINE_ASSERTION_FATAL( _value != nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( _value );
 
             size_t value_size = MENGINE_STRLEN( _value );
 

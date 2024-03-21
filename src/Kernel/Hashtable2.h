@@ -4,6 +4,7 @@
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #ifndef MENGINE_HASHTABLE_DUMMY_ELEMENT
 #define MENGINE_HASHTABLE_DUMMY_ELEMENT (reinterpret_cast<element_type *>(MENGINE_MAX_ALIGNED_POINTER_VALUE))
@@ -69,7 +70,7 @@ namespace Mengine
     public:
         const element_type_ptr & emplace( const key_type1 & _key1, const key_type2 & _key2, const element_type_ptr & _element )
         {
-            MENGINE_ASSERTION_FATAL( _element != nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( _element );
 
             size_type test_size = (m_size + m_dummy) * 3 + 1;
             size_type test_capacity = m_capacity * 2;
@@ -88,7 +89,7 @@ namespace Mengine
 
         element_type_ptr change( const key_type1 & _key1, const key_type2 & _key2, const element_type_ptr & _element )
         {
-            MENGINE_ASSERTION_FATAL( _element != nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( _element );
 
             size_type test_size = (m_size + m_dummy) * 3 + 1;
             size_type test_capacity = m_capacity * 2;
@@ -705,7 +706,7 @@ namespace Mengine
     public:
         element_type_ptr emplace( const key_type1 & _key1, const key_type2 & _key2, element_type_ptr _element )
         {
-            MENGINE_ASSERTION_FATAL( _element != nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( _element );
 
             uint32_t test_size = (m_size + m_dummy) * 3 + 1;
             uint32_t test_capacity = m_capacity * 2;
@@ -724,7 +725,7 @@ namespace Mengine
 
         element_type_ptr change( const key_type1 & _key1, const key_type2 & _key2, element_type_ptr _element )
         {
-            MENGINE_ASSERTION_FATAL( _element != nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( _element );
 
             uint32_t test_size = (m_size + m_dummy) * 3 + 1;
             uint32_t test_capacity = m_capacity * 2;

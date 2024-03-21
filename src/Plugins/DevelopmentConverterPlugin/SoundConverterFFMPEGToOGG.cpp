@@ -91,7 +91,7 @@ namespace Mengine
         uint32_t exitCode;
         if( Helper::Win32CreateProcess( ffmpeg.c_str(), command, true, &exitCode ) == false )
         {
-            LOGGER_ERROR( "invalid convert:\n%s"
+            LOGGER_ERROR( "invalid convert:\n%ls"
                 , command
             );
 

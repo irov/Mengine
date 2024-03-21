@@ -44,7 +44,7 @@ namespace Mengine
     {
         uint32_t Win32AntifreezeMonitorPlugin_Seconds = CONFIG_VALUE( "Win32AntifreezeMonitorPlugin", "Seconds", 10U );
 
-        MENGINE_ASSERTION_FATAL( Win32AntifreezeMonitorPlugin_Seconds != 0 );
+        MENGINE_ASSERTION_FATAL( Win32AntifreezeMonitorPlugin_Seconds != 0, "invalid seconds" );
 
         m_seconds = Win32AntifreezeMonitorPlugin_Seconds;
 
@@ -232,7 +232,7 @@ namespace Mengine
         MENGINE_UNUSED( _prevLocale );
         MENGINE_UNUSED( _currentlocale );
 
-        MENGINE_ASSERTION_FATAL( m_refChangeLocale != 0 );
+        MENGINE_ASSERTION_FATAL( m_refChangeLocale != 0, "invalid change locale" );
 
         --m_refChangeLocale;
         
@@ -250,7 +250,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _loggerMessage );
 
-        MENGINE_ASSERTION_FATAL( m_refLogger != 0 );
+        MENGINE_ASSERTION_FATAL( m_refLogger != 0, "invalid logger" );
 
         --m_refLogger;
 

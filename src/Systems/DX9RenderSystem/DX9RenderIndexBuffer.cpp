@@ -31,7 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderIndexBuffer::~DX9RenderIndexBuffer()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DIndexBuffer == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DIndexBuffer == nullptr, "index buffer not released" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderIndexBuffer::initialize( uint32_t _indexSize, EBufferType _bufferType )
@@ -143,7 +143,7 @@ namespace Mengine
             return nullptr;
         }
 
-        MENGINE_ASSERTION_FATAL( m_memory->getBuffer() == nullptr );
+        MENGINE_ASSERTION_FATAL( m_memory->getBuffer() == nullptr, "memory already lock" );
 
         DWORD d3d_flag;
         switch( m_bufferType )
@@ -276,7 +276,7 @@ namespace Mengine
             return true;
         }
 
-        MENGINE_ASSERTION_FATAL( m_pD3DIndexBuffer == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DIndexBuffer == nullptr, "index buffer is not nullptr" );
 
         uint32_t bufferSize = m_indexCapacity * m_indexSize;
 

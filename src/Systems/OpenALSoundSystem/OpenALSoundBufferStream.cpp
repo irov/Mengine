@@ -33,7 +33,9 @@ namespace Mengine
         {
             ALuint id = m_alBuffersId[index];
 
-            MENGINE_ASSERTION_FATAL( id == 0 );
+            MENGINE_ASSERTION_FATAL( id == 0, "buffer not released [%u]"
+                , id
+            );
         }
 #endif
     }

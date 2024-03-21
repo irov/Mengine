@@ -60,7 +60,7 @@ namespace Mengine
 
         //ToDo
 
-        LOGGER_INFO( "validate", "validate resource '%s' type '%s' group '%s' locale '%s'"
+        LOGGER_INFO( "validate", "validate resource '%s' type '%s' group '%s'"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             , _resource->getGroupName().c_str()

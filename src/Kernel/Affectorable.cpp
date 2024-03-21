@@ -14,7 +14,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Affectorable::~Affectorable()
     {
-        MENGINE_ASSERTION_FATAL( m_affectorHub == nullptr );
+        MENGINE_ASSERTION_FATAL( m_affectorHub == nullptr, "affector hub not released"
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Affectorable::availableAffectorHub() const

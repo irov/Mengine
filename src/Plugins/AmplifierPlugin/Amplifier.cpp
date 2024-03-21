@@ -122,7 +122,7 @@ namespace Mengine
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_TURN_SOUND );
 
-        MENGINE_ASSERTION_FATAL( m_soundIdentity == nullptr );
+        MENGINE_ASSERTION_FATAL( m_soundIdentity == nullptr, "amplifier invalid finalize" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Amplifier::playMusic( const ConstString & _resourceName, float _pos, bool _looped, const AmplifierMusicCallbackInterfacePtr & _callback )
@@ -139,7 +139,7 @@ namespace Mengine
         ResourceMusicPtr resourceMusic = RESOURCE_SERVICE()
             ->getResourceReference( ConstString::none(), _resourceName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceMusic, "can't found resource '%s'"
+        MENGINE_ASSERTION_FATAL( resourceMusic != nullptr, "can't found resource '%s'"
             , _resourceName.c_str()
         );
 

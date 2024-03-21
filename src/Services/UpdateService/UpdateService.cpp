@@ -102,7 +102,9 @@ namespace Mengine
         {
         case EUM_NODE_BASE:
             {
-                MENGINE_ASSERTION_FATAL( _deep * 2 + 0 < m_leafs.size() );
+                MENGINE_ASSERTION_FATAL( _deep * 2 + 0 < m_leafs.size(), "deep %u"
+                    , _deep
+                );
 
                 LeafUpdatable & leaf = m_leafs[_deep * 2 + 0];
 
@@ -110,7 +112,9 @@ namespace Mengine
             }break;
         case EUM_NODE_AFFECTOR:
             {
-                MENGINE_ASSERTION_FATAL( _deep * 2 + 1 < m_leafs.size() );
+                MENGINE_ASSERTION_FATAL( _deep * 2 + 1 < m_leafs.size(), "deep %u"
+                    , _deep
+                );
 
                 LeafUpdatable & leaf = m_leafs[_deep * 2 + 1];
 
@@ -118,7 +122,9 @@ namespace Mengine
             }break;
         case EUM_SERVICE_BEFORE:
             {
-                MENGINE_ASSERTION_FATAL( _deep < m_beforeLeaf.size() );
+                MENGINE_ASSERTION_FATAL( _deep < m_beforeLeaf.size(), "deep %u"
+                    , _deep
+                );
 
                 LeafUpdatable & leaf = m_beforeLeaf[_deep];
 
@@ -126,7 +132,9 @@ namespace Mengine
             }break;
         case EUM_SERVICE_AFTER:
             {
-                MENGINE_ASSERTION_FATAL( _deep < m_afterLeaf.size() );
+                MENGINE_ASSERTION_FATAL( _deep < m_afterLeaf.size(), "deep %u"
+                    , _deep
+                );
 
                 LeafUpdatable & leaf = m_afterLeaf[_deep];
 

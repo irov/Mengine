@@ -26,7 +26,7 @@ namespace Mengine
     public:
         size_t _decode( const DecoderData * _data ) override;
 
-    private:
+    protected:
         ArchivatorInterfacePtr m_archivator;
     };
 }

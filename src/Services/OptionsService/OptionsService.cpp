@@ -186,8 +186,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::setOptionValue( const Char * _key, const Char * _value )
     {
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _key ) < MENGINE_OPTIONS_KEY_SIZE );
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _value ) < MENGINE_OPTIONS_VALUE_SIZE );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _key ) < MENGINE_OPTIONS_KEY_SIZE, "option '%s' invalid key size %u (max %u)"
+            , _key
+            , MENGINE_STRLEN( _key)
+            , MENGINE_OPTIONS_KEY_SIZE
+        );
+
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _value ) < MENGINE_OPTIONS_VALUE_SIZE, "option '%s' invalid value size %u (max %u)"
+            , _key
+            , MENGINE_STRLEN( _value )
+            , MENGINE_OPTIONS_VALUE_SIZE
+        );
 
         MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, MENGINE_STRLEN( _key ) );
         MENGINE_ASSERTION_LOWER_CHARACTER_SET( _value, MENGINE_STRLEN( _value ) );

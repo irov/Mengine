@@ -745,7 +745,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             String s_generateUniqueIdentity( uint32_t _length )
             {
-                MENGINE_ASSERTION_FATAL( _length < 1024 );
+                MENGINE_ASSERTION_FATAL( _length < 1024, "max UID length equal 1024" );
 
                 Stringstream ss;
 

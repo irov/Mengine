@@ -631,7 +631,7 @@ namespace Mengine
 
         UniqueId workerId = m_threadJob->addWorker( ThreadWorkerInterfacePtr( this ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION( workerId != INVALID_UNIQUE_ID );
+        MENGINE_ASSERTION( workerId != INVALID_UNIQUE_ID, "can't add worker" );
 
         m_workerId = workerId;
 

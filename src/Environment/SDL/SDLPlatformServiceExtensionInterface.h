@@ -8,6 +8,8 @@
 #   include "Environment/Windows/WindowsIncluder.h"
 #endif
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     class SDLPlatformServiceExtensionInterface
@@ -47,7 +49,7 @@ namespace Mengine
 
     public:
         typedef Lambda<void( SDL_Event * event )> LambdaSDLEventHandler;
-        virtual uint32_t addSDLEventHandler( const LambdaSDLEventHandler & _handler ) = 0;
-        virtual void removeSDLEventHandler( uint32_t _handlerId ) = 0;
+        virtual UniqueId addSDLEventHandler( const LambdaSDLEventHandler & _handler ) = 0;
+        virtual void removeSDLEventHandler( UniqueId _handlerId ) = 0;
     };
 }

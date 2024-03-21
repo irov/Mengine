@@ -191,7 +191,9 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( name ) < MENGINE_PLUGIN_NAME_MAX );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( name ) < MENGINE_PLUGIN_NAME_MAX, "plugin name '%s' too long"
+            , name
+        );
 
         PluginDesc desc;
         desc.name.assign( name );

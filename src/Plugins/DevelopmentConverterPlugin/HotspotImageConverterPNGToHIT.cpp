@@ -212,7 +212,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotspotImageConverterPNGToHIT::makeMipMapLevel_( uint8_t * const _buffer, uint32_t _width, uint32_t _height, uint32_t _level )
     {
-        MENGINE_ASSERTION_FATAL( _level < 32 );
+        MENGINE_ASSERTION_FATAL( _level < 32, "invalid mipmap level %u"
+            , _level
+        );
 
         uint8_t * mipmap[32];
 

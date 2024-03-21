@@ -42,7 +42,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    const LoggerOperator & LoggerOperator::operator()( const Char * _format, ... ) const
+    void LoggerOperator::operator()( const Char * _format, ... ) const
     {
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
@@ -50,8 +50,6 @@ namespace Mengine
         this->logMessageArgs( _format, args );
 
         MENGINE_VA_LIST_END( args );
-
-        return *this;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerOperator::logMessageArgs( const Char * _format, MENGINE_VA_LIST_TYPE _args ) const

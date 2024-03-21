@@ -421,7 +421,7 @@ namespace Mengine
             m_debug.append( (const Char *)_data, _size );
         }
 
-    private:
+    protected:
         Data & m_buffer;
 
         String m_debug;

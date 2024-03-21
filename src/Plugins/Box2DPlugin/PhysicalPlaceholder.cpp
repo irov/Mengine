@@ -1,5 +1,7 @@
 #include "PhysicalPlaceholder.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -26,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PhysicalPlaceholder::updateLocalMatrix() const
     {
-        MENGINE_ASSERTION( m_body != nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_body );
 
         //always update local matrix
         this->invalidateLocalMatrix();

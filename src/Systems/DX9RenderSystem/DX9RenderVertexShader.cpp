@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexShader::~DX9RenderVertexShader()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DVertexShader == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexShader == nullptr, "shader not released" );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & DX9RenderVertexShader::getName() const
@@ -37,7 +37,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexShader::finalize()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DVertexShader == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexShader == nullptr, "shader '%s' not released"
+            , this->getName().c_str()
+        );
         
         m_memory = nullptr;
     }
@@ -46,7 +48,9 @@ namespace Mengine
     {
         if( m_compileReferenceCount == 0 )
         {
-            MENGINE_ASSERTION_FATAL( m_pD3DVertexShader == nullptr );
+            MENGINE_ASSERTION_FATAL( m_pD3DVertexShader == nullptr, "shader '%s' already compiled"
+                , this->getName().c_str()
+            );
 
             const DWORD * dx_source = m_memory->getBuffer();
 

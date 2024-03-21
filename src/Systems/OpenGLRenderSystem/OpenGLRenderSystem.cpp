@@ -49,7 +49,7 @@ namespace Mengine
     OpenGLRenderSystem::~OpenGLRenderSystem()
     {
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
-        MENGINE_ASSERTION_FATAL( m_vertexArrayId == 0 );
+        MENGINE_ASSERTION_FATAL( m_vertexArrayId == 0, "vertex array not released" );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -577,9 +577,9 @@ namespace Mengine
         MENGINE_UNUSED( _stageCache );
         MENGINE_UNUSED( _desc );
 
-        MENGINE_ASSERTION_FATAL( m_currentIndexBuffer != nullptr );
-        MENGINE_ASSERTION_FATAL( m_currentVertexBuffer != nullptr );
-        MENGINE_ASSERTION_FATAL( m_currentProgram != nullptr );
+        MENGINE_ASSERTION_FATAL( m_currentIndexBuffer != nullptr, "index buffer not set" );
+        MENGINE_ASSERTION_FATAL( m_currentVertexBuffer != nullptr, "vertex buffer not set" );
+        MENGINE_ASSERTION_FATAL( m_currentProgram != nullptr, "program not set" );
 
         if( m_currentProgram->enable() == false )
         {
@@ -1192,14 +1192,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderVertexShaderDestroy_( OpenGLRenderVertexShader * _vertexShader )
     {
-        MENGINE_ASSERTION_FATAL( _vertexShader->isCompile() == false );
+        MENGINE_ASSERTION_FATAL( _vertexShader->isCompile() == false, "shader '%s' not release"
+            , _vertexShader->getName().c_str()
+        );
 
         _vertexShader->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderFragmentShaderDestroy_( OpenGLRenderFragmentShader * _fragmentShader )
     {
-        MENGINE_ASSERTION_FATAL( _fragmentShader->isCompile() == false );
+        MENGINE_ASSERTION_FATAL( _fragmentShader->isCompile() == false, "shader '%s' not release"
+            , _fragmentShader->getName().c_str()
+        );
 
         _fragmentShader->finalize();
     }
@@ -1211,7 +1215,9 @@ namespace Mengine
             _program->release();
         }
 
-        MENGINE_ASSERTION_FATAL( _program->isCompile() == false );
+        MENGINE_ASSERTION_FATAL( _program->isCompile() == false, "program '%s' not release"
+            , _program->getName().c_str()
+        );
 
         _program->finalize();
     }

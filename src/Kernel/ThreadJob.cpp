@@ -315,7 +315,7 @@ namespace Mengine
         {
             ThreadJobWorkerDesc & desc = m_workers[i];
 
-            MENGINE_ASSERTION_FATAL( desc.status == ETS_FREE );
+            MENGINE_ASSERTION_FATAL( desc.status == ETS_FREE, "job worker not free" );
 
             desc.mutex = nullptr;
             desc.mutex_progress = nullptr;

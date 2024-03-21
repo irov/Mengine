@@ -86,13 +86,13 @@ namespace Mengine
         if( Helper::Win32GetCallstack( ~0U, pExceptionPointers->ContextRecord, stack, 8095 ) == false )
         {
             LOGGER_FATAL( "catch exception and write dumb '%s'"
-                , g_monitor->m_dumpPath
+                , g_monitor->m_dumpPath.c_str()
             );
         }
         else
         {
             LOGGER_FATAL( "catch exception and write dumb '%s'\n\n\n%s\n\n\n"
-                , g_monitor->m_dumpPath
+                , g_monitor->m_dumpPath.c_str()
                 , stack
             );
         }
@@ -135,7 +135,7 @@ namespace Mengine
 
         LOGGER_INFO( "system", "start critical errors monitor plugin" );
         LOGGER_INFO( "system", "dump path: '%s'"
-            , m_dumpPath
+            , m_dumpPath.c_str()
         );
 
         return true;

@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderFragmentShader::~DX9RenderFragmentShader()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr, "shader is not released" );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & DX9RenderFragmentShader::getName() const
@@ -37,7 +37,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderFragmentShader::finalize()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr, "shader is not released" );
 
         m_memory = nullptr;
     }
@@ -46,7 +46,7 @@ namespace Mengine
     {
         if( m_compileReferenceCount == 0 )
         {
-            MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr );
+            MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr, "shader is already compile" );
 
             const DWORD * shader_compile_data = m_memory->getBuffer();
 

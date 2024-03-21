@@ -256,7 +256,7 @@ namespace Mengine
             this->sync();
         }, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_FATAL( timerId != INVALID_UNIQUE_ID );
+        MENGINE_ASSERTION_FATAL( timerId != INVALID_UNIQUE_ID, "invalid add timer" );
 
         m_timerId = timerId;
 

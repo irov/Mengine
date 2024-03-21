@@ -139,8 +139,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSystem::_finalizeService()
     {
-        MENGINE_ASSERTION_FATAL( m_sourcesCount == 0 );
-        MENGINE_ASSERTION_FATAL( m_buffersCount == 0 );
+        MENGINE_ASSERTION_FATAL( m_sourcesCount == 0, "sound sources count %u not equal 0"
+            , m_sourcesCount
+        );
+
+        MENGINE_ASSERTION_FATAL( m_buffersCount == 0, "sound buffers count %u not equal 0"
+            , m_buffersCount
+        );
 
         if( m_device != nullptr )
         {

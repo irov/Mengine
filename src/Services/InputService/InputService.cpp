@@ -231,7 +231,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::isMouseButtonDown( EMouseButtonCode _button ) const
     {
-        MENGINE_ASSERTION_FATAL( _button < MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE );
+        MENGINE_ASSERTION_FATAL( _button < MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, "invalid button code %u"
+            , _button
+        );
 
         bool isDown = m_mouseBuffer[_button];
 
@@ -281,7 +283,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::applyCursorPosition_( ETouchCode _touchId, float _x, float _y, float _pressure )
     {
-        MENGINE_ASSERTION_FATAL( _touchId < MENGINE_INPUT_MAX_TOUCH );
+        MENGINE_ASSERTION_FATAL( _touchId < MENGINE_INPUT_MAX_TOUCH, "invalid touch id %u"
+            , _touchId
+        );
 
         const mt::vec2f & currentPosition = m_cursorPosition[_touchId];
 
@@ -321,7 +325,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & InputService::getCursorPosition( ETouchCode _touchId ) const
     {
-        MENGINE_ASSERTION_FATAL( _touchId < MENGINE_INPUT_MAX_TOUCH );
+        MENGINE_ASSERTION_FATAL( _touchId < MENGINE_INPUT_MAX_TOUCH, "invalid touch id %u"
+            , _touchId
+        );
 
         const mt::vec2f & position = m_cursorPosition[_touchId];
 
@@ -330,7 +336,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float InputService::getCursorPressure( ETouchCode _touchId ) const
     {
-        MENGINE_ASSERTION_FATAL( _touchId < MENGINE_INPUT_MAX_TOUCH );
+        MENGINE_ASSERTION_FATAL( _touchId < MENGINE_INPUT_MAX_TOUCH, "invalid touch id %u"
+            , _touchId
+        );
 
         float pressure = m_cursorPressure[_touchId];
 
@@ -439,8 +447,13 @@ namespace Mengine
             return;
         }
 
-        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH );
-        MENGINE_ASSERTION_FATAL( _event.button < MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE );
+        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH, "invalid touch id %u"
+            , _event.touchId
+        );
+
+        MENGINE_ASSERTION_FATAL( _event.button < MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, "invalid button code %u"
+            , _event.button
+        );
 
         LOGGER_INFO( "input", "handle mouse button touch [%u] pos [%.4f:%.4f] button [%u] down [%u] pressed [%u] pressure [%f]"
             , _event.touchId
@@ -473,7 +486,9 @@ namespace Mengine
             return;
         }
 
-        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH );
+        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH, "invalid touch id %u"
+            , _event.touchId
+        );
 
         LOGGER_INFO( "input", "handle mouse move touch [%u] pos [%.4f:%.4f] delta [%.8f:%.8f] pressure [%f]"
             , _event.touchId
@@ -505,7 +520,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseEnterEvent_( const InputMouseEnterEvent & _event )
     {
-        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH );
+        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH, "invalid touch id %u"
+            , _event.touchId
+        );
 
         LOGGER_INFO( "input", "handle mouse enter touch [%u] pos [%.4f:%.4f] pressure [%f]"
             , _event.touchId
@@ -522,7 +539,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseLeaveEvent_( const InputMouseLeaveEvent & _event )
     {
-        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH );
+        MENGINE_ASSERTION_FATAL( _event.touchId < MENGINE_INPUT_MAX_TOUCH, "invalid touch id %u"
+            , _event.touchId
+        );
 
         LOGGER_INFO( "input", "handle mouse leave touch [%u] pos [%.4f:%.4f] pressure [%f]"
             , _event.touchId

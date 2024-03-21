@@ -69,7 +69,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_destroy()
     {
-        MENGINE_ASSERTION_FATAL( this->isActivate() == false );
+        MENGINE_ASSERTION_FATAL( this->isActivate() == false, "node '%s' type '%s' destroy in activate state"
+            , this->getName().c_str()
+            , this->getType().c_str()
+        );
 
         this->release();
 

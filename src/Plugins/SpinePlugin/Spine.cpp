@@ -97,7 +97,10 @@ namespace Mengine
             return _sampler->getName() == _samplerName;
         } );
 
-        MENGINE_ASSERTION_FATAL( it_found != m_samplers.end() );
+        MENGINE_ASSERTION_FATAL( it_found != m_samplers.end(), "spine '%s' invalid remove sampler '%s' not found"
+            , this->getName().c_str()
+            , _samplerName.c_str()
+        );
 
         if( this->isCompile() == true )
         {
@@ -206,7 +209,12 @@ namespace Mengine
                 {
                     spMeshAttachment * attachment = (spMeshAttachment *)slot->attachment;
 
-                    MENGINE_ASSERTION_FATAL( attachment->super.worldVerticesLength <= MENGINE_SPINE_MAX_VERTICES );
+                    MENGINE_ASSERTION_FATAL( attachment->super.worldVerticesLength <= MENGINE_SPINE_MAX_VERTICES, "spine '%s' attachment '%s' worldVerticesLength %d > MENGINE_SPINE_MAX_VERTICES %d"
+                        , this->getName().c_str()
+                        , attachment->super.super.name
+                        , attachment->super.worldVerticesLength
+                        , MENGINE_SPINE_MAX_VERTICES
+                    );
 
                     spVertexAttachment_computeWorldVertices( &attachment->super, slot, 0, attachment->super.worldVerticesLength, (float *)attachment_vertices, 0, 2 );
 
@@ -428,7 +436,11 @@ namespace Mengine
 
             uint32_t slotIndex = (uint32_t)slot->data->index;
 
-            MENGINE_ASSERTION_FATAL( slotIndex < m_attachmentMeshes.size() );
+            MENGINE_ASSERTION_FATAL( slotIndex < m_attachmentMeshes.size(), "spine '%s' slotIndex %d >= m_attachmentMeshes.size() %d"
+                , this->getName().c_str()
+                , slotIndex
+                , m_attachmentMeshes.size()
+            );
 
             AttachmentMeshDesc & mesh = m_attachmentMeshes[slotIndex];
 

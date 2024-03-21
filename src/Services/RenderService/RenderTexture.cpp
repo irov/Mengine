@@ -2,6 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TextureHelper.h"
 
 namespace Mengine
@@ -23,9 +24,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderTexture::initialize( UniqueId _id, const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height )
     {
-        MENGINE_ASSERTION_FATAL( _image != nullptr );
-        MENGINE_ASSERTION_FATAL( _width != 0 );
-        MENGINE_ASSERTION_FATAL( _height != 0 );
+        MENGINE_ASSERTION_MEMORY_PANIC( _image );
+
+        MENGINE_ASSERTION_FATAL( _width != 0, "invalid width == 0" );
+        MENGINE_ASSERTION_FATAL( _height != 0, "invalid height == 0" );
 
         m_id = _id;
 

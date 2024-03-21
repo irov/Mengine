@@ -13,7 +13,7 @@ namespace Mengine
         ConstString stringizeString( const Char * _value );
         ConstString stringizeStringSize( const Char * _value, ConstString::size_type _size );
         ConstString stringizeStringSizeHash( const Char * _value, ConstString::size_type _size, ConstString::hash_type _hash );
-        ConstString stringizeStringFormat( MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 1, 2 );
+        ConstString stringizeStringFormat( const Char * _format, ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 1, 2 );
         ConstString stringizeStringLocal( const Char * _value, ConstString::size_type _size );
         ConstString stringizeStringHashLocal( const Char * _value, ConstString::size_type _size, ConstString::hash_type _hash );
         ConstString stringizeStringHashUnique( const Char * _value, ConstString::size_type _size, ConstString::hash_type _hash );

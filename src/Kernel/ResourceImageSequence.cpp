@@ -104,7 +104,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageSequence::addFrame( const ResourceImagePtr & _resourceImage, float _delay )
     {
-        MENGINE_ASSERTION_FATAL( this->isCompile() == false );
+        MENGINE_ASSERTION_FATAL( this->isCompile() == false, "resource '%s' already compile"
+            , this->getName().c_str()
+        );
 
         FrameImageSequence frame;
         frame.resourceImage = _resourceImage;
@@ -115,8 +117,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageSequence::setSequence( const VectorFrameImageSequence & _sequence )
     {
-        MENGINE_ASSERTION_FATAL( m_sequence.empty() == true );
-        MENGINE_ASSERTION_FATAL( this->isCompile() == false );
+        MENGINE_ASSERTION_FATAL( m_sequence.empty() == true, "resource '%s' already setup sequence"
+            , this->getName().c_str()
+        );
+
+        MENGINE_ASSERTION_FATAL( this->isCompile() == false, "resource '%s' already compile"
+            , this->getName().c_str()
+        );
 
         m_sequence = _sequence;
     }

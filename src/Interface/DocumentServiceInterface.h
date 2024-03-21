@@ -12,7 +12,7 @@ namespace Mengine
         SERVICE_DECLARE( "DocumentService" )
 
     public:
-        virtual DocumentInterfacePtr createDocument( const DocumentInterfacePtr & _parent, const Char * _modulePath, const Char * _file, const Char * _function, uint32_t _line, MENGINE_CHECK_FORMAT_STRING( const Char * _format ), ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 7, 8 ) = 0;
+        virtual DocumentInterfacePtr createDocument( const DocumentInterfacePtr & _parent, const Char * _modulePath, const Char * _file, const Char * _function, uint32_t _line, const Char * _format, ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 7, 8 ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

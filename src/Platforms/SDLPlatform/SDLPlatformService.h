@@ -212,8 +212,8 @@ namespace Mengine
 #endif
 
     public:
-        uint32_t addSDLEventHandler( const LambdaSDLEventHandler & _handler ) override;
-        void removeSDLEventHandler( uint32_t _handlerId ) override;
+        UniqueId addSDLEventHandler( const LambdaSDLEventHandler & _handler ) override;
+        void removeSDLEventHandler( UniqueId _handlerId ) override;
 
     protected:
         bool changeWindow_( const Resolution & _resolution, bool _fullscreen );

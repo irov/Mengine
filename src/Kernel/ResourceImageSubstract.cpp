@@ -15,7 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceImageSubstract::~ResourceImageSubstract()
     {
-        MENGINE_ASSERTION_FATAL( m_resourceImage == nullptr );
+        MENGINE_ASSERTION_FATAL( m_resourceImage == nullptr, "resource image not released" );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageSubstract::setResourceImage( const ResourceImagePtr & _resourceImage )
@@ -73,6 +73,9 @@ namespace Mengine
     void ResourceImageSubstract::_release()
     {
         ResourceImage::_release();
+
+        this->setTexture( nullptr );
+        this->setTextureAlpha( nullptr );
 
         m_resourceImage->release();
     }

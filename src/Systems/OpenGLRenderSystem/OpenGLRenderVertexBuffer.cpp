@@ -27,7 +27,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderVertexBuffer::~OpenGLRenderVertexBuffer()
     {
-        MENGINE_ASSERTION_FATAL( m_id == 0 );
+        MENGINE_ASSERTION_FATAL( m_id == 0, "vertex buffer '%u' is not released"
+            , m_id
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexBuffer::initialize( uint32_t _elementSize, EBufferType _bufferType )
@@ -207,7 +209,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexBuffer::onRenderRestore()
     {
-        MENGINE_ASSERTION_FATAL( m_id == 0 );
+        MENGINE_ASSERTION_FATAL( m_id == 0, "vertex buffer '%u' is not release"
+            , m_id
+        );
 
         OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
             ->getUnknown();

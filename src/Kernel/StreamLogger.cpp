@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     StreamLogger::~StreamLogger()
     {
-        MENGINE_ASSERTION_FATAL( m_stream == nullptr );
+        MENGINE_ASSERTION_FATAL( m_stream == nullptr, "stream is not nullptr" );
     }
     //////////////////////////////////////////////////////////////////////////
     void StreamLogger::setStream( const OutputStreamInterfacePtr & _stream )

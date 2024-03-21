@@ -311,8 +311,15 @@ namespace Mengine
         Detail::ZipEndOfCentralDirectoryFileHeader eocd;
         stream->read( &eocd, sizeof( eocd ) );
 
-        MENGINE_ASSERTION_FATAL( eocd.commentLength == 0 );
-        MENGINE_ASSERTION_FATAL( eocd.offsetOfStartOfCentralDirectoryRelativeToStartOfArchive != 0xffffffffU );
+        MENGINE_ASSERTION_FATAL( eocd.commentLength == 0, "zip '%s' invalid comment length [%u]"
+            , _folderPath.c_str()
+            , eocd.commentLength
+        );
+
+        MENGINE_ASSERTION_FATAL( eocd.offsetOfStartOfCentralDirectoryRelativeToStartOfArchive != 0xffffffffU, "zip '%s' invalid offset of start of central directory [%u]"
+            , _folderPath.c_str()
+            , eocd.offsetOfStartOfCentralDirectoryRelativeToStartOfArchive
+        );
 
         size_t header_offset = (size_t)eocd.offsetOfStartOfCentralDirectoryRelativeToStartOfArchive;
 

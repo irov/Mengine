@@ -37,7 +37,7 @@ namespace Mengine
     {
         uint32_t MemoryUsageMonitor_Seconds = CONFIG_VALUE( "MemoryUsageMonitorPlugin", "Seconds", 10U );
 
-        MENGINE_ASSERTION_FATAL( MemoryUsageMonitor_Seconds != 0 );
+        MENGINE_ASSERTION_FATAL( MemoryUsageMonitor_Seconds != 0, "invalid seconds" );
 
         m_seconds = MemoryUsageMonitor_Seconds;
 

@@ -21,7 +21,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferMemory::~OpenALSoundBufferMemory()
     {
-        MENGINE_ASSERTION_FATAL( m_alBufferId == 0 );
+        MENGINE_ASSERTION_FATAL( m_alBufferId == 0, "sound buffer '%u' not released"
+            , m_alBufferId
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferMemory::_acquireSoundBuffer()
@@ -49,7 +51,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferMemory::load( const SoundDecoderInterfacePtr & _soundDecoder )
     {
-        MENGINE_ASSERTION_FATAL( m_alBufferId == 0 );
+        MENGINE_ASSERTION_FATAL( m_alBufferId == 0, "sound buffer '%u' already loaded"
+            , m_alBufferId
+        );
 
         ALuint alBufferId = m_soundSystem->genBufferId();
 

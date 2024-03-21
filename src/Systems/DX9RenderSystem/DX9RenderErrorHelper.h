@@ -52,7 +52,7 @@ namespace Mengine
 #if defined(MENGINE_DXRENDER_CHECK_ERROR_ENABLE)
 //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_DXRELEASE( Object )\
-    if( Object == nullptr ){}else{ ULONG ref = Object -> Release(); MENGINE_ASSERTION_FATAL( ref == 0 ); Object = nullptr; }
+    if( Object == nullptr ){}else{ ULONG ref = Object -> Release(); MENGINE_ASSERTION_FATAL( ref == 0, "release dx object ref != 0" ); Object = nullptr; }
 //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_DXCALL( Device, Method, Args )\
     (MENGINE_DXERRORCHECK(#Method, Device -> Method Args))

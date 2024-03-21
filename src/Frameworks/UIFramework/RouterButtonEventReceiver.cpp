@@ -20,14 +20,18 @@ namespace Mengine
 
         MENGINE_UNUSED( delreceiver );
 
-        MENGINE_ASSERTION_FATAL( delreceiver == nullptr );
+        MENGINE_ASSERTION_FATAL( delreceiver == nullptr, "button event receiver '%s' override"
+            , _state.c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     ButtonEventReceiverInterfacePtr RouterButtonEventReceiver::removeButtonEventReceiver( const ConstString & _state )
     {
         ButtonEventReceiverInterfacePtr delreceiver = m_receivers.erase( _state );
 
-        MENGINE_ASSERTION_FATAL( delreceiver != nullptr );
+        MENGINE_ASSERTION_FATAL( delreceiver != nullptr, "button event receiver '%s' not found"
+            , _state.c_str()
+        );
 
         return delreceiver;
     }

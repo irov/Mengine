@@ -834,7 +834,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::setExtraOpacityMovieLayers( const ConstString & _name, float _opacity )
     {
-        MENGINE_ASSERTION_FATAL( _opacity >= 0.f && _opacity <= 1.f );
+        MENGINE_ASSERTION_FATAL( _opacity >= 0.f && _opacity <= 1.f, "invalid opacity [%.2f] (0..1)", _opacity );
 
         if( m_composition == nullptr )
         {
@@ -3217,7 +3217,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addSurface_( const SurfacePtr & _surface, bool _compile )
     {
-        MENGINE_ASSERTION_FATAL( Algorithm::find( m_surfaces.begin(), m_surfaces.end(), _surface ) == m_surfaces.end() );
+        MENGINE_ASSERTION_FATAL( Algorithm::find( m_surfaces.begin(), m_surfaces.end(), _surface ) == m_surfaces.end(), "surface '%s' already attach"
+            , _surface->getName().c_str()
+        );
 
         if( _compile == true )
         {

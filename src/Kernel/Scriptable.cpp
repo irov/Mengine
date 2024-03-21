@@ -17,12 +17,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Scriptable::~Scriptable()
     {
-        MENGINE_ASSERTION_FATAL( m_embed == nullptr );
+        MENGINE_ASSERTION_FATAL( m_embed == nullptr, "scriptable distruction embed is not NULL" );
     }
     //////////////////////////////////////////////////////////////////////////
     void Scriptable::setEmbed( pybind::kernel_interface * _kernel, PyObject * _embed )
     {
-        MENGINE_ASSERTION_FATAL( m_embed == nullptr );
+        MENGINE_ASSERTION_FATAL( m_embed == nullptr, "scriptable already setup embed '%s'"
+            , _kernel->object_repr_type( m_embed ).c_str()
+        );
 
 #if defined(MENGINE_DEBUG)
         if( _kernel->is_object_bindable( _embed ) == false )

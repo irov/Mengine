@@ -31,7 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexBuffer::~DX9RenderVertexBuffer()
     {
-        MENGINE_ASSERTION_FATAL( m_pD3DVertexBuffer == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexBuffer == nullptr, "invalid finalize" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexBuffer::initialize( uint32_t _vertexSize, EBufferType _bufferType )
@@ -141,7 +141,7 @@ namespace Mengine
             return nullptr;
         }
 
-        MENGINE_ASSERTION_FATAL( m_memory->getBuffer() == nullptr );
+        MENGINE_ASSERTION_FATAL( m_memory->getBuffer() == nullptr, "memory already lock" );
 
         DWORD d3d_flag;
         switch( m_bufferType )
@@ -275,7 +275,7 @@ namespace Mengine
             return true;
         }
 
-        MENGINE_ASSERTION_FATAL( m_pD3DVertexBuffer == nullptr );
+        MENGINE_ASSERTION_FATAL( m_pD3DVertexBuffer == nullptr, "invalid restore" );
 
         uint32_t bufferSize = m_vertexCapacity * m_vertexSize;
 

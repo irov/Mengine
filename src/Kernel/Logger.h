@@ -73,6 +73,7 @@ namespace Mengine
 
         uint32_t m_flag;
     };
+    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_VERBOSE_LEVEL( CATEGORY, LEVEL, FILTER, COLOR, FUNCTION, LINE, FLAG )\
@@ -82,7 +83,7 @@ namespace Mengine
     LOGGER_VERBOSE_LEVEL( MENGINE_CODE_LIBRARY, (LEVEL), (FILTER), (COLOR), MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE, (FLAG) )
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_DEBUG)
-#   define LOGGER_CALL_MESSAGE_FORMAT( ... ) (__VA_ARGS__); static_assert(sizeof(printf(__VA_ARGS__)))
+#   define LOGGER_CALL_MESSAGE_FORMAT( ... ) (__VA_ARGS__); static_assert(sizeof(MENGINE_PRINTF(__VA_ARGS__)))
 #else
 #   define LOGGER_CALL_MESSAGE_FORMAT( ... ) (__VA_ARGS__)
 #endif

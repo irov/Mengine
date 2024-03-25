@@ -8,4 +8,5 @@ namespace Mengine
 {
     typedef Map<ConstString, String> MapParams;
     typedef Map<ConstString, WString> MapWParams;
+    typedef Map<ConstString, ConstString> MapCParams;
 }

@@ -27,8 +27,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceImageDefault::~ResourceImageDefault()
     {
-        MENGINE_ASSERTION_FATAL( this->getTexture() == nullptr );
-        MENGINE_ASSERTION_FATAL( this->getTextureAlpha() == nullptr );
+        MENGINE_ASSERTION_FATAL( this->getTexture() == nullptr, "texture is not nullptr" );
+        MENGINE_ASSERTION_FATAL( this->getTextureAlpha() == nullptr, "texture alpha is not nullptr" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_compile()
@@ -93,7 +93,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageDefault::_release()
     {
-        ResourceImage::_release();
+        this->setTexture( nullptr );
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         if( m_forcePremultiply == true )

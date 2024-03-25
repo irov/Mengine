@@ -33,7 +33,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EventReceiverInterfacePtr BaseEventation::addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver )
     {
-        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1), "event %u overflow [0, %u]"
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1), "event %u overflow [0, %zu]"
             , _event
             , (sizeof( m_receiversMask ) * 8 - 1)
         );
@@ -76,7 +76,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EventReceiverInterfacePtr BaseEventation::removeEventReceiver( uint32_t _event )
     {
-        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1), "event %u overflow [0, %u]"
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1), "event %u overflow [0, %zu]"
             , _event
             , (sizeof( m_receiversMask ) * 8 - 1)
         );
@@ -108,7 +108,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const EventReceiverInterfacePtr & BaseEventation::getEventReceiver( uint32_t _event ) const
     {
-        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1), "event %u overflow [0, %u]"
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1), "event %u overflow [0, %zu]"
             , _event
             , (sizeof( m_receiversMask ) * 8 - 1)
         );
@@ -135,7 +135,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BaseEventation::hasEventReceiver( uint32_t _event ) const
     {
-        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1), "event %u overflow [0, %u]"
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1), "event %u overflow [0, %zu]"
             , _event
             , (sizeof( m_receiversMask ) * 8 - 1)
         );

@@ -106,7 +106,7 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
-#   define MENGINE_ASSERTION_CALL( ... ) (__VA_ARGS__ ) ;static_assert(sizeof(printf(__VA_ARGS__)))
+#   define MENGINE_ASSERTION_CALL( ... ) (__VA_ARGS__ ) ;static_assert(sizeof(MENGINE_PRINTF(__VA_ARGS__)))
 
 #   define MENGINE_ASSERTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_ERROR, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) MENGINE_ASSERTION_CALL(__VA_ARGS__)
 #   define MENGINE_ASSERTION_FATAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) MENGINE_ASSERTION_CALL(__VA_ARGS__)

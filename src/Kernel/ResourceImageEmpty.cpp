@@ -19,8 +19,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceImageEmpty::~ResourceImageEmpty()
     {
-        MENGINE_ASSERTION_FATAL( this->getTexture() == nullptr );
-        MENGINE_ASSERTION_FATAL( this->getTextureAlpha() == nullptr );
+        MENGINE_ASSERTION_FATAL( this->getTexture() == nullptr, "texture is not nullptr" );
+        MENGINE_ASSERTION_FATAL( this->getTextureAlpha() == nullptr, "texture alpha is not nullptr" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageEmpty::_compile()
@@ -43,7 +43,7 @@ namespace Mengine
     {
         ResourceImage::_release();
 
-        //Empty
+        this->setTexture( nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageEmpty::prepareImageFrame_()

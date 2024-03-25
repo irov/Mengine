@@ -115,3 +115,7 @@ namespace Mengine
 #define MENGINE_VSPRINTF(Buffer, Format, Args) std::vsprintf( Buffer, Format, Args )
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_PRINTF
+#define MENGINE_PRINTF(...) std::printf( __VA_ARGS__ )
+#endif
+//////////////////////////////////////////////////////////////////////////

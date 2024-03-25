@@ -32,9 +32,9 @@ namespace Mengine
 }
 
 #if defined(MENGINE_DEBUG)
-#   define MENGINE_ERROR_CALL( ... ) (__VA_ARGS__ ) ;static_assert(sizeof(printf(__VA_ARGS__)))
+#   define MENGINE_ERROR_CALL( ... ) (__VA_ARGS__ ) ;static_assert(sizeof(MENGINE_PRINTF(__VA_ARGS__)))
 #else
-#   define MENGINE_ERROR_CALL( ... ) (__VA_ARGS__ ) ;static_assert(sizeof(printf(__VA_ARGS__)))
+#   define MENGINE_ERROR_CALL( ... ) (__VA_ARGS__ )
 #endif
 
 //////////////////////////////////////////////////////////////////////////

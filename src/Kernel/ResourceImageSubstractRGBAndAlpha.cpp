@@ -99,6 +99,9 @@ namespace Mengine
     {
         ResourceImage::_release();
 
+        this->setTexture( nullptr );
+        this->setTextureAlpha( nullptr );
+
         m_resourceImageRGB->release();
         m_resourceImageAlpha->release();
     }

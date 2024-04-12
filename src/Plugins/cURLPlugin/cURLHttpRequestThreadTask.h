@@ -22,6 +22,9 @@ namespace Mengine
         void setURL( const String & _url );
         const String & getURL() const;
 
+        void setProxy( const String & _proxy );
+        const String & getProxy() const;
+
         void setCookies( const String & _cookies );
         const String & getCookies() const;
 
@@ -66,6 +69,7 @@ namespace Mengine
         HttpRequestId m_id;
 
         String m_url;
+        String m_proxy;
         String m_cookies;
         HttpRequestHeaders m_headers;        
         int32_t m_timeout;

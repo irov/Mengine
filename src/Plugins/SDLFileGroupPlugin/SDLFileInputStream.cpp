@@ -3,11 +3,10 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 
-#include "SDLFileHelper.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadGuardScope.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/DebugFileHelper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -37,9 +36,9 @@ namespace Mengine
         MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::open" );
 
 #if defined(MENGINE_DEBUG)
-        m_relationPath = _relationPath;
-        m_folderPath = _folderPath;
-        m_filePath = _filePath;
+        this->setDebugRelationPath( _relationPath );
+        this->setDebugFolderPath( _folderPath );
+        this->setDebugFilePath( _filePath );
 #endif
 
         m_streaming = _streaming;
@@ -115,7 +114,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * const _fullPath )
     {
-        if( Helper::concatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
+        if( Helper::concatenateFilePath( {_relationPath, _folderPath, _filePath}, _fullPath ) == false )
         {
             LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
                 , _folderPath.c_str()
@@ -159,7 +158,10 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath.c_str(), m_filePath.c_str(), m_streaming );
+            const FilePath & folderPath = this->getDebugFolderPath();
+            const FilePath & filePath = this->getDebugFilePath();
+
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, folderPath.c_str(), filePath.c_str(), m_streaming );
         }
 #endif
 
@@ -168,9 +170,8 @@ namespace Mengine
 
         if( error != 0 )
         {
-            LOGGER_ERROR( "invalid close file '%s:%s' get error: %s"
-                , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
-                , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
+            LOGGER_ERROR( "invalid close file '%s' get error: %s"
+                , Helper::getDebugFullPath( this )
                 , SDL_GetError()
             );
 
@@ -316,9 +317,8 @@ namespace Mengine
 
             if( result < 0 )
             {
-                LOGGER_ERROR( "file '%s:%s' seek %zu:%zu get [error: %s]"
-                    , MENGINE_DEBUG_VALUE( m_folderPath.c_str(), "" )
-                    , MENGINE_DEBUG_VALUE( m_filePath.c_str(), "" )
+                LOGGER_ERROR( "file '%s' seek %zu:%zu get [error: %s]"
+                    , Helper::getDebugFullPath( this )
                     , _pos
                     , m_size
                     , SDL_GetError()
@@ -373,19 +373,24 @@ namespace Mengine
     bool SDLFileInputStream::time( uint64_t * const _time ) const
     {
 #if defined(MENGINE_DEBUG)
-        Char filePath[MENGINE_MAX_PATH] = {'\0'};
-        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH - 1 ) == false )
+        const FilePath & relationPath = this->getDebugRelationPath();
+        const FilePath & folderPath = this->getDebugFolderPath();
+        const FilePath & filePath = this->getDebugFilePath();
+
+        Char fullPath[MENGINE_MAX_PATH] = {'\0'};
+        if( Helper::concatenateFilePath( {relationPath, folderPath, filePath}, fullPath ) == false )
         {
-            LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
-                , m_folderPath.c_str()
-                , m_filePath.c_str()
+            LOGGER_ERROR( "invalid concatenate filePath '%s:%s:%s'"
+                , relationPath.c_str()
+                , folderPath.c_str()
+                , filePath.c_str()
             );
 
             return false;
         }
 
         uint64_t ft = PLATFORM_SERVICE()
-            ->getFileTime( filePath );
+            ->getFileTime( fullPath );
 
         *_time = ft;
 
@@ -408,25 +413,6 @@ namespace Mengine
     SDL_RWops * SDLFileInputStream::getRWops() const
     {
         return m_rwops;
-    }
-    //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_DEBUG)
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLFileInputStream::getDebugRelationPath() const
-    {
-        return m_relationPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLFileInputStream::getDebugFolderPath() const
-    {
-        return m_folderPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLFileInputStream::getDebugFilePath() const
-    {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-#endif
+    }    
     //////////////////////////////////////////////////////////////////////////
 }

@@ -116,5 +116,93 @@ namespace Mengine
             return jresult;
         }
         //////////////////////////////////////////////////////////////////////////
+        void AndroidCallVoidActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
+        {
+            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+
+            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+
+            MENGINE_VA_LIST_TYPE args;
+            MENGINE_VA_LIST_START( args, _signature );
+
+            _jenv->CallStaticVoidMethodV( jclassMengineActivity, jmethodId, args );
+
+            MENGINE_VA_LIST_END( args );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jobject AndroidCallObjectActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
+        {
+            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+
+            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+
+            MENGINE_VA_LIST_TYPE args;
+            MENGINE_VA_LIST_START( args, _signature );
+
+            jobject jresult = _jenv->CallStaticObjectMethodV( jclassMengineActivity, jmethodId, args );
+
+            MENGINE_VA_LIST_END( args );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            return jresult;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jboolean AndroidCallBooleanActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
+        {
+            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+
+            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+
+            MENGINE_VA_LIST_TYPE args;
+            MENGINE_VA_LIST_START( args, _signature );
+
+            jboolean jresult = _jenv->CallStaticBooleanMethodV( jclassMengineActivity, jmethodId, args );
+
+            MENGINE_VA_LIST_END( args );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            return jresult;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jint AndroidCallIntActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
+        {
+            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+
+            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+
+            MENGINE_VA_LIST_TYPE args;
+            MENGINE_VA_LIST_START( args, _signature );
+
+            jint jresult = _jenv->CallStaticIntMethodV( jclassMengineActivity, jmethodId, args );
+
+            MENGINE_VA_LIST_END( args );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            return jresult;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jlong AndroidCallLongActivityStaticMethod( JNIEnv * _jenv, const Char * _name, const Char * _signature, ... )
+        {
+            jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
+
+            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+
+            MENGINE_VA_LIST_TYPE args;
+            MENGINE_VA_LIST_START( args, _signature );
+
+            jlong jresult = _jenv->CallStaticLongMethodV( jclassMengineActivity, jmethodId, args );
+
+            MENGINE_VA_LIST_END( args );
+
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            return jresult;
+        }
+        //////////////////////////////////////////////////////////////////////////
    }
 }

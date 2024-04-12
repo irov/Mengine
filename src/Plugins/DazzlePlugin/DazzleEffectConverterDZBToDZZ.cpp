@@ -59,8 +59,8 @@ namespace Mengine
         const FilePath & inputFolderPath = inputFileGroup->getFolderPath();
         const FilePath & outputFolderPath = outputFileGroup->getFolderPath();
 
-        FilePath full_inputFilePath = Helper::concatenationFilePath( inputFolderPath, inputFilePath );
-        FilePath full_outputFilePath = Helper::concatenationFilePath( outputFolderPath, outputFilePath );
+        FilePath full_inputFilePath = Helper::concatenateFilePath( {inputFolderPath, inputFilePath} );
+        FilePath full_outputFilePath = Helper::concatenateFilePath( {outputFolderPath, outputFilePath} );
 
         MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_devFileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 

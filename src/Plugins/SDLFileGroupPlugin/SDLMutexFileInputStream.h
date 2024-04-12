@@ -3,13 +3,10 @@
 #include "Interface/FileInputStreamInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
-#if defined(MENGINE_DEBUG)
-#   include "Interface/DebugFileInterface.h"
-#endif
-
 #include "SDLFileInputStream.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/BaseDebugFile.h"
 
 #include "SDL_rwops.h"
 
@@ -20,7 +17,7 @@ namespace Mengine
         : public FileInputStreamInterface
         , public Factorable
 #if defined(MENGINE_DEBUG)
-        , public DebugFileInterface
+        , public BaseDebugFile
 #endif
     {
         DECLARE_FACTORABLE( SDLMutexFileInputStream );
@@ -56,13 +53,6 @@ namespace Mengine
         bool read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read );
         bool seek_( size_t _pos );
 
-#if defined(MENGINE_DEBUG)
-    protected:
-        const FilePath & getDebugRelationPath() const override;
-        const FilePath & getDebugFolderPath() const override;
-        const FilePath & getDebugFilePath() const override;
-#endif
-
     protected:
         SDLFileInputStreamPtr m_stream;
         ThreadMutexInterfacePtr m_mutex;
@@ -75,12 +65,6 @@ namespace Mengine
         size_t m_reading;        
 
         uint8_t m_readCache[MENGINE_FILE_STREAM_BUFFER_SIZE];
-
-#if defined(MENGINE_DEBUG)
-        FilePath m_relationPath;
-        FilePath m_folderPath;
-        FilePath m_filePath;
-#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLMutexFileInputStream, FileInputStreamInterface> SDLMutexFileInputStreamPtr;

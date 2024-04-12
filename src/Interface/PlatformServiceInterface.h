@@ -72,6 +72,10 @@ namespace Mengine
         SERVICE_DECLARE( "PlatformService" );
 
     public:
+        virtual bool initializeFileService() = 0;
+        virtual void finalizeFileService() = 0;
+
+    public:
         virtual bool runPlatform() = 0;
         virtual void loopPlatform() = 0;
         virtual bool updatePlatform() = 0;

@@ -18,6 +18,9 @@ src
 
     AndroidEnvironmentService.h
     AndroidEnvironmentService.cpp
+    
+    AndroidAssetService.h
+    AndroidAssetService.cpp
 
     AndroidSemaphoreListenerInterface.h
     

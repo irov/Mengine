@@ -3,12 +3,14 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/String.h"
 
+#include "Config/InitializerList.h"
+
 namespace Mengine
 {
     namespace Helper
     {
-        FilePath concatenationFilePath( const FilePath & _left, const FilePath & _right );
-        bool makeFullPath( const ConstString & _fileGroupName, const FilePath & _filePath, FilePath * const _fullPath );
+        bool concatenateFilePath( InitializerList<FilePath> && _paths, Char * const _concatenatePath );
+        FilePath concatenateFilePath( InitializerList<FilePath> && _paths );
         FilePath getPathFolder( const FilePath & _fullpath );
         FilePath replaceFileSpec( const FilePath & _fullpath, const Char * _fileSpec );
         FilePath unicodeToFilePath( const WString & _unicode );

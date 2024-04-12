@@ -160,6 +160,16 @@ namespace Mengine
         return m_url;
     }
     //////////////////////////////////////////////////////////////////////////
+    void cURLHttpRequestThreadTask::setProxy( const String & _proxy )
+    {
+        m_proxy = _proxy;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const String & cURLHttpRequestThreadTask::getProxy() const
+    {
+        return m_proxy;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void cURLHttpRequestThreadTask::setCookies( const String & _cookies )
     {
         m_cookies = _cookies;
@@ -259,6 +269,13 @@ namespace Mengine
 
         MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_URL, url_str) );
         //CURLCALL( curl_easy_setopt, (curl, CURLOPT_FOLLOWLOCATION, 1) );
+
+        if( m_proxy.empty() == false )
+        {
+            const Char * proxy_str = m_proxy.c_str();
+
+            MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_PROXY, proxy_str) );
+        }
 
         struct curl_slist * curl_header_list = nullptr;
 

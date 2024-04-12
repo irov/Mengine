@@ -235,6 +235,16 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void cURLHttpSystem::setProxy( const String & _proxy )
+    {
+        m_proxy = _proxy;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const String & cURLHttpSystem::getProxy() const
+    {
+        return m_proxy;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const HttpRequestHeaders & cURLHttpSystem::getApplicationJSONHeaders() const
     {
         return m_applicationJSONHeaders;
@@ -256,6 +266,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( task );
 
         task->setURL( _url );
+        task->setProxy( m_proxy );
         task->setHeaders( _headers );
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
@@ -318,6 +329,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( task );
 
         task->setURL( _url );
+        task->setProxy( m_proxy );
         task->setHeaders( _headers );
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
@@ -380,6 +392,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( task );
 
         task->setURL( _url );
+        task->setProxy( m_proxy );
         task->setHeaders( _headers );
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
@@ -518,6 +531,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( task );
 
         task->setURL( _url );
+        task->setProxy( m_proxy );
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
 

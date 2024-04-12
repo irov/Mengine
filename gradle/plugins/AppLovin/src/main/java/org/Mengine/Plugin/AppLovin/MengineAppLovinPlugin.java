@@ -17,6 +17,7 @@ import com.applovin.sdk.AppLovinPrivacySettings;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.applovin.sdk.AppLovinSdkSettings;
+import com.applovin.sdk.AppLovinTermsAndPrivacyPolicyFlowSettings;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
@@ -116,7 +117,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         boolean MengineAppLovinPlugin_EnablePrivacyPolicyFlow = this.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_PRIVACY_POLICY_FLOW);
 
         if (MengineAppLovinPlugin_EnablePrivacyPolicyFlow == true) {
-            AppLovinSdkSettings.TermsAndPrivacyPolicyFlowSettings termsAndPrivacyPolicyFlowSettings = settings.getTermsAndPrivacyPolicyFlowSettings();
+            AppLovinTermsAndPrivacyPolicyFlowSettings termsAndPrivacyPolicyFlowSettings = settings.getTermsAndPrivacyPolicyFlowSettings();
 
             termsAndPrivacyPolicyFlowSettings.setEnabled(true);
 

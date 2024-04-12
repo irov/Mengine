@@ -9,8 +9,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadMutexScope.h"
-
-#include "SDLFileHelper.h"
+#include "Kernel/PathHelper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -46,9 +45,9 @@ namespace Mengine
         MENGINE_UNUSED( _share );
 
 #if defined(MENGINE_DEBUG)
-        m_relationPath = _relationPath;
-        m_folderPath = _folderPath;
-        m_filePath = _filePath;
+        this->setDebugRelationPath( _relationPath );
+        this->setDebugFolderPath( _folderPath );
+        this->setDebugFilePath( _filePath );
 #endif
 
         size_t size = m_stream->size();
@@ -277,19 +276,23 @@ namespace Mengine
     bool SDLMutexFileInputStream::time( uint64_t * const _time ) const
     {
 #if defined(MENGINE_DEBUG)
-        Char filePath[MENGINE_MAX_PATH] = {'\0'};
-        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH - 1 ) == false )
+        const FilePath & relationPath = this->getDebugRelationPath();
+        const FilePath & folderPath = this->getDebugFolderPath();
+        const FilePath & filePath = this->getDebugFilePath();
+
+        Char fullPath[MENGINE_MAX_PATH] = {'\0'};
+        if( Helper::concatenateFilePath( {relationPath, folderPath, filePath}, fullPath ) == false )
         {
             LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
-                , m_folderPath.c_str()
-                , m_filePath.c_str()
+                , folderPath.c_str()
+                , filePath.c_str()
             );
 
             return false;
         }
 
         uint64_t ft = PLATFORM_SERVICE()
-            ->getFileTime( filePath );
+            ->getFileTime( fullPath );
 
         *_time = ft;
 
@@ -308,24 +311,5 @@ namespace Mengine
 
         return false;
     }
-    //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_DEBUG)
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLMutexFileInputStream::getDebugRelationPath() const
-    {
-        return m_relationPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLMutexFileInputStream::getDebugFolderPath() const
-    {
-        return m_folderPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLMutexFileInputStream::getDebugFilePath() const
-    {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-#endif
     //////////////////////////////////////////////////////////////////////////
 }

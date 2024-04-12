@@ -259,6 +259,25 @@ namespace Mengine
                 return fontName;
             }
             //////////////////////////////////////////////////////////////////////////
+            PyObject * s_TextField_calcTotalTextViewport( pybind::kernel_interface * _kernel, TextField * _textField )
+            {
+                Viewport viewport;
+                if( _textField->calcTotalTextViewport( &viewport ) == false )
+                {
+                    _kernel->ret_none();
+                }
+
+                return pybind::ptr( _kernel, viewport );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            mt::vec2f s_TextField_calcTotalTextSize( TextField * _textField )
+            {
+                mt::vec2f size;
+                _textField->calcTotalTextSize( &size );
+
+                return size;
+            }
+            //////////////////////////////////////////////////////////////////////////
             mt::box2f s_BoundingBox_getBoundingBox( BoundingBox * _boundingBox )
             {
                 const mt::box2f * bb = _boundingBox->getBoundingBox();
@@ -926,6 +945,9 @@ namespace Mengine
                 .def( "setMaxCharCount", &TextField::setMaxCharCount )
                 .def( "getMaxCharCount", &TextField::getMaxCharCount )
                 .def( "getCharCount", &TextField::getCharCount )
+
+                .def_proxy_static_kernel( "calcTotalTextViewport", nodeScriptMethod, &NodeScriptMethod::s_TextField_calcTotalTextViewport )
+                .def_proxy_static( "calcTotalTextSize", nodeScriptMethod, &NodeScriptMethod::s_TextField_calcTotalTextSize )
                 ;
 
             pybind::interface_<ScriptHolder, pybind::bases<Node>>( _kernel, "ScriptHolder", false )

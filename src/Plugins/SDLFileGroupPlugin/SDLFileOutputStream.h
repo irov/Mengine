@@ -2,11 +2,8 @@
 
 #include "Interface/FileOutputStreamInterface.h"
 
-#if defined(MENGINE_DEBUG)
-#   include "Interface/DebugFileInterface.h"
-#endif
-
 #include "Kernel/Factorable.h"
+#include "Kernel/BaseDebugFile.h"
 
 #include "SDL_rwops.h"
 
@@ -17,7 +14,7 @@ namespace Mengine
         : public FileOutputStreamInterface
         , public Factorable
 #if defined(MENGINE_DEBUG)
-        , public DebugFileInterface
+        , public BaseDebugFile
 #endif
     {
         DECLARE_FACTORABLE( SDLFileOutputStream );
@@ -39,13 +36,6 @@ namespace Mengine
 
     public:
         SDL_RWops * getRWops() const;
-
-#if defined(MENGINE_DEBUG)
-    public:
-        const FilePath & getDebugRelationPath() const override;
-        const FilePath & getDebugFolderPath() const override;
-        const FilePath & getDebugFilePath() const override;
-#endif
 
     protected:
         SDL_RWops * m_rwops;

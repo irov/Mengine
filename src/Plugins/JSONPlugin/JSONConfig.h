@@ -77,10 +77,6 @@ namespace Mengine
         Tags m_platformTags;
 
         jpp::object m_json;
-
-#if defined(MENGINE_DEBUG)
-        FilePath m_debugFilePath;
-#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<JSONConfig, ConfigInterface> JSONConfigPtr;

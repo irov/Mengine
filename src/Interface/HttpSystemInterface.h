@@ -71,6 +71,10 @@ namespace Mengine
         SERVICE_DECLARE( "HttpSystem" );
 
     public:
+        virtual void setProxy( const String & _proxy ) = 0;
+        virtual const String & getProxy() const = 0;
+
+    public:
         virtual const HttpRequestHeaders & getApplicationJSONHeaders() const = 0;
 
     public:

@@ -33,12 +33,14 @@ namespace Mengine
         this->close();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32MutexFileInputStream::initialize( const Win32FileInputStreamPtr & _stream, const ThreadMutexInterfacePtr & _mutex )
+    void Win32MutexFileInputStream::setFileInputStream( const Win32FileInputStreamPtr & _stream )
     {
         m_stream = _stream;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32MutexFileInputStream::setThreadMutex( const ThreadMutexInterfacePtr & _mutex )
+    {
         m_mutex = _mutex;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32MutexFileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share )
@@ -50,9 +52,9 @@ namespace Mengine
         MENGINE_UNUSED( _share );
 
 #if defined(MENGINE_DEBUG)
-        m_relationPath = _relationPath;
-        m_folderPath = _folderPath;
-        m_filePath = _filePath;
+        this->setDebugRelationPath( _relationPath );
+        this->setDebugFolderPath( _folderPath );
+        this->setDebugFilePath( _filePath );
 #endif
 
         size_t size = m_stream->size();
@@ -328,22 +330,4 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_DEBUG)
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32MutexFileInputStream::getDebugRelationPath() const
-    {
-        return m_relationPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32MutexFileInputStream::getDebugFolderPath() const
-    {
-        return m_folderPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32MutexFileInputStream::getDebugFilePath() const
-    {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-#endif
 }

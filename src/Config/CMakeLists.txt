@@ -102,6 +102,7 @@ src
     Algorithm.h
     Numeric.h
     Iterator.h
+    InitializerList.h
     Timestamp.h
     Thread.h
     Switch.h

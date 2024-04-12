@@ -150,7 +150,7 @@ public class MengineAppLovinBase {
     protected void log(String callback) {
         StringBuilder sb = new StringBuilder(512);
 
-        sb.append(String.format(Locale.US, "[%s] callback: %s ", m_adFormat.getLabel(), callback));
+        sb.append(String.format(Locale.US, "[%s] %s ", m_adFormat.getLabel(), callback));
 
         this.writeBaseInfo(sb);
 
@@ -164,7 +164,7 @@ public class MengineAppLovinBase {
     protected void logError(String callback, Exception e) {
         StringBuilder sb = new StringBuilder(1024);
 
-        sb.append(String.format(Locale.US, "[%s] callback: %s exception: %s ", m_adFormat.getLabel(), callback, e.getMessage()));
+        sb.append(String.format(Locale.US, "[%s] %s exception: %s ", m_adFormat.getLabel(), callback, e.getMessage()));
 
         this.writeBaseInfo(sb);
 
@@ -178,7 +178,7 @@ public class MengineAppLovinBase {
     protected void log(String callback, Map<String, Object> params) {
         StringBuilder sb = new StringBuilder(512);
 
-        sb.append(String.format(Locale.US, "[%s] callback: %s %s ", m_adFormat.getLabel(), callback, params));
+        sb.append(String.format(Locale.US, "[%s] %s %s ", m_adFormat.getLabel(), callback, params));
 
         this.writeBaseInfo(sb);
 
@@ -192,7 +192,7 @@ public class MengineAppLovinBase {
     protected void logMaxAd(String callback, @NonNull MaxAd ad) {
         StringBuilder sb = new StringBuilder(2048);
 
-        sb.append(String.format(Locale.US, "[%s] callback: %s ", m_adFormat.getLabel(), callback));
+        sb.append(String.format(Locale.US, "[%s] %s ", m_adFormat.getLabel(), callback));
 
         this.writeBaseInfo(sb);
         this.writeMaxAdBaseInfo(sb, ad);
@@ -211,7 +211,7 @@ public class MengineAppLovinBase {
     protected void logMaxAd(String callback, @NonNull MaxAd ad, Map<String, Object> params) {
         StringBuilder sb = new StringBuilder(2048);
 
-        sb.append(String.format(Locale.US, "[%s] callback: %s %s ", m_adFormat.getLabel(), callback, params));
+        sb.append(String.format(Locale.US, "[%s] %s %s ", m_adFormat.getLabel(), callback, params));
 
         this.writeBaseInfo(sb);
         this.writeMaxAdBaseInfo(sb, ad);
@@ -230,7 +230,7 @@ public class MengineAppLovinBase {
     protected void logMaxAdReward(String callback, @NonNull MaxAd ad, MaxReward reward) {
         StringBuilder sb = new StringBuilder(2048);
 
-        sb.append(String.format(Locale.US, "[%s] callback: %s ", m_adFormat.getLabel(), callback));
+        sb.append(String.format(Locale.US, "[%s] %s ", m_adFormat.getLabel(), callback));
 
         this.writeBaseInfo(sb);
         this.writeMaxAdBaseInfo(sb, ad);
@@ -256,7 +256,7 @@ public class MengineAppLovinBase {
         int mediatedNetworkErrorCode = error.getMediatedNetworkErrorCode();
         String mediatedNetworkErrorMessage = error.getMediatedNetworkErrorMessage();
 
-        sb.append(String.format(Locale.US, "[%s] callback: %s ", m_adFormat.getLabel(), callback));
+        sb.append(String.format(Locale.US, "[%s] %s ", m_adFormat.getLabel(), callback));
 
         this.writeBaseInfo(sb);
 

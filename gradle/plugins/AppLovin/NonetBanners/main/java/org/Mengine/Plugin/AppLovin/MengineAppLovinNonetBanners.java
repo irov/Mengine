@@ -45,6 +45,8 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
     @Override
     public void initializeNonetBanners(MengineActivity activity, MengineAppLovinPlugin plugin) throws MenginePluginInvalidInitializeException {
+        this.m_plugin.logMessage("[NONET_BANNER] initialize");
+
         m_plugin = plugin;
 
         m_banners = new ArrayList<>();
@@ -116,7 +118,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
                     MengineAppLovinNonetBanners.this.m_requestId++;
 
-                    ViewGroup viewGroup = MengineActivity.getContentViewGroup();
+                    ViewGroup viewGroup = activity.getContentViewGroup();
 
                     NonetBanner oldBanner = MengineAppLovinNonetBanners.this.m_showBanner;
 
@@ -204,7 +206,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
         synchronized (this) {
             if (m_showBanner != null) {
-                ViewGroup viewGroup = MengineActivity.getContentViewGroup();
+                ViewGroup viewGroup = activity.getContentViewGroup();
                 viewGroup.removeView(m_showBanner.view);
 
                 m_showBanner = null;
@@ -249,7 +251,9 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
             NonetBanner banner = this.getCurrentBanner();
 
-            ViewGroup viewGroup = MengineActivity.getContentViewGroup();
+            MengineActivity activity = m_plugin.getMengineActivity();
+
+            ViewGroup viewGroup = activity.getContentViewGroup();
             viewGroup.addView(banner.view);
 
             m_showBanner = banner;
@@ -291,7 +295,9 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
             NonetBanner oldBanner = m_showBanner;
 
-            ViewGroup viewGroup = MengineActivity.getContentViewGroup();
+            MengineActivity activity = m_plugin.getMengineActivity();
+
+            ViewGroup viewGroup = activity.getContentViewGroup();
             viewGroup.removeView(oldBanner.view);
 
             m_showBanner = null;

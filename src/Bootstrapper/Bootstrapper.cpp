@@ -120,6 +120,7 @@ SERVICE_EXTERN( ChronometerService );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_ANDROID)
 SERVICE_EXTERN( AndroidEnvironmentService );
+SERVICE_EXTERN( AndroidAssetService );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_APPLE)
@@ -128,6 +129,10 @@ SERVICE_EXTERN( AppleEnvironmentService );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_IOS)
 SERVICE_EXTERN( iOSEnvironmentService );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_MACOS)
+SERVICE_EXTERN( MacOSEnvironmentService );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_EXTERNAL_SOURCE)
@@ -332,6 +337,18 @@ PLUGIN_EXPORT( MemoryUsageMonitor );
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_WIN32_ANTIFREEZEMONITOR_STATIC
 PLUGIN_EXPORT( Win32AntifreezeMonitor );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_WIN32_FILEGROUP_STATIC
+PLUGIN_EXPORT( Win32FileGroup );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_SDL_FILEGROUP_STATIC
+PLUGIN_EXPORT( SDLFileGroup );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_PLUGIN_ANDROID_FILEGROUP_STATIC
+PLUGIN_EXPORT( AndroidFileGroup );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC
@@ -961,6 +978,7 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         MENGINE_ADD_SERVICE( AndroidEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( AndroidAssetService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLATFORM_APPLE)
@@ -971,9 +989,28 @@ namespace Mengine
         MENGINE_ADD_SERVICE( iOSEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+#if defined(MENGINE_PLATFORM_MACOS)
+        MENGINE_ADD_SERVICE( MacOSEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         MENGINE_ADD_SERVICE( PlatformService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FileService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( ConfigService, MENGINE_DOCUMENT_FACTORABLE );
+
+#ifdef MENGINE_PLUGIN_ANDROID_FILEGROUP_STATIC
+        MENGINE_ADD_PLUGIN( AndroidFileGroup, "plugin AndroidFileGroup...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_SDL_FILEGROUP_STATIC
+        MENGINE_ADD_PLUGIN( SDLFileGroup, "plugin SDLFileGroup...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_WIN32_FILEGROUP_STATIC
+        MENGINE_ADD_PLUGIN( Win32FileGroup, "plugin Win32FileGroup...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+        PLATFORM_SERVICE()
+            ->initializeFileService();
 
         LOGGER_INFO( "bootstrapper", "debug mode [%s]", Helper::isDebugMode() == true ? "ON" : "OFF" );
         LOGGER_INFO( "bootstrapper", "development mode [%s]", Helper::isDevelopmentMode() == true ? "ON" : "OFF" );
@@ -2115,6 +2152,9 @@ namespace Mengine
             m_loggerFile = nullptr;
         }
 
+        PLATFORM_SERVICE()
+            ->finalizeFileService();
+
         if( SERVICE_IS_INITIALIZE( FileServiceInterface ) == true )
         {
             FILE_SERVICE()
@@ -2128,6 +2168,7 @@ namespace Mengine
         SERVICE_FINALIZE( SoundSystem );
 
 #if defined(MENGINE_PLATFORM_ANDROID)
+        SERVICE_FINALIZE( AndroidAssetService );
         SERVICE_FINALIZE( AndroidEnvironmentService );
 #endif
 
@@ -2137,6 +2178,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_iOS)
         SERVICE_FINALIZE( iOSEnvironmentService );
+#endif
+
+#if defined(MENGINE_PLATFORM_MACOS)
+        SERVICE_FINALIZE( MacOSEnvironmentService );
 #endif
 
         this->unregisterBaseTypes_();
@@ -2213,6 +2258,7 @@ namespace Mengine
         SERVICE_DESTROY( StatisticService );
 
 #if defined(MENGINE_PLATFORM_ANDROID)
+        SERVICE_DESTROY( AndroidAssetService );
         SERVICE_DESTROY( AndroidEnvironmentService );
 #endif
 
@@ -2222,6 +2268,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_IOS)
         SERVICE_DESTROY( iOSEnvironmentService );
+#endif
+
+#if defined(MENGINE_PLATFORM_MACOS)
+        SERVICE_DESTROY( MacOSEnvironmentService );
 #endif
 
         SERVICE_DESTROY( PlatformService );

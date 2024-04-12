@@ -6,6 +6,10 @@
     </queries>
 
     <queries>
+        <package android:name="com.instagram.android" />
+    </queries>
+
+    <queries>
         <provider android:authorities="com.facebook.katana.provider.PlatformProvider" />
         <provider android:authorities="com.facebook.orca.provider.PlatformProvider" />
     </queries>

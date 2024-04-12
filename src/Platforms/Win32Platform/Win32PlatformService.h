@@ -225,8 +225,8 @@ namespace Mengine
         void generateFingerprint_();
 
     protected:
-        bool initializeFileService_();
-        void finalizeFileService_();
+        bool initializeFileService() override;
+        void finalizeFileService() override;
 
     protected:
         void updateWndMessage_();

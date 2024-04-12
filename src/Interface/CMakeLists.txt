@@ -143,7 +143,10 @@ Common
 ADD_FILTER(
 Environment
     AndroidEnvironmentServiceInterface.h
+    AndroidAssetServiceInterface.h
     AppleEnvironmentServiceInterface.h
+    iOSEnvironmentServiceInterface.h
+    MacOSEnvironmentServiceInterface.h
 )
 
 ADD_FILTER(

@@ -26,6 +26,10 @@ namespace Mengine
         void _stopService() override;
 
     protected:
+        void setProxy( const String & _proxy ) override;
+        const String & getProxy() const override;
+
+    protected:
         const HttpRequestHeaders & getApplicationJSONHeaders() const override;
 
     protected:
@@ -52,6 +56,8 @@ namespace Mengine
         ThreadQueueInterfacePtr m_threadQueue;
 
         ThreadMutexInterfacePtr m_mutex;
+
+        String m_proxy;
 
         typedef Vector<ConstString> VectorThreads;
         VectorThreads m_threads;

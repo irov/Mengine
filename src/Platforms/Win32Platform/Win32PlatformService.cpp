@@ -92,8 +92,6 @@
 #define MENGINE_WINDOW_ICON_CACHE "icon_cache"
 #endif
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( Win32FileGroup );
-//////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PlatformService, Mengine::Win32PlatformService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -342,21 +340,6 @@ namespace Mengine
         const Char * Window_ClassName = CONFIG_VALUE( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
 
         Helper::utf8ToUnicode( Window_ClassName, m_windowClassName.data(), MENGINE_MAX_PATH );
-
-        SERVICE_WAIT( FileServiceInterface, [this]()
-        {
-            if( this->initializeFileService_() == false )
-            {
-                return false;
-            }
-
-            return true;
-        } );
-
-        SERVICE_LEAVE( FileServiceInterface, [this]()
-        {
-            this->finalizeFileService_();
-        } );
 
 #if defined(MENGINE_PLUGIN_DEVTODEBUG)
         SERVICE_WAIT( DevToDebugServiceInterface, [this]()
@@ -4309,17 +4292,8 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32PlatformService::initializeFileService_()
+    bool Win32PlatformService::initializeFileService()
     {
-        LOGGER_INFO( "platform", "plugin Win32FileGroup..." );
-
-        if( PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            LOGGER_ERROR( "plugin Win32FileGroup... [invalid initialize]" );
-
-            return false;
-        }
-
         Char currentPath[MENGINE_MAX_PATH] = {'\0'};
         size_t currentPathLen = PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
@@ -4413,7 +4387,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::finalizeFileService_()
+    void Win32PlatformService::finalizeFileService()
     {
         FILE_SERVICE()
             ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "windows" ) );

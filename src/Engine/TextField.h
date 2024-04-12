@@ -167,7 +167,7 @@ namespace Mengine
     public:
         const mt::vec2f & getTextSize() const;
         const mt::vec2f & getTextOffset() const;
-        bool calcTextViewport( Viewport * const _viewport ) const;
+        bool calcTotalTextViewport( Viewport * const _viewport ) const;
         void calcTotalTextSize( mt::vec2f * const _textSize ) const;
 
     public:

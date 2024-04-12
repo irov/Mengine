@@ -1,5 +1,6 @@
 package org.Mengine.Base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -8,6 +9,9 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.RelativeLayout;
 
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
@@ -51,19 +55,24 @@ public class MengineActivity extends SDLActivity {
     private Map<String, Integer> m_requestCodes;
     private Map<String, MengineSemaphore> m_semaphores;
 
+    //private boolean mBrokenLibraries = false;
+
+    //RelativeLayout m_contentView;
+
     public MengineActivity() {
     }
 
     @Override
     protected String[] getLibraries() {
         return new String[] {
-            "SDL2"
+            "SDL2",
+            "SDLApplication"
         };
     }
 
     @Override
     protected String getMainSharedObject() {
-        String mainSharedObject = getContext().getApplicationInfo().nativeLibraryDir + "/" + "libSDLApplication.so";
+        String mainSharedObject = this.getApplicationInfo().nativeLibraryDir + "/" + "libSDLApplication.so";
 
         return mainSharedObject;
     }
@@ -225,7 +234,7 @@ public class MengineActivity extends SDLActivity {
         return value;
     }
 
-    public static ViewGroup getContentViewGroup() {
+    public ViewGroup getContentViewGroup() {
         View view = SDLActivity.getContentView();
 
         ViewGroup viewGroup = (ViewGroup)view;
@@ -233,11 +242,20 @@ public class MengineActivity extends SDLActivity {
         return viewGroup;
     }
 
+    /*
+    public ViewGroup getContentViewGroup() {
+        ViewGroup viewGroup = (ViewGroup)m_contentView;
+
+        return viewGroup;
+    }*/
+
+    /*
     public static Context getContext() {
         Context context = SDLActivity.getContext();
 
         return context;
     }
+     */
 
     protected void finishWithAlertDialog(String format, Object... args) {
         MengineUtils.finishActivityWithAlertDialog(this, format, args);
@@ -258,6 +276,12 @@ public class MengineActivity extends SDLActivity {
 
         m_requestCodes = new HashMap<>();
         m_semaphores = new HashMap<>();
+
+        /*
+        RelativeLayout contentView = new RelativeLayout(this);
+        this.setContentView(contentView);
+        m_contentView = contentView;
+         */
 
         this.setState("activity.lifecycle", "create");
 
@@ -333,6 +357,27 @@ public class MengineActivity extends SDLActivity {
         this.setState("activity.init", "completed");
 
         this.setState("activity.lifecycle", "created");
+
+        /*
+        MengineGLSurfaceView surface = new MengineGLSurfaceView(this);
+
+        MengineGLSurfaceRenderer renderer = new MengineGLSurfaceRenderer();
+        surface.setRenderer(renderer);
+
+        m_contentView.addView(surface);
+
+        Window window = this.getWindow();
+
+        int flags = View.SYSTEM_UI_FLAG_FULLSCREEN |
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.INVISIBLE;
+                window.getDecorView().setSystemUiVisibility(flags);
+                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+         */
     }
 
     public void quitMengineApplication() {

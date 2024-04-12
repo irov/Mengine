@@ -52,6 +52,10 @@ namespace Mengine
         bool _runService() override;
         void _stopService() override;
 
+    protected:
+        bool initializeFileService() override;
+        void finalizeFileService() override;
+
     public:
         bool runPlatform()	override;
         void loopPlatform() override;
@@ -233,10 +237,6 @@ namespace Mengine
 
     protected:
         bool isNeedWindowRender() const;
-
-    protected:
-        bool initializeFileService_();
-        void finalizeFileService_();
 
     protected:
         Timestamp m_beginTime;

@@ -7,7 +7,6 @@
 #include "SDLMutexFileInputStream.h"
 #include "SDLFileOutputStream.h"
 #include "SDLFileMapped.h"
-#include "SDLFileHelper.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -59,7 +58,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLFileGroupDirectory::getFullPath( const FilePath & _filePath, Char * const _fullPath ) const
     {
-        bool successful = Helper::concatenateFilePath( m_relationPath, m_folderPath, _filePath, _fullPath, MENGINE_MAX_PATH );
+        bool successful = Helper::concatenateFilePath( {m_relationPath, m_folderPath, _filePath}, _fullPath );
 
         MENGINE_UNUSED( successful );
 
@@ -116,15 +115,21 @@ namespace Mengine
         basePath.append( relationPath );
         basePath.append( folderPath );
 
-        bool result = PLATFORM_SERVICE()
-            ->existDirectory( basePath.c_str(), _folderName.c_str() );
-
-        if( _recursive == true && result == false && m_parentFileGroup != nullptr )
+        if( PLATFORM_SERVICE()
+            ->existDirectory( basePath.c_str(), _folderName.c_str() ) == true )
         {
-            result = m_parentFileGroup->existDirectory( _folderName, true );
+            return true;
         }
 
-        return result;
+        if( _recursive == true && m_parentFileGroup != nullptr )
+        {
+            if( m_parentFileGroup->existDirectory( _folderName, true ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::createDirectory( const FilePath & _folderName ) const
@@ -175,7 +180,7 @@ namespace Mengine
     bool SDLFileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
         Char utf8_base[MENGINE_MAX_PATH] = {'\0'};
-        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, FilePath::none(), utf8_base, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, FilePath::none()}, utf8_base ) == false )
         {
             LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
                 , m_folderPath.c_str()

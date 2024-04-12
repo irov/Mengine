@@ -140,7 +140,9 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             return;
         }
 
-        ViewGroup viewGroup = MengineActivity.getContentViewGroup();
+        MengineActivity activity = m_plugin.getMengineActivity();
+
+        ViewGroup viewGroup = activity.getContentViewGroup();
         viewGroup.addView(adView);
 
         if (m_plugin.hasOption("applovin.banner.no_load") == false) {
@@ -155,7 +157,9 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             return;
         }
 
-        ViewGroup viewGroup = MengineActivity.getContentViewGroup();
+        MengineActivity activity = m_plugin.getMengineActivity();
+
+        ViewGroup viewGroup = activity.getContentViewGroup();
         viewGroup.removeView(adView);
 
         if (m_plugin.hasOption("applovin.banner.no_load") == false) {

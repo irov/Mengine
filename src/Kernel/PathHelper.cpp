@@ -1,7 +1,6 @@
 #include "PathHelper.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/FileServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
@@ -15,39 +14,46 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        FilePath concatenationFilePath( const FilePath & _left, const FilePath & _right )
+        bool concatenateFilePath( InitializerList<FilePath> && _paths, Char * const _concatenatePath )
         {
-            PathString path;
-
-            path += _left;
-            path += _right;
-
-            ConstString c_path = Helper::stringizeStringSize( path.c_str(), path.size() );
-
-            return FilePath( c_path );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool makeFullPath( const ConstString & _fileGroupName, const FilePath & _filePath, FilePath * const _fullPath )
-        {
-            FileGroupInterfacePtr group;
-
-            if( FILE_SERVICE()
-                ->hasFileGroup( _fileGroupName, &group ) == false )
+            if( Helper::memoryCopySafe( _concatenatePath, 0, MENGINE_MAX_PATH, "", 0 ) == false )
             {
-                LOGGER_ERROR( "not found file group '%s'"
-                    , _fileGroupName.c_str()
-                );
-
                 return false;
             }
 
-            const FilePath & groupPath = group->getFolderPath();
+            size_t offset = 0;
 
-            FilePath fullPath = Helper::concatenationFilePath( groupPath, _filePath );
+            for( const FilePath & path : _paths )
+            {
+                const Char * path_str = path.c_str();
+                FilePath::size_type path_size = path.size();
 
-            *_fullPath = fullPath;
+                if( Helper::memoryCopySafe( _concatenatePath, offset, MENGINE_MAX_PATH, path_str, path_size ) == false )
+                {
+                    return false;
+                }
+
+                offset += path_size;
+            }
+
+            _concatenatePath[offset] = '\0';
+
+            Helper::pathCorrectBackslashA( _concatenatePath );
 
             return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        FilePath concatenateFilePath( InitializerList<FilePath> && _paths )
+        {
+            Char concatenatePath[MENGINE_MAX_PATH];
+            if( Helper::concatenateFilePath( std::forward<InitializerList<FilePath> &&>( _paths ), concatenatePath ) == false )
+            {
+                return FilePath::none();
+            }
+
+            FilePath fp = Helper::stringizeFilePath( concatenatePath );
+
+            return fp;
         }
         //////////////////////////////////////////////////////////////////////////
         FilePath getPathFolder( const FilePath & _fullpath )

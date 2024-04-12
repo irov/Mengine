@@ -1,6 +1,7 @@
 #include "AndroidLogger.h"
 
 #include "Environment/Android/AndroidEnv.h"
+#include "Environment/Android/AndroidHelper.h"
 
 #include "Kernel/AssertionUtf8.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -100,6 +101,8 @@ namespace Mengine
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        Helper::AndroidEnvExceptionCheck( jenv );
 
         jclass jclass_MengineLog = jenv->FindClass( "android/util/Log" );
 

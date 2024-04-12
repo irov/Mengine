@@ -1,12 +1,9 @@
 #include "FileStreamHelper.h"
 
-#if defined(MENGINE_DEBUG)
-#   include "Interface/DebugFileInterface.h"
-#endif
-
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/FileGroupHelper.h"
+#include "Kernel/DebugFileHelper.h"
 
 namespace Mengine
 {
@@ -79,7 +76,7 @@ namespace Mengine
         {
             if( _fileGroup->closeInputFile( _stream ) == false )
             {
-                const FilePath & filePath = Helper::getInputStreamDebugRelationPath( _stream );
+                const FilePath & filePath = Helper::getDebugRelationPath( _stream );
 
                 LOGGER_ERROR( "invalid close input file '%s'"
                     , Helper::getFileGroupFullPath( _fileGroup, filePath )
@@ -95,7 +92,7 @@ namespace Mengine
         {
             if( _fileGroup->closeOutputFile( _stream ) == false )
             {
-                const FilePath & filePath = Helper::getOutputStreamDebugFilePath( _stream );
+                const FilePath & filePath = Helper::getDebugFilePath( _stream );
 
                 LOGGER_ERROR( "invalid close output file '%s'"
                     , Helper::getFileGroupFullPath( _fileGroup, filePath )
@@ -139,127 +136,6 @@ namespace Mengine
             stream = nullptr;
 
             return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        const FilePath & getInputStreamDebugRelationPath( const InputStreamInterfacePtr & _stream )
-        {
-            MENGINE_UNUSED( _stream );
-
-#if defined(MENGINE_DEBUG)
-            DebugFileInterface * stream = stdex::intrusive_dynamic_get<DebugFileInterface *>( _stream );
-
-            if( stream == nullptr )
-            {
-                return FilePath::none();
-            }
-
-            const FilePath & relationPath = stream->getDebugRelationPath();
-
-            return relationPath;
-#else
-            return FilePath::none();
-#endif
-        }
-        //////////////////////////////////////////////////////////////////////////
-        const FilePath & getInputStreamDebugFolderPath( const InputStreamInterfacePtr & _stream )
-        {
-            MENGINE_UNUSED( _stream );
-
-#if defined(MENGINE_DEBUG)
-            DebugFileInterface * stream = stdex::intrusive_dynamic_get<DebugFileInterface *>( _stream );
-
-            if( stream == nullptr )
-            {
-                return FilePath::none();
-            }
-
-            const FilePath & folderPath = stream->getDebugFolderPath();
-
-            return folderPath;
-#else
-            return FilePath::none();
-#endif
-        }
-        //////////////////////////////////////////////////////////////////////////
-        const FilePath & getInputStreamDebugFilePath( const InputStreamInterfacePtr & _stream )
-        {
-            MENGINE_UNUSED( _stream );
-
-#if defined(MENGINE_DEBUG)
-            DebugFileInterface * stream = stdex::intrusive_dynamic_get<DebugFileInterface *>( _stream );
-
-            if( stream == nullptr )
-            {
-                return FilePath::none();
-            }
-
-            const FilePath & filePath = stream->getDebugFilePath();
-
-            return filePath;
-#else
-            return FilePath::none();
-#endif
-        }
-        //////////////////////////////////////////////////////////////////////////
-        const FilePath & getOutputStreamDebugRelationPath( const OutputStreamInterfacePtr & _stream )
-        {
-            MENGINE_UNUSED( _stream );
-
-#if defined(MENGINE_DEBUG)
-            DebugFileInterface * stream = stdex::intrusive_dynamic_get<DebugFileInterface *>( _stream );
-
-            if( stream == nullptr )
-            {
-                return FilePath::none();
-            }
-
-            const FilePath & relationPath = stream->getDebugRelationPath();
-
-            return relationPath;
-#else
-            return FilePath::none();
-#endif
-        }
-        //////////////////////////////////////////////////////////////////////////
-        const FilePath & getOutputStreamDebugFolderPath( const OutputStreamInterfacePtr & _stream )
-        {
-            MENGINE_UNUSED( _stream );
-
-#if defined(MENGINE_DEBUG)
-            DebugFileInterface * stream = stdex::intrusive_dynamic_get<DebugFileInterface *>( _stream );
-
-            if( stream == nullptr )
-            {
-                return FilePath::none();
-            }
-
-            const FilePath & folderPath = stream->getDebugFolderPath();
-
-            return folderPath;
-#else
-            return FilePath::none();
-#endif
-        }
-        //////////////////////////////////////////////////////////////////////////
-        const FilePath & getOutputStreamDebugFilePath( const OutputStreamInterfacePtr & _stream )
-        {
-            MENGINE_UNUSED( _stream );
-
-#if defined(MENGINE_DEBUG)
-            DebugFileInterface * stream = stdex::intrusive_dynamic_get<DebugFileInterface *>( _stream );
-
-            if( stream == nullptr )
-            {
-                return FilePath::none();
-            }
-
-            const FilePath & filePath = stream->getDebugFilePath();
-
-            return filePath;
-
-#else
-            return FilePath::none();
-#endif
         }
         //////////////////////////////////////////////////////////////////////////
     }

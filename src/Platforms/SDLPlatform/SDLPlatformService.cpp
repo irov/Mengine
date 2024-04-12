@@ -97,8 +97,6 @@
 #   endif
 #endif
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( SDLFileGroup );
-//////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PlatformService, Mengine::SDLPlatformService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -847,21 +845,6 @@ namespace Mengine
         LOGGER_INFO( "platform", "Android SDK version: %d", AndroidSDKVersion );
         LOGGER_INFO( "platform", "Android TV: %d", AndroidTV );
 #endif
-
-        SERVICE_WAIT( FileServiceInterface, [this]()
-        {
-            if( this->initializeFileService_() == false )
-            {
-                return false;
-            }
-
-            return true;
-        } );
-
-        SERVICE_LEAVE( FileServiceInterface, [this]()
-        {
-            this->finalizeFileService_();
-        } );
 
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
@@ -3905,12 +3888,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::initializeFileService_()
+    bool SDLPlatformService::initializeFileService()
     {
-        LOGGER_INFO( "platform", "create plugin SDLFileGroup..." );
-
-        PLUGIN_CREATE( SDLFileGroup, MENGINE_DOCUMENT_FACTORABLE );
-
         FileGroupInterfacePtr defaultFileGroup = nullptr;
 
         if( FILE_SERVICE()
@@ -3940,7 +3919,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::finalizeFileService_()
+    void SDLPlatformService::finalizeFileService()
     {
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         FILE_SERVICE()

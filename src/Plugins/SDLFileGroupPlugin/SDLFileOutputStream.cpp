@@ -3,8 +3,8 @@
 #include "Interface/PlatformServiceInterface.h"
 
 #include "Kernel/Logger.h"
-
-#include "SDLFileHelper.h"
+#include "Kernel/PathHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 namespace Mengine
 {
@@ -34,7 +34,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         if( m_withTemp == true )
         {
-            if( Helper::concatenateFilePathTemp( m_relationPath, m_folderPath, m_filePath, concatenatePath, MENGINE_MAX_PATH - 1 ) == false )
+            if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath, STRINGIZE_FILEPATH_LOCAL( ".~tmp" )}, concatenatePath ) == false )
             {
                 LOGGER_ERROR( "invalid concatenate filePath '%s:%s' [temp]"
                     , m_folderPath.c_str()
@@ -46,7 +46,7 @@ namespace Mengine
         }
         else
         {
-            if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, concatenatePath, MENGINE_MAX_PATH - 1 ) == false )
+            if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath}, concatenatePath ) == false )
             {
                 LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
                     , m_folderPath.c_str()
@@ -57,7 +57,7 @@ namespace Mengine
             }
         }
 #else
-        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, concatenatePath, MENGINE_MAX_PATH - 1 ) == false )
+        if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath}, concatenatePath ) == false )
         {
             LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
                 , m_folderPath.c_str()
@@ -103,7 +103,7 @@ namespace Mengine
         if( m_withTemp == true )
         {
             Char fullPathTemp[MENGINE_MAX_PATH] = {'\0'};
-            if( Helper::concatenateFilePathTemp( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH - 1 ) == false )
+            if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath, STRINGIZE_FILEPATH_LOCAL( ".~tmp" )}, fullPathTemp ) == false )
             {
                 LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
                     , m_folderPath.c_str()
@@ -114,7 +114,7 @@ namespace Mengine
             }
 
             Char fullPath[MENGINE_MAX_PATH] = {'\0'};
-            if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, fullPath, MENGINE_MAX_PATH - 1 ) == false )
+            if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath}, fullPath ) == false )
             {
                 LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
                     , m_folderPath.c_str()
@@ -173,22 +173,4 @@ namespace Mengine
         return m_rwops;
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_DEBUG)
-//////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLFileOutputStream::getDebugRelationPath() const
-    {
-        return m_relationPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLFileOutputStream::getDebugFolderPath() const
-    {
-        return m_folderPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLFileOutputStream::getDebugFilePath() const
-    {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-#endif
 }

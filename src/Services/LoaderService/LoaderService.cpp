@@ -435,8 +435,8 @@ namespace Mengine
 
         const FilePath & folderPath = fileGroup->getFolderPath();
 
-        data.pathXml = Helper::concatenationFilePath( folderPath, filePath );
-        data.pathBin = Helper::concatenationFilePath( folderPath, _pathBin );
+        data.pathXml = Helper::concatenateFilePath( {folderPath, filePath} );
+        data.pathBin = Helper::concatenateFilePath( {folderPath, _pathBin} );
 
         data.useProtocolVersion = Metacode::get_metacode_protocol_version();
         data.useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();

@@ -2,6 +2,8 @@ package org.Mengine.Base;
 
 import android.util.Log;
 
+import androidx.annotation.Size;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Formatter;
@@ -58,7 +60,7 @@ public class MengineLog {
         MengineLog.m_initializeBaseServices = false;
     }
 
-    public static void logLevel(int level, String tag, String msg) {
+    public static void logLevel(int level, @Size(min = 1L,max = 23L) String tag, String msg) {
         switch (level) {
             case LM_SILENT:
                 break;
@@ -89,7 +91,7 @@ public class MengineLog {
         }
     }
 
-    private static String log(int level, String tag, String format, Object ... args) {
+    private static String log(int level, @Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String totalMsg = MengineLog.buildTotalMsg(format, args);
 
         MengineLog.logLevel(level, tag, totalMsg);
@@ -115,7 +117,7 @@ public class MengineLog {
         return totalMsg;
     }
 
-    public static String logVerbose(String tag, String format, Object ... args) {
+    public static String logVerbose(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         if (BuildConfig.DEBUG == false) {
             return "";
         }
@@ -125,7 +127,7 @@ public class MengineLog {
         return m;
     }
 
-    public static String logDebug(String tag, String format, Object ... args) {
+    public static String logDebug(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         if (BuildConfig.DEBUG == false) {
             return "";
         }
@@ -135,7 +137,7 @@ public class MengineLog {
         return m;
     }
 
-    public static String logInfo(String tag, String format, Object ... args) {
+    public static String logInfo(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         if (BuildConfig.DEBUG == false) {
             return "";
         }
@@ -145,31 +147,31 @@ public class MengineLog {
         return m;
     }
 
-    public static String logMessage(String tag, String format, Object ... args) {
+    public static String logMessage(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.log(LM_MESSAGE, tag, format, args);
 
         return m;
     }
 
-    public static String logWarning(String tag, String format, Object ... args) {
+    public static String logWarning(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.log(LM_WARNING, tag, format, args);
 
         return m;
     }
 
-    public static String logFatal(String tag, String format, Object ... args) {
+    public static String logFatal(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.log(LM_FATAL, tag, format, args);
 
         return m;
     }
 
-    public static String logMessageRelease(String tag, String format, Object ... args) {
+    public static String logMessageRelease(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.log(LM_MESSAGE_RELEASE, tag, format, args);
 
         return m;
     }
 
-    public static String logError(String tag, String format, Object ... args) {
+    public static String logError(@Size(min = 1L,max = 23L) String tag, String format, Object ... args) {
         String m = MengineLog.log(LM_ERROR, tag, format, args);
 
         return m;

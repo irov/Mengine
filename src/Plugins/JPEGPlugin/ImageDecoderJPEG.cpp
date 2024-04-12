@@ -8,6 +8,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
 #include "Kernel/ProfilerHelper.h"
+#include "Kernel/DebugFileHelper.h"
 
 #include "Config/StdArg.h"
 #include "Config/StdString.h"
@@ -30,13 +31,13 @@ namespace Mengine
             boolean start_of_file;
         };
         //////////////////////////////////////////////////////////////////////////
-        METHODDEF( const FilePath & ) jpeg_get_debug_filepath( j_common_ptr _cinfo )
+        METHODDEF( const Char * ) jpeg_get_debug_filepath( j_common_ptr _cinfo )
         {
             ImageDecoderJPEG * decoder = static_cast<ImageDecoderJPEG *>(_cinfo->client_data);
 
             const InputStreamInterfacePtr & stream = decoder->getStream();
 
-            const FilePath & filePath = Helper::getInputStreamDebugFilePath( stream );
+            const Char * filePath = Helper::getDebugFullPath( stream );
 
             return filePath;
         }
@@ -48,7 +49,7 @@ namespace Mengine
             (*_cinfo->err->format_message)(_cinfo, buffer);
 
             LOGGER_ASSERTION( "jpeg '%s' error: %s"
-                , Detail::jpeg_get_debug_filepath( _cinfo ).c_str()
+                , Detail::jpeg_get_debug_filepath( _cinfo )
                 , buffer
             );
 
@@ -65,7 +66,7 @@ namespace Mengine
             (*_cinfo->err->format_message)(_cinfo, buffer);
 
             LOGGER_ASSERTION( "jpeg '%s' message: %s"
-                , Detail::jpeg_get_debug_filepath( _cinfo ).c_str()
+                , Detail::jpeg_get_debug_filepath( _cinfo )
                 , buffer
             );
         }

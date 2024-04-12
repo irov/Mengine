@@ -2,12 +2,9 @@
 
 #include "Interface/FileInputStreamInterface.h"
 
-#if defined(MENGINE_DEBUG)
-#   include "Interface/DebugFileInterface.h"
-#endif
-
 #include "Kernel/Factorable.h"
 #include "Kernel/ThreadGuardScope.h"
+#include "Kernel/BaseDebugFile.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -22,7 +19,7 @@ namespace Mengine
         : public FileInputStreamInterface
         , public Factorable
 #if defined(MENGINE_DEBUG)
-        , public DebugFileInterface
+        , public BaseDebugFile
 #endif
     {
         DECLARE_FACTORABLE( Win32FileInputStream );
@@ -59,13 +56,6 @@ namespace Mengine
         bool read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read );
         bool seek_( size_t _pos );
 
-#if defined(MENGINE_DEBUG)
-    protected:
-        const FilePath & getDebugRelationPath() const override;
-        const FilePath & getDebugFolderPath() const override;
-        const FilePath & getDebugFilePath() const override;
-#endif
-
     protected:
         HANDLE m_hFile;
 
@@ -79,12 +69,6 @@ namespace Mengine
         uint8_t m_readCache[MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE];
 
         MENGINE_THREAD_GUARD_INIT( Win32FileInputStream );
-
-#if defined(MENGINE_DEBUG)
-        FilePath m_relationPath;
-        FilePath m_folderPath;
-        FilePath m_filePath;
-#endif
 
         bool m_streaming;
         bool m_share;

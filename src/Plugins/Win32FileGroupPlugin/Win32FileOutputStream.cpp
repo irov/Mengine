@@ -29,6 +29,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _withTemp )
     {
+#if defined(MENGINE_DEBUG)
+        this->setDebugRelationPath( _relationPath );
+        this->setDebugFolderPath( _folderPath );
+        this->setDebugFilePath( _filePath );
+#endif
+
         m_relationPath = _relationPath;
         m_folderPath = _folderPath;
         m_filePath = _filePath;
@@ -180,22 +186,4 @@ namespace Mengine
         return m_hFile;
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_DEBUG)
-//////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32FileOutputStream::getDebugRelationPath() const
-    {
-        return m_relationPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32FileOutputStream::getDebugFolderPath() const
-    {
-        return m_folderPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32FileOutputStream::getDebugFilePath() const
-    {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-#endif
 }

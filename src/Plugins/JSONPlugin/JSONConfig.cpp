@@ -14,6 +14,7 @@
 #include "Kernel/ArrayString.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/JSONHelper.h"
+#include "Kernel/DebugFileHelper.h"
 
 #include "Config/Typeinfo.h"
 
@@ -218,12 +219,8 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "invalid stream config" );
 
         LOGGER_INFO( "config", "load json config: %s"
-            , Helper::getInputStreamDebugFilePath( _stream ).c_str()
+            , Helper::getDebugFullPath( _stream )
         );
-
-#if defined(MENGINE_DEBUG)
-        m_debugFilePath = Helper::getInputStreamDebugFilePath( _stream );
-#endif
 
         size_t size = _stream->size();
 

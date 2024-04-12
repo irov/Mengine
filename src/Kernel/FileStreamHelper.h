@@ -16,13 +16,5 @@ namespace Mengine
         bool closeOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const OutputStreamInterfacePtr & _stream );
         bool writeOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _withTemp, const MemoryInterfacePtr & _memory, const DocumentInterfacePtr & _doc );
         //////////////////////////////////////////////////////////////////////////
-        const FilePath & getInputStreamDebugRelationPath( const InputStreamInterfacePtr & _stream );
-        const FilePath & getInputStreamDebugFolderPath( const InputStreamInterfacePtr & _stream );
-        const FilePath & getInputStreamDebugFilePath( const InputStreamInterfacePtr & _stream );
-        //////////////////////////////////////////////////////////////////////////
-        const FilePath & getOutputStreamDebugRelationPath( const OutputStreamInterfacePtr & _stream );
-        const FilePath & getOutputStreamDebugFolderPath( const OutputStreamInterfacePtr & _stream );
-        const FilePath & getOutputStreamDebugFilePath( const OutputStreamInterfacePtr & _stream );
-        //////////////////////////////////////////////////////////////////////////
     }
 }

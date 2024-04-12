@@ -9,6 +9,7 @@
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/DebugFileHelper.h"
 
 #ifndef MENGINE_DECODER_PNG_BYTES_TO_CHECK
 #define MENGINE_DECODER_PNG_BYTES_TO_CHECK 8
@@ -29,7 +30,7 @@ namespace Mengine
             ImageDecoderPNG * decoder = reinterpret_cast<ImageDecoderPNG *>(error_ptr);
 
             LOGGER_ASSERTION( "png [%s] error: '%s'"
-                , Helper::getInputStreamDebugFilePath( decoder->getStream() ).c_str()
+                , Helper::getDebugFullPath( decoder->getStream() )
                 , _error
             );
         }
@@ -43,7 +44,7 @@ namespace Mengine
             ImageDecoderPNG * decoder = reinterpret_cast<ImageDecoderPNG *>(error_ptr);
 
             LOGGER_WARNING( "png [%s] warning: '%s'"
-                , Helper::getInputStreamDebugFilePath( decoder->getStream() ).c_str()
+                , Helper::getDebugFullPath( decoder->getStream() )
                 , _error
             );
         }
@@ -51,6 +52,7 @@ namespace Mengine
         static void PNGAPI png_read_proc_ptr( png_structp png_ptr, uint8_t * _data, png_size_t _size )
         {
             png_voidp io_ptr = png_get_io_ptr( png_ptr );
+
             InputStreamInterface * stream = reinterpret_cast<InputStreamInterface *>(io_ptr);
 
             stream->read( _data, _size );
@@ -125,7 +127,7 @@ namespace Mengine
         if( stream->read( &png_check, MENGINE_DECODER_PNG_BYTES_TO_CHECK ) != MENGINE_DECODER_PNG_BYTES_TO_CHECK )
         {
             LOGGER_ERROR( "bad or not PNG file '%s' (size)"
-                , Helper::getInputStreamDebugFilePath( this->getStream() ).c_str() 
+                , Helper::getDebugFullPath( this->getStream() )
             );
 
             return false;
@@ -134,7 +136,7 @@ namespace Mengine
         if( png_sig_cmp( png_check, (png_size_t)0, MENGINE_DECODER_PNG_BYTES_TO_CHECK ) != 0 )
         {
             LOGGER_ERROR( "bad or not PNG file '%s' (sig)"
-                , Helper::getInputStreamDebugFilePath( this->getStream() ).c_str()
+                , Helper::getDebugFullPath( this->getStream() )
             );
 
             return false;
@@ -244,7 +246,7 @@ namespace Mengine
         default:
             {
                 LOGGER_ERROR( "png file '%s' unsupport channels %u"
-                    , Helper::getInputStreamDebugFilePath( this->getStream() ).c_str()
+                    , Helper::getDebugFullPath( this->getStream() )
                     , channels
                 );
 
@@ -355,7 +357,7 @@ namespace Mengine
                 else
                 {
                     LOGGER_ERROR( "png file '%s' DEFAULT not support chanells %u - %u"
-                        , Helper::getInputStreamDebugFilePath( this->getStream() ).c_str()
+                        , Helper::getDebugFullPath( this->getStream() )
                         , dataChannels
                         , optionChannels
                     );
@@ -402,7 +404,7 @@ namespace Mengine
                 else
                 {
                     LOGGER_ERROR( "png file '%s' DF_READ_ALPHA_ONLY not support chanells %u - %u"
-                        , Helper::getInputStreamDebugFilePath( this->getStream() ).c_str()
+                        , Helper::getDebugFullPath( this->getStream() )
                         , dataChannels
                         , optionChannels
                     );
@@ -459,7 +461,7 @@ namespace Mengine
                 else
                 {
                     LOGGER_ERROR( "png file '%s' DF_WRITE_ALPHA_ONLY not support chanells %u - %u"
-                        , Helper::getInputStreamDebugFilePath( this->getStream() ).c_str()
+                        , Helper::getDebugFullPath( this->getStream() )
                         , dataChannels
                         , optionChannels
                     );
@@ -470,7 +472,7 @@ namespace Mengine
         default:
             {
                 LOGGER_ERROR( "png file '%s' unsupport options flag %u"
-                    , Helper::getInputStreamDebugFilePath( this->getStream() ).c_str()
+                    , Helper::getDebugFullPath( this->getStream() )
                     , flags
                 );
 

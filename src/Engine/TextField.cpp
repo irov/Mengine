@@ -790,7 +790,7 @@ namespace Mengine
         return m_textOffset;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextField::calcTextViewport( Viewport * const _viewport ) const
+    bool TextField::calcTotalTextViewport( Viewport * const _viewport ) const
     {
         if( m_textId.empty() == true && m_text.empty() == true )
         {
@@ -829,12 +829,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::calcTotalTextSize( mt::vec2f * const _textSize ) const
     {
-        if( this->isInvalidateTextLines() == true )
-        {
-            this->updateTextLines_();
-        }
+        const mt::vec2f & textSize = this->getTextSize();
 
-        *_textSize = m_textSize * m_autoScaleFactor;
+        *_textSize = textSize * m_autoScaleFactor;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const

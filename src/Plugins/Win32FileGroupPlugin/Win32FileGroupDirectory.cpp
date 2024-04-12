@@ -113,15 +113,21 @@ namespace Mengine
         basePath.append( relationPath );
         basePath.append( folderPath );
 
-        bool result = PLATFORM_SERVICE()
-            ->existDirectory( basePath.c_str(), _folderPath.c_str() );
-
-        if( _recursive == true && result == false && m_parentFileGroup != nullptr )
+        if( PLATFORM_SERVICE()
+            ->existDirectory( basePath.c_str(), _folderPath.c_str() ) == true )
         {
-            result = m_parentFileGroup->existDirectory( _folderPath, true );
+            return true;
         }
 
-        return result;
+        if( _recursive == true && m_parentFileGroup != nullptr )
+        {
+            if( m_parentFileGroup->existDirectory( _folderPath, true ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::createDirectory( const FilePath & _folderName ) const
@@ -256,7 +262,8 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream );
 
-        stream->initialize( _stream, _mutex );
+        stream->setFileInputStream( _stream );
+        stream->setThreadMutex( _mutex );
 
         if( _fileGroup != nullptr )
         {

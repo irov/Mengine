@@ -18,6 +18,9 @@ src
     
     iOSMailCompose.h
     iOSMailCompose.mm
+
+    iOSTransparencyConsentParam.h
+    iOSTransparencyConsentParam.mm
     
     UIMainApplicationDelegateInterface.h
     UIPluginApplicationDelegateInterface.h

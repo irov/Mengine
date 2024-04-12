@@ -4,6 +4,9 @@
 #include "Environment/Apple/AppleLog.h"
 #include "Environment/Apple/AppleSemaphoreService.h"
 
+#include "Environment/iOS/iOSDetail.h"
+#include "Environment/iOS/iOSTransparencyConsentParam.h"
+
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/ConstStringHelper.h"
 
@@ -121,6 +124,10 @@
         Mengine::Helper::AppleLog(@"[AppLovin] country code: %@", countryCode);
         Mengine::Helper::AppleLog(@"[AppLovin] app tracking transparency status: %ld", appTrackingTransparencyStatus);
         Mengine::Helper::AppleLog(@"[AppLovin] test mode enabled: %d", testModeEnabled);
+        
+        iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
+        
+        Mengine::Helper::iOSPluginApplicationDelegateEventNotify( @("NOTIFICATION_TRANSPARENCY_CONSENT"), consent, nil );
         
         [AppleSemaphoreService.sharedInstance activateSemaphore:@"AppLovinSdkInitialized"];
     }];

@@ -68,7 +68,7 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "send key and values:" );
 
-        NSMutableDictionary *keysAndValues = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary * keysAndValues = [[NSMutableDictionary alloc] init];
 
         for( auto && [key, value] : _params )
         {

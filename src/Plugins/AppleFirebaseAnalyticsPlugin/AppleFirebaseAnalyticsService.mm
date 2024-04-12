@@ -87,7 +87,7 @@ namespace Mengine
             );
         }
 
-        [FIRAnalytics logEventWithName:_name 
+        [FIRAnalytics logEventWithName:_name
                             parameters:_parameters];
     }
     //////////////////////////////////////////////////////////////////////////

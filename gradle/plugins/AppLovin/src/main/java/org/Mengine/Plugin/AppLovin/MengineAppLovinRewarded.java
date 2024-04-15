@@ -321,7 +321,12 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public void onAdRevenuePaid(MaxAd ad) {
         this.logMaxAd("onAdRevenuePaid", ad);
 
+        String placement = ad.getPlacement();
+
         this.buildAdEvent("mng_ad_rewarded_revenue_paid")
+            .addParameterString("placement", placement)
+            .addParameterDouble("revenue", ad.getRevenue())
+            .addParameterString("revenue_precision", ad.getRevenuePrecision())
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 

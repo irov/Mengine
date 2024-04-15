@@ -390,6 +390,8 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
         this.buildAdEvent("mng_ad_banner_revenue_paid")
             .addParameterString("placement", placement)
+            .addParameterDouble("revenue", ad.getRevenue())
+            .addParameterString("revenue_precision", ad.getRevenuePrecision())
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 

@@ -229,7 +229,9 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    self.m_provider->onAppleAppLovinBannerDidPayRevenueForAd();
+    self.m_provider->onAppleAppLovinBannerDidPayRevenueForAd(@{
+            @"revenue": @(ad.revenue)
+    });
 }
 
 @end

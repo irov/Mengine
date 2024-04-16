@@ -238,8 +238,10 @@
         @"revenue_precision": ad.revenuePrecision,
         @"ad": [self getMAAdParams:ad]
     }];
-    
-    self.m_provider->onAppleAppLovinInterstitialDidPayRevenueForAd();
+
+    self.m_provider->onAppleAppLovinInterstitialDidPayRevenueForAd(@{
+        @"revenue": @(ad.revenue)
+    });
 }
 
 @end

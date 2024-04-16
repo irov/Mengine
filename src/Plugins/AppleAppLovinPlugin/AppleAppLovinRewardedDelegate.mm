@@ -290,7 +290,9 @@
         
     [self.m_analytics eventRevenuePaid:ad];
     
-    self.m_provider->onAppleAppLovinRewardedDidPayRevenueForAd();
+    self.m_provider->onAppleAppLovinRewardedDidPayRevenueForAd(@{
+        @"revenue": @(ad.revenue)
+    });
 }
     
 @end

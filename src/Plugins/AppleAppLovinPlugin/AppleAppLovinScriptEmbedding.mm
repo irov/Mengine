@@ -64,9 +64,9 @@ namespace Mengine
                 this->call_cbs( "onAppleAppLovinBannerDidCollapseAd" );
             }
             
-            void onAppleAppLovinBannerDidPayRevenueForAd() override
+            void onAppleAppLovinBannerDidPayRevenueForAd( NSDictionary _revenueData ) override
             {
-                this->call_cbs( "onAppleAppLovinBannerDidPayRevenueForAd" );
+                this->call_cbs( "onAppleAppLovinBannerDidPayRevenueForAd", _revenueData );
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -125,9 +125,9 @@ namespace Mengine
                 this->call_cbs( "onAppleAppLovinInterstitialDidFailToDisplayAd" );
             }
             
-            void onAppleAppLovinInterstitialDidPayRevenueForAd() override
+            void onAppleAppLovinInterstitialDidPayRevenueForAd( NSDictionary _revenueData ) override
             {
-                this->call_cbs( "onAppleAppLovinInterstitialDidPayRevenueForAd" );
+                this->call_cbs( "onAppleAppLovinInterstitialDidPayRevenueForAd", _revenueData );
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -201,9 +201,9 @@ namespace Mengine
                 this->call_cbs( "onAppleAppLovinRewardedDidRewardUserForAd" );
             }
             
-            void onAppleAppLovinRewardedDidPayRevenueForAd() override
+            void onAppleAppLovinRewardedDidPayRevenueForAd( NSDictionary _revenueData ) override
             {
-                this->call_cbs( "onAppleAppLovinRewardedDidPayRevenueForAd" );
+                this->call_cbs( "onAppleAppLovinRewardedDidPayRevenueForAd", _revenueData );
             }
         };
         //////////////////////////////////////////////////////////////////////////

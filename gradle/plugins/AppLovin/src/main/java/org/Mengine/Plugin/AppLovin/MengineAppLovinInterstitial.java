@@ -277,7 +277,9 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_plugin.onEventRevenuePaid(ad);
 
-        m_plugin.pythonCall("onAppLovinInterstitialOnAdRevenuePaid", m_adUnitId);
+        m_plugin.pythonCall("onAppLovinInterstitialOnAdRevenuePaid", m_adUnitId,
+                Map.of("revenue", ad.getRevenue())
+        );
     }
 
     @Override

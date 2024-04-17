@@ -45,14 +45,14 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
     @Override
     public void initializeNonetBanners(MengineActivity activity, MengineAppLovinPlugin plugin) throws MenginePluginInvalidInitializeException {
-        this.m_plugin.logMessage("[NONET_BANNER] initialize");
-
         m_plugin = plugin;
 
         m_banners = new ArrayList<>();
 
         m_visible = false;
         m_requestId = 0;
+
+        this.m_plugin.logMessage("[NONET_BANNER] initialize");
 
         Resources resources = activity.getResources();
 

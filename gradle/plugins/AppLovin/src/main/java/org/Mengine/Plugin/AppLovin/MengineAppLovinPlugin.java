@@ -171,7 +171,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
                 List<String> enabledAmazonAdUnitIds = configuration.getEnabledAmazonAdUnitIds();
                 AppLovinSdkConfiguration.ConsentFlowUserGeography consentFlowUserGeography = configuration.getConsentFlowUserGeography();
 
-                MengineAppLovinPlugin.this.logMessage("AppLovinSdk initialized CMP: %b TestMode: %b CountryCode: %s AmazonAdUnitIds: %s ConsentFlowUserGeography: %s"
+                MengineAppLovinPlugin.this.logMessage("initialized CMP: %b TestMode: %b CountryCode: %s AmazonAdUnitIds: %s ConsentFlowUserGeography: %s"
                     , supportedCmp
                     , testModeEnabled
                     , countryCode
@@ -185,7 +185,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
                     String name = networkInfo.getName();
                     String adapterVersion = networkInfo.getAdapterVersion();
 
-                    MengineAppLovinPlugin.this.logMessage("Available Mediated Network: %s [%s]"
+                    MengineAppLovinPlugin.this.logMessage("available mediated network: %s [%s]"
                         , name
                         , adapterVersion
                     );
@@ -211,6 +211,8 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             mediationAmazon.initializeMediator(activity, this);
 
             m_mediationAmazon = mediationAmazon;
+        } else {
+            this.logMessage("not found mediation amazon");
         }
 
         MengineAppLovinNonetBannersInterface nonetBanners = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinNonetBanners", false);
@@ -219,6 +221,8 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             nonetBanners.initializeNonetBanners(activity, this);
 
             m_nonetBanners = nonetBanners;
+        } else {
+            this.logMessage("not found no-net banners");
         }
     }
 

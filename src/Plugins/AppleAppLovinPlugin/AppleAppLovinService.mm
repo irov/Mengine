@@ -82,10 +82,11 @@ namespace Mengine
         NSString * placement = Helper::stringToNSString(_placement);
         
         // Banner height on iPhone and iPad is 50 and 90, respectively
-        CGFloat height = (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) ? 90 : 50;
+        CGFloat banner_height = (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) ? 90 : 50;
         // Stretch to the width of the screen for banners to be fully functional
-        CGFloat width = CGRectGetWidth(UIScreen.mainScreen.bounds);
-        CGRect bannerRect = CGRectMake(0, 0, width, height);
+        CGFloat screen_width = CGRectGetWidth(UIScreen.mainScreen.bounds);
+        CGFloat screen_height = CGRectGetHeight(UIScreen.mainScreen.bounds);
+        CGRect bannerRect = CGRectMake(0, screen_height - banner_height, screen_width, banner_height);
 
         NSString * amazonBannerSlotId = nil;
         

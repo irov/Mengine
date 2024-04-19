@@ -34,6 +34,7 @@
     rewardedAd.delegate = self;
     rewardedAd.requestDelegate = self;
     rewardedAd.revenueDelegate = self;
+    rewardedAd.adReviewDelegate = self;
     
     self.m_rewardedAd = rewardedAd;
     
@@ -290,9 +291,13 @@
         
     [self.m_analytics eventRevenuePaid:ad];
     
-    self.m_provider->onAppleAppLovinRewardedDidPayRevenueForAd(@{
-        @"revenue": @(ad.revenue)
-    });
+    self.m_provider->onAppleAppLovinRewardedDidPayRevenueForAd();
+}
+
+#pragma mark - AdReview Callbacks
+
+- (void)didGenerateCreativeIdentifier:(NSString *)creativeIdentifier forAd:(MAAd *)ad {
+    //ToDo
 }
     
 @end

@@ -40,12 +40,14 @@
     adView.delegate = self;
     adView.revenueDelegate = self;
     adView.requestDelegate = self;
+    adView.adReviewDelegate = self;
 
     adView.frame = rect;
-    adView.backgroundColor = UIColor.blackColor;
+    adView.backgroundColor = UIColor.clearColor;
 
     UIViewController * rootViewController = Mengine::Helper::iOSGetRootViewController();
     [rootViewController.view addSubview:adView];
+    adView.hidden = YES;
     
     self.m_adView = adView;
     
@@ -229,9 +231,13 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    self.m_provider->onAppleAppLovinBannerDidPayRevenueForAd(@{
-            @"revenue": @(ad.revenue)
-    });
+    self.m_provider->onAppleAppLovinBannerDidPayRevenueForAd();
+}
+
+#pragma mark - AdReview Callbacks
+
+- (void)didGenerateCreativeIdentifier:(NSString *)creativeIdentifier forAd:(MAAd *)ad {
+    //ToDo
 }
 
 @end

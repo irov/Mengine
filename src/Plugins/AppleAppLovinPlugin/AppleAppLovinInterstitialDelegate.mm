@@ -35,6 +35,7 @@
     interstitialAd.delegate = self;
     interstitialAd.revenueDelegate = self;
     interstitialAd.requestDelegate = self;
+    interstitialAd.adReviewDelegate = self;
     
     self.m_interstitialAd = interstitialAd;
     
@@ -239,9 +240,13 @@
         @"ad": [self getMAAdParams:ad]
     }];
 
-    self.m_provider->onAppleAppLovinInterstitialDidPayRevenueForAd(@{
-        @"revenue": @(ad.revenue)
-    });
+    self.m_provider->onAppleAppLovinInterstitialDidPayRevenueForAd();
+}
+
+#pragma mark - AdReview Callbacks
+
+- (void)didGenerateCreativeIdentifier:(NSString *)creativeIdentifier forAd:(MAAd *)ad {
+    //ToDo
 }
 
 @end

@@ -9,7 +9,7 @@
 #import "AppleAppLovinInterstitialAmazonLoader.h"
 #endif
 
-@interface AppleAppLovinInterstitialDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MAAdDelegate, MAAdRevenueDelegate>
+@interface AppleAppLovinInterstitialDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MAAdDelegate, MAAdRevenueDelegate, MAAdReviewDelegate>
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                        amazonSlotId:(NSString * _Nullable) amazonSlotId

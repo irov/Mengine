@@ -16,7 +16,7 @@ namespace Mengine
         virtual void onAppleAppLovinBannerDidFailToDisplayAd() = 0;
         virtual void onAppleAppLovinBannerDidExpandAd() = 0;
         virtual void onAppleAppLovinBannerDidCollapseAd() = 0;
-        virtual void onAppleAppLovinBannerDidPayRevenueForAd( NSDictionary _revenueData ) = 0;
+        virtual void onAppleAppLovinBannerDidPayRevenueForAd() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleAppLovinBannerProviderInterface> AppleAppLovinBannerProviderInterfacePtr;
@@ -32,7 +32,7 @@ namespace Mengine
         virtual void onAppleAppLovinInterstitialDidClickAd() = 0;
         virtual void onAppleAppLovinInterstitialDidHideAd() = 0;
         virtual void onAppleAppLovinInterstitialDidFailToDisplayAd() = 0;
-        virtual void onAppleAppLovinInterstitialDidPayRevenueForAd( NSDictionary _revenueData ) = 0;
+        virtual void onAppleAppLovinInterstitialDidPayRevenueForAd() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleAppLovinInterstitailProviderInterface> AppleAppLovinInterstitialProviderInterfacePtr;
@@ -51,7 +51,7 @@ namespace Mengine
         virtual void onAppleAppLovinRewardedDidStartRewardedVideoForAd() = 0;
         virtual void onAppleAppLovinRewardedDidCompleteRewardedVideoForAd() = 0;
         virtual void onAppleAppLovinRewardedDidRewardUserForAd() = 0;
-        virtual void onAppleAppLovinRewardedDidPayRevenueForAd( NSDictionary _revenueData ) = 0;
+        virtual void onAppleAppLovinRewardedDidPayRevenueForAd() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleAppLovinRewardedProviderInterface> AppleAppLovinRewardedProviderInterfacePtr;

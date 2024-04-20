@@ -55,7 +55,7 @@ namespace Mengine
 
         virtual bool close() = 0;
 
-        virtual void userEvent( const ConstString & _event, const MapWParams & _params ) = 0;
+        virtual void userEvent( const ConstString & _event, const Params & _params ) = 0;
 
         virtual void turnSound( bool _turn ) = 0;
     };

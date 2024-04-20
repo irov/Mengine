@@ -111,7 +111,7 @@ namespace Mengine
         virtual void onGameTurnSound( bool _turn ) = 0;
         virtual void onGameChangeSoundVolume( float _sound, float _music, float _voice ) = 0;
         virtual void onGameCursorMode( bool _mode ) = 0;
-        virtual void onGameUser( const ConstString & _event, const MapWParams & _params ) = 0;
+        virtual void onGameUser( const ConstString & _event, const Params & _params ) = 0;
         virtual bool onGameClose() = 0;
         virtual void onGameOverFillrate( double _fillrate, double _limit ) = 0;
         virtual void onGameFrameEnd() = 0;

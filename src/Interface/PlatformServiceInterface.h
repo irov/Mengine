@@ -158,7 +158,7 @@ namespace Mengine
         virtual bool notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _memory ) = 0;
 
     public:
-        virtual void onEvent( const ConstString & _event, const MapWParams & _params ) = 0;
+        virtual void onEvent( const ConstString & _event, const Params & _params ) = 0;
 
     public:
         virtual float getJoystickAxis( uint32_t _index ) const = 0;

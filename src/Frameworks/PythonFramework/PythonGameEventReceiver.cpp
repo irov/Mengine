@@ -283,7 +283,7 @@ namespace Mengine
         m_cb.call( _mode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonGameEventReceiver::onGameUser( const ConstString & _event, const MapWParams & _params )
+    void PythonGameEventReceiver::onGameUser( const ConstString & _event, const Params & _params )
     {
         m_cb.call( _event, _params );
     }

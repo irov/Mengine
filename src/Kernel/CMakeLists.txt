@@ -28,7 +28,6 @@ Containers
     Tuple.h
     Regex.h
     Optional.h
-    Variant.h
     InitializerList.h
 )
 

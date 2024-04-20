@@ -48,7 +48,7 @@ namespace Mengine
         void onGameTurnSound( bool _turn ) override;
         void onGameChangeSoundVolume( float _sound, float _music, float _voice ) override;
         void onGameCursorMode( bool _mode ) override;
-        void onGameUser( const ConstString & _event, const MapWParams & _params ) override;
+        void onGameUser( const ConstString & _event, const Params & _params ) override;
         bool onGameClose() override;
         void onGameOverFillrate( double _fillrate, double _limit ) override;
         void onGameFrameEnd() override;

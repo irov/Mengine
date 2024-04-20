@@ -77,7 +77,7 @@ namespace Mengine
 
         bool close() override;
 
-        void userEvent( const ConstString & _id, const MapWParams & _params ) override;
+        void userEvent( const ConstString & _id, const Params & _params ) override;
 
         void turnSound( bool _turn ) override;
 
@@ -106,7 +106,7 @@ namespace Mengine
         struct UserEvent
         {
             ConstString id;
-            MapWParams params;
+            Params params;
         };
 
         typedef Vector<UserEvent> VectorUserEvents;

@@ -500,7 +500,7 @@ namespace Mengine
         return needQuit;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::userEvent( const ConstString & _id, const MapWParams & _params )
+    void GameService::userEvent( const ConstString & _id, const Params & _params )
     {
         UserEvent ev;
         ev.id = _id;

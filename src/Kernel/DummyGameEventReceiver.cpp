@@ -262,7 +262,7 @@ namespace Mengine
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyGameEventReceiver::onGameUser( const ConstString & _event, const MapWParams & _params )
+    void DummyGameEventReceiver::onGameUser( const ConstString & _event, const Params & _params )
     {
         MENGINE_UNUSED( _event );
         MENGINE_UNUSED( _params );

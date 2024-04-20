@@ -1668,7 +1668,7 @@ namespace Mengine
                 Helper::pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_platformEvent( const ConstString & _event, const MapWParams & _params )
+            void s_platformEvent( const ConstString & _event, const Params & _params )
             {
                 PLATFORM_SERVICE()
                     ->onEvent( _event, _params );

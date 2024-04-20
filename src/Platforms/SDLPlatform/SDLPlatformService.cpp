@@ -2073,7 +2073,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::onEvent( const ConstString & _event, const MapWParams & _params )
+    void SDLPlatformService::onEvent( const ConstString & _event, const Params & _params )
     {
         MENGINE_UNUSED( _event );
         MENGINE_UNUSED( _params );

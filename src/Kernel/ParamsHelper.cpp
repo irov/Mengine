@@ -5,35 +5,44 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        String getParam( const MapWParams & _params, const ConstString & _key, const Char * _default )
+        String getParam( const Params & _params, const ConstString & _key, const Char * _default )
         {
-            typename MapWParams::const_iterator it_found = _params.find( _key );
+            typename Params::const_iterator it_found = _params.find( _key );
 
             if( it_found == _params.end() )
             {
                 return _default;
             }
 
-            const MapWParams::mapped_type & value = it_found->second;
+            const Params::mapped_type & value = it_found->second;
 
-            String utf8_value;
-            Helper::unicodeToUtf8( value, &utf8_value );
+            String string_value;
+            if( Helper::get( value, &string_value ) == false )
+            {
+                return _default;
+            }
 
-            return utf8_value;
+            return string_value;
         }
         //////////////////////////////////////////////////////////////////////////
-        WString getParam( const MapWParams & _params, const ConstString & _key, WString && _default )
+        WString getParam( const Params & _params, const ConstString & _key, WString && _default )
         {
-            typename MapWParams::const_iterator it_found = _params.find( _key );
+            typename Params::const_iterator it_found = _params.find( _key );
 
             if( it_found == _params.end() )
             {
                 return _default;
             }
 
-            const MapWParams::mapped_type & value = it_found->second;
+            const Params::mapped_type & value = it_found->second;
 
-            return value;
+            WString wstring_value;
+            if( Helper::get( value, &wstring_value ) == false )
+            {
+                return _default;
+            }
+
+            return wstring_value;
         }
         //////////////////////////////////////////////////////////////////////////
     }

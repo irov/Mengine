@@ -139,7 +139,7 @@ namespace Mengine
         bool notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer ) override;
 
     public:
-        void onEvent( const ConstString & _event, const MapWParams & _params ) override;
+        void onEvent( const ConstString & _event, const Params & _params ) override;
 
     public:
         float getJoystickAxis( uint32_t _index ) const override;

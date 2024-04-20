@@ -56,7 +56,7 @@ namespace Mengine
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpSystemScriptEmbedding::postMessage( const String & _url, const MapParams & _params, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
+    HttpRequestId HttpSystemScriptEmbedding::postMessage( const String & _url, const Params & _params, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
         PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
 
@@ -67,7 +67,10 @@ namespace Mengine
         HttpRequestPostParams params;
         for( auto && [key, value] : _params )
         {
-            params.emplace_back( HttpRequestPostParam{ key.c_str(), value } );
+            String string_value;
+            Helper::get( value, &string_value );
+
+            params.emplace_back( HttpRequestPostParam{key, string_value} );
         }
 
         HttpRequestId id = HTTP_SYSTEM()

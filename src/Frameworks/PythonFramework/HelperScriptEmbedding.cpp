@@ -76,6 +76,7 @@
 
 #include "Config/StdString.h"
 #include "Config/StdMath.h"
+#include "Config/Variant.h"
 
 #include "math/angle.h"
 #include "math/vec2.h"
@@ -3664,7 +3665,7 @@ namespace Mengine
                     size_t size = 0;
                     const String::value_type * string_char = _kernel->string_to_char_and_size( _obj, &size );
 
-                    if( string_char == 0 )
+                    if( string_char == nullptr )
                     {
                         return false;
                     }
@@ -3731,6 +3732,105 @@ namespace Mengine
                 WString::size_type value_size = _value.size();
 
                 PyObject * py_value = _kernel->unicode_from_wchar_size( value_str, (uint32_t)value_size );
+
+                return py_value;
+            }
+        };
+        //////////////////////////////////////////////////////////////////////////
+        struct extract_ParamVariant_type
+            : public pybind::type_cast_result<ParamVariant>
+        {
+        public:
+            bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, ParamVariant & _value, bool _nothrow ) override
+            {
+                MENGINE_UNUSED( _kernel );
+                MENGINE_UNUSED( _nothrow );
+
+                if( _kernel->bool_check( _obj ) == true )
+                {
+                    bool bool_value;
+                    _kernel->extract_bool( _obj, bool_value );
+
+                    _value.emplace<ParamBool>( bool_value );
+                }
+                else if( _kernel->int_check( _obj ) == true )
+                {
+                    int64_t int_value;
+                    _kernel->extract_int64( _obj, int_value );
+
+                    _value.emplace<ParamInteger>( int_value );
+                }
+                else if( _kernel->float_check( _obj ) == true )
+                {
+                    double double_value;
+                    _kernel->extract_double( _obj, double_value );
+
+                    _value.emplace<ParamDouble>( double_value );
+                }
+                else if( _kernel->string_check( _obj ) == true )
+                {
+                    size_t size = 0;
+                    const String::value_type * string_char = _kernel->string_to_char_and_size( _obj, &size );
+
+                    if( string_char == nullptr )
+                    {
+                        return false;
+                    }
+
+                    _value.emplace<ParamString>( string_char, size );
+                }
+                else if( _kernel->unicode_check( _obj ) == true )
+                {
+                    size_t size = 0;
+                    const WString::value_type * string_wchar = _kernel->unicode_to_wchar_and_size( _obj, &size );
+
+                    if( string_wchar == nullptr )
+                    {
+                        return false;
+                    }
+
+                    _value.emplace<ParamWString>( string_wchar, size );
+                }
+                else
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+        public:
+            PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<ParamVariant>::TCastRef _value ) override
+            {
+                MENGINE_UNUSED( _kernel );
+                
+                PyObject * py_value = nullptr;
+
+                Helper::visit( _value
+                    , [_kernel, &py_value]( const ParamBool & _element )
+                {
+                    py_value = pybind::ptr( _kernel, _element );
+                }
+                    , [_kernel, &py_value]( const ParamInteger & _element )
+                {
+                    py_value = pybind::ptr( _kernel, _element );
+                }
+                    , [_kernel, &py_value]( const ParamDouble & _element )
+                {
+                    py_value = pybind::ptr( _kernel, _element );
+                }
+                    , [_kernel, &py_value]( const ParamString & _element )
+                {
+                    py_value = pybind::ptr( _kernel, _element );
+                }
+                    , [_kernel, &py_value]( const ParamWString & _element )
+                {
+                    py_value = pybind::ptr( _kernel, _element );
+                }
+                    , [_kernel, &py_value]( const ParamConstString & _element )
+                {
+                    py_value = pybind::ptr( _kernel, _element );
+                } );
 
                 return py_value;
             }
@@ -4002,14 +4102,15 @@ namespace Mengine
         pybind::registration_stl_vector_type_cast<VectorResourceImages>(_kernel);
         pybind::registration_stl_vector_type_cast<VectorHotSpotPolygons>(_kernel);
 
-        pybind::registration_stl_map_type_cast<MapParams>(_kernel);
-        pybind::registration_stl_map_type_cast<MapWParams>(_kernel);
-
         pybind::registration_type_cast<String>(_kernel, pybind::make_type_cast<extract_String_type>(_kernel));
         pybind::registration_type_cast<WString>(_kernel, pybind::make_type_cast<extract_WString_type>(_kernel));
 
         pybind::registration_stl_vector_type_cast<VectorString>(_kernel);
         pybind::registration_stl_vector_type_cast<VectorWString>(_kernel);
+
+        pybind::registration_type_cast<ParamVariant>(_kernel, pybind::make_type_cast<extract_ParamVariant_type>(_kernel));
+
+        pybind::registration_stl_map_type_cast<Params>(_kernel);
 
         pybind::registration_stl_vector_type_cast<VectorRenderIndex>(_kernel);
 
@@ -4377,8 +4478,7 @@ namespace Mengine
         pybind::unregistration_stl_vector_type_cast<VectorResourceImages>(_kernel);
         pybind::unregistration_stl_vector_type_cast<VectorHotSpotPolygons>(_kernel);
 
-        pybind::unregistration_stl_map_type_cast<MapWParams>(_kernel);
-        pybind::unregistration_stl_map_type_cast<MapParams>(_kernel);
+        pybind::unregistration_stl_map_type_cast<Params>(_kernel);
 
         pybind::unregistration_type_cast<String>(_kernel);
         pybind::unregistration_type_cast<WString>(_kernel);

@@ -123,7 +123,7 @@ namespace Mengine
         HCURSOR getCursorICO_( const ConstString & _name, const FilePath & _filePath, const MemoryInterfacePtr & _buffer );
 
     public:
-        void onEvent( const ConstString & _event, const MapWParams & _params ) override;
+        void onEvent( const ConstString & _event, const Params & _params ) override;
 
     public:
         float getJoystickAxis( uint32_t _index ) const override;

@@ -107,6 +107,7 @@ src
     Thread.h
     Switch.h
     Utility.h
+    Variant.h
 )
 
 ADD_FILTER(

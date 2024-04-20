@@ -15,7 +15,7 @@ namespace Mengine
         ContentInterfacePtr inputContent;
         ContentInterfacePtr outputContent;
 
-        MapWParams params;
+        Params params;
     };
     //////////////////////////////////////////////////////////////////////////
     class ConverterInterface

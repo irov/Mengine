@@ -1,5 +1,7 @@
 #import "AppleAppLovinRewardedDelegate.h"
 
+
+#include "Environment/Apple/AppleDetail.h"
 #include "Environment/Apple/AppleString.h"
 #include "Environment/Apple/AppleAnalytics.h"
 
@@ -291,7 +293,10 @@
         
     [self.m_analytics eventRevenuePaid:ad];
     
-    self.m_provider->onAppleAppLovinRewardedDidPayRevenueForAd();
+    Mengine::Params params;
+    Mengine::Helper::AppleGetParamsNSDictionary( @{@"revenue":@(ad.revenue)}, &params );
+    
+    self.m_provider->onAppleAppLovinRewardedDidPayRevenueForAd( params );
 }
 
 #pragma mark - AdReview Callbacks

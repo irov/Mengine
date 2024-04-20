@@ -49,18 +49,72 @@ namespace Mengine
             return randomHexStringTrim;
         }
         //////////////////////////////////////////////////////////////////////////
-        void AppleGetParamsNSDictionary( NSDictionary * _dictionary, MapParams * const _map )
+        void AppleGetParamsNSDictionary( NSDictionary * _dictionary, Params * const _params )
         {
             if( _dictionary == nil )
             {
                 return;
             }
             
+            CFTypeID boolenTypeId = CFBooleanGetTypeID();
+            CFTypeID numberTypeId = CFNumberGetTypeID();
+            
             [_dictionary enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL * stop) {
                 ConstString key_str = Helper::NSStringToConstString( key );
+                
+                if ([value isKindOfClass:[NSNumber class]] == YES) {
+                    CFTypeID valueTypeId = CFGetTypeID((__bridge CFTypeRef)(value));
+                    
+                    if (valueTypeId == boolenTypeId) {
+                        bool b = [value boolValue];
+                        
+                        _params->emplace( key_str, b );
+                    } else if (valueTypeId == numberTypeId) {
+                        CFNumberType numberType = CFNumberGetType((__bridge CFNumberRef)value);
+                        
+                        switch (numberType) {
+                            case kCFNumberSInt8Type:
+                            case kCFNumberSInt16Type:
+                            case kCFNumberSInt32Type:
+                            case kCFNumberSInt64Type:
+                            case kCFNumberCharType:
+                            case kCFNumberShortType:
+                            case kCFNumberIntType:
+                            case kCFNumberLongType:
+                            case kCFNumberLongLongType: {
+                                int64_t n = [value longLongValue];
+                                
+                                _params->emplace( key_str, n );
+                            }break;
+                                
+                            case kCFNumberFloat32Type:
+                            case kCFNumberFloat64Type:
+                            case kCFNumberFloatType:
+                            case kCFNumberDoubleType: {
+                                double d = [value doubleValue];
+                                
+                                _params->emplace( key_str, d );
+                            }break;
+                            case kCFNumberCFIndexType:
+                            case kCFNumberNSIntegerType:
+                            case kCFNumberCGFloatType: {
+                                return;
+                            }break;
+                        }
+                    } else {
+                        return;
+                    }
+                } else if ([value isKindOfClass:[NSString class]] == YES) {
+                    Mengine::ConstString s = Mengine::Helper::NSStringToConstString(value);
+                    
+                    _params->emplace( key_str, s );
+                } else {
+                    return;
+                }
+                
                 const Char * value_str = [[NSString stringWithFormat:@"%@", value] UTF8String];
                 
-                _map->emplace(std::make_pair(key_str, String(value_str)));
+                _params->emplace(std::make_pair(key_str, String(value_str)));
             }];
         }
         //////////////////////////////////////////////////////////////////////////

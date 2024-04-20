@@ -1,5 +1,6 @@
 #import "AppleAppLovinInterstitialDelegate.h"
 
+#include "Environment/Apple/AppleDetail.h"
 #include "Environment/Apple/AppleString.h"
 #include "Environment/Apple/AppleAnalytics.h"
 
@@ -240,7 +241,10 @@
         @"ad": [self getMAAdParams:ad]
     }];
 
-    self.m_provider->onAppleAppLovinInterstitialDidPayRevenueForAd();
+    Mengine::Params params;
+    Mengine::Helper::AppleGetParamsNSDictionary( @{@"revenue":@(ad.revenue)}, &params );
+    
+    self.m_provider->onAppleAppLovinInterstitialDidPayRevenueForAd( params );
 }
 
 #pragma mark - AdReview Callbacks

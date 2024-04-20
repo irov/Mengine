@@ -1,5 +1,6 @@
 #import "AppleAppLovinBannerDelegate.h"
 
+#include "Environment/Apple/AppleDetail.h"
 #include "Environment/Apple/AppleString.h"
 #include "Environment/Apple/AppleAnalytics.h"
 
@@ -231,7 +232,10 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    self.m_provider->onAppleAppLovinBannerDidPayRevenueForAd();
+    Mengine::Params params;
+    Mengine::Helper::AppleGetParamsNSDictionary( @{@"revenue":@(ad.revenue)}, &params );
+    
+    self.m_provider->onAppleAppLovinBannerDidPayRevenueForAd( params );
 }
 
 #pragma mark - AdReview Callbacks

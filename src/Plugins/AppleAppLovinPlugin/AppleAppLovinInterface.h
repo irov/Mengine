@@ -2,6 +2,8 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Kernel/Params.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

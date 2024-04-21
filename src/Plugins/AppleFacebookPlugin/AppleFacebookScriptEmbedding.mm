@@ -19,11 +19,11 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleFacebookProvider
-            : public PythonCallbackProvider<AppleAppLovinBannerProviderInterface>
+            : public PythonCallbackProvider<AppleFacebookProviderInterface>
         {
         public:
             PythonAppleFacebookProvider( const pybind::dict & _cbs, const pybind::args & _args )
-                : PythonCallbackProvider<AppleAppLovinBannerProviderInterface>( _cbs, _args )
+                : PythonCallbackProvider<AppleFacebookProviderInterface>( _cbs, _args )
             {
             }
 
@@ -35,7 +35,7 @@ namespace Mengine
 
             void onFacebookLoginCancel() override
             {
-                this->call_cbs( onAppleFacebookLoginCancel" );
+                this->call_cbs( "onAppleFacebookLoginCancel" );
             }
 
             void onFacebookError( int32_t _code, const Char * _errorMessage ) override

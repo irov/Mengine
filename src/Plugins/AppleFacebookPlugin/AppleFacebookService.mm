@@ -4,8 +4,7 @@
 #include "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
-
-#import <Foundation/Foundation.h>
+#include "Kernel/ThreadHelper.h"
 
 ////////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleFacebookService, Mengine::AppleFacebookService );
@@ -28,7 +27,7 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     bool AppleFacebookService::_initializeService()
     {
-        m_loginManager = [FBSDKLoginManager new];
+        m_loginManager = [[FBSDKLoginManager alloc] init];
         m_shareDelegate = [[AppleFacebookShareDelegate alloc]initWithService: this];
         
         return true;
@@ -64,6 +63,8 @@ namespace Mengine
         UIViewController * rootViewController = Helper::iOSGetRootViewController();
         
         [m_loginManager logInWithPermissions:@[@"public_profile"] fromViewController:rootViewController handler:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
+            AppleFacebookProviderInterfacePtr copy_provider = m_provider;
+            
             if( error != nullptr )
             {
                 LOGGER_ERROR("[AppleFacebook] login error: '%s'"
@@ -72,9 +73,11 @@ namespace Mengine
                 
                 m_isProcessed = false;
                 
-                if( m_provider != nullptr )
+                if( copy_provider != nullptr )
                 {
-                    m_provider->onFacebookError(-2, [NSString stringWithFormat:@"%@", error].UTF8String);
+                    Helper::dispatchMainThreadEvent([copy_provider, error](){
+                        copy_provider->onFacebookError(-2, [NSString stringWithFormat:@"%@", error].UTF8String);
+                    });
                 }
                 
                 return;
@@ -82,9 +85,9 @@ namespace Mengine
                             
             m_userID = FBSDKProfile.currentProfile.userID;
                 
-            NSString * m_idTokenString = FBSDKAuthenticationToken.currentAuthenticationToken.tokenString;
+            NSString * idTokenString = FBSDKAuthenticationToken.currentAuthenticationToken.tokenString;
 
-            if( FBSDKProfile.currentProfile.imageURL )
+            if( FBSDKProfile.currentProfile.imageURL != nil )
             {
                 NSURL * imageURL = FBSDKProfile.currentProfile.imageURL.absoluteURL;
                 
@@ -96,15 +99,21 @@ namespace Mengine
             
             m_isProcessed = false;
                 
-            if( m_provider != nullptr )
+            if( copy_provider != nullptr )
             {
-                if( m_idTokenString )
+                if( idTokenString != nil )
                 {
-                    m_provider->onFacebookLoginSuccess( m_idTokenString.UTF8String );
+                    Helper::dispatchMainThreadEvent([copy_provider, idTokenString](){
+                        const Char * idTokenString_str = idTokenString.UTF8String;
+                        
+                        copy_provider->onFacebookLoginSuccess( idTokenString_str );
+                    });
                 }
                 else
                 {
-                    m_provider->onFacebookError(-1, "token == null" );
+                    Helper::dispatchMainThreadEvent([copy_provider](){
+                        copy_provider->onFacebookError( -1, "token == null" );
+                    });
                 }
             }
         }];
@@ -127,19 +136,25 @@ namespace Mengine
             return nullptr;
         }
         
-        return FBSDKAccessToken.currentAccessToken.tokenString.UTF8String;
+        const Char * token_str = FBSDKAccessToken.currentAccessToken.tokenString.UTF8String;
+        
+        return token_str;
     }
     /////////////////////////////////////////////////////////////////////////////
     void AppleFacebookService::shareLink( const Char * link, const Char * picture )
     {
+        AppleFacebookProviderInterfacePtr copy_provider = m_provider;
+        
         NSString * strPicture = [NSString stringWithUTF8String:picture];
         NSString * strlink = [NSString stringWithUTF8String:link];
         
         if( strlink.length <= 0 && strPicture.length <= 0 )
         {
-            if( m_provider != nullptr )
+            if( copy_provider != nullptr )
             {
-                m_provider->onFacebookShareError( -1, "empty data" );
+                Helper::dispatchMainThreadEvent([copy_provider](){
+                    copy_provider->onFacebookShareError( -1, "empty data" );
+                });
             }
 
             return;
@@ -154,13 +169,13 @@ namespace Mengine
         
         if( strPicture.length <= 0 )
         {
-            Helper::dispatchMainThreadEvent([]() {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 FBSDKShareLinkContent* content = [FBSDKShareLinkContent alloc];
                 content.contentURL = [NSURL URLWithString:strlink];
                 
                 UIViewController * rootViewController = Helper::iOSGetRootViewController();
                 
-                FBSDKShareDialog * const dialog = [FBSDKShareDialog dialogWithViewController:rootViewController withContent:content delegate:m_shareDelegate];
+                FBSDKShareDialog * dialog = [FBSDKShareDialog dialogWithViewController:rootViewController withContent:content delegate:m_shareDelegate];
                 
                 [dialog show];
             });
@@ -171,13 +186,15 @@ namespace Mengine
         {            
             NSURL * url = [NSURL URLWithString:strPicture];
 
-            if( url == nullptr)
+            if( url == nil )
             {
                 LOGGER_ERROR("Facebook picture not convert to NSURL");
 
-                if( m_provider != nullptr )
+                if( copy_provider != nullptr )
                 {
-                    m_provider->onFacebookShareError( -2, "error picture to NSURL" );
+                    Helper::dispatchMainThreadEvent([copy_provider](){
+                        copy_provider->onFacebookShareError( -2, "error picture to NSURL" );
+                    });
                 }
 
                 return;
@@ -185,33 +202,37 @@ namespace Mengine
             
             NSData * data = [NSData dataWithContentsOfURL: url];
 
-            if( data == nullptr )
+            if( data == nil )
             {
                 LOGGER_ERROR("Facebook picture not convert to NSData");
 
-                if( m_provider != nullptr )
+                if( copy_provider != nullptr )
                 {
-                    m_provider->onFacebookShareError( -3, "empty NSURL to NSData" );
+                    Helper::dispatchMainThreadEvent([copy_provider](){
+                        copy_provider->onFacebookShareError( -3, "empty NSURL to NSData" );
+                    });
                 }
 
                 return;
             }
             
-            UIImage *img = [UIImage imageWithData: data];
+            UIImage * img = [UIImage imageWithData: data];
 
-            if( img == nullptr )
+            if( img == nil )
             {
                 LOGGER_ERROR("Facebook picture not convert to UIImage");
 
-                if( m_provider != nullptr )
+                if( copy_provider != nullptr )
                 {
-                    m_provider->onFacebookShareError( -4, "empty NSData to UIImage" );
+                    Helper::dispatchMainThreadEvent([copy_provider](){
+                        copy_provider->onFacebookShareError( -4, "empty NSData to UIImage" );
+                    });
                 }
                 
                 return;
             }
             
-            Helper::dispatchMainThreadEvent([]() {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 FBSDKSharePhoto *sharePhoto = [[FBSDKSharePhoto alloc] initWithImage: img isUserGenerated:true];
                 
                 FBSDKShareMediaContent *content = [FBSDKShareMediaContent alloc];
@@ -229,13 +250,20 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     void AppleFacebookService::getProfilePictureLink()
     {
-        if( m_imageURL != nullptr )
+        NSString * copy_userID = m_userID;
+        NSString * copy_imageURL = m_imageURL;
+        AppleFacebookProviderInterfacePtr copy_provider = m_provider;
+        
+        if( copy_imageURL != nil )
         {
-            if( m_provider != nullptr )
+            if( copy_provider != nil )
             {
-                const Char * userId = m_userID != nullptr ? m_userID.UTF8String : nullptr;
-                
-                m_provider->onFacebookProfilePictureLinkGet( userId, true, m_imageURL.UTF8String );
+                Helper::dispatchMainThreadEvent([copy_provider, copy_userID, copy_imageURL](){
+                    const Char * userId = copy_userID != nil ? copy_userID.UTF8String : nullptr;
+                    const Char * imageURL = copy_imageURL.UTF8String;
+                    
+                    copy_provider->onFacebookProfilePictureLinkGet( userId, true, imageURL );
+                });
             }
             
             return;
@@ -243,39 +271,52 @@ namespace Mengine
         
         
         [FBSDKProfile loadCurrentProfileWithCompletion:^(FBSDKProfile * _Nullable profile, NSError * _Nullable error) {
-            if( error != nullptr )
+            if( error != nil )
             {
                 LOGGER_ERROR("[AppleFacebook] get picture error: '%s'"
                    , Helper::AppleGetMessageFromNSError(error).c_str()
                 );
                 
-                if( m_provider != nullptr )
+                if( copy_provider != nullptr )
                 {
-                    NSInteger error_code = error.code;
-                    const Char * error_message = error.localizedDescription.UTF8String;
-                    
-                    m_provider->onFacebookError((int32_t)error_code, error_message);
+                    Helper::dispatchMainThreadEvent([copy_provider, error](){
+                        NSInteger error_code = error.code;
+                        const Char * error_message = error.localizedDescription.UTF8String;
+                        
+                        copy_provider->onFacebookError((int32_t)error_code, error_message);
+                    });
                 }
+                
+                return;
             }
             
-            if( profile != nullptr && profile.imageURL )
+            if( profile != nil && profile.imageURL != nil )
             {
                 if( profile.imageURL.absoluteURL )
                 {
-                    m_imageURL = profile.imageURL.absoluteURL.absoluteString;
+                    NSString * imageURL = profile.imageURL.absoluteURL.absoluteString;
                     
-                    if( m_provider != nullptr )
+                    if( copy_provider != nullptr )
                     {
-                        m_provider->onFacebookProfilePictureLinkGet( profile.userID.UTF8String, true, m_imageURL.UTF8String );
-                        
-                        return;
+                        Helper::dispatchMainThreadEvent([copy_provider, profile, imageURL](){
+                            const Char * userId_str = profile.userID.UTF8String;
+                            const Char * imageURL_str = imageURL.UTF8String;
+                            
+                            copy_provider->onFacebookProfilePictureLinkGet( userId_str, true, imageURL_str );
+                        });
                     }
+                    
+                    return;
                 }
             }
-            
-            if( m_provider != nullptr )
+            else
             {
-                m_provider->onFacebookProfilePictureLinkGet("", false, "");
+                if( copy_provider != nullptr )
+                {
+                    Helper::dispatchMainThreadEvent([copy_provider](){
+                        copy_provider->onFacebookProfilePictureLinkGet( "", false, "" );
+                    });
+                }
             }
         }];
     }

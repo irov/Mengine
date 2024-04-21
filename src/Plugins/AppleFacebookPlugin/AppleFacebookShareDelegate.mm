@@ -1,5 +1,7 @@
 #import "AppleFacebookShareDelegate.h"
 
+#include "Kernel/ThreadHelper.h"
+
 @implementation AppleFacebookShareDelegate
 
 #pragma mark -
@@ -15,27 +17,32 @@
 }
 
 - (void) sharer:(id <FBSDKSharing> _Nonnull) sharer didCompleteWithResults:(NSDictionary<NSString *, id> * _Nonnull) results {
-    const char * message = sharer.shareContent == nullptr ? "" : sharer.shareContent.placeID.UTF8String;
+    Mengine::AppleFacebookProviderInterfacePtr copy_provider = self.m_service->getProvider();
     
-    const Mengine::AppleFacebookProviderInterfacePtr & provider = self.m_service->getProvider();
-    
-    provider->onFacebookShareSuccess( message );
+    Mengine::Helper::dispatchMainThreadEvent([copy_provider, sharer](){
+        const char * message = sharer.shareContent == nullptr ? "" : sharer.shareContent.placeID.UTF8String;
+        
+        copy_provider->onFacebookShareSuccess( message );
+    });
 }
 
 - (void) sharer:(id <FBSDKSharing> _Nonnull) sharer didFailWithError:(NSError * _Nonnull) error {
-    NSInteger code = error.code;
-    const char * message = error.localizedDescription.UTF8String;
+    Mengine::AppleFacebookProviderInterfacePtr copy_provider = self.m_service->getProvider();
     
-    const Mengine::AppleFacebookProviderInterfacePtr & provider = self.m_service->getProvider();
-    
-    provider->onFacebookShareError( (int32_t)code, message );
+    Mengine::Helper::dispatchMainThreadEvent([copy_provider, error](){
+        NSInteger code = error.code;
+        const char * message = error.localizedDescription.UTF8String;
+        
+        copy_provider->onFacebookShareError( (int32_t)code, message );
+    });
 }
 
 - (void) sharerDidCancel:(id <FBSDKSharing> _Nonnull) sharer {
+    Mengine::AppleFacebookProviderInterfacePtr copy_provider = self.m_service->getProvider();
     
-    const Mengine::AppleFacebookProviderInterfacePtr & provider = self.m_service->getProvider();
-    
-    provider->onFacebookShareCancel();
+    Mengine::Helper::dispatchMainThreadEvent([copy_provider](){
+        copy_provider->onFacebookShareCancel();
+    });
 }
 
 @end

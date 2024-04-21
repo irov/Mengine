@@ -1,8 +1,8 @@
 #import "AppleFacebookApplicationDelegate.h"
 
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
-#import <FBSDKShareKit/FBSDKShareKit.h>
+#import <AuthenticationServices/AuthenticationServices.h>
+#import <SafariServices/SafariServices.h>
+#import <FBSDKCoreKit/FBSDKCoreKit-Swift.h>
 
 @implementation AppleFacebookApplicationDelegate
 
@@ -16,7 +16,7 @@
 
 #pragma mark - UISceneSession lifecycle
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options handled:(BOOL *)handler {
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *, id> *)options handled:(BOOL *)handler {
     *handler = YES;
     
     return [FBSDKApplicationDelegate.sharedInstance application:application openURL:url options:options];

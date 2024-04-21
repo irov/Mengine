@@ -6,9 +6,11 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
 
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
-#import <FBSDKShareKit/FBSDKShareKit.h>
+#import <AuthenticationServices/AuthenticationServices.h>
+#import <SafariServices/SafariServices.h>
+
+#import <FBSDKCoreKit/FBSDKCoreKit-Swift.h>
+#import <FBSDKLoginKit/FBSDKLoginKit-Swift.h>
 #import <FBSDKShareKit/FBSDKShareKit-Swift.h>
 
 namespace Mengine

@@ -2,11 +2,11 @@
 
 #include "AppleFacebookInterface.h"
 
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
-#import <FBSDKShareKit/FBSDKShareKit.h>
+#import <AuthenticationServices/AuthenticationServices.h>
+#import <SafariServices/SafariServices.h>
+
+#import <FBSDKCoreKit/FBSDKCoreKit-Swift.h>
 #import <FBSDKShareKit/FBSDKShareKit-Swift.h>
-#import <Foundation/Foundation.h>
 
 @interface AppleFacebookShareDelegate : NSObject<FBSDKSharingDelegate>
 

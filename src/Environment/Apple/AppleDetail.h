@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Params.h"
+#include "Kernel/VectorConstString.h"
 
 #import <Foundation/Foundation.h>
 

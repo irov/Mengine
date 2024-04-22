@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/VectorConstString.h"
 
 #include "Config/Lambda.h"
 
@@ -37,7 +38,7 @@ namespace Mengine
         virtual const AppleFacebookProviderInterfacePtr & getProvider() const = 0;
 
     public:
-        virtual void login() = 0;
+        virtual void login( const VectorConstString & _permissions ) = 0;
         virtual void logout() = 0;
         virtual bool isLoggedIn() const = 0;
         virtual const Char * getAccessToken() const = 0;

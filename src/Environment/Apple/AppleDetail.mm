@@ -151,7 +151,7 @@ namespace Mengine
                 }
                     , [dictionary, key_str]( const ParamWString & _element )
                 {
-                    NSString * value_ns = Helper::stringToNSString( _element );
+                    NSString * value_ns = Helper::unicodeToNSString( _element );
 
                     [dictionary setObject:value_ns
                                    forKey:@(key_str)];

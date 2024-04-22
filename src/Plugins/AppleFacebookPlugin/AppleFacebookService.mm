@@ -1,6 +1,7 @@
 #include "AppleFacebookService.h"
 
 #include "Environment/Apple/AppleErrorHelper.h"
+#include "Environment/Apple/AppleDetail.h"
 #include "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
@@ -51,7 +52,7 @@ namespace Mengine
         return m_provider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleFacebookService::login()
+    void AppleFacebookService::login( const VectorConstString & _permissions )
     {
         if( m_isProcessed == true )
         {
@@ -62,7 +63,9 @@ namespace Mengine
         
         UIViewController * rootViewController = Helper::iOSGetRootViewController();
         
-        [m_loginManager logInWithPermissions:@[@"public_profile"] fromViewController:rootViewController handler:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
+        NSArray<NSString *> * permissions_ns = Helper::AppleGetNSArrayFromVectorConstString( _permissions );
+        
+        [m_loginManager logInWithPermissions:permissions_ns fromViewController:rootViewController handler:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
             AppleFacebookProviderInterfacePtr copy_provider = m_provider;
             
             if( error != nullptr )

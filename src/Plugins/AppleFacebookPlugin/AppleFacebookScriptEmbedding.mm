@@ -72,10 +72,10 @@ namespace Mengine
                 ->setProvider( provider );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleFacebook_login()
+        static void s_AppleFacebook_login( const VectorConstString & _permissions )
         {
             APPLE_FACEBOOK_SERVICE()
-                ->login();
+                ->login( _permissions );
         }
         //////////////////////////////////////////////////////////////////////////
         static void s_AppleFacebook_logout()

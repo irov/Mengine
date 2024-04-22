@@ -27,16 +27,16 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        virtual void setProvider( const AppleFacebookProviderInterfacePtr & _provider ) override;
-        virtual const AppleFacebookProviderInterfacePtr & getProvider() const override;
+        void setProvider( const AppleFacebookProviderInterfacePtr & _provider ) override;
+        const AppleFacebookProviderInterfacePtr & getProvider() const override;
 
     public:
-        virtual void login() override;
-        virtual void logout() override;
-        virtual bool isLoggedIn() const override;
-        virtual const Char * getAccessToken() const override;
-        virtual void shareLink( const Char * link, const Char * picture ) override;
-        virtual void getProfilePictureLink() override;
+        void login( const VectorConstString & _permissions ) override;
+        void logout() override;
+        bool isLoggedIn() const override;
+        const Char * getAccessToken() const override;
+        void shareLink( const Char * link, const Char * picture ) override;
+        void getProfilePictureLink() override;
 
     protected:
         AppleFacebookProviderInterfacePtr m_provider;

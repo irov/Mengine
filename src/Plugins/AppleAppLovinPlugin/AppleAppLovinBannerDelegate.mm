@@ -233,7 +233,7 @@
     }];
     
     Mengine::Params params;
-    Mengine::Helper::AppleGetParamsNSDictionary( @{@"revenue":@(ad.revenue)}, &params );
+    Mengine::Helper::AppleGetParamsFromNSDictionary( @{@"revenue":@(ad.revenue)}, &params );
     
     self.m_provider->onAppleAppLovinBannerDidPayRevenueForAd( params );
 }

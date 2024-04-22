@@ -49,7 +49,7 @@ namespace Mengine
             return randomHexStringTrim;
         }
         //////////////////////////////////////////////////////////////////////////
-        void AppleGetParamsNSDictionary( NSDictionary * _dictionary, Params * const _params )
+        void AppleGetParamsFromNSDictionary( NSDictionary * _dictionary, Params * const _params )
         {
             if( _dictionary == nil )
             {
@@ -116,6 +116,80 @@ namespace Mengine
                 
                 _params->emplace(std::make_pair(key_str, String(value_str)));
             }];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        NSDictionary * AppleGetNSDictionaryFromParams( const Params & _params )
+        {
+            NSMutableDictionary * dictionary = [NSMutableDictionary dictionary];
+            
+            for( auto && [key, value] : _params )
+            {
+                const Char * key_str = key.c_str();
+
+                Helper::visit( value
+                    , [dictionary, key_str]( const ParamBool & _element )
+                {
+                    [dictionary setObject:[NSNumber numberWithBool:_element]
+                                   forKey:@(key_str)];
+                }
+                    , [dictionary, key_str]( const ParamInteger & _element )
+                {
+                    [dictionary setObject:[NSNumber numberWithLongLong:_element]
+                                   forKey:@(key_str)];
+                }
+                    , [dictionary, key_str]( const ParamDouble & _element )
+                {
+                    [dictionary setObject:[NSNumber numberWithDouble:_element]
+                                   forKey:@(key_str)];
+                }
+                    , [dictionary, key_str]( const ParamString & _element )
+                {
+                    NSString * value_ns = Helper::stringToNSString( _element );
+
+                    [dictionary setObject:value_ns
+                                   forKey:@(key_str)];
+                }
+                    , [dictionary, key_str]( const ParamWString & _element )
+                {
+                    NSString * value_ns = Helper::stringToNSString( _element );
+
+                    [dictionary setObject:value_ns
+                                   forKey:@(key_str)];
+                }
+                    , [dictionary, key_str]( const ParamConstString & _element )
+                {
+                    NSString * value_ns = Helper::stringToNSString( _element );
+
+                    [dictionary setObject:value_ns
+                                   forKey:@(key_str)];
+                } );
+            }
+            
+            return dictionary;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void AppleGetVectorConstStringFromNSArray( NSArray<NSString *> * _array, VectorConstString * const _strings )
+        {
+            for( NSString * string in _array )
+            {
+                ConstString cstr = Helper::NSStringToConstString( string );
+                
+                _strings->emplace_back( cstr );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        NSArray<NSString *> * AppleGetNSArrayFromVectorConstString( const VectorConstString & _strings )
+        {
+            NSMutableArray<NSString *> * array = [NSMutableArray array];
+            
+            for( const ConstString & cstr : _strings )
+            {
+                NSString * string = Helper::stringToNSString( cstr );
+                
+                [array addObject:string];
+            }
+            
+            return array;
         }
         //////////////////////////////////////////////////////////////////////////
     }

@@ -11,6 +11,10 @@ namespace Mengine
         NSInteger AppleCurrentTimeMillis();
         NSInteger AppleGetSecureRandomInteger();
         NSString * AppleGetRandomHexString( NSInteger length );
-        void AppleGetParamsNSDictionary( NSDictionary * _dictionary, Params * const _params );
+
+        void AppleGetParamsFromNSDictionary( NSDictionary * _dictionary, Params * const _params );
+        NSDictionary * AppleGetNSDictionaryFromParams( const Params & _params );
+        void AppleGetVectorConstStringFromNSArray( NSArray<NSString *> * _array, VectorConstString * const _strings );
+        NSArray<NSString *> * AppleGetNSArrayFromVectorConstString( const VectorConstString & _strings );
     }
 }

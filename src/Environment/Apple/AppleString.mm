@@ -49,14 +49,11 @@ namespace Mengine
         /////////////////////////////////////////////////////////////////////////
         NSString * unicodeToNSString( const WString & _value )
         {
-            const WChar * value_str = _value.c_str();
+            const WChar * value_wstr = _value.c_str();
             WString::size_type value_size = _value.size();
             
-            NSString * ns = [[NSString alloc]
-                             initWithBytes:value_str
-                             length:value_size
-                             encoding:CFStringConvertEncodingToNSStringEncoding (kCFStringEncodingUTF32LE)
-            ];
+            NSData * data_wstr = [NSData dataWithBytes:value_wstr length:(value_size * sizeof(WChar))];
+            NSString * ns = [[NSString alloc] initWithData:data_wstr encoding:NSUTF32LittleEndianStringEncoding];
             
             return ns;
         }

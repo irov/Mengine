@@ -324,7 +324,7 @@ namespace Mengine
                         NSInteger error_code = error.code;
                         const Char * error_message = error.localizedDescription.UTF8String;
                         
-                        copy_provider->onFacebookError((int32_t)error_code, error_message);
+                        copy_provider->onFacebookError( (int32_t)error_code, error_message );
                     });
                 }
                 
@@ -333,14 +333,14 @@ namespace Mengine
             
             if( profile != nil && profile.imageURL != nil )
             {
-                if( profile.imageURL.absoluteURL )
+                if( profile.imageURL.absoluteURL != nil )
                 {
-                    NSString * imageURL = profile.imageURL.absoluteURL.absoluteString;
-                    
                     if( copy_provider != nullptr )
                     {
-                        Helper::dispatchMainThreadEvent([copy_provider, profile, imageURL](){
+                        Helper::dispatchMainThreadEvent([copy_provider, profile](){
                             const Char * userId_str = profile.userID.UTF8String;
+                            
+                            NSString * imageURL = profile.imageURL.absoluteURL.absoluteString;
                             const Char * imageURL_str = imageURL.UTF8String;
                             
                             copy_provider->onFacebookProfilePictureLinkGet( userId_str, true, imageURL_str );

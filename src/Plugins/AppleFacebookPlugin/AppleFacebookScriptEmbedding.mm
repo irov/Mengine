@@ -28,9 +28,9 @@ namespace Mengine
             }
 
         protected:
-            void onFacebookLoginSuccess( const Char * _token ) override
+            void onFacebookLoginSuccess( const Char * _token, const Char * _fbid ) override
             {
-                this->call_cbs( "onAppleFacebookLoginSuccess", _token );
+                this->call_cbs( "onAppleFacebookLoginSuccess", _token, _fbid );
             };
 
             void onFacebookLoginCancel() override
@@ -92,12 +92,32 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static const Char * s_AppleFacebook_getAccessToken()
+        static PyObject * s_AppleFacebook_getAccessToken( pybind::kernel_interface * _kernel )
         {
-            const Char * token = APPLE_FACEBOOK_SERVICE()
-                ->getAccessToken();
+            Char token[256] = {'\0'};
+            if( APPLE_FACEBOOK_SERVICE()
+               ->getAccessToken( token, 256 ) == false )
+            {
+                return _kernel->ret_none();
+            }
+            
+            PyObject * token_py = pybind::ptr( _kernel, token );
 
-            return token;
+            return token_py;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static PyObject * s_AppleFacebook_getUserId( pybind::kernel_interface * _kernel )
+        {
+            Char userId[256] = {'\0'};
+            if( APPLE_FACEBOOK_SERVICE()
+               ->getUserId( userId, 256 ) == false )
+            {
+                return _kernel->ret_none();
+            }
+            
+            PyObject * userId_py = pybind::ptr( _kernel, userId );
+
+            return userId_py;
         }
         //////////////////////////////////////////////////////////////////////////
         static void s_AppleFacebook_shareLink( const Char * link, const Char * picture )
@@ -132,7 +152,8 @@ namespace Mengine
         pybind::def_function( _kernel, "appleFacebookLogin", &Detail::s_AppleFacebook_login );
         pybind::def_function( _kernel, "appleFacebookLogout", &Detail::s_AppleFacebook_logout );
         pybind::def_function( _kernel, "appleFacebookIsLoggedIn", &Detail::s_AppleFacebook_isLoggedIn );
-        pybind::def_function( _kernel, "appleFacebookGetAccessToken", &Detail::s_AppleFacebook_getAccessToken );
+        pybind::def_function_kernel( _kernel, "appleFacebookGetAccessToken", &Detail::s_AppleFacebook_getAccessToken );
+        pybind::def_function_kernel( _kernel, "appleFacebookGetUserId", &Detail::s_AppleFacebook_getUserId );
         pybind::def_function( _kernel, "appleFacebookShareLink", &Detail::s_AppleFacebook_shareLink );
         pybind::def_function( _kernel, "appleFacebookGetProfilePictureLink", &Detail::s_AppleFacebook_getProfilePictureLink );
 

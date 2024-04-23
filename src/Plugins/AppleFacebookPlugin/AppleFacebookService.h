@@ -34,7 +34,8 @@ namespace Mengine
         void login( const VectorConstString & _permissions ) override;
         void logout() override;
         bool isLoggedIn() const override;
-        const Char * getAccessToken() const override;
+        bool getAccessToken( Char * const _token, size_t _capacity ) const override;
+        bool getUserId( Char * const _userId, size_t _capacity ) const override;
         void shareLink( const Char * link, const Char * picture ) override;
         void getProfilePictureLink() override;
 

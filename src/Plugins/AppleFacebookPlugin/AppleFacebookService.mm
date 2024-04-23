@@ -7,6 +7,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadHelper.h"
 
+#include "Config/StdString.h"
+
 ////////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleFacebookService, Mengine::AppleFacebookService );
 //////////////////////////////////////////////////////////////////////////
@@ -15,10 +17,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AppleFacebookService::AppleFacebookService()
         : m_isProcessed( false )
-        , m_loginManager( nullptr )
+        , m_loginManager( nil )
         , m_userID( nullptr )
-        , m_imageURL( nullptr )
-        , m_shareDelegate( nullptr )
+        , m_imageURL( nil )
+        , m_shareDelegate( nil )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -88,8 +90,6 @@ namespace Mengine
                             
             m_userID = FBSDKProfile.currentProfile.userID;
                 
-            NSString * idTokenString = FBSDKAuthenticationToken.currentAuthenticationToken.tokenString;
-
             if( FBSDKProfile.currentProfile.imageURL != nil )
             {
                 NSURL * imageURL = FBSDKProfile.currentProfile.imageURL.absoluteURL;
@@ -104,20 +104,26 @@ namespace Mengine
                 
             if( copy_provider != nullptr )
             {
-                if( idTokenString != nil )
-                {
-                    Helper::dispatchMainThreadEvent([copy_provider, idTokenString](){
-                        const Char * idTokenString_str = idTokenString.UTF8String;
+                Helper::dispatchMainThreadEvent([copy_provider](){
+                    FBSDKAccessToken * accessToken = [FBSDKAccessToken currentAccessToken];
+                    
+                    if( accessToken != nil )
+                    {
+                        NSString * accessTokenString = accessToken.tokenString;
+                        const Char * accessTokenString_str = accessTokenString.UTF8String;
                         
-                        copy_provider->onFacebookLoginSuccess( idTokenString_str );
-                    });
-                }
-                else
-                {
-                    Helper::dispatchMainThreadEvent([copy_provider](){
-                        copy_provider->onFacebookError( -1, "token == null" );
-                    });
-                }
+                        NSString * userId = [accessToken userID];
+                        const Char * userId_str = userId.UTF8String;
+                        
+                        copy_provider->onFacebookLoginSuccess( accessTokenString_str, userId_str );
+                    }
+                    else
+                    {
+                        Helper::dispatchMainThreadEvent([copy_provider](){
+                            copy_provider->onFacebookError( -1, "token == null" );
+                        });
+                    }
+                });
             }
         }];
     }
@@ -125,23 +131,55 @@ namespace Mengine
     void AppleFacebookService::logout()
     {
         [m_loginManager logOut];
+        
+        [FBSDKAccessToken setCurrentAccessToken:nil];
+        [FBSDKProfile setCurrentProfile:nil];
     }
     /////////////////////////////////////////////////////////////////////////////
     bool AppleFacebookService::isLoggedIn() const
     {
-        return FBSDKAuthenticationToken.currentAuthenticationToken != nullptr;
-    }
-    /////////////////////////////////////////////////////////////////////////////
-    const Char * AppleFacebookService::getAccessToken() const
-    {
-        if( this->isLoggedIn() == false )
+        FBSDKAccessToken * accessToken = [FBSDKAccessToken currentAccessToken];
+        
+        if( accessToken == nil )
         {
-            return nullptr;
+            return false;
         }
         
-        const Char * token_str = FBSDKAccessToken.currentAccessToken.tokenString.UTF8String;
+        return true;
+    }
+    /////////////////////////////////////////////////////////////////////////////
+    bool AppleFacebookService::getAccessToken( Char * const _token, size_t _capacity ) const
+    {
+        FBSDKAccessToken * accessToken = [FBSDKAccessToken currentAccessToken];
         
-        return token_str;
+        if( accessToken == nil )
+        {
+            return false;
+        }
+        
+        const Char * token_str = accessToken.tokenString.UTF8String;
+        
+        MENGINE_STRNCPY( _token, token_str, _capacity );
+        
+        return true;
+    }
+    /////////////////////////////////////////////////////////////////////////////
+    bool AppleFacebookService::getUserId( Char * const _userId, size_t _capacity ) const
+    {
+        FBSDKAccessToken * accessToken = [FBSDKAccessToken currentAccessToken];
+        
+        if( accessToken == nil )
+        {
+            return false;
+        }
+        
+        NSString * userId = [accessToken userID];
+        
+        const Char * userId_str = userId.UTF8String;
+        
+        MENGINE_STRNCPY( _userId, userId_str, _capacity );
+        
+        return true;
     }
     /////////////////////////////////////////////////////////////////////////////
     void AppleFacebookService::shareLink( const Char * link, const Char * picture )

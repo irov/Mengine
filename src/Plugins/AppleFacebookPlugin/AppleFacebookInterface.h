@@ -14,7 +14,7 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual void onFacebookLoginSuccess( const Char * _token ) = 0;
+        virtual void onFacebookLoginSuccess( const Char * _token, const Char * _fbid ) = 0;
         virtual void onFacebookLoginCancel() = 0;
 
         virtual void onFacebookError( int32_t _code, const Char * _errorMessage ) = 0;
@@ -41,7 +41,8 @@ namespace Mengine
         virtual void login( const VectorConstString & _permissions ) = 0;
         virtual void logout() = 0;
         virtual bool isLoggedIn() const = 0;
-        virtual const Char * getAccessToken() const = 0;
+        virtual bool getAccessToken( Char * const _token, size_t _capacity ) const = 0;
+        virtual bool getUserId( Char * const _userId, size_t _capacity ) const = 0;
         virtual void shareLink( const Char * link, const Char * picture ) = 0;
         virtual void getProfilePictureLink() = 0;
     };

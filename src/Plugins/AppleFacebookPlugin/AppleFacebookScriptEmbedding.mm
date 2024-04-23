@@ -28,9 +28,9 @@ namespace Mengine
             }
 
         protected:
-            void onFacebookLoginSuccess( const Char * _token ) override
+            void onFacebookLoginSuccess( const Params & _params ) override
             {
-                this->call_cbs( "onAppleFacebookLoginSuccess", _token );
+                this->call_cbs( "onAppleFacebookLoginSuccess", _params );
             };
 
             void onFacebookLoginCancel() override
@@ -58,9 +58,14 @@ namespace Mengine
                 this->call_cbs( "onAppleFacebookShareError", _code, _errorMessage );
             }
 
-            void onFacebookProfilePictureLinkGet( const Char * _userId, bool _success, const Char * _pictureURL ) override
+            void onFacebookProfilePictureLinkGetSuccess( const Char * _userId, bool _success, const Char * _pictureURL ) override
             {
-                this->call_cbs( "onAppleFacebookProfilePictureLinkGet", _userId, _success, _pictureURL );
+                this->call_cbs( "onAppleFacebookProfilePictureLinkGetSuccess", _userId, _success, _pictureURL );
+            }
+            
+            void onFacebookProfilePictureLinkGetError( int32_t _code, const Char * _errorMessage ) override
+            {
+                this->call_cbs( "onAppleFacebookProfilePictureLinkGetError", _code, _errorMessage );
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -72,10 +77,10 @@ namespace Mengine
                 ->setProvider( provider );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleFacebook_login( const VectorConstString & _permissions )
+        static void s_AppleFacebook_login( bool _limited, const VectorConstString & _permissions )
         {
             APPLE_FACEBOOK_SERVICE()
-                ->login( _permissions );
+                ->login( _limited, _permissions );
         }
         //////////////////////////////////////////////////////////////////////////
         static void s_AppleFacebook_logout()

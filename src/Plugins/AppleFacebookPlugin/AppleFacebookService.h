@@ -31,10 +31,11 @@ namespace Mengine
         const AppleFacebookProviderInterfacePtr & getProvider() const override;
 
     public:
-        void login( const VectorConstString & _permissions ) override;
+        bool login( bool _limited, const VectorConstString & _permissions ) override;
         void logout() override;
         bool isLoggedIn() const override;
         bool getAccessToken( Char * const _token, size_t _capacity ) const override;
+        bool getAuthenticationToken( Char * const _token, size_t _capacity ) const override;
         bool getUserId( Char * const _userId, size_t _capacity ) const override;
         void shareLink( const Char * link, const Char * picture ) override;
         void getProfilePictureLink() override;
@@ -46,7 +47,5 @@ namespace Mengine
         AppleFacebookShareDelegate * m_shareDelegate;
 
         bool m_isProcessed;
-        NSString * m_userID;
-        NSString * m_imageURL;
     };
 }

@@ -4,6 +4,7 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/VectorConstString.h"
+#include "Kernel/Params.h"
 
 #include "Config/Lambda.h"
 
@@ -14,7 +15,7 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual void onFacebookLoginSuccess( const Char * _token ) = 0;
+        virtual void onFacebookLoginSuccess( const Params & _params ) = 0;
         virtual void onFacebookLoginCancel() = 0;
 
         virtual void onFacebookError( int32_t _code, const Char * _errorMessage ) = 0;
@@ -23,7 +24,8 @@ namespace Mengine
         virtual void onFacebookShareCancel() = 0;
         virtual void onFacebookShareError( int32_t _code, const Char * _errorMessage ) = 0;
 
-        virtual void onFacebookProfilePictureLinkGet( const Char * _userId, bool _success, const Char * _pictureURL ) = 0;
+        virtual void onFacebookProfilePictureLinkGetSuccess( const Char * _userId, bool _success, const Char * _pictureURL ) = 0;
+        virtual void onFacebookProfilePictureLinkGetError( int32_t _code, const Char * _errorMessage ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleFacebookProviderInterface> AppleFacebookProviderInterfacePtr;
@@ -38,10 +40,11 @@ namespace Mengine
         virtual const AppleFacebookProviderInterfacePtr & getProvider() const = 0;
 
     public:
-        virtual void login( const VectorConstString & _permissions ) = 0;
+        virtual bool login( bool _limited, const VectorConstString & _permissions ) = 0;
         virtual void logout() = 0;
         virtual bool isLoggedIn() const = 0;
         virtual bool getAccessToken( Char * const _token, size_t _capacity ) const = 0;
+        virtual bool getAuthenticationToken( Char * const _token, size_t _capacity ) const = 0;
         virtual bool getUserId( Char * const _userId, size_t _capacity ) const = 0;
         virtual void shareLink( const Char * link, const Char * picture ) = 0;
         virtual void getProfilePictureLink() = 0;

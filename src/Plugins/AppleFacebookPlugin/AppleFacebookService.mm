@@ -1,8 +1,9 @@
 #include "AppleFacebookService.h"
 
-#include "Environment/Apple/AppleErrorHelper.h"
-#include "Environment/Apple/AppleDetail.h"
-#include "Environment/iOS/iOSDetail.h"
+#import "Environment/Apple/AppleErrorHelper.h"
+#import "Environment/Apple/AppleDetail.h"
+#import "Environment/iOS/iOSApplication.h"
+#import "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadHelper.h"
@@ -67,7 +68,13 @@ namespace Mengine
         
         NSArray<NSString *> * permissions_ns = Helper::AppleGetNSArrayFromVectorConstString( _permissions );
         
-        [m_loginManager logInWithPermissions:permissions_ns fromViewController:rootViewController handler:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
+        NSString * sessionId = [iOSApplication.sharedInstance getSessionId];
+        
+        FBSDKLoginConfiguration *configuration = [[FBSDKLoginConfiguration alloc] initWithPermissions:permissions_ns
+                                                                                             tracking:FBSDKLoginTrackingEnabled
+                                                                                                nonce:sessionId];
+        
+        [m_loginManager logInFromViewController:rootViewController configuration:configuration completion:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
             AppleFacebookProviderInterfacePtr copy_provider = m_provider;
             
             if( error != nullptr )

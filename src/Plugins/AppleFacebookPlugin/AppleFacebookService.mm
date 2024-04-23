@@ -71,7 +71,7 @@ namespace Mengine
         NSString * sessionId = [iOSApplication.sharedInstance getSessionId];
         
         FBSDKLoginConfiguration *configuration = [[FBSDKLoginConfiguration alloc] initWithPermissions:permissions_ns
-                                                                                             tracking:FBSDKLoginTrackingEnabled
+                                                                                             tracking:FBSDKLoginTrackingLimited
                                                                                                 nonce:sessionId];
         
         [m_loginManager logInFromViewController:rootViewController configuration:configuration completion:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
@@ -79,7 +79,7 @@ namespace Mengine
             
             if( error != nullptr )
             {
-                LOGGER_ERROR("[AppleFacebook] login error: '%s'"
+                LOGGER_ERROR( "[AppleFacebook] login error: '%s'"
                    , Helper::AppleGetMessageFromNSError(error).c_str()
                 );
                 
@@ -88,18 +88,36 @@ namespace Mengine
                 if( copy_provider != nullptr )
                 {
                     Helper::dispatchMainThreadEvent([copy_provider, error](){
-                        copy_provider->onFacebookError(-2, [NSString stringWithFormat:@"%@", error].UTF8String);
+                        copy_provider->onFacebookError( -2, [NSString stringWithFormat:@"%@", error].UTF8String);
                     });
                 }
                 
                 return;
             }
-                            
-            m_userID = FBSDKProfile.currentProfile.userID;
-                
-            if( FBSDKProfile.currentProfile.imageURL != nil )
+            
+            if( result.isCancelled == YES )
             {
-                NSURL * imageURL = FBSDKProfile.currentProfile.imageURL.absoluteURL;
+                LOGGER_ERROR( "[AppleFacebook] login cancel" );
+                
+                m_isProcessed = false;
+                
+                if( copy_provider != nullptr )
+                {
+                    Helper::dispatchMainThreadEvent([copy_provider, error](){
+                        copy_provider->onFacebookLoginCancel();
+                    });
+                }
+                
+                return;
+            }
+            
+            FBSDKProfile * profile = [FBSDKProfile currentProfile];
+                            
+            m_userID = profile.userID;
+                
+            if( profile.imageURL != nil )
+            {
+                NSURL * imageURL = profile.imageURL.absoluteURL;
                 
                 if( imageURL != nullptr && imageURL.absoluteString )
                 {
@@ -112,17 +130,14 @@ namespace Mengine
             if( copy_provider != nullptr )
             {
                 Helper::dispatchMainThreadEvent([copy_provider](){
-                    FBSDKAccessToken * accessToken = [FBSDKAccessToken currentAccessToken];
+                    FBSDKAuthenticationToken * authenticationToken = [FBSDKAuthenticationToken currentAuthenticationToken];
                     
-                    if( accessToken != nil )
+                    if( authenticationToken != nil )
                     {
-                        NSString * accessTokenString = accessToken.tokenString;
-                        const Char * accessTokenString_str = accessTokenString.UTF8String;
+                        NSString * authenticationTokenString = authenticationToken.tokenString;
+                        const Char * authenticationTokenString_str = [authenticationTokenString UTF8String];
                         
-                        NSString * userId = [accessToken userID];
-                        const Char * userId_str = userId.UTF8String;
-                        
-                        copy_provider->onFacebookLoginSuccess( accessTokenString_str, userId_str );
+                        copy_provider->onFacebookLoginSuccess( authenticationTokenString_str );
                     }
                     else
                     {
@@ -139,15 +154,15 @@ namespace Mengine
     {
         [m_loginManager logOut];
         
-        [FBSDKAccessToken setCurrentAccessToken:nil];
+        [FBSDKAuthenticationToken setCurrentAuthenticationToken:nil];
         [FBSDKProfile setCurrentProfile:nil];
     }
     /////////////////////////////////////////////////////////////////////////////
     bool AppleFacebookService::isLoggedIn() const
     {
-        FBSDKAccessToken * accessToken = [FBSDKAccessToken currentAccessToken];
+        FBSDKAuthenticationToken * authenticationToken = [FBSDKAuthenticationToken currentAuthenticationToken];
         
-        if( accessToken == nil )
+        if( authenticationToken == nil )
         {
             return false;
         }
@@ -157,14 +172,14 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     bool AppleFacebookService::getAccessToken( Char * const _token, size_t _capacity ) const
     {
-        FBSDKAccessToken * accessToken = [FBSDKAccessToken currentAccessToken];
+        FBSDKAuthenticationToken * authenticationToken = [FBSDKAuthenticationToken currentAuthenticationToken];
         
-        if( accessToken == nil )
+        if( authenticationToken == nil )
         {
             return false;
         }
         
-        const Char * token_str = accessToken.tokenString.UTF8String;
+        const Char * token_str = authenticationToken.tokenString.UTF8String;
         
         MENGINE_STRNCPY( _token, token_str, _capacity );
         
@@ -173,14 +188,14 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////////
     bool AppleFacebookService::getUserId( Char * const _userId, size_t _capacity ) const
     {
-        FBSDKAccessToken * accessToken = [FBSDKAccessToken currentAccessToken];
+        FBSDKProfile * profile = [FBSDKProfile currentProfile];
         
-        if( accessToken == nil )
+        if( profile == nil )
         {
             return false;
         }
         
-        NSString * userId = [accessToken userID];
+        NSString * userId = [profile userID];
         
         const Char * userId_str = userId.UTF8String;
         

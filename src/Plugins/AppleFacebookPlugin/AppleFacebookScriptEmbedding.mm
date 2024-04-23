@@ -28,9 +28,9 @@ namespace Mengine
             }
 
         protected:
-            void onFacebookLoginSuccess( const Char * _token, const Char * _fbid ) override
+            void onFacebookLoginSuccess( const Char * _token ) override
             {
-                this->call_cbs( "onAppleFacebookLoginSuccess", _token, _fbid );
+                this->call_cbs( "onAppleFacebookLoginSuccess", _token );
             };
 
             void onFacebookLoginCancel() override

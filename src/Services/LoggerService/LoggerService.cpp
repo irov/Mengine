@@ -94,7 +94,7 @@ namespace Mengine
             m_silentMessageRelease = true;
         }
 
-        ELoggerLevel logLevel = LM_MESSAGE;
+        ELoggerLevel logLevel = MENGINE_BUILD_PUBLISH_VALUE( LM_ERROR, LM_MESSAGE );
 
         bool developmentMode = Helper::isDevelopmentMode(); 
 
@@ -167,8 +167,6 @@ namespace Mengine
             m_history.reserve( MENGINE_LOGGER_HISTORY_BUFFER_MAX );
         }
 
-        ELoggerLevel level = this->getVerboseLevel();
-
         const Char * loggerLevels[] = {
             "SILENT",               // LM_SILENT
             "FATAL",                // LM_FATAL
@@ -181,7 +179,7 @@ namespace Mengine
             "VERBOSE"               // LM_VERBOSE
         };
 
-        const Char * loggerLevel = loggerLevels[level];
+        const Char * loggerLevel = loggerLevels[logLevel];
 
         Char loggerLevelMessage[256] = {'\0'};
         size_t loggerLevelMessageLen = MENGINE_SNPRINTF( loggerLevelMessage, 255, "start logger with verbose level [%s] Mode [%s] Debug [%s] Master [%s] Publish [%s]"

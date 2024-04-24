@@ -232,6 +232,8 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
+    [self.m_analytics eventRevenuePaid:ad];
+    
     Mengine::Params params;
     Mengine::Helper::AppleGetParamsFromNSDictionary( @{@"revenue":@(ad.revenue)}, &params );
     

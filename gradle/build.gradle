@@ -42,11 +42,11 @@ def ANDROID_APP_BUILD_TOOLS_VERSION = Utils.getStringProperty(project, "ANDROID_
 def ANDROID_APP_CMAKE_VERSION = Utils.getStringProperty(project, "ANDROID_APP_CMAKE_VERSION", "3.22.1")
 def ANDROID_APP_MULTIDEX_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_MULTIDEX_ENABLE", true)
 def ANDROID_APP_MIN_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_MIN_SDK_VERSION", 21)
-def ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_TARGET_SDK_VERSION", 33)
-def ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_COMPILE_SDK_VERSION", 33)
+def ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_TARGET_SDK_VERSION", 34)
+def ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_COMPILE_SDK_VERSION", 34)
 
 allprojects {
-    buildDir = rootProject.projectDir.getAbsolutePath() + "/../outputs/gradle/build/${rootProject.name}/${project.name}"
+    layout.buildDirectory.set(layout.projectDirectory.dir(rootProject.projectDir.getAbsolutePath() + "/../outputs/gradle/build/${rootProject.name}/${project.name}"))
 
     project.ext {
         ndkVersion = ANDROID_APP_NDK_VERSION

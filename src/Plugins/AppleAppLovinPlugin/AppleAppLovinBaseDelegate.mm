@@ -82,40 +82,40 @@
     return params;
 }
 
-- (void) log:(NSString * _Nonnull) callback {
+- (void) log:(NSString * _Nonnull) method {
     LOGGER_MESSAGE( "[%s] %s: adUnitId: %s request: %ld"
         , [self.m_adFormat.label UTF8String]
-        , [callback UTF8String]
+        , [method UTF8String]
         , [self.m_adUnitId UTF8String]
         , self.m_requestId
     );
 }
 
 
-- (void) log:(NSString * _Nonnull) callback withParams:(NSDictionary * _Nonnull) params {
+- (void) log:(NSString * _Nonnull) method withParams:(NSDictionary * _Nonnull) params {
     LOGGER_MESSAGE( "[%s] %s: adUnitId: %s request: %ld %s"
         , [self.m_adFormat.label UTF8String]
-        , [callback UTF8String]
+        , [method UTF8String]
         , [self.m_adUnitId UTF8String]
         , self.m_requestId
         , [[NSString stringWithFormat:@"%@", params] UTF8String]
     );
 }
 
-- (void) log:(NSString * _Nonnull) callback withMAAd:(MAAd *) ad {
+- (void) log:(NSString * _Nonnull) method withMAAd:(MAAd *) ad {
     LOGGER_MESSAGE( "[%s] %s: adUnitId: %s request: %ld ad: %s"
         , [self.m_adFormat.label UTF8String]
-        , [callback UTF8String]
+        , [method UTF8String]
         , [self.m_adUnitId UTF8String]
         , self.m_requestId
         , [[self getMAAdParams:ad] UTF8String]
     );
 }
 
-- (void) log:(NSString * _Nonnull) callback withMAAd:(MAAd * _Nonnull) ad withMAError:(MAError * _Nonnull) error {
+- (void) log:(NSString * _Nonnull) method withMAAd:(MAAd * _Nonnull) ad withMAError:(MAError * _Nonnull) error {
     LOGGER_MESSAGE( "[%s] %s: adUnitId: %s request: %ld ad: %s with error: %s"
         , [ad.format.label UTF8String]
-        , [callback UTF8String]
+        , [method UTF8String]
         , [ad.adUnitIdentifier UTF8String]
         , self.m_requestId
         , [[self getMAAdParams:ad] UTF8String]
@@ -123,20 +123,20 @@
     );
 }
 
-- (void) log:(NSString * _Nonnull) callback withMAError:(MAError * _Nonnull) error {
+- (void) log:(NSString * _Nonnull) method withMAError:(MAError * _Nonnull) error {
     LOGGER_MESSAGE( "[%s] %s: adUnitId: %s request: %ld with error: %s"
         , [self.m_adFormat.label UTF8String]
-        , [callback UTF8String]
+        , [method UTF8String]
         , [self.m_adUnitId UTF8String]
         , self.m_requestId
         , [[self getMAErrorParams:error] UTF8String]
     );
 }
 
-- (void) log:(NSString * _Nonnull) callback withMAAd:(MAAd * _Nonnull) ad withMAReward:(MAReward * _Nonnull) reward {
+- (void) log:(NSString * _Nonnull) method withMAAd:(MAAd * _Nonnull) ad withMAReward:(MAReward * _Nonnull) reward {
     LOGGER_MESSAGE( "[%s] %s: adUnitId: %s request: %ld with reward lable: %s amount: %ld"
         , [ad.format.label UTF8String]
-        , [callback UTF8String]
+        , [method UTF8String]
         , [ad.adUnitIdentifier UTF8String]
         , self.m_requestId
         , [reward.label UTF8String]

@@ -63,8 +63,7 @@
 
 - (void) dealloc {
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-    if( self.m_amazonLoader != nil )
-    {
+    if( self.m_amazonLoader != nil ) {
         [self.m_amazonLoader release];
         self.m_amazonLoader = nil;
     }
@@ -86,8 +85,7 @@
 }
 
 - (void) loadAd {
-    if( self.m_adView == nil )
-    {
+    if( self.m_adView == nil ) {
         return;
     }
     

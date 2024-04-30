@@ -55,8 +55,7 @@
 
 - (void) dealloc {
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
-    if( self.m_amazonLoader != nil )
-    {
+    if( self.m_amazonLoader != nil ) {
         [self.m_amazonLoader release];
         self.m_amazonLoader = nil;
     }
@@ -86,8 +85,7 @@
 
     [self log:@"canYouShow" withParams:@{@"placement":placement, @"ready":@(ready)}];
 
-    if( ready == NO )
-    {
+    if( ready == NO ) {
         [AppleAnalytics event:@"mng_ad_rewarded_show" params:@{
             @"ad_unit_id": self.m_adUnitId,
             @"placement": placement,
@@ -115,8 +113,7 @@
         @"ready": @(ready)
     }];
     
-    if( ready == NO )
-    {
+    if( ready == NO ) {
         return NO;
     }
     
@@ -126,8 +123,7 @@
 }
 
 - (void) loadAd {
-    if( self.m_rewardedAd == nil )
-    {
+    if( self.m_rewardedAd == nil ) {
         return;
     }
     
@@ -290,7 +286,7 @@
         @"revenue_precision": ad.revenuePrecision,
         @"ad": [self getMAAdParams:ad]
     }];
-        
+    
     [self.m_analytics eventRevenuePaid:ad];
     
     Mengine::Params params;

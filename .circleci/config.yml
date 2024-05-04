@@ -31,8 +31,9 @@ jobs:
           name: install cmake
           command: |
             sudo apt-get update
+            sudo apt-get install -y -q
+            sudo apt-get install apt-utils
             sudo apt-get install cmake
-            sudo apt-get upgrade
             
       - run:
           name: install gradle

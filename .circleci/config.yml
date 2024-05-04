@@ -49,7 +49,7 @@ jobs:
       - run:
           name: sdkmanager cmake
           command: |
-            yes | sdkmanager "cmake;3.24.0"
+            yes | sdkmanager "cmake;3.22.1"
           shell: /bin/bash -e
           
       - run:

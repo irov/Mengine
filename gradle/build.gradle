@@ -61,9 +61,11 @@ allprojects {
     }
 
     gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.encoding = 'UTF-8'
-            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        tasks.withType(JavaCompile).tap {
+            configureEach {
+                options.encoding = 'UTF-8'
+                options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+            }
         }
     }
 

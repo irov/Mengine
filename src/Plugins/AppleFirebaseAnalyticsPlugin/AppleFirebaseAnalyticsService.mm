@@ -73,20 +73,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////
     void AppleFirebaseAnalyticsService::sendEvent( NSString * _name, NSDictionary<NSString *, id> * _parameters )
     {
-        LOGGER_MESSAGE( "sendEvent name: %s"
-            , [_name UTF8String]
-        );
-        
-        for (NSString * key in _parameters)
-        {
-            id value = _parameters[key];
-            
-            LOGGER_MESSAGE( "key: %s value: %s"
-                , [key UTF8String]
-                , [[value description] UTF8String]
-            );
-        }
-
         [FIRAnalytics logEventWithName:_name
                             parameters:_parameters];
     }

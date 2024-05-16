@@ -30,7 +30,7 @@
         ->sendEvent( kFIREventAdImpression, @{
                         kFIRParameterAdPlatform: @"AppLovin",
                         kFIRParameterAdSource: ad.networkName,
-                        kFIRParameterAdFormat: ad.format,
+                        kFIRParameterAdFormat: ad.format.label,
                         kFIRParameterAdUnitName: ad.adUnitIdentifier,
                         kFIRParameterCurrency: @"USD", // All Applovin revenue is sent in USD
                         kFIRParameterValue: [NSNumber numberWithDouble:ad.revenue]

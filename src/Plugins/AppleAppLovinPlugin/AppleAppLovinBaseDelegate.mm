@@ -29,7 +29,7 @@
     [params appendFormat:@", \"adUnitIdentifier\": \"%@\"", ad.adUnitIdentifier];
     [params appendFormat:@", \"networkName\": \"%@\"", ad.networkName];
     [params appendFormat:@", \"networkPlacement\": \"%@\"", ad.networkPlacement];
-    [params appendFormat:@", \"revenue\": \"%lf\"", ad.revenue];
+    [params appendFormat:@", \"revenue\": %lf", ad.revenue];
     [params appendFormat:@", \"revenuePrecision\": \"%@\"", ad.revenuePrecision];
     
     if (ad.creativeIdentifier) {

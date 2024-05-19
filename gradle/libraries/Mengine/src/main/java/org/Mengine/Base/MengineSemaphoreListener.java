@@ -17,5 +17,5 @@ public class MengineSemaphoreListener {
 
     public void call() {
         AnroidEnvironmentService_callMengineSemaphoreListener(m_impl);
-    };
+    }
 }

@@ -64,13 +64,13 @@ namespace Mengine
 
         receiver->initialize( _cb, _args );
 
-        HttpRequestPostParams params;
+        HttpRequestPostProperties params;
         for( auto && [key, value] : _params )
         {
             String string_value;
             Helper::get( value, &string_value );
 
-            params.emplace_back( HttpRequestPostParam{key, string_value} );
+            params.emplace_back( HttpRequestPostProperty{key, string_value} );
         }
 
         HttpRequestId id = HTTP_SYSTEM()

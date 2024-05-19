@@ -20,13 +20,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceWindow::_compile()
     {
-        for( uint32_t i = 0; i != ResourceWindow_Count; ++i )
+        for( uint32_t index = 0; index != ResourceWindow_Count; ++index )
         {
-            WindowElement & element = m_elements[i];
+            WindowElement & element = m_elements[index];
 
             if( element.resourceImage == nullptr )
             {
-                if( i == ResourceWindow_Background )
+                if( index == ResourceWindow_Background )
                 {
                     continue;
                 }
@@ -35,7 +35,7 @@ namespace Mengine
 
                 LOGGER_ERROR( "resource window '%s' not set element [%s]"
                     , this->getName().c_str()
-                    , element_names[i]
+                    , element_names[index]
                 );
 
                 return false;

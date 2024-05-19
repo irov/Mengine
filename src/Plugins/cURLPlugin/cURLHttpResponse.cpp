@@ -5,7 +5,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     cURLHttpResponse::cURLHttpResponse()
         : m_requestId( 0 )
-        , m_status( CURLE_OK )
         , m_code( HTTP_OK )
         , m_successful( false )
     {
@@ -20,9 +19,9 @@ namespace Mengine
         m_requestId = _requestId;
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLHttpResponse::setStatus( CURLcode _status )
+    HttpRequestId cURLHttpResponse::getRequestId() const
     {
-        m_status = _status;
+        return m_requestId;
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLHttpResponse::appendHeaders( const Char * _ptr, size_t _size )
@@ -30,39 +29,14 @@ namespace Mengine
         m_headers.emplace_back( _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLHttpResponse::appendData( const Char * _ptr, size_t _size )
-    {
-        m_data.append( _ptr, _size );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void cURLHttpResponse::setCode( EHttpCode _code )
-    {
-        m_code = _code;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void cURLHttpResponse::setError( const String & _error )
-    {
-        m_error = _error;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void cURLHttpResponse::setSuccessful( bool _successful )
-    {
-        m_successful = _successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    HttpRequestId cURLHttpResponse::getRequestId() const
-    {
-        return m_requestId;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t cURLHttpResponse::getStatus() const
-    {
-        return (uint32_t)m_status;
-    }
-    //////////////////////////////////////////////////////////////////////////
     const HttpRequestHeaders & cURLHttpResponse::getHeaders() const
     {
         return m_headers;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void cURLHttpResponse::appendData( const Char * _ptr, size_t _size )
+    {
+        m_data.append( _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     const String & cURLHttpResponse::getData() const
@@ -70,14 +44,29 @@ namespace Mengine
         return m_data;
     }
     //////////////////////////////////////////////////////////////////////////
+    void cURLHttpResponse::setCode( EHttpCode _code )
+    {
+        m_code = _code;
+    }
+    //////////////////////////////////////////////////////////////////////////
     EHttpCode cURLHttpResponse::getCode() const
     {
         return m_code;
     }
     //////////////////////////////////////////////////////////////////////////
+    void cURLHttpResponse::setError( const String & _error )
+    {
+        m_error = _error;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const String & cURLHttpResponse::getError() const
     {
         return m_error;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void cURLHttpResponse::setSuccessful( bool _successful )
+    {
+        m_successful = _successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool cURLHttpResponse::isSuccessful() const

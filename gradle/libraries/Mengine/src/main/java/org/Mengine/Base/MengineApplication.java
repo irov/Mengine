@@ -17,17 +17,22 @@ import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.multidex.MultiDex;
-import androidx.preference.PreferenceManager;
 
 import org.libsdl.app.SDL;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.net.URL;
 
 public class MengineApplication extends Application {
     private static final String TAG = "MengineApplication";
@@ -40,7 +45,7 @@ public class MengineApplication extends Application {
      */
 
 
-    private static native void AndroidEnv_setMengineAndroidApplicationJNI(Object activity);
+    private static native void AndroidEnv_setMengineAndroidApplicationJNI(Object activity, ClassLoader cl);
     private static native void AndroidEnv_removeMengineAndroidApplicationJNI();
 
     private static native boolean AndroidEnv_isMasterRelease();
@@ -1006,7 +1011,9 @@ public class MengineApplication extends Application {
 
         this.setState("application.init", "sdl_init");
 
-        AndroidEnv_setMengineAndroidApplicationJNI(this);
+        ClassLoader cl = MengineApplication.class.getClassLoader();
+
+        AndroidEnv_setMengineAndroidApplicationJNI(this, cl);
 
         String build_gitsha1 = this.getEngineGITSHA1();
         this.setState("engine.build_gitsha1", build_gitsha1);

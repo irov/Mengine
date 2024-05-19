@@ -18,7 +18,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLHttpRequestPostMessageThreadTask::initialize( const HttpRequestPostParams & _params )
+    bool cURLHttpRequestPostMessageThreadTask::initialize( const HttpRequestPostProperties & _params )
     {
         m_params = _params;
 

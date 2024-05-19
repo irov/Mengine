@@ -15,14 +15,14 @@ namespace Mengine
         ~cURLHttpRequestPostMessageThreadTask() override;
 
     public:
-        bool initialize( const HttpRequestPostParams & _params );
+        bool initialize( const HttpRequestPostProperties & _params );
 
     protected:
         void _onCURL( CURL * _curl ) override;
         void _onCURLCleanup( CURL * _curl ) override;
 
     protected:
-        HttpRequestPostParams m_params;
+        HttpRequestPostProperties m_params;
 
         struct curl_httppost * m_curl_formpost;
     };

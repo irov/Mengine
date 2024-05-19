@@ -334,8 +334,10 @@ namespace Mengine
 
         if( m_response != nullptr )
         {
-            m_response->setStatus( status );
-            m_response->setError( errorbuf );
+            if( status != CURLE_OK )
+            {
+                m_response->setError( errorbuf );
+            }
 
             long http_code = 0;
             MENGINE_CURLCALL( curl_easy_getinfo, (curl, CURLINFO_RESPONSE_CODE, &http_code) );

@@ -33,24 +33,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef VectorString HttpRequestHeaders;
     //////////////////////////////////////////////////////////////////////////
-    struct HttpRequestPostParam
+    struct HttpRequestPostProperty
     {
         ConstString key;
         String value;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<HttpRequestPostParam> HttpRequestPostParams;
+    typedef Vector<HttpRequestPostProperty> HttpRequestPostProperties;
     //////////////////////////////////////////////////////////////////////////
     class HttpResponseInterface
         : public Interface
     {
     public:
+        virtual void setRequestId( HttpRequestId _requestId ) = 0;
         virtual HttpRequestId getRequestId() const = 0;
-        virtual uint32_t getStatus() const = 0;
+
+        virtual void appendHeaders( const Char * _ptr, size_t _size ) = 0;
         virtual const HttpRequestHeaders & getHeaders() const = 0;
+
+        virtual void appendData( const Char * _ptr, size_t _size ) = 0;
         virtual const String & getData() const = 0;
+
+        virtual void setCode( EHttpCode _code ) = 0;
         virtual EHttpCode getCode() const = 0;
+
+        virtual void setError( const String & _error ) = 0;
         virtual const String & getError() const = 0;
+
+        virtual void setSuccessful( bool _successful ) = 0;
         virtual bool isSuccessful() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -79,7 +89,7 @@ namespace Mengine
 
     public:
         virtual HttpRequestId getMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
-        virtual HttpRequestId postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpRequestPostParams & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
+        virtual HttpRequestId postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
         virtual HttpRequestId deleteMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
 
     public:

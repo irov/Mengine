@@ -93,7 +93,7 @@ namespace Mengine
 
         MENGINE_STRNCAT( buffer, data, data_size );
 
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {
             return;
         }

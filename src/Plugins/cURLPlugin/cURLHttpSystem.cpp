@@ -127,7 +127,7 @@ namespace Mengine
             , info->ssl_version
         );
 
-        uint32_t cURLService_ThreadCount = CONFIG_VALUE( "cURLPlugin", "ThreadCount", 8 );
+        uint32_t cURLService_ThreadCount = CONFIG_VALUE( "Http", "ThreadCount", 8 );
 
         ThreadQueueInterfacePtr threadQueue = THREAD_SERVICE()
             ->createTaskQueue( 1, MENGINE_DOCUMENT_FACTORABLE );
@@ -139,7 +139,7 @@ namespace Mengine
         for( uint32_t index = 0; index != cURLService_ThreadCount; ++index )
         {
             Stringstream ss;
-            ss << "ThreadcURLService_" << index;
+            ss << "ThreadHttp_" << index;
             ConstString threadName = Helper::stringizeString( ss.str() );
 
             if( THREAD_SERVICE()
@@ -313,7 +313,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId cURLHttpSystem::postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpRequestPostParams & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId cURLHttpSystem::postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -652,10 +652,9 @@ namespace Mengine
 
         m_mutex->unlock();
 
-        LOGGER_HTTP_ERROR( "curl invalid request '%u' %s (status [%u] error '%.2048s' response '%.2048s' code [%u])"
+        LOGGER_HTTP_ERROR( "curl invalid request '%u' %s (error '%.2048s' response '%.2048s' code [%u])"
             , _response->getRequestId()
             , _response->isSuccessful() ? "complete" : "failure"
-            , _response->getStatus()
             , _response->getError().c_str()
             , _response->getData().c_str()
             , _response->getCode()            

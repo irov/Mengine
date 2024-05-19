@@ -7,5 +7,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.firebase:firebase-analytics:21.6.2'
+    implementation 'com.google.firebase:firebase-analytics:22.0.0'
 }

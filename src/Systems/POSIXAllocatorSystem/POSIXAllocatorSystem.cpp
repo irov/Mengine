@@ -53,7 +53,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
-        MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
+        MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "usage size failed" );
 
         this->report( usage_size, 0 );
 #endif
@@ -73,7 +73,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         size_t old_size = MENGINE_MALLOC_SIZE( _mem );
 
-        MENGINE_ASSERTION_FATAL( old_size != (size_t)-1 );
+        MENGINE_ASSERTION_FATAL( old_size != (size_t)-1, "old size failed" );
 #endif
 
         MENGINE_FREE( _mem );
@@ -98,7 +98,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
-        MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
+        MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "usage size failed" );
 
         this->report( usage_size, 0 );
 #endif
@@ -123,7 +123,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
             size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
-            MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
+            MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "usage size failed" );
 
             this->report( usage_size, 0 );
 #endif
@@ -134,7 +134,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         size_t old_size = MENGINE_MALLOC_SIZE( _mem );
 
-        MENGINE_ASSERTION_FATAL( old_size != (size_t)-1 );
+        MENGINE_ASSERTION_FATAL( old_size != (size_t)-1, "old size failed" );
 #endif
 
         void * mem = MENGINE_REALLOC( _mem, _size );
@@ -149,7 +149,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
-        MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1 );
+        MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "usage size failed" );
 
         this->report( usage_size, old_size );
 #endif
@@ -180,7 +180,11 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     void POSIXAllocatorSystem::report( size_t _add, size_t _minus )
     {
-        MENGINE_ASSERTION_FATAL( m_memoryUsage + _add >= _minus );
+        MENGINE_ASSERTION_FATAL( m_memoryUsage + _add >= _minus, "memory usage %u and add %zu less minus %zu"
+            , Helper::atomicLoad( m_memoryUsage )
+            , _add
+            , _minus
+        );
 
         m_memoryUsage += (uint32_t)_add;
         m_memoryUsage -= (uint32_t)_minus;

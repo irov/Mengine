@@ -18,21 +18,22 @@ namespace Mengine
         ~cURLHttpResponse() override;
 
     public:
-        void setRequestId( HttpRequestId _requestId );
-        void setStatus( CURLcode _status );
-        void appendHeaders( const Char * _ptr, size_t _size );
-        void appendData( const Char * _ptr, size_t _size );
-        void setCode( EHttpCode _code );
-        void setError( const String & _error );
-        void setSuccessful( bool _successful );
-
-    public:
+        void setRequestId( HttpRequestId _requestId ) override;
         HttpRequestId getRequestId() const override;
-        uint32_t getStatus() const override;
+        
+        void appendHeaders( const Char * _ptr, size_t _size ) override;
         const HttpRequestHeaders & getHeaders() const override;
+
+        void appendData( const Char * _ptr, size_t _size ) override;
         const String & getData() const override;
+
+        void setCode( EHttpCode _code ) override;
         EHttpCode getCode() const override;
+
+        void setError( const String & _error ) override;
         const String & getError() const override;
+
+        void setSuccessful( bool _successful ) override;
         bool isSuccessful() const override;
 
     protected:
@@ -40,7 +41,6 @@ namespace Mengine
         HttpRequestHeaders m_headers;
         String m_data;
         String m_error;
-        CURLcode m_status;
         EHttpCode m_code;
 
         bool m_successful;

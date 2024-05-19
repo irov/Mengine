@@ -1,5 +1,7 @@
 package org.Mengine.Base;
 
+import androidx.annotation.NonNull;
+
 public class MengineAdMediation {
     public final static MengineAdMediation ADMEDIATION_APPLOVINMAX = new MengineAdMediation("ADMEDIATION_APPLOVINMAX");
 
@@ -12,6 +14,8 @@ public class MengineAdMediation {
     public String getName() {
         return m_name;
     }
+
+    @NonNull
     public String toString() {
         return m_name;
     }

@@ -23,15 +23,18 @@ import org.xml.sax.SAXException;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -536,11 +539,11 @@ public class MengineUtils {
 
             return document;
         } catch (ParserConfigurationException e) {
-            MengineLog.logError("parseDocument catch ParserConfigurationException: %s", e.getMessage());
+            MengineLog.logError(TAG, "parseDocument catch ParserConfigurationException: %s", e.getMessage());
         } catch (SAXException e) {
-            MengineLog.logError("parseDocument catch SAXException: %s", e.getMessage());
+            MengineLog.logError(TAG, "parseDocument catch SAXException: %s", e.getMessage());
         } catch (IOException e) {
-            MengineLog.logError("parseDocument catch IOException: %s", e.getMessage());
+            MengineLog.logError(TAG, "parseDocument catch IOException: %s", e.getMessage());
         }
 
         return null;
@@ -616,5 +619,20 @@ public class MengineUtils {
         } catch (InterruptedException e) {
             MengineLog.logWarning(TAG, "sleep %d catch InterruptedException: %s", millis, e.getMessage());
         }
+    }
+
+    public static String inputStreamToString(InputStream stream) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            stringBuilder.append(line).append("\n");
+        }
+
+        bufferedReader.close();
+
+        return stringBuilder.toString();
     }
 }

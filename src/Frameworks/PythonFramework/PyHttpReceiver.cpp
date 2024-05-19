@@ -22,7 +22,7 @@ namespace Mengine
     void PyHttpReceiver::onHttpRequestComplete( const HttpResponseInterfacePtr & _response )
     {
         HttpRequestId requestId = _response->getRequestId();
-        uint32_t status = _response->getStatus();
+        uint32_t status = 0; //ToDo remove
         const String & error = _response->getError();
         const String & data = _response->getData();
         EHttpCode code = _response->getCode();

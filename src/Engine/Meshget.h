@@ -113,6 +113,8 @@ namespace Mengine
         mutable bool m_invalidateVerticesColor;
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveNodePtr<Meshget> MeshgetPtr;
+    //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const VectorRenderVertex2D & Meshget::getVerticesWM() const
     {
         if( m_invalidateVerticesWM == true )

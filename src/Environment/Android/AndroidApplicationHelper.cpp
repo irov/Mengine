@@ -18,6 +18,11 @@ namespace Mengine
         {
             jclass jclassMengineApplication = Mengine_JNI_GetJClassMengineApplication();
 
+            MENGINE_ASSERTION_FATAL( jclassMengineApplication != nullptr, "invalid get android application class for method '%s' with signature '%s'"
+                , _name
+                , _signature
+            );
+
             jmethodID jmethodID_function = _jenv->GetMethodID( jclassMengineApplication, _name, _signature );
 
             MENGINE_ASSERTION_FATAL( jmethodID_function != nullptr, "invalid get android application method '%s' with signature '%s'"

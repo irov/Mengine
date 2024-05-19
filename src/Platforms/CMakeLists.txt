@@ -1,7 +1,9 @@
-if(MENGINE_PLATFORM_WIN32)
-    ADD_SUBDIRECTORY( Win32Platform )
-elseif( MENGINE_PLATFORM_SDL )
-    ADD_SUBDIRECTORY( SDLPlatform )
-endif()
+MACRO(ADD_PLATFORM_SUBDIRECTORY Platform)
+    if(${Platform})
+        ADD_SUBDIRECTORY(${${Platform}})
+    endif()
+endmacro()
+
+ADD_PLATFORM_SUBDIRECTORY(MENGINE_PLATFORM)
 
 MENGINE_SUBFOLDER()

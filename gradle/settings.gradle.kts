@@ -80,6 +80,7 @@ includeLibrary("MENGINE_APP_LIBRARY_SDL", ":libraries:SDL")
 
 /*****************************************************************************
 / * - MENGINE_APP_PLUGIN_FIREBASE [https://firebase.google.com]
+/ * - MENGINE_APP_PLUGIN_FIREBASE_APPCHECK [https://firebase.google.com/docs/app-check]
 / * - MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS [https://firebase.google.com/docs/analytics]
 / * - MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS [https://firebase.google.com/docs/crashlytics]
 / * - MENGINE_APP_PLUGIN_FIREBASE_MESSAGING [https://firebase.google.com/docs/cloud-messaging]
@@ -116,6 +117,7 @@ includePlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", ":plugins:GoogleGameSocia
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", ":plugins:GoogleInAppReviews")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_CONSENT", ":plugins:GoogleConsent")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE", ":plugins:Firebase")
+includePlugin("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK", ":plugins:FirebaseAppCheck")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", ":plugins:FirebaseAnalytics")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS", ":plugins:FirebaseCrashlytics")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING", ":plugins:FirebaseMessaging")

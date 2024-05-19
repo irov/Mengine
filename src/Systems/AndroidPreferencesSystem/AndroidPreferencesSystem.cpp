@@ -151,7 +151,7 @@ namespace Mengine
 
         jenv->DeleteLocalRef( jkey );
 
-        ConstString value = Helper::AndroidMakeConstStringFromJString(jenv, jvalue);
+        ConstString value = Helper::AndroidMakeConstStringFromJString( jenv, jvalue );
 
         jenv->DeleteLocalRef( jvalue );
 

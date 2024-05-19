@@ -1,5 +1,7 @@
 package org.Mengine.Base;
 
+import androidx.annotation.NonNull;
+
 public class MengineAdFormat {
     public final static MengineAdFormat ADFORMAT_BANNER = new MengineAdFormat("ADFORMAT_BANNER");
     public final static MengineAdFormat ADFORMAT_MREC = new MengineAdFormat("ADFORMAT_MREC");
@@ -20,6 +22,8 @@ public class MengineAdFormat {
     public String getName() {
         return m_name;
     }
+
+    @NonNull
     public String toString() {
         return m_name;
     }

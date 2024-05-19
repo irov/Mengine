@@ -32,7 +32,7 @@ public class MengineLog {
         public String tag;
         public String message;
         public MengineApplication application;
-    };
+    }
 
     private static ArrayList<HistoryRecord> m_history = new ArrayList<>();
 

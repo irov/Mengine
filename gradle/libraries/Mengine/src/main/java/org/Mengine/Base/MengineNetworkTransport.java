@@ -1,5 +1,7 @@
 package org.Mengine.Base;
 
+import androidx.annotation.NonNull;
+
 public class MengineNetworkTransport {
     public final static MengineNetworkTransport NETWORKTRANSPORT_CELLULAR = new MengineNetworkTransport("NETWORKTRANSPORT_CELLULAR");
     public final static MengineNetworkTransport NETWORKTRANSPORT_WIFI = new MengineNetworkTransport("NETWORKTRANSPORT_WIFI");
@@ -20,6 +22,8 @@ public class MengineNetworkTransport {
     public String getName() {
         return m_name;
     }
+
+    @NonNull
     public String toString() {
         return m_name;
     }

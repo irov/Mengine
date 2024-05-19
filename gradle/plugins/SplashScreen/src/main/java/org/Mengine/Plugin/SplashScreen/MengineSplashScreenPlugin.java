@@ -82,6 +82,10 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
 
         ImageView image = this.createBackground(activity);
 
+        if (image == null) {
+            throw new MenginePluginInvalidInitializeException("splash screen image is null");
+        }
+
         viewGroup.addView(image);
 
         m_image = image;
@@ -151,6 +155,10 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
     private void hideSplash(@NonNull MengineActivity activity) {
         this.setState("splashscreen.state", "hide");
 
+        if (m_image == null) {
+            return;
+        }
+
         Animation showAnimation = m_image.getAnimation();
 
         float alphaFrom = 1.f;
@@ -201,6 +209,10 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
     }
 
     private void removeSpash(@NonNull MengineActivity activity) {
+        if (m_image == null) {
+            return;
+        }
+
         ViewGroup viewGroup = activity.getContentViewGroup();
 
         viewGroup.removeView(m_image);

@@ -3,6 +3,8 @@
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidApplicationHelper.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
+
 #include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -40,6 +42,8 @@ namespace Mengine
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
         jlong jseed = Helper::AndroidCallLongApplicationMethod( jenv, "getSecureRandomNumber", "()J" );
 
         *_seed = (uint64_t)jseed;
@@ -55,6 +59,8 @@ namespace Mengine
         }
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         jstring jhex = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getSecureRandomHexString", "(I)Ljava/lang/String;", _length );
 

@@ -33,7 +33,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SecureService::_initializeService()
     {
-        const Char * secure = GET_OPTION_VALUE( "secure", MENGINE_SECURE_VALUE );
+        const Char * secure = GET_OPTION_VALUE( "secure", MENGINE_PP_STRINGIZE( MENGINE_SECURE_VALUE ) );
 
         size_t secure_len = MENGINE_STRLEN( secure );
 

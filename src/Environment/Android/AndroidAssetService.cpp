@@ -26,6 +26,8 @@ namespace Mengine
     {
         if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
+            LOGGER_ERROR( "invalid get asset manager" );
+
             return false;
         }
 
@@ -62,6 +64,8 @@ namespace Mengine
         if( m_jAssetManagerRef != nullptr )
         {
             JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+            MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
             jenv->DeleteGlobalRef( m_jAssetManagerRef );
             m_jAssetManagerRef = nullptr;

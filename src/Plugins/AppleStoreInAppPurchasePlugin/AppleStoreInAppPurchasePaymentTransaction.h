@@ -28,6 +28,9 @@ namespace Mengine
         void setSKPaymentTransaction( SKPaymentTransaction * _skPaymentTransaction );
         SKPaymentTransaction * getSKPaymentTransaction() const;
         
+        void setSKPaymentQueue( SKPaymentQueue * _skPaymentQueue );
+        SKPaymentQueue * getSKPaymentQueue() const;
+        
     public:
         const ConstString & getProductIdentifier() const override;
         
@@ -36,6 +39,7 @@ namespace Mengine
         
     protected:
         SKPaymentTransaction * m_skPaymentTransaction;
+        SKPaymentQueue * m_skPaymentQueue;
         
         ConstString m_productIdentifier;
     };

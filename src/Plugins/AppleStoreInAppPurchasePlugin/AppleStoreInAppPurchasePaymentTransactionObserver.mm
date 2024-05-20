@@ -34,25 +34,33 @@
 - (void)setupWithFactory: (Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nonnull)_factory service: (Mengine::AppleStoreInAppPurchaseServiceInterface * _Nonnull)_service {
     m_factory = _factory;
     m_service = _service;
+    
+    for (NSDictionary * value in self.m_cacheSKPaymentTransactions) {
+        SKPaymentQueue * queue = value[@"queue"];
+        NSArray<SKPaymentTransaction *> * transactions = value[@"transactions"];
+        
+        [self paymentQueue:queue updatedTransactions:transactions];
+    }
 }
 
 #pragma mark - SKPaymentTransactionObserver
 
 // Sent when the transaction array has changed (additions or state changes).  Client should check state of transactions and finish as appropriate.
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions {
-    LOGGER_MESSAGE( "SKPaymentTransactionObserver paymentQueue updatedTransactions" );
-    
     if (m_service == nil) {
-        [self.m_cacheSKPaymentTransactions addObjectsFromArray:transactions];
+        NSDictionary * value = @{@"queue": queue, @"transactions": transactions};
+        [self.m_cacheSKPaymentTransactions addObject:value];
         
         return;
     }
+    
+    LOGGER_MESSAGE( "SKPaymentTransactionObserver paymentQueue updatedTransactions" );
     
     Mengine::AppleStoreInAppPurchasePaymentTransactionProviderInterfacePtr copy_provider = m_service->getPaymentTransactionProvider();
     
     for (SKPaymentTransaction * skPaymentTransaction in transactions)
     {
-        Mengine::AppleStoreInAppPurchasePaymentTransactionInterfacePtr paymentTransaction = m_factory->makePaymentTransaction( skPaymentTransaction );
+        Mengine::AppleStoreInAppPurchasePaymentTransactionInterfacePtr paymentTransaction = m_factory->makePaymentTransaction( skPaymentTransaction, queue );
         
         SKPaymentTransactionState state = skPaymentTransaction.transactionState;
         
@@ -94,6 +102,10 @@
 
 // Sent when transactions are removed from the queue (via finishTransaction:).
 - (void)paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray<SKPaymentTransaction *> *)transactions {
+    if (m_service == nil) {
+        return;
+    }
+    
     LOGGER_MESSAGE( "SKPaymentTransactionObserver paymentQueue removedTransactions" );
     
     //ToDo
@@ -101,6 +113,10 @@
 
 // Sent when an error is encountered while adding transactions from the user's purchase history back to the queue.
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error {
+    if (m_service == nil) {
+        return;
+    }
+    
     LOGGER_MESSAGE( "SKPaymentTransactionObserver paymentQueue restoreCompletedTransactionsFailedWithError: %s"
         , Mengine::Helper::AppleGetMessageFromNSError( error ).c_str()
     );
@@ -110,6 +126,10 @@
 
 // Sent when all transactions from the user's purchase history have successfully been added back to the queue.
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
+    if (m_service == nil) {
+        return;
+    }
+    
     LOGGER_MESSAGE( "SKPaymentTransactionObserver paymentQueueRestoreCompletedTransactionsFinished" );
     
     //ToDo
@@ -117,6 +137,10 @@
 
 // Sent when a user initiates an IAP buy from the App Store
 - (BOOL)paymentQueue:(SKPaymentQueue *)queue shouldAddStorePayment:(SKPayment *)payment forProduct:(SKProduct *)product {
+    if (m_service == nil) {
+        return;
+    }
+    
     LOGGER_MESSAGE( "SKPaymentTransactionObserver shouldAddStorePayment" );
     
     //ToDo
@@ -125,6 +149,10 @@
 }
 
 - (void)paymentQueueDidChangeStorefront:(SKPaymentQueue *)queue {
+    if (m_service == nil) {
+        return;
+    }
+    
     LOGGER_MESSAGE( "SKPaymentTransactionObserver paymentQueueDidChangeStorefront" );
     
     //ToDo
@@ -132,6 +160,10 @@
 
 // Sent when entitlements for a user have changed and access to the specified IAPs has been revoked.
 - (void)paymentQueue:(SKPaymentQueue *)queue didRevokeEntitlementsForProductIdentifiers:(NSArray<NSString *> *)productIdentifiers {
+    if (m_service == nil) {
+        return;
+    }
+    
     LOGGER_MESSAGE( "SKPaymentTransactionObserver didRevokeEntitlementsForProductIdentifiers: %s"
         , Mengine::Helper::NSIdToString( productIdentifiers ).c_str()
     );

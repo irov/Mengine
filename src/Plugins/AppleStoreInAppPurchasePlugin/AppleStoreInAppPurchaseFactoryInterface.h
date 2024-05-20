@@ -15,8 +15,7 @@ namespace Mengine
     {
     public:
         virtual AppleStoreInAppPurchaseProductInterfacePtr makeProduct( SKProduct * _skProduct ) = 0;
-        virtual AppleStoreInAppPurchasePaymentTransactionInterfacePtr makePaymentTransaction( SKPaymentTransaction * _transaction ) = 0;
-
+        virtual AppleStoreInAppPurchasePaymentTransactionInterfacePtr makePaymentTransaction( SKPaymentTransaction * _skPaymentTransaction, SKPaymentQueue * _skPaymentQueue ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleStoreInAppPurchaseFactoryInterface> AppleStoreInAppPurchaseFactoryInterfacePtr;

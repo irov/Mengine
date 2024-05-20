@@ -10,12 +10,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AppleStoreInAppPurchasePaymentTransaction::AppleStoreInAppPurchasePaymentTransaction()
         : m_skPaymentTransaction( nil )
+        , m_skPaymentQueue( nil )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     AppleStoreInAppPurchasePaymentTransaction::~AppleStoreInAppPurchasePaymentTransaction()
     {
         m_skPaymentTransaction = nil;
+        m_skPaymentQueue = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleStoreInAppPurchasePaymentTransaction::setSKPaymentTransaction( SKPaymentTransaction * _skPaymentTransaction )
@@ -32,6 +34,16 @@ namespace Mengine
         return m_skPaymentTransaction;
     }
     /////////////////////////////////////////////////////////////////////////////
+    void AppleStoreInAppPurchasePaymentTransaction::setSKPaymentQueue( SKPaymentQueue * _skPaymentQueue )
+    {
+        m_skPaymentQueue = _skPaymentQueue;
+    }
+    /////////////////////////////////////////////////////////////////////////////
+    SKPaymentQueue * AppleStoreInAppPurchasePaymentTransaction::getSKPaymentQueue() const
+    {
+        return m_skPaymentQueue;
+    }
+    /////////////////////////////////////////////////////////////////////////////
     const ConstString & AppleStoreInAppPurchasePaymentTransaction::getProductIdentifier() const
     {
         return m_productIdentifier;
@@ -43,7 +55,7 @@ namespace Mengine
             , m_productIdentifier.c_str()
         );
         
-        [[SKPaymentQueue defaultQueue] finishTransaction:m_skPaymentTransaction];
+        [m_skPaymentQueue finishTransaction:m_skPaymentTransaction];
     }
     /////////////////////////////////////////////////////////////////////////////
 }

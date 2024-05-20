@@ -9,7 +9,7 @@
 @property (assign) Mengine::AppleStoreInAppPurchaseFactoryInterface * _Nullable m_factory;
 @property (assign) Mengine::AppleStoreInAppPurchaseServiceInterface * _Nullable m_service;
 
-@property (strong) NSMutableArray<SKPaymentTransaction *> * _Nonnull m_cacheSKPaymentTransactions;
+@property (strong) NSMutableArray<NSDictionary *> * _Nonnull m_cacheSKPaymentTransactions;
 
 + (instancetype _Nonnull) sharedInstance;
 

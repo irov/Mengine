@@ -164,11 +164,12 @@ namespace Mengine
         return product;
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleStoreInAppPurchasePaymentTransactionInterfacePtr AppleStoreInAppPurchaseService::makePaymentTransaction( SKPaymentTransaction * _skPaymentTransaction )
+    AppleStoreInAppPurchasePaymentTransactionInterfacePtr AppleStoreInAppPurchaseService::makePaymentTransaction( SKPaymentTransaction * _skPaymentTransaction, SKPaymentQueue * _skPaymentQueue )
     {
         AppleStoreInAppPurchasePaymentTransactionPtr transaction = m_factoryPaymentTransaction->createObject( MENGINE_DOCUMENT_FACTORABLE );
         
         transaction->setSKPaymentTransaction( _skPaymentTransaction );
+        transaction->setSKPaymentQueue( _skPaymentQueue );
         
         return transaction;
     }

@@ -28,7 +28,7 @@
     
     Mengine::AppleStoreInAppPurchasePaymentQueueProviderInterfacePtr copy_provider = m_service->getPaymentQueueProvider();
     
-    Mengine::AppleStoreInAppPurchasePaymentTransactionInterfacePtr paymentTransaction = m_factory->makePaymentTransaction( transaction );
+    Mengine::AppleStoreInAppPurchasePaymentTransactionInterfacePtr paymentTransaction = m_factory->makePaymentTransaction( transaction, paymentQueue );
     
     Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
         copy_provider->onPaymentQueueShouldContinueTransaction( paymentTransaction );

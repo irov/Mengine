@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Kernel/Params.h"
+#include "Kernel/Viewport.h"
 
 namespace Mengine
 {
@@ -79,6 +80,8 @@ namespace Mengine
     public:
         virtual bool showBanner( const ConstString & _adUnitId ) = 0;
         virtual bool hideBanner( const ConstString & _adUnitId ) = 0;
+        
+        virtual bool getBannerViewport( const ConstString & _adUnitId, Viewport * const _viewport ) const = 0;
         
     public:
         virtual bool initInterstitial( const ConstString & _adUnitId, const AppleAppLovinInterstitialProviderInterfacePtr & _provider ) = 0;

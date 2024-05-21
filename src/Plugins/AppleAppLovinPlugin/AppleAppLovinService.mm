@@ -143,6 +143,28 @@ namespace Mengine
         return true;
     }
     /////////////////////////////////////////////////////////////////////////
+    bool AppleAppLovinService::getBannerViewport( const ConstString & _adUnitId, Viewport * const _viewport ) const
+    {
+        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        
+        AppleAppLovinBannerDelegate * banner = [m_banners objectForKey:adUnit];
+        
+        if( banner == nil )
+        {
+            return false;
+        }
+        
+        CGRect rect = [banner getRect];
+        
+        _viewport->begin.x = rect.origin.x;
+        _viewport->begin.y = rect.origin.y;
+        
+        _viewport->end.x = rect.origin.x + rect.size.width;
+        _viewport->end.y = rect.origin.y + rect.size.height;
+        
+        return true;
+    }
+    /////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::initInterstitial( const ConstString & _adUnitId, const AppleAppLovinInterstitialProviderInterfacePtr & _provider )
     {
         LOGGER_MESSAGE( "init interstitial AdUnit '%s'"

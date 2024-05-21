@@ -33,6 +33,9 @@ namespace Mengine
         bool hideBanner( const ConstString & _adUnitId ) override;
         
     public:
+        bool getBannerViewport( const ConstString & _adUnitId, Viewport * const _viewport ) const override;
+        
+    public:
         bool initInterstitial( const ConstString & _adUnitId, const AppleAppLovinInterstitialProviderInterfacePtr & _provider ) override;
         
     public:

@@ -23,6 +23,8 @@
 
 - (void) loadAd;
 
+- (CGRect) getRect;
+
 @property (nonatomic, strong) MAAdView * _Nullable m_adView;
 
 @property (assign) Mengine::AppleAppLovinBannerProviderInterfacePtr m_provider;

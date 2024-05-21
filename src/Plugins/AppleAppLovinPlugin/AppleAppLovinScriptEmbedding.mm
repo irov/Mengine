@@ -80,6 +80,22 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
+        PyObject * s_appleAppLovin_getBannerViewport( pybind::kernel_interface * _kernel, const ConstString & _adUnitId )
+        {
+            Viewport viewport;
+            bool result = APPLE_APPLOVIN_SERVICE()
+                ->getBannerViewport( _adUnitId, &viewport );
+            
+            if( result == false )
+            {
+                return _kernel->ret_none();
+            }
+            
+            PyObject * py_viewport = pybind::ptr( _kernel, viewport );
+            
+            return py_viewport;
+        }
+        //////////////////////////////////////////////////////////////////////////
         class PythonAppleAppLovinInterstitialProvider
             : public PythonCallbackProvider<AppleAppLovinInterstitailProviderInterface>
         {
@@ -268,15 +284,19 @@ namespace Mengine
         AppleAppLovinServiceInterface * service = APPLE_APPLOVIN_SERVICE();
         
         pybind::def_function_args( _kernel, "appleAppLovinInitBanner", &Detail::s_appleAppLovin_initBanner );
-        pybind::def_function_args( _kernel, "appleAppLovinInitInterstitial", &Detail::s_appleAppLovin_initInterstitial );
-        pybind::def_function_args( _kernel, "appleAppLovinInitRewarded", &Detail::s_appleAppLovin_initRewarded );
         pybind::def_functor( _kernel, "appleAppLovinShowBanner", service, &AppleAppLovinServiceInterface::showBanner );
         pybind::def_functor( _kernel, "appleAppLovinHideBanner", service, &AppleAppLovinServiceInterface::hideBanner );
+        pybind::def_function_kernel( _kernel, "appleAppLovinGetBannerViewport", &Detail::s_appleAppLovin_getBannerViewport );
+        
+        pybind::def_function_args( _kernel, "appleAppLovinInitInterstitial", &Detail::s_appleAppLovin_initInterstitial );
         pybind::def_functor( _kernel, "appleAppLovinCanYouShowInterstitial", service,  &AppleAppLovinServiceInterface::canYouShowInterstitial );
         pybind::def_functor( _kernel, "appleAppLovinShowInterstitial", service, &AppleAppLovinServiceInterface::showInterstitial );
+        
+        pybind::def_function_args( _kernel, "appleAppLovinInitRewarded", &Detail::s_appleAppLovin_initRewarded );
         pybind::def_functor( _kernel, "appleAppLovinCanOfferRewarded", service, &AppleAppLovinServiceInterface::canOfferRewarded );
         pybind::def_functor( _kernel, "appleAppLovinCanYouShowRewarded", service, &AppleAppLovinServiceInterface::canYouShowRewarded );
         pybind::def_functor( _kernel, "appleAppLovinShowRewarded", service, &AppleAppLovinServiceInterface::showRewarded );
+        
         pybind::def_functor( _kernel, "appleAppLovinHasSupportedCMP", service, &AppleAppLovinServiceInterface::hasSupportedCMP );
         pybind::def_functor( _kernel, "appleAppLovinIsConsentFlowUserGeographyGDPR", service, &AppleAppLovinServiceInterface::isConsentFlowUserGeographyGDPR );
         pybind::def_function_args( _kernel, "appleAppLovinLoadAndShowCMPFlow", &Detail::s_appleAppLovin_loadAndShowCMPFlow );

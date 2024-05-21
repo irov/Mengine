@@ -100,6 +100,16 @@
     [self.m_adView loadAd];
 }
 
+- (CGRect) getRect {
+    if( self.m_adView == nil ) {
+        return CGRectZero;
+    }
+    
+    CGRect frame = self.m_adView.frame;
+    
+    return frame;
+}
+
 #pragma mark - MAAdRequestDelegate Protocol
 
 - (void)didStartAdRequestForAdUnitIdentifier:(NSString *)adUnitIdentifier {

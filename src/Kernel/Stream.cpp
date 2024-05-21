@@ -7,6 +7,7 @@
 #include "Kernel/CRC32.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
+#include "Kernel/DebugFileHelper.h"
 
 namespace Mengine
 {
@@ -18,14 +19,17 @@ namespace Mengine
             magic_number_type magic_number;
             if( _stream->read( &magic_number, sizeof( magic_number ) ) != sizeof( magic_number ) )
             {
-                LOGGER_ERROR( "invalid format stream magic head" );
+                LOGGER_ERROR( "invalid stream '%s' format stream magic head"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return false;
             }
 
             if( magic_number != _magic )
             {
-                LOGGER_ERROR( "invalid magic number '%u' need '%u'"
+                LOGGER_ERROR( "invalid stream '%s' magic number '%u' need '%u'"
+                    , Helper::getDebugFullPath( _stream )
                     , magic_number
                     , _magic
                 );
@@ -36,14 +40,17 @@ namespace Mengine
             magic_version_type magic_version;
             if( _stream->read( &magic_version, sizeof( magic_version ) ) != sizeof( magic_version ) )
             {
-                LOGGER_ERROR( "invalid format stream magic head" );
+                LOGGER_ERROR( "invalid stream '%s' format stream magic head"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return false;
             }
 
             if( magic_version != _version )
             {
-                LOGGER_ERROR( "invalid magic version '%u' need '%u'"
+                LOGGER_ERROR( "invalid stream '%s' magic version '%u' need '%u'"
+                    , Helper::getDebugFullPath( _stream )
                     , magic_version
                     , _version
                 );
@@ -58,14 +65,18 @@ namespace Mengine
         {
             if( _stream->write( &_magic, sizeof( _magic ) ) == false )
             {
-                LOGGER_ERROR( "invalid write 'magic header'" );
+                LOGGER_ERROR( "invalid stream '%s' write 'magic header'"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return false;
             }
 
             if( _stream->write( &_version, sizeof( _version ) ) == false )
             {
-                LOGGER_ERROR( "invalid write 'magic version'" );
+                LOGGER_ERROR( "invalid stream '%s' write 'magic version'"
+                    , Helper::getDebugFullPath( _stream )
+                );
 
                 return false;
             }
@@ -78,7 +89,9 @@ namespace Mengine
             uint32_t crc32;
             if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
             {
-                LOGGER_ERROR( "invalid format stream archive buffer" );
+                LOGGER_ERROR( "invalid file '%s' format stream archive buffer"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return nullptr;
             }
@@ -86,7 +99,9 @@ namespace Mengine
             uint32_t load_binary_size;
             if( _stream->read( &load_binary_size, sizeof( load_binary_size ) ) != sizeof( load_binary_size ) )
             {
-                LOGGER_ERROR( "invalid format stream archive buffer" );
+                LOGGER_ERROR( "invalid stream '%s' format stream archive buffer"
+                    , Helper::getDebugFullPath( _stream )
+                );
 
                 return nullptr;
             }
@@ -94,7 +109,9 @@ namespace Mengine
             uint32_t load_compress_size;
             if( _stream->read( &load_compress_size, sizeof( load_compress_size ) ) != sizeof( load_compress_size ) )
             {
-                LOGGER_ERROR( "invalid format stream archive buffer" );
+                LOGGER_ERROR( "invalid stream '%s' format stream archive buffer"
+                    , Helper::getDebugFullPath( _stream )
+                );
 
                 return nullptr;
             }
@@ -111,12 +128,17 @@ namespace Mengine
             void * compress_memory = compress_buffer->getBuffer();
 
             size_t read_data = _stream->read( compress_memory, compress_size );
-            MENGINE_UNUSED( read_data );
 
-            MENGINE_ASSERTION_FATAL( read_data == (size_t)compress_size, "invalid read data '%zu' need '%zu'"
-                , read_data
-                , compress_size
-            );
+            if( read_data != (size_t)compress_size )
+            {
+                LOGGER_ERROR( "invalid stream '%s' read data '%zu' need '%zu'"
+                    , Helper::getDebugFullPath( _stream )
+                    , read_data
+                    , compress_size                    
+                );
+
+                return nullptr;
+            }
 
             if( crc32 != 0 )
             {
@@ -124,7 +146,8 @@ namespace Mengine
 
                 if( check_crc32 != crc32 )
                 {
-                    LOGGER_ERROR( "invalid crc32 [%u] need [%u]"
+                    LOGGER_ERROR( "invalid stream '%s' crc32 [%u] need [%u]"
+                        , Helper::getDebugFullPath( _stream )
                         , check_crc32
                         , crc32
                     );
@@ -147,7 +170,8 @@ namespace Mengine
             size_t uncompressSize = 0;
             if( _archivator->decompress( binaryMemory, binary_size, compress_memory, compress_size, &uncompressSize ) == false )
             {
-                LOGGER_ERROR( "invalid decompress doc '%s'"
+                LOGGER_ERROR( "invalid stream '%s' decompress doc '%s'"
+                    , Helper::getDebugFullPath( _stream )
                     , MENGINE_DOCUMENT_STR( _doc )
                 );
 
@@ -156,7 +180,8 @@ namespace Mengine
 
             if( uncompressSize != binary_size )
             {
-                LOGGER_ERROR( "invalid decompress size '%zu' need '%zu'"
+                LOGGER_ERROR( "invalid stream '%s' decompress size '%zu' need '%zu'"
+                    , Helper::getDebugFullPath( _stream )
                     , uncompressSize
                     , binary_size
                 );
@@ -172,7 +197,9 @@ namespace Mengine
             uint32_t crc32;
             if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
             {
-                LOGGER_ERROR( "invalid format stream archive inplace" );
+                LOGGER_ERROR( "invalid stream '%s' format stream archive inplace"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return false;
             }
@@ -180,7 +207,9 @@ namespace Mengine
             uint32_t load_binary_size;
             if( _stream->read( &load_binary_size, sizeof( load_binary_size ) ) != sizeof( load_binary_size ) )
             {
-                LOGGER_ERROR( "invalid format stream archive inplace" );
+                LOGGER_ERROR( "invalid stream '%s' format stream archive inplace"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return false;
             }
@@ -188,7 +217,9 @@ namespace Mengine
             uint32_t load_compress_size;
             if( _stream->read( &load_compress_size, sizeof( load_compress_size ) ) != sizeof( load_compress_size ) )
             {
-                LOGGER_ERROR( "invalid format stream archive inplace" );
+                LOGGER_ERROR( "invalid stream '%s' format stream archive inplace"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return false;
             }
@@ -198,7 +229,8 @@ namespace Mengine
 
             if( binary_size > _capacity )
             {
-                LOGGER_ERROR( "invalid buffer size '%zu' need '%u'"
+                LOGGER_ERROR( "invalid stream '%s' buffer size '%zu' need '%u'"
+                    , Helper::getDebugFullPath( _stream )
                     , _capacity
                     , binary_size
                 );
@@ -220,7 +252,8 @@ namespace Mengine
 
                 if( check_crc32 != crc32 )
                 {
-                    LOGGER_ERROR( "invalid crc32 '%u' need '%u'"
+                    LOGGER_ERROR( "invalid stream '%s' crc32 '%u' need '%u'"
+                        , Helper::getDebugFullPath( _stream )
                         , check_crc32
                         , crc32
                     );
@@ -232,14 +265,17 @@ namespace Mengine
             size_t uncompressSize = 0;
             if( _archivator->decompress( _data, _capacity, compress_memory, compress_size, &uncompressSize ) == false )
             {
-                LOGGER_ERROR( "invalid decompress" );
+                LOGGER_ERROR( "invalid stream '%s' decompress"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return false;
             }
 
             if( uncompressSize > _capacity )
             {
-                LOGGER_ERROR( "invalid decompress size '%zu' need '%zu'"
+                LOGGER_ERROR( "invalid stream '%s' decompress size '%zu' need '%zu'"
+                    , Helper::getDebugFullPath( _stream )
                     , uncompressSize
                     , _capacity
                 );
@@ -262,7 +298,9 @@ namespace Mengine
             uint32_t crc32;
             if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
             {
-                LOGGER_ERROR( "invalid read crc32" );
+                LOGGER_ERROR( "invalid stream '%s' read crc32"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return false;
             }
@@ -270,7 +308,9 @@ namespace Mengine
             uint32_t load_binary_size;
             if( _stream->read( &load_binary_size, sizeof( load_binary_size ) ) != sizeof( load_binary_size ) )
             {
-                LOGGER_ERROR( "invalid read binary size" );
+                LOGGER_ERROR( "invalid stream '%s' read binary size"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
 
                 return false;
@@ -278,7 +318,9 @@ namespace Mengine
 
             if( _stream->seek( pos ) == false )
             {
-                LOGGER_ERROR( "invalid rewind" );
+                LOGGER_ERROR( "invalid stream '%s' rewind"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return false;
             }
@@ -307,7 +349,9 @@ namespace Mengine
 
             if( _stream->write( &value_crc32, sizeof( value_crc32 ) ) == false )
             {
-                LOGGER_ERROR( "invalid write 'crc32'" );
+                LOGGER_ERROR( "invalid stream '%s' write 'crc32'"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return false;
             }
@@ -315,7 +359,9 @@ namespace Mengine
             uint32_t write_uncompressSize = (uint32_t)_size;
             if( _stream->write( &write_uncompressSize, sizeof( write_uncompressSize ) ) == false )
             {
-                LOGGER_ERROR( "invalid write 'uncompress size'" );
+                LOGGER_ERROR( "invalid stream '%s' write 'uncompress size'"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return false;
             }
@@ -323,14 +369,17 @@ namespace Mengine
             uint32_t write_compressSize = (uint32_t)compressSize;
             if( _stream->write( &write_compressSize, sizeof( write_compressSize ) ) == false )
             {
-                LOGGER_ERROR( "invalid write 'compress size'" );
+                LOGGER_ERROR( "invalid stream '%s' write 'compress size'"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return false;
             }
 
             if( _stream->write( compressBuffer, compressSize ) == false )
             {
-                LOGGER_ERROR( "invalid write buffer '%zu'"
+                LOGGER_ERROR( "invalid stream '%s' write buffer '%zu'"
+                    , Helper::getDebugFullPath( _stream )
                     , compressSize
                 );
 
@@ -372,7 +421,9 @@ namespace Mengine
             uint32_t crc32;
             if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
             {
-                LOGGER_ERROR( "invalid format stream archive memory" );
+                LOGGER_ERROR( "invalid stream '%s' format stream archive memory"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return nullptr;
             }
@@ -380,7 +431,9 @@ namespace Mengine
             uint32_t load_binary_size;
             if( _stream->read( &load_binary_size, sizeof( load_binary_size ) ) != sizeof( load_binary_size ) )
             {
-                LOGGER_ERROR( "invalid format stream archive memory" );
+                LOGGER_ERROR( "invalid stream '%s' format stream archive memory"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return nullptr;
             }
@@ -388,7 +441,9 @@ namespace Mengine
             uint32_t load_compress_size;
             if( _stream->read( &load_compress_size, sizeof( load_compress_size ) ) != sizeof( load_compress_size ) )
             {
-                LOGGER_ERROR( "invalid format stream archive memory" );
+                LOGGER_ERROR( "invalid stream '%s' format stream archive memory"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return nullptr;
             }
@@ -408,7 +463,8 @@ namespace Mengine
 
             if( read_data != (size_t)compress_size )
             {
-                LOGGER_ERROR( "invalid read data '%zu' need '%zu'"
+                LOGGER_ERROR( "invalid stream '%s' read data '%zu' need '%zu'"
+                    , Helper::getDebugFullPath( _stream )
                     , read_data
                     , compress_size
                 );
@@ -422,7 +478,8 @@ namespace Mengine
 
                 if( check_crc32 != crc32 )
                 {
-                    LOGGER_ERROR( "invalid crc32 [%u] need [%u]"
+                    LOGGER_ERROR( "invalid stream '%s' crc32 [%u] need [%u]"
+                        , Helper::getDebugFullPath( _stream )
                         , check_crc32
                         , crc32
                     );
@@ -443,14 +500,17 @@ namespace Mengine
             size_t uncompressSize = 0;
             if( _archivator->decompress( binary_buffer, binary_size, compress_buffer, compress_size, &uncompressSize ) == false )
             {
-                LOGGER_ERROR( "invalid decompress" );
+                LOGGER_ERROR( "invalid stream '%s' decompress"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return nullptr;
             }
 
             if( uncompressSize != binary_size )
             {
-                LOGGER_ERROR( "invalid decompress size '%zu' need '%zu'"
+                LOGGER_ERROR( "invalid stream '%s' decompress size '%zu' need '%zu'"
+                    , Helper::getDebugFullPath( _stream )
                     , uncompressSize
                     , binary_size
                 );
@@ -478,7 +538,9 @@ namespace Mengine
             uint32_t crc32;
             if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
             {
-                LOGGER_ERROR( "invalid format stream cache archive memory" );
+                LOGGER_ERROR( "invalid stream '%s' format stream cache archive memory"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return nullptr;
             }
@@ -486,7 +548,9 @@ namespace Mengine
             uint32_t load_binary_size;
             if( _stream->read( &load_binary_size, sizeof( load_binary_size ) ) != sizeof( load_binary_size ) )
             {
-                LOGGER_ERROR( "invalid format stream cache archive memory" );
+                LOGGER_ERROR( "invalid stream '%s' format stream cache archive memory"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return nullptr;
             }
@@ -494,7 +558,9 @@ namespace Mengine
             uint32_t load_compress_size;
             if( _stream->read( &load_compress_size, sizeof( load_compress_size ) ) != sizeof( load_compress_size ) )
             {
-                LOGGER_ERROR( "invalid format stream cache archive memory" );
+                LOGGER_ERROR( "invalid stream '%s' format stream cache archive memory"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return nullptr;
             }
@@ -514,7 +580,8 @@ namespace Mengine
 
             if( read_data != compress_size )
             {
-                LOGGER_ERROR( "invalid read data '%zu' need '%zu'"
+                LOGGER_ERROR( "invalid stream '%s' read data '%zu' need '%zu'"
+                    , Helper::getDebugFullPath( _stream )
                     , read_data
                     , compress_size
                 );
@@ -528,7 +595,8 @@ namespace Mengine
 
                 if( check_crc32 != crc32 )
                 {
-                    LOGGER_ERROR( "invalid crc32 '%u' need '%u'"
+                    LOGGER_ERROR( "invalid stream '%s' crc32 '%u' need '%u'"
+                        , Helper::getDebugFullPath( _stream )
                         , check_crc32
                         , crc32
                     );
@@ -549,14 +617,17 @@ namespace Mengine
             size_t uncompressSize = 0;
             if( _archivator->decompress( binary_buffer, binary_size, compress_buffer, compress_size, &uncompressSize ) == false )
             {
-                LOGGER_ERROR( "invalid decompress" );
+                LOGGER_ERROR( "invalid stream '%s' decompress"
+                    , Helper::getDebugFullPath( _stream ) 
+                );
 
                 return nullptr;
             }
 
             if( uncompressSize != binary_size )
             {
-                LOGGER_ERROR( "invalid decompress size '%zu' need '%zu'"
+                LOGGER_ERROR( "invalid stream '%s' decompress size '%zu' need '%zu'"
+                    , Helper::getDebugFullPath( _stream )
                     , uncompressSize
                     , binary_size
                 );

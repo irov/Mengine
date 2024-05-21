@@ -1,11 +1,8 @@
 package org.Mengine.Plugin.AppLovin;
 
-import android.content.Context;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.preference.Preference;
-import androidx.preference.PreferenceManager;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
@@ -313,6 +310,20 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         }
 
         return true;
+    }
+
+    public Rect getBannerViewport(String adUnitId) {
+        MengineAppLovinBanner banner = m_banners.get(adUnitId);
+
+        if (banner == null) {
+            this.assertionError("not found banner: %s", adUnitId);
+
+            return null;
+        }
+
+        Rect rect = banner.getViewport();
+
+        return rect;
     }
 
     public boolean initInterstitial(String adUnitId) {

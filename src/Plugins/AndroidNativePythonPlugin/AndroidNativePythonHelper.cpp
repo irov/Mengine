@@ -33,6 +33,7 @@ namespace Mengine
             jclass jclass_List = _jenv->FindClass( "java/util/List" );
             jclass jclass_Map = _jenv->FindClass( "java/util/Map" );
             jclass jclass_Set = _jenv->FindClass( "java/util/Set" );
+            jclass jclass_Rect = _jenv->FindClass( "android/graphics/Rect" );
             jclass jclass_MengineFunctorVoid = _jenv->FindClass( "org/Mengine/Base/MengineFunctorVoid" );
             jclass jclass_MengineFunctorBoolean = _jenv->FindClass( "org/Mengine/Base/MengineFunctorBoolean" );
 
@@ -126,6 +127,13 @@ namespace Mengine
 
                 py_value = py_dict;
             }
+            else if( _jenv->IsInstanceOf( _obj, jclass_Rect ) == JNI_TRUE )
+            {
+                Viewport viewport;
+                Helper::AndroidGetJavaRect(_jenv, _obj, &viewport);
+
+                py_value = pybind::ptr( _kernel, viewport );
+            }
             else if ( _jenv->IsInstanceOf( _obj, jclass_MengineFunctorVoid ) == JNI_TRUE )
             {
                 AndroidNativePythonFunctorVoidPtr functor = PROTOTYPE_SERVICE()
@@ -171,6 +179,7 @@ namespace Mengine
             _jenv->DeleteLocalRef( jclass_List );
             _jenv->DeleteLocalRef( jclass_Map );
             _jenv->DeleteLocalRef( jclass_Set );
+            _jenv->DeleteLocalRef( jclass_Rect );
             _jenv->DeleteLocalRef( jclass_MengineFunctorVoid );
             _jenv->DeleteLocalRef( jclass_MengineFunctorBoolean );
 

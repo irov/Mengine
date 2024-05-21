@@ -1,5 +1,6 @@
 package org.Mengine.Plugin.AppLovin;
 
+import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -95,6 +96,21 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             m_adView.destroy();
             m_adView = null;
         }
+    }
+
+    public Rect getViewport() {
+        if (m_adView == null) {
+            m_plugin.logError("getViewport: adView is null");
+
+            return null;
+        }
+
+        int left = m_adView.getLeft();
+        int right = m_adView.getRight();
+        int top = m_adView.getTop();
+        int bottom = m_adView.getBottom();
+
+        return new Rect(left, top, right, bottom);
     }
 
     public void loadAd() {

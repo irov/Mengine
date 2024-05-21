@@ -9,6 +9,7 @@
 #include "Kernel/String.h"
 #include "Kernel/ArrayString.h"
 #include "Kernel/StaticString.h"
+#include "Kernel/Viewport.h"
 
 #include "Config/Lambda.h"
 
@@ -51,6 +52,8 @@ namespace Mengine
         typedef Lambda<void( jsize _index, jobject value)> LambdaJavaListForeach;
         uint32_t AndroidGetJavaListSize( JNIEnv * _jenv, jobject _jlist );
         void AndroidForeachJavaList( JNIEnv * _jenv, jobject _jlist, const LambdaJavaListForeach & _lambda );
+        //////////////////////////////////////////////////////////////////////////
+        void AndroidGetJavaRect( JNIEnv * _jenv, jobject _jrect, Viewport * const _viewport );
         //////////////////////////////////////////////////////////////////////////
         void AndroidWriteMemory( JNIEnv * _jenv, const MemoryInterfacePtr & _memory, jobject _writer );
         //////////////////////////////////////////////////////////////////////////

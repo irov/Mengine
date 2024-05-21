@@ -467,6 +467,28 @@ namespace Mengine
             _jenv->DeleteLocalRef( jclass_List );
         }
         //////////////////////////////////////////////////////////////////////////
+        void AndroidGetJavaRect( JNIEnv * _jenv, jobject _jrect, Viewport * const _viewport )
+        {
+            jclass jclass_Rect = _jenv->FindClass( "android/graphics/Rect" );
+
+            jfieldID jfieldID_Rect_left = _jenv->GetFieldID( jclass_Rect, "left", "I" );
+            jfieldID jfieldID_Rect_top = _jenv->GetFieldID( jclass_Rect, "top", "I" );
+            jfieldID jfieldID_Rect_right = _jenv->GetFieldID( jclass_Rect, "right", "I" );
+            jfieldID jfieldID_Rect_bottom = _jenv->GetFieldID( jclass_Rect, "bottom", "I" );
+
+            jint left = _jenv->GetIntField( _jrect, jfieldID_Rect_left );
+            jint top = _jenv->GetIntField( _jrect, jfieldID_Rect_top );
+            jint right = _jenv->GetIntField( _jrect, jfieldID_Rect_right );
+            jint bottom = _jenv->GetIntField( _jrect, jfieldID_Rect_bottom );
+
+            _viewport->begin.x = (float)left;
+            _viewport->begin.y = (float)top;
+            _viewport->end.x = (float)right;
+            _viewport->end.y = (float)bottom;
+
+            _jenv->DeleteLocalRef( jclass_Rect );
+        }
+        //////////////////////////////////////////////////////////////////////////
         void AndroidWriteMemory( JNIEnv * _jenv, const Mengine::MemoryInterfacePtr & _memory, jobject _writer )
         {
             jclass jclass_Writer = _jenv->GetObjectClass( _writer );

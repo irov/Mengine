@@ -9,7 +9,7 @@
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/ConstStringHelper.h"
 
-#define PLUGIN_BUNDLE_NAME @"MengineAppleFirebaseAnalyticsPlugin"
+#define PLUGIN_BUNDLE_NAME "MengineAppleFirebaseAnalyticsPlugin"
 
 @implementation AppleFirebaseAnalyticsApplicationDelegate
 

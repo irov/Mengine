@@ -33,7 +33,8 @@ namespace Mengine
     public:
         bool login( bool _limited, const VectorConstString & _permissions ) override;
         void logout() override;
-        bool isLoggedIn() const override;
+        bool isAccessSuccess() const override;
+        bool isAuthenticationSuccess() const override;
         bool getAccessToken( Char * const _token, size_t _capacity ) const override;
         bool getAuthenticationToken( Char * const _token, size_t _capacity ) const override;
         bool getUserId( Char * const _userId, size_t _capacity ) const override;
@@ -45,7 +46,5 @@ namespace Mengine
         FBSDKLoginManager * m_loginManager;
 
         AppleFacebookShareDelegate * m_shareDelegate;
-
-        bool m_isProcessed;
     };
 }

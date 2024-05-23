@@ -1,7 +1,9 @@
 #import "iOSApplication.h"
 
-#include "Environment/Apple/AppleUserDefaults.h"
-#include "Environment/Apple/AppleDetail.h"
+#import "Environment/Apple/AppleUserDefaults.h"
+#import "Environment/Apple/AppleDetail.h"
+
+#import "Environment/iOS/iOSDetail.h"
 
 @implementation iOSApplication
 
@@ -60,6 +62,18 @@
     self.m_sessionId = session_id;
     
     return YES;
+}
+
+- (void)setSessionId:(NSString * _Nonnull)sessionId {
+    if ([self.m_sessionId isEqualToString:sessionId] == YES) {
+        return;
+    }
+    
+    self.m_sessionId = sessionId;
+    
+    Mengine::Helper::AppleSetUserDefaultsString(@"mengine.session_id", self.m_sessionId);
+    
+    Mengine::Helper::iOSPluginApplicationDelegateEventNotify( @("SESSION_ID"), self.m_sessionId, nil );
 }
 
 - (NSString * _Nonnull)getInstallKey {

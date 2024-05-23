@@ -34,8 +34,7 @@
 
         <activity
             android:name="org.Mengine.Base.MengineActivity"
-            android:theme="@style/AppTheme"
-            android:clearTaskOnLaunch="true"
+            android:clearTaskOnLaunch="false"
             android:exported="true"
             android:launchMode="singleTop"
             android:keepScreenOn="true"

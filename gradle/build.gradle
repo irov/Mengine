@@ -37,25 +37,59 @@ buildscript {
     }
 }
 
-def ANDROID_APP_NDK_VERSION = Utils.getStringProperty(project, "ANDROID_APP_NDK_VERSION", "26.2.11394342")
-def ANDROID_APP_BUILD_TOOLS_VERSION = Utils.getStringProperty(project, "ANDROID_APP_BUILD_TOOLS_VERSION", "34.0.0")
-def ANDROID_APP_CMAKE_VERSION = Utils.getStringProperty(project, "ANDROID_APP_CMAKE_VERSION", "3.22.1")
-def ANDROID_APP_MULTIDEX_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_MULTIDEX_ENABLE", true)
-def ANDROID_APP_MIN_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_MIN_SDK_VERSION", 21)
-def ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_TARGET_SDK_VERSION", 34)
-def ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_COMPILE_SDK_VERSION", 34)
+def ANDROID_APP_NDK_VERSION = Utils.getStringProperty(project, "ANDROID_APP_NDK_VERSION", null)
+def ANDROID_APP_BUILD_TOOLS_VERSION = Utils.getStringProperty(project, "ANDROID_APP_BUILD_TOOLS_VERSION", null)
+def ANDROID_APP_CMAKE_VERSION = Utils.getStringProperty(project, "ANDROID_APP_CMAKE_VERSION", null)
+def ANDROID_APP_MULTIDEX_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_MULTIDEX_ENABLE", null)
+def ANDROID_APP_MIN_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_MIN_SDK_VERSION", null)
+def ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_TARGET_SDK_VERSION", null)
+def ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_COMPILE_SDK_VERSION", null)
 
 allprojects {
     layout.buildDirectory.set(layout.projectDirectory.dir(rootProject.projectDir.getAbsolutePath() + "/../outputs/gradle/build/${rootProject.name}/${project.name}"))
 
     project.ext {
-        ndkVersion = ANDROID_APP_NDK_VERSION
-        buildToolsVersion = ANDROID_APP_BUILD_TOOLS_VERSION
-        cmakeVersion = ANDROID_APP_CMAKE_VERSION
-        multiDexEnabled = ANDROID_APP_MULTIDEX_ENABLE
-        minSdkVersion = ANDROID_APP_MIN_SDK_VERSION
-        targetSdkVersion = ANDROID_APP_TARGET_SDK_VERSION
-        compileSdkVersion = ANDROID_APP_COMPILE_SDK_VERSION
+        if (ANDROID_APP_NDK_VERSION != null) {
+            ndkVersion = ANDROID_APP_NDK_VERSION
+        } else {
+            ndkVersion = "26.2.11394342"
+        }
+
+        if (ANDROID_APP_BUILD_TOOLS_VERSION != null) {
+            buildToolsVersion = ANDROID_APP_BUILD_TOOLS_VERSION
+        } else {
+            buildToolsVersion = "34.0.0"
+        }
+
+        if (ANDROID_APP_CMAKE_VERSION != null) {
+            cmakeVersion = ANDROID_APP_CMAKE_VERSION
+        } else {
+            cmakeVersion = "3.22.1"
+        }
+
+        if (ANDROID_APP_MULTIDEX_ENABLE != null) {
+            multiDexEnabled = ANDROID_APP_MULTIDEX_ENABLE
+        } else {
+            multiDexEnabled = true
+        }
+
+        if (ANDROID_APP_MIN_SDK_VERSION != null) {
+            minSdkVersion = ANDROID_APP_MIN_SDK_VERSION
+        } else {
+            minSdkVersion = 21
+        }
+
+        if (ANDROID_APP_TARGET_SDK_VERSION != null) {
+            targetSdkVersion = ANDROID_APP_TARGET_SDK_VERSION
+        } else {
+            targetSdkVersion = 34
+        }
+
+        if (ANDROID_APP_COMPILE_SDK_VERSION != null) {
+            compileSdkVersion = ANDROID_APP_COMPILE_SDK_VERSION
+        } else {
+            compileSdkVersion = 34
+        }
 
         javaVersion = JavaVersion.VERSION_17
     }

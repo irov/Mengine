@@ -1,19 +1,25 @@
-#import "AppleFirebaseAnalyticsApplicationDelegate.h"
+#import "AppleFirebaseCrashlyticsApplicationDelegate.h"
 
 #include "Environment/iOS/iOSApplication.h"
 
-#import <FirebaseAnalytics/FirebaseAnalytics.h>
+#import <FirebaseCrashlytics/FirebaseCrashlytics.h>
 
 #define PLUGIN_BUNDLE_NAME "MengineAppleFirebaseAnalyticsPlugin"
 
-@implementation AppleFirebaseAnalyticsApplicationDelegate
+@implementation AppleFirebaseCrashlyticsApplicationDelegate
 
 #pragma mark - UIPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+#ifdef MENGINE_DEBUG
+    [[FIRCrashlytics crashlytics] setCrashlyticsCollectionEnabled:NO];
+#else
+    [[FIRCrashlytics crashlytics] setCrashlyticsCollectionEnabled:YES];
+#endif
+    
     NSString * sessionId = [iOSApplication.sharedInstance getSessionId];
     
-    [FIRAnalytics setUserID:sessionId];
+    [[FIRCrashlytics crashlytics] setUserID:sessionId];
     
     return YES;
 }

@@ -9,9 +9,14 @@ src
     
     AppleFirebaseCrashlyticsService.h
     AppleFirebaseCrashlyticsService.mm
+
+    AppleFirebaseCrashlyticsApplicationDelegate.h
+    AppleFirebaseCrashlyticsApplicationDelegate.mm
 )
 
 ADD_MENGINE_APPLE_PLUGIN(MENGINE_PLUGIN_APPLE_FIREBASE_CRASHLYTICS)
+
+ADD_MENGINE_APPLE_APPLICATION_DELEGATE("AppleFirebaseCrashlyticsApplicationDelegate")
 
 ADD_MENGINE_COCOAPOD_GOOGLE_UTILITIES()
 ADD_MENGINE_COCOAPOD("FirebaseCrashlytics" "NO-GIT" "10.25.0")

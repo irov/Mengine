@@ -23,7 +23,11 @@
     NSString * session_id = Mengine::Helper::AppleGetUserDefaultsString(@"mengine.session_id", nil);
     
     if (install_key == nil) {
+#ifdef MENGINE_DEBUG
+        install_key = [@"MDIK" stringByAppendingString:Mengine::Helper::AppleGetRandomHexString(16)];
+#else
         install_key = [@"MNIK" stringByAppendingString:Mengine::Helper::AppleGetRandomHexString(16)];
+#endif
         install_timestamp = Mengine::Helper::AppleCurrentTimeMillis();
         install_version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
         install_rnd = Mengine::Helper::AppleGetSecureRandomInteger();

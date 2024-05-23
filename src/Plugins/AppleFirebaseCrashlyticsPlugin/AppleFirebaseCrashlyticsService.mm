@@ -24,11 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFirebaseCrashlyticsService::_initializeService()
     {
-#ifdef MENGINE_DEBUG
-        [[FIRCrashlytics crashlytics] setCrashlyticsCollectionEnabled:NO];
-#else
-        [[FIRCrashlytics crashlytics] setCrashlyticsCollectionEnabled:YES];
-#endif
+        //Empty
 
         return true;
     }

@@ -132,7 +132,7 @@ namespace Mengine
             const ThreadTaskInterfacePtr & task = desc.task;
 
             THREAD_SERVICE()
-                    ->joinTask( task );
+                ->joinTask( task );
         }
 
         m_receiverDescs.clear();
@@ -143,7 +143,7 @@ namespace Mengine
         for( const ConstString & threadName : m_threads )
         {
             THREAD_SERVICE()
-                    ->destroyThreadProcessor( threadName );
+                ->destroyThreadProcessor( threadName );
         }
 
         m_threads.clear();
@@ -151,7 +151,7 @@ namespace Mengine
         if( m_threadQueue != nullptr )
         {
             THREAD_SERVICE()
-                    ->cancelTaskQueue( m_threadQueue );
+                ->cancelTaskQueue( m_threadQueue );
 
             m_threadQueue = nullptr;
         }

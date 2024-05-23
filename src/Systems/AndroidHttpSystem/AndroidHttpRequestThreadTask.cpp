@@ -136,38 +136,8 @@ namespace Mengine
     {
         MENGINE_PROFILER_CATEGORY();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_response, "not setup 'respose'" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_response, "not setup 'response'" );
         MENGINE_ASSERTION_MEMORY_PANIC( m_receiver, "not setup 'receiver'" );
-
-        //CURL * curl = curl_easy_init();
-
-        //const Char * url_str = m_url.c_str();
-
-        //MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_URL, url_str) );
-        //MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_FOLLOWLOCATION, 1) );
-
-        //if( m_proxy.empty() == false )
-        //{
-        //    const Char * proxy_str = m_proxy.c_str();
-
-        //    MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_PROXY, proxy_str) );
-        //}
-
-        //struct curl_slist * curl_header_list = nullptr;
-
-        //if( m_headers.empty() == false )
-        //{
-        //    for( const String & header : m_headers )
-        //    {
-        //        const Char * header_buffer = header.c_str();
-
-        //        curl_header_list = curl_slist_append( curl_header_list, header_buffer );
-        //    }
-
-        //    MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_HTTPHEADER, curl_header_list) );
-
-        //    m_curl_header_list = curl_header_list;
-        //}
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -216,6 +186,20 @@ namespace Mengine
 
         jenv->DeleteLocalRef( jrequest );
 
+        if( jresponse == nullptr )
+        {
+            m_mutex->lock();
+
+            if( m_response != nullptr )
+            {
+                m_response->setSuccessful( false );
+            }
+
+            m_mutex->unlock();
+
+            return true;
+        }
+
         jclass jclass_MengineHttpResponseParam = ::Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineHttpResponseParam" );
 
         Helper::AndroidEnvExceptionCheck( jenv );
@@ -238,6 +222,8 @@ namespace Mengine
 
         if( m_response != nullptr )
         {
+            m_response->setSuccessful( true );
+
             m_response->setCode( (EHttpCode)HTTP_RESPONSE_CODE );
 
             if( HTTP_CONTENT_DATA != nullptr )
@@ -264,65 +250,6 @@ namespace Mengine
         {
             jenv->DeleteLocalRef( HTTP_ERROR_MESSAGE );
         }
-
-        //if( m_timeout != MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY )
-        //{
-        //    MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_TIMEOUT_MS, m_timeout) );
-        //}
-
-        //if( m_cookies.empty() == false )
-        //{
-        //    const Char * cookies_str = m_cookies.c_str();
-
-        //    MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_COOKIE, cookies_str) );
-        //}
-
-        //MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYPEER, 0) );
-        //MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYHOST, 0) );
-
-        //Char errorbuf[CURL_ERROR_SIZE] = {'\0'};
-        //MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_ERRORBUFFER, errorbuf) );
-
-        //bool OPTION_curltrace = HAS_OPTION( "curltrace" );
-
-        //if( OPTION_curltrace == true )
-        //{
-        //    MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_VERBOSE, 1) );
-
-        //    MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGDATA, nullptr) );
-        //    MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGFUNCTION, &Detail::cURL_trace) );
-        //}
-
-        //MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_XFERINFODATA, (void *)this) );
-        //MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_XFERINFOFUNCTION, &Detail::cURL_XFERInfoCallback) );
-
-        //MENGINE_CURLCALL( curl_easy_setopt, (curl, CURLOPT_NOPROGRESS, 0L) );
-
-        //CURLcode status = curl_easy_perform( curl );
-
-        //m_mutex->lock();
-
-        //if( m_response != nullptr )
-        //{
-            //m_response->setError( errorbuf );
-
-            //long http_code = 0;
-            //MENGINE_CURLCALL( curl_easy_getinfo, (curl, CURLINFO_RESPONSE_CODE, &http_code) );
-
-            //m_response->setCode( (EHttpCode)http_code );
-        //}
-
-        //m_mutex->unlock();
-
-        //if( m_curl_header_list != nullptr )
-        //{
-        //    curl_slist_free_all( m_curl_header_list );
-        //    m_curl_header_list = nullptr;
-        //}
-
-        //this->_onCURLCleanup( curl );
-
-        //curl_easy_cleanup( curl );
 
         return true;
     }

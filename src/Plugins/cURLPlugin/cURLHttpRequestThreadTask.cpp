@@ -260,7 +260,7 @@ namespace Mengine
     {
         MENGINE_PROFILER_CATEGORY();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_response, "not setup 'respose'" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_response, "not setup 'response'" );
         MENGINE_ASSERTION_MEMORY_PANIC( m_receiver, "not setup 'receiver'" );
 
         CURL * curl = curl_easy_init();

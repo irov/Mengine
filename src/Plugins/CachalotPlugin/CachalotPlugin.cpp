@@ -4,6 +4,7 @@
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 
 #include "CachalotLogger.h"
@@ -34,6 +35,13 @@ namespace Mengine
         bool OPTION_nocachalot = HAS_OPTION( "nocachalot" );
 
         if( OPTION_nocachalot == true )
+        {
+            return false;
+        }
+
+        bool CachalotPlugin_Available = CONFIG_VALUE( "CachalotPlugin", "Available", true );
+
+        if( CachalotPlugin_Available == false )
         {
             return false;
         }

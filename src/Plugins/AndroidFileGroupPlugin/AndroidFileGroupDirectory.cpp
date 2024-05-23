@@ -172,18 +172,31 @@ namespace Mengine
         newFilePathString.append( _newFilePath );
 
         bool successful = PLATFORM_SERVICE()
-                ->moveFile( oldFilePathString.c_str(), newFilePathString.c_str() );
+            ->moveFile( oldFilePathString.c_str(), newFilePathString.c_str() );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
-        MENGINE_UNUSED( _filePath );
-        MENGINE_UNUSED( _mask );
-        MENGINE_UNUSED( _lambda );
+        Char utf8_base[MENGINE_MAX_PATH] = {'\0'};
+        if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, FilePath::none()}, utf8_base ) == false )
+        {
+            LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
+                , m_folderPath.c_str()
+                , _filePath.c_str()
+            );
 
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+            return false;
+        }
+
+        Helper::pathCorrectForwardslashA( utf8_base );
+
+        if( PLATFORM_SERVICE()
+            ->findFiles( utf8_base, _filePath.c_str(), _mask, _lambda ) == false )
+        {
+            return false;
+        }
 
         return false;
     }

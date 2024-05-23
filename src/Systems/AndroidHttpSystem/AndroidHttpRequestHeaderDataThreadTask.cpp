@@ -41,31 +41,6 @@ namespace Mengine
         _jenv->DeleteLocalRef( jdata );
 
         return jresponse;
-
-        //MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_CUSTOMREQUEST, "POST") );
-
-        //MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDS, data_buffer) );
-        //MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDSIZE, (long)data_size) );
-
-        //bool OPTION_curltrace = HAS_OPTION( "curltrace" );
-
-        //if( OPTION_curltrace == true )
-        //{
-        //    Stringstream ss;
-
-        //    for( const String & header : m_headers )
-        //    {
-        //        ss << header;
-        //        ss << std::endl;
-        //    }
-
-        //    String header_str = ss.str();
-
-        //    LOGGER_HTTP_STATISTIC( "[HTTP] header data url '%s' header:\n %s"
-        //        , m_url.c_str()
-        //        , header_str.c_str()
-        //    );
-        //}
     }
     //////////////////////////////////////////////////////////////////////////
 }

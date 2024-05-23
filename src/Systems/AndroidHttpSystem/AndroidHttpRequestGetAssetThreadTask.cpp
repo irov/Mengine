@@ -68,38 +68,6 @@ namespace Mengine
         _jenv->DeleteLocalRef( jkey_password );
 
         return jresponse;
-
-        //MENGINE_CURLCALL( curl_easy_setopt, ( _curl, CURLOPT_CUSTOMREQUEST, "GET" ) );
-
-        //if( m_login.empty() == false || m_password.empty() == false )
-        //{
-        //    const Char * login_str = m_login.c_str();
-        //    const Char * password_str = m_password.c_str();
-
-        //    MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_USERNAME, login_str) );
-        //    MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_PASSWORD, password_str) );
-        //}
-
-        ///* send all data to this function  */
-        //MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEFUNCTION, &Detail::cURL_WriteMemoryCallback) );
-
-        ///* we pass our 'chunk' struct to the callback function */
-        //OutputStreamInterface * stream_ptr = m_stream.get();
-        //MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEDATA, (void *)stream_ptr) );
-
-        //MENGINE_CURLCALL( curl_easy_setopt, (_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0") );
-
-        //bool OPTION_curltrace = HAS_OPTION( "curltrace" );
-
-        //if( OPTION_curltrace == true )
-        //{
-        //    LOGGER_HTTP_STATISTIC( "[HTTP] get asset url '%s' login '%s' password '%s'\nfile: '%s'"
-        //        , m_url.c_str()
-        //        , m_login.c_str()
-        //        , m_password.c_str()
-        //        , Helper::getContentFullPath( m_content )
-        //    );
-        //}
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidHttpRequestGetAssetThreadTask::_onThreadTaskComplete( bool _successful )

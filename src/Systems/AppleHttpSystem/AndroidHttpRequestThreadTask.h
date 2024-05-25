@@ -2,19 +2,17 @@
 
 #include "Interface/HttpSystemInterface.h"
 
-#include "Environment/Android/AndroidIncluder.h"
-
 #include "Kernel/ThreadTask.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class AndroidHttpRequestThreadTask
+    class AppleHttpRequestThreadTask
         : public ThreadTask
     {
     public:
-        AndroidHttpRequestThreadTask();
-        ~AndroidHttpRequestThreadTask() override;
+        AppleHttpRequestThreadTask();
+        ~AppleHttpRequestThreadTask() override;
 
     public:
         void setURL( const String & _url );
@@ -71,6 +69,6 @@ namespace Mengine
         ThreadMutexInterfacePtr m_mutex;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AndroidHttpRequestThreadTask, ThreadTaskInterface> AndroidHttpRequestThreadTaskPtr;
+    typedef IntrusivePtr<AppleHttpRequestThreadTask, ThreadTaskInterface> AppleHttpRequestThreadTaskPtr;
     //////////////////////////////////////////////////////////////////////////
 }

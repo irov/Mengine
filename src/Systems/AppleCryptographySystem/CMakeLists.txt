@@ -6,4 +6,4 @@ src
     AppleCryptographySystem.mm
 )
 
-ADD_MENGINE_LIBRARY(Systems)
+ADD_MENGINE_APPLE_LIBRARY(Systems)

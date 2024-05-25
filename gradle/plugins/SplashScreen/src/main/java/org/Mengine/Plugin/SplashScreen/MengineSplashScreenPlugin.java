@@ -193,7 +193,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
                     m_text.setVisibility(View.GONE);
                 }
 
-                MengineUtils.performOnMainThread(() -> {
+                activity.runOnUiThread(() -> {
                     MengineSplashScreenPlugin.this.removeSpash(activity);
                 });
             }

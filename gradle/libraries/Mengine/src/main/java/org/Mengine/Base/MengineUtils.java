@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -133,6 +134,13 @@ public class MengineUtils {
 
     public static Handler performOnMainThread(Runnable runnable) {
         Looper looper = Looper.getMainLooper();
+
+        if (Looper.myLooper() == looper) {
+            runnable.run();
+
+            return null;
+        }
+
         Handler handler = new Handler(looper);
 
         handler.post(runnable);
@@ -634,5 +642,16 @@ public class MengineUtils {
         bufferedReader.close();
 
         return stringBuilder.toString();
+    }
+
+    public static byte [] inputStreamToByteArray(InputStream stream) throws IOException {
+        byte [] buffer = new byte[1024];
+        int len;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        while ((len = stream.read(buffer)) != -1) {
+            out.write(buffer, 0, len);
+        }
+        out.close();
+        return out.toByteArray();
     }
 }

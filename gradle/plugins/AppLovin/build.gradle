@@ -132,11 +132,11 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE == true) {
-        implementation 'com.applovin.mediation:ironsource-adapter:8.0.0.0.0'
+        implementation 'com.applovin.mediation:ironsource-adapter:8.1.0.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LIFTOFF == true) {
-        implementation 'com.applovin.mediation:vungle-adapter:7.3.2.0'
+        implementation 'com.applovin.mediation:vungle-adapter:7.3.2.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LINE == true) {

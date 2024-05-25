@@ -13,7 +13,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath 'com.android.tools.build:gradle:8.4.0'
 
         if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_SERVICE") == true) {
             classpath 'com.google.gms:google-services:4.4.1'
@@ -52,7 +52,7 @@ allprojects {
         if (ANDROID_APP_NDK_VERSION != null) {
             ndkVersion = ANDROID_APP_NDK_VERSION
         } else {
-            ndkVersion = "26.2.11394342"
+            ndkVersion = "26.3.11579264"
         }
 
         if (ANDROID_APP_BUILD_TOOLS_VERSION != null) {

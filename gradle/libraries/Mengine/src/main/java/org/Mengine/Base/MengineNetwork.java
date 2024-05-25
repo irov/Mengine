@@ -282,7 +282,14 @@ public class MengineNetwork {
 
             int length = connection.getContentLength();
 
-            if (length != 0) {
+            if (length == 0) {
+                response.HTTP_CONTENT_LENGTH = 0;
+            } else if (length == -1) {
+                byte [] data = MengineUtils.inputStreamToByteArray(is);
+
+                response.HTTP_CONTENT_DATA = data;
+                response.HTTP_CONTENT_LENGTH = data.length;
+            } else {
                 response.HTTP_CONTENT_DATA = new byte[length];
                 response.HTTP_CONTENT_LENGTH = is.read(response.HTTP_CONTENT_DATA, 0, length);
             }

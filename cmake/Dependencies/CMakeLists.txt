@@ -708,10 +708,6 @@ endif()
 
 if(MENGINE_DEPENDENCE_OPENAL_SOFT)
     message("================openal-soft================")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/CMakeLists.txt ${THIRDPARTY_DIR}/openal-soft/CMakeLists.txt COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/common/dynload.cpp ${THIRDPARTY_DIR}/openal-soft/common/dynload.cpp COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/common/strutils.cpp ${THIRDPARTY_DIR}/openal-soft/common/strutils.cpp COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/common/alstring.h ${THIRDPARTY_DIR}/openal-soft/common/alstring.h COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/core/helpers.cpp ${THIRDPARTY_DIR}/openal-soft/core/helpers.cpp COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/alc/alconfig.cpp ${THIRDPARTY_DIR}/openal-soft/alc/alconfig.cpp COPYONLY)
     
@@ -770,9 +766,9 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
     endif()
     
     if(MENGINE_TARGET_ANDROID)
-        SET(OPENAL_SHARED ON CACHE BOOL "OPENAL_SHARED" FORCE)
+        SET(LIBTYPE "SHARED" CACHE STRING "LIBTYPE" FORCE)
     else()
-        SET(OPENAL_SHARED OFF CACHE BOOL "OPENAL_SHARED" FORCE)
+        SET(LIBTYPE "STATIC" CACHE STRING "LIBTYPE" FORCE)
     endif()
     
     if(MENGINE_TOOLCHAIN_MSVC)

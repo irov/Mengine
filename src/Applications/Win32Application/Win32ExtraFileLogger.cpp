@@ -57,14 +57,6 @@ namespace Mengine
         LoggerMessage message;
         _record->getMessage( &message );
 
-        if( message.flag & LFLAG_FUNCTIONSTAMP )
-        {
-            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
-            Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH);
-            this->writeMessage_( functionstamp );
-            this->writeMessage_( " " );
-        }
-
         if( message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
@@ -96,6 +88,14 @@ namespace Mengine
             this->writeMessage_( "[" );
             this->writeMessage_( message.category );
             this->writeMessage_( "]" );
+            this->writeMessage_( " " );
+        }
+
+        if( message.flag & LFLAG_FUNCTIONSTAMP )
+        {
+            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+            Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+            this->writeMessage_( functionstamp );
             this->writeMessage_( " " );
         }
 

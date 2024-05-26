@@ -6,6 +6,7 @@
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
+#include "Interface/HttpServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Environment/Android/AndroidEnv.h"
@@ -446,7 +447,7 @@ namespace Mengine
             {
                 m_status = EDTDS_REGISTRATING;
 
-                const HttpRequestHeaders & headers = HTTP_SYSTEM()
+                const HttpRequestHeaders & headers = HTTP_SERVICE()
                     ->getApplicationJSONHeaders();
 
                 jpp::object j = this->makeJsonRegistrationData();
@@ -454,7 +455,7 @@ namespace Mengine
                 Data data;
                 Helper::writeJSONDataCompact( j, &data );
 
-                HttpRequestId id = HTTP_SYSTEM()
+                HttpRequestId id = HTTP_SERVICE()
                     ->headerData( m_dsn, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
@@ -463,10 +464,10 @@ namespace Mengine
             {
                 m_status = EDTDS_WAITING;
 
-                const HttpRequestHeaders & headers = HTTP_SYSTEM()
+                const HttpRequestHeaders & headers = HTTP_SERVICE()
                     ->getApplicationJSONHeaders();
 
-                HttpRequestId id = HTTP_SYSTEM()
+                HttpRequestId id = HTTP_SERVICE()
                     ->getMessage( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
@@ -475,7 +476,7 @@ namespace Mengine
             {
                 m_status = EDTDS_CONNECTING;
 
-                const HttpRequestHeaders & headers = HTTP_SYSTEM()
+                const HttpRequestHeaders & headers = HTTP_SERVICE()
                     ->getApplicationJSONHeaders();
 
                 jpp::object j = this->makeJsonConnectData();
@@ -483,14 +484,14 @@ namespace Mengine
                 Data data;
                 Helper::writeJSONDataCompact( j, &data );
 
-                HttpRequestId id = HTTP_SYSTEM()
+                HttpRequestId id = HTTP_SERVICE()
                     ->headerData( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
             }break;
         case EDTDS_CONNECT:
             {
-                const HttpRequestHeaders & headers = HTTP_SYSTEM()
+                const HttpRequestHeaders & headers = HTTP_SERVICE()
                     ->getApplicationJSONHeaders();
 
                 jpp::object j = this->makeJsonProcessData();
@@ -498,7 +499,7 @@ namespace Mengine
                 Data data;
                 Helper::writeJSONDataCompact( j, &data );
 
-                HttpRequestId id = HTTP_SYSTEM()
+                HttpRequestId id = HTTP_SERVICE()
                     ->headerData( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
@@ -934,7 +935,7 @@ namespace Mengine
 
         HttpRequestHeaders headers;
 
-        HTTP_SYSTEM()
+        HTTP_SERVICE()
             ->deleteMessage( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////

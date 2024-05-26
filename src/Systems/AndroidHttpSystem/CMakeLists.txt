@@ -7,19 +7,19 @@ src
     
     AndroidHttpResponse.cpp
     AndroidHttpResponse.h
-    
-    AndroidHttpRequestThreadTask.cpp
-    AndroidHttpRequestThreadTask.h
-    AndroidHttpRequestGetAssetThreadTask.cpp
-    AndroidHttpRequestGetAssetThreadTask.h
-    AndroidHttpRequestGetMessageThreadTask.cpp
-    AndroidHttpRequestGetMessageThreadTask.h
-    AndroidHttpRequestHeaderDataThreadTask.cpp
-    AndroidHttpRequestHeaderDataThreadTask.h
-    AndroidHttpRequestPostMessageThreadTask.cpp
-    AndroidHttpRequestPostMessageThreadTask.h
-    AndroidHttpRequestDeleteMessageThreadTask.cpp
-    AndroidHttpRequestDeleteMessageThreadTask.h
+
+    AndroidHttpRequest.cpp
+    AndroidHttpRequest.h
+    AndroidHttpRequestGetAsset.cpp
+    AndroidHttpRequestGetAsset.h
+    AndroidHttpRequestGetMessage.cpp
+    AndroidHttpRequestGetMessage.h
+    AndroidHttpRequestHeaderData.cpp
+    AndroidHttpRequestHeaderData.h
+    AndroidHttpRequestPostMessage.cpp
+    AndroidHttpRequestPostMessage.h
+    AndroidHttpRequestDeleteMessage.cpp
+    AndroidHttpRequestDeleteMessage.h
 )
 
 ADD_MENGINE_LIBRARY(Systems)

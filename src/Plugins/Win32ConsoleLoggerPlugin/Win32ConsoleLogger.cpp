@@ -22,7 +22,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        BOOL WINAPI ConsoleHandlerRoutine( DWORD dwCtrlType )
+        static BOOL WINAPI ConsoleHandlerRoutine( DWORD dwCtrlType )
         {
             switch( dwCtrlType )
             {
@@ -199,14 +199,6 @@ namespace Mengine
 
         DWORD dWritten;
 
-        if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
-        {
-            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
-            size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH);
-            ::WriteConsoleA( output_handle, functionstamp, (DWORD)functionstampSize, &dWritten, NULL );
-            ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
-        }
-
         if( message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
@@ -239,6 +231,14 @@ namespace Mengine
             ::WriteConsoleA( output_handle, "[", 1, &dWritten, NULL );
             ::WriteConsoleA( output_handle, message.category, (DWORD)category_size, &dWritten, NULL );
             ::WriteConsoleA( output_handle, "]", 1, &dWritten, NULL );
+            ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
+        }
+
+        if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
+        {
+            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+            size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+            ::WriteConsoleA( output_handle, functionstamp, (DWORD)functionstampSize, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 

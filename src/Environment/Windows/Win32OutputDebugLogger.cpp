@@ -22,14 +22,6 @@ namespace Mengine
         LoggerMessage message;
         _record->getMessage( &message );
 
-        if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
-        {
-            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
-            Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
-            ::OutputDebugStringA( functionstamp );
-            ::OutputDebugStringA( " " );
-        }
-
         if( message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
@@ -61,6 +53,14 @@ namespace Mengine
             ::OutputDebugStringA( "[" );
             ::OutputDebugStringA( message.category );
             ::OutputDebugStringA( "]" );
+            ::OutputDebugStringA( " " );
+        }
+
+        if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
+        {
+            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+            Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+            ::OutputDebugStringA( functionstamp );
             ::OutputDebugStringA( " " );
         }
 

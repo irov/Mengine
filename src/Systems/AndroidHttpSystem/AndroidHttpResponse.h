@@ -7,7 +7,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class AndroidHttpResponse
         : public HttpResponseInterface
-        , public Factorable
     {
         DECLARE_FACTORABLE( AndroidHttpResponse );
 

@@ -3,6 +3,7 @@
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/HttpServiceInterface.h"
 
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/LoggerHelper.h"
@@ -176,13 +177,13 @@ namespace Mengine
 
         j.set( "logger", jlogger );
 
-        const HttpRequestHeaders & headers = HTTP_SYSTEM()
+        const HttpRequestHeaders & headers = HTTP_SERVICE()
             ->getApplicationJSONHeaders();
 
         Data data;
         Helper::writeJSONDataCompact( j, &data );
 
-        HttpRequestId id = HTTP_SYSTEM()
+        HttpRequestId id = HTTP_SERVICE()
             ->headerData( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_UNUSED( id );

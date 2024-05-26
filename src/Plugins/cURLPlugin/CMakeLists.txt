@@ -9,21 +9,18 @@ src
     cURLHttpSystem.cpp
     cURLHttpSystem.h
     
-    cURLHttpResponse.cpp
-    cURLHttpResponse.h
-    
-    cURLHttpRequestThreadTask.cpp
-    cURLHttpRequestThreadTask.h
-    cURLHttpRequestGetAssetThreadTask.cpp
-    cURLHttpRequestGetAssetThreadTask.h
-    cURLHttpRequestGetMessageThreadTask.cpp
-    cURLHttpRequestGetMessageThreadTask.h
-    cURLHttpRequestHeaderDataThreadTask.cpp
-    cURLHttpRequestHeaderDataThreadTask.h
-    cURLHttpRequestPostMessageThreadTask.cpp
-    cURLHttpRequestPostMessageThreadTask.h
-    cURLHttpRequestDeleteMessageThreadTask.cpp
-    cURLHttpRequestDeleteMessageThreadTask.h
+    cURLHttpRequest.cpp
+    cURLHttpRequest.h
+    cURLHttpRequestGetAsset.cpp
+    cURLHttpRequestGetAsset.h
+    cURLHttpRequestGetMessage.cpp
+    cURLHttpRequestGetMessage.h
+    cURLHttpRequestHeaderData.cpp
+    cURLHttpRequestHeaderData.h
+    cURLHttpRequestPostMessage.cpp
+    cURLHttpRequestPostMessage.h
+    cURLHttpRequestDeleteMessage.cpp
+    cURLHttpRequestDeleteMessage.h
     
     cURLHttpErrorHelper.cpp
     cURLHttpErrorHelper.h

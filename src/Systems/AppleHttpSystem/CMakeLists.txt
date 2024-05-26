@@ -5,21 +5,21 @@ src
     AppleHttpSystem.mm
     AppleHttpSystem.h
     
-    AppleHttpResponse.mm
-    AppleHttpResponse.h
+    AppleHttpNetwork.mm
+    AppleHttpNetwork.h
     
-    AppleHttpRequestThreadTask.mm
-    AppleHttpRequestThreadTask.h
-    AppleHttpRequestGetAssetThreadTask.mm
-    AppleHttpRequestGetAssetThreadTask.h
-    AppleHttpRequestGetMessageThreadTask.mm
-    AppleHttpRequestGetMessageThreadTask.h
-    AppleHttpRequestHeaderDataThreadTask.mm
-    AppleHttpRequestHeaderDataThreadTask.h
-    AppleHttpRequestPostMessageThreadTask.mm
-    AppleHttpRequestPostMessageThreadTask.h
-    AppleHttpRequestDeleteMessageThreadTask.mm
-    AppleHttpRequestDeleteMessageThreadTask.h
+    AppleHttpRequest.mm
+    AppleHttpRequest.h
+    AppleHttpRequestGetAsset.mm
+    AppleHttpRequestGetAsset.h
+    AppleHttpRequestGetMessage.mm
+    AppleHttpRequestGetMessage.h
+    AppleHttpRequestHeaderData.mm
+    AppleHttpRequestHeaderData.h
+    AppleHttpRequestPostMessage.mm
+    AppleHttpRequestPostMessage.h
+    AppleHttpRequestDeleteMessage.mm
+    AppleHttpRequestDeleteMessage.h
 )
 
 ADD_MENGINE_APPLE_LIBRARY(Systems)

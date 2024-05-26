@@ -2,8 +2,10 @@
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/HttpServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/LoggerHelper.h"
@@ -244,10 +246,10 @@ namespace Mengine
 
         Helper::destroyJSON2( j );
 
-        const HttpRequestHeaders & headers = HTTP_SYSTEM()
+        const HttpRequestHeaders & headers = HTTP_SERVICE()
             ->getApplicationJSONHeaders();
 
-        HttpRequestId id = HTTP_SYSTEM()
+        HttpRequestId id = HTTP_SERVICE()
             ->headerData( m_dsn, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, m_dataAux, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_UNUSED( id );

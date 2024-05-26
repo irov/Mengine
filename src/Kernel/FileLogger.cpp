@@ -75,14 +75,6 @@ namespace Mengine
         LoggerMessage message;
         _record->getMessage( &message );
 
-        if( message.flag & LFLAG_FUNCTIONSTAMP )
-        {
-            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
-            size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
-            m_stream->write( functionstamp, functionstampSize );
-            m_stream->write( " ", 1 );
-        }
-
         if( message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
@@ -115,6 +107,14 @@ namespace Mengine
             m_stream->write( "[", 1 );
             m_stream->write( message.category, category_size );
             m_stream->write( "]", 1 );
+            m_stream->write( " ", 1 );
+        }
+
+        if( message.flag & LFLAG_FUNCTIONSTAMP )
+        {
+            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+            size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+            m_stream->write( functionstamp, functionstampSize );
             m_stream->write( " ", 1 );
         }
 

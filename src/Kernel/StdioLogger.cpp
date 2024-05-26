@@ -22,14 +22,6 @@ namespace Mengine
         LoggerMessage message;
         _record->getMessage( &message );
 
-        if( message.flag & LFLAG_FUNCTIONSTAMP )
-        {
-            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
-            size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH);
-            std::cout.write( functionstamp, functionstampSize );
-            std::cout.write( " ", 1 );
-        }
-
         if( message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
@@ -62,6 +54,14 @@ namespace Mengine
             std::cout.write( "[", 1 );
             std::cout.write( message.category, category_size );
             std::cout.write( "]", 1 );
+            std::cout.write( " ", 1 );
+        }
+
+        if( message.flag & LFLAG_FUNCTIONSTAMP )
+        {
+            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+            size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+            std::cout.write( functionstamp, functionstampSize );
             std::cout.write( " ", 1 );
         }
 

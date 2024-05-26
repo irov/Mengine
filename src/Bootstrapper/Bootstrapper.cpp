@@ -98,6 +98,7 @@ SERVICE_EXTERN( UserdataService );
 SERVICE_EXTERN( PickerService );
 SERVICE_EXTERN( PlayerService );
 SERVICE_EXTERN( AccountService );
+SERVICE_EXTERN( HttpService );
 SERVICE_EXTERN( GameService );
 SERVICE_EXTERN( TimerService );
 SERVICE_EXTERN( TimelineService );
@@ -1184,6 +1185,7 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( HttpSystem, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+        BOOTSTRAPPER_SERVICE_CREATE( HttpService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( SoundService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ModuleService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( FrameworkService, MENGINE_DOCUMENT_FACTORABLE );
@@ -2125,6 +2127,7 @@ namespace Mengine
                 ->stopTasks();
         }
 
+        SERVICE_FINALIZE( HttpService );
         SERVICE_FINALIZE( GameService );
         SERVICE_FINALIZE( Application );
 
@@ -2246,6 +2249,7 @@ namespace Mengine
         SERVICE_DESTROY( HttpSystem );
 #endif
 
+        SERVICE_DESTROY( HttpService );
         SERVICE_DESTROY( SceneService );
         SERVICE_DESTROY( GameService );
         SERVICE_DESTROY( Application );

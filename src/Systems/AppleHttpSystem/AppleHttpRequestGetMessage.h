@@ -14,11 +14,8 @@ namespace Mengine
         AppleHttpRequestGetMessage();
         ~AppleHttpRequestGetMessage() override;
 
-    public:
-        bool initialize();
-
     protected:
-        jobject _onHttp( JNIEnv * _jenv, jobject _basses ) override;
+        MengineHttpResponseParam * _onHttp( MengineHttpRequestParam * request ) override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleHttpRequestGetMessage, HttpRequestInterface> AppleHttpRequestGetMessagePtr;

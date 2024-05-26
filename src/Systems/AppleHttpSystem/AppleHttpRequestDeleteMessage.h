@@ -14,13 +14,10 @@ namespace Mengine
         AppleHttpRequestDeleteMessage();
         ~AppleHttpRequestDeleteMessage() override;
 
-    public:
-        bool initialize();
-
     protected:
-        jobject _onHttp( JNIEnv * _jenv, jobject _basses ) override;
+        MengineHttpResponseParam * _onHttp( MengineHttpRequestParam * request ) override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AppleHttpRequestDeleteMessage, HttpRequestInterface> AppleHttpRequestDeleteMessageThreadTaskPtr;
+    typedef IntrusivePtr<AppleHttpRequestDeleteMessage, HttpRequestInterface> AppleHttpRequestDeleteMessagePtr;
     //////////////////////////////////////////////////////////////////////////
 }

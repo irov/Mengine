@@ -14,20 +14,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleHttpRequestDeleteMessage::initialize()
+    MengineHttpResponseParam * AppleHttpRequestDeleteMessage::_onHttp( MengineHttpRequestParam * _request )
     {
-        //Empty
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    jobject AppleHttpRequestDeleteMessage::_onHttp( JNIEnv * _jenv, jobject _jrequest )
-    {
-        jobject jresponse = Helper::AppleCallObjectStaticClassMethod( _jenv, "org/Mengine/Base/MengineNetwork", "httpRequestDeleteMessage", "(Lorg/Mengine/Base/MengineHttpRequestParam;)Lorg/Mengine/Base/MengineHttpResponseParam;"
-            , _jrequest
-        );
-
-        return jresponse;
+        MengineHttpResponseParam * response = [MengineNetwork httpRequestDeleteMessage:_request];
+        
+        return response;
     }
     //////////////////////////////////////////////////////////////////////////
 }

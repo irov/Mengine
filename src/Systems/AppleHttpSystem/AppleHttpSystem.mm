@@ -26,11 +26,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleHttpSystem::_initializeService()
     {
-        m_factoryTaskGetMessage = Helper::makeFactoryPool<AppleHttpRequestGetMessageThreadTask, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskPostMessage = Helper::makeFactoryPool<AppleHttpRequestPostMessageThreadTask, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskDeleteMessage = Helper::makeFactoryPool<AppleHttpRequestDeleteMessageThreadTask, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskHeaderData = Helper::makeFactoryPool<AppleHttpRequestHeaderDataThreadTask, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskDownloadAsset = Helper::makeFactoryPool<AppleHttpRequestGetAssetThreadTask, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskGetMessage = Helper::makeFactoryPool<AppleHttpRequestGetMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskPostMessage = Helper::makeFactoryPool<AppleHttpRequestPostMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskDeleteMessage = Helper::makeFactoryPool<AppleHttpRequestDeleteMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskHeaderData = Helper::makeFactoryPool<AppleHttpRequestHeaderData, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskDownloadAsset = Helper::makeFactoryPool<AppleHttpRequestGetAsset, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

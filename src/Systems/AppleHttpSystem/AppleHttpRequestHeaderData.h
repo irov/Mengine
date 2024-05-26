@@ -15,10 +15,11 @@ namespace Mengine
         ~AppleHttpRequestHeaderData() override;
 
     public:
-        bool initialize( const Data & _data );
+        void setData( const Data & _data );
+        const Data & getData() const;
 
     protected:
-        jobject _onHttp( JNIEnv * _jenv, jobject _basses ) override;
+        MengineHttpResponseParam * _onHttp( MengineHttpRequestParam * request ) override;
 
     protected:
         Data m_data;

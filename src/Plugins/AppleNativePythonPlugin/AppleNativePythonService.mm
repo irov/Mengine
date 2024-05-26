@@ -9,6 +9,7 @@
 #include "AppleNativePythonScriptEmbedding.h"
 
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/Logger.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AppleNativePythonService, Mengine::AppleNativePythonService );

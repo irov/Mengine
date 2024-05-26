@@ -1,10 +1,10 @@
 #import "AppleAppLovinBannerDelegate.h"
 
-#include "Environment/Apple/AppleDetail.h"
-#include "Environment/Apple/AppleString.h"
-#include "Environment/Apple/AppleAnalytics.h"
+#import "Environment/Apple/AppleDetail.h"
+#import "Environment/Apple/AppleString.h"
+#import "Environment/Apple/AppleAnalytics.h"
 
-#include "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSDetail.h"
 
 #include "AppleAppLovinApplicationDelegate.h"
 

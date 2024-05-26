@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/HttpSystemInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/ServiceBase.h"
 

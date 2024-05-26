@@ -1,7 +1,7 @@
 #import "AppleStoreInAppPurchasePaymentTransactionObserver.h"
 
-#include "Environment/Apple/AppleErrorHelper.h"
-#include "Environment/Apple/AppleString.h"
+#import "Environment/Apple/AppleErrorHelper.h"
+#import "Environment/Apple/AppleString.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"

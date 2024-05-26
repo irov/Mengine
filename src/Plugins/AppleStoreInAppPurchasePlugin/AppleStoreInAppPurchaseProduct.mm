@@ -1,6 +1,6 @@
 #include "AppleStoreInAppPurchaseProduct.h"
 
-#include "Environment/Apple/AppleString.h"
+#import "Environment/Apple/AppleString.h"
 
 #include "Config/StdString.h"
 

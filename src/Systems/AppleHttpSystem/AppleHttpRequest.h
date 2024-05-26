@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Interface/HttpSystemInterface.h"
+#include "Kernel/BaseHttpRequest.h"
 
-#include "Kernel/ThreadTask.h"
+#import "AppleHttpNetwork.h"
 
 namespace Mengine
 {
@@ -20,7 +20,7 @@ namespace Mengine
         bool _onThreadTaskProcess() override;
 
     protected:
-        virtual jobject _onHttp( JNIEnv * _jenv, jobject _basses ) = 0;
+        virtual MengineHttpResponseParam * _onHttp( MengineHttpRequestParam * request ) = 0;
 
     protected:
         void _onThreadTaskComplete( bool _successful ) override;

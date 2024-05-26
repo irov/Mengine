@@ -1,7 +1,7 @@
 #include "AppleNativePythonScriptEmbedding.h"
 
-#include "Environment/Apple/AppleSemaphoreListenerInterface.h"
-#include "Environment/Python/PythonScriptWrapper.h"
+#import "Environment/Apple/AppleSemaphoreListenerInterface.h"
+#import "Environment/Python/PythonScriptWrapper.h"
 
 #include "AppleNativePythonInterface.h"
 

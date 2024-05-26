@@ -1,6 +1,6 @@
 #include "AppleHttpRequestHeaderData.h"
 
-#include "Environment/Apple/AppleHelper.h"
+#import "Environment/Apple/AppleDetail.h"
 
 #include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
@@ -17,30 +17,23 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleHttpRequestHeaderData::initialize( const Data & _data )
+    void AppleHttpRequestHeaderData::setData( const Data & _data )
     {
         m_data = _data;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AppleHttpRequestHeaderData::_onHttp( JNIEnv * _jenv, jobject _jrequest )
+    const Data & AppleHttpRequestHeaderData::getData() const
     {
-        const Data::value_type * data_buffer = m_data.data();
-        Data::size_type data_size = m_data.size();
-
-        jbyteArray jdata = _jenv->NewByteArray( data_size );
-
-        _jenv->SetByteArrayRegion( jdata, 0, data_size, (const jbyte *)data_buffer );
-
-        jobject jresponse = Helper::AppleCallObjectStaticClassMethod( _jenv, "org/Mengine/Base/MengineNetwork", "httpRequestHeaderData", "(Lorg/Mengine/Base/MengineHttpRequestParam;[B)Lorg/Mengine/Base/MengineHttpResponseParam;"
-            , _jrequest
-            , jdata
-        );
-
-        _jenv->DeleteLocalRef( jdata );
-
-        return jresponse;
+        return m_data;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MengineHttpResponseParam * AppleHttpRequestHeaderData::_onHttp( MengineHttpRequestParam * _request )
+    {
+        NSData * ns_data = Helper::AppleGetNSDataFromData( m_data );
+        
+        MengineHttpResponseParam * response = [MengineNetwork httpRequestHeaderData:_request data:ns_data];
+        
+        return response;
     }
     //////////////////////////////////////////////////////////////////////////
 }

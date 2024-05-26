@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Environment/Apple/AppleSemaphoreListenerInterface.h"
+#import "Environment/Apple/AppleSemaphoreListenerInterface.h"
 
 #import <Foundation/Foundation.h>
 

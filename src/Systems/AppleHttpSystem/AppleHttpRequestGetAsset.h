@@ -18,13 +18,20 @@ namespace Mengine
         ~AppleHttpRequestGetAsset() override;
 
     public:
-        bool initialize( const String & _login, const String & _password, const ContentInterfacePtr & _content, const FilePath & _filePathTemp );
+        void setLogin( const String & _login );
+        const String & getLogin() const;
+
+        void setPassword( const String & _password );
+        const String & getPassword() const;
+
+        void setContent( const ContentInterfacePtr & _content );
+        const ContentInterfacePtr & getContent() const;
 
     protected:
         bool _onThreadTaskRun() override;
 
     protected:
-        jobject _onHttp( JNIEnv * _jenv, jobject _basses ) override;
+        MengineHttpResponseParam * _onHttp( MengineHttpRequestParam * request ) override;
 
     protected:
         void _onThreadTaskComplete( bool _successful ) override;
@@ -33,7 +40,6 @@ namespace Mengine
         String m_login;
         String m_password;
         ContentInterfacePtr m_content;
-        FilePath m_filePathTemp;
 
         OutputStreamInterfacePtr m_stream;
     };

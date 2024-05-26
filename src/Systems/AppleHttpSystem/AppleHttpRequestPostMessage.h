@@ -15,10 +15,11 @@ namespace Mengine
         ~AppleHttpRequestPostMessage() override;
 
     public:
-        bool initialize( const HttpRequestPostProperties & _properties );
+        void setPostProperties( const HttpRequestPostProperties & _properties );
+        const HttpRequestPostProperties & getPostProperties() const;
 
     protected:
-        jobject _onHttp( JNIEnv * _jenv, jobject _jrequest ) override;
+        MengineHttpResponseParam * _onHttp( MengineHttpRequestParam * request ) override;
 
     protected:
         HttpRequestPostProperties m_properties;

@@ -26,6 +26,9 @@ src
     AppleSemaphoreService.h
     AppleSemaphoreService.mm
     
+    AppleHttpNetwork.h
+    AppleHttpNetwork.mm
+    
     AppleEnvironmentService.h
     AppleEnvironmentService.mm
     

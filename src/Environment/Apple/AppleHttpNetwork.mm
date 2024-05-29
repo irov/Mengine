@@ -55,124 +55,166 @@
 
 + (MengineHttpResponseParam *)makeResponse:(NSHTTPURLResponse *)response data:(NSData *)data error:(NSError *)error {
     MengineHttpResponseParam * httpResponse = [[MengineHttpResponseParam alloc] init];
-    httpResponse.HTTP_RESPONSE_CODE = (int)response.statusCode;
     
-    if (error) {
-        httpResponse.HTTP_ERROR_MESSAGE = error.localizedDescription;
+    if (response != nil) {
+        httpResponse.HTTP_RESPONSE_CODE = (int)response.statusCode;
     } else {
+        httpResponse.HTTP_RESPONSE_CODE = 0;
+    }
+    
+    if (error != nil) {
+        httpResponse.HTTP_ERROR_MESSAGE = error.domain;
+    } else {
+        httpResponse.HTTP_ERROR_MESSAGE = nil;
+    }
+    
+    if (data != nil) {
         httpResponse.HTTP_CONTENT_DATA = data;
         httpResponse.HTTP_CONTENT_LENGTH = (int)data.length;
+    } else {
+        httpResponse.HTTP_CONTENT_DATA = nil;
+        httpResponse.HTTP_CONTENT_LENGTH = 0;
     }
     
     return httpResponse;
 }
 
 + (nullable MengineHttpResponseParam *)httpRequestPostMessage:(MengineHttpRequestParam *)request properties:(NSDictionary<NSString *, NSString *> *)properties {
-    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
-    urlRequest.HTTPMethod = @"POST";
-    [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
-    [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
-    [self setMultipartFormData:urlRequest properties:properties];
+    @try {
+        NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
+        urlRequest.HTTPMethod = @"POST";
+        [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
+        [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
+        [self setMultipartFormData:urlRequest properties:properties];
+        
+        __block MengineHttpResponseParam *responseParam = nil;
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        
+        NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
+            responseParam = [self makeResponse:httpResponse data:data error:error];
+            dispatch_semaphore_signal(semaphore);
+        }];
+        
+        [dataTask resume];
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        
+        return responseParam;
+    } @catch (NSException *exception) {
+        NSLog(@"[HTTP] httpRequestPostMessage caught an exception: %@", exception.reason);
+    }
     
-    __block MengineHttpResponseParam *responseParam = nil;
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    
-    NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-        responseParam = [self makeResponse:httpResponse data:data error:error];
-        dispatch_semaphore_signal(semaphore);
-    }];
-    
-    [dataTask resume];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
-    return responseParam;
+    return nil;
 }
 
 + (nullable MengineHttpResponseParam *)httpRequestHeaderData:(MengineHttpRequestParam *)request data:(NSData *)data {
-    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
-    urlRequest.HTTPMethod = @"POST";
-    [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
-    [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
-    [self setData:urlRequest data:data];
+    @try {
+        NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
+        urlRequest.HTTPMethod = @"POST";
+        [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
+        [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
+        [self setData:urlRequest data:data];
+        
+        __block MengineHttpResponseParam * responseParam = nil;
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        
+        NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
+            responseParam = [self makeResponse:httpResponse data:data error:error];
+            dispatch_semaphore_signal(semaphore);
+        }];
+        
+        [dataTask resume];
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        
+        return responseParam;
+    } @catch (NSException *exception) {
+        NSLog(@"[HTTP] httpRequestHeaderData caught an exception: %@", exception.reason);
+    }
     
-    __block MengineHttpResponseParam * responseParam = nil;
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    
-    NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-        responseParam = [self makeResponse:httpResponse data:data error:error];
-        dispatch_semaphore_signal(semaphore);
-    }];
-    
-    [dataTask resume];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
-    return responseParam;
+    return nil;
 }
 
 + (nullable MengineHttpResponseParam *)httpRequestGetMessage:(MengineHttpRequestParam *)request {
-    NSMutableURLRequest * urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
-    urlRequest.HTTPMethod = @"GET";
-    [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
-    [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
+    @try {
+        NSMutableURLRequest * urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
+        urlRequest.HTTPMethod = @"GET";
+        [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
+        [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
+        
+        __block MengineHttpResponseParam *responseParam = nil;
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        
+        NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
+            responseParam = [self makeResponse:httpResponse data:data error:error];
+            dispatch_semaphore_signal(semaphore);
+        }];
+        
+        [dataTask resume];
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        
+        return responseParam;
+    } @catch (NSException *exception) {
+        NSLog(@"[HTTP] httpRequestGetMessage caught an exception: %@", exception.reason);
+    }
     
-    __block MengineHttpResponseParam *responseParam = nil;
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    
-    NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-        responseParam = [self makeResponse:httpResponse data:data error:error];
-        dispatch_semaphore_signal(semaphore);
-    }];
-    
-    [dataTask resume];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
-    return responseParam;
+    return nil;
 }
 
 + (nullable MengineHttpResponseParam *)httpRequestDeleteMessage:(MengineHttpRequestParam *)request {
-    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
-    urlRequest.HTTPMethod = @"DELETE";
-    [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
-    [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
+    @try {
+        NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
+        urlRequest.HTTPMethod = @"DELETE";
+        [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
+        [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
+        
+        __block MengineHttpResponseParam * responseParam = nil;
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        
+        NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
+            responseParam = [self makeResponse:httpResponse data:data error:error];
+            dispatch_semaphore_signal(semaphore);
+        }];
+        
+        [dataTask resume];
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        
+        return responseParam;
+    } @catch (NSException *exception) {
+        NSLog(@"[HTTP] httpRequestDeleteMessage caught an exception: %@", exception.reason);
+    }
     
-    __block MengineHttpResponseParam * responseParam = nil;
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    
-    NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-        responseParam = [self makeResponse:httpResponse data:data error:error];
-        dispatch_semaphore_signal(semaphore);
-    }];
-    
-    [dataTask resume];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
-    return responseParam;
+    return nil;
 }
 
 + (nullable MengineHttpResponseParam *)httpRequestGetAsset:(MengineHttpRequestParam *)request login:(NSString *)login password:(NSString *)password {
-    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
-    urlRequest.HTTPMethod = @"GET";
-    [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
-    [self setBasicAuthorization:urlRequest login:login password:password];
-    [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
+    @try {
+        NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
+        urlRequest.HTTPMethod = @"GET";
+        [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
+        [self setBasicAuthorization:urlRequest login:login password:password];
+        [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
+        
+        __block MengineHttpResponseParam * responseParam = nil;
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        
+        NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
+            responseParam = [self makeResponse:httpResponse data:data error:error];
+            dispatch_semaphore_signal(semaphore);
+        }];
+        
+        [dataTask resume];
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        
+        return responseParam;
+    } @catch (NSException *exception) {
+        NSLog(@"[HTTP] httpRequestGetAsset caught an exception: %@", exception.reason);
+    }
     
-    __block MengineHttpResponseParam * responseParam = nil;
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    
-    NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-        responseParam = [self makeResponse:httpResponse data:data error:error];
-        dispatch_semaphore_signal(semaphore);
-    }];
-    
-    [dataTask resume];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
-    return responseParam;
+    return nil;
 }
 
 @end

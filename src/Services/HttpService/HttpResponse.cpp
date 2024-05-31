@@ -4,7 +4,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     HttpResponse::HttpResponse()
-        : m_requestId( 0 )
+        : m_requestId( INVALID_UNIQUE_ID )
+        , m_errorCode( 0 )
         , m_code( HTTP_OK )
         , m_successful( false )
     {
@@ -54,14 +55,20 @@ namespace Mengine
         return m_code;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HttpResponse::setError( const String & _error )
+    void HttpResponse::setError( const String & _message, int32_t _code )
     {
-        m_error = _error;
+        m_errorMessage = _message;
+        m_errorCode = _code;
     }
     //////////////////////////////////////////////////////////////////////////
-    const String & HttpResponse::getError() const
+    const String & HttpResponse::getErrorMessage() const
     {
-        return m_error;
+        return m_errorMessage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t HttpResponse::getErrorCode() const
+    {
+        return m_errorCode;
     }
     //////////////////////////////////////////////////////////////////////////
     void HttpResponse::setSuccessful( bool _successful )

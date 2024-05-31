@@ -28,7 +28,7 @@ IF(WIN32)
 endif()
 
 #COMMON
-GIT_CLONE(freetype git://git.sv.nongnu.org/freetype/freetype2.git "VER-2-10-4")
+GIT_CLONE(freetype https://gitlab.freedesktop.org/freetype/freetype.git "VER-2-13-2")
 GIT_CLONE(ios-cmake https://github.com/leetal/ios-cmake "4.4.1")
 GIT_CLONE(zlib https://github.com/madler/zlib.git "v1.3.1")
 GIT_CLONE(libogg https://github.com/xiph/ogg.git "v1.3.5")

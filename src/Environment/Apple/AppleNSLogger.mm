@@ -26,20 +26,6 @@ namespace Mengine
         
         Char buffer[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
-        if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
-        {
-            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
-
-            const Char * function = message.function;
-            int32_t line = message.line;
-            size_t functionstampSize = Helper::makeLoggerFunctionStamp( function, line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
-            
-            MENGINE_UNUSED( functionstampSize );
-
-            MENGINE_STRCAT( buffer, functionstamp );
-            MENGINE_STRCAT( buffer, " " );
-        }
-
         if( message.flag & LFLAG_TIMESTAMP )
         {
             Char datestamp[256] = {'\0'};
@@ -48,17 +34,6 @@ namespace Mengine
             MENGINE_UNUSED( datestampSize );
             
             MENGINE_STRCAT( buffer, datestamp );
-            MENGINE_STRCAT( buffer, " " );
-        }
-
-        if( message.flag & LFLAG_THREADSTAMP )
-        {
-            Char threadstamp[256] = {'\0'};
-            size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
-
-            MENGINE_UNUSED( threadstampSize );
-            
-            MENGINE_STRCAT( buffer, threadstamp );
             MENGINE_STRCAT( buffer, " " );
         }
 
@@ -79,6 +54,31 @@ namespace Mengine
             MENGINE_STRCAT( buffer, "[" );
             MENGINE_STRCAT( buffer, category );
             MENGINE_STRCAT( buffer, "]" );
+            MENGINE_STRCAT( buffer, " " );
+        }
+        
+        if( message.flag & LFLAG_THREADSTAMP )
+        {
+            Char threadstamp[256] = {'\0'};
+            size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
+
+            MENGINE_UNUSED( threadstampSize );
+            
+            MENGINE_STRCAT( buffer, threadstamp );
+            MENGINE_STRCAT( buffer, " " );
+        }
+
+        if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
+        {
+            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+
+            const Char * function = message.function;
+            int32_t line = message.line;
+            size_t functionstampSize = Helper::makeLoggerFunctionStamp( function, line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+            
+            MENGINE_UNUSED( functionstampSize );
+
+            MENGINE_STRCAT( buffer, functionstamp );
             MENGINE_STRCAT( buffer, " " );
         }
 

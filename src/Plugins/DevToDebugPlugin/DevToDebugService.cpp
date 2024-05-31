@@ -514,7 +514,8 @@ namespace Mengine
         bool responseSuccessful = _response->isSuccessful();
         HttpRequestId requestId = _response->getRequestId();
         EHttpCode responseCode = _response->getCode();
-        const String & responseError = _response->getError();
+        const String & responseErrorMessage = _response->getErrorMessage();
+        int32_t responseErrorCode = _response->getErrorCode();
         const String & responseData = _response->getData();
 
         switch( m_status )
@@ -525,8 +526,9 @@ namespace Mengine
             {
                 if( responseSuccessful == false )
                 {
-                    LOGGER_ERROR( "connecting error: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connecting error: %s [%d] [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseCode
                         , requestId
                     );
@@ -538,8 +540,9 @@ namespace Mengine
 
                 if( responseCode / 100 != 2 )
                 {
-                    LOGGER_ERROR( "connecting error: %s data: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connecting error: %s [%d] data: %s [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseData.c_str()
                         , responseCode
                         , requestId
@@ -580,8 +583,9 @@ namespace Mengine
             {
                 if( responseSuccessful == false )
                 {
-                    LOGGER_ERROR( "connecting error: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connecting error: %s [%d] [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseCode
                         , requestId
                     );
@@ -593,8 +597,9 @@ namespace Mengine
 
                 if( responseCode / 100 != 2 )
                 {
-                    LOGGER_ERROR( "connecting error: %s data: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connecting error: %s [%d] data: %s [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseData.c_str()
                         , responseCode
                         , requestId
@@ -622,8 +627,9 @@ namespace Mengine
             {
                 if( responseSuccessful == false )
                 {
-                    LOGGER_ERROR( "connecting error: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connecting error: %s [%d] [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseCode
                         , requestId
                     );
@@ -635,8 +641,9 @@ namespace Mengine
 
                 if( responseCode / 100 != 2 )
                 {
-                    LOGGER_ERROR( "connecting error: %s data: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connecting error: %s [%d] data: %s [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseData.c_str()
                         , responseCode
                         , requestId
@@ -663,8 +670,9 @@ namespace Mengine
             {
                 if( responseSuccessful == false )
                 {
-                    LOGGER_ERROR( "connect response error: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connect response error: %s [%d] [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseCode
                         , requestId
                     );
@@ -676,8 +684,9 @@ namespace Mengine
 
                 if( responseCode / 100 != 2 )
                 {
-                    LOGGER_ERROR( "connect response error: %s data: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connect response error: %s [%d] data: %s [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseData.c_str()
                         , responseCode
                         , requestId

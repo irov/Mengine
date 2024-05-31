@@ -27,8 +27,9 @@ namespace Mengine
         void setCode( EHttpCode _code ) override;
         EHttpCode getCode() const override;
 
-        void setError( const String & _error ) override;
-        const String & getError() const override;
+        void setError( const String & _message, int32_t _code ) override;
+        const String & getErrorMessage() const override;
+        int32_t getErrorCode() const override;
 
         void setSuccessful( bool _successful ) override;
         bool isSuccessful() const override;
@@ -37,7 +38,8 @@ namespace Mengine
         HttpRequestId m_requestId;
         HttpRequestHeaders m_headers;
         String m_data;
-        String m_error;
+        String m_errorMessage;
+        int32_t m_errorCode;
         EHttpCode m_code;
 
         bool m_successful;

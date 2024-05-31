@@ -30,14 +30,6 @@ namespace Mengine
             std::cout.write( " ", 1 );
         }
 
-        if( message.flag & LFLAG_THREADSTAMP )
-        {
-            Char threadstamp[256] = {'\0'};
-            size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
-            std::cout.write( threadstamp, threadstampSize );
-            std::cout.write( " ", 1 );
-        }
-
         if( message.flag & LFLAG_SYMBOLSTAMP )
         {
             ELoggerLevel level = message.level;
@@ -54,6 +46,14 @@ namespace Mengine
             std::cout.write( "[", 1 );
             std::cout.write( message.category, category_size );
             std::cout.write( "]", 1 );
+            std::cout.write( " ", 1 );
+        }
+
+        if( message.flag & LFLAG_THREADSTAMP )
+        {
+            Char threadstamp[256] = {'\0'};
+            size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
+            std::cout.write( threadstamp, threadstampSize );
             std::cout.write( " ", 1 );
         }
 

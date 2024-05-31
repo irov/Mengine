@@ -83,7 +83,7 @@
 
 #include <Psapi.h>
 #include <shlwapi.h>
-#include <Lmcons.h>
+#include <lmcons.h>
 
 #include <tlhelp32.h>
 #include <shellapi.h>
@@ -93,4 +93,5 @@
 #include <wtsapi32.h>
 #include <libloaderapi.h>
 #include <wincrypt.h>
+#include <wininet.h>
 #pragma warning(pop) 

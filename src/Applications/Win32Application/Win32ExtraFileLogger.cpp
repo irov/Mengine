@@ -65,14 +65,6 @@ namespace Mengine
             this->writeMessage_( " " );
         }
 
-        if( message.flag & LFLAG_THREADSTAMP )
-        {
-            Char threadstamp[256] = {'\0'};
-            Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
-            this->writeMessage_( threadstamp );
-            this->writeMessage_( " " );
-        }
-
         if( message.flag & LFLAG_SYMBOLSTAMP )
         {
             ELoggerLevel level = message.level;
@@ -88,6 +80,14 @@ namespace Mengine
             this->writeMessage_( "[" );
             this->writeMessage_( message.category );
             this->writeMessage_( "]" );
+            this->writeMessage_( " " );
+        }
+
+        if( message.flag & LFLAG_THREADSTAMP )
+        {
+            Char threadstamp[256] = {'\0'};
+            Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
+            this->writeMessage_( threadstamp );
             this->writeMessage_( " " );
         }
 

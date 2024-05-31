@@ -59,14 +59,6 @@ namespace Mengine
             m_stream->write( " ", 1 );
         }
 
-        if( message.flag & LFLAG_THREADSTAMP )
-        {
-            Char threadstamp[256] = {'\0'};
-            size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
-            m_stream->write( threadstamp, threadstampSize );
-            m_stream->write( " ", 1 );
-        }
-
         if(message.flag & LFLAG_SYMBOLSTAMP )
         {
             ELoggerLevel level = message.level;
@@ -83,6 +75,14 @@ namespace Mengine
             m_stream->write( "[", 1 );
             m_stream->write( message.category, category_size );
             m_stream->write( "]", 1 );
+            m_stream->write( " ", 1 );
+        }
+
+        if( message.flag & LFLAG_THREADSTAMP )
+        {
+            Char threadstamp[256] = {'\0'};
+            size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
+            m_stream->write( threadstamp, threadstampSize );
             m_stream->write( " ", 1 );
         }
 

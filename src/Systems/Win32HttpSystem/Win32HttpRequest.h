@@ -1,18 +1,16 @@
 #pragma once
 
-#include "Environment/Android/AndroidIncluder.h"
-
 #include "Kernel/BaseHttpRequest.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class AndroidHttpRequest
+    class Win32HttpRequest
         : public BaseHttpRequest
     {
     public:
-        AndroidHttpRequest();
-        ~AndroidHttpRequest() override;
+        Win32HttpRequest();
+        ~Win32HttpRequest() override;
 
     protected:
         void _onThreadTaskPreparation() override;
@@ -20,7 +18,7 @@ namespace Mengine
         bool _onThreadTaskProcess() override;
 
     protected:
-        virtual jobject _onHttp( JNIEnv * _jenv, jobject _basses ) = 0;
+        virtual bool _onHttp() = 0;
 
     protected:
         void _onThreadTaskComplete( bool _successful ) override;
@@ -29,6 +27,6 @@ namespace Mengine
         ThreadMutexInterfacePtr m_mutex;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AndroidHttpRequest, ThreadTaskInterface> AndroidHttpRequestPtr;
+    typedef IntrusivePtr<Win32HttpRequest, HttpRequestInterface> Win32HttpRequestPtr;
     //////////////////////////////////////////////////////////////////////////
 }

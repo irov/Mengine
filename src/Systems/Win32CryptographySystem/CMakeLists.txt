@@ -7,3 +7,5 @@ src
 )
 
 ADD_MENGINE_LIBRARY(Systems)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Advapi32.lib)

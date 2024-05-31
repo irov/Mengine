@@ -23,12 +23,17 @@ namespace Mengine
     {
         HttpRequestId requestId = _response->getRequestId();
         uint32_t status = 0; //ToDo remove
-        const String & error = _response->getError();
+        const String & errorMessage = _response->getErrorMessage();
+        
+        //ToDo
+        int32_t errorCode = _response->getErrorCode();
+        MENGINE_UNUSED( errorCode );
+
         const String & data = _response->getData();
         EHttpCode code = _response->getCode();
         bool successful = _response->isSuccessful();
 
-        m_cb.call_args( requestId, status, error, data, code, successful, m_args );
+        m_cb.call_args( requestId, status, errorMessage, data, code, successful, m_args );
     }
     //////////////////////////////////////////////////////////////////////////
 }

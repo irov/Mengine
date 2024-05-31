@@ -91,6 +91,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HttpService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE );
+
         m_mutex = nullptr;
 
         m_receiverDescs.clear();
@@ -177,7 +179,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( response );
 
         response->setRequestId( task_id );
-        
+
         request->setReponse( response );
 
         request->setReceiver( HttpReceiverInterfacePtr::from( this ) );
@@ -520,12 +522,13 @@ namespace Mengine
 
         m_mutex->unlock();
 
-        LOGGER_HTTP_ERROR( "invalid request '%u' %s (error '%.2048s' response '%.2048s' code [%u])"
+        LOGGER_HTTP_ERROR( "invalid request '%u' %s (error '%.2048s' [%u] response '%.2048s' code [%u])"
             , _response->getRequestId()
             , _response->isSuccessful() ? "complete" : "failure"
-            , _response->getError().c_str()
+            , _response->getErrorMessage().c_str()
+            , _response->getErrorCode()
             , _response->getData().c_str()
-            , _response->getCode()            
+            , _response->getCode()
         );
     }
     //////////////////////////////////////////////////////////////////////////

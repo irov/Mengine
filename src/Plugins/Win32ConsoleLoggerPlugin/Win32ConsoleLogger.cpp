@@ -207,14 +207,6 @@ namespace Mengine
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
-        if( message.flag & LFLAG_THREADSTAMP )
-        {
-            Char threadstamp[256] = {'\0'};
-            size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
-            ::WriteConsoleA( output_handle, threadstamp, (DWORD)threadstampSize, &dWritten, NULL );
-            ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
-        }
-
         if( message.flag & LFLAG_SYMBOLSTAMP )
         {
             ELoggerLevel level = message.level;
@@ -231,6 +223,14 @@ namespace Mengine
             ::WriteConsoleA( output_handle, "[", 1, &dWritten, NULL );
             ::WriteConsoleA( output_handle, message.category, (DWORD)category_size, &dWritten, NULL );
             ::WriteConsoleA( output_handle, "]", 1, &dWritten, NULL );
+            ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
+        }
+
+        if( message.flag & LFLAG_THREADSTAMP )
+        {
+            Char threadstamp[256] = {'\0'};
+            size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
+            ::WriteConsoleA( output_handle, threadstamp, (DWORD)threadstampSize, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 

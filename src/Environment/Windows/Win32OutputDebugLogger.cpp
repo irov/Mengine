@@ -30,14 +30,6 @@ namespace Mengine
             ::OutputDebugStringA( " " );
         }
 
-        if( message.flag & LFLAG_THREADSTAMP )
-        {
-            Char threadstamp[256] = {'\0'};
-            Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
-            ::OutputDebugStringA( threadstamp );
-            ::OutputDebugStringA( " " );
-        }
-
         if( message.flag & LFLAG_SYMBOLSTAMP )
         {
             ELoggerLevel level = message.level;
@@ -53,6 +45,14 @@ namespace Mengine
             ::OutputDebugStringA( "[" );
             ::OutputDebugStringA( message.category );
             ::OutputDebugStringA( "]" );
+            ::OutputDebugStringA( " " );
+        }
+
+        if( message.flag & LFLAG_THREADSTAMP )
+        {
+            Char threadstamp[256] = {'\0'};
+            Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
+            ::OutputDebugStringA( threadstamp );
             ::OutputDebugStringA( " " );
         }
 

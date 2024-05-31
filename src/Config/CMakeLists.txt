@@ -123,6 +123,7 @@ src
     Switch.h
     Utility.h
     Variant.h
+    Version.h
 )
 
 ADD_FILTER(

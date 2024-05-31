@@ -42,8 +42,9 @@ namespace Mengine
         virtual void setCode( EHttpCode _code ) = 0;
         virtual EHttpCode getCode() const = 0;
 
-        virtual void setError( const String & _error ) = 0;
-        virtual const String & getError() const = 0;
+        virtual void setError( const String & _error, int32_t _code ) = 0;
+        virtual const String & getErrorMessage() const = 0;
+        virtual int32_t getErrorCode() const = 0;
 
         virtual void setSuccessful( bool _successful ) = 0;
         virtual bool isSuccessful() const = 0;

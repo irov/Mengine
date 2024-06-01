@@ -57,7 +57,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "CreateFile '%ls' get error %ls"
                         , tempFileNameBuffer
-                        , Helper::Win32GetLastErrorMessage()
+                        , Helper::Win32GetLastErrorMessageW()
                     );
 
                     return false;
@@ -86,7 +86,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "CreateProcess '%s' return %ls"
                         , _process
-                        , Helper::Win32GetLastErrorMessage()
+                        , Helper::Win32GetLastErrorMessageW()
                     );
 
                     return false;
@@ -129,7 +129,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "CreateFile '%ls' get error %ls"
                         , tempFileNameBuffer
-                        , Helper::Win32GetLastErrorMessage()
+                        , Helper::Win32GetLastErrorMessageW()
                     );
 
                     return false;
@@ -186,7 +186,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "invalid CreateProcess '%s' %ls"
                         , _process
-                        , Helper::Win32GetLastErrorMessage()
+                        , Helper::Win32GetLastErrorMessageW()
                     );
 
                     return false;

@@ -117,7 +117,7 @@ namespace Mengine
         
         if( result == FALSE )
         {
-            const WChar * errorMessage = Helper::Win32GetLastErrorMessage();
+            const WChar * errorMessage = Helper::Win32GetLastErrorMessageW();
 
             MENGINE_UNUSED( errorMessage );
             printf( "errorMessage: %ls"

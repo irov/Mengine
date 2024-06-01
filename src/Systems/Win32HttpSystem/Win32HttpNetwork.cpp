@@ -4,9 +4,11 @@
 #include "Interface/PlatformServiceInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
+#include "Environment/Windows/Win32Helper.h"
 
 #include "Kernel/ArrayString.h"
 #include "Kernel/HttpLogger.h"
+#include "Kernel/Stringalized.h"
 
 #include "Config/Version.h"
 
@@ -76,12 +78,26 @@ namespace Mengine
                 const Data::value_type * data_buffer = _data.data();
                 Data::size_type data_size = _data.size();
 
+                ArrayString<1024> header;
+                header.append( "Content-Length: " );
+
+                Char strContentLength[32] = {'\0'};
+                Helper::stringalized( data_size, strContentLength, 32 );
+
+                header.append( strContentLength );
+
+                const Char * header_str = header.c_str();
+                ArrayString<1024>::size_type header_size = header.size();
+
                 INTERNET_BUFFERSA buffersIn;
-                ::ZeroMemory( &buffersIn, sizeof( INTERNET_BUFFERS ) );
-                buffersIn.dwStructSize = sizeof( INTERNET_BUFFERS );
+                ::ZeroMemory( &buffersIn, sizeof( INTERNET_BUFFERSA ) );
+                buffersIn.dwStructSize = sizeof( INTERNET_BUFFERSA );
+
+                buffersIn.lpcszHeader = (LPCSTR)header_str;
+                buffersIn.dwHeadersLength = header_size;
+
                 buffersIn.lpvBuffer = (LPVOID)data_buffer;
                 buffersIn.dwBufferLength = data_size;
-                buffersIn.dwBufferTotal = data_size;
 
                 if( ::HttpSendRequestExA( _hRequest, &buffersIn, NULL, 0, 0 ) == FALSE )
                 {
@@ -150,8 +166,8 @@ namespace Mengine
                 ArrayString<8096>::size_type body_size = body.size();
 
                 INTERNET_BUFFERSA buffersIn;
-                ::ZeroMemory( &buffersIn, sizeof( INTERNET_BUFFERS ) );
-                buffersIn.dwStructSize = sizeof( INTERNET_BUFFERS );
+                ::ZeroMemory( &buffersIn, sizeof( INTERNET_BUFFERSA ) );
+                buffersIn.dwStructSize = sizeof( INTERNET_BUFFERSA );
                 buffersIn.lpvBuffer = (LPVOID)body_str;
                 buffersIn.dwBufferLength = body_size;
                 buffersIn.dwBufferTotal = body_size;
@@ -169,28 +185,37 @@ namespace Mengine
                 DWORD lastError = ::GetLastError();
                 MENGINE_UNUSED( lastError );
 
-                DWORD errorCode = 0;
-                Char errorMessage[4096] = {'\0'};
-                DWORD bufferLength = sizeof( errorMessage );
-
-                if( ::InternetGetLastResponseInfoA( &errorCode, errorMessage, &bufferLength ) == FALSE )
+                if( lastError == ERROR_INTERNET_EXTENDED_ERROR )
                 {
-                    DWORD lastError2 = ::GetLastError();
-                    MENGINE_UNUSED( lastError2 );
+                    DWORD errorCode = 0;
+                    Char errorMessage[4096] = {'\0'};
+                    DWORD bufferLength = sizeof( errorMessage );
 
-                    //ToDo
+                    if( ::InternetGetLastResponseInfoA( &errorCode, errorMessage, &bufferLength ) == FALSE )
+                    {
+                        DWORD lastError2 = ::GetLastError();
+                        MENGINE_UNUSED( lastError2 );
+
+                        //ToDo
+                    }
+
+                    _response->setError( errorMessage, errorCode );
+                }
+                else
+                {
+                    Char errorMessage[2048] = {'\0'};
+                    Helper::Win32ReadErrorMessageA( lastError, errorMessage, 2048 );
+                    
+                    _response->setError( errorMessage, lastError );
                 }
 
-                _response->setError( errorMessage, errorCode );
-
-                LOGGER_HTTP_INFO( "http request info: %s [%u] error: %u"
-                    , errorMessage
-                    , errorCode 
-                    , lastError
+                LOGGER_HTTP_INFO( "http request info: %s [%u]"
+                    , _response->getErrorMessage().c_str()
+                    , _response->getErrorCode()
                 );
             }
             //////////////////////////////////////////////////////////////////////////
-            static bool openRequest( const HttpRequestInterface * _request, const HttpResponseInterfacePtr & _response, const Char * _verb, HINTERNET * const _hInternet, HINTERNET * const _hConnect, HINTERNET * const _hRequest )
+            static bool openRequestEx( const HttpRequestInterface * _request, const Char * _verb, HINTERNET * const _hInternet, HINTERNET * const _hConnect, HINTERNET * const _hRequest )
             {
                 const String & HTTP_URL = _request->getURL();
                 int32_t HTTP_TIMEOUT = _request->getTimeout();
@@ -221,8 +246,6 @@ namespace Mengine
 
                 if( hInternet == NULL )
                 {
-                    Detail::errorRequest( _response );
-
                     return false;
                 }
 
@@ -252,10 +275,6 @@ namespace Mengine
 
                 if( ::InternetCrackUrlA( HTTP_URL.c_str(), HTTP_URL.size(), 0, &urlComponents ) == FALSE )
                 {
-                    Detail::errorRequest( _response );
-
-                    ::InternetCloseHandle( hInternet );
-
                     return false;
                 }
 
@@ -263,46 +282,45 @@ namespace Mengine
 
                 if( hConnect == NULL )
                 {
-                    Detail::errorRequest( _response );
-
-                    ::InternetCloseHandle( hInternet );
-
                     return false;
                 }
 
-                DWORD dwFlags = urlComponents.nScheme == INTERNET_SCHEME_HTTPS ? INTERNET_FLAG_SECURE : 0;
+                DWORD dwFlags = INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_NO_UI | INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_COOKIES;
+                
+                if( urlComponents.nScheme == INTERNET_SCHEME_HTTPS )
+                {
+                    dwFlags |= INTERNET_FLAG_SECURE;
+                }
 
                 HINTERNET hRequest = ::HttpOpenRequestA( hConnect, _verb, urlComponents.lpszUrlPath, "HTTP/1.1", NULL, NULL, dwFlags, 0 );
 
                 if( hRequest == NULL )
                 {
-                    Detail::errorRequest( _response );
+                    return false;
+                }
 
-                    ::InternetCloseHandle( hConnect );
-                    ::InternetCloseHandle( hInternet );
+                DWORD securityFlags = 0;
+                DWORD securityFlagsLen = sizeof( securityFlags );
+                if( ::InternetQueryOptionA( hRequest, INTERNET_OPTION_SECURITY_FLAGS, (void *)&securityFlags, &securityFlagsLen ) == FALSE )
+                {
+                    return false;
+                }
 
+                securityFlags |= SECURITY_FLAG_IGNORE_REVOCATION;
+                securityFlags |= SECURITY_FLAG_IGNORE_UNKNOWN_CA;
+
+                if( ::InternetSetOptionA( hRequest, INTERNET_OPTION_SECURITY_FLAGS, &securityFlags, sizeof( securityFlags ) ) == FALSE )
+                {
                     return false;
                 }
 
                 if( Detail::setTimeout( hRequest, HTTP_TIMEOUT ) == false )
                 {
-                    Detail::errorRequest( _response );
-
-                    ::InternetCloseHandle( hRequest );
-                    ::InternetCloseHandle( hConnect );
-                    ::InternetCloseHandle( hInternet );
-
                     return false;
                 }
 
                 if( Detail::setHeaders( hRequest, HTTP_HEADERS ) == false )
                 {
-                    Detail::errorRequest( _response );
-
-                    ::InternetCloseHandle( hRequest );
-                    ::InternetCloseHandle( hConnect );
-                    ::InternetCloseHandle( hInternet );
-
                     return false;
                 }
 
@@ -311,6 +329,33 @@ namespace Mengine
                 *_hRequest = hRequest;
 
                 return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static bool openRequest( const HttpRequestInterface * _request, const HttpResponseInterfacePtr & _response, const Char * _verb, HINTERNET * const _hInternet, HINTERNET * const _hConnect, HINTERNET * const _hRequest )
+            {
+                if( Detail::openRequestEx( _request, _verb, _hInternet, _hConnect, _hRequest ) == true )
+                {
+                    return true;
+                }
+
+                Detail::errorRequest( _response );
+
+                if( *_hRequest != NULL )
+                {
+                    ::InternetCloseHandle( *_hRequest );
+                }
+
+                if( *_hConnect != NULL )
+                {
+                    ::InternetCloseHandle( *_hConnect );
+                }
+
+                if( *_hInternet != NULL )
+                {
+                    ::InternetCloseHandle( *_hInternet );
+                }
+
+                return false;
             }
             //////////////////////////////////////////////////////////////////////////
             static bool getResponseStatusCode( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
@@ -331,9 +376,22 @@ namespace Mengine
             {
                 for( ;; )
                 {
+                    DWORD bytesAvailable = 0;
+                    if( ::InternetQueryDataAvailable( _hRequest, &bytesAvailable, 0, 0 ) == FALSE )
+                    {
+                        return false;
+                    }
+
+                    if( bytesAvailable == 0 )
+                    {
+                        break;
+                    }
+
+                    DWORD bytesRequest = bytesAvailable > 4096 ? 4096 : bytesAvailable;
+
                     Char buffer[4096] = {'\0'};
                     DWORD bytesRead = 0;
-                    if( ::InternetReadFile( _hRequest, buffer, sizeof( buffer ), &bytesRead ) == FALSE )
+                    if( ::InternetReadFile( _hRequest, buffer, bytesRequest, &bytesRead ) == FALSE )
                     {
                         return false;
                     }
@@ -351,7 +409,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             static bool makeResponse( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
             {
-                if( ::HttpSendRequestExA( _hRequest, NULL, 0, NULL, 0 ) == FALSE )
+                if( ::HttpSendRequestExA( _hRequest, NULL, NULL, 0, 0 ) == FALSE )
                 {
                     return false;
                 }
@@ -361,12 +419,12 @@ namespace Mengine
                     return false;
                 }
 
-                if( Detail::getResponseStatusCode( _hRequest, _response ) == false )
+                if( Detail::getResponseData( _hRequest, _response ) == false )
                 {
                     return false;
                 }
 
-                if( Detail::getResponseData( _hRequest, _response ) == false )
+                if( Detail::getResponseStatusCode( _hRequest, _response ) == false )
                 {
                     return false;
                 }

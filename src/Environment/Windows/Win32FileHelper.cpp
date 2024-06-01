@@ -31,7 +31,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "invalid create file '%ls' %ls"
                     , pathCorrect
-                    , Helper::Win32GetLastErrorMessage()
+                    , Helper::Win32GetLastErrorMessageW()
                 );
 
                 return INVALID_HANDLE_VALUE;
@@ -58,7 +58,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "file invalid find ??? (%ls) get error %ls"
                     , _path
-                    , Helper::Win32GetLastErrorMessage()
+                    , Helper::Win32GetLastErrorMessageW()
                 );
 
                 return false;

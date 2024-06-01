@@ -63,7 +63,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid file '%ls' size get error %ls"
                 , fullPath
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             this->close();
@@ -114,7 +114,7 @@ namespace Mengine
                     , fullPath
                     , m_offset
                     , m_size
-                    , Helper::Win32GetLastErrorMessage()
+                    , Helper::Win32GetLastErrorMessageW()
                 );
 
                 this->close();
@@ -150,7 +150,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid close file '%s' handle get error %ls"
                 , Helper::getDebugFullPath( this )
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
         }
 
@@ -292,7 +292,7 @@ namespace Mengine
                 , _offset
                 , _size
                 , m_size
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -348,7 +348,7 @@ namespace Mengine
                     , Helper::getDebugFullPath( this )
                     , _pos
                     , m_size
-                    , Helper::Win32GetLastErrorMessage()
+                    , Helper::Win32GetLastErrorMessageW()
                 );
 
                 return false;
@@ -412,7 +412,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid get file '%s' time get error %ls"
                 , Helper::getDebugFullPath( this )
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;

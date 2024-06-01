@@ -195,7 +195,7 @@ namespace Mengine
             LOGGER_ERROR( "seek %zu:%zu get %ls"
                 , pos
                 , m_size
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -210,7 +210,7 @@ namespace Mengine
                 , _offset
                 , _size
                 , m_size
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -303,7 +303,7 @@ namespace Mengine
         if( ::GetFileTime( hFile, &creation, &access, &write ) == FALSE )
         {
             LOGGER_ERROR( "invalid GetFileTime get error %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;

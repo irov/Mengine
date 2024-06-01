@@ -63,7 +63,7 @@ namespace Mengine
         {
             LOGGER_ASSERTION( "unicode '%ls' WideCharToMultiByte [CP_UTF8] 0 get error %ls"
                 , _unicode
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -124,7 +124,7 @@ namespace Mengine
         {
             LOGGER_ASSERTION( "utf8 '%s' MultiByteToWideChar [CP_UTF8] get error %ls"
                 , _utf8
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;

@@ -78,7 +78,7 @@ namespace Mengine
         m_mutex = mutex;
 
         HttpRequestHeaders applicationJSONHeaders;
-        applicationJSONHeaders.push_back( "Content-Type:application/json" );
+        applicationJSONHeaders.push_back( "Content-Type: application/json" );
 
         m_applicationJSONHeaders = applicationJSONHeaders;
 

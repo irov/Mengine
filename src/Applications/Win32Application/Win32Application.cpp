@@ -90,7 +90,7 @@ namespace Mengine
         {
             LOGGER_ASSERTION( "invalid CommandLineToArgvW [%ls] get error %ls"
                 , lpCmdLine
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -115,7 +115,7 @@ namespace Mengine
             {
                 LOGGER_ASSERTION( "unicode '%ls' WideCharToMultiByte [CP_UTF8] get error %ls"
                     , arg
-                    , Helper::Win32GetLastErrorMessage()
+                    , Helper::Win32GetLastErrorMessageW()
                 );
 
                 return false;

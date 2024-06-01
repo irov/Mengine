@@ -33,7 +33,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid load module '%s' error: %ls"
                 , MENGINE_RENDERDOC_DLLNAME
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -46,7 +46,7 @@ namespace Mengine
             LOGGER_ERROR( "invalid module '%s' get API '%s' error: %ls"
                 , MENGINE_RENDERDOC_DLLNAME
                 , "RENDERDOC_GetAPI"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;

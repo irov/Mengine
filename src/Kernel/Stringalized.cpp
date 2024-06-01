@@ -105,6 +105,20 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_STRINGALIZED_SIZE_T)
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const Char * _string, size_t * const _value )
+        {
+            if( MENGINE_SSCANF( _string, "%zu", _value ) != 1 )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+#endif
+        //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, float * const _value )
         {
             if( MENGINE_SSCANF( _string, "%f", _value ) != 1 )
@@ -378,6 +392,20 @@ namespace Mengine
 
             return true;
         }
+        //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_STRINGALIZED_SIZE_T)
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( size_t _value, Char * const _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%zu", _value ) > (int32_t)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+#endif
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( float _value, Char * const _string, size_t _capacity )
         {

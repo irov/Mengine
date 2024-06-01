@@ -147,7 +147,7 @@ namespace Mengine
                 , _size
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return 0;
@@ -172,7 +172,7 @@ namespace Mengine
             LOGGER_ERROR( "invalid FlushFileBuffers filePath '%s:%s' get error %ls"
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;

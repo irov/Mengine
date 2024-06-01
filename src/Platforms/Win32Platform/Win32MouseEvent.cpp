@@ -102,7 +102,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "SetTimer [%u] get error %ls"
                 , uElapse
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return;

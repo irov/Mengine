@@ -374,7 +374,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "SetDllDirectoryW [%ls] invalid %ls"
                     , currentPathW
-                    , Helper::Win32GetLastErrorMessage()
+                    , Helper::Win32GetLastErrorMessageW()
                 );
 
                 return false;
@@ -445,7 +445,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "invalid hwnd [%p] unregister session notification %ls"
                         , m_hWnd
-                        , Helper::Win32GetLastErrorMessage()
+                        , Helper::Win32GetLastErrorMessageW()
                     );
                 }
             }
@@ -467,7 +467,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "invalid UnregisterClass [%ls] get error: %ls"
                     , m_windowClassName.c_str()
-                    , Helper::Win32GetLastErrorMessage()
+                    , Helper::Win32GetLastErrorMessageW()
                 );
             }
 
@@ -887,7 +887,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid load HWND icon '%ls' %ls"
                 , _iconResource
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -1041,7 +1041,7 @@ namespace Mengine
         if( ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 ) == FALSE )
         {
             LOGGER_ERROR( "invalid get system parameters info %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -1055,7 +1055,7 @@ namespace Mengine
         if( ::AdjustWindowRectEx( &clientArea, dwStyle, FALSE, dwExStyle ) == FALSE )
         {
             LOGGER_ERROR( "invalid adjust window rect %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -1502,7 +1502,7 @@ namespace Mengine
                         if( m_cursor == NULL )
                         {
                             LOGGER_ERROR( "LoadCursor [IDC_ARROW] get error %ls"
-                                , Helper::Win32GetLastErrorMessage()
+                                , Helper::Win32GetLastErrorMessageW()
                             );
 
                             return 0;
@@ -1720,7 +1720,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "invalid hwnd [%p] get client rect %ls"
                         , m_hWnd
-                        , Helper::Win32GetLastErrorMessage()
+                        , Helper::Win32GetLastErrorMessageW()
                     );
 
                     return false;
@@ -2247,7 +2247,7 @@ namespace Mengine
         if( result == 0 )
         {
             LOGGER_ERROR( "can't register window class %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -2272,7 +2272,7 @@ namespace Mengine
         if( hWnd == NULL )
         {
             LOGGER_ERROR( "can't create window %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -2313,7 +2313,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid hwnd [%p] register session notification %ls"
                 , m_hWnd
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             m_sessionNotification = false;
@@ -2504,7 +2504,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "icon file '%ls' %ls"
                 , unicode_icoFile_str
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return NULL;
@@ -2608,7 +2608,7 @@ namespace Mengine
         if( ::SetRect( &rc, 0, 0, (int32_t)resolutionWidth, (int32_t)resolutionHeight ) == FALSE )
         {
             LOGGER_ERROR( "invalid set rect %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -2637,7 +2637,7 @@ namespace Mengine
                 if( ::AdjustWindowRectEx( &rc, dwStyle, FALSE, dwStyleEx ) == FALSE )
                 {
                     LOGGER_ERROR( "invalid adjust window rect %ls"
-                        , Helper::Win32GetLastErrorMessage()
+                        , Helper::Win32GetLastErrorMessageW()
                     );
 
                     return false;
@@ -2647,7 +2647,7 @@ namespace Mengine
                 if( ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 ) == FALSE )
                 {
                     LOGGER_ERROR( "invalid system parameters info %ls"
-                        , Helper::Win32GetLastErrorMessage()
+                        , Helper::Win32GetLastErrorMessageW()
                     );
 
                     return false;
@@ -2693,7 +2693,7 @@ namespace Mengine
         if( ::GetCursorPos( &point ) == FALSE )
         {
             LOGGER_ERROR( "invalid get cursor pos %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -2713,7 +2713,7 @@ namespace Mengine
                 , m_hWnd
                 , _point.x
                 , _point.y
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -2734,7 +2734,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid hwnd [%p] get client rect %ls"
                 , m_hWnd
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -2940,7 +2940,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "directory '%ls' unknown %ls"
                             , pathCreateDirectory
-                            , Helper::Win32GetLastErrorMessage()
+                            , Helper::Win32GetLastErrorMessageW()
                         );
 
                         return false;
@@ -3016,7 +3016,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid DeleteFile '%ls' %ls"
                 , pathCorrect
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -3082,7 +3082,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "invalid move file '%ls' %ls"
                     , newFilePathCorrect
-                    , Helper::Win32GetLastErrorMessage()
+                    , Helper::Win32GetLastErrorMessageW()
                 );
             }
         }
@@ -3092,7 +3092,7 @@ namespace Mengine
             LOGGER_ERROR( "file '%ls' move to '%ls' %ls"
                 , oldFilePathCorrect
                 , newFilePathCorrect
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -3161,7 +3161,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "get file time '%ls' invalid CreateFile %ls"
                 , unicode_filePath
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return 0U;
@@ -3179,7 +3179,7 @@ namespace Mengine
 
             LOGGER_ERROR( "get file time '%ls' invalid GetFileTime %ls"
                 , unicode_filePath
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return 0U;
@@ -3229,7 +3229,7 @@ namespace Mengine
                 , pathCorrect
                 , fileCorrect
                 , szPath
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -3324,7 +3324,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "SystemParametersInfo [%ls] get error %ls"
                 , szPath
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -3488,7 +3488,7 @@ namespace Mengine
         if( cxscreen == 0 )
         {
             LOGGER_ERROR( "GetSystemMetrics SM_CXSCREEN invalid %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -3499,7 +3499,7 @@ namespace Mengine
         if( cyscreen == 0 )
         {
             LOGGER_ERROR( "GetSystemMetrics SM_CYSCREEN invalid %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -3541,7 +3541,7 @@ namespace Mengine
         if( len == 0 )
         {
             LOGGER_ERROR( "GetCurrentDirectory invalid %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             _currentPath[0] = '\0';
@@ -3623,7 +3623,7 @@ namespace Mengine
         if( hr != S_OK )
         {
             LOGGER_ERROR( "SHGetSpecialFolderLocation invalid error: %ls [%ld] "
-                , Helper::Win32GetErrorMessage( hr )
+                , Helper::Win32GetErrorMessageW( hr )
                 , hr
             );
 
@@ -3636,7 +3636,7 @@ namespace Mengine
         if( result == FALSE )
         {
             LOGGER_ERROR( "SHGetPathFromIDListW invalid get error: %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return 0;
@@ -3720,7 +3720,7 @@ namespace Mengine
         if( ::GetUserName( unicode_userName, &unicode_userNameLen ) == FALSE )
         {
             LOGGER_ERROR( "GetUserName invalid %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return 0;
@@ -3839,7 +3839,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid hwnd [%p] ShowWindow %ls"
                 , m_hWnd
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
         }
     }
@@ -3948,7 +3948,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ShellExecuteEx [%ls] get error %ls"
                 , unicode_url
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -4060,7 +4060,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "failed GlobalAlloc [%zu] %ls"
                 , len_alloc
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -4071,7 +4071,7 @@ namespace Mengine
         if( memGlb == NULL )
         {
             LOGGER_ERROR( "failed GlobalLock %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -4345,7 +4345,7 @@ namespace Mengine
         if( winDirLen == 0 )
         {
             LOGGER_ERROR( "failed GetWindowsDirectory get error %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;

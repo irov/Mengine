@@ -18,7 +18,7 @@ namespace Mengine
         virtual HttpRequestInterfacePtr createHttpRequestGetMessage( const DocumentInterfacePtr & _doc ) = 0;
         virtual HttpRequestInterfacePtr createHttpRequestPostMessage( const HttpRequestPostProperties & _params, const DocumentInterfacePtr & _doc ) = 0;
         virtual HttpRequestInterfacePtr createHttpRequestHeaderData( const Data & _data, const DocumentInterfacePtr & _doc ) = 0;
-        virtual HttpRequestInterfacePtr createHttpRequestDownloadAsset( const String & _login, const String & _password, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) = 0;
+        virtual HttpRequestInterfacePtr createHttpRequestGetAsset( const String & _login, const String & _password, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) = 0;
         virtual HttpRequestInterfacePtr createHttpRequestDeleteMessage( const DocumentInterfacePtr & _doc ) = 0;
     };
 }

@@ -17,9 +17,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AndroidHttpRequest::AndroidHttpRequest()
-        : m_id( 0 )
-        , m_timeout( MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY )
-        , m_receiveHeaders( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -146,7 +143,7 @@ namespace Mengine
             if( HTTP_ERROR_MESSAGE != nullptr )
             {
                 String error_message = Helper::AndroidMakeStringFromJString( jenv, HTTP_ERROR_MESSAGE );
-                m_response->setError( error_message );
+                m_response->setError( error_message, 0 );
             }
         }
 

@@ -51,7 +51,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( content );
 
         uint32_t id = HTTP_SERVICE()
-            ->downloadAsset( _url, _login, _password, content, _timeout, receiver, MENGINE_DOCUMENT_PYBIND );
+            ->getAsset( _url, _login, _password, content, _timeout, receiver, MENGINE_DOCUMENT_PYBIND );
 
         return id;
     }

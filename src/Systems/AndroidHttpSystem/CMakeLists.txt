@@ -4,9 +4,6 @@ ADD_FILTER(
 src
     AndroidHttpSystem.cpp
     AndroidHttpSystem.h
-    
-    AndroidHttpResponse.cpp
-    AndroidHttpResponse.h
 
     AndroidHttpRequest.cpp
     AndroidHttpRequest.h

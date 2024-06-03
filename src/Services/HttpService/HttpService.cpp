@@ -378,7 +378,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::downloadAsset( const String & _url, const String & _login, const String & _password, const ContentInterfacePtr & _content, int32_t _timeout, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::getAsset( const String & _url, const String & _login, const String & _password, const ContentInterfacePtr & _content, int32_t _timeout, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -397,14 +397,10 @@ namespace Mengine
             return MENGINE_HTTP_REQUEST_INVALID;
         }
 
-        const FilePath & filePath = _content->getFilePath();
-
-        FilePath filePathTmp = Helper::stringizeFilePathFormat( "%s.~tmp", filePath.c_str() );
-
         UniqueId task_id = Helper::generateUniqueIdentity();
 
         HttpRequestInterfacePtr request = HTTP_SYSTEM()
-            ->createHttpRequestDownloadAsset( _login, _password, _content, _doc );
+            ->createHttpRequestGetAsset( _login, _password, _content, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( request );
 

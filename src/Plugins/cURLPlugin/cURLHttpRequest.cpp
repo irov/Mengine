@@ -245,7 +245,7 @@ namespace Mengine
         {
             if( status != CURLE_OK )
             {
-                m_response->setError( errorbuf );
+                m_response->setError( errorbuf, 0 );
             }
 
             long http_code = 0;

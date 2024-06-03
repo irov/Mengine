@@ -22,7 +22,7 @@ namespace Mengine
         HttpRequestInterfacePtr createHttpRequestGetMessage( const DocumentInterfacePtr & _doc ) override;
         HttpRequestInterfacePtr createHttpRequestPostMessage( const HttpRequestPostProperties & _params, const DocumentInterfacePtr & _doc ) override;
         HttpRequestInterfacePtr createHttpRequestHeaderData( const Data & _data, const DocumentInterfacePtr & _doc ) override;
-        HttpRequestInterfacePtr createHttpRequestDownloadAsset( const String & _login, const String & _password, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) override;
+        HttpRequestInterfacePtr createHttpRequestGetAsset( const String & _login, const String & _password, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) override;
         HttpRequestInterfacePtr createHttpRequestDeleteMessage( const DocumentInterfacePtr & _doc ) override;
 
     protected:
@@ -30,6 +30,6 @@ namespace Mengine
         FactoryInterfacePtr m_factoryTaskPostMessage;
         FactoryInterfacePtr m_factoryTaskDeleteMessage;
         FactoryInterfacePtr m_factoryTaskHeaderData;
-        FactoryInterfacePtr m_factoryTaskDownloadAsset;
+        FactoryInterfacePtr m_factoryTaskGetAsset;
     };
 }

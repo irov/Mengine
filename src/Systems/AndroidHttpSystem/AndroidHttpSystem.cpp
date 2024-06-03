@@ -29,20 +29,20 @@ namespace Mengine
         m_factoryTaskPostMessage = Helper::makeFactoryPool<AndroidHttpRequestPostMessage, 16>(MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskDeleteMessage = Helper::makeFactoryPool<AndroidHttpRequestDeleteMessage, 16>(MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskHeaderData = Helper::makeFactoryPool<AndroidHttpRequestHeaderData, 16>(MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskDownloadAsset = Helper::makeFactoryPool<AndroidHttpRequestGetAsset, 16>(MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskGetAsset = Helper::makeFactoryPool<AndroidHttpRequestGetAsset, 16>(MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidHttpSystem::_finalizeService()
     {
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDownloadAsset );
+        MENGINE_ASSERTION_FACTORY_EMPTY(m_factoryTaskGetAsset );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDeleteMessage );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskHeaderData );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetMessage );
 
-        m_factoryTaskDownloadAsset = nullptr;
+        m_factoryTaskGetAsset = nullptr;
         m_factoryTaskPostMessage = nullptr;
         m_factoryTaskDeleteMessage = nullptr;
         m_factoryTaskHeaderData = nullptr;
@@ -74,9 +74,9 @@ namespace Mengine
         return task;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestInterfacePtr AndroidHttpSystem::createHttpRequestDownloadAsset( const String & _login, const String & _password, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
+    HttpRequestInterfacePtr AndroidHttpSystem::createHttpRequestGetAsset( const String & _login, const String & _password, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
-        AndroidHttpRequestGetAssetPtr task = m_factoryTaskDownloadAsset->createObject(_doc );
+        AndroidHttpRequestGetAssetPtr task = m_factoryTaskGetAsset->createObject(_doc );
 
         task->setLogin( _login );
         task->setPassword( _password );

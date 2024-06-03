@@ -1,5 +1,7 @@
 #include "Win32HttpSystem.h"
 
+#include "Interface/PlatformServiceInterface.h"
+
 #include "Win32HttpRequestGetMessage.h"
 #include "Win32HttpRequestPostMessage.h"
 #include "Win32HttpRequestHeaderData.h"
@@ -9,6 +11,9 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/HttpLogger.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/ArrayString.h"
+
+#include "Config/Version.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( HttpSystem, Mengine::Win32HttpSystem );
@@ -17,6 +22,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32HttpSystem::Win32HttpSystem()
+        : m_hInternet( NULL )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -26,6 +32,36 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32HttpSystem::_initializeService()
     {
+        ArrayString<1024> agent;
+        agent.append( "Mengine" );
+        agent.append( "/" );
+        agent.append( MENGINE_VERSION_STRING );
+        agent.append( " (" );
+
+        Char osFamily[MENGINE_PLATFORM_OS_FAMILY_MAXNAME] = {'\0'};
+        PLATFORM_SERVICE()
+            ->getOsFamily( osFamily );
+
+        agent.append( osFamily );
+
+        Char osVersion[MENGINE_PLATFORM_OS_VERSION_MAXNAME] = {'\0'};
+        PLATFORM_SERVICE()
+            ->getOsVersion( osVersion );
+
+        agent.append( " " );
+        agent.append( osVersion );
+
+        agent.append( ")" );
+
+        HINTERNET hInternet = ::InternetOpenA( agent.c_str(), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
+
+        if( hInternet == NULL )
+        {
+            return false;
+        }
+
+        m_hInternet = hInternet;
+
         m_factoryTaskGetMessage = Helper::makeFactoryPool<Win32HttpRequestGetMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskPostMessage = Helper::makeFactoryPool<Win32HttpRequestPostMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskDeleteMessage = Helper::makeFactoryPool<Win32HttpRequestDeleteMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
@@ -37,6 +73,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32HttpSystem::_finalizeService()
     {
+        ::InternetCloseHandle( m_hInternet );
+        m_hInternet = NULL;
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetAsset );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDeleteMessage );
@@ -54,6 +93,8 @@ namespace Mengine
     {
         Win32HttpRequestGetMessagePtr task = m_factoryTaskGetMessage->createObject( _doc );
 
+        task->setHInternet( m_hInternet );
+
         return task;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -61,6 +102,7 @@ namespace Mengine
     {
         Win32HttpRequestPostMessagePtr task = m_factoryTaskPostMessage->createObject( _doc );
 
+        task->setHInternet( m_hInternet );
         task->setPostProperties( _params );
 
         return task;
@@ -70,6 +112,7 @@ namespace Mengine
     {
         Win32HttpRequestHeaderDataPtr task = m_factoryTaskHeaderData->createObject( _doc );
 
+        task->setHInternet( m_hInternet );
         task->setData( _data );
 
         return task;
@@ -79,6 +122,7 @@ namespace Mengine
     {
         Win32HttpRequestGetAssetPtr task = m_factoryTaskGetAsset->createObject( _doc );
 
+        task->setHInternet( m_hInternet );
         task->setLogin( _login );
         task->setPassword( _password );
         task->setContent( _content );
@@ -89,6 +133,8 @@ namespace Mengine
     HttpRequestInterfacePtr Win32HttpSystem::createHttpRequestDeleteMessage( const DocumentInterfacePtr & _doc )
     {
         Win32HttpRequestDeleteMessagePtr task = m_factoryTaskDeleteMessage->createObject( _doc );
+
+        task->setHInternet( m_hInternet );
 
         return task;
     }

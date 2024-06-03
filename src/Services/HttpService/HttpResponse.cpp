@@ -6,7 +6,7 @@ namespace Mengine
     HttpResponse::HttpResponse()
         : m_requestId( INVALID_UNIQUE_ID )
         , m_errorCode( 0 )
-        , m_code( HTTP_OK )
+        , m_code( HTTP_Unknown )
         , m_successful( false )
     {
     }

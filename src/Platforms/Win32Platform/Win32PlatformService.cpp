@@ -140,6 +140,9 @@ namespace Mengine
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
 #endif
 
+        ::ZeroMemory( &m_osInfo, sizeof( m_osInfo ) );
+        m_osInfo.dwOSVersionInfoSize = sizeof( m_osInfo );
+
         HMODULE hNtdll = ::LoadLibrary( L"ntdll.dll" );
 
         if( hNtdll != NULL )
@@ -149,24 +152,21 @@ namespace Mengine
 
             if( RtlGetVersion != NULL )
             {
-                OSVERSIONINFOEXW osInfo;
-                osInfo.dwOSVersionInfoSize = sizeof( osInfo );
-
-                RtlGetVersion( &osInfo );
+                (*RtlGetVersion)( &m_osInfo );
 
                 LOGGER_INFO( "platform", "windows version: %lu.%lu (build %lu)"
-                    , osInfo.dwMajorVersion
-                    , osInfo.dwMinorVersion
-                    , osInfo.dwBuildNumber
+                    , m_osInfo.dwMajorVersion
+                    , m_osInfo.dwMinorVersion
+                    , m_osInfo.dwBuildNumber
                 );
 
                 LOGGER_INFO( "platform", "windows platform: %lu"
-                    , osInfo.dwPlatformId
+                    , m_osInfo.dwPlatformId
                 );
 
                 LOGGER_INFO( "platform", "windows service pack: %lu.%lu"
-                    , (DWORD)osInfo.wServicePackMajor
-                    , (DWORD)osInfo.wServicePackMinor
+                    , (DWORD)m_osInfo.wServicePackMajor
+                    , (DWORD)m_osInfo.wServicePackMinor
                 );
             }
 
@@ -385,7 +385,7 @@ namespace Mengine
         m_deviceModel = "PC";
         m_osFamily = "Windows";
 
-        const Char * osVersion = Helper::Win32GetVersionName();
+        const Char * osVersion = this->getOsVersionName_();
         m_osVersion = osVersion;
 
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
@@ -731,6 +731,63 @@ namespace Mengine
             ::TranslateMessage( &msg );
             ::DispatchMessage( &msg );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Char * Win32PlatformService::getOsVersionName_() const
+    {
+        switch( m_osInfo.dwMajorVersion )
+        {
+        case 10:
+            {
+                switch( m_osInfo.dwMinorVersion )
+                {
+                case 0:
+                    {
+                        if( m_osInfo.wProductType == VER_NT_WORKSTATION )
+                        {
+                            if( m_osInfo.dwBuildNumber >= 22000 )
+                            {
+                                return "11";
+                            }
+                            else
+                            {
+                                return "10";
+                            }
+                        }
+                        else
+                        {
+                            return "Server 2016";
+                        }
+                    }break;
+                }
+            }break;
+        case 6:
+            {
+                switch( m_osInfo.dwMinorVersion )
+                {
+                case 3:
+                    return "8.1";
+                case 2:
+                    return "8";
+                case 1:
+                    return "7";
+                case 0:
+                    return "Vista";
+                }
+            }break;
+        case 5:
+            {
+                switch( m_osInfo.dwMinorVersion )
+                {
+                case 2:
+                    return "XP64";
+                case 1:
+                    return "XP";
+                }
+            }break;
+        }
+
+        return "Unknown";
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
@@ -2356,6 +2413,11 @@ namespace Mengine
     HWND Win32PlatformService::getWindowHandle() const
     {
         return m_hWnd;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32PlatformService::getOsInfo( OSVERSIONINFOEXW * const _osInfo ) const
+    {
+        ::CopyMemory( _osInfo, &m_osInfo, sizeof( m_osInfo ) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )

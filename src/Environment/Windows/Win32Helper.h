@@ -17,7 +17,6 @@ namespace Mengine
         const Char * Win32GetLastErrorMessageA();
         const WChar * Win32GetLastErrorMessageW();
         void Win32Toast( const WChar * _message );
-        const Char * Win32GetVersionName();
         //////////////////////////////////////////////////////////////////////////
     }
 }

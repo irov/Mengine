@@ -3,6 +3,8 @@
 #include "Interface/HttpSystemInterface.h"
 #include "Interface/FactoryInterface.h"
 
+#include "Environment/Windows/WindowsIncluder.h"
+
 #include "Kernel/ServiceBase.h"
 
 namespace Mengine
@@ -26,6 +28,8 @@ namespace Mengine
         HttpRequestInterfacePtr createHttpRequestDeleteMessage( const DocumentInterfacePtr & _doc ) override;
 
     protected:
+        HINTERNET m_hInternet;
+
         FactoryInterfacePtr m_factoryTaskGetMessage;
         FactoryInterfacePtr m_factoryTaskPostMessage;
         FactoryInterfacePtr m_factoryTaskDeleteMessage;

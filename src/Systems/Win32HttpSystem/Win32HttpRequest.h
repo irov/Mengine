@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Environment/Windows/WindowsIncluder.h"
+
 #include "Kernel/BaseHttpRequest.h"
 
 namespace Mengine
@@ -11,6 +13,10 @@ namespace Mengine
     public:
         Win32HttpRequest();
         ~Win32HttpRequest() override;
+
+    public:
+        void setHInternet( HINTERNET _hInternet );
+        HINTERNET getHInternet() const;
 
     protected:
         void _onThreadTaskPreparation() override;
@@ -25,6 +31,8 @@ namespace Mengine
 
     protected:
         ThreadMutexInterfacePtr m_mutex;
+
+        HINTERNET m_hInternet;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32HttpRequest, HttpRequestInterface> Win32HttpRequestPtr;

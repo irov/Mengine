@@ -52,7 +52,7 @@ namespace Mengine
         return m_provider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFacebookService::login( bool _limited, const VectorConstString & _permissions )
+    bool AppleFacebookService::login( const VectorConstString & _permissions )
     {        
         UIViewController * rootViewController = Helper::iOSGetRootViewController();
         
@@ -61,7 +61,7 @@ namespace Mengine
         NSString * sessionId = [iOSApplication.sharedInstance getSessionId];
         
         FBSDKLoginConfiguration * configuration = [[FBSDKLoginConfiguration alloc] initWithPermissions:permissions_ns
-                                                                                              tracking:(_limited == true ? FBSDKLoginTrackingLimited : FBSDKLoginTrackingEnabled)
+                                                                                              tracking:FBSDKLoginTrackingLimited
                                                                                                  nonce:sessionId];
         
         [m_loginManager logInFromViewController:rootViewController configuration:configuration completion:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
@@ -69,7 +69,7 @@ namespace Mengine
             
             if( error != nullptr )
             {
-                LOGGER_ERROR( "[AppleFacebook] login error: '%s'"
+                LOGGER_ERROR( "login error: '%s'"
                    , Helper::AppleGetMessageFromNSError(error).c_str()
                 );
                 
@@ -85,7 +85,7 @@ namespace Mengine
             
             if( result.isCancelled == YES )
             {
-                LOGGER_ERROR( "[AppleFacebook] login cancel" );
+                LOGGER_ERROR( "login cancel" );
                 
                 if( copy_provider != nullptr )
                 {
@@ -97,7 +97,7 @@ namespace Mengine
                 return;
             }
             
-            LOGGER_MESSAGE( "[AppleFacebook] login successful" );
+            LOGGER_MESSAGE( "login successful" );
                 
             if( copy_provider != nullptr )
             {
@@ -135,17 +135,7 @@ namespace Mengine
                         
                         params.emplace( STRINGIZE_STRING_LOCAL("authentication.token"), authenticationTokenString_str );
                     }
-                    
-                    FBSDKAccessToken * accessToken = [FBSDKAccessToken currentAccessToken];
-                    
-                    if( accessToken != nil )
-                    {
-                        NSString * accessTokenString = accessToken.tokenString;
-                        const Char * accessTokenString_str = [accessTokenString UTF8String];
-                        
-                        params.emplace( STRINGIZE_STRING_LOCAL("access.token"), accessTokenString_str );
-                    }
-                                         
+                                                             
                     copy_provider->onFacebookLoginSuccess( params );
                 });
             }
@@ -162,19 +152,7 @@ namespace Mengine
         [FBSDKProfile setCurrentProfile:nil];
     }
     /////////////////////////////////////////////////////////////////////////////
-    bool AppleFacebookService::isAccessSuccess() const
-    {
-        FBSDKAccessToken * accessToken = [FBSDKAccessToken currentAccessToken];
-        
-        if( accessToken == nil )
-        {
-            return false;
-        }
-        
-        return true;
-    }
-    /////////////////////////////////////////////////////////////////////////////
-    bool AppleFacebookService::isAuthenticationSuccess() const
+    bool AppleFacebookService::isLoggedIn() const
     {
         FBSDKAuthenticationToken * authenticationToken = [FBSDKAuthenticationToken currentAuthenticationToken];
         
@@ -187,22 +165,6 @@ namespace Mengine
     }
     /////////////////////////////////////////////////////////////////////////////
     bool AppleFacebookService::getAccessToken( Char * const _token, size_t _capacity ) const
-    {
-        FBSDKAccessToken * accessToken = [FBSDKAccessToken currentAccessToken];
-        
-        if( accessToken == nil )
-        {
-            return false;
-        }
-        
-        const Char * token_str = accessToken.tokenString.UTF8String;
-        
-        MENGINE_STRNCPY( _token, token_str, _capacity );
-        
-        return true;
-    }
-    /////////////////////////////////////////////////////////////////////////////
-    bool AppleFacebookService::getAuthenticationToken( Char * const _token, size_t _capacity ) const
     {
         FBSDKAuthenticationToken * authenticationToken = [FBSDKAuthenticationToken currentAuthenticationToken];
         
@@ -245,7 +207,7 @@ namespace Mengine
         
         if( strlink.length <= 0 && strPicture.length <= 0 )
         {
-            LOGGER_ERROR("Facebook link and picture is empty");
+            LOGGER_ERROR( "Facebook link and picture is empty" );
 
             if( copy_provider != nullptr )
             {
@@ -259,7 +221,7 @@ namespace Mengine
         
         if( m_shareDelegate != nullptr )
         {
-            LOGGER_ERROR("Facebook m_shareDelegate has nullptr -> not called share Dialog");
+            LOGGER_ERROR( "Facebook m_shareDelegate has nullptr -> not called share Dialog" );
 
             if( copy_provider != nullptr )
             {
@@ -291,7 +253,7 @@ namespace Mengine
 
         if( url == nil )
         {
-            LOGGER_ERROR("Facebook picture not convert to NSURL");
+            LOGGER_ERROR( "Facebook picture not convert to NSURL" );
 
             if( copy_provider != nullptr )
             {
@@ -307,7 +269,7 @@ namespace Mengine
 
         if( data == nil )
         {
-            LOGGER_ERROR("Facebook picture not convert to NSData");
+            LOGGER_ERROR( "Facebook picture not convert to NSData" );
 
             if( copy_provider != nullptr )
             {
@@ -323,7 +285,7 @@ namespace Mengine
 
         if( img == nil )
         {
-            LOGGER_ERROR("Facebook picture not convert to UIImage");
+            LOGGER_ERROR( "Facebook picture not convert to UIImage" );
 
             if( copy_provider != nullptr )
             {
@@ -383,11 +345,10 @@ namespace Mengine
             return;
         }
         
-        
         [FBSDKProfile loadCurrentProfileWithCompletion:^(FBSDKProfile * _Nullable _profile, NSError * _Nullable _error) {
             if( _error != nil )
             {
-                LOGGER_ERROR("[AppleFacebook] get picture error: '%s'"
+                LOGGER_ERROR( "get picture error: %s"
                    , Helper::AppleGetMessageFromNSError(_error).c_str()
                 );
                 
@@ -406,6 +367,8 @@ namespace Mengine
             
             if( _profile == nil )
             {
+                LOGGER_ERROR( "profile is nil" );
+                
                 if( copy_provider != nullptr )
                 {
                     Helper::dispatchMainThreadEvent( [copy_provider]() {
@@ -418,6 +381,8 @@ namespace Mengine
             
             if( _profile.imageURL == nil )
             {
+                LOGGER_ERROR( "profile image URL is nil" );
+                
                 if( copy_provider != nullptr )
                 {
                     Helper::dispatchMainThreadEvent( [copy_provider]() {
@@ -430,6 +395,8 @@ namespace Mengine
             
             if( _profile.imageURL.absoluteURL == nil )
             {
+                LOGGER_ERROR( "profile image URL absolute is nil" );
+                
                 if( copy_provider != nullptr )
                 {
                     Helper::dispatchMainThreadEvent( [copy_provider]() {

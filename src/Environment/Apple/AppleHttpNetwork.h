@@ -16,6 +16,7 @@
 @property (nonatomic, assign) int HTTP_CONTENT_LENGTH;
 @property (nonatomic, strong) NSData * HTTP_CONTENT_DATA;
 @property (nonatomic, strong) NSString * HTTP_ERROR_MESSAGE;
+@property (nonatomic, assign) NSInteger HTTP_ERROR_CODE;
 
 @end
 

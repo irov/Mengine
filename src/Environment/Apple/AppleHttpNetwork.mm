@@ -64,8 +64,10 @@
     
     if (error != nil) {
         httpResponse.HTTP_ERROR_MESSAGE = error.domain;
+        httpResponse.HTTP_ERROR_CODE = error.code;
     } else {
         httpResponse.HTTP_ERROR_MESSAGE = nil;
+        httpResponse.HTTP_ERROR_CODE = 0;
     }
     
     if (data != nil) {

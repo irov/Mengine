@@ -88,7 +88,9 @@ namespace Mengine
             if( response.HTTP_ERROR_MESSAGE != nullptr )
             {
                 String error_message = Helper::NSStringToString( response.HTTP_ERROR_MESSAGE );
-                m_response->setError( error_message );
+                int32_t error_code = (int32_t)response.HTTP_ERROR_CODE;
+                
+                m_response->setError( error_message, error_code );
             }
         }
 

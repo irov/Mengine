@@ -30,20 +30,20 @@ namespace Mengine
         m_factoryTaskPostMessage = Helper::makeFactoryPool<AppleHttpRequestPostMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskDeleteMessage = Helper::makeFactoryPool<AppleHttpRequestDeleteMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskHeaderData = Helper::makeFactoryPool<AppleHttpRequestHeaderData, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskDownloadAsset = Helper::makeFactoryPool<AppleHttpRequestGetAsset, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTaskGetAsset = Helper::makeFactoryPool<AppleHttpRequestGetAsset, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleHttpSystem::_finalizeService()
     {
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDownloadAsset );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetAsset );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDeleteMessage );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskHeaderData );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetMessage );
 
-        m_factoryTaskDownloadAsset = nullptr;
+        m_factoryTaskGetAsset = nullptr;
         m_factoryTaskPostMessage = nullptr;
         m_factoryTaskDeleteMessage = nullptr;
         m_factoryTaskHeaderData = nullptr;
@@ -75,9 +75,9 @@ namespace Mengine
         return task;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestInterfacePtr AppleHttpSystem::createHttpRequestDownloadAsset( const String & _login, const String & _password, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
+    HttpRequestInterfacePtr AppleHttpSystem::createHttpRequestGetAsset( const String & _login, const String & _password, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
-        AppleHttpRequestGetAssetPtr task = m_factoryTaskDownloadAsset->createObject( _doc );
+        AppleHttpRequestGetAssetPtr task = m_factoryTaskGetAsset->createObject( _doc );
 
         task->setLogin( _login );
         task->setPassword( _password );

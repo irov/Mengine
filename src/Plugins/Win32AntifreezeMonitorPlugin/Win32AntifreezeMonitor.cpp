@@ -250,7 +250,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _loggerMessage );
 
-        MENGINE_ASSERTION_FATAL( m_refLogger != 0, "invalid logger" );
+        uint32_t refLogger = m_refLogger;
+
+        MENGINE_UNUSED( refLogger );
+
+        MENGINE_ASSERTION_FATAL( m_refLogger != 0, "invalid logger %u", refLogger );
 
         --m_refLogger;
 

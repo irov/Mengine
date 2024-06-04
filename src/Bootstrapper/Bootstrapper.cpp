@@ -263,10 +263,6 @@ PLUGIN_EXPORT( Video );
 PLUGIN_EXPORT( Theora );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_CURL_STATIC)
-PLUGIN_EXPORT( cURL );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_SPINE_STATIC)
 PLUGIN_EXPORT( Spine );
 #endif
@@ -1352,10 +1348,6 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_THEORA_STATIC)
         MENGINE_ADD_PLUGIN( Theora, "plugin Theora...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_CURL_STATIC)
-        MENGINE_ADD_PLUGIN( cURL, "plugin cURL...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_SPINE_STATIC)

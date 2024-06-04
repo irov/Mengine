@@ -12,7 +12,7 @@ set CONFIGURATION=%1
 
 @echo Starting android dependencies build %CONFIGURATION% configuration...
 
-set ANDROID_NDK_VERSION=26.2.11394342
+set ANDROID_NDK_VERSION=26.3.11579264
 set ANDROID_CMAKE_VERSION=3.22.1
 
 set ANDROID_PLATFORM=android-21

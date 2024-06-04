@@ -6,6 +6,8 @@ namespace Mengine
 {
     enum EHttpCode : uint32_t
     {
+		HTTP_Unknown = 0,
+
 		// Informational
 		HTTP_Continue = 100,
 		HTTP_SwitchingProtocols = 101,

@@ -1,12 +1,12 @@
 #import "AppleAppLovinApplicationDelegate.h"
 
-#include "Environment/Apple/AppleBundle.h"
-#include "Environment/Apple/AppleLog.h"
-#include "Environment/Apple/AppleSemaphoreService.h"
+#import "Environment/Apple/AppleBundle.h"
+#import "Environment/Apple/AppleLog.h"
+#import "Environment/Apple/AppleSemaphoreService.h"
 
-#include "Environment/iOS/iOSApplication.h"
-#include "Environment/iOS/iOSDetail.h"
-#include "Environment/iOS/iOSTransparencyConsentParam.h"
+#import "Environment/iOS/iOSApplication.h"
+#import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSTransparencyConsentParam.h"
 
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/ConstStringHelper.h"

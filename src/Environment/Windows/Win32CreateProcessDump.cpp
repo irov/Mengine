@@ -31,7 +31,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "invalid create file for '%ls' %ls"
                     , unicode_processDumpPath
-                    , Helper::Win32GetLastErrorMessage()
+                    , Helper::Win32GetLastErrorMessageW()
                 );
 
                 return false;

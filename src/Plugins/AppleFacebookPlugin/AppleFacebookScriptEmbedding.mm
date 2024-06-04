@@ -126,8 +126,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "appleFacebookLogin", service, &AppleFacebookServiceInterface::login );
         pybind::def_functor( _kernel, "appleFacebookLogout", service, &AppleFacebookServiceInterface::logout );
-        pybind::def_functor( _kernel, "appleFacebookIsAccessSuccess", service, &AppleFacebookServiceInterface::isAccessSuccess );
-        pybind::def_functor( _kernel, "appleFacebookIsAuthenticationSuccess", service, &AppleFacebookServiceInterface::isAuthenticationSuccess );
+        pybind::def_functor( _kernel, "appleFacebookIsLoggedIn", service, &AppleFacebookServiceInterface::isLoggedIn );
         pybind::def_function_kernel( _kernel, "appleFacebookGetAccessToken", &Detail::s_AppleFacebook_getAccessToken );
         pybind::def_function_kernel( _kernel, "appleFacebookGetUserId", &Detail::s_AppleFacebook_getUserId );
         pybind::def_functor( _kernel, "appleFacebookShareLink", service, &AppleFacebookServiceInterface::shareLink );
@@ -140,8 +139,7 @@ namespace Mengine
     {
         _kernel->remove_from_module( "appleFacebookLogin", nullptr );
         _kernel->remove_from_module( "appleFacebookLogout", nullptr );
-        _kernel->remove_from_module( "appleFacebookIsAccessSuccess", nullptr );
-        _kernel->remove_from_module( "appleFacebookIsAuthenticationSuccess", nullptr );
+        _kernel->remove_from_module( "appleFacebookIsLoggedIn", nullptr );
         _kernel->remove_from_module( "appleFacebookGetAccessToken", nullptr );
         _kernel->remove_from_module( "appleFacebookGetUserId", nullptr );
         _kernel->remove_from_module( "appleFacebookShareLink", nullptr );

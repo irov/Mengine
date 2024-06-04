@@ -130,8 +130,6 @@ namespace Mengine
         MENGINE_UNUSED( _mask );
         MENGINE_UNUSED( _lambda );
 
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
         return false;
     }
     //////////////////////////////////////////////////////////////////////////

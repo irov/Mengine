@@ -23,4 +23,5 @@ extern "C"
     jboolean Mengine_JNI_ExistMengineActivity( void );
     jclass Mengine_JNI_GetJClassMengineActivity( void );
     jobject Mengine_JNI_GetJObjectMengineActivity( void );
+    jclass Mengine_JNI_FindClass( JNIEnv * _jenv, const char * _className );
 }

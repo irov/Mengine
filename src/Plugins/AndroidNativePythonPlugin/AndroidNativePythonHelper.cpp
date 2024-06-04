@@ -37,6 +37,8 @@ namespace Mengine
             jclass jclass_MengineFunctorVoid = _jenv->FindClass( "org/Mengine/Base/MengineFunctorVoid" );
             jclass jclass_MengineFunctorBoolean = _jenv->FindClass( "org/Mengine/Base/MengineFunctorBoolean" );
 
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
             if( _obj == nullptr )
             {
                 py_value = _kernel->ret_none();

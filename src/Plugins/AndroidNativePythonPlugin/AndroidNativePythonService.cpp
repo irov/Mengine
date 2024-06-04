@@ -20,7 +20,6 @@
 #include "Environment/Android/AndroidActivityHelper.h"
 #include "Environment/Android/AndroidApplicationHelper.h"
 
-
 #include "AndroidNativePythonHelper.h"
 #include "AndroidNativePythonFunctorVoid.h"
 #include "AndroidNativePythonFunctorBoolean.h"
@@ -711,6 +710,8 @@ namespace Mengine
 
         jclass jclass_MengineSemaphoreListener = jenv->FindClass( "org/Mengine/Base/MengineSemaphoreListener" );
 
+        Helper::AndroidEnvExceptionCheck( jenv );
+
         jmethodID jmethodID_MengineSemaphoreListener_constructor = jenv->GetMethodID( jclass_MengineSemaphoreListener, "<init>", "(Ljava/lang/Object;)V" );
 
         AndroidSemaphoreListenerInterface * listener_ptr = _listener.get();
@@ -718,6 +719,8 @@ namespace Mengine
         jobject jpoint_listener = jenv->NewDirectByteBuffer( listener_ptr, sizeof(listener_ptr) );
 
         jobject jfunctor = jenv->NewObject( jclass_MengineSemaphoreListener, jmethodID_MengineSemaphoreListener_constructor, jpoint_listener );
+
+        Helper::AndroidEnvExceptionCheck( jenv );
 
         Helper::AndroidCallVoidActivityMethod( jenv, "waitSemaphore", "(Ljava/lang/String;Lorg/Mengine/Base/MengineSemaphoreListener;)V", jname, jfunctor );
 
@@ -843,13 +846,7 @@ namespace Mengine
 
                     jstring jelement = _jenv->NewStringUTF( o_str );
 
-                    jmethodID jmethodID_List_add = _jenv->GetMethodID( jclass_ArrayList, "add", "(Ljava/lang/Object;)Z" );
-
-                    MENGINE_ASSERTION_FATAL( jmethodID_List_add != nullptr, "invalid get android method 'java/lang/ArrayList [add] (Ljava/lang/Object;)Z'" );
-
-                    jboolean result = _jenv->CallBooleanMethod( jlist, jmethodID_List_add, jelement );
-
-                    Helper::AndroidEnvExceptionCheck(_jenv);
+                    jboolean result = Helper::AndroidAddJObjectList( _jenv, jlist, jelement );
 
                     _jenv->DeleteLocalRef( jelement );
 

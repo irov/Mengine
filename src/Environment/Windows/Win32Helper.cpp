@@ -85,31 +85,83 @@ namespace Mengine
             return (ThreadId)id;
         }
         //////////////////////////////////////////////////////////////////////////
-        const WChar * Win32GetErrorMessage( uint32_t _messageId )
+        void Win32ReadErrorMessageA( uint32_t _id, Char * const _message, size_t _capacity )
         {
-            static MENGINE_THREAD_LOCAL WChar errorMessageBuffer[2048] = {L'\0'};
-
-            if( ::FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS
+            if( ::FormatMessageA( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS
                 , NULL
-                , (DWORD)_messageId
+                , (DWORD)_id
                 , MAKELANGID( LANG_ENGLISH, SUBLANG_ENGLISH_US )
-                , (LPTSTR)errorMessageBuffer
-                , 2048
+                , (LPSTR)_message
+                , _capacity
                 , NULL ) == 0 )
             {
-                MENGINE_WNSPRINTF( errorMessageBuffer, 2048, L"#Error FormatMessage [%u]#"
-                    , _messageId
+                DWORD lastError = ::GetLastError();
+
+                MENGINE_SNPRINTF( _message, _capacity, "error format message [%u] error: %u"
+                    , _id
+                    , lastError
                 );
             }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Win32ReadErrorMessageW( uint32_t _id, WChar * const _message, size_t _capacity )
+        {
+            if( ::FormatMessageW( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS
+                , NULL
+                , (DWORD)_id
+                , MAKELANGID( LANG_ENGLISH, SUBLANG_ENGLISH_US )
+                , (LPWSTR)_message
+                , _capacity
+                , NULL ) == 0 )
+            {
+                DWORD lastError = ::GetLastError();
+
+                MENGINE_WNSPRINTF( _message, _capacity, L"error format message [%u] error: %u"
+                    , _id
+                    , lastError
+                );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const Char * Win32GetErrorMessageA( uint32_t _id )
+        {
+            static MENGINE_THREAD_LOCAL Char errorMessageBuffer[2048] = {'\0'};
+
+            Helper::Win32ReadErrorMessageA( _id, errorMessageBuffer, 2048 );
 
             return errorMessageBuffer;
         }
         //////////////////////////////////////////////////////////////////////////
-        const WChar * Win32GetLastErrorMessage()
+        const WChar * Win32GetErrorMessageW( uint32_t _id )
+        {
+            static MENGINE_THREAD_LOCAL WChar errorMessageBuffer[2048] = {L'\0'};
+
+            Helper::Win32ReadErrorMessageW( _id, errorMessageBuffer, 2048 );
+
+            return errorMessageBuffer;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const Char * Win32GetLastErrorMessageA()
         {
             DWORD error = ::GetLastError();
 
-            const WChar * errorMessage = Helper::Win32GetErrorMessage( error );
+            const Char * errorMessage = Helper::Win32GetErrorMessageA( error );
+
+            static MENGINE_THREAD_LOCAL Char errorMessageBufferWithErrorCode[2048] = {'\0'};
+
+            MENGINE_SNPRINTF( errorMessageBufferWithErrorCode, 2048, "%s [%lu]"
+                , errorMessage
+                , error
+            );
+
+            return errorMessageBufferWithErrorCode;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const WChar * Win32GetLastErrorMessageW()
+        {
+            DWORD error = ::GetLastError();
+
+            const WChar * errorMessage = Helper::Win32GetErrorMessageW( error );
 
             static MENGINE_THREAD_LOCAL WChar errorMessageBufferWithErrorCode[2048] = {L'\0'};
 
@@ -128,85 +180,6 @@ namespace Mengine
 #if !defined(MENGINE_PLATFORM_UWP)
             ::MessageBoxW( NULL, _message, L"Mengine", MB_OK );
 #endif
-        }
-        //////////////////////////////////////////////////////////////////////////
-        const Char * Win32GetVersionName()
-        {
-            HMODULE hNtdll = GetModuleHandleW( L"ntdll.dll" );
-            
-            if( hNtdll == NULL )
-            {
-                return "Unknown";
-            }
-            
-            pRtlGetVersion rtlGetVersion = (pRtlGetVersion)::GetProcAddress( hNtdll, "RtlGetVersion" );
-
-            if( rtlGetVersion == NULL )
-            {
-                return "Unknown";
-            }
-
-            OSVERSIONINFOEXW osInfo;
-            osInfo.dwOSVersionInfoSize = sizeof( osInfo );
-            if( rtlGetVersion( &osInfo ) < 0 )
-            {
-                return "Unknown";
-            }
-
-            // Check major version              
-            switch( osInfo.dwMajorVersion )
-            {
-            case 10:
-                {
-                    switch( osInfo.dwMinorVersion )
-                    {
-                    case 0:
-                        {
-                            if( osInfo.wProductType == VER_NT_WORKSTATION )
-                            {
-                                if( osInfo.dwBuildNumber >= 22000 )
-                                {
-                                    return "11";
-                                }
-                                else
-                                {
-                                    return "10";
-                                }
-                            }
-                            else
-                            {
-                                return "Server 2016";
-                            }
-                        }break;
-                    }
-                }break;
-            case 6:
-                {
-                    switch( osInfo.dwMinorVersion )
-                    {
-                    case 3:
-                        return "8.1";
-                    case 2:
-                        return "8";
-                    case 1:
-                        return "7";
-                    case 0:
-                        return "Vista";
-                    }
-                }break;
-            case 5:
-                {
-                    switch( osInfo.dwMinorVersion )
-                    {
-                    case 2:
-                        return "XP64";
-                    case 1:
-                        return "XP";
-                    }
-                }break;
-            }
-            
-            return "Unknown";
         }
         //////////////////////////////////////////////////////////////////////////
     }

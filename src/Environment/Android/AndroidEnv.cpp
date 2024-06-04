@@ -10,13 +10,16 @@ extern "C"
     static jclass g_jclass_MengineApplication;
     static jobject g_jobject_MengineApplication;
     //////////////////////////////////////////////////////////////////////////
+    static jobject g_jobject_MengineClassLoader;
+    //////////////////////////////////////////////////////////////////////////
     static jclass g_jclass_MengineActivity;
     static jobject g_jobject_MengineActivity;
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidApplicationJNI )(JNIEnv * env, jclass cls, jobject obj)
+    JNIEXPORT void JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidApplicationJNI )(JNIEnv * env, jclass cls, jobject obj, jobject cl)
     {
         g_jclass_MengineApplication = (jclass)env->NewGlobalRef( cls );
         g_jobject_MengineApplication = (jobject)env->NewGlobalRef( obj );
+        g_jobject_MengineClassLoader = (jobject)env->NewGlobalRef( cl );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidApplicationJNI )(JNIEnv * env, jclass cls)
@@ -26,6 +29,9 @@ extern "C"
 
         env->DeleteGlobalRef( g_jobject_MengineApplication );
         g_jobject_MengineApplication = nullptr;
+
+        env->DeleteLocalRef( g_jobject_MengineClassLoader );
+        g_jobject_MengineClassLoader = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidActivityJNI )(JNIEnv * env, jclass cls, jobject obj)
@@ -161,6 +167,19 @@ extern "C"
         }
 
         return JNI_VERSION_1_6;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jclass Mengine_JNI_FindClass( JNIEnv * _jenv, const char * _className )
+    {
+        jclass jclass_ClassLoader = _jenv->FindClass("java/lang/ClassLoader");
+        jmethodID jmethodID_ClassLoader_loadClass = _jenv->GetMethodID(jclass_ClassLoader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+        _jenv->DeleteLocalRef(jclass_ClassLoader);
+
+        jstring jstring_className = _jenv->NewStringUTF(_className);
+        jclass jclass_FindClass = (jclass)_jenv->CallObjectMethod(g_jobject_MengineClassLoader, jmethodID_ClassLoader_loadClass, jstring_className);
+        _jenv->DeleteLocalRef(jstring_className);
+
+        return jclass_FindClass;
     }
     //////////////////////////////////////////////////////////////////////////
 }

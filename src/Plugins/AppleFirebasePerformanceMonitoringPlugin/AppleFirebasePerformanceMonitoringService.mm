@@ -1,6 +1,6 @@
 #include "AppleFirebasePerformanceMonitoringService.h"
 
-#include "Environment/Apple/AppleString.h"
+#import "Environment/Apple/AppleString.h"
 
 #import <FirebasePerformance/FirebasePerformance.h>
 

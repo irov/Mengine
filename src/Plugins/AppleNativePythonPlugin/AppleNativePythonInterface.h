@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Environment/Apple/AppleSemaphoreListenerInterface.h"
+#import "Environment/Apple/AppleSemaphoreListenerInterface.h"
 
 #include "Kernel/ConstString.h"
 

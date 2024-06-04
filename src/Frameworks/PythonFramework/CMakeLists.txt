@@ -84,8 +84,8 @@ Wrapper
     ConstsScriptEmbedding.cpp
     GameScriptEmbedding.h
     GameScriptEmbedding.cpp
-    HttpSystemScriptEmbedding.h
-    HttpSystemScriptEmbedding.cpp
+    HttpScriptEmbedding.h
+    HttpScriptEmbedding.cpp
 )
 
 ADD_FILTER(

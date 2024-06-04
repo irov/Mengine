@@ -22,7 +22,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        BOOL WINAPI ConsoleHandlerRoutine( DWORD dwCtrlType )
+        static BOOL WINAPI ConsoleHandlerRoutine( DWORD dwCtrlType )
         {
             switch( dwCtrlType )
             {
@@ -103,7 +103,7 @@ namespace Mengine
         if( ::SetConsoleCtrlHandler( &Detail::ConsoleHandlerRoutine, TRUE ) == FALSE )
         {
             LOGGER_ERROR( "invalid set console ctrl handler: %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
         }
 
@@ -199,27 +199,11 @@ namespace Mengine
 
         DWORD dWritten;
 
-        if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
-        {
-            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
-            size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH);
-            ::WriteConsoleA( output_handle, functionstamp, (DWORD)functionstampSize, &dWritten, NULL );
-            ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
-        }
-
         if( message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
             size_t timestampSize = Helper::makeLoggerShortDate( message.timestamp, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
             ::WriteConsoleA( output_handle, timestamp, (DWORD)timestampSize, &dWritten, NULL );
-            ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
-        }
-
-        if( message.flag & LFLAG_THREADSTAMP )
-        {
-            Char threadstamp[256] = {'\0'};
-            size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
-            ::WriteConsoleA( output_handle, threadstamp, (DWORD)threadstampSize, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 
@@ -239,6 +223,22 @@ namespace Mengine
             ::WriteConsoleA( output_handle, "[", 1, &dWritten, NULL );
             ::WriteConsoleA( output_handle, message.category, (DWORD)category_size, &dWritten, NULL );
             ::WriteConsoleA( output_handle, "]", 1, &dWritten, NULL );
+            ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
+        }
+
+        if( message.flag & LFLAG_THREADSTAMP )
+        {
+            Char threadstamp[256] = {'\0'};
+            size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
+            ::WriteConsoleA( output_handle, threadstamp, (DWORD)threadstampSize, &dWritten, NULL );
+            ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
+        }
+
+        if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
+        {
+            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+            size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+            ::WriteConsoleA( output_handle, functionstamp, (DWORD)functionstampSize, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
         }
 

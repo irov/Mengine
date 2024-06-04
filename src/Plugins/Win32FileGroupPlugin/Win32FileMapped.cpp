@@ -73,7 +73,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid file '%ls' size get error %ls"
                 , fullPath
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             ::CloseHandle( m_hFile );
@@ -88,7 +88,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid create file mapping '%ls' get error %ls"
                 , fullPath
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             ::CloseHandle( m_hFile );

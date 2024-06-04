@@ -101,7 +101,6 @@ namespace Mengine
         int64_t getInstallRND() const override;
         int64_t getSessionIndex() const override;
 
-
         void closeWindow() override;
         void minimizeWindow() override;
 
@@ -212,6 +211,9 @@ namespace Mengine
         HWND getWindowHandle() const override;
 
     protected:
+        void getOsInfo( OSVERSIONINFOEXW * const _osInfo ) const override;
+
+    protected:
         UniqueId addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentInterfacePtr & _doc ) override;
         void removeWin32ProcessHandler( UniqueId _id ) override;
 
@@ -232,9 +234,14 @@ namespace Mengine
         void updateWndMessage_();
 
     protected:
+        const Char * getOsVersionName_() const;
+
+    protected:
         Timestamp m_beginTime;
 
         StaticWString<MENGINE_MAX_PATH> m_windowClassName;
+
+        OSVERSIONINFOEXW m_osInfo;
         
         HINSTANCE m_hInstance;
 

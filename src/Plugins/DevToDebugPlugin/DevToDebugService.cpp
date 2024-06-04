@@ -6,6 +6,7 @@
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
+#include "Interface/HttpServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Environment/Android/AndroidEnv.h"
@@ -446,7 +447,7 @@ namespace Mengine
             {
                 m_status = EDTDS_REGISTRATING;
 
-                const HttpRequestHeaders & headers = HTTP_SYSTEM()
+                const HttpRequestHeaders & headers = HTTP_SERVICE()
                     ->getApplicationJSONHeaders();
 
                 jpp::object j = this->makeJsonRegistrationData();
@@ -454,7 +455,7 @@ namespace Mengine
                 Data data;
                 Helper::writeJSONDataCompact( j, &data );
 
-                HttpRequestId id = HTTP_SYSTEM()
+                HttpRequestId id = HTTP_SERVICE()
                     ->headerData( m_dsn, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
@@ -463,10 +464,10 @@ namespace Mengine
             {
                 m_status = EDTDS_WAITING;
 
-                const HttpRequestHeaders & headers = HTTP_SYSTEM()
+                const HttpRequestHeaders & headers = HTTP_SERVICE()
                     ->getApplicationJSONHeaders();
 
-                HttpRequestId id = HTTP_SYSTEM()
+                HttpRequestId id = HTTP_SERVICE()
                     ->getMessage( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
@@ -475,7 +476,7 @@ namespace Mengine
             {
                 m_status = EDTDS_CONNECTING;
 
-                const HttpRequestHeaders & headers = HTTP_SYSTEM()
+                const HttpRequestHeaders & headers = HTTP_SERVICE()
                     ->getApplicationJSONHeaders();
 
                 jpp::object j = this->makeJsonConnectData();
@@ -483,14 +484,14 @@ namespace Mengine
                 Data data;
                 Helper::writeJSONDataCompact( j, &data );
 
-                HttpRequestId id = HTTP_SYSTEM()
+                HttpRequestId id = HTTP_SERVICE()
                     ->headerData( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
             }break;
         case EDTDS_CONNECT:
             {
-                const HttpRequestHeaders & headers = HTTP_SYSTEM()
+                const HttpRequestHeaders & headers = HTTP_SERVICE()
                     ->getApplicationJSONHeaders();
 
                 jpp::object j = this->makeJsonProcessData();
@@ -498,7 +499,7 @@ namespace Mengine
                 Data data;
                 Helper::writeJSONDataCompact( j, &data );
 
-                HttpRequestId id = HTTP_SYSTEM()
+                HttpRequestId id = HTTP_SERVICE()
                     ->headerData( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
@@ -513,7 +514,8 @@ namespace Mengine
         bool responseSuccessful = _response->isSuccessful();
         HttpRequestId requestId = _response->getRequestId();
         EHttpCode responseCode = _response->getCode();
-        const String & responseError = _response->getError();
+        const String & responseErrorMessage = _response->getErrorMessage();
+        int32_t responseErrorCode = _response->getErrorCode();
         const String & responseData = _response->getData();
 
         switch( m_status )
@@ -524,8 +526,9 @@ namespace Mengine
             {
                 if( responseSuccessful == false )
                 {
-                    LOGGER_ERROR( "connecting error: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connecting error: %s [%d] [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseCode
                         , requestId
                     );
@@ -537,8 +540,9 @@ namespace Mengine
 
                 if( responseCode / 100 != 2 )
                 {
-                    LOGGER_ERROR( "connecting error: %s data: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connecting error: %s [%d] data: %s [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseData.c_str()
                         , responseCode
                         , requestId
@@ -579,8 +583,9 @@ namespace Mengine
             {
                 if( responseSuccessful == false )
                 {
-                    LOGGER_ERROR( "connecting error: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connecting error: %s [%d] [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseCode
                         , requestId
                     );
@@ -592,8 +597,9 @@ namespace Mengine
 
                 if( responseCode / 100 != 2 )
                 {
-                    LOGGER_ERROR( "connecting error: %s data: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connecting error: %s [%d] data: %s [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseData.c_str()
                         , responseCode
                         , requestId
@@ -621,8 +627,9 @@ namespace Mengine
             {
                 if( responseSuccessful == false )
                 {
-                    LOGGER_ERROR( "connecting error: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connecting error: %s [%d] [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseCode
                         , requestId
                     );
@@ -634,8 +641,9 @@ namespace Mengine
 
                 if( responseCode / 100 != 2 )
                 {
-                    LOGGER_ERROR( "connecting error: %s data: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connecting error: %s [%d] data: %s [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseData.c_str()
                         , responseCode
                         , requestId
@@ -662,8 +670,9 @@ namespace Mengine
             {
                 if( responseSuccessful == false )
                 {
-                    LOGGER_ERROR( "connect response error: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connect response error: %s [%d] [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseCode
                         , requestId
                     );
@@ -675,8 +684,9 @@ namespace Mengine
 
                 if( responseCode / 100 != 2 )
                 {
-                    LOGGER_ERROR( "connect response error: %s data: %s [code %u] [id %u]"
-                        , responseError.c_str()
+                    LOGGER_ERROR( "connect response error: %s [%d] data: %s [code %u] [id %u]"
+                        , responseErrorMessage.c_str()
+                        , responseErrorCode
                         , responseData.c_str()
                         , responseCode
                         , requestId
@@ -934,7 +944,7 @@ namespace Mengine
 
         HttpRequestHeaders headers;
 
-        HTTP_SYSTEM()
+        HTTP_SERVICE()
             ->deleteMessage( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////

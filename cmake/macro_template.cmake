@@ -1,10 +1,30 @@
 MACRO(MENGINE_ADD_DEFINITION Definition)
-    ADD_DEFINITIONS(-D${Definition})
-    IF(PROJECT_IS_TOP_LEVEL)
-        SET(MENGINE_CONFIG_DEFINITIONS ${MENGINE_CONFIG_DEFINITIONS} ${Definition})
-    ELSE()
-        SET(MENGINE_CONFIG_DEFINITIONS ${MENGINE_CONFIG_DEFINITIONS} ${Definition} PARENT_SCOPE)
-    ENDIF()
+    set(extra_macro_args ${ARGN})
+    list(LENGTH extra_macro_args num_extra_args)
+    
+    if(${num_extra_args} EQUAL 1)
+        list(GET extra_macro_args 0 Value)
+        
+        if("${Value}" STREQUAL "")
+            message(FATAL_ERROR "MENGINE_ADD_DEFINITION ${Definition} did't empty value")
+        endif()
+        
+        ADD_DEFINITIONS(-D${Definition}=${Value})
+        
+        IF(PROJECT_IS_TOP_LEVEL)
+            SET(MENGINE_CONFIG_DEFINITIONS ${MENGINE_CONFIG_DEFINITIONS} ${Definition} ${Value})
+        ELSE()
+            SET(MENGINE_CONFIG_DEFINITIONS ${MENGINE_CONFIG_DEFINITIONS} ${Definition} ${Value} PARENT_SCOPE)
+        ENDIF()
+    else()
+        ADD_DEFINITIONS(-D${Definition})
+        
+        IF(PROJECT_IS_TOP_LEVEL)
+            SET(MENGINE_CONFIG_DEFINITIONS ${MENGINE_CONFIG_DEFINITIONS} ${Definition} "NO-VALUE")
+        ELSE()
+            SET(MENGINE_CONFIG_DEFINITIONS ${MENGINE_CONFIG_DEFINITIONS} ${Definition} "NO-VALUE" PARENT_SCOPE)
+        ENDIF()
+    endif()
 ENDMACRO()
 
 MACRO(SET_MENGINE_ENVIRONMENT MENGINE_TARGET MENGINE_RENDER MENGINE_PLATFORM MENGINE_TOOLCHAIN)
@@ -423,6 +443,30 @@ ENDMACRO()
 MACRO(DISABLE_PLUGIN_OPTION Plugin Option)
     MESSAGE("DISABLE_PLUGIN_OPTION: ${Plugin}")
     SET(${Plugin}_${Option}_FORCE_DISABLE ${MENGINE_VARIABLES_CACHE_TIMESTEMP} CACHE STRING "${Plugin}_${Option}_FORCE_DISABLE" FORCE)
+ENDMACRO()
+
+MACRO(ADD_PLATFORM Name MSG)
+    SET(MENGINE_PLATFORM ${Name} CACHE STRING ${MSG} FORCE)
+
+    MENGINE_ADD_DEFINITION(MENGINE_PLATFORM ${Name})
+    
+    MESSAGE("PLATFORM: ${Name}")
+ENDMACRO()
+
+MACRO(ADD_SYSTEM System Name MSG)
+    if(NOT "${Name}" STREQUAL "OFF")
+        SET(${System} ${Name} CACHE STRING ${MSG} FORCE)
+
+        IF(${System})
+            MENGINE_ADD_DEFINITION(${System} ${Name})
+        ENDIF()
+    
+        MESSAGE("SYSTEM: ${System} = ${Name}")
+    else()
+        SET(${System} OFF CACHE BOOL ${MSG} FORCE)
+        
+        MESSAGE("SYSTEM: ${System} = OFF")
+    endif()
 ENDMACRO()
 
 MACRO(ADD_PLUGIN Plugin Toggle DLL MSG)

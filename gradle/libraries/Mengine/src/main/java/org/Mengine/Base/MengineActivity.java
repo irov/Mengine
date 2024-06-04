@@ -315,9 +315,17 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        this.setState("activity.init", "create");
-
         AndroidEnv_setMengineAndroidActivityJNI(this);
+
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            this.finishWithAlertDialog("[ERROR] Application invalid initialize");
+
+            return;
+        }
+
+        this.setState("activity.init", "create");
 
         MengineLog.logMessage(TAG, "onCreate");
 
@@ -845,9 +853,13 @@ public class MengineActivity extends SDLActivity {
             activate_listeners = semaphore.activate();
         }
 
-        for (MengineSemaphoreListener listener : activate_listeners) {
-            listener.call();
-        }
+        final ArrayList<MengineSemaphoreListener> final_activate_listeners = activate_listeners;
+
+        MengineUtils.performOnMainThread(() -> {
+            for (MengineSemaphoreListener listener : final_activate_listeners) {
+                listener.call();
+            }
+        });
     }
 
     public void deactivateSemaphore(String name) {
@@ -890,7 +902,9 @@ public class MengineActivity extends SDLActivity {
             }
         }
 
-        cb.call();
+        MengineUtils.performOnMainThread(() -> {
+            cb.call();
+        });
     }
 
     /***********************************************************************************************

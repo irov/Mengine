@@ -33,6 +33,7 @@ def MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING = Utils.existAppPlugin(project, "MENG
 def MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS")
 def MENGINE_APP_PLUGIN_GOOGLE_CONSENT = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_CONSENT")
 def MENGINE_APP_PLUGIN_FIREBASE = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE")
+def MENGINE_APP_PLUGIN_FIREBASE_APPCHECK = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_APPCHECK")
 def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS")
 def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE = Utils.getBooleanProperty(project, "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE", false)
 def MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS")
@@ -429,6 +430,20 @@ if (MENGINE_APP_PLUGIN_FIREBASE == true) {
 
     dependencies {
         implementation project(':plugins:Firebase')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK", MENGINE_APP_PLUGIN_FIREBASE_APPCHECK)
+
+if (MENGINE_APP_PLUGIN_FIREBASE_APPCHECK == true) {
+    if (MENGINE_APP_PLUGIN_FIREBASE == false) {
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK required enable MENGINE_APP_PLUGIN_FIREBASE");
+    }
+    
+    android.ext.plugins += 'org.Mengine.Plugin.FirebaseAppCheck.MengineFirebaseAppCheckPlugin'
+
+    dependencies {
+        implementation project(':plugins:FirebaseAppCheck')
     }
 }
 

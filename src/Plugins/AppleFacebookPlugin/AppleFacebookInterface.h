@@ -40,12 +40,10 @@ namespace Mengine
         virtual const AppleFacebookProviderInterfacePtr & getProvider() const = 0;
 
     public:
-        virtual bool login( bool _limited, const VectorConstString & _permissions ) = 0;
+        virtual bool login( const VectorConstString & _permissions ) = 0;
         virtual void logout() = 0;
-        virtual bool isAccessSuccess() const = 0;
-        virtual bool isAuthenticationSuccess() const = 0;
+        virtual bool isLoggedIn() const = 0;
         virtual bool getAccessToken( Char * const _token, size_t _capacity ) const = 0;
-        virtual bool getAuthenticationToken( Char * const _token, size_t _capacity ) const = 0;
         virtual bool getUserId( Char * const _userId, size_t _capacity ) const = 0;
         virtual void shareLink( const Char * link, const Char * picture ) = 0;
         virtual void getProfilePictureLink() = 0;

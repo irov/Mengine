@@ -57,27 +57,11 @@ namespace Mengine
         LoggerMessage message;
         _record->getMessage( &message );
 
-        if( message.flag & LFLAG_FUNCTIONSTAMP )
-        {
-            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
-            Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH);
-            this->writeMessage_( functionstamp );
-            this->writeMessage_( " " );
-        }
-
         if( message.flag & LFLAG_TIMESTAMP )
         {
             Char timestamp[256] = {'\0'};
             Helper::makeLoggerShortDate( message.timestamp, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
             this->writeMessage_( timestamp );
-            this->writeMessage_( " " );
-        }
-
-        if( message.flag & LFLAG_THREADSTAMP )
-        {
-            Char threadstamp[256] = {'\0'};
-            Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
-            this->writeMessage_( threadstamp );
             this->writeMessage_( " " );
         }
 
@@ -99,6 +83,22 @@ namespace Mengine
             this->writeMessage_( " " );
         }
 
+        if( message.flag & LFLAG_THREADSTAMP )
+        {
+            Char threadstamp[256] = {'\0'};
+            Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
+            this->writeMessage_( threadstamp );
+            this->writeMessage_( " " );
+        }
+
+        if( message.flag & LFLAG_FUNCTIONSTAMP )
+        {
+            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+            Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
+            this->writeMessage_( functionstamp );
+            this->writeMessage_( " " );
+        }
+
         this->writeMessage_( message.data );
         this->writeMessage_( "\n" );
     }
@@ -117,7 +117,7 @@ namespace Mengine
         
         if( result == FALSE )
         {
-            const WChar * errorMessage = Helper::Win32GetLastErrorMessage();
+            const WChar * errorMessage = Helper::Win32GetLastErrorMessageW();
 
             MENGINE_UNUSED( errorMessage );
             printf( "errorMessage: %ls"

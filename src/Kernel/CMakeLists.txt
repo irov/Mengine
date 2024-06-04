@@ -727,7 +727,7 @@ Core
     VectorRenderVertex2D.h
     VectorRenderIndex.h
    
-    Magic.h    
+    Magic.h
     Mixin.h
     MixinPointer.h
     Magicable.h
@@ -811,6 +811,10 @@ Core
     TouchCode.h
     
     HttpCode.h
+    HttpLogger.h
+    
+    BaseHttpRequest.h
+    BaseHttpRequest.cpp
     
     DocumentHelper.h
     

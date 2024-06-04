@@ -50,7 +50,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid load '%s' %ls"
                 , name
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -90,7 +90,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "GetProcAddress [%s] get error %ls"
                 , _name
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return NULL;

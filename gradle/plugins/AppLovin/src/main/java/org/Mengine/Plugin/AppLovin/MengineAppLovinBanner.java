@@ -57,9 +57,8 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         adView.setBackgroundColor(android.graphics.Color.TRANSPARENT);
         adView.setExtraParameter("adaptive_banner", "true");
 
-        adView.stopAutoRefresh();
-
         adView.setVisibility(View.GONE);
+        adView.stopAutoRefresh();
 
         m_adView = adView;
 
@@ -93,6 +92,11 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         super.destroy();
 
         if (m_adView != null) {
+            m_adView.setListener(null);
+            m_adView.setRequestListener(null);
+            m_adView.setRevenueListener(null);
+            m_adView.setAdReviewListener(null);
+
             m_adView.destroy();
             m_adView = null;
         }
@@ -161,11 +165,11 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         ViewGroup viewGroup = activity.getContentViewGroup();
         viewGroup.addView(adView);
 
+        adView.setVisibility(View.VISIBLE);
+
         if (m_plugin.hasOption("applovin.banner.no_load") == false) {
             adView.startAutoRefresh();
         }
-
-        adView.setVisibility(View.VISIBLE);
     }
 
     protected void disableAdView(@NonNull MaxAdView adView) {
@@ -173,54 +177,55 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             return;
         }
 
-        MengineActivity activity = m_plugin.getMengineActivity();
-
-        ViewGroup viewGroup = activity.getContentViewGroup();
-        viewGroup.removeView(adView);
+        adView.setVisibility(View.GONE);
 
         if (m_plugin.hasOption("applovin.banner.no_load") == false) {
             adView.stopAutoRefresh();
         }
 
-        adView.setVisibility(View.GONE);
+        MengineActivity activity = m_plugin.getMengineActivity();
+
+        ViewGroup viewGroup = activity.getContentViewGroup();
+        viewGroup.removeView(adView);
     }
 
     public boolean bannerVisible(boolean show) {
         MaxAdView copy_adView = m_adView;
 
-        m_plugin.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (m_visible == show) {
-                    return;
-                }
+        m_plugin.runOnUiThread(() -> {
+            if (m_visible == show) {
+                return;
+            }
 
-                m_visible = show;
+            m_visible = show;
 
-                MengineAppLovinBanner.this.log("bannerVisible", Map.of("show", show));
+            MengineAppLovinBanner.this.log("bannerVisible", Map.of("show", show));
 
-                MengineAppLovinNonetBannersInterface nonetBanners = m_plugin.getNonetBanners();
+            MengineAppLovinNonetBannersInterface nonetBanners = m_plugin.getNonetBanners();
 
-                if (show == true) {
-                    if (nonetBanners != null) {
-                        if (m_loaded == true) {
-                            nonetBanners.hide();
-                        } else {
-                            nonetBanners.show();
+            if (show == true) {
+                if (nonetBanners != null) {
+                    if (m_loaded == true) {
+                        nonetBanners.hide();
+
+                        if (copy_adView != null) {
+                            MengineAppLovinBanner.this.enableAdView(copy_adView);
                         }
-                    }
-
-                    if (copy_adView != null) {
-                        MengineAppLovinBanner.this.enableAdView(copy_adView);
+                    } else {
+                        nonetBanners.show();
                     }
                 } else {
                     if (copy_adView != null) {
-                        MengineAppLovinBanner.this.disableAdView(copy_adView);
+                        MengineAppLovinBanner.this.enableAdView(copy_adView);
                     }
+                }
+            } else {
+                if (copy_adView != null) {
+                    MengineAppLovinBanner.this.disableAdView(copy_adView);
+                }
 
-                    if (nonetBanners != null) {
-                        nonetBanners.hide();
-                    }
+                if (nonetBanners != null) {
+                    nonetBanners.hide();
                 }
             }
         });

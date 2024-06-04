@@ -56,7 +56,7 @@ namespace Mengine
         int64_t size = ANDROID_ASSET_SERVICE()
             ->size( m_asset );
 
-        if( size <= 0 )
+        if( size < 0 )
         {
             LOGGER_ERROR( "invalid file '%s' error size %zu"
                 , fullPath

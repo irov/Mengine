@@ -12,4 +12,15 @@ namespace Mengine
     typedef Atomic<bool> AtomicBool;
     typedef Atomic<uint32_t> AtomicUInt32;
     typedef Atomic<float> AtomicFloat;
+
+    namespace Helper
+    {
+        template<class T>
+        T atomicLoad( const Atomic<T> & _value )
+        {
+            T value = _value.load();
+
+            return value;
+        }
+    }
 }

@@ -132,12 +132,16 @@ Common
     StatisticInterface.h
     StatisticServiceInterface.h
     DateTimeSystemInterface.h
+    HttpServiceInterface.h
     HttpSystemInterface.h
     DebugFileInterface.h
     TimerServiceInterface.h
     MixerValueInterface.h
     PreferencesSystemInterface.h
     CryptographySystemInterface.h
+    HttpResponseInterface.h
+    HttpRequestInterface.h
+    HttpReceiverInterface.h
 )
 
 ADD_FILTER(

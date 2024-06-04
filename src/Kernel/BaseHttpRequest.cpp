@@ -1,0 +1,112 @@
+#include "BaseHttpRequest.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    BaseHttpRequest::BaseHttpRequest()
+        : m_id( 0 )
+        , m_timeout( MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY )
+        , m_receiveHeaders( false )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    BaseHttpRequest::~BaseHttpRequest()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseHttpRequest::setURL( const String & _url )
+    {
+        m_url = _url;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const String & BaseHttpRequest::getURL() const
+    {
+        return m_url;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseHttpRequest::setProxy( const String & _proxy )
+    {
+        m_proxy = _proxy;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const String & BaseHttpRequest::getProxy() const
+    {
+        return m_proxy;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseHttpRequest::setCookies( const String & _cookies )
+    {
+        m_cookies = _cookies;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const String & BaseHttpRequest::getCookies() const
+    {
+        return m_cookies;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseHttpRequest::setHeaders( const HttpRequestHeaders & _headers )
+    {
+        m_headers = _headers;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const HttpRequestHeaders & BaseHttpRequest::getHeaders() const
+    {
+        return m_headers;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseHttpRequest::setRequestId( HttpRequestId _id )
+    {
+        m_id = _id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HttpRequestId BaseHttpRequest::getRequestId() const
+    {
+        return m_id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseHttpRequest::setTimeout( int32_t _timeout )
+    {
+        m_timeout = _timeout;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t BaseHttpRequest::getTimeout() const
+    {
+        return m_timeout;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseHttpRequest::setReceiveHeaders( bool _receiveHeaders )
+    {
+        m_receiveHeaders = _receiveHeaders;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool BaseHttpRequest::getReceiveHeaders() const
+    {
+        return m_receiveHeaders;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseHttpRequest::setReponse( const HttpResponseInterfacePtr & _response )
+    {
+        m_response = _response;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const HttpResponseInterfacePtr & BaseHttpRequest::getReponse() const
+    {
+        return m_response;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseHttpRequest::setReceiver( const HttpReceiverInterfacePtr & _receiver )
+    {
+        m_receiver = _receiver;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const HttpReceiverInterfacePtr & BaseHttpRequest::getReceiver() const
+    {
+        return m_receiver;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ThreadTaskInterfacePtr BaseHttpRequest::getThreadTask()
+    {
+        return ThreadTaskInterfacePtr::from( this );
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

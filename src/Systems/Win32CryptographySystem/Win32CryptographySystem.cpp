@@ -46,7 +46,7 @@ namespace Mengine
         if( ::CryptReleaseContext( m_hCryptProv, 0 ) == FALSE )
         {
             LOGGER_ERROR( "CryptReleaseContext invalid %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
         }
 
@@ -59,7 +59,7 @@ namespace Mengine
         if( ::CryptGenRandom( m_hCryptProv, sizeof( pbData ), pbData ) == FALSE )
         {
             LOGGER_ERROR( "CryptGenRandom invalid %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;
@@ -87,7 +87,7 @@ namespace Mengine
         if( ::CryptGenRandom( m_hCryptProv, _length / 2, pbData ) == FALSE )
         {
             LOGGER_ERROR( "CryptGenRandom invalid %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             return false;

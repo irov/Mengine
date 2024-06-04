@@ -28,7 +28,7 @@ namespace Mengine
         MENGINE_ASSERTION_VALIDATE_UTF8( message.category, MENGINE_UNKNOWN_SIZE );
         MENGINE_ASSERTION_VALIDATE_UTF8( message.data, MENGINE_UNKNOWN_SIZE );
 
-        if((message.filter & Mengine::LFILTER_ANDROID) == Mengine::LFILTER_ANDROID )
+        if( (message.filter & Mengine::LFILTER_ANDROID) == Mengine::LFILTER_ANDROID )
         {
             return;
         }
@@ -37,7 +37,38 @@ namespace Mengine
 
         Char buffer[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
-        if(message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
+        if( message.flag & LFLAG_TIMESTAMP )
+        {
+            Char date[256] = {'\0'};
+
+            size_t dateSize = Helper::makeLoggerShortDate( message.timestamp, "[%02u:%02u:%02u:%04u]", date, 0, 256 );
+            MENGINE_UNUSED( dateSize );
+
+            MENGINE_STRCAT( buffer, date );
+            MENGINE_STRCAT( buffer, " " );
+        }
+
+        if( message.flag & LFLAG_CATEGORYSTAMP )
+        {
+            const Char * category = message.category;
+
+            MENGINE_STRCAT( buffer, "[" );
+            MENGINE_STRCAT( buffer, category );
+            MENGINE_STRCAT( buffer, "]" );
+            MENGINE_STRCAT( buffer, " " );
+        }
+
+        if( message.flag & LFLAG_THREADSTAMP )
+        {
+            Char threadstamp[256] = {'\0'};
+            size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
+            MENGINE_UNUSED( threadstampSize );
+
+            MENGINE_STRCAT( buffer, threadstamp );
+            MENGINE_STRCAT( buffer, " " );
+        }
+
+        if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
             Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
 
@@ -47,37 +78,6 @@ namespace Mengine
             MENGINE_UNUSED( functionstampSize );
 
             MENGINE_STRCAT( buffer, functionstamp );
-            MENGINE_STRCAT( buffer, " " );
-        }
-
-        if(message.flag & LFLAG_TIMESTAMP )
-        {
-            Char date[256] = {'\0'};
-
-            size_t dateSize = Helper::makeLoggerShortDate(message.timestamp, "[%02u:%02u:%02u:%04u]", date, 0, 256 );
-            MENGINE_UNUSED( dateSize );
-
-            MENGINE_STRCAT( buffer, date );
-            MENGINE_STRCAT( buffer, " " );
-        }
-
-        if(message.flag & LFLAG_THREADSTAMP )
-        {
-            Char threadstamp[256] = {'\0'};
-            size_t threadstampSize = Helper::makeLoggerThreadStamp(message.threadName, "|%s|", threadstamp, 0, 256 );
-            MENGINE_UNUSED( threadstampSize );
-
-            MENGINE_STRCAT( buffer, threadstamp );
-            MENGINE_STRCAT( buffer, " " );
-        }
-
-        if(message.flag & LFLAG_CATEGORYSTAMP )
-        {
-            const Char * category = message.category;
-            
-            MENGINE_STRCAT( buffer, "[" );
-            MENGINE_STRCAT( buffer, category );
-            MENGINE_STRCAT( buffer, "]" );
             MENGINE_STRCAT( buffer, " " );
         }
 
@@ -93,7 +93,7 @@ namespace Mengine
 
         MENGINE_STRNCAT( buffer, data, data_size );
 
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {
             return;
         }
@@ -115,34 +115,34 @@ namespace Mengine
 
         switch( level )
         {
-            case LM_SILENT:
-                return;
-            case LM_FATAL:
-                method = "wtf";
-                break;
-            case LM_MESSAGE_RELEASE:
-                method = "w";
-                break;
-            case LM_ERROR:
-                method = "e";
-                break;
-            case LM_WARNING:
-                method = "w";
-                break;
-            case LM_MESSAGE:
-                method = "i";
-                break;
-            case LM_INFO:
-                method = "i";
-                break;
-            case LM_DEBUG:
-                method = "d";
-                break;
-            case LM_VERBOSE:
-                method = "v";
-                break;
-            default:
-                return;
+        case LM_SILENT:
+            return;
+        case LM_FATAL:
+            method = "wtf";
+            break;
+        case LM_MESSAGE_RELEASE:
+            method = "w";
+            break;
+        case LM_ERROR:
+            method = "e";
+            break;
+        case LM_WARNING:
+            method = "w";
+            break;
+        case LM_MESSAGE:
+            method = "i";
+            break;
+        case LM_INFO:
+            method = "i";
+            break;
+        case LM_DEBUG:
+            method = "d";
+            break;
+        case LM_VERBOSE:
+            method = "v";
+            break;
+        default:
+            return;
         }
 
         jmethodID jclass_Log_method = jenv->GetStaticMethodID( jclass_MengineLog, method, "(Ljava/lang/String;Ljava/lang/String;)I" );

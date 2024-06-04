@@ -105,7 +105,7 @@ namespace Mengine
         bool m_hasImageMask;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Layer2D> Layer2DPtr;
+    typedef IntrusiveNodePtr<Layer2D> Layer2DPtr;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const RenderVertex2D * Layer2D::getVerticesImageMaskWM() const
     {

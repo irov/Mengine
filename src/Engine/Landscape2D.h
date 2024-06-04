@@ -94,6 +94,8 @@ namespace Mengine
         mutable bool m_invalidateElementWM;
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveNodePtr<Landscape2D> Landscape2DPtr;
+    //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const RenderVertex2D * Landscape2D::getVerticesWM( uint32_t _offset ) const
     {
         if( m_invalidateVerticesWM == true )

@@ -1,6 +1,6 @@
 #include "AppleAppLovinService.h"
 
-#include "Environment/Apple/AppleString.h"
+#import "Environment/Apple/AppleString.h"
 
 #ifdef MENGINE_PLUGIN_APPLE_APPTRACKING
 #   include "Plugins/AppleAppTrackingPlugin/AppleAppTrackingInterface.h"

@@ -130,7 +130,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "invalid open registry key '%ls' error: %ls"
                             , subKeyPython3InstallPath
-                            , Helper::Win32GetLastErrorMessage()
+                            , Helper::Win32GetLastErrorMessageW()
                         );
 
                         return false;

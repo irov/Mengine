@@ -10,6 +10,7 @@
 
 #include "Config/Char.h"
 #include "Config/StdInt.h"
+#include "Config/StdDef.h"
 
 #include "math/vec2.h"
 #include "math/vec3.h"
@@ -29,6 +30,9 @@ namespace Mengine
         bool stringalized( const Char * _string, uint32_t * const _value );
         bool stringalized( const Char * _string, int64_t * const _value );
         bool stringalized( const Char * _string, uint64_t * const _value );
+#if defined(MENGINE_STRINGALIZED_SIZE_T)
+        bool stringalized( const Char * _string, size_t * const _value );
+#endif
         bool stringalized( const Char * _string, float * const _value );
         bool stringalized( const Char * _string, double * const _value );
         bool stringalized( const Char * _string, mt::vec2f * const _value );
@@ -52,6 +56,9 @@ namespace Mengine
         bool stringalized( uint32_t _value, Char * const _string, size_t _capacity );
         bool stringalized( int64_t _value, Char * const _string, size_t _capacity );
         bool stringalized( uint64_t _value, Char * const _string, size_t _capacity );
+#if defined(MENGINE_STRINGALIZED_SIZE_T)
+        bool stringalized( size_t _value, Char * const _string, size_t _capacity );
+#endif
         bool stringalized( float _value, Char * const _string, size_t _capacity );
         bool stringalized( double _value, Char * const _string, size_t _capacity );
         bool stringalized( const mt::vec2f & _value, Char * const _string, size_t _capacity );

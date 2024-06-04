@@ -49,9 +49,9 @@ namespace Mengine
             return randomHexStringTrim;
         }
         //////////////////////////////////////////////////////////////////////////
-        void AppleGetParamsFromNSDictionary( NSDictionary * _dictionary, Params * const _params )
+        void AppleGetParamsFromNSDictionary( NSDictionary * _in, Params * const _out )
         {
-            if( _dictionary == nil )
+            if( _in == nil )
             {
                 return;
             }
@@ -59,7 +59,7 @@ namespace Mengine
             CFTypeID boolenTypeId = CFBooleanGetTypeID();
             CFTypeID numberTypeId = CFNumberGetTypeID();
             
-            [_dictionary enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL * stop) {
+            [_in enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL * stop) {
                 ConstString key_str = Helper::NSStringToConstString( key );
                 
                 if ([value isKindOfClass:[NSNumber class]] == YES) {
@@ -68,7 +68,7 @@ namespace Mengine
                     if (valueTypeId == boolenTypeId) {
                         bool b = [value boolValue];
                         
-                        _params->emplace( key_str, b );
+                        _out->emplace( key_str, b );
                     } else if (valueTypeId == numberTypeId) {
                         CFNumberType numberType = CFNumberGetType((__bridge CFNumberRef)value);
                         
@@ -84,7 +84,7 @@ namespace Mengine
                             case kCFNumberLongLongType: {
                                 int64_t n = [value longLongValue];
                                 
-                                _params->emplace( key_str, n );
+                                _out->emplace( key_str, n );
                             }break;
                                 
                             case kCFNumberFloat32Type:
@@ -93,7 +93,7 @@ namespace Mengine
                             case kCFNumberDoubleType: {
                                 double d = [value doubleValue];
                                 
-                                _params->emplace( key_str, d );
+                                _out->emplace( key_str, d );
                             }break;
                             case kCFNumberCFIndexType:
                             case kCFNumberNSIntegerType:
@@ -107,14 +107,14 @@ namespace Mengine
                 } else if ([value isKindOfClass:[NSString class]] == YES) {
                     Mengine::ConstString s = Mengine::Helper::NSStringToConstString(value);
                     
-                    _params->emplace( key_str, s );
+                    _out->emplace( key_str, s );
                 } else {
                     return;
                 }
                 
                 const Char * value_str = [[NSString stringWithFormat:@"%@", value] UTF8String];
                 
-                _params->emplace(std::make_pair(key_str, String(value_str)));
+                _out->emplace(std::make_pair(key_str, String(value_str)));
             }];
         }
         //////////////////////////////////////////////////////////////////////////
@@ -168,13 +168,37 @@ namespace Mengine
             return dictionary;
         }
         //////////////////////////////////////////////////////////////////////////
-        void AppleGetVectorConstStringFromNSArray( NSArray<NSString *> * _array, VectorConstString * const _strings )
+        void AppleGetVectorStringFromNSArray( NSArray<NSString *> * _in, VectorString * const _out )
         {
-            for( NSString * string in _array )
+            for( NSString * string in _in )
+            {
+                String cstr = Helper::NSStringToString( string );
+                
+                _out->emplace_back( cstr );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        NSArray<NSString *> * AppleGetNSArrayFromVectorString( const VectorString & _strings )
+        {
+            NSMutableArray<NSString *> * array = [NSMutableArray array];
+            
+            for( const String & str : _strings )
+            {
+                NSString * string = Helper::stringToNSString( str );
+                
+                [array addObject:string];
+            }
+            
+            return array;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void AppleGetVectorConstStringFromNSArray( NSArray<NSString *> * _in, VectorConstString * const _out )
+        {
+            for( NSString * string in _in )
             {
                 ConstString cstr = Helper::NSStringToConstString( string );
                 
-                _strings->emplace_back( cstr );
+                _out->emplace_back( cstr );
             }
         }
         //////////////////////////////////////////////////////////////////////////
@@ -190,6 +214,24 @@ namespace Mengine
             }
             
             return array;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void AppleGetDataFromNSData( NSData * _in, Data * const _out )
+        {
+            const uint8_t * bytes = (const uint8_t *)[_in bytes];
+            NSUInteger length = [_in length];
+
+            _out->insert( _out->end(), bytes, bytes + length );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        NSData * AppleGetNSDataFromData( const Data & _data )
+        {
+            const Data::value_type * bytes = _data.data();
+            Data::size_type size = _data.size();
+            
+            NSData * data = [NSData dataWithBytes:bytes length:size];
+            
+            return data;
         }
         //////////////////////////////////////////////////////////////////////////
     }

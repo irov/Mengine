@@ -61,6 +61,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileOutputStream::close()
     {
+        if( m_file == nullptr )
+        {
+            return false;
+        }
+
         ::fclose( m_file );
         m_file = nullptr;
 

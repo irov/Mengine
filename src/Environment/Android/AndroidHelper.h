@@ -20,6 +20,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         StaticString<1024> AndroidGetJavaClassName( JNIEnv * _jenv, jclass _jclass );
         //////////////////////////////////////////////////////////////////////////
+        void AndroidCallVoidStaticClassMethod( JNIEnv * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... );
+        jobject AndroidCallObjectStaticClassMethod( JNIEnv * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... );
+        //////////////////////////////////////////////////////////////////////////
+        jobject AndroidMakeJObjectPointer( JNIEnv * _jenv, void * _value );
         jobject AndroidMakeJObjectBoolean( JNIEnv * _jenv, bool _value );
         jobject AndroidMakeJObjectCharacter( JNIEnv * _jenv, Char _value );
         jobject AndroidMakeJObjectInteger( JNIEnv * _jenv, int32_t _value );
@@ -31,6 +35,11 @@ namespace Mengine
         jobject AndroidMakeJObjectString( JNIEnv * _jenv, const ConstString & _value );
         jobject AndroidMakeJObjectArrayList( JNIEnv * _jenv, int32_t _count );
         jobject AndroidMakeJObjectHashMap( JNIEnv * _jenv, int32_t _count );
+        //////////////////////////////////////////////////////////////////////////
+        void * AndroidGetJObjectPointer( JNIEnv * _jenv, jobject _pointer );
+        jboolean AndroidAddJObjectList( JNIEnv * _jenv, jobject _list, jobject _value );
+        jobject AndroidPutJObjectMap( JNIEnv * _jenv, jobject _map, jobject _key, jobject _value );
+        jobject AndroidGetJObjectMap( JNIEnv * _jenv, jobject _map, jobject _key );
         //////////////////////////////////////////////////////////////////////////
         void AndroidDeleteLocalRef( JNIEnv * _jenv, jobject _jobject );
         //////////////////////////////////////////////////////////////////////////

@@ -53,7 +53,15 @@ namespace Mengine
 
         agent.append( ")" );
 
-        HINTERNET hInternet = ::InternetOpenA( agent.c_str(), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0 );
+        const Char * agent_str = agent.c_str();
+
+        DWORD dwFlags = 0;
+
+        HINTERNET hInternet = ::InternetOpenA( agent_str
+            , INTERNET_OPEN_TYPE_PRECONFIG
+            , NULL
+            , NULL
+            , dwFlags );
 
         if( hInternet == NULL )
         {

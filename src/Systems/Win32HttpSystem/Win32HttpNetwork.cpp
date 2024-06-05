@@ -284,7 +284,7 @@ namespace Mengine
                 for( ;; )
                 {
                     DWORD bytesAvailable = 0;
-                    if( ::InternetQueryDataAvailable( _hRequest, &bytesAvailable, 0, 0 ) == FALSE )
+                    if( ::InternetQueryDataAvailable( _hRequest, &bytesAvailable, 0, INTERNET_NO_CALLBACK ) == FALSE )
                     {
                         return false;
                     }
@@ -316,7 +316,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             static bool makeResponse( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
             {
-                if( ::HttpEndRequestA( _hRequest, NULL, 0, 0 ) == FALSE )
+                if( ::HttpEndRequestA( _hRequest, NULL, 0, INTERNET_NO_CALLBACK ) == FALSE )
                 {
                     return false;
                 }

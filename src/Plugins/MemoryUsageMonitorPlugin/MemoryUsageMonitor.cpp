@@ -95,15 +95,14 @@ namespace Mengine
         LOGGER_SERVICE()
             ->lockMessage();
 
-        uint32_t totalMemoryUsage = ALLOCATOR_SYSTEM()
-            ->getMemoryUsage();
+        int64_t Statistic_AllocatorSize = STATISTIC_GET_INTEGER( STATISTIC_ALLOCATOR_SIZE );
 
         const ConstString & currentSceneName = STATISTIC_GET_CONSTSTRING( STATISTIC_CURRENT_SCENE_NAME );
 
-        LOGGER_MESSAGE_RELEASE( "Memory usage monitor [%ugb %umb %ukb] [scene %s]"
-            , (totalMemoryUsage / (1000 * 1000 * 1000))
-            , ((totalMemoryUsage / (1000 * 1000)) % 1000)
-            , ((totalMemoryUsage / 1000) % 1000)
+        LOGGER_MESSAGE_RELEASE( "Memory usage monitor [%ugb %umb %ukb] scene: %s"
+            , (uint32_t)(Statistic_AllocatorSize / (1000 * 1000 * 1000))
+            , (uint32_t)((Statistic_AllocatorSize / (1000 * 1000)) % 1000)
+            , (uint32_t)((Statistic_AllocatorSize / 1000) % 1000)
             , currentSceneName.c_str()
         );
 

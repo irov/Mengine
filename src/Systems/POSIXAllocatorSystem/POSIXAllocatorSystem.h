@@ -28,14 +28,5 @@ namespace Mengine
     protected:
         void beginThread( ThreadId _threadId ) override;
         void endThread( ThreadId _threadId ) override;
-
-    protected:
-        uint32_t getMemoryUsage() const override;
-
-    protected:
-        void report( size_t _add, size_t _minus );
-
-    protected:
-        AtomicUInt32 m_memoryUsage;
     };
 }

@@ -24,9 +24,6 @@ namespace Mengine
     public:
         virtual void beginThread( ThreadId _threadId ) = 0;
         virtual void endThread( ThreadId _threadId ) = 0;
-
-    public:
-        virtual uint32_t getMemoryUsage() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

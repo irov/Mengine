@@ -102,7 +102,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
-        implementation 'com.applovin.mediation:amazon-tam-adapter:9.9.5.0'
+        implementation 'com.applovin.mediation:amazon-tam-adapter:9.10.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE == true) {
@@ -122,11 +122,11 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_HYPRMX == true) {
-        implementation 'com.applovin.mediation:hyprmx-adapter:6.4.0.0'
+        implementation 'com.applovin.mediation:hyprmx-adapter:6.4.1.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_INMOBI == true) {
-        implementation 'com.applovin.mediation:inmobi-adapter:10.6.7.0'
+        implementation 'com.applovin.mediation:inmobi-adapter:10.7.3.0'
         implementation 'com.squareup.picasso:picasso:2.71828'
         implementation 'androidx.recyclerview:recyclerview:1.1.0'
     }
@@ -136,7 +136,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LIFTOFF == true) {
-        implementation 'com.applovin.mediation:vungle-adapter:7.3.2.1'
+        implementation 'com.applovin.mediation:vungle-adapter:7.3.2.2'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LINE == true) {
@@ -144,7 +144,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MAIO == true) {
-        implementation 'com.applovin.mediation:maio-adapter:1.1.16.2'
+        implementation 'com.applovin.mediation:maio-adapter:1.1.16.3'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_META == true) {
@@ -172,7 +172,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS == true) {
-        implementation 'com.applovin.mediation:unityads-adapter:4.11.3.0'
+        implementation 'com.applovin.mediation:unityads-adapter:4.12.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE == true) {
@@ -180,10 +180,10 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MYTARGET == true) {
-        implementation 'com.applovin.mediation:mytarget-adapter:5.20.1.0' //VK Ad Network
+        implementation 'com.applovin.mediation:mytarget-adapter:5.21.0.0' //VK Ad Network
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YANDEX == true) {
-        implementation 'com.applovin.mediation:yandex-adapter:7.0.1.0'
+        implementation 'com.applovin.mediation:yandex-adapter:7.1.0.0'
     }
 }

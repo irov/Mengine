@@ -32,14 +32,6 @@ namespace Mengine
         void endThread( ThreadId _threadId ) override;
 
     protected:
-        uint32_t getMemoryUsage() const override;
-
-    protected:
-        void report( size_t _add, size_t _minus );
-
-    protected:
-        HANDLE m_hHeap;
-
-        AtomicUInt32 m_memoryUsage;        
+        HANDLE m_hHeap;       
     };
 }

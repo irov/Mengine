@@ -40,9 +40,6 @@ namespace Mengine
         void endThread( ThreadId _threadId ) override;
 
     protected:
-        uint32_t getMemoryUsage() const override;
-
-    protected:
         void report( const Char * _doc, size_t _add, size_t _minus );
 
     protected:

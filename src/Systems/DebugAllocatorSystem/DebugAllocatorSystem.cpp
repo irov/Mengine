@@ -114,7 +114,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_mem, "invalid alloc memory '%zu' total '%u' [%s]"
             , total_size
-            , this->getMemoryUsage()
+            , Helper::atomicLoad( m_memoryUsage )
             , _doc
         );
 
@@ -180,7 +180,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_mem, "invalid calloc memory '%zu' total '%u' [%s]"
             , total_size
-            , this->getMemoryUsage()
+            , Helper::atomicLoad( m_memoryUsage )
             , _doc
         );
 
@@ -216,7 +216,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' total '%u' from nullptr [%s]"
                 , total_size
-                , this->getMemoryUsage()
+                , Helper::atomicLoad( m_memoryUsage )
                 , _doc
             );
 
@@ -253,7 +253,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_mem, "invalid realloc memory '%zu' total '%u' from '%p' [%s]"
             , total_size
-            , this->getMemoryUsage()
+            , Helper::atomicLoad( m_memoryUsage )
             , _mem
             , _doc
         );
@@ -289,13 +289,6 @@ namespace Mengine
         MENGINE_UNUSED( _threadId );
 
         //Empty
-    }
-    ////////////////////////////////////////////////////////////////////////
-    uint32_t DebugAllocatorSystem::getMemoryUsage() const
-    {
-        uint32_t memoryUsage = m_memoryUsage;
-
-        return memoryUsage;
     }
     ////////////////////////////////////////////////////////////////////////
     void DebugAllocatorSystem::report( const Char * _doc, size_t _add, size_t _minus )

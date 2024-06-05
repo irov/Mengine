@@ -73,17 +73,11 @@ namespace Mengine
 
         void * mem = rpmalloc( _size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid alloc memory '%zu' total '%u' [%s]"
+        MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid alloc memory '%zu' [%s]"
             , _size
             , this->getMemoryUsage()
             , _doc
         );
-
-#ifdef MENGINE_DEBUG
-        size_t usable_size = rpmalloc_usable_size( mem );
-
-        this->report( usable_size, 0 );
-#endif
 
         return mem;
     }
@@ -92,15 +86,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#ifdef MENGINE_DEBUG
-        size_t usable_size = rpmalloc_usable_size( _mem );
-#endif
-
         rpfree( _mem );
-
-#ifdef MENGINE_DEBUG
-        this->report( 0, usable_size );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void * RPAllocatorSystem::calloc( size_t _num, size_t _size, const Char * _doc )
@@ -109,17 +95,10 @@ namespace Mengine
 
         void * mem = rpcalloc( _num, _size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid calloc memory '%zu' total '%u' [%s]"
+        MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid calloc memory '%zu' [%s]"
             , _num * _size
-            , this->getMemoryUsage()
             , _doc
         );
-
-#ifdef MENGINE_DEBUG
-        size_t usable_size = rpmalloc_usable_size( mem );
-
-        this->report( usable_size, 0 );
-#endif
 
         return mem;
     }
@@ -128,24 +107,13 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#ifdef MENGINE_DEBUG
-        size_t old_size = rpmalloc_usable_size( _mem );
-#endif
-
         void * mem = rprealloc( _mem, _size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' total '%u' from [%p] [%s]"
+        MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' from [%p] [%s]"
             , _size
-            , this->getMemoryUsage()
             , _mem
             , _doc
         );
-
-#ifdef MENGINE_DEBUG
-        size_t usable_size = rpmalloc_usable_size( mem );
-
-        this->report( usable_size, old_size );
-#endif
 
         return mem;
     }
@@ -158,21 +126,6 @@ namespace Mengine
     void RPAllocatorSystem::stopThread()
     {
         rpmalloc_thread_finalize( 1 );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t RPAllocatorSystem::getMemoryUsage() const
-    {
-        uint32_t memoryUsage = m_memoryUsage;
-
-        return memoryUsage;
-    }
-    ////////////////////////////////////////////////////////////////////////
-    void RPAllocatorSystem::report( size_t _add, size_t _minus )
-    {
-        MENGINE_ASSERTION_FATAL( m_memoryUsage + _add >= _minus );
-
-        m_memoryUsage += _add;
-        m_memoryUsage -= _minus;
     }
     //////////////////////////////////////////////////////////////////////////
 }

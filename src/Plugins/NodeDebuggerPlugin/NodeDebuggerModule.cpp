@@ -1462,10 +1462,9 @@ namespace Mengine
 
         pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
 
-        uint32_t allocator_report_total = ALLOCATOR_SYSTEM()
-            ->getMemoryUsage();
+        int64_t Statistic_AllocatorSize = STATISTIC_GET_INTEGER( STATISTIC_ALLOCATOR_SIZE );
 
-        payloadNode.append_attribute( "Total" ).set_value( allocator_report_total );
+        payloadNode.append_attribute( "Total" ).set_value( Statistic_AllocatorSize );
 
         uint32_t availableTextureMemory = RENDER_SYSTEM()
             ->getAvailableTextureMemory();

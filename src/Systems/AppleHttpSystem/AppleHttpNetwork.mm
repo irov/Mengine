@@ -8,7 +8,7 @@
 
 @end
 
-@implementation MengineNetwork
+@implementation MengineHttpNetwork
 
 + (void)setTimeout:(NSMutableURLRequest *)request timeout:(int)timeout {
     if (timeout != -1) {

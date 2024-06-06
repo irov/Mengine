@@ -33,13 +33,13 @@ namespace Mengine
             
         for( const HttpRequestPostProperty & property : m_properties )
         {
-            NSString *key = Helper::stringToNSString( property.key );
-            NSString *value = Helper::stringToNSString( property.value );
+            NSString * key = Helper::stringToNSString( property.key );
+            NSString * value = Helper::stringToNSString( property.value );
             
             ns_properties[key] = value;
         }
 
-        MengineHttpResponseParam * response = [MengineNetwork httpRequestPostMessage:_request properties:ns_properties];
+        MengineHttpResponseParam * response = [MengineHttpNetwork httpRequestPostMessage:_request properties:ns_properties];
         
         return response;
     }

@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MengineHttpResponseParam * AppleHttpRequestGetMessage::_onHttp( MengineHttpRequestParam * _request )
     {
-        MengineHttpResponseParam * response = [MengineNetwork httpRequestGetMessage:_request];
+        MengineHttpResponseParam * response = [MengineHttpNetwork httpRequestGetMessage:_request];
         
         return response;
     }

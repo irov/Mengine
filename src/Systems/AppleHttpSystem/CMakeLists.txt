@@ -4,6 +4,9 @@ ADD_FILTER(
 src
     AppleHttpSystem.mm
     AppleHttpSystem.h
+
+    AppleHttpNetwork.mm
+    AppleHttpNetwork.h
     
     AppleHttpRequest.mm
     AppleHttpRequest.h

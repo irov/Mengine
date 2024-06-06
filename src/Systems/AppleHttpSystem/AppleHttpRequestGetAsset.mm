@@ -81,7 +81,7 @@ namespace Mengine
         NSString * ns_login = Helper::stringToNSString( m_login );
         NSString * ns_password = Helper::stringToNSString( m_password );
         
-        MengineHttpResponseParam * response = [MengineNetwork httpRequestGetAsset:_request login:ns_login password:ns_password];
+        MengineHttpResponseParam * response = [MengineHttpNetwork httpRequestGetAsset:_request login:ns_login password:ns_password];
         
         return response;
     }

@@ -7,6 +7,7 @@ import com.applovin.mediation.MaxAdExpirationListener;
 import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxAdRequestListener;
 import com.applovin.mediation.MaxAdRevenueListener;
+import com.applovin.mediation.MaxAdReviewListener;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.MaxReward;
 import com.applovin.mediation.MaxRewardedAdListener;
@@ -17,7 +18,7 @@ import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxAdRequestListener, MaxRewardedAdListener, MaxAdRevenueListener, MaxAdExpirationListener {
+public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxAdRequestListener, MaxRewardedAdListener, MaxAdRevenueListener, MaxAdExpirationListener, MaxAdReviewListener {
     private MaxRewardedAd m_rewardedAd;
 
     public MengineAppLovinRewarded(MengineAppLovinPlugin plugin, String adUnitId) {
@@ -31,6 +32,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         rewardedAd.setRequestListener(this);
         rewardedAd.setRevenueListener(this);
         rewardedAd.setExpirationListener(this);
+        rewardedAd.setAdReviewListener(this);
 
         m_rewardedAd = rewardedAd;
 
@@ -138,7 +140,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         return true;
     }
 
-    public boolean showRewarded(String placement) {
+    public boolean showRewarded(MengineActivity activity, String placement) {
         if(m_rewardedAd == null) {
             return false;
         }
@@ -156,7 +158,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             return false;
         }
 
-        m_rewardedAd.showAd(placement);
+        m_rewardedAd.showAd(placement, activity);
 
         return true;
     }
@@ -171,22 +173,6 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         m_plugin.setState("applovin.rewarded.state." + m_adUnitId, "request_started");
 
         m_plugin.pythonCall("onAppLovinRewardedOnAdRequestStarted", m_adUnitId);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onRewardedVideoStarted(MaxAd ad) {
-        this.logMaxAd("onRewardedVideoStarted", ad);
-
-        //Deprecation
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onRewardedVideoCompleted(MaxAd ad) {
-        this.logMaxAd("onRewardedVideoCompleted", ad);
-
-        //Deprecation
     }
 
     @Override
@@ -345,5 +331,10 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             .addParameterJSON("old_ad", this.getMAAdParams(adOld))
             .addParameterJSON("new_ad", this.getMAAdParams(adNew))
             .log();
+    }
+
+    @Override
+    public void onCreativeIdGenerated(@NonNull String creativeId, @NonNull MaxAd ad) {
+        //ToDo
     }
 }

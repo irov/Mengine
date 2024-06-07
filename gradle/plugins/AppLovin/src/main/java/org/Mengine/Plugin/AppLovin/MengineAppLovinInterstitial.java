@@ -8,6 +8,7 @@ import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxAdRequestListener;
 import com.applovin.mediation.MaxAdRevenueListener;
+import com.applovin.mediation.MaxAdReviewListener;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 
@@ -16,7 +17,7 @@ import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
 
-public class MengineAppLovinInterstitial extends MengineAppLovinBase implements MaxAdListener, MaxAdRequestListener, MaxAdRevenueListener, MaxAdExpirationListener {
+public class MengineAppLovinInterstitial extends MengineAppLovinBase implements MaxAdListener, MaxAdRequestListener, MaxAdRevenueListener, MaxAdExpirationListener, MaxAdReviewListener {
     private MaxInterstitialAd m_interstitialAd;
 
     public MengineAppLovinInterstitial(MengineAppLovinPlugin plugin, String adUnitId) {
@@ -30,6 +31,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         interstitialAd.setRequestListener(this);
         interstitialAd.setRevenueListener(this);
         interstitialAd.setExpirationListener(this);
+        interstitialAd.setAdReviewListener(this);
 
         m_interstitialAd = interstitialAd;
 
@@ -118,7 +120,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         return true;
     }
 
-    public boolean showInterstitial(String placement) {
+    public boolean showInterstitial(MengineActivity activity, String placement) {
         if (m_interstitialAd == null) {
             return false;
         }
@@ -136,7 +138,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             return false;
         }
 
-        m_interstitialAd.showAd(placement);
+        m_interstitialAd.showAd(placement, activity);
 
         return true;
     }
@@ -277,8 +279,11 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_plugin.onEventRevenuePaid(ad);
 
-        m_plugin.pythonCall("onAppLovinInterstitialOnAdRevenuePaid", m_adUnitId,
-                Map.of("revenue", ad.getRevenue())
+		double revenue = ad.getRevenue();
+
+        m_plugin.pythonCall("onAppLovinInterstitialOnAdRevenuePaid"
+            , m_adUnitId
+            , Map.of("revenue", revenue)
         );
     }
 
@@ -290,5 +295,10 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             .addParameterJSON("old_ad", this.getMAAdParams(adOld))
             .addParameterJSON("new_ad", this.getMAAdParams(adNew))
             .log();
+    }
+
+    @Override
+    public void onCreativeIdGenerated(@NonNull String creativeId, @NonNull MaxAd ad) {
+        //ToDo
     }
 }

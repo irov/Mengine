@@ -383,7 +383,9 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             , placement
         );
 
-        if (interstitial.showInterstitial(placement) == false) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (interstitial.showInterstitial(activity, placement) == false) {
             return false;
         }
 
@@ -463,7 +465,9 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             , placement
         );
 
-        if (rewarded.showRewarded(placement) == false) {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (rewarded.showRewarded(activity, placement) == false) {
             return false;
         }
 

@@ -91,9 +91,17 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
                 this.addNonetBanner(activity, image, url);
             }
         } catch (XmlPullParserException e) {
-            e.printStackTrace();
+            m_plugin.logError("[NONET_BANNER] XmlPullParserException: %s"
+                , e.getMessage()
+            );
+
+            return;
         } catch (IOException e) {
-            e.printStackTrace();
+            m_plugin.logError("[NONET_BANNER] IOException: %s"
+                , e.getMessage()
+            );
+
+            return;
         }
 
         if (m_banners.isEmpty() == true) {
@@ -156,6 +164,14 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         String packageName = activity.getPackageName();
 
         int resId = resources.getIdentifier(image, "drawable", packageName);
+
+        if (resId == 0) {
+            m_plugin.logError("[NONET_BANNER] not found image: %s"
+                , image
+            );
+
+            return;
+        }
 
         Resources.Theme theme = context.getTheme();
         Drawable drawable = ResourcesCompat.getDrawable(resources, resId, theme);

@@ -27,6 +27,7 @@ import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 
+import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
@@ -581,8 +582,6 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 try {
                     pictureURL = responseObject.getJSONObject("data").getString("url");
                 } catch (JSONException e) {
-                    e.printStackTrace();
-
                     MengineFacebookPlugin.this.logError("[ERROR] profile user picture link [%s] catch JSONException: %s"
                         , graphPath
                         , e.getMessage()

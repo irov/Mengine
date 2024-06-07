@@ -31,7 +31,7 @@ public class MengineGeneralDataProtectionRegulationPlugin extends MenginePlugin 
 
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("gdpr_pass", passGDPR);
-        editor.commit();
+        editor.apply();
 
         m_passGDPR = passGDPR;
 

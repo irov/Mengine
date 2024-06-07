@@ -26,12 +26,11 @@ namespace Mengine
     bool Win32CryptographySystem::_initializeService()
     {
         HCRYPTPROV hCryptProv;
-        if( ::CryptAcquireContext(
-            &hCryptProv,
-            NULL,
-            (LPCWSTR)L"Microsoft Base Cryptographic Provider v1.0",
-            PROV_RSA_FULL,
-            CRYPT_VERIFYCONTEXT ) == FALSE )
+        if( ::CryptAcquireContext( &hCryptProv
+            , NULL
+            , (LPCWSTR)L"Microsoft Base Cryptographic Provider v1.0"
+            , PROV_RSA_FULL
+            , CRYPT_VERIFYCONTEXT ) == FALSE )
         {
             return false;
         }

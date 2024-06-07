@@ -13,6 +13,7 @@ import com.applovin.sdk.AppLovinMediationProvider;
 import com.applovin.sdk.AppLovinPrivacySettings;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
+import com.applovin.sdk.AppLovinSdkInitializationConfiguration;
 import com.applovin.sdk.AppLovinSdkSettings;
 import com.applovin.sdk.AppLovinTermsAndPrivacyPolicyFlowSettings;
 
@@ -36,6 +37,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     public static final String PLUGIN_NAME = "MengineAppLovin";
     public static final boolean PLUGIN_EMBEDDING = true;
 
+    public static final String PLUGIN_METADATA_SDK_KEY = "mengine.applovin.sdk_key";
     public static final String PLUGIN_METADATA_IS_AGE_RESTRICTED_USER = "mengine.applovin.is_age_restricted_user";
     public static final String PLUGIN_METADATA_CCPA = "mengine.applovin.CCPA";
     public static final String PLUGIN_METADATA_ENABLE_PRIVACY_POLICY_FLOW = "mengine.applovin.enable_privacy_policy_flow";
@@ -53,21 +55,13 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     private MengineAppLovinNonetBannersInterface m_nonetBanners;
 
     @Override
-    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (event == MengineEvent.EVENT_SESSION_ID) {
-            String sessionId = (String)args[0];
-
-            if (m_appLovinSdk != null) {
-                m_appLovinSdk.setUserIdentifier(sessionId);
-            }
-        }
-    }
-
-    @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         m_banners = new HashMap<>();
         m_interstitials = new HashMap<>();
         m_rewardeds = new HashMap<>();
+
+        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(activity);
+        AppLovinSdkSettings settings = appLovinSdk.getSettings();
 
         String MengineAppLovinPlugin_IsAgeRestrictedUser = this.getMetaDataString(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER);
 
@@ -109,8 +103,6 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             );
         }
 
-        AppLovinSdkSettings settings = new AppLovinSdkSettings(activity);
-
         boolean MengineAppLovinPlugin_EnablePrivacyPolicyFlow = this.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_PRIVACY_POLICY_FLOW);
 
         if (MengineAppLovinPlugin_EnablePrivacyPolicyFlow == true) {
@@ -149,16 +141,23 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             settings.setCreativeDebuggerEnabled(false);
         }
 
-        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(settings, activity);
-
-        appLovinSdk.setMediationProvider(AppLovinMediationProvider.MAX);
-
         MengineApplication application = this.getMengineApplication();
 
         String sessionId = application.getSessionId();
-        appLovinSdk.setUserIdentifier(sessionId);
+        settings.setUserIdentifier(sessionId);
 
-        appLovinSdk.initializeSdk(activity, new AppLovinSdk.SdkInitializationListener() {
+        String MengineAppLovinPlugin_SdkKey = this.getMetaDataString(PLUGIN_METADATA_SDK_KEY);
+
+        this.logMessage("%s: %s"
+                , PLUGIN_METADATA_SDK_KEY
+                , MengineAppLovinPlugin_SdkKey
+        );
+
+        AppLovinSdkInitializationConfiguration config = AppLovinSdkInitializationConfiguration.builder(MengineAppLovinPlugin_SdkKey, activity)
+                .setMediationProvider( AppLovinMediationProvider.MAX )
+                .build();
+
+        appLovinSdk.initialize(config, new AppLovinSdk.SdkInitializationListener() {
             @Override
             public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
                 AppLovinCmpService cmpService = appLovinSdk.getCmpService();

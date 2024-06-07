@@ -152,7 +152,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL == true) {
-        implementation 'com.applovin.mediation:mintegral-adapter:16.7.41.0'
+        implementation 'com.applovin.mediation:mintegral-adapter:16.7.51.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MOBILEFUSE == true) {

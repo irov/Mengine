@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/Interface.h"
 #include "Interface/HttpResponseInterface.h"
 
 namespace Mengine

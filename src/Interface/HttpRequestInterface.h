@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/Interface.h"
 #include "Interface/HttpResponseInterface.h"
 #include "Interface/HttpReceiverInterface.h"
 #include "Interface/ThreadTaskInterface.h"

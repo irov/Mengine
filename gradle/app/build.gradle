@@ -80,7 +80,7 @@ if (MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING == true) {
     apply plugin: 'com.google.firebase.firebase-perf'
 }
 
-if (MENGINE_APP_PLUGIN_APPLOVIN == true && project.hasProperty("MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY") == true) {
+if (MENGINE_APP_PLUGIN_APPLOVIN == true && project.hasProperty("MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY")) {
     println "MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY: $MENGINE_APP_PLUGIN_APPLOVIN_AD_REVIEW_KEY"
 
     apply plugin: 'applovin-quality-service'
@@ -101,25 +101,25 @@ android {
             //Empty
         } else if (taskGraph.hasTask(bundleDebug)) {
             if (ANDROID_APP_SPLIT_ENABLE == true) {
-                throw new GradleException("unsupport bundle with enable ANDROID_APP_SPLIT_ENABLE");
+                throw new GradleException("unsupport bundle with enable ANDROID_APP_SPLIT_ENABLE")
             }
 
             if (ANDROID_APP_BUNDLE_ENABLE == false) {
-                throw new GradleException("unsupport bundle without enable ANDROID_APP_BUNDLE_ENABLE");
+                throw new GradleException("unsupport bundle without enable ANDROID_APP_BUNDLE_ENABLE")
             }
         } else if (taskGraph.hasTask(bundleRelease)) {
             if (ANDROID_APP_SPLIT_ENABLE == true) {
-                throw new GradleException("unsupport bundle with enable ANDROID_APP_SPLIT_ENABLE");
+                throw new GradleException("unsupport bundle with enable ANDROID_APP_SPLIT_ENABLE")
             }
 
             if (ANDROID_APP_BUNDLE_ENABLE == false) {
-                throw new GradleException("unsupport bundle without enable ANDROID_APP_BUNDLE_ENABLE");
+                throw new GradleException("unsupport bundle without enable ANDROID_APP_BUNDLE_ENABLE")
             }
         }
     }
 
     signingConfigs {
-        if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
+        if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE")) {
             debug {
                 println "ANDROID_APP_DEBUG_STORE_FILE: $ANDROID_APP_DEBUG_STORE_FILE"
                 println "ANDROID_APP_DEBUG_KEY_ALIAS: $ANDROID_APP_DEBUG_KEY_ALIAS"
@@ -127,7 +127,7 @@ android {
                 def f = new File(ANDROID_APP_DEBUG_STORE_FILE)
 
                 if (f.exists() == false) {
-                    throw new GradleException("ANDROID_APP_DEBUG_STORE_FILE not found folder: $ANDROID_APP_DEBUG_STORE_FILE");
+                    throw new GradleException("ANDROID_APP_DEBUG_STORE_FILE not found folder: $ANDROID_APP_DEBUG_STORE_FILE")
                 }
 
                 storeFile file(ANDROID_APP_DEBUG_STORE_FILE)
@@ -137,7 +137,7 @@ android {
             }
         }
 
-        if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
+        if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE")) {
             release {
                 println "ANDROID_APP_RELEASE_STORE_FILE: $ANDROID_APP_RELEASE_STORE_FILE"
                 println "ANDROID_APP_RELEASE_KEY_ALIAS: $ANDROID_APP_RELEASE_KEY_ALIAS"
@@ -145,7 +145,7 @@ android {
                 def f = new File(ANDROID_APP_RELEASE_STORE_FILE)
 
                 if (f.exists() == false) {
-                    throw new GradleException("ANDROID_APP_RELEASE_STORE_FILE not found folder: $ANDROID_APP_RELEASE_STORE_FILE");
+                    throw new GradleException("ANDROID_APP_RELEASE_STORE_FILE not found folder: $ANDROID_APP_RELEASE_STORE_FILE")
                 }
 
                 storeFile file(ANDROID_APP_RELEASE_STORE_FILE)
@@ -211,13 +211,13 @@ android {
 
     buildTypes {
         debug {
-            if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE") == true) {
+            if (project.hasProperty("ANDROID_APP_DEBUG_STORE_FILE")) {
                 signingConfig signingConfigs.debug
             }
         }
 
         release {
-            if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE") == true) {
+            if (project.hasProperty("ANDROID_APP_RELEASE_STORE_FILE")) {
                 signingConfig signingConfigs.release
             }
         }
@@ -275,7 +275,7 @@ android {
                 def f = new File(ANDROID_APP_MANIFEST_SRC_FILE)
 
                 if (f.exists() == false) {
-                    throw new GradleException("ANDROID_APP_MANIFEST_SRC_FILE not found folder: $ANDROID_APP_MANIFEST_SRC_FILE");
+                    throw new GradleException("ANDROID_APP_MANIFEST_SRC_FILE not found folder: $ANDROID_APP_MANIFEST_SRC_FILE")
                 }
 
                 manifest.srcFile ANDROID_APP_MANIFEST_SRC_FILE
@@ -297,7 +297,7 @@ android {
                 def f = new File(ANDROID_APP_ASSETS_RES_DIR)
 
                 if (f.exists() == false) {
-                    throw new GradleException("ANDROID_APP_ASSETS_RES_DIR not found folder: $ANDROID_APP_ASSETS_RES_DIR");
+                    throw new GradleException("ANDROID_APP_ASSETS_RES_DIR not found folder: $ANDROID_APP_ASSETS_RES_DIR")
                 }
 
                 res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
@@ -313,7 +313,7 @@ android {
                 def f = new File(ANDROID_APP_ASSETS_SRC_DIR)
 
                 if (f.exists() == false) {
-                    throw new GradleException("ANDROID_APP_ASSETS_SRC_DIR not found folder: $ANDROID_APP_ASSETS_SRC_DIR");
+                    throw new GradleException("ANDROID_APP_ASSETS_SRC_DIR not found folder: $ANDROID_APP_ASSETS_SRC_DIR")
                 }
 
                 assets.srcDirs += [ANDROID_APP_ASSETS_SRC_DIR]
@@ -339,7 +339,7 @@ android {
 }
 
 if (ANDROID_APP_SPLIT_ENABLE == true) {
-    android.applicationVariants.all { variant ->
+    android.applicationVariants.configureEach { variant ->
         variant.outputs.each { output ->
             def abiCodes = ["arm64-v8a": 1, "armeabi-v7a": 2, "x86": 3, "x86_64": 4]
 
@@ -399,7 +399,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_ADVERTISING", MENGINE_APP_PLUGIN_ADVERTIS
 
 if (MENGINE_APP_PLUGIN_ADVERTISING == true) {
     if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_ADVERTISING required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
+        throw new GradleException("MENGINE_APP_PLUGIN_ADVERTISING required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
     }
 
     android.ext.plugins += 'org.Mengine.Plugin.Advertising.MengineAdvertisingPlugin'
@@ -423,7 +423,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE", MENGINE_APP_PLUGIN_FIREBASE)
 
 if (MENGINE_APP_PLUGIN_FIREBASE == true) {
     if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
     }
     
     android.ext.plugins += 'org.Mengine.Plugin.Firebase.MengineFirebasePlugin'
@@ -437,7 +437,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK", MENGINE_APP_PLUGIN_FI
 
 if (MENGINE_APP_PLUGIN_FIREBASE_APPCHECK == true) {
     if (MENGINE_APP_PLUGIN_FIREBASE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK required enable MENGINE_APP_PLUGIN_FIREBASE");
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK required enable MENGINE_APP_PLUGIN_FIREBASE")
     }
     
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseAppCheck.MengineFirebaseAppCheckPlugin'
@@ -452,7 +452,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD
 
 if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
     if (MENGINE_APP_PLUGIN_FIREBASE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS required enable MENGINE_APP_PLUGIN_FIREBASE");
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS required enable MENGINE_APP_PLUGIN_FIREBASE")
     }
     
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseCrashlytics.MengineFirebaseCrashlyticsPlugin'
@@ -466,7 +466,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", MENGINE_APP_PLUGIN_F
 
 if (MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS == true) {
     if (MENGINE_APP_PLUGIN_FIREBASE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS required enable MENGINE_APP_PLUGIN_FIREBASE");
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS required enable MENGINE_APP_PLUGIN_FIREBASE")
     }
     
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseAnalytics.MengineFirebaseAnalyticsPlugin'
@@ -480,7 +480,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING", MENGINE_APP_PLUGIN_F
 
 if (MENGINE_APP_PLUGIN_FIREBASE_MESSAGING == true) {
     if (MENGINE_APP_PLUGIN_FIREBASE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING required enable MENGINE_APP_PLUGIN_FIREBASE");
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_MESSAGING required enable MENGINE_APP_PLUGIN_FIREBASE")
     }
     
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseMessaging.MengineFirebaseMessagingPlugin'
@@ -494,7 +494,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG", MENGINE_APP_PLUGI
 
 if (MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG == true) {
     if (MENGINE_APP_PLUGIN_FIREBASE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG required enable MENGINE_APP_PLUGIN_FIREBASE");
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_REMOTECONFIG required enable MENGINE_APP_PLUGIN_FIREBASE")
     }
     
     android.ext.plugins += 'org.Mengine.Plugin.FirebaseRemoteConfig.MengineFirebaseRemoteConfigPlugin'
@@ -508,7 +508,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING", MENGINE_
 
 if (MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING == true) {
     if (MENGINE_APP_PLUGIN_FIREBASE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING required enable MENGINE_APP_PLUGIN_FIREBASE");
+        throw new GradleException("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING required enable MENGINE_APP_PLUGIN_FIREBASE")
     }
     
     android.ext.plugins += 'org.Mengine.Plugin.FirebasePerformanceMonitoring.MengineFirebasePerformanceMonitoringPlugin'
@@ -592,7 +592,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", MENGINE_APP_PLUGIN_G
 
 if (MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL == true) {
     if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
+        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
     }
 
     android.ext.plugins += 'org.Mengine.Plugin.GoogleGameSocial.MengineGoogleGameSocialPlugin'
@@ -606,7 +606,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING", MENGINE_APP_PLUGIN_
 
 if (MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING == true) {
     if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
+        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
     }
 
     android.ext.plugins += 'org.Mengine.Plugin.GooglePlayBilling.MengineGooglePlayBillingPlugin'
@@ -620,7 +620,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", MENGINE_APP_PLUGIN
 
 if (MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS == true) {
     if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
+        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
     }
 
     android.ext.plugins += 'org.Mengine.Plugin.GoogleInAppReviews.MengineGoogleInAppReviewsPlugin'
@@ -634,7 +634,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_CONSENT", MENGINE_APP_PLUGIN_GOOGL
 
 if (MENGINE_APP_PLUGIN_GOOGLE_CONSENT == true) {
     if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
-        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_CONSENT required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE");
+        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_CONSENT required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
     }
 
     android.ext.plugins += 'org.Mengine.Plugin.GoogleConsent.MengineGoogleConsentPlugin'
@@ -771,13 +771,13 @@ android {
 }
 
 if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
-    tasks.all { task ->
+    tasks.configureEach { task ->
         if (task.name.startsWith('generateCrashlyticsSymbolFile')) {
             task.dependsOn 'merge' + (task.name =~ /^generateCrashlyticsSymbolFile(.+)$/)[0][1] + 'NativeLibs'
         }
     }
 
-    tasks.all { task ->
+    tasks.configureEach { task ->
         if (task.name.startsWith('injectCrashlyticsBuildIds')) {
             task.dependsOn 'merge' + (task.name =~ /^injectCrashlyticsBuildIds(.+)$/)[0][1] + 'NativeLibs'
         }

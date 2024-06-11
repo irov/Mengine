@@ -1,6 +1,6 @@
 fun getBooleanProperty(name: String, d: Boolean): Boolean {
     if (extra.has(name) == false) {
-        return d;
+        return d
     }
 
     try {
@@ -14,14 +14,14 @@ fun getBooleanProperty(name: String, d: Boolean): Boolean {
     } catch (e: Exception) {
     }
 
-    return d;
+    return d
 }
 
 fun includeLibrary(name: String, path: String) {
     if (getBooleanProperty("MENGINE_APP_LIBRARY_ALL", false) == false && getBooleanProperty(name, true) == false) {
         println("\u001b[31m" + "[-] Exclude library: $path" + "\u001b[0m")
 
-        return;
+        return
     }
 
     println("\u001b[32m" + "[+] Include library: $path" + "\u001b[0m")
@@ -33,7 +33,7 @@ fun includePlugin(name: String, path: String) {
     if (getBooleanProperty("MENGINE_APP_PLUGIN_ENABLE_ALL", false) == false && getBooleanProperty(name, false) == false) {
         println("\u001b[31m" + "[-] Exclude plugin: $path" + "\u001b[0m")
 
-        return;
+        return
     }
 
     println("\u001b[32m" + "[+] Include plugin: $path" + "\u001b[0m")
@@ -49,8 +49,8 @@ if (extra.has("ANDROID_APP_DELIVERY_PACKAGES") == true) {
     val PACKAGES = extra["ANDROID_APP_DELIVERY_PACKAGES"].toString().split(",")
 
     for(PACKAGE_DESC in PACKAGES) {
-        var PACKAGE_NAME = PACKAGE_DESC.split(";").get(0)
-        var PACKAGE_PATH = PACKAGE_DESC.split(";").getOrNull(1)
+        val PACKAGE_NAME = PACKAGE_DESC.split(";").get(0)
+        val PACKAGE_PATH = PACKAGE_DESC.split(";").getOrNull(1)
 
         if (PACKAGE_PATH == null || PACKAGE_PATH == "NO-PATH") {
             println("\u001b[32m" + "[+] Include delivery: :app:$PACKAGE_NAME" + "\u001b[0m")

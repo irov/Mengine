@@ -108,51 +108,48 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             return;
         }
 
-        Timer refreshTimer = m_plugin.scheduleAtFixedRate(m_showBannerDurationTime, new Runnable() {
-            @Override
-            public void run() {
-                int refreshRequestId;
-                String oldBanenrUrl;
-                String newBannerUrl;
+        Timer refreshTimer = m_plugin.scheduleAtFixedRate(m_showBannerDurationTime, () -> {
+            int refreshRequestId;
+            String oldBanenrUrl;
+            String newBannerUrl;
 
-                if (MengineAppLovinNonetBanners.this.m_visible == false) {
+            if (MengineAppLovinNonetBanners.this.m_visible == false) {
+                return;
+            }
+
+            synchronized (MengineAppLovinNonetBanners.this) {
+                if (MengineAppLovinNonetBanners.this.m_showBanner == null) {
                     return;
                 }
 
-                synchronized (MengineAppLovinNonetBanners.this) {
-                    if (MengineAppLovinNonetBanners.this.m_showBanner == null) {
-                        return;
-                    }
+                MengineAppLovinNonetBanners.this.m_requestId++;
 
-                    MengineAppLovinNonetBanners.this.m_requestId++;
+                ViewGroup viewGroup = activity.getContentViewGroup();
 
-                    ViewGroup viewGroup = activity.getContentViewGroup();
+                NonetBanner oldBanner = MengineAppLovinNonetBanners.this.m_showBanner;
 
-                    NonetBanner oldBanner = MengineAppLovinNonetBanners.this.m_showBanner;
+                viewGroup.removeView(oldBanner.view);
 
-                    viewGroup.removeView(oldBanner.view);
+                NonetBanner newBanner = MengineAppLovinNonetBanners.this.getCurrentBanner();
+                viewGroup.addView(newBanner.view);
 
-                    NonetBanner newBanner = MengineAppLovinNonetBanners.this.getCurrentBanner();
-                    viewGroup.addView(newBanner.view);
+                MengineAppLovinNonetBanners.this.m_showBanner = newBanner;
 
-                    MengineAppLovinNonetBanners.this.m_showBanner = newBanner;
-
-                    refreshRequestId = MengineAppLovinNonetBanners.this.m_requestId;
-                    oldBanenrUrl = oldBanner.url;
-                    newBannerUrl = newBanner.url;
-                }
-
-                MengineAppLovinNonetBanners.this.m_plugin.logMessage("[NONET_BANNER] refresh banner request: %d old: %s new: %s"
-                    , refreshRequestId
-                    , oldBanenrUrl
-                    , newBannerUrl
-                );
-
-                MengineAppLovinNonetBanners.this.m_plugin.buildEvent("mng_ad_nonet_banner_displayed")
-                    .addParameterString("url", newBannerUrl)
-                    .addParameterLong("request_id", refreshRequestId)
-                    .log();
+                refreshRequestId = MengineAppLovinNonetBanners.this.m_requestId;
+                oldBanenrUrl = oldBanner.url;
+                newBannerUrl = newBanner.url;
             }
+
+            MengineAppLovinNonetBanners.this.m_plugin.logMessage("[NONET_BANNER] refresh banner request: %d old: %s new: %s"
+                , refreshRequestId
+                , oldBanenrUrl
+                , newBannerUrl
+            );
+
+            MengineAppLovinNonetBanners.this.m_plugin.buildEvent("mng_ad_nonet_banner_displayed")
+                .addParameterString("url", newBannerUrl)
+                .addParameterLong("request_id", refreshRequestId)
+                .log();
         });
 
         m_refreshTimer = refreshTimer;

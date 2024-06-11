@@ -7,10 +7,10 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import androidx.annotation.NonNull;
+
 public class MengineGLSurfaceView extends GLSurfaceView {
     public static final String TAG = "MengineGLSurfaceView";
-
-    protected int m_;
 
     public MengineGLSurfaceView(Context context) {
         super(context);
@@ -28,7 +28,7 @@ public class MengineGLSurfaceView extends GLSurfaceView {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
 
         MengineLog.logMessage(TAG, "MengineGLSurfaceView::onDraw");

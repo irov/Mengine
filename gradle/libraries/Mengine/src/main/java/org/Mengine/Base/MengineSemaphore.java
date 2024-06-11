@@ -3,7 +3,7 @@ package org.Mengine.Base;
 import java.util.ArrayList;
 
 public class MengineSemaphore {
-    private boolean m_activated = false;
+    private boolean m_activated;
     private ArrayList<MengineSemaphoreListener> m_listeners = new ArrayList<>();
 
     MengineSemaphore(boolean _activated) {

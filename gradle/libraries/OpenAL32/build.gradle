@@ -9,7 +9,7 @@ android {
     }
 
     buildTypes {
-        List<String> cmake_arguments = new ArrayList<String>();
+        List<String> cmake_arguments = new ArrayList<String>()
         cmake_arguments.add("-DANDROID_PLATFORM=android-" + project.minSdkVersion)
         cmake_arguments.add("-DANDROID_ARM_NEON=TRUE")
         cmake_arguments.add("-DANDROID_STL=c++_shared")

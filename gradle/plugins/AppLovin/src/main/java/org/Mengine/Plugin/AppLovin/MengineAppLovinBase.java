@@ -56,7 +56,7 @@ public class MengineAppLovinBase {
         long delayMillis = TimeUnit.SECONDS.toMillis(duration);
 
         MengineUtils.performOnMainThreadDelayed(() -> {
-            this.loadAd();
+            MengineAppLovinBase.this.loadAd();
         }, delayMillis);
     }
 

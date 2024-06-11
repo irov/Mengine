@@ -1,5 +1,7 @@
 package org.Mengine.Base;
 
+import androidx.annotation.NonNull;
+
 public class MengineEvent {
     public final static MengineEvent EVENT_GDPR_PASS = new MengineEvent("EVENT_GDPR_PASS");
     public final static MengineEvent EVENT_PUSH_TOKEN = new MengineEvent("EVENT_PUSH_TOKEN");
@@ -17,6 +19,8 @@ public class MengineEvent {
     public String getName() {
         return m_name;
     }
+
+    @NonNull
     public String toString() {
         return m_name;
     }

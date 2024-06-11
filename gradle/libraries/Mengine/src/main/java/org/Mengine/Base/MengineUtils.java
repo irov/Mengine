@@ -40,6 +40,7 @@ import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -369,7 +370,7 @@ public class MengineUtils {
     private static void zipFile(ZipOutputStream out, File file, int basePathLength) throws IOException {
         final int BUFFER = 2048;
 
-        byte data[] = new byte[BUFFER];
+        byte [] data = new byte[BUFFER];
         String unmodifiedFilePath = file.getPath();
         String relativePath = unmodifiedFilePath.substring(basePathLength);
         FileInputStream fi = new FileInputStream(unmodifiedFilePath);
@@ -499,7 +500,7 @@ public class MengineUtils {
     }
 
     public static String getDateFormat(long timestamp, String format) {
-        SimpleDateFormat df = new SimpleDateFormat(format);
+        SimpleDateFormat df = new SimpleDateFormat(format, Locale.US);
         Date date = new Date(timestamp);
         String s = df.format(date);
 
@@ -612,11 +613,8 @@ public class MengineUtils {
         MengineLog.logError(TAG, format, args);
 
         MengineUtils.performOnMainThreadDelayed(() -> {
-            MengineUtils.showAlertDialog(activity, new Runnable() {
-                @Override
-                public void run() {
-                    activity.finish();
-                }
+            MengineUtils.showAlertDialog(activity, () -> {
+                activity.finish();
             }, format, args);
         }, 0);
     }

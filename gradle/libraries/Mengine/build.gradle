@@ -18,18 +18,18 @@ android {
     }
 
     buildTypes {
-        List<String> cmake_arguments = new ArrayList<String>();
-        cmake_arguments.add("-DANDROID_PLATFORM=android-" + project.minSdkVersion);
-        cmake_arguments.add("-DANDROID_ARM_NEON=TRUE");
-        cmake_arguments.add("-DANDROID_STL=c++_shared");
-        cmake_arguments.add("-DANDROID_TOOLCHAIN=clang");
-        cmake_arguments.add("-DANDROID_ALLOW_UNDEFINED_SYMBOLS=ON");
-        cmake_arguments.add("-DMENGINE_BUILD_NUMBER:STRING=" + ANDROID_APP_BUILD_NUMBER);
-        cmake_arguments.add("-DMENGINE_BUILD_VERSION:STRING=" + ANDROID_APP_BUILD_VERSION);
-        cmake_arguments.add("-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (ANDROID_APP_BUILD_PUBLISH ? "ON" : "OFF"));
-        cmake_arguments.add("-DMENGINE_BUILD_MENGINE_LOGGER_LEVEL_FORCE_VERBOSE=" + (ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE ? "ON" : "OFF"));
-        cmake_arguments.add("-DMENGINE_SECURE_VALUE:STRING=" + MENGINE_APP_SECURE_VALUE);
-        cmake_arguments.add("-DMENGINE_DEPLOY_PATH=" + MENGINE_APP_DEPLOY_PATH);
+        List<String> cmake_arguments = new ArrayList<String>()
+        cmake_arguments.add("-DANDROID_PLATFORM=android-" + project.minSdkVersion)
+        cmake_arguments.add("-DANDROID_ARM_NEON=TRUE")
+        cmake_arguments.add("-DANDROID_STL=c++_shared")
+        cmake_arguments.add("-DANDROID_TOOLCHAIN=clang")
+        cmake_arguments.add("-DANDROID_ALLOW_UNDEFINED_SYMBOLS=ON")
+        cmake_arguments.add("-DMENGINE_BUILD_NUMBER:STRING=" + ANDROID_APP_BUILD_NUMBER)
+        cmake_arguments.add("-DMENGINE_BUILD_VERSION:STRING=" + ANDROID_APP_BUILD_VERSION)
+        cmake_arguments.add("-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (ANDROID_APP_BUILD_PUBLISH ? "ON" : "OFF"))
+        cmake_arguments.add("-DMENGINE_BUILD_MENGINE_LOGGER_LEVEL_FORCE_VERBOSE=" + (ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE ? "ON" : "OFF"))
+        cmake_arguments.add("-DMENGINE_SECURE_VALUE:STRING=" + MENGINE_APP_SECURE_VALUE)
+        cmake_arguments.add("-DMENGINE_DEPLOY_PATH=" + MENGINE_APP_DEPLOY_PATH)
 
         debug {
             externalNativeBuild {
@@ -39,8 +39,8 @@ android {
                     }
 
                     arguments.add("-DCMAKE_BUILD_TYPE:STRING=Debug")
-                    arguments.add("-DMENGINE_BUILD_MENGINE_DEVELOPMENT=ON");
-                    arguments.add("-DMENGINE_BUILD_MENGINE_MASTER_RELEASE=OFF");
+                    arguments.add("-DMENGINE_BUILD_MENGINE_DEVELOPMENT=ON")
+                    arguments.add("-DMENGINE_BUILD_MENGINE_MASTER_RELEASE=OFF")
                 }
             }
         }
@@ -53,8 +53,8 @@ android {
                     }
 
                     arguments.add("-DCMAKE_BUILD_TYPE:STRING=Release")
-                    arguments.add("-DMENGINE_BUILD_MENGINE_DEVELOPMENT=OFF");
-                    arguments.add("-DMENGINE_BUILD_MENGINE_MASTER_RELEASE=ON");
+                    arguments.add("-DMENGINE_BUILD_MENGINE_DEVELOPMENT=OFF")
+                    arguments.add("-DMENGINE_BUILD_MENGINE_MASTER_RELEASE=ON")
                 }
             }
         }

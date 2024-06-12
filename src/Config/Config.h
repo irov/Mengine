@@ -115,6 +115,10 @@
 #   define MENGINE_TOOLCHAIN_MSVC
 #endif
 
+#if defined(__OBJC__)
+#   define MENGINE_COMPILE_OBJECTIVE_C
+#endif
+
 #ifndef NDEBUG
 #   define MENGINE_DEBUG
 #else
@@ -124,6 +128,12 @@
 #if defined(MENGINE_DEBUG)
 #   if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_TOOLCHAIN_MINGW)
 #       define MENGINE_WINDOWS_DEBUG
+#   endif
+#endif
+
+#if defined(MENGINE_RELEASE)
+#   if defined(MENGINE_COMPILE_OBJECTIVE_C)
+#       define NS_BLOCK_ASSERTIONS
 #   endif
 #endif
 

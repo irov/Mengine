@@ -13,7 +13,9 @@ namespace Mengine
     {
         NSInteger AppleCurrentTimeMillis();
         NSInteger AppleGetSecureRandomInteger();
-        NSString * AppleGetRandomHexString( NSInteger length );
+        NSString * AppleGetRandomHexString( NSInteger _length );
+    
+        BOOL AppleIsValidJSON( NSString * _value );
 
         void AppleGetParamsFromNSDictionary( NSDictionary * _in, Params * const _out );
         NSDictionary * AppleGetNSDictionaryFromParams( const Params & _params );

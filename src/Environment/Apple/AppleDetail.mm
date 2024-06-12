@@ -49,6 +49,26 @@ namespace Mengine
             return randomHexStringTrim;
         }
         //////////////////////////////////////////////////////////////////////////
+        BOOL AppleIsValidJSON( NSString * _value )
+        {
+            if( _value == nil )
+            {
+                return NO;
+            }
+            
+            NSData *data = [_value dataUsingEncoding:NSUTF8StringEncoding];
+            NSError *error = nil;
+            
+            id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+            
+            if( error != nil )
+            {
+                return NO;
+            }
+            
+            return YES;
+        }
+        //////////////////////////////////////////////////////////////////////////
         void AppleGetParamsFromNSDictionary( NSDictionary * _in, Params * const _out )
         {
             if( _in == nil )

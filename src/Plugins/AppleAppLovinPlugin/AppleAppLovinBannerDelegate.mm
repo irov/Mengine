@@ -211,20 +211,6 @@
     
     self.m_provider->onAppleAppLovinBannerDidCollapseAd();
 }
-
-#pragma mark - Deprecated Callbacks
-
-- (void) didDisplayAd:(MAAd *) ad {
-    [self log:@"didDisplayAd" withMAAd:ad];
-    
-    //deprecated
-}
-
-- (void) didHideAd:(MAAd *) ad {
-    [self log:@"didHideAd" withMAAd:ad];
-    
-    //deprecated
-}
     
 #pragma mark - Revenue Callbacks
 

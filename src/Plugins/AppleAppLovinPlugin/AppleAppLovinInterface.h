@@ -15,6 +15,8 @@ namespace Mengine
         virtual void onAppleAppLovinBannerDidStartAdRequestForAdUnitIdentifier() = 0;
         virtual void onAppleAppLovinBannerDidLoadAd() = 0;
         virtual void onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier() = 0;
+        virtual void onAppleAppLovinBannerDidDisplayAd() = 0;
+        virtual void onAppleAppLovinBannerDidHideAd() = 0;
         virtual void onAppleAppLovinBannerDidClickAd() = 0;
         virtual void onAppleAppLovinBannerDidFailToDisplayAd() = 0;
         virtual void onAppleAppLovinBannerDidExpandAd() = 0;

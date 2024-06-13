@@ -31,16 +31,16 @@ namespace Mengine
         
         AppleFirebaseRemoteConfigServiceInterface * service = APPLE_FIREBASE_REMOTECONFIG_SERVICE();
 
-        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueBoolean", service, &AppleFirebaseRemoteConfigScriptEmbedding::getValueBoolean );
-        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueInteger", service, &AppleFirebaseRemoteConfigScriptEmbedding::getValueInteger );
-        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueDouble", service, &AppleFirebaseRemoteConfigScriptEmbedding::getValueDouble );
-        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueConstString", service, &AppleFirebaseRemoteConfigScriptEmbedding::getValueConstString );
-        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueJSON", service, &AppleFirebaseRemoteConfigScriptEmbedding::getValueJSON );
+        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueBoolean", service, &AppleFirebaseRemoteConfigServiceInterface::getValueBoolean );
+        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueInteger", service, &AppleFirebaseRemoteConfigServiceInterface::getValueInteger );
+        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueDouble", service, &AppleFirebaseRemoteConfigServiceInterface::getValueDouble );
+        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueConstString", service, &AppleFirebaseRemoteConfigServiceInterface::getValueConstString );
+        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueJSON", service, &AppleFirebaseRemoteConfigServiceInterface::getValueJSON );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleGameCenterScriptEmbedding::eject( pybind::kernel_interface * _kernel )
+    void AppleFirebaseRemoteConfigScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_from_module( "appleFirebaseRemoteConfigGetValueBoolean", nullptr );
         _kernel->remove_from_module( "appleFirebaseRemoteConfigGetValueInteger", nullptr );

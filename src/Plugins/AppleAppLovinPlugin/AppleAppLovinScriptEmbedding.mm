@@ -41,7 +41,17 @@ namespace Mengine
             
             void onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier() override
             {
-                this->call_cbs( "onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier" );                
+                this->call_cbs( "onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier" );
+            }
+            
+            void onAppleAppLovinBannerDidDisplayAd() override
+            {
+                this->call_cbs( "onAppleAppLovinBannerDidDisplayAd" );
+            }
+            
+            void onAppleAppLovinBannerDidHideAd() override
+            {
+                this->call_cbs( "onAppleAppLovinBannerDidHideAd" );
             }
             
             void onAppleAppLovinBannerDidClickAd() override

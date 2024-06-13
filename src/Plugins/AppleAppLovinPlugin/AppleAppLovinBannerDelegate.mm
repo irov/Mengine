@@ -157,6 +157,32 @@
     self.m_provider->onAppleAppLovinBannerDidFailToLoadAdForAdUnitIdentifier();
 }
 
+- (void)didDisplayAd:(MAAd *)ad
+{
+    [self log:@"didDisplayAd" withMAAd:ad];
+    
+    [AppleAnalytics event:@"mng_ad_banner_displayed" params:@{
+        @"ad_unit_id": ad.adUnitIdentifier,
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt)
+    }];
+    
+    self.m_provider->onAppleAppLovinBannerDidDisplayAd();
+}
+
+- (void)didHideAd:(MAAd *)ad
+{
+    [self log:@"didHideAd" withMAAd:ad];
+    
+    [AppleAnalytics event:@"mng_ad_banner_hidden" params:@{
+        @"ad_unit_id": ad.adUnitIdentifier,
+        @"request_id": @(self.m_requestId),
+        @"attempt": @(self.m_retryAttempt)
+    }];
+    
+    self.m_provider->onAppleAppLovinBannerDidHideAd();
+}
+
 - (void) didClickAd:(MAAd *) ad {
     [self log:@"didClickAd" withMAAd:ad];
     

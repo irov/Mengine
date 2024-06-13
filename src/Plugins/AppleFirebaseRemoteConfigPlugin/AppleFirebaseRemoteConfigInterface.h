@@ -5,8 +5,6 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
 
-#import <Foundation/Foundation.h>
-
 namespace Mengine
 {
     class AppleFirebaseRemoteConfigServiceInterface

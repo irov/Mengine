@@ -451,7 +451,7 @@ namespace Mengine
 
         STATISTIC_INC_INTEGER( statisticId );
 
-        if( m_threadly == true )
+        if( m_threadly == true && (message.flag & LFLAG_IMMEDIATE) == 0 )
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexMessage );
 
@@ -464,6 +464,8 @@ namespace Mengine
         }
         else
         {
+            MENGINE_THREAD_SHARED_MUTEX_SCOPE( m_mutexLogger );
+
             for( const LoggerInterfacePtr & logger : m_loggers )
             {
                 if( logger->validMessage( _record ) == false )

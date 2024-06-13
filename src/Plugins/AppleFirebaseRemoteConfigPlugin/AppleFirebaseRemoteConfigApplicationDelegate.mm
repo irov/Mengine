@@ -4,7 +4,6 @@
 
 #include "Kernel/Logger.h"
 
-#import <Firebase/Firebase.h>
 #import <FirebaseRemoteConfig/FirebaseRemoteConfig.h>
 
 @implementation AppleFirebaseRemoteConfigApplicationDelegate

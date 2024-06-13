@@ -2,7 +2,6 @@
 
 #include "Environment/Apple/AppleString.h"
 
-#import <Firebase/Firebase.h>
 #import <FirebaseRemoteConfig/FirebaseRemoteConfig.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -49,6 +48,15 @@ namespace Mengine
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
+    double AppleFirebaseRemoteConfigService::getValueDouble( const ConstString & _key ) const
+    {
+        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:@(_key.c_str())];
+        
+        NSInteger value = [[firValue numberValue] doubleValue];
+        
+        return value;
+    }
+    //////////////////////////////////////////////////////////////////////////
     ConstString AppleFirebaseRemoteConfigService::getValueConstString( const ConstString & _key ) const
     {
         FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:@(_key.c_str())];
@@ -58,6 +66,17 @@ namespace Mengine
         ConstString value_cs = Helper::NSStringToConstString( value );
         
         return value_cs;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    String AppleFirebaseRemoteConfigService::getValueJSON( const ConstString & _key ) const
+    {
+        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:@(_key.c_str())];
+        
+        NSString * value = [firValue stringValue];
+        
+        String value_str = Helper::NSStringToString( value );
+        
+        return value_str;
     }
     //////////////////////////////////////////////////////////////////////////
 }

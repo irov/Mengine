@@ -66,6 +66,9 @@
             Mengine::ConstString s = Mengine::Helper::NSStringToConstString(value);
             
             builder->addParameterConstString( key_cstr, s );
+        } else if ([value isKindOfClass:[NSDictionary class]] == YES) {
+            //ToDo
+            
         } else {
             return;
         }

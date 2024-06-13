@@ -22,68 +22,57 @@
     return self;
 }
 
-- (NSString *) getMAAdParams:(MAAd *) ad {
-    NSMutableString * params = [NSMutableString stringWithCapacity:1024];
+- (NSDictionary *) getMAAdParams:(MAAd *) ad {
+    NSMutableDictionary * params = [NSMutableDictionary dictionary];
     
-    [params appendString:@"{"];
-    [params appendFormat:@"\"format\":\"%@\"", ad.format.label];
-    [params appendFormat:@",\"size\":[%f, %f]", ad.size.width, ad.size.height];
-    [params appendFormat:@",\"adUnitIdentifier\":\"%@\"", ad.adUnitIdentifier];
-    [params appendFormat:@",\"networkName\":\"%@\"", ad.networkName];
-    [params appendFormat:@",\"networkPlacement\":\"%@\"", ad.networkPlacement];
-    [params appendFormat:@",\"revenue\":%lf", ad.revenue];
-    [params appendFormat:@",\"revenuePrecision\":\"%@\"", ad.revenuePrecision];
+    [params setObject:ad.format.label forKey:@"format"];
+    [params setObject:@[@(ad.size.width), @(ad.size.height)] forKey:@"size"];
+    [params setObject:ad.adUnitIdentifier forKey:@"adUnitIdentifier"];
+    [params setObject:ad.networkName forKey:@"networkName"];
+    [params setObject:ad.networkPlacement forKey:@"networkPlacement"];
+    [params setObject:@(ad.revenue) forKey:@"revenue"];
+    [params setObject:ad.revenuePrecision forKey:@"revenuePrecision"];
     
     if (ad.creativeIdentifier) {
-        [params appendFormat:@",\"creativeIdentifier\":\"%@\"", ad.creativeIdentifier];
+        [params setObject:ad.creativeIdentifier forKey:@"creativeIdentifier"];
     }
     
     if (ad.adReviewCreativeIdentifier) {
-        [params appendFormat:@",\"adReviewCreativeIdentifier\":\"%@\"", ad.adReviewCreativeIdentifier];
+        [params setObject:ad.adReviewCreativeIdentifier forKey:@"adReviewCreativeIdentifier"];
     }
     
     if (ad.placement) {
-        [params appendFormat:@",\"placement\":\"%@\"", ad.placement];
+        [params setObject:ad.placement forKey:@"placement"];
     }
     
     if (ad.DSPName) {
-        [params appendFormat:@",\"DSPName\":\"%@\"", ad.DSPName];
+        [params setObject:ad.DSPName forKey:@"DSPName"];
     }
     
     if (ad.DSPIdentifier) {
-        [params appendFormat:@",\"DSPIdentifier\":\"%@\"", ad.DSPIdentifier];
+        [params setObject:ad.DSPIdentifier forKey:@"DSPIdentifier"];
     }
     
-    [params appendString:@"}"];
-    
-    NSAssert(Mengine::Helper::AppleIsValidJSON(params) == YES, @"Generated MAAd json is invalid: %@", params);
+    return params;
+}
+
+- (NSDictionary * _Nonnull) getMAErrorParams:(MAError * _Nonnull) error {
+    NSDictionary * params = @{
+        @"code": @(error.code),
+        @"message": error.message,
+        @"mediatedNetworkErrorCode": @(error.mediatedNetworkErrorCode),
+        @"mediatedNetworkErrorMessage": error.mediatedNetworkErrorMessage,
+        @"requestLatency": @(error.requestLatency)
+    };
     
     return params;
 }
 
-- (NSString * _Nonnull) getMAErrorParams:(MAError * _Nonnull) error {
-    NSMutableString * params = [NSMutableString stringWithCapacity:1024];
-    
-    [params appendString:@"{"];
-    [params appendFormat:@"\"code\":\"%ld\"", error.code];
-    [params appendFormat:@",\"message\":\"%@\"", error.message];
-    [params appendFormat:@",\"mediated_network_error_code\":\"%ld\"", error.mediatedNetworkErrorCode];
-    [params appendFormat:@",\"mediated_network_error_message\":\"%@\"", error.mediatedNetworkErrorMessage];
-    [params appendFormat:@",\"latency\":\"%lf\"", error.requestLatency];
-    [params appendString:@"}"];
-    
-    NSAssert(Mengine::Helper::AppleIsValidJSON(params) == YES, @"Generated MAError json is invalid: %@", params);
-
-    return params;
-}
-
-- (NSString * _Nonnull) getMARewardParams:(MAReward * _Nonnull) reward {
-    NSMutableString * params = [NSMutableString stringWithCapacity:256];
-    
-    [params appendString:@"{"];
-    [params appendFormat:@"\"label\":\"%@\"", reward.label];
-    [params appendFormat:@",\"amount\":\"%ld\"", reward.amount];
-    [params appendString:@"}"];
+- (NSDictionary * _Nonnull) getMARewardParams:(MAReward * _Nonnull) reward {
+    NSDictionary * params = @{
+        @"label": reward.label,
+        @"amount": @(reward.amount)
+    };
 
     return params;
 }
@@ -114,7 +103,7 @@
         , [method UTF8String]
         , [self.m_adUnitId UTF8String]
         , self.m_requestId
-        , [[self getMAAdParams:ad] UTF8String]
+        , [[NSString stringWithFormat:@"%@", [self getMAAdParams:ad]] UTF8String]
     );
 }
 
@@ -124,8 +113,8 @@
         , [method UTF8String]
         , [ad.adUnitIdentifier UTF8String]
         , self.m_requestId
-        , [[self getMAAdParams:ad] UTF8String]
-        , [[self getMAErrorParams:error] UTF8String]
+        , [[NSString stringWithFormat:@"%@", [self getMAAdParams:ad]] UTF8String]
+        , [[NSString stringWithFormat:@"%@", [self getMAErrorParams:error]] UTF8String]
     );
 }
 
@@ -135,7 +124,7 @@
         , [method UTF8String]
         , [self.m_adUnitId UTF8String]
         , self.m_requestId
-        , [[self getMAErrorParams:error] UTF8String]
+        , [[NSString stringWithFormat:@"%@", [self getMAErrorParams:error]] UTF8String]
     );
 }
 

@@ -15,9 +15,9 @@
 - (void) loadAd;
 - (void) retryLoadAd;
 
-- (NSString * _Nonnull) getMAAdParams:(MAAd * _Nonnull) ad;
-- (NSString * _Nonnull) getMAErrorParams:(MAError * _Nonnull) error;
-- (NSString * _Nonnull) getMARewardParams:(MAReward * _Nonnull) reward;
+- (NSDictionary * _Nonnull) getMAAdParams:(MAAd * _Nonnull) ad;
+- (NSDictionary * _Nonnull) getMAErrorParams:(MAError * _Nonnull) error;
+- (NSDictionary * _Nonnull) getMARewardParams:(MAReward * _Nonnull) reward;
 
 - (void) log:(NSString * _Nonnull) callback;
 - (void) log:(NSString * _Nonnull) callback withParams:(NSDictionary * _Nonnull) params;

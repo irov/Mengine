@@ -15,7 +15,7 @@ namespace Mengine
         NSInteger AppleGetSecureRandomInteger();
         NSString * AppleGetRandomHexString( NSInteger _length );
     
-        BOOL AppleIsValidJSON( NSString * _value );
+        BOOL AppleIsValidJSONString( NSString * _value );
 
         void AppleGetParamsFromNSDictionary( NSDictionary * _in, Params * const _out );
         NSDictionary * AppleGetNSDictionaryFromParams( const Params & _params );

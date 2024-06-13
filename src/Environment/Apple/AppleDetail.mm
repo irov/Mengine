@@ -49,7 +49,7 @@ namespace Mengine
             return randomHexStringTrim;
         }
         //////////////////////////////////////////////////////////////////////////
-        BOOL AppleIsValidJSON( NSString * _value )
+        BOOL AppleIsValidJSONString( NSString * _value )
         {
             if( _value == nil )
             {

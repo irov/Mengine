@@ -43,10 +43,24 @@ Games that are being developed or have been released on this engine
 
 Mobile
 -------
+[Numberphile](https://www.wonderland-games.com/projects/numberphile)
 
-[Evil Monkey](https://play.google.com/store/apps/details?id=org.Wonderland.EvilMonkey) There’s a very hungry and very Evil Monkey under the banana tree! Try to steal those sweet, sweet bananas without drawing the monkey’s wrath. Shake bananas from the tree and if you get too greedy – you’re in big trouble!
+[![Android](https://raw.githubusercontent.com/irov/badgets/master/half/GetItOnGooglePlay_Badge_Web_color_English.png)](https://play.google.com/store/apps/details?id=com.wonderland.numberphile)
+[![Apple](https://raw.githubusercontent.com/irov/badgets/master/half/Download_on_the_App_Store_Badge_US-UK_RGB.png)](https://apps.apple.com/app/id6498917681)
 
-[The Dungeon Chronicles](https://www.wonderland-games.com/projects/the-dungeon-chronicles) Fight the creatures of darkness with their own weapons to make your way through the gloomy dungeons and save princess from the Skeleton King!
+Welcome to the world of Numberphile, a thrilling attention-training game that will put your numerical skills to the ultimate test! Designed for speed and concentration, this game is a haven for those who revel in the beauty of numbers and the excitement of a challenge.
+
+[Evil Monkey](https://www.wonderland-games.com/projects/evil-monkey)
+
+[![Android](https://raw.githubusercontent.com/irov/badgets/master/half/GetItOnGooglePlay_Badge_Web_color_English.png)](https://play.google.com/store/apps/details?id=org.Wonderland.EvilMonkey) 
+
+There’s a very hungry and very Evil Monkey under the banana tree! Try to steal those sweet, sweet bananas without drawing the monkey’s wrath. Shake bananas from the tree and if you get too greedy – you’re in big trouble!
+
+[The Dungeon Chronicles](https://www.wonderland-games.com/projects/the-dungeon-chronicles)
+
+[![Android](https://raw.githubusercontent.com/irov/badgets/master/half/GetItOnGooglePlay_Badge_Web_color_English.png)](https://www.wonderland-games.com/projects/the-dungeon-chronicles)
+
+Fight the creatures of darkness with their own weapons to make your way through the gloomy dungeons and save princess from the Skeleton King!
 
 Desktop
 -------

@@ -18,6 +18,9 @@ import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -39,8 +42,12 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -651,5 +658,58 @@ public class MengineUtils {
         }
         out.close();
         return out.toByteArray();
+    }
+
+    public static Map<String, Object> parseJSONMap(String json) {
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+
+            Map<String, Object> map = MengineUtils.jsonObjectToMap(jsonObject);
+
+            return map;
+        } catch (JSONException e) {
+            MengineLog.logError(TAG, "parseJSONMap '%s' catch JSONException: %s"
+                , json
+                , e.getMessage()
+            );
+        }
+
+        return null;
+    }
+
+    private static Map<String, Object> jsonObjectToMap(JSONObject jsonobj)  throws JSONException {
+        Map<String, Object> map = new HashMap<>();
+
+        Iterator<String> keys = jsonobj.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            Object value = jsonobj.get(key);
+            Object parsedValue = MengineUtils.parseJsonValue(value);
+            map.put(key, parsedValue);
+        }
+
+        return map;
+    }
+
+    private static List<Object> jsonArrayToList(JSONArray array) throws JSONException {
+        List<Object> list = new ArrayList<>();
+
+        for (int i = 0; i < array.length(); i++) {
+            Object value = array.get(i);
+            Object parsedValue = MengineUtils.parseJsonValue(value);
+            list.add(parsedValue);
+        }
+
+        return list;
+    }
+
+    private static Object parseJsonValue(Object value) throws JSONException {
+        if (value instanceof JSONArray) {
+            return MengineUtils.jsonArrayToList((JSONArray) value);
+        } else if (value instanceof JSONObject) {
+            return MengineUtils.jsonObjectToMap((JSONObject) value);
+        } else {
+            return value;
+        }
     }
 }

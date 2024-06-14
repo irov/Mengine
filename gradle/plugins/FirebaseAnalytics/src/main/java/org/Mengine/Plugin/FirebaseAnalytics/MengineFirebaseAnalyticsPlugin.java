@@ -74,6 +74,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         long installRND = application.getInstallRND();
         long sessionIndex = application.getSessionIndex();
         long sessionTimestamp = application.getSessionTimestamp();
+        long purchasesTimestamp = application.getPurchasesTimestamp();
 
         firebaseAnalytics.setUserProperty("is_dev", String.valueOf(BuildConfig.DEBUG));
         firebaseAnalytics.setUserProperty("install_key", installKey);
@@ -82,6 +83,12 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         firebaseAnalytics.setUserProperty("install_rnd", String.valueOf(installRND));
         firebaseAnalytics.setUserProperty("session_index", String.valueOf(sessionIndex));
         firebaseAnalytics.setUserProperty("session_timestamp", String.valueOf(sessionTimestamp));
+        firebaseAnalytics.setUserProperty("purchases_timestamp", String.valueOf(purchasesTimestamp));
+
+        long currentTime = System.currentTimeMillis();
+        long lifeTime = currentTime - installTimestamp;
+
+        firebaseAnalytics.setUserProperty("life_time", String.valueOf(lifeTime));
 
         m_firebaseAnalytics = firebaseAnalytics;
     }
@@ -193,7 +200,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         return "UNKNOWN";
     }
 
-    private String getAdMediation(MengineAdMediation adMediation) {
+    private static String getAdMediation(MengineAdMediation adMediation) {
         if (adMediation == MengineAdMediation.ADMEDIATION_APPLOVINMAX) {
             return "appLovin";
         }

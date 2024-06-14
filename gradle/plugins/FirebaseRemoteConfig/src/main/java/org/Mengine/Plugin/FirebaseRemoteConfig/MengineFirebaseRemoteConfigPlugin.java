@@ -17,6 +17,8 @@ import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -122,5 +124,15 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
         long value = remoteConfig.getLong(key);
 
         return value;
+    }
+
+    public Map<String, Object> getRemoteConfigValueJSON(String key) {
+        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+
+        String value = remoteConfig.getString(key);
+
+        Map<String, Object> mapJson = MengineUtils.parseJSONMap(value);
+
+        return mapJson;
     }
 }

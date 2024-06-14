@@ -78,6 +78,7 @@ public class MengineApplication extends Application {
     private long m_sessionIndex = -1;
     private String m_sessionId;
     private long m_sessionTimestamp = -1;
+    private long m_purchasesTimestamp = -1;
 
     private boolean m_invalidInitialize = false;
     private String m_invalidInitializeReason = null;
@@ -314,10 +315,7 @@ public class MengineApplication extends Application {
 
         m_sessionId = sessionId;
 
-        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("session_id", m_sessionId);
-        editor.apply();
+        this.setPreferenceString("session_id", m_sessionId);
 
         this.setState("user.session_id", m_sessionId);
 
@@ -330,6 +328,10 @@ public class MengineApplication extends Application {
 
     public long getSessionTimestamp() {
         return m_sessionTimestamp;
+    }
+
+    public long getPurchasesTimestamp() {
+        return m_purchasesTimestamp;
     }
 
     public String getDeviceLanguage() {
@@ -864,6 +866,7 @@ public class MengineApplication extends Application {
         long installRND = settings.getLong("install_rnd", -1);
         long sessionIndex = settings.getLong("session_index", 0);
         String sessionId = settings.getString("session_id", null);
+        long purchasesTimestamp = settings.getLong("purchases_timestamp", 0);
 
         SharedPreferences.Editor editor = settings.edit();
 
@@ -905,6 +908,7 @@ public class MengineApplication extends Application {
         m_sessionIndex = sessionIndex;
         m_sessionId = sessionId;
         m_sessionTimestamp = MengineUtils.getTimestamp();
+        m_purchasesTimestamp = purchasesTimestamp;
 
         this.setState("user.install_key", m_installKey);
         this.setState("user.install_timestamp", m_installTimestamp);
@@ -913,12 +917,15 @@ public class MengineApplication extends Application {
         this.setState("user.session_index", m_sessionIndex);
         this.setState("user.session_id", m_sessionId);
         this.setState("user.session_timestamp", m_sessionTimestamp);
+        this.setState("user.purchases_timestamp", m_purchasesTimestamp);
 
-        String installDate = MengineUtils.getDateFormat(m_installTimestamp, "d MMM yyyy HH:mm:ss");
-        this.setState("user.install_date", installDate);
+        if (BuildConfig.DEBUG == true) {
+            String installDate = MengineUtils.getDateFormat(m_installTimestamp, "d MMM yyyy HH:mm:ss");
+            this.setState("user.install_date", installDate);
 
-        String sessionDate = MengineUtils.getDateFormat(m_sessionTimestamp, "d MMM yyyy HH:mm:ss");
-        this.setState("user.session_date", sessionDate);
+            String sessionDate = MengineUtils.getDateFormat(m_sessionTimestamp, "d MMM yyyy HH:mm:ss");
+            this.setState("user.session_date", sessionDate);
+        }
 
         MengineAnalytics.addContextParameterBoolean("is_dev", BuildConfig.DEBUG);
         MengineAnalytics.addContextParameterString("install_key", m_installKey);
@@ -927,6 +934,7 @@ public class MengineApplication extends Application {
         MengineAnalytics.addContextParameterLong("install_rnd", m_installRND);
         MengineAnalytics.addContextParameterLong("session_index", m_sessionIndex);
         MengineAnalytics.addContextParameterLong("session_timestamp", m_sessionTimestamp);
+        MengineAnalytics.addContextParameterLong("purchases_timestamp", m_purchasesTimestamp);
 
         MengineAnalytics.addContextGetterParameterLong("connection", new MengineAnalyticsGetter<Long>() {
             @Override
@@ -1192,6 +1200,10 @@ public class MengineApplication extends Application {
     }
 
     public void onMengineInAppPurchase(MengineInAppPurchaseParam purchase) {
+        m_purchasesTimestamp = MengineUtils.getTimestamp();
+
+        this.setPreferenceInteger("purchases_timestamp", m_purchasesTimestamp);
+
         List<MenginePluginInAppPurchaseListener> listeners = this.getInAppAnalyticsListeners();
 
         for (MenginePluginInAppPurchaseListener l : listeners) {

@@ -94,18 +94,13 @@ namespace Mengine
 
                 PyObject * py_list = _kernel->list_new( list_size );
 
-                Helper::AndroidForeachJavaList(_jenv, _obj,
-                                               [_kernel, _jenv, py_list, _doc](jsize _index,
-                                                                               jobject _jvalue) {
-                                                   PyObject *py_obj = Helper::androidNativePythonMakePyObject(
-                                                           _kernel, _jenv, _jvalue, _doc);
+                Helper::AndroidForeachJavaList(_jenv, _obj, [_kernel, _jenv, py_list, _doc](jsize _index, jobject _jvalue) {
+                    PyObject * py_obj = Helper::androidNativePythonMakePyObject(_kernel, _jenv, _jvalue, _doc);
 
-                                                   MENGINE_ASSERTION_MEMORY_PANIC( py_obj );
+                    _kernel->list_setitem( py_list, _index, py_obj );
 
-                                                   _kernel->list_setitem(py_list, _index, py_obj);
-
-                                                   _kernel->decref(py_obj);
-                                               });
+                    _kernel->decref( py_obj );
+                });
 
                 py_value = py_list;
             }
@@ -113,19 +108,15 @@ namespace Mengine
             {
                 PyObject * py_dict = _kernel->dict_new();
 
-                Helper::AndroidForeachJavaMap(_jenv, _obj,
-                                              [_kernel, _jenv, _doc, py_dict](jobject _jkey,
-                                                                              jobject _jvalue) {
-                                                  PyObject *py_key = Helper::androidNativePythonMakePyObject(
-                                                          _kernel, _jenv, _jkey, _doc);
-                                                  PyObject *py_value = Helper::androidNativePythonMakePyObject(
-                                                          _kernel, _jenv, _jvalue, _doc);
+                Helper::AndroidForeachJavaMap(_jenv, _obj, [_kernel, _jenv, _doc, py_dict](jobject _jkey, jobject _jvalue) {
+                    PyObject * py_key = Helper::androidNativePythonMakePyObject(_kernel, _jenv, _jkey, _doc);
+                    PyObject * py_value = Helper::androidNativePythonMakePyObject(_kernel, _jenv, _jvalue, _doc);
 
-                                                  _kernel->dict_set(py_dict, py_key, py_value);
+                    _kernel->dict_set( py_dict, py_key, py_value );
 
-                                                  _kernel->decref(py_key);
-                                                  _kernel->decref(py_value);
-                                              });
+                    _kernel->decref( py_key );
+                    _kernel->decref( py_value );
+                });
 
                 py_value = py_dict;
             }

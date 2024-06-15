@@ -66,9 +66,6 @@ namespace Mengine
         void notifyBootstrapperCreateApplication_();
 
     protected:
-        void initializeLoggerService_();
-
-    protected:
         AndroidEventationHubPtr m_androidEventationHub;
 
         typedef Pool<ConstStringHolderJString, 256> PoolConstStringHolderJString;

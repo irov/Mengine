@@ -375,7 +375,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     LoggerRecordInterfacePtr LoggerService::makeLoggerRecord( const LoggerMessage & _message, const DocumentInterfacePtr & _doc )
     {
-        LoggerRecordInterfacePtr record = m_factoryLoggerRecord->createObject( _doc );
+        LoggerRecordPtr record = m_factoryLoggerRecord->createObject( _doc );
 
         record->initialize( _message );
 

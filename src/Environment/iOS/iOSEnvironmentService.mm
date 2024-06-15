@@ -1,11 +1,13 @@
 #include "iOSEnvironmentService.h"
 
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/FactorableUnique.h"
 
 #include "Config/StdString.h"
 
@@ -29,14 +31,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSEnvironmentService::_initializeService()
     {
-        //Empty
+        iOSProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<iOSProxyLogger>(MENGINE_DOCUMENT_FACTORABLE);
+
+        if( LOGGER_SERVICE()
+            ->registerLogger( proxyLogger ) == true )
+        {
+            m_proxyLogger = proxyLogger;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSEnvironmentService::_finalizeService()
     {
-        //Empty
+        if( m_proxyLogger != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_proxyLogger );
+
+            m_proxyLogger = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     size_t iOSEnvironmentService::getDeviceName( Char * const _deviceName, size_t _capacity ) const

@@ -18,6 +18,9 @@ src
     
     iOSMailCompose.h
     iOSMailCompose.mm
+    
+    iOSProxyLogger.h
+    iOSProxyLogger.mm
 
     iOSTransparencyConsentParam.h
     iOSTransparencyConsentParam.mm

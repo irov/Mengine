@@ -6,12 +6,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class AndroidProxyLogger
+    class iOSProxyLogger
         : public LoggerBase
     {
     public:
-        AndroidProxyLogger();
-        ~AndroidProxyLogger() override;
+        iOSProxyLogger();
+        ~iOSProxyLogger() override;
 
     protected:
         bool _initializeLogger() override;
@@ -21,6 +21,6 @@ namespace Mengine
         void _log( const LoggerRecordInterfacePtr & message ) override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AndroidProxyLogger, LoggerInterface> AndroidProxyLoggerPtr;
+    typedef IntrusivePtr<iOSProxyLogger, LoggerInterface> iOSProxyLoggerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

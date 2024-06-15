@@ -260,12 +260,15 @@ namespace Mengine
         ANALYTICS_SERVICE()
             ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
 
-        SERVICE_PROVIDER_GET()->waitService( "AndroidEnvironmentService", SERVICE_ID( LoggerServiceInterface ), [this]()
-        {
-            this->initializeLoggerService_();
+        AndroidProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<AndroidProxyLogger>(MENGINE_DOCUMENT_FACTORABLE);
 
-            return true;
-        } );
+        proxyLogger->setVerboseFilter( Mengine::LFILTER_ANDROID );
+
+        if( LOGGER_SERVICE()
+                    ->registerLogger( proxyLogger ) == true )
+        {
+            m_proxyLogger = proxyLogger;
+        }
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_RUN, &AndroidEnvironmentService::notifyPlatformRun_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_STOP, &AndroidEnvironmentService::notifyPlatformStop_, MENGINE_DOCUMENT_FACTORABLE );
@@ -874,19 +877,6 @@ namespace Mengine
         Helper::AndroidCallVoidActivityMethod( jenv, "onMengineCreateApplication", "()V" );
 
         m_androidEventationHub->invoke();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::initializeLoggerService_()
-    {
-        AndroidProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<AndroidProxyLogger>(MENGINE_DOCUMENT_FACTORABLE);
-
-        proxyLogger->setVerboseFilter( Mengine::LFILTER_ANDROID );
-
-        if( LOGGER_SERVICE()
-            ->registerLogger( proxyLogger ) == true )
-        {
-            m_proxyLogger = proxyLogger;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

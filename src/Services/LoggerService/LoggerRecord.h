@@ -14,7 +14,7 @@ namespace Mengine
         ~LoggerRecord() override;
 
     public:
-        void initialize( const LoggerMessage & _message ) override;
+        void initialize( const LoggerMessage & _message );
         
     public:
         void getMessage( LoggerMessage * const _message ) const override;
@@ -32,4 +32,7 @@ namespace Mengine
         Char m_data[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
         size_t m_size;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<LoggerRecord, LoggerRecordInterface> LoggerRecordPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

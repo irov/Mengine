@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Interface/iOSEnvironmentServiceInterface.h"
-
-#include "Kernel/ServiceBase.h"
+#include "Interface/LoggerInterface.h"
 
 #import "Environment/iOS/iOSMailCompose.h"
+
+#include "Kernel/ServiceBase.h"
 
 namespace Mengine
 {
@@ -40,5 +41,7 @@ namespace Mengine
         
     protected:
         iOSMailCompose * m_mailCompose;
+
+        LoggerInterfacePtr m_proxyLogger;
     };
 }

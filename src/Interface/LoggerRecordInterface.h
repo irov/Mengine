@@ -13,9 +13,6 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void initialize( const LoggerMessage & _message ) = 0;
-
-    public:
         virtual void getMessage( LoggerMessage * const _message ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////

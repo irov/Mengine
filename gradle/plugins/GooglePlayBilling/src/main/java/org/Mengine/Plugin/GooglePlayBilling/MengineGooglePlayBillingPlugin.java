@@ -15,6 +15,7 @@ import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.ConsumeResponseListener;
+import com.android.billingclient.api.PendingPurchasesParams;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.ProductDetailsResponseListener;
 import com.android.billingclient.api.Purchase;
@@ -157,9 +158,13 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
 
         Context context = activity.getApplicationContext();
 
+        PendingPurchasesParams pendingPurchasesParams = PendingPurchasesParams.newBuilder()
+                .enableOneTimeProducts()
+                .build();
+
         m_billingClient = BillingClient.newBuilder(context)
             .setListener(purchasesUpdatedListener)
-            .enablePendingPurchases()
+            .enablePendingPurchases(pendingPurchasesParams)
             .build();
     }
 

@@ -33,6 +33,7 @@ namespace Mengine
 
             DocumentInterfacePtr doc = DOCUMENT_SERVICE()
                 ->createDocument( nullptr, MENGINE_CODE_LIBRARY, _file, _function, _line, "traceback: %s", traceback );
+
             return doc;
         }
         //////////////////////////////////////////////////////////////////////////

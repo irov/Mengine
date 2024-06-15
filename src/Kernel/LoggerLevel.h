@@ -37,6 +37,7 @@ namespace Mengine
         LFILTER_PROTECTED = 1 << 1,
         LFILTER_ANDROID = 1 << 2,
         LFILTER_HTTP = 1 << 3,
+        LFILTER_IMMEDIATE = 1 << 4
     };
     //////////////////////////////////////////////////////////////////////////
     enum ELoggerFlag : uint32_t
@@ -47,7 +48,6 @@ namespace Mengine
         LFLAG_THREADSTAMP = 1 << 3,
         LFLAG_SYMBOLSTAMP = 1 << 4,
         LFLAG_CATEGORYSTAMP = 1 << 5,
-        LFLAG_IMMEDIATE = 1 << 6,
         LFLAG_SHORT = LFLAG_TIMESTAMP | LFLAG_SYMBOLSTAMP | LFLAG_CATEGORYSTAMP,
         LFLAG_FULL = 0xFFFFFFFF
     };

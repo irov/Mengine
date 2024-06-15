@@ -16,6 +16,10 @@ namespace Mengine
         ~CachalotLogger() override;
 
     public:
+        void setDSN( const String & _dsn );
+        const String & getDSN() const;
+
+    public:
         bool _initializeLogger() override;
         void _finalizeLogger() override;
 

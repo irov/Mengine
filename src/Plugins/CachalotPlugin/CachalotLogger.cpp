@@ -29,23 +29,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void CachalotLogger::setDSN( const String & _dsn )
+    {
+        m_dsn = _dsn;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const String & CachalotLogger::getDSN() const
+    {
+        return m_dsn;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool CachalotLogger::_initializeLogger()
     {
-        String CachalotPlugin_DSN = CONFIG_VALUE( "CachalotPlugin", "DSN", "" );
-
-        if( CachalotPlugin_DSN.empty() == true )
-        {
-            LOGGER_ERROR( "invalid DSN" );
-
-            return false;
-        }
-
-        LOGGER_MESSAGE( "Cachalot DSN: %s"
-            , CachalotPlugin_DSN.c_str()
-        );
-
-        m_dsn = CachalotPlugin_DSN;
-
         ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex );

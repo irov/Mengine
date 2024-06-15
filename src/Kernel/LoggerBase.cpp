@@ -102,7 +102,7 @@ namespace Mengine
             return false;
         }
 
-        if( message.filter == 0 )
+        if( message.filter == LFILTER_NONE )
         {
             return true;
         }

@@ -57,18 +57,6 @@ namespace Mengine
         int64_t size = ::ftell( m_file );
         ::rewind( m_file );
 
-        if( size <= 0 )
-        {
-            LOGGER_ERROR( "invalid file '%s' error size %zu"
-                , fullPath
-                , (size_t)size
-            );
-
-            this->close();
-
-            return false;
-        }
-
         if( _size != ~0U )
         {
             if( _offset + _size > (size_t)size )

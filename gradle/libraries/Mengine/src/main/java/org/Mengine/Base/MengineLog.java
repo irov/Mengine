@@ -22,6 +22,12 @@ public class MengineLog {
     public final static int LM_DEBUG = 7;
     public final static int LM_VERBOSE = 8;
 
+    public final static int LFILTER_NONE = 0 << 0;
+    public final static int LFILTER_PROTECTED = 1 << 1;
+    public final static int LFILTER_ANDROID = 1 << 2;
+    public final static int LFILTER_HTTP = 1 << 3;
+    public final static int LFILTER_IMMEDIATE = 1 << 4;
+
     private static MengineApplication m_application;
     private static boolean m_initializeBaseServices = false;
     private static final Object m_lock = new Object();
@@ -29,6 +35,7 @@ public class MengineLog {
     static class HistoryRecord
     {
         public int level;
+        public int filter;
         public String tag;
         public String message;
         public MengineApplication application;
@@ -48,7 +55,7 @@ public class MengineLog {
                 AndroidEnvironmentService_log(record.level, record.tag, record.message);
 
                 if (record.application == null) {
-                    MengineLog.m_application.onMengineLogger(record.level, record.tag, record.message);
+                    MengineLog.m_application.onMengineLogger(record.level, record.filter, record.tag, record.message);
                 }
             }
 
@@ -102,6 +109,7 @@ public class MengineLog {
             } else {
                 HistoryRecord record = new HistoryRecord();
                 record.level = level;
+                record.filter = MengineLog.LFILTER_NONE;
                 record.tag = tag;
                 record.message = totalMsg;
                 record.application = MengineLog.m_application;
@@ -111,7 +119,7 @@ public class MengineLog {
         }
 
         if (MengineLog.m_application != null) {
-            MengineLog.m_application.onMengineLogger(level, tag, totalMsg);
+            MengineLog.m_application.onMengineLogger(level, MengineLog.LFILTER_NONE, tag, totalMsg);
         }
 
         return totalMsg;

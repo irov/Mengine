@@ -56,18 +56,6 @@ namespace Mengine
         int64_t size = ANDROID_ASSET_SERVICE()
             ->size( m_asset );
 
-        if( size < 0 )
-        {
-            LOGGER_ERROR( "invalid file '%s' error size %zu"
-                , fullPath
-                , (size_t)size
-            );
-
-            this->close();
-
-            return false;
-        }
-
         if( _size != ~0U )
         {
             if( _offset + _size > (size_t)size )

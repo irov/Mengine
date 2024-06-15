@@ -8,6 +8,7 @@ import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
+import org.Mengine.Base.MengineFatalErrorException;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
@@ -58,6 +59,8 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
 
     @Override
     public void onMengineCaughtException(MengineApplication activity, Throwable throwable) {
+        throwable.printStackTrace(System.err);
+
         this.recordException(throwable);
     }
 
@@ -70,8 +73,6 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
         this.logMessage("recordException throwable: %s"
             , throwable.getMessage()
         );
-
-        throwable.printStackTrace(System.err);
 
         FirebaseCrashlytics.getInstance().recordException(throwable);
     }
@@ -125,7 +126,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     @Override
-    public void onMengineLogger(MengineApplication application, int level, String category, String msg) {
+    public void onMengineLogger(MengineApplication application, int level, int filter, String category, String msg) {
         if (BuildConfig.DEBUG == true) {
             return;
         }
@@ -135,7 +136,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
                 FirebaseCrashlytics.getInstance().log("[" + category + "] E " + msg);
                 break;
             case MengineLog.LM_FATAL:
-                FirebaseCrashlytics.getInstance().log("[" + category + "] F " + msg);
+                FirebaseCrashlytics.getInstance().recordException(new MengineFatalErrorException(msg));
                 break;
         }
     }

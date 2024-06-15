@@ -947,8 +947,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logInfo( pybind::kernel_interface * _kernel, PyObject * _message )
             {
-                LoggerMessage msg;
+                Char function[MENGINE_MAX_PATH] = {'\0'};
+                uint32_t lineno = 0;
+                _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
+                LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
                 msg.threadName = Helper::getCurrentThreadName();
@@ -956,8 +959,8 @@ namespace Mengine
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_GREEN | LCOLOR_BLUE;
                 msg.flag = LFLAG_SHORT;
-                msg.function = "";
-                msg.line = 0;
+                msg.function = function;
+                msg.line = lineno;
 
                 size_t size;
                 const Char * data = _kernel->string_to_char_and_size( _message, &size );
@@ -971,8 +974,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logMessage( pybind::kernel_interface * _kernel, PyObject * _message )
             {
-                LoggerMessage msg;
+                Char function[MENGINE_MAX_PATH] = {'\0'};
+                uint32_t lineno = 0;
+                _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
+                LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
                 msg.threadName = Helper::getCurrentThreadName();
@@ -980,8 +986,8 @@ namespace Mengine
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED | LCOLOR_BLUE;
                 msg.flag = LFLAG_SHORT;
-                msg.function = "";
-                msg.line = 0;
+                msg.function = function;
+                msg.line = lineno;
 
                 size_t size;
                 const Char * data = _kernel->string_to_char_and_size( _message, &size );
@@ -995,8 +1001,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logWarning( pybind::kernel_interface * _kernel, PyObject * _message )
             {
-                LoggerMessage msg;
+                Char function[MENGINE_MAX_PATH] = {'\0'};
+                uint32_t lineno = 0;
+                _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
+                LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
                 msg.threadName = Helper::getCurrentThreadName();
@@ -1004,8 +1013,8 @@ namespace Mengine
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED | LCOLOR_GREEN;
                 msg.flag = LFLAG_SHORT;
-                msg.function = "";
-                msg.line = 0;
+                msg.function = function;
+                msg.line = lineno;
 
                 size_t size;
                 const Char * data = _kernel->string_to_char_and_size( _message, &size );
@@ -1019,8 +1028,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logError( pybind::kernel_interface * _kernel, PyObject * _message )
             {
-                LoggerMessage msg;
+                Char function[MENGINE_MAX_PATH] = {'\0'};
+                uint32_t lineno = 0;
+                _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
+                LoggerMessage msg;
                 msg.timestamp = Helper::getLocalTimestamp();
                 msg.category = "python";
                 msg.threadName = Helper::getCurrentThreadName();
@@ -1028,8 +1040,35 @@ namespace Mengine
                 msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED;
                 msg.flag = LFLAG_SHORT;
-                msg.function = "";
-                msg.line = 0;
+                msg.function = function;
+                msg.line = lineno;
+
+                size_t size;
+                const Char * data = _kernel->string_to_char_and_size( _message, &size );
+
+                msg.data = data;
+                msg.size = size;
+
+                LOGGER_SERVICE()
+                    ->logMessage( msg );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_logFatal( pybind::kernel_interface * _kernel, PyObject * _message )
+            {
+                Char function[MENGINE_MAX_PATH] = {'\0'};
+                uint32_t lineno = 0;
+                _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
+
+                LoggerMessage msg;
+                msg.timestamp = Helper::getLocalTimestamp();
+                msg.category = "python";
+                msg.threadName = Helper::getCurrentThreadName();
+                msg.level = LM_FATAL;
+                msg.filter = LFILTER_IMMEDIATE;
+                msg.color = LCOLOR_RED;
+                msg.flag = LFLAG_FULL;
+                msg.function = function;
+                msg.line = lineno;
 
                 size_t size;
                 const Char * data = _kernel->string_to_char_and_size( _message, &size );
@@ -4146,6 +4185,7 @@ namespace Mengine
         pybind::def_functor_kernel( _kernel, "logMessage", helperScriptMethod, &HelperScriptMethod::s_logMessage );
         pybind::def_functor_kernel( _kernel, "logWarning", helperScriptMethod, &HelperScriptMethod::s_logWarning );
         pybind::def_functor_kernel( _kernel, "logError", helperScriptMethod, &HelperScriptMethod::s_logError );
+        pybind::def_functor_kernel( _kernel, "logFatal", helperScriptMethod, &HelperScriptMethod::s_logFatal );        
 
         pybind::def_functor( _kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
         pybind::def_functor( _kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::s_enumerator );

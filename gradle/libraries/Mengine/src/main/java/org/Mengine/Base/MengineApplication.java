@@ -1151,11 +1151,11 @@ public class MengineApplication extends Application {
         }
     }
 
-    public void onMengineLogger(int level, String category, String msg) {
+    public void onMengineLogger(int level, int filter, String category, String msg) {
         List<MenginePluginLoggerListener> listeners = this.getLoggerListeners();
 
         for(MenginePluginLoggerListener l : listeners) {
-            l.onMengineLogger(this, level, category, msg);
+            l.onMengineLogger(this, level, filter, category, msg);
         }
     }
 

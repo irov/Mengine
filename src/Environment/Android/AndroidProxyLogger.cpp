@@ -59,10 +59,11 @@ namespace Mengine
         jstring category_jstring = jenv->NewStringUTF(message.category );
 
         ELoggerLevel level = message.level;
+        uint32_t filter = message.filter;
 
         jstring data_jstring = jenv->NewStringUTF( message.data );
 
-        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineLogger", "(ILjava/lang/String;Ljava/lang/String;)V", level, category_jstring, data_jstring );
+        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineLogger", "(IILjava/lang/String;Ljava/lang/String;)V", level, filter, category_jstring, data_jstring );
 
         jenv->DeleteLocalRef( category_jstring );
         jenv->DeleteLocalRef( data_jstring );

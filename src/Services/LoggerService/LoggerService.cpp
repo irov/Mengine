@@ -196,7 +196,7 @@ namespace Mengine
         msg.threadName = Helper::getCurrentThreadName();
         msg.level = LM_MESSAGE;
         msg.flag = LFLAG_SHORT;
-        msg.filter = 0;
+        msg.filter = LFILTER_NONE;
         msg.color = LCOLOR_GREEN;
         msg.function = "";
         msg.line = 0;
@@ -451,7 +451,7 @@ namespace Mengine
 
         STATISTIC_INC_INTEGER( statisticId );
 
-        if( m_threadly == true && (message.flag & LFLAG_IMMEDIATE) == 0 )
+        if( m_threadly == true && (message.filter & LFILTER_IMMEDIATE) == 0 )
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexMessage );
 

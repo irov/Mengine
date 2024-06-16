@@ -13,7 +13,6 @@
 #include "Kernel/AspectRatioViewport.h"
 #include "Kernel/VectorAspectRatioViewports.h"
 #include "Kernel/Color.h"
-#include "Kernel/Params.h"
 #include "Kernel/VectorString.h"
 
 namespace Mengine

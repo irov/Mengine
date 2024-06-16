@@ -303,7 +303,7 @@ MACRO(MENGINE_GENERATE_COCOAPODS)
     if(APPLE AND NOT IOS)
         configure_file("MacOSPods.patch.in" "${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/MacOSPods.patch" @ONLY)
         
-        file(STRINGS "MacOSPods.patch" PODS_END_PATCH NEWLINE_CONSUME)
+        file(STRINGS "${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/MacOSPods.patch" PODS_END_PATCH NEWLINE_CONSUME)
     endif()
             
     STRING(APPEND PODFILE_BUFFER ${PODS_END_PATCH})

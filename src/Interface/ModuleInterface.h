@@ -7,7 +7,6 @@
 #include "Kernel/UpdateContext.h"
 #include "Kernel/RenderContext.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/Params.h"
 
 namespace Mengine
 {

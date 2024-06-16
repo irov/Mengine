@@ -5,7 +5,6 @@
 #include "Interface/RenderPipelineInterface.h"
 
 #include "Kernel/ConstString.h"
-#include "Kernel/Params.h"
 
 #include "Config/Lambda.h"
 

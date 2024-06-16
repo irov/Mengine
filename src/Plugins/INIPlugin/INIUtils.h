@@ -4,7 +4,6 @@
 #include "Interface/ContentInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Kernel/Params.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/VectorConstString.h"
 #include "Kernel/FilePath.h"

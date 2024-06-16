@@ -265,7 +265,7 @@ namespace Mengine
         proxyLogger->setVerboseFilter( Mengine::LFILTER_ANDROID );
 
         if( LOGGER_SERVICE()
-                    ->registerLogger( proxyLogger ) == true )
+            ->registerLogger( proxyLogger ) == true )
         {
             m_proxyLogger = proxyLogger;
         }

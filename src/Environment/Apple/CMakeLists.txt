@@ -12,6 +12,9 @@ src
     AppleErrorHelper.mm
     AppleString.h
     AppleString.mm
+    
+    AppleEvent.h
+    AppleEvent.mm
 
     AppleUserDefaults.h
     AppleUserDefaults.mm

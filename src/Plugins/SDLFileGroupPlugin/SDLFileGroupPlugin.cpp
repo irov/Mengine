@@ -39,6 +39,8 @@ namespace Mengine
         
 #if defined(MENGINE_PLATFORM_IOS)
         MENGINE_STRCAT( utf8_currentPath, "Data/" );
+#elif defined(MENGINE_PLATFORM_MACOS)
+        MENGINE_STRCAT( utf8_currentPath, "Data/" );
 #endif
         
         size_t utf8_currentPathLen = MENGINE_STRLEN( utf8_currentPath );

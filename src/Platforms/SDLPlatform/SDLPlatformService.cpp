@@ -24,6 +24,10 @@
 #   include "Interface/iOSEnvironmentServiceInterface.h"
 #endif
 
+#if defined(MENGINE_PLATFORM_MACOS)
+#   include "Interface/MacOSEnvironmentServiceInterface.h"
+#endif
+
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
 #elif defined(MENGINE_PLATFORM_APPLE)
@@ -857,7 +861,8 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_WINDOWS)
         m_deviceModel = "PC";
 #elif defined(MENGINE_PLATFORM_MACOS)
-        m_deviceModel = "Mac";
+        MACOS_ENVIRONMENT_SERVICE()
+            ->getDeviceModel( m_deviceModel.data(), MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME );
 #elif defined(MENGINE_PLATFORM_IOS)
         IOS_ENVIRONMENT_SERVICE()
             ->getDeviceModel( m_deviceModel.data(), MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME );
@@ -868,16 +873,19 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
         m_osFamily = "Windows";
-#elif defined(MENGINE_PLATFORM_MACOS)
-        m_osFamily = "MacOS";
 #elif defined(MENGINE_PLATFORM_IOS)
         m_osFamily = "iOS";
+#elif defined(MENGINE_PLATFORM_MACOS)
+        m_osFamily = "MacOS";
 #elif defined(MENGINE_PLATFORM_ANDROID)
         m_osFamily = "Android";
 #endif
 
 #if defined(MENGINE_PLATFORM_IOS)
         IOS_ENVIRONMENT_SERVICE()
+            ->getOSVersion( m_osVersion.data(), MENGINE_PLATFORM_OS_VERSION_MAXNAME );
+#elif defined(MENGINE_PLATFORM_MACOS)
+        MACOS_ENVIRONMENT_SERVICE()
             ->getOSVersion( m_osVersion.data(), MENGINE_PLATFORM_OS_VERSION_MAXNAME );
 #elif defined(MENGINE_PLATFORM_ANDROID)
         ANDROID_ENVIRONMENT_SERVICE()
@@ -886,6 +894,9 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_IOS)
         IOS_ENVIRONMENT_SERVICE()
+            ->getBundleId( m_bundleId.data(), MENGINE_PLATFORM_BUNDLEID_MAXNAME );
+#elif defined(MENGINE_PLATFORM_MACOS)
+        MACOS_ENVIRONMENT_SERVICE()
             ->getBundleId( m_bundleId.data(), MENGINE_PLATFORM_BUNDLEID_MAXNAME );
 #elif defined(MENGINE_PLATFORM_ANDROID)
         ANDROID_ENVIRONMENT_SERVICE()
@@ -897,6 +908,9 @@ namespace Mengine
 #elif defined(MENGINE_PLATFORM_IOS)
         IOS_ENVIRONMENT_SERVICE()
             ->getSessionId( m_sessionId.data(), MENGINE_PLATFORM_SESSIONID_MAXNAME );
+#elif defined(MENGINE_PLATFORM_MACOS)
+        MACOS_ENVIRONMENT_SERVICE()
+            ->getSessionId( m_sessionId.data(), MENGINE_PLATFORM_SESSIONID_MAXNAME );
 #elif defined(MENGINE_PLATFORM_ANDROID)
         ANDROID_ENVIRONMENT_SERVICE()
             ->getSessionId( m_sessionId.data(), MENGINE_PLATFORM_SESSIONID_MAXNAME );
@@ -906,6 +920,9 @@ namespace Mengine
         m_installKey.assign( m_fingerprint );
 #elif defined(MENGINE_PLATFORM_IOS)
         IOS_ENVIRONMENT_SERVICE()
+            ->getInstallKey( m_installKey.data(), MENGINE_PLATFORM_INSTALLKEY_MAXNAME );
+#elif defined(MENGINE_PLATFORM_MACOS)
+        MACOS_ENVIRONMENT_SERVICE()
             ->getInstallKey( m_installKey.data(), MENGINE_PLATFORM_INSTALLKEY_MAXNAME );
 #elif defined(MENGINE_PLATFORM_ANDROID)
         ANDROID_ENVIRONMENT_SERVICE()
@@ -917,6 +934,9 @@ namespace Mengine
 #elif defined(MENGINE_PLATFORM_IOS)
         m_installTimestamp = IOS_ENVIRONMENT_SERVICE()
             ->getInstallTimestamp();
+#elif defined(MENGINE_PLATFORM_MACOS)
+        m_installTimestamp = MACOS_ENVIRONMENT_SERVICE()
+            ->getInstallTimestamp();
 #elif defined(MENGINE_PLATFORM_ANDROID)
         m_installTimestamp = ANDROID_ENVIRONMENT_SERVICE()
             ->getInstallTimestamp();
@@ -926,6 +946,9 @@ namespace Mengine
         m_installVersion = "0.0.0";
 #elif defined(MENGINE_PLATFORM_IOS)
         IOS_ENVIRONMENT_SERVICE()
+            ->getInstallVersion( m_installVersion.data(), MENGINE_PLATFORM_INSTALLVERSION_MAXNAME );
+#elif defined(MENGINE_PLATFORM_MACOS)
+        MACOS_ENVIRONMENT_SERVICE()
             ->getInstallVersion( m_installVersion.data(), MENGINE_PLATFORM_INSTALLVERSION_MAXNAME );
 #elif defined(MENGINE_PLATFORM_ANDROID)
         ANDROID_ENVIRONMENT_SERVICE()
@@ -937,6 +960,9 @@ namespace Mengine
 #elif defined(MENGINE_PLATFORM_IOS)
         m_installRND = IOS_ENVIRONMENT_SERVICE()
             ->getInstallRND();
+#elif defined(MENGINE_PLATFORM_MACOS)
+        m_installRND = MACOS_ENVIRONMENT_SERVICE()
+            ->getInstallRND();
 #elif defined(MENGINE_PLATFORM_ANDROID)
         m_installRND = ANDROID_ENVIRONMENT_SERVICE()
             ->getInstallRND();
@@ -946,6 +972,9 @@ namespace Mengine
         m_sessionIndex = 0;
 #elif defined(MENGINE_PLATFORM_IOS)
         m_sessionIndex = IOS_ENVIRONMENT_SERVICE()
+            ->getSessionIndex();
+#elif defined(MENGINE_PLATFORM_MACOS)
+        m_sessionIndex = MACOS_ENVIRONMENT_SERVICE()
             ->getSessionIndex();
 #elif defined(MENGINE_PLATFORM_ANDROID)
         m_sessionIndex = ANDROID_ENVIRONMENT_SERVICE()
@@ -1119,9 +1148,15 @@ namespace Mengine
         m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
 #endif
 
-#if defined(MENGINE_PLATFORM_ANDROID)
+#if defined(MENGINE_PLATFORM_IOS)
+        IOS_ENVIRONMENT_SERVICE()
+            ->getDeviceName( m_deviceName.data(), MENGINE_PLATFORM_DEVICE_NAME_MAXNAME );
+#elif defined(MENGINE_PLATFORM_MACOS)
+        MACOS_ENVIRONMENT_SERVICE()
+            ->getDeviceName( m_deviceName.data(), MENGINE_PLATFORM_DEVICE_NAME_MAXNAME );
+#elif defined(MENGINE_PLATFORM_ANDROID)
         ANDROID_ENVIRONMENT_SERVICE()
-            ->getDeviceName( m_deviceName, 128 );
+            ->getDeviceName( m_deviceName.data(), MENGINE_PLATFORM_DEVICE_NAME_MAXNAME );
 #endif
         
 #if defined(MENGINE_PLATFORM_MACOS)

@@ -1,6 +1,7 @@
 #include "AppleGameCenterService.h"
 
 #import "Environment/Apple/AppleErrorHelper.h"
+#import "Environment/Apple/AppleString.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadHelper.h"
@@ -163,7 +164,7 @@ namespace Mengine
             , _percentComplete
         );
         
-        NSString * nsDescription = [NSString stringWithUTF8String : _achievementName.c_str()];
+        NSString * nsDescription = Helper::stringToNSString( _achievementName );
 
         ConstString copy_achievementName = _achievementName;
         LambdaAchievemtResponse copy_response = _response;
@@ -256,7 +257,7 @@ namespace Mengine
             , _score
         );
         
-        NSString* identifier = [NSString stringWithUTF8String:_key.c_str()];
+        NSString* identifier = Helper::stringToNSString( _key );
         
         ConstString copy_key = _key;
         LambdaScoreResponse copy_response = _response;

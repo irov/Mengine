@@ -1,6 +1,7 @@
 #import "AppleFirebaseCrashlyticsApplicationDelegate.h"
 
-#include "Environment/iOS/iOSApplication.h"
+#import "Environment/Apple/AppleString.h"
+#import "Environment/iOS/iOSApplication.h"
 
 #import <FirebaseCrashlytics/FirebaseCrashlytics.h>
 
@@ -24,8 +25,40 @@
     return YES;
 }
 
-- (void)event:(NSString *)name args:(NSArray *)args {
+- (void)onEvent:(MengineEvent *)event args:(NSArray *)args {
+    if (event == MengineEvent.EVENT_SESSION_ID) {
+        NSString * sessionId = args[0];
+        
+        [[FIRCrashlytics crashlytics] setUserID:sessionId];
+    }
+}
+
+- (void)onLog:(const Mengine::LoggerRecordInterfacePtr &)record {
+    Mengine::LoggerMessage message;
+    record->getMessage( &message );
     
+    switch (message.level) {
+        case Mengine::LM_ERROR: {
+            NSString * ns_message = Mengine::Helper::stringToNSString(message.data, message.size);
+            
+            [[FIRCrashlytics crashlytics] log:ns_message];
+        }break;
+        case Mengine::LM_FATAL: {
+            NSString * ns_message = Mengine::Helper::stringToNSString(message.data, message.size);
+            
+            NSDictionary *userInfo = @{
+                NSLocalizedDescriptionKey: ns_message
+            };
+            
+            NSError * error = [NSError errorWithDomain:@("com.mengine.firebase")
+                                                  code:0
+                                              userInfo:userInfo];
+            
+            [[FIRCrashlytics crashlytics] recordError:error];
+        }break;
+        default:
+            break;
+    }
 }
 
 @end

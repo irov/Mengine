@@ -1,6 +1,7 @@
 #include "AppleFirebaseCrashlyticsService.h"
 
 #import "Environment/Apple/AppleErrorHelper.h"
+#import "Environment/Apple/AppleString.h"
 
 #include "Kernel/Logger.h"
 
@@ -39,28 +40,28 @@ namespace Mengine
             , _value.c_str() 
         );
 
-        const Char * value_str = _value.c_str();
+        NSString * ns_value = Helper::stringToNSString( _value );
         
-        [[FIRCrashlytics crashlytics] log:[NSString stringWithUTF8String:value_str]];
+        [[FIRCrashlytics crashlytics] log:ns_value];
     }
     //////////////////////////////////////////////////////////////////////
     void AppleFirebaseCrashlyticsService::sendKeyAndValue( const ConstString & _key, const ConstString & _value )
     {
         LOGGER_MESSAGE( "send key: %s value: %s"
             , _key.c_str()
-            , _value.c_str() 
+            , _value.c_str()
         );
 
-        const Char * key_str = _key.c_str();
-        const Char * value_str = _value.c_str();
+        NSString * ns_key = Helper::stringToNSString( _key );
+        NSString * ns_value = Helper::stringToNSString( _value );
         
-        [[FIRCrashlytics crashlytics] setCustomValue:[NSString stringWithUTF8String:value_str]
-                                              forKey:[NSString stringWithUTF8String:key_str]];
+        [[FIRCrashlytics crashlytics] setCustomValue:ns_value
+                                              forKey:ns_key];
         
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseCrashlyticsService::sendKeyAndValues( const FirebaseCrashlyticsParams & _params )
+    void AppleFirebaseCrashlyticsService::sendKeyAndValues( const Params & _params )
     {
         LOGGER_MESSAGE( "send key and values:" );
 
@@ -68,47 +69,58 @@ namespace Mengine
 
         for( auto && [key, value] : _params )
         {
-            LOGGER_MESSAGE("param key: %s value: %s"
-                , key.c_str()
-                , value.c_str()
-            );
-
-            const Char * key_str = key.c_str();
-            const Char * value_str = value.c_str();
-
-            [keysAndValues setObject:[NSString stringWithUTF8String:value_str]  forKey:[NSString stringWithUTF8String:key_str]];
+            NSString * ns_key = Helper::stringToNSString( key );
+            
+            Helper::visit( value
+                , [keysAndValues, ns_key]( const ParamBool & _element )
+            {
+                [keysAndValues setObject:@(_element) forKey:ns_key];
+            }
+                , [keysAndValues, ns_key]( const ParamInteger & _element )
+            {
+                [keysAndValues setObject:@(_element) forKey:ns_key];
+            }
+                , [keysAndValues, ns_key]( const ParamDouble & _element )
+            {
+                [keysAndValues setObject:@(_element) forKey:ns_key];
+            }
+                , [keysAndValues, ns_key]( const ParamString & _element )
+            {
+                NSString * ns_element = Helper::stringToNSString( _element );
+                
+                [keysAndValues setObject:ns_element forKey:ns_key];
+            }
+                , [keysAndValues, ns_key]( const ParamWString & _element )
+            {
+                NSString * ns_element = Helper::unicodeToNSString( _element );
+                
+                [keysAndValues setObject:ns_element forKey:ns_key];
+            }
+                , [keysAndValues, ns_key]( const ParamConstString & _element )
+            {
+                NSString * ns_element = Helper::stringToNSString( _element );
+                
+                [keysAndValues setObject:ns_element forKey:ns_key];
+            } );
         }
 
         [[FIRCrashlytics crashlytics] setCustomKeysAndValues: keysAndValues];
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleFirebaseCrashlyticsService::recordError( const ConstString & _name, uint32_t _code, const FirebaseCrashlyticsParams & _params )
+    void AppleFirebaseCrashlyticsService::recordError( const String & _name, uint32_t _code )
     {
         LOGGER_MESSAGE( "record error name: %s code: %u"
             , _name.c_str()
             , _code
         );
 
-        NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
-
-        for( auto && [key, value] : _params )
-        {
-            LOGGER_MESSAGE("param key: %s value: %s"
-                , key.c_str()
-                , value.c_str()
-            );
-
-            const Char * key_str = key.c_str();
-            const Char * value_str = value.c_str();
-
-            [userInfo setObject:[NSString stringWithUTF8String:value_str]  forKey:[NSString stringWithUTF8String:key_str]];
-        }
-
-        const Char * name_str = _name.c_str();
+        NSDictionary *userInfo = @{
+          NSLocalizedDescriptionKey: @(_name.c_str())
+        };
         
-        NSError *error = [NSError errorWithDomain:[NSString stringWithUTF8String:name_str]
-            code:_code
-            userInfo:userInfo];
+        NSError * error = [NSError errorWithDomain:@("com.mengine.firebase")
+                                             code:_code
+                                         userInfo:userInfo];
 
         [[FIRCrashlytics crashlytics] recordError:error];
     }

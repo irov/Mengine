@@ -22,6 +22,7 @@ namespace Mengine
         typedef StaticString<MENGINE_APPLE_MESSAGE_NSID> NSIDMessage;
         NSIDMessage NSIdToString( id _value );
     
+        NSString * stringToNSString( const Char * _value, size_t _size );
         NSString * unicodeToNSString( const WString & _value );
         NSString * stringToNSString( const String & _value );
         NSString * stringToNSString( const ConstString & _value );

@@ -2,14 +2,13 @@
 
 #include "Config/Config.h"
 
-#import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
 @interface MacOSApplication : NSObject
 
 + (instancetype _Nonnull) sharedInstance;
 
-- (BOOL)application;
+- (void)initialize;
 
 - (NSString * _Nonnull)getInstallKey;
 - (NSInteger)getInstallTimestamp;

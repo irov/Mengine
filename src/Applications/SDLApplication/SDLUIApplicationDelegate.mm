@@ -42,7 +42,7 @@ char ** MENGINE_MAIN_argv = nullptr;
     return self.m_pluginDelegates;
 }
 
-- (void)notify:(NSString *)name args:(id)firstArg, ... NS_REQUIRES_NIL_TERMINATION {
+- (void)notify:(MengineEvent *)event args:(id)firstArg, ... NS_REQUIRES_NIL_TERMINATION {
     va_list args;
     va_start(args, firstArg);
     
@@ -54,13 +54,21 @@ char ** MENGINE_MAIN_argv = nullptr;
 
     va_end(args);
     
-    [self notify:name arrayArgs:send_args];
+    [self notify:event arrayArgs:send_args];
 }
 
-- (void)notify:(NSString *)name arrayArgs:(NSArray<id> *)args {
-    for (id delegate in self.m_pluginDelegates) {
-        if ([delegate respondsToSelector:@selector(event: args:)] == YES) {
-            [delegate event:name args:args];
+- (void)notify:(MengineEvent *)event arrayArgs:(NSArray<id> *)args {
+    for (NSObject<UIPluginApplicationDelegateInterface> * delegate in self.m_pluginDelegates) {
+        if ([delegate respondsToSelector:@selector(onEvent: args:)] == YES) {
+            [delegate onEvent:event args:args];
+        }
+    }
+}
+
+- (void)log:(const Mengine::LoggerRecordInterfacePtr &)record {
+    for (NSObject<UIPluginApplicationDelegateInterface> * delegate in self.m_pluginDelegates) {
+        if ([delegate respondsToSelector:@selector(onLog:)] == YES) {
+            [delegate onLog:record];
         }
     }
 }

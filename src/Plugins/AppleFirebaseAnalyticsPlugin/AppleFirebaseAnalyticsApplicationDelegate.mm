@@ -1,6 +1,6 @@
 #import "AppleFirebaseAnalyticsApplicationDelegate.h"
 
-#include "Environment/iOS/iOSApplication.h"
+#import "Environment/iOS/iOSApplication.h"
 
 #import <FirebaseAnalytics/FirebaseAnalytics.h>
 
@@ -18,8 +18,12 @@
     return YES;
 }
 
-- (void)event:(NSString *)name args:(NSArray *)args {
-    
+- (void)onEvent:(MengineEvent *)event args:(NSArray *)args {
+    if (event == MengineEvent.EVENT_SESSION_ID) {
+        NSString * sessionId = args[0];
+        
+        [FIRAnalytics setUserID:sessionId];
+    }
 }
 
 @end

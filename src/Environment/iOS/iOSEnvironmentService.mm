@@ -3,6 +3,7 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
+#import "Environment/iOS/iOSProxyLogger.h"
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
 
@@ -148,12 +149,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSEnvironmentService::openUrlInDefaultBrowser( const Char * _url )
     {
-        if( [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@(_url)]] == NO )
+        NSURL * ns_url = [NSURL URLWithString:@(_url)];
+        
+        if( [[UIApplication sharedApplication] canOpenURL:ns_url] == NO )
         {
             return false;
         }
         
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@(_url)] options:@{} completionHandler:^(BOOL success) {
+        [[UIApplication sharedApplication] openURL:ns_url options:@{} completionHandler:^(BOOL success) {
             //ToDo callback
         }];
 

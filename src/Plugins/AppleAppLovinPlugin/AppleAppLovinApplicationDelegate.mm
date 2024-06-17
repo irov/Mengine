@@ -120,7 +120,7 @@
         
         iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
         
-        Mengine::Helper::iOSPluginApplicationDelegateEventNotify( @("NOTIFICATION_TRANSPARENCY_CONSENT"), consent, nil );
+        Mengine::Helper::iOSPluginApplicationDelegateEventNotify( MengineEvent.EVENT_TRANSPARENCY_CONSENT, consent, nil );
         
         [AppleSemaphoreService.sharedInstance activateSemaphore:@"AppLovinSdkInitialized"];
     }];

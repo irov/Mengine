@@ -21,8 +21,8 @@ namespace Mengine
     public:
         void sendValue( const ConstString & _val ) override;
         void sendKeyAndValue( const ConstString & _key, const ConstString & _val ) override;
-        void sendKeyAndValues( const FirebaseCrashlyticsParams & _params ) override;
-        void recordError( const ConstString & _name, uint32_t _code, const FirebaseCrashlyticsParams & _params ) override;
+        void sendKeyAndValues( const Params & _params ) override;
+        void recordError( const String & _name, uint32_t _code ) override;
         void recordError( NSError * _error ) override;
     };
 }

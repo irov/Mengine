@@ -6,7 +6,7 @@
 @implementation MacOSApplication
 
 + (instancetype)sharedInstance {
-    static iOSApplication *sharedInstance = nil;
+    static MacOSApplication *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[self alloc] init];
@@ -14,7 +14,7 @@
     return sharedInstance;
 }
 
-- (BOOL)application {
+- (void)initialize {
     NSString * install_key = Mengine::Helper::AppleGetUserDefaultsString(@"mengine.install_key", nil);
     NSInteger install_timestamp = Mengine::Helper::AppleGetUserDefaultsInteger(@"mengine.install_timestamp", -1);
     NSString * install_version = Mengine::Helper::AppleGetUserDefaultsString(@"mengine.install_version", nil);
@@ -54,8 +54,6 @@
     self.m_installRND = install_rnd;
     self.m_sessionIndex = session_index;
     self.m_sessionId = session_id;
-    
-    return YES;
 }
 
 - (NSString * _Nonnull)getInstallKey {

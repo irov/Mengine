@@ -266,15 +266,12 @@ namespace Mengine
         SDLPlatformMacOSWorkspace * m_macOSWorkspace;
 #endif
 
-#if defined(MENGINE_PLATFORM_ANDROID)
-        Char m_deviceName[128];
-#endif
-
         SDLInputPtr m_sdlInput;
 
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
         StaticString<MENGINE_SHA1_HEX_COUNT + 1> m_fingerprint; //SHA1
 
+        StaticString<MENGINE_PLATFORM_DEVICE_NAME_MAXNAME> m_deviceName;
         StaticString<MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME> m_deviceModel;
         StaticString<MENGINE_PLATFORM_OS_FAMILY_MAXNAME> m_osFamily;
         StaticString<MENGINE_PLATFORM_OS_VERSION_MAXNAME> m_osVersion;

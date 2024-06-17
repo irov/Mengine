@@ -1,5 +1,9 @@
 #include "Config/Config.h"
 
+#include "Interface/LoggerRecordInterface.h"
+
+#import "Environment/Apple/AppleEvent.h"
+
 #import <UIKit/UIKit.h>
 
 @protocol UIPluginApplicationDelegateInterface <NSObject>
@@ -12,7 +16,8 @@
 - (BOOL)beginLoop;
 - (void)endLoop;
 
-- (void)event:(NSString *)name args:(NSArray *)args;
+- (void)onEvent:(MengineEvent *)event args:(NSArray *)args;
+- (void)onLog:(const Mengine::LoggerRecordInterfacePtr &)record;
 
 #pragma mark - UISceneSession lifecycle
 

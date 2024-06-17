@@ -58,6 +58,14 @@ namespace Mengine
             return ns;
         }
         /////////////////////////////////////////////////////////////////////////
+        NSString * stringToNSString( const Char * _value, size_t _size )
+        {
+            NSData * data_wstr = [NSData dataWithBytes:_value length:(_size * sizeof(Char))];
+            NSString * ns = [[NSString alloc] initWithData:data_wstr encoding:NSUTF8StringEncoding];
+            
+            return ns;
+        }
+        /////////////////////////////////////////////////////////////////////////
         NSString * stringToNSString( const String & _value )
         {
             const Char * value_str = _value.c_str();

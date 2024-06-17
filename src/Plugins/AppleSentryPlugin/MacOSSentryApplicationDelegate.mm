@@ -1,6 +1,6 @@
 #import "MacOSSentryApplicationDelegate.h"
 
-#import "Environment/Apple/AppleDetail.h"
+#import "Environment/Apple/AppleBundle.h"
 
 #include "Kernel/BuildMode.h"
 
@@ -11,13 +11,11 @@
 #pragma mark - MacOSProxyApplicationDelegateInterface
 
 - (BOOL)application {
-    NSString * AppleSentryPlugin_DSN = Mengine::Helper::AppleGetBundlePluginConfigString( @("MengineAppleSentryPlugin"), @("DSN"), nil );
+    NSString * MengineMacOSSentryPlugin_DSN = Mengine::Helper::AppleGetBundlePluginConfigString( @("MengineMacOSSentryPlugin"), @("DSN"), nil );
     
-    if( AppleSentryPlugin_DSN == nil ) {
+    if( MengineMacOSSentryPlugin_DSN == nil ) {
         return NO;
     }
-
-    BOOL AppleSentryPlugin_Debug = MENGINE_DEBUG_VALUE(YES, NO);
     
     const Mengine::Char * BUILD_VERSION = Mengine::Helper::getBuildVersion();
     const Mengine::Char * BUILD_NUMBER_STRING = Mengine::Helper::getBuildNumberString();
@@ -29,8 +27,8 @@
 #endif
     
     [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
-        options.dsn = AppleSentryPlugin_DSN;
-        options.debug = AppleSentryPlugin_Debug;
+        options.dsn = MengineMacOSSentryPlugin_DSN;
+        options.debug = NO;
         options.releaseName = @(BUILD_VERSION);
         options.dist = @(BUILD_NUMBER_STRING);
         options.environment = @(ENVIRONMENT);

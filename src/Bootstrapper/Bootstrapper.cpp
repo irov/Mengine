@@ -1087,8 +1087,6 @@ namespace Mengine
 
         if( this->loadApplicationConfig_() == false )
         {
-            LOGGER_ERROR( "invalid load application config" );
-
             return false;
         }
 #endif

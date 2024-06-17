@@ -1,6 +1,7 @@
 #include "Environment/SDL/SDLIncluder.h"
 
 #import "Environment/MacOS/MacOSProxyApplicationDelegateInterface.h"
+#import "Environment/MacOS/MacOSApplication.h"
 
 #import "MengineAppleApplicationDelegates.h"
 
@@ -10,16 +11,20 @@
 
 int main( int argc, char * argv[] )
 {
+    NSLog(@"🟢 Launch Megnine application");
+    
+    [MacOSApplication.sharedInstance initialize];
+    
     NSArray * proxysClassed = getMengineAppleApplicationDelegates();
 
-    for (NSString * className in proxysClassed)
+    for( NSString * className in proxysClassed )
     {
         Class clazz = NSClassFromString(className);
 
         if( clazz == nil )
         {
-            NSLog( @"invalid found application delegate %@"
-              , className
+            NSLog( @"🔴 [ERROR] Invalid found application delegate: %@"
+                , className
             );
             
             return EXIT_FAILURE;
@@ -29,8 +34,8 @@ int main( int argc, char * argv[] )
 
         if( [delegate application] == NO )
         {
-            NSLog( @"invalid initialize application delegate %@"
-              , className
+            NSLog( @"🔴 [ERROR] Invalid initialize application delegate: %@"
+                , className
             );
             
             return EXIT_FAILURE;
@@ -39,9 +44,9 @@ int main( int argc, char * argv[] )
     
     Mengine::SDLApplication application;
 
-    if( bootstrap.bootstrap( argc, argv ) == false )
+    if( application.bootstrap( argc, argv ) == false )
     {
-        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine initialize", "Mengine invalid initialization", NULL );
+        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine initialize", "Mengine invalid bootstrap", NULL );
 
         application.finalize();
 
@@ -61,5 +66,7 @@ int main( int argc, char * argv[] )
 
     application.finalize();
 
+    NSLog(@"🟢 Mengine application finish");
+    
     return EXIT_SUCCESS;
 }

@@ -1,7 +1,7 @@
 #include "AppleAppTrackingService.h"
 
-#include "Environment/iOS/iOSUtils.h"
-#include "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSUtils.h"
+#import "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadHelper.h"

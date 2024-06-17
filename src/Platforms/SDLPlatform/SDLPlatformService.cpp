@@ -293,9 +293,9 @@ namespace Mengine
 
         return userNameLen;
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        MENGINE_STRCPY( _userName, m_deviceName );
+        m_deviceName.copy( _userName );
 
-        size_t userNameLen = MENGINE_STRLEN( _userName );
+        size_t userNameLen = m_deviceName.size();
 
         return userNameLen;
 #else

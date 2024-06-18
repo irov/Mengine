@@ -59,7 +59,7 @@ namespace Mengine
             NSData *data = [_value dataUsingEncoding:NSUTF8StringEncoding];
             NSError *error = nil;
             
-            id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+            [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
             
             if( error != nil )
             {

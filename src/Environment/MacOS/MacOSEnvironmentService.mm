@@ -145,14 +145,17 @@ namespace Mengine
         
         NSURL * url = [NSURL URLWithString:urlString];
         
-        if (url == nil)
+        if( url == nil )
         {
             return false;
         }
         
-        [[NSWorkspace sharedWorkspace] openURL:url];
+        if( [[NSWorkspace sharedWorkspace] openURL:url] == NO )
+        {
+            return false;
+        }
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MacOSEnvironmentService::openMail( const Char * _email, const Char * _subject, const Char * _body )
@@ -168,12 +171,15 @@ namespace Mengine
         
         NSURL *url = [NSURL URLWithString:mailString];
         
-        if (url == nil)
+        if( url == nil )
         {
             return false;
         }
         
-        BOOL success = [[NSWorkspace sharedWorkspace] openURL:url];
+        if( [[NSWorkspace sharedWorkspace] openURL:url] == NO )
+        {
+            return false;
+        }
         
         return true;
     }

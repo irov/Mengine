@@ -1,6 +1,6 @@
 #include "AndroidHelper.h"
 
-#include "Interface/AndroidEnvironmentServiceInterface.h"
+#include "Interface/AndroidKernelServiceInterface.h"
 
 #include "AndroidEnv.h"
 
@@ -461,7 +461,7 @@ namespace Mengine
         ConstString AndroidMakeConstStringFromJString( JNIEnv * _jenv, jstring _value )
         {
             ConstString value_cstr;
-            ANDROID_ENVIRONMENT_SERVICE()
+            ANDROID_KERNEL_SERVICE()
                 ->stringize( _jenv, _value, &value_cstr );
 
             return value_cstr;
@@ -470,7 +470,7 @@ namespace Mengine
         FilePath AndroidMakeFilePathFromJString( JNIEnv * _jenv, jstring _value )
         {
             ConstString value_cstr;
-            ANDROID_ENVIRONMENT_SERVICE()
+            ANDROID_KERNEL_SERVICE()
                 ->stringize( _jenv, _value, &value_cstr );
 
             return FilePath( value_cstr );

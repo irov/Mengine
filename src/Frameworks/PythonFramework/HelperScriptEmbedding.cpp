@@ -24,9 +24,10 @@
 #include "Interface/DocumentInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
+#include "Interface/EnvironmentServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
-#   include "Interface/AndroidEnvironmentServiceInterface.h"
+#   include "Interface/AndroidKernelServiceInterface.h"
 #endif
 
 #include "Environment/Python/PythonIncluder.h"
@@ -905,7 +906,7 @@ namespace Mengine
             String s_getAndroidId()
             {
                 Char androidId[128];
-                ANDROID_ENVIRONMENT_SERVICE()
+                ANDROID_KERNEL_SERVICE()
                     ->getAndroidId( androidId, 128 );
 
                 return String( androidId );

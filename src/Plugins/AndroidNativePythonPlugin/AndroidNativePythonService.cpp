@@ -5,7 +5,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/AndroidEnvironmentServiceInterface.h"
+#include "Interface/AndroidKernelServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
@@ -145,7 +145,7 @@ namespace Mengine
 
         m_eventation->setEventHandler( AndroidNativePythonEventHandlerInterfacePtr::from( this ) );
 
-        ANDROID_ENVIRONMENT_SERVICE()
+        ANDROID_KERNEL_SERVICE()
             ->addAndroidEventation( m_eventation );
 
         if( Mengine_JNI_ExistMengineActivity() == JNI_TRUE )
@@ -156,7 +156,7 @@ namespace Mengine
 
             Helper::AndroidCallVoidActivityMethod( jenv, "onPythonEmbeddedInitialize", "()V" );
 
-            ANDROID_ENVIRONMENT_SERVICE()
+            ANDROID_KERNEL_SERVICE()
                 ->invokeAndroidEventations();
         }
 
@@ -178,7 +178,7 @@ namespace Mengine
         {
             Helper::AndroidCallVoidActivityMethod( jenv, "onPythonEmbeddedFinalize", "()V" );
 
-            ANDROID_ENVIRONMENT_SERVICE()
+            ANDROID_KERNEL_SERVICE()
                 ->invokeAndroidEventations();
         }
 
@@ -195,7 +195,7 @@ namespace Mengine
 
         m_plugins.clear();
 
-        ANDROID_ENVIRONMENT_SERVICE()
+        ANDROID_KERNEL_SERVICE()
             ->removeAndroidEventation( m_eventation );
 
         m_eventation->finalize();
@@ -402,7 +402,7 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        ANDROID_ENVIRONMENT_SERVICE()
+        ANDROID_KERNEL_SERVICE()
             ->invokeAndroidEventations();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -440,7 +440,7 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        ANDROID_ENVIRONMENT_SERVICE()
+        ANDROID_KERNEL_SERVICE()
             ->invokeAndroidEventations();
 
         return (bool)jresult;
@@ -480,7 +480,7 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        ANDROID_ENVIRONMENT_SERVICE()
+        ANDROID_KERNEL_SERVICE()
             ->invokeAndroidEventations();
 
         return (int32_t)jresult;
@@ -520,7 +520,7 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        ANDROID_ENVIRONMENT_SERVICE()
+        ANDROID_KERNEL_SERVICE()
             ->invokeAndroidEventations();
 
         return (int64_t)jresult;
@@ -560,7 +560,7 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        ANDROID_ENVIRONMENT_SERVICE()
+        ANDROID_KERNEL_SERVICE()
             ->invokeAndroidEventations();
 
         return (float)jresult;
@@ -600,7 +600,7 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        ANDROID_ENVIRONMENT_SERVICE()
+        ANDROID_KERNEL_SERVICE()
             ->invokeAndroidEventations();
 
         return (double)jresult;
@@ -648,7 +648,7 @@ namespace Mengine
 
         jenv->DeleteLocalRef( jresult );
 
-        ANDROID_ENVIRONMENT_SERVICE()
+        ANDROID_KERNEL_SERVICE()
             ->invokeAndroidEventations();
 
         return py_value;
@@ -690,7 +690,7 @@ namespace Mengine
 
         PyObject * py_result = Helper::androidNativePythonMakePyObject( m_kernel, jenv, jresult, MENGINE_DOCUMENT_FACTORABLE );
 
-        ANDROID_ENVIRONMENT_SERVICE()
+        ANDROID_KERNEL_SERVICE()
             ->invokeAndroidEventations();
 
         return py_result;
@@ -925,7 +925,7 @@ namespace Mengine
 
         jenv->DeleteLocalRef( sceneName_jvalue );
 
-        ANDROID_ENVIRONMENT_SERVICE()
+        ANDROID_KERNEL_SERVICE()
             ->invokeAndroidEventations();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -946,7 +946,7 @@ namespace Mengine
 
         jenv->DeleteLocalRef( sceneName_jvalue );
 
-        ANDROID_ENVIRONMENT_SERVICE()
+        ANDROID_KERNEL_SERVICE()
             ->invokeAndroidEventations();
     }
     //////////////////////////////////////////////////////////////////////////

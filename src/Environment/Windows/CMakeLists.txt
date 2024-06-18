@@ -25,6 +25,9 @@ src
     
     Win32Register.h
     Win32Register.cpp
+    
+    Win32EnvironmentService.h
+    Win32EnvironmentService.cpp
 )
 
 if(NOT MENGINE_TARGET_UWP)

@@ -22,6 +22,10 @@
 #define MENGINE_STRNCPY(a, b, n) ::strncpy((a), (b), (n))
 #endif
 //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_STRNCPY_STATIC
+#define MENGINE_STRNCPY_STATIC(a, b, n) (::strncpy((a), (b), (n)), MENGINE_STATIC_STRING_LENGTH(b))
+#endif
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_STRCAT
 #define MENGINE_STRCAT(a, b) ::strcat((a), (b))
 #endif

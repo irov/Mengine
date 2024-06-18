@@ -112,51 +112,54 @@ SERVICE_EXTERN( MockupRenderSystem );
 SERVICE_EXTERN( SilentSoundSystem );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_SYSTEM_TIME)
-    SERVICE_EXTERN( TimeSystem );
-#endif
-#if defined(MENGINE_SYSTEM_SOUND)
-    SERVICE_EXTERN( SoundSystem );
-#endif
-#if defined(MENGINE_SYSTEM_RENDER)
-    SERVICE_EXTERN( RenderSystem );
-#endif
-#if defined(MENGINE_SYSTEM_THREAD)
-    SERVICE_EXTERN( ThreadSystem );
-#endif
-#if defined(MENGINE_SYSTEM_UNICODE)
-    SERVICE_EXTERN( UnicodeSystem );
-#endif
-#if defined(MENGINE_SYSTEM_PREFERENCES)
-    SERVICE_EXTERN( PreferencesSystem );
-#endif
-#if defined(MENGINE_SYSTEM_CRYPTOGRAPHY)
-    SERVICE_EXTERN( CryptographySystem );
-#endif
-#if defined(MENGINE_SYSTEM_DATETIME)
-    SERVICE_EXTERN( DateTimeSystem );
-#endif
-#if defined(MENGINE_SYSTEM_HTTP)
-    SERVICE_EXTERN( HttpSystem );
-#endif
-#if defined(MENGINE_PLATFORM)
-    SERVICE_EXTERN( PlatformSystem );
+SERVICE_EXTERN( TimeSystem );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_SYSTEM_SOUND)
+SERVICE_EXTERN( SoundSystem );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_SYSTEM_RENDER)
+SERVICE_EXTERN( RenderSystem );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_SYSTEM_THREAD)
+SERVICE_EXTERN( ThreadSystem );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_SYSTEM_UNICODE)
+SERVICE_EXTERN( UnicodeSystem );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_SYSTEM_PREFERENCES)
+SERVICE_EXTERN( PreferencesSystem );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_SYSTEM_CRYPTOGRAPHY)
+SERVICE_EXTERN( CryptographySystem );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_SYSTEM_DATETIME)
+SERVICE_EXTERN( DateTimeSystem );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_SYSTEM_HTTP)
+SERVICE_EXTERN( HttpSystem );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM)
+SERVICE_EXTERN( PlatformSystem );
+#endif
+//////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( EnvironmentService );
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_ANDROID)
-SERVICE_EXTERN( AndroidEnvironmentService );
+SERVICE_EXTERN( AndroidKernelService );
 SERVICE_EXTERN( AndroidAssetService );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_APPLE)
-SERVICE_EXTERN( AppleEnvironmentService );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_IOS)
-SERVICE_EXTERN( iOSEnvironmentService );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_MACOS)
-SERVICE_EXTERN( MacOSEnvironmentService );
+SERVICE_EXTERN( AppleKernelService );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_EXTERNAL_SOURCE)
@@ -997,21 +1000,15 @@ namespace Mengine
         MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_PLATFORM_ANDROID)
-        MENGINE_ADD_SERVICE( AndroidEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( AndroidKernelService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( AndroidAssetService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLATFORM_APPLE)
-        MENGINE_ADD_SERVICE( AppleEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( AppleKernelService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#if defined(MENGINE_PLATFORM_IOS)
-        MENGINE_ADD_SERVICE( iOSEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLATFORM_MACOS)
-        MENGINE_ADD_SERVICE( MacOSEnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
-#endif
+        MENGINE_ADD_SERVICE( EnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ADD_SERVICE( PlatformService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( FileService, MENGINE_DOCUMENT_FACTORABLE );
@@ -2197,20 +2194,14 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         SERVICE_FINALIZE( AndroidAssetService );
-        SERVICE_FINALIZE( AndroidEnvironmentService );
+        SERVICE_FINALIZE( AndroidKernelService );
 #endif
 
 #if defined(MENGINE_PLATFORM_APPLE)
-        SERVICE_FINALIZE( AppleEnvironmentService );
+        SERVICE_FINALIZE( AppleKernelService );
 #endif
 
-#if defined(MENGINE_PLATFORM_iOS)
-        SERVICE_FINALIZE( iOSEnvironmentService );
-#endif
-
-#if defined(MENGINE_PLATFORM_MACOS)
-        SERVICE_FINALIZE( MacOSEnvironmentService );
-#endif
+        SERVICE_FINALIZE( EnvironmentService );
 
         this->unregisterBaseTypes_();
 
@@ -2293,20 +2284,14 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         SERVICE_DESTROY( AndroidAssetService );
-        SERVICE_DESTROY( AndroidEnvironmentService );
+        SERVICE_DESTROY( AndroidKernelService );
 #endif
 
 #if defined(MENGINE_PLATFORM_APPLE)
-        SERVICE_DESTROY( AppleEnvironmentService );
+        SERVICE_DESTROY( AppleKernelService );
 #endif
 
-#if defined(MENGINE_PLATFORM_IOS)
-        SERVICE_DESTROY( iOSEnvironmentService );
-#endif
-
-#if defined(MENGINE_PLATFORM_MACOS)
-        SERVICE_DESTROY( MacOSEnvironmentService );
-#endif
+        SERVICE_DESTROY( EnvironmentService );
 
         SERVICE_DESTROY( PlatformService );
         SERVICE_DESTROY( NotificationService );

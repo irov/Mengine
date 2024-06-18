@@ -6,16 +6,17 @@
 
 namespace Mengine
 {
-    class iOSEnvironmentServiceInterface
+    class EnvironmentServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "iOSEnvironmentService" )
+        SERVICE_DECLARE( "EnvironmentService" )
 
     public:
         virtual size_t getDeviceName( Char * _deviceName, size_t _capacity ) const = 0;
         virtual size_t getDeviceModel( Char * _deviceModel, size_t _capacity ) const = 0;
-        virtual size_t getDeviceLanguage( Char * _deviceName, size_t _capacity ) const = 0;
-        virtual size_t getOSVersion( Char * _deviceName, size_t _capacity ) const = 0;
+        virtual size_t getDeviceLanguage( Char * _deviceLanguage, size_t _capacity ) const = 0;
+        virtual size_t getOSFamily( Char * _osVersion, size_t _capacity ) const = 0;
+        virtual size_t getOSVersion( Char * _osVersion, size_t _capacity ) const = 0;
         virtual size_t getBundleId( Char * _bundleId, size_t _capacity ) const = 0;
 
     public:
@@ -32,6 +33,6 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define IOS_ENVIRONMENT_SERVICE()\
-    ((Mengine::iOSEnvironmentServiceInterface *)SERVICE_GET(Mengine::iOSEnvironmentServiceInterface))
+#define ENVIRONMENT_SERVICE()\
+    ((Mengine::EnvironmentServiceInterface *)SERVICE_GET(Mengine::EnvironmentServiceInterface))
 //////////////////////////////////////////////////////////////////////////

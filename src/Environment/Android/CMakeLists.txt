@@ -15,6 +15,9 @@ src
     AndroidApplicationHelper.cpp
     AndroidHelper.h
     AndroidHelper.cpp
+    
+    AndroidKernelService.h
+    AndroidKernelService.cpp
 
     AndroidEnvironmentService.h
     AndroidEnvironmentService.cpp

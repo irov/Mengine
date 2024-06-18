@@ -12,7 +12,7 @@ class NSString;
 
 namespace Mengine
 {
-    class AppleEnvironmentServiceInterface
+    class AppleKernelServiceInterface
         : public ServiceInterface
     {
         SERVICE_DECLARE( "AppleEnvironmentService" )
@@ -22,6 +22,6 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define APPLE_ENVIRONMENT_SERVICE()\
-    ((Mengine::AppleEnvironmentServiceInterface *)SERVICE_GET(Mengine::AppleEnvironmentServiceInterface))
+#define APPLE_KERNEL_SERVICE()\
+    ((Mengine::AppleKernelServiceInterface *)SERVICE_GET(Mengine::AppleKernelServiceInterface))
 //////////////////////////////////////////////////////////////////////////

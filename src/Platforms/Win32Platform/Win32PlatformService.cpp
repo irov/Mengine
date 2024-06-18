@@ -10,7 +10,7 @@
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/PluginInterface.h"
-#include "Interface/ServiceInterface.h"
+#include "Interface/EnvironmentServiceInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 #include "Environment/Windows/Win32Helper.h"
@@ -103,6 +103,9 @@ namespace Mengine
         , m_hWnd( NULL )
         , m_performanceFrequency{0}
         , m_performanceSupport( false )
+        , m_installTimestamp( 0 )
+        , m_installRND( 0 )
+        , m_sessionIndex( 0 )
         , m_active( false )
         , m_hIcon( NULL )
         , m_close( false )
@@ -139,39 +142,6 @@ namespace Mengine
 #if defined(MENGINE_SETLOCALE_ENABLE)
         ::setlocale( LC_ALL, MENGINE_SETLOCALE_VALUE );
 #endif
-
-        ::ZeroMemory( &m_osInfo, sizeof( m_osInfo ) );
-        m_osInfo.dwOSVersionInfoSize = sizeof( m_osInfo );
-
-        HMODULE hNtdll = ::LoadLibrary( L"ntdll.dll" );
-
-        if( hNtdll != NULL )
-        {
-            LONG( WINAPI * RtlGetVersion )(LPOSVERSIONINFOEXW);
-            *(FARPROC *)&RtlGetVersion = ::GetProcAddress( hNtdll, "RtlGetVersion" );
-
-            if( RtlGetVersion != NULL )
-            {
-                (*RtlGetVersion)( &m_osInfo );
-
-                LOGGER_INFO( "platform", "windows version: %lu.%lu (build %lu)"
-                    , m_osInfo.dwMajorVersion
-                    , m_osInfo.dwMinorVersion
-                    , m_osInfo.dwBuildNumber
-                );
-
-                LOGGER_INFO( "platform", "windows platform: %lu"
-                    , m_osInfo.dwPlatformId
-                );
-
-                LOGGER_INFO( "platform", "windows service pack: %lu.%lu"
-                    , (DWORD)m_osInfo.wServicePackMajor
-                    , (DWORD)m_osInfo.wServicePackMinor
-                );
-            }
-
-            ::FreeLibrary( hNtdll );
-        }
 
         m_hInstance = ::GetModuleHandle( NULL );
 
@@ -382,17 +352,49 @@ namespace Mengine
         }
 #endif
 
-        m_deviceModel = "PC";
-        m_osFamily = "Windows";
-
-        const Char * osVersion = this->getOsVersionName_();
-        m_osVersion = osVersion;
-
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
         LOGGER_INFO_PROTECTED( "platform", "device seed: %u"
             , deviceSeed
         );
+
+        ENVIRONMENT_SERVICE()
+            ->getDeviceName( m_deviceName.data(), MENGINE_PLATFORM_DEVICE_NAME_MAXNAME );
+
+        ENVIRONMENT_SERVICE()
+            ->getDeviceModel( m_deviceModel.data(), MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME );
+
+        ENVIRONMENT_SERVICE()
+            ->getDeviceLanguage( m_deviceLanguage.data(), MENGINE_PLATFORM_DEVICE_LANGUAGE_MAXNAME );
+
+        ENVIRONMENT_SERVICE()
+            ->getOSFamily( m_osFamily.data(), MENGINE_PLATFORM_OS_FAMILY_MAXNAME );
+
+        ENVIRONMENT_SERVICE()
+            ->getOSVersion( m_osVersion.data(), MENGINE_PLATFORM_OS_VERSION_MAXNAME );
+
+        ENVIRONMENT_SERVICE()
+            ->getBundleId( m_bundleId.data(), MENGINE_PLATFORM_BUNDLEID_MAXNAME );
+
+        //m_sessionId.assign( m_fingerprint );
+        ENVIRONMENT_SERVICE()
+            ->getSessionId( m_sessionId.data(), MENGINE_PLATFORM_SESSIONID_MAXNAME );
+
+        //m_installKey.assign( m_fingerprint );
+        ENVIRONMENT_SERVICE()
+            ->getInstallKey( m_installKey.data(), MENGINE_PLATFORM_INSTALLKEY_MAXNAME );
+
+        m_installTimestamp = ENVIRONMENT_SERVICE()
+            ->getInstallTimestamp();
+
+        ENVIRONMENT_SERVICE()
+            ->getInstallVersion( m_installVersion.data(), MENGINE_PLATFORM_INSTALLVERSION_MAXNAME );
+
+        m_installRND = ENVIRONMENT_SERVICE()
+            ->getInstallRND();
+
+        m_sessionIndex = ENVIRONMENT_SERVICE()
+            ->getSessionIndex();
 
         return true;
     }
@@ -449,7 +451,7 @@ namespace Mengine
                     );
                 }
             }
-#endif    
+#endif
 
             ::CloseWindow( m_hWnd );
             ::DestroyWindow( m_hWnd );
@@ -483,7 +485,7 @@ namespace Mengine
     {
         PlatformDateTime dateTime;
         DATETIME_SYSTEM()
-            ->getLocalDateTime(&dateTime);
+            ->getLocalDateTime( &dateTime );
 
         LOGGER_INFO( "platform", "start date: %02u.%02u.%u, %02u:%02u:%02u"
             , dateTime.day
@@ -714,7 +716,7 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
 
-        LOGGER_INFO( "platform", "run platform" );        
+        LOGGER_INFO( "platform", "run platform" );
 
         MENGINE_PROFILER_BEGIN_APPLICATION();
 
@@ -731,63 +733,6 @@ namespace Mengine
             ::TranslateMessage( &msg );
             ::DispatchMessage( &msg );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const Char * Win32PlatformService::getOsVersionName_() const
-    {
-        switch( m_osInfo.dwMajorVersion )
-        {
-        case 10:
-            {
-                switch( m_osInfo.dwMinorVersion )
-                {
-                case 0:
-                    {
-                        if( m_osInfo.wProductType == VER_NT_WORKSTATION )
-                        {
-                            if( m_osInfo.dwBuildNumber >= 22000 )
-                            {
-                                return "11";
-                            }
-                            else
-                            {
-                                return "10";
-                            }
-                        }
-                        else
-                        {
-                            return "Server 2016";
-                        }
-                    }break;
-                }
-            }break;
-        case 6:
-            {
-                switch( m_osInfo.dwMinorVersion )
-                {
-                case 3:
-                    return "8.1";
-                case 2:
-                    return "8";
-                case 1:
-                    return "7";
-                case 0:
-                    return "Vista";
-                }
-            }break;
-        case 5:
-            {
-                switch( m_osInfo.dwMinorVersion )
-                {
-                case 2:
-                    return "XP64";
-                case 1:
-                    return "XP";
-                }
-            }break;
-        }
-
-        return "Unknown";
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
@@ -1242,7 +1187,7 @@ namespace Mengine
             {
                 LOGGER_INFO( "platform", "HWND [%p] WM_SHOWWINDOW wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%d]"
                     , hWnd
-                    , wParam 
+                    , wParam
                     , lParam
                     , ::IsWindowVisible( hWnd )
                 );
@@ -2340,7 +2285,7 @@ namespace Mengine
             LOGGER_ERROR( "can't atach window" );
 
             return false;
-        }        
+        }
 
         return true;
     }
@@ -2413,11 +2358,6 @@ namespace Mengine
     HWND Win32PlatformService::getWindowHandle() const
     {
         return m_hWnd;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::getOsInfo( OSVERSIONINFOEXW * const _osInfo ) const
-    {
-        ::CopyMemory( _osInfo, &m_osInfo, sizeof( m_osInfo ) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
@@ -2493,9 +2433,9 @@ namespace Mengine
             if( m_cursor == NULL )
             {
                 m_cursor = ::LoadCursor( NULL, IDC_ARROW );
-            }            
-        } 
-        else 
+            }
+        }
+        else
         {
             m_cursor = NULL;
         }
@@ -2820,10 +2760,10 @@ namespace Mengine
             , "invalid path '%s'", _path
         );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0
             || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM )
                 || _directory[MENGINE_STRLEN( _directory ) - 1] == MENGINE_PATH_DELIM
-                || _directory[MENGINE_STRLEN( _directory ) - 1] == MENGINE_WIN32_PATH_DELIM) 
+                || _directory[MENGINE_STRLEN( _directory ) - 1] == MENGINE_WIN32_PATH_DELIM)
             , "invalid directory '%s'", _directory
         );
 
@@ -2884,15 +2824,15 @@ namespace Mengine
             , _directory
         );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0 
-            || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM ) 
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0
+            || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM )
                 || _path[MENGINE_STRLEN( _path ) - 1] == MENGINE_PATH_DELIM
                 || _path[MENGINE_STRLEN( _path ) - 1] == MENGINE_WIN32_PATH_DELIM)
             , "invalid path '%s'", _path
         );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0 
-            || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM ) 
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0
+            || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM )
                 || _directory[MENGINE_STRLEN( _directory ) - 1] == MENGINE_PATH_DELIM
                 || _directory[MENGINE_STRLEN( _directory ) - 1] == MENGINE_WIN32_PATH_DELIM)
             , "invalid directory '%s'", _directory
@@ -3517,7 +3457,7 @@ namespace Mengine
     void Win32PlatformService::sleep( uint32_t _ms )
     {
         ::Sleep( _ms );
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr Win32PlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )
     {
@@ -3803,7 +3743,7 @@ namespace Mengine
         ::GetSystemDefaultLocaleName( unicode_localeName, LOCALE_NAME_MAX_LENGTH );
 
         Helper::unicodeToUtf8( unicode_localeName, _deviceLanguage, LOCALE_NAME_MAX_LENGTH, nullptr );
-        
+
         size_t deviceLanguageLen = MENGINE_STRLEN( _deviceLanguage );
 
         return deviceLanguageLen;
@@ -3819,7 +3759,7 @@ namespace Mengine
     size_t Win32PlatformService::getDeviceModel( Char * const _deviceModel ) const
     {
         m_deviceModel.copy( _deviceModel );
-        
+
         size_t deviceModelLen = m_deviceModel.size();
 
         return deviceModelLen;
@@ -3923,7 +3863,7 @@ namespace Mengine
     void Win32PlatformService::setCursorIcon( const ConstString & _icon )
     {
         LOGGER_INFO( "platform", "set cursor icon '%s'"
-            , _icon.c_str() 
+            , _icon.c_str()
         );
 
         MapCursors::const_iterator it_found = m_cursors.find( _icon );
@@ -4322,8 +4262,8 @@ namespace Mengine
         DWORD VolumeSerialNumber = 0;
         DWORD VolumeMaxComponentLen = 0;
         DWORD VolumeFileSystemFlags = 0;
-        WCHAR VolumeFileSystemNameBuffer[255] = {0};
-        WCHAR VolumeNameBuffer[255] = {0};
+        WCHAR VolumeFileSystemNameBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WCHAR VolumeNameBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
 
         if( ::GetVolumeInformation( NULL
             , VolumeNameBuffer
@@ -4338,8 +4278,8 @@ namespace Mengine
                 , VolumeSerialNumber
             );
 
-            WChar VolumeSerialNumberBuffer[255] = {L'\0'};
-            MENGINE_WNSPRINTF( VolumeSerialNumberBuffer, 255, L"%u", VolumeSerialNumber );
+            WChar VolumeSerialNumberBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
+            MENGINE_WNSPRINTF( VolumeSerialNumberBuffer, MENGINE_MAX_PATH, L"%u", VolumeSerialNumber );
 
             MENGINE_WCSCAT( fingerprintGarbage, L"_" );
             MENGINE_WCSCAT( fingerprintGarbage, VolumeSerialNumberBuffer );

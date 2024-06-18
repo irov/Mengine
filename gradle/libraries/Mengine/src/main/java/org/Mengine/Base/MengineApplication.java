@@ -83,9 +83,6 @@ public class MengineApplication extends Application {
     private boolean m_invalidInitialize = false;
     private String m_invalidInitializeReason = null;
 
-    private boolean m_networkAvailable = false;
-    private boolean m_networkUnmetered = false;
-    private MengineNetworkTransport m_networkTransport = MengineNetworkTransport.NETWORKTRANSPORT_UNKNOWN;
     private ConnectivityManager.NetworkCallback m_networkCallback;
 
     private ArrayList<MenginePlugin> m_plugins = new ArrayList<>();
@@ -691,7 +688,7 @@ public class MengineApplication extends Application {
 
                 MengineLog.logMessage(TAG, "NetworkCallback onAvailable");
 
-                m_networkAvailable = true;
+                MengineNetwork.setNetworkAvailable(true);
             }
 
             @Override
@@ -700,7 +697,7 @@ public class MengineApplication extends Application {
 
                 MengineLog.logMessage(TAG, "NetworkCallback onLost");
 
-                m_networkAvailable = false;
+                MengineNetwork.setNetworkAvailable(false);
             }
 
             private MengineNetworkTransport getNetworkTransport(@NonNull NetworkCapabilities networkCapabilities) {
@@ -736,6 +733,10 @@ public class MengineApplication extends Application {
                     return MengineNetworkTransport.NETWORKTRANSPORT_USB;
                 }
 
+                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_THREAD) == true) {
+                    return MengineNetworkTransport.NETWORKTRANSPORT_THREAD;
+                }
+
                 return MengineNetworkTransport.NETWORKTRANSPORT_UNKNOWN;
             }
 
@@ -746,7 +747,10 @@ public class MengineApplication extends Application {
 
                 MengineNetworkTransport transport = this.getNetworkTransport(networkCapabilities);
 
-                if (m_networkUnmetered == unmetered && m_networkTransport == transport) {
+                boolean last_unmetered = MengineNetwork.isNetworkUnmetered();
+                MengineNetworkTransport last_transport = MengineNetwork.getNetworkTransport();
+
+                if (last_unmetered == unmetered && last_transport == transport) {
                     return;
                 }
 
@@ -755,8 +759,8 @@ public class MengineApplication extends Application {
                     , transport
                 );
 
-                m_networkUnmetered = unmetered;
-                m_networkTransport = transport;
+                MengineNetwork.setNetworkUnmetered(unmetered);
+                MengineNetwork.setNetworkTransport(transport);
             }
         };
 
@@ -943,39 +947,43 @@ public class MengineApplication extends Application {
                     return -3L;
                 }
 
-                if (m_networkAvailable == false) {
+                boolean networkAvailable = MengineNetwork.isNetworkAvailable();
+
+                if (networkAvailable == false) {
                     return -2L;
                 }
 
-                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_CELLULAR) {
+                MengineNetworkTransport networkTransport = MengineNetwork.getNetworkTransport();
+
+                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_CELLULAR) {
                     return 1L;
                 }
 
-                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_WIFI) {
+                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_WIFI) {
                     return 2L;
                 }
 
-                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_BLUETOOTH) {
+                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_BLUETOOTH) {
                     return 3L;
                 }
 
-                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_ETHERNET) {
+                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_ETHERNET) {
                     return 4L;
                 }
 
-                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_VPN) {
+                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_VPN) {
                     return 5L;
                 }
 
-                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_WIFI_AWARE) {
+                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_WIFI_AWARE) {
                     return 6L;
                 }
 
-                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_LOWPAN) {
+                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_LOWPAN) {
                     return 7L;
                 }
 
-                if (m_networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_USB) {
+                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_USB) {
                     return 8L;
                 }
 

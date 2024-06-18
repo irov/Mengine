@@ -211,9 +211,6 @@ namespace Mengine
         HWND getWindowHandle() const override;
 
     protected:
-        void getOsInfo( OSVERSIONINFOEXW * const _osInfo ) const override;
-
-    protected:
         UniqueId addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentInterfacePtr & _doc ) override;
         void removeWin32ProcessHandler( UniqueId _id ) override;
 
@@ -234,14 +231,9 @@ namespace Mengine
         void updateWndMessage_();
 
     protected:
-        const Char * getOsVersionName_() const;
-
-    protected:
         Timestamp m_beginTime;
 
-        StaticWString<MENGINE_MAX_PATH> m_windowClassName;
-
-        OSVERSIONINFOEXW m_osInfo;
+        StaticWString<MENGINE_MAX_PATH> m_windowClassName;        
         
         HINSTANCE m_hInstance;
 
@@ -274,11 +266,19 @@ namespace Mengine
         HICON m_hIcon;
         StaticWString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
 
+        StaticString<MENGINE_PLATFORM_DEVICE_NAME_MAXNAME> m_deviceName;
         StaticString<MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME> m_deviceModel;
+        StaticString<MENGINE_PLATFORM_DEVICE_LANGUAGE_MAXNAME> m_deviceLanguage;
         StaticString<MENGINE_PLATFORM_OS_FAMILY_MAXNAME> m_osFamily;
         StaticString<MENGINE_PLATFORM_OS_VERSION_MAXNAME> m_osVersion;
-
         StaticString<MENGINE_PLATFORM_BUNDLEID_MAXNAME> m_bundleId;
+
+        StaticString<MENGINE_PLATFORM_SESSIONID_MAXNAME> m_sessionId;
+        StaticString<MENGINE_PLATFORM_INSTALLKEY_MAXNAME> m_installKey;
+        int64_t m_installTimestamp;
+        StaticString<MENGINE_PLATFORM_INSTALLVERSION_MAXNAME> m_installVersion;
+        int64_t m_installRND;
+        int64_t m_sessionIndex;
 
         Timestamp m_prevTime;
 

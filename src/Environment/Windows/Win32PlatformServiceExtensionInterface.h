@@ -22,9 +22,6 @@ namespace Mengine
         virtual HWND getWindowHandle() const = 0;
 
     public:
-        virtual void getOsInfo( OSVERSIONINFOEXW * const _osInfo ) const = 0;
-
-    public:
         typedef Lambda<LRESULT( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, BOOL * const pHandled )> LambdaWin32ProcessHandler;
         virtual UniqueId addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentInterfacePtr & _doc ) = 0;
         virtual void removeWin32ProcessHandler( UniqueId _id ) = 0;

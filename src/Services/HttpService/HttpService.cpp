@@ -43,6 +43,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & HttpService::requiredServices() const
+    {
+        static const ServiceRequiredList service = {
+            SERVICE_ID( HttpSystemInterface ),
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return service;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool HttpService::_initializeService()
     {
         uint32_t Http_ThreadCount = CONFIG_VALUE( "Http", "ThreadCount", 8 );

@@ -11,22 +11,7 @@
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
-
-#if defined(MENGINE_PLATFORM_ANDROID)
-#   include "Interface/AndroidEnvironmentServiceInterface.h"
-#endif
-
-#if defined(MENGINE_PLATFORM_APPLE)
-#   include "Interface/AppleEnvironmentServiceInterface.h"
-#endif
-
-#if defined(MENGINE_PLATFORM_IOS)
-#   include "Interface/iOSEnvironmentServiceInterface.h"
-#endif
-
-#if defined(MENGINE_PLATFORM_MACOS)
-#   include "Interface/MacOSEnvironmentServiceInterface.h"
-#endif
+#include "Interface/EnvironmentServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "Environment/Windows/WindowsIncluder.h"
@@ -37,6 +22,7 @@
 #       include "Environment/iOS/iOSUtils.h"
 #   endif
 #elif defined(MENGINE_PLATFORM_ANDROID)
+#   include "Interface/AndroidKernelServiceInterface.h"
 #   include "Environment/Android/AndroidEnv.h"
 #endif
 
@@ -266,7 +252,7 @@ namespace Mengine
         if( ::GetUserName( unicode_userName, &unicode_userNameLen ) == FALSE )
         {
             LOGGER_ERROR( "invalid GetUserName %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
 
             MENGINE_STRCPY( _userName, "" );
@@ -307,35 +293,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatformService::getDeviceLanguage( Char * const _deviceLanguage ) const
     {
-#if defined(MENGINE_PLATFORM_WINDOWS)
-        WCHAR unicode_localeName[LOCALE_NAME_MAX_LENGTH];
-        ::GetSystemDefaultLocaleName( unicode_localeName, LOCALE_NAME_MAX_LENGTH );
+        m_deviceLanguage.copy( _deviceLanguage );
 
-        Helper::unicodeToUtf8( unicode_localeName, _deviceLanguage, LOCALE_NAME_MAX_LENGTH, nullptr );
+        size_t len = m_deviceLanguage.size();
 
-        size_t deviceLanguageLen = MENGINE_STRLEN( _deviceLanguage );
-
-        return deviceLanguageLen;
-#elif defined(MENGINE_PLATFORM_MACOS)
-        MENGINE_STRCPY( _deviceLanguage, "en" );
-
-        return 2;
-#elif defined(MENGINE_PLATFORM_IOS)
-        MENGINE_STRCPY( _deviceLanguage, "en" );
-
-        return 2;
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->getDeviceLanguage( _deviceLanguage, 16 );
-
-        size_t deviceLanguageLen = MENGINE_STRLEN( _deviceLanguage );
-
-        return deviceLanguageLen;
-#else
-        MENGINE_STRCPY( _deviceLanguage, "" );
-
-        return 0;
-#endif
+        return len;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatformService::getFingerprint( Char * const _fingerprint ) const
@@ -858,128 +820,43 @@ namespace Mengine
 
         SDL_EventState( SDL_JOYAXISMOTION, SDL_FALSE );
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
-        m_deviceModel = "PC";
-#elif defined(MENGINE_PLATFORM_MACOS)
-        MACOS_ENVIRONMENT_SERVICE()
+        ENVIRONMENT_SERVICE()
+            ->getDeviceName( m_deviceName.data(), MENGINE_PLATFORM_DEVICE_NAME_MAXNAME );
+
+        ENVIRONMENT_SERVICE()
             ->getDeviceModel( m_deviceModel.data(), MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME );
-#elif defined(MENGINE_PLATFORM_IOS)
-        IOS_ENVIRONMENT_SERVICE()
-            ->getDeviceModel( m_deviceModel.data(), MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME );
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->getDeviceModel( m_deviceModel.data(), MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME );
-#endif
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
-        m_osFamily = "Windows";
-#elif defined(MENGINE_PLATFORM_IOS)
-        m_osFamily = "iOS";
-#elif defined(MENGINE_PLATFORM_MACOS)
-        m_osFamily = "MacOS";
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        m_osFamily = "Android";
-#endif
+        ENVIRONMENT_SERVICE()
+            ->getDeviceLanguage( m_deviceLanguage.data(), MENGINE_PLATFORM_DEVICE_LANGUAGE_MAXNAME );
 
-#if defined(MENGINE_PLATFORM_IOS)
-        IOS_ENVIRONMENT_SERVICE()
+        ENVIRONMENT_SERVICE()
+            ->getOSFamily( m_osFamily.data(), MENGINE_PLATFORM_OS_FAMILY_MAXNAME );
+
+        ENVIRONMENT_SERVICE()
             ->getOSVersion( m_osVersion.data(), MENGINE_PLATFORM_OS_VERSION_MAXNAME );
-#elif defined(MENGINE_PLATFORM_MACOS)
-        MACOS_ENVIRONMENT_SERVICE()
-            ->getOSVersion( m_osVersion.data(), MENGINE_PLATFORM_OS_VERSION_MAXNAME );
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->getOSVersion( m_osVersion.data(), MENGINE_PLATFORM_OS_VERSION_MAXNAME );
-#endif
 
-#if defined(MENGINE_PLATFORM_IOS)
-        IOS_ENVIRONMENT_SERVICE()
+        ENVIRONMENT_SERVICE()
             ->getBundleId( m_bundleId.data(), MENGINE_PLATFORM_BUNDLEID_MAXNAME );
-#elif defined(MENGINE_PLATFORM_MACOS)
-        MACOS_ENVIRONMENT_SERVICE()
-            ->getBundleId( m_bundleId.data(), MENGINE_PLATFORM_BUNDLEID_MAXNAME );
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->getBundleId( m_bundleId.data(), MENGINE_PLATFORM_BUNDLEID_MAXNAME );
-#endif
 
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        m_sessionId.assign( m_fingerprint );
-#elif defined(MENGINE_PLATFORM_IOS)
-        IOS_ENVIRONMENT_SERVICE()
+        //m_sessionId.assign( m_fingerprint );
+        ENVIRONMENT_SERVICE()
             ->getSessionId( m_sessionId.data(), MENGINE_PLATFORM_SESSIONID_MAXNAME );
-#elif defined(MENGINE_PLATFORM_MACOS)
-        MACOS_ENVIRONMENT_SERVICE()
-            ->getSessionId( m_sessionId.data(), MENGINE_PLATFORM_SESSIONID_MAXNAME );
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->getSessionId( m_sessionId.data(), MENGINE_PLATFORM_SESSIONID_MAXNAME );
-#endif
 
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        m_installKey.assign( m_fingerprint );
-#elif defined(MENGINE_PLATFORM_IOS)
-        IOS_ENVIRONMENT_SERVICE()
+        //m_installKey.assign( m_fingerprint );
+        ENVIRONMENT_SERVICE()
             ->getInstallKey( m_installKey.data(), MENGINE_PLATFORM_INSTALLKEY_MAXNAME );
-#elif defined(MENGINE_PLATFORM_MACOS)
-        MACOS_ENVIRONMENT_SERVICE()
-            ->getInstallKey( m_installKey.data(), MENGINE_PLATFORM_INSTALLKEY_MAXNAME );
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->getInstallKey( m_installKey.data(), MENGINE_PLATFORM_INSTALLKEY_MAXNAME );
-#endif
 
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        m_installTimestamp = 0;
-#elif defined(MENGINE_PLATFORM_IOS)
-        m_installTimestamp = IOS_ENVIRONMENT_SERVICE()
+        m_installTimestamp = ENVIRONMENT_SERVICE()
             ->getInstallTimestamp();
-#elif defined(MENGINE_PLATFORM_MACOS)
-        m_installTimestamp = MACOS_ENVIRONMENT_SERVICE()
-            ->getInstallTimestamp();
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        m_installTimestamp = ANDROID_ENVIRONMENT_SERVICE()
-            ->getInstallTimestamp();
-#endif
 
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        m_installVersion = "0.0.0";
-#elif defined(MENGINE_PLATFORM_IOS)
-        IOS_ENVIRONMENT_SERVICE()
+        ENVIRONMENT_SERVICE()
             ->getInstallVersion( m_installVersion.data(), MENGINE_PLATFORM_INSTALLVERSION_MAXNAME );
-#elif defined(MENGINE_PLATFORM_MACOS)
-        MACOS_ENVIRONMENT_SERVICE()
-            ->getInstallVersion( m_installVersion.data(), MENGINE_PLATFORM_INSTALLVERSION_MAXNAME );
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->getInstallVersion( m_installVersion.data(), MENGINE_PLATFORM_INSTALLVERSION_MAXNAME );
-#endif
 
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        m_installRND = 0;
-#elif defined(MENGINE_PLATFORM_IOS)
-        m_installRND = IOS_ENVIRONMENT_SERVICE()
+        m_installRND = ENVIRONMENT_SERVICE()
             ->getInstallRND();
-#elif defined(MENGINE_PLATFORM_MACOS)
-        m_installRND = MACOS_ENVIRONMENT_SERVICE()
-            ->getInstallRND();
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        m_installRND = ANDROID_ENVIRONMENT_SERVICE()
-            ->getInstallRND();
-#endif
 
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        m_sessionIndex = 0;
-#elif defined(MENGINE_PLATFORM_IOS)
-        m_sessionIndex = IOS_ENVIRONMENT_SERVICE()
+        m_sessionIndex = ENVIRONMENT_SERVICE()
             ->getSessionIndex();
-#elif defined(MENGINE_PLATFORM_MACOS)
-        m_sessionIndex = MACOS_ENVIRONMENT_SERVICE()
-            ->getSessionIndex();
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        m_sessionIndex = ANDROID_ENVIRONMENT_SERVICE()
-            ->getSessionIndex();
-#endif
 
         return true;
     }
@@ -1114,7 +991,7 @@ namespace Mengine
         if( ::GetUserName( UserNameBuffer, &UserNameLen ) == FALSE )
         {
             LOGGER_ASSERTION( "invalid GetUserName %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
         }
 
@@ -1123,7 +1000,7 @@ namespace Mengine
         if( ::GetComputerName( ComputerNameBuffer, &ComputerNameLen ) == FALSE )
         {
             LOGGER_ASSERTION( "invalid GetComputerName %ls"
-                , Helper::Win32GetLastErrorMessage()
+                , Helper::Win32GetLastErrorMessageW()
             );
         }
 
@@ -1141,22 +1018,11 @@ namespace Mengine
         m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
 #elif defined(MENGINE_PLATFORM_ANDROID)
         Char androidId[128];
-        ANDROID_ENVIRONMENT_SERVICE()
+        ANDROID_KERNEL_SERVICE()
             ->getAndroidId( androidId, 128 );
 
         Helper::makeSHA1String( androidId, m_fingerprint.data() );
         m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
-#endif
-
-#if defined(MENGINE_PLATFORM_IOS)
-        IOS_ENVIRONMENT_SERVICE()
-            ->getDeviceName( m_deviceName.data(), MENGINE_PLATFORM_DEVICE_NAME_MAXNAME );
-#elif defined(MENGINE_PLATFORM_MACOS)
-        MACOS_ENVIRONMENT_SERVICE()
-            ->getDeviceName( m_deviceName.data(), MENGINE_PLATFORM_DEVICE_NAME_MAXNAME );
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        ANDROID_ENVIRONMENT_SERVICE()
-            ->getDeviceName( m_deviceName.data(), MENGINE_PLATFORM_DEVICE_NAME_MAXNAME );
 #endif
         
 #if defined(MENGINE_PLATFORM_MACOS)
@@ -1364,24 +1230,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _url );
 
-#if defined(MENGINE_PLATFORM_IOS)
-        if( IOS_ENVIRONMENT_SERVICE()
-           ->openUrlInDefaultBrowser( _url ) == false )
-        {
-            LOGGER_ERROR( "error open url in default browser '%s'"
-                , _url
-            );
-
-            return false;
-        }
-
         LOGGER_INFO( "platform", "open url in default browser '%s'"
             , _url
         );
 
-        return true;
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        if( ANDROID_ENVIRONMENT_SERVICE()
+        if( ENVIRONMENT_SERVICE()
             ->openUrlInDefaultBrowser( _url ) == false )
         {
             LOGGER_ERROR( "error open url in default browser '%s'"
@@ -1391,16 +1244,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "platform", "open url in default browser '%s'"
-            , _url
-        );
-
         return true;
-#else
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body )
@@ -1415,20 +1259,7 @@ namespace Mengine
             , _body
         );
 
-#if defined(MENGINE_PLATFORM_IOS)
-        if(IOS_ENVIRONMENT_SERVICE()
-            ->openMail( _email, _subject, _body ) == false )
-        {
-            LOGGER_ERROR( "error open mail '%s'"
-                , _email
-            );
-
-            return false;
-        }
-
-        return false;
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        if(ANDROID_ENVIRONMENT_SERVICE()
+        if( ENVIRONMENT_SERVICE()
             ->openMail( _email, _subject, _body ) == false )
         {
             LOGGER_ERROR( "error open mail '%s'"
@@ -1439,11 +1270,6 @@ namespace Mengine
         }
 
         return true;
-#else
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::stopPlatform()

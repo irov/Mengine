@@ -6,7 +6,6 @@
 #include "Interface/ThreadTaskInterface.h"
 
 #define MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY (-1)
-#define MENGINE_HTTP_REQUEST_INVALID INVALID_UNIQUE_ID
 
 namespace Mengine
 {

@@ -1,5 +1,6 @@
 package org.Mengine.Base;
 
+import android.content.Context;
 import android.util.Base64;
 
 import androidx.annotation.NonNull;
@@ -18,8 +19,40 @@ import java.util.Map;
 public class MengineNetwork {
     public static final String TAG = "MengineNetwork";
 
+    public static boolean m_networkAvailable = true;
+    public static boolean m_networkUnmetered = true;
+    public static MengineNetworkTransport m_networkTransport = MengineNetworkTransport.NETWORKTRANSPORT_UNKNOWN;
+
+    public static void setNetworkAvailable(boolean available) {
+        m_networkAvailable = available;
+    }
+
+    public static boolean isNetworkAvailable() {
+        return m_networkAvailable;
+    }
+
+    public static void setNetworkUnmetered(boolean unmetered) {
+        m_networkUnmetered = unmetered;
+    }
+
+    public static boolean isNetworkUnmetered() {
+        return m_networkUnmetered;
+    }
+
+    public static void setNetworkTransport(MengineNetworkTransport transport) {
+        m_networkTransport = transport;
+    }
+
+    public static MengineNetworkTransport getNetworkTransport() {
+        return m_networkTransport;
+    }
+
     @Nullable
     public static MengineHttpResponseParam httpRequestPostMessage(MengineHttpRequestParam request, Map<String, String> properties) {
+        if (m_networkAvailable == false) {
+            return null;
+        }
+
         try {
             URL url = new URL(request.HTTP_URL);
 
@@ -40,7 +73,7 @@ public class MengineNetwork {
 
             return response;
         } catch (Exception e) {
-            MengineLog.logError(TAG, "invalid http request post message: %s"
+            MengineLog.logMessage(TAG, "invalid http request post message: %s"
                 , e.getMessage()
             );
 
@@ -50,6 +83,10 @@ public class MengineNetwork {
 
     @Nullable
     public static MengineHttpResponseParam httpRequestHeaderData(MengineHttpRequestParam request, byte[] data) {
+        if (m_networkAvailable == false) {
+            return null;
+        }
+
         try {
             URL url = new URL(request.HTTP_URL);
 
@@ -70,7 +107,7 @@ public class MengineNetwork {
 
             return response;
         } catch (Exception e) {
-            MengineLog.logError(TAG, "invalid http request header data: %s"
+            MengineLog.logMessage(TAG, "invalid http request header data: %s"
                 , e.getMessage()
             );
 
@@ -80,6 +117,10 @@ public class MengineNetwork {
 
     @Nullable
     public static MengineHttpResponseParam httpRequestGetMessage(MengineHttpRequestParam request) {
+        if (m_networkAvailable == false) {
+            return null;
+        }
+
         try {
             URL url = new URL(request.HTTP_URL);
 
@@ -97,7 +138,7 @@ public class MengineNetwork {
 
             return response;
         } catch (Exception e) {
-            MengineLog.logError(TAG, "invalid http request get message: %s"
+            MengineLog.logMessage(TAG, "invalid http request get message: %s"
                 , e.getMessage()
             );
 
@@ -107,6 +148,10 @@ public class MengineNetwork {
 
     @Nullable
     public static MengineHttpResponseParam httpRequestDeleteMessage(MengineHttpRequestParam request) {
+        if (m_networkAvailable == false) {
+            return null;
+        }
+
         try {
             URL url = new URL(request.HTTP_URL);
 
@@ -124,7 +169,7 @@ public class MengineNetwork {
 
             return response;
         } catch (Exception e) {
-            MengineLog.logError(TAG, "invalid http request delete message: %s"
+            MengineLog.logMessage(TAG, "invalid http request delete message: %s"
                 , e.getMessage()
             );
 
@@ -134,6 +179,10 @@ public class MengineNetwork {
 
     @Nullable
     public static MengineHttpResponseParam httpRequestGetAsset(MengineHttpRequestParam request, String login, String password) {
+        if (m_networkAvailable == false) {
+            return null;
+        }
+
         try {
             URL url = new URL(request.HTTP_URL);
 
@@ -152,7 +201,7 @@ public class MengineNetwork {
 
             return response;
         } catch (Exception e) {
-            MengineLog.logError(TAG, "invalid http request get asset: %s"
+            MengineLog.logMessage(TAG, "invalid http request get asset: %s"
                 , e.getMessage()
             );
 
@@ -182,7 +231,7 @@ public class MengineNetwork {
             output.write(data);
             output.flush();
         } catch (Exception e) {
-            MengineLog.logError(TAG, "invalid http request set data: %s"
+            MengineLog.logMessage(TAG, "invalid http request set data: %s"
                 , e.getMessage()
             );
         }
@@ -235,7 +284,7 @@ public class MengineNetwork {
             writer.append("--").append(boundary).append("--").append("\r\n");
             writer.flush();
         } catch (Exception e) {
-            MengineLog.logError(TAG, "invalid http request set multipart form data: %s"
+            MengineLog.logMessage(TAG, "invalid http request set multipart form data: %s"
                 , e.getMessage()
             );
         }
@@ -247,7 +296,7 @@ public class MengineNetwork {
 
             response.HTTP_RESPONSE_CODE = responseCode;
         } catch (Exception e) {
-            MengineLog.logError(TAG, "invalid http request set response code: %s"
+            MengineLog.logMessage(TAG, "invalid http request set response code: %s"
                 , e.getMessage()
             );
         }
@@ -296,7 +345,7 @@ public class MengineNetwork {
 
             is.close();
         } catch (Exception e) {
-            MengineLog.logError(TAG, "invalid http request get response content data: %s"
+            MengineLog.logMessage(TAG, "invalid http request get response content data: %s"
                 , e.getMessage()
             );
         }
@@ -314,7 +363,7 @@ public class MengineNetwork {
 
             is.close();
         } catch (Exception e) {
-            MengineLog.logError(TAG, "invalid http request get response error message: %s"
+            MengineLog.logMessage(TAG, "invalid http request get response error message: %s"
                 , e.getMessage()
             );
         }

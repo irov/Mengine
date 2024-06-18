@@ -142,15 +142,10 @@ Common
     HttpResponseInterface.h
     HttpRequestInterface.h
     HttpReceiverInterface.h
-)
-
-ADD_FILTER(
-Environment
-    AndroidEnvironmentServiceInterface.h
+    EnvironmentServiceInterface.h
+    AndroidKernelServiceInterface.h
     AndroidAssetServiceInterface.h
-    AppleEnvironmentServiceInterface.h
-    iOSEnvironmentServiceInterface.h
-    MacOSEnvironmentServiceInterface.h
+    AppleKernelServiceInterface.h
 )
 
 ADD_FILTER(

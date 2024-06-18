@@ -320,60 +320,6 @@ public class MengineUtils {
         return usageMemory;
     }
 
-    public static int getConectivityStatus(Context context) {
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
-            return -2;
-        }
-
-        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        Network network = connectivityManager.getActiveNetwork();
-
-        if (network == null) {
-            return -1;
-        }
-
-        NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
-
-        if (capabilities == null) {
-            return -1;
-        }
-
-        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true) {
-            return 1;
-        }
-
-        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true) {
-            return 2;
-        }
-
-        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) == true) {
-            return 3;
-        }
-
-        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) == true) {
-            return 4;
-        }
-
-        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) == true) {
-            return 5;
-        }
-
-        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI_AWARE) == true) {
-            return 6;
-        }
-
-        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_LOWPAN) == true) {
-            return 7;
-        }
-
-        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_USB) == true) {
-            return 8;
-        }
-
-        return 0;
-    }
-
     private static void zipFile(ZipOutputStream out, File file, int basePathLength) throws IOException {
         final int BUFFER = 2048;
 

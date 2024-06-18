@@ -11,6 +11,8 @@
 
 #include "Config/UniqueId.h"
 
+#define MENGINE_HTTP_REQUEST_INVALID INVALID_UNIQUE_ID
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

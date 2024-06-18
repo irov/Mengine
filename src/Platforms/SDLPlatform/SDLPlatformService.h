@@ -273,6 +273,7 @@ namespace Mengine
 
         StaticString<MENGINE_PLATFORM_DEVICE_NAME_MAXNAME> m_deviceName;
         StaticString<MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME> m_deviceModel;
+        StaticString<MENGINE_PLATFORM_DEVICE_LANGUAGE_MAXNAME> m_deviceLanguage;
         StaticString<MENGINE_PLATFORM_OS_FAMILY_MAXNAME> m_osFamily;
         StaticString<MENGINE_PLATFORM_OS_VERSION_MAXNAME> m_osVersion;
         StaticString<MENGINE_PLATFORM_BUNDLEID_MAXNAME> m_bundleId;

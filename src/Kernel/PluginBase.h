@@ -30,6 +30,9 @@ namespace Mengine
         bool isDynamicLoad() const override;
 
     protected:
+        const ServiceRequiredList & requiredServices() const override;
+
+    protected:
         bool initializePlugin() override;
         void finalizePlugin() override;
 
@@ -37,7 +40,6 @@ namespace Mengine
         bool isInitializePlugin() const override;
         bool isAvailablePlugin() const override;
         bool isSystemPlugin() const override;
-        bool isUnimportantPlugin() const override;
 
     protected:
         void _destroy() override;
@@ -63,6 +65,5 @@ namespace Mengine
         bool m_initializePlugin;
         bool m_availablePlugin;
         bool m_systemPlugin;
-        bool m_unimportantPlugin;
     };
 }

@@ -16,6 +16,12 @@ namespace Mengine
         ~CachalotPlugin() override;
 
     protected:
+        bool _unimportantPlugin() const override;
+
+    protected:
+        const ServiceRequiredList & requiredServices() const override;
+
+    protected:
         bool _availablePlugin() const override;
 
     protected:

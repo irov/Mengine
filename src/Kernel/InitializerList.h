@@ -7,5 +7,5 @@
 namespace Mengine
 {
     template<class C>
-    using InitializeList = std::initializer_list<C>;
+    using InitializerList = std::initializer_list<C>;
 }

@@ -5,6 +5,7 @@
 
 #include "Kernel/FactorablePlugin.h"
 #include "Kernel/MemoryAllocator.h"
+#include "Kernel/ServiceRequiredList.h"
 
 #include "Config/Char.h"
 #include "Config/Export.h"
@@ -32,6 +33,9 @@ namespace Mengine
         virtual bool isDynamicLoad() const = 0;
 
     public:
+        virtual const ServiceRequiredList & requiredServices() const = 0;
+
+    public:
         virtual bool initializePlugin() = 0;
         virtual void finalizePlugin() = 0;
 
@@ -39,7 +43,6 @@ namespace Mengine
         virtual bool isInitializePlugin() const = 0;
         virtual bool isAvailablePlugin() const = 0;
         virtual bool isSystemPlugin() const = 0;
-        virtual bool isUnimportantPlugin() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PluginInterface> PluginInterfacePtr;

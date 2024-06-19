@@ -3,15 +3,13 @@
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/InitializerList.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/ExceptionHelper.h"
 #include "Kernel/Typename.h"
+#include "Kernel/ServiceRequiredList.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
-    typedef InitializeList<const Char *> ServiceRequiredList;
+{   
     //////////////////////////////////////////////////////////////////////////
     class ServiceInterface
         : public Factorable
@@ -24,7 +22,7 @@ namespace Mengine
         virtual bool isInitializeService() const = 0;
         virtual bool isStopService() const = 0;
 
-    public:        
+    public:
         virtual const ServiceRequiredList & requiredServices() const = 0;
 
     protected:
@@ -62,7 +60,7 @@ namespace Mengine
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service '%s' invalid get provider"
                         , serviceName
                         );
-                    
+
                     return nullptr;
                 }
 #endif
@@ -77,7 +75,7 @@ namespace Mengine
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service '%s' not found"
                         , serviceName
                         );
-                    
+
                     return nullptr;
                 }
 #endif
@@ -89,7 +87,7 @@ namespace Mengine
                         , serviceName
                         , Typename<T>::value
                         );
-                    
+
                     return nullptr;
                 }
 #endif

@@ -17,6 +17,9 @@ namespace Mengine
         bool _unimportantPlugin() const override;
 
     protected:
+        const ServiceRequiredList & requiredServices() const override;
+
+    protected:
         bool _availablePlugin() const override;
         bool _initializePlugin() override;
         void _finalizePlugin() override;

@@ -935,6 +935,8 @@ Core
     WriteHelper.h
     
     Validator.h
+    
+    ServiceRequiredList.h
 )
 
 ADD_FILTER(

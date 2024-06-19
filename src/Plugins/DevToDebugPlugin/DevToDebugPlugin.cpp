@@ -1,5 +1,8 @@
 #include "DevToDebugPlugin.h"
 
+#include "Interface/HttpServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
+
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/BuildMode.h"
@@ -23,6 +26,16 @@ namespace Mengine
     bool DevToDebugPlugin::_unimportantPlugin() const
     {
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & DevToDebugPlugin::requiredServices() const
+    {
+        static ServiceRequiredList required = {
+            SERVICE_ID( HttpServiceInterface ),
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugPlugin::_availablePlugin() const

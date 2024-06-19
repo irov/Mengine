@@ -1,6 +1,8 @@
 #include "CachalotPlugin.h"
 
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/HttpServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
@@ -22,6 +24,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     CachalotPlugin::~CachalotPlugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool CachalotPlugin::_unimportantPlugin() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & CachalotPlugin::requiredServices() const
+    {
+        static ServiceRequiredList required = {
+            SERVICE_ID( LoggerServiceInterface ),
+            SERVICE_ID( HttpServiceInterface ),
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool CachalotPlugin::_availablePlugin() const

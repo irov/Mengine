@@ -21,7 +21,6 @@ namespace Mengine
         , m_initializePlugin( false )
         , m_availablePlugin( true )
         , m_systemPlugin( false )
-        , m_unimportantPlugin( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -65,11 +64,50 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & PluginBase::requiredServices() const
+    {
+        static ServiceRequiredList required = {};
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PluginBase::initializePlugin()
     {
         if( m_initializePlugin == true )
         {
             return true;
+        }
+
+        const ServiceRequiredList & required = this->requiredServices();
+
+        for( const Char * serviceId : required )
+        {
+            const bool * serviceInitialized = SERVICE_PROVIDER_GET()
+                ->isInitializeServiceProvider( serviceId );
+
+            if( *serviceInitialized == true )
+            {
+                continue;
+            }
+
+            bool unimportantPlugin = this->_unimportantPlugin();
+
+            if( unimportantPlugin == true )
+            {
+                LOGGER_MESSAGE( "plugin '%s' required service '%s' [unimportant]"
+                    , this->getPluginName()
+                    , serviceId
+                );
+
+                return true;
+            }
+
+            LOGGER_ERROR( "plugin '%s' required service '%s'"
+                , this->getPluginName()
+                , serviceId
+            );
+
+            return false;
         }
 
         m_availablePlugin = this->_availablePlugin();
@@ -81,9 +119,7 @@ namespace Mengine
             );
 
             return true;
-        }
-
-        m_unimportantPlugin = this->_unimportantPlugin();
+        }        
 
         bool successful = false;
 
@@ -93,7 +129,7 @@ namespace Mengine
         }
         catch( const std::exception & ex )
         {
-            LOGGER_ERROR( "plugin '%s' initialize exception:\n%s"
+            LOGGER_ERROR( "plugin '%s' initialize exception: %s"
                 , this->getPluginName()
                 , ex.what()
             );
@@ -101,14 +137,20 @@ namespace Mengine
 
         if( successful == false )
         {
+            bool unimportantPlugin = this->_unimportantPlugin();
+
+            if( unimportantPlugin == true )
+            {
+                LOGGER_MESSAGE( "plugin '%s' not initialize [unimportant]"
+                    , this->getPluginName()
+                );
+
+                return true;
+            }
+
             LOGGER_ERROR( "plugin '%s' not initialize"
                 , this->getPluginName()
             );
-
-            if( m_unimportantPlugin == true )
-            {
-                return true;
-            }
 
             return false;
         }
@@ -173,11 +215,6 @@ namespace Mengine
     bool PluginBase::isSystemPlugin() const
     {
         return m_systemPlugin;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PluginBase::isUnimportantPlugin() const
-    {
-        return m_unimportantPlugin;
     }
     //////////////////////////////////////////////////////////////////////////
     void PluginBase::_destroy()

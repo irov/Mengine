@@ -31,7 +31,7 @@
 #include "Config/StdIntTypes.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( AndroidEnvironmentService, Mengine::AndroidEnvironmentService );
+SERVICE_FACTORY( EnvironmentService, Mengine::AndroidEnvironmentService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

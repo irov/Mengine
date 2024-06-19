@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Interface/MacOSEnvironmentServiceInterface.h"
+#include "Interface/EnvironmentServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
 namespace Mengine
 {
     class MacOSEnvironmentService
-        : public ServiceBase<MacOSEnvironmentServiceInterface>
+        : public ServiceBase<EnvironmentServiceInterface>
     {
     public:
         MacOSEnvironmentService();
@@ -20,8 +20,9 @@ namespace Mengine
     public:
         size_t getDeviceName( Char * _deviceName, size_t _capacity ) const override;
         size_t getDeviceModel( Char * _deviceModel, size_t _capacity ) const override;
-        size_t getDeviceLanguage( Char * _deviceName, size_t _capacity ) const override;
-        size_t getOSVersion( Char * _deviceName, size_t _capacity ) const override;
+        size_t getDeviceLanguage( Char * _deviceLanguage, size_t _capacity ) const override;
+        size_t getOSFamily( Char * _osFamily, size_t _capacity ) const override;
+        size_t getOSVersion( Char * _osVersion, size_t _capacity ) const override;
         size_t getBundleId( Char * _bundleId, size_t _capacity ) const override;
         
     public:

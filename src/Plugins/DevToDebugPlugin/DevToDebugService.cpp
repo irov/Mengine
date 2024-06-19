@@ -137,7 +137,7 @@ namespace Mengine
     const ServiceRequiredList & DevToDebugService::requiredServices() const
     {
         static ServiceRequiredList required = {
-            SERVICE_ID( HttpSystemInterface ),
+            SERVICE_ID( HttpServiceInterface ),
             SERVICE_ID( ThreadSystemInterface )
         };
 

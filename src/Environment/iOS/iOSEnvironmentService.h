@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/iOSEnvironmentServiceInterface.h"
+#include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 
 #import "Environment/iOS/iOSMailCompose.h"
@@ -10,7 +10,7 @@
 namespace Mengine
 {
     class iOSEnvironmentService
-        : public ServiceBase<iOSEnvironmentServiceInterface>
+        : public ServiceBase<EnvironmentServiceInterface>
     {
     public:
         iOSEnvironmentService();
@@ -24,6 +24,7 @@ namespace Mengine
         size_t getDeviceName( Char * _deviceName, size_t _capacity ) const override;
         size_t getDeviceModel( Char * _deviceModel, size_t _capacity ) const override;
         size_t getDeviceLanguage( Char * _deviceName, size_t _capacity ) const override;
+        size_t getOSFamily( Char * _osVersion, size_t _capacity ) const override;
         size_t getOSVersion( Char * _deviceName, size_t _capacity ) const override;
         size_t getBundleId( Char * _bundleId, size_t _capacity ) const override;
         

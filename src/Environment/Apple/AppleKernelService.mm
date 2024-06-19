@@ -1,4 +1,4 @@
-#include "AppleEnvironmentService.h"
+#include "AppleKernelService.h"
 
 #include "Interface/StringizeServiceInterface.h"
 
@@ -11,27 +11,27 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( AppleEnvironmentService, Mengine::AppleEnvironmentService );
+SERVICE_FACTORY( AppleKernelService, Mengine::AppleKernelService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleEnvironmentService::AppleEnvironmentService()
+    AppleKernelService::AppleKernelService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleEnvironmentService::~AppleEnvironmentService()
+    AppleKernelService::~AppleKernelService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleEnvironmentService::_initializeService()
+    bool AppleKernelService::_initializeService()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleEnvironmentService::_finalizeService()
+    void AppleKernelService::_finalizeService()
     {
         for( IntrusiveListConstStringHolderNSString::iterator
             it = m_holdersNSString.begin();
@@ -51,7 +51,7 @@ namespace Mengine
         m_poolNSString.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AppleEnvironmentService::stringize( NSString * _value, ConstString * const _cstr )
+    void AppleKernelService::stringize( NSString * _value, ConstString * const _cstr )
     {
         if( [_value length] == 0 )
         {

@@ -1,6 +1,6 @@
 #include "AppleString.h"
 
-#include "Interface/AppleEnvironmentServiceInterface.h"
+#include "Interface/AppleKernelServiceInterface.h"
 
 #include "Kernel/ConstStringHelper.h"
 
@@ -25,7 +25,7 @@ namespace Mengine
         ConstString NSStringToConstString( NSString * _value )
         {
             ConstString value_cstr;
-            APPLE_ENVIRONMENT_SERVICE()
+            APPLE_KERNEL_SERVICE()
                 ->stringize( _value, &value_cstr );
             
             return value_cstr;

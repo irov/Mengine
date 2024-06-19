@@ -20,37 +20,38 @@
     [[FIRRemoteConfig remoteConfig] fetchWithCompletionHandler:^(FIRRemoteConfigFetchStatus status, NSError *error) {
         switch (status) {
             case FIRRemoteConfigFetchStatusNoFetchYet:
-                LOGGER_ERROR("FIRRemoteConfigFetchStatusNoFetchYet: %s"
-                    , [[error localizedDescription] UTF8String]
+                NSLog( @"FIRRemoteConfigFetchStatusNoFetchYet: %@"
+                    , [error localizedDescription]
                 );
+                
                 break;
             case FIRRemoteConfigFetchStatusSuccess:
-                LOGGER_MESSAGE("FIRRemoteConfigFetchStatusSuccess");
+                NSLog( @"FIRRemoteConfigFetchStatusSuccess" );
                 
                 [[FIRRemoteConfig remoteConfig] activateWithCompletion:^(BOOL changed, NSError * _Nullable error) {
                     if (error != nil)
                     {
-                        LOGGER_ERROR("FIRRemoteConfigFetchStatusSuccess activate error: %s"
-                            , [[error localizedDescription] UTF8String]
+                        NSLog( @"FIRRemoteConfigFetchStatusSuccess activate error: %@"
+                            , [error localizedDescription]
                         );
                         
                         return;
                     }
                     
-                    LOGGER_MESSAGE("FIRRemoteConfigFetchStatusSuccess activate changed: %d"
+                    NSLog( @"FIRRemoteConfigFetchStatusSuccess activate changed: %d"
                         , changed
                     );
                 }];
                 break;
             case FIRRemoteConfigFetchStatusFailure:
-                LOGGER_ERROR("FIRRemoteConfigFetchStatusFailure: %s"
-                    , [[error localizedDescription] UTF8String]
+                NSLog( @"FIRRemoteConfigFetchStatusFailure: %@"
+                    , [error localizedDescription]
                 );
                 
                 break;
             case FIRRemoteConfigFetchStatusThrottled:
-                LOGGER_ERROR("FIRRemoteConfigFetchStatusThrottled: %s"
-                    , [[error localizedDescription] UTF8String]
+                NSLog( @"FIRRemoteConfigFetchStatusThrottled: %@"
+                    , [error localizedDescription]
                 );
                 
                 break;
@@ -58,6 +59,8 @@
                 break;
         }
     }];
+    
+    return YES;
 }
 
 @end

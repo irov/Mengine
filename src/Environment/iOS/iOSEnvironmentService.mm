@@ -16,7 +16,7 @@
 #import <MessageUI/MessageUI.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( iOSEnvironmentService, Mengine::iOSEnvironmentService );
+SERVICE_FACTORY( EnvironmentService, Mengine::iOSEnvironmentService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -79,6 +79,13 @@ namespace Mengine
         MENGINE_STRNCPY( _deviceName, [language UTF8String], _capacity );
 
         return language.length;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t iOSEnvironmentService::getOSFamily( Char * const _deviceName, size_t _capacity ) const
+    {
+        size_t len = MENGINE_STRNCPY_STATIC( _deviceName, "iOS", _capacity );
+
+        return len;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t iOSEnvironmentService::getOSVersion( Char * const _deviceName, size_t _capacity ) const

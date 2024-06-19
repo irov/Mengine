@@ -15,7 +15,7 @@
 #import <sys/sysctl.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( MacOSEnvironmentService, Mengine::MacOSEnvironmentService );
+SERVICE_FACTORY( EnvironmentService, Mengine::MacOSEnvironmentService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -71,6 +71,13 @@ namespace Mengine
         MENGINE_STRNCPY( _deviceName, [language UTF8String], _capacity );
 
         return language.length;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t MacOSEnvironmentService::getOSFamily( Char * _osFamily, size_t _capacity ) const
+    {
+        size_t len = MENGINE_STRNCPY_STATIC( _osFamily, "MacOS", _capacity );
+
+        return len;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t MacOSEnvironmentService::getOSVersion( Char * const _deviceName, size_t _capacity ) const

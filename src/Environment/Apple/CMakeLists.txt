@@ -29,8 +29,8 @@ src
     AppleSemaphoreService.h
     AppleSemaphoreService.mm
     
-    AppleEnvironmentService.h
-    AppleEnvironmentService.mm
+    AppleKernelService.h
+    AppleKernelService.mm
     
     AppleSemaphoreListenerInterface.h
     

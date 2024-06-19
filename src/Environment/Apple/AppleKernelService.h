@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/AppleEnvironmentServiceInterface.h"
+#include "Interface/AppleKernelServiceInterface.h"
 
 #include "ConstStringHolderNSString.h"
 
@@ -12,12 +12,12 @@
 
 namespace Mengine
 {
-    class AppleEnvironmentService
-        : public ServiceBase<AppleEnvironmentServiceInterface>
+    class AppleKernelService
+        : public ServiceBase<AppleKernelServiceInterface>
     {
     public:
-        AppleEnvironmentService();
-        ~AppleEnvironmentService() override;
+        AppleKernelService();
+        ~AppleKernelService() override;
 
     public:
         bool _initializeService() override;

@@ -25,6 +25,7 @@
 #include "Kernel/ContentHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/HttpLogger.h"
+#include "Kernel/OptionHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -51,6 +52,16 @@ namespace Mengine
         };
 
         return service;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool HttpService::_availableService() const
+    {
+        if( HAS_OPTION( "nohttp" ) == true )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool HttpService::_initializeService()

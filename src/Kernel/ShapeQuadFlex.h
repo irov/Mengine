@@ -29,6 +29,9 @@ namespace Mengine
         void setFlipY( bool _flipY );
         bool getFlipY() const;
 
+        void setUV( const mt::uv4f & _uv );
+        const mt::uv4f & getUV() const;
+
         void setPercentVisibility( const mt::vec4f & _percent );
         const mt::vec4f & getPercentVisibility() const;
 
@@ -43,6 +46,8 @@ namespace Mengine
 
     protected:
         mt::vec2f m_customSize;
+
+        mt::uv4f m_uv;
 
         mt::vec4f m_percentVisibility;
 

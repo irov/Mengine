@@ -101,6 +101,16 @@ namespace Mengine
         return m_flipY;
     }
     ///////////////////////////////////////////////////////////////////////////
+    void ShapeQuadFlex::setUV( const mt::uv4f & _uv )
+    {
+        m_uv = _uv;
+    }
+    ///////////////////////////////////////////////////////////////////////////
+    const mt::uv4f & ShapeQuadFlex::getUV() const
+    {
+        return m_uv;
+    }
+    ///////////////////////////////////////////////////////////////////////////
     void ShapeQuadFlex::setPercentVisibility( const mt::vec4f & _percent )
     {
         if( m_percentVisibility == _percent )
@@ -216,17 +226,17 @@ namespace Mengine
         m_verticesLocal[3].x = visOffset.x + 0.f;
         m_verticesLocal[3].y = visOffset.y + percent_size.w;
 
-        mt::uv4f uv_percentVisibility;
-        uv4_from_mask( &uv_percentVisibility, m_percentVisibility );
+        mt::uv4f uv_correct;
+        mt::uv4_multiply_tetragon_v4( &uv_correct, m_uv, m_percentVisibility );
 
         if( m_flipX == true )
         {
-            mt::uv4_swap_u( &uv_percentVisibility );
+            mt::uv4_swap_u( &uv_correct );
         }
 
         if( m_flipY == true )
         {
-            mt::uv4_swap_v( &uv_percentVisibility );
+            mt::uv4_swap_v( &uv_correct );
         }
 
         uint32_t uvCount = m_surface->getUVCount();
@@ -235,9 +245,9 @@ namespace Mengine
         {
             for( uint32_t v = 0; v != 4; ++v )
             {
-                const mt::vec2f & uv_correct = uv_percentVisibility[v];
+                const mt::vec2f & uv = uv_correct[v];
 
-                mt::vec2f uv_total = uv_correct * m_textureUVScale + m_textureUVOffset;
+                mt::vec2f uv_total = uv * m_textureUVScale + m_textureUVOffset;
 
                 m_surface->correctUV( i, uv_total, m_verticesWM[v].uv + i );
             }

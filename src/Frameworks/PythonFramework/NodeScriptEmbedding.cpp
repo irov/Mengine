@@ -1081,6 +1081,8 @@ namespace Mengine
                 .def( "getFlipX", &ShapeQuadFlex::getFlipX )
                 .def( "setFlipY", &ShapeQuadFlex::setFlipY )
                 .def( "getFlipY", &ShapeQuadFlex::getFlipY )
+                .def( "setUV", &ShapeQuadFlex::setUV )
+                .def( "getUV", &ShapeQuadFlex::getUV )
                 .def( "setPercentVisibility", &ShapeQuadFlex::setPercentVisibility )
                 .def( "getPercentVisibility", &ShapeQuadFlex::getPercentVisibility )
                 .def( "setCustomSize", &ShapeQuadFlex::setCustomSize )

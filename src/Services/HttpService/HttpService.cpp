@@ -66,19 +66,45 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HttpService::_initializeService()
     {
-        uint32_t Http_ThreadCount = CONFIG_VALUE( "Http", "ThreadCount", 8 );
+        uint32_t Http_ThreadCountLow = CONFIG_VALUE( "Http", "ThreadCountLow", 2 );
 
-        ThreadQueueInterfacePtr threadQueue = THREAD_SERVICE()
+        ThreadQueueInterfacePtr threadQueueLow = THREAD_SERVICE()
             ->createTaskQueue( 1, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( threadQueue, "invalid create task queue" );
+        MENGINE_ASSERTION_MEMORY_PANIC( threadQueueLow, "invalid create task queue" );
 
-        m_threadQueue = threadQueue;
+        m_threadQueueLow = threadQueueLow;
 
-        for( uint32_t index = 0; index != Http_ThreadCount; ++index )
+        for( uint32_t index = 0; index != Http_ThreadCountLow; ++index )
         {
             Stringstream ss;
-            ss << "ThreadHttp_" << index;
+            ss << "ThreadHttpLow_" << index;
+            ConstString threadName = Helper::stringizeString( ss.str() );
+
+            if( THREAD_SERVICE()
+                ->createThreadProcessor( threadName, ETP_LOWEST, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            {
+                return false;
+            }
+
+            m_threads.emplace_back( threadName );
+
+            m_threadQueueLow->addThread( threadName );
+        }
+
+        uint32_t Http_ThreadCountHigh = CONFIG_VALUE( "Http", "ThreadCountHigh", 6 );
+
+        ThreadQueueInterfacePtr threadQueueHigh = THREAD_SERVICE()
+            ->createTaskQueue( 1, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( threadQueueHigh, "invalid create task queue" );
+
+        m_threadQueueHigh = threadQueueHigh;
+
+        for( uint32_t index = 0; index != Http_ThreadCountHigh; ++index )
+        {
+            Stringstream ss;
+            ss << "ThreadHttpHigh_" << index;
             ConstString threadName = Helper::stringizeString( ss.str() );
 
             if( THREAD_SERVICE()
@@ -89,7 +115,7 @@ namespace Mengine
 
             m_threads.emplace_back( threadName );
 
-            m_threadQueue->addThread( threadName );
+            m_threadQueueHigh->addThread( threadName );
         }
 
         ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
@@ -148,12 +174,20 @@ namespace Mengine
 
         m_threads.clear();
 
-        if( m_threadQueue != nullptr )
+        if( m_threadQueueLow != nullptr )
         {
             THREAD_SERVICE()
-                ->cancelTaskQueue( m_threadQueue );
+                ->cancelTaskQueue( m_threadQueueLow );
 
-            m_threadQueue = nullptr;
+            m_threadQueueLow = nullptr;
+        }
+
+        if( m_threadQueueHigh != nullptr )
+        {
+            THREAD_SERVICE()
+                ->cancelTaskQueue( m_threadQueueHigh );
+
+            m_threadQueueHigh = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -172,7 +206,7 @@ namespace Mengine
         return m_applicationJSONHeaders;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::getMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::getMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -181,7 +215,7 @@ namespace Mengine
             return MENGINE_HTTP_REQUEST_INVALID;
         }
 
-        UniqueId task_id = Helper::generateUniqueIdentity();
+        UniqueId requestId = Helper::generateUniqueIdentity();
 
         HttpRequestInterfacePtr request = HTTP_SYSTEM()
             ->createHttpRequestGetMessage( _doc );
@@ -191,15 +225,15 @@ namespace Mengine
         request->setURL( _url );
         request->setProxy( m_proxy );
         request->setHeaders( _headers );
-        request->setRequestId( task_id );
+        request->setRequestId( requestId );
         request->setTimeout( _timeout );
-        request->setReceiveHeaders( _receiveHeaders );
+        request->setFlags( _flags );
 
         AndroidHttpResponsePtr response = m_factoryResponse->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( response );
 
-        response->setRequestId( task_id );
+        response->setRequestId( requestId );
 
         request->setReponse( response );
 
@@ -208,7 +242,7 @@ namespace Mengine
         ThreadTaskInterfacePtr task = request->getThreadTask();
 
         ReceiverDesc desc;
-        desc.id = task_id;
+        desc.id = requestId;
         desc.type = ERT_GET_MESSAGE;
         desc.timestamp = Helper::getSystemTimestamp();
         desc.task = task;
@@ -222,14 +256,14 @@ namespace Mengine
         m_receiverDescs.push_back( desc );
         m_mutex->unlock();
 
-        m_threadQueue->addTask( task );
+        this->addRequestToQueue( _flags, task );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_HTTP_REQUEST, task_id, _url );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_HTTP_REQUEST, requestId, _url );
 
-        return task_id;
+        return requestId;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -238,7 +272,7 @@ namespace Mengine
             return MENGINE_HTTP_REQUEST_INVALID;
         }
 
-        UniqueId task_id = Helper::generateUniqueIdentity();
+        UniqueId requestId = Helper::generateUniqueIdentity();
 
         HttpRequestInterfacePtr request = HTTP_SYSTEM()
             ->createHttpRequestPostMessage( _params, _doc );
@@ -248,15 +282,15 @@ namespace Mengine
         request->setURL( _url );
         request->setProxy( m_proxy );
         request->setHeaders( _headers );
-        request->setRequestId( task_id );
+        request->setRequestId( requestId );
         request->setTimeout( _timeout );
-        request->setReceiveHeaders( _receiveHeaders );
+        request->setFlags( _flags );
 
         AndroidHttpResponsePtr response = m_factoryResponse->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( response );
 
-        response->setRequestId( task_id );
+        response->setRequestId( requestId );
 
         request->setReponse( response );
 
@@ -265,7 +299,7 @@ namespace Mengine
         ThreadTaskInterfacePtr task = request->getThreadTask();
 
         ReceiverDesc desc;
-        desc.id = task_id;
+        desc.id = requestId;
         desc.type = ERT_POST_MESSAGE;
         desc.timestamp = Helper::getSystemTimestamp();
         desc.task = task;
@@ -279,14 +313,14 @@ namespace Mengine
         m_receiverDescs.push_back( desc );
         m_mutex->unlock();
 
-        m_threadQueue->addTask( task );
+        this->addRequestToQueue( _flags, task );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_HTTP_REQUEST, task_id, _url );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_HTTP_REQUEST, requestId, _url );
 
-        return task_id;
+        return requestId;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::deleteMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::deleteMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -295,7 +329,7 @@ namespace Mengine
             return MENGINE_HTTP_REQUEST_INVALID;
         }
 
-        UniqueId task_id = Helper::generateUniqueIdentity();
+        UniqueId requestId = Helper::generateUniqueIdentity();
 
         HttpRequestInterfacePtr request = HTTP_SYSTEM()
             ->createHttpRequestDeleteMessage( _doc );
@@ -305,15 +339,15 @@ namespace Mengine
         request->setURL( _url );
         request->setProxy( m_proxy );
         request->setHeaders( _headers );
-        request->setRequestId( task_id );
+        request->setRequestId( requestId );
         request->setTimeout( _timeout );
-        request->setReceiveHeaders( _receiveHeaders );
+        request->setFlags( _flags );
 
         AndroidHttpResponsePtr response = m_factoryResponse->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( response );
 
-        response->setRequestId( task_id );
+        response->setRequestId( requestId );
 
         request->setReponse( response );
 
@@ -322,7 +356,7 @@ namespace Mengine
         ThreadTaskInterfacePtr task = request->getThreadTask();
 
         ReceiverDesc desc;
-        desc.id = task_id;
+        desc.id = requestId;
         desc.type = ERT_POST_MESSAGE;
         desc.timestamp = Helper::getSystemTimestamp();
         desc.task = task;
@@ -336,14 +370,14 @@ namespace Mengine
         m_receiverDescs.push_back( desc );
         m_mutex->unlock();
 
-        m_threadQueue->addTask( task );
+        this->addRequestToQueue( _flags, task );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_HTTP_REQUEST, task_id, _url );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_HTTP_REQUEST, requestId, _url );
 
-        return task_id;
+        return requestId;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::headerData( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const Data & _data, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::headerData( const String & _url, const HttpRequestHeaders & _headers, const Data & _data, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -352,7 +386,7 @@ namespace Mengine
             return MENGINE_HTTP_REQUEST_INVALID;
         }
 
-        UniqueId task_id = Helper::generateUniqueIdentity();
+        UniqueId requestId = Helper::generateUniqueIdentity();
 
         HttpRequestInterfacePtr request = HTTP_SYSTEM()
             ->createHttpRequestHeaderData( _data, _doc );
@@ -361,15 +395,15 @@ namespace Mengine
 
         request->setURL( _url );
         request->setHeaders( _headers );
-        request->setRequestId( task_id );
+        request->setRequestId( requestId );
         request->setTimeout( _timeout );
-        request->setReceiveHeaders( _receiveHeaders );
+        request->setFlags( _flags );
 
         AndroidHttpResponsePtr response = m_factoryResponse->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( response );
 
-        response->setRequestId( task_id );
+        response->setRequestId( requestId );
 
         request->setReponse( response );
 
@@ -378,7 +412,7 @@ namespace Mengine
         ThreadTaskInterfacePtr task = request->getThreadTask();
 
         ReceiverDesc desc;
-        desc.id = task_id;
+        desc.id = requestId;
         desc.type = ERT_HEADER_DATA;
         desc.timestamp = Helper::getSystemTimestamp();
         desc.task = task;
@@ -392,14 +426,14 @@ namespace Mengine
         m_receiverDescs.push_back( desc );
         m_mutex->unlock();
 
-        m_threadQueue->addTask( task );
+        this->addRequestToQueue( _flags, task );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_HTTP_REQUEST, task_id, _url );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_HTTP_REQUEST, requestId, _url );
 
-        return task_id;
+        return requestId;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::getAsset( const String & _url, const String & _login, const String & _password, const ContentInterfacePtr & _content, int32_t _timeout, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::getAsset( const String & _url, const String & _login, const String & _password, const ContentInterfacePtr & _content, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -418,7 +452,7 @@ namespace Mengine
             return MENGINE_HTTP_REQUEST_INVALID;
         }
 
-        UniqueId task_id = Helper::generateUniqueIdentity();
+        UniqueId requestId = Helper::generateUniqueIdentity();
 
         HttpRequestInterfacePtr request = HTTP_SYSTEM()
             ->createHttpRequestGetAsset( _login, _password, _content, _doc );
@@ -427,14 +461,15 @@ namespace Mengine
 
         request->setURL( _url );
         request->setProxy( m_proxy );
-        request->setRequestId( task_id );
+        request->setRequestId( requestId );
         request->setTimeout( _timeout );
+        request->setFlags( _flags );
 
         AndroidHttpResponsePtr response = m_factoryResponse->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( response );
 
-        response->setRequestId( task_id );
+        response->setRequestId( requestId );
 
         request->setReponse( response );
 
@@ -443,7 +478,7 @@ namespace Mengine
         ThreadTaskInterfacePtr task = request->getThreadTask();
 
         ReceiverDesc desc;
-        desc.id = task_id;
+        desc.id = requestId;
         desc.type = ERT_DOWNLOAD_ASSET;
         desc.timestamp = Helper::getSystemTimestamp();
         desc.task = task;
@@ -457,11 +492,11 @@ namespace Mengine
         m_receiverDescs.push_back( desc );
         m_mutex->unlock();
 
-        m_threadQueue->addTask( task );
+        this->addRequestToQueue( _flags, task );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_HTTP_REQUEST, task_id, _url );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_HTTP_REQUEST, requestId, _url );
 
-        return task_id;
+        return requestId;
     }
     //////////////////////////////////////////////////////////////////////////
     bool HttpService::cancelRequest( HttpRequestId _id )
@@ -547,6 +582,18 @@ namespace Mengine
             , _response->getData().c_str()
             , _response->getCode()
         );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HttpService::addRequestToQueue( uint32_t _flags, const ThreadTaskInterfacePtr & _task )
+    {
+        if( _flags & EHRE_LOW_PRIORITY )
+        {
+            m_threadQueueLow->addTask( _task );
+        }
+        else
+        {
+            m_threadQueueHigh->addTask( _task );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

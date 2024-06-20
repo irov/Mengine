@@ -456,7 +456,7 @@ namespace Mengine
                 Helper::writeJSONDataCompact( j, &data );
 
                 HttpRequestId id = HTTP_SERVICE()
-                    ->headerData( m_dsn, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+                    ->headerData( m_dsn, headers, data, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, EHRF_NONE, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
             }break;
@@ -468,7 +468,7 @@ namespace Mengine
                     ->getApplicationJSONHeaders();
 
                 HttpRequestId id = HTTP_SERVICE()
-                    ->getMessage( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+                    ->getMessage( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, EHRF_NONE, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
             }break;
@@ -485,7 +485,7 @@ namespace Mengine
                 Helper::writeJSONDataCompact( j, &data );
 
                 HttpRequestId id = HTTP_SERVICE()
-                    ->headerData( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+                    ->headerData( m_workerURL, headers, data, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, EHRF_NONE, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
             }break;
@@ -500,7 +500,7 @@ namespace Mengine
                 Helper::writeJSONDataCompact( j, &data );
 
                 HttpRequestId id = HTTP_SERVICE()
-                    ->headerData( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+                    ->headerData( m_workerURL, headers, data, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, EHRF_NONE, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_UNUSED( id );
             }break;

@@ -245,7 +245,7 @@ namespace Mengine
             ->getApplicationJSONHeaders();
 
         HttpRequestId id = HTTP_SERVICE()
-            ->headerData( m_dsn, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, m_dataAux, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+            ->headerData( m_dsn, headers, m_dataAux, 2000, EHRE_LOW_PRIORITY, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_UNUSED( id );
     }

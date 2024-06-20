@@ -184,7 +184,7 @@ namespace Mengine
         Helper::writeJSONDataCompact( j, &data );
 
         HttpRequestId id = HTTP_SERVICE()
-            ->headerData( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, false, data, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+            ->headerData( m_workerURL, headers, data, 2000, EHRE_LOW_PRIORITY, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_UNUSED( id );
     }

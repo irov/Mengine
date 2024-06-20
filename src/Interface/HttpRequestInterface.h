@@ -32,8 +32,8 @@ namespace Mengine
         virtual void setTimeout( int32_t _timeout ) = 0;
         virtual int32_t getTimeout() const = 0;
 
-        virtual void setReceiveHeaders( bool _receiveHeaders ) = 0;
-        virtual bool getReceiveHeaders() const = 0;
+        virtual void setFlags( uint32_t _flags ) = 0;
+        virtual uint32_t getFlags() const = 0;
 
         virtual void setReponse( const HttpResponseInterfacePtr & _response ) = 0;
         virtual const HttpResponseInterfacePtr & getReponse() const = 0;

@@ -1,12 +1,14 @@
 #include "BaseHttpRequest.h"
 
+#include "Kernel/HttpRequestFlags.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     BaseHttpRequest::BaseHttpRequest()
         : m_id( 0 )
         , m_timeout( MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY )
-        , m_receiveHeaders( false )
+        , m_flags( EHRF_NONE )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -74,14 +76,14 @@ namespace Mengine
         return m_timeout;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseHttpRequest::setReceiveHeaders( bool _receiveHeaders )
+    void BaseHttpRequest::setFlags( uint32_t _flags )
     {
-        m_receiveHeaders = _receiveHeaders;
+        m_flags = _flags;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseHttpRequest::getReceiveHeaders() const
+    uint32_t BaseHttpRequest::getFlags() const
     {
-        return m_receiveHeaders;
+        return m_flags;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseHttpRequest::setReponse( const HttpResponseInterfacePtr & _response )

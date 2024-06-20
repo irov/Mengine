@@ -35,8 +35,8 @@ namespace Mengine
         void setTimeout( int32_t _timeout ) override;
         int32_t getTimeout() const override;
 
-        void setReceiveHeaders( bool _receiveHeaders ) override;
-        bool getReceiveHeaders() const override;
+        void setFlags( uint32_t _flags ) override;
+        uint32_t getFlags() const override;
 
         void setReponse( const HttpResponseInterfacePtr & _response ) override;
         const HttpResponseInterfacePtr & getReponse() const override;
@@ -55,7 +55,7 @@ namespace Mengine
         String m_cookies;
         HttpRequestHeaders m_headers;
         int32_t m_timeout;
-        bool m_receiveHeaders;
+        uint32_t m_flags;
 
         HttpResponseInterfacePtr m_response;
         HttpReceiverInterfacePtr m_receiver;

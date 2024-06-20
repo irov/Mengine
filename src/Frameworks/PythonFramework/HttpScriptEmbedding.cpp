@@ -56,7 +56,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( content );
 
         uint32_t id = HTTP_SERVICE()
-            ->getAsset( _url, _login, _password, content, _timeout, receiver, MENGINE_DOCUMENT_PYBIND );
+            ->getAsset( _url, _login, _password, content, _timeout, EHRF_NONE, receiver, MENGINE_DOCUMENT_PYBIND );
 
         return id;
     }
@@ -103,7 +103,7 @@ namespace Mengine
         receiver->initialize( _cb, _args );
 
         HttpRequestId id = HTTP_SERVICE()
-            ->headerData( _url, _headers, _timeout, false, _data, receiver, MENGINE_DOCUMENT_PYBIND );
+            ->headerData( _url, _headers, _data, _timeout, EHRF_NONE, receiver, MENGINE_DOCUMENT_PYBIND );
 
         return id;
     }

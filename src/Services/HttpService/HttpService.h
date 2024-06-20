@@ -4,6 +4,7 @@
 #include "Interface/FactoryInterface.h"
 #include "Interface/ThreadTaskInterface.h"
 #include "Interface/HttpServiceInterface.h"
+#include "Interface/HttpRequestInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -34,11 +35,11 @@ namespace Mengine
         const HttpRequestHeaders & getApplicationJSONHeaders() const override;
 
     protected:
-        HttpRequestId getMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
-        HttpRequestId postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
-        HttpRequestId deleteMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
-        HttpRequestId headerData( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const Data & _data, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
-        HttpRequestId getAsset( const String & _url, const String & _login, const String & _password, const ContentInterfacePtr & _content, int32_t _timeout, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
+        HttpRequestId getMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
+        HttpRequestId postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
+        HttpRequestId deleteMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
+        HttpRequestId headerData( const String & _url, const HttpRequestHeaders & _headers, const Data & _data, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
+        HttpRequestId getAsset( const String & _url, const String & _login, const String & _password, const ContentInterfacePtr & _content, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
 
     protected:
         bool cancelRequest( HttpRequestId _id ) override;
@@ -47,10 +48,14 @@ namespace Mengine
         void onHttpRequestComplete( const HttpResponseInterfacePtr & _response ) override;
 
     protected:
+        void addRequestToQueue( uint32_t _flags, const ThreadTaskInterfacePtr & _task );
+
+    protected:
         void notifyEnginePrepareFinalize_();
 
     protected:
-        ThreadQueueInterfacePtr m_threadQueue;
+        ThreadQueueInterfacePtr m_threadQueueLow;
+        ThreadQueueInterfacePtr m_threadQueueHigh;        
 
         ThreadMutexInterfacePtr m_mutex;
 

@@ -19,7 +19,7 @@
 + (void)setBasicAuthorization:(NSMutableURLRequest *)request login:(NSString *)login password:(NSString *)password {
     NSString * userCredentials = [NSString stringWithFormat:@"%@:%@", login, password];
     NSData * data = [userCredentials dataUsingEncoding:NSUTF8StringEncoding];
-    NSString * base64 = [data base64EncodedStringWithOptions:0];
+    NSString * base64 = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
     NSString * authHeader = [NSString stringWithFormat:@"Basic %@", base64];
     [request setValue:authHeader forHTTPHeaderField:@"Authorization"];
 }
@@ -85,16 +85,16 @@
     @try {
         NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
         urlRequest.HTTPMethod = @"POST";
-        [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
-        [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
-        [self setMultipartFormData:urlRequest properties:properties];
+        [MengineHttpNetwork setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
+        [MengineHttpNetwork setHeaders:urlRequest headers:request.HTTP_HEADERS];
+        [MengineHttpNetwork setMultipartFormData:urlRequest properties:properties];
         
         __block MengineHttpResponseParam *responseParam = nil;
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
         
         NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-            responseParam = [self makeResponse:httpResponse data:data error:error];
+            responseParam = [MengineHttpNetwork makeResponse:httpResponse data:data error:error];
             dispatch_semaphore_signal(semaphore);
         }];
         
@@ -113,16 +113,16 @@
     @try {
         NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
         urlRequest.HTTPMethod = @"POST";
-        [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
-        [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
-        [self setData:urlRequest data:data];
+        [MengineHttpNetwork setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
+        [MengineHttpNetwork setHeaders:urlRequest headers:request.HTTP_HEADERS];
+        [MengineHttpNetwork setData:urlRequest data:data];
         
         __block MengineHttpResponseParam * responseParam = nil;
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
         
         NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-            responseParam = [self makeResponse:httpResponse data:data error:error];
+            responseParam = [MengineHttpNetwork makeResponse:httpResponse data:data error:error];
             dispatch_semaphore_signal(semaphore);
         }];
         
@@ -141,15 +141,15 @@
     @try {
         NSMutableURLRequest * urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
         urlRequest.HTTPMethod = @"GET";
-        [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
-        [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
+        [MengineHttpNetwork setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
+        [MengineHttpNetwork setHeaders:urlRequest headers:request.HTTP_HEADERS];
         
         __block MengineHttpResponseParam *responseParam = nil;
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
         
         NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-            responseParam = [self makeResponse:httpResponse data:data error:error];
+            responseParam = [MengineHttpNetwork makeResponse:httpResponse data:data error:error];
             dispatch_semaphore_signal(semaphore);
         }];
         
@@ -168,15 +168,15 @@
     @try {
         NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
         urlRequest.HTTPMethod = @"DELETE";
-        [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
-        [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
+        [MengineHttpNetwork setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
+        [MengineHttpNetwork setHeaders:urlRequest headers:request.HTTP_HEADERS];
         
         __block MengineHttpResponseParam * responseParam = nil;
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
         
         NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-            responseParam = [self makeResponse:httpResponse data:data error:error];
+            responseParam = [MengineHttpNetwork makeResponse:httpResponse data:data error:error];
             dispatch_semaphore_signal(semaphore);
         }];
         
@@ -195,16 +195,16 @@
     @try {
         NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:request.HTTP_URL]];
         urlRequest.HTTPMethod = @"GET";
-        [self setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
-        [self setBasicAuthorization:urlRequest login:login password:password];
-        [self setHeaders:urlRequest headers:request.HTTP_HEADERS];
+        [MengineHttpNetwork setTimeout:urlRequest timeout:request.HTTP_TIMEOUT];
+        [MengineHttpNetwork setBasicAuthorization:urlRequest login:login password:password];
+        [MengineHttpNetwork setHeaders:urlRequest headers:request.HTTP_HEADERS];
         
         __block MengineHttpResponseParam * responseParam = nil;
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
         
         NSURLSessionDataTask * dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-            responseParam = [self makeResponse:httpResponse data:data error:error];
+            responseParam = [MengineHttpNetwork makeResponse:httpResponse data:data error:error];
             dispatch_semaphore_signal(semaphore);
         }];
         

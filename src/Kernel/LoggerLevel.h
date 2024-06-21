@@ -37,7 +37,8 @@ namespace Mengine
         LFILTER_PROTECTED = 1 << 1,
         LFILTER_ANDROID = 1 << 2,
         LFILTER_HTTP = 1 << 3,
-        LFILTER_IMMEDIATE = 1 << 4
+        LFILTER_IMMEDIATE = 1 << 4,
+        LFILTER_EXCEPTION = 1 << 5
     };
     //////////////////////////////////////////////////////////////////////////
     enum ELoggerFlag : uint32_t

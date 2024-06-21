@@ -1,7 +1,6 @@
 #include "Logger.h"
 
 #include "Interface/LoggerServiceInterface.h"
-//#include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/OptionHelper.h"
 #include "Kernel/ThreadHelper.h"

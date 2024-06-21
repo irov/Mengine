@@ -246,6 +246,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
 #endif
         //////////////////////////////////////////////////////////////////////////
+        static void py_excepthook( void * _ud, PyTypeObject * _exctype, PyObject * _value, PyObject * _traceback )
+        {
+            PythonScriptService * scriptService = static_cast<PythonScriptService *>(_ud);
+
+            scriptService->handleException_( _exctype, _value, _traceback );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     PythonScriptService::PythonScriptService()
@@ -260,13 +267,17 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & PythonScriptService::requiredServices() const
+    {
+        static ServiceRequiredList required = {
+            SERVICE_ID( ScriptProviderServiceInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::_initializeService()
     {
-        if( SERVICE_IS_INITIALIZE( ScriptProviderServiceInterface ) == false )
-        {
-            return false;
-        }
-
         bool developmentMode = Helper::isDevelopmentMode();
 
         pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
@@ -275,6 +286,8 @@ namespace Mengine
         m_kernel = kernel;
 
         pybind::set_logger( (pybind::pybind_logger_t)&Detail::s_pybind_logger, nullptr );
+
+        kernel->set_sys_excepthook( &Detail::py_excepthook, this );
 
         m_moduleMengine = this->initModule( "Mengine" );
 
@@ -1193,6 +1206,46 @@ namespace Mengine
         }
 
         LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_MESSAGE_RELEASE, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, Mengine::LFLAG_SHORT )("traceback:\n%s", traceback);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonScriptService::handleException_( PyTypeObject * _exctype, PyObject * _value, PyObject * _traceback )
+    {
+        ArrayString< MENGINE_LOGGER_MAX_MESSAGE> traceback_str;
+
+        PyObject * traceback = m_kernel->get_exception_traceback( _traceback );
+
+        size_t traceback_size = m_kernel->list_size( traceback );
+
+        for( size_t index = 0; index != traceback_size; ++index )
+        {
+            if( index != 0 )
+            {
+                traceback_str.append( "\n" );
+            }
+
+            PyObject * item = m_kernel->list_getitem( traceback, (int)index );
+
+            PyObject * trace_file = m_kernel->tuple_getitem( item, 0 );
+            PyObject * trace_line = m_kernel->tuple_getitem( item, 1 );
+            PyObject * trace_function = m_kernel->tuple_getitem( item, 2 );
+
+            Char trace_str[MENGINE_MAX_PATH] = {'\0'};
+            MENGINE_SNPRINTF( trace_str, MENGINE_MAX_PATH, "File \"%s\", line %d, in %s"
+                , m_kernel->string_to_char( trace_file )
+                , pybind::extract<int32_t>( m_kernel, trace_line )
+                , m_kernel->string_to_char( trace_function )
+            );
+
+            traceback_str.append( trace_str );
+        }
+
+        m_kernel->decref( traceback );
+
+        LOGGER_CATEGORY_VERBOSE_LEVEL( Mengine::LM_ERROR, Mengine::LFILTER_EXCEPTION, Mengine::LCOLOR_RED, Mengine::LFLAG_SHORT )("[Python] exception [%s] %s\n%s"
+            , m_kernel->type_name( _exctype )
+            , m_kernel->object_str( _value ).c_str()
+            , traceback_str.c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_DEBUG)

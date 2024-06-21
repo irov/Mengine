@@ -27,6 +27,7 @@ public class MengineLog {
     public final static int LFILTER_ANDROID = 1 << 2;
     public final static int LFILTER_HTTP = 1 << 3;
     public final static int LFILTER_IMMEDIATE = 1 << 4;
+    public final static int LFILTER_EXCEPTION = 1 << 5;
 
     private static MengineApplication m_application;
     private static boolean m_initializeBaseServices = false;
@@ -65,6 +66,10 @@ public class MengineLog {
 
     public static void finalize(MengineActivity activity) {
         MengineLog.m_initializeBaseServices = false;
+    }
+
+    public static boolean isFilter(int filter, int flag) {
+        return (filter & flag) == flag;
     }
 
     public static void logLevel(int level, @Size(min = 1L,max = 23L) String tag, String msg) {

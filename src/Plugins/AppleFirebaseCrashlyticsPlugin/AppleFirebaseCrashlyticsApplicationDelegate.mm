@@ -39,9 +39,23 @@
     
     switch (message.level) {
         case Mengine::LM_ERROR: {
-            NSString * ns_message = Mengine::Helper::stringToNSString(message.data, message.size);
+            if ((message.filter & LFILTER_EXCEPTION) == LFILTER_EXCEPTION) {
+                NSString * ns_message = Mengine::Helper::stringToNSString(message.data, message.size);
             
-            [[FIRCrashlytics crashlytics] log:ns_message];
+                NSDictionary *userInfo = @{
+                    NSLocalizedDescriptionKey: ns_message
+                };
+            
+                NSError * error = [NSError errorWithDomain:@("com.mengine.firebase")
+                                                      code:0
+                                                  userInfo:userInfo];
+            
+                [[FIRCrashlytics crashlytics] recordError:error];
+            } else {
+                NSString * ns_message = Mengine::Helper::stringToNSString(message.data, message.size);
+            
+                [[FIRCrashlytics crashlytics] log:ns_message];
+            }
         }break;
         case Mengine::LM_FATAL: {
             NSString * ns_message = Mengine::Helper::stringToNSString(message.data, message.size);

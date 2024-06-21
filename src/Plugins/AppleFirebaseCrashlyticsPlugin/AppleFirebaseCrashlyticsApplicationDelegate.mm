@@ -39,7 +39,7 @@
     
     switch (message.level) {
         case Mengine::LM_ERROR: {
-            if ((message.filter & LFILTER_EXCEPTION) == LFILTER_EXCEPTION) {
+            if ((message.filter & Mengine::LFILTER_EXCEPTION) == Mengine::LFILTER_EXCEPTION) {
                 NSString * ns_message = Mengine::Helper::stringToNSString(message.data, message.size);
             
                 NSDictionary *userInfo = @{

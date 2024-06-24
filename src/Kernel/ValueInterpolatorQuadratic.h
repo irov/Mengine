@@ -4,7 +4,7 @@
 
 namespace Mengine
 {
-    template <typename T>
+    template<typename T>
     class ValueInterpolatorQuadratic
         : public ValueInterpolator<T>
     {

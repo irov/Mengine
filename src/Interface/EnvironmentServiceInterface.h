@@ -4,6 +4,46 @@
 
 #include "Config/Char.h"
 
+#ifndef MENGINE_ENVIRONMENT_FINGERPRINT_MAXNAME
+#define MENGINE_ENVIRONMENT_FINGERPRINT_MAXNAME (MENGINE_SHA1_HEX_COUNT + 1)
+#endif
+
+#ifndef MENGINE_ENVIRONMENT_USER_MAXNAME
+#define MENGINE_ENVIRONMENT_USER_MAXNAME 256
+#endif
+
+#ifndef MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME
+#define MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME 128
+#endif
+
+#ifndef MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME
+#define MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME 64
+#endif
+
+#ifndef MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME
+#define MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME 64
+#endif
+
+#ifndef MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME
+#define MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME 64
+#endif
+
+#ifndef MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME
+#define MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME 256
+#endif
+
+#ifndef MENGINE_ENVIRONMENT_SESSIONID_MAXNAME
+#define MENGINE_ENVIRONMENT_SESSIONID_MAXNAME 128
+#endif
+
+#ifndef MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME
+#define MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME 128
+#endif
+
+#ifndef MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME
+#define MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME 64
+#endif
+
 namespace Mengine
 {
     class EnvironmentServiceInterface
@@ -12,24 +52,23 @@ namespace Mengine
         SERVICE_DECLARE( "EnvironmentService" )
 
     public:
-        virtual size_t getDeviceName( Char * _deviceName, size_t _capacity ) const = 0;
-        virtual size_t getDeviceModel( Char * _deviceModel, size_t _capacity ) const = 0;
-        virtual size_t getDeviceLanguage( Char * _deviceLanguage, size_t _capacity ) const = 0;
-        virtual size_t getOSFamily( Char * _osVersion, size_t _capacity ) const = 0;
-        virtual size_t getOSVersion( Char * _osVersion, size_t _capacity ) const = 0;
-        virtual size_t getBundleId( Char * _bundleId, size_t _capacity ) const = 0;
+        virtual void getUserName( Char * const _userName ) const = 0;
+        virtual void getDeviceModel( Char * const _deviceModel ) const = 0;
+        virtual void getDeviceLanguage( Char * const _deviceLanguage ) const = 0;
+        virtual void getOSFamily( Char * const _osVersion ) const = 0;
+        virtual void getOSVersion( Char * const _osVersion ) const = 0;
+        virtual void getBundleId( Char * const _bundleId ) const = 0;
 
     public:
-        virtual size_t getSessionId( Char * _sessionId, size_t _capacity ) const = 0;
-        virtual size_t getInstallKey( Char * const _installKey, size_t _capacity ) const = 0;
+        virtual void getFingerprint( Char * const _fingerprint ) const = 0;
+
+    public:
+        virtual void getSessionId( Char * const _sessionId ) const = 0;
+        virtual void getInstallKey( Char * const _installKey ) const = 0;
         virtual int64_t getInstallTimestamp() const = 0;
-        virtual size_t getInstallVersion( Char * const _installVersion, size_t _capacity ) const = 0;
+        virtual void getInstallVersion( Char * const _installVersion ) const = 0;
         virtual int64_t getInstallRND() const = 0;
         virtual int64_t getSessionIndex() const = 0;
-        
-    public:
-        virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
-        virtual bool openMail( const Char * _email, const Char * _subject, const Char * _body ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

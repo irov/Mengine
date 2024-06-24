@@ -48,7 +48,7 @@ namespace Mengine
         WChar ENVPython3Path[MENGINE_MAX_PATH] = {L'\0'};
         if( ::GetEnvironmentVariable( L"MENGINE_PYTHON3_PATH", ENVPython3Path, MENGINE_MAX_PATH ) != 0 )
         {
-            if( ::PathFileExists( ENVPython3Path ) == FALSE )
+            if( ::PathFileExistsW( ENVPython3Path ) == FALSE )
             {
                 LOGGER_ERROR( "invalid python3 path not found: %ls"
                     , ENVPython3Path

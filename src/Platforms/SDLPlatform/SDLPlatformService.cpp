@@ -103,14 +103,11 @@ namespace Mengine
         , m_sleepMode( true )
         , m_desktop( false )
         , m_touchpad( false )
-        , m_installTimestamp( 0L )
-        , m_installRND( 0L )
-        , m_sessionIndex( 0L )
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         , m_glContext( nullptr )
 #endif
 #if defined( MENGINE_PLATFORM_MACOS )
-    , m_macOSWorkspace( nullptr )
+        , m_macOSWorkspace( nullptr )
 #endif
     {
     }
@@ -242,147 +239,6 @@ namespace Mengine
         size_t Project_ExtraPreferencesFolderNameLen = MENGINE_STRLEN( Project_ExtraPreferencesFolderName );
 
         return Project_ExtraPreferencesFolderNameLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatformService::getUserName( Char * const _userName ) const
-    {
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        WChar unicode_userName[UNLEN + 1] = {L'\0'};
-        DWORD unicode_userNameLen = UNLEN + 1;
-        if( ::GetUserName( unicode_userName, &unicode_userNameLen ) == FALSE )
-        {
-            LOGGER_ERROR( "invalid GetUserName %ls"
-                , Helper::Win32GetLastErrorMessageW()
-            );
-
-            MENGINE_STRCPY( _userName, "" );
-
-            return 0;
-        }
-
-        size_t userNameLen;
-        if( Helper::unicodeToUtf8Size( unicode_userName, unicode_userNameLen, _userName, MENGINE_PLATFORM_USER_MAXNAME, &userNameLen ) == false )
-        {
-            MENGINE_STRCPY( _userName, "" );
-
-            return 0;
-        }
-
-        return userNameLen;
-#elif defined(MENGINE_PLATFORM_IOS)
-        Char deviceName[51] = {L'\0'};
-        Helper::iOSGetDeviceName( deviceName );
-        
-        MENGINE_STRCPY( _userName, deviceName );
-
-        size_t userNameLen = MENGINE_STRLEN( _userName );
-
-        return userNameLen;
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        m_deviceName.copy( _userName );
-
-        size_t userNameLen = m_deviceName.size();
-
-        return userNameLen;
-#else
-        MENGINE_STRCPY( _userName, "" );
-        
-        return 0;
-#endif
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatformService::getDeviceLanguage( Char * const _deviceLanguage ) const
-    {
-        m_deviceLanguage.copy( _deviceLanguage );
-
-        size_t len = m_deviceLanguage.size();
-
-        return len;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatformService::getFingerprint( Char * const _fingerprint ) const
-    {
-        m_fingerprint.copy( _fingerprint );
-
-        return MENGINE_SHA1_HEX_COUNT;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatformService::getDeviceModel( Char * const _deviceModel ) const
-    {
-        m_deviceModel.copy( _deviceModel );
-
-        size_t deviceModelLen = m_deviceModel.size();
-
-        return deviceModelLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatformService::getOsFamily( Char * const _osFamily ) const
-    {
-        m_osFamily.copy( _osFamily );
-
-        size_t osFamilyLen = m_osFamily.size();
-
-        return osFamilyLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatformService::getOsVersion( Char * const _osVersion ) const
-    {
-        m_osVersion.copy( _osVersion );
-
-        size_t osVersionLen = m_osVersion.size();
-
-        return osVersionLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatformService::getBundleId( Char * const _osVersion ) const
-    {
-        m_bundleId.copy( _osVersion );
-
-        size_t bundleIdLen = m_bundleId.size();
-
-        return bundleIdLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatformService::getSessionId( Char * const _sessionId ) const
-    {
-        m_sessionId.copy( _sessionId );
-
-        size_t sessionIdLen = m_sessionId.size();
-
-        return sessionIdLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatformService::getInstallKey( Char * const _installKey ) const
-    {
-        m_installKey.copy( _installKey );
-
-        size_t installKeyLen = m_installKey.size();
-
-        return installKeyLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    int64_t SDLPlatformService::getInstallTimestamp() const
-    {
-        return m_installTimestamp;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatformService::getInstallVersion( Char * const _installVersion ) const
-    {
-        m_installVersion.copy( _installVersion );
-
-        size_t installVersionLen = m_installVersion.size();
-
-        return installVersionLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    int64_t SDLPlatformService::getInstallRND() const
-    {
-        return m_installRND;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    int64_t SDLPlatformService::getSessionIndex() const
-    {
-        return m_sessionIndex;
     }
     //////////////////////////////////////////////////////////////////////////
     float SDLPlatformService::getJoystickAxis( uint32_t _index ) const
@@ -818,46 +674,6 @@ namespace Mengine
             , deviceSeed
         );
 
-        SDL_EventState( SDL_JOYAXISMOTION, SDL_FALSE );
-
-        ENVIRONMENT_SERVICE()
-            ->getDeviceName( m_deviceName.data(), MENGINE_PLATFORM_DEVICE_NAME_MAXNAME );
-
-        ENVIRONMENT_SERVICE()
-            ->getDeviceModel( m_deviceModel.data(), MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME );
-
-        ENVIRONMENT_SERVICE()
-            ->getDeviceLanguage( m_deviceLanguage.data(), MENGINE_PLATFORM_DEVICE_LANGUAGE_MAXNAME );
-
-        ENVIRONMENT_SERVICE()
-            ->getOSFamily( m_osFamily.data(), MENGINE_PLATFORM_OS_FAMILY_MAXNAME );
-
-        ENVIRONMENT_SERVICE()
-            ->getOSVersion( m_osVersion.data(), MENGINE_PLATFORM_OS_VERSION_MAXNAME );
-
-        ENVIRONMENT_SERVICE()
-            ->getBundleId( m_bundleId.data(), MENGINE_PLATFORM_BUNDLEID_MAXNAME );
-
-        //m_sessionId.assign( m_fingerprint );
-        ENVIRONMENT_SERVICE()
-            ->getSessionId( m_sessionId.data(), MENGINE_PLATFORM_SESSIONID_MAXNAME );
-
-        //m_installKey.assign( m_fingerprint );
-        ENVIRONMENT_SERVICE()
-            ->getInstallKey( m_installKey.data(), MENGINE_PLATFORM_INSTALLKEY_MAXNAME );
-
-        m_installTimestamp = ENVIRONMENT_SERVICE()
-            ->getInstallTimestamp();
-
-        ENVIRONMENT_SERVICE()
-            ->getInstallVersion( m_installVersion.data(), MENGINE_PLATFORM_INSTALLVERSION_MAXNAME );
-
-        m_installRND = ENVIRONMENT_SERVICE()
-            ->getInstallRND();
-
-        m_sessionIndex = ENVIRONMENT_SERVICE()
-            ->getSessionIndex();
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -985,46 +801,6 @@ namespace Mengine
             LOGGER_INFO( "platform", "accelerometer not found" );
         }
 
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        WChar UserNameBuffer[UNLEN + 1] = {L'\0'};
-        DWORD UserNameLen = UNLEN + 1;
-        if( ::GetUserName( UserNameBuffer, &UserNameLen ) == FALSE )
-        {
-            LOGGER_ASSERTION( "invalid GetUserName %ls"
-                , Helper::Win32GetLastErrorMessageW()
-            );
-        }
-
-        WChar ComputerNameBuffer[MAX_COMPUTERNAME_LENGTH + 1] = {'\0'};
-        DWORD ComputerNameLen = MAX_COMPUTERNAME_LENGTH + 1;
-        if( ::GetComputerName( ComputerNameBuffer, &ComputerNameLen ) == FALSE )
-        {
-            LOGGER_ASSERTION( "invalid GetComputerName %ls"
-                , Helper::Win32GetLastErrorMessageW()
-            );
-        }
-
-        WChar fingerprintGarbage[UNLEN + MAX_COMPUTERNAME_LENGTH + 1] = {'\0'};
-        MENGINE_WCSCPY( fingerprintGarbage, UserNameBuffer );
-        MENGINE_WCSCAT( fingerprintGarbage, ComputerNameBuffer );
-
-        Helper::makeSHA1HEX( fingerprintGarbage, sizeof( fingerprintGarbage ), m_fingerprint.data() );
-        m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
-#elif defined(MENGINE_PLATFORM_IOS)
-        Char fingerprintGarbage[40 + 1] = {'\0'};
-        Helper::iOSGetDeviceId( fingerprintGarbage );
-
-        Helper::makeSHA1HEX( fingerprintGarbage, sizeof( fingerprintGarbage ), m_fingerprint.data() );
-        m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        Char androidId[128];
-        ANDROID_KERNEL_SERVICE()
-            ->getAndroidId( androidId, 128 );
-
-        Helper::makeSHA1String( androidId, m_fingerprint.data() );
-        m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
-#endif
-        
 #if defined(MENGINE_PLATFORM_MACOS)
         //cppcheck-suppress syntaxError
         m_macOSWorkspace = [SDLPlatformMacOSWorkspace alloc];
@@ -1234,7 +1010,8 @@ namespace Mengine
             , _url
         );
 
-        if( ENVIRONMENT_SERVICE()
+#if defined(MENGINE_PLATFORM_ANDROID)
+        if( ANDROID_KERNEL_SERVICE()
             ->openUrlInDefaultBrowser( _url ) == false )
         {
             LOGGER_ERROR( "error open url in default browser '%s'"
@@ -1245,6 +1022,13 @@ namespace Mengine
         }
 
         return true;
+#else
+        LOGGER_ERROR( "not supported open url in default browser '%s'"
+            , _url
+        );
+
+        return false;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body )
@@ -1259,17 +1043,29 @@ namespace Mengine
             , _body
         );
 
-        if( ENVIRONMENT_SERVICE()
+#if defined(MENGINE_PLATFORM_ANDROID)
+        if( ANDROID_KERNEL_SERVICE()
             ->openMail( _email, _subject, _body ) == false )
         {
-            LOGGER_ERROR( "error open mail '%s'"
+            LOGGER_ERROR( "error open mail '%s' subject '%s' body '%s'"
                 , _email
+                , _subject
+                , _body
             );
 
             return false;
         }
 
         return true;
+#else
+        LOGGER_ERROR( "not supported open mail '%s' subject '%s' body '%s'"
+            , _email
+            , _subject
+            , _body
+        );
+
+        return false;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::stopPlatform()

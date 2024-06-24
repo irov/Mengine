@@ -29,8 +29,9 @@ namespace Mengine
             Helper::AndroidEnvExceptionCheck(_jenv);
 
             const Char * obj_class_name_str = _jenv->GetStringUTFChars( obj_class_name, nullptr );
+            jsize obj_class_name_size = _jenv->GetStringLength( obj_class_name );
 
-            StaticString<1024> value(obj_class_name_str);
+            StaticString<1024> value( obj_class_name_str, obj_class_name_size );
 
             _jenv->ReleaseStringUTFChars( obj_class_name, obj_class_name_str );
             _jenv->DeleteLocalRef( obj_class_name );
@@ -487,13 +488,16 @@ namespace Mengine
             return value_string;
         }
         //////////////////////////////////////////////////////////////////////////
-        void AndroidCopyStringFromJString( JNIEnv * _jenv, jstring _value, Char * const _str, size_t _capacity )
+        size_t AndroidCopyStringFromJString( JNIEnv * _jenv, jstring _value, Char * const _str, size_t _capacity )
         {
             const Char * value_str = _jenv->GetStringUTFChars( _value, nullptr );
+            jsize value_size = _jenv->GetStringLength( _value );
 
             Helper::stringCopy( _str, value_str, _capacity );
 
             _jenv->ReleaseStringUTFChars( _value, value_str );
+
+            return value_size;
         }
         //////////////////////////////////////////////////////////////////////////
         void AndroidForeachJavaMap( JNIEnv * _jenv, jobject _jmap, const LambdaJavaMapForeach & _lambda )

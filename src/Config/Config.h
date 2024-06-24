@@ -324,6 +324,9 @@
 #   endif
 #endif
 
+#define MENGINE_SHA1_UINT8_COUNT 20
+#define MENGINE_SHA1_HEX_COUNT 40
+
 #ifndef MENGINE_PATH_DELIM
 #define MENGINE_PATH_DELIM '/'
 #endif

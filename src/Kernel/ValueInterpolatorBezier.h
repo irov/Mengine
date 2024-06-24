@@ -5,7 +5,7 @@
 
 namespace Mengine
 {
-    template <typename T, uint32_t N>
+    template<typename T, uint32_t N>
     class ValueInterpolatorBezier
         : public ValueInterpolator<T>
     {

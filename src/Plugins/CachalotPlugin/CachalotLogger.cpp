@@ -1,6 +1,7 @@
 #include "CachalotLogger.h"
 
 #include "Interface/ApplicationInterface.h"
+#include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/HttpServiceInterface.h"
 
@@ -90,49 +91,44 @@ namespace Mengine
             return;
         }
 
-        Char session_id[MENGINE_PLATFORM_SESSIONID_MAXNAME] = {'\0'};
-        size_t session_id_length = PLATFORM_SERVICE()
+        Char session_id[MENGINE_ENVIRONMENT_SESSIONID_MAXNAME] = {'\0'};
+        ENVIRONMENT_SERVICE()
             ->getSessionId( session_id );
 
-        if( session_id_length == 0 )
-        {
-            return;
-        }
-
-        Char install_key[MENGINE_PLATFORM_INSTALLKEY_MAXNAME] = {'\0'};
-        size_t install_key_length = PLATFORM_SERVICE()
+        Char install_key[MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME] = {'\0'};
+        ENVIRONMENT_SERVICE()
             ->getInstallKey( install_key );
 
-        int64_t install_timestamp = PLATFORM_SERVICE()
+        int64_t install_timestamp = ENVIRONMENT_SERVICE()
             ->getInstallTimestamp();
 
-        Char install_version[MENGINE_PLATFORM_INSTALLVERSION_MAXNAME] = {'\0'};
-        size_t install_version_length = PLATFORM_SERVICE()
+        Char install_version[MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME] = {'\0'};
+        ENVIRONMENT_SERVICE()
             ->getInstallVersion( install_version );
 
-        int64_t install_rnd = PLATFORM_SERVICE()
+        int64_t install_rnd = ENVIRONMENT_SERVICE()
             ->getInstallRND();
 
-        int64_t session_index = PLATFORM_SERVICE()
+        int64_t session_index = ENVIRONMENT_SERVICE()
             ->getSessionIndex();
 
         Timestamp live = PLATFORM_SERVICE()
             ->getPlatfomTime();
 
-        Char device_model[MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME] = {'\0'};
-        PLATFORM_SERVICE()
+        Char device_model[MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME] = {'\0'};
+        ENVIRONMENT_SERVICE()
             ->getDeviceModel( device_model );
 
-        Char os_family[MENGINE_PLATFORM_OS_FAMILY_MAXNAME] = {'\0'};
-        PLATFORM_SERVICE()
-            ->getOsFamily( os_family );
+        Char os_family[MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME] = {'\0'};
+        ENVIRONMENT_SERVICE()
+            ->getOSFamily( os_family );
 
-        Char os_version[MENGINE_PLATFORM_OS_VERSION_MAXNAME] = {'\0'};
-        PLATFORM_SERVICE()
-            ->getOsVersion( os_version );
+        Char os_version[MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME] = {'\0'};
+        ENVIRONMENT_SERVICE()
+            ->getOSVersion( os_version );
         
-        Char build_bundle[MENGINE_PLATFORM_BUNDLEID_MAXNAME] = {'\0'};
-        PLATFORM_SERVICE()
+        Char build_bundle[MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME] = {'\0'};
+        ENVIRONMENT_SERVICE()
             ->getBundleId( build_bundle );
 
         const Char * build_version = Helper::getBuildVersion();
@@ -159,7 +155,7 @@ namespace Mengine
                 return;
             }
 
-            js_object_add_field_stringn( j, jrecord, JS_CONST_STRING( "user.id" ), JS_MAKE_STRING( session_id, session_id_length ) );
+            js_object_add_field_string( j, jrecord, JS_CONST_STRING( "user.id" ), session_id );
 
             switch( message.level )
             {
@@ -225,9 +221,9 @@ namespace Mengine
                 return;
             }
 
-            js_object_add_field_stringn( j, jattributes, JS_CONST_STRING( "install.key" ), JS_MAKE_STRING( install_key, install_key_length ) );
+            js_object_add_field_string( j, jattributes, JS_CONST_STRING( "install.key" ), install_key );
             js_object_add_field_integer( j, jattributes, JS_CONST_STRING( "install.timestamp" ), install_timestamp );
-            js_object_add_field_stringn( j, jattributes, JS_CONST_STRING( "install.version" ), JS_MAKE_STRING( install_version, install_version_length ) );
+            js_object_add_field_string( j, jattributes, JS_CONST_STRING( "install.version" ), install_version );
             js_object_add_field_integer( j, jattributes, JS_CONST_STRING( "install.rnd" ), install_rnd );
             js_object_add_field_integer( j, jattributes, JS_CONST_STRING( "session.index" ), session_index );
         }

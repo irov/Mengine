@@ -43,6 +43,10 @@ namespace Mengine
         void onAnalyticsFlush() override;
 
     protected:
+        bool openUrlInDefaultBrowser( const Char * _url ) override;
+        bool openMail( const Char * _email, const Char * _subject, const Char * _body ) override;
+
+    protected:
         void notifyPlatformRun_();
         void notifyPlatformStop_();
         void notifyApplicationBeginUpdate_();

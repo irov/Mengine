@@ -1,9 +1,11 @@
 #include "AndroidCryptographySystem.h"
 
 #include "Environment/Android/AndroidEnv.h"
+#include "Environment/Android/AndroidHelper.h"
 #include "Environment/Android/AndroidApplicationHelper.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/StringLowercase.h"
 
 #include "Config/StdString.h"
 
@@ -51,8 +53,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidCryptographySystem::generateRandomHexadecimal( uint32_t _length, Char * const _hexadecimal ) const
+    bool AndroidCryptographySystem::generateRandomHexadecimal( uint32_t _length, Char * const _hexadecimal, bool _lowercase ) const
     {
+        MENGINE_UNUSED( _lowercase );
+
         if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {
             return false;
@@ -64,12 +68,14 @@ namespace Mengine
 
         jstring jhex = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getSecureRandomHexString", "(I)Ljava/lang/String;", _length );
 
-        const Char * hex = jenv->GetStringUTFChars( jhex, nullptr );
+        Helper::AndroidCopyStringFromJString( jenv, jhex, _hexadecimal, _length + 1 );
 
-        MENGINE_STRCPY( _hexadecimal, hex );
-
-        jenv->ReleaseStringUTFChars( jhex, hex );
         jenv->DeleteLocalRef( jhex );
+
+        if( _lowercase == false )
+        {
+            Helper::stringUppercase( _hexadecimal, _hexadecimal );
+        }
 
         return true;
     }

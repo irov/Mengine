@@ -1,5 +1,6 @@
 #include "Win32SentryService.h"
 
+#include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/LoggerServiceInterface.h"
@@ -345,8 +346,8 @@ namespace Mengine
         sentry_set_tag( "project", projectName );
 
 #if defined(MENGINE_DEBUG)
-        Char userName[MENGINE_PLATFORM_USER_MAXNAME] = {'\0'};
-        PLATFORM_SERVICE()
+        Char userName[MENGINE_ENVIRONMENT_USER_MAXNAME] = {'\0'};
+        ENVIRONMENT_SERVICE()
             ->getUserName( userName );
 
         LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [User: %s]"

@@ -641,8 +641,9 @@ namespace Mengine
         }
 
         const Char * jresult_str = jenv->GetStringUTFChars( jresult, nullptr );
+        jsize jresult_size = jenv->GetStringLength( jresult );
 
-        PyObject * py_value = m_kernel->string_from_char( jresult_str );
+        PyObject * py_value = m_kernel->string_from_char_size( jresult_str, jresult_size );
 
         jenv->ReleaseStringUTFChars( jresult, jresult_str );
 

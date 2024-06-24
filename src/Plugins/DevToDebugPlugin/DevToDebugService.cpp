@@ -1,6 +1,6 @@
 #include "DevToDebugService.h"
 
-#include "Interface/PlatformServiceInterface.h"
+#include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
@@ -829,14 +829,14 @@ namespace Mengine
     {
         jpp::object j = jpp::make_object();
 
-        Char fingerprint[MENGINE_PLATFORM_FINGERPRINT_MAXNAME] = {'\0'};
-        PLATFORM_SERVICE()
+        Char fingerprint[MENGINE_ENVIRONMENT_FINGERPRINT_MAXNAME] = {'\0'};
+        ENVIRONMENT_SERVICE()
             ->getFingerprint( fingerprint );
 
         j.set( "did", fingerprint );
 
-        Char userName[MENGINE_PLATFORM_USER_MAXNAME] = {'\0'};
-        PLATFORM_SERVICE()
+        Char userName[MENGINE_ENVIRONMENT_USER_MAXNAME] = {'\0'};
+        ENVIRONMENT_SERVICE()
             ->getUserName( userName );
 
         j.set( "name", userName );

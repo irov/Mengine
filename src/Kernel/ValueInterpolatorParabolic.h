@@ -5,7 +5,7 @@
 
 namespace Mengine
 {
-    template <typename T>
+    template<typename T>
     class ValueInterpolatorParabolic
         : public ValueInterpolator<T>
     {

@@ -6,7 +6,7 @@
 
 namespace Mengine
 {
-    template <typename T>
+    template<typename T>
     class ValueAccumulateLinear
         : public ValueAccumulator<T>
     {

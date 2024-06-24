@@ -103,9 +103,6 @@ namespace Mengine
         , m_hWnd( NULL )
         , m_performanceFrequency{0}
         , m_performanceSupport( false )
-        , m_installTimestamp( 0 )
-        , m_installRND( 0 )
-        , m_sessionIndex( 0 )
         , m_active( false )
         , m_hIcon( NULL )
         , m_close( false )
@@ -358,44 +355,6 @@ namespace Mengine
             , deviceSeed
         );
 
-        ENVIRONMENT_SERVICE()
-            ->getDeviceName( m_deviceName.data(), MENGINE_PLATFORM_DEVICE_NAME_MAXNAME );
-
-        ENVIRONMENT_SERVICE()
-            ->getDeviceModel( m_deviceModel.data(), MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME );
-
-        ENVIRONMENT_SERVICE()
-            ->getDeviceLanguage( m_deviceLanguage.data(), MENGINE_PLATFORM_DEVICE_LANGUAGE_MAXNAME );
-
-        ENVIRONMENT_SERVICE()
-            ->getOSFamily( m_osFamily.data(), MENGINE_PLATFORM_OS_FAMILY_MAXNAME );
-
-        ENVIRONMENT_SERVICE()
-            ->getOSVersion( m_osVersion.data(), MENGINE_PLATFORM_OS_VERSION_MAXNAME );
-
-        ENVIRONMENT_SERVICE()
-            ->getBundleId( m_bundleId.data(), MENGINE_PLATFORM_BUNDLEID_MAXNAME );
-
-        //m_sessionId.assign( m_fingerprint );
-        ENVIRONMENT_SERVICE()
-            ->getSessionId( m_sessionId.data(), MENGINE_PLATFORM_SESSIONID_MAXNAME );
-
-        //m_installKey.assign( m_fingerprint );
-        ENVIRONMENT_SERVICE()
-            ->getInstallKey( m_installKey.data(), MENGINE_PLATFORM_INSTALLKEY_MAXNAME );
-
-        m_installTimestamp = ENVIRONMENT_SERVICE()
-            ->getInstallTimestamp();
-
-        ENVIRONMENT_SERVICE()
-            ->getInstallVersion( m_installVersion.data(), MENGINE_PLATFORM_INSTALLVERSION_MAXNAME );
-
-        m_installRND = ENVIRONMENT_SERVICE()
-            ->getInstallRND();
-
-        m_sessionIndex = ENVIRONMENT_SERVICE()
-            ->getSessionIndex();
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -595,8 +554,6 @@ namespace Mengine
         {
             LOGGER_INFO( "platform", "application not setup Process DPI Aware" );
         }
-
-        this->generateFingerprint_();
 
         return true;
     }
@@ -3270,7 +3227,7 @@ namespace Mengine
             return false;
         }
 
-        ::PathAddBackslash( _path );
+        ::PathAddBackslashW( _path );
 
         Helper::pathCorrectBackslashW( _path );
 
@@ -3587,8 +3544,8 @@ namespace Mengine
 
             Helper::pathCorrectBackslashW( currentPath );
 
-            ::PathRemoveBackslash( currentPath );
-            ::PathAddBackslash( currentPath );
+            ::PathRemoveBackslashW( currentPath );
+            ::PathAddBackslashW( currentPath );
 
             MENGINE_WCSCAT( currentPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
 
@@ -3604,7 +3561,7 @@ namespace Mengine
                 MENGINE_WCSCAT( currentPath, botId_suffix );
             }
 
-            ::PathAddBackslash( currentPath );
+            ::PathAddBackslashW( currentPath );
 
             size_t currentPathLen;
             if( Helper::unicodeToUtf8( currentPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
@@ -3666,7 +3623,7 @@ namespace Mengine
         }
 
         WChar roamingPath[MENGINE_MAX_PATH] = {L'\0'};
-        ::PathCombine( roamingPath, currentPath, companyNameW );
+        ::PathCombineW( roamingPath, currentPath, companyNameW );
 
         const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
@@ -3687,9 +3644,9 @@ namespace Mengine
             return 0;
         }
 
-        ::PathCombine( roamingPath, roamingPath, projectNameW );
+        ::PathCombineW( roamingPath, roamingPath, projectNameW );
 
-        ::PathAddBackslash( roamingPath );
+        ::PathAddBackslashW( roamingPath );
 
         size_t currentPathLen;
         if( Helper::unicodeToUtf8( roamingPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
@@ -3713,119 +3670,6 @@ namespace Mengine
         size_t Project_ExtraPreferencesFolderNameLen = MENGINE_STRLEN( Project_ExtraPreferencesFolderName );
 
         return Project_ExtraPreferencesFolderNameLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t Win32PlatformService::getUserName( Char * const _userName ) const
-    {
-        WChar unicode_userName[UNLEN + 1] = {L'\0'};
-        DWORD unicode_userNameLen = UNLEN + 1;
-        if( ::GetUserName( unicode_userName, &unicode_userNameLen ) == FALSE )
-        {
-            LOGGER_ERROR( "GetUserName invalid %ls"
-                , Helper::Win32GetLastErrorMessageW()
-            );
-
-            return 0;
-        }
-
-        size_t userNameLen;
-        if( Helper::unicodeToUtf8Size( unicode_userName, unicode_userNameLen, _userName, MENGINE_PLATFORM_USER_MAXNAME, &userNameLen ) == false )
-        {
-            return 0;
-        }
-
-        return userNameLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t Win32PlatformService::getDeviceLanguage( Char * const _deviceLanguage ) const
-    {
-        WCHAR unicode_localeName[LOCALE_NAME_MAX_LENGTH];
-        ::GetSystemDefaultLocaleName( unicode_localeName, LOCALE_NAME_MAX_LENGTH );
-
-        Helper::unicodeToUtf8( unicode_localeName, _deviceLanguage, LOCALE_NAME_MAX_LENGTH, nullptr );
-
-        size_t deviceLanguageLen = MENGINE_STRLEN( _deviceLanguage );
-
-        return deviceLanguageLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t Win32PlatformService::getFingerprint( Char * const _fingerprint ) const
-    {
-        m_fingerprint.copy( _fingerprint );
-
-        return MENGINE_SHA1_HEX_COUNT;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t Win32PlatformService::getDeviceModel( Char * const _deviceModel ) const
-    {
-        m_deviceModel.copy( _deviceModel );
-
-        size_t deviceModelLen = m_deviceModel.size();
-
-        return deviceModelLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t Win32PlatformService::getOsFamily( Char * const _osFamily ) const
-    {
-        m_osFamily.copy( _osFamily );
-
-        size_t osFamilyLen = m_osFamily.size();
-
-        return osFamilyLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t Win32PlatformService::getOsVersion( Char * const _osVersion ) const
-    {
-        m_osVersion.copy( _osVersion );
-
-        size_t osVersionLen = m_osVersion.size();
-
-        return osVersionLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t Win32PlatformService::getBundleId( Char * const _osVersion ) const
-    {
-        MENGINE_UNUSED( _osVersion );
-
-        //ToDo
-
-        return 0;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t Win32PlatformService::getSessionId( Char * const _sessionId ) const
-    {
-        m_fingerprint.copy( _sessionId );
-
-        return MENGINE_SHA1_HEX_COUNT;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t Win32PlatformService::getInstallKey( Char * const _installKey ) const
-    {
-        m_fingerprint.copy( _installKey );
-
-        return MENGINE_SHA1_HEX_COUNT;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    int64_t Win32PlatformService::getInstallTimestamp() const
-    {
-        return 0LL;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t Win32PlatformService::getInstallVersion( Char * const _installVersion ) const
-    {
-        MENGINE_UNUSED( _installVersion );
-
-        return 0;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    int64_t Win32PlatformService::getInstallRND() const
-    {
-        return 0LL;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    int64_t Win32PlatformService::getSessionIndex() const
-    {
-        return 0LL;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::closeWindow()
@@ -4229,71 +4073,6 @@ namespace Mengine
         return time;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::generateFingerprint_()
-    {
-        WChar fingerprintGarbage[UNLEN + MAX_COMPUTERNAME_LENGTH + 1] = {L'\0'};
-
-        MENGINE_WCSCPY( fingerprintGarbage, L"FINGERPRINT" );
-
-        WChar UserNameBuffer[UNLEN + 1] = {L'\0'};
-        DWORD UserNameLen = UNLEN + 1;
-        if( ::GetUserName( UserNameBuffer, &UserNameLen ) == TRUE )
-        {
-            LOGGER_INFO_PROTECTED( "platform", "user name: %ls"
-                , UserNameBuffer
-            );
-
-            MENGINE_WCSCAT( fingerprintGarbage, L"_" );
-            MENGINE_WCSCAT( fingerprintGarbage, UserNameBuffer );
-        }
-
-        WChar ComputerNameBuffer[MAX_COMPUTERNAME_LENGTH + 1] = {'\0'};
-        DWORD ComputerNameLen = MAX_COMPUTERNAME_LENGTH + 1;
-        if( ::GetComputerName( ComputerNameBuffer, &ComputerNameLen ) == TRUE )
-        {
-            LOGGER_INFO_PROTECTED( "platform", "computer name: %ls"
-                , ComputerNameBuffer
-            );
-
-            MENGINE_WCSCAT( fingerprintGarbage, L"_" );
-            MENGINE_WCSCAT( fingerprintGarbage, ComputerNameBuffer );
-        }
-
-        DWORD VolumeSerialNumber = 0;
-        DWORD VolumeMaxComponentLen = 0;
-        DWORD VolumeFileSystemFlags = 0;
-        WCHAR VolumeFileSystemNameBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
-        WCHAR VolumeNameBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
-
-        if( ::GetVolumeInformation( NULL
-            , VolumeNameBuffer
-            , sizeof( VolumeNameBuffer ) / sizeof( WCHAR )
-            , &VolumeSerialNumber
-            , &VolumeMaxComponentLen
-            , &VolumeFileSystemFlags
-            , VolumeFileSystemNameBuffer
-            , sizeof( VolumeFileSystemNameBuffer ) / sizeof( WCHAR ) ) == TRUE )
-        {
-            LOGGER_INFO_PROTECTED( "platform", "system volume serial number: %u"
-                , VolumeSerialNumber
-            );
-
-            WChar VolumeSerialNumberBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
-            MENGINE_WNSPRINTF( VolumeSerialNumberBuffer, MENGINE_MAX_PATH, L"%u", VolumeSerialNumber );
-
-            MENGINE_WCSCAT( fingerprintGarbage, L"_" );
-            MENGINE_WCSCAT( fingerprintGarbage, VolumeSerialNumberBuffer );
-        }
-
-        Helper::makeSHA1HEX( fingerprintGarbage, sizeof( fingerprintGarbage ), m_fingerprint.data() );
-
-        m_fingerprint.change( MENGINE_SHA1_HEX_COUNT, '\0' );
-
-        LOGGER_MESSAGE( "fingerprint: %s"
-            , m_fingerprint.c_str()
-        );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::initializeFileService()
     {
         Char currentPath[MENGINE_MAX_PATH] = {'\0'};
@@ -4364,8 +4143,8 @@ namespace Mengine
         }
 
         Helper::pathCorrectBackslashW( winDir );
-        ::PathRemoveBackslash( winDir );
-        ::PathAddBackslash( winDir );
+        ::PathRemoveBackslashW( winDir );
+        ::PathAddBackslashW( winDir );
 
         Utf8 utf8_winDir[MENGINE_MAX_PATH] = {'\0'};
         Helper::unicodeToUtf8( winDir, utf8_winDir, MENGINE_MAX_PATH );

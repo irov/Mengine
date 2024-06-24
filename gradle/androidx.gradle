@@ -1,60 +1,21 @@
 import com.Mengine.Utils
 
-def ANDROID_APP_IMPLEMENTATION_ANDROIDX_CORE = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_CORE", null)
-def ANDROID_APP_IMPLEMENTATION_ANDROIDX_ANNOTATION = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_ANNOTATION", null)
-def ANDROID_APP_IMPLEMENTATION_ANDROIDX_MULTIDEX = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_MULTIDEX", null)
-def ANDROID_APP_IMPLEMENTATION_ANDROIDX_CONSTRAINTLAYOUT = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_CONSTRAINTLAYOUT", null)
-def ANDROID_APP_IMPLEMENTATION_ANDROIDX_PREFERENCE = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_PREFERENCE", null)
-def ANDROID_APP_IMPLEMENTATION_ANDROIDX_APPCOMPAT = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_APPCOMPAT", null)
-def ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW", null)
-def ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW_EXTENSIONS = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW_EXTENSIONS", null)
+def ANDROID_APP_IMPLEMENTATION_ANDROIDX_CORE = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_CORE", "1.13.1")
+def ANDROID_APP_IMPLEMENTATION_ANDROIDX_ANNOTATION = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_ANNOTATION", "1.8.0")
+def ANDROID_APP_IMPLEMENTATION_ANDROIDX_MULTIDEX = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_MULTIDEX", "2.0.1")
+def ANDROID_APP_IMPLEMENTATION_ANDROIDX_CONSTRAINTLAYOUT = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_CONSTRAINTLAYOUT", "2.1.4")
+def ANDROID_APP_IMPLEMENTATION_ANDROIDX_PREFERENCE = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_PREFERENCE", "1.2.1")
+def ANDROID_APP_IMPLEMENTATION_ANDROIDX_APPCOMPAT = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_APPCOMPAT", "1.7.0")
+def ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW", "1.3.0")
+def ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW_EXTENSIONS = Utils.getStringProperty(project, "ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW_EXTENSIONS", "1.0.0")
 
 dependencies {
-    if (ANDROID_APP_IMPLEMENTATION_ANDROIDX_CORE != null) {
-        implementation "androidx.core:core:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_CORE"
-    } else {
-        implementation "androidx.core:core:1.10.1"
-    }
-
-    if (ANDROID_APP_IMPLEMENTATION_ANDROIDX_ANNOTATION != null) {
-        implementation "androidx.annotation:annotation:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_ANNOTATION"
-    } else {
-        implementation "androidx.annotation:annotation:1.6.0"
-    }
-
-    if (ANDROID_APP_IMPLEMENTATION_ANDROIDX_MULTIDEX != null) {
-        implementation "androidx.multidex:multidex:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_MULTIDEX"
-    } else {
-        implementation "androidx.multidex:multidex:2.0.1"
-    }
-
-    if (ANDROID_APP_IMPLEMENTATION_ANDROIDX_CONSTRAINTLAYOUT != null) {
-        implementation "androidx.constraintlayout:constraintlayout:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_CONSTRAINTLAYOUT"
-    } else {
-        implementation "androidx.constraintlayout:constraintlayout:2.1.4"
-    }
-
-    if (ANDROID_APP_IMPLEMENTATION_ANDROIDX_PREFERENCE != null) {
-        implementation "androidx.preference:preference:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_PREFERENCE"
-    } else {
-        implementation "androidx.preference:preference:1.2.1"
-    }
-
-    if (ANDROID_APP_IMPLEMENTATION_ANDROIDX_APPCOMPAT != null) {
-        implementation "androidx.appcompat:appcompat:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_APPCOMPAT"
-    } else {
-        implementation "androidx.appcompat:appcompat:1.6.1"
-    }
-
-    if (ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW != null) {
-        implementation "androidx.window:window:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW"
-    } else {
-        implementation "androidx.window:window:1.1.0"
-    }
-
-    if (ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW_EXTENSIONS != null) {
-        implementation "androidx.window:window-extensions:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW_EXTENSIONS"
-    } else {
-        implementation "androidx.window:window-extensions:1.0.0-alpha01"
-    }
+    implementation "androidx.core:core:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_CORE"
+    implementation "androidx.annotation:annotation:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_ANNOTATION"
+    implementation "androidx.multidex:multidex:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_MULTIDEX"
+    implementation "androidx.constraintlayout:constraintlayout:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_CONSTRAINTLAYOUT"
+    implementation "androidx.preference:preference:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_PREFERENCE"
+    implementation "androidx.appcompat:appcompat:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_APPCOMPAT"
+    implementation "androidx.window:window:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW"
+    implementation "androidx.window.extensions.core:core:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_WINDOW_EXTENSIONS"
 }

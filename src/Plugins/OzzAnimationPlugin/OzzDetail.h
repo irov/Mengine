@@ -101,14 +101,14 @@ namespace ozz
         OZZ_IO_TYPE_TAG( "ozz-sample-Mesh", Mengine::Detail::Mesh );
         OZZ_IO_TYPE_VERSION( 1, Mengine::Detail::Mesh );
         //////////////////////////////////////////////////////////////////////////
-        template <>
+        template<>
         struct Extern<Mengine::Detail::Part>
         {
             static void Save( OArchive & _archive, const Mengine::Detail::Part * _parts, size_t _count );
             static void Load( IArchive & _archive, Mengine::Detail::Part * _parts, size_t _count, uint32_t _version );
         };
         //////////////////////////////////////////////////////////////////////////
-        template <>
+        template<>
         struct Extern<Mengine::Detail::Mesh>
         {
             static void Save( OArchive & _archive, const Mengine::Detail::Mesh * _meshes, size_t _count );

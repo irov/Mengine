@@ -8,7 +8,7 @@
 
 namespace Mengine
 {
-    template <typename T>
+    template<typename T>
     class ValueInterpolator
     {
     public:

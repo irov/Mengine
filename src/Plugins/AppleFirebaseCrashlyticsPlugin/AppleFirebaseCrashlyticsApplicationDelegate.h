@@ -3,5 +3,3 @@
 @interface AppleFirebaseCrashlyticsApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface>
 
 @end
-
-

@@ -340,15 +340,11 @@ namespace Mengine
 
         jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getAndroidId", "()Ljava/lang/String;" );
 
-        const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
-        jsize jStringLen = jenv->GetStringLength( jReturnValue );
+        size_t size = Helper::AndroidCopyStringFromJString( jenv, jReturnValue, _androidId, _capacity );
 
-        MENGINE_STRNCPY( _androidId, jStringValue, _capacity );
-
-        jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
         jenv->DeleteLocalRef( jReturnValue );
 
-        return jStringLen;
+        return size;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr )
@@ -509,6 +505,50 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineAnalyticsFlush", "()V" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidKernelService::openUrlInDefaultBrowser( const Char * _url )
+    {
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        {
+            return false;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jstring jurl = jenv->NewStringUTF( _url );
+
+        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenURL", "(Ljava/lang/String;)Z", jurl );
+
+        jenv->DeleteLocalRef( jurl );
+
+        return jresult;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidKernelService::openMail( const Char * _email, const Char * _subject, const Char * _body )
+    {
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        {
+            return false;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jstring jemail = jenv->NewStringUTF( _email );
+        jstring jsubject = jenv->NewStringUTF( _subject );
+        jstring jbody = jenv->NewStringUTF( _body );
+
+        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z", jemail, jsubject, jbody );
+
+        jenv->DeleteLocalRef( jemail );
+        jenv->DeleteLocalRef( jsubject );
+        jenv->DeleteLocalRef( jbody );
+
+        return jresult;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::notifyPlatformRun_()

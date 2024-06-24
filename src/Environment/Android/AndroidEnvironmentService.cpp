@@ -1,31 +1,12 @@
 #include "AndroidEnvironmentService.h"
 
-#include "Interface/PlatformServiceInterface.h"
-#include "Interface/ApplicationInterface.h"
-#include "Interface/AccountServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
-#include "Interface/OptionsServiceInterface.h"
-#include "Interface/LoggerServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
-#include "Interface/FileServiceInterface.h"
-
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
 #include "Environment/Android/AndroidActivityHelper.h"
 #include "Environment/Android/AndroidApplicationHelper.h"
 
-#include "AndroidSemaphoreListenerInterface.h"
-#include "AndroidProxyLogger.h"
-
-#include "Kernel/AssertionObservable.h"
-#include "Kernel/FactorableUnique.h"
-#include "Kernel/BuildMode.h"
-#include "Kernel/Logger.h"
-#include "Kernel/Error.h"
-#include "Kernel/NotificationHelper.h"
-#include "Kernel/ProxyLogger.h"
-#include "Kernel/DocumentHelper.h"
-#include "Kernel/LoggerHelper.h"
+#include "Kernel/SHA1.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"
@@ -36,7 +17,32 @@ SERVICE_FACTORY( EnvironmentService, Mengine::AndroidEnvironmentService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        template<size_t N>
+        static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, StaticString<N> * const _info )
+        {
+            jstring jinfo = (jstring)Helper::AndroidCallObjectApplicationMethod( _jenv, _method, "()Ljava/lang/String;" );
+
+            Helper::AndroidCopyStringFromJString( _jenv, jinfo, _info );
+
+            _jenv->DeleteLocalRef( jinfo );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, int64_t * const _info )
+        {
+            jlong jinfo = Helper::AndroidCallLongApplicationMethod( _jenv, _method, "()J" );
+
+            *_info = (int64_t)jinfo;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     AndroidEnvironmentService::AndroidEnvironmentService()
+        : m_installTimestamp( 0 )
+        , m_installRND( 0 )
+        , m_sessionIndex( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -46,7 +52,47 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidEnvironmentService::_initializeService()
     {
-        //Empty
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
+        {
+            return false;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        Detail::getAndroidInfo( jenv, "getDeviceModel", &m_deviceModel );
+        Detail::getAndroidInfo( jenv, "getDeviceLanguage", &m_deviceLanguage );
+        Detail::getAndroidInfo( jenv, "getOSVersion", &m_osVersion );
+        Detail::getAndroidInfo( jenv, "getPackageName", &m_bundleId );
+        Detail::getAndroidInfo( jenv, "getSessionId", &m_sessionId );
+        Detail::getAndroidInfo( jenv, "getInstallKey", &m_installKey );
+        Detail::getAndroidInfo( jenv, "getInstallVersion", &m_installVersion );
+
+        Detail::getAndroidInfo( jenv, "getInstallTimestamp", &m_installTimestamp );
+        Detail::getAndroidInfo( jenv, "getInstallRND", &m_installRND );
+        Detail::getAndroidInfo( jenv, "getSessionIndex", &m_sessionIndex );
+
+        m_osVersion.assign( "Android" );
+
+        StaticString<256> androidId;
+        Detail::getAndroidInfo( jenv, "getAndroidId", &androidId );
+
+        StaticString<MENGINE_ENVIRONMENT_USER_MAXNAME + MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME + 256 + 64> fingerprintGarbage;
+
+        fingerprintGarbage.assign( "FINGERPRINT" );
+        fingerprintGarbage.append( "_" );
+        fingerprintGarbage.append( m_userName );
+        fingerprintGarbage.append( "_" );
+        fingerprintGarbage.append( m_deviceModel );
+        fingerprintGarbage.append( "_" );
+        fingerprintGarbage.append( androidId );
+
+        Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), m_fingerprint.data(), false );
+
+        m_userName.assign( m_deviceModel );
+        m_userName.append( ' ' );
+        m_userName.append( m_fingerprint.data(), 6 );
 
         return true;
     }
@@ -56,295 +102,69 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidEnvironmentService::openUrlInDefaultBrowser( const Char * _url )
+    void AndroidEnvironmentService::getUserName( Char * const _deviceName ) const
     {
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
-        {
-            return false;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jstring jurl = jenv->NewStringUTF( _url );
-
-        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenURL", "(Ljava/lang/String;)Z", jurl );
-
-        jenv->DeleteLocalRef( jurl );
-
-        return jresult;
+        m_userName.copy( _deviceName );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidEnvironmentService::openMail( const Char * _email, const Char * _subject, const Char * _body )
+    void AndroidEnvironmentService::getDeviceModel( Char * const _deviceModel ) const
     {
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
-        {
-            return false;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jstring jemail = jenv->NewStringUTF( _email );
-        jstring jsubject = jenv->NewStringUTF( _subject );
-        jstring jbody = jenv->NewStringUTF( _body );
-
-        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z", jemail, jsubject, jbody );
-
-        jenv->DeleteLocalRef( jemail );
-        jenv->DeleteLocalRef( jsubject );
-        jenv->DeleteLocalRef( jbody );
-
-        return jresult;
+        m_deviceModel.copy( _deviceModel );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t AndroidEnvironmentService::getDeviceName( Char * const _deviceName, size_t _capacity ) const
+    void AndroidEnvironmentService::getDeviceLanguage( Char * const _deviceLanguage ) const
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return 0;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getDeviceName", "()Ljava/lang/String;" );
-
-        const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
-        jsize jStringLen = jenv->GetStringLength( jReturnValue );
-
-        MENGINE_STRNCPY( _deviceName, jStringValue, _capacity );
-
-        jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
-        jenv->DeleteLocalRef( jReturnValue );
-
-        return jStringLen;
+        m_deviceLanguage.copy( _deviceLanguage );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t AndroidEnvironmentService::getDeviceModel( Char * const _deviceModel, size_t _capacity ) const
+    void AndroidEnvironmentService::getOSFamily( Char * _osFamily ) const
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return 0;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getDeviceModel", "()Ljava/lang/String;" );
-
-        const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
-        jsize jStringLen = jenv->GetStringLength( jReturnValue );
-
-        MENGINE_STRNCPY( _deviceModel, jStringValue, _capacity );
-
-        jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
-        jenv->DeleteLocalRef( jReturnValue );
-
-        return jStringLen;
+        m_osFamily.copy( _osFamily );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t AndroidEnvironmentService::getDeviceLanguage( Char * const _deviceLanguage, size_t _capacity ) const
+    void AndroidEnvironmentService::getOSVersion( Char * const _osVersion ) const
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return 0;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getDeviceLanguage", "()Ljava/lang/String;" );
-
-        const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
-        jsize jStringLen = jenv->GetStringLength( jReturnValue );
-
-        MENGINE_STRNCPY( _deviceLanguage, jStringValue, _capacity );
-
-        jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
-        jenv->DeleteLocalRef( jReturnValue );
-
-        return jStringLen;
+        m_osVersion.copy( _osVersion );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t AndroidEnvironmentService::getOSFamily( Char * _osVersion, size_t _capacity ) const
+    void AndroidEnvironmentService::getBundleId( Char * const _bundleId ) const
     {
-        size_t len = MENGINE_STRNCPY_STATIC( _osVersion, "Android", _capacity );
-
-        return len;
+        m_bundleId.copy( _bundleId );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t AndroidEnvironmentService::getOSVersion( Char * const _osVersion, size_t _capacity ) const
+    void AndroidEnvironmentService::getFingerprint( Char * const _fingerprint ) const
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return 0;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getOSVersion", "()Ljava/lang/String;" );
-
-        const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
-        jsize jStringLen = jenv->GetStringLength( jReturnValue );
-
-        MENGINE_STRNCPY( _osVersion, jStringValue, _capacity );
-
-        jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
-        jenv->DeleteLocalRef( jReturnValue );
-
-        return jStringLen;
+        m_fingerprint.copy( _fingerprint );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t AndroidEnvironmentService::getBundleId( Char * const _packageName, size_t _capacity ) const
+    void AndroidEnvironmentService::getSessionId( Char * const _sessionId ) const
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return 0;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getPackageName", "()Ljava/lang/String;" );
-
-        const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
-        jsize jStringLen = jenv->GetStringLength( jReturnValue );
-
-        MENGINE_STRNCPY( _packageName, jStringValue, _capacity );
-
-        jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
-        jenv->DeleteLocalRef( jReturnValue );
-
-        return jStringLen;
+        m_sessionId.copy( _sessionId );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t AndroidEnvironmentService::getSessionId( Char * const _sessionId, size_t _capacity ) const
+    void AndroidEnvironmentService::getInstallKey( Char * const _installKey ) const
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return 0;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getSessionId", "()Ljava/lang/String;" );
-
-        const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
-        jsize jStringLen = jenv->GetStringLength( jReturnValue );
-
-        MENGINE_STRNCPY( _sessionId, jStringValue, _capacity );
-
-        jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
-        jenv->DeleteLocalRef( jReturnValue );
-
-        return jStringLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t AndroidEnvironmentService::getInstallKey( Char * const _installKey, size_t _capacity ) const
-    {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return 0;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getInstallKey", "()Ljava/lang/String;" );
-
-        const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
-        jsize jStringLen = jenv->GetStringLength( jReturnValue );
-
-        MENGINE_STRNCPY( _installKey, jStringValue, _capacity );
-
-        jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
-        jenv->DeleteLocalRef( jReturnValue );
-
-        return jStringLen;
+        m_installKey.copy( _installKey );
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t AndroidEnvironmentService::getInstallTimestamp() const
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return 0;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        int64_t jReturnValue = Helper::AndroidCallLongApplicationMethod( jenv, "getInstallTimestamp", "()J" );
-
-        return jReturnValue;
+        return m_installTimestamp;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t AndroidEnvironmentService::getInstallVersion( Char * const _installVersion, size_t _capacity ) const
+    void AndroidEnvironmentService::getInstallVersion( Char * const _installVersion ) const
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return 0;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getInstallVersion", "()Ljava/lang/String;" );
-
-        const Char * jStringValue = jenv->GetStringUTFChars( jReturnValue, nullptr );
-        jsize jStringLen = jenv->GetStringLength( jReturnValue );
-
-        MENGINE_STRNCPY( _installVersion, jStringValue, _capacity );
-
-        jenv->ReleaseStringUTFChars( jReturnValue, jStringValue );
-        jenv->DeleteLocalRef( jReturnValue );
-
-        return jStringLen;
+        m_installVersion.copy( _installVersion );
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t AndroidEnvironmentService::getInstallRND() const
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return 0;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        int64_t jReturnValue = Helper::AndroidCallLongApplicationMethod( jenv, "getInstallRND", "()J" );
-
-        return jReturnValue;
+        return m_installRND;
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t AndroidEnvironmentService::getSessionIndex() const
     {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return 0;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        int64_t jReturnValue = Helper::AndroidCallLongApplicationMethod( jenv, "getSessionIndex", "()J" );
-
-        return jReturnValue;
+        return m_sessionIndex;
     }
     //////////////////////////////////////////////////////////////////////////
 }

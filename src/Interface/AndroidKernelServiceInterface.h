@@ -24,6 +24,10 @@ namespace Mengine
         virtual void addAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) = 0;
         virtual void removeAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) = 0;
         virtual void invokeAndroidEventations() = 0;
+
+    public:
+        virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
+        virtual bool openMail( const Char * _email, const Char * _subject, const Char * _body ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

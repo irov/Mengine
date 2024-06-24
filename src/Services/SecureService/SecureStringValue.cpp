@@ -172,7 +172,7 @@ namespace Mengine
 
         _hexadecimal->resize( blob.size() * 2 );
 
-        Helper::encodeHexadecimal( blob_raving.data(), blob_raving.size(), _hexadecimal->data(), _hexadecimal->size(), nullptr );
+        Helper::encodeHexadecimal( blob_raving.data(), blob_raving.size(), _hexadecimal->data(), _hexadecimal->size(), true, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SecureStringValue::loadHexadecimal( const String & _hexadecimal )

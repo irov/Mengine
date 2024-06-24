@@ -33,6 +33,11 @@ namespace Mengine
         jobject AndroidMakeJObjectString( JNIEnv * _jenv, const Char * _value );
         jobject AndroidMakeJObjectString( JNIEnv * _jenv, const String & _value );
         jobject AndroidMakeJObjectString( JNIEnv * _jenv, const ConstString & _value );
+        template<size_t N>
+        jobject AndroidMakeJObjectString( JNIEnv * _jenv, const StaticString<N> & _value )
+        {
+            return Helper::AndroidMakeJObjectString( _jenv, _value.c_str() );
+        }
         jobject AndroidMakeJObjectArrayList( JNIEnv * _jenv, int32_t _count );
         jobject AndroidMakeJObjectHashMap( JNIEnv * _jenv, int32_t _count );
         //////////////////////////////////////////////////////////////////////////
@@ -53,7 +58,18 @@ namespace Mengine
         ConstString AndroidMakeConstStringFromJString( JNIEnv * _jenv, jstring _value );
         FilePath AndroidMakeFilePathFromJString( JNIEnv * _jenv, jstring _value );
         String AndroidMakeStringFromJString( JNIEnv * _jenv, jstring _value );
-        void AndroidCopyStringFromJString( JNIEnv * _jenv, jstring _value, Char * const _str, size_t _capacity );
+        size_t AndroidCopyStringFromJString( JNIEnv * _jenv, jstring _value, Char * const _str, size_t _capacity );
+        ///////////////////////////////////////////////////////////////////////
+        template<size_t N>
+        size_t AndroidCopyStringFromJString( JNIEnv * _jenv, jstring _value, StaticString<N> * const _str )
+        {
+            Char * data = _str->data();
+            size_t capacity = _str->capacity();
+
+            size_t size = Helper::AndroidCopyStringFromJString( _jenv, _value, data, capacity );
+
+            return size;
+        }
         //////////////////////////////////////////////////////////////////////////
         typedef Lambda<void( jobject key, jobject value)> LambdaJavaMapForeach;
         void AndroidForeachJavaMap( JNIEnv * _jenv, jobject _jmap, const LambdaJavaMapForeach & _lambda );

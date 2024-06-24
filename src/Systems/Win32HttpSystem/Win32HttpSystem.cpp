@@ -1,6 +1,6 @@
 #include "Win32HttpSystem.h"
 
-#include "Interface/PlatformServiceInterface.h"
+#include "Interface/EnvironmentServiceInterface.h"
 
 #include "Win32HttpRequestGetMessage.h"
 #include "Win32HttpRequestPostMessage.h"
@@ -38,15 +38,15 @@ namespace Mengine
         agent.append( MENGINE_VERSION_STRING );
         agent.append( " (" );
 
-        Char osFamily[MENGINE_PLATFORM_OS_FAMILY_MAXNAME] = {'\0'};
-        PLATFORM_SERVICE()
-            ->getOsFamily( osFamily );
+        Char osFamily[MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME] = {'\0'};
+        ENVIRONMENT_SERVICE()
+            ->getOSFamily( osFamily );
 
         agent.append( osFamily );
 
-        Char osVersion[MENGINE_PLATFORM_OS_VERSION_MAXNAME] = {'\0'};
-        PLATFORM_SERVICE()
-            ->getOsVersion( osVersion );
+        Char osVersion[MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME] = {'\0'};
+        ENVIRONMENT_SERVICE()
+            ->getOSVersion( osVersion );
 
         agent.append( " " );
         agent.append( osVersion );

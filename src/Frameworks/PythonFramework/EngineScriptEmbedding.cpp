@@ -1,6 +1,7 @@
 #include "EngineScriptEmbedding.h"
 
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
@@ -1702,8 +1703,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getDeviceLanguage( pybind::kernel_interface * _kernel )
             {
-                Char deviceLanguage[85] = {'\0'};
-                PLATFORM_SERVICE()
+                Char deviceLanguage[MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME] = {'\0'};
+                ENVIRONMENT_SERVICE()
                     ->getDeviceLanguage( deviceLanguage );
 
                 return _kernel->string_from_char( deviceLanguage );

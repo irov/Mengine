@@ -171,13 +171,13 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     jclass Mengine_JNI_FindClass( JNIEnv * _jenv, const char * _className )
     {
-        jclass jclass_ClassLoader = _jenv->FindClass("java/lang/ClassLoader");
-        jmethodID jmethodID_ClassLoader_loadClass = _jenv->GetMethodID(jclass_ClassLoader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
-        _jenv->DeleteLocalRef(jclass_ClassLoader);
+        jclass jclass_ClassLoader = _jenv->FindClass( "java/lang/ClassLoader" );
+        jmethodID jmethodID_ClassLoader_loadClass = _jenv->GetMethodID( jclass_ClassLoader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;" );
+        _jenv->DeleteLocalRef( jclass_ClassLoader );
 
-        jstring jstring_className = _jenv->NewStringUTF(_className);
-        jclass jclass_FindClass = (jclass)_jenv->CallObjectMethod(g_jobject_MengineClassLoader, jmethodID_ClassLoader_loadClass, jstring_className);
-        _jenv->DeleteLocalRef(jstring_className);
+        jstring jstring_className = _jenv->NewStringUTF( _className );
+        jclass jclass_FindClass = (jclass)_jenv->CallObjectMethod( g_jobject_MengineClassLoader, jmethodID_ClassLoader_loadClass, jstring_className );
+        _jenv->DeleteLocalRef( jstring_className );
 
         return jclass_FindClass;
     }

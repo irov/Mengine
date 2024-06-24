@@ -21,7 +21,7 @@ namespace Mengine
 
     public:
         bool generateRandomSeed( uint64_t * const _seed ) const override;
-        bool generateRandomHexadecimal( uint32_t _length, Char * const _hexadecimal ) const override;
+        bool generateRandomHexadecimal( uint32_t _length, Char * const _hexadecimal, bool _lowercase ) const override;
 
     protected:
         HCRYPTPROV m_hCryptProv;

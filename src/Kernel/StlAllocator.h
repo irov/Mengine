@@ -6,7 +6,8 @@
 
 namespace Mengine
 {
-    template <typename T>
+    //////////////////////////////////////////////////////////////////////////
+    template<typename T>
     class StlAllocator
     {
     public:
@@ -30,16 +31,17 @@ namespace Mengine
             Helper::deallocateMemory( p, "stl" );
         }
     };
-
-    template <class T>
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
     bool operator == ( const StlAllocator<T> &, const StlAllocator<T> & )
     {
         return true;
     }
-
-    template <class T>
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
     bool operator != ( const StlAllocator<T> &, const StlAllocator<T> & )
     {
         return false;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

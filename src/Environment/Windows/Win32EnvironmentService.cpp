@@ -1,6 +1,9 @@
 #include "Win32EnvironmentService.h"
 
+#include "Environment/Windows/Win32Helper.h"
+
 #include "Kernel/Logger.h"
+#include "Kernel/SHA1.h"
 
 #include "Config/StdString.h"
 
@@ -10,7 +13,117 @@ SERVICE_FACTORY( EnvironmentService, Mengine::Win32EnvironmentService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static void getUserName( Char * const _userName )
+        {
+            DWORD unicode_userNameLen = UNLEN + 1;
+            ::GetUserNameA( _userName, &unicode_userNameLen );
+
+            LOGGER_INFO_PROTECTED( "environment", "user name: %s"
+                , _userName
+            );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void getDeviceModel( Char * const _deviceModel )
+        {
+            MENGINE_STRNCPY_STATIC( _deviceModel, "PC", MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME );
+
+            LOGGER_INFO_PROTECTED( "environment", "device model: %s"
+                , _deviceModel
+            );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void getDeviceLanguage( Char * const _deviceLanguage )
+        {
+            LCID lcid = GetUserDefaultLCID();
+
+            ::GetLocaleInfoA( lcid, LOCALE_SISO639LANGNAME, _deviceLanguage, LOCALE_NAME_MAX_LENGTH );
+
+            LOGGER_INFO_PROTECTED( "environment", "device language: %s"
+                , _deviceLanguage
+            );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void getOSFamily( Char * const _osFamily )
+        {
+            MENGINE_STRNCPY_STATIC( _osFamily, "Windows", MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME );
+
+            LOGGER_INFO_PROTECTED( "environment", "os family: %s"
+                , _osFamily
+            );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void getOSVersion( const OSVERSIONINFOEXW * _osInfo, Char * const _osVersion )
+        {
+            switch( _osInfo->dwMajorVersion )
+            {
+            case 10:
+                {
+                    switch( _osInfo->dwMinorVersion )
+                    {
+                    case 0:
+                        {
+                            if( _osInfo->wProductType == VER_NT_WORKSTATION )
+                            {
+                                if( _osInfo->dwBuildNumber >= 22000 )
+                                {
+                                    MENGINE_STRNCPY_STATIC( _osVersion, "11", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                                }
+                                else
+                                {
+                                    MENGINE_STRNCPY_STATIC( _osVersion, "10", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                                }
+                            }
+                            else
+                            {
+                                MENGINE_STRNCPY_STATIC( _osVersion, "Server 2016", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                            }
+                        }break;
+                    }
+                }break;
+            case 6:
+                {
+                    switch( _osInfo->dwMinorVersion )
+                    {
+                    case 3:
+                        MENGINE_STRNCPY_STATIC( _osVersion, "8.1", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                    case 2:
+                        MENGINE_STRNCPY_STATIC( _osVersion, "8", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                    case 1:
+                        MENGINE_STRNCPY_STATIC( _osVersion, "7", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                    case 0:
+                        MENGINE_STRNCPY_STATIC( _osVersion, "Vista", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                    }
+                }break;
+            case 5:
+                {
+                    switch( _osInfo->dwMinorVersion )
+                    {
+                    case 2:
+                        MENGINE_STRNCPY_STATIC( _osVersion, "XP64", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                    case 1:
+                        MENGINE_STRNCPY_STATIC( _osVersion, "XP", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                    }
+                }break;
+            default:
+                {
+                    MENGINE_STRNCPY_STATIC( _osVersion, "Unknown", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                }break;
+            }
+
+            LOGGER_INFO_PROTECTED( "environment", "os version: %s"
+                , _osVersion
+            );
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     Win32EnvironmentService::Win32EnvironmentService()
+        : m_installTimestamp( 0 )
+        , m_installRND( 0 )
+        , m_sessionIndex( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -20,8 +133,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32EnvironmentService::_initializeService()
     {
-        ::ZeroMemory( &m_osInfo, sizeof( m_osInfo ) );
-        m_osInfo.dwOSVersionInfoSize = sizeof( m_osInfo );
+        OSVERSIONINFOEXW osInfo;
+        ::ZeroMemory( &osInfo, sizeof( osInfo ) );
+        osInfo.dwOSVersionInfoSize = sizeof( osInfo );
 
         HMODULE hNtdll = ::LoadLibrary( L"ntdll.dll" );
 
@@ -32,26 +146,76 @@ namespace Mengine
 
             if( RtlGetVersion != NULL )
             {
-                (*RtlGetVersion)(&m_osInfo);
+                (*RtlGetVersion)(&osInfo);
 
                 LOGGER_INFO( "platform", "windows version: %lu.%lu (build %lu)"
-                    , m_osInfo.dwMajorVersion
-                    , m_osInfo.dwMinorVersion
-                    , m_osInfo.dwBuildNumber
+                    , osInfo.dwMajorVersion
+                    , osInfo.dwMinorVersion
+                    , osInfo.dwBuildNumber
                 );
 
                 LOGGER_INFO( "platform", "windows platform: %lu"
-                    , m_osInfo.dwPlatformId
+                    , osInfo.dwPlatformId
                 );
 
                 LOGGER_INFO( "platform", "windows service pack: %lu.%lu"
-                    , (DWORD)m_osInfo.wServicePackMajor
-                    , (DWORD)m_osInfo.wServicePackMinor
+                    , (DWORD)osInfo.wServicePackMajor
+                    , (DWORD)osInfo.wServicePackMinor
                 );
             }
 
             ::FreeLibrary( hNtdll );
         }
+
+        Detail::getUserName( m_userName.data() );
+        Detail::getDeviceModel( m_deviceModel.data() );
+        Detail::getDeviceLanguage( m_deviceLanguage.data() );
+        Detail::getOSFamily( m_osFamily.data() );
+        Detail::getOSVersion( &osInfo, m_osVersion.data() );
+
+        StaticString<MENGINE_ENVIRONMENT_USER_MAXNAME + MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME + 64> fingerprintGarbage;
+
+        fingerprintGarbage.assign( "FINGERPRINT" );
+
+        fingerprintGarbage.append( "_" );
+        fingerprintGarbage.append( m_userName.c_str() );
+        fingerprintGarbage.append( "_" );
+        fingerprintGarbage.append( m_deviceModel.c_str() );
+
+        DWORD VolumeSerialNumber = 0;
+        DWORD VolumeMaxComponentLen = 0;
+        DWORD VolumeFileSystemFlags = 0;
+        CHAR VolumeFileSystemNameBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
+        CHAR VolumeNameBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
+
+        if( ::GetVolumeInformationA( NULL
+            , VolumeNameBuffer
+            , sizeof( VolumeNameBuffer ) / sizeof( VolumeNameBuffer[0] )
+            , &VolumeSerialNumber
+            , &VolumeMaxComponentLen
+            , &VolumeFileSystemFlags
+            , VolumeFileSystemNameBuffer
+            , sizeof( VolumeFileSystemNameBuffer ) / sizeof( VolumeFileSystemNameBuffer[0] ) ) == TRUE )
+        {
+            LOGGER_INFO_PROTECTED( "environment", "system volume serial number: %u"
+                , VolumeSerialNumber
+            );
+
+            Char VolumeSerialNumberBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
+            MENGINE_SNPRINTF( VolumeSerialNumberBuffer, MENGINE_MAX_PATH, "%u", VolumeSerialNumber );
+
+            fingerprintGarbage.append( "_" );
+            fingerprintGarbage.append( VolumeSerialNumberBuffer );
+        }
+
+        Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), m_fingerprint.data(), true );
+
+        LOGGER_INFO_PROTECTED( "environment", "fingerprint: %s"
+            , m_fingerprint.data()
+        );
+
+        m_sessionId.assign( m_fingerprint );
+        m_installKey.assign( m_fingerprint );
 
         return true;
     }
@@ -61,174 +225,69 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32EnvironmentService::getDeviceName( Char * const _deviceName, size_t _capacity ) const
+    void Win32EnvironmentService::getUserName( Char * const _userName ) const
     {
-        DWORD ComputerNameLen = (DWORD)_capacity;
-        if( ::GetComputerNameA( _deviceName, &ComputerNameLen ) == FALSE )
-        {
-            return 0;
-        }
-
-        return ComputerNameLen;
+        m_userName.copy( _userName );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32EnvironmentService::getDeviceModel( Char * const _deviceModel, size_t _capacity ) const
+    void Win32EnvironmentService::getDeviceModel( Char * const _deviceModel ) const
     {
-        size_t len = MENGINE_STRNCPY_STATIC( _deviceModel, "PC", _capacity );
-
-        return len;
+        m_deviceModel.copy( _deviceModel );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32EnvironmentService::getDeviceLanguage( Char * const _deviceLanguage, size_t _capacity ) const
+    void Win32EnvironmentService::getDeviceLanguage( Char * const _deviceLanguage ) const
     {
-        WCHAR unicode_localeName[LOCALE_NAME_MAX_LENGTH + 1] = {L'\0'};
-        int result = ::GetUserDefaultLocaleName( unicode_localeName, LOCALE_NAME_MAX_LENGTH );
-
-        if( result <= 0 )
-        {
-            return 0;
-        }
-
-        int32_t len = ::WideCharToMultiByte( CP_UTF8, 0, unicode_localeName, -1, _deviceLanguage, static_cast<int>(_capacity), NULL, NULL );
-            
-        if( len <= 0 )
-        {
-            return 0;
-        }
-
-        if( (size_t)len >= _capacity )
-        {
-            return 0;
-        }
-
-        return len;
+        m_deviceLanguage.copy( _deviceLanguage );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32EnvironmentService::getOSFamily( Char * const _osFamily, size_t _capacity ) const
+    void Win32EnvironmentService::getOSFamily( Char * const _osFamily ) const
     {
-        size_t len = MENGINE_STRNCPY_STATIC( _osFamily, "Windows", _capacity );
-
-        return len;
+        m_osFamily.copy( _osFamily );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32EnvironmentService::getOSVersion( Char * const _osVersion, size_t _capacity ) const
+    void Win32EnvironmentService::getOSVersion( Char * const _osVersion ) const
     {
-        switch( m_osInfo.dwMajorVersion )
-        {
-        case 10:
-            {
-                switch( m_osInfo.dwMinorVersion )
-                {
-                case 0:
-                    {
-                        if( m_osInfo.wProductType == VER_NT_WORKSTATION )
-                        {
-                            if( m_osInfo.dwBuildNumber >= 22000 )
-                            {
-                                return MENGINE_STRNCPY_STATIC( _osVersion, "11", _capacity );
-                            }
-                            else
-                            {
-                                return MENGINE_STRNCPY_STATIC( _osVersion, "10", _capacity );
-                            }
-                        }
-                        else
-                        {
-                            return MENGINE_STRNCPY_STATIC( _osVersion, "Server 2016", _capacity );
-                        }
-                    }break;
-                }
-            }break;
-        case 6:
-            {
-                switch( m_osInfo.dwMinorVersion )
-                {
-                case 3:
-                    return MENGINE_STRNCPY_STATIC( _osVersion, "8.1", _capacity );
-                case 2:
-                    return MENGINE_STRNCPY_STATIC( _osVersion, "8", _capacity );
-                case 1:
-                    return MENGINE_STRNCPY_STATIC( _osVersion, "7", _capacity );
-                case 0:
-                    return MENGINE_STRNCPY_STATIC( _osVersion, "Vista", _capacity );
-                }
-            }break;
-        case 5:
-            {
-                switch( m_osInfo.dwMinorVersion )
-                {
-                case 2:
-                    return MENGINE_STRNCPY_STATIC( _osVersion, "XP64", _capacity );
-                case 1:
-                    return MENGINE_STRNCPY_STATIC( _osVersion, "XP", _capacity );
-                }
-            }break;
-        }
-
-        return MENGINE_STRNCPY_STATIC( _osVersion, "Unknown", _capacity );
+        m_osVersion.copy( _osVersion );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32EnvironmentService::getBundleId( Char * const _bundleId, size_t _capacity ) const
+    void Win32EnvironmentService::getBundleId( Char * const _bundleId ) const
     {
-        MENGINE_UNUSED( _bundleId );
-        MENGINE_UNUSED( _capacity );
-
-        return 0;
+        m_bundleId.copy( _bundleId );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32EnvironmentService::getSessionId( Char * const _sessionId, size_t _capacity ) const
+    void Win32EnvironmentService::getFingerprint( Char * const _fingerprint ) const
     {
-        MENGINE_UNUSED( _sessionId );
-        MENGINE_UNUSED( _capacity );
-
-        return 0;
+        m_fingerprint.copy( _fingerprint );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32EnvironmentService::getInstallKey( Char * const _installKey, size_t _capacity ) const
+    void Win32EnvironmentService::getSessionId( Char * const _sessionId ) const
     {
-        MENGINE_UNUSED( _installKey );
-        MENGINE_UNUSED( _capacity );
-
-        return 0;
+        m_sessionId.copy( _sessionId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32EnvironmentService::getInstallKey( Char * const _installKey ) const
+    {
+        m_installKey.copy( _installKey );
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t Win32EnvironmentService::getInstallTimestamp() const
     {
-        return 0LL;
+        return m_installTimestamp;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32EnvironmentService::getInstallVersion( Char * const _installVersion, size_t _capacity ) const
+    void Win32EnvironmentService::getInstallVersion( Char * const _installVersion ) const
     {
-        MENGINE_UNUSED( _installVersion );
-        MENGINE_UNUSED( _capacity );
-
-        return 0;
+        m_installVersion.copy( _installVersion );
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t Win32EnvironmentService::getInstallRND() const
     {
-        return 0LL;
+        return m_installRND;
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t Win32EnvironmentService::getSessionIndex() const
     {        
-        return 0LL;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32EnvironmentService::openUrlInDefaultBrowser( const Char * _url )
-    {
-        MENGINE_UNUSED( _url );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32EnvironmentService::openMail( const Char * _email, const Char * _subject, const Char * _body )
-    {
-        MENGINE_UNUSED( _email );
-        MENGINE_UNUSED( _subject );
-        MENGINE_UNUSED( _body );
-        
-        return true;
+        return m_sessionIndex;
     }
     //////////////////////////////////////////////////////////////////////////
 }

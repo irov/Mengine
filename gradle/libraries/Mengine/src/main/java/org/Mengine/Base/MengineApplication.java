@@ -331,22 +331,16 @@ public class MengineApplication extends Application {
         return m_purchasesTimestamp;
     }
 
-    public String getDeviceLanguage() {
-        String language = Locale.getDefault().getLanguage();
-
-        return language;
-    }
-
-    public String getDeviceName() {
-        String deviceModel = this.getDeviceModel();
-
-        return "Android " + deviceModel;
-    }
-
     public String getDeviceModel() {
         String deviceName = android.os.Build.MODEL;
 
         return deviceName;
+    }
+
+    public String getDeviceLanguage() {
+        String language = Locale.getDefault().getLanguage();
+
+        return language;
     }
 
     public int getSDKVersion() {

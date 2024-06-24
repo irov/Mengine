@@ -72,7 +72,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32CryptographySystem::generateRandomHexadecimal( uint32_t _length, Char * const _hexadecimal ) const
+    bool Win32CryptographySystem::generateRandomHexadecimal( uint32_t _length, Char * const _hexadecimal, bool _lowercase ) const
     {
         MENGINE_ASSERTION_FATAL( _length < 1024, "invalid length %u"
             , _length
@@ -92,7 +92,7 @@ namespace Mengine
             return false;
         }
 
-        Helper::encodeHexadecimal( pbData, _length / 2, _hexadecimal, _length, nullptr );
+        Helper::encodeHexadecimal( pbData, _length / 2, _hexadecimal, _length, _lowercase, nullptr );
 
         return true;
     }

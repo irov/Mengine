@@ -23,50 +23,6 @@
 #define MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME 256
 #endif
 
-#ifndef MENGINE_PLATFORM_USER_MAXNAME
-#define MENGINE_PLATFORM_USER_MAXNAME 256
-#endif
-
-#ifndef MENGINE_PLATFORM_FINGERPRINT_MAXNAME
-#define MENGINE_PLATFORM_FINGERPRINT_MAXNAME 41
-#endif
-
-#ifndef MENGINE_PLATFORM_DEVICE_NAME_MAXNAME
-#define MENGINE_PLATFORM_DEVICE_NAME_MAXNAME 128
-#endif
-
-#ifndef MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME
-#define MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME 128
-#endif
-
-#ifndef MENGINE_PLATFORM_DEVICE_LANGUAGE_MAXNAME
-#define MENGINE_PLATFORM_DEVICE_LANGUAGE_MAXNAME 64
-#endif
-
-#ifndef MENGINE_PLATFORM_OS_FAMILY_MAXNAME
-#define MENGINE_PLATFORM_OS_FAMILY_MAXNAME 64
-#endif
-
-#ifndef MENGINE_PLATFORM_OS_VERSION_MAXNAME
-#define MENGINE_PLATFORM_OS_VERSION_MAXNAME 64
-#endif
-
-#ifndef MENGINE_PLATFORM_BUNDLEID_MAXNAME
-#define MENGINE_PLATFORM_BUNDLEID_MAXNAME 256
-#endif
-
-#ifndef MENGINE_PLATFORM_SESSIONID_MAXNAME
-#define MENGINE_PLATFORM_SESSIONID_MAXNAME 128
-#endif
-
-#ifndef MENGINE_PLATFORM_INSTALLKEY_MAXNAME
-#define MENGINE_PLATFORM_INSTALLKEY_MAXNAME 128
-#endif
-
-#ifndef MENGINE_PLATFORM_INSTALLVERSION_MAXNAME
-#define MENGINE_PLATFORM_INSTALLVERSION_MAXNAME 64
-#endif
-
 namespace Mengine
 {
     class PlatformServiceInterface
@@ -127,22 +83,7 @@ namespace Mengine
 
         virtual size_t getCurrentPath( Char * const _filePath ) const = 0;
         virtual size_t getUserPath( Char * const _filePath ) const = 0;
-        virtual size_t getExtraPreferencesFolderName( Char * const _folderName ) const = 0;
-        virtual size_t getUserName( Char * const _userName ) const = 0;
-        virtual size_t getDeviceLanguage( Char * const _deviceLanguage ) const = 0;
-        virtual size_t getFingerprint( Char * const _fingerprint ) const = 0;
-
-        virtual size_t getDeviceModel( Char * const _deviceModel ) const = 0;
-        virtual size_t getOsFamily( Char * const _osFamily ) const = 0;
-        virtual size_t getOsVersion( Char * const _osVersion ) const = 0;
-        virtual size_t getBundleId( Char * const _osVersion ) const = 0;
-
-        virtual size_t getSessionId( Char * const _sessionId ) const = 0;
-        virtual size_t getInstallKey( Char * const _installKey ) const = 0;
-        virtual int64_t getInstallTimestamp() const = 0;
-        virtual size_t getInstallVersion( Char * const _installVersion ) const = 0;
-        virtual int64_t getInstallRND() const = 0;
-        virtual int64_t getSessionIndex() const = 0;
+        virtual size_t getExtraPreferencesFolderName( Char * const _folderName ) const = 0;        
 
         virtual void closeWindow() = 0;
         virtual void minimizeWindow() = 0;

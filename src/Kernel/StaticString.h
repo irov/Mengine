@@ -13,6 +13,7 @@ namespace Mengine
         Char staticStringIndex( const Char * _buffer, size_t _capacity, size_t _index );
         void staticStringChange( Char * _buffer, size_t _capacity, size_t _index, Char _ch );
         void staticStringAssign( Char * _buffer, size_t _capacity, const Char * _value, size_t _size );
+        void staticStringAppendChar( Char * const _buffer, size_t _capacity, Char _value );
         void staticStringAppend( Char * _buffer, size_t _capacity, const Char * _value, size_t _size );
         void staticStringFormat( Char * _buffer, size_t _capacity, const Char * _format, MENGINE_VA_LIST_TYPE _args );
         void staticStringCopy( const Char * _buffer, size_t _capacity, Char * _value );
@@ -33,6 +34,11 @@ namespace Mengine
         StaticString( const Char * _value )
         {
             this->assign( _value );
+        }
+
+        StaticString( const Char * _value, size_t _size )
+        {
+            this->assign( _value, _size );
         }
 
         ~StaticString()
@@ -70,7 +76,7 @@ namespace Mengine
     public:
         void assign( const Char * _value )
         {
-            Detail::staticStringAssign( m_buffer, N, _value, MENGINE_UNKNOWN_SIZE );
+            this->assign( _value, MENGINE_UNKNOWN_SIZE );
         }
 
         void assign( const Char * _value, size_t _size )
@@ -83,22 +89,42 @@ namespace Mengine
         {
             const Char * value_str = _value.c_str();
             size_t value_size = _value.size();
-            Detail::staticStringAssign( m_buffer, N, value_str, value_size );
+
+            this->assign( value_str, value_size );
+        }
+
+        template<size_t N2>
+        void assign( const StaticString<N2> & _value, size_t _size )
+        {
+            const Char * value_str = _value.c_str();
+            size_t value_size = _value.size();
+
+            this->assign( value_str, _size );
         }
 
         void append( Char _value )
         {
-            Detail::staticStringAppend( m_buffer, N, &_value, 1 );
+            this->append( &_value, 1 );
+            Detail::staticStringAppendChar( m_buffer, N, _value );
         }
 
         void append( const Char * _value )
         {
-            Detail::staticStringAppend( m_buffer, N, _value, MENGINE_UNKNOWN_SIZE );
+            this->append( _value, MENGINE_UNKNOWN_SIZE );
         }
 
         void append( const Char * _value, size_t _size )
         {
             Detail::staticStringAppend( m_buffer, N, _value, _size );
+        }
+
+        template<size_t N2>
+        void append( const StaticString<N2> & _value )
+        {
+            const Char * value_str = _value.c_str();
+            size_t value_size = _value.size();
+
+            this->append( value_str, value_size );
         }
 
         void copy( Char * _value ) const

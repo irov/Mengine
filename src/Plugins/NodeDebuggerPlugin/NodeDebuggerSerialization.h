@@ -41,13 +41,13 @@ namespace Mengine
             _payload.insert( _payload.begin(), begin, end );
         }
 
-        template <typename T>
+        template<typename T>
         void setXmlValue( pugi::xml_attribute & _attrib, const T & _value )
         {
             _attrib.set_value( _value );
         }
 
-        template <>
+        template<>
         MENGINE_INLINE void setXmlValue<float>( pugi::xml_attribute & _attrib, const float & _value )
         {
             std::string str = std::to_string( _value );
@@ -55,7 +55,7 @@ namespace Mengine
             _attrib.set_value( str.c_str() );
         }
 
-        template <>
+        template<>
         MENGINE_INLINE void setXmlValue<mt::vec2f>( pugi::xml_attribute & _attrib, const mt::vec2f & _value )
         {
             std::string str = std::to_string( _value.x ) + MENGINE_PATH_DELIM + std::to_string( _value.y );
@@ -63,7 +63,7 @@ namespace Mengine
             _attrib.set_value( str.c_str() );
         }
 
-        template <>
+        template<>
         MENGINE_INLINE void setXmlValue<mt::vec3f>( pugi::xml_attribute & _attrib, const mt::vec3f & _value )
         {
             std::string str = std::to_string( _value.x ) + MENGINE_PATH_DELIM + std::to_string( _value.y ) + MENGINE_PATH_DELIM + std::to_string( _value.z );
@@ -71,7 +71,7 @@ namespace Mengine
             _attrib.set_value( str.c_str() );
         }
 
-        template <>
+        template<>
         MENGINE_INLINE void setXmlValue<mt::uv4f>( pugi::xml_attribute & _attrib, const mt::uv4f & _value )
         {
             std::string str 
@@ -83,58 +83,58 @@ namespace Mengine
             _attrib.set_value( str.c_str() );
         }
 
-        template <>
+        template<>
         MENGINE_INLINE void setXmlValue<Color>( pugi::xml_attribute & _attrib, const Color & _value )
         {
             setXmlValue<uint32_t>( _attrib, _value.getAsARGB() );
         }
 
-        template <>
+        template<>
         MENGINE_INLINE void setXmlValue<String>( pugi::xml_attribute & _attrib, const String & _value )
         {
             _attrib.set_value( _value.c_str() );
         }
 
-        template <>
+        template<>
         MENGINE_INLINE void setXmlValue<ConstString>( pugi::xml_attribute & _attrib, const ConstString & _value )
         {
             _attrib.set_value( _value.c_str() );
         }
 
-        template <>
+        template<>
         MENGINE_INLINE void setXmlValue<FilePath>( pugi::xml_attribute & _attrib, const FilePath & _value )
         {
             _attrib.set_value( _value.c_str() );
         }
 
-        template <typename T>
+        template<typename T>
         T getXmlValue( const pugi::xml_attribute & _attrib );
 
-        template <>
+        template<>
         MENGINE_INLINE bool getXmlValue<bool>( const pugi::xml_attribute & _attrib )
         {
             return _attrib.as_bool();
         }
 
-        template <>
+        template<>
         MENGINE_INLINE int8_t getXmlValue<int8_t>( const pugi::xml_attribute & _attrib )
         {
             return (int8_t)_attrib.as_int();
         }
 
-        template <>
+        template<>
         MENGINE_INLINE int32_t getXmlValue<int32_t>( const pugi::xml_attribute & _attrib )
         {
             return _attrib.as_int();
         }
 
-        template <>
+        template<>
         MENGINE_INLINE uint32_t getXmlValue<uint32_t>( const pugi::xml_attribute & _attrib )
         {
             return _attrib.as_uint();
         }
 
-        template <>
+        template<>
         MENGINE_INLINE float getXmlValue<float>( const pugi::xml_attribute & _attrib )
         {
             return _attrib.as_float();
@@ -158,7 +158,7 @@ namespace Mengine
             }
         }
 
-        template <>
+        template<>
         MENGINE_INLINE mt::vec2f getXmlValue<mt::vec2f>( const pugi::xml_attribute & _attrib )
         {
             mt::vec2f result;
@@ -168,7 +168,7 @@ namespace Mengine
             return result;
         }
 
-        template <>
+        template<>
         MENGINE_INLINE mt::vec3f getXmlValue<mt::vec3f>( const pugi::xml_attribute & _attrib )
         {
             mt::vec3f result;
@@ -178,7 +178,7 @@ namespace Mengine
             return result;
         }
 
-        template <>
+        template<>
         MENGINE_INLINE mt::uv4f getXmlValue<mt::uv4f>( const pugi::xml_attribute & _attrib )
         {
             mt::uv4f result;
@@ -188,7 +188,7 @@ namespace Mengine
             return result;
         }
 
-        template <>
+        template<>
         MENGINE_INLINE Color getXmlValue<Color>( const pugi::xml_attribute & _attrib )
         {
             uint32_t argb = getXmlValue<uint32_t>( _attrib );
@@ -196,19 +196,19 @@ namespace Mengine
             return Helper::makeColorARGB( argb );
         }
 
-        template <>
+        template<>
         MENGINE_INLINE String getXmlValue<String>( const pugi::xml_attribute & _attrib )
         {
             return _attrib.as_string();
         }
 
-        template <>
+        template<>
         MENGINE_INLINE ConstString getXmlValue<ConstString>( const pugi::xml_attribute & _attrib )
         {
             return Helper::stringizeString( _attrib.as_string() );
         }
 
-        template <typename T>
+        template<typename T>
         bool deserializeNodePropImpl( const Char * _propType, const Char * _propName,
             const pugi::xml_node & _xmlParentNode,
             const Lambda<void( const T & )> & _lambda )
@@ -357,7 +357,7 @@ namespace Mengine
             }
         };
 
-        template <typename T>
+        template<typename T>
         void serializeNodeProp( const T & _prop, const Char * _propName, pugi::xml_node & _xmlParentNode )
         {
             pugi::xml_node propNode = _xmlParentNode.append_child( _propName );

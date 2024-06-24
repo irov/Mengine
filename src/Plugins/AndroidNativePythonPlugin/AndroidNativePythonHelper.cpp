@@ -34,8 +34,8 @@ namespace Mengine
             jclass jclass_Map = _jenv->FindClass( "java/util/Map" );
             jclass jclass_Set = _jenv->FindClass( "java/util/Set" );
             jclass jclass_Rect = _jenv->FindClass( "android/graphics/Rect" );
-            jclass jclass_MengineFunctorVoid = _jenv->FindClass( "org/Mengine/Base/MengineFunctorVoid" );
-            jclass jclass_MengineFunctorBoolean = _jenv->FindClass( "org/Mengine/Base/MengineFunctorBoolean" );
+            jclass jclass_MengineFunctorVoid = Mengine_JNI_FindClass( _jenv, "org/Mengine/Base/MengineFunctorVoid" );
+            jclass jclass_MengineFunctorBoolean = Mengine_JNI_FindClass( _jenv, "org/Mengine/Base/MengineFunctorBoolean" );
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 
@@ -43,59 +43,62 @@ namespace Mengine
             {
                 py_value = _kernel->ret_none();
             }
-            else if( _jenv->IsInstanceOf(_obj, jclass_Boolean ) == JNI_TRUE )
+            else if( _jenv->IsInstanceOf( _obj, jclass_Boolean ) == JNI_TRUE )
             {
-                jboolean value = Helper::AndroidGetJavaObjectValueBoolean(_jenv, _obj);
+                jboolean value = Helper::AndroidGetJavaObjectValueBoolean( _jenv, _obj );
 
                 py_value = _kernel->ret_bool( value );
             }
-            else if( _jenv->IsInstanceOf(_obj, jclass_Character ) == JNI_TRUE )
+            else if( _jenv->IsInstanceOf( _obj, jclass_Character ) == JNI_TRUE )
             {
-                jchar value = Helper::AndroidGetJavaObjectValueCharacter(_jenv, _obj);
+                jchar value = Helper::AndroidGetJavaObjectValueCharacter( _jenv, _obj );
 
                 Char value_str[2] = {(Char)value, '\0'};
                 py_value = _kernel->string_from_char_size( value_str, 1 );
             }
-            else if( _jenv->IsInstanceOf(_obj, jclass_Integer ) == JNI_TRUE )
+            else if( _jenv->IsInstanceOf( _obj, jclass_Integer ) == JNI_TRUE )
             {
-                jint value = Helper::AndroidGetJavaObjectValueInteger(_jenv, _obj);;
+                jint value = Helper::AndroidGetJavaObjectValueInteger( _jenv, _obj );
 
                 py_value = _kernel->ptr_int32( value );
             }
             else if( _jenv->IsInstanceOf( _obj, jclass_Long ) == JNI_TRUE )
             {
-                jlong value = Helper::AndroidGetJavaObjectValueLong(_jenv, _obj);
+                jlong value = Helper::AndroidGetJavaObjectValueLong( _jenv, _obj );
 
                 py_value = _kernel->ptr_int64( value );
             }
             else if( _jenv->IsInstanceOf( _obj, jclass_Float ) == JNI_TRUE )
             {
-                jfloat value = Helper::AndroidGetJavaObjectValueFloat(_jenv, _obj);
+                jfloat value = Helper::AndroidGetJavaObjectValueFloat( _jenv, _obj );
 
                 py_value = _kernel->ptr_float( value );
             }
             else if( _jenv->IsInstanceOf( _obj, jclass_Double ) == JNI_TRUE )
             {
-                jdouble value = Helper::AndroidGetJavaObjectValueDouble(_jenv, _obj);
+                jdouble value = Helper::AndroidGetJavaObjectValueDouble( _jenv, _obj );
 
                 py_value = _kernel->ptr_double( value );
             }
-            else if( _jenv->IsInstanceOf(_obj, jclass_String ) == JNI_TRUE )
+            else if( _jenv->IsInstanceOf( _obj, jclass_String ) == JNI_TRUE )
             {
-                const Char * obj_str = _jenv->GetStringUTFChars( (jstring)_obj, nullptr );
+                jstring jobj_string = (jstring)_obj;
 
-                py_value = _kernel->string_from_char( obj_str );
+                const Char * obj_str = _jenv->GetStringUTFChars( jobj_string, nullptr );
+                jsize obj_size = _jenv->GetStringLength( jobj_string );
 
-                _jenv->ReleaseStringUTFChars( (jstring)_obj, obj_str );
+                py_value = _kernel->string_from_char_size( obj_str, obj_size );
+
+                _jenv->ReleaseStringUTFChars( jobj_string, obj_str );
             }
             else if( _jenv->IsInstanceOf( _obj, jclass_List ) == JNI_TRUE )
             {
-                uint32_t list_size = Helper::AndroidGetJavaListSize(_jenv, _obj);
+                uint32_t list_size = Helper::AndroidGetJavaListSize( _jenv, _obj );
 
                 PyObject * py_list = _kernel->list_new( list_size );
 
                 Helper::AndroidForeachJavaList(_jenv, _obj, [_kernel, _jenv, py_list, _doc](jsize _index, jobject _jvalue) {
-                    PyObject * py_obj = Helper::androidNativePythonMakePyObject(_kernel, _jenv, _jvalue, _doc);
+                    PyObject * py_obj = Helper::androidNativePythonMakePyObject( _kernel, _jenv, _jvalue, _doc );
 
                     _kernel->list_setitem( py_list, _index, py_obj );
 
@@ -109,8 +112,8 @@ namespace Mengine
                 PyObject * py_dict = _kernel->dict_new();
 
                 Helper::AndroidForeachJavaMap(_jenv, _obj, [_kernel, _jenv, _doc, py_dict](jobject _jkey, jobject _jvalue) {
-                    PyObject * py_key = Helper::androidNativePythonMakePyObject(_kernel, _jenv, _jkey, _doc);
-                    PyObject * py_value = Helper::androidNativePythonMakePyObject(_kernel, _jenv, _jvalue, _doc);
+                    PyObject * py_key = Helper::androidNativePythonMakePyObject( _kernel, _jenv, _jkey, _doc );
+                    PyObject * py_value = Helper::androidNativePythonMakePyObject( _kernel, _jenv, _jvalue, _doc );
 
                     _kernel->dict_set( py_dict, py_key, py_value );
 
@@ -123,7 +126,7 @@ namespace Mengine
             else if( _jenv->IsInstanceOf( _obj, jclass_Rect ) == JNI_TRUE )
             {
                 Viewport viewport;
-                Helper::AndroidGetJavaRect(_jenv, _obj, &viewport);
+                Helper::AndroidGetJavaRect( _jenv, _obj, &viewport );
 
                 py_value = pybind::ptr( _kernel, viewport );
             }
@@ -145,7 +148,7 @@ namespace Mengine
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonFunctorBoolean" ), _doc );
 
                 functor->setKernel( _kernel );
-                functor->setJavaFunctor(  _jenv, _obj );
+                functor->setJavaFunctor( _jenv, _obj );
 
                 PyObject * py_functor = pybind::ptr( _kernel, functor );
 
@@ -156,7 +159,7 @@ namespace Mengine
                 jclass cls_obj = _jenv->GetObjectClass( _obj );
 
                 LOGGER_ERROR( "unsupported java argument type '%s'"
-                    , Helper::AndroidGetJavaClassName(_jenv, cls_obj).c_str()
+                    , Helper::AndroidGetJavaClassName( _jenv, cls_obj ).c_str()
                 );
 
                 _jenv->DeleteLocalRef( cls_obj );
@@ -199,31 +202,31 @@ namespace Mengine
             {
                 bool value = pybind::extract<bool>( _kernel, _obj );
 
-                jresult = Helper::AndroidMakeJObjectBoolean(_jenv, value);
+                jresult = Helper::AndroidMakeJObjectBoolean( _jenv, value );
             }
             else if( _kernel->int_check( _obj ) == true )
             {
                 int32_t value = pybind::extract<int32_t>( _kernel, _obj );
 
-                jresult = Helper::AndroidMakeJObjectInteger(_jenv, value);
+                jresult = Helper::AndroidMakeJObjectInteger( _jenv, value );
             }
             else if( _kernel->long_check( _obj ) == true )
             {
                 int64_t value = pybind::extract<int64_t>( _kernel, _obj );
 
-                jresult = Helper::AndroidMakeJObjectLong(_jenv, value);
+                jresult = Helper::AndroidMakeJObjectLong( _jenv, value );
             }
             else if( _kernel->float_check( _obj ) == true )
             {
                 double value = pybind::extract<double>( _kernel, _obj );
 
-                jresult = Helper::AndroidMakeJObjectDouble(_jenv, value);
+                jresult = Helper::AndroidMakeJObjectDouble( _jenv, value );
             }
             else if( _kernel->string_check( _obj ) == true )
             {
                 const Char * value = _kernel->string_to_char( _obj );
 
-                jresult = Helper::AndroidMakeJObjectString(_jenv, value);
+                jresult = Helper::AndroidMakeJObjectString( _jenv, value );
             }
             else
             {

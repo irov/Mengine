@@ -646,6 +646,9 @@ Core
     StringHelper.h
     StringHelper.cpp
     
+    StringLowercase.h
+    StringLowercase.cpp
+    
     Tags.h
     Tags.cpp
     

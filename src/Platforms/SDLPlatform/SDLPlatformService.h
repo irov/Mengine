@@ -106,21 +106,6 @@ namespace Mengine
         size_t getCurrentPath( Char * const _currentPath ) const override;
         size_t getUserPath( Char * const _userPath ) const override;
         size_t getExtraPreferencesFolderName( Char * const _folderName ) const override;
-        size_t getUserName( Char * const _userName ) const override;
-        size_t getDeviceLanguage( Char * const _deviceLanguage ) const override;
-        size_t getFingerprint( Char * const _fingerprint ) const override;
-
-        size_t getDeviceModel( Char * const _deviceModel ) const override;
-        size_t getOsFamily( Char * const _osFamily ) const override;
-        size_t getOsVersion( Char * const _osVersion ) const override;
-        size_t getBundleId( Char * const _osVersion ) const override;
-
-        size_t getSessionId( Char * const _sessionId ) const override;
-        size_t getInstallKey( Char * const _installKey ) const override;
-        int64_t getInstallTimestamp() const override;
-        size_t getInstallVersion( Char * const _installVersion ) const override;
-        int64_t getInstallRND() const override;
-        int64_t getSessionIndex() const override;
 
         void closeWindow() override;
         void minimizeWindow() override;
@@ -269,21 +254,6 @@ namespace Mengine
         SDLInputPtr m_sdlInput;
 
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
-        StaticString<MENGINE_SHA1_HEX_COUNT + 1> m_fingerprint; //SHA1
-
-        StaticString<MENGINE_PLATFORM_DEVICE_NAME_MAXNAME> m_deviceName;
-        StaticString<MENGINE_PLATFORM_DEVICE_MODEL_MAXNAME> m_deviceModel;
-        StaticString<MENGINE_PLATFORM_DEVICE_LANGUAGE_MAXNAME> m_deviceLanguage;
-        StaticString<MENGINE_PLATFORM_OS_FAMILY_MAXNAME> m_osFamily;
-        StaticString<MENGINE_PLATFORM_OS_VERSION_MAXNAME> m_osVersion;
-        StaticString<MENGINE_PLATFORM_BUNDLEID_MAXNAME> m_bundleId;
-
-        StaticString<MENGINE_PLATFORM_SESSIONID_MAXNAME> m_sessionId;
-        StaticString<MENGINE_PLATFORM_INSTALLKEY_MAXNAME> m_installKey;
-        int64_t m_installTimestamp;
-        StaticString<MENGINE_PLATFORM_INSTALLVERSION_MAXNAME> m_installVersion;
-        int64_t m_installRND;
-        int64_t m_sessionIndex;
 
         Timestamp m_prevTime;
 

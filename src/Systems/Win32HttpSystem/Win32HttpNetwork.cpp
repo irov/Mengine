@@ -358,7 +358,7 @@ namespace Mengine
 
             Char boundary[17] = {'\0'};
             CRYPTOGRAPHY_SYSTEM()
-                ->generateRandomHexadecimal( 16, boundary );
+                ->generateRandomHexadecimal( 16, boundary, false );
 
             ArrayString<1024> header;
             header.append( "Content-Type: multipart/form-data; boundary=" );

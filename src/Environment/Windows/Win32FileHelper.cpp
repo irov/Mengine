@@ -17,7 +17,7 @@ namespace Mengine
             WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
             Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
 
-            HANDLE handle = ::CreateFile(
+            HANDLE handle = ::CreateFileW(
                 pathCorrect, //lpFileName
                 _desiredAccess, //dwDesiredAccess
                 _sharedMode, //dwShareMode
@@ -66,7 +66,7 @@ namespace Mengine
 
             ::FindClose( hFind );
 
-            const WChar * filename = ::PathFindFileName( _path );
+            const WChar * filename = ::PathFindFileNameW( _path );
 
             if( MENGINE_WCSCMP( filename, wfd.cFileName ) != 0 )
             {
@@ -114,15 +114,15 @@ namespace Mengine
 
                         Helper::pathCorrectForwardslashW( sPath2 );
 
-                        ::PathRemoveFileSpec( sPath2 );
+                        ::PathRemoveFileSpecW( sPath2 );
 
                         WChar unicode_filepath[MENGINE_MAX_PATH] = {L'\0'};
-                        ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
+                        ::PathCombineW( unicode_filepath, sPath2, fdFile.cFileName );
 
                         WChar unicode_out[MENGINE_MAX_PATH] = {L'\0'};
                         if( MENGINE_WCSLEN( _dir ) != 0 )
                         {
-                            ::PathRelativePathTo( unicode_out,
+                            ::PathRelativePathToW( unicode_out,
                                 _dir,
                                 FILE_ATTRIBUTE_DIRECTORY,
                                 unicode_filepath,
@@ -156,7 +156,7 @@ namespace Mengine
                 MENGINE_WCSCAT( sPath, L"*.*" );
 
                 WIN32_FIND_DATA fdFile;
-                HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
+                HANDLE hFind = ::FindFirstFileExW( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
 
                 if( hFind == INVALID_HANDLE_VALUE )
                 {
@@ -180,12 +180,12 @@ namespace Mengine
                     MENGINE_WCSCPY( currentPath, sPath );
                     MENGINE_WCSCAT( currentPath, L"\0" );
 
-                    ::PathRemoveFileSpec( currentPath );
+                    ::PathRemoveFileSpecW( currentPath );
 
                     WChar nextPath[MENGINE_MAX_PATH] = {L'\0'};
-                    ::PathCombine( nextPath, currentPath, fdFile.cFileName );
+                    ::PathCombineW( nextPath, currentPath, fdFile.cFileName );
 
-                    ::PathAddBackslash( nextPath );
+                    ::PathAddBackslashW( nextPath );
 
                     bool stop;
                     if( Helper::Win32ListDirectory( _dir, _mask, nextPath, _lambda, &stop ) == false )

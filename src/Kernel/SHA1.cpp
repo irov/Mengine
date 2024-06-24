@@ -164,22 +164,22 @@ namespace Mengine
             Detail::SHA1_Final( &context, _sha1, _digestSize );
         }
         //////////////////////////////////////////////////////////////////////////
-        void makeSHA1HEX( const void * _buffer, size_t _size, Char * const _hex )
+        void makeSHA1HEX( const void * _buffer, size_t _size, Char * const _hex, bool _lowercase )
         {
             uint8_t sha1[MENGINE_SHA1_UINT8_COUNT];
             Helper::makeSHA1( _buffer, _size, sha1, MENGINE_SHA1_UINT8_COUNT );
 
-            Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, ~0U, nullptr );
+            Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, ~0U, _lowercase, nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
-        void makeSHA1String( const Char * _string, Char * const _hex )
+        void makeSHA1String( const Char * _string, Char * const _hex, bool _lowercase )
         {
             size_t len = MENGINE_STRLEN( _string );
 
             uint8_t sha1[MENGINE_SHA1_UINT8_COUNT];
             Helper::makeSHA1( _string, len, sha1, MENGINE_SHA1_UINT8_COUNT );
 
-            Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, ~0U, nullptr );
+            Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, ~0U, _lowercase, nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
         void makeSHA1Base64( const void * _buffer, size_t _size, Char * const _base64 )

@@ -43,7 +43,7 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            static Char uint8ToHexadecimal( uint8_t _u8 )
+            static Char uint8ToHexadecimalLowercase( uint8_t _u8 )
             {
                 const Char hex[] = "0123456789abcdef";
 
@@ -52,9 +52,18 @@ namespace Mengine
                 return c;
             }
             //////////////////////////////////////////////////////////////////////////
+            static Char uint8ToHexadecimalUppercase( uint8_t _u8 )
+            {
+                const Char hex[] = "0123456789ABCDEF";
+
+                Char c = hex[_u8];
+
+                return c;
+            }
+            //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
-        bool encodeHexadecimal( const void * _data, size_t _datasize, Char * const _hexadecimal, size_t _capacity, size_t * const _outsize )
+        bool encodeHexadecimal( const void * _data, size_t _datasize, Char * const _hexadecimal, size_t _capacity, bool _lowercase, size_t * const _outsize )
         {
             if( _capacity < _datasize * 2 )
             {
@@ -64,15 +73,31 @@ namespace Mengine
             Char * c = _hexadecimal;
             const uint8_t * data_u8 = reinterpret_cast<const uint8_t *>(_data);
 
-            for( size_t i = 0; i != _datasize; ++i )
+            if( _lowercase == true )
             {
-                uint8_t d = data_u8[i];
+                for( size_t i = 0; i != _datasize; ++i )
+                {
+                    uint8_t d = data_u8[i];
 
-                uint8_t d0 = d / 16;
-                uint8_t d1 = d % 16;
+                    uint8_t d0 = d / 16;
+                    uint8_t d1 = d % 16;
 
-                *c++ = Detail::uint8ToHexadecimal( d0 );
-                *c++ = Detail::uint8ToHexadecimal( d1 );
+                    *c++ = Detail::uint8ToHexadecimalLowercase( d0 );
+                    *c++ = Detail::uint8ToHexadecimalLowercase( d1 );
+                }
+            }
+            else
+            {
+                for( size_t i = 0; i != _datasize; ++i )
+                {
+                    uint8_t d = data_u8[i];
+
+                    uint8_t d0 = d / 16;
+                    uint8_t d1 = d % 16;
+
+                    *c++ = Detail::uint8ToHexadecimalUppercase( d0 );
+                    *c++ = Detail::uint8ToHexadecimalUppercase( d1 );
+                }
             }
 
             *c++ = '\0';

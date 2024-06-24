@@ -37,15 +37,15 @@ namespace Mengine
                 sa.bInheritHandle = TRUE;
 
                 WChar tempPathBuffer[MENGINE_MAX_PATH] = {L'\0'};
-                ::GetTempPath( MENGINE_MAX_PATH, tempPathBuffer );
+                ::GetTempPathW( MENGINE_MAX_PATH, tempPathBuffer );
 
                 WChar tempFileNameBuffer[MENGINE_MAX_PATH] = {L'\0'};
-                ::GetTempFileName( tempPathBuffer
+                ::GetTempFileNameW( tempPathBuffer
                     , L"Process"
                     , 0
                     , tempFileNameBuffer );
 
-                HANDLE hWriteTempFile = ::CreateFile( tempFileNameBuffer
+                HANDLE hWriteTempFile = ::CreateFileW( tempFileNameBuffer
                     , FILE_APPEND_DATA
                     , FILE_SHARE_WRITE | FILE_SHARE_READ
                     , &sa
@@ -75,7 +75,7 @@ namespace Mengine
                 PROCESS_INFORMATION processInfo;
                 ::ZeroMemory( &processInfo, sizeof( PROCESS_INFORMATION ) );
 
-                if( ::CreateProcess( unicode_process, unicode_command
+                if( ::CreateProcessW( unicode_process, unicode_command
                     , NULL
                     , NULL
                     , TRUE
@@ -117,7 +117,7 @@ namespace Mengine
                     , exitCode
                 );
 
-                HANDLE hReadTempFile = ::CreateFile( tempFileNameBuffer
+                HANDLE hReadTempFile = ::CreateFileW( tempFileNameBuffer
                     , FILE_GENERIC_READ
                     , FILE_SHARE_WRITE | FILE_SHARE_READ
                     , &sa
@@ -175,7 +175,7 @@ namespace Mengine
                 PROCESS_INFORMATION processInfo;
                 ::ZeroMemory( &processInfo, sizeof( PROCESS_INFORMATION ) );
 
-                if( ::CreateProcess( unicode_process, unicode_command
+                if( ::CreateProcessW( unicode_process, unicode_command
                     , NULL
                     , NULL
                     , FALSE

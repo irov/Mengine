@@ -20,26 +20,39 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        size_t getDeviceName( Char * _deviceName, size_t _capacity ) const override;
-        size_t getDeviceModel( Char * _deviceModel, size_t _capacity ) const override;
-        size_t getDeviceLanguage( Char * _deviceLanguage, size_t _capacity ) const override;
-        size_t getOSFamily( Char * _osVersion, size_t _capacity ) const override;
-        size_t getOSVersion( Char * _osVersion, size_t _capacity ) const override;
-        size_t getBundleId( Char * _bundleId, size_t _capacity ) const override;
+        void getUserName( Char * const _userName ) const override;
+        void getDeviceModel( Char * const _deviceModel ) const override;
+        void getDeviceLanguage( Char * const _deviceLanguage ) const override;
+        void getOSFamily( Char * const _osVersion ) const override;
+        void getOSVersion( Char * const _osVersion ) const override;
+        void getBundleId( Char * const _bundleId ) const override;
+
+    public:
+        void getFingerprint( Char * const _fingerprint ) const override;
         
     public:
-        size_t getSessionId( Char * _sessionId, size_t _capacity ) const override;
-        size_t getInstallKey( Char * const _installKey, size_t _capacity ) const override;
+        void getSessionId( Char * const _sessionId ) const override;
+        void getInstallKey( Char * const _installKey ) const override;
         int64_t getInstallTimestamp() const override;
-        size_t getInstallVersion( Char * const _installVersion, size_t _capacity ) const override;
+        void getInstallVersion( Char * const _installVersion ) const override;
         int64_t getInstallRND() const override;
-        int64_t getSessionIndex() const override;
-        
-    public:
-        bool openUrlInDefaultBrowser( const Char * _url ) override;
-        bool openMail( const Char * _email, const Char * _subject, const Char * _body ) override;
+        int64_t getSessionIndex() const override;        
 
     protected:
-        OSVERSIONINFOEXW m_osInfo;
+        StaticString<MENGINE_ENVIRONMENT_USER_MAXNAME> m_userName;
+        StaticString<MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME> m_deviceModel;
+        StaticString<MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME> m_deviceLanguage;
+        StaticString<MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME> m_osFamily;
+        StaticString<MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME> m_osVersion;
+        StaticString<MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME> m_bundleId;
+
+        StaticString<MENGINE_ENVIRONMENT_FINGERPRINT_MAXNAME> m_fingerprint;
+
+        StaticString<MENGINE_ENVIRONMENT_SESSIONID_MAXNAME> m_sessionId;
+        StaticString<MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME> m_installKey;
+        int64_t m_installTimestamp;
+        StaticString<MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME> m_installVersion;
+        int64_t m_installRND;
+        int64_t m_sessionIndex;
     };
 }

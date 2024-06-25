@@ -146,6 +146,7 @@ Common
     AndroidKernelServiceInterface.h
     AndroidAssetServiceInterface.h
     AppleKernelServiceInterface.h
+    iOSKernelServiceInterface.h
 )
 
 ADD_FILTER(

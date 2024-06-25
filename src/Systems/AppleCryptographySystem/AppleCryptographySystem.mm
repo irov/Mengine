@@ -1,6 +1,10 @@
 #include "AppleCryptographySystem.h"
 
+#include "Kernel/Hexadecimal.h"
+
 #include "Config/StdString.h"
+
+#include <Security/Security.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( CryptographySystem, Mengine::AppleCryptographySystem );
@@ -30,19 +34,44 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleCryptographySystem::generateRandomSeed( uint64_t * const _seed ) const
     {
-        //Empty
-
-        return false;
+        union {
+            SInt8 bytes[sizeof(uint64_t)];
+            uint64_t randomNumber = 0;
+        };
+        
+        int status = SecRandomCopyBytes(kSecRandomDefault, sizeof(bytes), bytes);
+        
+        if( status != errSecSuccess )
+        {
+            return false;
+        }
+        
+        *_seed = randomNumber;
+        
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleCryptographySystem::generateRandomHexadecimal( uint32_t _length, Char * const _hexadecimal ) const
+    bool AppleCryptographySystem::generateRandomHexadecimal( uint32_t _length, Char * const _hexadecimal, bool _lowercase ) const
     {
-        MENGINE_UNUSED( _length );
-        MENGINE_UNUSED( _hexadecimal );
+        MENGINE_ASSERTION_FATAL( _length < 1024, "invalid length %u"
+            , _length
+        );
 
-        //Empty
+        MENGINE_ASSERTION_FATAL( _length % 2 == 0, "invalid odd %u"
+            , _length
+        );
+        
+        uint8_t buffer[512];
+        int result = SecRandomCopyBytes(kSecRandomDefault, sizeof(buffer), buffer);
+            
+        if( result != errSecSuccess)
+        {
+            return false;
+        }
+        
+        Helper::encodeHexadecimal( buffer, _length / 2, _hexadecimal, _length, _lowercase, nullptr );
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

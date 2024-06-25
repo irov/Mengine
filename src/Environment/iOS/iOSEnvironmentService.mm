@@ -3,17 +3,11 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
-#import "Environment/iOS/iOSProxyLogger.h"
 #import "Environment/iOS/iOSApplication.h"
+#import "Environment/iOS/iOSProxyLogger.h"
 #import "Environment/iOS/iOSDetail.h"
 
-#include "Kernel/Logger.h"
-#include "Kernel/FactorableUnique.h"
-
 #include "Config/StdString.h"
-
-#import <UIKit/UIKit.h>
-#import <MessageUI/MessageUI.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( EnvironmentService, Mengine::iOSEnvironmentService );
@@ -22,7 +16,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     iOSEnvironmentService::iOSEnvironmentService()
-        : m_mailCompose( nil )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -32,162 +25,115 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSEnvironmentService::_initializeService()
     {
-        iOSProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<iOSProxyLogger>(MENGINE_DOCUMENT_FACTORABLE);
-
-        if( LOGGER_SERVICE()
-            ->registerLogger( proxyLogger ) == true )
-        {
-            m_proxyLogger = proxyLogger;
-        }
-
+        NSString * deviceName = [[UIDevice currentDevice] name];
+        
+        m_userName.assign( [deviceName UTF8String] );
+        
+        NSString * deviceModel = [[UIDevice currentDevice] model];
+        
+        m_deviceModel.assign( [deviceModel UTF8String] );
+        
+        NSString * language = [[NSLocale preferredLanguages] firstObject];
+        
+        m_deviceLanguage.assign( [language UTF8String] );
+        
+        m_osFamily.assign( "iOS" );
+        
+        NSString * systemVersion = [[UIDevice currentDevice] systemVersion];
+        
+        m_osVersion.assign( [systemVersion UTF8String] );
+        
+        NSString * bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+        
+        m_bundleId.assign( [bundleIdentifier UTF8String] );
+        
+        NSString * sessionId = [iOSApplication.sharedInstance getSessionId];
+        
+        m_sessionId.assign( [sessionId UTF8String] );
+        
+        NSString * installKey = [iOSApplication.sharedInstance getInstallKey];
+        
+        m_installKey.assign( [installKey UTF8String] );
+        
+        NSInteger installRND = [iOSApplication.sharedInstance getInstallRND];
+        
+        m_installRND = (int64_t)installRND;
+        
+        NSInteger sessionIndex = [iOSApplication.sharedInstance getSessionIndex];
+        
+        m_sessionIndex = (int64_t)sessionIndex;
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSEnvironmentService::_finalizeService()
     {
-        if( m_proxyLogger != nullptr )
-        {
-            LOGGER_SERVICE()
-                ->unregisterLogger( m_proxyLogger );
-
-            m_proxyLogger = nullptr;
-        }
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t iOSEnvironmentService::getDeviceName( Char * const _deviceName, size_t _capacity ) const
+    void iOSEnvironmentService::getUserName( Char * const _userName ) const
     {
-        NSString * name = [[UIDevice currentDevice] name];
-
-        MENGINE_STRNCPY( _deviceName, [name UTF8String], _capacity );
-
-        return name.length;
+        m_userName.copy( _userName );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t iOSEnvironmentService::getDeviceModel( Char * const _deviceModel, size_t _capacity ) const
+    void iOSEnvironmentService::getDeviceModel( Char * const _deviceModel ) const
     {
-        NSString * platformString = [[UIDevice currentDevice] model];
-
-        MENGINE_STRNCPY( _deviceModel, [platformString UTF8String], _capacity );
-
-        return platformString.length;
+        m_deviceModel.copy( _deviceModel );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t iOSEnvironmentService::getDeviceLanguage( Char * const _deviceName, size_t _capacity ) const
+    void iOSEnvironmentService::getDeviceLanguage( Char * const _deviceLanguage ) const
     {
-        NSString * language = [[NSLocale preferredLanguages] firstObject];
-
-        MENGINE_STRNCPY( _deviceName, [language UTF8String], _capacity );
-
-        return language.length;
+        m_deviceLanguage.copy( _deviceLanguage );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t iOSEnvironmentService::getOSFamily( Char * const _deviceName, size_t _capacity ) const
+    void iOSEnvironmentService::getOSFamily( Char * const _osFamily ) const
     {
-        size_t len = MENGINE_STRNCPY_STATIC( _deviceName, "iOS", _capacity );
-
-        return len;
+        m_osFamily.copy( _osFamily );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t iOSEnvironmentService::getOSVersion( Char * const _deviceName, size_t _capacity ) const
+    void iOSEnvironmentService::getOSVersion( Char * const _osVersion ) const
     {
-        NSString * systemVersion = [[UIDevice currentDevice] systemVersion];
-
-        MENGINE_STRNCPY( _deviceName, [systemVersion UTF8String], _capacity );
-
-        return systemVersion.length;
+        m_osVersion.copy( _osVersion );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t iOSEnvironmentService::getBundleId( Char * const _bundleId, size_t _capacity ) const
+    void iOSEnvironmentService::getBundleId( Char * const _bundleId ) const
     {
-        NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-
-        MENGINE_STRNCPY( _bundleId, [bundleIdentifier UTF8String], _capacity );
-
-        return bundleIdentifier.length;
+        m_bundleId.copy( _bundleId );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t iOSEnvironmentService::getSessionId( Char * const _sessionId, size_t _capacity ) const
+    void iOSEnvironmentService::getFingerprint( Char * const _fingerprint ) const
     {
-        NSString * sessionId = [iOSApplication.sharedInstance getSessionId];
-        
-        MENGINE_STRNCPY( _sessionId, [sessionId UTF8String], _capacity );
-
-        return sessionId.length;
+        m_fingerprint.copy( _fingerprint );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t iOSEnvironmentService::getInstallKey( Char * const _installKey, size_t _capacity ) const
+    void iOSEnvironmentService::getSessionId( Char * const _sessionId ) const
     {
-        NSString * installKey = [iOSApplication.sharedInstance getInstallKey];
-        
-        MENGINE_STRNCPY( _installKey, [installKey UTF8String], _capacity );
-
-        return installKey.length;
+        m_sessionId.copy( _sessionId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSEnvironmentService::getInstallKey( Char * const _installKey ) const
+    {
+        m_installKey.copy( _installKey );
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t iOSEnvironmentService::getInstallTimestamp() const
     {
-        NSInteger installTimestamp = [iOSApplication.sharedInstance getInstallTimestamp];
-        
-        return installTimestamp;
+        return m_installTimestamp;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t iOSEnvironmentService::getInstallVersion( Char * const _installVersion, size_t _capacity ) const
+    void iOSEnvironmentService::getInstallVersion( Char * const _installVersion ) const
     {
-        NSString * installVersion = [iOSApplication.sharedInstance getInstallVersion];
-        
-        MENGINE_STRNCPY( _installVersion, [installVersion UTF8String], _capacity );
-
-        return installVersion.length;
+        m_installVersion.copy( _installVersion );
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t iOSEnvironmentService::getInstallRND() const
     {
-        NSInteger installRND = [iOSApplication.sharedInstance getInstallRND];
-        
-        return installRND;
+        return m_installRND;
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t iOSEnvironmentService::getSessionIndex() const
     {
-        NSInteger sessionIndex = [iOSApplication.sharedInstance getSessionIndex];
-        
-        return sessionIndex;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool iOSEnvironmentService::openUrlInDefaultBrowser( const Char * _url )
-    {
-        NSURL * ns_url = [NSURL URLWithString:@(_url)];
-        
-        if( [[UIApplication sharedApplication] canOpenURL:ns_url] == NO )
-        {
-            return false;
-        }
-        
-        [[UIApplication sharedApplication] openURL:ns_url options:@{} completionHandler:^(BOOL success) {
-            //ToDo callback
-        }];
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool iOSEnvironmentService::openMail( const Char * _email, const Char * _subject, const Char * _body )
-    {
-        UIViewController * view = Helper::iOSGetRootViewController();
-        
-        if( [iOSMailCompose canSendMail] == NO )
-        {
-            Helper::iOSAlert( view, @"Yikes.", @"Log into your mailbox using the standard Mail app" );
-            
-            return false;
-        }
-        
-        iOSMailCompose * mailCompose = [[iOSMailCompose alloc] initWithViewController:view email:@(_email) subject:@(_subject) message:@(_body) completion:^{
-            this->m_mailCompose = nullptr;
-        }];
-
-        m_mailCompose = mailCompose;
-        
-        return true;
+        return m_sessionIndex;
     }
     //////////////////////////////////////////////////////////////////////////
 }

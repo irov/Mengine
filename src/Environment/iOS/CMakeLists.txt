@@ -12,6 +12,9 @@ src
     
     iOSApplication.h
     iOSApplication.mm
+
+    iOSKernelService.h
+    iOSKernelService.mm
     
     iOSEnvironmentService.h
     iOSEnvironmentService.mm

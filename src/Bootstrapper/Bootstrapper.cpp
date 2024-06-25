@@ -162,6 +162,10 @@ SERVICE_EXTERN( AndroidAssetService );
 SERVICE_EXTERN( AppleKernelService );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_IOS)
+SERVICE_EXTERN( iOSKernelService );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_EXTERNAL_SOURCE)
 PLUGIN_EXPORT( ExternalBootstrapper );
 #endif
@@ -1006,6 +1010,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_APPLE)
         MENGINE_ADD_SERVICE( AppleKernelService, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLATFORM_IOS)
+        MENGINE_ADD_SERVICE( iOSKernelService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         MENGINE_ADD_SERVICE( EnvironmentService, MENGINE_DOCUMENT_FACTORABLE );

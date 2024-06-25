@@ -14,8 +14,8 @@ namespace Mengine
     SDLInput::SDLInput()
     {
         Algorithm::fill_n( m_keyDown, MENGINE_INPUT_MAX_KEY_CODE, false );
-        Algorithm::fill_n( m_keys, MENGINE_INPUT_MAX_KEY_CODE, KC_UNASSIGNED );
-        Algorithm::fill_n( m_codes, SDL_NUM_SCANCODES, SDL_SCANCODE_UNKNOWN );
+        Algorithm::fill_n( m_keys, SDL_NUM_SCANCODES, KC_UNASSIGNED );
+        Algorithm::fill_n( m_codes, MENGINE_INPUT_MAX_KEY_CODE, SDL_SCANCODE_UNKNOWN );
         Algorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, -1 );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -272,10 +272,12 @@ namespace Mengine
         {
             bool isDown = m_keyDown[i];
 
-            if( isDown == true )
+            if( isDown == false )
             {
-                return true;
+                continue;
             }
+
+            return true;
         }
 
         return false;
@@ -283,8 +285,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLInput::getCursorPosition( SDL_Window * _sdlWindow, mt::vec2f * const _point ) const
     {
-        int x;
-        int y;
+        int x = 0;
+        int y = 0;
         Uint32 state = SDL_GetMouseState( &x, &y );
         MENGINE_UNUSED( state );
 
@@ -396,7 +398,9 @@ namespace Mengine
 
         m_keys[SDL_SCANCODE_NUMLOCKCLEAR] = Mengine::KC_NUMLOCK;
 
-        for( uint32_t i = 0; i != MENGINE_INPUT_MAX_KEY_CODE; ++i )
+        m_keys[SDL_SCANCODE_AC_BACK] = Mengine::KC_BROWSER_BACK;
+
+        for( uint32_t i = 0; i != SDL_NUM_SCANCODES; ++i )
         {
             EKeyCode code = m_keys[i];
 
@@ -423,6 +427,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SDL_Scancode SDLInput::getSDLKey_( EKeyCode _code ) const
     {
+        if( _code >= MENGINE_INPUT_MAX_KEY_CODE )
+        {
+            return SDL_SCANCODE_UNKNOWN;
+        }
+
         SDL_Scancode key = m_codes[_code];
 
         return key;

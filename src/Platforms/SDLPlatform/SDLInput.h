@@ -11,6 +11,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class SDLInput
         : public Factorable
     {
@@ -44,16 +45,16 @@ namespace Mengine
         ETouchCode getFingerIndex_( SDL_FingerID _fingerId ) const;
 
     protected:
-        bool m_keyDown[MENGINE_INPUT_MAX_KEY_CODE];
-
-        EKeyCode m_keys[MENGINE_INPUT_MAX_KEY_CODE];
-        SDL_Scancode m_codes[SDL_NUM_SCANCODES];
-
-        SDL_FingerID m_fingers[MENGINE_INPUT_MAX_TOUCH];
-
-    protected:
         EKeyCode getKeyCode_( SDL_Scancode _key ) const;
         SDL_Scancode getSDLKey_( EKeyCode _code ) const;
+
+    protected:
+        bool m_keyDown[MENGINE_INPUT_MAX_KEY_CODE];
+
+        EKeyCode m_keys[SDL_NUM_SCANCODES];
+        SDL_Scancode m_codes[MENGINE_INPUT_MAX_KEY_CODE];
+
+        SDL_FingerID m_fingers[MENGINE_INPUT_MAX_TOUCH];
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLInput> SDLInputPtr;

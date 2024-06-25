@@ -101,11 +101,6 @@ namespace Mengine
         m_bundleId.copy( _bundleId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void iOSEnvironmentService::getFingerprint( Char * const _fingerprint ) const
-    {
-        m_fingerprint.copy( _fingerprint );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void iOSEnvironmentService::getSessionId( Char * const _sessionId ) const
     {
         m_sessionId.copy( _sessionId );

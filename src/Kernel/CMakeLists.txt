@@ -649,6 +649,9 @@ Core
     StringLowercase.h
     StringLowercase.cpp
     
+    Fingerprint.h
+    Fingerprint.cpp
+    
     Tags.h
     Tags.cpp
     

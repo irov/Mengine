@@ -87,12 +87,13 @@ namespace Mengine
         fingerprintGarbage.append( m_deviceModel );
         fingerprintGarbage.append( "_" );
         fingerprintGarbage.append( androidId );
-
-        Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), m_fingerprint.data(), false );
+        
+        StaticString<MENGINE_SHA1_HEX_COUNT + 1> fingerprint;
+        Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), fingerprint.data(), false );
 
         m_userName.assign( m_deviceModel );
-        m_userName.append( ' ' );
-        m_userName.append( m_fingerprint.data(), 6 );
+        m_userName.append( '_' );
+        m_userName.append( fingerprint.data(), 6 );
 
         return true;
     }
@@ -130,11 +131,6 @@ namespace Mengine
     void AndroidEnvironmentService::getBundleId( Char * const _bundleId ) const
     {
         m_bundleId.copy( _bundleId );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::getFingerprint( Char * const _fingerprint ) const
-    {
-        m_fingerprint.copy( _fingerprint );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::getSessionId( Char * const _sessionId ) const

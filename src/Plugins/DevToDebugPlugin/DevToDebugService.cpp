@@ -44,13 +44,15 @@
 #include "Kernel/ThreadWorkerHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/Fingerprint.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 //////////////////////////////////////////////////////////////////////////
-extern "C" {
+extern "C"
+{
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidDevDebuggerMengine_1createDevTab )(JNIEnv * env, jclass cls, jstring _tab)
     {
@@ -236,6 +238,8 @@ namespace Mengine
         {
             return false;
         }
+
+        Helper::fingerprintSHA1( m_fingerprint, false );
 
         uint32_t DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebugPlugin", "ProccesTime", 2000 );
 
@@ -829,11 +833,7 @@ namespace Mengine
     {
         jpp::object j = jpp::make_object();
 
-        Char fingerprint[MENGINE_ENVIRONMENT_FINGERPRINT_MAXNAME] = {'\0'};
-        ENVIRONMENT_SERVICE()
-            ->getFingerprint( fingerprint );
-
-        j.set( "did", fingerprint );
+        j.set( "did", m_fingerprint );
 
         Char userName[MENGINE_ENVIRONMENT_USER_MAXNAME] = {'\0'};
         ENVIRONMENT_SERVICE()
@@ -842,7 +842,7 @@ namespace Mengine
         j.set( "name", userName );
 
         LOGGER_INFO( "devtodebug", "device did '%s' name '%s'"
-            , fingerprint
+            , m_fingerprint
             , userName
         );
 

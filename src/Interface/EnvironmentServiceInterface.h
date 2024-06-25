@@ -4,10 +4,6 @@
 
 #include "Config/Char.h"
 
-#ifndef MENGINE_ENVIRONMENT_FINGERPRINT_MAXNAME
-#define MENGINE_ENVIRONMENT_FINGERPRINT_MAXNAME (MENGINE_SHA1_HEX_COUNT + 1)
-#endif
-
 #ifndef MENGINE_ENVIRONMENT_USER_MAXNAME
 #define MENGINE_ENVIRONMENT_USER_MAXNAME 256
 #endif
@@ -58,9 +54,6 @@ namespace Mengine
         virtual void getOSFamily( Char * const _osVersion ) const = 0;
         virtual void getOSVersion( Char * const _osVersion ) const = 0;
         virtual void getBundleId( Char * const _bundleId ) const = 0;
-
-    public:
-        virtual void getFingerprint( Char * const _fingerprint ) const = 0;
 
     public:
         virtual void getSessionId( Char * const _sessionId ) const = 0;

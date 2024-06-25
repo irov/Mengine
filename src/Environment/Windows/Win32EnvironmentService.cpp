@@ -208,14 +208,11 @@ namespace Mengine
             fingerprintGarbage.append( VolumeSerialNumberBuffer );
         }
 
-        Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), m_fingerprint.data(), true );
+        StaticString<MENGINE_SHA1_HEX_COUNT + 1> fingerprint;
+        Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), fingerprint.data(), true );
 
-        LOGGER_INFO_PROTECTED( "environment", "fingerprint: %s"
-            , m_fingerprint.data()
-        );
-
-        m_sessionId.assign( m_fingerprint );
-        m_installKey.assign( m_fingerprint );
+        m_sessionId.assign( fingerprint );
+        m_installKey.assign( fingerprint );
 
         return true;
     }
@@ -253,11 +250,6 @@ namespace Mengine
     void Win32EnvironmentService::getBundleId( Char * const _bundleId ) const
     {
         m_bundleId.copy( _bundleId );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32EnvironmentService::getFingerprint( Char * const _fingerprint ) const
-    {
-        m_fingerprint.copy( _fingerprint );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32EnvironmentService::getSessionId( Char * const _sessionId ) const

@@ -67,6 +67,8 @@ namespace Mengine
         jpp::object makeJsonProcessData();
 
     protected:
+        Char m_fingerprint[MENGINE_SHA1_HEX_COUNT + 1];
+
         ThreadMutexInterfacePtr m_mutexTabs;
         ThreadMutexInterfacePtr m_mutexCommands;
 

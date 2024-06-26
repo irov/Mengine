@@ -291,9 +291,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadProcessor::isCurrentThread() const
     {
-        HANDLE handle = ::GetCurrentThread();
+        DWORD threadId = ::GetCurrentThreadId();
 
-        if( m_thread != handle )
+        if( m_threadId != threadId )
         {
             return false;
         }

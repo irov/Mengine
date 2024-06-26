@@ -17,18 +17,19 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         namespace Detail
         {
-            class MyThreadWorker
+            //////////////////////////////////////////////////////////////////////////
+            class SimpleThreadWorker
                 : public ThreadWorkerInterface
                 , public Factorable
             {
             public:
-                MyThreadWorker( const LambdaThreadUpdate & _update, const LambdaThreadWorker & _worker )
+                SimpleThreadWorker( const LambdaThreadUpdate & _update, const LambdaThreadWorker & _worker )
                     : m_update( _update )
                     , m_worker( _worker )
                 {
                 }
 
-                ~MyThreadWorker() override
+                ~SimpleThreadWorker() override
                 {
                 }
 
@@ -62,7 +63,7 @@ namespace Mengine
                 LambdaThreadWorker m_worker;
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<MyThreadWorker, ThreadWorkerInterface> MyThreadWorkerPtr;
+            typedef IntrusivePtr<SimpleThreadWorker, ThreadWorkerInterface> SimpleThreadWorkerPtr;
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
@@ -85,7 +86,7 @@ namespace Mengine
                 return false;
             }
 
-            Detail::MyThreadWorkerPtr worker = Helper::makeFactorableUnique<Detail::MyThreadWorker>( _doc, _update, _worker );
+            Detail::SimpleThreadWorkerPtr worker = Helper::makeFactorableUnique<Detail::SimpleThreadWorker>( _doc, _update, _worker );
 
             UniqueId workerId = threadJob->addWorker( worker, _doc );
 

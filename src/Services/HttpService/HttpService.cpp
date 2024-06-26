@@ -78,7 +78,7 @@ namespace Mengine
         for( uint32_t index = 0; index != Http_ThreadCountLow; ++index )
         {
             Stringstream ss;
-            ss << "ThreadHttpLow_" << index;
+            ss << "HttpLow_" << index;
             ConstString threadName = Helper::stringizeString( ss.str() );
 
             if( THREAD_SERVICE()
@@ -104,7 +104,7 @@ namespace Mengine
         for( uint32_t index = 0; index != Http_ThreadCountHigh; ++index )
         {
             Stringstream ss;
-            ss << "ThreadHttpHigh_" << index;
+            ss << "HttpHigh_" << index;
             ConstString threadName = Helper::stringizeString( ss.str() );
 
             if( THREAD_SERVICE()

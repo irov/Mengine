@@ -66,7 +66,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HttpService::_initializeService()
     {
-        uint32_t Http_ThreadCountLow = CONFIG_VALUE( "Http", "ThreadCountLow", 2 );
+        uint32_t Http_ThreadCountLow = CONFIG_VALUE( "Http", "ThreadCountLow", 4 );
 
         ThreadQueueInterfacePtr threadQueueLow = THREAD_SERVICE()
             ->createTaskQueue( 1, MENGINE_DOCUMENT_FACTORABLE );
@@ -92,7 +92,7 @@ namespace Mengine
             m_threadQueueLow->addThread( threadName );
         }
 
-        uint32_t Http_ThreadCountHigh = CONFIG_VALUE( "Http", "ThreadCountHigh", 6 );
+        uint32_t Http_ThreadCountHigh = CONFIG_VALUE( "Http", "ThreadCountHigh", 8 );
 
         ThreadQueueInterfacePtr threadQueueHigh = THREAD_SERVICE()
             ->createTaskQueue( 1, MENGINE_DOCUMENT_FACTORABLE );

@@ -20,6 +20,8 @@
 
 #include "Config/Algorithm.h"
 
+#define MEMORYUSAGEMONITOR_THREAD_NAME "MemoryUsageMonitor"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -49,13 +51,13 @@ namespace Mengine
         m_threadJob = threadJob;
 
         if( THREAD_SERVICE()
-            ->createThreadProcessor( STRINGIZE_STRING_LOCAL( "MemoryUsageMonitor" ), ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->createThreadProcessor( STRINGIZE_STRING_LOCAL_I( MEMORYUSAGEMONITOR_THREAD_NAME ), ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
         if( THREAD_SERVICE()
-            ->addTask( STRINGIZE_STRING_LOCAL( "MemoryUsageMonitor" ), m_threadJob, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->addTask( STRINGIZE_STRING_LOCAL_I( MEMORYUSAGEMONITOR_THREAD_NAME ), m_threadJob, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -78,17 +80,17 @@ namespace Mengine
         m_threadJob = nullptr;
 
         THREAD_SERVICE()
-            ->destroyThreadProcessor( STRINGIZE_STRING_LOCAL( "MemoryUsageMonitor" ) );
+            ->destroyThreadProcessor( STRINGIZE_STRING_LOCAL_I( MEMORYUSAGEMONITOR_THREAD_NAME ) );
 
         m_prevUsages.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryUsageMonitor::onThreadWorkerUpdate( uint32_t _id )
+    void MemoryUsageMonitor::onThreadWorkerUpdate( UniqueId _id )
     {
         MENGINE_UNUSED( _id );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryUsageMonitor::onThreadWorkerWork( uint32_t _id )
+    bool MemoryUsageMonitor::onThreadWorkerWork( UniqueId _id )
     {
         MENGINE_UNUSED( _id );
 
@@ -195,7 +197,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryUsageMonitor::onThreadWorkerDone( uint32_t _id )
+    void MemoryUsageMonitor::onThreadWorkerDone( UniqueId _id )
     {
         MENGINE_UNUSED( _id );
 

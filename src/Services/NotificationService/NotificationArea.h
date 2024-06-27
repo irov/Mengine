@@ -21,7 +21,7 @@ namespace Mengine
         const ThreadMutexInterfacePtr & getMutex() const;
 
     public:
-        bool initialize( uint32_t _id );
+        bool initialize( NotificatorId _id );
         void finalize();
 
     public:
@@ -43,7 +43,7 @@ namespace Mengine
         void updateObservers_();
 
     protected:
-        uint32_t m_id;
+        NotificatorId m_id;
 
         ThreadMutexInterfacePtr m_mutex;
 

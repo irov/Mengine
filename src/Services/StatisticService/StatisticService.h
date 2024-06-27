@@ -21,20 +21,20 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void addStatisticInteger( uint32_t _id, int64_t _value ) override;
-        void delStatisticInteger( uint32_t _id, int64_t _value ) override;
-        int64_t getStatisticInteger( uint32_t _id ) const override;
-        void resetStatisticInteger( uint32_t _id ) override;
+        void addStatisticInteger( StatisticId _id, int64_t _value ) override;
+        void delStatisticInteger( StatisticId _id, int64_t _value ) override;
+        int64_t getStatisticInteger( StatisticId _id ) const override;
+        void resetStatisticInteger( StatisticId _id ) override;
 
     public:
-        void addStatisticDouble( uint32_t _id, double _value ) override;
-        double getStatisticDouble( uint32_t _id ) const override;
-        void resetStatisticDouble( uint32_t _id ) override;
+        void addStatisticDouble( StatisticId _id, double _value ) override;
+        double getStatisticDouble( StatisticId _id ) const override;
+        void resetStatisticDouble( StatisticId _id ) override;
 
     public:
-        void setStatisticConstString( uint32_t _id, const ConstString & _value ) override;
-        const ConstString & getStatisticConstString( uint32_t _id ) const override;
-        void resetStatisticConstString( uint32_t _id ) override;
+        void setStatisticConstString( StatisticId _id, const ConstString & _value ) override;
+        const ConstString & getStatisticConstString( StatisticId _id ) const override;
+        void resetStatisticConstString( StatisticId _id ) override;
 
     protected:
         ThreadSharedMutexInterfacePtr m_mutex;

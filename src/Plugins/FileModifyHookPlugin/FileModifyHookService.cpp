@@ -11,6 +11,8 @@
 
 #include "Config/StdString.h"
 
+#define FILEMODIFYHOOK_THREAD_NAME "FileModifyHook"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FileModifyHookService, Mengine::FileModifyHookService );
 //////////////////////////////////////////////////////////////////////////
@@ -36,13 +38,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileModifyHookService::_initializeService()
     {
-        Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "FileModifyHook" ), ETP_BELOW_NORMAL, 500, [this]()
-        {
-            this->notifyFileModifies();
-        }, [this]()
-        {
-            this->checkFileModifies();
-        }, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( FILEMODIFYHOOK_THREAD_NAME ), ETP_BELOW_NORMAL, 500, ThreadWorkerInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         ThreadMutexInterfacePtr fileModifyMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -53,7 +49,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileModifyHookService::_finalizeService()
     {
-        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL( "FileModifyHook" ) );
+        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( FILEMODIFYHOOK_THREAD_NAME ) );
 
         m_fileModifyMutex = nullptr;
 
@@ -106,6 +102,29 @@ namespace Mengine
 
             break;
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FileModifyHookService::onThreadWorkerUpdate( UniqueId _id )
+    {
+        MENGINE_UNUSED( _id );
+
+        this->notifyFileModifies();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileModifyHookService::onThreadWorkerWork( UniqueId _id )
+    {
+        MENGINE_UNUSED( _id );
+
+        this->checkFileModifies();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FileModifyHookService::onThreadWorkerDone( UniqueId _id )
+    {
+        MENGINE_UNUSED( _id );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void FileModifyHookService::notifyFileModifies() const

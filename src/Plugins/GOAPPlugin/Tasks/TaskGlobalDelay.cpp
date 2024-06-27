@@ -26,14 +26,14 @@ namespace Mengine
         }
 
     protected:
-        void onSchedulerComplete( uint32_t _id ) override
+        void onSchedulerComplete( UniqueId _id ) override
         {
             m_task->schedulerComplete( _id );
 
             m_node->complete();
         }
 
-        void onSchedulerStop( uint32_t _id ) override
+        void onSchedulerStop( UniqueId _id ) override
         {
             m_task->schedulerComplete( _id );
 
@@ -51,7 +51,7 @@ namespace Mengine
 #if defined(MENGINE_DOCUMENT_ENABLE)
         , m_doc( _doc )
 #endif
-        , m_id( 0 )
+        , m_id( INVALID_UNIQUE_ID )
     {
         MENGINE_UNUSED( _doc );
     }
@@ -60,14 +60,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void TaskGlobalDelay::schedulerComplete( uint32_t _id )
+    void TaskGlobalDelay::schedulerComplete( UniqueId _id )
     {
         if( m_id != _id )
         {
             return;
         }
 
-        m_id = 0;
+        m_id = INVALID_UNIQUE_ID;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TaskGlobalDelay::_onRun( GOAP::NodeInterface * _node )
@@ -77,9 +77,9 @@ namespace Mengine
         const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
             ->getGlobalScheduler();
 
-        uint32_t id = scheduler->event( m_time, ev, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) );
+        UniqueId id = scheduler->event( m_time, ev, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) );
 
-        if( id == 0 )
+        if( id == INVALID_UNIQUE_ID )
         {
             LOGGER_ERROR( "error schedule event" );
 
@@ -93,13 +93,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TaskGlobalDelay::_onFinally()
     {
-        if( m_id != 0 )
+        if( m_id != INVALID_UNIQUE_ID )
         {
             const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
                 ->getGlobalScheduler();
 
             scheduler->remove( m_id );
-            m_id = 0;
+            m_id = INVALID_UNIQUE_ID;
         }
 
 #if defined(MENGINE_DOCUMENT_ENABLE)

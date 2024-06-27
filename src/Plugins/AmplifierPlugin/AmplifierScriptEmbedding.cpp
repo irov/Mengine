@@ -212,7 +212,7 @@ namespace Mengine
                 }
 
             protected:
-                void onAffectorEnd( uint32_t _id, bool _isEnd ) override
+                void onAffectorEnd( UniqueId _id, bool _isEnd ) override
                 {
                     if( m_cb.is_invalid() == true )
                     {

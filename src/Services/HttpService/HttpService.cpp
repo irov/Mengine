@@ -1,6 +1,7 @@
 #include "HttpService.h"
 
 #include "Interface/FileGroupInterface.h"
+#include "Interface/HttpSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 

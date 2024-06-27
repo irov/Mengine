@@ -407,7 +407,7 @@ namespace Mengine
                 }
 
             protected:
-                void onAffectorEnd( uint32_t _id, bool _isEnd ) override
+                void onAffectorEnd( UniqueId _id, bool _isEnd ) override
                 {
                     if( _isEnd == true )
                     {

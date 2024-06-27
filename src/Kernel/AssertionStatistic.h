@@ -5,12 +5,13 @@
 #if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
 #   include "Config/Char.h"
 #   include "Config/Typedef.h"
+#   include "Config/StatisticId.h"
 
 namespace Mengine
 {
     namespace Detail
     {
-        void assertionStatisticEmpty( const Char * _category, uint32_t _id, const Char * _file, uint32_t _line );
+        void assertionStatisticEmpty( const Char * _category, StatisticId _id, const Char * _file, uint32_t _line );
     }
 }
 

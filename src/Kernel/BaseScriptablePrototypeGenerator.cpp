@@ -6,6 +6,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

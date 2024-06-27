@@ -19,6 +19,8 @@
 
 #include "Config/StdString.h"
 
+#define CACHALOTLOGGER_THREAD_NAME "CachalotLogger"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -50,10 +52,7 @@ namespace Mengine
 
         uint32_t CachalotPlugin_LoggerTime = CONFIG_VALUE( "CachalotPlugin", "Time", 2000 );
 
-        if( Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "CachalotLogger" ), ETP_BELOW_NORMAL, CachalotPlugin_LoggerTime, nullptr, [this]()
-        {
-            this->process();
-        }, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( CACHALOTLOGGER_THREAD_NAME ), ETP_BELOW_NORMAL, CachalotPlugin_LoggerTime, ThreadWorkerInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -63,7 +62,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void CachalotLogger::_finalizeLogger()
     {
-        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL( "CachalotLogger" ) );
+        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( CACHALOTLOGGER_THREAD_NAME ) );
 
         m_mutex = nullptr;
 
@@ -244,6 +243,29 @@ namespace Mengine
             ->headerData( m_dsn, headers, m_dataAux, 2000, EHRE_LOW_PRIORITY, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_UNUSED( id );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void CachalotLogger::onThreadWorkerUpdate( UniqueId _id )
+    {
+        MENGINE_UNUSED( _id );
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool CachalotLogger::onThreadWorkerWork( UniqueId _id )
+    {
+        MENGINE_UNUSED( _id );
+
+        this->process();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void CachalotLogger::onThreadWorkerDone( UniqueId _id )
+    {
+        MENGINE_UNUSED( _id );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void CachalotLogger::onHttpRequestComplete( const HttpResponseInterfacePtr & _response )

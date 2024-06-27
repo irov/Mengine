@@ -51,21 +51,21 @@ namespace Mengine
         m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void StatisticService::addStatisticInteger( uint32_t _id, int64_t _value )
+    void StatisticService::addStatisticInteger( StatisticId _id, int64_t _value )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_statisticIntegers[_id] += _value;
     }
     //////////////////////////////////////////////////////////////////////////
-    void StatisticService::delStatisticInteger( uint32_t _id, int64_t _value )
+    void StatisticService::delStatisticInteger( StatisticId _id, int64_t _value )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_statisticIntegers[_id] -= _value;
     }
     //////////////////////////////////////////////////////////////////////////
-    int64_t StatisticService::getStatisticInteger( uint32_t _id ) const
+    int64_t StatisticService::getStatisticInteger( StatisticId _id ) const
     {
         MENGINE_THREAD_SHARED_MUTEX_SCOPE( m_mutex );
 
@@ -74,21 +74,21 @@ namespace Mengine
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
-    void StatisticService::resetStatisticInteger( uint32_t _id )
+    void StatisticService::resetStatisticInteger( StatisticId _id )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_statisticIntegers[_id] = 0LL;
     }
     //////////////////////////////////////////////////////////////////////////
-    void StatisticService::addStatisticDouble( uint32_t _id, double _value )
+    void StatisticService::addStatisticDouble( StatisticId _id, double _value )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_statisticDoubles[_id] += _value;
     }
     //////////////////////////////////////////////////////////////////////////
-    double StatisticService::getStatisticDouble( uint32_t _id ) const
+    double StatisticService::getStatisticDouble( StatisticId _id ) const
     {
         MENGINE_THREAD_SHARED_MUTEX_SCOPE( m_mutex );
 
@@ -97,21 +97,21 @@ namespace Mengine
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
-    void StatisticService::resetStatisticDouble( uint32_t _id )
+    void StatisticService::resetStatisticDouble( StatisticId _id )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_statisticDoubles[_id] = 0.0;
     }
     //////////////////////////////////////////////////////////////////////////
-    void StatisticService::setStatisticConstString( uint32_t _id, const ConstString & _value )
+    void StatisticService::setStatisticConstString( StatisticId _id, const ConstString & _value )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_statisticConstStrings[_id] = _value;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & StatisticService::getStatisticConstString( uint32_t _id ) const
+    const ConstString & StatisticService::getStatisticConstString( StatisticId _id ) const
     {
         MENGINE_THREAD_SHARED_MUTEX_SCOPE( m_mutex );
 
@@ -120,7 +120,7 @@ namespace Mengine
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
-    void StatisticService::resetStatisticConstString( uint32_t _id )
+    void StatisticService::resetStatisticConstString( StatisticId _id )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 

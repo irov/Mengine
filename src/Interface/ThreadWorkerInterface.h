@@ -2,7 +2,7 @@
 
 #include "Interface/Interface.h"
 
-#include "Kernel/IntrusivePtr.h"
+#include "Config/UniqueId.h"
 
 namespace Mengine
 {
@@ -11,9 +11,9 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual void onThreadWorkerUpdate( uint32_t _id ) = 0;
-        virtual bool onThreadWorkerWork( uint32_t _id ) = 0;
-        virtual void onThreadWorkerDone( uint32_t _id ) = 0;
+        virtual void onThreadWorkerUpdate( UniqueId _id ) = 0;
+        virtual bool onThreadWorkerWork( UniqueId _id ) = 0;
+        virtual void onThreadWorkerDone( UniqueId _id ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadWorkerInterface> ThreadWorkerInterfacePtr;

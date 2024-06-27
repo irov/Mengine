@@ -32,7 +32,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
-        const Char * getNotificationName( uint32_t _id )
+        const Char * getNotificationName( NotificatorId _id )
         {
             const Char * name = Detail::createNotificationNameTable<MENGINE_NOTIFICATOR_MAX_COUNT>()[_id];
 

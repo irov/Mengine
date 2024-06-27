@@ -49,6 +49,8 @@
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
+#define DEVTODEBUGPROCESS_THREAD_NAME "DevToDebugProcess"
+
 #if defined(MENGINE_PLATFORM_ANDROID)
 //////////////////////////////////////////////////////////////////////////
 extern "C"
@@ -243,10 +245,7 @@ namespace Mengine
 
         uint32_t DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebugPlugin", "ProccesTime", 2000 );
 
-        if( Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugProcess" ), ETP_BELOW_NORMAL, DevToDebug_ProccesTime, nullptr, [this]()
-        {
-            this->process();
-        }, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( DEVTODEBUGPROCESS_THREAD_NAME ), ETP_BELOW_NORMAL, DevToDebug_ProccesTime, ThreadWorkerInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -361,7 +360,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::_stopService()
     {
-        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugProcess" ) );
+        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( DEVTODEBUGPROCESS_THREAD_NAME ) );
 
         if( m_timerId != INVALID_UNIQUE_ID )
         {
@@ -511,6 +510,29 @@ namespace Mengine
         default:
             break;
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugService::onThreadWorkerUpdate( UniqueId _id )
+    {
+        MENGINE_UNUSED( _id );
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DevToDebugService::onThreadWorkerWork( UniqueId _id )
+    {
+        MENGINE_UNUSED( _id );
+
+        this->process();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugService::onThreadWorkerDone( UniqueId _id )
+    {
+        MENGINE_UNUSED( _id );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::onHttpRequestComplete( const HttpResponseInterfacePtr & _response )

@@ -19,7 +19,7 @@ namespace Mengine
         void _onFinally() override;
 
     protected:
-        void schedulerComplete( uint32_t _id );
+        void schedulerComplete( UniqueId _id );
 
     protected:
         SchedulerInterfacePtr m_scheduler;
@@ -29,7 +29,7 @@ namespace Mengine
         DocumentInterfacePtr m_doc;
 #endif
 
-        uint32_t m_id;
+        UniqueId m_id;
 
         class ScheduleEvent;
     };

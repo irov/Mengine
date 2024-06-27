@@ -32,7 +32,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
-        const Char * getStatisticName( uint32_t _id )
+        const Char * getStatisticName( StatisticId _id )
         {
             const Char * name = Detail::createStatisticNameTable<MENGINE_STATISTIC_MAX_COUNT>()[_id];
 

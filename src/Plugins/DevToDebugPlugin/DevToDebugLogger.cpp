@@ -16,6 +16,8 @@
 #include "Kernel/VectorHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 
+#define DEVTODEBUGLOGGER_THREAD_NAME "DevToDebugLogger"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -50,10 +52,7 @@ namespace Mengine
 
         uint32_t DevToDebug_LoggerTime = CONFIG_VALUE( "DevToDebugPlugin", "LoggerTime", 2000 );
 
-        if( Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugLogger" ), ETP_BELOW_NORMAL, DevToDebug_LoggerTime, nullptr, [this]()
-        {
-            this->process();
-        }, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( DEVTODEBUGLOGGER_THREAD_NAME ), ETP_BELOW_NORMAL, DevToDebug_LoggerTime, ThreadWorkerInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -63,7 +62,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugLogger::_finalizeLogger()
     {
-        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL( "DevToDebugLogger" ) );
+        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( DEVTODEBUGLOGGER_THREAD_NAME ) );
         
         m_mutex = nullptr;
 
@@ -187,6 +186,29 @@ namespace Mengine
             ->headerData( m_workerURL, headers, data, 2000, EHRE_LOW_PRIORITY, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_UNUSED( id );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugLogger::onThreadWorkerUpdate( UniqueId _id )
+    {
+        MENGINE_UNUSED( _id );
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DevToDebugLogger::onThreadWorkerWork( UniqueId _id )
+    {
+        MENGINE_UNUSED( _id );
+
+        this->process();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugLogger::onThreadWorkerDone( UniqueId _id )
+    {
+        MENGINE_UNUSED( _id );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugLogger::onHttpRequestComplete( const HttpResponseInterfacePtr & _response )

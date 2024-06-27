@@ -62,8 +62,9 @@
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
+#include "Config/Iterator.h"
 
-#include <iterator>
+#define NODEDEBUGGERLISTEN_THREAD_NAME "NodeDebuggerListen"
 
 namespace Mengine
 {
@@ -169,7 +170,7 @@ namespace Mengine
         }
 
         THREAD_SERVICE()
-            ->destroyThreadProcessor( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ) );
+            ->destroyThreadProcessor( STRINGIZE_STRING_LOCAL_I( NODEDEBUGGERLISTEN_THREAD_NAME ) );
 
         m_arrow = nullptr;
         m_scene = nullptr;
@@ -207,12 +208,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::onThreadWorkerUpdate( uint32_t _id )
+    void NodeDebuggerModule::onThreadWorkerUpdate( UniqueId _id )
     {
         MENGINE_UNUSED( _id );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeDebuggerModule::onThreadWorkerWork( uint32_t )
+    bool NodeDebuggerModule::onThreadWorkerWork( UniqueId )
     {
         switch( m_serverState )
         {
@@ -347,8 +348,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::onThreadWorkerDone( uint32_t )
+    void NodeDebuggerModule::onThreadWorkerDone( UniqueId _id )
     {
+        MENGINE_UNUSED( _id );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::setArrow( const ArrowPtr & _arrow )
@@ -621,11 +625,17 @@ namespace Mengine
         m_threadJob = THREAD_SERVICE()
             ->createJob( 50u, MENGINE_DOCUMENT_FACTORABLE );
 
-        THREAD_SERVICE()
-            ->createThreadProcessor( STRINGIZE_STRING_LOCAL( "NodeDebuggerListen" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
+        if( THREAD_SERVICE()
+            ->createThreadProcessor( STRINGIZE_STRING_LOCAL_I( NODEDEBUGGERLISTEN_THREAD_NAME ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
-        THREAD_SERVICE()
-            ->addTask( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), m_threadJob, MENGINE_DOCUMENT_FACTORABLE );
+        if( THREAD_SERVICE()
+            ->addTask( STRINGIZE_STRING_LOCAL_I( NODEDEBUGGERLISTEN_THREAD_NAME ), m_threadJob, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         m_dataMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 

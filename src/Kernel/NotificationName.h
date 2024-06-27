@@ -6,6 +6,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        const Char * getNotificationName( uint32_t _id );
+        const Char * getNotificationName( NotificatorId _id );
     }
 }

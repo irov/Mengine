@@ -17,7 +17,7 @@ namespace Mengine
         m_args = _args;
     }
     //////////////////////////////////////////////////////////////////////////
-    float PythonSchedulePipe::onSchedulerPipe( uint32_t _id, uint32_t _index )
+    float PythonSchedulePipe::onSchedulerPipe( UniqueId _id, uint32_t _index )
     {
         float delay = m_cb.call_args( _id, _index, m_args );
 

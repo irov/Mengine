@@ -15,59 +15,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        namespace Detail
-        {
-            //////////////////////////////////////////////////////////////////////////
-            class SimpleThreadWorker
-                : public ThreadWorkerInterface
-                , public Factorable
-            {
-            public:
-                SimpleThreadWorker( const LambdaThreadUpdate & _update, const LambdaThreadWorker & _worker )
-                    : m_update( _update )
-                    , m_worker( _worker )
-                {
-                }
-
-                ~SimpleThreadWorker() override
-                {
-                }
-
-            public:
-                void onThreadWorkerUpdate( uint32_t _id ) override
-                {
-                    MENGINE_UNUSED( _id );
-
-                    if( m_update != nullptr )
-                    {
-                        m_update();
-                    }
-                }
-
-                bool onThreadWorkerWork( uint32_t _id ) override
-                {
-                    MENGINE_UNUSED( _id );
-
-                    m_worker();
-
-                    return true;
-                }
-
-                void onThreadWorkerDone( uint32_t _id ) override
-                {
-                    MENGINE_UNUSED( _id );
-                }
-
-            protected:
-                LambdaThreadUpdate m_update;
-                LambdaThreadWorker m_worker;
-            };
-            //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<SimpleThreadWorker, ThreadWorkerInterface> SimpleThreadWorkerPtr;
-            //////////////////////////////////////////////////////////////////////////
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool createSimpleThreadWorker( const ConstString & _threadName, EThreadPriority _priority, uint32_t _sleep, const LambdaThreadUpdate & _update, const LambdaThreadWorker & _worker, const DocumentInterfacePtr & _doc )
+        bool createSimpleThreadWorker( const ConstString & _threadName, EThreadPriority _priority, uint32_t _sleep, const ThreadWorkerInterfacePtr & _worker, const DocumentInterfacePtr & _doc )
         {
             ThreadJobPtr threadJob = THREAD_SERVICE()
                 ->createJob( _sleep, _doc );
@@ -86,9 +34,7 @@ namespace Mengine
                 return false;
             }
 
-            Detail::SimpleThreadWorkerPtr worker = Helper::makeFactorableUnique<Detail::SimpleThreadWorker>( _doc, _update, _worker );
-
-            UniqueId workerId = threadJob->addWorker( worker, _doc );
+            UniqueId workerId = threadJob->addWorker( _worker, _doc );
 
             if( workerId == INVALID_UNIQUE_ID )
             {

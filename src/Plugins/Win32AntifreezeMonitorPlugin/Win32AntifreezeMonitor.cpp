@@ -21,6 +21,8 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/StatisticHelper.h"
 
+#define WIN32ANTIFREEZEMONITOR_THREAD_NAME "Win32AntifreezeMonitor"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -56,13 +58,13 @@ namespace Mengine
         m_threadJob = threadJob;
 
         if( THREAD_SERVICE()
-            ->createThreadProcessor( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->createThreadProcessor( STRINGIZE_STRING_LOCAL_I( WIN32ANTIFREEZEMONITOR_THREAD_NAME ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
 
         if( THREAD_SERVICE()
-            ->addTask( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), m_threadJob, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->addTask( STRINGIZE_STRING_LOCAL_I( WIN32ANTIFREEZEMONITOR_THREAD_NAME ), m_threadJob, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -97,7 +99,7 @@ namespace Mengine
         m_threadJob = nullptr;
 
         THREAD_SERVICE()
-            ->destroyThreadProcessor( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ) );
+            ->destroyThreadProcessor( STRINGIZE_STRING_LOCAL_I( WIN32ANTIFREEZEMONITOR_THREAD_NAME ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::ping()
@@ -105,12 +107,12 @@ namespace Mengine
         ++m_refAlive;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::onThreadWorkerUpdate( uint32_t _id )
+    void Win32AntifreezeMonitor::onThreadWorkerUpdate( UniqueId _id )
     {
         MENGINE_UNUSED( _id );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32AntifreezeMonitor::onThreadWorkerWork( uint32_t _id )
+    bool Win32AntifreezeMonitor::onThreadWorkerWork( UniqueId _id )
     {
         MENGINE_UNUSED( _id );
 
@@ -212,7 +214,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::onThreadWorkerDone( uint32_t _id )
+    void Win32AntifreezeMonitor::onThreadWorkerDone( UniqueId _id )
     {
         MENGINE_UNUSED( _id );
 

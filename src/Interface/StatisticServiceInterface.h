@@ -4,6 +4,8 @@
 
 #include "Kernel/ConstString.h"
 
+#include "Config/StatisticId.h"
+
 //////////////////////////////////////////////////////////////////////////
 #if !defined(MENGINE_STATISTIC)
 #   if defined(MENGINE_DEBUG)
@@ -25,20 +27,20 @@ namespace Mengine
         SERVICE_DECLARE( "StatisticService" )
 
     public:
-        virtual void addStatisticInteger( uint32_t _id, int64_t _value ) = 0;
-        virtual void delStatisticInteger( uint32_t _id, int64_t _value ) = 0;
-        virtual int64_t getStatisticInteger( uint32_t _id ) const = 0;
-        virtual void resetStatisticInteger( uint32_t _id ) = 0;
+        virtual void addStatisticInteger( StatisticId _id, int64_t _value ) = 0;
+        virtual void delStatisticInteger( StatisticId _id, int64_t _value ) = 0;
+        virtual int64_t getStatisticInteger( StatisticId _id ) const = 0;
+        virtual void resetStatisticInteger( StatisticId _id ) = 0;
 
     public:
-        virtual void addStatisticDouble( uint32_t _id, double _value ) = 0;
-        virtual double getStatisticDouble( uint32_t _id ) const = 0;
-        virtual void resetStatisticDouble( uint32_t _id ) = 0;
+        virtual void addStatisticDouble( StatisticId _id, double _value ) = 0;
+        virtual double getStatisticDouble( StatisticId _id ) const = 0;
+        virtual void resetStatisticDouble( StatisticId _id ) = 0;
 
     public:
-        virtual void setStatisticConstString( uint32_t _id, const ConstString & _value ) = 0;
-        virtual const ConstString & getStatisticConstString( uint32_t _id ) const = 0;
-        virtual void resetStatisticConstString( uint32_t _id ) = 0;
+        virtual void setStatisticConstString( StatisticId _id, const ConstString & _value ) = 0;
+        virtual const ConstString & getStatisticConstString( StatisticId _id ) const = 0;
+        virtual void resetStatisticConstString( StatisticId _id ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

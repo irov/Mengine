@@ -6,7 +6,7 @@
 
 namespace Mengine
 {
-    namespace mpl
+    namespace Metaprogramming
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T, class A, size_t N, size_t... Is>

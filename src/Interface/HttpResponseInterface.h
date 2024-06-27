@@ -8,15 +8,10 @@
 #include "Kernel/Data.h"
 #include "Kernel/VectorString.h"
 #include "Kernel/HttpCode.h"
-
-#include "Config/UniqueId.h"
-
-#define MENGINE_HTTP_REQUEST_INVALID INVALID_UNIQUE_ID
+#include "Kernel/HttpRequestId.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef UniqueId HttpRequestId;
     //////////////////////////////////////////////////////////////////////////
     typedef VectorString HttpRequestHeaders;
     //////////////////////////////////////////////////////////////////////////

@@ -87,7 +87,7 @@ namespace Mengine
             bool successful = false;
 
             ThreadWorkerInterfacePtr worker;
-            uint32_t id = 0;
+            UniqueId id = INVALID_UNIQUE_ID;
 
             _desc.mutex->lock();
 
@@ -178,7 +178,9 @@ namespace Mengine
             if( _desc.remove == false && _desc.pause == false )
             {
                 _desc.mutex_progress->lock();
-                work = _desc.worker->onThreadWorkerWork( _desc.id );
+                UniqueId id = _desc.id;
+
+                work = _desc.worker->onThreadWorkerWork( id );
                 _desc.mutex_progress->unlock();
             }
 

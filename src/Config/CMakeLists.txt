@@ -114,6 +114,8 @@ src
     UInt32ToPointer.h
     Metaprogramming.h
     UniqueId.h
+    NotificatorId.h
+    StatisticId.h
     Algorithm.h
     Numeric.h
     Iterator.h

@@ -50,7 +50,7 @@ namespace Mengine
         {
             m_sourceId = m_soundSystem->genSourceId();
 
-            if( m_sourceId == 0 )
+            if( m_sourceId == INVALID_UNIQUE_ID )
             {
                 return false;
             }
@@ -87,7 +87,7 @@ namespace Mengine
             return;
         }
 
-        if( m_sourceId == 0 )
+        if( m_sourceId == INVALID_UNIQUE_ID )
         {
             return;
         }

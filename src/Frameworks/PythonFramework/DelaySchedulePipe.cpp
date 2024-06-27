@@ -17,7 +17,7 @@ namespace Mengine
         m_delay = _delay;
     }
     //////////////////////////////////////////////////////////////////////////    
-    float DelaySchedulePipe::onSchedulerPipe( uint32_t _id, uint32_t _index )
+    float DelaySchedulePipe::onSchedulerPipe( UniqueId _id, uint32_t _index )
     {
         MENGINE_UNUSED( _id );
         MENGINE_UNUSED( _index );

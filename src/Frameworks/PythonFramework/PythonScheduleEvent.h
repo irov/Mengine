@@ -23,8 +23,8 @@ namespace Mengine
         void initialize( const pybind::object & _cb, const pybind::args & _args );
 
     protected:
-        void onSchedulerComplete( uint32_t _id ) override;
-        void onSchedulerStop( uint32_t _id ) override;
+        void onSchedulerComplete( UniqueId _id ) override;
+        void onSchedulerStop( UniqueId _id ) override;
 
     protected:
         pybind::object m_cb;

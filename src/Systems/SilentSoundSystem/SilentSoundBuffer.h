@@ -5,6 +5,7 @@
 #include "Kernel/Factorable.h"
 
 #include "Config/Timestamp.h"
+#include "Config/UniqueId.h"
 
 namespace Mengine
 {
@@ -31,13 +32,13 @@ namespace Mengine
     public:
         bool load( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable );
 
-        void play( uint32_t _id, bool _looped, float _pos );
-        bool resume( uint32_t _id );
-        void pause( uint32_t _id );
-        void stop( uint32_t _id );
+        void play( UniqueId _id, bool _looped, float _pos );
+        bool resume( UniqueId _id );
+        void pause( UniqueId _id );
+        void stop( UniqueId _id );
 
     public:
-        float getTimePos( uint32_t _id ) const;
+        float getTimePos( UniqueId _id ) const;
         float getTimeTotal() const;
 
     public:

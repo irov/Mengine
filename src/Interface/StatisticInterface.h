@@ -2,6 +2,7 @@
 
 #include "Config/Typedef.h"
 #include "Config/Char.h"
+#include "Config/StatisticId.h"
 
 #ifndef MENGINE_STATISTIC_MAX_COUNT
 #define MENGINE_STATISTIC_MAX_COUNT 256
@@ -10,7 +11,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    template<uint32_t ID>
+    typedef uint32_t StatisticId;
+    //////////////////////////////////////////////////////////////////////////
+    template<StatisticId ID>
     struct Statistic
     {
         static const Char * getName()
@@ -20,14 +23,14 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_STATISTIC_DECLARE_BEGIN()\
-    static constexpr uint32_t MENGINE_STATISTIC_ENUMERATOR_BEGIN = MENGINE_CODE_LINE
+    static constexpr StatisticId MENGINE_STATISTIC_ENUMERATOR_BEGIN = MENGINE_CODE_LINE
         //////////////////////////////////////////////////////////////////////////
 #define MENGINE_STATISTIC_DECLARE_END()\
-    static constexpr uint32_t MENGINE_STATISTIC_ENUMERATOR_COUNT = MENGINE_CODE_LINE - MENGINE_STATISTIC_ENUMERATOR_BEGIN - 1;\
+    static constexpr StatisticId MENGINE_STATISTIC_ENUMERATOR_COUNT = MENGINE_CODE_LINE - MENGINE_STATISTIC_ENUMERATOR_BEGIN - 1;\
     static_assert(MENGINE_STATISTIC_ENUMERATOR_COUNT < MENGINE_STATISTIC_MAX_COUNT)
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_STATISTIC_DECLARE(NAME)\
-    static constexpr uint32_t NAME = MENGINE_CODE_LINE - MENGINE_STATISTIC_ENUMERATOR_BEGIN;\
+    static constexpr StatisticId NAME = MENGINE_CODE_LINE - MENGINE_STATISTIC_ENUMERATOR_BEGIN;\
     template<> struct Statistic<NAME> { static const Char * getName() { return #NAME; } }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_STATISTIC_DECLARE_BEGIN();

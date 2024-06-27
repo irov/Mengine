@@ -7,12 +7,13 @@
 #   include "Kernel/Logger.h"
 
 #   include "Config/StdIO.h"
+#   include "Config/StatisticId.h"
 
 namespace Mengine
 {
     namespace Detail
     {
-        void assertionStatisticEmpty( const Char * _category, uint32_t _id, const Char * _file, uint32_t _line )
+        void assertionStatisticEmpty( const Char * _category, StatisticId _id, const Char * _file, uint32_t _line )
         {
             int64_t value = STATISTIC_GET_INTEGER( _id );
 

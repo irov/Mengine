@@ -18,7 +18,7 @@ namespace Mengine
         m_args = _args;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptableAffectorCallback::onAffectorEnd( uint32_t _id, bool _isEnd )
+    void ScriptableAffectorCallback::onAffectorEnd( UniqueId _id, bool _isEnd )
     {
         ScriptablePtr scriptable = m_scriptable;
         m_scriptable = nullptr;

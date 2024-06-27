@@ -36,7 +36,7 @@ namespace Mengine
         return m_mutex;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NotificationArea::initialize( uint32_t _id )
+    bool NotificationArea::initialize( NotificatorId _id )
     {
         m_id = _id;
 

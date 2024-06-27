@@ -2,6 +2,7 @@
 
 #include "DevToDebugInterface.h"
 
+#include "Interface/ThreadWorkerInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 #include "Interface/HttpSystemInterface.h"
 
@@ -16,6 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class DevToDebugLogger
         : public LoggerBase
+        , public ThreadWorkerInterface
         , public HttpReceiverInterface
     {
         DECLARE_FACTORABLE( DevToDebugTab );
@@ -43,6 +45,11 @@ namespace Mengine
 
     protected:
         void process();
+
+    protected:
+        void onThreadWorkerUpdate( UniqueId _id ) override;
+        bool onThreadWorkerWork( UniqueId _id ) override;
+        void onThreadWorkerDone( UniqueId _id ) override;
 
     protected:
         void onHttpRequestComplete( const HttpResponseInterfacePtr & _response ) override;

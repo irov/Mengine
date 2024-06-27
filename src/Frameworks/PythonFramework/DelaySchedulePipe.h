@@ -21,7 +21,7 @@ namespace Mengine
         void initialize( float _delay );
 
     protected:
-        float onSchedulerPipe( uint32_t _id, uint32_t _index ) override;
+        float onSchedulerPipe( UniqueId _id, uint32_t _index ) override;
 
     protected:
         float m_delay;

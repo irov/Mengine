@@ -25,12 +25,12 @@ namespace Mengine
                 }
 
             protected:
-                void onSchedulerComplete( uint32_t _id ) override
+                void onSchedulerComplete( UniqueId _id ) override
                 {
                     m_event( _id, true );
                 }
 
-                void onSchedulerStop( uint32_t _id ) override
+                void onSchedulerStop( UniqueId _id ) override
                 {
                     m_event( _id, false );
                 }
@@ -54,7 +54,7 @@ namespace Mengine
                 }
 
             protected:
-                float onSchedulerPipe( uint32_t _id, uint32_t _index ) override
+                float onSchedulerPipe( UniqueId _id, uint32_t _index ) override
                 {
                     float delay = m_pipe( _id, _index );
 
@@ -80,7 +80,7 @@ namespace Mengine
                 }
 
             protected:
-                void onSchedulerTiming( uint32_t _id, uint32_t _iterate, float _time ) override
+                void onSchedulerTiming( UniqueId _id, uint32_t _iterate, float _time ) override
                 {
                     m_timing( _id, _iterate, _time );
                 }

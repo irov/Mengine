@@ -354,7 +354,7 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_timingRemove( uint32_t _id )
+            bool s_timingRemove( UniqueId _id )
             {
                 const SchedulerInterfacePtr & tm = PLAYER_SERVICE()
                     ->getLocalScheduler();
@@ -419,7 +419,7 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_scheduleRemove( uint32_t _id )
+            bool s_scheduleRemove( UniqueId _id )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getLocalScheduler();
@@ -447,7 +447,7 @@ namespace Mengine
                 sm->removeAll();
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_scheduleFreeze( uint32_t _id, bool _freeze )
+            bool s_scheduleFreeze( UniqueId _id, bool _freeze )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getLocalScheduler();
@@ -488,7 +488,7 @@ namespace Mengine
                 sm->freezeAll( false );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_scheduleIsFreeze( uint32_t _id )
+            bool s_scheduleIsFreeze( UniqueId _id )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getLocalScheduler();
@@ -503,7 +503,7 @@ namespace Mengine
                 return result;
             }
             //////////////////////////////////////////////////////////////////////////
-            float s_scheduleTime( uint32_t _id )
+            float s_scheduleTime( UniqueId _id )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getLocalScheduler();
@@ -533,7 +533,7 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_scheduleGlobalRemove( uint32_t _id )
+            bool s_scheduleGlobalRemove( UniqueId _id )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getGlobalScheduler();
@@ -561,7 +561,7 @@ namespace Mengine
                 sm->removeAll();
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_scheduleGlobalFreeze( uint32_t _id, bool _freeze )
+            bool s_scheduleGlobalFreeze( UniqueId _id, bool _freeze )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getGlobalScheduler();
@@ -602,7 +602,7 @@ namespace Mengine
                 sm->freezeAll( false );
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_scheduleGlobalIsFreeze( uint32_t _id )
+            bool s_scheduleGlobalIsFreeze( UniqueId _id )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getGlobalScheduler();
@@ -617,7 +617,7 @@ namespace Mengine
                 return freeze;
             }
             //////////////////////////////////////////////////////////////////////////
-            float s_scheduleGlobalPassed( uint32_t _id )
+            float s_scheduleGlobalPassed( UniqueId _id )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getGlobalScheduler();
@@ -632,7 +632,7 @@ namespace Mengine
                 return time;
             }
             //////////////////////////////////////////////////////////////////////////
-            float s_scheduleGlobalLeft( uint32_t _id )
+            float s_scheduleGlobalLeft( UniqueId _id )
             {
                 const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                     ->getGlobalScheduler();
@@ -2433,7 +2433,7 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_removeMousePositionProvider( uint32_t _id )
+            void s_removeMousePositionProvider( UniqueId _id )
             {
                 INPUT_SERVICE()
                     ->removeMousePositionProvider( _id );
@@ -3953,7 +3953,7 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_enableGlobalHandler( uint32_t _id, bool _value )
+            bool s_enableGlobalHandler( UniqueId _id, bool _value )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();

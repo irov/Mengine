@@ -174,7 +174,7 @@ namespace Mengine
         return free_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t UpdateService::createUpdatater( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updation )
+    UniqueId UpdateService::createUpdatater( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updation )
     {
         uint32_t id = this->placeProxy_( _mode, _deep, _updation );
 

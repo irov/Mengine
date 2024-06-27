@@ -61,7 +61,7 @@ namespace Mengine
         float m_volume;
         bool m_loop;
 
-        uint32_t m_sourceId;
+        UniqueId m_sourceId;
         float m_time;
 
         SilentSoundBufferPtr m_soundBuffer;        

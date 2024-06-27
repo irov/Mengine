@@ -31,7 +31,7 @@ namespace Mengine
     []() { static bool result = CONFIG_SERVICE()->getDefaultConfig()->existValue( section, key); return result;}()
 //////////////////////////////////////////////////////////////////////////
 #define CONFIG_VALUE( section, key, default )\
-    []() -> const decltype(Mengine::mpl::decltype_string(default)) &{ static decltype(Mengine::mpl::decltype_string( default )) value = Mengine::Detail::getConfigValue( section, key, default); return value;}()
+    []() -> const decltype(Mengine::Metaprogramming::decltype_string(default)) &{ static decltype(Mengine::Metaprogramming::decltype_string( default )) value = Mengine::Detail::getConfigValue( section, key, default); return value;}()
 //////////////////////////////////////////////////////////////////////////
 #define CONFIG_VALUET( section, key, default, type )\
     []() -> const type &{static type value = Mengine::Detail::getConfigValue( section, key, (type)default); return value;}()

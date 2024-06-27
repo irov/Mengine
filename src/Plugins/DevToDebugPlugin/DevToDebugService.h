@@ -2,6 +2,7 @@
 
 #include "DevToDebugInterface.h"
 
+#include "Interface/ThreadWorkerInterface.h"
 #include "Interface/HttpSystemInterface.h"
 
 #include "Plugins/JSONPlugin/JSONInterface.h"
@@ -29,6 +30,7 @@ namespace Mengine
 
     class DevToDebugService
         : public ServiceBase<DevToDebugServiceInterface>
+        , public ThreadWorkerInterface
         , public HttpReceiverInterface
     {
     public:
@@ -51,6 +53,11 @@ namespace Mengine
         void process();
         void sync();
         void stop();
+
+    public:
+        void onThreadWorkerUpdate( UniqueId _id ) override;
+        bool onThreadWorkerWork( UniqueId _id ) override;
+        void onThreadWorkerDone( UniqueId _id ) override;
 
     protected:
         void onHttpRequestComplete( const HttpResponseInterfacePtr & _response ) override;

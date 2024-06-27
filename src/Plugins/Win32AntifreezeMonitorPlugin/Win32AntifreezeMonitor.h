@@ -34,9 +34,9 @@ namespace Mengine
         void ping();
 
     protected:
-        void onThreadWorkerUpdate( uint32_t _id ) override;
-        bool onThreadWorkerWork( uint32_t _id ) override;
-        void onThreadWorkerDone( uint32_t _id ) override;
+        void onThreadWorkerUpdate( UniqueId _id ) override;
+        bool onThreadWorkerWork( UniqueId _id ) override;
+        void onThreadWorkerDone( UniqueId _id ) override;
 
     protected:
         void notifyChangeLocalePrepare( const ConstString & _prevLocale, const ConstString & _currentlocale );

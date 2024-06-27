@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ObserverCallableInterface> ObserverCallableInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    template<uint32_t ID>
+    template<NotificatorId ID>
     class ArgsObserverCallable
         : public ObserverCallableInterface
     {
@@ -36,7 +36,7 @@ namespace Mengine
         virtual void call( typename Notificator<ID>::args_type && _args ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    template<uint32_t ID, class C, class M, class ... Args>
+    template<NotificatorId ID, class C, class M, class ... Args>
     class MethodObserverCallable
         : public ArgsObserverCallable<ID>
     {
@@ -54,11 +54,11 @@ namespace Mengine
     protected:
         void call( typename Notificator<ID>::args_type && _args ) override
         {
-            this->call_with_tuple( std::forward<typename Notificator<ID>::args_type && >( _args ), std::make_integer_sequence<uint32_t, sizeof ... (Args)>() );
+            this->call_with_tuple( std::forward<typename Notificator<ID>::args_type && >( _args ), std::make_integer_sequence<NotificatorId, sizeof ... (Args)>() );
         }
 
-        template<uint32_t ... I>
-        void call_with_tuple( typename Notificator<ID>::args_type && _args, std::integer_sequence<uint32_t, I...> )
+        template<NotificatorId ... I>
+        void call_with_tuple( typename Notificator<ID>::args_type && _args, std::integer_sequence<NotificatorId, I...> )
         {
             (m_self->*m_method)(std::get<I>( _args )...);
         }
@@ -73,7 +73,7 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    template<uint32_t ID, class L>
+    template<NotificatorId ID, class L>
     class LambdaObserverCallable
         : public ArgsObserverCallable<ID>
     {
@@ -97,10 +97,10 @@ namespace Mengine
         L m_lambda;
     };
     //////////////////////////////////////////////////////////////////////////
-    template<uint32_t ID, class T>
+    template<NotificatorId ID, class T>
     class GeneratorMethodObserverCallable;
     //////////////////////////////////////////////////////////////////////////
-    template<uint32_t ID, class C, class ... P>
+    template<NotificatorId ID, class C, class ... P>
     class GeneratorMethodObserverCallable<ID, void (C:: *)(P...)>
         : public MethodObserverCallable<ID, C, void (C:: *)(P...), P ...>
     {
@@ -111,7 +111,7 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    template<uint32_t ID, class C, class ... P>
+    template<NotificatorId ID, class C, class ... P>
     class GeneratorMethodObserverCallable<ID, void (C:: *)(P...) const>
         : public MethodObserverCallable<ID, C, void (C:: *)(P...) const, P ...>
     {
@@ -128,11 +128,11 @@ namespace Mengine
         SERVICE_DECLARE( "NotificationService" )
 
     public:
-        virtual void addObserver( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentInterfacePtr & _doc ) = 0;
-        virtual void removeObserver( uint32_t _id, Observable * _observer ) = 0;
+        virtual void addObserver( NotificatorId _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentInterfacePtr & _doc ) = 0;
+        virtual void removeObserver( NotificatorId _id, Observable * _observer ) = 0;
 
     public:
-        template<uint32_t ID, class C, class L>
+        template<NotificatorId ID, class C, class L>
         void addObserverLambda( C * _self, const L & _lambda, const DocumentInterfacePtr & _doc )
         {
             ObserverCallableInterfacePtr callable( Helper::makeFactorableUnique<LambdaObserverCallable<ID, L>>( _doc, _lambda ) );
@@ -141,7 +141,7 @@ namespace Mengine
         }
 
     public:
-        template<uint32_t ID, class C, class M>
+        template<NotificatorId ID, class C, class M>
         void addObserverMethod( C * _self, M _method, const DocumentInterfacePtr & _doc )
         {
             ObserverCallableInterfacePtr callable( Helper::makeFactorableUnique<GeneratorMethodObserverCallable<ID, M>>( _doc, _self, _method ) );
@@ -154,10 +154,10 @@ namespace Mengine
 
     public:
         typedef Lambda<void( const ObserverCallableInterfacePtr & )> LambdaObserver;
-        virtual bool foreachObservers( uint32_t _id, const LambdaObserver & _lambda ) = 0;
+        virtual bool foreachObservers( NotificatorId _id, const LambdaObserver & _lambda ) = 0;
 
     public:
-        template<uint32_t ID, class ... Args>
+        template<NotificatorId ID, class ... Args>
         bool notify( Args && ... _args )
         {
             bool successful = this->notify_tuple<ID>( std::forward_as_tuple( std::forward<Args &&>( _args ) ... ) );
@@ -166,7 +166,7 @@ namespace Mengine
         }
 
     protected:
-        template<uint32_t ID>
+        template<NotificatorId ID>
         bool notify_tuple( typename Notificator<ID>::args_type && _args )
         {
             typedef ArgsObserverCallable<ID> args_observer_type;

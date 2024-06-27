@@ -76,7 +76,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SilentSoundBuffer::play( uint32_t _id, bool _looped, float _pos )
+    void SilentSoundBuffer::play( UniqueId _id, bool _looped, float _pos )
     {
         MENGINE_UNUSED( _id );
         MENGINE_UNUSED( _looped );
@@ -88,7 +88,7 @@ namespace Mengine
         m_pauseTime = 0UL;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SilentSoundBuffer::resume( uint32_t _id )
+    bool SilentSoundBuffer::resume( UniqueId _id )
     {
         MENGINE_UNUSED( _id );
 
@@ -102,7 +102,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SilentSoundBuffer::pause( uint32_t _id )
+    void SilentSoundBuffer::pause( UniqueId _id )
     {
         MENGINE_UNUSED( _id );
 
@@ -111,7 +111,7 @@ namespace Mengine
         m_pauseTime = time;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SilentSoundBuffer::stop( uint32_t _id )
+    void SilentSoundBuffer::stop( UniqueId _id )
     {
         MENGINE_UNUSED( _id );
 
@@ -119,7 +119,7 @@ namespace Mengine
         m_pauseTime = 0UL;
     }
     //////////////////////////////////////////////////////////////////////////
-    float SilentSoundBuffer::getTimePos( uint32_t _id ) const
+    float SilentSoundBuffer::getTimePos( UniqueId _id ) const
     {
         MENGINE_UNUSED( _id );
 

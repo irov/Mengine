@@ -1,11 +1,9 @@
 #pragma once
 
-#include "Interface/RenderTextureInterface.h"
-#include "Interface/RenderPipelineInterface.h"
-#include "Interface/HttpSystemInterface.h"
 #include "Interface/FactoryInterface.h"
 
 #include "Kernel/Tuple.h"
+#include "Kernel/String.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/Factorable.h"
@@ -14,10 +12,12 @@
 #include "Kernel/AssertionLevel.h"
 #include "Kernel/ErrorLevel.h"
 #include "Kernel/LoggerMessage.h"
+#include "Kernel/HttpRequestId.h"
 
 #include "Config/Typedef.h"
 #include "Config/Char.h"
 #include "Config/UniqueId.h"
+#include "Config/NotificatorId.h"
 
 #ifndef MENGINE_NOTIFICATOR_MAX_COUNT
 #define MENGINE_NOTIFICATOR_MAX_COUNT 256
@@ -26,9 +26,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    class RenderTextureInterface;
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Resource> ResourcePtr;
     typedef IntrusivePtr<class Arrow, class Node> ArrowPtr;
     typedef IntrusivePtr<class Scene, class Node> ScenePtr;
+    typedef IntrusivePtr<class RenderPipelineInterface> RenderPipelineInterfacePtr;
+    typedef IntrusivePtr<class HttpResponseInterface> HttpResponseInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     template<uint32_t ID>
     struct Notificator
@@ -49,7 +53,7 @@ namespace Mengine
     static_assert(MENGINE_NOTIFICATOR_ENUMERATOR_COUNT < MENGINE_NOTIFICATOR_MAX_COUNT)
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_NOTIFICATOR_DECLARE(NAME, ...)\
-    static constexpr uint32_t NAME = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN;\
+    static constexpr NotificatorId NAME = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN;\
     template<> struct Notificator<NAME> { typedef Tuple<__VA_ARGS__> args_type; static const Char * getName() { return #NAME; } }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_NOTIFICATOR_DECLARE_BEGIN();
@@ -100,7 +104,7 @@ namespace Mengine
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_CHANGE_SESSION_ID, const ConstString &, const ConstString & );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_CHANGE_SESSION_ID_POST, const ConstString &, const ConstString & );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_DEBUG_TEXT_MODE, bool );
-    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_CHANGE_TEXT_ALIAS, ConstString, ConstString );
+    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_CHANGE_TEXT_ALIAS, const ConstString &, const ConstString & );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_RELOAD_LOCALE_PREPARE );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_RELOAD_LOCALE );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_RELOAD_LOCALE_POST );
@@ -144,14 +148,18 @@ namespace Mengine
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_REQUEST, HttpRequestId, const String & );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_CANCEL, HttpRequestId );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_HTTP_RESPONSE, const HttpResponseInterfacePtr & );
+    //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
+    //////////////////////////////////////////////////////////////////////////
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUD );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
+    //////////////////////////////////////////////////////////////////////////
 #endif
+    //////////////////////////////////////////////////////////////////////////
     MENGINE_NOTIFICATOR_DECLARE_END();
     //////////////////////////////////////////////////////////////////////////
 #undef MENGINE_NOTIFICATOR_DECLARE_BEGIN

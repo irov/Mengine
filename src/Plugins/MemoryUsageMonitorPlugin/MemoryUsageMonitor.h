@@ -27,9 +27,9 @@ namespace Mengine
         void finalize();
 
     protected:
-        void onThreadWorkerUpdate( uint32_t _id ) override;
-        bool onThreadWorkerWork( uint32_t _id ) override;
-        void onThreadWorkerDone( uint32_t _id ) override;
+        void onThreadWorkerUpdate( UniqueId _id ) override;
+        bool onThreadWorkerWork( UniqueId _id ) override;
+        void onThreadWorkerDone( UniqueId _id ) override;
 
     protected:
         ThreadJobPtr m_threadJob;

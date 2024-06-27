@@ -21,7 +21,7 @@ namespace Mengine
         void initialize( const ScriptablePtr & _scriptable, const pybind::object & _cb, const pybind::args & _args );
 
     protected:
-        void onAffectorEnd( uint32_t _id, bool _isEnd ) override;
+        void onAffectorEnd( UniqueId _id, bool _isEnd ) override;
 
     protected:
         ScriptablePtr m_scriptable;

@@ -17,12 +17,12 @@ namespace Mengine
         m_args = _args;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScheduleEvent::onSchedulerComplete( uint32_t _id )
+    void PythonScheduleEvent::onSchedulerComplete( UniqueId _id )
     {
         m_cb.call_args( _id, true, m_args );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScheduleEvent::onSchedulerStop( uint32_t _id )
+    void PythonScheduleEvent::onSchedulerStop( UniqueId _id )
     {
         m_cb.call_args( _id, false, m_args );
     }

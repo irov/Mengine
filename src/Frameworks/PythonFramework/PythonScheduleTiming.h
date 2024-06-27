@@ -23,7 +23,7 @@ namespace Mengine
         void initialize( const pybind::object & _cb, const pybind::args & _args );
 
     protected:
-        void onSchedulerTiming( uint32_t _id, uint32_t _iterate, float _delay ) override;
+        void onSchedulerTiming( UniqueId _id, uint32_t _iterate, float _delay ) override;
 
     protected:
         pybind::object m_cb;

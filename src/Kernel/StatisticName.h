@@ -6,6 +6,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        const Char * getStatisticName( uint32_t _id );
+        const Char * getStatisticName( StatisticId _id );
     }
 }

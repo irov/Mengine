@@ -427,11 +427,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SDL_Scancode SDLInput::getSDLKey_( EKeyCode _code ) const
     {
-        if( _code >= MENGINE_INPUT_MAX_KEY_CODE )
-        {
-            return SDL_SCANCODE_UNKNOWN;
-        }
-
         SDL_Scancode key = m_codes[_code];
 
         return key;

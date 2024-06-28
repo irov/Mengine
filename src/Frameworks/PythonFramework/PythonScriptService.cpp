@@ -58,15 +58,6 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void s_pybind_logger( void * _user, const char * _msg )
-        {
-            MENGINE_UNUSED( _user );
-
-            LOGGER_VERBOSE_LEVEL( "pybind", Mengine::LM_ERROR, Mengine::LFILTER_NONE, Mengine::LCOLOR_RED, nullptr, 0, LFLAG_SHORT )("%s"
-                , _msg
-                );
-        }
-        //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_DEBUG)
         //////////////////////////////////////////////////////////////////////////
 #   if defined(MENGINE_WINDOWS_DEBUG)
@@ -82,8 +73,8 @@ namespace Mengine
             pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
                 ->getKernel();
 
-            Char traceback[4096] = {'\0'};
-            kernel->get_traceback( traceback, 4095 );
+            Char traceback[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+            kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE );
 
             MENGINE_ERROR_FATAL( "invalid parameter detected in function %ls.\nFile: %ls Line: %u\nExpression: %ls\nTrackeback:\n%s"
                 , _function
@@ -185,6 +176,11 @@ namespace Mengine
                     return;
                 }
 
+                if( MENGINE_STRCMP( _className, "" ) == 0 && MENGINE_STRCMP( _functionName, "excepthook" ) == 0 )
+                {
+                    return;
+                }
+
                 if( MENGINE_STRCMP( _className, "PythonScriptLogger" ) == 0 )
                 {
                     return;
@@ -223,8 +219,8 @@ namespace Mengine
                     , ss_kwds.str().c_str()
                     );
 
-                Char traceback[4096] = {'\0'};
-                _kernel->get_traceback( traceback, 4095 );
+                Char traceback[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+                _kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE );
 
                 LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE, LFLAG_SHORT )("traceback:\n%s"
                     , traceback
@@ -284,8 +280,6 @@ namespace Mengine
             ->getKernel();
 
         m_kernel = kernel;
-
-        pybind::set_logger( (pybind::pybind_logger_t)&Detail::s_pybind_logger, nullptr );
 
         kernel->set_sys_excepthook( &Detail::py_excepthook, this );
 
@@ -1210,20 +1204,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::handleException_( PyTypeObject * _exctype, PyObject * _value, PyObject * _traceback )
     {
-        ArrayString< MENGINE_LOGGER_MAX_MESSAGE> traceback_str;
+        ArrayString<MENGINE_LOGGER_MAX_MESSAGE> traceback_str;
 
-        PyObject * traceback = m_kernel->get_exception_traceback( _traceback );
+        PyObject * traceback = m_kernel->is_none( _traceback ) == false
+            ? m_kernel->get_exception_traceback( _traceback )
+            : m_kernel->get_current_traceback();
 
-        size_t traceback_size = m_kernel->list_size( traceback );
+        uint32_t traceback_size = m_kernel->list_size( traceback );
 
-        for( size_t index = 0; index != traceback_size; ++index )
+        for( uint32_t index = traceback_size; index != 0; --index )
         {
-            if( index != 0 )
+            if( index != traceback_size )
             {
                 traceback_str.append( "\n" );
             }
 
-            PyObject * item = m_kernel->list_getitem( traceback, (int)index );
+            PyObject * item = m_kernel->list_getitem( traceback, index - 1 );
 
             PyObject * trace_file = m_kernel->tuple_getitem( item, 0 );
             PyObject * trace_line = m_kernel->tuple_getitem( item, 1 );
@@ -1314,8 +1310,8 @@ namespace Mengine
                     , m_kernel->object_repr( _kwds ).c_str()
                 );
 
-                Char traceback[4096] = {'\0'};
-                m_kernel->get_traceback( traceback, 4095 );
+                Char traceback[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+                m_kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE );
 
                 LOGGER_STATISTIC( "%s", traceback );
             }

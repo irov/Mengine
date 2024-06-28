@@ -216,7 +216,7 @@ namespace Mengine
         }
 
     protected:
-        value_type m_buffer[Size];
+        value_type m_buffer[Size] = {Helper::stringTerminalChar<T>()};
         size_type m_pos;
     };
     //////////////////////////////////////////////////////////////////////////

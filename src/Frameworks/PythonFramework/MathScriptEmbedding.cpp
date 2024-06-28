@@ -60,8 +60,8 @@ namespace Mengine
         static String mat4f_repr( mt::mat4f * _v )
         {
             Stringstream ss;
-            ss << "<mat4f: " 
-                << _v->v0.x << ", " << _v->v0.y << ", " << _v->v0.z << ", " << _v->v0.w 
+            ss << "<mat4f: "
+                << _v->v0.x << ", " << _v->v0.y << ", " << _v->v0.z << ", " << _v->v0.w
                 << _v->v1.x << ", " << _v->v1.y << ", " << _v->v1.z << ", " << _v->v1.w
                 << _v->v2.x << ", " << _v->v2.y << ", " << _v->v2.z << ", " << _v->v2.w
                 << _v->v3.x << ", " << _v->v3.y << ", " << _v->v3.z << ", " << _v->v3.w
@@ -115,7 +115,8 @@ namespace Mengine
 
                 return true;
             }
-            else if( _kernel->list_check( _obj ) == true )
+            
+            if( _kernel->list_check( _obj ) == true )
             {
                 size_t size = _kernel->list_size( _obj );
 
@@ -139,7 +140,8 @@ namespace Mengine
 
                 return true;
             }
-            else if( pybind::instance_of<mt::vec3f>( _kernel, _obj ) == true )
+            
+            if( pybind::instance_of<mt::vec3f>( _kernel, _obj ) == true )
             {
                 mt::vec3f v3 = pybind::extract_t( _kernel, _obj );
 
@@ -182,7 +184,8 @@ namespace Mengine
 
                 return true;
             }
-            else if( _kernel->list_check( _obj ) == true )
+            
+            if( _kernel->list_check( _obj ) == true )
             {
                 size_t size = _kernel->list_size( _obj );
 
@@ -208,7 +211,8 @@ namespace Mengine
 
                 return true;
             }
-            else if( pybind::instance_of<mt::vec2f>( _kernel, _obj ) == true )
+            
+            if( pybind::instance_of<mt::vec2f>( _kernel, _obj ) == true )
             {
                 mt::vec2f v2 = pybind::extract_t( _kernel, _obj );
 
@@ -240,7 +244,8 @@ namespace Mengine
 
                 return true;
             }
-            else if( _kernel->list_check( _obj ) == true )
+            
+            if( _kernel->list_check( _obj ) == true )
             {
                 if( _kernel->list_size( _obj ) != 4 )
                 {
@@ -276,7 +281,8 @@ namespace Mengine
 
                 return true;
             }
-            else if( _kernel->list_check( _obj ) == true )
+            
+            if( _kernel->list_check( _obj ) == true )
             {
                 if( _kernel->list_size( _obj ) != 4 )
                 {
@@ -312,7 +318,8 @@ namespace Mengine
 
                 return true;
             }
-            else if( _kernel->list_check( _obj ) == true )
+            
+            if( _kernel->list_check( _obj ) == true )
             {
                 if( _kernel->list_size( _obj ) != 4 )
                 {
@@ -358,7 +365,8 @@ namespace Mengine
 
                 return true;
             }
-            else if( _kernel->list_check( _obj ) == true )
+            
+            if( _kernel->list_check( _obj ) == true )
             {
                 if( _kernel->list_size( _obj ) != 4 )
                 {
@@ -421,8 +429,11 @@ namespace Mengine
                     float a = pybind::tuple_getitem_t( _kernel, _obj, 3 );
 
                     _place->setRGBA( r, g, b, a );
+
+                    return true;
                 }
-                else if( _kernel->tuple_size( _obj ) == 3 )
+                
+                if( _kernel->tuple_size( _obj ) == 3 )
                 {
                     float r = pybind::tuple_getitem_t( _kernel, _obj, 0 );
                     float g = pybind::tuple_getitem_t( _kernel, _obj, 1 );
@@ -430,15 +441,14 @@ namespace Mengine
                     float a = 1.f;
 
                     _place->setRGBA( r, g, b, a );
-                }
-                else
-                {
-                    return false;
+
+                    return true;
                 }
 
-                return true;
+                return false;
             }
-            else if( _kernel->list_check( _obj ) == true )
+            
+            if( _kernel->list_check( _obj ) == true )
             {
                 if( _kernel->list_size( _obj ) == 4 )
                 {
@@ -448,6 +458,8 @@ namespace Mengine
                     float a = pybind::list_getitem_t( _kernel, _obj, 3 );
 
                     _place->setRGBA( r, g, b, a );
+
+                    return true;
                 }
                 else if( _kernel->list_size( _obj ) == 3 )
                 {
@@ -457,13 +469,11 @@ namespace Mengine
                     float a = 1.f;
 
                     _place->setRGBA( r, g, b, a );
-                }
-                else
-                {
-                    return false;
+
+                    return true;
                 }
 
-                return true;
+                return false;
             }
 
             return false;
@@ -488,7 +498,8 @@ namespace Mengine
 
                 return true;
             }
-            else if( _kernel->list_check( _obj ) == true )
+            
+            if( _kernel->list_check( _obj ) == true )
             {
                 if( _kernel->list_size( _obj ) != 2 )
                 {
@@ -535,7 +546,8 @@ namespace Mengine
 
                 return true;
             }
-            else if( _kernel->list_check( _obj ) == true )
+            
+            if( _kernel->list_check( _obj ) == true )
             {
                 if( _kernel->list_size( _obj ) != 2 )
                 {
@@ -596,7 +608,8 @@ namespace Mengine
 
                 return true;
             }
-            else if( _kernel->list_check( _obj ) == true )
+            
+            if( _kernel->list_check( _obj ) == true )
             {
                 if( _kernel->list_size( _obj ) != 4 )
                 {
@@ -613,6 +626,7 @@ namespace Mengine
 
             return false;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     MathScriptEmbedding::MathScriptEmbedding()

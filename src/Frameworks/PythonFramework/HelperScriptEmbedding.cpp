@@ -3843,7 +3843,7 @@ namespace Mengine
             PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<ParamVariant>::TCastRef _value ) override
             {
                 MENGINE_UNUSED( _kernel );
-                
+
                 PyObject * py_value = nullptr;
 
                 Helper::visit( _value
@@ -4186,7 +4186,7 @@ namespace Mengine
         pybind::def_functor_kernel( _kernel, "logMessage", helperScriptMethod, &HelperScriptMethod::s_logMessage );
         pybind::def_functor_kernel( _kernel, "logWarning", helperScriptMethod, &HelperScriptMethod::s_logWarning );
         pybind::def_functor_kernel( _kernel, "logError", helperScriptMethod, &HelperScriptMethod::s_logError );
-        pybind::def_functor_kernel( _kernel, "logFatal", helperScriptMethod, &HelperScriptMethod::s_logFatal );        
+        pybind::def_functor_kernel( _kernel, "logFatal", helperScriptMethod, &HelperScriptMethod::s_logFatal );
 
         pybind::def_functor( _kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
         pybind::def_functor( _kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::s_enumerator );

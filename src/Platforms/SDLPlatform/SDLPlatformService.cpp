@@ -19,6 +19,7 @@
 #   if defined(MENGINE_PLATFORM_MACOS)
 #       include "Environment/MacOS/MacOSUtils.h"
 #   elif defined(MENGINE_PLATFORM_IOS)
+#       include "Interface/iOSKernelServiceInterface.h"
 #       include "Environment/iOS/iOSUtils.h"
 #   endif
 #elif defined(MENGINE_PLATFORM_ANDROID)
@@ -1022,6 +1023,18 @@ namespace Mengine
         }
 
         return true;
+#elif defined(MENGINE_PLATFORM_IOS)
+        if( IOS_KERNEL_SERVICE()
+            ->openUrlInDefaultBrowser( _url ) == false )
+        {
+            LOGGER_ERROR( "error open url in default browser '%s'"
+                , _url
+            );
+
+            return false;
+        }
+
+        return true;
 #else
         LOGGER_ERROR( "not supported open url in default browser '%s'"
             , _url
@@ -1045,6 +1058,20 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         if( ANDROID_KERNEL_SERVICE()
+            ->openMail( _email, _subject, _body ) == false )
+        {
+            LOGGER_ERROR( "error open mail '%s' subject '%s' body '%s'"
+                , _email
+                , _subject
+                , _body
+            );
+
+            return false;
+        }
+
+        return true;
+#elif defined(MENGINE_PLATFORM_IOS)
+        if( IOS_KERNEL_SERVICE()
             ->openMail( _email, _subject, _body ) == false )
         {
             LOGGER_ERROR( "error open mail '%s' subject '%s' body '%s'"

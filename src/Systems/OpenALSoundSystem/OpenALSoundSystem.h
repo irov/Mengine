@@ -43,19 +43,12 @@ namespace Mengine
         ALuint genBufferId();
         void releaseBufferId( ALuint _bufferId );
 
-    public:
-        uint32_t getSourcesCount() const override;
-        uint32_t getBuffersCount() const override;
-
     protected:
         void onDestroyOpenALSoundSource_( OpenALSoundSource * _soundSource );
 
     protected:
         ALCcontext * m_context;
         ALCdevice * m_device;
-
-        uint32_t m_sourcesCount;
-        uint32_t m_buffersCount;
 
         FactoryInterfacePtr m_factoryOpenALSoundBuffer;
         FactoryInterfacePtr m_factoryOpenALSoundBufferStream;

@@ -1489,15 +1489,13 @@ namespace Mengine
 
         payloadNode.append_attribute( "TextureCount" ).set_value( textureCount );
 
-        uint32_t sourcesCount = SOUND_SYSTEM()
-            ->getSourcesCount();
+        int64_t soundSourcesCount = STATISTIC_GET_INTEGER( STATISTIC_SOUND_SOURCE_COUNT );
 
-        payloadNode.append_attribute( "SoundSourcesCount" ).set_value( sourcesCount );
+        payloadNode.append_attribute( "SoundSourcesCount" ).set_value( soundSourcesCount );
 
-        uint32_t buffersCount = SOUND_SYSTEM()
-            ->getBuffersCount();
+        int64_t soundBuffersCount = STATISTIC_GET_INTEGER( STATISTIC_SOUND_BUFFER_COUNT );
 
-        payloadNode.append_attribute( "SoundBuffersCount" ).set_value( buffersCount );
+        payloadNode.append_attribute( "SoundBuffersCount" ).set_value( soundBuffersCount );
 
         UnknownAllocatorDebugReportInterface * debugReport = ALLOCATOR_SYSTEM()
             ->getUnknown();

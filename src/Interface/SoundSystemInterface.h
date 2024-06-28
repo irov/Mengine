@@ -35,10 +35,6 @@ namespace Mengine
 
     public:
         virtual SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, const DocumentInterfacePtr & _doc ) = 0;
-
-    public:
-        virtual uint32_t getSourcesCount() const = 0;
-        virtual uint32_t getBuffersCount() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -9,8 +9,10 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionStatistic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/StatisticHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -23,8 +25,6 @@ namespace Mengine
     OpenALSoundSystem::OpenALSoundSystem()
         : m_context( nullptr )
         , m_device( nullptr )
-        , m_sourcesCount( 0 )
-        , m_buffersCount( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -139,13 +139,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSystem::_finalizeService()
     {
-        MENGINE_ASSERTION_FATAL( m_sourcesCount == 0, "sound sources count %u not equal 0"
-            , m_sourcesCount
-        );
-
-        MENGINE_ASSERTION_FATAL( m_buffersCount == 0, "sound buffers count %u not equal 0"
-            , m_buffersCount
-        );
+        MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_SOUND_SOURCE_COUNT );
+        MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_SOUND_BUFFER_COUNT );
 
         if( m_device != nullptr )
         {
@@ -268,7 +263,8 @@ namespace Mengine
             return 0U;
         }
 
-        ++m_sourcesCount;
+        STATISTIC_INC_INTEGER( STATISTIC_SOUND_SOURCE_COUNT );
+        STATISTIC_INC_INTEGER( STATISTIC_SOUND_SOURCE_NEW );
 
         return sourceId;
     }
@@ -282,7 +278,8 @@ namespace Mengine
 
         MENGINE_OPENAL_CALL( alDeleteSources, (1, &_sourceId) );
 
-        --m_sourcesCount;
+        STATISTIC_DEC_INTEGER( STATISTIC_SOUND_SOURCE_COUNT );
+        STATISTIC_INC_INTEGER( STATISTIC_SOUND_SOURCE_FREE );
     }
     //////////////////////////////////////////////////////////////////////////
     ALuint OpenALSoundSystem::genBufferId()
@@ -295,7 +292,8 @@ namespace Mengine
             return 0U;
         }
 
-        ++m_buffersCount;
+        STATISTIC_INC_INTEGER( STATISTIC_SOUND_BUFFER_COUNT );
+        STATISTIC_INC_INTEGER( STATISTIC_SOUND_BUFFER_NEW );
 
         return bufferId;
     }
@@ -309,17 +307,8 @@ namespace Mengine
 
         MENGINE_OPENAL_CALL( alDeleteBuffers, (1, &_bufferId) );
 
-        --m_buffersCount;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t OpenALSoundSystem::getSourcesCount() const
-    {
-        return m_sourcesCount;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t OpenALSoundSystem::getBuffersCount() const
-    {
-        return m_buffersCount;
+        STATISTIC_DEC_INTEGER( STATISTIC_SOUND_BUFFER_COUNT );
+        STATISTIC_INC_INTEGER( STATISTIC_SOUND_BUFFER_FREE );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSystem::onDestroyOpenALSoundSource_( OpenALSoundSource * _soundSource )

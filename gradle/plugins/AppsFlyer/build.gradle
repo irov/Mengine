@@ -7,6 +7,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.appsflyer:af-android-sdk:6.12.1'
+    implementation 'com.appsflyer:af-android-sdk:6.14.2'
     implementation 'com.appsflyer:adrevenue:6.9.0'
 }

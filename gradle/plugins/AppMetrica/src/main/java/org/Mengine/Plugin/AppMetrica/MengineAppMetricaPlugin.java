@@ -2,11 +2,6 @@ package org.Mengine.Plugin.AppMetrica;
 
 import android.content.Context;
 
-import com.yandex.metrica.AdRevenue;
-import com.yandex.metrica.AdType;
-import com.yandex.metrica.YandexMetrica;
-import com.yandex.metrica.YandexMetricaConfig;
-
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
@@ -26,6 +21,11 @@ import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.appmetrica.analytics.AdRevenue;
+import io.appmetrica.analytics.AdType;
+import io.appmetrica.analytics.AppMetrica;
+import io.appmetrica.analytics.AppMetricaConfig;
+
 public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginEngineListener {
     public static final String PLUGIN_NAME = "MengineAppMetrica";
     public static final boolean PLUGIN_EMBEDDING = true;
@@ -37,14 +37,13 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     public static final String PLUGIN_METADATA_SESSION_TIMEOUT = "mengine.appmetrica.session_timeout";
     public static final String PLUGIN_METADATA_LOGS = "mengine.appmetrica.logs";
     public static final String PLUGIN_METADATA_HANDLE_FIRST_ACTIVATION_AS_UPDATE = "mengine.appmetrica.handle_first_activation_as_update";
-    public static final String PLUGIN_METADATA_STATISTICS_SENDING = "mengine.appmetrica.statistics_sending";
 
     @Override
     public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
         if (event == MengineEvent.EVENT_SESSION_ID) {
             String sessionId = (String)args[0];
 
-            YandexMetrica.setUserProfileID(sessionId);
+            AppMetrica.setUserProfileID(sessionId);
         }
     }
 
@@ -60,9 +59,8 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
         boolean MengineAppMetricaPlugin_LocationTracking = this.getMetaDataBoolean(PLUGIN_METADATA_LOCATION_TRACKING);
         boolean MengineAppMetricaPlugin_Logs = this.getMetaDataBoolean(PLUGIN_METADATA_LOGS);
         boolean MengineAppMetricaPlugin_HandleFirstActivationAsUpdate = this.getMetaDataBoolean(PLUGIN_METADATA_HANDLE_FIRST_ACTIVATION_AS_UPDATE);
-        boolean MengineAppMetricaPlugin_StatisticSending = this.getMetaDataBoolean(PLUGIN_METADATA_STATISTICS_SENDING);
 
-        YandexMetricaConfig.Builder builder = YandexMetricaConfig
+        AppMetricaConfig.Builder builder = AppMetricaConfig
             .newConfigBuilder(MengineAppMetricaPlugin_ApiKey)
                 .withAppVersion(AppVersion)
                 .withCrashReporting(MengineAppMetricaPlugin_CrashReporting)
@@ -70,7 +68,6 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
                 .withSessionTimeout(MengineAppMetricaPlugin_SessionTimeout)
                 .withLocationTracking(MengineAppMetricaPlugin_LocationTracking)
                 .handleFirstActivationAsUpdate(MengineAppMetricaPlugin_HandleFirstActivationAsUpdate)
-                .withStatisticsSending(MengineAppMetricaPlugin_StatisticSending)
                 .withRevenueAutoTrackingEnabled(false)
                 ;
 
@@ -78,18 +75,18 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
             builder.withLogs();
         }
 
-        YandexMetricaConfig config = builder.build();
+        AppMetricaConfig config = builder.build();
 
         Context context = application.getApplicationContext();
 
-        YandexMetrica.activate(context, config);
-        YandexMetrica.enableActivityAutoTracking(application);
+        AppMetrica.activate(context, config);
+        AppMetrica.enableActivityAutoTracking(application);
     }
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         String sessionId = application.getSessionId();
-        YandexMetrica.setUserProfileID(sessionId);
+        AppMetrica.setUserProfileID(sessionId);
     }
 
     @Override
@@ -99,12 +96,12 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
         params.putAll(bases);
         params.putAll(parameters);
 
-        YandexMetrica.reportEvent(eventName, params);
+        AppMetrica.reportEvent(eventName, params);
     }
 
     @Override
     public void onMengineAnalyticsFlush(MengineApplication application) {
-        YandexMetrica.sendEventsBuffer();
+        AppMetrica.sendEventsBuffer();
     }
 
     private static AdType getYandexAdType(MengineAdFormat adType) {
@@ -149,7 +146,7 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
             .withPrecision(revenuePrecision)
             .build();
 
-        YandexMetrica.reportAdRevenue(adRevenue);
+        AppMetrica.reportAdRevenue(adRevenue);
     }
 
     @Override
@@ -158,7 +155,7 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
             return;
         }
 
-        YandexMetrica.reportError("Exception", throwable);
+        AppMetrica.reportError("Exception", throwable);
     }
 
     @Override
@@ -169,10 +166,10 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
 
         switch (level) {
             case MengineLog.LM_ERROR:
-                YandexMetrica.reportError(category, msg);
+                AppMetrica.reportError(category, msg);
                 break;
             case MengineLog.LM_FATAL:
-                YandexMetrica.reportError(category, msg);
+                AppMetrica.reportError(category, msg);
                 break;
         }
     }

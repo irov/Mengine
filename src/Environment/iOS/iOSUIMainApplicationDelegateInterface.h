@@ -1,6 +1,7 @@
 #include "Config/Config.h"
 
 #import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
+#import "Environment/iOS/iOSPluginAdRevenueDelegateInterface.h"
 
 #import <Foundation/Foundation.h>
 

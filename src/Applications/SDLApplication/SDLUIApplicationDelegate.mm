@@ -11,6 +11,8 @@
 #import "Environment/Apple/AppleLog.h"
 #import "Environment/iOS/iOSApplication.h"
 
+#include "SDLApplication.h"
+
 int MENGINE_MAIN_argc = 0;
 char ** MENGINE_MAIN_argv = nullptr;
 
@@ -49,7 +51,7 @@ char ** MENGINE_MAIN_argv = nullptr;
     return self.m_pluginApplicationDelegates;
 }
 
-- (NSArray<iOSPluginApplicationDelegateInterface> *)getPluginAdRevenueDelegates {
+- (NSArray<iOSPluginAdRevenueDelegateInterface> *)getPluginAdRevenueDelegates {
     return self.m_pluginAdRevenueDelegates;
 }
 

@@ -3,7 +3,7 @@
 #include "Config/Config.h"
 
 #import "Environment/Apple/AppleEvent.h"
-#import "Environment/iOS/iOSRevenueParam.h"
+#import "Environment/iOS/iOSAdRevenueParam.h"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>

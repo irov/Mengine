@@ -3,7 +3,6 @@
 #import "Environment/Apple/AppleDetail.h"
 
 #import "Environment/iOS/iOSDetail.h"
-#import "Environment/iOS/iOSRevenueParam.h"
 
 #include "Kernel/Logger.h"
 
@@ -155,7 +154,8 @@
 }
 
 - (void) eventRevenue:(MAAd * _Nonnull) ad {
-    iOSRevenueParam * revenue = [iOSRevenueParam alloc];
+    iOSAdRevenueParam * revenue = [iOSAdRevenueParam alloc];
+    
     revenue.REVENUE_PLATFORM = @"AppLovin";
     revenue.REVENUE_COUNTRY_CODE = [ALSdk shared].configuration.countryCode;
     revenue.REVENUE_PLACEMENT = ad.placement;
@@ -166,7 +166,7 @@
     revenue.REVENUE_CURRENCY = @"USD";
     revenue.REVENUE_VALUE = [NSNumber numberWithDouble:ad.revenue];
     
-    Mengine::Helper::iOSPluginApplicationDelegateEventNotify( AppleEvent.EVENT_REVENUE, revenue, nil );
+    Mengine::Helper::iOSAdRevenue( revenue );
 }
 
 @end

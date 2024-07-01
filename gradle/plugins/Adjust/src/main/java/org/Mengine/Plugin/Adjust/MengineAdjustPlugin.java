@@ -21,12 +21,13 @@ import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginAdRevenueListener;
+import org.Mengine.Base.MenginePluginTransparencyConsentListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginRemoteMessageListener;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 
-public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginAdRevenueListener, MenginePluginRemoteMessageListener {
+public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginAdRevenueListener, MenginePluginTransparencyConsentListener, MenginePluginRemoteMessageListener {
     public static final String PLUGIN_NAME = "MengineAdjust";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -77,23 +78,6 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
             final Context context = application.getApplicationContext();
 
             Adjust.setPushToken(token, context);
-        } else if (event == MengineEvent.EVENT_TRANSPARENCY_CONSENT) {
-            MengineTransparencyConsentParam consent = (MengineTransparencyConsentParam)args[0];
-
-            boolean EEA = consent.isEEA();
-            boolean AD_PERSONALIZATION = consent.getConsentAdPersonalization();
-            boolean AD_USER_DATA = consent.getConsentAdUserData();
-
-            AdjustThirdPartySharing adjustThirdPartySharing = new AdjustThirdPartySharing(null);
-            adjustThirdPartySharing.addGranularOption("google_dma", "eea", EEA ? "1" : "0");
-            adjustThirdPartySharing.addGranularOption("google_dma", "ad_personalization", AD_PERSONALIZATION ? "1" : "0");
-            adjustThirdPartySharing.addGranularOption("google_dma", "ad_user_data", AD_USER_DATA ? "1" : "0");
-
-            this.logMessage("AdjustThirdPartySharing: %s"
-                , adjustThirdPartySharing.getGranularOptions()
-            );
-
-            Adjust.trackThirdPartySharing(adjustThirdPartySharing);
         }
     }
 
@@ -155,6 +139,24 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
         adjustAdRevenue.setAdRevenuePlacement(placement);
 
         Adjust.trackAdRevenue(adjustAdRevenue);
+    }
+
+    @Override
+    void onMengineTransparencyConsent(MengineApplication application, MengineTransparencyConsentParam consent) {
+        boolean EEA = consent.isEEA();
+        boolean AD_PERSONALIZATION = consent.getConsentAdPersonalization();
+        boolean AD_USER_DATA = consent.getConsentAdUserData();
+
+        AdjustThirdPartySharing adjustThirdPartySharing = new AdjustThirdPartySharing(null);
+        adjustThirdPartySharing.addGranularOption("google_dma", "eea", EEA ? "1" : "0");
+        adjustThirdPartySharing.addGranularOption("google_dma", "ad_personalization", AD_PERSONALIZATION ? "1" : "0");
+        adjustThirdPartySharing.addGranularOption("google_dma", "ad_user_data", AD_USER_DATA ? "1" : "0");
+
+        this.logMessage("AdjustThirdPartySharing: %s"
+            , adjustThirdPartySharing.getGranularOptions()
+        );
+
+        Adjust.trackThirdPartySharing(adjustThirdPartySharing);
     }
 
     @Override

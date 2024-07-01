@@ -1,5 +1,5 @@
-#import "Environment/iOS/UIPluginApplicationDelegateInterface.h"
+#import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
 
-@interface AppleDevToDevApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface>
+@interface AppleDevToDevApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
 
 @end

@@ -92,6 +92,7 @@ public class MengineApplication extends Application {
     private ArrayList<MenginePluginLoggerListener> m_loggerListeners = new ArrayList<>();
     private ArrayList<MenginePluginAnalyticsListener> m_analyticsListeners = new ArrayList<>();
     private ArrayList<MenginePluginAdRevenueListener> m_adRevenueListeners = new ArrayList<>();
+    private ArrayList<MenginePluginTransparencyConsentListener> m_transparencyConsentListeners = new ArrayList<>();
     private ArrayList<MenginePluginInAppPurchaseListener> m_inAppPurchaseListeners = new ArrayList<>();
     private ArrayList<MenginePluginRemoteMessageListener> m_removeMessageListeners = new ArrayList<>();
     private ArrayList<MenginePluginKeyListener> m_keyListeners = new ArrayList<>();
@@ -413,6 +414,10 @@ public class MengineApplication extends Application {
         return m_adRevenueListeners;
     }
 
+    public List<MenginePluginTransparencyConsentListener> getTransparencyConsentListeners() {
+        return m_transparencyConsentListeners;
+    }
+
     public List<MenginePluginInAppPurchaseListener> getInAppAnalyticsListeners() {
         return m_inAppPurchaseListeners;
     }
@@ -528,6 +533,10 @@ public class MengineApplication extends Application {
 
         if (plugin instanceof MenginePluginAdRevenueListener listener) {
             m_adRevenueListeners.add(listener);
+        }
+
+        if (plugin instanceof MenginePluginTransparencyConsentListener listener) {
+            m_transparencyConsentListeners.add(listener);
         }
 
         if (plugin instanceof MenginePluginInAppPurchaseListener listener) {
@@ -1190,6 +1199,14 @@ public class MengineApplication extends Application {
 
         for (MenginePluginAdRevenueListener l : listeners) {
             l.onMengineAdRevenue(this, revenue);
+        }
+    }
+
+    public void onMengineTransparencyConsent(MengineTransparencyConsentParam consent) {
+        List<MenginePluginTransparencyConsentListener> listeners = this.getTransparencyConsentListeners();
+
+        for (MenginePluginTransparencyConsentListener l : listeners) {
+            l.onMengineTransparencyConsent(this, consent);
         }
     }
 

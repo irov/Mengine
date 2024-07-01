@@ -6,7 +6,7 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol UIPluginApplicationDelegateInterface <NSObject>
+@protocol iOSPluginApplicationDelegateInterface <NSObject>
 
 #pragma mark - UIApplicationDelegate Protocol
 

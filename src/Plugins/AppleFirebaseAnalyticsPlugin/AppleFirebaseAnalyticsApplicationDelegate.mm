@@ -1,7 +1,7 @@
 #import "AppleFirebaseAnalyticsApplicationDelegate.h"
 
 #import "Environment/iOS/iOSApplication.h"
-#import "Environment/iOS/iOSRevenueParam.h"
+#import "Environment/iOS/iOSAdRevenueParam.h"
 
 #import <FirebaseAnalytics/FirebaseAnalytics.h>
 
@@ -9,7 +9,7 @@
 
 @implementation AppleFirebaseAnalyticsApplicationDelegate
 
-#pragma mark - UIPluginApplicationDelegateInterface
+#pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     NSString * sessionId = [iOSApplication.sharedInstance getSessionId];
@@ -24,18 +24,20 @@
         NSString * sessionId = args[0];
         
         [FIRAnalytics setUserID:sessionId];
-    } else if (event == AppleEvent.EVENT_REVENUE) {
-        iOSRevenueParam * revenue = args[0];
-        
-        [FIRAnalytics logEventWithName:kFIREventAdImpression
-                            parameters:@{
-                                kFIRParameterAdPlatform:revenue.REVENUE_PLATFORM,
-                                kFIRParameterAdSource:revenue.REVENUE_SOURCE,
-                                kFIRParameterAdFormat:revenue.REVENUE_FORMAT,
-                                kFIRParameterAdUnitName:revenue.REVENUE_UNIT,
-                                kFIRParameterCurrency:revenue.REVENUE_CURRENCY,
-                                kFIRParameterValue:revenue.REVENUE_VALUE}];
     }
+}
+
+#pragma mark - iOSPluginAdRevenueDelegateInterface
+
+- (void)onAdRevenue:(iOSAdRevenueParam *)revenue {
+    [FIRAnalytics logEventWithName:kFIREventAdImpression
+                        parameters:@{
+                            kFIRParameterAdPlatform:revenue.REVENUE_PLATFORM,
+                            kFIRParameterAdSource:revenue.REVENUE_SOURCE,
+                            kFIRParameterAdFormat:revenue.REVENUE_FORMAT,
+                            kFIRParameterAdUnitName:revenue.REVENUE_UNIT,
+                            kFIRParameterCurrency:revenue.REVENUE_CURRENCY,
+                            kFIRParameterValue:revenue.REVENUE_VALUE}];
 }
 
 @end

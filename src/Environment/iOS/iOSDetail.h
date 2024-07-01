@@ -3,6 +3,7 @@
 #include "Config/Config.h"
 
 #import "Environment/Apple/AppleEvent.h"
+#import "Environment/iOS/iOSRevenueParam.h"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -16,8 +17,9 @@ namespace Mengine
         UIViewController * iOSGetRootViewController();
         NSUUID * iOSGetAdIdentifier();
         id iOSGetUIProxyApplicationDelegate( Class delegateClass );
-        void iOSPluginApplicationDelegateEventNotify( AppleEvent * event, id firstArg, ... );
-        void iOSPluginApplicationDelegateEventNotifyArray( AppleEvent * event, NSArray<id> * args );
+        void iOSEventNotify( AppleEvent * event, id firstArg, ... );
+        void iOSEventNotifyArray( AppleEvent * event, NSArray<id> * args );
+        void iOSAdRevenue( iOSAdRevenueParam * revenue );
         NSString * iOSPathForTemporaryFileWithPrefix( NSString * prefix, NSString * ext );
         void iOSAlert( UIViewController * view, NSString * title, NSString * message );
     }

@@ -1,5 +1,7 @@
-#import "Environment/iOS/UIPluginApplicationDelegateInterface.h"
+#pragma once
 
-@interface AppleFirebaseApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface>
+#import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
+
+@interface AppleFirebaseApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
 
 @end

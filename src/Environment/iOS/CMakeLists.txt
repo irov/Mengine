@@ -28,11 +28,13 @@ src
     iOSTransparencyConsentParam.h
     iOSTransparencyConsentParam.mm
 
-    iOSRevenueParam.h
-    iOSRevenueParam.mm
+    iOSAdRevenueParam.h
+    iOSAdRevenueParam.mm
     
-    UIMainApplicationDelegateInterface.h
-    UIPluginApplicationDelegateInterface.h
+    iOSUIMainApplicationDelegateInterface.h
+    
+    iOSPluginAdRevenueDelegateInterface.h
+    iOSPluginApplicationDelegateInterface.h
 )
 
 ADD_MENGINE_APPLE_LIBRARY(Environment)

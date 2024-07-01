@@ -19,7 +19,8 @@ char ** MENGINE_MAIN_argv = nullptr;
 - (id)init {
     NSArray * proxysClassed = getMengineAppleApplicationDelegates();
 
-    self.m_pluginDelegates = [NSMutableArray<UIPluginApplicationDelegateInterface> array];
+    self.m_pluginApplicationDelegates = [NSMutableArray<iOSPluginApplicationDelegateInterface> array];
+    self.m_pluginAdRevenueDelegates = [NSMutableArray<iOSPluginAdRevenueDelegateInterface> array];
     
     for (id className in proxysClassed) {
         id c = NSClassFromString(className);
@@ -30,16 +31,26 @@ char ** MENGINE_MAIN_argv = nullptr;
         
         id delegate = [[c alloc] init];
 
-        [self.m_pluginDelegates addObject:delegate];
+        if ([delegate conformsToProtocol:@protocol(iOSPluginApplicationDelegateInterface)] == YES) {
+            [self.m_pluginApplicationDelegates addObject:delegate];
+        }
+
+        if ([delegate conformsToProtocol:@protocol(iOSPluginAdRevenueDelegateInterface)] == YES) {
+            [self.m_pluginAdRevenueDelegates addObject:delegate];
+        }
     }
     
     return [super init];
 }
 
-#pragma mark - UIMainApplicationDelegateInterface Protocol
+#pragma mark - iOSUIMainApplicationDelegateInterface Protocol
 
-- (NSArray<UIPluginApplicationDelegateInterface> *)getPluginDelegates {
-    return self.m_pluginDelegates;
+- (NSArray<iOSPluginApplicationDelegateInterface> *)getPluginApplicationDelegates {
+    return self.m_pluginApplicationDelegates;
+}
+
+- (NSArray<iOSPluginApplicationDelegateInterface> *)getPluginAdRevenueDelegates {
+    return self.m_pluginAdRevenueDelegates;
 }
 
 - (void)notify:(AppleEvent *)event args:(id)firstArg, ... NS_REQUIRES_NIL_TERMINATION {
@@ -58,7 +69,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (void)notify:(AppleEvent *)event arrayArgs:(NSArray<id> *)args {
-    for (NSObject<UIPluginApplicationDelegateInterface> * delegate in self.m_pluginDelegates) {
+    for (NSObject<iOSPluginApplicationDelegateInterface> * delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(onEvent: args:)] == YES) {
             [delegate onEvent:event args:args];
         }
@@ -66,10 +77,16 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (void)log:(const Mengine::LoggerRecordInterfacePtr &)record {
-    for (NSObject<UIPluginApplicationDelegateInterface> * delegate in self.m_pluginDelegates) {
+    for (NSObject<iOSPluginApplicationDelegateInterface> * delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(onLog:)] == YES) {
             [delegate onLog:record];
         }
+    }
+}
+
+- (void)eventAdRevenue:(iOSAdRevenueParam *)revenue {
+    for (NSObject<iOSPluginAdRevenueDelegateInterface> * delegate in self.m_pluginAdRevenueDelegates) {
+        [delegate onAdRevenue:revenue];
     }
 }
 
@@ -84,7 +101,7 @@ char ** MENGINE_MAIN_argv = nullptr;
         return NO;
     }
     
-    for (id delegate in self.m_pluginDelegates) {
+    for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
             Mengine::Helper::AppleLog(@"🔴 [ERROR] Mengine application didFinishLaunchingWithOptions plugin %@ failed", NSStringFromClass([delegate class]));
             
@@ -100,9 +117,9 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken API_AVAILABLE(ios(3.0)) {
-    for (id delegate in self.m_pluginDelegates) {
-        Mengine::Helper::AppleLog(@"Mengine application didRegisterForRemoteNotificationsWithDeviceToken");
-        
+    Mengine::Helper::AppleLog(@"Mengine application didRegisterForRemoteNotificationsWithDeviceToken");
+
+    for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(application: didRegisterForRemoteNotificationsWithDeviceToken:)] == NO) {
             continue;
         }
@@ -114,7 +131,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler API_AVAILABLE(ios(7.0)) {
     Mengine::Helper::AppleLog(@"Mengine application didReceiveRemoteNotification");
     
-    for (id delegate in self.m_pluginDelegates) {
+    for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(application: didReceiveRemoteNotification: fetchCompletionHandler:)] == NO) {
             continue;
         }
@@ -126,7 +143,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     Mengine::Helper::AppleLog(@"Mengine application applicationDidBecomeActive");
     
-    for (id delegate in self.m_pluginDelegates) {
+    for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(applicationDidBecomeActive:)] == NO) {
             continue;
         }
@@ -138,7 +155,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     Mengine::Helper::AppleLog(@"Mengine application applicationWillEnterForeground");
     
-    for (id delegate in self.m_pluginDelegates) {
+    for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(applicationWillEnterForeground:)] == NO) {
             continue;
         }
@@ -150,7 +167,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     Mengine::Helper::AppleLog(@"Mengine application applicationDidEnterBackground");
     
-    for (id delegate in self.m_pluginDelegates) {
+    for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(applicationDidEnterBackground:)] == NO) {
             continue;
         }
@@ -162,7 +179,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 - (void)applicationWillResignActive:(UIApplication *)application {
     Mengine::Helper::AppleLog(@"Mengine application applicationWillResignActive");
     
-    for (id delegate in self.m_pluginDelegates) {
+    for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(applicationWillResignActive:)] == NO) {
             continue;
         }
@@ -174,7 +191,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 - (void)applicationWillTerminate:(UIApplication *)application {
     Mengine::Helper::AppleLog(@"Mengine application applicationWillTerminate");
     
-    for (id delegate in self.m_pluginDelegates) {
+    for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(applicationWillTerminate:)] == NO) {
             continue;
         }
@@ -184,7 +201,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options API_AVAILABLE(ios(9.0)) {
-    for (id delegate in self.m_pluginDelegates) {
+    for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(application: openURL: options: handled:)] == NO) {
             continue;
         }
@@ -222,11 +239,11 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (void)postFinishLaunch {
-    for (id delegate in self.m_pluginDelegates) {
+    for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(beginLoop:)] == NO) {
             continue;
         }
-         
+        
         [delegate beginLoop];
     }
     
@@ -260,7 +277,7 @@ char ** MENGINE_MAIN_argv = nullptr;
     
     SDL_iPhoneSetEventPump( SDL_FALSE );
     
-    for (id delegate in self.m_pluginDelegates) {
+    for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(endLoop:)] == NO) {
             continue;
         }

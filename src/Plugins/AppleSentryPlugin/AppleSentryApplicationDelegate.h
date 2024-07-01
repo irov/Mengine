@@ -1,6 +1,8 @@
-#import "Environment/iOS/UIPluginApplicationDelegateInterface.h"
+#pragma once
 
-@interface AppleSentryApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface>
+#import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
+
+@interface AppleSentryApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
 
 @property (assign) BOOL m_sendAllow;
 

@@ -8,7 +8,7 @@
 - (void)setGDPRPass:(BOOL)passGDPR {
     Mengine::Helper::AppleSetUserDefaultsBoolean( @("mengine.gdpr.pass"), passGDPR );
     
-    Mengine::Helper::iOSPluginApplicationDelegateEventNotify( AppleEvent.EVENT_GDPR_PASS, @(passGDPR), nil );
+    Mengine::Helper::iOSEventNotify( AppleEvent.EVENT_GDPR_PASS, @(passGDPR), nil );
 }
 
 - (BOOL)isGDPRPass {
@@ -17,12 +17,12 @@
     return passGDPR;
 }
 
-#pragma mark - UIPluginApplicationDelegateInterface
+#pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     bool passGDPR = Mengine::Helper::AppleGetUserDefaultsBoolean( @("mengine.gdpr.pass"), false );
     
-    Mengine::Helper::iOSPluginApplicationDelegateEventNotify( AppleEvent.EVENT_GDPR_PASS, @(passGDPR), nil );
+    Mengine::Helper::iOSEventNotify( AppleEvent.EVENT_GDPR_PASS, @(passGDPR), nil );
     
     return YES;
 }

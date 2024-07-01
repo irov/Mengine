@@ -1,7 +1,9 @@
-#import "Environment/iOS/UIPluginApplicationDelegateInterface.h"
+#pragma once
+
+#import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
 
 #import <FirebaseMessaging/FirebaseMessaging.h>
 
-@interface AppleFirebaseMessagingApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface, FIRMessagingDelegate>
+@interface AppleFirebaseMessagingApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, FIRMessagingDelegate>
 
 @end

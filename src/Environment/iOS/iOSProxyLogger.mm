@@ -1,6 +1,6 @@
 #include "iOSProxyLogger.h"
 
-#import "UIMainApplicationDelegateInterface.h"
+#import "Environment/iOS/iOSUIMainApplicationDelegateInterface.h"
 
 #include "Kernel/AssertionUtf8.h"
 
@@ -35,7 +35,7 @@ namespace Mengine
         MENGINE_ASSERTION_VALIDATE_UTF8( message.category, MENGINE_UNKNOWN_SIZE );
         MENGINE_ASSERTION_VALIDATE_UTF8( message.data, MENGINE_UNKNOWN_SIZE );
 
-        NSObject<UIMainApplicationDelegateInterface> * delegate = (NSObject<UIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
+        NSObject<iOSUIMainApplicationDelegateInterface> * delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
 
         [delegate log:_record];
     }

@@ -1,5 +1,7 @@
-#import "Environment/iOS/UIPluginApplicationDelegateInterface.h"
+#pragma once
 
-@interface AppleMARSDKApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface>
+#import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
+
+@interface AppleMARSDKApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
 
 @end

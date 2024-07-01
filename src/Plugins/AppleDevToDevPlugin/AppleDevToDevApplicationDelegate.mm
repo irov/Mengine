@@ -6,7 +6,7 @@
 
 @implementation AppleDevToDevApplicationDelegate
 
-#pragma mark - UIPluginApplicationDelegateInterface
+#pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if (Mengine::Helper::iOSHasBundlePluginConfig(@"MengineAppleDevToDevPlugin") == NO) {

@@ -9,7 +9,7 @@
 
 @implementation AppleSentryApplicationDelegate
 
-#pragma mark - UIPluginApplicationDelegateInterface
+#pragma mark - iOSPluginApplicationDelegateInterface
 
 - (instancetype _Nonnull)init {
     self = [super init];

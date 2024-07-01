@@ -1,11 +1,15 @@
+#pragma once
+
+#import "Environment/iOS/iOSUIMainApplicationDelegateInterface.h"
+
+#import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
+#import "Environment/iOS/iOSPluginAdRevenueDelegateInterface.h"
+
 #import <UIKit/UIKit.h>
 
-#import "Environment/iOS/UIMainApplicationDelegateInterface.h"
+@interface SDLUIApplicationDelegate : NSObject<UIApplicationDelegate, iOSUIMainApplicationDelegateInterface>
 
-#include "SDLApplication.h"
-
-@interface SDLUIApplicationDelegate : NSObject<UIApplicationDelegate, UIMainApplicationDelegateInterface>
-
-@property (nonatomic, strong) NSMutableArray<UIPluginApplicationDelegateInterface> * m_pluginDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginApplicationDelegateInterface> * m_pluginApplicationDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginAdRevenueDelegateInterface> * m_pluginAdRevenueDelegates;
 
 @end

@@ -1,5 +1,7 @@
-#import "Environment/iOS/UIPluginApplicationDelegateInterface.h"
+#pragma once
 
-@interface AppleSKAdNetworkApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface>
+#import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
+
+@interface AppleSKAdNetworkApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
 
 @end

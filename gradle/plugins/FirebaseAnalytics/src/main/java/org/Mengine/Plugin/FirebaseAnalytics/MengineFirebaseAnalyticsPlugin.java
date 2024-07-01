@@ -19,12 +19,13 @@ import org.Mengine.Base.MenginePluginAdRevenueListener;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MenginePluginTransparencyConsentListener;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 
 import java.util.EnumMap;
 import java.util.Map;
 
-public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener {
+public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginTransparencyConsentListener, MenginePluginApplicationListener {
     public static final String PLUGIN_NAME = "MengineFBAnalytics";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -36,28 +37,6 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
             String sessionId = (String)args[0];
 
             m_firebaseAnalytics.setUserId(sessionId);
-        } else if (event == MengineEvent.EVENT_TRANSPARENCY_CONSENT) {
-            MengineTransparencyConsentParam consent = (MengineTransparencyConsentParam)args[0];
-
-            boolean AD_STORAGE = consent.getConsentAdStorage();
-            boolean ANALYTICS_STORAGE =  consent.getConsentAnalyticsStorage();
-            boolean AD_USER_DATA = consent.getConsentAdUserData();
-            boolean AD_PERSONALIZATION = consent.getConsentAdPersonalization();
-
-            Map<FirebaseAnalytics.ConsentType, FirebaseAnalytics.ConsentStatus> consentMap = new EnumMap<>(FirebaseAnalytics.ConsentType.class);
-            consentMap.put(FirebaseAnalytics.ConsentType.ANALYTICS_STORAGE, ANALYTICS_STORAGE ? FirebaseAnalytics.ConsentStatus.GRANTED : FirebaseAnalytics.ConsentStatus.DENIED);
-            consentMap.put(FirebaseAnalytics.ConsentType.AD_STORAGE, AD_STORAGE ? FirebaseAnalytics.ConsentStatus.GRANTED : FirebaseAnalytics.ConsentStatus.DENIED);
-            consentMap.put(FirebaseAnalytics.ConsentType.AD_USER_DATA, AD_USER_DATA ? FirebaseAnalytics.ConsentStatus.GRANTED : FirebaseAnalytics.ConsentStatus.DENIED);
-            consentMap.put(FirebaseAnalytics.ConsentType.AD_PERSONALIZATION, AD_PERSONALIZATION ? FirebaseAnalytics.ConsentStatus.GRANTED : FirebaseAnalytics.ConsentStatus.DENIED);
-
-            this.logMessage("setConsent AD_STORAGE: %s ANALYTICS_STORAGE: %s AD_USER_DATA: %s AD_PERSONALIZATION: %s"
-                , AD_STORAGE
-                , ANALYTICS_STORAGE
-                , AD_USER_DATA
-                , AD_PERSONALIZATION
-            );
-
-            m_firebaseAnalytics.setConsent(consentMap);
         }
     }
 
@@ -231,6 +210,32 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         params.putString(FirebaseAnalytics.Param.CURRENCY, revenueCurrency);
 
         m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params);
+    }
+
+    public void onMengineTransparencyConsent(MengineApplication application, MengineTransparencyConsentParam consent) {
+        if (m_firebaseAnalytics == null) {
+            return;
+        }
+
+        boolean AD_STORAGE = consent.getConsentAdStorage();
+        boolean ANALYTICS_STORAGE =  consent.getConsentAnalyticsStorage();
+        boolean AD_USER_DATA = consent.getConsentAdUserData();
+        boolean AD_PERSONALIZATION = consent.getConsentAdPersonalization();
+
+        Map<FirebaseAnalytics.ConsentType, FirebaseAnalytics.ConsentStatus> consentMap = new EnumMap<>(FirebaseAnalytics.ConsentType.class);
+        consentMap.put(FirebaseAnalytics.ConsentType.AD_STORAGE, AD_STORAGE ? FirebaseAnalytics.ConsentStatus.GRANTED : FirebaseAnalytics.ConsentStatus.DENIED);
+        consentMap.put(FirebaseAnalytics.ConsentType.ANALYTICS_STORAGE, ANALYTICS_STORAGE ? FirebaseAnalytics.ConsentStatus.GRANTED : FirebaseAnalytics.ConsentStatus.DENIED);
+        consentMap.put(FirebaseAnalytics.ConsentType.AD_USER_DATA, AD_USER_DATA ? FirebaseAnalytics.ConsentStatus.GRANTED : FirebaseAnalytics.ConsentStatus.DENIED);
+        consentMap.put(FirebaseAnalytics.ConsentType.AD_PERSONALIZATION, AD_PERSONALIZATION ? FirebaseAnalytics.ConsentStatus.GRANTED : FirebaseAnalytics.ConsentStatus.DENIED);
+
+        this.logMessage("setConsent AD_STORAGE: %s ANALYTICS_STORAGE: %s AD_USER_DATA: %s AD_PERSONALIZATION: %s"
+            , AD_STORAGE
+            , ANALYTICS_STORAGE
+            , AD_USER_DATA
+            , AD_PERSONALIZATION
+        );
+
+        m_firebaseAnalytics.setConsent(consentMap);
     }
 
     public void setUserProperty(@NonNull @Size(min = 1L,max = 24L) String name, @NonNull @Size(min = 1L,max = 36L) String value) {

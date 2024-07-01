@@ -1,9 +1,9 @@
-#import "Environment/iOS/UIPluginApplicationDelegateInterface.h"
+#pragma once
+
+#import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
 
 #import <AppLovinSDK/AppLovinSDK.h>
 
-@interface AppleAppLovinApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface>
+@interface AppleAppLovinApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
 
 @end
-
-

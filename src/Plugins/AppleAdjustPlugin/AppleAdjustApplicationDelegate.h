@@ -1,7 +1,9 @@
-#import "Environment/iOS/UIPluginApplicationDelegateInterface.h"
+#pragma once
+
+#import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
 
 #import <Adjust/Adjust.h>
 
-@interface AppleAdjustApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface, AdjustDelegate>
+@interface AppleAdjustApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface, AdjustDelegate>
 
 @end

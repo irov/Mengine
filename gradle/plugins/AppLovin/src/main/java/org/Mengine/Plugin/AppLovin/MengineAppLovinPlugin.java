@@ -23,7 +23,6 @@ import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginEngineListener;
@@ -189,7 +188,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
                 MengineTransparencyConsentParam consent = activity.makeTransparencyConsentParam();
 
-                MengineAppLovinPlugin.this.sendEvent(MengineEvent.EVENT_TRANSPARENCY_CONSENT, consent);
+                application.onMengineTransparencyConsent(consent);
 
                 if (MengineAppLovinPlugin.this.hasOption("applovin.show_mediation_debugger") == true) {
                     MengineAppLovinPlugin.this.showMediationDebugger();

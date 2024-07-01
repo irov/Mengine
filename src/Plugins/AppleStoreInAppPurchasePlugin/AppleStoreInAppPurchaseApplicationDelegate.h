@@ -1,5 +1,7 @@
-#import "Environment/iOS/UIPluginApplicationDelegateInterface.h"
+#pragma once
 
-@interface AppleStoreInAppPurchaseApplicationDelegate : NSObject<UIPluginApplicationDelegateInterface>
+#import "Environment/iOS/iOSPluginApplicationDelegateInterface.h"
+
+@interface AppleStoreInAppPurchaseApplicationDelegate : NSObject<iOSPluginApplicationDelegateInterface>
 
 @end

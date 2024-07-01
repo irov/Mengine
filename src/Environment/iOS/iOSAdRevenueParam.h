@@ -4,7 +4,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface iOSRevenueParam : NSObject
+@interface iOSAdRevenueParam : NSObject
 
 @property (nonatomic, strong) NSString * _Nonnull REVENUE_PLATFORM;
 @property (nonatomic, strong) NSString * _Nonnull REVENUE_COUNTRY_CODE;

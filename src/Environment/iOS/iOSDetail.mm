@@ -1,7 +1,7 @@
 #include "iOSDetail.h"
 
-#import "UIMainApplicationDelegateInterface.h"
-#import "UIPluginApplicationDelegateInterface.h"
+#import "iOSUIMainApplicationDelegateInterface.h"
+#import "iOSPluginApplicationDelegateInterface.h"
 
 #import <AdSupport/ASIdentifierManager.h>
 
@@ -46,11 +46,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         id iOSGetUIProxyApplicationDelegate( Class delegateClass )
         {
-            NSObject<UIMainApplicationDelegateInterface> * delegate = (NSObject<UIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
+            NSObject<iOSUIMainApplicationDelegateInterface> * delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
 
-            NSArray<UIPluginApplicationDelegateInterface> * pluginDelegates = [delegate getPluginDelegates];
+            NSArray<iOSPluginApplicationDelegateInterface> * pluginDelegates = [delegate getPluginApplicationDelegates];
 
-            for( NSObject<UIPluginApplicationDelegateInterface> * delegate : pluginDelegates ) {
+            for( NSObject<iOSPluginApplicationDelegateInterface> * delegate : pluginDelegates ) {
                 if( [delegate isMemberOfClass:delegateClass] == YES ) {
                     return delegate;
                 }
@@ -59,9 +59,9 @@ namespace Mengine
             return nil;
         }
         //////////////////////////////////////////////////////////////////////////
-        void iOSPluginApplicationDelegateEventNotify( AppleEvent * event, id firstArg, ... )
+        void iOSEventNotify( AppleEvent * event, id firstArg, ... )
         {
-            NSObject<UIMainApplicationDelegateInterface> * delegate = (NSObject<UIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
+            NSObject<iOSUIMainApplicationDelegateInterface> * delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
             
             va_list args;
             va_start(args, firstArg);
@@ -77,17 +77,24 @@ namespace Mengine
             [delegate notify:event arrayArgs:send_args];
         }
         //////////////////////////////////////////////////////////////////////////
-        void iOSPluginApplicationDelegateEventNotifyArray( AppleEvent * event, NSArray<id> * args )
+        void iOSEventNotifyArray( AppleEvent * event, NSArray<id> * args )
         {
-            NSObject<UIMainApplicationDelegateInterface> * delegate = (NSObject<UIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
+            NSObject<iOSUIMainApplicationDelegateInterface> * delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
             
             [delegate notify:event arrayArgs:args];
         }
         //////////////////////////////////////////////////////////////////////////
+        void iOSAdRevenue( iOSAdRevenueParam * revenue )
+        {
+            NSObject<iOSUIMainApplicationDelegateInterface> * delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
+
+            [delegate eventAdRevenue:revenue];
+        }
+        //////////////////////////////////////////////////////////////////////////
         NSString * iOSPathForTemporaryFileWithPrefix( NSString * prefix, NSString * ext )
         {
-            NSString *  result;
-            CFUUIDRef   uuid;
+            NSString * result;
+            CFUUIDRef uuid;
             CFStringRef uuidStr;
 
             uuid = CFUUIDCreate(NULL);
@@ -111,9 +118,10 @@ namespace Mengine
                                                                                      message:message
                                                                               preferredStyle:UIAlertControllerStyleAlert];
 
-            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK"
+            UIAlertAction * okAction = [UIAlertAction actionWithTitle:@"OK"
                                                                style:UIAlertActionStyleDefault
                                                              handler:nil];
+
             [alertController addAction:okAction];
 
             [view presentViewController:alertController animated:YES completion:nil];

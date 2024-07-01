@@ -15,7 +15,7 @@
 
 @implementation AppleAppLovinApplicationDelegate
 
-#pragma mark - UIPluginApplicationDelegateInterface
+#pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if( Mengine::Helper::AppleHasBundlePluginConfig(@PLUGIN_BUNDLE_NAME) == NO ) {
@@ -120,7 +120,7 @@
         
         iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
         
-        Mengine::Helper::iOSPluginApplicationDelegateEventNotify( AppleEvent.EVENT_TRANSPARENCY_CONSENT, consent, nil );
+        Mengine::Helper::iOSEventNotify( AppleEvent.EVENT_TRANSPARENCY_CONSENT, consent, nil );
         
         [AppleSemaphoreService.sharedInstance activateSemaphore:@"AppLovinSdkInitialized"];
     }];

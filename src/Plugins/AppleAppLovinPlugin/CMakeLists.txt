@@ -25,21 +25,10 @@ src
     AppleAppLovinService.mm
 
     AppleAppLovinAnalyticsDelegate.h
-
-    AppleAppLovinAnalyticsService.h
-    AppleAppLovinAnalyticsService.mm
     
     AppleAppLovinApplicationDelegate.h
     AppleAppLovinApplicationDelegate.mm
 )
-
-if(MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS)
-    ADD_FILTER(
-        firebase
-        AppleAppLovinFirebaseAnalytics.h
-        AppleAppLovinFirebaseAnalytics.mm
-    )
-endif()
 
 if(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
     ADD_FILTER(

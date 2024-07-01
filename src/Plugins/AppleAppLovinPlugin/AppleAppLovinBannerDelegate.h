@@ -15,8 +15,7 @@
                                           placement:(NSString * _Nonnull) placement
                                        amazonSlotId:(NSString * _Nullable) amazonSlotId
                                                rect:(CGRect) rect
-                                           provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider
-                                          analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
+                                           provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider;
 
 - (void) show;
 - (void) hide;

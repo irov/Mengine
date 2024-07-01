@@ -6,10 +6,6 @@
 #   include "Plugins/AppleAppTrackingPlugin/AppleAppTrackingInterface.h"
 #endif
 
-#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS
-#   include "AppleAppLovinFirebaseAnalytics.h"
-#endif
-
 #include "AppleAppLovinApplicationDelegate.h"
 
 #include "Kernel/Assertion.h"
@@ -50,12 +46,6 @@ namespace Mengine
         m_amazonService = [[AppleAppLovinAmazonService alloc] init];
 #endif
         
-        m_analyticsService = [[AppleAppLovinAnalyticsService alloc] init];
-        
-#ifdef MENGINE_PLUGIN_APPLE_FIREBASE_ANALYTICS
-        [m_analyticsService addAnalyticsDelegate:[[AppleAppLovinFirebaseAnalytics alloc] init]];
-#endif
-        
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
@@ -64,8 +54,6 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
         m_amazonService = nil;
 #endif
-        
-        m_analyticsService = nil;
                 
         m_banners = nil;
         m_interstitials = nil;
@@ -98,8 +86,7 @@ namespace Mengine
                                                                                                    placement:placement
                                                                                                 amazonSlotId:amazonBannerSlotId
                                                                                                         rect:bannerRect
-                                                                                                    provider:_provider
-                                                                                                   analytics:m_analyticsService];
+                                                                                                    provider:_provider];
         
         if( banner == nil )
         {
@@ -181,8 +168,7 @@ namespace Mengine
 
         AppleAppLovinInterstitialDelegate * interstitial = [[AppleAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:adUnitId
                                                                                                                   amazonSlotId:amazonInterstitialSlotId
-                                                                                                                      provider:_provider
-                                                                                                                     analytics:m_analyticsService];
+                                                                                                                      provider:_provider];
         
         if( interstitial == nil )
         {
@@ -246,8 +232,7 @@ namespace Mengine
 
         AppleAppLovinRewardedDelegate * rewarded = [[AppleAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier:adUnitId
                                                                                                       amazonSlotId:amazonRewardedSlotId
-                                                                                                          provider:_provider
-                                                                                                         analytics:m_analyticsService];
+                                                                                                          provider:_provider];
         
         if( rewarded == nil )
         {

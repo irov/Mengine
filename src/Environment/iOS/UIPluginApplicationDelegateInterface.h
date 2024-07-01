@@ -16,7 +16,7 @@
 - (BOOL)beginLoop;
 - (void)endLoop;
 
-- (void)onEvent:(MengineEvent *)event args:(NSArray *)args;
+- (void)onEvent:(AppleEvent *)event args:(NSArray *)args;
 - (void)onLog:(const Mengine::LoggerRecordInterfacePtr &)record;
 
 #pragma mark - UISceneSession lifecycle

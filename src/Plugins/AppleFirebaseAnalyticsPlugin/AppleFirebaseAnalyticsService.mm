@@ -35,41 +35,6 @@ namespace Mengine
         ANALYTICS_SERVICE()
             ->removeEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
     }
-    ////////////////////////////////////////////////////////////////////////
-    NSString * AppleFirebaseAnalyticsService::getkFIREventAdImpression() const
-    {
-        return kFIREventAdImpression;
-    }
-    //////////////////////////////////////////////////////////////////////
-    NSString * AppleFirebaseAnalyticsService::getkFIRParameterAdPlatform() const
-    {
-        return kFIRParameterAdPlatform;
-    }
-    //////////////////////////////////////////////////////////////////////
-    NSString * AppleFirebaseAnalyticsService::getkFIRParameterAdSource() const
-    {
-        return kFIRParameterAdSource;
-    }
-    //////////////////////////////////////////////////////////////////////
-    NSString * AppleFirebaseAnalyticsService::getkFIRParameterAdFormat() const
-    {
-        return kFIRParameterAdFormat;
-    }
-    //////////////////////////////////////////////////////////////////////
-    NSString * AppleFirebaseAnalyticsService::getkFIRParameterAdUnitName() const
-    {
-        return kFIRParameterAdUnitName;
-    }
-    //////////////////////////////////////////////////////////////////////
-    NSString * AppleFirebaseAnalyticsService::getkFIRParameterCurrency() const
-    {
-        return kFIRParameterCurrency;
-    }
-    //////////////////////////////////////////////////////////////////////
-    NSString * AppleFirebaseAnalyticsService::getkFIRParameterValue() const
-    {
-        return kFIRParameterValue;
-    }
     //////////////////////////////////////////////////////////////////////
     void AppleFirebaseAnalyticsService::sendEvent( NSString * _name, NSDictionary<NSString *, id> * _parameters )
     {

@@ -58,9 +58,7 @@ namespace Mengine
     public:
         void showMediationDebugger() override;
         
-    protected:
-        AppleAppLovinAnalyticsService * m_analyticsService;
-        
+    protected:        
         NSMutableDictionary<NSString *, AppleAppLovinBannerDelegate *> * m_banners;
         NSMutableDictionary<NSString *, AppleAppLovinInterstitialDelegate *> * m_interstitials;
         NSMutableDictionary<NSString *, AppleAppLovinRewardedDelegate *> * m_rewardeds;

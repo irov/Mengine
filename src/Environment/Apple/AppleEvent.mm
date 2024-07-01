@@ -1,60 +1,24 @@
 #import "AppleEvent.h"
 
-@implementation MengineEvent
+@implementation AppleEvent
 
-+ (MengineEvent *)EVENT_GDPR_PASS {
-    static MengineEvent *event = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        event = [[MengineEvent alloc] initWithName:@"EVENT_GDPR_PASS"];
-    });
-    return event;
-}
+#define DECLARE_APPLE_EVENT(NAME)\
+    + (AppleEvent *)NAME {\
+        static AppleEvent *event = nil;\
+        static dispatch_once_t onceToken;\
+        dispatch_once(&onceToken, ^{\
+            event = [[AppleEvent alloc] initWithName:@(#NAME)];\
+        });\
+        return event;\
+    }
 
-+ (MengineEvent *)EVENT_PUSH_TOKEN {
-    static MengineEvent *event = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        event = [[MengineEvent alloc] initWithName:@"EVENT_PUSH_TOKEN"];
-    });
-    return event;
-}
-
-+ (MengineEvent *)EVENT_ADVERTISING_ID {
-    static MengineEvent *event = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        event = [[MengineEvent alloc] initWithName:@"EVENT_ADVERTISING_ID"];
-    });
-    return event;
-}
-
-+ (MengineEvent *)EVENT_SESSION_ID {
-    static MengineEvent *event = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        event = [[MengineEvent alloc] initWithName:@"EVENT_SESSION_ID"];
-    });
-    return event;
-}
-
-+ (MengineEvent *)EVENT_REMOTE_CONFIG_FETCH {
-    static MengineEvent *event = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        event = [[MengineEvent alloc] initWithName:@"EVENT_REMOTE_CONFIG_FETCH"];
-    });
-    return event;
-}
-
-+ (MengineEvent *)EVENT_TRANSPARENCY_CONSENT {
-    static MengineEvent *event = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        event = [[MengineEvent alloc] initWithName:@"EVENT_TRANSPARENCY_CONSENT"];
-    });
-    return event;
-}
+DECLARE_APPLE_EVENT(EVENT_GDPR_PASS)
+DECLARE_APPLE_EVENT(EVENT_PUSH_TOKEN)
+DECLARE_APPLE_EVENT(EVENT_ADVERTISING_ID)
+DECLARE_APPLE_EVENT(EVENT_SESSION_ID)
+DECLARE_APPLE_EVENT(EVENT_REMOTE_CONFIG_FETCH)
+DECLARE_APPLE_EVENT(EVENT_TRANSPARENCY_CONSENT)
+DECLARE_APPLE_EVENT(EVENT_REVENUE)
 
 - (instancetype)initWithName:(NSString *)name {
     self = [super init];

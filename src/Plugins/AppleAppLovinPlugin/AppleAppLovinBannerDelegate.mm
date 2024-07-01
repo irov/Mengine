@@ -16,9 +16,8 @@
                                           placement:(NSString * _Nonnull) placement
                                        amazonSlotId:(NSString * _Nullable) amazonSlotId
                                                rect:(CGRect) rect
-                                           provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider
-                                          analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
-    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.banner analytics:analytics];
+                                           provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider {
+    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.banner];
     
     self.m_provider = provider;
     
@@ -252,7 +251,7 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    [self.m_analytics eventRevenuePaid:ad];
+    [self eventRevenue:ad];
     
     Mengine::Params params;
     Mengine::Helper::AppleGetParamsFromNSDictionary( @{@"revenue":@(ad.revenue)}, &params );

@@ -1,6 +1,5 @@
 #pragma once
 
-#import "AppleAppLovinAnalyticsService.h"
 #import "AppleAppLovinInterface.h"
 
 #import <AppLovinSDK/AppLovinSDK.h>
@@ -9,8 +8,7 @@
 @interface AppleAppLovinBaseDelegate : NSObject
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
-                                          adFormat:(MAAdFormat * _Nonnull) adFormat
-                                         analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
+                                          adFormat:(MAAdFormat * _Nonnull) adFormat;
 
 - (void) loadAd;
 - (void) retryLoadAd;
@@ -26,10 +24,10 @@
 - (void) log:(NSString * _Nonnull) callback withMAError:(MAError * _Nonnull)error;
 - (void) log:(NSString * _Nonnull) callback withMAAd:(MAAd * _Nonnull) ad withMAReward:(MAReward * _Nonnull)reward;
 
+- (void) eventRevenue:(MAAd * _Nonnull) ad;
+
 @property (strong) NSString * _Nonnull m_adUnitId;
 @property (strong) MAAdFormat * _Nonnull m_adFormat;
-
-@property (nonatomic, strong) AppleAppLovinAnalyticsService * _Nonnull m_analytics;
 
 @property (nonatomic, assign) NSInteger m_retryAttempt;
 @property (nonatomic, assign) NSInteger m_enumeratorRequest;

@@ -59,7 +59,7 @@ namespace Mengine
             return nil;
         }
         //////////////////////////////////////////////////////////////////////////
-        void iOSPluginApplicationDelegateEventNotify( MengineEvent * event, id firstArg, ... )
+        void iOSPluginApplicationDelegateEventNotify( AppleEvent * event, id firstArg, ... )
         {
             NSObject<UIMainApplicationDelegateInterface> * delegate = (NSObject<UIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
             
@@ -75,6 +75,13 @@ namespace Mengine
             va_end(args);
             
             [delegate notify:event arrayArgs:send_args];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void iOSPluginApplicationDelegateEventNotifyArray( AppleEvent * event, NSArray<id> * args )
+        {
+            NSObject<UIMainApplicationDelegateInterface> * delegate = (NSObject<UIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
+            
+            [delegate notify:event arrayArgs:args];
         }
         //////////////////////////////////////////////////////////////////////////
         NSString * iOSPathForTemporaryFileWithPrefix( NSString * prefix, NSString * ext )

@@ -25,8 +25,8 @@
     return YES;
 }
 
-- (void)onEvent:(MengineEvent *)event args:(NSArray *)args {
-    if (event == MengineEvent.EVENT_SESSION_ID) {
+- (void)onEvent:(AppleEvent *)event args:(NSArray *)args {
+    if (event == AppleEvent.EVENT_SESSION_ID) {
         NSString * sessionId = args[0];
         
         [[FIRCrashlytics crashlytics] setUserID:sessionId];

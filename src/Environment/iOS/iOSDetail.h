@@ -16,7 +16,8 @@ namespace Mengine
         UIViewController * iOSGetRootViewController();
         NSUUID * iOSGetAdIdentifier();
         id iOSGetUIProxyApplicationDelegate( Class delegateClass );
-        void iOSPluginApplicationDelegateEventNotify( MengineEvent * name, id firstArg, ... );
+        void iOSPluginApplicationDelegateEventNotify( AppleEvent * event, id firstArg, ... );
+        void iOSPluginApplicationDelegateEventNotifyArray( AppleEvent * event, NSArray<id> * args );
         NSString * iOSPathForTemporaryFileWithPrefix( NSString * prefix, NSString * ext );
         void iOSAlert( UIViewController * view, NSString * title, NSString * message );
     }

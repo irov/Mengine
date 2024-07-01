@@ -2,18 +2,19 @@
 
 #import "Environment/Apple/AppleDetail.h"
 
+#import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSRevenueParam.h"
+
 #include "Kernel/Logger.h"
 
 @implementation AppleAppLovinBaseDelegate
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
-                                          adFormat:(MAAdFormat * _Nonnull) adFormat
-                                         analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
+                                          adFormat:(MAAdFormat * _Nonnull) adFormat {
     self = [super init];
     
     self.m_adUnitId = adUnitId;
     self.m_adFormat = adFormat;
-    self.m_analytics = analytics;
     
     self.m_retryAttempt = 0;
     self.m_enumeratorRequest = 0;
@@ -151,6 +152,21 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delaySec * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self loadAd];
     });
+}
+
+- (void) eventRevenue:(MAAd * _Nonnull) ad {
+    iOSRevenueParam * revenue = [iOSRevenueParam alloc];
+    revenue.REVENUE_PLATFORM = @"AppLovin";
+    revenue.REVENUE_COUNTRY_CODE = [ALSdk shared].configuration.countryCode;
+    revenue.REVENUE_PLACEMENT = ad.placement;
+    revenue.REVENUE_NETWORK_PLACEMENT = ad.networkPlacement;
+    revenue.REVENUE_SOURCE = ad.networkName;
+    revenue.REVENUE_FORMAT = ad.format.label;
+    revenue.REVENUE_UNIT = ad.adUnitIdentifier;
+    revenue.REVENUE_CURRENCY = @"USD";
+    revenue.REVENUE_VALUE = [NSNumber numberWithDouble:ad.revenue];
+    
+    Mengine::Helper::iOSPluginApplicationDelegateEventNotify( AppleEvent.EVENT_REVENUE, revenue, nil );
 }
 
 @end

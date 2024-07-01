@@ -13,8 +13,7 @@
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                        amazonSlotId:(NSString * _Nullable) amazonSlotId
-                                           provider:(const Mengine::AppleAppLovinInterstitialProviderInterfacePtr &) provider
-                                          analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics;
+                                           provider:(const Mengine::AppleAppLovinInterstitialProviderInterfacePtr &) provider;
 
 - (BOOL) canYouShow:(NSString * _Nonnull) placement;
 - (BOOL) show:(NSString * _Nonnull) placement;

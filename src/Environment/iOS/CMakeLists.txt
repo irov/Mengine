@@ -27,6 +27,9 @@ src
 
     iOSTransparencyConsentParam.h
     iOSTransparencyConsentParam.mm
+
+    iOSRevenueParam.h
+    iOSRevenueParam.mm
     
     UIMainApplicationDelegateInterface.h
     UIPluginApplicationDelegateInterface.h

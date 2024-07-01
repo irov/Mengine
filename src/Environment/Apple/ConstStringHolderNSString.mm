@@ -21,7 +21,7 @@ namespace Mengine
         if( _value != nil )
         {
             const char * data = [_value UTF8String];
-            size_t size = MENGINE_STRLEN( data );
+            size_t size = [_value length];
             int64_t hash = Helper::makeHash( data, size );
 
             this->setup( data, (ConstStringHolder::size_type)size, (ConstStringHolder::hash_type)hash );

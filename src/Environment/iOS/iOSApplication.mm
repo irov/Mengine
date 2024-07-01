@@ -73,7 +73,7 @@
     
     Mengine::Helper::AppleSetUserDefaultsString(@"mengine.session_id", self.m_sessionId);
     
-    Mengine::Helper::iOSPluginApplicationDelegateEventNotify( MengineEvent.EVENT_SESSION_ID, self.m_sessionId, nil );
+    Mengine::Helper::iOSPluginApplicationDelegateEventNotify( AppleEvent.EVENT_SESSION_ID, self.m_sessionId, nil );
 }
 
 - (NSString * _Nonnull)getInstallKey {

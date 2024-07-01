@@ -42,7 +42,7 @@ char ** MENGINE_MAIN_argv = nullptr;
     return self.m_pluginDelegates;
 }
 
-- (void)notify:(MengineEvent *)event args:(id)firstArg, ... NS_REQUIRES_NIL_TERMINATION {
+- (void)notify:(AppleEvent *)event args:(id)firstArg, ... NS_REQUIRES_NIL_TERMINATION {
     va_list args;
     va_start(args, firstArg);
     
@@ -57,7 +57,7 @@ char ** MENGINE_MAIN_argv = nullptr;
     [self notify:event arrayArgs:send_args];
 }
 
-- (void)notify:(MengineEvent *)event arrayArgs:(NSArray<id> *)args {
+- (void)notify:(AppleEvent *)event arrayArgs:(NSArray<id> *)args {
     for (NSObject<UIPluginApplicationDelegateInterface> * delegate in self.m_pluginDelegates) {
         if ([delegate respondsToSelector:@selector(onEvent: args:)] == YES) {
             [delegate onEvent:event args:args];

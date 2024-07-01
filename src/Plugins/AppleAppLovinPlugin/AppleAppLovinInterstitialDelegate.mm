@@ -13,9 +13,8 @@
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                        amazonSlotId:(NSString * _Nullable) amazonSlotId
-                                           provider:(const Mengine::AppleAppLovinInterstitialProviderInterfacePtr &) provider
-                                          analytics:(AppleAppLovinAnalyticsService * _Nonnull) analytics {
-    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.interstitial analytics:analytics];
+                                           provider:(const Mengine::AppleAppLovinInterstitialProviderInterfacePtr &) provider {
+    self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.interstitial];
     
     self.m_provider = provider;
     
@@ -237,7 +236,7 @@
         @"ad": [self getMAAdParams:ad]
     }];
     
-    [self.m_analytics eventRevenuePaid:ad];
+    [self eventRevenue:ad];
 
     Mengine::Params params;
     Mengine::Helper::AppleGetParamsFromNSDictionary( @{@"revenue":@(ad.revenue)}, &params );

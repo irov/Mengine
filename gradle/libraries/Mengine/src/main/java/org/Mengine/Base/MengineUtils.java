@@ -623,13 +623,13 @@ public class MengineUtils {
         return null;
     }
 
-    private static Map<String, Object> jsonObjectToMap(JSONObject jsonobj)  throws JSONException {
+    private static Map<String, Object> jsonObjectToMap(JSONObject obj)  throws JSONException {
         Map<String, Object> map = new HashMap<>();
 
-        Iterator<String> keys = jsonobj.keys();
+        Iterator<String> keys = obj.keys();
         while (keys.hasNext()) {
             String key = keys.next();
-            Object value = jsonobj.get(key);
+            Object value = obj.get(key);
             Object parsedValue = MengineUtils.parseJsonValue(value);
             map.put(key, parsedValue);
         }
@@ -654,6 +654,8 @@ public class MengineUtils {
             return MengineUtils.jsonArrayToList((JSONArray) value);
         } else if (value instanceof JSONObject) {
             return MengineUtils.jsonObjectToMap((JSONObject) value);
+        } else if (value == JSONObject.NULL ) {
+            return null;
         } else {
             return value;
         }

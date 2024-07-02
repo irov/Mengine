@@ -241,6 +241,14 @@ public class MengineApplication extends Application {
         return value;
     }
 
+    public long getMetaDataLong(String name) {
+        Bundle bundle = this.assertMetaDataBundle(name);
+
+        long value = bundle.getLong(name);
+
+        return value;
+    }
+
     public long getSecureRandomNumber() {
         long rnd = MengineUtils.getSecureRandomNumber();
 

@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
+        <meta-data android:name="mengine.firebase_remote_config.minimum_fetch_interval" android:value="@integer/mengine_firebase_remote_config_minimum_fetch_interval" />
     </application>
 </manifest>

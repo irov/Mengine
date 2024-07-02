@@ -205,6 +205,18 @@ public class MenginePlugin implements MenginePluginInterface {
         return 0;
     }
 
+    public long getMetaDataLong(String name) throws MenginePluginInvalidInitializeException {
+        try {
+            long value = m_application.getMetaDataInteger(name);
+
+            return value;
+        } catch (RuntimeException e) {
+            this.invalidInitialize("invalid get meta data [%s]", name);
+        }
+
+        return 0;
+    }
+
     public String getMetaDataString(String name) throws MenginePluginInvalidInitializeException {
         try {
             String value = m_application.getMetaDataString(name);

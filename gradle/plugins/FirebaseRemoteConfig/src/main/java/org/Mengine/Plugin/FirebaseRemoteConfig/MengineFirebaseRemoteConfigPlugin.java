@@ -28,12 +28,21 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
     public static final String PLUGIN_NAME = "MengineFBRemoteConfig";
     public static final boolean PLUGIN_EMBEDDING = true;
 
+    public static final String PLUGIN_METADATA_MINIMUM_FETCH_INTERVAL = "mengine.firebase_remote_config.minimum_fetch_interval";
+
     @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+        long MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval = this.getMetaDataLong(PLUGIN_METADATA_MINIMUM_FETCH_INTERVAL);
+
+        this.logMessage("%s: %d"
+            , PLUGIN_METADATA_MINIMUM_FETCH_INTERVAL
+            , MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval
+        );
+
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(3600)
+                .setMinimumFetchIntervalInSeconds(MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval)
                 .build();
         remoteConfig.setConfigSettingsAsync(configSettings);
 

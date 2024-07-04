@@ -563,7 +563,7 @@ public class MengineUtils {
     }
 
     public static void finishActivityWithAlertDialog(Activity activity, String format, Object... args) {
-        MengineLog.logError(TAG, format, args);
+        MengineLog.logErrorException(TAG, format, args);
 
         MengineUtils.performOnMainThreadDelayed(() -> {
             MengineUtils.showAlertDialog(activity, () -> {

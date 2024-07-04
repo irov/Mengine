@@ -1281,7 +1281,7 @@ public class MengineApplication extends Application {
     }
 
     private void invalidInitialize(String format, Object ... args) {
-        String msg = MengineLog.logError(TAG, format, args);
+        String msg = MengineLog.logErrorException(TAG, format, args);
 
         m_invalidInitialize = true;
         m_invalidInitializeReason = msg;

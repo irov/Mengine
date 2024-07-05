@@ -388,12 +388,12 @@ if(MENGINE_DEPENDENCE_TINYINI)
 endif()
 
 if(MENGINE_DEPENDENCE_FREETYPE)
-    message("================freetype================")    
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/freetype/ftoption.h ${THIRDPARTY_DIR}/freetype/include/freetype/config/ftoption.h COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/freetype/ftstdlib.h ${THIRDPARTY_DIR}/freetype/include/freetype/config/ftstdlib.h COPYONLY)
+    message("================freetype================")
+    #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/freetype/ftstdlib.h ${THIRDPARTY_DIR}/freetype/include/freetype/config/ftstdlib.h COPYONLY)
     
     set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP_INSTALL_ALL" FORCE)
     set(DISABLE_FORCE_DEBUG_POSTFIX ON CACHE BOOL "DISABLE_FORCE_DEBUG_POSTFIX" FORCE)
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS" FORCE)
 
     if(MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR)
         set(IOS_PLATFORM "OS" CACHE STRING "IOS_PLATFORM" FORCE)

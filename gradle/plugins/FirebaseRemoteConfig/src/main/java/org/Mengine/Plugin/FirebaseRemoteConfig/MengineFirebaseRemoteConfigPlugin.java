@@ -18,7 +18,6 @@ import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -2,7 +2,6 @@ package org.Mengine.Plugin.GeneralDataProtectionRegulation;
 
 import android.content.SharedPreferences;
 
-
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;

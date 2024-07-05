@@ -27,7 +27,7 @@ dependencies {
     if (MENGINE_APP_LIBRARY_MENGINE == true) {
         implementation project(':libraries:Mengine')
     }
-    
+
     if (MENGINE_APP_LIBRARY_SDL == true) {
         implementation project(':libraries:SDL')
     }

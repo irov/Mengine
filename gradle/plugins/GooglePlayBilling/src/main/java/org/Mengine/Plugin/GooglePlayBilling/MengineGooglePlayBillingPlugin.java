@@ -23,8 +23,6 @@ import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
@@ -34,7 +32,6 @@ import org.Mengine.Base.MengineInAppPurchaseParam;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MengineUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

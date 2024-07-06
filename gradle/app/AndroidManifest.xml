@@ -29,6 +29,7 @@
         android:theme="@style/AppTheme"
         android:networkSecurityConfig="@xml/network_security_config"
         android:hardwareAccelerated="true"
+        android:gwpAsanMode="default"
         tools:replace="android:label">
 
         <activity

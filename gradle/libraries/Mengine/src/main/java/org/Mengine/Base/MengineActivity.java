@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -945,25 +946,26 @@ public class MengineActivity extends SDLActivity {
         Context context = this.getApplicationContext();
 
         Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+
+        intent.setType("application/zip");
+
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, body);
 
-        boolean hasAccount = AndroidEnvironmentService_hasCurrentAccount();
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-        if (hasAccount == true) {
-            try {
-                intent.setType("message/rfc822");
+        try {
+            ArrayList<Parcelable> fileUris = new ArrayList<>();
 
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            boolean hasAccount = AndroidEnvironmentService_hasCurrentAccount();
 
-                ArrayList<Uri> fileUris = new ArrayList<Uri>();
-
-                File filesDir = context.getFilesDir();
-
+            if (hasAccount == true) {
                 String extraPreferencesFolderName = AndroidEnvironmentService_getExtraPreferencesFolderName();
                 String accountFolderName = AndroidEnvironmentService_getCurrentAccountFolderName();
+
+                File filesDir = context.getFilesDir();
 
                 File extraPreferencesFolder = new File(filesDir, extraPreferencesFolderName);
                 File accountFolder = new File(extraPreferencesFolder, accountFolderName);
@@ -994,92 +996,92 @@ public class MengineActivity extends SDLActivity {
 
                     fileUris.add(accountZIPUri);
                 }
+            }
 
-                File logFile = MengineUtils.createTempFile(context, "mng_log_", ".log");
+            File logFile = MengineUtils.createTempFile(context, "mng_log_", ".log");
 
-                if (logFile == null) {
-                    MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_log_***.log' mail: %s subject: %s"
-                        , email
-                        , subject
-                    );
-
-                    return false;
-                }
-
-                OutputStreamWriter logFileStream = new OutputStreamWriter(new FileOutputStream(logFile));
-
-                if (AndroidEnvironmentService_writeCurrentLogToFile(logFileStream) == true) {
-                    logFileStream.flush();
-                    logFileStream.close();
-
-                    File logZipFile = MengineUtils.createTempFile(context, "mng_log_", ".zip");
-
-                    if (MengineUtils.zipFiles(logFile, logZipFile) == true) {
-                        Uri logZipFileUri = MengineUtils.getUriForFile(context, logZipFile);
-
-                        if (logZipFileUri == null) {
-                            return false;
-                        }
-
-                        MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' mail: %s subject: %s"
-                            , logZipFileUri
-                            , email
-                            , subject
-                        );
-
-                        fileUris.add(logZipFileUri);
-                    }
-                }
-
-                File oldLogFile = MengineUtils.createTempFile(context, "mng_old_log_", ".log");
-
-                if (oldLogFile == null) {
-                    MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_old_log_***.log' mail: %s subject: %s"
-                        , email
-                        , subject
-                    );
-
-                    return false;
-                }
-
-                OutputStreamWriter oldLogFileStream = new OutputStreamWriter(new FileOutputStream(oldLogFile));
-
-                if (AndroidEnvironmentService_writeOldLogToFile(oldLogFileStream) == true) {
-                    oldLogFileStream.flush();
-                    oldLogFileStream.close();
-
-                    File oldLogZipFile = MengineUtils.createTempFile(context, "mng_old_log_", ".zip");
-
-                    if (MengineUtils.zipFiles(oldLogFile, oldLogZipFile) == true) {
-                        Uri oldLogZipFileUri = MengineUtils.getUriForFile(context, oldLogZipFile);
-
-                        if (oldLogZipFileUri == null) {
-                            return false;
-                        }
-
-                        MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' mail: %s subject: %s"
-                            , oldLogZipFileUri
-                            , email
-                            , subject
-                        );
-
-                        fileUris.add(oldLogZipFileUri);
-                    }
-                }
-
-                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris);
-            } catch (IOException e) {
-                MengineLog.logError(TAG, "[ERROR] linkingOpenMail failed attachs file mail: %s subject: %s exception: %s"
+            if (logFile == null) {
+                MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_log_***.log' mail: %s subject: %s"
                     , email
                     , subject
-                    , e.getMessage()
                 );
+
+                return false;
             }
-        } else {
-            intent.setType("text/plain");
+
+            OutputStreamWriter logFileStream = new OutputStreamWriter(new FileOutputStream(logFile));
+
+            if (AndroidEnvironmentService_writeCurrentLogToFile(logFileStream) == true) {
+                logFileStream.flush();
+                logFileStream.close();
+
+                File logZipFile = MengineUtils.createTempFile(context, "mng_log_", ".zip");
+
+                if (MengineUtils.zipFiles(logFile, logZipFile) == true) {
+                    Uri logZipFileUri = MengineUtils.getUriForFile(context, logZipFile);
+
+                    if (logZipFileUri == null) {
+                        return false;
+                    }
+
+                    MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' mail: %s subject: %s"
+                        , logZipFileUri
+                        , email
+                        , subject
+                    );
+
+                    fileUris.add(logZipFileUri);
+                }
+            }
+
+            File oldLogFile = MengineUtils.createTempFile(context, "mng_old_log_", ".log");
+
+            if (oldLogFile == null) {
+                MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_old_log_***.log' mail: %s subject: %s"
+                    , email
+                    , subject
+                );
+
+                return false;
+            }
+
+            OutputStreamWriter oldLogFileStream = new OutputStreamWriter(new FileOutputStream(oldLogFile));
+
+            if (AndroidEnvironmentService_writeOldLogToFile(oldLogFileStream) == true) {
+                oldLogFileStream.flush();
+                oldLogFileStream.close();
+
+                File oldLogZipFile = MengineUtils.createTempFile(context, "mng_old_log_", ".zip");
+
+                if (MengineUtils.zipFiles(oldLogFile, oldLogZipFile) == true) {
+                    Uri oldLogZipFileUri = MengineUtils.getUriForFile(context, oldLogZipFile);
+
+                    if (oldLogZipFileUri == null) {
+                        return false;
+                    }
+
+                    MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' mail: %s subject: %s"
+                        , oldLogZipFileUri
+                        , email
+                        , subject
+                    );
+
+                    fileUris.add(oldLogZipFileUri);
+                }
+            }
+
+            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris);
+        } catch (IOException e) {
+            MengineLog.logError(TAG, "[ERROR] linkingOpenMail failed attachs file mail: %s subject: %s exception: %s"
+                , email
+                , subject
+                , e.getMessage()
+            );
         }
 
         Intent chooser = Intent.createChooser(intent, "Send Email");
+
+        chooser.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         try {
             this.startActivity(chooser);

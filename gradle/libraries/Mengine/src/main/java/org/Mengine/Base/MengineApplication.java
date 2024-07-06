@@ -20,19 +20,13 @@ import androidx.multidex.MultiDex;
 
 import org.libsdl.app.SDL;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.lang.reflect.Field;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.net.URL;
 
 public class MengineApplication extends Application {
     private static final String TAG = "MengineApplication";
@@ -152,14 +146,18 @@ public class MengineApplication extends Application {
     }
 
     @SuppressWarnings("deprecation")
-    private ApplicationInfo getPackageApplicationInfo(PackageManager packageManager, String packageName) throws PackageManager.NameNotFoundException {
+    private static ApplicationInfo getPackageApplicationInfo(PackageManager packageManager, String packageName) throws PackageManager.NameNotFoundException {
+        ApplicationInfo applicationInfo;
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             PackageManager.ApplicationInfoFlags flags = PackageManager.ApplicationInfoFlags.of(PackageManager.GET_META_DATA);
 
-            return packageManager.getApplicationInfo(packageName, flags);
+            applicationInfo = packageManager.getApplicationInfo(packageName, flags);
         } else {
-            return packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+            applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
         }
+
+        return applicationInfo;
     }
 
     public Bundle getMetaDataBundle() {
@@ -168,7 +166,7 @@ public class MengineApplication extends Application {
         PackageManager packageManager = context.getPackageManager();
 
         try {
-            ApplicationInfo ai = this.getPackageApplicationInfo(packageManager, packageName);
+            ApplicationInfo ai = MengineApplication.getPackageApplicationInfo(packageManager, packageName);
 
             Bundle bundle = ai.metaData;
 

@@ -6,12 +6,14 @@ import android.util.Base64;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -73,11 +75,9 @@ public class MengineNetwork {
 
             return response;
         } catch (Exception e) {
-            MengineLog.logMessage(TAG, "invalid http request post message: %s"
-                , e.getMessage()
-            );
+            MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
 
-            return null;
+            return response;
         }
     }
 
@@ -90,7 +90,7 @@ public class MengineNetwork {
         try {
             URL url = new URL(request.HTTP_URL);
 
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
 
             connection.setDoOutput(true);
@@ -107,11 +107,9 @@ public class MengineNetwork {
 
             return response;
         } catch (Exception e) {
-            MengineLog.logMessage(TAG, "invalid http request header data: %s"
-                , e.getMessage()
-            );
+            MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
 
-            return null;
+            return response;
         }
     }
 
@@ -138,11 +136,9 @@ public class MengineNetwork {
 
             return response;
         } catch (Exception e) {
-            MengineLog.logMessage(TAG, "invalid http request get message: %s"
-                , e.getMessage()
-            );
+            MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
 
-            return null;
+            return response;
         }
     }
 
@@ -169,11 +165,9 @@ public class MengineNetwork {
 
             return response;
         } catch (Exception e) {
-            MengineLog.logMessage(TAG, "invalid http request delete message: %s"
-                , e.getMessage()
-            );
+            MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
 
-            return null;
+            return response;
         }
     }
 
@@ -201,7 +195,27 @@ public class MengineNetwork {
 
             return response;
         } catch (Exception e) {
-            MengineLog.logMessage(TAG, "invalid http request get asset: %s"
+            MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
+
+            return response;
+        }
+    }
+
+    protected static MengineHttpResponseParam catchException(@NonNull MengineHttpRequestParam request, @NonNull Exception exception) {
+        try {
+            throw exception;
+        } catch (UnknownHostException e) {
+            MengineHttpResponseParam response = new MengineHttpResponseParam();
+
+            response.HTTP_RESPONSE_CODE = HttpURLConnection.HTTP_NOT_FOUND;
+            response.HTTP_CONTENT_LENGTH = 0;
+            response.HTTP_CONTENT_DATA = null;
+            response.HTTP_ERROR_MESSAGE = e.getMessage();
+
+            return response;
+        } catch (Exception e) {
+            MengineLog.logMessage(TAG, "invalid http request url: %s exception: %s"
+                , request.HTTP_URL
                 , e.getMessage()
             );
 
@@ -224,17 +238,11 @@ public class MengineNetwork {
         connection.setRequestProperty("Authorization", basicAuth);
     }
 
-    protected static void setData(@NonNull HttpURLConnection connection, @NonNull byte[] data) {
-        try {
-            OutputStream output = connection.getOutputStream();
+    protected static void setData(@NonNull HttpURLConnection connection, @NonNull byte[] data) throws IOException {
+        OutputStream output = connection.getOutputStream();
 
-            output.write(data);
-            output.flush();
-        } catch (Exception e) {
-            MengineLog.logMessage(TAG, "invalid http request set data: %s"
-                , e.getMessage()
-            );
-        }
+        output.write(data);
+        output.flush();
     }
 
     protected static void setHeaders(@NonNull HttpURLConnection connection, @NonNull List<String> headers) {
@@ -253,7 +261,7 @@ public class MengineNetwork {
         }
     }
 
-    protected static void setMultipartFormData(@NonNull HttpURLConnection connection, @NonNull Map<String, String> properties) {
+    protected static void setMultipartFormData(@NonNull HttpURLConnection connection, @NonNull Map<String, String> properties) throws IOException {
         if (properties.isEmpty() == true) {
             return;
         }
@@ -262,47 +270,33 @@ public class MengineNetwork {
 
         connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
 
-        try {
-            OutputStream output = connection.getOutputStream();
+        OutputStream output = connection.getOutputStream();
 
-            Writer writer = new OutputStreamWriter(output, StandardCharsets.UTF_8);
+        Writer writer = new OutputStreamWriter(output, StandardCharsets.UTF_8);
 
-            // Append parameters
-            for (Map.Entry<String, String> entry : properties.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
+        for (Map.Entry<String, String> entry : properties.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
 
-                writer.append("--").append(boundary).append("\r\n");
-                writer.append("Content-Disposition: form-data; name=\"").append(key).append("\"").append("\r\n");
-                writer.append("Content-Type: text/plain; charset=UTF-8").append("\r\n");
-                writer.append("\r\n");
-                writer.append(value).append("\r\n");
-                writer.flush();
-            }
-
-            // End of multipart/form-data.
-            writer.append("--").append(boundary).append("--").append("\r\n");
+            writer.append("--").append(boundary).append("\r\n");
+            writer.append("Content-Disposition: form-data; name=\"").append(key).append("\"").append("\r\n");
+            writer.append("Content-Type: text/plain; charset=UTF-8").append("\r\n");
+            writer.append("\r\n");
+            writer.append(value).append("\r\n");
             writer.flush();
-        } catch (Exception e) {
-            MengineLog.logMessage(TAG, "invalid http request set multipart form data: %s"
-                , e.getMessage()
-            );
         }
+
+        writer.append("--").append(boundary).append("--").append("\r\n");
+        writer.flush();
     }
 
-    protected static void setResponseCode(@NonNull HttpURLConnection connection, @NonNull MengineHttpResponseParam response) {
-        try {
-            int responseCode = connection.getResponseCode();
+    protected static void setResponseCode(@NonNull HttpURLConnection connection, @NonNull MengineHttpResponseParam response) throws IOException {
+        int responseCode = connection.getResponseCode();
 
-            response.HTTP_RESPONSE_CODE = responseCode;
-        } catch (Exception e) {
-            MengineLog.logMessage(TAG, "invalid http request set response code: %s"
-                , e.getMessage()
-            );
-        }
+        response.HTTP_RESPONSE_CODE = responseCode;
     }
 
-    protected static MengineHttpResponseParam makeResponse(@NonNull HttpURLConnection connection) {
+    protected static MengineHttpResponseParam makeResponse(@NonNull HttpURLConnection connection) throws IOException {
         MengineHttpResponseParam response = new MengineHttpResponseParam();
 
         MengineNetwork.setResponseCode(connection, response);
@@ -325,47 +319,35 @@ public class MengineNetwork {
         return response;
     }
 
-    protected static void getResponseContentData(@NonNull HttpURLConnection connection, @NonNull MengineHttpResponseParam response) {
-        try {
-            InputStream is = connection.getInputStream();
+    protected static void getResponseContentData(@NonNull HttpURLConnection connection, @NonNull MengineHttpResponseParam response) throws IOException {
+        InputStream is = connection.getInputStream();
 
-            int length = connection.getContentLength();
+        int length = connection.getContentLength();
 
-            if (length == 0) {
-                response.HTTP_CONTENT_LENGTH = 0;
-            } else if (length == -1) {
-                byte [] data = MengineUtils.inputStreamToByteArray(is);
+        if (length == 0) {
+            response.HTTP_CONTENT_LENGTH = 0;
+        } else if (length == -1) {
+            byte [] data = MengineUtils.inputStreamToByteArray(is);
 
-                response.HTTP_CONTENT_DATA = data;
-                response.HTTP_CONTENT_LENGTH = data.length;
-            } else {
-                response.HTTP_CONTENT_DATA = new byte[length];
-                response.HTTP_CONTENT_LENGTH = is.read(response.HTTP_CONTENT_DATA, 0, length);
-            }
-
-            is.close();
-        } catch (Exception e) {
-            MengineLog.logMessage(TAG, "invalid http request get response content data: %s"
-                , e.getMessage()
-            );
+            response.HTTP_CONTENT_DATA = data;
+            response.HTTP_CONTENT_LENGTH = data.length;
+        } else {
+            response.HTTP_CONTENT_DATA = new byte[length];
+            response.HTTP_CONTENT_LENGTH = is.read(response.HTTP_CONTENT_DATA, 0, length);
         }
+
+        is.close();
     }
 
-    protected static void getResponseErrorMessage(@NonNull HttpURLConnection connection, @NonNull MengineHttpResponseParam response) {
-        try {
-            InputStream is = connection.getErrorStream();
+    protected static void getResponseErrorMessage(@NonNull HttpURLConnection connection, @NonNull MengineHttpResponseParam response) throws IOException {
+        InputStream is = connection.getErrorStream();
 
-            String HTTP_ERROR_MESSAGE = MengineUtils.inputStreamToString(is);
+        String HTTP_ERROR_MESSAGE = MengineUtils.inputStreamToString(is);
 
-            if (HTTP_ERROR_MESSAGE.isEmpty() == false) {
-                response.HTTP_ERROR_MESSAGE = HTTP_ERROR_MESSAGE;
-            }
-
-            is.close();
-        } catch (Exception e) {
-            MengineLog.logMessage(TAG, "invalid http request get response error message: %s"
-                , e.getMessage()
-            );
+        if (HTTP_ERROR_MESSAGE.isEmpty() == false) {
+            response.HTTP_ERROR_MESSAGE = HTTP_ERROR_MESSAGE;
         }
+
+        is.close();
     }
 }

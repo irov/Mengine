@@ -16,18 +16,6 @@
 
 namespace Mengine
 {
-    enum EDevToDebugStatus
-    {
-        EDTDS_NONE,
-        EDTDS_READY,
-        EDTDS_REGISTRATING,
-        EDTDS_REGISTRATION,
-        EDTDS_WAITING,
-        EDTDS_WAIT,
-        EDTDS_CONNECTING,
-        EDTDS_CONNECT,
-    };
-
     class DevToDebugService
         : public ServiceBase<DevToDebugServiceInterface>
         , public ThreadWorkerInterface
@@ -88,6 +76,18 @@ namespace Mengine
         DevToDebugLoggerPtr m_logger;
 
         AtomicBool m_invalidateTabs;
+
+        enum EDevToDebugStatus
+        {
+            EDTDS_NONE,
+            EDTDS_READY,
+            EDTDS_REGISTRATING,
+            EDTDS_REGISTRATION,
+            EDTDS_WAITING,
+            EDTDS_WAIT,
+            EDTDS_CONNECTING,
+            EDTDS_CONNECT,
+        };
 
         EDevToDebugStatus m_status;
 

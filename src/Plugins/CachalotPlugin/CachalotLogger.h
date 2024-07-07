@@ -30,6 +30,7 @@ namespace Mengine
 
     protected:
         void process();
+        void stop();
 
     protected:
         void onThreadWorkerUpdate( UniqueId _id ) override;
@@ -41,6 +42,15 @@ namespace Mengine
 
     protected:
         String m_dsn;
+
+        enum ECachalotStatus
+        {
+            ECS_NONE,
+            ECS_READY,
+            ECS_DISCONNECT,
+        };
+
+        ECachalotStatus m_status;
 
         ThreadMutexInterfacePtr m_mutex;
 

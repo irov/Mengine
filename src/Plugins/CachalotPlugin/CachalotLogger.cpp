@@ -25,6 +25,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     CachalotLogger::CachalotLogger()
+        : m_status( ECS_NONE )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -50,28 +51,30 @@ namespace Mengine
 
         m_mutex = mutex;
 
+        m_status = ECS_READY;
+
         uint32_t CachalotPlugin_LoggerTime = CONFIG_VALUE( "CachalotPlugin", "Time", 2000 );
 
         if( Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( CACHALOTLOGGER_THREAD_NAME ), ETP_BELOW_NORMAL, CachalotPlugin_LoggerTime, ThreadWorkerInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
-        }
+        }        
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void CachalotLogger::_finalizeLogger()
     {
-        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( CACHALOTLOGGER_THREAD_NAME ) );
-
-        m_mutex = nullptr;
-
-        m_dsn.clear();
-        m_messages.clear();
+        this->stop();
     }
     //////////////////////////////////////////////////////////////////////////
     void CachalotLogger::_log( const LoggerRecordInterfacePtr & _record )
     {
+        if( m_status != ECS_READY )
+        {
+            return;
+        }
+
         m_mutex->lock();
         m_messages.emplace_back( _record );
         m_mutex->unlock();
@@ -79,6 +82,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void CachalotLogger::process()
     {
+        if( m_status != ECS_READY )
+        {
+            return;
+        }
+
         uint32_t CachalotPlugin_BatchCount = CONFIG_VALUE( "CachalotPlugin", "BatchCount", 50 );
 
         m_mutex->lock();
@@ -245,6 +253,24 @@ namespace Mengine
         MENGINE_UNUSED( id );
     }
     //////////////////////////////////////////////////////////////////////////
+    void CachalotLogger::stop()
+    {
+        if( m_status != ECS_READY )
+        {
+            return;
+        }
+
+        m_status = ECS_DISCONNECT;
+
+        m_mutex->lock();
+        m_messages.clear();
+        m_mutex->unlock();
+
+        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( CACHALOTLOGGER_THREAD_NAME ) );
+
+        m_mutex = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void CachalotLogger::onThreadWorkerUpdate( UniqueId _id )
     {
         MENGINE_UNUSED( _id );
@@ -270,7 +296,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void CachalotLogger::onHttpRequestComplete( const HttpResponseInterfacePtr & _response )
     {
-        MENGINE_UNUSED( _response );
+        bool successful = _response->isSuccessful();
+
+        if( successful == false )
+        {
+            this->stop();
+
+            return;
+        }
 
         //Empty
     }

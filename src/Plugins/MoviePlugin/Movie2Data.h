@@ -33,7 +33,7 @@ namespace Mengine
         void releaseCompositionData( const aeMovieCompositionData * _compositionData ) override;
 
     public:
-        void foreachCompositionDataResources( const aeMovieCompositionData * _compositionData, const LambdaResource & _lambda ) override;
+        void foreachCompositionDataResources( const aeMovieCompositionData * _compositionData, const LambdaCompositionDataResource & _lambda ) override;
 
     public:
         void setMovieData( const aeMovieData * _movieData );

@@ -224,11 +224,13 @@ namespace Mengine
     {
         AE_UNUSED( _compositionData );
 
-        const Movie2DataInterface::LambdaResource * lambda = reinterpret_cast<const Movie2DataInterface::LambdaResource *>(_ud);
+        const Movie2DataInterface::LambdaCompositionDataResource * lambda = reinterpret_cast<const Movie2DataInterface::LambdaCompositionDataResource *>(_ud);
 
-        aeMovieResourceTypeEnum resource_type = ae_get_movie_layer_data_resource_type( _layer );
+        ae_uint32_t layer_index = ae_get_movie_layer_data_index( _layer );
+        const ae_char_t * layer_name = ae_get_movie_layer_data_name( _layer );
+        aeMovieResourceTypeEnum layer_resource_type = ae_get_movie_layer_data_resource_type( _layer );
 
-        switch( resource_type )
+        switch( layer_resource_type )
         {
         case AE_MOVIE_RESOURCE_SEQUENCE:
             {
@@ -244,7 +246,7 @@ namespace Mengine
 
                     ResourceImage * resourceImage = image_desc->resourceImage;
 
-                    (*lambda)(ResourcePtr::from( resourceImage ));
+                    (*lambda)(layer_index, layer_name, ResourcePtr::from( resourceImage ));
                 }
 
                 return AE_TRUE;
@@ -259,7 +261,7 @@ namespace Mengine
 
                 ResourceImage * resourceImage = image_desc->resourceImage;
 
-                (*lambda)(ResourcePtr::from( resourceImage ));
+                (*lambda)(layer_index, layer_name, ResourcePtr::from( resourceImage ));
 
                 return AE_TRUE;
             }break;
@@ -276,7 +278,7 @@ namespace Mengine
 
                 Resource * resource = reinterpret_cast<Resource *>(resource_ud);
 
-                (*lambda)(ResourcePtr::from( resource ));
+                (*lambda)(layer_index, layer_name, ResourcePtr::from( resource ));
 
                 return AE_TRUE;
             }break;
@@ -287,7 +289,7 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2Data::foreachCompositionDataResources( const aeMovieCompositionData * _compositionData, const LambdaResource & _lambda )
+    void Movie2Data::foreachCompositionDataResources( const aeMovieCompositionData * _compositionData, const LambdaCompositionDataResource & _lambda )
     {
         ae_visit_composition_layer_data( _compositionData, &__ae_movie_layer_data_visitor_get, const_cast<void *>(reinterpret_cast<const void *>(&_lambda)) );
     }

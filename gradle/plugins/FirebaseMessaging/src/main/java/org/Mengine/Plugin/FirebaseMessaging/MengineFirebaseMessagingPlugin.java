@@ -5,25 +5,17 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 
 import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MengineRemoteMessageParam;
 
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MengineFirebaseMessagingPlugin extends MenginePlugin implements MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "MengineFBMessaging";
@@ -58,7 +50,9 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin implements Men
                             , token
                         );
 
-                        MengineFirebaseMessagingPlugin.this.sendEvent(MengineEvent.EVENT_PUSH_TOKEN, token);
+                        MengineApplication application = activity.getMengineApplication();
+
+                        application.onMenginePushToken(token);
                     }
                 });
         }

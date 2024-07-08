@@ -21,13 +21,14 @@ import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginAdRevenueListener;
+import org.Mengine.Base.MenginePluginPushTokenListener;
 import org.Mengine.Base.MenginePluginTransparencyConsentListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginRemoteMessageListener;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 
-public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginAdRevenueListener, MenginePluginTransparencyConsentListener, MenginePluginRemoteMessageListener {
+public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginAdRevenueListener, MenginePluginTransparencyConsentListener, MenginePluginRemoteMessageListener, MenginePluginPushTokenListener {
     public static final String PLUGIN_NAME = "MengineAdjust";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -71,17 +72,6 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (event == MengineEvent.EVENT_PUSH_TOKEN) {
-            final String token = (String)args[0];
-
-            final Context context = application.getApplicationContext();
-
-            Adjust.setPushToken(token, context);
-        }
-    }
-
-    @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         String environment = AdjustConfig.ENVIRONMENT_PRODUCTION;
 
@@ -121,6 +111,13 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
+    public void onMenginePushToken(MengineApplication application, String token) {
+        final Context context = application.getApplicationContext();
+
+        Adjust.setPushToken(token, context);
+    }
+
+    @Override
     public void onMengineAdRevenue(MengineApplication application, MengineAdRevenueParam revenue) {
         MengineAdMediation mediation = revenue.ADREVENUE_MEDIATION;
         String AdjustMediation = MengineAdjustPlugin.getAdjustMediation(mediation);
@@ -142,7 +139,7 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    void onMengineTransparencyConsent(MengineApplication application, MengineTransparencyConsentParam consent) {
+    public void onMengineTransparencyConsent(MengineApplication application, MengineTransparencyConsentParam consent) {
         boolean EEA = consent.isEEA();
         boolean AD_PERSONALIZATION = consent.getConsentAdPersonalization();
         boolean AD_USER_DATA = consent.getConsentAdUserData();

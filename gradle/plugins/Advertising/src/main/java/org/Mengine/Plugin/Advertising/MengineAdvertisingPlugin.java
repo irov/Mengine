@@ -43,7 +43,7 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
             try {
                 AdvertisingIdClient.Info adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
 
-                this.postAdInfo(adInfo);
+                this.postAdInfo(application, adInfo);
 
                 return adInfo;
             } catch (IOException e) {
@@ -80,7 +80,7 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
         m_advertisingFuture = null;
     }
 
-    private void postAdInfo(AdvertisingIdClient.Info adInfo) {
+    private void postAdInfo(MengineApplication application, AdvertisingIdClient.Info adInfo) {
         String advertisingId;
         boolean advertisingLimitTrackingEnabled;
 
@@ -107,6 +107,6 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
             , advertisingLimitTrackingEnabled == true ? "true" : "false"
         );
 
-        this.sendEvent(MengineEvent.EVENT_ADVERTISING_ID, advertisingId, advertisingLimitTrackingEnabled);
+        application.onMengineAdvertisingId(advertisingId, advertisingLimitTrackingEnabled);
     }
 }

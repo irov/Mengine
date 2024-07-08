@@ -5,10 +5,10 @@ import android.os.Bundle;
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MenginePluginPushTokenListener;
 import org.Mengine.Base.MenginePluginRemoteMessageListener;
 import org.Mengine.Base.MengineRemoteMessageParam;
 
@@ -24,21 +24,12 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 
-public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEventsListener, MenginePluginRemoteMessageListener, MenginePluginActivityListener {
+public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEventsListener, MenginePluginRemoteMessageListener, MenginePluginActivityListener, MenginePluginPushTokenListener {
     public static final String PLUGIN_NAME = "MengineHelpshift";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_PLATFORM_ID = "mengine.helpshift.platform_id";
     public static final String PLUGIN_METADATA_DOMAIN = "mengine.helpshift.domain";
-
-    @Override
-    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (event == MengineEvent.EVENT_PUSH_TOKEN) {
-            final String token = (String)args[0];
-
-            Helpshift.registerPushToken(token);
-        }
-    }
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
@@ -53,7 +44,7 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         int screenOrientation = activity.getRequestedOrientation();
 
         config.put("screenOrientation", screenOrientation);
-        config.put("notificationIcon", R.drawable.ic_stat_onesignal_default);
+        config.put("notificationIcon", R.drawable.mengine_helpshift_notification_icon);
 
         String MengineHelpshiftPlugin_PlatformId = this.getMetaDataString(PLUGIN_METADATA_PLATFORM_ID);
 
@@ -89,8 +80,17 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
     }
 
     @Override
+    public void onDestroy(MengineActivity activity) {
+        Helpshift.setHelpshiftEventsListener(null);
+    }
+
+    @Override
+    public void onMenginePushToken(MengineApplication application, String token) {
+        Helpshift.registerPushToken(token);
+    }
+
+    @Override
     public boolean onMengineRemoteMessageReceived(MengineApplication application, MengineRemoteMessageParam message) {
-        @SuppressWarnings("unchecked")
         Map<String, String> data = message.REMOTEMESSAGE_DATA;
 
         String origin = data.get("origin");

@@ -36,6 +36,7 @@ import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MenginePluginPushTokenListener;
 import org.Mengine.Base.MenginePluginRemoteMessageListener;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +44,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Map;
 
-public class MengineFacebookPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener, MenginePluginRemoteMessageListener, MenginePluginActivityListener {
+public class MengineFacebookPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener, MenginePluginRemoteMessageListener, MenginePluginActivityListener, MenginePluginPushTokenListener {
     public static final String PLUGIN_NAME = "MengineFacebook";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -56,11 +57,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
     @Override
     public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (event == MengineEvent.EVENT_PUSH_TOKEN) {
-            final String token = (String)args[0];
-
-            AppEventsLogger.setPushNotificationsRegistrationId(token);
-        } else if (event == MengineEvent.EVENT_SESSION_ID) {
+        if (event == MengineEvent.EVENT_SESSION_ID) {
             String sessionId = (String)args[0];
 
             if (m_logger != null) {
@@ -245,6 +242,11 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         if (m_facebookCallbackManager != null) {
             m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onMenginePushToken(MengineApplication application, String token) {
+        AppEventsLogger.setPushNotificationsRegistrationId(token);
     }
 
     @Override

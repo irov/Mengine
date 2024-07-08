@@ -93,6 +93,8 @@ public class MengineApplication extends Application {
     private ArrayList<MenginePluginApplicationListener> m_applicationListeners = new ArrayList<>();
     private ArrayList<MenginePluginActivityListener> m_activityListeners = new ArrayList<>();
     private ArrayList<MenginePluginEngineListener> m_engineListeners = new ArrayList<>();
+    private ArrayList<MenginePluginPushTokenListener> m_pushTokenListeners = new ArrayList<>();
+    private ArrayList<MenginePluginAdvertisingIdListener> m_advertisingIdListeners = new ArrayList<>();
 
     private final Object m_syncEvent = new Object();
     private final Object m_syncState = new Object();
@@ -448,6 +450,14 @@ public class MengineApplication extends Application {
         return m_engineListeners;
     }
 
+    public List<MenginePluginPushTokenListener> getPushTokenListeners() {
+        return m_pushTokenListeners;
+    }
+
+    public List<MenginePluginAdvertisingIdListener> getAdvertisingIdListeners() {
+        return m_advertisingIdListeners;
+    }
+
     public MenginePlugin findPlugin(String name) {
         MenginePlugin plugin = m_dictionaryPlugins.get(name);
 
@@ -571,6 +581,14 @@ public class MengineApplication extends Application {
 
         if (plugin instanceof MenginePluginEngineListener listener) {
             m_engineListeners.add(listener);
+        }
+
+        if (plugin instanceof MenginePluginPushTokenListener listener) {
+            m_pushTokenListeners.add(listener);
+        }
+
+        if (plugin instanceof MenginePluginAdvertisingIdListener listener) {
+            m_advertisingIdListeners.add(listener);
         }
 
         MengineLog.logMessage(TAG, "create plugin: %s [%s]"
@@ -1275,6 +1293,24 @@ public class MengineApplication extends Application {
 
         for (MenginePluginRemoteMessageListener l : listeners) {
             l.onMengineRemoteMessageNewToken(this, token);
+        }
+    }
+
+    public void onMenginePushToken(String token) {
+        List<MenginePluginPushTokenListener> listeners = this.getPushTokenListeners();
+
+        for (MenginePluginPushTokenListener l : listeners) {
+            l.onMenginePushToken(this, token);
+        }
+    }
+
+    public void onMengineAdvertisingId(String advertisingId, boolean limitAdTracking) {
+        this.setState("user.limit_ad_tracking", limitAdTracking);
+
+        List<MenginePluginAdvertisingIdListener> listeners = this.getAdvertisingIdListeners();
+
+        for (MenginePluginAdvertisingIdListener l : listeners) {
+            l.onMengineAdvertisingId(this, advertisingId, limitAdTracking);
         }
     }
 

@@ -11,7 +11,6 @@
 @property (class, nonatomic, readonly) AppleEvent * EVENT_ADVERTISING_ID;
 @property (class, nonatomic, readonly) AppleEvent * EVENT_SESSION_ID;
 @property (class, nonatomic, readonly) AppleEvent * EVENT_REMOTE_CONFIG_FETCH;
-@property (class, nonatomic, readonly) AppleEvent * EVENT_TRANSPARENCY_CONSENT;
 
 @property (nonatomic, strong, readonly) NSString * name;
 

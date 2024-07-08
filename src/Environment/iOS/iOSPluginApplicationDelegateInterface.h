@@ -1,7 +1,5 @@
 #include "Config/Config.h"
 
-#include "Interface/LoggerRecordInterface.h"
-
 #import "Environment/Apple/AppleEvent.h"
 
 #import <UIKit/UIKit.h>
@@ -17,10 +15,10 @@
 - (void)endLoop;
 
 - (void)onEvent:(AppleEvent *)event args:(NSArray *)args;
-- (void)onLog:(const Mengine::LoggerRecordInterfacePtr &)record;
 
 #pragma mark - UISceneSession lifecycle
 
+@optional
 - (void)applicationWillResignActive:(UIApplication *)application;
 - (void)applicationDidEnterBackground:(UIApplication *)application;
 - (void)applicationWillEnterForeground:(UIApplication *)application;

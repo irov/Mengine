@@ -35,6 +35,8 @@ src
     
     iOSPluginAdRevenueDelegateInterface.h
     iOSPluginApplicationDelegateInterface.h
+    iOSPluginTransparencyConsentDelegateInterface.h
+    iOSPluginLoggerDelegateInterface.h
 )
 
 ADD_MENGINE_APPLE_LIBRARY(Environment)

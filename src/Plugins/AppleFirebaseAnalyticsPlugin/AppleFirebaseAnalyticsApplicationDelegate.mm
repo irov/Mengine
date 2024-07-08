@@ -40,4 +40,20 @@
                             kFIRParameterValue:revenue.REVENUE_VALUE}];
 }
 
+#pragma mark iOSPluginTransparencyConsentDelegateInterface
+
+- (void)onTransparencyConsent:(iOSTransparencyConsentParam *)consent {
+    BOOL AD_STORAGE = [consent getConsentAdStorage];
+    BOOL ANALYTICS_STORAGE = [consent getConsentAnalyticsStorage];
+    BOOL AD_PERSONALIZATION = [consent getConsentAdPersonalization];
+    BOOL AD_USER_DATA = [consent getConsentAdUserData];
+    
+    [FIRAnalytics setConsent:@{
+        FIRConsentTypeAdStorage : AD_STORAGE ? FIRConsentStatusGranted : FIRConsentStatusDenied,
+        FIRConsentTypeAnalyticsStorage : ANALYTICS_STORAGE ? FIRConsentStatusGranted : FIRConsentStatusDenied,
+        FIRConsentTypeAdPersonalization : AD_PERSONALIZATION ? FIRConsentStatusGranted : FIRConsentStatusDenied,
+        FIRConsentTypeAdUserData : AD_USER_DATA ? FIRConsentStatusGranted : FIRConsentStatusDenied,
+    }];
+}
+
 @end

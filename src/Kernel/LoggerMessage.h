@@ -3,9 +3,9 @@
 #include "Kernel/LoggerLevel.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/DateTime.h"
-#include "Kernel/VectorChar.h"
 
 #include "Config/Timestamp.h"
+#include "Config/Char.h"
 
 #ifndef MENGINE_LOGGER_MAX_MESSAGE
 #define MENGINE_LOGGER_MAX_MESSAGE 16384

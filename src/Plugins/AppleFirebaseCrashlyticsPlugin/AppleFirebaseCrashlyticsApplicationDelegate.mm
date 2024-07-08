@@ -33,7 +33,7 @@
     }
 }
 
-- (void)onLog:(const Mengine::LoggerRecordInterfacePtr &)record {
+- (void)onLogger:(const Mengine::LoggerRecordInterfacePtr &)record {
     Mengine::LoggerMessage message;
     record->getMessage( &message );
     

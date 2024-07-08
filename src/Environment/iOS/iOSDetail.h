@@ -4,6 +4,7 @@
 
 #import "Environment/Apple/AppleEvent.h"
 #import "Environment/iOS/iOSAdRevenueParam.h"
+#import "Environment/iOS/iOSTransparencyConsentParam.h"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -20,6 +21,7 @@ namespace Mengine
         void iOSEventNotify( AppleEvent * event, id firstArg, ... );
         void iOSEventNotifyArray( AppleEvent * event, NSArray<id> * args );
         void iOSAdRevenue( iOSAdRevenueParam * revenue );
+        void iOSTransparencyConsent( iOSTransparencyConsentParam * consent );
         NSString * iOSPathForTemporaryFileWithPrefix( NSString * prefix, NSString * ext );
         void iOSAlert( UIViewController * view, NSString * title, NSString * message );
     }

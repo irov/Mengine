@@ -91,6 +91,13 @@ namespace Mengine
             [delegate eventAdRevenue:revenue];
         }
         //////////////////////////////////////////////////////////////////////////
+        void iOSTransparencyConsent( iOSTransparencyConsentParam * consent )
+        {
+            NSObject<iOSUIMainApplicationDelegateInterface> * delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
+
+            [delegate eventTransparencyConsent:consent];
+        }
+        //////////////////////////////////////////////////////////////////////////
         NSString * iOSPathForTemporaryFileWithPrefix( NSString * prefix, NSString * ext )
         {
             NSString * result;

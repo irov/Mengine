@@ -22,7 +22,9 @@ char ** MENGINE_MAIN_argv = nullptr;
     NSArray * proxysClassed = getMengineAppleApplicationDelegates();
 
     self.m_pluginApplicationDelegates = [NSMutableArray<iOSPluginApplicationDelegateInterface> array];
+    self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
     self.m_pluginAdRevenueDelegates = [NSMutableArray<iOSPluginAdRevenueDelegateInterface> array];
+    self.m_pluginTransparencyConsentDelegates = [NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> array];
     
     for (id className in proxysClassed) {
         id c = NSClassFromString(className);
@@ -36,9 +38,17 @@ char ** MENGINE_MAIN_argv = nullptr;
         if ([delegate conformsToProtocol:@protocol(iOSPluginApplicationDelegateInterface)] == YES) {
             [self.m_pluginApplicationDelegates addObject:delegate];
         }
+        
+        if ([delegate conformsToProtocol:@protocol(iOSPluginLoggerDelegateInterface)] == YES) {
+            [self.m_pluginLoggerDelegates addObject:delegate];
+        }
 
         if ([delegate conformsToProtocol:@protocol(iOSPluginAdRevenueDelegateInterface)] == YES) {
             [self.m_pluginAdRevenueDelegates addObject:delegate];
+        }
+        
+        if ([delegate conformsToProtocol:@protocol(iOSPluginTransparencyConsentDelegateInterface)] == YES) {
+            [self.m_pluginTransparencyConsentDelegates addObject:delegate];
         }
     }
     
@@ -51,8 +61,16 @@ char ** MENGINE_MAIN_argv = nullptr;
     return self.m_pluginApplicationDelegates;
 }
 
+- (NSArray<iOSPluginLoggerDelegateInterface> *)getPluginLoggerDelegates {
+    return self.m_pluginLoggerDelegates;
+}
+
 - (NSArray<iOSPluginAdRevenueDelegateInterface> *)getPluginAdRevenueDelegates {
     return self.m_pluginAdRevenueDelegates;
+}
+
+- (NSArray<iOSPluginTransparencyConsentDelegateInterface> *)getPluginTransparencyConsentDelegates {
+    return self.m_pluginTransparencyConsentDelegates;
 }
 
 - (void)notify:(AppleEvent *)event args:(id)firstArg, ... NS_REQUIRES_NIL_TERMINATION {
@@ -79,16 +97,20 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (void)log:(const Mengine::LoggerRecordInterfacePtr &)record {
-    for (NSObject<iOSPluginApplicationDelegateInterface> * delegate in self.m_pluginApplicationDelegates) {
-        if ([delegate respondsToSelector:@selector(onLog:)] == YES) {
-            [delegate onLog:record];
-        }
+    for (NSObject<iOSPluginLoggerDelegateInterface> * delegate in self.m_pluginLoggerDelegates) {
+        [delegate onLogger:record];
     }
 }
 
 - (void)eventAdRevenue:(iOSAdRevenueParam *)revenue {
     for (NSObject<iOSPluginAdRevenueDelegateInterface> * delegate in self.m_pluginAdRevenueDelegates) {
         [delegate onAdRevenue:revenue];
+    }
+}
+
+- (void)eventTransparencyConsent:(iOSTransparencyConsentParam *)consent {
+    for (NSObject<iOSPluginTransparencyConsentDelegateInterface> * delegate in self.m_pluginTransparencyConsentDelegates) {
+        [delegate onTransparencyConsent:consent];
     }
 }
 

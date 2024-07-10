@@ -59,8 +59,19 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
                     if (task.isSuccessful() == true) {
                         boolean updated = task.getResult();
 
+                        Map<String, FirebaseRemoteConfigValue> allValues = remoteConfig.getAll();
+
+                        Map<String, String> allValueString = new HashMap<>();
+                        for (Map.Entry<String, FirebaseRemoteConfigValue> entry : allValues.entrySet()) {
+                            String key = entry.getKey();
+                            FirebaseRemoteConfigValue value = entry.getValue();
+                            String valueString = value.asString();
+
+                            allValueString.put(key, valueString);
+                        }
+
                         MengineFirebaseRemoteConfigPlugin.this.logMessage("remote config successful fetch and activate params: %s [%s]"
-                            , remoteConfig.getAll()
+                            , allValueString
                             , updated == true ? "updated" : "not updated"
                         );
 
@@ -138,6 +149,10 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
         String value = remoteConfig.getString(key);
+
+        if (value.isEmpty() == true) {
+            return new HashMap<>();
+        }
 
         Map<String, Object> mapJson = MengineUtils.parseJSONMap(value);
 

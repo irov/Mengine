@@ -54,7 +54,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     LoggerService::LoggerService()
-        : m_verboseLevel( LM_MESSAGE )
+        : m_verboseLevel( MENGINE_MASTER_RELEASE_VALUE( LM_ERROR, LM_MESSAGE ) )
         , m_verboseFilter( 0xFFFFFFFF )
         , m_silent( false )
         , m_silentMessageRelease( false )
@@ -451,7 +451,7 @@ namespace Mengine
 
         STATISTIC_INC_INTEGER( statisticId );
 
-        if( m_threadly == true && (message.filter & LFILTER_IMMEDIATE) == 0 )
+        if( m_threadly == true )
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexMessage );
 

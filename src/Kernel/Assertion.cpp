@@ -93,7 +93,7 @@ namespace Mengine
 
             if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
             {
-                LOGGER_VERBOSE_LEVEL( _category, LM_ERROR, LFILTER_IMMEDIATE, LCOLOR_RED, _file, _line, LFLAG_NONE )("%s"
+                LOGGER_VERBOSE_LEVEL( _category, LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, LFLAG_NONE )("%s"
                     , assertion_info
                     );
             }

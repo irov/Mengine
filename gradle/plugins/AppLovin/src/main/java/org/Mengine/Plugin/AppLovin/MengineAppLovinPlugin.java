@@ -148,13 +148,13 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         String MengineAppLovinPlugin_SdkKey = this.getMetaDataString(PLUGIN_METADATA_SDK_KEY);
 
         this.logMessage("%s: %s"
-                , PLUGIN_METADATA_SDK_KEY
-                , MengineAppLovinPlugin_SdkKey
+            , PLUGIN_METADATA_SDK_KEY
+            , MengineAppLovinPlugin_SdkKey
         );
 
         AppLovinSdkInitializationConfiguration config = AppLovinSdkInitializationConfiguration.builder(MengineAppLovinPlugin_SdkKey, activity)
-                .setMediationProvider( AppLovinMediationProvider.MAX )
-                .build();
+            .setMediationProvider( AppLovinMediationProvider.MAX )
+            .build();
 
         appLovinSdk.initialize(config, new AppLovinSdk.SdkInitializationListener() {
             @Override

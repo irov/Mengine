@@ -1065,7 +1065,7 @@ namespace Mengine
                 msg.category = "python";
                 msg.threadName = Helper::getCurrentThreadName();
                 msg.level = LM_FATAL;
-                msg.filter = LFILTER_IMMEDIATE;
+                msg.filter = LFILTER_NONE;
                 msg.color = LCOLOR_RED;
                 msg.flag = LFLAG_FULL;
                 msg.function = function;

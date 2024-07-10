@@ -49,7 +49,7 @@ namespace Mengine
 
             if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
             {
-                LOGGER_VERBOSE_LEVEL( m_category, LM_ERROR, LFILTER_IMMEDIATE, LCOLOR_RED, m_file, m_line, LFLAG_NONE )("%s"
+                LOGGER_VERBOSE_LEVEL( m_category, LM_ERROR, LFILTER_NONE, LCOLOR_RED, m_file, m_line, LFLAG_NONE )("%s"
                     , error_info
                     );
             }

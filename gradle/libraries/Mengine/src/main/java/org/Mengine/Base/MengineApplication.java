@@ -1061,12 +1061,6 @@ public class MengineApplication extends Application {
         String build_gitsha1 = this.getEngineGITSHA1();
         this.setState("engine.build_gitsha1", build_gitsha1);
 
-        String build_date = this.getBuildDate();
-        this.setState("engine.build_date", build_date);
-
-        String build_username = this.getBuildUsername();
-        this.setState("engine.build_username", build_username);
-
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
                 MengineLog.logMessage(TAG, "onAppPrepare plugin: %s"

@@ -611,7 +611,7 @@ public class MengineUtils {
 
             return map;
         } catch (JSONException e) {
-            MengineLog.logError(TAG, "parseJSONMap '%s' catch JSONException: %s"
+            MengineLog.logError(TAG, "parseJSONMap json: %s JSONException: %s"
                 , json
                 , e.getMessage()
             );

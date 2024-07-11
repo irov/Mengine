@@ -181,6 +181,11 @@ namespace Mengine
                     return;
                 }
 
+                if( MENGINE_STRCMP( _className, "" ) == 0 && MENGINE_STRCMP( _functionName, "logError" ) == 0 )
+                {
+                    return;
+                }
+
                 if( MENGINE_STRCMP( _className, "PythonScriptLogger" ) == 0 )
                 {
                     return;

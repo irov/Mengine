@@ -423,14 +423,18 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( _message.category, "please setup category for log message" );
         MENGINE_ASSERTION_MEMORY_PANIC( _message.data, "please setup data for log message" );
 
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _message );
+#endif
 
         LoggerRecordInterfacePtr record = this->makeLoggerRecord( _message, MENGINE_DOCUMENT_FACTORABLE );
 
         this->logMessage_( record );
         this->logHistory_( record );
 
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_END, _message );
+#endif
 
         if( m_conditionLogger != nullptr )
         {

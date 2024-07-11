@@ -246,6 +246,7 @@ namespace Mengine
         MENGINE_UNUSED( _loggerMessage );
 
         ++m_refLogger;
+        ++m_countLogger;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::notifyLoggerEnd( const LoggerMessage & _loggerMessage )
@@ -256,9 +257,10 @@ namespace Mengine
 
         MENGINE_UNUSED( refLogger );
 
-        MENGINE_ASSERTION_FATAL( m_refLogger != 0, "invalid logger %u", refLogger );
+        MENGINE_ASSERTION_FATAL( refLogger != 0, "invalid logger %u", refLogger );
 
         --m_refLogger;
+        ++m_countLogger;
 
         ++m_refAlive;
     }

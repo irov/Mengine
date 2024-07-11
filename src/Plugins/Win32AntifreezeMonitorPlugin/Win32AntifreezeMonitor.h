@@ -56,6 +56,8 @@ namespace Mengine
         AtomicUInt32 m_refLogger;
         AtomicUInt32 m_refAbort;
         AtomicUInt32 m_oldRefAlive;
+
+        AtomicUInt32 m_countLogger;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32AntifreezeMonitor, ThreadWorkerInterface> Win32AntifreezeMonitorPtr;

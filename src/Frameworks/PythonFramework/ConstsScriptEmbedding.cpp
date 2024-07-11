@@ -4,11 +4,32 @@
 
 #include "Environment/Python/PythonIncluder.h"
 
+#include "Kernel/StringView.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
+        static bool StringView_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
+        {
+            MENGINE_UNUSED( _user );
+
+            StringView * sv = (StringView *)_place;
+
+            if( _kernel->string_check( _obj ) == true )
+            {
+                size_t size;
+                const Char * str = _kernel->string_to_char_and_size( _obj, &size );
+
+                sv->setup( str, size );
+
+                return true;
+            }
+
+            return false;
+        }
         //////////////////////////////////////////////////////////////////////////
         static bool ConstString_compare( pybind::kernel_interface * _kernel, PyObject * _obj, ConstString * _self, PyObject * _compare, pybind::PybindOperatorCompare _op, bool & _result )
         {
@@ -180,6 +201,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ConstsScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
+        pybind::structhash_<StringView>( _kernel, "StringView" )
+            .def_convert( &Detail::StringView_convert, nullptr )
+            ;
+
         pybind::structhash_<ConstString>( _kernel, "ConstString" )
             .def_compare( &Detail::ConstString_compare )
             .def_convert( &Detail::ConstString_convert, nullptr )

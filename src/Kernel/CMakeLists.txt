@@ -609,6 +609,9 @@ Core
     StringLength.h
     StringLength.cpp
     
+    StringView.h
+    StringView.cpp
+    
     MemoryCopy.h
     MemoryCopy.cpp
     

@@ -74,6 +74,7 @@
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/StringView.h"
 
 #include "Config/StdString.h"
 #include "Config/StdMath.h"
@@ -946,7 +947,7 @@ namespace Mengine
                     ->addGlobalModule( _name, _module );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_logInfo( pybind::kernel_interface * _kernel, PyObject * _message )
+            void s_logInfo( pybind::kernel_interface * _kernel, const StringView & _message )
             {
                 Char function[MENGINE_MAX_PATH] = {'\0'};
                 uint32_t lineno = 0;
@@ -963,17 +964,14 @@ namespace Mengine
                 msg.function = function;
                 msg.line = lineno;
 
-                size_t size;
-                const Char * data = _kernel->string_to_char_and_size( _message, &size );
-
-                msg.data = data;
-                msg.size = size;
+                msg.data = _message.c_str();
+                msg.size = _message.size();
 
                 LOGGER_SERVICE()
                     ->logMessage( msg );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_logMessage( pybind::kernel_interface * _kernel, PyObject * _message )
+            void s_logMessage( pybind::kernel_interface * _kernel, const StringView & _message )
             {
                 Char function[MENGINE_MAX_PATH] = {'\0'};
                 uint32_t lineno = 0;
@@ -990,17 +988,14 @@ namespace Mengine
                 msg.function = function;
                 msg.line = lineno;
 
-                size_t size;
-                const Char * data = _kernel->string_to_char_and_size( _message, &size );
-
-                msg.data = data;
-                msg.size = size;
+                msg.data = _message.c_str();
+                msg.size = _message.size();
 
                 LOGGER_SERVICE()
                     ->logMessage( msg );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_logWarning( pybind::kernel_interface * _kernel, PyObject * _message )
+            void s_logWarning( pybind::kernel_interface * _kernel, const StringView & _message )
             {
                 Char function[MENGINE_MAX_PATH] = {'\0'};
                 uint32_t lineno = 0;
@@ -1017,17 +1012,14 @@ namespace Mengine
                 msg.function = function;
                 msg.line = lineno;
 
-                size_t size;
-                const Char * data = _kernel->string_to_char_and_size( _message, &size );
-
-                msg.data = data;
-                msg.size = size;
+                msg.data = _message.c_str();
+                msg.size = _message.size();
 
                 LOGGER_SERVICE()
                     ->logMessage( msg );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_logError( pybind::kernel_interface * _kernel, PyObject * _message )
+            void s_logError( pybind::kernel_interface * _kernel, const StringView & _message )
             {
                 Char function[MENGINE_MAX_PATH] = {'\0'};
                 uint32_t lineno = 0;
@@ -1044,17 +1036,14 @@ namespace Mengine
                 msg.function = function;
                 msg.line = lineno;
 
-                size_t size;
-                const Char * data = _kernel->string_to_char_and_size( _message, &size );
-
-                msg.data = data;
-                msg.size = size;
+                msg.data = _message.c_str();
+                msg.size = _message.size();
 
                 LOGGER_SERVICE()
                     ->logMessage( msg );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_logFatal( pybind::kernel_interface * _kernel, PyObject * _message )
+            void s_logFatal( pybind::kernel_interface * _kernel, const StringView & _message )
             {
                 Char function[MENGINE_MAX_PATH] = {'\0'};
                 uint32_t lineno = 0;
@@ -1071,11 +1060,8 @@ namespace Mengine
                 msg.function = function;
                 msg.line = lineno;
 
-                size_t size;
-                const Char * data = _kernel->string_to_char_and_size( _message, &size );
-
-                msg.data = data;
-                msg.size = size;
+                msg.data = _message.c_str();
+                msg.size = _message.size();
 
                 LOGGER_SERVICE()
                     ->logMessage( msg );

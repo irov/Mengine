@@ -36,7 +36,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidAssetInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
-        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this, "AndroidAssetInputStream::open" );
+        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this );
 
 #if defined(MENGINE_DEBUG)
         this->setDebugRelationPath( _relationPath );
@@ -145,7 +145,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidAssetInputStream::close()
     {
-        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this, "AndroidAssetInputStream::close" );
+        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this );
 
         if( m_asset == nullptr )
         {
@@ -172,7 +172,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidAssetInputStream::read( void * const _buf, size_t _count )
     {
-        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this, "AndroidAssetInputStream::read" );
+        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this );
 
         size_t pos = m_reading - m_capacity + m_carriage;
 
@@ -270,7 +270,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidAssetInputStream::seek( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this, "AndroidAssetInputStream::seek" );
+        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this );
 
         bool successful = this->seek_( _pos );
 
@@ -279,14 +279,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidAssetInputStream::rewind()
     {
-        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this, "AndroidAssetInputStream::rewind" );
+        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this );
 
         this->seek_( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidAssetInputStream::rseek( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this, "AndroidAssetInputStream::seek" );
+        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this );
 
         bool successful = this->seek_( m_size - _pos );
 
@@ -328,7 +328,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidAssetInputStream::skip( size_t _size )
     {
-        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this, "AndroidAssetInputStream::skip" );
+        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this );
 
         size_t current = m_reading - m_capacity + m_carriage;
 
@@ -341,7 +341,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidAssetInputStream::tell() const
     {
-        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this, "AndroidAssetInputStream::tell" );
+        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this );
 
         size_t current = m_reading - m_capacity + m_carriage;
 
@@ -355,7 +355,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidAssetInputStream::eof() const
     {
-        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this, "AndroidAssetInputStream::eof" );
+        MENGINE_THREAD_GUARD_SCOPE( AndroidAssetInputStream, this );
 
         size_t current = m_reading - m_capacity + m_carriage;
 

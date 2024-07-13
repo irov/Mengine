@@ -1039,6 +1039,30 @@ namespace Mengine
                     ->logMessage( msg );
             }
             //////////////////////////////////////////////////////////////////////////
+            void s_logMessageRelease( pybind::kernel_interface * _kernel, const StringView & _message )
+            {
+                Char function[MENGINE_MAX_PATH] = {'\0'};
+                uint32_t lineno = 0;
+                _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
+
+                LoggerMessage msg;
+                msg.timestamp = Helper::getLocalTimestamp();
+                msg.category = "python";
+                msg.threadName = Helper::getCurrentThreadName();
+                msg.level = LM_MESSAGE_RELEASE;
+                msg.filter = LFILTER_NONE;
+                msg.color = LCOLOR_RED | LCOLOR_BLUE;
+                msg.flag = LFLAG_SHORT;
+                msg.function = function;
+                msg.line = lineno;
+
+                msg.data = _message.c_str();
+                msg.size = _message.size();
+
+                LOGGER_SERVICE()
+                    ->logMessage( msg );
+            }
+            //////////////////////////////////////////////////////////////////////////
             void s_logFatal( pybind::kernel_interface * _kernel, const StringView & _message )
             {
                 Char function[MENGINE_MAX_PATH] = {'\0'};
@@ -4168,6 +4192,7 @@ namespace Mengine
         pybind::def_functor_kernel( _kernel, "logMessage", helperScriptMethod, &HelperScriptMethod::s_logMessage );
         pybind::def_functor_kernel( _kernel, "logWarning", helperScriptMethod, &HelperScriptMethod::s_logWarning );
         pybind::def_functor_kernel( _kernel, "logError", helperScriptMethod, &HelperScriptMethod::s_logError );
+        pybind::def_functor_kernel( _kernel, "logMessageRelease", helperScriptMethod, &HelperScriptMethod::s_logMessageRelease );
         pybind::def_functor_kernel( _kernel, "logFatal", helperScriptMethod, &HelperScriptMethod::s_logFatal );
 
         pybind::def_functor( _kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );

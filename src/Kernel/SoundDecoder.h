@@ -2,12 +2,12 @@
 
 #include "Interface/SoundCodecInterface.h"
 
-#include "Kernel/Decoder.h"
+#include "Kernel/DecoderBase.h"
 
 namespace Mengine
 {
     class SoundDecoder
-        : public Decoder<SoundDecoderInterface>
+        : public DecoderBase<SoundDecoderInterface>
     {
     public:
         SoundDecoder();

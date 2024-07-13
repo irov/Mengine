@@ -143,7 +143,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourcePointer ResourceBank::createResource( const ResourceCook & _cook, Resource ** const _override, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::createResource" );
+        MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this );
 
         //ToDo
 
@@ -228,7 +228,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceBank::removeResource( const ResourcePtr & _resource )
     {
-        MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::removeResource" );
+        MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this );
 
         MENGINE_ASSERTION_FATAL( _resource->getCompileReferenceCount() == 0, "remove resource '%s' type '%s' has reference count: %u"
             , _resource->getName().c_str()
@@ -336,7 +336,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceBank::foreachResources( const LambdaResourceView & _lambda ) const
     {
-        MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this, "ResourceBank::foreachResources" );
+        MENGINE_THREAD_GUARD_SCOPE( ResourceBank, this );
 
         for( const HashtableResources::value_type & value : m_resources )
         {

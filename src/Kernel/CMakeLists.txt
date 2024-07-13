@@ -967,8 +967,8 @@ Unknown
 
 ADD_FILTER(
 Codec
-    Decoder.h
-    Encoder.h
+    DecoderBase.h
+    EncoderBase.h
     PickEncoder.cpp
     PickEncoder.h
     PickDecoder.cpp

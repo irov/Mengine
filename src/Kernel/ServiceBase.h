@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/ServiceInterface.h"
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/Observable.h"
@@ -12,9 +13,12 @@ namespace Mengine
         : public T
         , public Observable
     {
+        static_assert(std::is_base_of<ServiceInterface, T>::value, "T must derive from ServiceInterface");
+
     public:
         ServiceBase() noexcept
-            : m_availableService( false )
+            : m_serviceProvider( nullptr )
+            , m_availableService( false )
             , m_initializeService( false )
             , m_stopService( false )
         {
@@ -23,7 +27,7 @@ namespace Mengine
         ~ServiceBase() override
         {
             MENGINE_ASSERTION_OBSERVABLE( this, "service '%s'"
-                , SERVICE_ID(T)
+                , SERVICE_ID( T )
             );
         }
 
@@ -43,8 +47,10 @@ namespace Mengine
             return m_availableService;
         }
 
-        bool initializeService() override
+        bool initializeService( ServiceProviderInterface * _serviceProvider ) override
         {
+            m_serviceProvider = _serviceProvider;
+
             if( m_availableService == false )
             {
                 return true;
@@ -73,12 +79,13 @@ namespace Mengine
 
             const Char * serviceId = this->getServiceId();
 
-            SERVICE_PROVIDER_GET()
-                ->unlinkService( serviceId );
+            m_serviceProvider->unlinkService( serviceId );
 
             m_initializeService = false;
 
             this->_finalizeService();
+
+            m_serviceProvider = nullptr;
         }
 
         void replaceService() override
@@ -178,7 +185,9 @@ namespace Mengine
         }
 
     protected:
-        bool m_availableService;
+        ServiceProviderInterface * m_serviceProvider;
+
+        mutable bool m_availableService;
         bool m_initializeService;
         bool m_stopService;
     };

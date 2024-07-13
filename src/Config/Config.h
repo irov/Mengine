@@ -150,8 +150,10 @@
 #endif
 
 #ifndef MENGINE_CODE_FUNCTION
-#   if defined(MENGINE_COMPILER_GCC)
+#   if defined(MENGINE_COMPILER_GCC) || defined(MENGINE_COMPILER_CLANG)
 #       define MENGINE_CODE_FUNCTION __PRETTY_FUNCTION__
+#   elif defined(MENGINE_COMPILER_MSVC)
+#       define MENGINE_CODE_FUNCTION __FUNCSIG__
 #   else
 #       define MENGINE_CODE_FUNCTION __FUNCTION__
 #   endif

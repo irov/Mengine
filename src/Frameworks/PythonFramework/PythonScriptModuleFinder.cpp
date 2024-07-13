@@ -105,7 +105,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _path );
 
-        MENGINE_THREAD_GUARD_SCOPE( PythonScriptModuleFinder, this, "PythonScriptModuleFinder::find_module" );
+        MENGINE_THREAD_GUARD_SCOPE( PythonScriptModuleFinder, this );
 
         bool PythonScript_AvailableCompileZCode = CONFIG_VALUE( "PythonScript", "AvailableCompileZCode", true );
 

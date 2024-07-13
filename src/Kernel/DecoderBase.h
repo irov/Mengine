@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/ServiceInterface.h"
+#include "Interface/DecoderInterface.h"
 #include "Interface/InputStreamInterface.h"
 
 #include "Kernel/ThreadGuardScope.h"
@@ -9,26 +9,28 @@
 
 namespace Mengine
 {
-    template<class TDecoderInterface>
-    class Decoder
-        : public TDecoderInterface
+    template<class T>
+    class DecoderBase
+        : public T
         , public Factorable
     {
+        static_assert(std::is_base_of<DecoderInterface, T>::value, "T must derive from DecoderInterface");
+
     public:
-        Decoder()
+        DecoderBase()
             : m_rewindPos( 0 )
             , m_initialize( false )
         {
         }
 
-        ~Decoder() override
+        ~DecoderBase() override
         {
         }
 
     public:
         bool initialize() override
         {
-            MENGINE_THREAD_GUARD_SCOPE( Decoder, this, "Decoder::initialize" );
+            MENGINE_THREAD_GUARD_SCOPE( DecoderBase, this );
 
             if( m_initialize == true )
             {
@@ -51,7 +53,7 @@ namespace Mengine
     public:
         void finalize() override
         {
-            MENGINE_THREAD_GUARD_SCOPE( Decoder, this, "Decoder::finalize" );
+            MENGINE_THREAD_GUARD_SCOPE( DecoderBase, this );
 
             if( m_initialize == false )
             {
@@ -84,7 +86,7 @@ namespace Mengine
     private:
         bool prepareData( const InputStreamInterfacePtr & _stream ) override
         {
-            MENGINE_THREAD_GUARD_SCOPE( Decoder, this, "Decoder::prepareData" );
+            MENGINE_THREAD_GUARD_SCOPE( DecoderBase, this );
 
             m_stream = _stream;
 
@@ -109,7 +111,7 @@ namespace Mengine
     private:
         size_t decode( const DecoderData * _data ) override
         {
-            MENGINE_THREAD_GUARD_SCOPE( Decoder, this, "Decoder::decode" );
+            MENGINE_THREAD_GUARD_SCOPE( DecoderBase, this );
 
             size_t byte = this->_decode( _data );
 
@@ -122,7 +124,7 @@ namespace Mengine
     private:
         bool seek( float _time ) override
         {
-            MENGINE_THREAD_GUARD_SCOPE( Decoder, this, "Decoder::seek" );
+            MENGINE_THREAD_GUARD_SCOPE( DecoderBase, this );
 
             bool successful = this->_seek( _time );
 
@@ -140,7 +142,7 @@ namespace Mengine
     private:
         float tell() const override
         {
-            MENGINE_THREAD_GUARD_SCOPE( Decoder, this, "Decoder::tell" );
+            MENGINE_THREAD_GUARD_SCOPE( DecoderBase, this );
 
             float value = this->_tell();
 
@@ -158,7 +160,7 @@ namespace Mengine
     private:
         bool rewind() override
         {
-            MENGINE_THREAD_GUARD_SCOPE( Decoder, this, "Decoder::rewind" );
+            MENGINE_THREAD_GUARD_SCOPE( DecoderBase, this );
 
             bool successful = this->_rewind();
 
@@ -180,6 +182,6 @@ namespace Mengine
 
         bool m_initialize;
 
-        MENGINE_THREAD_GUARD_INIT( Decoder );
+        MENGINE_THREAD_GUARD_INIT( DecoderBase );
     };
 }

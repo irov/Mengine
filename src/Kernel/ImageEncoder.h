@@ -2,12 +2,12 @@
 
 #include "Interface/ImageCodecInterface.h"
 
-#include "Kernel/Encoder.h"
+#include "Kernel/EncoderBase.h"
 
 namespace Mengine
 {
     class ImageEncoder
-        : public Encoder<ImageEncoderInterface>
+        : public EncoderBase<ImageEncoderInterface>
     {
     public:
         ImageEncoder();

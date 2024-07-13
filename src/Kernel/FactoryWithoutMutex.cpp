@@ -20,7 +20,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( m_type.empty() == false, "factory type not set" );
 
-        MENGINE_THREAD_GUARD_SCOPE( FactoryWithoutMutex, this, "FactoryWithoutMutex::createObject" );
+        MENGINE_THREAD_GUARD_SCOPE( FactoryWithoutMutex, this );
 
         Factorable * object = this->_createObject();
 

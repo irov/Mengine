@@ -2,12 +2,12 @@
 
 #include "Plugins/VideoPlugin/VideoInterface.h"
 
-#include "Kernel/Decoder.h"
+#include "Kernel/DecoderBase.h"
 
 namespace Mengine
 {
     class VideoDecoder
-        : public Decoder<VideoDecoderInterface>
+        : public DecoderBase<VideoDecoderInterface>
     {
     public:
         VideoDecoder();

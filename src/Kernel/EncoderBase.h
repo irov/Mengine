@@ -1,21 +1,26 @@
 #pragma once
 
+#include "Interface/EncoderInterface.h"
+#include "Interface/OutputStreamInterface.h"
+
 #include "Kernel/Factorable.h"
 
 namespace Mengine
 {
-    template<class TEncoderInterface>
-    class Encoder
-        : public TEncoderInterface
+    template<class T>
+    class EncoderBase
+        : public T
         , public Factorable
     {
+        static_assert(std::is_base_of<EncoderInterface, T>::value, "T must derive from DecoderInterface");
+
     public:
-        Encoder()
+        EncoderBase()
             : m_initialize( false )
         {
         }
 
-        ~Encoder() override
+        ~EncoderBase() override
         {
         }
 

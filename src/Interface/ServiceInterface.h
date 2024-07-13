@@ -27,7 +27,7 @@ namespace Mengine
 
     protected:
         virtual bool availableService() = 0;
-        virtual bool initializeService() = 0;
+        virtual bool initializeService( ServiceProviderInterface * _serviceProvider ) = 0;
         virtual void finalizeService() = 0;
         virtual void replaceService() = 0;
         virtual bool runService() = 0;

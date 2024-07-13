@@ -169,7 +169,7 @@ namespace Mengine
 
         try
         {
-            successful = service->initializeService();
+            successful = service->initializeService( this );
         }
         catch( const std::exception & ex )
         {

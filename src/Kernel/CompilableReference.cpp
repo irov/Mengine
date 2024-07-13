@@ -15,7 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool CompilableReference::compile()
     {
-        MENGINE_THREAD_GUARD_SCOPE( CompilableReference, this, "CompilableReference::compile" );
+        MENGINE_THREAD_GUARD_SCOPE( CompilableReference, this );
 
         if( m_compileReferenceCount.incref() == false )
         {
@@ -32,7 +32,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void CompilableReference::release()
     {
-        MENGINE_THREAD_GUARD_SCOPE( CompilableReference, this, "CompilableReference::release" );
+        MENGINE_THREAD_GUARD_SCOPE( CompilableReference, this );
 
         if( m_compileReferenceCount.decref() == false )
         {

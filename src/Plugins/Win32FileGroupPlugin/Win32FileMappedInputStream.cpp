@@ -75,7 +75,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32FileMappedInputStream::read( void * const _buf, size_t _count )
     {
-        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this, "Win32FileMappedInputStream::read" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this );
 
         size_t cnt = _count;
 
@@ -98,7 +98,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileMappedInputStream::seek( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this, "Win32FileMappedInputStream::seek" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this );
 
         if( _pos > m_size )
         {
@@ -112,14 +112,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32FileMappedInputStream::rewind()
     {
-        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this, "Win32FileMappedInputStream::rewind" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this );
 
         m_pos = m_base;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileMappedInputStream::rseek( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this, "Win32FileMappedInputStream::rseek" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this );
 
         if( _pos > m_size )
         {
@@ -133,7 +133,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileMappedInputStream::skip( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this, "Win32FileMappedInputStream::skip" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this );
 
         if( m_pos + _pos > m_end )
         {
@@ -147,21 +147,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32FileMappedInputStream::size() const
     {
-        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this, "Win32FileMappedInputStream::size" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this );
 
         return m_size;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileMappedInputStream::eof() const
     {
-        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this, "Win32FileMappedInputStream::eof" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this );
 
         return m_pos == m_end;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32FileMappedInputStream::tell() const
     {
-        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this, "Win32FileMappedInputStream::tell" );
+        MENGINE_THREAD_GUARD_SCOPE( Win32FileMappedInputStream, this );
 
         size_t distance = m_pos - m_base;
 

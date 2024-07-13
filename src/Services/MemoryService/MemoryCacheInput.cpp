@@ -78,7 +78,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t MemoryCacheInput::read( void * const _buf, size_t _size )
     {
-        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this, "MemoryCacheInput::read" );
+        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this );
 
         size_t cnt = _size;
         // Read over end of memory?
@@ -101,7 +101,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryCacheInput::seek( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this, "MemoryCacheInput::seek" );
+        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this );
 
         if( _pos > m_size )
         {
@@ -115,14 +115,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MemoryCacheInput::rewind()
     {
-        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this, "MemoryCacheInput::rewind" );
+        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this );
 
         m_pos = m_data;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryCacheInput::rseek( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this, "MemoryCacheInput::rseek" );
+        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this );
 
         if( _pos > m_size )
         {
@@ -136,7 +136,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryCacheInput::skip( size_t _size )
     {
-        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this, "MemoryCacheInput::skip" );
+        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this );
 
         if( m_pos + _size > m_end )
         {
@@ -155,14 +155,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryCacheInput::eof() const
     {
-        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this, "MemoryCacheInput::eof" );
+        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this );
 
         return m_pos == m_end;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t MemoryCacheInput::tell() const
     {
-        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this, "MemoryCacheInput::tell" );
+        MENGINE_THREAD_GUARD_SCOPE( MemoryCacheInput, this );
 
         size_t distance = m_pos - m_data;
 

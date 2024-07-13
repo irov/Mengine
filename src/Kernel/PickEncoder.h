@@ -2,12 +2,12 @@
 
 #include "Interface/PickCodecInterface.h"
 
-#include "Kernel/Encoder.h"
+#include "Kernel/EncoderBase.h"
 
 namespace Mengine
 {
     class PickEncoder
-        : public Encoder<PickEncoderInterface>
+        : public EncoderBase<PickEncoderInterface>
     {
     public:
         PickEncoder();

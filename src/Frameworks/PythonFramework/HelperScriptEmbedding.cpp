@@ -774,12 +774,10 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_compressBase64( pybind::kernel_interface * _kernel, const ConstString & _archivatorType, PyObject * _object )
+            PyObject * s_compressBase64( pybind::kernel_interface * _kernel, const ConstString & _archivatorType, const StringView & _data )
             {
-                MENGINE_ASSERTION_FATAL( _kernel->string_check( _object ) == true, "invalid object" );
-
-                size_t size;
-                const char * str = _kernel->string_to_char_and_size( _object, &size );
+                const char * str = _data.c_str();
+                size_t size = _data.size();
 
                 ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), _archivatorType );
 
@@ -829,12 +827,10 @@ namespace Mengine
                 return py_base64;
             }
             //////////////////////////////////////////////////////////////////////////
-            PyObject * s_decompressBase64( pybind::kernel_interface * _kernel, const ConstString & _archivatorType, PyObject * _object )
+            PyObject * s_decompressBase64( pybind::kernel_interface * _kernel, const ConstString & _archivatorType, const StringView & _base64 )
             {
-                MENGINE_ASSERTION_FATAL( _kernel->string_check( _object ) == true, "invalid object" );
-
-                size_t base64Size;
-                const char * base64String = _kernel->string_to_char_and_size( _object, &base64Size );
+                const char * base64String = _base64.c_str();
+                size_t base64Size = _base64.size();
 
                 size_t size = Helper::getBase64DecodeSize( base64String, base64Size );
 

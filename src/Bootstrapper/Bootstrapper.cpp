@@ -2209,6 +2209,10 @@ namespace Mengine
         SERVICE_FINALIZE( AppleKernelService );
 #endif
 
+#if defined(MENGINE_PLATFORM_IOS)
+        SERVICE_FINALIZE( iOSKernelService );
+#endif
+
         SERVICE_FINALIZE( EnvironmentService );
 
         this->unregisterBaseTypes_();
@@ -2297,6 +2301,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_APPLE)
         SERVICE_DESTROY( AppleKernelService );
+#endif
+
+#if defined(MENGINE_PLATFORM_IOS)
+        SERVICE_DESTROY( iOSKernelService );
 #endif
 
         SERVICE_DESTROY( EnvironmentService );

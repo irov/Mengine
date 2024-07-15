@@ -389,6 +389,7 @@ endif()
 
 if(MENGINE_DEPENDENCE_FREETYPE)
     message("================freetype================")
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/freetype/CMakeLists.txt ${THIRDPARTY_DIR}/freetype/include/freetype/CMakeLists.txt COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/freetype/ftstdlib.h ${THIRDPARTY_DIR}/freetype/include/freetype/config/ftstdlib.h COPYONLY)
     
     set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP_INSTALL_ALL" FORCE)

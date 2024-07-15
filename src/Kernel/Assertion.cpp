@@ -1,5 +1,7 @@
 #include "Assertion.h"
 
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
+
 #include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/Crash.h"
@@ -26,7 +28,7 @@ namespace Mengine
             Assertion_NotDebugBreak = _debugBreak;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool AssertionGetNotDebugBreak()
+        bool AssertionIsNotDebugBreak()
         {
             return Assertion_NotDebugBreak;
         }
@@ -135,3 +137,4 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
 }
+#endif

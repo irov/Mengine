@@ -3,6 +3,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
 

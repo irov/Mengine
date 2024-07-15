@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config/Config.h"
+#include "Kernel/Assertion.h"
 
 #if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
 #   include "Config/Char.h"

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Kernel/Observable.h"
+#include "Kernel/Assertion.h"
 
 #if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
-#   include "Kernel/Assertion.h"
+#   include "Kernel/Observable.h"
 
 namespace Mengine
 {

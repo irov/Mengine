@@ -22,6 +22,7 @@
 #include "Kernel/Map.h"
 #include "Kernel/Vector.h"
 #include "Kernel/IntrusiveList.h"
+#include "Kernel/AssertionLevel.h"
 
 namespace Mengine
 {

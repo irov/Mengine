@@ -1,6 +1,7 @@
 #include "TheoraVideoDecoder.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionType.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ProfilerHelper.h"

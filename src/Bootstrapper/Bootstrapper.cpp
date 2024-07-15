@@ -1101,7 +1101,7 @@ namespace Mengine
 
         bool Assertion_NoDebugBreak = OPTION_assertion == false && Engine_AssertionDebugBreak == false;
 
-        Helper::AssertionSetNotDebugBreak( Assertion_NoDebugBreak );
+        MENGINE_ASSERTION_SET_NOT_DEBUG_BREAK( Assertion_NoDebugBreak );
 
         LOGGER_INFO( "bootstrapper", "bootstrapper mount user file group" );
 

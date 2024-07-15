@@ -5,6 +5,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
 #include "Kernel/ProfilerHelper.h"

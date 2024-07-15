@@ -6,6 +6,7 @@
 #include "Kernel/SHA1.h"
 
 #include "Config/StdString.h"
+#include "Config/StdIO.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( EnvironmentService, Mengine::Win32EnvironmentService );

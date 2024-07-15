@@ -1,13 +1,14 @@
 #pragma once
 
+#include "Config/Config.h"
+
+#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
+
 #include "Kernel/AssertionLevel.h"
 
 #include "Config/Typedef.h"
 #include "Config/Char.h"
-
-#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
-#   include "Config/StdIO.h"
-#endif
+#include "Config/StdIO.h"
 
 #ifndef MENGINE_ASSERTION_MAX_MESSAGE
 #define MENGINE_ASSERTION_MAX_MESSAGE 8192
@@ -20,7 +21,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         void AssertionSetNotDebugBreak( bool _debugBreak );
-        bool AssertionGetNotDebugBreak();
+        bool AssertionIsNotDebugBreak();
         //////////////////////////////////////////////////////////////////////////
         void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line );
         void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 6, 7 );
@@ -104,15 +105,20 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
 }
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
-#   define MENGINE_ASSERTION_CALL( ... ) (__VA_ARGS__ ) ;static_assert(sizeof(MENGINE_PRINTF(__VA_ARGS__)))
 
-#   define MENGINE_ASSERTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_ERROR, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) MENGINE_ASSERTION_CALL(__VA_ARGS__)
-#   define MENGINE_ASSERTION_FATAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) MENGINE_ASSERTION_CALL(__VA_ARGS__)
-#   define MENGINE_ASSERTION_EXCEPTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_EXCEPTION, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) MENGINE_ASSERTION_CALL(__VA_ARGS__)
-#   define MENGINE_ASSERTION_CRITICAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_CRITICAL, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) MENGINE_ASSERTION_CALL(__VA_ARGS__)
+#   define MENGINE_ASSERTION_SET_NOT_DEBUG_BREAK( DebugBreak ) Mengine::Helper::AssertionSetNotDebugBreak( DebugBreak )
+#   define MENGINE_ASSERTION_IS_NOT_DEBUG_BREAK() Mengine::Helper::AssertionIsNotDebugBreak()
+
+#   define DETAIL__MENGINE_ASSERTION_CALL( ... ) (__VA_ARGS__ ) ;static_assert(sizeof(MENGINE_PRINTF(__VA_ARGS__)))
+
+#   define MENGINE_ASSERTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_ERROR, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) DETAIL__MENGINE_ASSERTION_CALL(__VA_ARGS__)
+#   define MENGINE_ASSERTION_FATAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) DETAIL__MENGINE_ASSERTION_CALL(__VA_ARGS__)
+#   define MENGINE_ASSERTION_EXCEPTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_EXCEPTION, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) DETAIL__MENGINE_ASSERTION_CALL(__VA_ARGS__)
+#   define MENGINE_ASSERTION_CRITICAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_CRITICAL, #Condition, MENGINE_CODE_FILE, MENGINE_CODE_LINE ) DETAIL__MENGINE_ASSERTION_CALL(__VA_ARGS__)
 #else
+#   define MENGINE_ASSERTION_SET_NOT_DEBUG_BREAK( DebugBreak ) MENGINE_UNUSED( DebugBreak )
+#   define MENGINE_ASSERTION_IS_NOT_DEBUG_BREAK() true
+
 #   define MENGINE_ASSERTION(Condition, ...)
 #   define MENGINE_ASSERTION_FATAL(Condition, ...)
 #   define MENGINE_ASSERTION_EXCEPTION(Condition, ...)

@@ -1,9 +1,9 @@
 set(CMAKE_CROSSCOMPILING TRUE)
 
-if(NOT DEFINED ENV{MINGW_ROOT})
-    message(FATAL_ERROR "Required ENV variable MINGW_ROOT does not exists")
+if(NOT DEFINED ENV{MINGW64_ROOT})
+    message(FATAL_ERROR "Required ENV variable MINGW64_ROOT does not exists")
 else()
-    SET(MINGW_ROOT $ENV{MINGW_ROOT})
+    SET(MINGW_ROOT $ENV{MINGW64_ROOT})
 endif()
 
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM ONLY)

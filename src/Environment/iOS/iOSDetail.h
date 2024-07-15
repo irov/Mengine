@@ -23,6 +23,7 @@ namespace Mengine
         void iOSAdRevenue( iOSAdRevenueParam * revenue );
         void iOSTransparencyConsent( iOSTransparencyConsentParam * consent );
         NSString * iOSPathForTemporaryFileWithPrefix( NSString * prefix, NSString * ext );
-        void iOSAlert( UIViewController * view, NSString * title, NSString * message );
+        void iOSAlert( NSString * title, NSString * message, void (^_cb)(void) );
+        void iOSAlertWithViewController( UIViewController * view, NSString * title, NSString * message, void (^_cb)(void) );    
     }
 }

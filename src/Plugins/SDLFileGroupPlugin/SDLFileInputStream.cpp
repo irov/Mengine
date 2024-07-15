@@ -33,7 +33,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
-        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::open" );
+        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this );
 
 #if defined(MENGINE_DEBUG)
         this->setDebugRelationPath( _relationPath );
@@ -183,7 +183,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SDLFileInputStream::read( void * const _buf, size_t _count )
     {
-        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::read" );
+        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this );
 
         size_t pos = m_reading - m_capacity + m_carriage;
 
@@ -280,7 +280,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::seek( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::seek" );
+        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this );
 
         bool successful = this->seek_( _pos );
 
@@ -289,14 +289,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLFileInputStream::rewind()
     {
-        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::rewind" );
+        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this );
 
         this->seek_( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::rseek( size_t _pos )
     {
-        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::seek" );
+        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this );
 
         bool successful = this->seek_( m_size - _pos );
 
@@ -338,7 +338,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::skip( size_t _size )
     {
-        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::skip" );
+        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this );
 
         size_t current = m_reading - m_capacity + m_carriage;
 
@@ -351,7 +351,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SDLFileInputStream::tell() const
     {
-        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::tell" );
+        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this );
 
         size_t current = m_reading - m_capacity + m_carriage;
 
@@ -365,7 +365,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::eof() const
     {
-        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this, "SDLFileInputStream::eof" );
+        MENGINE_THREAD_GUARD_SCOPE( SDLFileInputStream, this );
 
         return (m_reading - m_capacity + m_carriage) == m_size;
     }

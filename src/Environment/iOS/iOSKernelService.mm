@@ -69,7 +69,7 @@ namespace Mengine
             //ToDo callback
         }];
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSKernelService::openMail( const Char * _email, const Char * _subject, const Char * _body )
@@ -78,7 +78,7 @@ namespace Mengine
         
         if( [iOSMailCompose canSendMail] == NO )
         {
-            Helper::iOSAlert( view, @"Yikes.", @"Log into your mailbox using the standard Mail app" );
+            Helper::iOSAlertWithViewController( view, @"Yikes.", @"Log into your mailbox using the standard Mail app", ^{} );
             
             return false;
         }

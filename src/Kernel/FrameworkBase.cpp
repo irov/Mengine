@@ -101,9 +101,10 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        MENGINE_ASSERTION_FATAL( m_running == true, "framework '%s' not running"
-            , this->getName().c_str()
-        );
+        if( m_running == false )
+        {
+            return;
+        }
 
         this->_stopFramework();
 

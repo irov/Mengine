@@ -11,6 +11,8 @@
 
 @interface SDLUIApplicationDelegate : NSObject<UIApplicationDelegate, iOSUIMainApplicationDelegateInterface>
 
+@property (nonatomic, strong) UIWindow * m_window;
+
 @property (nonatomic, strong) NSMutableArray<iOSPluginApplicationDelegateInterface> * m_pluginApplicationDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginLoggerDelegateInterface> * m_pluginLoggerDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginAdRevenueDelegateInterface> * m_pluginAdRevenueDelegates;

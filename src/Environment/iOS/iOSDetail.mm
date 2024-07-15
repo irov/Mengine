@@ -119,19 +119,37 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        void iOSAlert( UIViewController * view, NSString * title, NSString * message )
+        void iOSAlert( NSString * title, NSString * message, void (^_cb)(void) )
         {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
+            UIViewController * rootViewController = Helper::iOSGetRootViewController();
+            
+            Helper::iOSAlertWithViewController( rootViewController, title, message, _cb );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void iOSAlertWithViewController( UIViewController * view, NSString * title, NSString * message, void (^_cb)(void) )
+        {
+            if( view == nil )
+            {
+                return;
+            }
+            
+            UIAlertController * alertController = [UIAlertController alertControllerWithTitle:title
                                                                                      message:message
                                                                               preferredStyle:UIAlertControllerStyleAlert];
 
             UIAlertAction * okAction = [UIAlertAction actionWithTitle:@"OK"
-                                                               style:UIAlertActionStyleDefault
-                                                             handler:nil];
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction *action) {
+                _cb();
+            }];
 
             [alertController addAction:okAction];
-
-            [view presentViewController:alertController animated:YES completion:nil];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [view presentViewController:alertController animated:YES completion:^{
+                    //ToDo
+                }];
+            });
         }
         //////////////////////////////////////////////////////////////////////////
     }

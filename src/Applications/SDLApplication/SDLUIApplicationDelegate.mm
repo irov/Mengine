@@ -4,12 +4,14 @@
 
 #include "Interface/PlatformServiceInterface.h"
 
-#import "Environment/SDL/SDLIncluder.h"
-#import "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
+#include "Environment/SDL/SDLIncluder.h"
+#include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
+
 #import "Environment/Apple/AppleUserDefaults.h"
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/Apple/AppleLog.h"
 #import "Environment/iOS/iOSApplication.h"
+#import "Environment/iOS/iOSDetail.h"
 
 #include "SDLApplication.h"
 
@@ -124,6 +126,14 @@ char ** MENGINE_MAIN_argv = nullptr;
         
         return NO;
     }
+    
+    UIWindow * window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    UIViewController * viewController = [[UIViewController alloc] init];
+    window.rootViewController = viewController;
+    
+    [window makeKeyAndVisible];
+    
+    [self setWindow:window];
     
     for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
@@ -242,25 +252,13 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (UIWindow *)window {
-    if( SERVICE_PROVIDER_EXIST() == false ) {
-        return nil;
-    }
-    
-    if( SERVICE_IS_INITIALIZE(Mengine::PlatformServiceInterface) == false ) {
-        return nil;
-    }
-    
-    Mengine::SDLPlatformServiceExtensionInterface * sdlPlatform = PLATFORM_SERVICE()
-        ->getDynamicUnknown();
-    
-    UIWindow * window = sdlPlatform->getUIWindow();
-     
-    return window;
+    return self.m_window;
 }
 
 - (void)setWindow:(UIWindow *)window {
-    /* Do nothing. */
+    self.m_window = window;
 }
+
 
 - (void)postFinishLaunch {
     for (id delegate in self.m_pluginApplicationDelegates) {
@@ -282,7 +280,11 @@ char ** MENGINE_MAIN_argv = nullptr;
         
         SDL_iPhoneSetEventPump( SDL_FALSE );
         
-        return NO;
+        Mengine::Helper::iOSAlert( @"Failed...", @"Mengine bootstraped application", ^{
+            ::exit( EXIT_SUCCESS );
+        } );
+        
+        return;
     }
 
     if( application.initialize() == false ) {
@@ -292,7 +294,11 @@ char ** MENGINE_MAIN_argv = nullptr;
         
         SDL_iPhoneSetEventPump( SDL_FALSE );
         
-        return NO;
+        Mengine::Helper::iOSAlert( @"Failed...", @"Mengine initialized application", ^{
+            ::exit( EXIT_SUCCESS );
+        } );
+        
+        return;
     }
     
     application.loop();
@@ -305,11 +311,13 @@ char ** MENGINE_MAIN_argv = nullptr;
         if ([delegate respondsToSelector:@selector(endLoop:)] == NO) {
             continue;
         }
-         
+        
         [delegate endLoop];
     }
     
     Mengine::Helper::AppleLog(@"Mengine application finish");
+    
+    ::exit( EXIT_SUCCESS );
 }
 
 @end

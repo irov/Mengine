@@ -156,7 +156,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     @Override
-    public void onAdLoaded(MaxAd ad) {
+    public void onAdLoaded(@NonNull MaxAd ad) {
         this.logMaxAd("onAdLoaded", ad);
 
         this.buildAdEvent("mng_ad_interstitial_loaded")
@@ -171,7 +171,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     @Override
-    public void onAdDisplayed(MaxAd ad) {
+    public void onAdDisplayed(@NonNull MaxAd ad) {
         this.logMaxAd("onAdDisplayed", ad);
 
         String placement = ad.getPlacement();
@@ -187,7 +187,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     @Override
-    public void onAdHidden(MaxAd ad) {
+    public void onAdHidden(@NonNull MaxAd ad) {
         this.logMaxAd("onAdHidden", ad);
 
         String placement = ad.getPlacement();
@@ -207,7 +207,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     @Override
-    public void onAdClicked(MaxAd ad) {
+    public void onAdClicked(@NonNull MaxAd ad) {
         this.logMaxAd("onAdClicked", ad);
 
         String placement = ad.getPlacement();
@@ -223,7 +223,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     @Override
-    public void onAdLoadFailed(String adUnitId, MaxError error) {
+    public void onAdLoadFailed(@NonNull String adUnitId, @NonNull MaxError error) {
         this.logMaxError("onAdLoadFailed", error);
 
         int errorCode = error.getCode();
@@ -241,7 +241,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     @Override
-    public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+    public void onAdDisplayFailed(@NonNull MaxAd ad, @NonNull MaxError error) {
         this.logMaxError("onAdDisplayFailed", error);
 
         String placement = ad.getPlacement();
@@ -265,7 +265,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     @Override
-    public void onAdRevenuePaid(MaxAd ad) {
+    public void onAdRevenuePaid(@NonNull MaxAd ad) {
         this.logMaxAd("onAdRevenuePaid", ad);
 
         String placement = ad.getPlacement();

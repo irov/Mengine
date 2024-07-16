@@ -248,7 +248,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     }
 
     @Override
-    public void onAdLoaded(MaxAd ad) {
+    public void onAdLoaded(@NonNull MaxAd ad) {
         m_loaded = true;
 
         this.logMaxAd("onAdLoaded", ad);
@@ -276,7 +276,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     }
 
     @Override
-    public void onAdDisplayed(MaxAd ad) {
+    public void onAdDisplayed(@NonNull MaxAd ad) {
         this.logMaxAd("onAdDisplayed", ad);
 
         String placement = ad.getPlacement();
@@ -292,7 +292,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     }
 
     @Override
-    public void onAdHidden(MaxAd ad) {
+    public void onAdHidden(@NonNull MaxAd ad) {
         this.logMaxAd("onAdHidden", ad);
 
         String placement = ad.getPlacement();
@@ -308,7 +308,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     }
 
     @Override
-    public void onAdClicked(MaxAd ad) {
+    public void onAdClicked(@NonNull MaxAd ad) {
         this.logMaxAd("onAdClicked", ad);
 
         String placement = ad.getPlacement();
@@ -324,7 +324,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     }
 
     @Override
-    public void onAdLoadFailed(String adUnitId, MaxError error) {
+    public void onAdLoadFailed(@NonNull String adUnitId, @NonNull MaxError error) {
         m_loaded = false;
 
         this.logMaxError("onAdLoadFailed", error);
@@ -352,7 +352,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     }
 
     @Override
-    public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+    public void onAdDisplayFailed(@NonNull MaxAd ad, @NonNull MaxError error) {
         this.logMaxError("onAdDisplayFailed", error);
 
         String placement = ad.getPlacement();
@@ -372,7 +372,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     }
 
     @Override
-    public void onAdExpanded(MaxAd ad) {
+    public void onAdExpanded(@NonNull MaxAd ad) {
         this.logMaxAd("onAdExpanded", ad);
 
         String placement = ad.getPlacement();
@@ -388,7 +388,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     }
 
     @Override
-    public void onAdCollapsed(MaxAd ad) {
+    public void onAdCollapsed(@NonNull MaxAd ad) {
         this.logMaxAd("onAdCollapsed", ad);
 
         String placement = ad.getPlacement();
@@ -404,7 +404,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
     }
 
     @Override
-    public void onAdRevenuePaid(MaxAd ad) {
+    public void onAdRevenuePaid(@NonNull MaxAd ad) {
         this.logMaxAd("onAdRevenuePaid", ad);
 
         String placement = ad.getPlacement();

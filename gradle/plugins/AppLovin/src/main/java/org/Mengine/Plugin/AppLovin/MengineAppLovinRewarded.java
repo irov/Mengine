@@ -176,7 +176,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     }
 
     @Override
-    public void onUserRewarded(MaxAd ad, MaxReward reward) {
+    public void onUserRewarded(@NonNull MaxAd ad, @NonNull MaxReward reward) {
         this.logMaxAdReward("onUserRewarded", ad, reward);
 
         String placement = ad.getPlacement();
@@ -195,7 +195,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     }
 
     @Override
-    public void onAdLoaded(MaxAd ad) {
+    public void onAdLoaded(@NonNull MaxAd ad) {
         this.logMaxAd("onAdLoaded", ad);
 
         this.buildAdEvent("mng_ad_rewarded_loaded")
@@ -210,7 +210,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     }
 
     @Override
-    public void onAdDisplayed(MaxAd ad) {
+    public void onAdDisplayed(@NonNull MaxAd ad) {
         this.logMaxAd("onAdDisplayed", ad);
 
         String placement = ad.getPlacement();
@@ -226,7 +226,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     }
 
     @Override
-    public void onAdHidden(MaxAd ad) {
+    public void onAdHidden(@NonNull MaxAd ad) {
         this.logMaxAd("onAdHidden", ad);
 
         String placement = ad.getPlacement();
@@ -246,7 +246,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     }
 
     @Override
-    public void onAdClicked(MaxAd ad) {
+    public void onAdClicked(@NonNull MaxAd ad) {
         this.logMaxAd("onAdClicked", ad);
 
         String placement = ad.getPlacement();
@@ -262,7 +262,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     }
 
     @Override
-    public void onAdLoadFailed(String adUnitId, MaxError error) {
+    public void onAdLoadFailed(@NonNull String adUnitId, @NonNull MaxError error) {
         this.logMaxError("onAdLoadFailed", error);
 
         int errorCode = error.getCode();
@@ -280,7 +280,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     }
 
     @Override
-    public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+    public void onAdDisplayFailed(@NonNull MaxAd ad, @NonNull MaxError error) {
         this.logMaxError("onAdDisplayFailed", error);
 
         String placement = ad.getPlacement();
@@ -304,7 +304,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     }
 
     @Override
-    public void onAdRevenuePaid(MaxAd ad) {
+    public void onAdRevenuePaid(@NonNull MaxAd ad) {
         this.logMaxAd("onAdRevenuePaid", ad);
 
         String placement = ad.getPlacement();

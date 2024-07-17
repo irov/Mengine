@@ -75,7 +75,7 @@ macro(ADD_APPLOVIN_MEDIATION MEDIATION POD VERSION)
     endif()
 endmacro()
 
-ADD_APPLOVIN_MEDIATION(ADMOB "AppLovinMediationGoogleAdapter" "11.6.0.0")
+ADD_APPLOVIN_MEDIATION(ADMOB "AppLovinMediationGoogleAdapter" "11.7.0.0")
 ADD_APPLOVIN_MEDIATION(AMAZON "AppLovinMediationAmazonAdMarketplaceAdapter" "4.9.4.0")
 ADD_APPLOVIN_MEDIATION(AMAZON "AmazonPublisherServicesSDK" "4.9.4")
 ADD_APPLOVIN_MEDIATION(BIDMACHINE "AppLovinMediationBidMachineAdapter" "2.7.0.0.0")
@@ -96,7 +96,7 @@ ADD_APPLOVIN_MEDIATION(OGURY "AppLovinMediationOguryPresageAdapter" "4.3.0.0")
 ADD_APPLOVIN_MEDIATION(PANGLE "AppLovinMediationByteDanceAdapter" "5.9.0.8.0") #Pangle
 ADD_APPLOVIN_MEDIATION(SMAATO "AppLovinMediationSmaatoAdapter" "22.8.3.0")
 ADD_APPLOVIN_MEDIATION(TENCENT "AppLovinMediationTencentGDTAdapter" "4.14.76.0")
-ADD_APPLOVIN_MEDIATION(UNITYADS "AppLovinMediationUnityAdsAdapter" "4.12.0.0")
+ADD_APPLOVIN_MEDIATION(UNITYADS "AppLovinMediationUnityAdsAdapter" "4.12.1.0")
 ADD_APPLOVIN_MEDIATION(VERVE "AppLovinMediationVerveAdapter" "3.0.0.0")
 ADD_APPLOVIN_MEDIATION(MYTARGET "AppLovinMediationMyTargetAdapter" "5.21.4.0") #VK
 ADD_APPLOVIN_MEDIATION(YANDEX "AppLovinMediationYandexAdapter" "7.0.0.0")

@@ -14,7 +14,7 @@
 #include "Config/StdString.h"
 
 #ifndef MENGINE_SECURE_VALUE
-#define MENGINE_SECURE_VALUE "0123456789A"
+#define MENGINE_SECURE_VALUE 0123456789A
 #endif
 
 //////////////////////////////////////////////////////////////////////////

@@ -39,8 +39,6 @@ android {
                     }
 
                     arguments.add("-DCMAKE_BUILD_TYPE:STRING=Debug")
-                    arguments.add("-DMENGINE_BUILD_MENGINE_DEVELOPMENT=ON")
-                    arguments.add("-DMENGINE_BUILD_MENGINE_MASTER_RELEASE=OFF")
                 }
             }
         }
@@ -53,8 +51,6 @@ android {
                     }
 
                     arguments.add("-DCMAKE_BUILD_TYPE:STRING=Release")
-                    arguments.add("-DMENGINE_BUILD_MENGINE_DEVELOPMENT=OFF")
-                    arguments.add("-DMENGINE_BUILD_MENGINE_MASTER_RELEASE=ON")
                 }
             }
         }

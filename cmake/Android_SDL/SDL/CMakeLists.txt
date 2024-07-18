@@ -2,10 +2,13 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
 OPTION(MENGINE_USE_PRECOMPILED_HEADER "Mengine use precompiled header" OFF)
 
-PROJECT(SDL_Android_SDL)
+SET(MENGINE_PROJECT_NAME "SDL_Android_SDL" CACHE STRING "Mengine project name")
+
+PROJECT(${MENGINE_PROJECT_NAME})
 
 SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
 
+INCLUDE(${MENGINE_REPOSITORY}/cmake/master_options_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/base_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/macro_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/android_template.cmake)

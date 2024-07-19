@@ -39,9 +39,9 @@
     
     switch (message.level) {
         case Mengine::LM_ERROR: {
-            if ((message.filter & Mengine::LFILTER_EXCEPTION) == Mengine::LFILTER_EXCEPTION) {
-                NSString * ns_message = Mengine::Helper::stringToNSString(message.data, message.size);
+            NSString * ns_message = Mengine::Helper::stringToNSString(message.data, message.size);
             
+            if ((message.filter & Mengine::LFILTER_EXCEPTION) == Mengine::LFILTER_EXCEPTION) {
                 NSDictionary *userInfo = @{
                     NSLocalizedDescriptionKey: ns_message
                 };
@@ -52,8 +52,6 @@
             
                 [[FIRCrashlytics crashlytics] recordError:error];
             } else {
-                NSString * ns_message = Mengine::Helper::stringToNSString(message.data, message.size);
-            
                 [[FIRCrashlytics crashlytics] log:ns_message];
             }
         }break;

@@ -1,6 +1,5 @@
 #include "iOSDetail.h"
 
-#import "iOSUIMainApplicationDelegateInterface.h"
 #import "iOSPluginApplicationDelegateInterface.h"
 
 #import <AdSupport/ASIdentifierManager.h>
@@ -44,9 +43,16 @@ namespace Mengine
             return idfa_uuid;
         }
         //////////////////////////////////////////////////////////////////////////
-        id iOSGetUIProxyApplicationDelegate( Class delegateClass )
+        NSObject<iOSUIMainApplicationDelegateInterface> * iOSGetUIMainApplicationDelegate()
         {
             NSObject<iOSUIMainApplicationDelegateInterface> * delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
+            
+            return delegate;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        id iOSGetUIProxyApplicationDelegate( Class delegateClass )
+        {
+            NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
 
             NSArray<iOSPluginApplicationDelegateInterface> * pluginDelegates = [delegate getPluginApplicationDelegates];
 
@@ -61,41 +67,60 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void iOSEventNotify( AppleEvent * event, id firstArg, ... )
         {
-            NSObject<iOSUIMainApplicationDelegateInterface> * delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
-            
             va_list args;
             va_start(args, firstArg);
             
             NSMutableArray * send_args = [[NSMutableArray alloc] init];
-
+            
             for( NSString *arg = firstArg; arg != nil; arg = va_arg(args, NSString*) ) {
                 [send_args addObject:firstArg];
             }
-
+            
             va_end(args);
             
-            [delegate notify:event arrayArgs:send_args];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
+                
+                [delegate notify:event arrayArgs:send_args];
+            });
         }
         //////////////////////////////////////////////////////////////////////////
         void iOSEventNotifyArray( AppleEvent * event, NSArray<id> * args )
         {
-            NSObject<iOSUIMainApplicationDelegateInterface> * delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
-            
-            [delegate notify:event arrayArgs:args];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
+                
+                [delegate notify:event arrayArgs:args];
+            });
         }
         //////////////////////////////////////////////////////////////////////////
         void iOSAdRevenue( iOSAdRevenueParam * revenue )
         {
-            NSObject<iOSUIMainApplicationDelegateInterface> * delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
-
-            [delegate eventAdRevenue:revenue];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
+                
+                [delegate eventAdRevenue:revenue];
+            });
         }
         //////////////////////////////////////////////////////////////////////////
         void iOSTransparencyConsent( iOSTransparencyConsentParam * consent )
         {
-            NSObject<iOSUIMainApplicationDelegateInterface> * delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
-
-            [delegate eventTransparencyConsent:consent];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
+                
+                [delegate eventTransparencyConsent:consent];
+            });
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void iOSLog( const LoggerRecordInterfacePtr & record )
+        {
+            LoggerRecordInterfacePtr copy_record = record;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
+                
+                [delegate log:copy_record];
+            });
         }
         //////////////////////////////////////////////////////////////////////////
         NSString * iOSPathForTemporaryFileWithPrefix( NSString * prefix, NSString * ext )

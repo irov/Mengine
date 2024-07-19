@@ -26,21 +26,24 @@
 #pragma mark - SKProductsRequestDelegate
 //////////////////////////////////////////////////////////////////////////
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
-    LOGGER_MESSAGE( "[SKProductsRequestDelegate] productsRequest didReceiveResponse:" );
+    NSMutableString * skProductsLog = [NSMutableString stringWithString:@""];
     
     NSArray<SKProduct *> * skProducts = response.products;
     
     Mengine::VectorAppleStoreInAppPurchaseProducts products;
     for( SKProduct * skProduct in skProducts )
     {
-        LOGGER_MESSAGE( "skProduct: %s"
-            , [skProduct.productIdentifier UTF8String]
-        );
+        [skProductsLog appendString:skProduct.productIdentifier];
+        [skProductsLog appendString:@", "];
         
         Mengine::AppleStoreInAppPurchaseProductInterfacePtr product = self.m_factory->makeProduct( skProduct );
         
         products.emplace_back( product );
     }
+    
+    LOGGER_MESSAGE( "[SKProductsRequestDelegate] productsRequest didReceiveResponse: %s"
+        , [skProductsLog UTF8String]
+    );
     
     Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
     Mengine::AppleStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;

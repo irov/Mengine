@@ -30,6 +30,9 @@ src
 
     iOSAdRevenueParam.h
     iOSAdRevenueParam.mm
+
+    iOSLogRecordParam.h
+    iOSLogRecordParam.mm
     
     iOSUIMainApplicationDelegateInterface.h
     

@@ -1,7 +1,6 @@
 #import "AppleAppLovinBaseDelegate.h"
 
 #import "Environment/Apple/AppleDetail.h"
-
 #import "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
@@ -146,11 +145,15 @@
 - (void) retryLoadAd {
     self.m_retryAttempt++;
     
-    NSInteger delaySec = pow(2, MIN(6, self.m_retryAttempt));
+    NSTimeInterval delaySec = pow(2, MIN(6, self.m_retryAttempt));
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delaySec * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+    __weak NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Mengine::Helper::iOSGetUIMainApplicationDelegate();
+    
+    [delegate addMainQueueOperation: ^{
+        [NSThread sleepForTimeInterval:delaySec];
+        
         [self loadAd];
-    });
+    }];
 }
 
 - (void) eventRevenue:(MAAd * _Nonnull) ad {

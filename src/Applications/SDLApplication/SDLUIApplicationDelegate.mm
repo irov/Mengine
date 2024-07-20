@@ -57,6 +57,12 @@ char ** MENGINE_MAIN_argv = nullptr;
     return [super init];
 }
 
+- (void)addMainQueueOperation:(dispatch_block_t)block {
+    NSBlockOperation * operation = [NSBlockOperation blockOperationWithBlock:block];
+    
+    [[NSOperationQueue mainQueue] addOperation:operation];
+}
+
 #pragma mark - iOSUIMainApplicationDelegateInterface Protocol
 
 - (NSArray<iOSPluginApplicationDelegateInterface> *)getPluginApplicationDelegates {
@@ -98,7 +104,7 @@ char ** MENGINE_MAIN_argv = nullptr;
     }
 }
 
-- (void)log:(const Mengine::LoggerRecordInterfacePtr &)record {
+- (void)log:(iOSLogRecordParam *)record {
     for (NSObject<iOSPluginLoggerDelegateInterface> * delegate in self.m_pluginLoggerDelegates) {
         [delegate onLogger:record];
     }
@@ -276,6 +282,8 @@ char ** MENGINE_MAIN_argv = nullptr;
     if( application.bootstrap( MENGINE_MAIN_argc, MENGINE_MAIN_argv ) == false ) {
         Mengine::Helper::AppleLog(@"🔴 [ERROR] Mengine application bootstrap [Failed]");
         
+        [[NSOperationQueue mainQueue] cancelAllOperations];
+        
         application.finalize();
         
         SDL_iPhoneSetEventPump( SDL_FALSE );
@@ -289,7 +297,9 @@ char ** MENGINE_MAIN_argv = nullptr;
 
     if( application.initialize() == false ) {
         Mengine::Helper::AppleLog(@"🔴 [ERROR] Mengine application initialize [Failed]");
-                
+        
+        [[NSOperationQueue mainQueue] cancelAllOperations];
+        
         application.finalize();
         
         SDL_iPhoneSetEventPump( SDL_FALSE );
@@ -302,6 +312,8 @@ char ** MENGINE_MAIN_argv = nullptr;
     }
     
     application.loop();
+    
+    [[NSOperationQueue mainQueue] cancelAllOperations];
     
     application.finalize();
     

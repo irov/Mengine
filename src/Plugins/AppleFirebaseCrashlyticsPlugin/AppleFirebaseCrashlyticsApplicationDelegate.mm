@@ -33,36 +33,29 @@
     }
 }
 
-- (void)onLogger:(const Mengine::LoggerRecordInterfacePtr &)record {
-    Mengine::LoggerMessage message;
-    record->getMessage( &message );
-    
-    switch (message.level) {
+- (void)onLogger:(iOSLogRecordParam *)record {
+    switch (record.LOG_LEVEL) {
         case Mengine::LM_ERROR: {
-            NSString * ns_message = Mengine::Helper::stringToNSString(message.data, message.size);
-            
-            if ((message.filter & Mengine::LFILTER_EXCEPTION) == Mengine::LFILTER_EXCEPTION) {
+            if ((record.LOG_FILTER & Mengine::LFILTER_EXCEPTION) == Mengine::LFILTER_EXCEPTION) {
                 NSDictionary *userInfo = @{
-                    NSLocalizedDescriptionKey: ns_message
+                    NSLocalizedDescriptionKey: record.LOG_DATA
                 };
             
-                NSError * error = [NSError errorWithDomain:@("com.mengine.firebase")
+                NSError * error = [NSError errorWithDomain:record.LOG_CATEGORY
                                                       code:0
                                                   userInfo:userInfo];
             
                 [[FIRCrashlytics crashlytics] recordError:error];
             } else {
-                [[FIRCrashlytics crashlytics] log:ns_message];
+                [[FIRCrashlytics crashlytics] log:record.LOG_DATA];
             }
         }break;
         case Mengine::LM_FATAL: {
-            NSString * ns_message = Mengine::Helper::stringToNSString(message.data, message.size);
-            
             NSDictionary *userInfo = @{
-                NSLocalizedDescriptionKey: ns_message
+                NSLocalizedDescriptionKey: record.LOG_DATA
             };
             
-            NSError * error = [NSError errorWithDomain:@("com.mengine.firebase")
+            NSError * error = [NSError errorWithDomain:record.LOG_CATEGORY
                                                   code:0
                                               userInfo:userInfo];
             

@@ -78,49 +78,47 @@ namespace Mengine
             
             va_end(args);
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
+            __weak NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
                 
+            [delegate addMainQueueOperation: ^{
                 [delegate notify:event arrayArgs:send_args];
-            });
+            }];
         }
         //////////////////////////////////////////////////////////////////////////
         void iOSEventNotifyArray( AppleEvent * event, NSArray<id> * args )
         {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
+            __weak NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
                 
+            [delegate addMainQueueOperation: ^{
                 [delegate notify:event arrayArgs:args];
-            });
+            }];
         }
         //////////////////////////////////////////////////////////////////////////
         void iOSAdRevenue( iOSAdRevenueParam * revenue )
         {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
-                
+            __weak NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
+    
+            [delegate addMainQueueOperation: ^{
                 [delegate eventAdRevenue:revenue];
-            });
+            }];
         }
         //////////////////////////////////////////////////////////////////////////
         void iOSTransparencyConsent( iOSTransparencyConsentParam * consent )
         {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
-                
+            __weak NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
+     
+            [delegate addMainQueueOperation: ^{
                 [delegate eventTransparencyConsent:consent];
-            });
+            }];
         }
         //////////////////////////////////////////////////////////////////////////
-        void iOSLog( const LoggerRecordInterfacePtr & record )
+        void iOSLog( iOSLogRecordParam * record )
         {
-            LoggerRecordInterfacePtr copy_record = record;
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
-                
-                [delegate log:copy_record];
-            });
+            __weak NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Helper::iOSGetUIMainApplicationDelegate();
+        
+            [delegate addMainQueueOperation: ^{
+                [delegate log:record];
+            }];
         }
         //////////////////////////////////////////////////////////////////////////
         NSString * iOSPathForTemporaryFileWithPrefix( NSString * prefix, NSString * ext )

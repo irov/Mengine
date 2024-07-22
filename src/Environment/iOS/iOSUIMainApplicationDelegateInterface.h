@@ -14,8 +14,6 @@
 - (NSArray<iOSPluginAdRevenueDelegateInterface> *)getPluginAdRevenueDelegates;
 - (NSArray<iOSPluginTransparencyConsentDelegateInterface> *)getPluginTransparencyConsentDelegates;
 
-- (void)addMainQueueOperation:(dispatch_block_t)block;
-
 - (void)notify:(AppleEvent *)event args:(id)firstArg, ... NS_REQUIRES_NIL_TERMINATION;
 - (void)notify:(AppleEvent *)event arrayArgs:(NSArray<id> *)args;
 

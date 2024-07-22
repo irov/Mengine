@@ -22,6 +22,9 @@
 + (UIView *)getRootView;
 + (UIViewController *)getRootViewController;
 + (NSUUID *)getAdIdentifier;
+
++ (void)addMainQueueOperation:(dispatch_block_t)block;
+
 + (NSObject<iOSUIMainApplicationDelegateInterface> *)getUIMainApplicationDelegate;
 + (id)getUIProxyApplicationDelegate:(Class)delegateClass;
 

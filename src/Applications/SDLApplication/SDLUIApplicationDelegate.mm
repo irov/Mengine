@@ -57,12 +57,6 @@ char ** MENGINE_MAIN_argv = nullptr;
     return [super init];
 }
 
-- (void)addMainQueueOperation:(dispatch_block_t)block {
-    NSBlockOperation * operation = [NSBlockOperation blockOperationWithBlock:block];
-    
-    [[NSOperationQueue mainQueue] addOperation:operation];
-}
-
 #pragma mark - iOSUIMainApplicationDelegateInterface Protocol
 
 - (NSArray<iOSPluginApplicationDelegateInterface> *)getPluginApplicationDelegates {

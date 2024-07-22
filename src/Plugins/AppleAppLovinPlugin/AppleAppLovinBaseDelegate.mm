@@ -151,7 +151,7 @@
     
     __weak NSObject<iOSUIMainApplicationDelegateInterface> * delegate = [iOSDetail getUIMainApplicationDelegate];
     
-    [delegate addMainQueueOperation: ^{
+    [iOSDetail addMainQueueOperation:^{
         [NSThread sleepForTimeInterval:delaySec];
         
         [self loadAd];

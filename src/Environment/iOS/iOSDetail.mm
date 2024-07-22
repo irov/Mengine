@@ -75,6 +75,12 @@
     return idfa_uuid;
 }
 
++ (void)addMainQueueOperation:(dispatch_block_t)block {
+    NSBlockOperation * operation = [NSBlockOperation blockOperationWithBlock:block];
+    
+    [[NSOperationQueue mainQueue] addOperation:operation];
+}
+
 + (NSObject<iOSUIMainApplicationDelegateInterface> *)getUIMainApplicationDelegate {
     NSObject<iOSUIMainApplicationDelegateInterface> *delegate = (NSObject<iOSUIMainApplicationDelegateInterface> *)[[UIApplication sharedApplication] delegate];
     
@@ -95,33 +101,33 @@
 }
 
 + (void)eventNotify:(AppleEvent *)event args:(NSArray<id> *)args {
-    __weak NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [self getUIMainApplicationDelegate];
-    
-    [delegate addMainQueueOperation:^{
+    [iOSDetail addMainQueueOperation:^{
+        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [self getUIMainApplicationDelegate];
+        
         [delegate notify:event arrayArgs:args];
     }];
 }
 
 + (void)adRevenue:(iOSAdRevenueParam *)revenue {
-    __weak NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [self getUIMainApplicationDelegate];
+    [iOSDetail addMainQueueOperation:^{
+        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [self getUIMainApplicationDelegate];
     
-    [delegate addMainQueueOperation:^{
         [delegate eventAdRevenue:revenue];
     }];
 }
 
 + (void)transparencyConsent:(iOSTransparencyConsentParam *)consent {
-    __weak NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [self getUIMainApplicationDelegate];
+    [iOSDetail addMainQueueOperation:^{
+        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [self getUIMainApplicationDelegate];
     
-    [delegate addMainQueueOperation:^{
         [delegate eventTransparencyConsent:consent];
     }];
 }
 
 + (void)log:(iOSLogRecordParam *)record {
-    __weak NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [self getUIMainApplicationDelegate];
+    [iOSDetail addMainQueueOperation:^{
+        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [self getUIMainApplicationDelegate];
     
-    [delegate addMainQueueOperation:^{
         [delegate log:record];
     }];
 }

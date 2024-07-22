@@ -26,7 +26,7 @@ namespace Mengine
         
         SKPayment * payment = m_skPaymentTransaction.payment;
         
-        m_productIdentifier = Helper::NSStringToConstString( payment.productIdentifier );
+        m_productIdentifier = [AppleString NSStringToConstString:payment.productIdentifier];
     }
     //////////////////////////////////////////////////////////////////////////
     SKPaymentTransaction * AppleStoreInAppPurchasePaymentTransaction::getSKPaymentTransaction() const

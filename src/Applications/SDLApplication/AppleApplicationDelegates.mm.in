@@ -1,7 +1,11 @@
-#import "MengineAppleApplicationDelegates.h"
+#import "AppleApplicationDelegates.h"
 
-NSArray * getMengineAppleApplicationDelegates() {
+@implementation AppleApplicationDelegates
+
++ (NSArray *)getApplicationDelegates {
     NSArray * proxysClassed = [[NSArray alloc] initWithObjects:@MENGINE_APPLE_APPLICATION_DELEGATE_STRING@ nil];
     
     return proxysClassed;
 }
+
+@end

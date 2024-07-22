@@ -74,11 +74,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSKernelService::openMail( const Char * _email, const Char * _subject, const Char * _body )
     {
-        UIViewController * view = Helper::iOSGetRootViewController();
+        UIViewController * view = [iOSDetail getRootViewController];
         
         if( [iOSMailCompose canSendMail] == NO )
         {
-            Helper::iOSAlertWithViewController( view, @"Yikes.", @"Log into your mailbox using the standard Mail app", ^{} );
+            [iOSDetail alertWithViewController:view title:@"Yikes." message:@"Log into your mailbox using the standard Mail app" callback:^{}];
             
             return false;
         }

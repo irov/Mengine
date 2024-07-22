@@ -45,7 +45,7 @@
     adView.frame = rect;
     adView.backgroundColor = UIColor.clearColor;
 
-    UIViewController * rootViewController = Mengine::Helper::iOSGetRootViewController();
+    UIViewController * rootViewController = [iOSDetail getRootViewController];
     [rootViewController.view addSubview:adView];
     adView.hidden = YES;
     
@@ -254,7 +254,7 @@
     [self eventRevenue:ad];
     
     Mengine::Params params;
-    Mengine::Helper::AppleGetParamsFromNSDictionary( @{@"revenue":@(ad.revenue)}, &params );
+    [AppleDetail getParamsFromNSDictionary:@{@"revenue":@(ad.revenue)} outParams:&params];
     
     self.m_provider->onAppleAppLovinBannerDidPayRevenueForAd( params );
 }

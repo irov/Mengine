@@ -8,8 +8,6 @@ src
     AppleDetail.mm
     AppleBundle.h
     AppleBundle.mm
-    AppleErrorHelper.h
-    AppleErrorHelper.mm
     AppleString.h
     AppleString.mm
     

@@ -1,6 +1,4 @@
-#include "AppleUserDefaults.h"
-
-#include "Kernel/StringCopy.h"
+#import "AppleUserDefaults.h"
 
 #if defined(MENGINE_PLATFORM_MACOS)
 #   import <AppKit/AppKit.h>
@@ -8,148 +6,120 @@
 #   import <UIKit/UIKit.h>
 #endif
 
-namespace Mengine
-{
-    namespace Helper
-    {
-        //////////////////////////////////////////////////////////////////////////
-        NSString * AppleGetUserDefaultsString( NSString * _key, NSString * _default )
-        {
-            NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-            
-            if( defaults == nil )
-            {
-                return _default;
-            }
-            
-            if( [defaults objectForKey:_key] == nil )
-            {
-                return _default;
-            }
-            
-            NSString * value = [defaults stringForKey:_key];
-            
-            return value;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        BOOL AppleSetUserDefaultsString( NSString * _key, NSString * _value )
-        {
-            NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-            
-            if( defaults == nil )
-            {
-                return NO;
-            }
-            
-            [defaults setObject:_value forKey:_key];
-            
-            [defaults synchronize];
-            
-            return YES;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        BOOL AppleGetUserDefaultsBoolean( NSString * _key, BOOL _default )
-        {
-            NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-            
-            if( defaults == nil )
-            {
-                return _default;
-            }
-            
-            if( [defaults objectForKey:_key] == nil )
-            {
-                return _default;
-            }
-            
-            BOOL value = [defaults boolForKey:_key];
-            
-            return value;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        BOOL AppleSetUserDefaultsBoolean( NSString * _key, BOOL _value )
-        {
-            NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-            
-            if( defaults == nil )
-            {
-                return NO;
-            }
-            
-            [defaults setBool:_value forKey:_key];
-            
-            [defaults synchronize];
-            
-            return YES;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        NSInteger AppleGetUserDefaultsInteger( NSString * _key, NSInteger _default )
-        {
-            NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-        
-            if( defaults == nil )
-            {
-                return _default;
-            }
-            
-            if( [defaults objectForKey:_key] == nil )
-            {
-                return _default;
-            }
-        
-            NSInteger value = [defaults integerForKey:_key];
-        
-            return value;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        BOOL AppleSetUserDefaultsInteger( NSString * _key, NSInteger _value )
-        {
-            NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-        
-            if( defaults == nil )
-            {
-                return NO;
-            }
-        
-            [defaults setInteger:_value forKey:_key];
-        
-            [defaults synchronize];
-        
-            return YES;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        BOOL AppleHasUserDefaults( NSString * _key )
-        {
-            NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-            
-            if( defaults == nil )
-            {
-                return NO;
-            }
-            
-            if( [defaults objectForKey:_key] == nil )
-            {
-                return NO;
-            }
-            
-            return YES;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        BOOL AppleRemoveUserDefaults( NSString * _key )
-        {
-            NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-            
-            if( defaults == nil )
-            {
-                return NO;
-            }
+@implementation AppleUserDefaults
 
-            [defaults removeObjectForKey:_key];
-            
-            [defaults synchronize];
-
-            return YES;
-        }
-        //////////////////////////////////////////////////////////////////////////
++ (NSString *)getStringForKey:(NSString *)key defaultValue:(NSString *)defaultValue {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if (defaults == nil) {
+        return defaultValue;
     }
+    
+    if ([defaults objectForKey:key] == nil) {
+        return defaultValue;
+    }
+    
+    NSString *value = [defaults stringForKey:key];
+    
+    return value;
 }
+
++ (BOOL)setStringForKey:(NSString *)key value:(NSString *)value {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if (defaults == nil) {
+        return NO;
+    }
+    
+    [defaults setObject:value forKey:key];
+    [defaults synchronize];
+    
+    return YES;
+}
+
++ (BOOL)getBooleanForKey:(NSString *)key defaultValue:(BOOL)defaultValue {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if (defaults == nil) {
+        return defaultValue;
+    }
+    
+    if ([defaults objectForKey:key] == nil) {
+        return defaultValue;
+    }
+    
+    BOOL value = [defaults boolForKey:key];
+    
+    return value;
+}
+
++ (BOOL)setBooleanForKey:(NSString *)key value:(BOOL)value {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if (defaults == nil) {
+        return NO;
+    }
+    
+    [defaults setBool:value forKey:key];
+    [defaults synchronize];
+    
+    return YES;
+}
+
++ (NSInteger)getIntegerForKey:(NSString *)key defaultValue:(NSInteger)defaultValue {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if (defaults == nil) {
+        return defaultValue;
+    }
+    
+    if ([defaults objectForKey:key] == nil) {
+        return defaultValue;
+    }
+    
+    NSInteger value = [defaults integerForKey:key];
+    
+    return value;
+}
+
++ (BOOL)setIntegerForKey:(NSString *)key value:(NSInteger)value {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if (defaults == nil) {
+        return NO;
+    }
+    
+    [defaults setInteger:value forKey:key];
+    [defaults synchronize];
+    
+    return YES;
+}
+
++ (BOOL)hasKey:(NSString *)key {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if (defaults == nil) {
+        return NO;
+    }
+    
+    if ([defaults objectForKey:key] == nil) {
+        return NO;
+    }
+    
+    return YES;
+}
+
++ (BOOL)removeKey:(NSString *)key {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if (defaults == nil) {
+        return NO;
+    }
+
+    [defaults removeObjectForKey:key];
+    [defaults synchronize];
+    
+    return YES;
+}
+
+@end

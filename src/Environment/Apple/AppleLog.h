@@ -4,11 +4,9 @@
 
 #import <Foundation/Foundation.h>
 
-namespace Mengine
-{
-    namespace Helper
-    {
-        void AppleLog( NSString * _format, ... ) NS_FORMAT_FUNCTION(1, 2);
-        void AppleLogV( NSString * _format, MENGINE_VA_LIST_TYPE _va );
-    }
-}
+@interface AppleLog : NSObject
+
++ (void)withFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(1, 2);
++ (void)withFormatV:(NSString *)format arguments:(va_list)args;
+
+@end

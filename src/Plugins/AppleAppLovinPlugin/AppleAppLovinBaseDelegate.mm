@@ -140,6 +140,8 @@
 
 - (void) loadAd {
     //Empty
+    
+    [AppleDetail raisePureVirtualMethodException:[self class] selector:_cmd];
 }
 
 - (void) retryLoadAd {
@@ -147,7 +149,7 @@
     
     NSTimeInterval delaySec = pow(2, MIN(6, self.m_retryAttempt));
     
-    __weak NSObject<iOSUIMainApplicationDelegateInterface> * delegate = Mengine::Helper::iOSGetUIMainApplicationDelegate();
+    __weak NSObject<iOSUIMainApplicationDelegateInterface> * delegate = [iOSDetail getUIMainApplicationDelegate];
     
     [delegate addMainQueueOperation: ^{
         [NSThread sleepForTimeInterval:delaySec];
@@ -169,7 +171,7 @@
     revenue.REVENUE_CURRENCY = @"USD";
     revenue.REVENUE_VALUE = [NSNumber numberWithDouble:ad.revenue];
     
-    Mengine::Helper::iOSAdRevenue( revenue );
+    [iOSDetail adRevenue:revenue];
 }
 
 @end

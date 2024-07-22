@@ -49,10 +49,10 @@ namespace Mengine
 
         MengineHttpRequestParam * request = [MengineHttpRequestParam alloc];
         
-        request.HTTP_URL = Helper::stringToNSString( m_url );
-        request.HTTP_PROXY = Helper::stringToNSString( m_proxy );
-        request.HTTP_HEADERS = Helper::AppleGetNSArrayFromVectorString( m_headers );
-        request.HTTP_COOKIES = Helper::stringToNSString( m_cookies );
+        request.HTTP_URL = [AppleString NSStringFromString:m_url];
+        request.HTTP_PROXY = [AppleString NSStringFromString:m_proxy];
+        request.HTTP_HEADERS = [AppleDetail getNSArrayFromVectorString:m_headers];
+        request.HTTP_COOKIES = [AppleString NSStringFromString:m_cookies];
         request.HTTP_TIMEOUT = m_timeout;
 
         MengineHttpResponseParam * response = this->_onHttp( request );
@@ -82,12 +82,13 @@ namespace Mengine
             if( response.HTTP_CONTENT_DATA != nullptr )
             {
                 const Char * bytes = (const Char *)[response.HTTP_CONTENT_DATA bytes];
+                
                 m_response->appendData( bytes, response.HTTP_CONTENT_LENGTH );
             }
 
             if( response.HTTP_ERROR_MESSAGE != nullptr )
             {
-                String error_message = Helper::NSStringToString( response.HTTP_ERROR_MESSAGE );
+                String error_message = [AppleString NSStringToString:response.HTTP_ERROR_MESSAGE];
                 int32_t error_code = (int32_t)response.HTTP_ERROR_CODE;
                 
                 m_response->setError( error_message, error_code );

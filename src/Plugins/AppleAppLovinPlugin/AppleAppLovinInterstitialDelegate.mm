@@ -239,7 +239,7 @@
     [self eventRevenue:ad];
 
     Mengine::Params params;
-    Mengine::Helper::AppleGetParamsFromNSDictionary( @{@"revenue":@(ad.revenue)}, &params );
+    [AppleDetail getParamsFromNSDictionary:@{@"revenue":@(ad.revenue)} outParams:&params];
     
     self.m_provider->onAppleAppLovinInterstitialDidPayRevenueForAd( params );
 }

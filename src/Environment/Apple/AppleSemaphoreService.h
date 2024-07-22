@@ -15,5 +15,5 @@
 - (void)waitSemaphore:(NSString* _Nonnull)name withListener:(AppleSemaphoreListenerNSProxy * _Nonnull)listener;
 
 @property (nonatomic, strong) NSMutableDictionary<NSString *, AppleSemaphore *> * _Nonnull m_semaphores;
-                                                
+
 @end

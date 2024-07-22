@@ -1,6 +1,6 @@
 #import "AppleStoreInAppPurchasePaymentTransactionObserver.h"
 
-#import "Environment/Apple/AppleErrorHelper.h"
+#import "Environment/Apple/AppleDetail.h"
 #import "Environment/Apple/AppleString.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -118,7 +118,7 @@
     }
     
     LOGGER_MESSAGE( "SKPaymentTransactionObserver paymentQueue restoreCompletedTransactionsFailedWithError: %s"
-        , Mengine::Helper::AppleGetMessageFromNSError( error ).c_str()
+        , [AppleDetail getMessageFromNSError:error].c_str()
     );
     
     //ToDo
@@ -165,7 +165,7 @@
     }
     
     LOGGER_MESSAGE( "SKPaymentTransactionObserver didRevokeEntitlementsForProductIdentifiers: %s"
-        , Mengine::Helper::NSIdToString( productIdentifiers ).c_str()
+        , [AppleDetail NSIdToString:productIdentifiers].c_str()
     );
     
     //ToDo

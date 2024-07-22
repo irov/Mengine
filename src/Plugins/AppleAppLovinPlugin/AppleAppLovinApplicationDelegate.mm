@@ -18,15 +18,15 @@
 #pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    if( Mengine::Helper::AppleHasBundlePluginConfig(@PLUGIN_BUNDLE_NAME) == NO ) {
-        Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin not found bundle config [%@]", @PLUGIN_BUNDLE_NAME);
+    if( [AppleBundle hasPluginConfig:@PLUGIN_BUNDLE_NAME] == NO ) {
+        [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin not found bundle config [%@]", @PLUGIN_BUNDLE_NAME];
         
         return NO;
     }
     
-    Mengine::Helper::AppleLog(@"AppLovin: %@", ALSdk.version);
+    [AppleLog withFormat:@"AppLovin: %@", ALSdk.version];
     
-    NSString * MengineAppleAppLovinPlugin_IsAgeRestrictedUser = Mengine::Helper::AppleGetBundlePluginConfigString(@PLUGIN_BUNDLE_NAME, @"IsAgeRestrictedUser", @"UNKNOWN");
+    NSString * MengineAppleAppLovinPlugin_IsAgeRestrictedUser = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"IsAgeRestrictedUser" withDefault:@"UNKNOWN"];
     
     if( [MengineAppleAppLovinPlugin_IsAgeRestrictedUser caseInsensitiveCompare:@"YES"] == NSOrderedSame ) {
         [ALPrivacySettings setIsAgeRestrictedUser: YES];
@@ -35,12 +35,12 @@
     } else if( [MengineAppleAppLovinPlugin_IsAgeRestrictedUser caseInsensitiveCompare:@"UNKNOWN"] == NSOrderedSame ) {
         //Nothing
     } else {
-        Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin invalid config [%@.IsAgeRestrictedUser] value %@ [YES|NO|UNKNOWN]", @PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_IsAgeRestrictedUser);
+        [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin invalid config [%@.IsAgeRestrictedUser] value %@ [YES|NO|UNKNOWN]", @PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_IsAgeRestrictedUser];
         
         return NO;
     }
     
-    NSString * MengineAppleAppLovinPlugin_CCPA = Mengine::Helper::AppleGetBundlePluginConfigString(@PLUGIN_BUNDLE_NAME, @"CCPA", @"UNKNOWN");
+    NSString * MengineAppleAppLovinPlugin_CCPA = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"CCPA" withDefault:@"UNKNOWN"];
     
     if( [MengineAppleAppLovinPlugin_CCPA caseInsensitiveCompare:@"YES"] == NSOrderedSame ) {
         [ALPrivacySettings setDoNotSell: YES];
@@ -49,15 +49,15 @@
     } else if( [MengineAppleAppLovinPlugin_CCPA caseInsensitiveCompare:@"UNKNOWN"] == NSOrderedSame ) {
         //Nothing
     } else {
-        Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin invalid config [%@.CCPA] value %@ [YES|NO|UNKNOWN]", @PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_CCPA);
+        [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin invalid config [%@.CCPA] value %@ [YES|NO|UNKNOWN]", @PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_CCPA];
         
         return NO;
     }
     
-    NSString * MengineAppleAppLovinPlugin_SdkKey = Mengine::Helper::AppleGetBundlePluginConfigString(@PLUGIN_BUNDLE_NAME, @"SdkKey", nil);
+    NSString * MengineAppleAppLovinPlugin_SdkKey = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"SdkKey" withDefault:nil];
     
     if( MengineAppleAppLovinPlugin_SdkKey == nil ) {
-        Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin missed required config [%@.SdkKey]", @PLUGIN_BUNDLE_NAME);
+        [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin missed required config [%@.SdkKey]", @PLUGIN_BUNDLE_NAME];
         
         return NO;
     }
@@ -69,7 +69,7 @@
     
     ALSdkSettings * settings = [ALSdk shared].settings;
     
-    BOOL MengineAppleAppLovinPlugin_Verbose = Mengine::Helper::AppleGetBundlePluginConfigBoolean(@PLUGIN_BUNDLE_NAME, @"Verbose", NO);
+    BOOL MengineAppleAppLovinPlugin_Verbose = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"Verbose" withDefault:NO];
     
     if( MengineAppleAppLovinPlugin_Verbose == YES ) {
         settings.verboseLoggingEnabled = YES;
@@ -81,20 +81,20 @@
     
     settings.userIdentifier = sessionId;
 
-    BOOL MengineAppleAppLovinPlugin_TermsAndPrivacyPolicyFlow = Mengine::Helper::AppleGetBundlePluginConfigBoolean(@PLUGIN_BUNDLE_NAME, @"TermsAndPrivacyPolicyFlow", NO);
+    BOOL MengineAppleAppLovinPlugin_TermsAndPrivacyPolicyFlow = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"TermsAndPrivacyPolicyFlow" withDefault:NO];
 
     if( MengineAppleAppLovinPlugin_TermsAndPrivacyPolicyFlow == YES ) {
-        NSString * MengineAppleAppLovinPlugin_PrivacyPolicyURL = Mengine::Helper::AppleGetBundlePluginConfigString(@PLUGIN_BUNDLE_NAME, @"PrivacyPolicyURL", nil);
-        NSString * MengineAppleAppLovinPlugin_TermsOfServiceURL = Mengine::Helper::AppleGetBundlePluginConfigString(@PLUGIN_BUNDLE_NAME, @"TermsOfServiceURL", nil);
+        NSString * MengineAppleAppLovinPlugin_PrivacyPolicyURL = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"PrivacyPolicyURL" withDefault:nil];
+        NSString * MengineAppleAppLovinPlugin_TermsOfServiceURL = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"TermsOfServiceURL" withDefault:nil];
         
         if( MengineAppleAppLovinPlugin_PrivacyPolicyURL == nil ) {
-            Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin missed required config [%@.PrivacyPolicyURL]", @PLUGIN_BUNDLE_NAME);
+            [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin missed required config [%@.PrivacyPolicyURL]", @PLUGIN_BUNDLE_NAME];
             
             return NO;
         }
         
         if( MengineAppleAppLovinPlugin_TermsOfServiceURL == nil ) {
-            Mengine::Helper::AppleLog(@"🔴 [ERROR] AppLovin plugin missed required config [%@.TermsOfServiceURL]", @PLUGIN_BUNDLE_NAME);
+            [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin missed required config [%@.TermsOfServiceURL]", @PLUGIN_BUNDLE_NAME];
             
             return NO;
         }
@@ -112,15 +112,15 @@
         ALAppTrackingTransparencyStatus appTrackingTransparencyStatus = configuration.appTrackingTransparencyStatus;
         BOOL testModeEnabled = configuration.testModeEnabled;
         
-        Mengine::Helper::AppleLog(@"[AppLovin] plugin initialize complete");
-        Mengine::Helper::AppleLog(@"[AppLovin] consent flow user geography: %ld", consentFlowUserGeography);
-        Mengine::Helper::AppleLog(@"[AppLovin] country code: %@", countryCode);
-        Mengine::Helper::AppleLog(@"[AppLovin] app tracking transparency status: %ld", appTrackingTransparencyStatus);
-        Mengine::Helper::AppleLog(@"[AppLovin] test mode enabled: %d", testModeEnabled);
+        [AppleLog withFormat:@"[AppLovin] plugin initialize complete"];
+        [AppleLog withFormat:@"[AppLovin] consent flow user geography: %ld", consentFlowUserGeography];
+        [AppleLog withFormat:@"[AppLovin] country code: %@", countryCode];
+        [AppleLog withFormat:@"[AppLovin] app tracking transparency status: %ld", appTrackingTransparencyStatus];
+        [AppleLog withFormat:@"[AppLovin] test mode enabled: %d", testModeEnabled];
         
         iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
         
-        Mengine::Helper::iOSTransparencyConsent( consent );
+        [iOSDetail transparencyConsent:consent];
         
         [AppleSemaphoreService.sharedInstance activateSemaphore:@"AppLovinSdkInitialized"];
     }];

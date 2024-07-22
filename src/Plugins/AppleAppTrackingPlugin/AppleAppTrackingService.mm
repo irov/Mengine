@@ -1,6 +1,5 @@
 #include "AppleAppTrackingService.h"
 
-#import "Environment/iOS/iOSUtils.h"
 #import "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/Logger.h"
@@ -101,7 +100,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::makeIDFA_()
     {
-        NSUUID * idfa_uuid = Helper::iOSGetAdIdentifier();
+        NSUUID * idfa_uuid = [iOSDetail getAdIdentifier];
 
         if( idfa_uuid == nil )
         {
@@ -124,7 +123,7 @@ namespace Mengine
         }
         else
         {
-            if( Helper::iOSIsValidIDFA() == false )
+            if( [iOSDetail isValidIDFA] == NO )
             {
                 return false;
             }

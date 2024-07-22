@@ -54,7 +54,7 @@ namespace Mengine
             , _name.c_str()
         );
         
-        NSString * ns_name = Helper::stringToNSString( _name );
+        NSString * ns_name = [AppleString NSStringFromConstString:_name];
 
         AppleSemaphoreListenerNSProxy * proxy = [[AppleSemaphoreListenerNSProxy alloc] initWithListener:_listener];
         

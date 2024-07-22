@@ -10,7 +10,7 @@
 
 + (void)event:(NSString*)eventName params:(NSDictionary<NSString*, id> *)params {
     Mengine::AnalyticsEventBuilderInterfacePtr builder = ANALYTICS_SERVICE()
-        ->buildEvent( Mengine::Helper::NSStringToConstString(eventName), MENGINE_DOCUMENT_FUNCTION );
+        ->buildEvent( [AppleString NSStringToConstString:eventName], MENGINE_DOCUMENT_FUNCTION );
     
     CFTypeID boolenTypeId = CFBooleanGetTypeID();
     CFTypeID numberTypeId = CFNumberGetTypeID();
@@ -18,7 +18,7 @@
     for (NSString * key in params) {
         id value = params[key];
         
-        Mengine::ConstString key_cstr = Mengine::Helper::NSStringToConstString(key);
+        Mengine::ConstString key_cstr = [AppleString NSStringToConstString:key];
         
         if ([value isKindOfClass:[NSNumber class]] == YES) {
             CFTypeID valueTypeId = CFGetTypeID((__bridge CFTypeRef)(value));
@@ -63,7 +63,7 @@
                 return;
             }
         } else if ([value isKindOfClass:[NSString class]] == YES) {
-            Mengine::ConstString s = Mengine::Helper::NSStringToConstString(value);
+            Mengine::ConstString s = [AppleString NSStringToConstString:value];
             
             builder->addParameterConstString( key_cstr, s );
         } else if ([value isKindOfClass:[NSDictionary class]] == YES) {

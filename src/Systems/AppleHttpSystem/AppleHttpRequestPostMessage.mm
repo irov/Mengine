@@ -33,8 +33,8 @@ namespace Mengine
             
         for( const HttpRequestPostProperty & property : m_properties )
         {
-            NSString * key = Helper::stringToNSString( property.key );
-            NSString * value = Helper::stringToNSString( property.value );
+            NSString * key = [AppleString NSStringFromConstString:property.key];
+            NSString * value = [AppleString NSStringFromString:property.value];
             
             ns_properties[key] = value;
         }

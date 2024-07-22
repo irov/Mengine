@@ -66,8 +66,8 @@ namespace Mengine
             , _adUnitId.c_str()
         );
         
-        NSString * adUnitId = Helper::stringToNSString(_adUnitId);
-        NSString * placement = Helper::stringToNSString(_placement);
+        NSString * adUnitId = [AppleString NSStringFromConstString:_adUnitId];
+        NSString * placement = [AppleString NSStringFromConstString:_placement];
         
         // Banner height on iPhone and iPad is 50 and 90, respectively
         CGFloat banner_height = (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) ? 90 : 50;
@@ -100,7 +100,7 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::showBanner( const ConstString & _adUnitId )
     {
-        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        NSString * adUnit = [AppleString NSStringFromConstString:_adUnitId];
         
         AppleAppLovinBannerDelegate * banner = [m_banners objectForKey:adUnit];
         
@@ -116,7 +116,7 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::hideBanner( const ConstString & _adUnitId )
     {
-        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        NSString * adUnit = [AppleString NSStringFromConstString:_adUnitId];
         
         AppleAppLovinBannerDelegate * banner = [m_banners objectForKey:adUnit];
         
@@ -132,7 +132,7 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::getBannerViewport( const ConstString & _adUnitId, Viewport * const _viewport ) const
     {
-        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        NSString * adUnit = [AppleString NSStringFromConstString:_adUnitId];
         
         AppleAppLovinBannerDelegate * banner = [m_banners objectForKey:adUnit];
         
@@ -158,7 +158,7 @@ namespace Mengine
             , _adUnitId.c_str()
         );
         
-        NSString * adUnitId = Helper::stringToNSString(_adUnitId);
+        NSString * adUnitId = [AppleString NSStringFromConstString:_adUnitId];
         
         NSString * amazonInterstitialSlotId = nil;
         
@@ -182,7 +182,7 @@ namespace Mengine
     /////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::canYouShowInterstitial( const ConstString & _adUnitId, const ConstString & _placement ) const
     {
-        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        NSString * adUnit = [AppleString NSStringFromConstString:_adUnitId];
         
         AppleAppLovinInterstitialDelegate * interstitial = [m_interstitials objectForKey:adUnit];
         
@@ -191,7 +191,7 @@ namespace Mengine
             return false;
         }
         
-        NSString * placement = Helper::stringToNSString(_placement);
+        NSString * placement = [AppleString NSStringFromConstString:_placement];
         
         BOOL result = [interstitial canYouShow:placement];
         
@@ -200,7 +200,7 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::showInterstitial( const ConstString & _adUnitId, const ConstString & _placement )
     {
-        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        NSString * adUnit = [AppleString NSStringFromConstString:_adUnitId];
         
         AppleAppLovinInterstitialDelegate * interstitial = [m_interstitials objectForKey:adUnit];
         
@@ -209,7 +209,7 @@ namespace Mengine
             return false;
         }
         
-        NSString * placement = Helper::stringToNSString(_placement);
+        NSString * placement = [AppleString NSStringFromConstString:_placement];
         
         BOOL result = [interstitial show:placement];
         
@@ -222,7 +222,7 @@ namespace Mengine
             , _adUnitId.c_str()
         );
         
-        NSString * adUnitId = Helper::stringToNSString(_adUnitId);
+        NSString * adUnitId = [AppleString NSStringFromConstString:_adUnitId];
         
         NSString * amazonRewardedSlotId = nil;
         
@@ -246,7 +246,7 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::canOfferRewarded( const ConstString & _adUnitId, const ConstString & _placement ) const
     {
-        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        NSString * adUnit = [AppleString NSStringFromConstString:_adUnitId];
         
         AppleAppLovinRewardedDelegate * rewarded = [m_rewardeds objectForKey:adUnit];
         
@@ -255,7 +255,7 @@ namespace Mengine
             return false;
         }
         
-        NSString * placement = Helper::stringToNSString(_placement);
+        NSString * placement = [AppleString NSStringFromConstString:_placement];
         
         BOOL result = [rewarded canOffer:placement];
         
@@ -264,7 +264,7 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::canYouShowRewarded( const ConstString & _adUnitId, const ConstString & _placement ) const
     {
-        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        NSString * adUnit = [AppleString NSStringFromConstString:_adUnitId];
         
         AppleAppLovinRewardedDelegate * rewarded = [m_rewardeds objectForKey:adUnit];
         
@@ -273,7 +273,7 @@ namespace Mengine
             return false;
         }
         
-        NSString * placement = Helper::stringToNSString(_placement);
+        NSString * placement = [AppleString NSStringFromConstString:_placement];
         
         BOOL result = [rewarded canYouShow:placement];
         
@@ -282,7 +282,7 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     bool AppleAppLovinService::showRewarded( const ConstString & _adUnitId, const ConstString & _placement )
     {
-        NSString * adUnit = Helper::stringToNSString(_adUnitId);
+        NSString * adUnit = [AppleString NSStringFromConstString:_adUnitId];
         
         AppleAppLovinRewardedDelegate * rewarded = [m_rewardeds objectForKey:adUnit];
         
@@ -291,7 +291,7 @@ namespace Mengine
             return false;
         }
         
-        NSString * placement = Helper::stringToNSString(_placement);
+        NSString * placement = [AppleString NSStringFromConstString:_placement];
         
         BOOL result = [rewarded show:placement];
         

@@ -22,15 +22,15 @@ namespace Mengine
     {
         m_skProduct = _skProduct;
         
-        m_productIdentifier = Helper::NSStringToConstString( m_skProduct.productIdentifier );
-        m_productTitle = Helper::NSStringToString( m_skProduct.localizedTitle );
-        m_productDescription = Helper::NSStringToString( m_skProduct.localizedDescription );
+        m_productIdentifier = [AppleString NSStringToConstString:m_skProduct.productIdentifier];
+        m_productTitle = [AppleString NSStringToString:m_skProduct.localizedTitle];
+        m_productDescription = [AppleString NSStringToString:m_skProduct.localizedDescription];
         
         NSLocale * priceLocale = m_skProduct.priceLocale;
         
         NSString * currencyCode = [priceLocale currencyCode];
         
-        m_productCurrencyCode = Helper::NSStringToString( currencyCode );
+        m_productCurrencyCode = [AppleString NSStringToString:currencyCode];
         
         NSNumberFormatter * formatter = [[NSNumberFormatter alloc] init];
         [formatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
@@ -41,7 +41,7 @@ namespace Mengine
         
         NSString * priceFormatted = [formatter stringFromNumber:price];
         
-        m_productPriceFormatted = Helper::NSStringToString( priceFormatted );
+        m_productPriceFormatted = [AppleString NSStringToString:priceFormatted];
         
         m_productPrice = [price doubleValue];
     }

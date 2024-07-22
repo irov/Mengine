@@ -11,23 +11,27 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-namespace Mengine
-{
-    namespace Helper
-    {
-        UIWindow * iOSGetRootWindow();
-        UIView * iOSGetRootView();
-        UIViewController * iOSGetRootViewController();
-        NSUUID * iOSGetAdIdentifier();
-        NSObject<iOSUIMainApplicationDelegateInterface> * iOSGetUIMainApplicationDelegate();
-        id iOSGetUIProxyApplicationDelegate( Class delegateClass );
-        void iOSEventNotify( AppleEvent * event, id firstArg, ... );
-        void iOSEventNotifyArray( AppleEvent * event, NSArray<id> * args );
-        void iOSAdRevenue( iOSAdRevenueParam * revenue );
-        void iOSTransparencyConsent( iOSTransparencyConsentParam * consent );
-        void iOSLog( iOSLogRecordParam * record );
-        NSString * iOSPathForTemporaryFileWithPrefix( NSString * prefix, NSString * ext );
-        void iOSAlert( NSString * title, NSString * message, void (^_cb)(void) );
-        void iOSAlertWithViewController( UIViewController * view, NSString * title, NSString * message, void (^_cb)(void) );    
-    }
-}
+@interface iOSDetail : NSObject
+
++ (NSString *)getDeviceId;
++ (NSString *)getDeviceName;
++ (NSString *)getIDFA;
++ (BOOL)isValidIDFA;
+
++ (UIWindow *)getRootWindow;
++ (UIView *)getRootView;
++ (UIViewController *)getRootViewController;
++ (NSUUID *)getAdIdentifier;
++ (NSObject<iOSUIMainApplicationDelegateInterface> *)getUIMainApplicationDelegate;
++ (id)getUIProxyApplicationDelegate:(Class)delegateClass;
+
++ (void)eventNotify:(AppleEvent *)event args:(NSArray<id> *)args;
++ (void)adRevenue:(iOSAdRevenueParam *)revenue;
++ (void)transparencyConsent:(iOSTransparencyConsentParam *)consent;
++ (void)log:(iOSLogRecordParam *)record;
++ (NSString *)pathForTemporaryFileWithPrefix:(NSString *)prefix ext:(NSString *)ext;
+
++ (void)alertWithTitle:(NSString *)title message:(NSString *)message callback:(void (^)(void))callback;
++ (void)alertWithViewController:(UIViewController *)viewController title:(NSString *)title message:(NSString *)message callback:(void (^)(void))callback;
+
+@end

@@ -20,7 +20,6 @@
 #       include "Environment/MacOS/MacOSUtils.h"
 #   elif defined(MENGINE_PLATFORM_IOS)
 #       include "Interface/iOSKernelServiceInterface.h"
-#       include "Environment/iOS/iOSUtils.h"
 #   endif
 #elif defined(MENGINE_PLATFORM_ANDROID)
 #   include "Interface/AndroidKernelServiceInterface.h"

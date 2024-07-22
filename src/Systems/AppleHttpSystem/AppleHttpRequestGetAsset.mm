@@ -78,8 +78,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MengineHttpResponseParam * AppleHttpRequestGetAsset::_onHttp( MengineHttpRequestParam * _request )
     {
-        NSString * ns_login = Helper::stringToNSString( m_login );
-        NSString * ns_password = Helper::stringToNSString( m_password );
+        NSString * ns_login = [AppleString NSStringFromString:m_login];
+        NSString * ns_password = [AppleString NSStringFromString:m_password];
         
         MengineHttpResponseParam * response = [MengineHttpNetwork httpRequestGetAsset:_request login:ns_login password:ns_password];
         

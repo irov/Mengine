@@ -5,18 +5,18 @@
 
 #import <Foundation/Foundation.h>
 
-namespace Mengine
-{
-    namespace Helper
-    {
-        NSString * AppleGetUserDefaultsString( NSString * _key, NSString * _default );
-        BOOL AppleSetUserDefaultsString( NSString * _key, NSString * _value );
-        BOOL AppleGetUserDefaultsBoolean( NSString * _key, BOOL _default );
-        BOOL AppleSetUserDefaultsBoolean( NSString * _key, BOOL _value );
-        NSInteger AppleGetUserDefaultsInteger( NSString * _key, NSInteger _default );
-        BOOL AppleSetUserDefaultsInteger( NSString * _key, NSInteger _value );
+@interface AppleUserDefaults : NSObject
 
-        BOOL AppleHasUserDefaults( NSString * _key );
-        BOOL AppleRemoveUserDefaults( NSString * _key );
-    }
-}
++ (NSString *)getStringForKey:(NSString *)key defaultValue:(NSString *)defaultValue;
++ (BOOL)setStringForKey:(NSString *)key value:(NSString *)value;
+
++ (BOOL)getBooleanForKey:(NSString *)key defaultValue:(BOOL)defaultValue;
++ (BOOL)setBooleanForKey:(NSString *)key value:(BOOL)value;
+
++ (NSInteger)getIntegerForKey:(NSString *)key defaultValue:(NSInteger)defaultValue;
++ (BOOL)setIntegerForKey:(NSString *)key value:(NSInteger)value;
+
++ (BOOL)hasKey:(NSString *)key;
++ (BOOL)removeKey:(NSString *)key;
+
+@end

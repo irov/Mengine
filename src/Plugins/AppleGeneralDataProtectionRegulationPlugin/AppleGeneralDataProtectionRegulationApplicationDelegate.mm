@@ -6,13 +6,13 @@
 @implementation AppleGeneralDataProtectionRegulationApplicationDelegate
 
 - (void)setGDPRPass:(BOOL)passGDPR {
-    Mengine::Helper::AppleSetUserDefaultsBoolean( @("mengine.gdpr.pass"), passGDPR );
+    [AppleUserDefaults setBooleanForKey:@("mengine.gdpr.pass") value:passGDPR];
     
-    Mengine::Helper::iOSEventNotify( AppleEvent.EVENT_GDPR_PASS, @(passGDPR), nil );
+    [iOSDetail eventNotify:AppleEvent.EVENT_GDPR_PASS args:@[@(passGDPR)]];
 }
 
 - (BOOL)isGDPRPass {
-    bool passGDPR = Mengine::Helper::AppleGetUserDefaultsBoolean( @("mengine.gdpr.pass"), false );
+    BOOL passGDPR = [AppleUserDefaults getBooleanForKey:@("mengine.gdpr.pass") defaultValue:NO];
     
     return passGDPR;
 }
@@ -20,9 +20,9 @@
 #pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    bool passGDPR = Mengine::Helper::AppleGetUserDefaultsBoolean( @("mengine.gdpr.pass"), false );
+    BOOL passGDPR = [AppleUserDefaults getBooleanForKey:@("mengine.gdpr.pass") defaultValue:NO];
     
-    Mengine::Helper::iOSEventNotify( AppleEvent.EVENT_GDPR_PASS, @(passGDPR), nil );
+    [iOSDetail eventNotify:AppleEvent.EVENT_GDPR_PASS args:@[@(passGDPR)]];
     
     return YES;
 }

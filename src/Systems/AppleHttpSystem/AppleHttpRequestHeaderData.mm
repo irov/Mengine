@@ -29,7 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MengineHttpResponseParam * AppleHttpRequestHeaderData::_onHttp( MengineHttpRequestParam * _request )
     {
-        NSData * ns_data = Helper::AppleGetNSDataFromData( m_data );
+        NSData * ns_data = [AppleDetail getNSDataFromData:m_data];
         
         MengineHttpResponseParam * response = [MengineHttpNetwork httpRequestHeaderData:_request data:ns_data];
         

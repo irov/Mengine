@@ -1,6 +1,6 @@
 #include "AppleGameCenterService.h"
 
-#import "Environment/Apple/AppleErrorHelper.h"
+#import "Environment/Apple/AppleDetail.h"
 #import "Environment/Apple/AppleString.h"
 
 #include "Kernel/Logger.h"
@@ -61,7 +61,7 @@ namespace Mengine
                 m_achievementsComplete.clear();
                 
                 LOGGER_ERROR( "login error: '%s'"
-                   , Helper::AppleGetMessageFromNSError(_error).c_str()
+                   , [AppleDetail getMessageFromNSError:_error].c_str()
                 );
                 
                 if( copy_provider != nullptr )
@@ -106,7 +106,7 @@ namespace Mengine
                     m_achievementsSynchronization = false;
                     
                     LOGGER_ERROR("load completed achievements error: '%s'"
-                       , Helper::AppleGetMessageFromNSError(_error).c_str()
+                       , [AppleDetail getMessageFromNSError:_error].c_str()
                     );
                     
                     if( provider != nullptr )
@@ -164,7 +164,7 @@ namespace Mengine
             , _percentComplete
         );
         
-        NSString * nsDescription = Helper::stringToNSString( _achievementName );
+        NSString * nsDescription = [AppleString NSStringFromConstString:_achievementName];
 
         ConstString copy_achievementName = _achievementName;
         LambdaAchievemtResponse copy_response = _response;
@@ -175,7 +175,7 @@ namespace Mengine
                 LOGGER_ERROR( "response achievement '%s' [%lf] error: %s"
                    , copy_achievementName.c_str()
                    , _percentComplete
-                   , Helper::AppleGetMessageFromNSError(_error).c_str()
+                   , [AppleDetail getMessageFromNSError:_error].c_str()
                 );
                 
                 Mengine::Helper::dispatchMainThreadEvent([copy_response]() {
@@ -231,7 +231,7 @@ namespace Mengine
             if( _error != nil )
             {
                 LOGGER_ERROR( "reset achievemnts error: '%s'"
-                   , Helper::AppleGetMessageFromNSError(_error).c_str()
+                   , [AppleDetail getMessageFromNSError:_error].c_str()
                 );
                 
                 return;
@@ -257,7 +257,7 @@ namespace Mengine
             , _score
         );
         
-        NSString* identifier = Helper::stringToNSString( _key );
+        NSString* identifier = [AppleString NSStringFromConstString:_key];
         
         ConstString copy_key = _key;
         LambdaScoreResponse copy_response = _response;
@@ -268,7 +268,7 @@ namespace Mengine
                 LOGGER_ERROR( "response score '%s' [%lld] error: %s"
                    , copy_key.c_str()
                    , _score
-                   , Helper::AppleGetMessageFromNSError(_error).c_str()
+                   , [AppleDetail getMessageFromNSError:_error].c_str()
                 );
                 
                 Mengine::Helper::dispatchMainThreadEvent([copy_response]() {

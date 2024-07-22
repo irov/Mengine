@@ -1,11 +1,11 @@
 #import "SDLUIApplicationDelegate.h"
 
-#import "MengineAppleApplicationDelegates.h"
-
 #include "Interface/PlatformServiceInterface.h"
 
 #include "Environment/SDL/SDLIncluder.h"
 #include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
+
+#import "AppleApplicationDelegates.h"
 
 #import "Environment/Apple/AppleUserDefaults.h"
 #import "Environment/Apple/AppleDetail.h"
@@ -21,7 +21,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 @implementation SDLUIApplicationDelegate
 
 - (id)init {
-    NSArray * proxysClassed = getMengineAppleApplicationDelegates();
+    NSArray * proxysClassed = [AppleApplicationDelegates getApplicationDelegates];
 
     self.m_pluginApplicationDelegates = [NSMutableArray<iOSPluginApplicationDelegateInterface> array];
     self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
@@ -125,10 +125,10 @@ char ** MENGINE_MAIN_argv = nullptr;
 #pragma mark - UIApplicationDelegate Protocol
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions API_AVAILABLE(ios(3.0)) {
-    Mengine::Helper::AppleLog(@"Mengine application didFinishLaunchingWithOptions");
+    [AppleLog withFormat:@"Mengine application didFinishLaunchingWithOptions"];
     
     if( [iOSApplication.sharedInstance didFinishLaunchingWithOptions:launchOptions] == NO) {
-        Mengine::Helper::AppleLog(@"🔴 [ERROR] Mengine iOSApplication didFinishLaunchingWithOptions failed");
+        [AppleLog withFormat:@"🔴 [ERROR] Mengine iOSApplication didFinishLaunchingWithOptions failed"];
         
         return NO;
     }
@@ -143,7 +143,7 @@ char ** MENGINE_MAIN_argv = nullptr;
     
     for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate application:application didFinishLaunchingWithOptions:launchOptions] == NO) {
-            Mengine::Helper::AppleLog(@"🔴 [ERROR] Mengine application didFinishLaunchingWithOptions plugin %@ failed", NSStringFromClass([delegate class]));
+            [AppleLog withFormat:@"🔴 [ERROR] Mengine application didFinishLaunchingWithOptions plugin %@ failed", NSStringFromClass([delegate class])];
             
             return NO;
         }
@@ -157,7 +157,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken API_AVAILABLE(ios(3.0)) {
-    Mengine::Helper::AppleLog(@"Mengine application didRegisterForRemoteNotificationsWithDeviceToken");
+    [AppleLog withFormat:@"Mengine application didRegisterForRemoteNotificationsWithDeviceToken"];
 
     for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(application: didRegisterForRemoteNotificationsWithDeviceToken:)] == NO) {
@@ -169,7 +169,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler API_AVAILABLE(ios(7.0)) {
-    Mengine::Helper::AppleLog(@"Mengine application didReceiveRemoteNotification");
+    [AppleLog withFormat:@"Mengine application didReceiveRemoteNotification"];
     
     for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(application: didReceiveRemoteNotification: fetchCompletionHandler:)] == NO) {
@@ -181,7 +181,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    Mengine::Helper::AppleLog(@"Mengine application applicationDidBecomeActive");
+    [AppleLog withFormat:@"Mengine application applicationDidBecomeActive"];
     
     for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(applicationDidBecomeActive:)] == NO) {
@@ -193,7 +193,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    Mengine::Helper::AppleLog(@"Mengine application applicationWillEnterForeground");
+    [AppleLog withFormat:@"Mengine application applicationWillEnterForeground"];
     
     for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(applicationWillEnterForeground:)] == NO) {
@@ -205,7 +205,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    Mengine::Helper::AppleLog(@"Mengine application applicationDidEnterBackground");
+    [AppleLog withFormat:@"Mengine application applicationDidEnterBackground"];
     
     for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(applicationDidEnterBackground:)] == NO) {
@@ -217,7 +217,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-    Mengine::Helper::AppleLog(@"Mengine application applicationWillResignActive");
+    [AppleLog withFormat:@"Mengine application applicationWillResignActive"];
     
     for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(applicationWillResignActive:)] == NO) {
@@ -229,7 +229,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    Mengine::Helper::AppleLog(@"Mengine application applicationWillTerminate");
+    [AppleLog withFormat:@"Mengine application applicationWillTerminate"];
     
     for (id delegate in self.m_pluginApplicationDelegates) {
         if ([delegate respondsToSelector:@selector(applicationWillTerminate:)] == NO) {
@@ -280,7 +280,7 @@ char ** MENGINE_MAIN_argv = nullptr;
     Mengine::SDLApplication application;
         
     if( application.bootstrap( MENGINE_MAIN_argc, MENGINE_MAIN_argv ) == false ) {
-        Mengine::Helper::AppleLog(@"🔴 [ERROR] Mengine application bootstrap [Failed]");
+        [AppleLog withFormat:@"🔴 [ERROR] Mengine application bootstrap [Failed]"];
         
         [[NSOperationQueue mainQueue] cancelAllOperations];
         
@@ -288,15 +288,15 @@ char ** MENGINE_MAIN_argv = nullptr;
         
         SDL_iPhoneSetEventPump( SDL_FALSE );
         
-        Mengine::Helper::iOSAlert( @"Failed...", @"Mengine bootstraped application", ^{
+        [iOSDetail alertWithTitle:@"Failed..." message:@"Mengine bootstraped application" callback:^{
             ::exit( EXIT_SUCCESS );
-        } );
+        }];
         
         return;
     }
 
     if( application.initialize() == false ) {
-        Mengine::Helper::AppleLog(@"🔴 [ERROR] Mengine application initialize [Failed]");
+        [AppleLog withFormat:@"🔴 [ERROR] Mengine application initialize [Failed]"];
         
         [[NSOperationQueue mainQueue] cancelAllOperations];
         
@@ -304,9 +304,9 @@ char ** MENGINE_MAIN_argv = nullptr;
         
         SDL_iPhoneSetEventPump( SDL_FALSE );
         
-        Mengine::Helper::iOSAlert( @"Failed...", @"Mengine initialized application", ^{
+        [iOSDetail alertWithTitle:@"Failed..." message:@"Mengine initialized application" callback:^{
             ::exit( EXIT_SUCCESS );
-        } );
+        }];
         
         return;
     }
@@ -327,7 +327,7 @@ char ** MENGINE_MAIN_argv = nullptr;
         [delegate endLoop];
     }
     
-    Mengine::Helper::AppleLog(@"Mengine application finish");
+    [AppleLog withFormat:@"Mengine application finish"];
     
     ::exit( EXIT_SUCCESS );
 }

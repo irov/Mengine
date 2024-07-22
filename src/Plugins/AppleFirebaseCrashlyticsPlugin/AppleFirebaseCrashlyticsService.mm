@@ -1,6 +1,6 @@
 #include "AppleFirebaseCrashlyticsService.h"
 
-#import "Environment/Apple/AppleErrorHelper.h"
+#import "Environment/Apple/AppleDetail.h"
 #import "Environment/Apple/AppleString.h"
 
 #include "Kernel/Logger.h"
@@ -40,7 +40,7 @@ namespace Mengine
             , _value.c_str() 
         );
 
-        NSString * ns_value = Helper::stringToNSString( _value );
+        NSString * ns_value = [AppleString NSStringFromConstString:_value];
         
         [[FIRCrashlytics crashlytics] log:ns_value];
     }
@@ -52,8 +52,8 @@ namespace Mengine
             , _value.c_str()
         );
 
-        NSString * ns_key = Helper::stringToNSString( _key );
-        NSString * ns_value = Helper::stringToNSString( _value );
+        NSString * ns_key = [AppleString NSStringFromConstString:_key];
+        NSString * ns_value = [AppleString NSStringFromConstString:_value];
         
         [[FIRCrashlytics crashlytics] setCustomValue:ns_value
                                               forKey:ns_key];
@@ -69,7 +69,7 @@ namespace Mengine
 
         for( auto && [key, value] : _params )
         {
-            NSString * ns_key = Helper::stringToNSString( key );
+            NSString * ns_key = [AppleString NSStringFromConstString:key];
             
             Helper::visit( value
                 , [keysAndValues, ns_key]( const ParamBool & _element )
@@ -86,19 +86,19 @@ namespace Mengine
             }
                 , [keysAndValues, ns_key]( const ParamString & _element )
             {
-                NSString * ns_element = Helper::stringToNSString( _element );
+                NSString * ns_element = [AppleString NSStringFromString:_element];
                 
                 [keysAndValues setObject:ns_element forKey:ns_key];
             }
                 , [keysAndValues, ns_key]( const ParamWString & _element )
             {
-                NSString * ns_element = Helper::unicodeToNSString( _element );
+                NSString * ns_element = [AppleString NSStringFromUnicode:_element];
                 
                 [keysAndValues setObject:ns_element forKey:ns_key];
             }
                 , [keysAndValues, ns_key]( const ParamConstString & _element )
             {
-                NSString * ns_element = Helper::stringToNSString( _element );
+                NSString * ns_element = [AppleString NSStringFromConstString:_element];
                 
                 [keysAndValues setObject:ns_element forKey:ns_key];
             } );
@@ -128,7 +128,7 @@ namespace Mengine
     void AppleFirebaseCrashlyticsService::recordError( NSError * _error )
     {
         LOGGER_MESSAGE( "record error: %s"
-           , Helper::AppleGetMessageFromNSError( _error ).c_str()
+           , [AppleDetail getMessageFromNSError:_error].c_str()
         );
 
         [[FIRCrashlytics crashlytics] recordError:_error];

@@ -13,7 +13,7 @@ if(MENGINE_TARGET_APPLE)
         STRING(APPEND MENGINE_APPLE_APPLICATION_DELEGATE_STRING "@\"${DELEGATE}\", ")
     endforeach()
     
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/MengineAppleApplicationDelegates.mm.in ${CMAKE_CURRENT_SOURCE_DIR}/MengineAppleApplicationDelegates.mm @ONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/AppleApplicationDelegates.mm.in ${CMAKE_CURRENT_SOURCE_DIR}/AppleApplicationDelegates.mm @ONLY)
 endif()
 
 if(MENGINE_TARGET_UWP)
@@ -72,8 +72,8 @@ endif()
 if(MENGINE_TARGET_APPLE)
     ADD_FILTER(
     apple
-        MengineAppleApplicationDelegates.mm
-        MengineAppleApplicationDelegates.h
+        AppleApplicationDelegates.mm
+        AppleApplicationDelegates.h
     )
 endif()
 

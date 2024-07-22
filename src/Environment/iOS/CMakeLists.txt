@@ -1,10 +1,7 @@
 MENGINE_PROJECT(iOS)
 
 ADD_FILTER(
-src
-    iOSUtils.h
-    iOSUtils.mm
-    
+src    
     iOSDetail.h
     iOSDetail.mm
     

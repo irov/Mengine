@@ -45,8 +45,8 @@ namespace Mengine
     void AppleFirebaseAnalyticsService::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
     {
         [FIRAnalytics logEventWithName:kFIREventScreenView
-                            parameters:@{kFIRParameterScreenClass: Helper::stringToNSString( _screenType ),
-                                         kFIRParameterScreenName: Helper::stringToNSString( _screenName )}];
+                            parameters:@{kFIRParameterScreenClass: [AppleString NSStringFromConstString:_screenType],
+                                         kFIRParameterScreenName: [AppleString NSStringFromConstString:_screenName]}];
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleFirebaseAnalyticsService::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )

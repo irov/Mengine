@@ -36,17 +36,17 @@ namespace Mengine
         iOSLogRecordParam * record = [iOSLogRecordParam alloc];
         
         record.LOG_TIMESTAMP = message.timestamp;
-        record.LOG_CATEGORY = Helper::stringToNSString( message.category );
-        record.LOG_THREADNAME = Helper::stringToNSString( message.threadName );
+        record.LOG_CATEGORY = [NSString stringWithUTF8String:message.category];
+        record.LOG_THREADNAME = [AppleString NSStringFromConstString:message.threadName];
         record.LOG_LEVEL = message.level;
         record.LOG_FLAG = message.flag;
         record.LOG_FILTER = message.filter;
         record.LOG_COLOR = message.color;
-        record.LOG_FUNCTION = Helper::stringToNSString( message.function );
+        record.LOG_FUNCTION = [NSString stringWithUTF8String:message.function];
         record.LOG_LINE = message.line;
-        record.LOG_DATA = Helper::stringToNSString( message.data, message.size );
+        record.LOG_DATA = [AppleString NSStringFromString:message.data withSize:message.size];
         
-        Helper::iOSLog( record );
+        [iOSDetail log:record];
     }
     //////////////////////////////////////////////////////////////////////////
 }

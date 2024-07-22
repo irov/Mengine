@@ -17,22 +17,25 @@
 }
 
 - (BOOL)didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions {
-    NSString * install_key = Mengine::Helper::AppleGetUserDefaultsString(@"mengine.install_key", nil);
-    NSInteger install_timestamp = Mengine::Helper::AppleGetUserDefaultsInteger(@"mengine.install_timestamp", -1);
-    NSString * install_version = Mengine::Helper::AppleGetUserDefaultsString(@"mengine.install_version", nil);
-    NSInteger install_rnd = Mengine::Helper::AppleGetUserDefaultsInteger(@"mengine.install_rnd", -1);
-    NSInteger session_index = Mengine::Helper::AppleGetUserDefaultsInteger(@"mengine.session_index", 0);
-    NSString * session_id = Mengine::Helper::AppleGetUserDefaultsString(@"mengine.session_id", nil);
+    NSString * install_key = [AppleUserDefaults getStringForKey:@"mengine.install_key" defaultValue:nil];
+    NSInteger install_timestamp = [AppleUserDefaults getIntegerForKey:@"mengine.install_timestamp" defaultValue:-1];
+    NSString * install_version = [AppleUserDefaults getStringForKey:@"mengine.install_version" defaultValue:nil];
+    NSInteger install_rnd = [AppleUserDefaults getIntegerForKey:@"mengine.install_rnd" defaultValue:-1];
+    NSInteger session_index = [AppleUserDefaults getIntegerForKey:@"mengine.session_index" defaultValue:0];
+    NSString * session_id = [AppleUserDefaults getStringForKey:@"mengine.session_id" defaultValue:nil];
     
     if (install_key == nil) {
+        NSString * randomHex = [AppleDetail getRandomHexString:16];
+        
 #ifdef MENGINE_DEBUG
-        install_key = [@"MDIK" stringByAppendingString:Mengine::Helper::AppleGetRandomHexString(16)];
+        install_key = [@"MDIK" stringByAppendingString:randomHex];
 #else
-        install_key = [@"MNIK" stringByAppendingString:Mengine::Helper::AppleGetRandomHexString(16)];
+        install_key = [@"MNIK" stringByAppendingString:randomHex];
 #endif
-        install_timestamp = Mengine::Helper::AppleCurrentTimeMillis();
+        
+        install_timestamp = [AppleDetail getCurrentTimeMillis];
         install_version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-        install_rnd = Mengine::Helper::AppleGetSecureRandomInteger();
+        install_rnd = [AppleDetail getSecureRandomInteger];
         
         if (install_rnd == 0) {
             install_rnd = 1;
@@ -40,19 +43,19 @@
             install_rnd = -install_rnd;
         }
         
-        Mengine::Helper::AppleSetUserDefaultsString(@"mengine.install_key", install_key);
-        Mengine::Helper::AppleSetUserDefaultsInteger(@"mengine.install_timestamp", install_timestamp);
-        Mengine::Helper::AppleSetUserDefaultsString(@"mengine.install_version", install_version);
-        Mengine::Helper::AppleSetUserDefaultsInteger(@"mengine.install_rnd", install_rnd);
+        [AppleUserDefaults setStringForKey:@"mengine.install_key" value:install_key];
+        [AppleUserDefaults setIntegerForKey:@"mengine.install_timestamp" value:install_timestamp];
+        [AppleUserDefaults setStringForKey:@"mengine.install_version" value:install_version];
+        [AppleUserDefaults setIntegerForKey:@"mengine.install_rnd" value:install_rnd];
     }
     
     if (session_id == nil) {
         session_id = install_key;
         
-        Mengine::Helper::AppleSetUserDefaultsString(@"mengine.session_id", session_id);
+        [AppleUserDefaults setStringForKey:@"mengine.session_id" value:session_id];
     }
     
-    Mengine::Helper::AppleSetUserDefaultsInteger(@"mengine.session_index", session_index + 1);
+    [AppleUserDefaults setIntegerForKey:@"mengine.session_index" value:session_index + 1];
     
     self.m_installKey = install_key;
     self.m_installTimestamp = install_timestamp;
@@ -71,9 +74,9 @@
     
     self.m_sessionId = sessionId;
     
-    Mengine::Helper::AppleSetUserDefaultsString(@"mengine.session_id", self.m_sessionId);
+    [AppleUserDefaults setStringForKey:@"mengine.session_id" value:self.m_sessionId];
     
-    Mengine::Helper::iOSEventNotify( AppleEvent.EVENT_SESSION_ID, self.m_sessionId, nil );
+    [iOSDetail eventNotify:AppleEvent.EVENT_SESSION_ID args:@[self.m_sessionId]];
 }
 
 - (NSString * _Nonnull)getInstallKey {

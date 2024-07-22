@@ -4,18 +4,16 @@
 
 #import <Foundation/Foundation.h>
 
-namespace Mengine
-{
-    namespace Helper
-    {
-        NSString * AppleGetBundleIdentifier();
-    
-        BOOL AppleHasBundlePluginConfig( NSString * _plugin );
-        NSDictionary * AppleGetBundlePluginConfig( NSString * _plugin );
-        NSString * AppleGetBundlePluginConfigString( NSString * _plugin, NSString * _key, NSString * _default );
-        NSNumber * AppleGetBundlePluginConfigNumber( NSString * _plugin, NSString * _key, NSNumber * _default );
-        NSInteger AppleGetBundlePluginConfigInteger( NSString * _plugin, NSString * _key, NSInteger _default );
-        double AppleGetBundlePluginConfigDouble( NSString * _plugin, NSString * _key, double _default );
-        BOOL AppleGetBundlePluginConfigBoolean( NSString * _plugin, NSString * _key, BOOL _default );
-    }
-}
+@interface AppleBundle : NSObject
+
++ (NSString *) getIdentifier;
+
++ (BOOL)hasPluginConfig:(NSString *) _plugin;
++ (NSDictionary *)getPluginConfig:(NSString *) _plugin;
++ (NSString *)getPluginConfigString:(NSString *) _plugin withKey:(NSString *) _key withDefault:(NSString *) _default;
++ (NSNumber *)getPluginConfigNumber:(NSString *) _plugin withKey:(NSString *) _key withDefault:(NSNumber *) _default;
++ (NSInteger)getPluginConfigInteger:(NSString *) _plugin withKey:(NSString *) _key withDefault:(NSInteger) _default;
++ (double)getPluginConfigDouble:(NSString *) _plugin withKey:(NSString *) _key withDefault:(double) _default;
++ (BOOL)getPluginConfigBoolean:(NSString *) _plugin withKey:(NSString *) _key withDefault:(BOOL) _default;
+
+@end

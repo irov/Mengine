@@ -36,7 +36,7 @@ namespace Mengine
         NSString * apple_key = [@("mengine.") stringByAppendingString:@(_key)];
         NSInteger apple_default = (NSInteger)_default;
 
-        NSInteger apple_value = Helper::AppleGetUserDefaultsInteger( apple_key, apple_default );
+        NSInteger apple_value = [AppleUserDefaults getIntegerForKey:apple_key defaultValue:apple_default];
 
         int64_t value = (int64_t)apple_value;
 
@@ -48,7 +48,7 @@ namespace Mengine
         NSString * apple_key = [@("mengine.") stringByAppendingString:@(_key)];
         NSInteger apple_value = (NSInteger)_value;
 
-        if( Helper::AppleSetUserDefaultsInteger( apple_key, apple_value ) == NO )
+        if( [AppleUserDefaults setIntegerForKey:apple_key value:apple_value] == NO )
         {
             return false;
         }
@@ -60,7 +60,7 @@ namespace Mengine
     {
         NSString * apple_key = [@("mengine.") stringByAppendingString:@(_key)];
         
-        NSString * apple_value = Helper::AppleGetUserDefaultsString( apple_key, nil );
+        NSString * apple_value = [AppleUserDefaults getStringForKey:apple_key defaultValue:nil];
 
         if( apple_value == nil )
         {
@@ -84,7 +84,7 @@ namespace Mengine
         NSString * apple_key = [@("mengine.") stringByAppendingString:@(_key)];
         NSString * apple_value = @(_value);
 
-        if( Helper::AppleSetUserDefaultsString( apple_key, apple_value ) == NO )
+        if( [AppleUserDefaults setStringForKey:apple_key value:apple_value] == NO )
         {
             return false;
         }
@@ -97,9 +97,9 @@ namespace Mengine
         NSString * apple_key = [@("mengine.") stringByAppendingString:@(_key)];
         NSString * apple_default = @(_default.c_str());
 
-        NSString * apple_value = Helper::AppleGetUserDefaultsString( apple_key, apple_default );
+        NSString * apple_value = [AppleUserDefaults getStringForKey:apple_key defaultValue:apple_default];
 
-        ConstString value = Helper::NSStringToConstString( apple_value );
+        ConstString value = [AppleString NSStringToConstString:apple_value];
 
         return value;
     }
@@ -109,7 +109,7 @@ namespace Mengine
         NSString * apple_key = [@("mengine.") stringByAppendingString:@(_key)];
         NSString * apple_value = @(_value.c_str());
 
-        if( Helper::AppleSetUserDefaultsString( apple_key, apple_value ) == NO )
+        if( [AppleUserDefaults setStringForKey:apple_key value:apple_value] == NO )
         {
             return false;
         }
@@ -121,7 +121,7 @@ namespace Mengine
     {
         NSString * apple_key = [@("mengine.") stringByAppendingString:@(_key)];
 
-        BOOL result = Helper::AppleHasUserDefaults( apple_key );
+        BOOL result = [AppleUserDefaults hasKey:apple_key];
 
         return result;
     }
@@ -130,7 +130,7 @@ namespace Mengine
     {
         NSString * apple_key = [@("mengine.") stringByAppendingString:@(_key)];
 
-        Helper::AppleRemoveUserDefaults( apple_key );
+        [AppleUserDefaults removeKey:apple_key];
     }
     //////////////////////////////////////////////////////////////////////////
 }

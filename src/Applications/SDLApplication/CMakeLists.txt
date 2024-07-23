@@ -466,16 +466,28 @@ ENDIF()
 IF(MENGINE_TARGET_ANDROID)
     ADD_LIBRARY_IMPORTED(SDL_IMPORTED "${MENGINE_DEPENDENCIES_LIBRARY_OUTPUT_DIRECTORY}/libSDL2.so")
     
+    find_library(log-lib log)
+    find_library(android-lib android)
+    find_library(GLESv1_CM-lib GLESv1_CM)
+    find_library(GLESv2-lib GLESv2)
+    find_library(OpenSLES-lib OpenSLES)
+    
+    MESSAGE("log-lib: ${log-lib}")
+    MESSAGE("android-lib: ${android-lib}")
+    MESSAGE("GLESv1_CM-lib: ${GLESv1_CM-lib}")
+    MESSAGE("GLESv2-lib: ${GLESv2-lib}")
+    MESSAGE("OpenSLES-lib: ${OpenSLES-lib}")
+    
     target_link_libraries(${PROJECT_NAME}
         stdc++
         c
         m
         dl
-        log
-        android
-        OpenSLES
-        GLESv1_CM
-        GLESv2
+        ${log-lib}
+        ${android-lib}
+        ${GLESv1_CM-lib}
+        ${GLESv2-lib}
+        ${OpenSLES-lib}
     )
 ENDIF()
 

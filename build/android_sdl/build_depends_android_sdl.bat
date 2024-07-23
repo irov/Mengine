@@ -15,7 +15,8 @@ set CONFIGURATION=%1
 set ANDROID_NDK_VERSION=26.3.11579264
 set ANDROID_CMAKE_VERSION=3.22.1
 
-set ANDROID_PLATFORM=android-21
+set ANDROID_PLATFORM_VERSION=21
+set ANDROID_PLATFORM=android-%ANDROID_PLATFORM_VERSION%
 set ANDROID_SDK=%LOCALAPPDATA%\Android\sdk
 set ANDROID_NDK=%ANDROID_SDK%\ndk\%ANDROID_NDK_VERSION%
 set CMAKE_GENERATOR="Ninja"
@@ -38,6 +39,8 @@ for %%A in (x86 x86_64 armeabi-v7a arm64-v8a) do (
         -DANDROID_NDK=%ANDROID_NDK% ^
         -DANDROID_STL=c++_shared ^
         -DANDROID_TOOLCHAIN=clang ^
+        -DCMAKE_SYSTEM_NAME=Android ^
+        -DCMAKE_SYSTEM_VERSION=%ANDROID_PLATFORM_VERSION% ^
         -DCMAKE_BUILD_TYPE=%CONFIGURATION% ^
         -DCMAKE_CONFIGURATION_TYPES:STRING=%CONFIGURATION% ^
         -DCMAKE_MAKE_PROGRAM=%CMAKE_MAKE_PROGRAM% ^
@@ -90,5 +93,6 @@ if %errorlevel% NEQ 0 (
 :setESC
 for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do (
   set ESC=%%b
-  exit /B 0
 )
+
+exit /B 0

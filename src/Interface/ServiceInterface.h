@@ -83,9 +83,11 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
                 if( dynamic_cast<T *>(service_ptr) == nullptr )
                 {
+                    const Char * typenameValue = Typename<T>::value;
+
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service '%s' invalid cast to '%s'"
                         , serviceName
-                        , Typename<T>::value
+                        , typenameValue
                         );
 
                     return nullptr;

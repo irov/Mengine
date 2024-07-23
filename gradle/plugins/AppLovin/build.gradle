@@ -91,7 +91,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.applovin:applovin-sdk:12.5.0'
+    implementation 'com.applovin:applovin-sdk:12.6.0'
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW) {
         implementation 'com.google.android.ump:user-messaging-platform:2.2.0'
@@ -132,7 +132,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE == true) {
-        implementation 'com.applovin.mediation:ironsource-adapter:8.1.0.0.1'
+        implementation 'com.applovin.mediation:ironsource-adapter:8.2.1.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LIFTOFF == true) {
@@ -164,7 +164,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE == true) {
-        implementation 'com.applovin.mediation:bytedance-adapter:6.0.0.5.0'
+        implementation 'com.applovin.mediation:bytedance-adapter:6.1.0.6.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO == true) {

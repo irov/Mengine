@@ -233,7 +233,9 @@ android {
 
                     nativeSymbolUploadEnabled true
 
-                    unstrippedNativeLibsDir "$buildDir/intermediates/merged_native_libs/debug/out/lib/"
+                    unstrippedNativeLibsDir "$buildDir/intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib"
+
+                    println "unstrippedNativeLibsDir: $unstrippedNativeLibsDir"
                 }
             }
 
@@ -245,7 +247,9 @@ android {
 
                     nativeSymbolUploadEnabled true
 
-                    unstrippedNativeLibsDir "$buildDir/intermediates/merged_native_libs/release/out/lib/"
+                    unstrippedNativeLibsDir "$buildDir/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib"
+
+                    println "unstrippedNativeLibsDir: $unstrippedNativeLibsDir"
                 }
             }
         }
@@ -771,6 +775,36 @@ android {
 }
 
 if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
+    task checkDebugUnstrippedNativeLibsDir {
+        doLast {
+            println "[TASK] checkDebugUnstrippedNativeLibsDir"
+
+            def f = new File(android.buildTypes.debug.firebaseCrashlytics.unstrippedNativeLibsDir)
+            if (!f.exists()) {
+                throw new GradleException("unstrippedNativeLibsDir not found folder: $android.buildTypes.debug.firebaseCrashlytics.unstrippedNativeLibsDir")
+            }
+        }
+    }
+
+    task checkReleaseUnstrippedNativeLibsDir {
+        doLast {
+            println "[TASK] checkReleaseUnstrippedNativeLibsDir"
+
+            def f = new File(android.buildTypes.release.firebaseCrashlytics.unstrippedNativeLibsDir)
+            if (!f.exists()) {
+                throw new GradleException("unstrippedNativeLibsDir not found folder: $android.buildTypes.release.firebaseCrashlytics.unstrippedNativeLibsDir")
+            }
+        }
+    }
+
+    tasks.whenTaskAdded { task ->
+        if (task.name == 'assembleRelease') {
+            task.finalizedBy checkReleaseUnstrippedNativeLibsDir
+        } else if(task.name == 'assembleDebug') {
+            task.finalizedBy checkDebugUnstrippedNativeLibsDir
+        }
+    }
+
     tasks.configureEach { task ->
         if (task.name.startsWith('generateCrashlyticsSymbolFile')) {
             task.dependsOn 'merge' + (task.name =~ /^generateCrashlyticsSymbolFile(.+)$/)[0][1] + 'NativeLibs'

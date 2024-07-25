@@ -99,6 +99,11 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
+            LOGGER_ERROR( "resource movie2 '%s' file '%s' not compile"
+                , this->getName().c_str()
+                , Helper::getContentFullPath( this->getContent() )
+            );
+
             return nullptr;
         }
 

@@ -479,6 +479,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter::setEmitterTranslateWithParticle( bool _translateWithParticle )
     {
+        if( m_emitterTranslateWithParticle == _translateWithParticle )
+        {
+            return;
+        }
+
         m_emitterTranslateWithParticle = _translateWithParticle;
 
         m_emitterTranslateWithParticleSetup = true;
@@ -493,6 +498,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter::setEmitterPositionRelative( bool _positionRelative )
     {
+        if( m_emitterPositionRelative == _positionRelative )
+        {
+            return;
+        }
+
         m_emitterPositionRelative = _positionRelative;
 
         if( this->isCompile() == false )
@@ -530,6 +540,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter::setEmitterCameraRelative( bool _cameraRelative )
     {
+        if( m_emitterCameraRelative == _cameraRelative )
+        {
+            return;
+        }
+
         m_emitterCameraRelative = _cameraRelative;
 
         if( this->isCompile() == false )
@@ -734,6 +749,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter::setEmitterRandomMode( bool _randomMode )
     {
+        if( m_randomMode == _randomMode )
+        {
+            return;
+        }
+
         m_randomMode = _randomMode;
 
         if( this->isCompile() == false )

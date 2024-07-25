@@ -185,6 +185,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SamplerSpineAnimation::_setTime( float _time )
     {
+        if( mt::equal_f_f( m_time, _time ) == true )
+        {
+            return;
+        }
+
         m_time = _time;
 
         if( this->isCompile() == false )

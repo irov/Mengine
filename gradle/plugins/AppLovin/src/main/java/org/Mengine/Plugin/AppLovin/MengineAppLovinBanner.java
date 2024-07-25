@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.graphics.Color;
 
 import androidx.annotation.NonNull;
 
@@ -54,7 +55,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, heightPx);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         adView.setLayoutParams(params);
-        adView.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+        adView.setBackgroundColor(Color.TRANSPARENT);
         adView.setExtraParameter("adaptive_banner", "true");
 
         adView.setVisibility(View.GONE);

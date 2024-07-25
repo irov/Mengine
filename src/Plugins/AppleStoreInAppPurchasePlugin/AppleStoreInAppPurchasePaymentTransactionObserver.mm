@@ -68,30 +68,60 @@
         {
             case SKPaymentTransactionStatePurchasing:
             {
+                LOGGER_MESSAGE( "SKPaymentTransactionObserver SKPaymentTransactionStatePurchasing: %s"
+                    , [skPaymentTransaction.payment.productIdentifier UTF8String]
+                );
+                
                 Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
                     copy_provider->onPaymentQueueUpdatedTransactionPurchasing( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStatePurchased:
             {
-                Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
-                    copy_provider->onPaymentQueueUpdatedTransactionPurchased( paymentTransaction );
-                });
+                if (skPaymentTransaction.originalTransaction != nil) {
+                    LOGGER_MESSAGE( "SKPaymentTransactionObserver SKPaymentTransactionStatePurchased: %s [originalTransaction]"
+                        , [skPaymentTransaction.payment.productIdentifier UTF8String]
+                    );
+                    
+                    Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
+                        copy_provider->onPaymentQueueUpdatedTransactionRestored( paymentTransaction );
+                    });
+                } else {
+                    LOGGER_MESSAGE( "SKPaymentTransactionObserver SKPaymentTransactionStatePurchased: %s"
+                        , [skPaymentTransaction.payment.productIdentifier UTF8String]
+                    );
+                    
+                    Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
+                        copy_provider->onPaymentQueueUpdatedTransactionPurchased( paymentTransaction );
+                    });
+                }
             } break;
             case SKPaymentTransactionStateFailed:
             {
+                LOGGER_MESSAGE( "SKPaymentTransactionObserver SKPaymentTransactionStateFailed: %s"
+                    , [skPaymentTransaction.payment.productIdentifier UTF8String]
+                );
+                
                 Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
                     copy_provider->onPaymentQueueUpdatedTransactionFailed( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStateRestored:
             {
+                LOGGER_MESSAGE( "SKPaymentTransactionObserver SKPaymentTransactionStateRestored: %s"
+                    , [skPaymentTransaction.payment.productIdentifier UTF8String]
+                );
+                
                 Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
                     copy_provider->onPaymentQueueUpdatedTransactionRestored( paymentTransaction );
                 });
             } break;
             case SKPaymentTransactionStateDeferred:
             {
+                LOGGER_MESSAGE( "SKPaymentTransactionObserver SKPaymentTransactionStateDeferred: %s"
+                    , [skPaymentTransaction.payment.productIdentifier UTF8String]
+                );
+                
                 Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
                     copy_provider->onPaymentQueueUpdatedTransactionDeferred( paymentTransaction );
                 });

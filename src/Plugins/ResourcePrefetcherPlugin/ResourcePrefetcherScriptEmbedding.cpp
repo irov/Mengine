@@ -47,10 +47,12 @@ namespace Mengine
         protected:
             void onPrefetchIgnored() override
             {
+                // Empty
             }
 
             void onPrefetchAlreadyExist() override
             {
+                // Empty
             }
 
             void onPrefetchPreparation() override
@@ -60,6 +62,8 @@ namespace Mengine
 
             bool onPrefetchRun() override
             {
+                // Empty
+
                 return true;
             }
 

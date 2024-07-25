@@ -11,6 +11,8 @@ namespace Mengine
         {
             if( SERVICE_IS_INITIALIZE( PrefetcherServiceInterface ) == false )
             {
+                _observer->onPrefetchIgnored();
+
                 return false;
             }
 
@@ -43,6 +45,8 @@ namespace Mengine
         {
             if( SERVICE_IS_INITIALIZE( PrefetcherServiceInterface ) == false )
             {
+                _observer->onPrefetchIgnored();
+
                 return false;
             }
 
@@ -75,6 +79,8 @@ namespace Mengine
         {
             if( SERVICE_IS_INITIALIZE( PrefetcherServiceInterface ) == false )
             {
+                _observer->onPrefetchIgnored();
+
                 return false;
             }
 
@@ -123,6 +129,8 @@ namespace Mengine
         {
             if( SERVICE_IS_INITIALIZE( PrefetcherServiceInterface ) == false )
             {
+                _observer->onPrefetchIgnored();
+
                 return false;
             }
 

@@ -141,6 +141,16 @@ namespace Mengine
 
             const aeMovieCompositionData * compositionData = _resourceMovie2->getCompositionData( _compositionName );
 
+            if( compositionData == nullptr )
+            {
+                LOGGER_ERROR( "ResourceMovie2 '%s' not found composition '%s'"
+                    , _resourceMovie2->getName().c_str()
+                    , _compositionName.c_str()
+                );
+
+                return pybind::list( _kernel );
+            }
+
             pybind::list l = pybind::make_list_t( _kernel );
 
             data->foreachCompositionDataResources( compositionData, [_kernel, &l]( uint32_t _index, const Char * _name, const ResourcePtr & _resource )

@@ -2681,7 +2681,7 @@ namespace Mengine
                         RenderIndex * indices = indices_buffer + index_iterator;
                         index_iterator += mesh.indexCount;
 
-                        Helper::memoryCopyPod( indices, 0, mesh.indices, mesh.indexCount );
+                        Helper::memoryCopyPod( indices, 0, mesh.indices, 0, mesh.indexCount );
 
                         EMaterialBlendMode blend_mode = Detail::getMovieBlendMode( mesh.blend_mode );
 
@@ -2724,7 +2724,7 @@ namespace Mengine
                         RenderIndex * indices = indices_buffer + index_iterator;
                         index_iterator += mesh.indexCount;
 
-                        Helper::memoryCopyPod( indices, 0, mesh.indices, mesh.indexCount );
+                        Helper::memoryCopyPod( indices, 0, mesh.indices, 0, mesh.indexCount );
 
                         EMaterialBlendMode blend_mode = Detail::getMovieBlendMode( mesh.blend_mode );
 
@@ -2845,7 +2845,7 @@ namespace Mengine
                         RenderIndex * indices = indices_buffer + index_iterator;
                         index_iterator += mesh.indexCount;
 
-                        Helper::memoryCopyPod( indices, 0, mesh.indices, mesh.indexCount );
+                        Helper::memoryCopyPod( indices, 0, mesh.indices, 0, mesh.indexCount );
 
                         EMaterialBlendMode blend_mode = Detail::getMovieBlendMode( mesh.blend_mode );
 
@@ -2956,7 +2956,7 @@ namespace Mengine
                         RenderIndex * indices = indices_buffer + index_iterator;
                         index_iterator += mesh.indexCount;
 
-                        Helper::memoryCopyPod( indices, 0, mesh.indices, mesh.indexCount );
+                        Helper::memoryCopyPod( indices, 0, mesh.indices, 0, mesh.indexCount );
 
                         const RenderMaterialInterfacePtr & material = surface->getMaterial();
 
@@ -3036,7 +3036,7 @@ namespace Mengine
                         RenderIndex * indices = indices_buffer + index_iterator;
                         index_iterator += mesh.indexCount;
 
-                        Helper::memoryCopyPod( indices, 0, mesh.indices, mesh.indexCount );
+                        Helper::memoryCopyPod( indices, 0, mesh.indices, 0, mesh.indexCount );
 
                         const RenderProgramVariableInterfacePtr & programVariable = surfaceTrackMatte->getProgramVariable();
 
@@ -3161,7 +3161,7 @@ namespace Mengine
                         RenderIndex * indices = indices_buffer + index_iterator;
                         index_iterator += mesh.indexCount;
 
-                        Helper::memoryCopyPod( indices, 0, mesh.indices, mesh.indexCount );
+                        Helper::memoryCopyPod( indices, 0, mesh.indices, 0, mesh.indexCount );
 
                         const RenderProgramVariableInterfacePtr & programVariable = surfaceTrackMatte->getProgramVariable();
 

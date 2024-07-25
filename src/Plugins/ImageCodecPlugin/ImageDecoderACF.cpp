@@ -125,7 +125,7 @@ namespace Mengine
 
             for( uint32_t j = 0; j != m_dataInfo.height; ++j )
             {
-                Helper::memoryCopy( dest_buffer, 0, source_buffer, linesize );
+                Helper::memoryCopy( dest_buffer, 0, source_buffer, 0, linesize );
 
                 source_buffer += linesize;
                 dest_buffer += dataPitch;

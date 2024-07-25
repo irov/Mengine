@@ -16,6 +16,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/OptionHelper.h"
 #include "Kernel/Stringstream.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -37,6 +38,11 @@ namespace Mengine
         bool Engine_PrefetcherServiceAvailable = CONFIG_VALUE( "Engine", "PrefetcherServiceAvailable", true );
 
         if( Engine_PrefetcherServiceAvailable == false )
+        {
+            return false;
+        }
+
+        if( HAS_OPTION( "noprefetch" ) == true )
         {
             return false;
         }

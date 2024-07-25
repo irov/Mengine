@@ -980,7 +980,7 @@ namespace Mengine
             return false;
         }
 
-        Helper::memoryCopy( vertexBuffer, vertexBufferOffset, _renderObject->vertexData, vertexCountSize );
+        Helper::memoryCopy( vertexBuffer, vertexBufferOffset, _renderObject->vertexData, 0, vertexCountSize );
 
         RenderIndex * offsetIndicesBuffer = indexBuffer + _ibPos;
 

@@ -606,7 +606,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Spine::fillIndices_( RenderIndex * _indices, const RenderIndex * _triangles, uint32_t _count ) const
     {
-        Helper::memoryCopyPod( _indices, 0, _triangles, _count );
+        Helper::memoryCopyPod( _indices, 0, _triangles, 0, _count );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Spine::_afterActivate()

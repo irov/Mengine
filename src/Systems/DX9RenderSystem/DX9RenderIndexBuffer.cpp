@@ -226,7 +226,7 @@ namespace Mengine
             return false;
         }
 
-        Helper::memoryCopy( lock_memory, 0, _buffer, _count * m_indexSize );
+        Helper::memoryCopy( lock_memory, 0, _buffer, 0, _count * m_indexSize );
 
         MENGINE_IF_DXCALL( m_pD3DIndexBuffer, Unlock, () )
         {

@@ -27,7 +27,7 @@ namespace Mengine
     {
         dz_stream_t * stream = reinterpret_cast<dz_stream_t *>(_ud);
 
-        Helper::memoryCopy( _data, 0U, stream->data, _size );
+        Helper::memoryCopy( _data, 0, stream->data, 0, _size );
 
         stream->data = (const dz_uint8_t *)stream->data + _size;
 

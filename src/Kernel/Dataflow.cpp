@@ -1,6 +1,5 @@
 #include "Dataflow.h"
 
-#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
 #include "Kernel/Logger.h"
@@ -9,6 +8,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/PrefetcherHelper.h"
 
 namespace Mengine
 {
@@ -18,8 +18,7 @@ namespace Mengine
         DataInterfacePointer getDataflow( const ContentInterfacePtr & _content, const DataflowContext * _context, const DocumentInterfacePtr & _doc )
         {
             DataInterfacePtr prefetch_data;
-            if( PREFETCHER_SERVICE()
-                ->getData( _content, &prefetch_data ) == true )
+            if( Helper::getPrefetchData( _content, &prefetch_data ) == true )
             {
                 return prefetch_data;
             }
@@ -45,8 +44,7 @@ namespace Mengine
         DataInterfacePointer popDataflow( const ContentInterfacePtr & _content, const DataflowInterfacePtr & _dataflow, const DataflowContext * _context, const DocumentInterfacePtr & _doc )
         {
             DataInterfacePtr prefetch_data;
-            if( PREFETCHER_SERVICE()
-                ->popData( _content, &prefetch_data ) == true )
+            if( Helper::popPrefetchData( _content, &prefetch_data ) == true )
             {
                 return prefetch_data;
             }

@@ -70,7 +70,7 @@ namespace Mengine
             return 0;
         }
 
-        Helper::memoryCopy( _buf, 0, m_pos, cnt );
+        Helper::memoryCopy( _buf, 0, m_pos, 0, cnt );
 
         m_pos += cnt;
 

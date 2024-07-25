@@ -2,7 +2,6 @@
 
 #include "Interface/SoundCodecInterface.h"
 #include "Interface/CodecServiceInterface.h"
-#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
 #include "Interface/NotificatorInterface.h"
@@ -21,6 +20,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/PrototypeHelper.h"
+#include "Kernel/PrefetcherHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -498,8 +498,7 @@ namespace Mengine
         SoundDecoderInterfacePtr soundDecoder;
         if( _streamable == false )
         {
-            if( PREFETCHER_SERVICE()
-                ->getSoundDecoder( _content, &soundDecoder ) == false )
+            if( Helper::getPrefetchSoundDecoder( _content, &soundDecoder ) == false )
             {
                 soundDecoder = this->createSoundDecoder_( _content, false, _doc );
             }

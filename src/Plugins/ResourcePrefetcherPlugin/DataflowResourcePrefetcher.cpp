@@ -1,10 +1,10 @@
 #include "DataflowResourcePrefetcher.h"
 
-#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ContentInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/PrefetcherHelper.h"
 
 namespace Mengine
 {
@@ -33,8 +33,7 @@ namespace Mengine
         context.filePath = filePath;
         context.groupName = groupName;
 
-        if( PREFETCHER_SERVICE()
-            ->prefetchData( content, &context, _observer ) == false )
+        if( Helper::prefetchData( content, &context, _observer ) == false )
         {
             return false;
         }
@@ -50,8 +49,7 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        bool successful = PREFETCHER_SERVICE()
-            ->unfetch( content );
+        bool successful = Helper::unfetch( content );
 
         return successful;
     }

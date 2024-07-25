@@ -16,7 +16,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool concatenateFilePath( InitializerList<FilePath> && _paths, Char * const _concatenatePath )
         {
-            if( Helper::memoryCopySafe( _concatenatePath, 0, MENGINE_MAX_PATH, "", 0 ) == false )
+            if( Helper::memoryCopySafe( _concatenatePath, 0, MENGINE_MAX_PATH, "", 0, 0 ) == false )
             {
                 return false;
             }
@@ -28,7 +28,7 @@ namespace Mengine
                 const Char * path_str = path.c_str();
                 FilePath::size_type path_size = path.size();
 
-                if( Helper::memoryCopySafe( _concatenatePath, offset, MENGINE_MAX_PATH, path_str, path_size ) == false )
+                if( Helper::memoryCopySafe( _concatenatePath, offset, MENGINE_MAX_PATH, path_str, 0, path_size ) == false )
                 {
                     return false;
                 }

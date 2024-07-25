@@ -45,7 +45,7 @@ namespace Mengine
     {
         void * buffer = this->newBuffer( _size );
 
-        Helper::memoryCopy( buffer, 0, _ptr, _size );
+        Helper::memoryCopy( buffer, 0, _ptr, 0, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     Pointer MemoryCacheBuffer::newBuffer( size_t _size )

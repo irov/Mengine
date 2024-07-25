@@ -2,7 +2,6 @@
 
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/PrefetcherServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Stream.h"
@@ -13,6 +12,7 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/PrefetcherHelper.h"
 
 #include "Config/StdString.h"
 
@@ -34,8 +34,7 @@ namespace Mengine
     bool AstralaxEmitterContainer::initialize( const ContentInterfacePtr & _content, const ArchivatorInterfacePtr & _archivator )
     {
         MemoryInterfacePtr memory;
-        if( PREFETCHER_SERVICE()
-            ->getStream( _content, &memory ) == false )
+        if( Helper::getPrefetchStream( _content, &memory ) == false )
         {
             InputStreamInterfacePtr stream = _content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 

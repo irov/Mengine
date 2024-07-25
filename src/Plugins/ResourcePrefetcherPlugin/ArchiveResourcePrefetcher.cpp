@@ -1,9 +1,9 @@
 #include "ArchiveResourcePrefetcher.h"
 
-#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ContentInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/PrefetcherHelper.h"
 
 namespace Mengine
 {
@@ -37,8 +37,7 @@ namespace Mengine
         uint32_t magicNumber = _resource->getMagicNumber();
         uint32_t magicVersion = _resource->getMagicVersion();
 
-        if( PREFETCHER_SERVICE()
-            ->prefetchStream( content, m_archivator, magicNumber, magicVersion, _observer ) == false )
+        if( Helper::prefetchStream( content, m_archivator, magicNumber, magicVersion, _observer ) == false )
         {
             return false;
         }
@@ -54,8 +53,7 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        bool successful = PREFETCHER_SERVICE()
-            ->unfetch( content );
+        bool successful = Helper::unfetch( content );
 
         return successful;
     }

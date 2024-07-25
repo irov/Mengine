@@ -17,8 +17,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        MENGINE_ASSERTION_FATAL( m_type.empty() == false, "factory type not set"
-        );
+        MENGINE_ASSERTION_FATAL( m_type.empty() == false, "factory type not set" );
 
         if( m_mutex != nullptr )
         {

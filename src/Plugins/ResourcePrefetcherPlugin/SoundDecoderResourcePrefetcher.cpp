@@ -1,6 +1,6 @@
 #include "SoundDecoderResourcePrefetcher.h"
 
-#include "Interface/PrefetcherServiceInterface.h"
+#include "Kernel/PrefetcherHelper.h"
 
 namespace Mengine
 {
@@ -21,8 +21,7 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        if( PREFETCHER_SERVICE()
-            ->prefetchSoundDecoder( content, _observer ) == false )
+        if( Helper::prefetchSoundDecoder( content, _observer ) == false )
         {
             return false;
         }
@@ -38,8 +37,7 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        bool successful = PREFETCHER_SERVICE()
-            ->unfetch( content );
+        bool successful = Helper::unfetch( content );
 
         return successful;
     }

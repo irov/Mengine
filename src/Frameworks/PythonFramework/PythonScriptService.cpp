@@ -5,7 +5,6 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
-#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ScriptEmbeddingInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
@@ -44,6 +43,7 @@
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PrefetcherHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -979,7 +979,6 @@ namespace Mengine
     void PythonScriptService::prefetchModules( const PrefetcherObserverInterfacePtr & _cb, const DocumentInterfacePtr & _doc )
     {
         DataflowInterfacePtr dataflowPY = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ) );
-
         DataflowInterfacePtr dataflowPYZ = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ) );
 
         for( const ScriptModulePackage & pack : m_bootstrapperModules )
@@ -998,10 +997,9 @@ namespace Mengine
                 DataflowContext context;
                 context.filePath = _filePath;
 
-                if( PREFETCHER_SERVICE()
-                    ->prefetchData( content, &context, _cb ) == false )
+                if( Helper::prefetchData( content, &context, _cb ) == false )
                 {
-                    LOGGER_ERROR( "invalid prefetch data '%s'"
+                    LOGGER_INFO( "prefetch", "invalid prefetch data '%s'"
                         , _filePath.c_str()
                     );
                 }
@@ -1024,10 +1022,9 @@ namespace Mengine
                     DataflowContext context;
                     context.filePath = _filePath;
 
-                    if( PREFETCHER_SERVICE()
-                        ->prefetchData( content, &context, _cb ) == false )
+                    if( Helper::prefetchData( content, &context, _cb ) == false )
                     {
-                        LOGGER_ERROR( "invalid prefetch data '%s'"
+                        LOGGER_INFO( "prefetch", "invalid prefetch data '%s'"
                             , _filePath.c_str()
                         );
                     }
@@ -1065,10 +1062,11 @@ namespace Mengine
         {
             py_module = m_kernel->module_import( _name.c_str(), exist );
         }
-        catch( ... )
+        catch( const pybind::pybind_exception & _ex )
         {
-            LOGGER_ERROR( "invalid import module '%s' (c-exception)"
+            LOGGER_ERROR( "invalid import module '%s' exception: %s"
                 , _name.c_str()
+                , _ex.what()
             );
 
             return nullptr;

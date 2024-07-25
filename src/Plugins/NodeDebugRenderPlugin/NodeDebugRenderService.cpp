@@ -9,7 +9,6 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
@@ -30,6 +29,7 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/PrefetcherHelper.h"
 
 #include <iomanip>
 
@@ -310,8 +310,7 @@ namespace Mengine
 
                 uint32_t prefetchCount = 0;
 
-                PREFETCHER_SERVICE()
-                    ->foreachPrefetches( [&prefetchCount]( const ThreadTaskPtr & _prefetcher )
+                Helper::foreachPrefetches( [&prefetchCount]( const ThreadTaskPtr & _prefetcher )
                 {
                     if( _prefetcher->isComplete() == false )
                     {

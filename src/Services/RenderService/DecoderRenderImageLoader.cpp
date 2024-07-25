@@ -1,6 +1,5 @@
 #include "DecoderRenderImageLoader.h"
 
-#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 
@@ -15,6 +14,7 @@
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/MemoryCopy.h"
+#include "Kernel/PrefetcherHelper.h"
 
 namespace Mengine
 {
@@ -31,8 +31,7 @@ namespace Mengine
     bool DecoderRenderImageLoader::initialize( const ContentInterfacePtr & _content, uint32_t _codecFlags )
     {
         ImageDecoderInterfacePtr decoder;
-        if( PREFETCHER_SERVICE()
-            ->getImageDecoder( _content, &decoder ) == false )
+        if( Helper::getPrefetchImageDecoder( _content, &decoder ) == false )
         {
             decoder = this->createImageDecoder_( _content );
 
@@ -126,14 +125,21 @@ namespace Mengine
 
             const ImageCodecDataInfo * dataInfo = m_decoder->getCodecDataInfo();
 
+            uint32_t width = dataInfo->width;
+            uint32_t height = dataInfo->height;
+
             // copy pixels on the edge for better image quality
-            if( dataInfo->width != mipmap_width )
+            if( width != mipmap_width )
             {
                 uint8_t * image_data = static_cast<uint8_t *>(textureBuffer);
 
-                for( uint32_t j = 0; j != dataInfo->height; ++j )
+                for( uint32_t j = 0; j != height; ++j )
                 {
-                    Helper::memoryCopy( image_data, dataInfo->width * pixel_size, image_data + (dataInfo->width - 1) * pixel_size, pixel_size );
+                    size_t dst_offset = width * pixel_size;
+                    size_t src_offset = (width - 1) * pixel_size;
+                    size_t copy_size = pixel_size;
+
+                    Helper::memoryCopy( image_data, dst_offset, image_data, src_offset, copy_size );
 
                     image_data += pitch;
                 }
@@ -143,7 +149,11 @@ namespace Mengine
             {
                 uint8_t * image_data = static_cast<uint8_t *>(textureBuffer);
 
-                Helper::memoryCopy( image_data, dataInfo->height * pitch, image_data + (dataInfo->height - 1) * pitch, dataInfo->width * pixel_size );
+                size_t dst_offset = height * pitch;
+                size_t src_offset = (height - 1) * pitch;
+                size_t copy_size = width * pixel_size;
+
+                Helper::memoryCopy( image_data, dst_offset, image_data, src_offset, copy_size );
             }
         }
 
@@ -161,10 +171,14 @@ namespace Mengine
 
         const ImageCodecDataInfo * dataInfo = m_decoder->getCodecDataInfo();
 
-        uint32_t channels = Helper::getPixelFormatChannels( dataInfo->format );
+        EPixelFormat format = dataInfo->format;
+        uint32_t width = dataInfo->width;
+        uint32_t height = dataInfo->height;
 
-        size_t pitch = dataInfo->width * channels;
-        size_t dataSize = pitch * dataInfo->height;
+        uint32_t channels = Helper::getPixelFormatChannels( format );
+
+        size_t pitch = width * channels;
+        size_t dataSize = pitch * height;
 
         void * buffer = memory->newBuffer( dataSize );
 
@@ -172,7 +186,7 @@ namespace Mengine
         data.buffer = buffer;
         data.size = dataSize;
         data.pitch = pitch;
-        data.format = dataInfo->format;
+        data.format = format;
         data.flags = _codecFlags;
         data.mipmap = 0;
 

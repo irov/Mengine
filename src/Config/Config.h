@@ -153,7 +153,7 @@
 #   if defined(MENGINE_COMPILER_GCC) || defined(MENGINE_COMPILER_CLANG)
 #       define MENGINE_CODE_FUNCTION __PRETTY_FUNCTION__
 #   elif defined(MENGINE_COMPILER_MSVC)
-#       define MENGINE_CODE_FUNCTION __FUNCSIG__
+#       define MENGINE_CODE_FUNCTION __FUNCTION__
 #   else
 #       define MENGINE_CODE_FUNCTION __FUNCTION__
 #   endif

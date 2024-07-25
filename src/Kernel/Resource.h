@@ -119,6 +119,8 @@ namespace Mengine
         ReferenceCounter m_prefetchReferenceCount;
         ReferenceCounter m_cacheReferenceCount;
 
+        AtomicBool m_prefetchReferenceSuccessful;
+
         VectorConstString m_locales;
         ConstString m_groupName;
         Tags m_tags;

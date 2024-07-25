@@ -1,13 +1,12 @@
 #include "FEFontEffectFile.h"
 
-#include "Interface/PrefetcherServiceInterface.h"
-
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Dataflow.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/PrefetcherHelper.h"
 
 namespace Mengine
 {
@@ -63,8 +62,7 @@ namespace Mengine
         DataflowContext context;
         context.filePath = filePath;
 
-        if( PREFETCHER_SERVICE()
-            ->prefetchData( content, &context, _observer ) == false )
+        if( Helper::prefetchData( content, &context, _observer ) == false )
         {
             return false;
         }
@@ -76,8 +74,7 @@ namespace Mengine
     {
         const ContentInterfacePtr & content = this->getContent();
 
-        if( PREFETCHER_SERVICE()
-            ->unfetch( content ) == false )
+        if( Helper::unfetch( content ) == false )
         {
             return false;
         }

@@ -1,10 +1,9 @@
 #include "TTFFontGlyph.h"
 
-#include "Interface/PrefetcherServiceInterface.h"
-
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/Dataflow.h"
+#include "Kernel/PrefetcherHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -87,8 +86,7 @@ namespace Mengine
         DataflowContext context;
         context.filePath = filePath;
 
-        if( PREFETCHER_SERVICE()
-            ->prefetchData( m_glyphContent, &context, _observer ) == false )
+        if( Helper::prefetchData( m_glyphContent, &context, _observer ) == false )
         {
             return false;
         }
@@ -98,8 +96,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TTFFontGlyph::unfetch()
     {
-        PREFETCHER_SERVICE()
-            ->unfetch( m_glyphContent );
+        Helper::unfetch( m_glyphContent );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -856,6 +856,11 @@ Core
     DummySceneEventReceiver.h
     DummySceneEventReceiver.cpp
     
+    LambdaPrefetchTask.h
+    
+    PrefetcherHelper.h
+    PrefetcherHelper.cpp
+    
     FileStreamHelper.h
     FileStreamHelper.cpp
     

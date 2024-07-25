@@ -17,6 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Resource::Resource()
         : m_resourceBank( nullptr )
+        , m_prefetchReferenceSuccessful( false )
         , m_initialize( false )
         , m_groupCache( false )
         , m_keep( false )
@@ -237,25 +238,34 @@ namespace Mengine
         
         if( _lambda() == false )
         {
-            m_prefetchReferenceCount.reset();
+            m_prefetchReferenceCount.decref();
 
             return false;
         }
+
+        m_prefetchReferenceSuccessful = true;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Resource::unfetch( const LambdaUnfetch & _lambda )
     {
+        if( m_prefetchReferenceSuccessful == false )
+        {
+            return false;
+        }
+
         if( m_prefetchReferenceCount.decref() == false )
         {
             return true;
         }
-         
+        
+        m_prefetchReferenceSuccessful = false;
+
         if( _lambda() == false )
         {
             return false;
-        }
+        }        
     
         return true;
     }

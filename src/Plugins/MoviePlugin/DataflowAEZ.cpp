@@ -24,7 +24,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static ae_size_t __movie_read_stream( ae_voidptr_t _buff, ae_size_t _carriage, ae_size_t _size, ae_userdata_t _ud )
         {
-            Helper::memoryCopy( _buff, 0U, (ae_uint8_t *)_ud + _carriage, _size );
+            Helper::memoryCopy( _buff, 0, _ud, _carriage, _size );
 
             return _size;
         }
@@ -33,7 +33,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _ud );
 
-            Helper::memoryCopy( _dst, 0U, _src, _size );
+            Helper::memoryCopy( _dst, 0, _src, 0, _size );
         }
         //////////////////////////////////////////////////////////////////////////
         static ae_bool_t __movie_resource_provider( const aeMovieResource * _resource, ae_voidptrptr_t _rd, ae_voidptr_t _ud )

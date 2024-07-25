@@ -16,6 +16,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Visitor.h"
 #include "Kernel/ThreadTask.h"
+#include "Kernel/LambdaPrefetchTask.h"
 
 #include "Config/Lambda.h"
 
@@ -46,8 +47,7 @@ namespace Mengine
     public:
         virtual bool unfetch( const ContentInterfacePtr & _content ) = 0;
 
-    public:
-        typedef Lambda<void( const ThreadTaskPtr & )> LambdaPrefetchTask;
+    public:        
         virtual void foreachPrefetches( const LambdaPrefetchTask & _lambda ) const = 0;
         virtual void visitPrefetches( const VisitorPtr & _visitor ) const = 0;
     };

@@ -949,13 +949,6 @@ public class MengineActivity extends SDLActivity {
 
         intent.setType("application/zip");
 
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, body);
-
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
         try {
             ArrayList<Parcelable> fileUris = new ArrayList<>();
 
@@ -995,6 +988,13 @@ public class MengineActivity extends SDLActivity {
                     );
 
                     fileUris.add(accountZIPUri);
+                } else {
+                    body += "\n\n[ERROR] invalid zip account folder";
+
+                    MengineLog.logWarning(TAG, "linkingOpenMail invalid zip account folder mail: %s subject: %s"
+                        , email
+                        , subject
+                    );
                 }
             }
 
@@ -1017,6 +1017,15 @@ public class MengineActivity extends SDLActivity {
 
                 File logZipFile = MengineUtils.createTempFile(context, "mng_log_", ".zip");
 
+                if (logZipFile == null) {
+                    MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_log_***.zip' mail: %s subject: %s"
+                        , email
+                        , subject
+                    );
+
+                    return false;
+                }
+
                 if (MengineUtils.zipFiles(logFile, logZipFile) == true) {
                     Uri logZipFileUri = MengineUtils.getUriForFile(context, logZipFile);
 
@@ -1031,7 +1040,21 @@ public class MengineActivity extends SDLActivity {
                     );
 
                     fileUris.add(logZipFileUri);
+                } else {
+                    body += "\n\n[ERROR] invalid zip current log file";
+
+                    MengineLog.logMessage(TAG, "linkingOpenMail invalid zip current log file mail: %s subject: %s"
+                        , email
+                        , subject
+                    );
                 }
+            } else {
+                body += "\n\n[ERROR] invalid write current log file";
+
+                MengineLog.logMessage(TAG, "linkingOpenMail invalid write current log file mail: %s subject: %s"
+                    , email
+                    , subject
+                );
             }
 
             File oldLogFile = MengineUtils.createTempFile(context, "mng_old_log_", ".log");
@@ -1067,17 +1090,40 @@ public class MengineActivity extends SDLActivity {
                     );
 
                     fileUris.add(oldLogZipFileUri);
+                } else {
+                    body += "\n\n[ERROR] invalid zip old log file";
+
+                    MengineLog.logMessage(TAG, "linkingOpenMail invalid zip old log file mail: %s subject: %s"
+                        , email
+                        , subject
+                    );
                 }
+            } else {
+                body += "\n\n[ERROR] invalid write old log file";
+
+                MengineLog.logMessage(TAG, "linkingOpenMail invalid write old log file mail: %s subject: %s"
+                    , email
+                    , subject
+                );
             }
 
             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris);
         } catch (IOException e) {
+            body += "\n\n[ERROR] invalid attachs file";
+
             MengineLog.logError(TAG, "[ERROR] linkingOpenMail failed attachs file mail: %s subject: %s exception: %s"
                 , email
                 , subject
                 , e.getMessage()
             );
         }
+
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, body);
+
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
         Intent chooser = Intent.createChooser(intent, "Send Email");
 

@@ -64,6 +64,14 @@ if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
     apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/Amazon/amazon.gradle'
 }
 
+def MENGINE_APP_PLUGIN_ADMOB = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_ADMOB")
+
+if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADMOB == true) {
+    if (MENGINE_APP_PLUGIN_ADMOB == false) {
+        throw new GradleException("Plugin [AppLovin] mediation [AdMob] require plugin [AdMob]")
+    }
+}
+
 Utils.logAvailable("AppLovin add Consent Flow", MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW)
 Utils.logAvailable("AppLovin add Nonet Banners", MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS)
 Utils.logAvailable("AppLovin add Mediation Amazon", MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON)

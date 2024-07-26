@@ -22,7 +22,7 @@ namespace Mengine
 
     public:
         const ConstString & getName() const override;
-        uint32_t getId() const override;
+        UniqueId getId() const override;
 
     public:
         void update( float _time, float _timing ) override;
@@ -37,7 +37,7 @@ namespace Mengine
     protected:
         ConstString m_name;
 
-        uint32_t m_id;
+        UniqueId m_id;
         uint32_t m_hash;
 
         EPrimitiveType m_primitiveType;
@@ -53,7 +53,7 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE uint32_t RenderMaterial::getId() const
+    MENGINE_INLINE UniqueId RenderMaterial::getId() const
     {
         return m_id;
     }

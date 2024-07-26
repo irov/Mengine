@@ -4,7 +4,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     RenderMaterial::RenderMaterial()
-        : m_id( 0 )
+        : m_id( INVALID_UNIQUE_ID )
         , m_hash( 0 )
         , m_primitiveType( PT_TRIANGLELIST )
         , m_textureCount( 0 )

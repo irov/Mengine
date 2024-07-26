@@ -354,7 +354,7 @@ namespace Mengine
 
         if( m_batchMode == ERBM_SMART )
         {
-            uint32_t materialId = rp.material->getId();
+            UniqueId materialId = rp.material->getId();
             ro.materialSmartId = materialId % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
 
             renderPass.materialEnd[ro.materialSmartId] = &ro;

@@ -639,7 +639,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderMaterialService::onRenderMaterialDestroy_( RenderMaterial * _material )
     {
-        uint32_t materialId = _material->getId();
+        UniqueId materialId = _material->getId();
         m_materialEnumerators.emplace_back( materialId );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -690,7 +690,9 @@ namespace Mengine
 
         for( uint32_t i = 0; i != _textureCount; ++i )
         {
-            uint32_t texture_id = _textures[i]->getId();
+            const RenderTextureInterfacePtr & texture = _textures[i];
+
+            UniqueId texture_id = texture->getId();
 
             material_hash += texture_id + i * 3571;
         }

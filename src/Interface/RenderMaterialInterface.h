@@ -5,6 +5,8 @@
 #include "Interface/RenderProgramInterface.h"
 #include "Interface/RenderTextureInterface.h"
 
+#include "Config/UniqueId.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -54,7 +56,7 @@ namespace Mengine
     {
     public:
         virtual const ConstString & getName() const = 0;
-        virtual uint32_t getId() const = 0;
+        virtual UniqueId getId() const = 0;
 
     public:
         virtual void update( float _time, float _timing ) = 0;

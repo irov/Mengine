@@ -627,7 +627,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _material );
 
-        uint32_t materialId = _material->getId();
+        UniqueId materialId = _material->getId();
 
         if( m_currentMaterialId == materialId )
         {

@@ -84,18 +84,6 @@ android {
             if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
                 java.srcDirs += ['Amazon']
             }
-            
-            if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADMOB == true) {
-                java.srcDirs += ['AdMob']
-            }
-            
-            manifest {
-                srcFile 'src/main/AndroidManifest.xml'
-
-                if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_ADMOB == true) {
-                    srcFile 'AdMob/main/AndroidManifest.xml'
-                }
-            }
         }
     }
 

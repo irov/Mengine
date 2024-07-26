@@ -194,7 +194,11 @@ namespace Mengine
         Helper::closeOutputStreamFile( userFileGroup, stream );
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        ImGui_ImplDX9_Shutdown();
+        if( RENDER_SERVICE()
+            ->isWindowCreated() == true )
+        {
+            ImGui_ImplDX9_Shutdown();
+        }
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)

@@ -1,6 +1,7 @@
 #include "ImageDecoderResourcePrefetcher.h"
 
 #include "Kernel/PrefetcherHelper.h"
+#include "Kernel/Assertion.h"
 
 namespace Mengine
 {

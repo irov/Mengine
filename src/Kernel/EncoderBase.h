@@ -5,6 +5,8 @@
 
 #include "Kernel/Factorable.h"
 
+#include "Config/TypeTraits.h"
+
 namespace Mengine
 {
     template<class T>
@@ -12,7 +14,7 @@ namespace Mengine
         : public T
         , public Factorable
     {
-        static_assert(std::is_base_of<EncoderInterface, T>::value, "T must derive from DecoderInterface");
+        static_assert(TypeTraits::is_base_of<EncoderInterface, T>, "T must derive from DecoderInterface");
 
     public:
         EncoderBase()

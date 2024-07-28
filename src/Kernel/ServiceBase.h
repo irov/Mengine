@@ -6,6 +6,8 @@
 #include "Kernel/Observable.h"
 #include "Kernel/AssertionObservable.h"
 
+#include "Config/TypeTraits.h"
+
 namespace Mengine
 {
     template<class T>
@@ -13,7 +15,7 @@ namespace Mengine
         : public T
         , public Observable
     {
-        static_assert(std::is_base_of<ServiceInterface, T>::value, "T must derive from ServiceInterface");
+        static_assert(TypeTraits::is_base_of<ServiceInterface, T>, "T must derive from ServiceInterface");
 
     public:
         ServiceBase() noexcept

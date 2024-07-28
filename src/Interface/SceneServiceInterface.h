@@ -1,22 +1,10 @@
 #pragma once
 
-#include "Interface/Interface.h"
 #include "Interface/ServiceInterface.h"
-
-#include "Kernel/Scene.h"
+#include "Interface/SceneChangeCallbackInterface.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    class SceneChangeCallbackInterface
-        : public Interface
-    {
-    public:
-        virtual void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove, bool _error ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SceneChangeCallbackInterface> SceneChangeCallbackInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class SceneServiceInterface
         : public ServiceInterface
     {
@@ -41,7 +29,6 @@ namespace Mengine
     public:
         virtual bool isProcess() const = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define SCENE_SERVICE()\

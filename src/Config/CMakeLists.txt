@@ -126,6 +126,7 @@ src
     Utility.h
     Variant.h
     Version.h
+    TypeTraits.h
 )
 
 ADD_FILTER(

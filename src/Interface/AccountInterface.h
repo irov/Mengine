@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Interface/Interface.h"
+#include "Interface/AccountSettingProviderInterface.h"
 #include "Interface/InputStreamInterface.h"
 #include "Interface/OutputStreamInterface.h"
 #include "Interface/MemoryInterface.h"
 
+#include "Kernel/AccountUID.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/FilePath.h"
@@ -14,22 +16,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DECLARE_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA, 'A', 'C', 'D', '1', 1 );
-    //////////////////////////////////////////////////////////////////////////
-    struct AccountUID
-    {
-        typedef Char value_type;
-        static constexpr size_t size_data = 20U;
-        Char data[AccountUID::size_data];
-    };
-    //////////////////////////////////////////////////////////////////////////
-    class AccountSettingProviderInterface
-        : public Interface
-    {
-    public:
-        virtual void onChangeSetting( const Char * _value ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AccountSettingProviderInterface> AccountSettingProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AccountInterface
         : public Interface

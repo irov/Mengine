@@ -1,6 +1,5 @@
 #include "JPEGPlugin.h"
 
-#include "Interface/CodecInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 

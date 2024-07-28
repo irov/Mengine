@@ -69,14 +69,25 @@ public class MengineAppLovinBase {
     protected String getMAAdParams(@NonNull MaxAd ad) {
         StringBuilder sb = new StringBuilder(512);
 
+        MaxAdFormat format = ad.getFormat();
+        String formatLabel = format.getLabel();
+        AppLovinSdkUtils.Size size = ad.getSize();
+        int sizeWidth = size.getWidth();
+        int sizeHeight = size.getHeight();
+        String adUnitId = ad.getAdUnitId();
+        String networkName = ad.getNetworkName();
+        String networkPlacement = ad.getNetworkPlacement();
+        double revenue = ad.getRevenue();
+        String revenuePrecision = ad.getRevenuePrecision();
+
         sb.append("{");
-        sb.append(String.format(Locale.US, "\"format\": \"%s\"", ad.getFormat().getLabel()));
-        sb.append(String.format(Locale.US, ", \"size\": [%d, %d]", ad.getSize().getWidth(), ad.getSize().getHeight()));
-        sb.append(String.format(Locale.US, ", \"ad_unit_id\": \"%s\"", ad.getAdUnitId()));
-        sb.append(String.format(Locale.US, ", \"network_name\": \"%s\"", ad.getNetworkName()));
-        sb.append(String.format(Locale.US, ", \"network_placement\": \"%s\"", ad.getNetworkPlacement()));
-        sb.append(String.format(Locale.US, ", \"revenue\": %f", ad.getRevenue()));
-        sb.append(String.format(Locale.US, ", \"revenue_precision\": \"%s\"", ad.getRevenuePrecision()));
+        sb.append(String.format(Locale.US, "\"format\": \"%s\"", formatLabel));
+        sb.append(String.format(Locale.US, ", \"size\": [%d, %d]", sizeWidth, sizeHeight));
+        sb.append(String.format(Locale.US, ", \"ad_unit_id\": \"%s\"", adUnitId));
+        sb.append(String.format(Locale.US, ", \"network_name\": \"%s\"", networkName));
+        sb.append(String.format(Locale.US, ", \"network_placement\": \"%s\"", networkPlacement));
+        sb.append(String.format(Locale.US, ", \"revenue\": %f", revenue));
+        sb.append(String.format(Locale.US, ", \"revenue_precision\": \"%s\"", revenuePrecision));
 
         String creativeId = ad.getCreativeId();
 
@@ -150,7 +161,9 @@ public class MengineAppLovinBase {
     protected void log(String callback) {
         StringBuilder sb = new StringBuilder(512);
 
-        sb.append(String.format(Locale.US, "[%s] %s ", m_adFormat.getLabel(), callback));
+        String label = m_adFormat.getLabel();
+
+        sb.append(String.format(Locale.US, "[%s] %s ", label, callback));
 
         this.writeBaseInfo(sb);
 
@@ -164,7 +177,9 @@ public class MengineAppLovinBase {
     protected void logError(String callback, Exception e) {
         StringBuilder sb = new StringBuilder(1024);
 
-        sb.append(String.format(Locale.US, "[%s] %s exception: %s ", m_adFormat.getLabel(), callback, e.getMessage()));
+        String label = m_adFormat.getLabel();
+
+        sb.append(String.format(Locale.US, "[%s] %s exception: %s ", label, callback, e.getMessage()));
 
         this.writeBaseInfo(sb);
 
@@ -178,7 +193,9 @@ public class MengineAppLovinBase {
     protected void log(String callback, Map<String, Object> params) {
         StringBuilder sb = new StringBuilder(512);
 
-        sb.append(String.format(Locale.US, "[%s] %s %s ", m_adFormat.getLabel(), callback, params));
+        String label = m_adFormat.getLabel();
+
+        sb.append(String.format(Locale.US, "[%s] %s %s ", label, callback, params));
 
         this.writeBaseInfo(sb);
 
@@ -192,7 +209,9 @@ public class MengineAppLovinBase {
     protected void logMaxAd(String callback, @NonNull MaxAd ad) {
         StringBuilder sb = new StringBuilder(2048);
 
-        sb.append(String.format(Locale.US, "[%s] %s ", m_adFormat.getLabel(), callback));
+        String label = m_adFormat.getLabel();
+
+        sb.append(String.format(Locale.US, "[%s] %s ", label, callback));
 
         this.writeBaseInfo(sb);
         this.writeMaxAdBaseInfo(sb, ad);
@@ -211,7 +230,9 @@ public class MengineAppLovinBase {
     protected void logMaxAd(String callback, @NonNull MaxAd ad, Map<String, Object> params) {
         StringBuilder sb = new StringBuilder(2048);
 
-        sb.append(String.format(Locale.US, "[%s] %s %s ", m_adFormat.getLabel(), callback, params));
+        String label = m_adFormat.getLabel();
+
+        sb.append(String.format(Locale.US, "[%s] %s %s ", label, callback, params));
 
         this.writeBaseInfo(sb);
         this.writeMaxAdBaseInfo(sb, ad);
@@ -230,7 +251,9 @@ public class MengineAppLovinBase {
     protected void logMaxAdReward(String callback, @NonNull MaxAd ad, MaxReward reward) {
         StringBuilder sb = new StringBuilder(2048);
 
-        sb.append(String.format(Locale.US, "[%s] %s ", m_adFormat.getLabel(), callback));
+        String label = m_adFormat.getLabel();
+
+        sb.append(String.format(Locale.US, "[%s] %s ", label, callback));
 
         this.writeBaseInfo(sb);
         this.writeMaxAdBaseInfo(sb, ad);
@@ -251,14 +274,16 @@ public class MengineAppLovinBase {
     protected void logMaxError(String callback, @NonNull MaxError error) {
         StringBuilder sb = new StringBuilder(1024);
 
+        String label = m_adFormat.getLabel();
+
+        sb.append(String.format(Locale.US, "[%s] %s ", label, callback));
+
+        this.writeBaseInfo(sb);
+
         int errorCode = error.getCode();
         String errorMessage = error.getMessage();
         int mediatedNetworkErrorCode = error.getMediatedNetworkErrorCode();
         String mediatedNetworkErrorMessage = error.getMediatedNetworkErrorMessage();
-
-        sb.append(String.format(Locale.US, "[%s] %s ", m_adFormat.getLabel(), callback));
-
-        this.writeBaseInfo(sb);
 
         sb.append(String.format(Locale.US, "MaxError: code: %d message: %s ", errorCode, errorMessage));
         sb.append(String.format(Locale.US, "MediatedNetwork: code: %d message: %s ", mediatedNetworkErrorCode, mediatedNetworkErrorMessage));
@@ -284,10 +309,13 @@ public class MengineAppLovinBase {
         sb.append("{Ad} -> ");
 
         MaxAdFormat format = ad.getFormat();
-        sb.append(String.format(Locale.US, "Format: %s ", format.getLabel()));
+        String formatLabel = format.getLabel();
+        sb.append(String.format(Locale.US, "Format: %s ", formatLabel));
 
         AppLovinSdkUtils.Size size = ad.getSize();
-        sb.append(String.format(Locale.US, "Size: %d x %d ", size.getWidth(), size.getHeight()));
+        int sizeWidth = size.getWidth();
+        int sizeHeight = size.getHeight();
+        sb.append(String.format(Locale.US, "Size: %d x %d ", sizeWidth, sizeHeight));
 
         String networkName = ad.getNetworkName();
         sb.append(String.format(Locale.US, "NetworkName: %s ", networkName));

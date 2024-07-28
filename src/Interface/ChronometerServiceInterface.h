@@ -4,13 +4,14 @@
 #include "Interface/DocumentInterface.h"
 #include "Interface/ChronometerInterface.h"
 
+#include "Kernel/LambdaChronometer.h"
+
 #include "Config/Lambda.h"
 #include "Config/UniqueId.h"
 #include "Config/Timestamp.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class ChronometerServiceInterface
         : public ServiceInterface
     {

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/CodecInterface.h"
-
 #include "Kernel/PluginBase.h"
 
 namespace Mengine

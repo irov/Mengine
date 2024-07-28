@@ -2,13 +2,10 @@
 
 #include "Interface/ServantInterface.h"
 
-#include "Config/Lambda.h"
 #include "Config/Timestamp.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<void( Timestamp _time )> LambdaChronometer;
     //////////////////////////////////////////////////////////////////////////
     class ChronometerInterface
         : public ServantInterface

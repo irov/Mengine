@@ -3,8 +3,7 @@
 #include "Kernel/Surface.h"
 
 #if defined(MENGINE_DEBUG)
-#   include <type_traits>
-#   include <stdexcept>
+#   include "Config/TypeTraits.h"
 #endif
 
 namespace Mengine
@@ -35,7 +34,7 @@ namespace Mengine
         T reinterpretSurfaceCast( void * _surface )
         {
 #if defined(MENGINE_DEBUG)
-            static_assert(std::is_base_of_v<Surface, std::remove_pointer_t<T>>, "reinterpret surface cast use on non 'Surfacable' type");
+            static_assert(TypeTraits::is_base_of<Surface, T>, "reinterpret surface cast use on non 'Surface' type");
 
             if( _surface == nullptr )
             {
@@ -62,7 +61,7 @@ namespace Mengine
         T staticSurfaceCast( Surface * _surface )
         {
 #if defined(MENGINE_DEBUG)
-            static_assert(std::is_base_of_v<Surface, std::remove_pointer_t<T>>, "static surface cast use on non 'Surfacable' type");
+            static_assert(TypeTraits::is_base_of<Surface, T>, "static surface cast use on non 'Surface' type");
 
             if( _surface == nullptr )
             {
@@ -82,7 +81,7 @@ namespace Mengine
         T staticSurfaceCast( const Surface * _surface )
         {
 #if defined(MENGINE_DEBUG)
-            static_assert(std::is_base_of_v<Surface, std::remove_pointer_t<T>>, "static surface cast use on non 'Surfacable' type");
+            static_assert(TypeTraits::is_base_of<Surface, T>, "static surface cast use on non 'Surface' type");
 
             if( _surface == nullptr )
             {
@@ -102,7 +101,7 @@ namespace Mengine
         T dynamicSurfaceCast( Surface * _surface )
         {
 #if defined(MENGINE_DEBUG)
-            static_assert(std::is_base_of_v<Surface, std::remove_pointer_t<T>>, "dynamic surface cast use on non 'Surfacable' type");
+            static_assert(TypeTraits::is_base_of<Surface, T>, "dynamic surface cast use on non 'Surface' type");
 #endif
 
             T t = dynamic_cast<T>(_surface);
@@ -114,7 +113,7 @@ namespace Mengine
         T dynamicSurfaceCast( const Surface * _surface )
         {
 #if defined(MENGINE_DEBUG)
-            static_assert(std::is_base_of_v<Surface, std::remove_pointer_t<T>>, "dynamic surface cast use on non 'Surfacable' type");
+            static_assert(TypeTraits::is_base_of<Surface, T>, "dynamic surface cast use on non 'Surface' type");
 #endif
 
             T t = dynamic_cast<T>(_surface);

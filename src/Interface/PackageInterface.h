@@ -7,31 +7,10 @@
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
 
+#include "Kernel/PackageDesc.h"
+
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    struct PackageDesc
-    {
-        ConstString name;
-        ConstString type;
-        ConstString format;
-
-        VectorConstString locales;
-        Tags platform;
-        Tags tags;
-
-        ConstString fileGroupName;
-        ConstString parent;
-        FilePath descriptionPath;
-        FilePath path;
-
-        FilePath fontsPath;
-        FilePath textsPath;
-
-        bool dev;
-        bool immediately;
-        bool preload;
-    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class PackageInterface> PackageInterfacePtr;
     //////////////////////////////////////////////////////////////////////////

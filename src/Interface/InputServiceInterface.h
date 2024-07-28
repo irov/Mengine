@@ -16,25 +16,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    struct InputUnionEvent
-    {
-        EInputEventType type;
-
-        union
-        {
-            InputSpecialData special;
-
-            InputKeyEvent key;
-            InputTextEvent text;
-            InputMouseButtonEvent button;
-            InputMouseWheelEvent wheel;
-            InputMouseMoveEvent move;
-            InputMouseEnterEvent enter;
-            InputMouseLeaveEvent leave;
-        } data;
-    };
-    //////////////////////////////////////////////////////////////////////////
     class InputServiceInterface
         : public ServiceInterface
     {
@@ -75,9 +56,26 @@ namespace Mengine
         virtual void getSpecial( InputSpecialData * const _special ) const = 0;
 
     public:
+        struct InputUnionEvent
+        {
+            EInputEventType type;
+
+            union
+            {
+                InputSpecialData special;
+
+                InputKeyEvent key;
+                InputTextEvent text;
+                InputMouseButtonEvent button;
+                InputMouseWheelEvent wheel;
+                InputMouseMoveEvent move;
+                InputMouseEnterEvent enter;
+                InputMouseLeaveEvent leave;
+            } data;
+        };
+
         virtual void pushEvent( const InputUnionEvent & _event ) = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define INPUT_SERVICE()\

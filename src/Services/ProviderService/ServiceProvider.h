@@ -124,7 +124,7 @@ namespace Mengine
 
     protected:
         bool isRequired_( const ServiceDesc & _desc );
-        void initializeService_( ServiceDesc & _desc, const DocumentInterfacePtr & _doc, bool * const _result );
+        void initializeService_( ServiceDesc * const _desc, const DocumentInterfacePtr & _doc, bool * const _result );
         void deferredRequiredInitialize_( const DocumentInterfacePtr & _doc, bool * const _result );
     };
 }

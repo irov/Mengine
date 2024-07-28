@@ -2,6 +2,8 @@
 
 #include "Interface/ChronometerInterface.h"
 
+#include "Kernel/LambdaChronometer.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

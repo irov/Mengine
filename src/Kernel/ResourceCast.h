@@ -3,8 +3,7 @@
 #include "Kernel/Resource.h"
 
 #if defined(MENGINE_DEBUG)
-#   include <type_traits>
-#   include <stdexcept>
+#   include "Config/TypeTraits.h"
 #endif
 
 namespace Mengine
@@ -35,7 +34,7 @@ namespace Mengine
         T reinterpretResourceCast( void * _resource )
         {
 #if defined(MENGINE_DEBUG)
-            static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "reinterpret resource cast use on non 'Resourcable' type");
+            static_assert(TypeTraits::is_base_of<Resource, T>, "reinterpret resource cast use on non 'Resourcable' type");
 
             if( _resource == nullptr )
             {
@@ -55,7 +54,7 @@ namespace Mengine
         T staticResourceCast( Resource * _resource )
         {
 #if defined(MENGINE_DEBUG)
-            static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "static resource cast use on non 'Resourcable' type");
+            static_assert(TypeTraits::is_base_of<Resource, T>, "static resource cast use on non 'Resourcable' type");
 
             if( _resource == nullptr )
             {
@@ -75,7 +74,7 @@ namespace Mengine
         T staticResourceCast( const Resource * _resource )
         {
 #if defined(MENGINE_DEBUG)
-            static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "static resource cast use on non 'Resourcable' type");
+            static_assert(TypeTraits::is_base_of<Resource, T>, "static resource cast use on non 'Resourcable' type");
 
             if( _resource == nullptr )
             {
@@ -95,7 +94,7 @@ namespace Mengine
         T staticResourceCast( const ResourcePtr & _resource )
         {
 #if defined(MENGINE_DEBUG)
-            static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<typename T::value_type>>, "static resource cast use on non 'Resourcable' type");
+            static_assert(TypeTraits::is_base_of<Resource, typename T::value_type>, "static resource cast use on non 'Resourcable' type");
 
             if( _resource == nullptr )
             {
@@ -117,7 +116,7 @@ namespace Mengine
         T dynamicResourceCast( Resource * _resource )
         {
 #if defined(MENGINE_DEBUG)
-            static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "dynamic resource cast use on non 'Resourcable' type");
+            static_assert(TypeTraits::is_base_of<Resource, T>, "dynamic resource cast use on non 'Resourcable' type");
 #endif
 
             T t = dynamic_cast<T>(_resource);
@@ -129,7 +128,7 @@ namespace Mengine
         T dynamicResourceCast( const Resource * _resource )
         {
 #if defined(MENGINE_DEBUG)
-            static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<T>>, "dynamic resource cast use on non 'Resourcable' type");
+            static_assert(TypeTraits::is_base_of<Resource, T>, "dynamic resource cast use on non 'Resourcable' type");
 #endif
 
             T t = dynamic_cast<T>(_resource);
@@ -141,7 +140,7 @@ namespace Mengine
         T dynamicResourceCast( const ResourcePtr & _resource )
         {
 #if defined(MENGINE_DEBUG)
-            static_assert(std::is_base_of_v<Resource, std::remove_pointer_t<typename T::value_type>>, "dynamic resource cast use on non 'Resourcable' type");
+            static_assert(TypeTraits::is_base_of<Resource, typename T::value_type>, "dynamic resource cast use on non 'Resourcable' type");
 #endif
 
             T t = T::dynamic_from( _resource );

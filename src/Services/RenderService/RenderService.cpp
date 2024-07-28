@@ -1,6 +1,5 @@
 #include "RenderService.h"
 
-#include "Interface/CodecInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/WatchdogServiceInterface.h"
 #include "Interface/FileServiceInterface.h"

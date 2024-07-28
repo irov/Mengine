@@ -5,8 +5,7 @@
 #include "Config/Lambda.h"
 
 #if defined(MENGINE_DEBUG)
-#   include <type_traits>
-#   include <stdexcept>
+#   include "Config/TypeTraits.h"
 #endif
 
 namespace Mengine
@@ -48,7 +47,7 @@ namespace Mengine
             EventReceiverInterface * r = receiver.get();
 
 #if defined(MENGINE_DEBUG)
-            static_assert(std::is_base_of_v<EventReceiverInterface, std::remove_pointer_t<T>>, "static event receiver cast use on non 'EventReceiverInterface' type");
+            static_assert(TypeTraits::is_base_of<EventReceiverInterface, T>, "static event receiver cast use on non 'EventReceiverInterface' type");
 
             if( r == nullptr )
             {

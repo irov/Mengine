@@ -1,24 +1,13 @@
 #pragma once
 
 #include "Interface/Interface.h"
-#include "Interface/CodecInterface.h"
 #include "Interface/OutputStreamInterface.h"
 
-#include "Config/Typedef.h"
+#include "Kernel/EncoderData.h"
+#include "Kernel/CodecDataInfo.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    struct EncoderData
-    {
-#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
-        EncoderData() = default;
-        virtual ~EncoderData() = default;
-#endif
-
-        const void * buffer;
-        size_t size;
-    };
     //////////////////////////////////////////////////////////////////////////
     class EncoderInterface
         : public Interface

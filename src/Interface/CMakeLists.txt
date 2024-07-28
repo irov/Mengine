@@ -17,7 +17,6 @@ Common
     ScriptEmbeddingInterface.h
     ScriptProviderServiceInterface.h
     ScriptServiceInterface.h
-    CodecInterface.h
     CodecFactoryInterface.h
     DecoderInterface.h
     DecoderFactoryInterface.h
@@ -97,9 +96,6 @@ Common
     LoaderServiceInterface.h
     RandomizerInterface.h
     AnimationInterface.h
-    AccountInterface.h
-    AccountProviderInterface.h
-    AccountServiceInterface.h
     EventationInterface.h
     EventReceiverInterface.h
     UnknownInterface.h
@@ -111,6 +107,7 @@ Common
     ServantInterface.h
     EnumeratorServiceInterface.h
     SceneServiceInterface.h
+    SceneChangeCallbackInterface.h
     ChronometerInterface.h
     ChronometerServiceInterface.h
     ArgumentsInterface.h
@@ -148,6 +145,15 @@ Common
     AppleKernelServiceInterface.h
     iOSKernelServiceInterface.h
 )
+
+ADD_FILTER(
+Account
+    AccountInterface.h
+    AccountSettingProviderInterface.h
+    AccountProviderInterface.h
+    AccountServiceInterface.h
+)
+
 
 ADD_FILTER(
 Analytics

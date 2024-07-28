@@ -7,7 +7,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class BootstrapperInterface
         : public ServiceInterface
     {

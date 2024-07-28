@@ -8,7 +8,6 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/CodecInterface.h"
 #include "Interface/ConverterInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/PluginInterface.h"

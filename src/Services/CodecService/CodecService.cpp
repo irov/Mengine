@@ -1,7 +1,5 @@
 #include "CodecService.h"
 
-#include "Interface/CodecInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ConstStringHelper.h"

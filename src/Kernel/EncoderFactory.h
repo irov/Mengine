@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Interface/CodecInterface.h"
 #include "Interface/EncoderFactoryInterface.h"
 
 #include "Kernel/Factorable.h"

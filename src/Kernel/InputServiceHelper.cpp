@@ -19,7 +19,7 @@ namespace Mengine
                 return;
             }
 
-            InputUnionEvent ev;
+            InputServiceInterface::InputUnionEvent ev;
 
             ev.type = IET_MOUSE_MOVE;
 
@@ -44,7 +44,7 @@ namespace Mengine
             INPUT_SERVICE()
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputUnionEvent ev;
+            InputServiceInterface::InputUnionEvent ev;
 
             ev.type = IET_MOUSE_BUTTON;
 
@@ -70,7 +70,7 @@ namespace Mengine
             INPUT_SERVICE()
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputUnionEvent ev;
+            InputServiceInterface::InputUnionEvent ev;
 
             ev.type = IET_KEY;
 
@@ -94,7 +94,7 @@ namespace Mengine
             INPUT_SERVICE()
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputUnionEvent ev;
+            InputServiceInterface::InputUnionEvent ev;
 
             ev.type = IET_TEXT;
 
@@ -116,7 +116,7 @@ namespace Mengine
             INPUT_SERVICE()
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputUnionEvent ev;
+            InputServiceInterface::InputUnionEvent ev;
 
             ev.type = IET_MOUSE_LEAVE;
 
@@ -139,7 +139,7 @@ namespace Mengine
             INPUT_SERVICE()
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputUnionEvent ev;
+            InputServiceInterface::InputUnionEvent ev;
 
             ev.type = IET_MOUSE_ENTER;
 
@@ -162,7 +162,7 @@ namespace Mengine
             INPUT_SERVICE()
                 ->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputUnionEvent ev;
+            InputServiceInterface::InputUnionEvent ev;
 
             ev.type = IET_MOUSE_WHELL;
 

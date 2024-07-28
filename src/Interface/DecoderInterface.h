@@ -1,24 +1,15 @@
 #pragma once
 
 #include "Interface/Interface.h"
-#include "Interface/CodecInterface.h"
 #include "Interface/InputStreamInterface.h"
+
+#include "Kernel/DecoderData.h"
+#include "Kernel/CodecDataInfo.h"
 
 #include "Config/Typedef.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    struct DecoderData
-    {
-#if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
-        DecoderData() = default;
-        virtual ~DecoderData() = default;
-#endif
-
-        void * buffer;
-        size_t size;
-    };
     //////////////////////////////////////////////////////////////////////////
     class DecoderInterface
         : public Interface

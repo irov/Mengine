@@ -565,6 +565,8 @@ Core
     
     Histogram.h
     
+    PackageDesc.h
+    
     PathHelper.h
     PathHelper.cpp
     
@@ -847,7 +849,14 @@ Core
     
     ProfilerHelper.h
     
+    AccountUID.h
+    
     DateTime.h
+    
+    DecoderData.h
+    EncoderData.h
+    
+    CodecDataInfo.h
 
     DummyGameEventReceiver.h
     DummyGameEventReceiver.cpp
@@ -857,6 +866,7 @@ Core
     DummySceneEventReceiver.cpp
     
     LambdaPrefetchTask.h
+    LambdaChronometer.h
     
     PrefetcherHelper.h
     PrefetcherHelper.cpp

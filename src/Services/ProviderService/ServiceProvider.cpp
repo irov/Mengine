@@ -138,7 +138,7 @@ namespace Mengine
             }
 
             bool result = true;
-            this->initializeService_( desc, _doc, &result );
+            this->initializeService_( &desc, _doc, &result );
 
             return result;
         }
@@ -152,9 +152,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ServiceProvider::initializeService_( ServiceDesc & _desc, const DocumentInterfacePtr & _doc, bool * const _result )
+    void ServiceProvider::initializeService_( ServiceDesc * const _desc, const DocumentInterfacePtr & _doc, bool * const _result )
     {
-        const ServiceInterfacePtr & service = _desc.service;
+        const ServiceInterfacePtr & service = _desc->service;
 
 #if defined(MENGINE_DEBUG)
         MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr, "already initialize service '%s' (doc: %s)"
@@ -181,7 +181,7 @@ namespace Mengine
 
             *_result = false;
 
-            MENGINE_ASSERTION_EXCEPTION( _desc.safe == true, "exception initialize service '%s' (doc: %s)\n%s"
+            MENGINE_ASSERTION_EXCEPTION( _desc->safe == true, "exception initialize service '%s' (doc: %s)\n%s"
                 , service->getServiceId()
                 , MENGINE_DOCUMENT_STR( _doc )
                 , ex.what()
@@ -198,7 +198,7 @@ namespace Mengine
         {
             *_result = false;
 
-            MENGINE_ASSERTION_EXCEPTION( _desc.safe == true, "invalid initialize service '%s' (doc: %s)"
+            MENGINE_ASSERTION_EXCEPTION( _desc->safe == true, "invalid initialize service '%s' (doc: %s)"
                 , service->getServiceId()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
@@ -206,7 +206,7 @@ namespace Mengine
             return;
         }
 
-        _desc.initialize = true;
+        _desc->initialize = true;
 
         if( this->checkWaits_( service ) == false )
         {
@@ -572,7 +572,7 @@ namespace Mengine
 
             desc.requiring = false;
 
-            this->initializeService_( desc, _doc, _result );
+            this->initializeService_( &desc, _doc, _result );
         }
     }
     //////////////////////////////////////////////////////////////////////////

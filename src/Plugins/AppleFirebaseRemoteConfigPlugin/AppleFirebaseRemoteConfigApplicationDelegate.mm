@@ -12,7 +12,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     FIRRemoteConfigSettings *remoteConfigSettings = [[FIRRemoteConfigSettings alloc] init];
-    remoteConfigSettings.minimumFetchInterval = 3600;
+    remoteConfigSettings.minimumFetchInterval = MENGINE_DEBUG_VALUE(0, 3600);
     [[FIRRemoteConfig remoteConfig] setConfigSettings:remoteConfigSettings];
     
     [[FIRRemoteConfig remoteConfig] setDefaultsFromPlistFileName:@MENGINE_FIREBASE_REMOTECONFIG_PLIST_NAME];

@@ -18,7 +18,7 @@ namespace Mengine
         virtual int64_t getValueInteger( const ConstString & _key ) const = 0;
         virtual double getValueDouble( const ConstString & _key ) const = 0;
         virtual ConstString getValueConstString( const ConstString & _key ) const = 0;
-        virtual String getValueJSON( const ConstString & _key ) const = 0;
+        virtual Params getValueJSON( const ConstString & _key ) const = 0;
         
         virtual Params getValues() const = 0;
     };

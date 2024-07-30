@@ -1,6 +1,7 @@
 #include "AppleFirebaseRemoteConfigService.h"
 
-#include "Environment/Apple/AppleString.h"
+#import "Environment/Apple/AppleString.h"
+#import "Environment/Apple/AppleDetail.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #   include "Interface/ScriptServiceInterface.h"
@@ -91,15 +92,27 @@ namespace Mengine
         return value_cs;
     }
     //////////////////////////////////////////////////////////////////////////
-    String AppleFirebaseRemoteConfigService::getValueJSON( const ConstString & _key ) const
+    Params AppleFirebaseRemoteConfigService::getValueJSON( const ConstString & _key ) const
     {
         FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:@(_key.c_str())];
         
         NSString * value = [firValue stringValue];
         
-        String value_str = [AppleString NSStringToString:value];
+        NSData *data = [value dataUsingEncoding:NSUTF8StringEncoding];
+        NSError *error = nil;
+        id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
         
-        return value_str;
+        if( error != nil )
+        {
+            return Params();
+        }
+        
+        NSDictionary * jsonDictionary = (NSDictionary *)jsonObject;
+        
+        Params params;
+        [AppleDetail getParamsFromNSDictionary:jsonDictionary outParams:&params];
+        
+        return params;
     }
     //////////////////////////////////////////////////////////////////////////
     Params AppleFirebaseRemoteConfigService::getValues() const

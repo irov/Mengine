@@ -22,7 +22,7 @@ namespace Mengine
         int64_t getValueInteger( const ConstString & _key ) const override;
         double getValueDouble( const ConstString & _key ) const override;
         ConstString getValueConstString( const ConstString & _key ) const override;
-        String getValueJSON( const ConstString & _key ) const override;
+        Params getValueJSON( const ConstString & _key ) const override;
         
         Params getValues() const override;
     };

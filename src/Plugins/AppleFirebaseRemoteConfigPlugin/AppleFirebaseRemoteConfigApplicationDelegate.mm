@@ -15,7 +15,7 @@
     remoteConfigSettings.minimumFetchInterval = 3600;
     [[FIRRemoteConfig remoteConfig] setConfigSettings:remoteConfigSettings];
     
-    [[FIRRemoteConfig remoteConfig] setDefaultsFromPlistFileName:@"RemoteConfigDefaults"];
+    [[FIRRemoteConfig remoteConfig] setDefaultsFromPlistFileName:@MENGINE_FIREBASE_REMOTECONFIG_PLIST_NAME];
     
     [[FIRRemoteConfig remoteConfig] fetchWithCompletionHandler:^(FIRRemoteConfigFetchStatus status, NSError *error) {
         switch (status) {

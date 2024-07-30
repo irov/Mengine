@@ -86,7 +86,7 @@ namespace Mengine
         
         NSString * value = [firValue stringValue];
         
-        ConstString value_cs = Helper::NSStringToConstString( value );
+        ConstString value_cs = [AppleString NSStringToConstString:value];
         
         return value_cs;
     }
@@ -97,7 +97,7 @@ namespace Mengine
         
         NSString * value = [firValue stringValue];
         
-        String value_str = Helper::NSStringToString( value );
+        String value_str = [AppleString NSStringToString:value];
         
         return value_str;
     }

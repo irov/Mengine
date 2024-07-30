@@ -31,6 +31,7 @@ typedef Mengine::StaticString<MENGINE_APPLE_MESSAGE_NSERROR> NSErrorMessage;
 + (BOOL)isValidJSONString:(NSString * _Nonnull) _value;
 
 + (void)getParamsFromNSDictionary:(NSDictionary * _Nonnull) _in outParams:(Mengine::Params * const _Nonnull) _out;
++ (BOOL)getParamsFromJSON:(NSString * _Nonnull) _in outParams:(Mengine::Params * const _Nonnull) _out;
 + (NSDictionary * _Nonnull)getNSDictionaryFromParams:(const Mengine::Params &) _params;
 + (void)getVectorStringFromNSArray:(NSArray<NSString *> * _Nonnull) _in outVectorString:(Mengine::VectorString * const _Nonnull) _out;
 + (NSArray<NSString *> * _Nonnull)getNSArrayFromVectorString:(const Mengine::VectorString &) _strings;

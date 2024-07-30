@@ -76,6 +76,24 @@
     return YES;
 }
 
++ (BOOL)getParamsFromJSON:(NSString * _Nonnull) _in outParams:(Mengine::Params * const _Nonnull) _out {
+    NSData * data = [_in dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSError * error = nil;
+    id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    
+    if( error != nil )
+    {
+        return NO;
+    }
+    
+    NSDictionary * jsonDictionary = (NSDictionary *)jsonObject;
+    
+    [AppleDetail getParamsFromNSDictionary:jsonDictionary outParams:_out];
+    
+    return YES;
+}
+
 + (void)getParamsFromNSDictionary:(NSDictionary *) _in outParams:(Mengine::Params *const) _out {
     if (_in == nil) {
         return;

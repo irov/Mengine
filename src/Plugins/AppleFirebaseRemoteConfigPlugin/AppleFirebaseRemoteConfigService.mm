@@ -98,19 +98,8 @@ namespace Mengine
         
         NSString * value = [firValue stringValue];
         
-        NSData *data = [value dataUsingEncoding:NSUTF8StringEncoding];
-        NSError *error = nil;
-        id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-        
-        if( error != nil )
-        {
-            return Params();
-        }
-        
-        NSDictionary * jsonDictionary = (NSDictionary *)jsonObject;
-        
         Params params;
-        [AppleDetail getParamsFromNSDictionary:jsonDictionary outParams:&params];
+        [AppleDetail getParamsFromJSON:value outParams:&params];
         
         return params;
     }

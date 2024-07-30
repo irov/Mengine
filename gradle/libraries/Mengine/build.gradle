@@ -8,6 +8,7 @@ def ANDROID_APP_BUILD_PUBLISH = Utils.getBooleanProperty(project, "ANDROID_APP_B
 def ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE = Utils.getBooleanProperty(project, "ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE", false)
 def MENGINE_APP_DEPLOY_PATH = Utils.getStringProperty(project, "MENGINE_APP_DEPLOY_PATH", rootProject.projectDir.getAbsolutePath() + '/app')
 def MENGINE_APP_SECURE_VALUE = Utils.getStringProperty(project, "MENGINE_APP_SECURE_VALUE", "0123456789A")
+def MENGINE_BUILD_ASSERTION_DEBUG= Utils.getIntegerProperty(project, "MENGINE_BUILD_ASSERTION_DEBUG", -1)
 
 def MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_OPENAL32")
 
@@ -28,12 +29,12 @@ android {
         cmake_arguments.add("-DCMAKE_SYSTEM_NAME=Android")
         cmake_arguments.add("-DCMAKE_SYSTEM_VERSION=" + project.minSdkVersion)
 
-        cmake_arguments.add("-DMENGINE_BUILD_NUMBER:STRING=" + ANDROID_APP_BUILD_NUMBER)
-        cmake_arguments.add("-DMENGINE_BUILD_VERSION:STRING=" + ANDROID_APP_BUILD_VERSION)
+        cmake_arguments.add("-DMENGINE_BUILD_NUMBER:STRING=${ANDROID_APP_BUILD_NUMBER}")
+        cmake_arguments.add("-DMENGINE_BUILD_VERSION:STRING=${ANDROID_APP_BUILD_VERSION}")
         cmake_arguments.add("-DMENGINE_BUILD_MENGINE_BUILD_PUBLISH=" + (ANDROID_APP_BUILD_PUBLISH ? "ON" : "OFF"))
         cmake_arguments.add("-DMENGINE_BUILD_MENGINE_LOGGER_LEVEL_FORCE_VERBOSE=" + (ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE ? "ON" : "OFF"))
-        cmake_arguments.add("-DMENGINE_SECURE_VALUE:STRING=" + MENGINE_APP_SECURE_VALUE)
-        cmake_arguments.add("-DMENGINE_DEPLOY_PATH=" + MENGINE_APP_DEPLOY_PATH)
+        cmake_arguments.add("-DMENGINE_SECURE_VALUE:STRING=${MENGINE_APP_SECURE_VALUE}")
+        cmake_arguments.add("-DMENGINE_DEPLOY_PATH:STRING=${MENGINE_APP_DEPLOY_PATH}")
 
         debug {
             externalNativeBuild {
@@ -43,6 +44,10 @@ android {
                     }
 
                     arguments.add("-DCMAKE_BUILD_TYPE:STRING=Debug")
+
+                    if (MENGINE_BUILD_ASSERTION_DEBUG != -1) {
+                        cppFlags "-DMENGINE_ASSERTION_DEBUG=" + MENGINE_BUILD_ASSERTION_DEBUG
+                    }
                 }
             }
         }
@@ -55,6 +60,10 @@ android {
                     }
 
                     arguments.add("-DCMAKE_BUILD_TYPE:STRING=Release")
+
+                    if (MENGINE_BUILD_ASSERTION_DEBUG != -1) {
+                        cppFlags "-DMENGINE_ASSERTION_DEBUG=${MENGINE_BUILD_ASSERTION_DEBUG}"
+                    }
                 }
             }
         }

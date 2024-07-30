@@ -102,4 +102,28 @@ namespace Mengine
         return value_str;
     }
     //////////////////////////////////////////////////////////////////////////
+    Params AppleFirebaseRemoteConfigService::getValues() const
+    {
+        FIRRemoteConfig * remoteConfig = [FIRRemoteConfig remoteConfig];
+        
+        NSArray<NSString *> * remoteKeys = [remoteConfig allKeysFromSource:FIRRemoteConfigSourceRemote];
+        
+        Params params;
+        
+        for( NSString * key in remoteKeys )
+        {
+            Mengine::ConstString key_cstr = [AppleString NSStringToConstString:key];
+            
+            FIRRemoteConfigValue * value = [remoteConfig configValueForKey:key];
+            
+            NSString * value_ns = [value stringValue];
+            
+            String value_str = [AppleString NSStringToString:value_ns];
+            
+            params.emplace( key_cstr, value_str );
+        }
+        
+        return params;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

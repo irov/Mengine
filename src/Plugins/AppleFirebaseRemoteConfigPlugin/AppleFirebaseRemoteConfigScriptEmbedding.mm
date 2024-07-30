@@ -36,6 +36,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueDouble", service, &AppleFirebaseRemoteConfigServiceInterface::getValueDouble );
         pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueConstString", service, &AppleFirebaseRemoteConfigServiceInterface::getValueConstString );
         pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValueJSON", service, &AppleFirebaseRemoteConfigServiceInterface::getValueJSON );
+        pybind::def_functor( _kernel, "appleFirebaseRemoteConfigGetValues", service, &AppleFirebaseRemoteConfigServiceInterface::getValues );
 
         return true;
     }
@@ -47,6 +48,7 @@ namespace Mengine
         _kernel->remove_from_module( "appleFirebaseRemoteConfigGetValueDouble", nullptr );
         _kernel->remove_from_module( "appleFirebaseRemoteConfigGetValueConstString", nullptr );
         _kernel->remove_from_module( "appleFirebaseRemoteConfigGetValueJSON", nullptr );
+        _kernel->remove_from_module( "appleFirebaseRemoteConfigGetValues", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

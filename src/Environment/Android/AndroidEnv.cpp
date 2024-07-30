@@ -1,5 +1,7 @@
 #include "AndroidEnv.h"
 
+#include "AndroidDeclaration.h"
+
 #include "Kernel/BuildMode.h"
 
 #include <pthread.h>

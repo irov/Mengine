@@ -1,14 +1,14 @@
 #define SDL_MAIN_HANDLED
 
-#include "Environment/SDL/SDLIncluder.h"
+#include "Environment/Android/AndroidDeclaration.h"
 
-#include "SDLApplication.h"
+#include "AndroidApplication.h"
 
-int SDL_main( int argc, char * argv[] )
+JNIEXPORT int JNICALL MENGINE_MAIN_JAVA_INTERFACE( AndroidMain_1nativeRunMain )(JNIEnv * _env, jclass _cls, jobjectArray _options)
 {
-    Mengine::SDLApplication application;
+    Mengine::AndroidApplication application;
 
-    if( application.bootstrap( argc, argv ) == false )
+    if( application.bootstrap( 0, nullptr ) == false )
     {
         application.finalize();
 

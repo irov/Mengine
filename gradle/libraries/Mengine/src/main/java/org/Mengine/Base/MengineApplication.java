@@ -32,12 +32,9 @@ public class MengineApplication extends Application {
     private static final String TAG = "MengineApplication";
 
 
-    /*
     static {
         System.loadLibrary("SDLApplication");
     }
-     */
-
 
     private static native void AndroidEnv_setMengineAndroidApplicationJNI(Object activity, ClassLoader cl);
     private static native void AndroidEnv_removeMengineAndroidApplicationJNI();
@@ -1028,6 +1025,7 @@ public class MengineApplication extends Application {
 
         this.setState("application.init", "sdl_load_library");
 
+        /*
         try {
             SDL.loadLibrary("SDLApplication");
         } catch (UnsatisfiedLinkError e) {
@@ -1051,6 +1049,7 @@ public class MengineApplication extends Application {
 
             return;
         }
+        */
 
         this.setState("application.init", "sdl_init");
 

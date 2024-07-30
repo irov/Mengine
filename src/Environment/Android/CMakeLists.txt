@@ -3,6 +3,7 @@ MENGINE_PROJECT(Android)
 ADD_FILTER(
 src
     AndroidIncluder.h
+    AndroidDeclaration.h
     AndroidEventation.h
     AndroidEventationInterface.h
     AndroidEventationHub.h
@@ -38,3 +39,5 @@ src
 )
 
 ADD_MENGINE_LIBRARY(Environment)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} android)

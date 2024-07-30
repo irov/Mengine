@@ -9,7 +9,7 @@
 #include "Interface/HttpServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
-#   include "Environment/Android/AndroidEnv.h"
+#   include "Environment/Android/AndroidDeclaration.h"
 #   include "Environment/Android/AndroidHelper.h"
 #endif
 

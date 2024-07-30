@@ -7,7 +7,6 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/androidx.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/minify.gradle'
 
 def MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_MENGINE")
-def MENGINE_APP_LIBRARY_SDL = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_SDL")
 
 android {
     ext.extensions = []
@@ -26,9 +25,5 @@ android {
 dependencies {
     if (MENGINE_APP_LIBRARY_MENGINE == true) {
         implementation project(':libraries:Mengine')
-    }
-
-    if (MENGINE_APP_LIBRARY_SDL == true) {
-        implementation project(':libraries:SDL')
     }
 }

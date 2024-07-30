@@ -14,6 +14,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
 
@@ -30,7 +32,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.Set;
 
-public class MengineActivity extends SDLActivity {
+public class MengineActivity extends AppCompatActivity {
     public static final String TAG = "MengineActivity";
 
     private static native void AndroidEnv_setMengineAndroidActivityJNI(Object activity);
@@ -56,26 +58,11 @@ public class MengineActivity extends SDLActivity {
     private Map<String, Integer> m_requestCodes;
     private Map<String, MengineSemaphore> m_semaphores;
 
-    //private boolean mBrokenLibraries = false;
+    Thread m_threadMain;
 
-    //RelativeLayout m_contentView;
+    RelativeLayout m_contentView;
 
     public MengineActivity() {
-    }
-
-    @Override
-    protected String[] getLibraries() {
-        return new String[] {
-            "SDL2",
-            "SDLApplication"
-        };
-    }
-
-    @Override
-    protected String getMainSharedObject() {
-        String mainSharedObject = this.getApplicationInfo().nativeLibraryDir + "/" + "libSDLApplication.so";
-
-        return mainSharedObject;
     }
 
     public boolean isDevelopmentMode() {
@@ -272,49 +259,23 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Thread.currentThread().setName("MengineActivity");
+
         m_initializePython = false;
         m_destroy = false;
 
         m_requestCodes = new HashMap<>();
         m_semaphores = new HashMap<>();
 
-        /*
         RelativeLayout contentView = new RelativeLayout(this);
         this.setContentView(contentView);
         m_contentView = contentView;
-         */
 
         this.setState("activity.lifecycle", "create");
 
         this.setState("activity.init", "start");
-
-        try {
-            super.onCreate(savedInstanceState);
-        } catch (Exception e) {
-            this.setState("activity.init", "sdl_exception");
-
-            MengineAnalytics.buildEvent("mng_activity_init_failed")
-                .addParameterException("reason", e)
-                .logAndFlush();
-
-            this.finishWithAlertDialog("[ERROR] SDL create exception: %s"
-                , e.getMessage()
-            );
-
-            return;
-        }
-
-        if (mBrokenLibraries == true) {
-            this.setState("activity.init", "sdl_broken_libraries");
-
-            MengineAnalytics.buildEvent("mng_activity_init_failed")
-                .addParameterString("reason", "sdl broken libraries")
-                .logAndFlush();
-
-            this.finishWithAlertDialog("[ERROR] SDL broken libraries");
-
-            return;
-        }
 
         AndroidEnv_setMengineAndroidActivityJNI(this);
 
@@ -367,7 +328,6 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.lifecycle", "created");
 
-        /*
         MengineGLSurfaceView surface = new MengineGLSurfaceView(this);
 
         MengineGLSurfaceRenderer renderer = new MengineGLSurfaceRenderer();
@@ -383,10 +343,15 @@ public class MengineActivity extends SDLActivity {
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.INVISIBLE;
-                window.getDecorView().setSystemUiVisibility(flags);
-                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-         */
+
+        window.getDecorView().setSystemUiVisibility(flags);
+        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+
+        String options = application.getApplicationOptions();
+        MengineMain main = new MengineMain(options);
+
+        m_threadMain = new Thread(main);
     }
 
     public void quitMengineApplication() {
@@ -452,14 +417,6 @@ public class MengineActivity extends SDLActivity {
             , resultCode
         );
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onStart: broken libraries");
-
-            super.onActivityResult(requestCode, resultCode, data);
-
-            return;
-        }
-
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
@@ -481,12 +438,6 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logMessage(TAG, "onStart");
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onStart: broken libraries");
-
-            return;
-        }
-
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
@@ -503,12 +454,6 @@ public class MengineActivity extends SDLActivity {
         this.setState("activity.lifecycle", "stop");
 
         MengineLog.logMessage(TAG, "onStop");
-
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onStop: broken libraries");
-
-            return;
-        }
 
         List<MenginePlugin> plugins = this.getPlugins();
 
@@ -529,12 +474,6 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logMessage(TAG, "onPause");
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onPause: broken libraries");
-
-            return;
-        }
-
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
@@ -551,12 +490,6 @@ public class MengineActivity extends SDLActivity {
         this.setState("activity.lifecycle", "resume");
 
         MengineLog.logMessage(TAG, "onResume");
-
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onResume: broken libraries");
-
-            return;
-        }
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -575,12 +508,6 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logMessage(TAG, "onNewIntent intent: %s", intent);
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onNewIntent: broken libraries");
-
-            return;
-        }
-
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
@@ -595,14 +522,6 @@ public class MengineActivity extends SDLActivity {
         this.setState("activity.lifecycle", "destroy");
 
         MengineLog.logMessage(TAG, "onDestroy");
-
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onDestroy: broken libraries");
-
-            super.onDestroy();
-
-            return;
-        }
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -619,6 +538,14 @@ public class MengineActivity extends SDLActivity {
         m_requestCodes = null;
         m_semaphores = null;
 
+        try {
+            m_threadMain.join();
+        } catch (InterruptedException e) {
+            MengineLog.logError(TAG, "thread main join exception: %s"
+                , e.getMessage()
+            );
+        }
+
         AndroidEnv_removeMengineAndroidActivityJNI();
 
         super.onDestroy();
@@ -631,12 +558,6 @@ public class MengineActivity extends SDLActivity {
         this.setState("activity.lifecycle", "restart");
 
         MengineLog.logMessage(TAG, "onRestart");
-
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onRestart: broken libraries");
-
-            return;
-        }
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -657,12 +578,6 @@ public class MengineActivity extends SDLActivity {
             , newConfig.toString()
         );
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onConfigurationChanged: broken libraries");
-
-            return;
-        }
-
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
@@ -680,12 +595,6 @@ public class MengineActivity extends SDLActivity {
             , Arrays.toString(grantResults)
         );
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onRequestPermissionsResult: broken libraries");
-
-            return;
-        }
-
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
@@ -701,12 +610,6 @@ public class MengineActivity extends SDLActivity {
             , event.getScanCode()
         );
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "dispatchKeyEvent: broken libraries");
-
-            return super.dispatchKeyEvent(event);
-        }
-
         List<MenginePluginKeyListener> listeners = this.getKeyListeners();
 
         for (MenginePluginKeyListener l : listeners) {
@@ -716,11 +619,6 @@ public class MengineActivity extends SDLActivity {
         }
 
         return super.dispatchKeyEvent(event);
-    }
-
-    @Override
-    protected SDLSurface createSDLSurface(Context context) {
-        return new MengineSurface(context);
     }
 
     /***********************************************************************************************

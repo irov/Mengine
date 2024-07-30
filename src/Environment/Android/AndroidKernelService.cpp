@@ -10,6 +10,7 @@
 #include "Interface/FileServiceInterface.h"
 
 #include "Environment/Android/AndroidEnv.h"
+#include "Environment/Android/AndroidDeclaration.h"
 #include "Environment/Android/AndroidHelper.h"
 #include "Environment/Android/AndroidActivityHelper.h"
 #include "Environment/Android/AndroidApplicationHelper.h"

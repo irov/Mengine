@@ -9,6 +9,8 @@ def ANDROID_APP_LOGGER_LEVEL_FORCE_VERBOSE = Utils.getBooleanProperty(project, "
 def MENGINE_APP_DEPLOY_PATH = Utils.getStringProperty(project, "MENGINE_APP_DEPLOY_PATH", rootProject.projectDir.getAbsolutePath() + '/app')
 def MENGINE_APP_SECURE_VALUE = Utils.getStringProperty(project, "MENGINE_APP_SECURE_VALUE", "0123456789A")
 
+def MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_OPENAL32")
+
 android {
     externalNativeBuild {
         cmake {
@@ -58,12 +60,15 @@ android {
         }
     }
 
-    preBuild.dependsOn ":libraries:SDL:build", ":libraries:OpenAL32:build"
+    if (MENGINE_APP_LIBRARY_OPENAL32 == true) {
+        preBuild.dependsOn ":libraries:OpenAL32:build"
+    }
 
     namespace "org.Mengine.Base"
 }
 
 dependencies {
-    implementation project(':libraries:SDL')
-    implementation project(':libraries:OpenAL32')
+    if (MENGINE_APP_LIBRARY_OPENAL32 == true) {
+        implementation project(':libraries:OpenAL32')
+    }
 }

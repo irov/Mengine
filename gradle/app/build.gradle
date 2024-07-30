@@ -21,7 +21,6 @@ def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDRO
 
 def MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_MENGINE")
 def MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_OPENAL32")
-def MENGINE_APP_LIBRARY_SDL = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_SDL")
 
 def MENGINE_APP_PLUGIN_SPLASHSCREEN = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_SPLASHSCREEN")
 def MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS")
@@ -355,14 +354,6 @@ if (ANDROID_APP_SPLIT_ENABLE == true) {
                 output.versionCodeOverride = baseAbiVersionCode * 1000000 + variant.versionCode
             }
         }
-    }
-}
-
-Utils.logAvailable("MENGINE_APP_LIBRARY_SDL", MENGINE_APP_LIBRARY_SDL)
-
-if (MENGINE_APP_LIBRARY_SDL == true) {
-    dependencies {
-        implementation project(':libraries:SDL')
     }
 }
 

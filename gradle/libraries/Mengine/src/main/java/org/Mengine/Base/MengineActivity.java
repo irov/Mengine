@@ -739,6 +739,7 @@ public class MengineActivity extends AppCompatActivity {
             , event.getScanCode()
         );
 
+
         MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginKeyListener> listeners = this.getKeyListeners();

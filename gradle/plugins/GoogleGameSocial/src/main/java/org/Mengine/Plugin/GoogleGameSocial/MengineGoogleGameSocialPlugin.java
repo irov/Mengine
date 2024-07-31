@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.GoogleGameSocial;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -71,10 +72,9 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialShowAchievementSuccess");
 
-                    MengineActivity activity1 = MengineGoogleGameSocialPlugin.this.getMengineActivity();
 
                     try {
-                        activity1.startActivityForResult(intent, MengineGoogleGameSocialPlugin.RC_ACHIEVEMENT_UI);
+                        activity.startActivityForResult(intent, MengineGoogleGameSocialPlugin.RC_ACHIEVEMENT_UI);
                     } catch (ActivityNotFoundException e) {
                         MengineGoogleGameSocialPlugin.this.logError("[ERROR] showAchievements catch ActivityNotFoundException: %s"
                             , e.getMessage()

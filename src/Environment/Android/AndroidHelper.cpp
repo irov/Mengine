@@ -645,8 +645,6 @@ namespace Mengine
                 _jenv->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
                 _jenv->DeleteLocalRef( jvalue );
 
-                __android_log_write( ANDROID_LOG_INFO, "Mengine", _utf8 );
-
                 return true;
             } );
 

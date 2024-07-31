@@ -34,9 +34,6 @@ src
     
     AppleNSLogger.h
     AppleNSLogger.mm
-    
-    ConstStringHolderNSString.h
-    ConstStringHolderNSString.mm
 )
 
 ADD_MENGINE_APPLE_LIBRARY(Environment)

@@ -1028,6 +1028,7 @@ public class MengineApplication extends Application {
 
             return;
         }
+        */
 
         ClassLoader cl = MengineApplication.class.getClassLoader();
 

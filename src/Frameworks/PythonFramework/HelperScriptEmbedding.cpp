@@ -3859,6 +3859,8 @@ namespace Mengine
                 Helper::visit( _value
                     , [_kernel, &py_value]( const ParamNull & _element )
                 {
+                    MENGINE_UNUSED( _element );
+
                     py_value = _kernel->ret_none();
                 }
                     , [_kernel, &py_value]( const ParamBool & _element )

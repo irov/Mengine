@@ -9,6 +9,8 @@ SET(THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies)
 
 include(${MENGINE_REPOSITORY}/cmake/download_template.cmake)
 
+DOWNLOAD_URL(libjpeg https://www.ijg.org/files/jpegsr9f.zip)
+
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image.h stb_image.h)
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image_write.h stb_image_write.h)
 
@@ -49,7 +51,6 @@ GIT_CLONE(libmath https://github.com/irov/libmath.git)
 GIT_CLONE(jansson https://github.com/akheron/jansson.git "v2.14")
 GIT_CLONE(jpp https://github.com/irov/jpp.git)
 GIT_CLONE(libpng https://github.com/glennrp/libpng.git "v1.6.40")
-GIT_CLONE(libjpeg https://github.com/winlibs/libjpeg.git "libjpeg-9c")
 GIT_CLONE(libtheora https://github.com/xiph/theora.git "v1.1.1")
 GIT_CLONE(openal-soft https://github.com/kcat/openal-soft.git "1.23.1")
 GIT_CLONE(python https://github.com/python/cpython.git "v2.7.18")

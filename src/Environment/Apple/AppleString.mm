@@ -28,8 +28,9 @@
 
 + (Mengine::String)NSStringToString:(NSString *) _value {
     const Mengine::Char * value_str = [_value UTF8String];
+    NSUInteger value_size = [_value length];
             
-    Mengine::String value_string = Mengine::String( value_str );
+    Mengine::String value_string = Mengine::String( value_str, value_size );
             
     return value_string;
 }
@@ -62,7 +63,7 @@
         
 + (NSString *)NSStringFromConstString:(const Mengine::ConstString &) _value {
     const Mengine::Char * value_str = _value.c_str();
-    Mengine::String::size_type value_size = _value.size();
+    Mengine::ConstString::size_type value_size = _value.size();
             
     NSString * ns = [AppleString NSStringFromString:value_str withSize:value_size];
             

@@ -98,7 +98,7 @@
     return YES;
 }
 
-+ (void)getParamsFromNSDictionary:(NSDictionary *) _in outParams:(Mengine::Params *const) _out {
++ (void)getParamsFromNSDictionary:(NSDictionary *) _in outParams:(Mengine::Params * const) _out {
     if (_in == nil) {
         return;
     }
@@ -107,7 +107,9 @@
     CFTypeID numberTypeId = CFNumberGetTypeID();
     
     [_in enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL * stop) {
-        Mengine::ConstString key_str = [AppleString NSStringToConstString:key];
+        Mengine::ConstString key_cstr = [AppleString NSStringToConstString:key];
+        
+        Mengine::ParamVariant variant;
         
         if ([value isKindOfClass:[NSNumber class]] == YES) {
             CFTypeID valueTypeId = CFGetTypeID((__bridge CFTypeRef)(value));
@@ -115,7 +117,7 @@
             if (valueTypeId == boolenTypeId) {
                 bool b = [value boolValue];
                 
-                _out->emplace( key_str, b );
+                variant = Mengine::ParamVariant(b);
             } else if (valueTypeId == numberTypeId) {
                 CFNumberType numberType = CFNumberGetType((__bridge CFNumberRef)value);
                 
@@ -131,7 +133,7 @@
                     case kCFNumberLongLongType: {
                         int64_t n = [value longLongValue];
                         
-                        _out->emplace( key_str, n );
+                        variant = Mengine::ParamVariant(n);
                     }break;
                         
                     case kCFNumberFloat32Type:
@@ -140,28 +142,29 @@
                     case kCFNumberDoubleType: {
                         double d = [value doubleValue];
                         
-                        _out->emplace( key_str, d );
+                        variant = Mengine::ParamVariant(d);
                     }break;
+                    
                     case kCFNumberCFIndexType:
                     case kCFNumberNSIntegerType:
                     case kCFNumberCGFloatType: {
-                        return;
+                        
                     }break;
                 }
-            } else {
-                return;
             }
         } else if ([value isKindOfClass:[NSString class]] == YES) {
             Mengine::ConstString s = [AppleString NSStringToConstString:value];
             
-            _out->emplace( key_str, s );
+            variant = Mengine::ParamVariant(s);
+        } else if ([value isKindOfClass:[NSNull class]]) {
+            variant = Mengine::ParamVariant(nullptr);
         } else {
-            return;
+            const Mengine::Char * value_str = [[NSString stringWithFormat:@"%@", value] UTF8String];
+            
+            variant = Mengine::ParamVariant(value_str);
         }
         
-        const Mengine::Char * value_str = [[NSString stringWithFormat:@"%@", value] UTF8String];
-        
-        _out->emplace( key_str, Mengine::String(value_str) );
+        _out->emplace( key_cstr, variant );
     }];
 }
 
@@ -172,7 +175,10 @@
         const Mengine::Char * key_str = key.c_str();
         
         Mengine::Helper::visit( value
-            , [dictionary, key_str]( const Mengine::ParamBool & _element ) {
+            , [dictionary, key_str]( const Mengine::ParamNull & _element ) {
+                [dictionary setObject:[NSNull null]
+                               forKey:@(key_str)];
+            }, [dictionary, key_str]( const Mengine::ParamBool & _element ) {
                 [dictionary setObject:[NSNumber numberWithBool:_element]
                                forKey:@(key_str)];
             }, [dictionary, key_str]( const Mengine::ParamInteger & _element ) {

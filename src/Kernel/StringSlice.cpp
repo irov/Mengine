@@ -27,10 +27,13 @@ namespace Mengine
             {
                 return;
             }
-             
-            const Char * tail = _in + data_index;
 
-            _lambda( tail );
+            size_t tail_size = _size - data_index;
+
+            MENGINE_MEMCPY( _buffer, _in + data_index, tail_size );
+            _buffer[tail_size] = '\0';
+
+            _lambda( _buffer );
         }
     }
 }

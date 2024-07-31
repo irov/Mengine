@@ -44,6 +44,7 @@ public class MengineApplication extends Application {
 
     private static native boolean AndroidEnv_isMasterRelease();
     private static native String AndroidEnv_getEngineGITSHA1();
+    private static native String AndroidEnv_getEngineVersion();
     private static native String AndroidEnv_getBuildDate();
     private static native String AndroidEnv_getBuildUsername();
 
@@ -53,6 +54,10 @@ public class MengineApplication extends Application {
 
     public String getEngineGITSHA1() {
         return AndroidEnv_getEngineGITSHA1();
+    }
+
+    public String getEngineVersion() {
+        return AndroidEnv_getEngineVersion();
     }
 
     public String getBuildDate() {
@@ -1060,6 +1065,12 @@ public class MengineApplication extends Application {
 
         String build_gitsha1 = this.getEngineGITSHA1();
         this.setState("engine.build_gitsha1", build_gitsha1);
+
+        String build_version = this.getEngineVersion();
+        this.setState("engine.build_version", build_version);
+
+        String build_date = this.getBuildDate();
+        this.setState("engine.build_date", build_date);
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {

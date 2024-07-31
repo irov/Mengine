@@ -320,9 +320,8 @@ public class MengineUtils {
     private static void zipFile(ZipOutputStream out, File file, int basePathLength) throws IOException {
         final int BUFFER = 2048;
 
-        byte [] data = new byte[BUFFER];
         String unmodifiedFilePath = file.getPath();
-        String relativePath = unmodifiedFilePath.substring(basePathLength);
+        String relativePath = unmodifiedFilePath.substring(basePathLength + 1);
         FileInputStream fi = new FileInputStream(unmodifiedFilePath);
         BufferedInputStream origin = new BufferedInputStream(fi, BUFFER);
         ZipEntry entry = new ZipEntry(relativePath);
@@ -330,12 +329,14 @@ public class MengineUtils {
         entry.setTime(modified);
         out.putNextEntry(entry);
 
+        byte[] data = new byte[BUFFER];
         int count;
         while ((count = origin.read(data, 0, BUFFER)) != -1) {
             out.write(data, 0, count);
         }
 
         origin.close();
+        fi.close();
     }
 
     private static void zipSubFolder(ZipOutputStream out, File folder, int basePathLength) throws IOException {
@@ -383,6 +384,7 @@ public class MengineUtils {
             }
 
             out.close();
+            dest.close();
         } catch (Exception e) {
             MengineLog.logError(TAG, "[ERROR] zipFiles exception: %s"
                 , e.getMessage()
@@ -564,7 +566,7 @@ public class MengineUtils {
 
         MengineUtils.performOnMainThreadDelayed(() -> {
             MengineUtils.showAlertDialog(activity, () -> {
-                activity.finish();
+                activity.finishAndRemoveTask();
             }, format, args);
         }, 0);
     }

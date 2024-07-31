@@ -67,6 +67,15 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1getEngineVersion )(JNIEnv * env, jclass cls)
+    {
+        const Mengine::Char * ENGINE_VERSION = Mengine::Helper::getEngineVersion();
+
+        jstring result = env->NewStringUTF( ENGINE_VERSION );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jstring JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1getBuildDate )(JNIEnv * env, jclass cls)
     {
         const Mengine::Char * BUILD_DATE = Mengine::Helper::getBuildDate();

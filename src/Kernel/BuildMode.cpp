@@ -3,6 +3,8 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 
+#include "Config/Version.h"
+
 #include "Configuration/GitSHA1.h"
 #include "Configuration/BuildInfo.h"
 
@@ -100,6 +102,13 @@ namespace Mengine
             const Char * ENGINE_GIT_DATE = MENGINE_ENGINE_GIT_DATE;
 
             return ENGINE_GIT_DATE;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const Char * getEngineVersion()
+        {
+            const Char * ENGINE_VERSION = MENGINE_ENGINE_VERSION_STRING;
+
+            return ENGINE_VERSION;
         }
         //////////////////////////////////////////////////////////////////////////        
         const Char * getContentCommit()

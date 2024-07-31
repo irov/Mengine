@@ -1,7 +1,5 @@
 #import "AppleString.h"
 
-#include "Interface/AppleKernelServiceInterface.h"
-
 #include "Kernel/ConstStringHelper.h"
 
 #include "Config/StdString.h"
@@ -19,9 +17,10 @@
 }
         
 + (Mengine::ConstString)NSStringToConstString:(NSString *) _value {
-    Mengine::ConstString value_cstr;
-    APPLE_KERNEL_SERVICE()
-        ->stringize( _value, &value_cstr );
+    const Mengine::Char * value_str = [_value UTF8String];
+    NSUInteger value_size = [_value length];
+    
+    Mengine::ConstString value_cstr = Mengine::Helper::stringizeStringSize( value_str, (Mengine::ConstString::size_type)value_size );
             
     return value_cstr;
 }

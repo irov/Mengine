@@ -1093,11 +1093,6 @@ public class MengineApplication extends Application {
         String engine_builddate = this.getBuildDate();
         this.setState("engine.build_date", engine_builddate);
 
-        String engine_version = this.getEngineVersion();
-        this.setState("engine.version", engine_version);
-
-        String engine_builddate = this.getBuildDate();
-        this.setState("engine.build_date", engine_builddate);
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {

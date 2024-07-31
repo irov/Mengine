@@ -289,7 +289,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.init", "create");
 
-        MengineLog.logMessage(TAG, "onCreate");
+        MengineLog.logMessageRelease(TAG, "onCreate");
 
         List<MenginePlugin> plugins = this.getPlugins();
 
@@ -521,7 +521,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "destroy");
 
-        MengineLog.logMessage(TAG, "onDestroy");
+        MengineLog.logMessageRelease(TAG, "onDestroy");
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -864,7 +864,7 @@ public class MengineActivity extends AppCompatActivity {
                 File accountZipFile = MengineUtils.createTempFile(context, "mng_account_", ".zip");
 
                 if (accountZipFile == null) {
-                    MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_account_***.zip' mail: %s subject: %s"
+                    MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_account_***.zip' for mail: %s subject: %s"
                         , email
                         , subject
                     );
@@ -879,7 +879,7 @@ public class MengineActivity extends AppCompatActivity {
                         return false;
                     }
 
-                    MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' mail: %s subject: %s"
+                    MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' for mail: %s subject: %s"
                         , accountZIPUri
                         , email
                         , subject
@@ -889,7 +889,7 @@ public class MengineActivity extends AppCompatActivity {
                 } else {
                     body += "\n\n[ERROR] invalid zip account folder";
 
-                    MengineLog.logWarning(TAG, "linkingOpenMail invalid zip account folder mail: %s subject: %s"
+                    MengineLog.logWarning(TAG, "linkingOpenMail invalid zip account folder for mail: %s subject: %s"
                         , email
                         , subject
                     );
@@ -899,7 +899,7 @@ public class MengineActivity extends AppCompatActivity {
             File logFile = MengineUtils.createTempFile(context, "mng_log_", ".log");
 
             if (logFile == null) {
-                MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_log_***.log' mail: %s subject: %s"
+                MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_log_***.log' for mail: %s subject: %s"
                     , email
                     , subject
                 );
@@ -909,14 +909,17 @@ public class MengineActivity extends AppCompatActivity {
 
             OutputStreamWriter logFileStream = new OutputStreamWriter(new FileOutputStream(logFile));
 
+            logFileStream.write("[BEGIN CURRENT LOG]\n\n");
+
             if (AndroidEnvironmentService_writeCurrentLogToFile(logFileStream) == true) {
+                logFileStream.write("\n\n[END CURRENT LOG]");
                 logFileStream.flush();
                 logFileStream.close();
 
                 File logZipFile = MengineUtils.createTempFile(context, "mng_log_", ".zip");
 
                 if (logZipFile == null) {
-                    MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_log_***.zip' mail: %s subject: %s"
+                    MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_log_***.zip' for mail: %s subject: %s"
                         , email
                         , subject
                     );
@@ -931,7 +934,7 @@ public class MengineActivity extends AppCompatActivity {
                         return false;
                     }
 
-                    MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' mail: %s subject: %s"
+                    MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' for mail: %s subject: %s"
                         , logZipFileUri
                         , email
                         , subject
@@ -941,7 +944,7 @@ public class MengineActivity extends AppCompatActivity {
                 } else {
                     body += "\n\n[ERROR] invalid zip current log file";
 
-                    MengineLog.logMessage(TAG, "linkingOpenMail invalid zip current log file mail: %s subject: %s"
+                    MengineLog.logMessage(TAG, "linkingOpenMail invalid zip current log file for mail: %s subject: %s"
                         , email
                         , subject
                     );
@@ -949,7 +952,7 @@ public class MengineActivity extends AppCompatActivity {
             } else {
                 body += "\n\n[ERROR] invalid write current log file";
 
-                MengineLog.logMessage(TAG, "linkingOpenMail invalid write current log file mail: %s subject: %s"
+                MengineLog.logMessage(TAG, "linkingOpenMail invalid write current log file for mail: %s subject: %s"
                     , email
                     , subject
                 );
@@ -958,7 +961,7 @@ public class MengineActivity extends AppCompatActivity {
             File oldLogFile = MengineUtils.createTempFile(context, "mng_old_log_", ".log");
 
             if (oldLogFile == null) {
-                MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_old_log_***.log' mail: %s subject: %s"
+                MengineLog.logWarning(TAG, "linkingOpenMail invalid create temp file 'mng_old_log_***.log' for mail: %s subject: %s"
                     , email
                     , subject
                 );
@@ -968,7 +971,10 @@ public class MengineActivity extends AppCompatActivity {
 
             OutputStreamWriter oldLogFileStream = new OutputStreamWriter(new FileOutputStream(oldLogFile));
 
+            oldLogFileStream.write("[BEGIN OLD LOG]\n\n");
+
             if (AndroidEnvironmentService_writeOldLogToFile(oldLogFileStream) == true) {
+                oldLogFileStream.write("\n\n[END OLD LOG]");
                 oldLogFileStream.flush();
                 oldLogFileStream.close();
 
@@ -981,7 +987,7 @@ public class MengineActivity extends AppCompatActivity {
                         return false;
                     }
 
-                    MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' mail: %s subject: %s"
+                    MengineLog.logInfo(TAG, "linkingOpenMail attach file '%s' for mail: %s subject: %s"
                         , oldLogZipFileUri
                         , email
                         , subject
@@ -991,15 +997,15 @@ public class MengineActivity extends AppCompatActivity {
                 } else {
                     body += "\n\n[ERROR] invalid zip old log file";
 
-                    MengineLog.logMessage(TAG, "linkingOpenMail invalid zip old log file mail: %s subject: %s"
+                    MengineLog.logMessage(TAG, "linkingOpenMail invalid zip old log file for mail: %s subject: %s"
                         , email
                         , subject
                     );
                 }
             } else {
-                body += "\n\n[ERROR] invalid write old log file";
+                body += "\n\nNOT_FOUND_OLD_LOG";
 
-                MengineLog.logMessage(TAG, "linkingOpenMail invalid write old log file mail: %s subject: %s"
+                MengineLog.logMessage(TAG, "linkingOpenMail not found old log file for mail: %s subject: %s"
                     , email
                     , subject
                 );

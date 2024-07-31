@@ -89,6 +89,8 @@ extern "C"
 
         Mengine::ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_PUT();
         SERVICE_PROVIDER_FINALIZE( serviceProvider );
+
+        SERVICE_PROVIDER_DESTROY( serviceProvider );
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_DLL)

@@ -35,7 +35,7 @@ namespace Mengine
         ArrayString<1024> agent;
         agent.append( "Mengine" );
         agent.append( "/" );
-        agent.append( MENGINE_VERSION_STRING );
+        agent.append( MENGINE_ENGINE_VERSION_STRING );
         agent.append( " (" );
 
         Char osFamily[MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME] = {'\0'};

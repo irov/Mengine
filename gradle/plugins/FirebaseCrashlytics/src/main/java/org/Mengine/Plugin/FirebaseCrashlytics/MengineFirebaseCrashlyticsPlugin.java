@@ -132,6 +132,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
         }
 
         switch (level) {
+            case MengineLog.LM_MESSAGE_RELEASE:
             case MengineLog.LM_ERROR: {
                 if (MengineLog.isFilter(filter, MengineLog.LFILTER_EXCEPTION) == true) {
                     FirebaseCrashlytics.getInstance().recordException(new MengineFatalErrorException(msg));

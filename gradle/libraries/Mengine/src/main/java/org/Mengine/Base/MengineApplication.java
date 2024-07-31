@@ -1093,6 +1093,12 @@ public class MengineApplication extends Application {
         String engine_builddate = this.getBuildDate();
         this.setState("engine.build_date", engine_builddate);
 
+        String build_version = this.getEngineVersion();
+        this.setState("engine.build_version", build_version);
+
+        String build_date = this.getBuildDate();
+        this.setState("engine.build_date", build_date);
+
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
                 MengineLog.logMessage(TAG, "onAppPrepare plugin: %s"

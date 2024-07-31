@@ -42,7 +42,7 @@
     self.m_enumeratorRequest = 0;
     self.m_requestId = 0;
     
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
     self.m_amazonLoader = [[AppleAppLovinRewardedAmazonLoader alloc] initWithSlotId:amazonSlotId rewardedAd:self.m_rewardedAd];
 #else
     [self loadAd];
@@ -52,7 +52,7 @@
 }
 
 - (void) dealloc {
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
     if( self.m_amazonLoader != nil ) {
         [self.m_amazonLoader release];
         self.m_amazonLoader = nil;

@@ -5,7 +5,7 @@
 #import <Foundation/Foundation.h>
 #import <AppLovinSDK/AppLovinSDK.h>
 
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
 #import "AppleAppLovinInterstitialAmazonLoader.h"
 #endif
 
@@ -24,7 +24,7 @@
 
 @property (nonatomic, strong) MAInterstitialAd * _Nullable m_interstitialAd;
 
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
 @property (nonatomic, strong) AppleAppLovinInterstitialAmazonLoader * _Nullable m_amazonLoader;
 #endif
 

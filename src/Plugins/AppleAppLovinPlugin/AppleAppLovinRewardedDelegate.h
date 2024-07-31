@@ -5,7 +5,7 @@
 #import <AppLovinSDK/AppLovinSDK.h>
 #import <Foundation/Foundation.h>
 
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
 #import "AppleAppLovinRewardedAmazonLoader.h"
 #endif
 
@@ -25,7 +25,7 @@
 
 @property (nonatomic, strong) MARewardedAd * _Nullable m_rewardedAd;
 
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
 @property (nonatomic, strong) AppleAppLovinRewardedAmazonLoader * _Nullable m_amazonLoader;
 #endif
 

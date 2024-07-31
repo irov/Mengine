@@ -39,7 +39,7 @@
     
     self.m_interstitialAd = interstitialAd;
     
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
     self.m_amazonLoader = [[AppleAppLovinInterstitialAmazonLoader alloc] initWithSlotId:amazonSlotId interstitialAd:self.m_interstitialAd];
 #else
     [self loadAd];
@@ -49,7 +49,7 @@
 }
 
 - (void) dealloc {
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
     if( self.m_amazonLoader != nil ) {
         [self.m_amazonLoader release];
         self.m_amazonLoader = nil;

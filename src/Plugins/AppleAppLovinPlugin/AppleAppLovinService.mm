@@ -2,7 +2,7 @@
 
 #import "Environment/Apple/AppleString.h"
 
-#ifdef MENGINE_PLUGIN_APPLE_APPTRACKING
+#if defined(MENGINE_PLUGIN_APPLE_APPTRACKING)
 #   include "Plugins/AppleAppTrackingPlugin/AppleAppTrackingInterface.h"
 #endif
 
@@ -26,7 +26,7 @@ namespace Mengine
         : m_banners( nil )
         , m_interstitials( nil )
         , m_rewardeds( nil )
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
         , m_amazonService( nil )
 #endif
     {
@@ -42,7 +42,7 @@ namespace Mengine
         m_interstitials = [[NSMutableDictionary alloc] init];
         m_rewardeds = [[NSMutableDictionary alloc] init];
         
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
         m_amazonService = [[AppleAppLovinAmazonService alloc] init];
 #endif
         
@@ -51,7 +51,7 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     void AppleAppLovinService::_finalizeService()
     {
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
         m_amazonService = nil;
 #endif
                 
@@ -78,7 +78,7 @@ namespace Mengine
 
         NSString * amazonBannerSlotId = nil;
         
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
         amazonBannerSlotId = [m_amazonService getAmazonBannerSlotId];
 #endif
         
@@ -162,7 +162,7 @@ namespace Mengine
         
         NSString * amazonInterstitialSlotId = nil;
         
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
         amazonInterstitialSlotId = [m_amazonService getAmazonInterstitialSlotId];
 #endif
 
@@ -226,7 +226,7 @@ namespace Mengine
         
         NSString * amazonRewardedSlotId = nil;
         
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
         amazonRewardedSlotId = [m_amazonService getAmazonRewardedSlotId];
 #endif
 

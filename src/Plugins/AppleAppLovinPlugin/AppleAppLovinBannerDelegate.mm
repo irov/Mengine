@@ -51,7 +51,7 @@
     
     self.m_adView = adView;
     
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
     self.m_amazonLoader = [[AppleAppLovinBannerAmazonLoader alloc] initWithSlotId:amazonSlotId adView:self.m_adView rect:rect];
 #else
     [self loadAd];
@@ -61,7 +61,7 @@
 }
 
 - (void) dealloc {
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
     if( self.m_amazonLoader != nil ) {
         [self.m_amazonLoader release];
         self.m_amazonLoader = nil;

@@ -72,6 +72,10 @@ namespace Mengine
             NSString * ns_key = [AppleString NSStringFromConstString:key];
             
             Helper::visit( value
+                , [keysAndValues, ns_key]( const ParamNull & _element )
+            {
+                [keysAndValues setObject:[NSNull null] forKey:ns_key];
+            }
                 , [keysAndValues, ns_key]( const ParamBool & _element )
             {
                 [keysAndValues setObject:@(_element) forKey:ns_key];

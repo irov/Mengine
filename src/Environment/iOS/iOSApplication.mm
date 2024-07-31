@@ -27,7 +27,7 @@
     if (install_key == nil) {
         NSString * randomHex = [AppleDetail getRandomHexString:16];
         
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         install_key = [@"MDIK" stringByAppendingString:randomHex];
 #else
         install_key = [@"MNIK" stringByAppendingString:randomHex];

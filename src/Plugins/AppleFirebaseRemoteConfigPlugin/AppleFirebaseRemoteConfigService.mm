@@ -3,13 +3,14 @@
 #import "Environment/Apple/AppleString.h"
 #import "Environment/Apple/AppleDetail.h"
 
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
 #   include "Interface/ScriptServiceInterface.h"
 
 #   include "AppleFirebaseRemoteConfigScriptEmbedding.h"
 #endif
 
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/Logger.h"
 
 #import <FirebaseRemoteConfig/FirebaseRemoteConfig.h>
 
@@ -29,7 +30,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFirebaseRemoteConfigService::_initializeService()
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_ADDOBSERVERLAMBDA_THIS( NOTIFICATOR_SCRIPT_EMBEDDING, [this]()
         {
             SCRIPT_SERVICE()
@@ -48,7 +49,7 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     void AppleFirebaseRemoteConfigService::_finalizeService()
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
+#if defined(MENGINE_USE_SCRIPT_SERVICE)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
@@ -60,9 +61,21 @@ namespace Mengine
         
         FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
         
-        BOOL value = [firValue boolValue];
+        if( firValue.source == FIRRemoteConfigSourceStatic )
+        {
+            LOGGER_WARNING("Apple firebase remote config not found key: %s"
+               , _key.c_str()
+            );
+            
+            return false;
+        }
         
-        return value;
+        if( [firValue boolValue] == NO )
+        {
+            return false;
+        }
+        
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t AppleFirebaseRemoteConfigService::getValueInteger( const ConstString & _key ) const
@@ -70,6 +83,15 @@ namespace Mengine
         NSString * key_ns = [AppleString NSStringFromConstString:_key];
         
         FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
+        
+        if( firValue.source == FIRRemoteConfigSourceStatic )
+        {
+            LOGGER_WARNING("Apple firebase remote config not found key: %s"
+               , _key.c_str()
+            );
+            
+            return 0;
+        }
         
         NSInteger value = [[firValue numberValue] integerValue];
         
@@ -82,6 +104,15 @@ namespace Mengine
         
         FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
         
+        if( firValue.source == FIRRemoteConfigSourceStatic )
+        {
+            LOGGER_WARNING("Apple firebase remote config not found key: %s"
+               , _key.c_str()
+            );
+            
+            return 0.0;
+        }
+        
         NSInteger value = [[firValue numberValue] doubleValue];
         
         return value;
@@ -92,6 +123,15 @@ namespace Mengine
         NSString * key_ns = [AppleString NSStringFromConstString:_key];
         
         FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
+        
+        if( firValue.source == FIRRemoteConfigSourceStatic )
+        {
+            LOGGER_WARNING("Apple firebase remote config not found key: %s"
+               , _key.c_str()
+            );
+            
+            return ConstString::none();
+        }
         
         NSString * value = [firValue stringValue];
         
@@ -106,10 +146,19 @@ namespace Mengine
         
         FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
         
-        NSString * value = [firValue stringValue];
+        if( firValue.source == FIRRemoteConfigSourceStatic )
+        {
+            LOGGER_WARNING("Apple firebase remote config not found key: %s"
+               , _key.c_str()
+            );
+            
+            return Params();
+        }
+        
+        NSDictionary * value = [firValue JSONValue];
         
         Params params;
-        [AppleDetail getParamsFromJSON:value outParams:&params];
+        [AppleDetail getParamsFromNSDictionary:value outParams:&params];
         
         return params;
     }

@@ -12,11 +12,7 @@
 #pragma mark - iOSPluginApplicationDelegateInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-#ifdef MENGINE_DEBUG
-    [[FIRCrashlytics crashlytics] setCrashlyticsCollectionEnabled:NO];
-#else
-    [[FIRCrashlytics crashlytics] setCrashlyticsCollectionEnabled:YES];
-#endif
+    [[FIRCrashlytics crashlytics] setCrashlyticsCollectionEnabled:MENGINE_DEBUG_VALUE(NO, YES)];
     
     NSString * sessionId = [iOSApplication.sharedInstance getSessionId];
     

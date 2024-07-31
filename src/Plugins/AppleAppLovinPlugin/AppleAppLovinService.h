@@ -8,7 +8,7 @@
 #import "AppleAppLovinRewardedDelegate.h"
 #import "AppleAppLovinBannerDelegate.h"
 
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
 #import "AppleAppLovinAmazonService.h"
 #endif
 
@@ -63,7 +63,7 @@ namespace Mengine
         NSMutableDictionary<NSString *, AppleAppLovinInterstitialDelegate *> * m_interstitials;
         NSMutableDictionary<NSString *, AppleAppLovinRewardedDelegate *> * m_rewardeds;
         
-#ifdef MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
         AppleAppLovinAmazonService * m_amazonService;
 #endif
     };

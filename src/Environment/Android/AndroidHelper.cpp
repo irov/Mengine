@@ -9,6 +9,7 @@
 #include "Kernel/Error.h"
 #include "Kernel/StringCopy.h"
 #include "Kernel/StringSlice.h"
+#include "Kernel/Logger.h"
 
 #include "Config/StdIntTypes.h"
 
@@ -629,6 +630,16 @@ namespace Mengine
             Mengine::Helper::stringSlice( data_value, data_size, jvalue_str, 1024, [_jenv, _writer, jmethodID_Writer_write_String]( const Mengine::Char * _str )
             {
                 jstring jvalue = _jenv->NewStringUTF( _str );
+
+                if (jvalue == nullptr)
+                {
+                    LOGGER_ERROR( "invalid write memory string UTF8: %s"
+                        , _str
+                    );
+
+                    return;
+                }
+
                 _jenv->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
                 _jenv->DeleteLocalRef( jvalue );
             } );

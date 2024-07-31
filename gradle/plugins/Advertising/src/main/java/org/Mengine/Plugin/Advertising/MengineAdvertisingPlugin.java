@@ -3,16 +3,14 @@ package org.Mengine.Plugin.Advertising;
 import android.content.Context;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -27,20 +25,21 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
     private Future<AdvertisingIdClient.Info> m_advertisingFuture;
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-
-        final Context context = application.getApplicationContext();
-        final int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
-
-        if (resultCode != ConnectionResult.SUCCESS) {
-            return;
+    public boolean onAvailable(MengineApplication application) {
+        if (MengineGoogleServicePlugin.isGooglePlayServicesAvailable(application) == false) {
+            return false;
         }
 
+        return true;
+    }
+
+    @Override
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         Future<AdvertisingIdClient.Info> future = executor.submit(() -> {
             try {
+                Context context = application.getApplicationContext();
                 AdvertisingIdClient.Info adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
 
                 this.postAdInfo(application, adInfo);

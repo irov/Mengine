@@ -8,6 +8,7 @@
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionUtf8.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadSharedMutexScope.h"
 #include "Kernel/DocumentHelper.h"
@@ -422,6 +423,8 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _message.category, "please setup category for log message" );
         MENGINE_ASSERTION_MEMORY_PANIC( _message.data, "please setup data for log message" );
+
+        MENGINE_ASSERTION_VALIDATE_UTF8( _message.data, MENGINE_UNKNOWN_SIZE );
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _message );

@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.GoogleGameSocial;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
@@ -25,22 +26,31 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+
+import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
 public class MengineGoogleGameSocialPlugin extends MenginePlugin implements MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "MengineGGameSocial";
     public static final boolean PLUGIN_EMBEDDING = true;
 
-    private int RC_SIGN_IN;
-    private int RC_ACHIEVEMENT_UI;
+    private static final int RC_SIGN_IN = MengineActivity.genRequestCode("RC_SIGN_IN");
+    private static final int RC_ACHIEVEMENT_UI = MengineActivity.genRequestCode("RC_ACHIEVEMENT_UI");
+
+    @Override
+    public boolean onAvailable(MengineApplication application) {
+        if (MengineGoogleServicePlugin.isGooglePlayServicesAvailable(application) == false) {
+            return false;
+        }
+
+        return true;
+    }
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        RC_SIGN_IN = activity.genRequestCode("RC_SIGN_IN");
-        RC_ACHIEVEMENT_UI = activity.genRequestCode("RC_ACHIEVEMENT_UI");
-
         this.signInSilently();
     }
 
@@ -65,7 +75,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
         Intent intent = signInClient.getSignInIntent();
 
         try {
-            activity.startActivityForResult(intent, RC_SIGN_IN);
+            activity.startActivityForResult(intent, MengineGoogleGameSocialPlugin.RC_SIGN_IN);
         } catch (ActivityNotFoundException e) {
             this.logError("[ERROR] startSignInIntent catch ActivityNotFoundException: %s"
                 , e.getMessage()
@@ -134,59 +144,90 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
 
     @Override
     public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
-        if (requestCode != RC_SIGN_IN) {
-            return;
-        }
+        if (requestCode == MengineGoogleGameSocialPlugin.RC_SIGN_IN) {
+            switch (resultCode) {
+                case MengineActivity.RESULT_CANCELED: {
+                    this.logMessage("onActivityResult sign in canceled");
 
-        GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+                    this.pythonCall("onGoogleGameSocialOnSignCanceled");
 
-        if (result == null) {
-            this.logError("[ERROR] getSignInResultFromIntent result == null");
+                    return;
+                }
+                case MengineActivity.RESULT_OK: {
+                    this.logMessage("onActivityResult sign in ok");
 
-            return;
-        }
+                    GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
-        if (result.isSuccess() == false) {
-            this.logMessage("onActivityResult sign in failed");
+                    if (result == null) {
+                        this.logError("[ERROR] getSignInResultFromIntent result == null");
 
-            Status status = result.getStatus();
+                        this.pythonCall("onGoogleGameSocialOnSignError");
 
-            int statusCode = status.getStatusCode();
-
-            switch (statusCode) {
-                case CommonStatusCodes.SIGN_IN_REQUIRED: {
-                    this.logError("[ERROR] google game social signIn SIGN_IN_REQUIRED [hasResolution %s]"
-                        , status.hasResolution()
-                    );
-
-                    if (status.hasResolution() == true) {
-                        try {
-                            status.startResolutionForResult(activity, RC_SIGN_IN);
-                        } catch (IntentSender.SendIntentException ex) {
-                            this.logError("[ERROR] start resolution for result RC_SIGN_IN catch SendIntentException: %s"
-                                , ex.getMessage()
-                            );
-                        }
+                        return;
                     }
-                }break;
+
+                    if (result.isSuccess() == false) {
+                        Status status = result.getStatus();
+
+                        this.logMessage("onActivityResult sign in failed code: %d message: %s"
+                                , status.getStatusCode()
+                                , status.getStatusMessage()
+                        );
+
+                        int statusCode = status.getStatusCode();
+
+                        switch (statusCode) {
+                            case CommonStatusCodes.SIGN_IN_REQUIRED: {
+                                this.logError("[ERROR] google game social signIn SIGN_IN_REQUIRED [hasResolution %s]"
+                                        , status.hasResolution()
+                                );
+
+                                if (status.hasResolution() == true) {
+                                    try {
+                                        status.startResolutionForResult(activity, MengineGoogleGameSocialPlugin.RC_SIGN_IN);
+                                    } catch (IntentSender.SendIntentException ex) {
+                                        this.logError("[ERROR] start resolution for result RC_SIGN_IN catch SendIntentException: %s"
+                                                , ex.getMessage()
+                                        );
+                                    }
+                                }
+                            }
+                            break;
+                            default: {
+                                this.logWarning("google game social signIn failed status error message: %s code: %d"
+                                        , status.getStatusMessage()
+                                        , status.getStatusCode()
+                                );
+                            }
+                            break;
+                        }
+
+                        this.pythonCall("onGoogleGameSocialOnSignError");
+
+                        return;
+                    }
+
+                    this.logMessage("onActivityResult resign");
+
+                    GoogleSignInAccount account = result.getSignInAccount();
+
+                    this.signInCallback(account);
+
+                    return;
+                }
                 default: {
-                    this.logWarning("google game social signIn failed status error message: %s code: %d"
-                        , status.getStatusMessage()
-                        , status.getStatusCode()
+                    this.logError("[ERROR] onActivityResult sign in unknown resultCode: %d"
+                        , resultCode
                     );
-                }break;
+
+                    this.pythonCall("onGoogleGameSocialOnSignError");
+
+                    return;
+                }
             }
-
-            this.pythonCall("onGoogleGameSocialOnSignError");
-
-            return;
+        } else if (requestCode == MengineGoogleGameSocialPlugin.RC_ACHIEVEMENT_UI) {
+            //ToDo
         }
-
-        this.logMessage("onActivityResult resign");
-
-        GoogleSignInAccount account = result.getSignInAccount();
-
-        this.signInCallback(account);
     }
 
     private void signInCallback(GoogleSignInAccount account) {
@@ -283,7 +324,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
                     MengineActivity activity = MengineGoogleGameSocialPlugin.this.getMengineActivity();
 
                     try {
-                        activity.startActivityForResult(intent, RC_ACHIEVEMENT_UI);
+                        activity.startActivityForResult(intent, MengineGoogleGameSocialPlugin.RC_ACHIEVEMENT_UI);
                     } catch (ActivityNotFoundException e) {
                         MengineGoogleGameSocialPlugin.this.logError("[ERROR] showAchievements catch ActivityNotFoundException: %s"
                             , e.getMessage()

@@ -12,6 +12,7 @@ public class MenginePlugin implements MenginePluginInterface {
     private MengineApplication m_application;
     private MengineActivity m_activity;
     private String m_pluginName;
+    private Boolean m_availableStatus = null;
 
     public MengineApplication getMengineApplication() {
         return m_application;
@@ -44,6 +45,14 @@ public class MenginePlugin implements MenginePluginInterface {
         T instance = MengineUtils.newInstance(m_pluginName, name, exist);
 
         return instance;
+    }
+
+    public boolean isAvailable() {
+        if( m_availableStatus == null ) {
+            m_availableStatus = this.onAvailable(m_application);
+        }
+
+        return m_availableStatus;
     }
 
     public boolean hasOption(String option) {

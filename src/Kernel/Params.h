@@ -8,6 +8,7 @@
 
 namespace Mengine
 {
+    typedef nullptr_t ParamNull;
     typedef bool ParamBool;
     typedef int64_t ParamInteger;
     typedef double ParamDouble;
@@ -15,7 +16,7 @@ namespace Mengine
     typedef WString ParamWString;
     typedef ConstString ParamConstString;
 
-    typedef Variant<ParamBool, ParamInteger, ParamDouble, ParamString, ParamWString, ParamConstString> ParamVariant;
+    typedef Variant<ParamNull, ParamBool, ParamInteger, ParamDouble, ParamString, ParamWString, ParamConstString> ParamVariant;
 
     typedef Map<ConstString, ParamVariant> Params;
 }

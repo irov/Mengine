@@ -386,6 +386,8 @@ if (MENGINE_APP_PLUGIN_SPLASHSCREEN == true) {
 Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_SERVICE", MENGINE_APP_PLUGIN_GOOGLE_SERVICE)
 
 if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin'
+
     dependencies {
         implementation project(':plugins:GoogleService')
     }

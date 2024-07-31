@@ -399,6 +399,10 @@ public class MengineApplication extends Application {
             List<MenginePlugin> plugins = this.getPlugins();
 
             for (MenginePlugin p : plugins) {
+                if (p.onAvailable(this) == false) {
+                    continue;
+                }
+
                 p.onState(this, name, value);
             }
         }
@@ -611,6 +615,10 @@ public class MengineApplication extends Application {
         List<MenginePluginEngineListener> listeners = this.getEngineListeners();
 
         for (MenginePluginEngineListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMengineCaughtException(this, throwable);
         }
     }
@@ -678,6 +686,10 @@ public class MengineApplication extends Application {
 
         synchronized (m_syncEvent) {
             for (MenginePlugin p : plugins) {
+                if (p.onAvailable(this) == false) {
+                    continue;
+                }
+
                 p.onEvent(this, event, args);
             }
         }
@@ -857,6 +869,10 @@ public class MengineApplication extends Application {
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
+                if (l.onAvailable(this) == false) {
+                    continue;
+                }
+
                 MengineLog.logMessage(TAG, "onAppInit plugin: %s isMainProcess: %b"
                     , l.getPluginName()
                     , isMainProcess
@@ -864,7 +880,7 @@ public class MengineApplication extends Application {
 
                 l.onAppInit(this, isMainProcess);
             } catch (MenginePluginInvalidInitializeException e) {
-                this.invalidInitialize("onAppCreate plugin: %s exception: %s"
+                this.invalidInitialize("onAppInit plugin: %s exception: %s"
                     , l.getPluginName()
                     , e.getMessage()
                 );
@@ -1129,6 +1145,10 @@ public class MengineApplication extends Application {
         List<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
         for (MenginePluginApplicationListener l : applicationListeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onAppTerminate(this);
         }
 
@@ -1186,6 +1206,10 @@ public class MengineApplication extends Application {
         List<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
         for (MenginePluginApplicationListener l : applicationListeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onAppConfigurationChanged(this, newConfig);
         }
     }
@@ -1194,6 +1218,10 @@ public class MengineApplication extends Application {
         List<MenginePluginLoggerListener> listeners = this.getLoggerListeners();
 
         for(MenginePluginLoggerListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMengineLogger(this, level, filter, category, msg);
         }
     }
@@ -1202,6 +1230,10 @@ public class MengineApplication extends Application {
         List<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
 
         for (MenginePluginAnalyticsListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMengineAnalyticsEvent(this, eventName, timestamp, bases, parameters);
         }
     }
@@ -1210,6 +1242,10 @@ public class MengineApplication extends Application {
         List<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
 
         for (MenginePluginAnalyticsListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMengineAnalyticsScreenView(this, screenType, screenName);
         }
     }
@@ -1218,6 +1254,10 @@ public class MengineApplication extends Application {
         List<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
 
         for (MenginePluginAnalyticsListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMengineAnalyticsFlush(this);
         }
     }
@@ -1226,6 +1266,10 @@ public class MengineApplication extends Application {
         List<MenginePluginAdRevenueListener> listeners = this.getAdRevenueListeners();
 
         for (MenginePluginAdRevenueListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMengineAdRevenue(this, revenue);
         }
     }
@@ -1234,6 +1278,10 @@ public class MengineApplication extends Application {
         List<MenginePluginTransparencyConsentListener> listeners = this.getTransparencyConsentListeners();
 
         for (MenginePluginTransparencyConsentListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMengineTransparencyConsent(this, consent);
         }
     }
@@ -1242,6 +1290,10 @@ public class MengineApplication extends Application {
         List<MenginePluginInAppPurchaseListener> listeners = this.getInAppAnalyticsListeners();
 
         for (MenginePluginInAppPurchaseListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMengineInAppProduct(this, products);
         }
     }
@@ -1254,6 +1306,10 @@ public class MengineApplication extends Application {
         List<MenginePluginInAppPurchaseListener> listeners = this.getInAppAnalyticsListeners();
 
         for (MenginePluginInAppPurchaseListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMengineInAppPurchase(this, purchase);
         }
     }
@@ -1262,6 +1318,10 @@ public class MengineApplication extends Application {
         List<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
 
         for (MenginePluginRemoteMessageListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             if (l.onMengineRemoteMessageReceived(this, message) == true) {
                 break;
             }
@@ -1272,6 +1332,10 @@ public class MengineApplication extends Application {
         List<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
 
         for (MenginePluginRemoteMessageListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMengineRemoteMessageDeleted(this);
         }
     }
@@ -1280,6 +1344,10 @@ public class MengineApplication extends Application {
         List<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
 
         for (MenginePluginRemoteMessageListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMengineRemoteMessageSent(this, messageId);
         }
     }
@@ -1288,6 +1356,10 @@ public class MengineApplication extends Application {
         List<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
 
         for (MenginePluginRemoteMessageListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMengineRemoteMessageSentError(this, messageId, exception);
         }
     }
@@ -1296,6 +1368,10 @@ public class MengineApplication extends Application {
         List<MenginePluginRemoteMessageListener> listeners = this.getRemoteMessageListeners();
 
         for (MenginePluginRemoteMessageListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMengineRemoteMessageNewToken(this, token);
         }
     }
@@ -1304,6 +1380,10 @@ public class MengineApplication extends Application {
         List<MenginePluginPushTokenListener> listeners = this.getPushTokenListeners();
 
         for (MenginePluginPushTokenListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMenginePushToken(this, token);
         }
     }
@@ -1314,6 +1394,10 @@ public class MengineApplication extends Application {
         List<MenginePluginAdvertisingIdListener> listeners = this.getAdvertisingIdListeners();
 
         for (MenginePluginAdvertisingIdListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
             l.onMengineAdvertisingId(this, advertisingId, limitAdTracking);
         }
     }

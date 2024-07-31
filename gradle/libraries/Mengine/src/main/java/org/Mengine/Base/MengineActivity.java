@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MengineActivity extends AppCompatActivity {
     public static final String TAG = "MengineActivity";
@@ -55,7 +56,7 @@ public class MengineActivity extends AppCompatActivity {
     private boolean m_initializePython;
     private boolean m_destroy;
 
-    private Map<String, Integer> m_requestCodes;
+    private static Map<String, Integer> m_requestCodes = new HashMap<>();
     private Map<String, MengineSemaphore> m_semaphores;
 
     Thread m_threadMain;
@@ -266,7 +267,6 @@ public class MengineActivity extends AppCompatActivity {
         m_initializePython = false;
         m_destroy = false;
 
-        m_requestCodes = new HashMap<>();
         m_semaphores = new HashMap<>();
 
         RelativeLayout contentView = new RelativeLayout(this);
@@ -300,10 +300,12 @@ public class MengineActivity extends AppCompatActivity {
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
-            String pluginName = l.getPluginName();
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
 
             MengineLog.logMessage(TAG, "onCreate plugin: %s"
-                , pluginName
+                , l.getPluginName()
             );
 
             try {
@@ -363,9 +365,15 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.initialize(this);
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginEngineListener> listeners = this.getEngineListeners();
 
         for (MenginePluginEngineListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onMengineInitializeBaseServices(this);
         }
     }
@@ -373,9 +381,15 @@ public class MengineActivity extends AppCompatActivity {
     public void onMengineCreateApplication() {
         MengineLog.logInfo(TAG, "onMengineCreateApplication");
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginEngineListener> listeners = this.getEngineListeners();
 
         for (MenginePluginEngineListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onMengineCreateApplication(this);
         }
     }
@@ -383,9 +397,15 @@ public class MengineActivity extends AppCompatActivity {
     public void onMenginePlatformRun() {
         MengineLog.logInfo(TAG, "onMenginePlatformRun");
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginEngineListener> listeners = this.getEngineListeners();
 
         for (MenginePluginEngineListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onMenginePlatformRun(this);
         }
     }
@@ -393,9 +413,15 @@ public class MengineActivity extends AppCompatActivity {
     public void onMenginePlatformStop() {
         MengineLog.logInfo(TAG, "onMenginePlatformStop");
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginEngineListener> listeners = this.getEngineListeners();
 
         for (MenginePluginEngineListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onMenginePlatformStop(this);
         }
 
@@ -417,15 +443,25 @@ public class MengineActivity extends AppCompatActivity {
             , resultCode
         );
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onActivityResultBefore(this, requestCode, resultCode, data);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onActivityResult(this, requestCode, resultCode, data);
         }
     }
@@ -438,9 +474,15 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessage(TAG, "onStart");
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onStart(this);
         }
 
@@ -455,11 +497,15 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessage(TAG, "onStop");
 
-        List<MenginePlugin> plugins = this.getPlugins();
+        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onStop(this);
         }
 
@@ -474,9 +520,15 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessage(TAG, "onPause");
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onPause(this);
         }
 
@@ -491,9 +543,15 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessage(TAG, "onResume");
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onResume(this);
         }
 
@@ -508,9 +566,15 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessage(TAG, "onNewIntent intent: %s", intent);
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onNewIntent(this, intent);
         }
     }
@@ -523,9 +587,15 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessageRelease(TAG, "onDestroy");
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onDestroy(this);
         }
 
@@ -535,7 +605,6 @@ public class MengineActivity extends AppCompatActivity {
             p.setActivity(null);
         }
 
-        m_requestCodes = null;
         m_semaphores = null;
 
         try {
@@ -559,9 +628,15 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessage(TAG, "onRestart");
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onRestart(this);
         }
 
@@ -578,9 +653,15 @@ public class MengineActivity extends AppCompatActivity {
             , newConfig.toString()
         );
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onConfigurationChanged(this, newConfig);
         }
     }
@@ -595,9 +676,15 @@ public class MengineActivity extends AppCompatActivity {
             , Arrays.toString(grantResults)
         );
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
         }
     }
@@ -610,9 +697,15 @@ public class MengineActivity extends AppCompatActivity {
             , event.getScanCode()
         );
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginKeyListener> listeners = this.getKeyListeners();
 
         for (MenginePluginKeyListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             if (l.dispatchKeyEvent(this, event) == true) {
                 return true;
             }
@@ -625,7 +718,7 @@ public class MengineActivity extends AppCompatActivity {
      * Kernel Methods
      **********************************************************************************************/
 
-    public int genRequestCode(String name) {
+    public static int genRequestCode(String name) {
         if (m_requestCodes.containsKey(name) == false) {
             int new_code = m_requestCodes.size();
 
@@ -656,6 +749,10 @@ public class MengineActivity extends AppCompatActivity {
         List<MenginePlugin> plugins = this.getPlugins();
 
         for (MenginePlugin p : plugins) {
+            if (p.onAvailable(application) == false) {
+                continue;
+            }
+
             try {
                 Class<?> cls = p.getClass();
 

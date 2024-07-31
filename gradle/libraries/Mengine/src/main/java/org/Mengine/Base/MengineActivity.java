@@ -519,6 +519,8 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
@@ -565,6 +567,8 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
@@ -588,6 +592,8 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
@@ -608,6 +614,8 @@ public class MengineActivity extends AppCompatActivity {
         this.setState("activity.intent_action", intent.getAction() );
 
         MengineLog.logMessageRelease(TAG, "onNewIntent intent: %s", intent);
+
+        MengineApplication application = (MengineApplication)this.getApplication();
 
         MengineApplication application = (MengineApplication)this.getApplication();
 

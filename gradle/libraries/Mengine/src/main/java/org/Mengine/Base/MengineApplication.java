@@ -1044,6 +1044,12 @@ public class MengineApplication extends Application {
 
         this.setState("application.init", "plugins_prepare");
 
+        String build_version = this.getEngineVersion();
+        this.setState("engine.build_version", build_version);
+
+        String build_date = this.getBuildDate();
+        this.setState("engine.build_date", build_date);
+
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
                 MengineLog.logMessage(TAG, "onAppPrepare plugin: %s"

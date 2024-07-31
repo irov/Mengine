@@ -3792,7 +3792,11 @@ namespace Mengine
                 MENGINE_UNUSED( _kernel );
                 MENGINE_UNUSED( _nothrow );
 
-                if( _kernel->bool_check( _obj ) == true )
+                if( _kernel->is_none( _obj ) == true )
+                {
+                    _value.emplace<ParamNull>( nullptr );
+                }
+                else if( _kernel->bool_check( _obj ) == true )
                 {
                     bool bool_value;
                     _kernel->extract_bool( _obj, bool_value );
@@ -3853,6 +3857,10 @@ namespace Mengine
                 PyObject * py_value = nullptr;
 
                 Helper::visit( _value
+                    , [_kernel, &py_value]( const ParamNull & _element )
+                {
+                    py_value = _kernel->ret_none();
+                }
                     , [_kernel, &py_value]( const ParamBool & _element )
                 {
                     py_value = pybind::ptr( _kernel, _element );

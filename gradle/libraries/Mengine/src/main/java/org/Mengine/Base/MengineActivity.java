@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MengineActivity extends SDLActivity {
     public static final String TAG = "MengineActivity";
@@ -53,7 +54,7 @@ public class MengineActivity extends SDLActivity {
     private boolean m_initializePython;
     private boolean m_destroy;
 
-    private Map<String, Integer> m_requestCodes;
+    private static Map<String, Integer> m_requestCodes = new HashMap<>();
     private Map<String, MengineSemaphore> m_semaphores;
 
     //private boolean mBrokenLibraries = false;
@@ -275,7 +276,6 @@ public class MengineActivity extends SDLActivity {
         m_initializePython = false;
         m_destroy = false;
 
-        m_requestCodes = new HashMap<>();
         m_semaphores = new HashMap<>();
 
         /*
@@ -339,10 +339,12 @@ public class MengineActivity extends SDLActivity {
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
-            String pluginName = l.getPluginName();
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
 
             MengineLog.logMessage(TAG, "onCreate plugin: %s"
-                , pluginName
+                , l.getPluginName()
             );
 
             try {
@@ -398,9 +400,15 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.initialize(this);
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginEngineListener> listeners = this.getEngineListeners();
 
         for (MenginePluginEngineListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onMengineInitializeBaseServices(this);
         }
     }
@@ -408,9 +416,15 @@ public class MengineActivity extends SDLActivity {
     public void onMengineCreateApplication() {
         MengineLog.logInfo(TAG, "onMengineCreateApplication");
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginEngineListener> listeners = this.getEngineListeners();
 
         for (MenginePluginEngineListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onMengineCreateApplication(this);
         }
     }
@@ -418,9 +432,15 @@ public class MengineActivity extends SDLActivity {
     public void onMenginePlatformRun() {
         MengineLog.logInfo(TAG, "onMenginePlatformRun");
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginEngineListener> listeners = this.getEngineListeners();
 
         for (MenginePluginEngineListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onMenginePlatformRun(this);
         }
     }
@@ -428,9 +448,15 @@ public class MengineActivity extends SDLActivity {
     public void onMenginePlatformStop() {
         MengineLog.logInfo(TAG, "onMenginePlatformStop");
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginEngineListener> listeners = this.getEngineListeners();
 
         for (MenginePluginEngineListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onMenginePlatformStop(this);
         }
 
@@ -452,23 +478,25 @@ public class MengineActivity extends SDLActivity {
             , resultCode
         );
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onStart: broken libraries");
-
-            super.onActivityResult(requestCode, resultCode, data);
-
-            return;
-        }
+        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onActivityResultBefore(this, requestCode, resultCode, data);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onActivityResult(this, requestCode, resultCode, data);
         }
     }
@@ -481,15 +509,15 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logMessage(TAG, "onStart");
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onStart: broken libraries");
-
-            return;
-        }
+        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onStart(this);
         }
 
@@ -504,17 +532,15 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logMessage(TAG, "onStop");
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onStop: broken libraries");
-
-            return;
-        }
-
-        List<MenginePlugin> plugins = this.getPlugins();
+        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onStop(this);
         }
 
@@ -529,15 +555,15 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logMessage(TAG, "onPause");
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onPause: broken libraries");
-
-            return;
-        }
+        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onPause(this);
         }
 
@@ -552,15 +578,15 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logMessage(TAG, "onResume");
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onResume: broken libraries");
-
-            return;
-        }
+        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onResume(this);
         }
 
@@ -575,15 +601,15 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logMessage(TAG, "onNewIntent intent: %s", intent);
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onNewIntent: broken libraries");
-
-            return;
-        }
+        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onNewIntent(this, intent);
         }
     }
@@ -604,9 +630,15 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onDestroy(this);
         }
 
@@ -616,7 +648,6 @@ public class MengineActivity extends SDLActivity {
             p.setActivity(null);
         }
 
-        m_requestCodes = null;
         m_semaphores = null;
 
         AndroidEnv_removeMengineAndroidActivityJNI();
@@ -632,15 +663,15 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logMessage(TAG, "onRestart");
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onRestart: broken libraries");
-
-            return;
-        }
+        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onRestart(this);
         }
 
@@ -657,15 +688,15 @@ public class MengineActivity extends SDLActivity {
             , newConfig.toString()
         );
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onConfigurationChanged: broken libraries");
-
-            return;
-        }
+        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onConfigurationChanged(this, newConfig);
         }
     }
@@ -680,15 +711,15 @@ public class MengineActivity extends SDLActivity {
             , Arrays.toString(grantResults)
         );
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onRequestPermissionsResult: broken libraries");
-
-            return;
-        }
+        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             l.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
         }
     }
@@ -707,9 +738,15 @@ public class MengineActivity extends SDLActivity {
             return super.dispatchKeyEvent(event);
         }
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
         List<MenginePluginKeyListener> listeners = this.getKeyListeners();
 
         for (MenginePluginKeyListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
             if (l.dispatchKeyEvent(this, event) == true) {
                 return true;
             }
@@ -727,7 +764,7 @@ public class MengineActivity extends SDLActivity {
      * Kernel Methods
      **********************************************************************************************/
 
-    public int genRequestCode(String name) {
+    public static int genRequestCode(String name) {
         if (m_requestCodes.containsKey(name) == false) {
             int new_code = m_requestCodes.size();
 
@@ -758,6 +795,10 @@ public class MengineActivity extends SDLActivity {
         List<MenginePlugin> plugins = this.getPlugins();
 
         for (MenginePlugin p : plugins) {
+            if (p.onAvailable(application) == false) {
+                continue;
+            }
+
             try {
                 Class<?> cls = p.getClass();
 

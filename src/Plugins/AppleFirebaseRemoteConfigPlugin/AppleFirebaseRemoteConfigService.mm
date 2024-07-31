@@ -56,7 +56,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFirebaseRemoteConfigService::getValueBoolean( const ConstString & _key ) const
     {
-        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:@(_key.c_str())];
+        NSString * key_ns = [AppleString NSStringFromConstString:_key];
+        
+        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
         
         BOOL value = [firValue boolValue];
         
@@ -65,7 +67,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int64_t AppleFirebaseRemoteConfigService::getValueInteger( const ConstString & _key ) const
     {
-        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:@(_key.c_str())];
+        NSString * key_ns = [AppleString NSStringFromConstString:_key];
+        
+        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
         
         NSInteger value = [[firValue numberValue] integerValue];
         
@@ -74,7 +78,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     double AppleFirebaseRemoteConfigService::getValueDouble( const ConstString & _key ) const
     {
-        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:@(_key.c_str())];
+        NSString * key_ns = [AppleString NSStringFromConstString:_key];
+        
+        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
         
         NSInteger value = [[firValue numberValue] doubleValue];
         
@@ -83,7 +89,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ConstString AppleFirebaseRemoteConfigService::getValueConstString( const ConstString & _key ) const
     {
-        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:@(_key.c_str())];
+        NSString * key_ns = [AppleString NSStringFromConstString:_key];
+        
+        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
         
         NSString * value = [firValue stringValue];
         
@@ -94,7 +102,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Params AppleFirebaseRemoteConfigService::getValueJSON( const ConstString & _key ) const
     {
-        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:@(_key.c_str())];
+        NSString * key_ns = [AppleString NSStringFromConstString:_key];
+        
+        FIRRemoteConfigValue * firValue = [[FIRRemoteConfig remoteConfig] configValueForKey:key_ns];
         
         NSString * value = [firValue stringValue];
         

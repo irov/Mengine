@@ -77,6 +77,10 @@
 }
 
 + (BOOL)getParamsFromJSON:(NSString * _Nonnull) _in outParams:(Mengine::Params * const _Nonnull) _out {
+    if ([_in length] == 0) {
+        return NO;
+    }
+    
     NSData * data = [_in dataUsingEncoding:NSUTF8StringEncoding];
     
     NSError * error = nil;

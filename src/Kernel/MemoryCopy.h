@@ -12,7 +12,7 @@ namespace Mengine
         bool memoryCopySafe( void * _dist, size_t _dstOffset, size_t _capacity, const void * _src, size_t _srcOffset, size_t _size );
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        MENGINE_INLINE void memoryCopyPod( T * _dist, size_t _dstOffset, const T * _src, size_t _srcOffset, size_t _size )
+        void memoryCopyPod( T * _dist, size_t _dstOffset, const T * _src, size_t _srcOffset, size_t _size )
         {
             const size_t sizeof_T = sizeof( T );
 
@@ -24,7 +24,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        MENGINE_INLINE bool memoryCopyPodSafe( T * _dist, size_t _dstOffset, size_t _capacity, const T * _src, size_t _srcOffset, size_t _size )
+        bool memoryCopyPodSafe( T * _dist, size_t _dstOffset, size_t _capacity, const T * _src, size_t _srcOffset, size_t _size )
         {
             if( _dstOffset + _size > _capacity )
             {

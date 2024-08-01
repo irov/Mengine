@@ -110,6 +110,7 @@ src
     StdLocale.h
     StdCType.h
     StdMath.h
+    StdSetJMP.h
     Limits.h
     UInt32ToPointer.h
     Metaprogramming.h

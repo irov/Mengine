@@ -617,6 +617,9 @@ Core
     MemoryCopy.h
     MemoryCopy.cpp
     
+    MemoryZero.h
+    MemoryZero.cpp
+    
     MemoryStreamHelper.h
     MemoryStreamHelper.cpp
 

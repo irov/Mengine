@@ -11,6 +11,8 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/DebugFileHelper.h"
 
+#include "Config/StdSetJMP.h"
+
 #ifndef MENGINE_DECODER_PNG_BYTES_TO_CHECK
 #define MENGINE_DECODER_PNG_BYTES_TO_CHECK 8
 #endif
@@ -148,19 +150,11 @@ namespace Mengine
 
         png_set_sig_bytes( m_png_ptr, MENGINE_DECODER_PNG_BYTES_TO_CHECK );
 
-#if defined(PNG_SETJMP_SUPPORTED) && !defined(MENGINE_SETJMP_UNSUPPORTED)
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(push, 0) 
-#endif 
-        if( setjmp( png_jmpbuf( m_png_ptr ) ) )
+#if defined(PNG_SETJMP_SUPPORTED)
+        if( MENGINE_JMP_SET( png_jmpbuf( m_png_ptr ) ) != 0 )
         {
-            LOGGER_ASSERTION( "jmp" );
-
             return false;
         }
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(pop) 
-#endif
 #endif
 
         png_read_info( m_png_ptr, m_info_ptr );

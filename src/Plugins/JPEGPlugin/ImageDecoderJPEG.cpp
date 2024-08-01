@@ -10,147 +10,56 @@
 #include "Kernel/AssertionType.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/DebugFileHelper.h"
+#include "Kernel/MemoryZero.h"
 
 #include "Config/StdArg.h"
 #include "Config/StdString.h"
-
-#ifndef MENGINE_DECODER_JPEG_INPUT_BUF_SIZE
-#define MENGINE_DECODER_JPEG_INPUT_BUF_SIZE 4096
-#endif
 
 namespace Mengine
 {
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        struct DecoderJPEGSourceManager
-        {
-            jpeg_source_mgr base;
-
-            InputStreamInterface * stream;
-            JOCTET * buffer;
-            boolean start_of_file;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        METHODDEF( const Char * ) jpeg_get_debug_filepath( j_common_ptr _cinfo )
+        METHODDEF( noreturn_t ) jpeg_error_exit( j_common_ptr _cinfo )
         {
             ImageDecoderJPEG * decoder = static_cast<ImageDecoderJPEG *>(_cinfo->client_data);
 
-            const InputStreamInterfacePtr & stream = decoder->getStream();
-
-            const Char * filePath = Helper::getDebugFullPath( stream );
-
-            return filePath;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        METHODDEF( noreturn_t ) jpeg_error_exit( j_common_ptr _cinfo )
-        {
-            Char buffer[JMSG_LENGTH_MAX] = {'\0'};
-
-            (*_cinfo->err->format_message)(_cinfo, buffer);
-
-            LOGGER_ASSERTION( "jpeg '%s' error: %s"
-                , Detail::jpeg_get_debug_filepath( _cinfo )
-                , buffer
-            );
-
-            if( _cinfo->err->msg_parm.i[0] != 13 )
-            {
-                jpeg_destroy( _cinfo );
-            }
+            return decoder->jpeg_error_exit( _cinfo );
         }
         //////////////////////////////////////////////////////////////////////////
         METHODDEF( noreturn_t ) jpeg_output_message( j_common_ptr _cinfo )
         {
-            Char buffer[JMSG_LENGTH_MAX] = {'\0'};
+            ImageDecoderJPEG * decoder = static_cast<ImageDecoderJPEG *>(_cinfo->client_data);
 
-            (*_cinfo->err->format_message)(_cinfo, buffer);
-
-            LOGGER_ASSERTION( "jpeg '%s' message: %s"
-                , Detail::jpeg_get_debug_filepath( _cinfo )
-                , buffer
-            );
+            return decoder->jpeg_output_message( _cinfo );
         }
         //////////////////////////////////////////////////////////////////////////
-        METHODDEF( void ) jpeg_init_source( j_decompress_ptr cinfo )
+        METHODDEF( void ) jpeg_init_source( j_decompress_ptr _cinfo )
         {
-            DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
+            ImageDecoderJPEG * decoder = static_cast<ImageDecoderJPEG *>(_cinfo->client_data);
 
-            src->start_of_file = TRUE;
+            decoder->jpeg_init_source( _cinfo );
         }
         //////////////////////////////////////////////////////////////////////////
-        METHODDEF( boolean ) jpeg_fill_input_buffer( j_decompress_ptr cinfo )
+        METHODDEF( boolean ) jpeg_fill_input_buffer( j_decompress_ptr _cinfo )
         {
-            DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
+            ImageDecoderJPEG * decoder = static_cast<ImageDecoderJPEG *>(_cinfo->client_data);
 
-            size_t nbytes = src->stream->read( src->buffer, MENGINE_DECODER_JPEG_INPUT_BUF_SIZE );
-
-            if( nbytes <= 0 )
-            {
-                WARNMS( cinfo, JWRN_JPEG_EOF );
-
-                src->buffer[0] = (JOCTET)0xFF;
-                src->buffer[1] = (JOCTET)JPEG_EOI;
-
-                nbytes = 2;
-            }
-
-            src->base.next_input_byte = src->buffer;
-            src->base.bytes_in_buffer = nbytes;
-            src->start_of_file = FALSE;
-
-            return TRUE;
+            return decoder->jpeg_fill_input_buffer( _cinfo );
         }
         //////////////////////////////////////////////////////////////////////////
-        METHODDEF( void ) jpeg_skip_input_data( j_decompress_ptr cinfo, long num_bytes )
+        METHODDEF( void ) jpeg_skip_input_data( j_decompress_ptr _cinfo, long num_bytes )
         {
-            DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
+            ImageDecoderJPEG * decoder = static_cast<ImageDecoderJPEG *>(_cinfo->client_data);
 
-            if( num_bytes > 0 )
-            {
-                while( num_bytes > (long)src->base.bytes_in_buffer )
-                {
-                    num_bytes -= (long)src->base.bytes_in_buffer;
-
-                    boolean result = jpeg_fill_input_buffer( cinfo );
-                    MENGINE_UNUSED( result );
-                }
-
-                src->base.next_input_byte += (size_t)num_bytes;
-                src->base.bytes_in_buffer -= (size_t)num_bytes;
-            }
+            decoder->jpeg_skip_input_data( _cinfo, num_bytes );
         }
         //////////////////////////////////////////////////////////////////////////
-        METHODDEF( void ) jpeg_term_source( j_decompress_ptr cinfo )
+        METHODDEF( void ) jpeg_term_source( j_decompress_ptr _cinfo )
         {
-            MENGINE_UNUSED( cinfo );
+            ImageDecoderJPEG * decoder = static_cast<ImageDecoderJPEG *>(_cinfo->client_data);
 
-            //Empty
-        }
-        //////////////////////////////////////////////////////////////////////////
-        METHODDEF( void ) jpeg_mengine_src( j_decompress_ptr cinfo, InputStreamInterface * _stream )
-        {
-            if( cinfo->src == nullptr )
-            {
-                DecoderJPEGSourceManager * manager = (DecoderJPEGSourceManager *)(*cinfo->mem->alloc_small)
-                    ((j_common_ptr)cinfo, JPOOL_PERMANENT, SIZEOF( DecoderJPEGSourceManager ));
-
-                manager->buffer = (JOCTET *)(*cinfo->mem->alloc_small)
-                    ((j_common_ptr)cinfo, JPOOL_PERMANENT, MENGINE_DECODER_JPEG_INPUT_BUF_SIZE * SIZEOF( JOCTET ));
-
-                cinfo->src = (struct jpeg_source_mgr *)manager;
-            }
-
-            DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
-
-            src->base.init_source = &jpeg_init_source;
-            src->base.fill_input_buffer = &jpeg_fill_input_buffer;
-            src->base.skip_input_data = &jpeg_skip_input_data;
-            src->base.resync_to_restart = jpeg_resync_to_restart; // use default method 
-            src->base.term_source = jpeg_term_source;
-            src->base.bytes_in_buffer = 0;
-            src->base.next_input_byte = nullptr;
-            src->stream = _stream;
+            decoder->jpeg_term_source( _cinfo );
         }
         //////////////////////////////////////////////////////////////////////////
         METHODDEF( int32_t ) jpeg_get_quality( const jpeg_decompress_struct * _jpegObject )
@@ -200,37 +109,57 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderJPEG::_initialize()
-    {
-        // step 1: allocate and initialize JPEG decompression object
-        m_jpegObject.err = jpeg_std_error( &m_errorMgr );
-        m_jpegObject.client_data = this;
+    {   
+        Helper::memoryZeroPod( &m_errorMgr );
+
+        jpeg_std_error( &m_errorMgr );
 
         m_errorMgr.error_exit = &Detail::jpeg_error_exit;
         m_errorMgr.output_message = &Detail::jpeg_output_message;
 
-        jpeg_create_decompress( &m_jpegObject );
+        Helper::memoryZeroPod( &m_decompressJpeg );
+
+        jpeg_create_decompress( &m_decompressJpeg );
+        
+        m_decompressJpeg.err = &m_errorMgr;
+        m_decompressJpeg.client_data = this;
+        m_decompressJpeg.src = &m_sourceMgr;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ImageDecoderJPEG::_finalize()
     {
-        jpeg_destroy_decompress( &m_jpegObject );
+        jpeg_destroy_decompress( &m_decompressJpeg );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderJPEG::_prepareData()
     {
-        const InputStreamInterfacePtr & stream = this->getStream();
+        if( MENGINE_JMP_SET( m_jmpBuffer ) != 0 )
+        {
+            LOGGER_ASSERTION( "jmp" );
 
-        Detail::jpeg_mengine_src( &m_jpegObject, stream.get() );
+            return false;
+        }
 
-        jpeg_read_header( &m_jpegObject, TRUE );
-        jpeg_calc_output_dimensions( &m_jpegObject );
+        Helper::memoryZeroPod( &m_sourceMgr );
+
+        m_sourceMgr.bytes_in_buffer = 0;
+        m_sourceMgr.next_input_byte = nullptr;
+
+        m_sourceMgr.init_source = &Detail::jpeg_init_source;
+        m_sourceMgr.fill_input_buffer = &Detail::jpeg_fill_input_buffer;
+        m_sourceMgr.skip_input_data = &Detail::jpeg_skip_input_data;
+        m_sourceMgr.resync_to_restart = jpeg_resync_to_restart; // use default method 
+        m_sourceMgr.term_source = &Detail::jpeg_term_source;
+
+        jpeg_read_header( &m_decompressJpeg, TRUE );
+        jpeg_calc_output_dimensions( &m_decompressJpeg );
 
         m_dataInfo.mipmaps = 1;
-        m_dataInfo.width = m_jpegObject.image_width;
-        m_dataInfo.height = m_jpegObject.image_height;
-        m_dataInfo.quality = Detail::jpeg_get_quality( &m_jpegObject );
+        m_dataInfo.width = m_decompressJpeg.image_width;
+        m_dataInfo.height = m_decompressJpeg.image_height;
+        m_dataInfo.quality = Detail::jpeg_get_quality( &m_decompressJpeg );
 
         switch( RGB_PIXELSIZE )
         {
@@ -254,6 +183,13 @@ namespace Mengine
 
         MENGINE_PROFILER_CATEGORY();
 
+        if( MENGINE_JMP_SET( m_jmpBuffer ) != 0 )
+        {
+            LOGGER_ASSERTION( "jmp" );
+
+            return 0;
+        }
+
         const ImageDecoderData * decoderData = static_cast<const ImageDecoderData *>(_decoderData);
 
         void * buffer = decoderData->buffer;
@@ -266,7 +202,7 @@ namespace Mengine
             , m_dataInfo.height
         );
 
-        jpeg_start_decompress( &m_jpegObject );
+        jpeg_start_decompress( &m_decompressJpeg );
 
         uint32_t optionChannels = Helper::getPixelFormatChannels( decoderData->format );
         uint32_t dataChannels = Helper::getPixelFormatChannels( m_dataInfo.format );
@@ -281,7 +217,7 @@ namespace Mengine
 
                     for( uint32_t j = 0; j != m_dataInfo.height; ++j )
                     {
-                        jpeg_read_scanlines( &m_jpegObject, &rgb_buffer, 1 );
+                        jpeg_read_scanlines( &m_decompressJpeg, &rgb_buffer, 1 );
 
                         // Assume put_scanline_someplace wants a pointer and sample count.
                         rgb_buffer += decoderData->pitch;
@@ -341,8 +277,8 @@ namespace Mengine
             }break;
         }
 
-        m_jpegObject.output_scanline = m_jpegObject.output_height;
-        jpeg_finish_decompress( &m_jpegObject );
+        m_decompressJpeg.output_scanline = m_decompressJpeg.output_height;
+        jpeg_finish_decompress( &m_decompressJpeg );
 
         size_t readSize = decoderData->pitch * m_dataInfo.height;
 
@@ -351,15 +287,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderJPEG::_rewind()
     {
-        jpeg_destroy_decompress( &m_jpegObject );
+        jpeg_destroy_decompress( &m_decompressJpeg );
 
-        m_jpegObject.err = jpeg_std_error( &m_errorMgr );
-        m_jpegObject.client_data = this;
+        Helper::memoryZeroPod( &m_errorMgr );
+
+        jpeg_std_error( &m_errorMgr );
 
         m_errorMgr.error_exit = &Detail::jpeg_error_exit;
         m_errorMgr.output_message = &Detail::jpeg_output_message;
 
-        jpeg_create_decompress( &m_jpegObject );
+        Helper::memoryZeroPod( &m_decompressJpeg );
+
+        jpeg_create_decompress( &m_decompressJpeg );
+
+        m_decompressJpeg.err = &m_errorMgr;
+        m_decompressJpeg.client_data = this;
+        m_decompressJpeg.src = &m_sourceMgr;
 
         const InputStreamInterfacePtr & stream = this->getStream();
 
@@ -372,4 +315,91 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
+    noreturn_t ImageDecoderJPEG::jpeg_error_exit( j_common_ptr _cinfo )
+    {
+        Char buffer[JMSG_LENGTH_MAX] = {'\0'};
+
+        (*_cinfo->err->format_message)(_cinfo, buffer);
+
+        LOGGER_ASSERTION( "jpeg '%s' error: %s"
+            , Helper::getDebugFullPath( this->getStream() )
+            , buffer
+        );
+
+        if( _cinfo->err->msg_parm.i[0] != 13 )
+        {
+            jpeg_destroy( _cinfo );
+
+            MENGINE_JMP_JUMP( m_jmpBuffer, 1 );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    noreturn_t ImageDecoderJPEG::jpeg_output_message( j_common_ptr _cinfo )
+    {
+        Char buffer[JMSG_LENGTH_MAX] = {'\0'};
+
+        (*_cinfo->err->format_message)(_cinfo, buffer);
+
+        LOGGER_ASSERTION( "jpeg '%s' message: %s"
+            , Helper::getDebugFullPath( this->getStream() )
+            , buffer
+        );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImageDecoderJPEG::jpeg_init_source( j_decompress_ptr _cinfo )
+    {
+        MENGINE_UNUSED( _cinfo );
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    boolean ImageDecoderJPEG::jpeg_fill_input_buffer( j_decompress_ptr _cinfo )
+    {
+        const InputStreamInterfacePtr & stream = this->getStream();
+
+        size_t nbytes = stream->read( m_JOCTETBuffer, MENGINE_DECODER_JPEG_INPUT_BUF_SIZE );
+
+        if( nbytes <= 0 )
+        {
+            WARNMS( _cinfo, JWRN_JPEG_EOF );
+
+            m_JOCTETBuffer[0] = (JOCTET)0xFF;
+            m_JOCTETBuffer[1] = (JOCTET)JPEG_EOI;
+
+            nbytes = 2;
+        }
+
+        m_sourceMgr.next_input_byte = m_JOCTETBuffer;
+        m_sourceMgr.bytes_in_buffer = nbytes;
+
+        return TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImageDecoderJPEG::jpeg_skip_input_data( j_decompress_ptr _cinfo, long num_bytes )
+    {
+        if( num_bytes <= 0 )
+        {
+            return;
+        }
+
+        while( num_bytes > (long)m_sourceMgr.bytes_in_buffer )
+        {
+            num_bytes -= (long)m_sourceMgr.bytes_in_buffer;
+
+            boolean result = this->jpeg_fill_input_buffer( _cinfo );
+            MENGINE_UNUSED( result );
+        }
+
+        m_sourceMgr.next_input_byte += (size_t)num_bytes;
+        m_sourceMgr.bytes_in_buffer -= (size_t)num_bytes;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImageDecoderJPEG::jpeg_term_source( j_decompress_ptr _cinfo )
+    {
+        MENGINE_UNUSED( _cinfo );
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

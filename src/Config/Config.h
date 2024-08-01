@@ -125,6 +125,10 @@
 #   define MENGINE_RELEASE
 #endif
 
+#ifndef MENGINE_SETJMP_UNSUPPORTED
+#   define MENGINE_SETJMP_SUPPORTED
+#endif
+
 #if defined(MENGINE_DEBUG)
 #   if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_TOOLCHAIN_MINGW)
 #       define MENGINE_WINDOWS_DEBUG

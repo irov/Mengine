@@ -6,6 +6,8 @@
 #include "Kernel/AssertionType.h"
 #include "Kernel/PixelFormatHelper.h"
 
+#include "Config/StdSetJMP.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -124,6 +126,13 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
         MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
+
+#if defined(PNG_SETJMP_SUPPORTED)
+        if( MENGINE_JMP_SET( png_jmpbuf( m_png_ptr ) ) != 0 )
+        {
+            return false;
+        }
+#endif
 
         const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
 

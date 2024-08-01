@@ -50,6 +50,9 @@ namespace Mengine
         CODEC_SERVICE()
             ->registerCodecExt( STRINGIZE_STRING_LOCAL( "jpeg" ), STRINGIZE_STRING_LOCAL( "jpegImage" ) );
 
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "jfif" ), STRINGIZE_STRING_LOCAL( "jpegImage" ) );
+
         Helper::registerDecoder<ImageDecoderJPEG>( STRINGIZE_STRING_LOCAL( "jpegImage" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerEncoder<ImageEncoderJPEG>( STRINGIZE_STRING_LOCAL( "jpegImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
@@ -66,6 +69,9 @@ namespace Mengine
 
         CODEC_SERVICE()
             ->removeCodecExt( STRINGIZE_STRING_LOCAL( "jpeg" ) );
+
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "jfif" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void JPEGPlugin::_destroyPlugin()

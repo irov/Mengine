@@ -12,6 +12,6 @@
 #   define MENGINE_JMP_JUMP(Var, Code) longjmp(Var, Code)
 #else
 #   define MENGINE_JMP_DECLARE(Var) 
-#   define MENGINE_JMP_DECLARE(Var) 0
+#   define MENGINE_JMP_SET(Var) 0
 #   define MENGINE_JMP_JUMP(Var, Code)
 #endif

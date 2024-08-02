@@ -139,6 +139,16 @@ public class MengineApplication extends Application {
     public MengineApplication() {
         super();
 
+        String applicationId = this.getApplicationId();
+        String versionName = this.getVersionName();
+        int versionCode = this.getVersionCode();
+
+        MengineLog.logMessageRelease(TAG, "MengineApplication id: %s version: %s [%d]"
+                , applicationId
+                , versionName
+                , versionCode
+        );
+
         String[] plugins = this.getAndroidPlugins();
 
         for (String namePlugin : plugins) {
@@ -859,13 +869,9 @@ public class MengineApplication extends Application {
         }
 
         boolean isMainProcess = this.isMainProcess();
-        String versionName = this.getVersionName();
-        int versionCode = this.getVersionCode();
 
-        MengineLog.logMessage(TAG, "onCreate isMainProcess: %b VersionName: %s [%d]"
+        MengineLog.logMessageRelease(TAG, "onCreate isMainProcess: %b "
             , isMainProcess
-            , versionName
-            , versionCode
         );
 
         List<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();

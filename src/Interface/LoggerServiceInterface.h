@@ -44,8 +44,11 @@ namespace Mengine
         virtual void logMessage( const LoggerMessage & _message ) = 0;
 
     public:
-        virtual void lockMessage() = 0;
-        virtual void unlockMessage() = 0;
+        virtual void lockMessages() = 0;
+        virtual void unlockMessages() = 0;
+
+    public:
+        virtual void flushMessages() = 0;
 
     public:
         virtual bool loadOldLogMemory( const ContentInterfacePtr & _content ) = 0;

@@ -17,7 +17,10 @@ namespace Mengine
                 return false;
             }
 
-            *_utf8Code = (uint32_t)code;
+            if( _utf8Code != nullptr )
+            {
+                *_utf8Code = (uint32_t)code;
+            }
 
             return true;
         }

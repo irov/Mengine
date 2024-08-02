@@ -707,7 +707,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jstring jname = jenv->NewStringUTF( _name.c_str() );
+        const Char * name_str = _name.c_str();
+
+        jstring jname = jenv->NewStringUTF( name_str );
 
         jclass jclass_MengineSemaphoreListener = jenv->FindClass( "org/Mengine/Base/MengineSemaphoreListener" );
 

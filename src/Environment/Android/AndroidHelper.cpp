@@ -12,6 +12,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/StdIntTypes.h"
+#include "Config/Utf8.h"
 
 namespace Mengine
 {
@@ -618,7 +619,7 @@ namespace Mengine
             _jenv->DeleteLocalRef( jclass_Rect );
         }
         //////////////////////////////////////////////////////////////////////////
-        void AndroidWriteMemory( JNIEnv * _jenv, const Mengine::MemoryInterfacePtr & _memory, jobject _writer )
+        bool AndroidWriteMemory( JNIEnv * _jenv, const Mengine::MemoryInterfacePtr & _memory, jobject _writer )
         {
             jclass jclass_Writer = _jenv->GetObjectClass( _writer );
             jmethodID jmethodID_Writer_write_String = _jenv->GetMethodID( jclass_Writer, "write", "(Ljava/lang/String;)V" );
@@ -626,25 +627,31 @@ namespace Mengine
             const Mengine::Char * data_value = _memory->getBuffer();
             size_t data_size = _memory->getSize();
 
-            Mengine::Char jvalue_str[1024 + 1] = {'\0'};
-            Mengine::Helper::stringSlice( data_value, data_size, jvalue_str, 1024, [_jenv, _writer, jmethodID_Writer_write_String]( const Mengine::Char * _str )
+            Mengine::Utf8 jvalue_str[1024 + 1] = {'\0'};
+            bool result = Mengine::Helper::utf8Slice( data_value, data_size, jvalue_str, 1024, [_jenv, _writer, jmethodID_Writer_write_String]( const Mengine::Utf8 * _utf8 )
             {
-                jstring jvalue = _jenv->NewStringUTF( _str );
+                jstring jvalue = _jenv->NewStringUTF( _utf8 );
 
-                if (jvalue == nullptr)
+                if( jvalue == nullptr )
                 {
                     LOGGER_ERROR( "invalid write memory string UTF8: %s"
-                        , _str
+                        , _utf8
                     );
 
-                    return;
+                    return false;
                 }
 
                 _jenv->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
                 _jenv->DeleteLocalRef( jvalue );
+
+                __android_log_write( ANDROID_LOG_INFO, "Mengine", _utf8 );
+
+                return true;
             } );
 
             _jenv->DeleteLocalRef( jclass_Writer );
+
+            return result;
         }
         //////////////////////////////////////////////////////////////////////////
         void AndroidEnvExceptionCheck( JNIEnv * _jenv )

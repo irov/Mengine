@@ -424,7 +424,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( _message.category, "please setup category for log message" );
         MENGINE_ASSERTION_MEMORY_PANIC( _message.data, "please setup data for log message" );
 
-        MENGINE_ASSERTION_VALIDATE_UTF8( _message.data, MENGINE_UNKNOWN_SIZE );
+        MENGINE_ASSERTION_VALIDATE_UTF8( _message.data, _message.size );
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         NOTIFICATION_NOTIFY( NOTIFICATOR_LOGGER_BEGIN, _message );
@@ -564,7 +564,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerService::lockMessage()
+    void LoggerService::lockMessages()
     {
         if( m_mutexMessageBlock == nullptr )
         {
@@ -574,7 +574,7 @@ namespace Mengine
         m_mutexMessageBlock->lock();
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerService::unlockMessage()
+    void LoggerService::unlockMessages()
     {
         if( m_mutexMessageBlock == nullptr )
         {
@@ -582,6 +582,16 @@ namespace Mengine
         }
 
         m_mutexMessageBlock->unlock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerService::flushMessages()
+    {
+        MENGINE_THREAD_SHARED_MUTEX_SCOPE( m_mutexLogger );
+
+        for( const LoggerInterfacePtr & logger : m_loggers )
+        {
+            logger->flush();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::writeHistory( const LoggerInterfacePtr & _logger ) const

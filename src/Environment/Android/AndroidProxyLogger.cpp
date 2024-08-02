@@ -40,7 +40,7 @@ namespace Mengine
         _record->getMessage( &message );
 
         MENGINE_ASSERTION_VALIDATE_UTF8( message.category, MENGINE_UNKNOWN_SIZE );
-        MENGINE_ASSERTION_VALIDATE_UTF8( message.data, MENGINE_UNKNOWN_SIZE );
+        MENGINE_ASSERTION_VALIDATE_UTF8( message.data, message.size );
 
         if((message.filter & Mengine::LFILTER_ANDROID) == Mengine::LFILTER_ANDROID )
         {
@@ -56,7 +56,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jstring category_jstring = jenv->NewStringUTF(message.category );
+        jstring category_jstring = jenv->NewStringUTF( message.category );
 
         ELoggerLevel level = message.level;
         uint32_t filter = message.filter;

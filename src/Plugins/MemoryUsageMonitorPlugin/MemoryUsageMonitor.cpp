@@ -95,7 +95,7 @@ namespace Mengine
         MENGINE_UNUSED( _id );
 
         LOGGER_SERVICE()
-            ->lockMessage();
+            ->lockMessages();
 
         int64_t Statistic_AllocatorSize = STATISTIC_GET_INTEGER( STATISTIC_ALLOCATOR_SIZE );
 
@@ -192,7 +192,7 @@ namespace Mengine
         }
 
         LOGGER_SERVICE()
-            ->unlockMessage();
+            ->unlockMessages();
 
         return true;
     }

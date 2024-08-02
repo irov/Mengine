@@ -15,20 +15,20 @@ public class MengineGoogleServicePlugin extends MenginePlugin {
     private static int m_cacheIsGooglePlayServicesResultCode = ConnectionResult.UNKNOWN;
 
     public static boolean isGooglePlayServicesAvailable(MengineApplication application) {
-        if (m_cacheIsGooglePlayServicesResultCode != ConnectionResult.UNKNOWN) {
-            boolean available = m_cacheIsGooglePlayServicesResultCode == ConnectionResult.SUCCESS;
-
-            return available;
+        if (MengineGoogleServicePlugin.m_cacheIsGooglePlayServicesResultCode == ConnectionResult.SUCCESS) {
+            return true;
         }
 
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        if (MengineGoogleServicePlugin.m_cacheIsGooglePlayServicesResultCode == ConnectionResult.UNKNOWN) {
+            GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
 
-        Context context = application.getApplicationContext();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
+            Context context = application.getApplicationContext();
+            int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
 
-        MengineGoogleServicePlugin.m_cacheIsGooglePlayServicesResultCode = resultCode;
+            MengineGoogleServicePlugin.m_cacheIsGooglePlayServicesResultCode = resultCode;
+        }
 
-        if (resultCode != ConnectionResult.SUCCESS) {
+        if (MengineGoogleServicePlugin.m_cacheIsGooglePlayServicesResultCode != ConnectionResult.SUCCESS) {
             return false;
         }
 

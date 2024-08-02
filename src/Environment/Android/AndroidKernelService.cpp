@@ -94,13 +94,18 @@ extern "C"
 
         const Mengine::ConstString & folderName = account->getFolderName();
 
-        jstring result = env->NewStringUTF( folderName.c_str() );
+        const Mengine::Char * folderName_str = folderName.c_str();
+
+        jstring result = env->NewStringUTF( folderName_str );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1writeCurrentLogToFile )(JNIEnv * env, jclass cls, jobject _writer)
     {
+        LOGGER_SERVICE()
+            ->flushMessages();
+
         const Mengine::ContentInterfacePtr & content = LOGGER_SERVICE()
             ->getCurrentContentLog();
 
@@ -116,7 +121,10 @@ extern "C"
             return JNI_FALSE;
         }
 
-        Mengine::Helper::AndroidWriteMemory( env, memory, _writer );
+        if( Mengine::Helper::AndroidWriteMemory( env, memory, _writer ) == false )
+        {
+            return JNI_FALSE;
+        }
 
         return JNI_TRUE;
     }
@@ -131,7 +139,10 @@ extern "C"
             return JNI_FALSE;
         }
 
-        Mengine::Helper::AndroidWriteMemory( env, memory, _writer );
+        if( Mengine::Helper::AndroidWriteMemory( env, memory, _writer ) == false )
+        {
+            return JNI_FALSE;
+        }
 
         return JNI_TRUE;
     }

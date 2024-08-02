@@ -55,8 +55,11 @@ namespace Mengine
         void logMessage( const LoggerMessage & _message ) override;
 
     public:
-        void lockMessage() override;
-        void unlockMessage() override;
+        void lockMessages() override;
+        void unlockMessages() override;
+
+    public:
+        void flushMessages() override;
 
     public:
         void writeHistory( const LoggerInterfacePtr & _logger ) const override;

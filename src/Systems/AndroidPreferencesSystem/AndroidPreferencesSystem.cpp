@@ -142,12 +142,15 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
+        const Char * default_str = _default.c_str();
+
         jstring jkey = jenv->NewStringUTF( _key );
-        jstring jdefault = jenv->NewStringUTF( _default.c_str() );
+        jstring jdefault = jenv->NewStringUTF( default_str );
 
         jstring jvalue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getPreferenceString", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", jkey, jdefault );
 
         jenv->DeleteLocalRef( jkey );
+        jenv->DeleteLocalRef( jdefault );
 
         ConstString value = Helper::AndroidMakeConstStringFromJString( jenv, jvalue );
 
@@ -167,8 +170,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
+        const Char * value_str = _value.c_str();
+
         jstring jkey = jenv->NewStringUTF( _key );
-        jstring jvalue = jenv->NewStringUTF( _value.c_str() );
+        jstring jvalue = jenv->NewStringUTF( value_str );
 
         Helper::AndroidCallVoidApplicationMethod( jenv, "setPreferenceString", "(Ljava/lang/String;Ljava/lang/String;)V", jkey, jvalue );
 

@@ -101,7 +101,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileOutputStream::flush()
     {
-        fflush( m_file );
+        ::fflush( m_file );
 
         return true;
     }

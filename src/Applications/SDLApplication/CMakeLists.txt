@@ -184,7 +184,7 @@ if(MENGINE_TARGET_APPLE)
         MESSAGE(FATAL_ERROR "Deploy plist path setup invalid path '${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PLIST}'")
     endif()
     
-    find_package(PythonInterp 3 REQUIRED)
+    find_package(Python3 REQUIRED COMPONENTS Interpreter)
     
     set(PYTHON_MERGE_PLISTS_SCRIPT "${CMAKE_SOURCE_DIR}/merge_plists.py")
     set(MENGINE_MERGE_PLIST "${MENGINE_SOLUTIONS_CONFIG_DIR}/res/Configuration/info.plist.in")

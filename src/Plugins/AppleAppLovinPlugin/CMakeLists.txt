@@ -111,7 +111,7 @@ list(GET STATUS_DOWNLOAD_SKADNETWORKIDS 0 STATUS_DOWNLOAD_SKADNETWORKIDS_CODE)
 if(NOT STATUS_DOWNLOAD_SKADNETWORKIDS_CODE EQUAL 0)
     message(FATAL_ERROR "Failed to download file: ${URL_DOWNLOAD_SKADNETWORKIDS}")
 else()
-    message(STATUS "File downloaded successfully: ${OUTPUT_JSON}")
+    message(STATUS "File downloaded successfully: ${URL_DOWNLOAD_SKADNETWORKIDS}")
 endif()
 
 ADD_MENGINE_PLIST(${MENGINE_SOLUTIONS_CONFIG_DIR}/downloads/Configuration/${PROJECT_NAME}/skadnetworkids.json)

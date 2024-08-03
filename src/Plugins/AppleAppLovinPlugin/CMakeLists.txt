@@ -101,7 +101,7 @@ ADD_APPLOVIN_MEDIATION(VERVE "AppLovinMediationVerveAdapter" "3.0.0.0")
 ADD_APPLOVIN_MEDIATION(MYTARGET "AppLovinMediationMyTargetAdapter" "5.21.4.0") #VK
 ADD_APPLOVIN_MEDIATION(YANDEX "AppLovinMediationYandexAdapter" "7.0.0.0")
 
-SET(URL_DOWNLOAD_SKADNETWORKIDS https://skadnetwork-ids.applovin.com/v1/skadnetworkids.json)
+SET(URL_DOWNLOAD_SKADNETWORKIDS https://skadnetwork-ids.applovin.com/v1/skadnetworkids.xml)
 
 file(DOWNLOAD ${URL_DOWNLOAD_SKADNETWORKIDS} ${MENGINE_SOLUTIONS_CONFIG_DIR}/downloads/Configuration/${PROJECT_NAME}/skadnetworkids.json
     STATUS STATUS_DOWNLOAD_SKADNETWORKIDS

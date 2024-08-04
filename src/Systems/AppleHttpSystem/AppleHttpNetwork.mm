@@ -17,6 +17,10 @@
 }
 
 + (void)setBasicAuthorization:(NSMutableURLRequest *)request login:(NSString *)login password:(NSString *)password {
+    if (login.length == 0) {
+        return;
+    }
+    
     NSString * userCredentials = [NSString stringWithFormat:@"%@:%@", login, password];
     NSData * data = [userCredentials dataUsingEncoding:NSUTF8StringEncoding];
     NSString * base64 = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];

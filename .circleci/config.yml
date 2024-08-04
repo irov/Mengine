@@ -74,5 +74,5 @@ jobs:
             cp gradle.properties.ci gradle.properties
             sudo chmod +x gradlew
             ./gradlew --version
-            ./gradlew assembleDebug -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64 -PANDROID_APP_MANIFEST_CI=1 -PANDROID_APP_ASSETS_RES_CI=1 -PMENGINE_APP_PLUGIN_FORCE_DISABLE=ASTRALAX
+            ./gradlew assembleDebug -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64 -PANDROID_APP_MANIFEST_CI=1 -PANDROID_APP_ASSETS_RES_CI=1
             popd

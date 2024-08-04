@@ -6,6 +6,8 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/base.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/androidx.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/minify.gradle'
 
+def ANDROID_APP_ASSETS_RES_CI = Utils.getBooleanProperty(project, "ANDROID_APP_ASSETS_RES_CI", false)
+
 def MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_MENGINE")
 def MENGINE_APP_LIBRARY_SDL = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_SDL")
 
@@ -14,9 +16,23 @@ android {
 
     sourceSets {
         main {
-            if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+            if (ANDROID_APP_ASSETS_RES_CI == true) {
+                println 'ANDROID_APP_ASSETS_RES_DIR: res_ci [CI]'
+
+                res.srcDirs += ['../../app/res_ci']
+            } else if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
+                println "ANDROID_APP_ASSETS_RES_DIR: $ANDROID_APP_ASSETS_RES_DIR"
+
+                def f = new File(ANDROID_APP_ASSETS_RES_DIR)
+
+                if (f.exists() == false) {
+                    throw new GradleException("ANDROID_APP_ASSETS_RES_DIR not found folder: $ANDROID_APP_ASSETS_RES_DIR")
+                }
+
                 res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
             } else {
+                println 'ANDROID_APP_ASSETS_RES_DIR: res [Default]'
+
                 res.srcDirs += ['../../app/res']
             }
         }

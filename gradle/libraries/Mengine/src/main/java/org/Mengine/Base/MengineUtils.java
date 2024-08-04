@@ -587,8 +587,28 @@ public class MengineUtils {
         while ((len = stream.read(buffer)) != -1) {
             out.write(buffer, 0, len);
         }
+
         out.close();
+
         return out.toByteArray();
+    }
+
+    public static byte [] inputStreamToByteArraySize(InputStream stream, int size) throws IOException {
+        byte [] buffer = new byte[size];
+
+        int bytesRead = 0;
+
+        while (bytesRead < size) {
+            int read = stream.read(buffer, bytesRead, size - bytesRead);
+
+            if (read == -1) {
+                break;
+            }
+
+            bytesRead += read;
+        }
+
+        return buffer;
     }
 
     public static String inputStreamToString(InputStream stream) throws IOException {

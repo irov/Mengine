@@ -279,6 +279,41 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
+            static bool getResponseJson( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
+            {
+                for( ;; )
+                {
+                    DWORD bytesAvailable = 0;
+                    if( ::InternetQueryDataAvailable( _hRequest, &bytesAvailable, 0, INTERNET_NO_CALLBACK ) == FALSE )
+                    {
+                        return false;
+                    }
+
+                    if( bytesAvailable == 0 )
+                    {
+                        break;
+                    }
+
+                    DWORD bytesRequest = bytesAvailable > 4096 ? 4096 : bytesAvailable;
+
+                    DWORD bytesRead = 0;
+                    if( ::InternetReadFile( _hRequest, buffer, bytesRequest, &bytesRead ) == FALSE )
+                    {
+                        return false;
+                    }
+
+                    if( bytesRead == 0 )
+                    {
+                        break;
+                    }
+
+                    _response->appendJson( buffer, bytesRead );
+                }
+
+                return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
+                    BYTE buffer[4096] = {'\0'};
             static bool getResponseData( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
             {
                 for( ;; )

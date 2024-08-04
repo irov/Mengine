@@ -22,9 +22,6 @@ namespace Mengine
         void appendHeaders( const Char * _ptr, size_t _size ) override;
         const HttpHeaders & getHeaders() const override;
 
-        void appendJson( const Char * _ptr, size_t _size ) override;
-        const String & getJson() const override;
-
         void appendData( const void * _ptr, size_t _size ) override;
         const Data & getData() const override;
 
@@ -42,7 +39,6 @@ namespace Mengine
         HttpRequestInterfacePtr m_request;
         HttpHeaders m_headers;
         Data m_data;
-        String m_json;
         String m_errorMessage;
         int32_t m_errorCode;
         EHttpCode m_code;

@@ -34,23 +34,6 @@ namespace Mengine
         return m_headers;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HttpResponse::appendJson( const Char * _ptr, size_t _size )
-    {
-        if( _size != MENGINE_UNKNOWN_SIZE )
-        {
-            m_json.append( _ptr, _size );
-        }
-        else
-        {
-            m_json.append( _ptr );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const String & HttpResponse::getJson() const
-    {
-        return m_json;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void HttpResponse::appendData( const void * _ptr, size_t _size )
     {
         const uint8_t * data_begin = static_cast<const uint8_t *>(_ptr);

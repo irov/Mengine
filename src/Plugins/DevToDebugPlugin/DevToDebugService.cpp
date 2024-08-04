@@ -45,6 +45,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/Fingerprint.h"
+#include "Kernel/DataHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -544,7 +545,11 @@ namespace Mengine
         EHttpCode responseCode = _response->getCode();
         const String & responseErrorMessage = _response->getErrorMessage();
         int32_t responseErrorCode = _response->getErrorCode();
-        const String & responseJson = _response->getJson();
+        
+        const Data & responseData = _response->getData();
+
+        String responseJson;
+        Helper::stringFromData( responseData, &responseJson );
 
         switch( m_status )
         {

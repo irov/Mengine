@@ -35,9 +35,6 @@ namespace Mengine
         virtual void appendHeaders( const Char * _ptr, size_t _size ) = 0;
         virtual const HttpHeaders & getHeaders() const = 0;
 
-        virtual void appendJson( const Char * _ptr, size_t _size ) = 0;
-        virtual const String & getJson() const = 0;
-
         virtual void appendData( const void * _ptr, size_t _size ) = 0;
         virtual const Data & getData() const = 0;
 

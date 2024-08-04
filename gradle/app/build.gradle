@@ -259,10 +259,6 @@ android {
                 ndk {
                     debugSymbolLevel 'SYMBOL_TABLE'
                 }
-
-                packagingOptions {
-                    exclude "**/*.so.debug"
-                }
             }
         }
     }
@@ -344,7 +340,6 @@ android {
     packagingOptions {
         jniLibs {
             pickFirsts += ['lib/**/libc++_shared.so', 'lib/**/libopenal.so', 'lib/**/libSDL2.so']
-            keepDebugSymbols += '**/*.so'
         }
     }
 

@@ -258,7 +258,7 @@ android {
                 }
 
                 ndk {
-                    debugSymbolLevel 'FULL'
+                    debugSymbolLevel 'SYMBOL_TABLE'
                 }
             }
         }

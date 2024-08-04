@@ -69,7 +69,7 @@ public class MengineNetwork {
 
             connection.connect();
 
-            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection);
+            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection, true);
 
             connection.disconnect();
 
@@ -101,7 +101,7 @@ public class MengineNetwork {
 
             connection.connect();
 
-            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection);
+            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection, true);
 
             connection.disconnect();
 
@@ -130,7 +130,7 @@ public class MengineNetwork {
 
             connection.connect();
 
-            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection);
+            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection, true);
 
             connection.disconnect();
 
@@ -159,7 +159,7 @@ public class MengineNetwork {
 
             connection.connect();
 
-            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection);
+            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection, true);
 
             connection.disconnect();
 
@@ -189,7 +189,7 @@ public class MengineNetwork {
 
             connection.connect();
 
-            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection);
+            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection, false);
 
             connection.disconnect();
 
@@ -300,7 +300,7 @@ public class MengineNetwork {
         response.HTTP_RESPONSE_CODE = responseCode;
     }
 
-    protected static MengineHttpResponseParam makeResponse(@NonNull HttpURLConnection connection) throws IOException {
+    protected static MengineHttpResponseParam makeResponse(@NonNull HttpURLConnection connection, boolean json) throws IOException {
         MengineHttpResponseParam response = new MengineHttpResponseParam();
 
         MengineNetwork.setResponseCode(connection, response);
@@ -324,6 +324,8 @@ public class MengineNetwork {
     }
 
     protected static void getResponseContentData(@NonNull HttpURLConnection connection, @NonNull MengineHttpResponseParam response) throws IOException {
+        response.HTTP_CONTENT_JSON = null;
+
         InputStream is = connection.getInputStream();
 
         int length = connection.getContentLength();
@@ -341,6 +343,17 @@ public class MengineNetwork {
             response.HTTP_CONTENT_DATA = data;
             response.HTTP_CONTENT_LENGTH = data.length;
         }
+
+        is.close();
+    }
+
+    protected static void getResponseContentJson(@NonNull HttpURLConnection connection, @NonNull MengineHttpResponseParam response) throws IOException {
+        InputStream is = connection.getInputStream();
+
+        response.HTTP_CONTENT_LENGTH = 0;
+        response.HTTP_CONTENT_DATA = null;
+
+        response.HTTP_CONTENT_JSON = MengineUtils.inputStreamToString(is);
 
         is.close();
     }

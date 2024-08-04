@@ -20,15 +20,15 @@ namespace Mengine
 
             _data->resize( stream_size );
 
-            uint8_t * data_buffer = _data->data();
+            Data::value_type * data_buffer = _data->data();
 
             _stream->read( data_buffer, stream_size );
         }
         //////////////////////////////////////////////////////////////////////////
         void writeStreamData( const OutputStreamInterfacePtr & _stream, const Data & _data )
         {
-            const uint8_t * data_buffer = _data.data();
-            size_t data_size = _data.size();
+            const Data::value_type * data_buffer = _data.data();
+            Data::size_type data_size = _data.size();
 
             _stream->write( data_buffer, data_size );
         }

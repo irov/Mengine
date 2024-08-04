@@ -683,6 +683,9 @@ Core
     StreamHelper.h
     StreamHelper.cpp
     
+    DataHelper.h
+    DataHelper.cpp
+    
     Pointer.h
     
     Wrapper.h

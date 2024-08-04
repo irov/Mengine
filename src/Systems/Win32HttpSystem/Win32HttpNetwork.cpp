@@ -279,41 +279,6 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            static bool getResponseJson( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
-            {
-                for( ;; )
-                {
-                    DWORD bytesAvailable = 0;
-                    if( ::InternetQueryDataAvailable( _hRequest, &bytesAvailable, 0, INTERNET_NO_CALLBACK ) == FALSE )
-                    {
-                        return false;
-                    }
-
-                    if( bytesAvailable == 0 )
-                    {
-                        break;
-                    }
-
-                    DWORD bytesRequest = bytesAvailable > 4096 ? 4096 : bytesAvailable;
-
-                    Char buffer[4096] = {'\0'};
-                    DWORD bytesRead = 0;
-                    if( ::InternetReadFile( _hRequest, buffer, bytesRequest, &bytesRead ) == FALSE )
-                    {
-                        return false;
-                    }
-
-                    if( bytesRead == 0 )
-                    {
-                        break;
-                    }
-
-                    _response->appendJson( buffer, bytesRead );
-                }
-
-                return true;
-            }
-            //////////////////////////////////////////////////////////////////////////
             static bool getResponseData( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
             {
                 for( ;; )
@@ -345,32 +310,6 @@ namespace Mengine
 
                     _response->appendData( buffer, bytesRead );
                 }
-
-                return true;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            static bool makeResponseJson( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
-            {
-                if( ::HttpEndRequestA( _hRequest, NULL, 0, INTERNET_NO_CALLBACK ) == FALSE )
-                {
-                    return false;
-                }
-
-                if( Detail::getResponseStatusCode( _hRequest, _response ) == false )
-                {
-                    return false;
-                }
-
-                if( Detail::getResponseJson( _hRequest, _response ) == false )
-                {
-                    return false;
-                }
-
-                LOGGER_HTTP_INFO( "response [%u] code: %u json: %s"
-                    , _response->getRequest()->getRequestId()
-                    , _response->getCode()
-                    , _response->getJson().c_str()
-                );
 
                 return true;
             }
@@ -485,7 +424,7 @@ namespace Mengine
                 return false;
             }
 
-            if( Detail::makeResponseJson( hRequest, _response ) == false )
+            if( Detail::makeResponseData( hRequest, _response ) == false )
             {
                 Detail::errorRequest( _response );
 
@@ -562,7 +501,7 @@ namespace Mengine
                 return false;
             }
 
-            if( Detail::makeResponseJson( hRequest, _response ) == false )
+            if( Detail::makeResponseData( hRequest, _response ) == false )
             {
                 Detail::errorRequest( _response );
 
@@ -602,7 +541,7 @@ namespace Mengine
                 return false;
             }
 
-            if( Detail::makeResponseJson( hRequest, _response ) == false )
+            if( Detail::makeResponseData( hRequest, _response ) == false )
             {
                 Detail::errorRequest( _response );
 
@@ -642,7 +581,7 @@ namespace Mengine
                 return false;
             }
 
-            if( Detail::makeResponseJson( hRequest, _response ) == false )
+            if( Detail::makeResponseData( hRequest, _response ) == false )
             {
                 Detail::errorRequest( _response );
 

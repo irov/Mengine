@@ -10,6 +10,7 @@
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/StreamHelper.h"
 
 namespace Mengine
 {
@@ -95,6 +96,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidHttpRequestGetAsset::_onThreadTaskComplete(bool _successful )
     {
+        const HttpResponseInterfacePtr & response = this->getReponse();
+
         bool successful_stream_flush = true;
 
         FileGroupInterfacePtr fileGroup = m_content->getFileGroup();
@@ -103,13 +106,17 @@ namespace Mengine
 
         if( m_stream != nullptr )
         {
+            const Data & data = response->getData();
+
+            Helper::writeStreamData( m_stream, data );
+
             successful_stream_flush = m_stream->flush();
 
             Helper::closeOutputStreamFile( fileGroup, m_stream );
             m_stream = nullptr;
         }
 
-        EHttpCode code = m_response->getCode();
+        EHttpCode code = response->getCode();
 
         if( _successful == false || HTTP_CODE_IS_SUCCESSFUL( code ) == false || successful_stream_flush == false )
         {

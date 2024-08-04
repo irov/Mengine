@@ -9,7 +9,7 @@
 
 #include "Kernel/ResourceImage.h"
 #include "Kernel/Dataflow.h"
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"

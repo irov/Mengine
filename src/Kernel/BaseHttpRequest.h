@@ -26,8 +26,8 @@ namespace Mengine
         void setCookies( const String & _cookies ) override;
         const String & getCookies() const override;
 
-        void setHeaders( const HttpRequestHeaders & _headers ) override;
-        const HttpRequestHeaders & getHeaders() const override;
+        void setHeaders( const HttpHeaders & _headers ) override;
+        const HttpHeaders & getHeaders() const override;
 
         void setRequestId( HttpRequestId _id ) override;
         HttpRequestId getRequestId() const override;
@@ -53,7 +53,7 @@ namespace Mengine
         String m_url;
         String m_proxy;
         String m_cookies;
-        HttpRequestHeaders m_headers;
+        HttpHeaders m_headers;
         int32_t m_timeout;
         uint32_t m_flags;
 

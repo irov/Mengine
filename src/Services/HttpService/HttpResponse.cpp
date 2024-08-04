@@ -4,8 +4,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     HttpResponse::HttpResponse()
-        : m_requestId( MENGINE_HTTP_REQUEST_INVALID )
-        , m_errorCode( 0 )
+        : m_errorCode( 0 )
         , m_code( HTTP_Unknown )
         , m_successful( false )
     {
@@ -15,14 +14,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void HttpResponse::setRequestId( HttpRequestId _requestId )
+    void HttpResponse::setRequest( const HttpRequestInterfacePtr & _request )
     {
-        m_requestId = _requestId;
+        m_request = _request;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpResponse::getRequestId() const
+    const HttpRequestInterfacePtr & HttpResponse::getRequest() const
     {
-        return m_requestId;
+        return m_request;
     }
     //////////////////////////////////////////////////////////////////////////
     void HttpResponse::appendHeaders( const Char * _ptr, size_t _size )
@@ -30,17 +29,37 @@ namespace Mengine
         m_headers.emplace_back( _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    const HttpRequestHeaders & HttpResponse::getHeaders() const
+    const HttpHeaders & HttpResponse::getHeaders() const
     {
         return m_headers;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HttpResponse::appendData( const Char * _ptr, size_t _size )
+    void HttpResponse::appendJson( const Char * _ptr, size_t _size )
     {
-        m_data.append( _ptr, _size );
+        if( _size != MENGINE_UNKNOWN_SIZE )
+        {
+            m_json.append( _ptr, _size );
+        }
+        else
+        {
+            m_json.append( _ptr );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    const String & HttpResponse::getData() const
+    const String & HttpResponse::getJson() const
+    {
+        return m_json;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HttpResponse::appendData( const void * _ptr, size_t _size )
+    {
+        const uint8_t * data_begin = static_cast<const uint8_t *>(_ptr);
+        const uint8_t * data_end = data_begin + _size;
+
+        m_data.insert( m_data.end(), data_begin, data_end );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Data & HttpResponse::getData() const
     {
         return m_data;
     }

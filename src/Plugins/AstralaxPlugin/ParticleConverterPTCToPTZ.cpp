@@ -10,7 +10,7 @@
 #include "Kernel/Magic.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
@@ -77,7 +77,7 @@ namespace Mengine
             , full_outputFilePath.c_str()
         );
 
-        if( Helper::writeStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), false, data_memory, data_size, EAC_BEST ) == false )
+        if( Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), false, data_memory, data_size, EAC_BEST ) == false )
         {
             LOGGER_ERROR( "invalid write '%s'"
                 , full_outputFilePath.c_str()
@@ -98,7 +98,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ParticleConverterPTCToPTZ::validateVersion( const InputStreamInterfacePtr & _stream ) const
     {
-        if( Helper::loadStreamMagicHeader( _stream, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ) ) == false )
+        if( Helper::readStreamMagicHeader( _stream, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ) ) == false )
         {
             LOGGER_ERROR( "invalid magic header" );
 

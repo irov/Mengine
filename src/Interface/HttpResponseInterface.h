@@ -13,7 +13,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef VectorString HttpRequestHeaders;
+    typedef VectorString HttpHeaders;
     //////////////////////////////////////////////////////////////////////////
     struct HttpRequestPostProperty
     {
@@ -23,18 +23,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<HttpRequestPostProperty> HttpRequestPostProperties;
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class HttpRequestInterface> HttpRequestInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class HttpResponseInterface
         : public ServantInterface
     {
     public:
-        virtual void setRequestId( HttpRequestId _requestId ) = 0;
-        virtual HttpRequestId getRequestId() const = 0;
+        virtual void setRequest( const HttpRequestInterfacePtr & _requestId ) = 0;
+        virtual const HttpRequestInterfacePtr & getRequest() const = 0;
 
         virtual void appendHeaders( const Char * _ptr, size_t _size ) = 0;
-        virtual const HttpRequestHeaders & getHeaders() const = 0;
+        virtual const HttpHeaders & getHeaders() const = 0;
 
-        virtual void appendData( const Char * _ptr, size_t _size ) = 0;
-        virtual const String & getData() const = 0;
+        virtual void appendJson( const Char * _ptr, size_t _size ) = 0;
+        virtual const String & getJson() const = 0;
+
+        virtual void appendData( const void * _ptr, size_t _size ) = 0;
+        virtual const Data & getData() const = 0;
 
         virtual void setCode( EHttpCode _code ) = 0;
         virtual EHttpCode getCode() const = 0;

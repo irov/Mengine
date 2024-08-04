@@ -1,7 +1,7 @@
 #include "PickEncoderHIT.h"
 #include "PickVerifyHIT.h"
 
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"

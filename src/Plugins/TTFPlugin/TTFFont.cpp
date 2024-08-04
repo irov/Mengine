@@ -10,7 +10,7 @@
 #include "TTFFontTextureGlyphProvider.h"
 
 #include "Kernel/Dataflow.h"
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Logger.h"

@@ -51,7 +51,7 @@ public class MengineActivity extends AppCompatActivity {
     private static native int AndroidEnvironmentService_getProjectVersion();
 
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
-    private static native void AndroidNativePython_call(String plugin, String method, Object args[]);
+    private static native void AndroidNativePython_call(String plugin, String method, Object []args);
 
     private boolean m_initializePython;
     private boolean m_destroy;
@@ -269,6 +269,11 @@ public class MengineActivity extends AppCompatActivity {
 
         m_semaphores = new HashMap<>();
 
+        int orientation = getResources().getInteger(R.integer.app_screen_orientation);
+
+        this.setRequestedOrientation(orientation);
+
+        /*
         RelativeLayout contentView = new RelativeLayout(this);
         this.setContentView(contentView);
         m_contentView = contentView;

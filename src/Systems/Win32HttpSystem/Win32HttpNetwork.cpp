@@ -44,7 +44,7 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            static bool setHeaders( HINTERNET _hRequest, const HttpRequestHeaders & _headers )
+            static bool setHeaders( HINTERNET _hRequest, const HttpHeaders & _headers )
             {
                 for( const String & header : _headers )
                 {
@@ -237,7 +237,7 @@ namespace Mengine
                     return false;
                 }
 
-                const HttpRequestHeaders & HTTP_HEADERS = _request->getHeaders();
+                const HttpHeaders & HTTP_HEADERS = _request->getHeaders();
 
                 if( Detail::setHeaders( hRequest, HTTP_HEADERS ) == false )
                 {
@@ -279,7 +279,7 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            static bool getResponseData( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
+            static bool getResponseJson( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
             {
                 for( ;; )
                 {
@@ -308,13 +308,74 @@ namespace Mengine
                         break;
                     }
 
+                    _response->appendJson( buffer, bytesRead );
+                }
+
+                return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static bool getResponseData( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
+            {
+                for( ;; )
+                {
+                    DWORD bytesAvailable = 0;
+                    if( ::InternetQueryDataAvailable( _hRequest, &bytesAvailable, 0, INTERNET_NO_CALLBACK ) == FALSE )
+                    {
+                        return false;
+                    }
+
+                    if( bytesAvailable == 0 )
+                    {
+                        break;
+                    }
+
+                    DWORD bytesRequest = bytesAvailable > 4096 ? 4096 : bytesAvailable;
+
+                    BYTE buffer[4096] = {'\0'};
+                    DWORD bytesRead = 0;
+                    if( ::InternetReadFile( _hRequest, buffer, bytesRequest, &bytesRead ) == FALSE )
+                    {
+                        return false;
+                    }
+
+                    if( bytesRead == 0 )
+                    {
+                        break;
+                    }
+
                     _response->appendData( buffer, bytesRead );
                 }
 
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            static bool makeResponse( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
+            static bool makeResponseJson( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
+            {
+                if( ::HttpEndRequestA( _hRequest, NULL, 0, INTERNET_NO_CALLBACK ) == FALSE )
+                {
+                    return false;
+                }
+
+                if( Detail::getResponseStatusCode( _hRequest, _response ) == false )
+                {
+                    return false;
+                }
+
+                if( Detail::getResponseJson( _hRequest, _response ) == false )
+                {
+                    return false;
+                }
+
+                LOGGER_HTTP_INFO( "response [%u] code: %u json: %s"
+                    , _response->getRequest()->getRequestId()
+                    , _response->getCode()
+                    , _response->getJson().c_str()
+                );
+
+                return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static bool makeResponseData( HINTERNET _hRequest, const HttpResponseInterfacePtr & _response )
             {
                 if( ::HttpEndRequestA( _hRequest, NULL, 0, INTERNET_NO_CALLBACK ) == FALSE )
                 {
@@ -331,10 +392,10 @@ namespace Mengine
                     return false;
                 }
 
-                LOGGER_HTTP_INFO( "response [%u] code: %u data: %s"
-                    , _response->getRequestId()
+                LOGGER_HTTP_INFO( "response [%u] code: %u data: %zu"
+                    , _response->getRequest()->getRequestId()
                     , _response->getCode()
-                    , _response->getData().c_str()
+                    , _response->getData().size()
                 );
 
                 return true;
@@ -424,7 +485,7 @@ namespace Mengine
                 return false;
             }
 
-            if( Detail::makeResponse( hRequest, _response ) == false )
+            if( Detail::makeResponseJson( hRequest, _response ) == false )
             {
                 Detail::errorRequest( _response );
 
@@ -501,7 +562,7 @@ namespace Mengine
                 return false;
             }
 
-            if( Detail::makeResponse( hRequest, _response ) == false )
+            if( Detail::makeResponseJson( hRequest, _response ) == false )
             {
                 Detail::errorRequest( _response );
 
@@ -541,7 +602,7 @@ namespace Mengine
                 return false;
             }
 
-            if( Detail::makeResponse( hRequest, _response ) == false )
+            if( Detail::makeResponseJson( hRequest, _response ) == false )
             {
                 Detail::errorRequest( _response );
 
@@ -581,7 +642,7 @@ namespace Mengine
                 return false;
             }
 
-            if( Detail::makeResponse( hRequest, _response ) == false )
+            if( Detail::makeResponseJson( hRequest, _response ) == false )
             {
                 Detail::errorRequest( _response );
 
@@ -611,33 +672,36 @@ namespace Mengine
                 return false;
             }
 
-            ArrayString<1024> credentials;
-            credentials.append( _login );
-            credentials.append( ":" );
-            credentials.append( _password );
-
-            const Char * credentials_str = credentials.c_str();
-            ArrayString<1024>::size_type credentials_size = credentials.size();
-
-            CHAR bstrEncoded[1024];
-            DWORD dwSize = 1024;
-            ::CryptBinaryToStringA( (const BYTE *)credentials_str, credentials_size, CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, bstrEncoded, &dwSize );
-
-            ArrayString<1024> header;
-            header.append( "Authorization: Basic " );
-            header.append( bstrEncoded );
-
-            const Char * header_str = header.c_str();
-            ArrayString<1024>::size_type header_size = header.size();
-
-            if( ::HttpAddRequestHeadersA( hRequest, header_str, header_size, HTTP_ADDREQ_FLAG_ADD | HTTP_ADDREQ_FLAG_REPLACE ) == FALSE )
+            if( _login.empty() == false && _password.empty() == false )
             {
-                Detail::errorRequest( _response );
+                ArrayString<1024> credentials;
+                credentials.append( _login );
+                credentials.append( ":" );
+                credentials.append( _password );
 
-                ::InternetCloseHandle( hRequest );
-                ::InternetCloseHandle( hConnect );
+                const Char * credentials_str = credentials.c_str();
+                ArrayString<1024>::size_type credentials_size = credentials.size();
 
-                return false;
+                CHAR bstrEncoded[1024];
+                DWORD dwSize = 1024;
+                ::CryptBinaryToStringA( (const BYTE *)credentials_str, credentials_size, CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, bstrEncoded, &dwSize );
+
+                ArrayString<1024> header;
+                header.append( "Authorization: Basic " );
+                header.append( bstrEncoded );
+
+                const Char * header_str = header.c_str();
+                ArrayString<1024>::size_type header_size = header.size();
+
+                if( ::HttpAddRequestHeadersA( hRequest, header_str, header_size, HTTP_ADDREQ_FLAG_ADD | HTTP_ADDREQ_FLAG_REPLACE ) == FALSE )
+                {
+                    Detail::errorRequest( _response );
+
+                    ::InternetCloseHandle( hRequest );
+                    ::InternetCloseHandle( hConnect );
+
+                    return false;
+                }
             }
 
             if( Detail::sendRequest( hRequest ) == false )
@@ -650,7 +714,7 @@ namespace Mengine
                 return false;
             }
 
-            if( Detail::makeResponse( hRequest, _response ) == false )
+            if( Detail::makeResponseData( hRequest, _response ) == false )
             {
                 Detail::errorRequest( _response );
 

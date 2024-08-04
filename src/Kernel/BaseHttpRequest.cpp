@@ -46,12 +46,12 @@ namespace Mengine
         return m_cookies;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseHttpRequest::setHeaders( const HttpRequestHeaders & _headers )
+    void BaseHttpRequest::setHeaders( const HttpHeaders & _headers )
     {
         m_headers = _headers;
     }
     //////////////////////////////////////////////////////////////////////////
-    const HttpRequestHeaders & BaseHttpRequest::getHeaders() const
+    const HttpHeaders & BaseHttpRequest::getHeaders() const
     {
         return m_headers;
     }

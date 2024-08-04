@@ -680,8 +680,8 @@ Core
     Rect.h
     Rect.cpp
     
-    Stream.h
-    Stream.cpp
+    StreamHelper.h
+    StreamHelper.cpp
     
     Pointer.h
     

@@ -11,7 +11,7 @@
 #include "Kernel/Magic.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
@@ -79,7 +79,7 @@ namespace Mengine
             , Helper::getContentFullPath( m_options.outputContent )
         );
 
-        if( Helper::writeStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ), false, data_memory, data_size, EAC_BEST ) == false )
+        if( Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ), false, data_memory, data_size, EAC_BEST ) == false )
         {
             LOGGER_ERROR( "dazzle converter invalid write '%s'"
                 , Helper::getContentFullPath( m_options.outputContent )
@@ -102,7 +102,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DazzleEffectConverterDZBToDZZ::validateVersion( const InputStreamInterfacePtr & _stream ) const
     {
-        if( Helper::loadStreamMagicHeader( _stream, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ) ) == false )
+        if( Helper::readStreamMagicHeader( _stream, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ) ) == false )
         {
             LOGGER_ERROR( "dazzle converter invalid magic header" );
 

@@ -450,7 +450,7 @@ namespace Mengine
             {
                 m_status = EDTDS_REGISTRATING;
 
-                const HttpRequestHeaders & headers = HTTP_SERVICE()
+                const HttpHeaders & headers = HTTP_SERVICE()
                     ->getApplicationJSONHeaders();
 
                 jpp::object j = this->makeJsonRegistrationData();
@@ -467,7 +467,7 @@ namespace Mengine
             {
                 m_status = EDTDS_WAITING;
 
-                const HttpRequestHeaders & headers = HTTP_SERVICE()
+                const HttpHeaders & headers = HTTP_SERVICE()
                     ->getApplicationJSONHeaders();
 
                 HttpRequestId id = HTTP_SERVICE()
@@ -479,7 +479,7 @@ namespace Mengine
             {
                 m_status = EDTDS_CONNECTING;
 
-                const HttpRequestHeaders & headers = HTTP_SERVICE()
+                const HttpHeaders & headers = HTTP_SERVICE()
                     ->getApplicationJSONHeaders();
 
                 jpp::object j = this->makeJsonConnectData();
@@ -494,7 +494,7 @@ namespace Mengine
             }break;
         case EDTDS_CONNECT:
             {
-                const HttpRequestHeaders & headers = HTTP_SERVICE()
+                const HttpHeaders & headers = HTTP_SERVICE()
                     ->getApplicationJSONHeaders();
 
                 jpp::object j = this->makeJsonProcessData();
@@ -537,12 +537,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::onHttpRequestComplete( const HttpResponseInterfacePtr & _response )
     {
-        bool responseSuccessful = _response->isSuccessful();
-        HttpRequestId requestId = _response->getRequestId();
+        const HttpRequestInterfacePtr & request = _response->getRequest();
+        HttpRequestId requestId = request->getRequestId();
+
+        bool responseSuccessful = _response->isSuccessful();        
         EHttpCode responseCode = _response->getCode();
         const String & responseErrorMessage = _response->getErrorMessage();
         int32_t responseErrorCode = _response->getErrorCode();
-        const String & responseData = _response->getData();
+        const String & responseJson = _response->getJson();
 
         switch( m_status )
         {
@@ -569,7 +571,7 @@ namespace Mengine
                     LOGGER_ERROR( "connecting error: %s [%d] data: %s [code %u] [id %u]"
                         , responseErrorMessage.c_str()
                         , responseErrorCode
-                        , responseData.c_str()
+                        , responseJson.c_str()
                         , responseCode
                         , requestId
                     );
@@ -579,14 +581,14 @@ namespace Mengine
                     break;
                 }
 
-                jpp::object j = Helper::loadJSONString( responseData, MENGINE_DOCUMENT_FACTORABLE );
+                jpp::object j = Helper::loadJSONString( responseJson, MENGINE_DOCUMENT_FACTORABLE );
 
                 m_workerURL = j.get( "url", "" );
 
                 if( m_workerURL.empty() == true )
                 {
                     LOGGER_ERROR( "connecting response error: %s [code %u] [id %u]"
-                        , responseData.c_str()
+                        , responseJson.c_str()
                         , responseCode
                         , requestId
                     );
@@ -626,7 +628,7 @@ namespace Mengine
                     LOGGER_ERROR( "connecting error: %s [%d] data: %s [code %u] [id %u]"
                         , responseErrorMessage.c_str()
                         , responseErrorCode
-                        , responseData.c_str()
+                        , responseJson.c_str()
                         , responseCode
                         , requestId
                     );
@@ -636,7 +638,7 @@ namespace Mengine
                     break;
                 }
 
-                jpp::object j = Helper::loadJSONString( responseData, MENGINE_DOCUMENT_FACTORABLE );
+                jpp::object j = Helper::loadJSONString( responseJson, MENGINE_DOCUMENT_FACTORABLE );
 
                 bool is_watched = j.get( "is_watched" );
 
@@ -670,7 +672,7 @@ namespace Mengine
                     LOGGER_ERROR( "connecting error: %s [%d] data: %s [code %u] [id %u]"
                         , responseErrorMessage.c_str()
                         , responseErrorCode
-                        , responseData.c_str()
+                        , responseJson.c_str()
                         , responseCode
                         , requestId
                     );
@@ -713,7 +715,7 @@ namespace Mengine
                     LOGGER_ERROR( "connect response error: %s [%d] data: %s [code %u] [id %u]"
                         , responseErrorMessage.c_str()
                         , responseErrorCode
-                        , responseData.c_str()
+                        , responseJson.c_str()
                         , responseCode
                         , requestId
                     );
@@ -723,7 +725,7 @@ namespace Mengine
                     break;
                 }
 
-                jpp::object j = Helper::loadJSONString( responseData, MENGINE_DOCUMENT_FACTORABLE );
+                jpp::object j = Helper::loadJSONString( responseJson, MENGINE_DOCUMENT_FACTORABLE );
 
                 uint32_t revision_from = j.get( "revision_from", 0U );
                 uint32_t revision_to = j.get( "revision_to", 0U );
@@ -743,7 +745,7 @@ namespace Mengine
                     LOGGER_ERROR( "connect out of sync revision %u != from %u: %s [code %u] [id %u]"
                         , m_revision
                         , revision_from
-                        , responseData.c_str()
+                        , responseJson.c_str()
                         , responseCode
                         , requestId
                     );
@@ -964,7 +966,7 @@ namespace Mengine
             return;
         }
 
-        HttpRequestHeaders headers;
+        HttpHeaders headers;
 
         HTTP_SERVICE()
             ->deleteMessage( m_workerURL, headers, MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY, EHRE_LOW_PRIORITY, nullptr, MENGINE_DOCUMENT_FACTORABLE );

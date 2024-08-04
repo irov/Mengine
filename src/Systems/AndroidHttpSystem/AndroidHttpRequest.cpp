@@ -54,7 +54,7 @@ namespace Mengine
         jobject jurl = Helper::AndroidMakeJObjectString( jenv, m_url );
         jobject jproxy = Helper::AndroidMakeJObjectString( jenv, m_proxy );
 
-        HttpRequestHeaders::size_type headers_size = m_headers.size();
+        HttpHeaders::size_type headers_size = m_headers.size();
 
         jobject jheaders = Helper::AndroidMakeJObjectArrayList( jenv, headers_size );
 
@@ -115,6 +115,7 @@ namespace Mengine
         jfieldID jfieldiD_HTTP_RESPONSE_CODE = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_RESPONSE_CODE", "I" );
         jfieldID jfieldiD_HTTP_CONTENT_LENGTH = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_CONTENT_LENGTH", "I" );
         jfieldID jfieldiD_HTTP_CONTENT_DATA = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_CONTENT_DATA", "[B" );
+        jfieldID jfieldiD_HTTP_CONTENT_JSON = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_CONTENT_JSON", "Ljava/lang/String;" );
         jfieldID jfieldiD_HTTP_ERROR_MESSAGE = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_ERROR_MESSAGE", "Ljava/lang/String;" );
 
         jenv->DeleteLocalRef( jclass_MengineHttpResponseParam );
@@ -122,6 +123,7 @@ namespace Mengine
         int HTTP_RESPONSE_CODE = jenv->GetIntField( jresponse, jfieldiD_HTTP_RESPONSE_CODE );
         int HTTP_CONTENT_LENGTH = jenv->GetIntField( jresponse, jfieldiD_HTTP_CONTENT_LENGTH );
         jbyteArray HTTP_CONTENT_DATA = (jbyteArray)jenv->GetObjectField( jresponse, jfieldiD_HTTP_CONTENT_DATA );
+        jstring HTTP_CONTENT_JSON = (jstring)jenv->GetObjectField( jresponse, jfieldiD_HTTP_CONTENT_JSON );
         jstring HTTP_ERROR_MESSAGE = (jstring)jenv->GetObjectField( jresponse, jfieldiD_HTTP_ERROR_MESSAGE );
 
         jenv->DeleteLocalRef( jresponse );
@@ -138,6 +140,15 @@ namespace Mengine
             {
                 jbyte * elements = jenv->GetByteArrayElements( HTTP_CONTENT_DATA, NULL );
                 m_response->appendData( (Char *)elements, HTTP_CONTENT_LENGTH );
+            }
+
+            if( HTTP_CONTENT_JSON != nullptr )
+            {
+                const Char * content_json = jenv->GetStringUTFChars( HTTP_CONTENT_JSON, nullptr );
+
+                m_response->appendJson( content_json, MENGINE_UNKNOWN_SIZE );
+
+                jenv->ReleaseStringUTFChars( HTTP_CONTENT_JSON, content_json );
             }
 
             if( HTTP_ERROR_MESSAGE != nullptr )

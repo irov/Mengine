@@ -7,7 +7,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
@@ -95,7 +95,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr DataflowDZZ::load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
     {
-        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ), _doc );
+        MemoryInterfacePtr memory = Helper::readStreamArchiveMagic( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory );
 

@@ -20,13 +20,13 @@ namespace Mengine
         virtual const String & getProxy() const = 0;
 
     public:
-        virtual const HttpRequestHeaders & getApplicationJSONHeaders() const = 0;
+        virtual const HttpHeaders & getApplicationJSONHeaders() const = 0;
 
     public:
-        virtual HttpRequestId getMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
-        virtual HttpRequestId postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
-        virtual HttpRequestId deleteMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
-        virtual HttpRequestId headerData( const String & _url, const HttpRequestHeaders & _headers, const Data & _data, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
+        virtual HttpRequestId getMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
+        virtual HttpRequestId postMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
+        virtual HttpRequestId deleteMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
+        virtual HttpRequestId headerData( const String & _url, const HttpHeaders & _headers, const Data & _data, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
         virtual HttpRequestId getAsset( const String & _url, const String & _login, const String & _password, const ContentInterfacePtr & _content, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;
 
     public:

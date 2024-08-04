@@ -2,7 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
@@ -127,7 +127,7 @@ namespace Mengine
             , Helper::getContentFullPath( desc.content )
         );
 
-        MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), _doc );
+        MemoryInterfacePtr binaryBuffer = Helper::readStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, "data '%s' invalid load stream archive '%s'"
             , _name.c_str()
@@ -174,7 +174,7 @@ namespace Mengine
         const void * data_memory = _data;
         size_t data_size = _size;
 
-        if( Helper::writeStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), true, data_memory, data_size, EAC_NORMAL ) == false )
+        if( Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), true, data_memory, data_size, EAC_NORMAL ) == false )
         {
             LOGGER_ERROR( "data '%s' invalid write file '%s'"
                 , _name.c_str()

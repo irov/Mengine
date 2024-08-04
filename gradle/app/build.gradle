@@ -235,7 +235,7 @@ android {
 
                     unstrippedNativeLibsDir "$buildDir/intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib"
 
-                    println "unstrippedNativeLibsDir: $unstrippedNativeLibsDir"
+                    println "unstrippedNativeLibsDir debug: $unstrippedNativeLibsDir"
                 }
 
                 ndk {
@@ -253,11 +253,15 @@ android {
 
                     unstrippedNativeLibsDir "$buildDir/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib"
 
-                    println "unstrippedNativeLibsDir: $unstrippedNativeLibsDir"
+                    println "unstrippedNativeLibsDir release: $unstrippedNativeLibsDir"
                 }
 
                 ndk {
                     debugSymbolLevel 'SYMBOL_TABLE'
+                }
+
+                packagingOptions {
+                    exclude "**/*.so.debug"
                 }
             }
         }
@@ -827,6 +831,12 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
     tasks.configureEach { task ->
         if (task.name.startsWith('injectCrashlyticsBuildIds')) {
             task.dependsOn 'merge' + (task.name =~ /^injectCrashlyticsBuildIds(.+)$/)[0][1] + 'NativeLibs'
+        }
+    }
+
+    tasks.whenTaskAdded { task ->
+        if (task.name == "bundleRelease") {
+            task.finalizedBy 'uploadCrashlyticsSymbolFileRelease'
         }
     }
 }

@@ -4,7 +4,7 @@
 #include "Interface/FileServiceInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
@@ -42,7 +42,7 @@ namespace Mengine
                 , Helper::getContentFullPath( _content )
             );
 
-            memory = Helper::loadStreamArchiveMagicMemory( stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), MENGINE_DOCUMENT_FACTORABLE );
+            memory = Helper::readStreamArchiveMagicMemory( stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), MENGINE_DOCUMENT_FACTORABLE );
         }
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid get data" );

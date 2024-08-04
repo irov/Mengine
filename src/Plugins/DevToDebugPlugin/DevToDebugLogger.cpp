@@ -176,7 +176,7 @@ namespace Mengine
 
         j.set( "logger", jlogger );
 
-        const HttpRequestHeaders & headers = HTTP_SERVICE()
+        const HttpHeaders & headers = HTTP_SERVICE()
             ->getApplicationJSONHeaders();
 
         Data data;

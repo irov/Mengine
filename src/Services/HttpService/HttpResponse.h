@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/HttpResponseInterface.h"
+#include "Interface/HttpRequestInterface.h"
 
 namespace Mengine
 {    
@@ -15,14 +16,17 @@ namespace Mengine
         ~HttpResponse() override;
 
     public:
-        void setRequestId( HttpRequestId _requestId ) override;
-        HttpRequestId getRequestId() const override;
+        void setRequest( const HttpRequestInterfacePtr & _request ) override;
+        const HttpRequestInterfacePtr & getRequest() const override;
 
         void appendHeaders( const Char * _ptr, size_t _size ) override;
-        const HttpRequestHeaders & getHeaders() const override;
+        const HttpHeaders & getHeaders() const override;
 
-        void appendData( const Char * _ptr, size_t _size ) override;
-        const String & getData() const override;
+        void appendJson( const Char * _ptr, size_t _size ) override;
+        const String & getJson() const override;
+
+        void appendData( const void * _ptr, size_t _size ) override;
+        const Data & getData() const override;
 
         void setCode( EHttpCode _code ) override;
         EHttpCode getCode() const override;
@@ -35,9 +39,10 @@ namespace Mengine
         bool isSuccessful() const override;
 
     protected:
-        HttpRequestId m_requestId;
-        HttpRequestHeaders m_headers;
-        String m_data;
+        HttpRequestInterfacePtr m_request;
+        HttpHeaders m_headers;
+        Data m_data;
+        String m_json;
         String m_errorMessage;
         int32_t m_errorCode;
         EHttpCode m_code;

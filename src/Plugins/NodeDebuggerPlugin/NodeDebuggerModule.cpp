@@ -2183,8 +2183,8 @@ namespace Mengine
     {
         NodeDebuggerRequestData responseData;
 
-        responseData.id = _response->getRequestId();
-        responseData.url = _response->getData();
+        responseData.id = _response->getRequest()->getRequestId();
+        responseData.url = _response->getRequest()->getURL();
         responseData.type = STRINGIZE_STRING_LOCAL( "Response" );
 
         m_requestDatas.push_back( responseData );

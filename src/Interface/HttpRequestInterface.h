@@ -23,8 +23,8 @@ namespace Mengine
         virtual void setCookies( const String & _cookies ) = 0;
         virtual const String & getCookies() const = 0;
 
-        virtual void setHeaders( const HttpRequestHeaders & _headers ) = 0;
-        virtual const HttpRequestHeaders & getHeaders() const = 0;
+        virtual void setHeaders( const HttpHeaders & _headers ) = 0;
+        virtual const HttpHeaders & getHeaders() const = 0;
 
         virtual void setRequestId( HttpRequestId _id ) = 0;
         virtual HttpRequestId getRequestId() const = 0;

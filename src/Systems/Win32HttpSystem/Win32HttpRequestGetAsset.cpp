@@ -10,6 +10,7 @@
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/StreamHelper.h"
 
 namespace Mengine
 {
@@ -93,6 +94,12 @@ namespace Mengine
 
         if( m_stream != nullptr )
         {
+            const HttpResponseInterfacePtr & response = this->getReponse();
+
+            const Data & data = response->getData();
+
+            Helper::writeStreamData( m_stream, data );
+
             successful_stream_flush = m_stream->flush();
 
             Helper::closeOutputStreamFile( fileGroup, m_stream );

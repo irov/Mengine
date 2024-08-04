@@ -21,7 +21,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PyHttpReceiver::onHttpRequestComplete( const HttpResponseInterfacePtr & _response )
     {
-        HttpRequestId requestId = _response->getRequestId();
+        const HttpRequestInterfacePtr & request = _response->getRequest();
+
+        HttpRequestId requestId = request->getRequestId();
         uint32_t status = 0; //ToDo remove
         const String & errorMessage = _response->getErrorMessage();
         
@@ -29,11 +31,11 @@ namespace Mengine
         int32_t errorCode = _response->getErrorCode();
         MENGINE_UNUSED( errorCode );
 
-        const String & data = _response->getData();
+        const String & json = _response->getJson();
         EHttpCode code = _response->getCode();
         bool successful = _response->isSuccessful();
 
-        m_cb.call_args( requestId, status, errorMessage, data, code, successful, m_args );
+        m_cb.call_args( requestId, status, errorMessage, json, code, successful, m_args );
     }
     //////////////////////////////////////////////////////////////////////////
 }

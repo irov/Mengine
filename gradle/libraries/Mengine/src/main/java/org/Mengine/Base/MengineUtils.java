@@ -579,30 +579,29 @@ public class MengineUtils {
         }
     }
 
-    public static String inputStreamToString(InputStream stream) throws IOException {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
-
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-            stringBuilder.append(line).append("\n");
-        }
-
-        bufferedReader.close();
-
-        return stringBuilder.toString();
-    }
-
     public static byte [] inputStreamToByteArray(InputStream stream) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
         byte [] buffer = new byte[1024];
         int len;
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
         while ((len = stream.read(buffer)) != -1) {
             out.write(buffer, 0, len);
         }
         out.close();
         return out.toByteArray();
+    }
+
+    public static String inputStreamToString(InputStream stream) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        byte [] buffer = new byte[1024];
+        int len;
+        while ((len = stream.read(buffer)) != -1) {
+            out.write(buffer, 0, len);
+        }
+        out.close();
+
+        return out.toString("UTF-8");
     }
 
     public static Map<String, Object> parseJSONMap(String json) {

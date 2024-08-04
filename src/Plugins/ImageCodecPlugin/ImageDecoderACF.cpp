@@ -1,7 +1,7 @@
 #include "ImageDecoderACF.h"
 #include "ImageVerifyACF.h"
 
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
@@ -38,7 +38,7 @@ namespace Mengine
     {
         const InputStreamInterfacePtr & stream = this->getStream();
 
-        if( Helper::loadStreamMagicHeader( stream, GET_MAGIC_NUMBER( MAGIC_ACF ), GET_MAGIC_VERSION( MAGIC_ACF ) ) == false )
+        if( Helper::readStreamMagicHeader( stream, GET_MAGIC_NUMBER( MAGIC_ACF ), GET_MAGIC_VERSION( MAGIC_ACF ) ) == false )
         {
             LOGGER_ERROR( "invalid load magic header" );
 
@@ -76,7 +76,7 @@ namespace Mengine
         size_t dataPitch = decoderData->pitch;
 
         size_t streamSize;
-        if( Helper::loadStreamArchiveBufferSize( stream, &streamSize ) == false )
+        if( Helper::readStreamArchiveBufferSize( stream, &streamSize ) == false )
         {
             LOGGER_ERROR( "invalid load data size" );
 
@@ -95,7 +95,7 @@ namespace Mengine
 
         if( dataPitch * m_dataInfo.height == streamSize )
         {
-            if( Helper::loadStreamArchiveInplace( stream, m_archivator, dataBuffer, dataSize, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            if( Helper::readStreamArchiveInplace( stream, m_archivator, dataBuffer, dataSize, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load" );
 
@@ -110,7 +110,7 @@ namespace Mengine
 
             void * memory = buffer->getBuffer();
 
-            if( Helper::loadStreamArchiveInplace( stream, m_archivator, memory, streamSize, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            if( Helper::readStreamArchiveInplace( stream, m_archivator, memory, streamSize, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load" );
 

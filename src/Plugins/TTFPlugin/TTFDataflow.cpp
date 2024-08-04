@@ -7,7 +7,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"

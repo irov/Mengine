@@ -125,7 +125,7 @@ namespace Mengine
 
         m_mutex = mutex;
 
-        HttpRequestHeaders applicationJSONHeaders;
+        HttpHeaders applicationJSONHeaders;
         applicationJSONHeaders.push_back( "Content-Type: application/json" );
 
         m_applicationJSONHeaders = applicationJSONHeaders;
@@ -202,12 +202,12 @@ namespace Mengine
         return m_proxy;
     }
     //////////////////////////////////////////////////////////////////////////
-    const HttpRequestHeaders & HttpService::getApplicationJSONHeaders() const
+    const HttpHeaders & HttpService::getApplicationJSONHeaders() const
     {
         return m_applicationJSONHeaders;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::getMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::getMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -234,7 +234,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( response );
 
-        response->setRequestId( requestId );
+        response->setRequest( request );
 
         request->setReponse( response );
 
@@ -264,7 +264,7 @@ namespace Mengine
         return requestId;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::postMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -291,7 +291,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( response );
 
-        response->setRequestId( requestId );
+        response->setRequest( request );
 
         request->setReponse( response );
 
@@ -321,7 +321,7 @@ namespace Mengine
         return requestId;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::deleteMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::deleteMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -348,7 +348,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( response );
 
-        response->setRequestId( requestId );
+        response->setRequest( request );
 
         request->setReponse( response );
 
@@ -378,7 +378,7 @@ namespace Mengine
         return requestId;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestId HttpService::headerData( const String & _url, const HttpRequestHeaders & _headers, const Data & _data, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
+    HttpRequestId HttpService::headerData( const String & _url, const HttpHeaders & _headers, const Data & _data, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
     {
         if( this->isStopService() == true )
         {
@@ -404,7 +404,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( response );
 
-        response->setRequestId( requestId );
+        response->setRequest( request );
 
         request->setReponse( response );
 
@@ -470,7 +470,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( response );
 
-        response->setRequestId( requestId );
+        response->setRequest( request );
 
         request->setReponse( response );
 
@@ -551,7 +551,9 @@ namespace Mengine
         {
             ReceiverDesc & desc = *it;
 
-            HttpRequestId requestId = _response->getRequestId();
+            const HttpRequestInterfacePtr & request = _response->getRequest();
+
+            HttpRequestId requestId = request->getRequestId();
 
             if( desc.id != requestId )
             {
@@ -575,12 +577,11 @@ namespace Mengine
 
         m_mutex->unlock();
 
-        LOGGER_HTTP_ERROR( "invalid request '%u' %s (error '%.2048s' [%u] response '%.2048s' code [%u])"
-            , _response->getRequestId()
+        LOGGER_HTTP_ERROR( "invalid request '%u' %s (error '%.2048s' [%u] code [%u])"
+            , _response->getRequest()->getRequestId()
             , _response->isSuccessful() ? "complete" : "failure"
             , _response->getErrorMessage().c_str()
             , _response->getErrorCode()
-            , _response->getData().c_str()
             , _response->getCode()
         );
     }

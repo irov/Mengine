@@ -6,7 +6,7 @@
 
 #include "Movie2Interface.h"
 
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
@@ -404,7 +404,7 @@ namespace Mengine
             return false;
         }
 
-        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), MENGINE_DOCUMENT_FACTORABLE );
+        MemoryInterfacePtr memory = Helper::readStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), MENGINE_DOCUMENT_FACTORABLE );
 
         if( memory == nullptr )
         {

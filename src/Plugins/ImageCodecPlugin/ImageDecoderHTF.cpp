@@ -1,7 +1,7 @@
 #include "ImageDecoderHTF.h"
 #include "ImageVerifyHTF.h"
 
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -54,7 +54,7 @@ namespace Mengine
     {
         const InputStreamInterfacePtr & stream = this->getStream();
 
-        if( Helper::loadStreamMagicHeader( stream, GET_MAGIC_NUMBER( MAGIC_HTF ), GET_MAGIC_VERSION( MAGIC_HTF ) ) == false )
+        if( Helper::readStreamMagicHeader( stream, GET_MAGIC_NUMBER( MAGIC_HTF ), GET_MAGIC_VERSION( MAGIC_HTF ) ) == false )
         {
             LOGGER_ERROR( "invalid load magic header" );
 
@@ -89,7 +89,7 @@ namespace Mengine
 
         const InputStreamInterfacePtr & stream = this->getStream();
 
-        if( Helper::loadStreamArchiveInplace( stream, m_archivator, buffer, capacity, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::readStreamArchiveInplace( stream, m_archivator, buffer, capacity, nullptr, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "invalid load" );
 

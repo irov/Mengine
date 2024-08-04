@@ -1,6 +1,6 @@
 #include "ThreadTaskPrefetchStream.h"
 
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -100,7 +100,7 @@ namespace Mengine
             return false;
         }
 
-        MemoryInterfacePtr memory = Helper::loadStreamArchiveMagicMemory( m_stream, m_archivator, m_magicNumber, m_magicVersion, MENGINE_DOCUMENT_FACTORABLE );
+        MemoryInterfacePtr memory = Helper::readStreamArchiveMagicMemory( m_stream, m_archivator, m_magicNumber, m_magicVersion, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid stream archive magic memory '%s'"
             , Helper::getContentFullPath( m_content )

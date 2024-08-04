@@ -1,4 +1,4 @@
-#include "Stream.h"
+#include "StreamHelper.h"
 
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
@@ -14,7 +14,26 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        bool loadStreamMagicHeader( const InputStreamInterfacePtr & _stream, magic_number_type _magic, magic_version_type _version )
+        void readStreamData( const InputStreamInterfacePtr & _stream, Data * const _data )
+        {
+            size_t stream_size = _stream->size();
+
+            _data->resize( stream_size );
+
+            uint8_t * data_buffer = _data->data();
+
+            _stream->read( data_buffer, stream_size );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void writeStreamData( const OutputStreamInterfacePtr & _stream, const Data & _data )
+        {
+            const uint8_t * data_buffer = _data.data();
+            size_t data_size = _data.size();
+
+            _stream->write( data_buffer, data_size );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool readStreamMagicHeader( const InputStreamInterfacePtr & _stream, magic_number_type _magic, magic_version_type _version )
         {
             magic_number_type magic_number;
             if( _stream->read( &magic_number, sizeof( magic_number ) ) != sizeof( magic_number ) )
@@ -84,7 +103,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamArchiveBuffer( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const DocumentInterfacePtr & _doc )
+        MemoryInterfacePtr readStreamArchiveBuffer( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const DocumentInterfacePtr & _doc )
         {
             uint32_t crc32;
             if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
@@ -192,7 +211,7 @@ namespace Mengine
             return binaryBuffer;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadStreamArchiveInplace( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, void * const _data, size_t _capacity, size_t * const _size, const DocumentInterfacePtr & _doc )
+        bool readStreamArchiveInplace( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, void * const _data, size_t _capacity, size_t * const _size, const DocumentInterfacePtr & _doc )
         {
             uint32_t crc32;
             if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
@@ -291,7 +310,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadStreamArchiveBufferSize( const InputStreamInterfacePtr & _stream, size_t * const _size )
+        bool readStreamArchiveBufferSize( const InputStreamInterfacePtr & _stream, size_t * const _size )
         {
             size_t pos = _stream->tell();
 
@@ -389,19 +408,19 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamArchiveData( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const DocumentInterfacePtr & _doc )
+        MemoryInterfacePtr readStreamArchiveMagic( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const DocumentInterfacePtr & _doc )
         {
-            if( Helper::loadStreamMagicHeader( _stream, _magic, _version ) == false )
+            if( Helper::readStreamMagicHeader( _stream, _magic, _version ) == false )
             {
                 return nullptr;
             }
 
-            MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveBuffer( _stream, _archivator, _doc );
+            MemoryInterfacePtr binaryBuffer = Helper::readStreamArchiveBuffer( _stream, _archivator, _doc );
 
             return binaryBuffer;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool writeStreamArchiveData( const OutputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, bool _crc32, const void * _data, size_t _size, EArchivatorCompress _compress )
+        bool writeStreamArchiveMagic( const OutputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, bool _crc32, const void * _data, size_t _size, EArchivatorCompress _compress )
         {
             if( Helper::writeStreamMagicHeader( _stream, _magic, _version ) == false )
             {
@@ -416,7 +435,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const DocumentInterfacePtr & _doc )
+        MemoryInterfacePtr readStreamArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const DocumentInterfacePtr & _doc )
         {
             uint32_t crc32;
             if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )
@@ -521,19 +540,19 @@ namespace Mengine
             return binary_memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamArchiveMagicMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const DocumentInterfacePtr & _doc )
+        MemoryInterfacePtr readStreamArchiveMagicMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const DocumentInterfacePtr & _doc )
         {
-            if( Helper::loadStreamMagicHeader( _stream, _magic, _version ) == false )
+            if( Helper::readStreamMagicHeader( _stream, _magic, _version ) == false )
             {
                 return nullptr;
             }
 
-            MemoryInterfacePtr memory = Helper::loadStreamArchiveMemory( _stream, _archivator, _doc );
+            MemoryInterfacePtr memory = Helper::readStreamArchiveMemory( _stream, _archivator, _doc );
 
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamCacheArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const DocumentInterfacePtr & _doc )
+        MemoryInterfacePtr readStreamCacheArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const DocumentInterfacePtr & _doc )
         {
             uint32_t crc32;
             if( _stream->read( &crc32, sizeof( crc32 ) ) != sizeof( crc32 ) )

@@ -49,7 +49,7 @@ public class MengineActivity extends SDLActivity {
     private static native int AndroidEnvironmentService_getProjectVersion();
 
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
-    private static native void AndroidNativePython_call(String plugin, String method, Object args[]);
+    private static native void AndroidNativePython_call(String plugin, String method, Object []args);
 
     private boolean m_initializePython;
     private boolean m_destroy;
@@ -70,6 +70,11 @@ public class MengineActivity extends SDLActivity {
             "SDL2",
             "SDLApplication"
         };
+    }
+
+    @Override
+    public void setOrientationBis(int w, int h, boolean resizable, String hint) {
+        // Empty
     }
 
     @Override
@@ -277,6 +282,10 @@ public class MengineActivity extends SDLActivity {
         m_destroy = false;
 
         m_semaphores = new HashMap<>();
+
+        int orientation = getResources().getInteger(R.integer.app_screen_orientation);
+
+        this.setRequestedOrientation(orientation);
 
         /*
         RelativeLayout contentView = new RelativeLayout(this);

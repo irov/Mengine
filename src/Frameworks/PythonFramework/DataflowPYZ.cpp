@@ -5,7 +5,7 @@
 
 #include "PythonScriptCodeData.h"
 
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -80,7 +80,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr DataflowPYZ::load( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
     {
-        MemoryInterfacePtr memory = Helper::loadStreamCacheArchiveMemory( _stream, m_archivator, _doc );
+        MemoryInterfacePtr memory = Helper::readStreamCacheArchiveMemory( _stream, m_archivator, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory );
 

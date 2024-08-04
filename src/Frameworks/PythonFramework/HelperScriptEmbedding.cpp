@@ -69,7 +69,7 @@
 #include "Kernel/CRC32.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/FileStreamHelper.h"
-#include "Kernel/Stream.h"
+#include "Kernel/StreamHelper.h"
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/FactorableUnique.h"
@@ -3201,7 +3201,7 @@ namespace Mengine
                 }
 
                 //TODO create global data save
-                if( Helper::writeStreamArchiveData( stream, archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), true, memory_buffer, memory_size, EAC_NORMAL ) == false )
+                if( Helper::writeStreamArchiveMagic( stream, archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), true, memory_buffer, memory_size, EAC_NORMAL ) == false )
                 {
                     LOGGER_ERROR( "invalid write file '%s'"
                         , filePath.c_str()
@@ -3263,7 +3263,7 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                MemoryInterfacePtr memory = Helper::loadStreamArchiveData( stream, archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), MENGINE_DOCUMENT_FACTORABLE );
+                MemoryInterfacePtr memory = Helper::readStreamArchiveMagic( stream, archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), MENGINE_DOCUMENT_FACTORABLE );
 
                 if( memory == nullptr )
                 {

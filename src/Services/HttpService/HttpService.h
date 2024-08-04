@@ -32,13 +32,13 @@ namespace Mengine
         const String & getProxy() const override;
 
     protected:
-        const HttpRequestHeaders & getApplicationJSONHeaders() const override;
+        const HttpHeaders & getApplicationJSONHeaders() const override;
 
     protected:
-        HttpRequestId getMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
-        HttpRequestId postMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
-        HttpRequestId deleteMessage( const String & _url, const HttpRequestHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
-        HttpRequestId headerData( const String & _url, const HttpRequestHeaders & _headers, const Data & _data, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
+        HttpRequestId getMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
+        HttpRequestId postMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
+        HttpRequestId deleteMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
+        HttpRequestId headerData( const String & _url, const HttpHeaders & _headers, const Data & _data, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
         HttpRequestId getAsset( const String & _url, const String & _login, const String & _password, const ContentInterfacePtr & _content, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
 
     protected:
@@ -88,7 +88,7 @@ namespace Mengine
         typedef Vector<ReceiverDesc> VectorReceiverDesc;
         VectorReceiverDesc m_receiverDescs;
 
-        HttpRequestHeaders m_applicationJSONHeaders;
+        HttpHeaders m_applicationJSONHeaders;
 
         FactoryInterfacePtr m_factoryResponse;
     };

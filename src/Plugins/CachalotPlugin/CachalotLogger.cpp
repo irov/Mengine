@@ -244,7 +244,7 @@ namespace Mengine
 
         Helper::destroyJSON2( j );
 
-        const HttpRequestHeaders & headers = HTTP_SERVICE()
+        const HttpHeaders & headers = HTTP_SERVICE()
             ->getApplicationJSONHeaders();
 
         HttpRequestId id = HTTP_SERVICE()

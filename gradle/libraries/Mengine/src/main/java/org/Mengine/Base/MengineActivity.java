@@ -382,6 +382,26 @@ public class MengineActivity extends AppCompatActivity {
         );
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        this.setState("activity.lifecycle", "save_instance_state");
+
+        MengineLog.logMessage(TAG, "onSaveInstanceState");
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        this.setState("activity.lifecycle", "restore_instance_state");
+
+        MengineLog.logMessage(TAG, "onRestoreInstanceState: %s"
+            , savedInstanceState
+        );
+    }
+
     public void quitMengineApplication() {
         AndroidEnvironmentService_quitMengineAndroidActivityJNI();
     }
@@ -632,6 +652,14 @@ public class MengineActivity extends AppCompatActivity {
         }
 
         MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onDestroy: application invalid initialize");
+
+            super.onDestroy();
+
+            return;
+        }
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 

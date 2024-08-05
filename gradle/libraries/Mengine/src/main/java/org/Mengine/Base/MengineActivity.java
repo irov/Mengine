@@ -1,18 +1,15 @@
 package org.Mengine.Base;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.RelativeLayout;
 
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
@@ -28,8 +25,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class MengineActivity extends SDLActivity {
     public static final String TAG = "MengineActivity";
@@ -721,6 +716,15 @@ public class MengineActivity extends SDLActivity {
         }
 
         this.setState("activity.lifecycle", "restarted");
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+
+        this.setState("activity.low_memory", true);
+
+        MengineLog.logMessage(TAG, "onLowMemory");
     }
 
     @Override

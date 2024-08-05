@@ -1,7 +1,6 @@
 package org.Mengine.Plugin.GoogleGameSocial;
 
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;

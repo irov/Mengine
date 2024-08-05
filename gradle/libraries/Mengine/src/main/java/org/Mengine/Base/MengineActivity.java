@@ -383,7 +383,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "save_instance_state");
 
-        MengineLog.logMessage(TAG, "onSaveInstanceState");
+        MengineLog.logMessageRelease(TAG, "onSaveInstanceState");
     }
 
     @Override
@@ -392,7 +392,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "restore_instance_state");
 
-        MengineLog.logMessage(TAG, "onRestoreInstanceState: %s"
+        MengineLog.logMessageRelease(TAG, "onRestoreInstanceState: %s"
             , savedInstanceState
         );
     }
@@ -479,7 +479,9 @@ public class MengineActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        MengineLog.logMessage(TAG, "onActivityResult request: %d result: %d"
+    	this.setState("activity.result", "request: " + requestCode + "result: " + resultCode );
+    	
+        MengineLog.logMessageRelease(TAG, "onActivityResult request: %d result: %d"
             , requestCode
             , resultCode
         );
@@ -513,7 +515,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "start");
 
-        MengineLog.logMessage(TAG, "onStart");
+        MengineLog.logMessageRelease(TAG, "onStart");
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
@@ -536,7 +538,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "stop");
 
-        MengineLog.logMessage(TAG, "onStop");
+        MengineLog.logMessageRelease(TAG, "onStop");
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
@@ -559,7 +561,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "pause");
 
-        MengineLog.logMessage(TAG, "onPause");
+        MengineLog.logMessageRelease(TAG, "onPause");
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
@@ -582,7 +584,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "resume");
 
-        MengineLog.logMessage(TAG, "onResume");
+        MengineLog.logMessageRelease(TAG, "onResume");
 
         MengineApplication application = (MengineApplication)this.getApplication();
 

@@ -142,6 +142,12 @@ public class MenginePlugin implements MenginePluginInterface {
         return m;
     }
 
+    public String logMessageRelease(String format, Object ... args) {
+        String m = MengineLog.logMessageRelease(m_pluginName, format, args);
+
+        return m;
+    }
+
     public String logWarning(String format, Object ... args) {
         String m = MengineLog.logWarning(m_pluginName, format, args);
 

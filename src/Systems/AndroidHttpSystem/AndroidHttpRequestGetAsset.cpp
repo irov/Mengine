@@ -120,7 +120,7 @@ namespace Mengine
 
         if( _successful == false || HTTP_CODE_IS_SUCCESSFUL( code ) == false || successful_stream_flush == false )
         {
-            AndroidHttpRequest::_onThreadTaskComplete(false );
+            AndroidHttpRequest::_onThreadTaskComplete( false );
 
             return;
         }
@@ -129,12 +129,12 @@ namespace Mengine
 
         if( fileGroup->moveFile( filePathTmp, filePath ) == false )
         {
-            AndroidHttpRequest::_onThreadTaskComplete(false );
+            AndroidHttpRequest::_onThreadTaskComplete( false );
 
             return;
         }
 
-        AndroidHttpRequest::_onThreadTaskComplete(true );
+        AndroidHttpRequest::_onThreadTaskComplete( true );
     }
     //////////////////////////////////////////////////////////////////////////
 }

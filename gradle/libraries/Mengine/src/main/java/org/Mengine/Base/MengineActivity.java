@@ -65,7 +65,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    protected String[] getLibraries() {
+    public String[] getLibraries() {
         return new String[] {
             "SDL2",
             "SDLApplication"
@@ -78,7 +78,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    protected String getMainSharedObject() {
+    public String getMainSharedObject() {
         String mainSharedObject = this.getApplicationInfo().nativeLibraryDir + "/" + "libSDLApplication.so";
 
         return mainSharedObject;
@@ -277,7 +277,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         m_initializePython = false;
         m_destroy = false;
 
@@ -325,8 +325,6 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
-        AndroidEnv_setMengineAndroidActivityJNI(this);
-
         MengineApplication application = (MengineApplication)this.getApplication();
 
         if (application.isInvalidInitialize() == true) {
@@ -334,6 +332,8 @@ public class MengineActivity extends SDLActivity {
 
             return;
         }
+
+        AndroidEnv_setMengineAndroidActivityJNI(this);
 
         this.setState("activity.init", "create");
 
@@ -398,6 +398,26 @@ public class MengineActivity extends SDLActivity {
                 window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
          */
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        this.setState("activity.lifecycle", "save_instance_state");
+
+        MengineLog.logMessage(TAG, "onSaveInstanceState");
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        this.setState("activity.lifecycle", "restore_instance_state");
+
+        MengineLog.logMessage(TAG, "onRestoreInstanceState: %s"
+            , savedInstanceState
+        );
     }
 
     public void quitMengineApplication() {
@@ -481,7 +501,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         MengineLog.logMessage(TAG, "onActivityResult request: %d result: %d"
             , requestCode
             , resultCode
@@ -511,7 +531,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
 
         this.setState("activity.lifecycle", "start");
@@ -534,7 +554,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
 
         this.setState("activity.lifecycle", "stop");
@@ -557,7 +577,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
 
         this.setState("activity.lifecycle", "pause");
@@ -580,7 +600,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
 
         this.setState("activity.lifecycle", "resume");
@@ -603,12 +623,12 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
         this.setState("activity.intent_action", intent.getAction() );
 
-        MengineLog.logMessage(TAG, "onNewIntent intent: %s", intent);
+        MengineLog.logMessageRelease(TAG, "onNewIntent intent: %s", intent);
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
@@ -624,7 +644,15 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
+        if (m_destroy == true) {
+            MengineLog.logWarning(TAG, "onDestroy: already destroyed");
+
+            super.onDestroy();
+
+            return;
+        }
+
         m_destroy = true;
 
         this.setState("activity.lifecycle", "destroy");
@@ -632,7 +660,7 @@ public class MengineActivity extends SDLActivity {
         MengineLog.logMessageRelease(TAG, "onDestroy");
 
         if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "onDestroy: broken libraries");
+            MengineLog.logMessage(TAG, "onDestroy: broken libraries");
 
             super.onDestroy();
 
@@ -640,6 +668,14 @@ public class MengineActivity extends SDLActivity {
         }
 
         MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onDestroy: application invalid initialize");
+
+            super.onDestroy();
+
+            return;
+        }
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -665,7 +701,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    protected void onRestart() {
+    public void onRestart() {
         super.onRestart();
 
         this.setState("activity.lifecycle", "restart");
@@ -765,7 +801,7 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    protected SDLSurface createSDLSurface(Context context) {
+    public SDLSurface createSDLSurface(Context context) {
         return new MengineSurface(context);
     }
 

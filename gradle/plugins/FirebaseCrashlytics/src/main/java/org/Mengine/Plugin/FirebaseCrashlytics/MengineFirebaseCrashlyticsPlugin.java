@@ -132,7 +132,9 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
         }
 
         switch (level) {
-            case MengineLog.LM_MESSAGE_RELEASE:
+            case MengineLog.LM_MESSAGE_RELEASE: {
+                FirebaseCrashlytics.getInstance().log("[" + category + "] R " + msg);
+            }break;
             case MengineLog.LM_ERROR: {
                 if (MengineLog.isFilter(filter, MengineLog.LFILTER_EXCEPTION) == true) {
                     FirebaseCrashlytics.getInstance().recordException(new MengineFatalErrorException(msg));
@@ -142,7 +144,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
             }break;
             case MengineLog.LM_FATAL: {
                 FirebaseCrashlytics.getInstance().recordException(new MengineFatalErrorException(msg));
-            }
+            }break;
         }
     }
 }

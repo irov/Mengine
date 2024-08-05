@@ -590,9 +590,7 @@ public class MengineActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	this.setState("activity.result", "request: " + requestCode + "result: " + resultCode );
-    	
-        MengineLog.logMessageRelease(TAG, "onActivityResult request: %d result: %d"
+        MengineLog.logMessage(TAG, "onActivityResult request: %d result: %d"
             , requestCode
             , resultCode
         );
@@ -626,7 +624,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "start");
 
-        MengineLog.logMessageRelease(TAG, "onStart");
+        MengineLog.logMessage(TAG, "onStart");
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
@@ -649,7 +647,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "stop");
 
-        MengineLog.logMessageRelease(TAG, "onStop");
+        MengineLog.logMessage(TAG, "onStop");
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
@@ -672,7 +670,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "pause");
 
-        MengineLog.logMessageRelease(TAG, "onPause");
+        MengineLog.logMessage(TAG, "onPause");
 
         if (m_surfaceView != null) {
             m_surfaceView.handlePause();
@@ -699,7 +697,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "resume");
 
-        MengineLog.logMessageRelease(TAG, "onResume");
+        MengineLog.logMessage(TAG, "onResume");
 
         if (m_surfaceView != null) {
             m_surfaceView.handleResume();
@@ -795,6 +793,14 @@ public class MengineActivity extends AppCompatActivity {
 
         AndroidMain_destroy(m_nativeApplication);
         m_nativeApplication = null;
+
+        try {
+            m_threadMain.join();
+        } catch (InterruptedException e) {
+            MengineLog.logError(TAG, "thread main join exception: %s"
+                , e.getMessage()
+            );
+        }
 
         AndroidEnv_removeMengineAndroidActivityJNI();
 

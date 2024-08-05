@@ -617,8 +617,6 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
-        MengineApplication application = (MengineApplication)this.getApplication();
-
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {

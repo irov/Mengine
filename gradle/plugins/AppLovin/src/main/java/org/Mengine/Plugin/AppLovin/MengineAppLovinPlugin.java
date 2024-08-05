@@ -228,23 +228,29 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             m_mediationAmazon = null;
         }
 
-        for( MengineAppLovinBanner banner : m_banners.values() ) {
-            banner.destroy();
+        if (m_banners != null) {
+            for (MengineAppLovinBanner banner : m_banners.values()) {
+                banner.destroy();
+            }
+
+            m_banners = null;
         }
 
-        m_banners = null;
+        if (m_interstitials != null) {
+            for (MengineAppLovinInterstitial interstitial : m_interstitials.values()) {
+                interstitial.destroy();
+            }
 
-        for( MengineAppLovinInterstitial interstitial : m_interstitials.values() ) {
-            interstitial.destroy();
+            m_interstitials = null;
         }
 
-        m_interstitials = null;
+        if (m_rewardeds != null) {
+            for (MengineAppLovinRewarded rewarded : m_rewardeds.values()) {
+                rewarded.destroy();
+            }
 
-        for( MengineAppLovinRewarded rewarded : m_rewardeds.values() ) {
-            rewarded.destroy();
+            m_rewardeds = null;
         }
-
-        m_rewardeds = null;
 
         if (m_nonetBanners != null) {
             m_nonetBanners.finalizeNonetBanners(activity, this);

@@ -1084,14 +1084,14 @@ public class MengineApplication extends Application {
 
         AndroidEnv_setMengineAndroidApplicationJNI(this, cl);
 
-        String build_gitsha1 = this.getEngineGITSHA1();
-        this.setState("engine.build_gitsha1", build_gitsha1);
+        String engine_gitsha1 = this.getEngineGITSHA1();
+        this.setState("engine.gitsha1", engine_gitsha1);
 
-        String build_version = this.getEngineVersion();
-        this.setState("engine.build_version", build_version);
+        String engine_version = this.getEngineVersion();
+        this.setState("engine.version", engine_version);
 
-        String build_date = this.getBuildDate();
-        this.setState("engine.build_date", build_date);
+        String engine_builddate = this.getBuildDate();
+        this.setState("engine.build_date", engine_builddate);
 
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
@@ -1166,20 +1166,6 @@ public class MengineApplication extends Application {
 
         MengineLog.setMengineApplication(null);
         MengineAnalytics.setMengineApplication(null);
-
-        m_plugins = null;
-        m_dictionaryPlugins = null;
-        m_states = null;
-
-        m_loggerListeners = null;
-        m_analyticsListeners = null;
-        m_adRevenueListeners = null;
-        m_inAppPurchaseListeners = null;
-        m_removeMessageListeners = null;
-        m_keyListeners = null;
-        m_applicationListeners = null;
-        m_activityListeners = null;
-        m_engineListeners = null;
 
         AndroidEnv_removeMengineAndroidApplicationJNI();
 

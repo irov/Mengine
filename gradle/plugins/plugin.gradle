@@ -26,8 +26,6 @@ android {
 
                 res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
             } else {
-                println 'ANDROID_APP_ASSETS_RES_DIR: res [Default]'
-
                 res.srcDirs += ['../../app/res']
             }
         }

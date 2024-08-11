@@ -9,11 +9,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.view.WindowManager;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -292,7 +296,9 @@ public class MengineActivity extends AppCompatActivity {
             );
         }
 
-        MengineApplication application = (MengineApplication)this.getApplication();
+        ApplicationInfo applicationInfo = application.getApplicationInfo();
+        String nativeLibraryDir = applicationInfo.nativeLibraryDir;
+        String options = application.getApplicationOptions();
 
         if (application.isInvalidInitialize() == true) {
             this.finishWithAlertDialog("[ERROR] Application invalid initialize");
@@ -590,7 +596,9 @@ public class MengineActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        MengineLog.logMessage(TAG, "onActivityResult request: %d result: %d"
+    	this.setState("activity.result", "request: " + requestCode + "result: " + resultCode );
+    	
+        MengineLog.logMessageRelease(TAG, "onActivityResult request: %d result: %d"
             , requestCode
             , resultCode
         );
@@ -624,9 +632,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "start");
 
-        MengineLog.logMessage(TAG, "onStart");
-
-        MengineApplication application = (MengineApplication)this.getApplication();
+        MengineLog.logMessageRelease(TAG, "onStart");
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -647,7 +653,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "stop");
 
-        MengineLog.logMessage(TAG, "onStop");
+        MengineLog.logMessageRelease(TAG, "onStop");
 
         MengineApplication application = (MengineApplication)this.getApplication();
 

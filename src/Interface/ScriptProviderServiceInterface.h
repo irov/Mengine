@@ -21,6 +21,9 @@ namespace Mengine
         virtual pybind::kernel_interface * getKernel() const = 0;
 
     public:
+        virtual void updateScriptThread() = 0;
+
+    public:
         virtual ThreadId getScriptThreadId() const = 0;
     };
 }

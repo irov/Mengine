@@ -58,7 +58,7 @@ namespace Mengine
                 }
 
                 const uint8_t * jd_buffer = jd->buffer + jd->carriage;
-                MENGINE_MEMCPY( _buffer, jd_buffer, _buflen );
+                StdString::memcpy( _buffer, jd_buffer, _buflen );
                 jd->carriage += _buflen;
 
                 return _buflen;

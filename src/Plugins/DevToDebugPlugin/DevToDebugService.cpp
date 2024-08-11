@@ -153,7 +153,7 @@ namespace Mengine
     {
         const Char * DevToDebug_DSN = CONFIG_VALUE( "DevToDebugPlugin", "DSN", "" );
 
-        if( MENGINE_STRCMP( DevToDebug_DSN, "" ) == 0 )
+        if( StdString::strcmp( DevToDebug_DSN, "" ) == 0 )
         {
             LOGGER_ERROR( "DevToDebug don't setup DSN" );
 

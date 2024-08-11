@@ -85,9 +85,9 @@ namespace Mengine
             return _kernel->ret_none();
         }
 
-        if( MENGINE_STRCMP( arg_str, "\n" ) != 0 )
+        if( StdString::strcmp( arg_str, "\n" ) != 0 )
         {
-            MENGINE_STRNCAT( m_message, arg_str, arg_str_size );
+            StdString::strncat( m_message, arg_str, arg_str_size );
 
             return _kernel->ret_none();
         }
@@ -107,7 +107,7 @@ namespace Mengine
             LOGGER_VERBOSE_LEVEL( "python", m_level, LFILTER_NONE, color, nullptr, 0, LFLAG_SHORT )("%s", m_message);
         }
 
-        MENGINE_STRCPY( m_message, "" );
+        StdString::strcpy( m_message, "" );
 
         return _kernel->ret_none();
     }

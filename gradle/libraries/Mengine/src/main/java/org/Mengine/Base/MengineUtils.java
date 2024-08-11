@@ -35,6 +35,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
@@ -575,7 +576,7 @@ public class MengineUtils {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-            MengineLog.logWarning(TAG, "sleep %d catch InterruptedException: %s", millis, e.getMessage());
+            // Ignore
         }
     }
 
@@ -612,19 +613,6 @@ public class MengineUtils {
     }
 
     public static String inputStreamToString(InputStream stream) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        byte [] buffer = new byte[1024];
-        int len;
-    public static String inputStreamToString(InputStream stream) throws IOException {
-        while ((len = stream.read(buffer)) != -1) {
-            out.write(buffer, 0, len);
-        }
-        out.close();
-
-        return out.toString("UTF-8");
-    }
-
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         byte [] buffer = new byte[1024];
@@ -689,6 +677,33 @@ public class MengineUtils {
             return null;
         } else {
             return value;
+        }
+    }
+
+    public static void loadLibrary(Context context, String libraryName) throws UnsatisfiedLinkError, SecurityException {
+        try {
+            Class<?> relinkClass = context.getClassLoader().loadClass("com.getkeepsafe.relinker.ReLinker");
+            Class<?> relinkListenerClass = context.getClassLoader().loadClass("com.getkeepsafe.relinker.ReLinker$LoadListener");
+            Class<?> contextClass = context.getClassLoader().loadClass("android.content.Context");
+            Class<?> stringClass = context.getClassLoader().loadClass("java.lang.String");
+
+            Method forceMethod = relinkClass.getDeclaredMethod("force");
+            Object relinkInstance = forceMethod.invoke(null);
+            Class<?> relinkInstanceClass = relinkInstance.getClass();
+
+            Method loadMethod = relinkInstanceClass.getDeclaredMethod("loadLibrary", contextClass, stringClass, stringClass, relinkListenerClass);
+            loadMethod.invoke(relinkInstance, context, libraryName, null, null);
+        }
+        catch (final Throwable e) {
+            try {
+                System.loadLibrary(libraryName);
+            }
+            catch (final UnsatisfiedLinkError ule) {
+                throw ule;
+            }
+            catch (final SecurityException se) {
+                throw se;
+            }
         }
     }
 }

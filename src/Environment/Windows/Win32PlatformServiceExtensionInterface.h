@@ -31,8 +31,5 @@ namespace Mengine
 
     public:
         virtual size_t getShortPathName( const Char * _filePath, Char * const _shortFilePath ) const = 0;
-
-    public:
-        virtual time_t getFileUnixTime( const FILETIME * filetime ) const = 0;
     };
 }

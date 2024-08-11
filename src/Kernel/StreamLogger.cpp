@@ -70,7 +70,7 @@ namespace Mengine
 
         if(message.flag & LFLAG_CATEGORYSTAMP )
         {
-            size_t category_size = MENGINE_STRLEN( message.category );
+            size_t category_size = StdString::strlen( message.category );
 
             m_stream->write( "[", 1 );
             m_stream->write( message.category, category_size );

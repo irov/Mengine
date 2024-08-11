@@ -22,10 +22,8 @@
 #elif defined(MENGINE_PLATFORM_ANDROID)
 #   define GL_GLEXT_PROTOTYPES
 
-#   include "SDL_opengles.h"
-#   include "SDL_opengles2.h"
-#   include "SDL_opengles2_gl2.h"
-#   include "SDL_opengles2_gl2ext.h"
+#   include <GLES2/gl2.h>
+#   include <GLES2/gl2ext.h>
 
 #   define MENGINE_RENDER_OPENGL_ES
 #   define MENGINE_RENDER_OPENGL_ES_ANDROID

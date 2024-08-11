@@ -13,14 +13,14 @@ namespace Mengine
         {
             if( _size == MENGINE_UNKNOWN_SIZE )
             {
-                _size = MENGINE_STRLEN( _in );
+                _size = StdString::strlen( _in );
             }
 
             size_t data_index = 0;
 
             for( ; data_index + _capacity < _size; data_index += _capacity )
             {
-                MENGINE_MEMCPY( _buffer, _in + data_index, _capacity );
+                StdString::memcpy( _buffer, _in + data_index, _capacity );
                 _buffer[_capacity] = '\0';
 
                 if( _lambda( _buffer ) == false )
@@ -36,7 +36,7 @@ namespace Mengine
 
             size_t tail_size = _size - data_index;
 
-            MENGINE_MEMCPY( _buffer, _in + data_index, tail_size );
+            StdString::memcpy( _buffer, _in + data_index, tail_size );
             _buffer[tail_size] = '\0';
 
             if( _lambda( _buffer ) == false )
@@ -51,7 +51,7 @@ namespace Mengine
         {
             if( _size == MENGINE_UNKNOWN_SIZE )
             {
-                _size = MENGINE_STRLEN( _in );
+                _size = StdString::strlen( _in );
             }
 
             const Utf8 * it_slice = _in;
@@ -74,7 +74,7 @@ namespace Mengine
 
                     size_t correct_size = it_correct - it_slice;
 
-                    MENGINE_MEMCPY( _buffer, it_slice, correct_size );
+                    StdString::memcpy( _buffer, it_slice, correct_size );
                     _buffer[correct_size] = '\0';
 
                     if( _lambda( _buffer ) == false )
@@ -97,7 +97,7 @@ namespace Mengine
 
             size_t tail_size = it_end - it_slice;
 
-            MENGINE_MEMCPY( _buffer, it_slice, tail_size );
+            StdString::memcpy( _buffer, it_slice, tail_size );
             _buffer[tail_size] = '\0';
 
             if( _lambda( _buffer ) == false )

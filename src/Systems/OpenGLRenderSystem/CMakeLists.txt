@@ -59,4 +59,11 @@ ENDIF()
 
 IF(MENGINE_TARGET_UNIX)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} GL)
-ENDIF()
+ENDIF()
+
+IF(MENGINE_PLATFORM_ANDROID)
+    find_package(OpenGLES REQUIRED)
+    find_library(GLESv2-lib GLESv2)
+
+    target_link_libraries(${PROJECT_NAME} ${GLESv2-lib})
+ENDIF()

@@ -105,7 +105,7 @@ namespace Mengine
 
                 if( (j + len) > 63 )
                 {
-                    MENGINE_MEMCPY( &context->buffer[j], data, (i = 64 - j) * sizeof( uint8_t ) );
+                    StdString::memcpy( &context->buffer[j], data, (i = 64 - j) * sizeof( uint8_t ) );
 
                     SHA1_Transform( context->state, context->buffer );
 
@@ -121,7 +121,7 @@ namespace Mengine
                     i = 0;
                 }
 
-                MENGINE_MEMCPY( &context->buffer[j], &data[i], (len - i) * sizeof( uint8_t ) );
+                StdString::memcpy( &context->buffer[j], &data[i], (len - i) * sizeof( uint8_t ) );
             }
             //////////////////////////////////////////////////////////////////////////
             static void SHA1_Final( SHA1_CTX * context, uint8_t * const digest, size_t _size )
@@ -147,10 +147,10 @@ namespace Mengine
                     digest[i] = (uint8_t)((context->state[(i >> 2) % 5] >> ((3 - (i & 3)) * 8)) & 255);
                 }
 
-                MENGINE_MEMSET( context->buffer, 0, 64 * sizeof( uint8_t ) );
-                MENGINE_MEMSET( context->state, 0, 5 * sizeof( uint32_t ) );
-                MENGINE_MEMSET( context->count, 0, 2 * sizeof( size_t ) );
-                MENGINE_MEMSET( finalcount, 0, 8 );
+                StdString::memset( context->buffer, 0, 64 * sizeof( uint8_t ) );
+                StdString::memset( context->state, 0, 5 * sizeof( uint32_t ) );
+                StdString::memset( context->count, 0, 2 * sizeof( size_t ) );
+                StdString::memset( finalcount, 0, 8 );
             }
             //////////////////////////////////////////////////////////////////////////
         }
@@ -174,7 +174,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void makeSHA1String( const Char * _string, Char * const _hex, bool _lowercase )
         {
-            size_t len = MENGINE_STRLEN( _string );
+            size_t len = StdString::strlen( _string );
 
             uint8_t sha1[MENGINE_SHA1_UINT8_COUNT];
             Helper::makeSHA1( _string, len, sha1, MENGINE_SHA1_UINT8_COUNT );

@@ -92,7 +92,7 @@ namespace Mengine
         {
             const FileModifyDesc & desc = *it;
 
-            if( MENGINE_STRCMP( desc.fullPath, fullPath ) != 0 )
+            if( StdString::strcmp( desc.fullPath, fullPath ) != 0 )
             {
                 continue;
             }

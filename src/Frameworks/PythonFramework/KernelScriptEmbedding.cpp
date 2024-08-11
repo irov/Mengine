@@ -89,6 +89,7 @@
 
 #include "Config/StdIO.h"
 #include "Config/StdMath.h"
+#include "Config/DynamicCast.h"
 
 #include "math/angle.h"
 #include "math/vec4.h"
@@ -357,7 +358,7 @@ namespace Mengine
 
                     EventReceiverInterface * receiver_ptr = _receiver.get();
 
-                    PythonEventReceiver * py_receiver_ptr = dynamic_cast<PythonEventReceiver *>(receiver_ptr);
+                    PythonEventReceiver * py_receiver_ptr = Helper::dynamicCast<PythonEventReceiver *>( receiver_ptr );
 
                     if( py_receiver_ptr == nullptr )
                     {
@@ -571,7 +572,7 @@ namespace Mengine
                 }
                     , transformation->getLocalPosition(), _dir, _speed
                     , MENGINE_DOCUMENT_PYBIND
-                    );
+                );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
@@ -777,7 +778,7 @@ namespace Mengine
                     transformation->setLocalPosition( _v );
                 }
                         , transformation->getLocalPosition(), _point, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                        , MENGINE_DOCUMENT_PYBIND
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -835,7 +836,7 @@ namespace Mengine
                 }
                     , transformation->getLocalPosition(), _point, linearSpeed, _time
                     , MENGINE_DOCUMENT_PYBIND
-                    );
+                );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
@@ -900,7 +901,7 @@ namespace Mengine
                 }
                     , _time
                     , MENGINE_DOCUMENT_PYBIND
-                    );
+                );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
@@ -969,7 +970,7 @@ namespace Mengine
                 }
                     , _time
                     , MENGINE_DOCUMENT_PYBIND
-                    );
+                );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
@@ -1026,16 +1027,16 @@ namespace Mengine
                 {
                     return transformation->getLocalPosition();
                 }
-                    , [_to]()
+                        , [_to]()
                 {
                     return _to;
                 }
-                    , [_v0, _v1]( mt::vec3f * _v )
+                        , [_v0, _v1]( mt::vec3f * _v )
                 {
                     _v[0] = _v0; _v[1] = _v1;
                 }
-                    , _time
-                    , MENGINE_DOCUMENT_PYBIND
+                        , _time
+                        , MENGINE_DOCUMENT_PYBIND
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -1094,16 +1095,16 @@ namespace Mengine
                 {
                     return transformation->getLocalPosition();
                 }
-                    , [_to]()
+                        , [_to]()
                 {
                     return _to;
                 }
-                    , [_v0, _v1, _v2]( mt::vec3f * _v )
+                        , [_v0, _v1, _v2]( mt::vec3f * _v )
                 {
                     _v[0] = _v0; _v[1] = _v1; _v[2] = _v2;
                 }
-                    , _time
-                    , MENGINE_DOCUMENT_PYBIND
+                        , _time
+                        , MENGINE_DOCUMENT_PYBIND
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -1868,7 +1869,7 @@ namespace Mengine
                 }
                     , correct_angle_from, correct_angle_to, _time
                     , MENGINE_DOCUMENT_PYBIND
-                    );
+                );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
@@ -1880,7 +1881,7 @@ namespace Mengine
                 }
 
                 float invTime = 1.f / _time;
-                float angularSpeed = MENGINE_FABSF( correct_angle_from - correct_angle_to ) * invTime;
+                float angularSpeed = Math::fabsf( correct_angle_from - correct_angle_to ) * invTime;
 
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
@@ -1928,7 +1929,7 @@ namespace Mengine
                     transformation->setLocalOrientationX( _v );
                 }
                         , correct_angle_from, correct_angle_to, angularSpeed, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                        , MENGINE_DOCUMENT_PYBIND
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
@@ -1993,7 +1994,7 @@ namespace Mengine
                 }
                     , transformation->getLocalScale(), _scale, _time
                     , MENGINE_DOCUMENT_PYBIND
-                    );
+                );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
@@ -2068,7 +2069,7 @@ namespace Mengine
                     render->setLocalColor( _v );
                 }
                         , render->getLocalColor(), _color, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                        , MENGINE_DOCUMENT_PYBIND
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "node '%s' invalid create affector"
@@ -2150,7 +2151,7 @@ namespace Mengine
                     render->setLocalAlpha( _v );
                 }
                         , render->getLocalAlpha(), _alpha, _time
-                    , MENGINE_DOCUMENT_PYBIND
+                        , MENGINE_DOCUMENT_PYBIND
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( affector, "node '%s' invalid create affector"
@@ -2498,7 +2499,7 @@ namespace Mengine
             .def_deprecated( "emptyChildren", &Hierarchy::isEmptyChildren, "use isEmptyChildren" )
             .def( "isEmptyChildren", &Hierarchy::isEmptyChildren )
             .def( "hasChild", &Hierarchy::hasChild )
-            .def_deprecated( "addChildren", &Hierarchy::addChild, "use addChild")
+            .def_deprecated( "addChildren", &Hierarchy::addChild, "use addChild" )
             .def_deprecated( "addChildrenFront", &Hierarchy::addChildFront, "use addChildFront" )
             .def_deprecated( "addChildrenAfter", &Hierarchy::addChildAfter, "use addChildAfter" )
             .def_deprecated( "findChildren", &Hierarchy::findChild, "use findChild" )
@@ -2520,7 +2521,7 @@ namespace Mengine
             .def( "findUniqueChild", &Node::findUniqueChild )
             .def_proxy_static( "removeChild", scriptMethod, &KernelScriptMethod::s_Node_removeChild )
 
-            .def_proxy_static_deprecated( "removeAllChild", scriptMethod, &KernelScriptMethod::s_Node_removeChildren, "use removeChildren")
+            .def_proxy_static_deprecated( "removeAllChild", scriptMethod, &KernelScriptMethod::s_Node_removeChildren, "use removeChildren" )
             .def_proxy_static( "removeChildren", scriptMethod, &KernelScriptMethod::s_Node_removeChildren )
             .def_proxy_static( "removeFromParent", scriptMethod, &KernelScriptMethod::s_Node_removeFromParent )
             .def_proxy_static_deprecated( "destroyAllChild", scriptMethod, &KernelScriptMethod::s_Node_destroyChildren, "use destroyChildren" )
@@ -2629,7 +2630,7 @@ namespace Mengine
             .def( "setSpeedFactor", &SchedulerInterface::setSpeedFactor )
             .def( "getSpeedFactor", &SchedulerInterface::getSpeedFactor )
             .def( "getTime", &SchedulerInterface::getTime )
-            .def_deprecated( "getTiming", &SchedulerInterface::getTime, "use getTime")
+            .def_deprecated( "getTiming", &SchedulerInterface::getTime, "use getTime" )
             ;
 
         pybind::interface_<ChronometerInterface, pybind::bases<Mixin>>( _kernel, "ChronometerInterface", true )

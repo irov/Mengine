@@ -199,7 +199,7 @@ namespace Mengine
                     o_str[2] = o_str[2] == '\0' ? ' ' : o_str[2];
                     o_str[3] = o_str[3] == '\0' ? ' ' : o_str[3];
 
-                    Char * o_str_value = MENGINE_STRRCHR( o_str, ' ' );
+                    Char * o_str_value = StdString::strrchr( o_str, ' ' );
 
                     if( o_str_value == nullptr )
                     {

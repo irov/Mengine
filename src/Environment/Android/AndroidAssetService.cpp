@@ -86,6 +86,20 @@ namespace Mengine
         AAsset_close( _asset );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AndroidAssetService::existFile( const Char * _path ) const
+    {
+        AAsset * asset = AAssetManager_open( m_assetManager, _path, AASSET_MODE_UNKNOWN);
+
+        if( asset == nullptr )
+        {
+            return false;
+        }
+
+        AAsset_close(asset);
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t AndroidAssetService::read( AAsset * _asset, void * _buffer, size_t _size ) const
     {
         size_t read = AAsset_read( _asset, _buffer, _size );

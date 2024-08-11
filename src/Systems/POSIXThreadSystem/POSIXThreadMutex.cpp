@@ -16,7 +16,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool POSIXThreadMutex::initialize()
     {
-        int status = pthread_mutex_init( &m_cs, nullptr );
+        pthread_mutexattr_t attr;
+        ::pthread_mutexattr_init( &attr );
+
+        ::pthread_mutexattr_settype( &attr, PTHREAD_MUTEX_RECURSIVE );
+
+        int status = ::pthread_mutex_init( &m_cs, &attr );
 
         if( status != 0 )
         {
@@ -33,7 +38,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadMutex::finalize()
     {
-        int status = pthread_mutex_destroy( &m_cs );
+        int status = ::pthread_mutex_destroy( &m_cs );
 
         if( status != 0 )
         {
@@ -46,7 +51,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadMutex::lock()
     {
-        int status = pthread_mutex_lock( &m_cs );
+        int status = ::pthread_mutex_lock( &m_cs );
 
         if( status != 0 )
         {
@@ -59,7 +64,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadMutex::unlock()
     {
-        int status = pthread_mutex_unlock( &m_cs );
+        int status = ::pthread_mutex_unlock( &m_cs );
 
         if( status != 0 )
         {
@@ -72,7 +77,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool POSIXThreadMutex::tryLock()
     {
-        int status = pthread_mutex_trylock( &m_cs );
+        int status = ::pthread_mutex_trylock( &m_cs );
 
         if( status == 0 )
         {
@@ -81,7 +86,7 @@ namespace Mengine
 
         if( status != EBUSY )
         {
-            LOGGER_ERROR( "invalid try lock error: %s (doc: %s)"
+            LOGGER_ERROR( "invalid try lock error: %d (doc: %s)"
                 , status
                 , MENGINE_DOCUMENT_STR( this->getDocument() )
             );

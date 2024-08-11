@@ -72,7 +72,7 @@ namespace Mengine
             return false;
         }
 
-        size_t unicodeSize = (_unicodeSize == MENGINE_UNKNOWN_SIZE) ? MENGINE_WCSLEN( _unicode ) + 1 : _unicodeSize + 1;
+        size_t unicodeSize = (_unicodeSize == MENGINE_UNKNOWN_SIZE) ? StdString::wcslen( _unicode ) + 1 : _unicodeSize + 1;
 
         const char * iconv_inbuf = (const char *)_unicode;
         size_t iconv_insize = unicodeSize * sizeof( WChar );
@@ -147,7 +147,7 @@ namespace Mengine
             return false;
         }
 
-        size_t utf8Size = (_utf8Size == MENGINE_UNKNOWN_SIZE) ? MENGINE_STRLEN( _utf8 ) + 1 : _utf8Size + 1;
+        size_t utf8Size = (_utf8Size == MENGINE_UNKNOWN_SIZE) ? StdString::strlen( _utf8 ) + 1 : _utf8Size + 1;
 
         const char * iconv_inbuf = (const char *)_utf8;
         size_t iconv_insize = utf8Size * sizeof( Char );

@@ -3,7 +3,7 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/libraries/library.gradl
 android {
     externalNativeBuild {
         cmake {
-            path "../../../cmake/Android_SDL/OpenAL/CMakeLists.txt"
+            path "../../../cmake/Android/OpenAL/CMakeLists.txt"
             buildStagingDirectory rootProject.projectDir.getAbsolutePath() + "/../outputs/gradle/.cxx/" + project.getName()
         }
     }

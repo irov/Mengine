@@ -143,14 +143,14 @@ namespace Mengine
                 pModuleInfo->SizeOfStruct = sizeof( IMAGEHLP_MODULE64 );
 
                 uint8_t pData[4096]; // reserve enough memory, so the bug in v6.3.5.1 does not lead to memory-overwrites...
-                MENGINE_MEMCPY( pData, pModuleInfo, sizeof( IMAGEHLP_MODULE64 ) );
+                StdString::memcpy( pData, pModuleInfo, sizeof( IMAGEHLP_MODULE64 ) );
 
                 if( pSymGetModuleInfo64( hProcess, baseAddr, (IMAGEHLP_MODULE64 *)pData ) == FALSE )
                 {
                     return FALSE;
                 }
 
-                MENGINE_MEMCPY( pModuleInfo, pData, sizeof( IMAGEHLP_MODULE64 ) );
+                StdString::memcpy( pModuleInfo, pData, sizeof( IMAGEHLP_MODULE64 ) );
                 pModuleInfo->SizeOfStruct = sizeof( IMAGEHLP_MODULE64 );
 
                 return TRUE;
@@ -197,26 +197,26 @@ namespace Mengine
 
                 if( _entry->name[0] == 0 )
                 {
-                    MENGINE_STRCPY( _entry->name, "(function-name not available)" );
+                    StdString::strcpy( _entry->name, "(function-name not available)" );
                 }
 
                 if( _entry->undName[0] != 0 )
                 {
-                    MENGINE_STRCPY( _entry->name, _entry->undName );
+                    StdString::strcpy( _entry->name, _entry->undName );
                 }
 
                 if( _entry->undFullName[0] != 0 )
                 {
-                    MENGINE_STRCPY( _entry->name, _entry->undFullName );
+                    StdString::strcpy( _entry->name, _entry->undFullName );
                 }
 
                 if( _entry->lineFileName[0] == 0 )
                 {
-                    MENGINE_STRCPY( _entry->lineFileName, "(filename not available)" );
+                    StdString::strcpy( _entry->lineFileName, "(filename not available)" );
 
                     if( _entry->moduleName[0] == 0 )
                     {
-                        MENGINE_STRCPY( _entry->moduleName, "(module-name not available)" );
+                        StdString::strcpy( _entry->moduleName, "(module-name not available)" );
                     }
 
                     MENGINE_SNPRINTF( buffer, MENGINE_STACKWALK_MAX_NAMELEN, "%p (%s): %s (%d): %s\n"
@@ -236,14 +236,14 @@ namespace Mengine
                     );
                 }
 
-                size_t buffer_len = MENGINE_STRLEN( buffer );
+                size_t buffer_len = StdString::strlen( buffer );
 
                 if( _capacity < buffer_len )
                 {
                     return 0;
                 }
 
-                MENGINE_STRCAT( _stack, buffer );
+                StdString::strcat( _stack, buffer );
 
                 return buffer_len;
             }
@@ -302,7 +302,7 @@ namespace Mengine
 
                 if( _context == NULL )
                 {
-                    MENGINE_MEMSET( &contex, 0, sizeof( CONTEXT ) );
+                    StdString::memset( &contex, 0, sizeof( CONTEXT ) );
                     contex.ContextFlags = CONTEXT_FULL;
 
                     HANDLE hCurrentThread = ::GetCurrentThread();
@@ -332,7 +332,7 @@ namespace Mengine
                 }
 
                 STACKFRAME64 frame;
-                MENGINE_MEMSET( &frame, 0, sizeof( frame ) );
+                StdString::memset( &frame, 0, sizeof( frame ) );
 
 #if defined(MENGINE_MACHINE_IX86)
                 DWORD imageType = IMAGE_FILE_MACHINE_I386;
@@ -366,17 +366,17 @@ namespace Mengine
 
                 uint8_t pSymBuff[sizeof( IMAGEHLP_SYMBOL64 ) + MENGINE_STACKWALK_MAX_NAMELEN];
                 IMAGEHLP_SYMBOL64 * pSymbol = (IMAGEHLP_SYMBOL64 *)pSymBuff;
-                MENGINE_MEMSET( pSymbol, 0, sizeof( IMAGEHLP_SYMBOL64 ) + MENGINE_STACKWALK_MAX_NAMELEN );
+                StdString::memset( pSymbol, 0, sizeof( IMAGEHLP_SYMBOL64 ) + MENGINE_STACKWALK_MAX_NAMELEN );
 
                 pSymbol->SizeOfStruct = sizeof( IMAGEHLP_SYMBOL64 );
                 pSymbol->MaxNameLength = MENGINE_STACKWALK_MAX_NAMELEN;
 
                 IMAGEHLP_LINE64 Line;
-                MENGINE_MEMSET( &Line, 0, sizeof( Line ) );
+                StdString::memset( &Line, 0, sizeof( Line ) );
                 Line.SizeOfStruct = sizeof( Line );
 
                 IMAGEHLP_MODULE64 Module;
-                MENGINE_MEMSET( &Module, 0, sizeof( Module ) );
+                StdString::memset( &Module, 0, sizeof( Module ) );
                 Module.SizeOfStruct = sizeof( Module );
 
                 uint32_t recursionFrame = 0;
@@ -402,7 +402,7 @@ namespace Mengine
                     }
 
                     CallstackEntry csEntry;
-                    MENGINE_MEMSET( &csEntry, 0, sizeof( csEntry ) );
+                    StdString::memset( &csEntry, 0, sizeof( csEntry ) );
                     csEntry.offset = frame.AddrPC.Offset;
 
                     if( frame.AddrPC.Offset != 0 )
@@ -410,7 +410,7 @@ namespace Mengine
                         DWORD64 offsetFromSmybol;
                         if( (*pSymGetSymFromAddr64)(hProcess, frame.AddrPC.Offset, &offsetFromSmybol, pSymbol) == TRUE )
                         {
-                            MENGINE_STRCPY( csEntry.name, pSymbol->Name );
+                            StdString::strcpy( csEntry.name, pSymbol->Name );
                             (*pUnDecorateSymbolName)(pSymbol->Name, csEntry.undName, MENGINE_STACKWALK_MAX_NAMELEN, UNDNAME_NAME_ONLY);
                             (*pUnDecorateSymbolName)(pSymbol->Name, csEntry.undFullName, MENGINE_STACKWALK_MAX_NAMELEN, UNDNAME_COMPLETE);
                         }
@@ -421,13 +421,13 @@ namespace Mengine
                             if( (*pSymGetLineFromAddr64)(hProcess, frame.AddrPC.Offset, &offsetFromLine, &Line) == TRUE )
                             {
                                 csEntry.lineNumber = Line.LineNumber;
-                                MENGINE_STRCPY( csEntry.lineFileName, Line.FileName );
+                                StdString::strcpy( csEntry.lineFileName, Line.FileName );
                             }
                         }
 
                         if( Detail::GetModuleInfo( pSymGetModuleInfo64, hProcess, frame.AddrPC.Offset, &Module ) == TRUE )
                         {
-                            MENGINE_STRCPY( csEntry.moduleName, Module.ModuleName );
+                            StdString::strcpy( csEntry.moduleName, Module.ModuleName );
                         }
                     }
 

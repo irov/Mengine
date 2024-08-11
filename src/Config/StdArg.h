@@ -5,7 +5,7 @@
 #include <cstdarg>
 
 #ifndef MENGINE_VA_LIST_TYPE
-#define MENGINE_VA_LIST_TYPE va_list
+#define MENGINE_VA_LIST_TYPE std::va_list
 #endif
 
 #ifndef MENGINE_VA_LIST_START

@@ -15,6 +15,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/ThreadMutexScope.h"
 
+#include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidDeclaration.h"
 #include "Environment/Android/AndroidHelper.h"
@@ -44,7 +45,7 @@ extern "C"
 
         if( s_androidNativePythonService == nullptr )
         {
-            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "invalid android call plugin '%s' method '%s'"
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "invalid android call plugin '%s' method '%s'"
                 , plugin.c_str()
                 , method.c_str()
             );
@@ -71,7 +72,7 @@ extern "C"
 
         if( s_androidNativePythonService == nullptr )
         {
-            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "invalid android add plugin '%s'"
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "invalid android add plugin '%s'"
                 , name.c_str()
             );
 
@@ -394,7 +395,7 @@ namespace Mengine
 
         jenv->CallVoidMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::AndroidEnvExceptionCheck(jenv);
+        Helper::AndroidEnvExceptionCheck( jenv );
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -432,7 +433,7 @@ namespace Mengine
 
         jboolean jresult = jenv->CallBooleanMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::AndroidEnvExceptionCheck(jenv);
+        Helper::AndroidEnvExceptionCheck( jenv );
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -472,7 +473,7 @@ namespace Mengine
 
         jint jresult = jenv->CallIntMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::AndroidEnvExceptionCheck(jenv);
+        Helper::AndroidEnvExceptionCheck( jenv );
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -512,7 +513,7 @@ namespace Mengine
 
         jlong jresult = jenv->CallLongMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::AndroidEnvExceptionCheck(jenv);
+        Helper::AndroidEnvExceptionCheck( jenv );
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -552,7 +553,7 @@ namespace Mengine
 
         jfloat jresult = jenv->CallFloatMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::AndroidEnvExceptionCheck(jenv);
+        Helper::AndroidEnvExceptionCheck( jenv );
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -592,7 +593,7 @@ namespace Mengine
 
         jdouble jresult = jenv->CallDoubleMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::AndroidEnvExceptionCheck(jenv);
+        Helper::AndroidEnvExceptionCheck( jenv );
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -632,7 +633,7 @@ namespace Mengine
 
         jstring jresult = (jstring)jenv->CallObjectMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::AndroidEnvExceptionCheck(jenv);
+        Helper::AndroidEnvExceptionCheck( jenv );
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -681,7 +682,7 @@ namespace Mengine
 
         jobject jresult = jenv->CallObjectMethodA( jplugin, jmethodID_method, jargs );
 
-        Helper::AndroidEnvExceptionCheck(jenv);
+        Helper::AndroidEnvExceptionCheck( jenv );
 
         for( uint32_t index = 0; index != freeCount; ++index )
         {
@@ -774,10 +775,10 @@ namespace Mengine
 
         Char signature[1024] = {'\0'};
 
-        MENGINE_STRCAT( signature, "(" );
+        StdString::strcat( signature, "(" );
 
-        MENGINE_MEMSET( _jargs, 0, sizeof( jvalue ) * 32 );
-        MENGINE_MEMSET( _jfree, 0, sizeof( jstring ) * 32 );
+        StdString::memset( _jargs, 0, sizeof( jvalue ) * 32 );
+        StdString::memset( _jfree, 0, sizeof( jstring ) * 32 );
 
         uint32_t index_args = 0;
         uint32_t index_free = 0;
@@ -788,35 +789,35 @@ namespace Mengine
             {
                 _jargs[index_args++].l = nullptr;
 
-                MENGINE_STRCAT( signature, "L" );
+                StdString::strcat( signature, "L" );
             }
             else if( arg.is_bool() == true )
             {
                 jboolean jvalue = (bool)arg.extract();
                 _jargs[index_args++].z = jvalue;
 
-                MENGINE_STRCAT( signature, "Z" );
+                StdString::strcat( signature, "Z" );
             }
             else if( arg.is_integer() == true )
             {
                 jint jvalue = (int32_t)arg.extract();
                 _jargs[index_args++].i = jvalue;
 
-                MENGINE_STRCAT( signature, "I" );
+                StdString::strcat( signature, "I" );
             }
             else if( arg.is_long() == true )
             {
                 jlong jvalue = (int64_t)arg.extract();
                 _jargs[index_args++].j = jvalue;
 
-                MENGINE_STRCAT( signature, "J" );
+                StdString::strcat( signature, "J" );
             }
             else if( arg.is_float() == true )
             {
                 jfloat jvalue = (float)arg.extract();
                 _jargs[index_args++].f = jvalue;
 
-                MENGINE_STRCAT( signature, "F" );
+                StdString::strcat( signature, "F" );
             }
             else if( arg.is_string() == true )
             {
@@ -827,7 +828,7 @@ namespace Mengine
                 _jargs[index_args++].l = jvalue;
                 _jfree[index_free++] = jvalue;
 
-                MENGINE_STRCAT( signature, "Ljava/lang/String;" );
+                StdString::strcat( signature, "Ljava/lang/String;" );
             }
             else if( arg.is_list() == true )
             {
@@ -862,7 +863,7 @@ namespace Mengine
 
                 _jenv->DeleteLocalRef( jclass_ArrayList );
 
-                MENGINE_STRCAT( signature, "Ljava/util/List;" );
+                StdString::strcat( signature, "Ljava/util/List;" );
             }
             else
             {
@@ -879,14 +880,14 @@ namespace Mengine
             }
         }
 
-        MENGINE_STRCAT( signature, ")" );
-        MENGINE_STRCAT( signature, _retType );
+        StdString::strcat( signature, ")" );
+        StdString::strcat( signature, _retType );
 
         jmethodID jmethodId = _jenv->GetMethodID( plugin_class, _method.c_str(), signature );
 
         if( jmethodId == nullptr )
         {
-            Helper::AndroidEnvExceptionCheck(_jenv);
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             _jenv->DeleteLocalRef( plugin_class );
 

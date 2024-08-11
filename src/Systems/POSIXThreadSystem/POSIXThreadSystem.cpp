@@ -13,6 +13,7 @@
 #include "Kernel/DocumentHelper.h"
 
 #include <pthread.h>
+#include <unistd.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ThreadSystem, Mengine::POSIXThreadSystem );

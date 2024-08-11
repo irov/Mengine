@@ -12,13 +12,13 @@ CMAKE_PATH=$ANDROID_SDK/cmake/$ANDROID_CMAKE_VERSION
 CMAKE=$CMAKE_PATH/bin/cmake
 CMAKE_MAKE_PROGRAM=$CMAKE_PATH/bin/ninja
 CMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake
-CMAKELIST_PATH=$PWD/../../cmake/Depends_Android_SDL
-BUILD_TEMP_DIR=$PWD/../../solutions/dependencies_android_sdl
+CMAKELIST_PATH=$PWD/../../cmake/Depends_Android
+SOLUTION_DIR=$PWD/../../solutions/dependencies_android
 
 for ABI in "x86" "x86_64" "armeabi-v7a" "arm64-v8a"
 do
-    mkdir -p ../../solutions/dependencies_android_sdl/$CONFIGURATION/$ABI
-    pushd ../../solutions/dependencies_android_sdl/$CONFIGURATION/$ABI
+    mkdir -p $SOLUTION_DIR/$CONFIGURATION/$ABI
+    pushd $SOLUTION_DIR/$CONFIGURATION/$ABI
 
     $CMAKE -G $CMAKE_GENERATOR \
             -DANDROID_PLATFORM=$ANDROID_PLATFORM \

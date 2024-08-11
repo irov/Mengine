@@ -142,6 +142,12 @@ namespace Mengine
 
         m_thread = thread;
 
+        LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
+            , m_name.c_str()
+            , m_threadId
+            , m_priority
+        );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

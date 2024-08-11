@@ -125,7 +125,7 @@ namespace Mengine
 
         const Char * Win32SentryPlugin_DSN = CONFIG_VALUE( "Win32SentryPlugin", "DSN", "" );
 
-        if( MENGINE_STRCMP( Win32SentryPlugin_DSN, "" ) == 0 )
+        if( StdString::strcmp( Win32SentryPlugin_DSN, "" ) == 0 )
         {
             LOGGER_WARNING( "Sentry don't setup DSN" );
 
@@ -218,17 +218,17 @@ namespace Mengine
         Char environment[128] = {'\0'};
 
 #if defined(MENGINE_BUILD_PUBLISH_ENABLE)
-        MENGINE_STRCAT( environment, "publish_" );
+        StdString::strcat( environment, "publish_" );
 #endif
 
 #if defined(MENGINE_MASTER_RELEASE_ENABLE)
-        MENGINE_STRCAT( environment, "master_" );
+        StdString::strcat( environment, "master_" );
 #endif
 
 #if defined(MENGINE_DEBUG)
-        MENGINE_STRCAT( environment, "debug" );
+        StdString::strcat( environment, "debug" );
 #else
-        MENGINE_STRCAT( environment, "release" );
+        StdString::strcat( environment, "release" );
 #endif
         
         sentry_options_set_environment( options, environment );

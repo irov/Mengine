@@ -1105,12 +1105,12 @@ namespace Mengine
 
                 for( float v : l )
                 {
-                    s += MENGINE_POWF( v, inv_pow );
+                    s += Math::powf( v, inv_pow );
                 }
 
                 s /= (float)l.size();
 
-                s = MENGINE_POWF( s, _pow );
+                s = Math::powf( s, _pow );
 
                 return s;
             }
@@ -1200,10 +1200,10 @@ namespace Mengine
                 float rp = randomizer->getRandomf( mt::constant::two_pi );
                 float rr = randomizer->getRandomf( 1.f );
 
-                float rr2 = MENGINE_SQRTF( rr ) * _radius;
+                float rr2 = Math::sqrtf( rr ) * _radius;
 
-                float x = MENGINE_COSF( rp );
-                float y = MENGINE_SINF( rp );
+                float x = Math::cosf( rp );
+                float y = Math::sinf( rp );
 
                 float xr = x * rr2;
                 float yr = y * rr2;
@@ -1221,7 +1221,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float s_roundingf( float _value, float _round )
             {
-                float floor_value = MENGINE_FLOORF( _value / _round );
+                float floor_value = Math::floorf( _value / _round );
                 float round_value = floor_value * _round;
 
                 return round_value;
@@ -1244,67 +1244,67 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             float s_sqrtf( float a )
             {
-                return MENGINE_SQRTF( a );
+                return Math::sqrtf( a );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_powf( float a, float b )
             {
-                return MENGINE_POWF( a, b );
+                return Math::powf( a, b );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_fabsf( float a )
             {
-                return MENGINE_FABSF( a );
+                return Math::fabsf( a );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_cosf( float a )
             {
-                return MENGINE_COSF( a );
+                return Math::cosf( a );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_sinf( float a )
             {
-                return MENGINE_SINF( a );
+                return Math::sinf( a );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_cosf_deg( float a )
             {
-                return MENGINE_COSF( a * mt::constant::deg2rad );
+                return Math::cosf( a * mt::constant::deg2rad );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_sinf_deg( float a )
             {
-                return MENGINE_SINF( a * mt::constant::deg2rad );
+                return Math::sinf( a * mt::constant::deg2rad );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_tanf( float a )
             {
-                return MENGINE_TANF( a );
+                return Math::tanf( a );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_acosf( float a )
             {
-                return MENGINE_ACOSF( a );
+                return Math::acosf( a );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_atanf( float _x )
             {
-                return MENGINE_ATAN( _x );
+                return Math::atan( _x );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_logf( float _x )
             {
-                return MENGINE_LOGF( _x );
+                return Math::logf( _x );
             }
             //////////////////////////////////////////////////////////////////////////
             float s_log10f( float _x )
             {
-                return MENGINE_LOG10F( _x );
+                return Math::log10f( _x );
             }
             //////////////////////////////////////////////////////////////////////////
             double s_log10( double _x )
             {
-                return MENGINE_LOG10( _x );
+                return Math::log10( _x );
             }
             //////////////////////////////////////////////////////////////////////////
             uint32_t s_fibo( uint32_t _n )
@@ -1327,10 +1327,10 @@ namespace Mengine
             {
                 const double nf = (double)_n;
                 const double fplus = (1.0 + 2.2360679774997896964091736687313) * 0.5;
-                const double fplusn = MENGINE_POW( fplus, nf );
+                const double fplusn = Math::pow( fplus, nf );
 
                 const double fminus = (1.0 - 2.2360679774997896964091736687313) * 0.5;
-                const double fminusn = MENGINE_POW( fminus, nf );
+                const double fminusn = Math::pow( fminus, nf );
 
                 double fbine = (fplusn - fminusn) * 0.44721359549995793928183473374626;
 
@@ -1469,7 +1469,7 @@ namespace Mengine
 
                 float cos_v = mt::dot_v2_v2( v1_norm, v2_norm );
 
-                float angle = MENGINE_ACOSF( cos_v );
+                float angle = Math::acosf( cos_v );
 
                 return angle;
             }
@@ -2605,7 +2605,7 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                if( MENGINE_STRLEN( setting_value ) == 0 )
+                if( StdString::strlen( setting_value ) == 0 )
                 {
                     return _kernel->ret_none();
                 }
@@ -2648,7 +2648,7 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                if( MENGINE_STRLEN( setting_value ) == 0 )
+                if( StdString::strlen( setting_value ) == 0 )
                 {
                     return _kernel->ret_none();
                 }
@@ -2690,7 +2690,7 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                if( MENGINE_STRLEN( setting_value ) == 0 )
+                if( StdString::strlen( setting_value ) == 0 )
                 {
                     return _kernel->ret_none();
                 }
@@ -2732,7 +2732,7 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                if( MENGINE_STRLEN( setting_value ) == 0 )
+                if( StdString::strlen( setting_value ) == 0 )
                 {
                     return _kernel->ret_none();
                 }
@@ -2774,7 +2774,7 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                size_t setting_value_len = MENGINE_STRLEN( setting_value );
+                size_t setting_value_len = StdString::strlen( setting_value );
 
                 if( setting_value_len == 0 )
                 {
@@ -2814,7 +2814,7 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                if( MENGINE_STRLEN( setting_value ) == 0 )
+                if( StdString::strlen( setting_value ) == 0 )
                 {
                     return _kernel->ret_none();
                 }
@@ -2861,7 +2861,7 @@ namespace Mengine
                     return _default;
                 }
 
-                if( MENGINE_STRLEN( setting_value ) == 0 )
+                if( StdString::strlen( setting_value ) == 0 )
                 {
                     return _default;
                 }

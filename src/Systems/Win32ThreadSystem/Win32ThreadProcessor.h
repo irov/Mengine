@@ -46,6 +46,7 @@ namespace Mengine
 
     protected:
         ConstString m_name;
+        EThreadPriority m_priority;
 
         ThreadMutexInterfacePtr m_mutex;
 

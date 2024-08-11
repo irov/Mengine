@@ -28,7 +28,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
 
         boolean isBuildPublish = application.isBuildPublish();
 
-        if (isBuildPublish == false) {
+        if (isBuildPublish == false && android.os.Debug.isDebuggerConnected() == false) {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
         }
     }

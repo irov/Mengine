@@ -63,7 +63,7 @@ namespace Mengine
         {
             DZ_UNUSED( _ud );
 
-            float value = MENGINE_SQRTF( _a );
+            float value = Math::sqrtf( _a );
 
             return value;
         }
@@ -72,7 +72,7 @@ namespace Mengine
         {
             DZ_UNUSED( _ud );
 
-            float value = MENGINE_COSF( _a );
+            float value = Math::cosf( _a );
 
             return value;
         }
@@ -81,7 +81,7 @@ namespace Mengine
         {
             DZ_UNUSED( _ud );
 
-            float value = MENGINE_SINF( _a );
+            float value = Math::sinf( _a );
 
             return value;
         }

@@ -191,7 +191,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( name ) < MENGINE_PLUGIN_NAME_MAX, "plugin name '%s' too long"
+        MENGINE_ASSERTION_FATAL( StdString::strlen( name ) < MENGINE_PLUGIN_NAME_MAX, "plugin name '%s' too long"
             , name
         );
 

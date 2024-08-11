@@ -2,19 +2,23 @@ package org.Mengine.Base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.view.WindowManager;
+import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import org.libsdl.app.SDLActivity;
-import org.libsdl.app.SDLSurface;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,9 +31,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class MengineActivity extends AppCompatActivity {
     public static final String TAG = "MengineActivity";
+
+    private static native Object AndroidMain_bootstrap(String nativeLibraryDir, String _args);
+    private static native void AndroidMain_destroy(Object application);
 
     private static native void AndroidEnv_setMengineAndroidActivityJNI(Object activity);
     private static native void AndroidEnv_removeMengineAndroidActivityJNI();
@@ -51,14 +59,21 @@ public class MengineActivity extends AppCompatActivity {
     private boolean m_initializePython;
     private boolean m_destroy;
 
+    private Object m_nativeApplication;
+
     private static Map<String, Integer> m_requestCodes = new HashMap<>();
     private Map<String, MengineSemaphore> m_semaphores;
 
-    Thread m_threadMain;
+    private Thread m_threadMain;
 
-    RelativeLayout m_contentView;
+    private RelativeLayout m_contentView;
+
+    private MengineSurfaceView m_surfaceView;
+
+    private MengineSensor m_sensor;
 
     public MengineActivity() {
+        super();
     }
 
     public boolean isDevelopmentMode() {
@@ -219,27 +234,20 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public ViewGroup getContentViewGroup() {
-        View view = SDLActivity.getContentView();
-
-        ViewGroup viewGroup = (ViewGroup)view;
-
-        return viewGroup;
-    }
-
-    /*
-    public ViewGroup getContentViewGroup() {
         ViewGroup viewGroup = (ViewGroup)m_contentView;
 
         return viewGroup;
-    }*/
-
-    /*
-    public static Context getContext() {
-        Context context = SDLActivity.getContext();
-
-        return context;
     }
-     */
+
+    public Surface getSurface() {
+        if (m_surfaceView == null) {
+            return null;
+        }
+
+        Surface surface = m_surfaceView.getSurface();
+
+        return surface;
+    }
 
     protected void finishWithAlertDialog(String format, Object... args) {
         MengineUtils.finishActivityWithAlertDialog(this, format, args);
@@ -257,7 +265,21 @@ public class MengineActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Thread.currentThread().setName("MengineActivity");
+        try {
+            Thread.currentThread().setName("MengineActivity");
+        } catch (Exception e) {
+            MengineLog.logMessage(TAG, "modify activity thread name exception: %s"
+                , e.getMessage()
+            );
+        }
+
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            this.finishWithAlertDialog("[ERROR] Application invalid initialize");
+
+            return;
+        }
 
         m_initializePython = false;
         m_destroy = false;
@@ -269,8 +291,20 @@ public class MengineActivity extends AppCompatActivity {
         this.setRequestedOrientation(orientation);
 
         RelativeLayout contentView = new RelativeLayout(this);
-        this.setContentView(contentView);
+
         m_contentView = contentView;
+
+        this.setState("activity.init", "setup_surface");
+
+        CountDownLatch runLatch = new CountDownLatch(1);
+
+        MengineSurfaceView surface = new MengineSurfaceView(this, runLatch);
+
+        m_surfaceView = surface;
+
+        m_contentView.addView(m_surfaceView);
+
+        this.setContentView(m_contentView);
 
         this.setState("activity.lifecycle", "create");
 
@@ -278,15 +312,11 @@ public class MengineActivity extends AppCompatActivity {
 
         AndroidEnv_setMengineAndroidActivityJNI(this);
 
-        MengineApplication application = (MengineApplication)this.getApplication();
+        ApplicationInfo applicationInfo = application.getApplicationInfo();
+        String nativeLibraryDir = applicationInfo.nativeLibraryDir;
+        String options = application.getApplicationOptions();
 
-        if (application.isInvalidInitialize() == true) {
-            this.finishWithAlertDialog("[ERROR] Application invalid initialize");
-
-            return;
-        }
-
-        AndroidEnv_setMengineAndroidActivityJNI(this);
+        m_nativeApplication = AndroidMain_bootstrap(nativeLibraryDir, options);
 
         this.setState("activity.init", "create");
 
@@ -327,34 +357,48 @@ public class MengineActivity extends AppCompatActivity {
             }
         }
 
+        this.setState("activity.init", "setup_window");
+
+        this.setupWindow();
+
+        this.setState("activity.init", "setup_sensor");
+
+        m_sensor = new MengineSensor(this);
+
+        this.setState("activity.init", "setup_main");
+
+        MengineMain main = new MengineMain(this, m_nativeApplication, runLatch);
+
+        m_threadMain = new Thread(main);
+        m_threadMain.start();
+
         this.setState("activity.init", "completed");
 
         this.setState("activity.lifecycle", "created");
+    }
 
-        MengineGLSurfaceView surface = new MengineGLSurfaceView(this);
-
-        MengineGLSurfaceRenderer renderer = new MengineGLSurfaceRenderer();
-        surface.setRenderer(renderer);
-
-        m_contentView.addView(surface);
-
+    @SuppressWarnings("deprecation")
+    private void setupWindow() {
         Window window = this.getWindow();
 
-        int flags = View.SYSTEM_UI_FLAG_FULLSCREEN |
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowInsetsController insetsController = window.getInsetsController();
+            if (insetsController != null) {
+                insetsController.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+                insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            }
+        } else {
+            int flags = View.SYSTEM_UI_FLAG_FULLSCREEN |
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.INVISIBLE;
 
-        window.getDecorView().setSystemUiVisibility(flags);
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-
-        String options = application.getApplicationOptions();
-        MengineMain main = new MengineMain(options);
-
-        m_threadMain = new Thread(main);
+            window.getDecorView().setSystemUiVisibility(flags);
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        }
     }
 
     @Override
@@ -373,26 +417,6 @@ public class MengineActivity extends AppCompatActivity {
         this.setState("activity.lifecycle", "restore_instance_state");
 
         MengineLog.logMessage(TAG, "onRestoreInstanceState: %s"
-            , savedInstanceState
-        );
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        this.setState("activity.lifecycle", "save_instance_state");
-
-        MengineLog.logMessageRelease(TAG, "onSaveInstanceState");
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        this.setState("activity.lifecycle", "restore_instance_state");
-
-        MengineLog.logMessageRelease(TAG, "onRestoreInstanceState: %s"
             , savedInstanceState
         );
     }
@@ -519,8 +543,6 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
-        MengineApplication application = (MengineApplication)this.getApplication();
-
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
@@ -567,8 +589,6 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
-        MengineApplication application = (MengineApplication)this.getApplication();
-
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
         for (MenginePluginActivityListener l : listeners) {
@@ -589,8 +609,6 @@ public class MengineActivity extends AppCompatActivity {
         this.setState("activity.lifecycle", "resume");
 
         MengineLog.logMessageRelease(TAG, "onResume");
-
-        MengineApplication application = (MengineApplication)this.getApplication();
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
@@ -643,16 +661,6 @@ public class MengineActivity extends AppCompatActivity {
         this.setState("activity.lifecycle", "destroy");
 
         MengineLog.logMessageRelease(TAG, "onDestroy");
-
-        MengineApplication application = (MengineApplication)this.getApplication();
-
-        if (application.isInvalidInitialize() == true) {
-            MengineLog.logMessage(TAG, "onDestroy: application invalid initialize");
-
-            super.onDestroy();
-
-            return;
-        }
 
         MengineApplication application = (MengineApplication)this.getApplication();
 

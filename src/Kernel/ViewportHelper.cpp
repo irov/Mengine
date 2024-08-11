@@ -18,7 +18,7 @@ namespace Mengine
 
             for( auto && [aspect, viewport] : _aspectRatioViewports )
             {
-                float delta_aspect = MENGINE_FABSF( _aspect - aspect );
+                float delta_aspect = Math::fabsf( _aspect - aspect );
 
                 if( delta_aspect >= minimal_aspect )
                 {

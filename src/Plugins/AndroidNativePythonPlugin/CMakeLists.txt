@@ -17,6 +17,9 @@ src
     AndroidNativePythonScriptEmbedding.h
     AndroidNativePythonScriptEmbedding.cpp
     
+    PythonAndroidSemaphoreListener.h
+    PythonAndroidSemaphoreListener.cpp
+    
     AndroidNativePythonFunctor.h
     AndroidNativePythonFunctor.cpp
     AndroidNativePythonFunctorVoid.h
@@ -34,5 +37,3 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Engine)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Android)
-
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} android)

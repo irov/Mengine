@@ -15,6 +15,9 @@
 #include "Interface/AndroidKernelServiceInterface.h"
 
 #include "Environment/Android/AndroidEnv.h"
+#include "Environment/Android/AndroidDeclaration.h"
+#include "Environment/Android/AndroidHelper.h"
+#include "Environment/Android/AndroidPlatformServiceExtensionInterface.h"
 
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
@@ -50,6 +53,7 @@
 #include <iomanip>
 
 #include <sys/stat.h>
+#include <dlfcn.h>
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_SETLOCALE_ENABLE
@@ -64,11 +68,46 @@
 #define MENGINE_DEVELOPMENT_USER_FOLDER_NAME "User"
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_IOS)
-#   ifndef SDL_IPHONE_MAX_GFORCE
-#   define SDL_IPHONE_MAX_GFORCE 5.0f
-#   endif
-#endif
+extern "C"
+{
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1surfaceCreated )(JNIEnv * env, jclass cls, jobject surface)
+    {
+        MENGINE_UNUSED( cls );
+
+        ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, surface );
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->setAndroidNativeWindow( nativeWindow );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1surfaceDestroyed )(JNIEnv * env, jclass cls, jobject surface)
+    {
+        MENGINE_UNUSED( cls );
+
+        ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, surface );
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->destroyAndroidNativeWindow( nativeWindow );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1surfaceChanged )(JNIEnv * env, jclass cls, jobject surface, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate)
+    {
+        MENGINE_UNUSED( cls );
+
+        ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, surface );
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+                ->getUnknown();
+
+        platformExtension->changeAndroidNativeWindow( nativeWindow, surfaceWidth, surfaceHeight, deviceWidth, deviceHeight, rate );
+    }
+    ///////////////////////////////////////////////////////////////////////
+}
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PlatformService, Mengine::AndroidPlatformService );
 //////////////////////////////////////////////////////////////////////////
@@ -77,6 +116,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AndroidPlatformService::AndroidPlatformService()
         : m_beginTime( 0 )
+        , m_nativeWindow( nullptr )
         /*
         , m_sdlWindow( nullptr )
         , m_sdlAccelerometer( nullptr )
@@ -104,53 +144,43 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidPlatformService::getUserPath( Char * const _userPath ) const
     {
-        MENGINE_UNUSED( _userPath );
-
-        /*
-        const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "UNKNOWN" );
-        const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
-
-        Char * sdl_prefPath = SDL_GetPrefPath( Project_Company, Project_Name );
-
-        size_t sdl_prefPathLen = MENGINE_STRLEN( _userPath );
-
-        if( sdl_prefPathLen >= MENGINE_MAX_PATH )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            SDL_free( sdl_prefPath );
-
-            MENGINE_STRCPY( _userPath, "" );
+            LOGGER_ERROR( "invalid get user path [not exist activity]" );
 
             return 0;
         }
 
-        Helper::pathCorrectBackslashToA( _userPath, sdl_prefPath );
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        SDL_free( sdl_prefPath );
+        if( Helper::AndroidGetActivityFilesDirCanonicalPath( jenv, _userPath ) == false )
+        {
+            LOGGER_ERROR( "invalid get user path" );
+
+            return 0;
+        }
 
         Char extraPreferencesFolderName[MENGINE_MAX_PATH] = {'\0'};
         size_t ExtraPreferencesFolderNameLen = this->getExtraPreferencesFolderName( extraPreferencesFolderName );
 
         if( ExtraPreferencesFolderNameLen != 0 )
         {
-            MENGINE_STRCAT( _userPath, extraPreferencesFolderName );
-            MENGINE_STRCAT( _userPath, "/" );
+            StdString::strcat( _userPath, extraPreferencesFolderName );
+            StdString::strcat( _userPath, "/" );
         }
 
-        size_t userPathLen = MENGINE_STRLEN( _userPath );
+        size_t userPathLen = StdString::strlen( _userPath );
 
         return userPathLen;
-         */
-
-        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
         const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE( "Project", "ExtraPreferencesFolderName", "" );
 
-        MENGINE_STRCPY( _folderName, Project_ExtraPreferencesFolderName );
+        StdString::strcpy( _folderName, Project_ExtraPreferencesFolderName );
         
-        size_t Project_ExtraPreferencesFolderNameLen = MENGINE_STRLEN( Project_ExtraPreferencesFolderName );
+        size_t Project_ExtraPreferencesFolderNameLen = StdString::strlen( Project_ExtraPreferencesFolderName );
 
         return Project_ExtraPreferencesFolderNameLen;
     }
@@ -252,8 +282,8 @@ namespace Mengine
         {
             const Char * tag_str = tag.c_str();
 
-            MENGINE_STRCAT( platformTags, tag_str );
-            MENGINE_STRCAT( platformTags, "-" );
+            StdString::strcat( platformTags, tag_str );
+            StdString::strcat( platformTags, "-" );
         }
 
         LOGGER_INFO( "platform", "platform tags: %s"
@@ -366,6 +396,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::tickPlatform( float _time, bool _render, bool _flush, bool _pause )
     {
+        MENGINE_UNUSED( _pause );
+        MENGINE_UNUSED( _flush );
+
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate( _time );
 
@@ -381,7 +414,7 @@ namespace Mengine
                 ->tick( _time );
         }
 
-        if( this->isNeedWindowRender() == true && _render == true )
+        if( _render == true )
         {
             bool sucessful = APPLICATION_SERVICE()
                 ->render();
@@ -391,33 +424,18 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->flush();
 
-                /*
-                if( m_sdlWindow != nullptr )
-                {
-                    SDL_ShowWindow( m_sdlWindow );
-
-                    if( SDL_GetWindowFlags( m_sdlWindow ) & SDL_WINDOW_OPENGL )
-                    {
-                        SDL_GL_SwapWindow( m_sdlWindow );
-                    }
-                }
-                 */
+                ::eglSwapBuffers( m_eglDisplay, m_eglSurface );
             }
         }
 
         APPLICATION_SERVICE()
             ->endUpdate();
 
-        MENGINE_UNUSED( _pause );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::loopPlatform()
     {
-        THREAD_SERVICE()
-            ->updateMainThread();
-
         m_prevTime = Helper::getSystemTimestamp();
 
         for( ;; )
@@ -543,6 +561,10 @@ namespace Mengine
         }
 
         m_projectTitle.assign( _projectTitle );
+
+        LOGGER_INFO( "platform", "project title: %s"
+            , m_projectTitle.c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidPlatformService::getProjectTitle( Char * const _projectTitle ) const
@@ -788,17 +810,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getDesktopResolution( Resolution * const _resolution ) const
     {
-        uint32_t width;
-        uint32_t height;
-
-        /*
-        int drawable_width;
-        int drawable_height;
-        SDL_GL_GetDrawableSize( m_sdlWindow, &drawable_width, &drawable_height );
-
-        width = (uint32_t)drawable_width;
-        height = (uint32_t)drawable_height;
-        */
+        int32_t width = ANativeWindow_getWidth( m_nativeWindow );
+        int32_t height = ANativeWindow_getHeight( m_nativeWindow );
 
         *_resolution = Resolution( width, height );
 
@@ -817,13 +830,6 @@ namespace Mengine
 #elif defined(MENGINE_PLATFORM_ANDROID)
         return true;
 #endif
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AndroidPlatformService::setProcessDPIAware()
-    {
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
     }
@@ -1087,7 +1093,7 @@ namespace Mengine
 
         Helper::pathRemoveFileSpecA( pathDirectory );
 
-        size_t len = MENGINE_STRLEN( pathDirectory );
+        size_t len = StdString::strlen( pathDirectory );
 
         if( len == 0 )	// current dir
         {
@@ -1109,7 +1115,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::createDirectory( const Char * _path, const Char * _directory )
     {
-        size_t directorySize = MENGINE_STRLEN( _directory );
+        size_t directorySize = StdString::strlen( _directory );
 
         if( directorySize == 0 )
         {
@@ -1121,7 +1127,7 @@ namespace Mengine
 
         Helper::pathRemoveFileSpecA( pathDirectory );
 
-        if( MENGINE_STRLEN( pathDirectory ) == 0 )
+        if( StdString::strlen( pathDirectory ) == 0 )
         {
             return true;
         }
@@ -1147,7 +1153,7 @@ namespace Mengine
                 break;
             }
 
-            if( MENGINE_STRLEN( _path ) == 0 )
+            if( StdString::strlen( _path ) == 0 )
             {
                 break;
             }
@@ -1517,6 +1523,79 @@ namespace Mengine
         MENGINE_UNUSED( _windowResolution );
         MENGINE_UNUSED( _fullscreen );
 
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
+        {
+            return false;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        jobject surface = Helper::AndroidGetActivitySurface( jenv );
+
+        ANativeWindow * nativeWindow = ANativeWindow_fromSurface( jenv, surface );
+
+        m_nativeWindow = nativeWindow;
+
+        EGLDisplay eglDisplay = ::eglGetDisplay( EGL_DEFAULT_DISPLAY );
+
+        EGLint major;
+        EGLint minor;
+        if( ::eglInitialize( eglDisplay, &major, &minor ) == EGL_FALSE )
+        {
+            return false;
+        }
+
+        m_eglDisplay = eglDisplay;
+
+        const EGLint configAttribs[] = {
+            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+            EGL_RED_SIZE, 8,
+            EGL_GREEN_SIZE, 8,
+            EGL_BLUE_SIZE, 8,
+            EGL_ALPHA_SIZE, 8,
+            EGL_DEPTH_SIZE, 24,
+            EGL_NONE
+        };
+
+        EGLConfig config;
+        EGLint numConfigs;
+        if( ::eglChooseConfig( m_eglDisplay, configAttribs, &config, 1, &numConfigs ) == EGL_FALSE )
+        {
+            return false;
+        }
+
+        EGLSurface eglSurface = ::eglCreateWindowSurface( m_eglDisplay, config, m_nativeWindow, NULL );
+
+        if( eglSurface == EGL_NO_SURFACE )
+        {
+            return false;
+        }
+
+        m_eglSurface = eglSurface;
+
+        const EGLint contextAttribs[] = {
+            EGL_CONTEXT_CLIENT_VERSION, 2,
+            EGL_NONE
+        };
+
+        EGLContext eglShareContext = EGL_NO_CONTEXT;
+
+        EGLContext context = ::eglCreateContext( m_eglDisplay, config, eglShareContext, contextAttribs );
+
+        if( context == EGL_NO_CONTEXT )
+        {
+            return false;
+        }
+
+        m_eglContext = context;
+
+        if( ::eglMakeCurrent( m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext ) == EGL_FALSE )
+        {
+            return false;
+        }
+
+        //::dlsym( handleGLESv2, "eglGetDisplay" );
+
         /*
         SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 );
 
@@ -1559,7 +1638,7 @@ namespace Mengine
         return true;
          */
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::destroyWindow_()
@@ -1816,32 +1895,6 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidPlatformService::isNeedWindowRender() const
-    {
-        bool nopause = APPLICATION_SERVICE()
-            ->getNopause();
-
-        if( nopause == true )
-        {
-            return true;
-        }
-
-        if( m_active == false )
-        {
-            return false;
-        }
-
-        bool focus = APPLICATION_SERVICE()
-            ->isFocus();
-
-        if( focus == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::initializeFileService()
     {
         FileGroupInterfacePtr defaultFileGroup = nullptr;
@@ -1885,6 +1938,21 @@ namespace Mengine
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::setAndroidNativeWindow( ANativeWindow * _nativeWindow )
+    {
+
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::destroyAndroidNativeWindow( ANativeWindow * _nativeWindow )
+    {
+
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::changeAndroidNativeWindow( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate )
+    {
+
     }
     //////////////////////////////////////////////////////////////////////////
 }

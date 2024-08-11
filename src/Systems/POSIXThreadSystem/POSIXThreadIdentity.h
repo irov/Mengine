@@ -38,7 +38,6 @@ namespace Mengine
 
     public:
         void join() override;
-        void cancel() override;
 
     public:
         bool isCurrentThread() const override;

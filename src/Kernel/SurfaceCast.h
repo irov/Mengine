@@ -2,6 +2,8 @@
 
 #include "Kernel/Surface.h"
 
+#include "Config/DynamicCast.h"
+
 #if defined(MENGINE_DEBUG)
 #   include "Config/TypeTraits.h"
 #endif
@@ -43,7 +45,7 @@ namespace Mengine
 
             try
             {
-                if( dynamic_cast<typename Detail::reinterpret_surface_cast_void_t<T>::type>(static_cast<T>(_surface)) == nullptr )
+                if( Helper::dynamicCast<typename Detail::reinterpret_surface_cast_void_t<T>::type>( static_cast<T>(_surface) ) == nullptr )
                 {
                     throw std::runtime_error( "reinterpret surface cast" );
                 }
@@ -68,7 +70,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            if( dynamic_cast<T>(_surface) == nullptr )
+            if( Helper::dynamicCast<T>( _surface ) == nullptr )
             {
                 throw std::runtime_error( "static surface cast" );
             }
@@ -88,7 +90,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            if( dynamic_cast<T>(_surface) == nullptr )
+            if( Helper::dynamicCast<T>( _surface ) == nullptr )
             {
                 throw std::runtime_error( "static surface cast" );
             }
@@ -104,7 +106,7 @@ namespace Mengine
             static_assert(TypeTraits::is_base_of<Surface, T>, "dynamic surface cast use on non 'Surface' type");
 #endif
 
-            T t = dynamic_cast<T>(_surface);
+            T t = Helper::dynamicCast<T>( _surface );
 
             return t;
         }
@@ -116,9 +118,10 @@ namespace Mengine
             static_assert(TypeTraits::is_base_of<Surface, T>, "dynamic surface cast use on non 'Surface' type");
 #endif
 
-            T t = dynamic_cast<T>(_surface);
+            T t = Helper::dynamicCast<T>( _surface );
 
             return t;
         }
+        ////////////////////////////////////////////////////////////////////////
     }
 }

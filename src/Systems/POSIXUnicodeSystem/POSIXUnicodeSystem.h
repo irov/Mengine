@@ -5,13 +5,6 @@
 
 #include "Kernel/ServiceBase.h"
 
-#include <iconv.h>
-#include <unistd.h>
-
-#ifndef MENGINE_UNICODE_CONVERT_BUFFER
-#define MENGINE_UNICODE_CONVERT_BUFFER 10240
-#endif
-
 namespace Mengine
 {
     class POSIXUnicodeSystem
@@ -34,8 +27,5 @@ namespace Mengine
 
     protected:
         ThreadMutexInterfacePtr m_mutex;
-
-        Char m_utf8Buffer[MENGINE_UNICODE_CONVERT_BUFFER] = {'\0'};
-        WChar m_unicodeBuffer[MENGINE_UNICODE_CONVERT_BUFFER] = {L'\0'};
     };
 }

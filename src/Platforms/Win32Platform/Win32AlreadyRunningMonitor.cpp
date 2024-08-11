@@ -22,9 +22,9 @@ namespace Mengine
     {
         // try to create mutex to sure that we are not running already
         WChar mutexName[MENGINE_MAX_PATH] = {L'\0'};
-        MENGINE_WCSCPY( mutexName, L"Mengine_ARM_Mutex_" );
-        MENGINE_WCSCAT( mutexName, _windowClassName );
-        MENGINE_WCSCAT( mutexName, _projectTitle );
+        StdString::wcscpy( mutexName, L"Mengine_ARM_Mutex_" );
+        StdString::wcscat( mutexName, _windowClassName );
+        StdString::wcscat( mutexName, _projectTitle );
 
         HANDLE mutex = ::CreateMutex( NULL, FALSE, mutexName );
 

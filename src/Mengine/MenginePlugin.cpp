@@ -5,6 +5,8 @@
 
 #include "Kernel/DocumentHelper.h"
 
+#include "Config/DynamicCast.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
@@ -13,87 +15,83 @@ SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_DLL)
-extern "C"
+MENGINE_EXPORT_API Mengine::ServiceProviderInterface * API_MengineCreate()
 {
-#endif
-    //////////////////////////////////////////////////////////////////////////
-    Mengine::ServiceProviderInterface * API_MengineCreate()
+    if( SERVICE_PROVIDER_EXIST() == true )
     {
-        Mengine::ServiceProviderInterface * serviceProvider;
-        if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
-        {
-            return nullptr;
-        }
-
-        SERVICE_PROVIDER_SETUP( serviceProvider );
-
-        if( SERVICE_CREATE( AllocatorSystem, nullptr ) == false )
-        {
-            return nullptr;
-        }
-
-        if( SERVICE_CREATE( StringizeService, nullptr ) == false )
-        {
-            return nullptr;
-        }
-
-        if( SERVICE_CREATE( DocumentService, nullptr ) == false )
-        {
-            return nullptr;
-        }
-
-        return serviceProvider;
+        return nullptr;
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool API_MengineBootstrap()
+
+    Mengine::ServiceProviderInterface * serviceProvider;
+    if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
     {
-        if( SERVICE_CREATE( Bootstrapper, MENGINE_DOCUMENT_FUNCTION ) == false )
-        {
-            return false;
-        }
-
-        if( BOOTSTRAPPER_SERVICE()
-            ->initialize() == false )
-        {
-            return false;
-        }
-
-        return true;
+        return nullptr;
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool API_MengineRun()
+
+    SERVICE_PROVIDER_SETUP( serviceProvider );
+
+    if( SERVICE_CREATE( AllocatorSystem, nullptr ) == false )
     {
-        if( BOOTSTRAPPER_SERVICE()
-            ->run() == false )
-        {
-            return false;
-        }
-
-        return true;
+        return nullptr;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void API_MengineFinalize()
+
+    if( SERVICE_CREATE( StringizeService, nullptr ) == false )
     {
-        SERVICE_FINALIZE( Bootstrapper );
-        SERVICE_DESTROY( Bootstrapper );
-
-        SERVICE_FINALIZE( DocumentService );
-        SERVICE_DESTROY( DocumentService );
-
-        SERVICE_FINALIZE( StringizeService );
-        SERVICE_DESTROY( StringizeService );
-
-        SERVICE_FINALIZE( AllocatorSystem );
-        SERVICE_DESTROY( AllocatorSystem );
-
-        Mengine::ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_PUT();
-        SERVICE_PROVIDER_FINALIZE( serviceProvider );
-
-        SERVICE_PROVIDER_DESTROY( serviceProvider );
+        return nullptr;
     }
-    //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_DLL)
+
+    if( SERVICE_CREATE( DocumentService, nullptr ) == false )
+    {
+        return nullptr;
+    }
+
+    return serviceProvider;
 }
-#endif
+//////////////////////////////////////////////////////////////////////////
+MENGINE_EXPORT_API bool API_MengineBootstrap()
+{
+    if( SERVICE_CREATE( Bootstrapper, MENGINE_DOCUMENT_FUNCTION ) == false )
+    {
+        return false;
+    }
+
+    if( BOOTSTRAPPER_SERVICE()
+        ->initialize() == false )
+    {
+        return false;
+    }
+
+    return true;
+}
+//////////////////////////////////////////////////////////////////////////
+MENGINE_EXPORT_API bool API_MengineRun()
+{
+    if( BOOTSTRAPPER_SERVICE()
+        ->run() == false )
+    {
+        return false;
+    }
+
+    return true;
+}
+//////////////////////////////////////////////////////////////////////////
+MENGINE_EXPORT_API void API_MengineFinalize()
+{
+    SERVICE_FINALIZE( Bootstrapper );
+    SERVICE_DESTROY( Bootstrapper );
+
+    SERVICE_FINALIZE( DocumentService );
+    SERVICE_DESTROY( DocumentService );
+
+    SERVICE_FINALIZE( StringizeService );
+    SERVICE_DESTROY( StringizeService );
+
+    SERVICE_FINALIZE( AllocatorSystem );
+    SERVICE_DESTROY( AllocatorSystem );
+
+    Mengine::ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_PUT();
+    SERVICE_PROVIDER_FINALIZE( serviceProvider );
+
+    SERVICE_PROVIDER_DESTROY( serviceProvider );
+}
 //////////////////////////////////////////////////////////////////////////

@@ -103,7 +103,7 @@ namespace Mengine
 
             ev.data.text.x = vx;
             ev.data.text.y = vy;
-            MENGINE_WCSNCPY( ev.data.text.text, _key, MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE );
+            StdString::wcsncpy( ev.data.text.text, _key, MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE );
 
             INPUT_SERVICE()
                 ->pushEvent( ev );

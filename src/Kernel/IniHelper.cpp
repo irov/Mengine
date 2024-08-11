@@ -37,7 +37,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool writeIniSetting( const OutputStreamInterfacePtr & _stream, const Char * _key, const Char * _value, size_t _size )
         {
-            size_t len = MENGINE_STRLEN( _key );
+            size_t len = StdString::strlen( _key );
 
             _stream->write( _key, len );
             _stream->write( " = ", MENGINE_STATIC_STRING_LENGTH( " = " ) );
@@ -63,7 +63,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool writeIniSection( const OutputStreamInterfacePtr & _stream, const Char * _section )
         {
-            size_t len = MENGINE_STRLEN( _section );
+            size_t len = StdString::strlen( _section );
 
             _stream->write( _section, len );
             _stream->write( "\n", MENGINE_STATIC_STRING_LENGTH( "\n" ) );

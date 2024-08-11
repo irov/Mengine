@@ -76,8 +76,6 @@ namespace Mengine
         virtual bool getNoFullscreen() const = 0;
         virtual bool getAlwaysFullscreen() const = 0;
 
-        virtual bool setProcessDPIAware() = 0;
-
         virtual bool isDebuggerPresent() const = 0;
         virtual void debugBreak() = 0;
 

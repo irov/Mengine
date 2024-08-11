@@ -41,7 +41,7 @@ namespace Mengine
 
         if( message.flag & LFLAG_CATEGORYSTAMP )
         {
-            size_t category_size = MENGINE_STRLEN( message.category );
+            size_t category_size = StdString::strlen( message.category );
 
             std::cout.write( "[", 1 );
             std::cout.write( message.category, category_size );

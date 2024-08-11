@@ -58,7 +58,7 @@ namespace Mengine
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
-            size_t unicodeSize = MENGINE_WCSLEN( _unicode );
+            size_t unicodeSize = StdString::wcslen( _unicode );
 
             size_t utf8Size;
             if( unicodeService->unicodeToUtf8( _unicode, unicodeSize, _utf8, _utf8Capacity, &utf8Size ) == false )
@@ -99,7 +99,7 @@ namespace Mengine
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
-            size_t utf8Size = MENGINE_STRLEN( _utf8 );
+            size_t utf8Size = StdString::strlen( _utf8 );
 
             bool successful = unicodeService->utf8ToUnicode( _utf8, utf8Size, _unicode, _unicodeCapacity, _unicodeSize );
 

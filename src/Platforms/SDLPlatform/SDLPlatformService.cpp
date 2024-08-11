@@ -124,7 +124,7 @@ namespace Mengine
 
         if( len == 0 )
         {
-            MENGINE_STRCPY( _currentPath, "" );
+            StdString::strcpy( _currentPath, "" );
 
             return 0;
         }
@@ -137,7 +137,7 @@ namespace Mengine
         size_t pathLen;
         if( Helper::unicodeToUtf8( unicode_path, _currentPath, MENGINE_MAX_PATH, &pathLen ) == false )
         {
-            MENGINE_STRCPY( _currentPath, "" );
+            StdString::strcpy( _currentPath, "" );
 
             return 0;
         }
@@ -145,23 +145,23 @@ namespace Mengine
         return pathLen;
 #elif defined(MENGINE_PLATFORM_IOS)
         const Char deploy_mac_data[] = "";
-        MENGINE_STRCPY( _currentPath, deploy_mac_data );
+        StdString::strcpy( _currentPath, deploy_mac_data );
 
         return sizeof( deploy_mac_data ) - 1;
 #elif defined(MENGINE_PLATFORM_MACOS)
         char * basePath = SDL_GetBasePath();
 
-        MENGINE_STRCPY( _currentPath, basePath );
+        StdString::strcpy( _currentPath, basePath );
 
         SDL_free( basePath );
 
-        return MENGINE_STRLEN( _currentPath );
+        return StdString::strlen( _currentPath );
 #elif defined(MENGINE_PLATFORM_ANDROID)
         _currentPath[0] = L'\0';
 
         return 0;
 #else
-        MENGINE_STRCPY( _currentPath, "" );
+        StdString::strcpy( _currentPath, "" );
 
         return 0;
 #endif
@@ -181,16 +181,16 @@ namespace Mengine
 
             if( MENGINE_MAX_PATH <= currentPathLen + 5 )
             {
-                MENGINE_STRCPY( _userPath, "" );
+                StdString::strcpy( _userPath, "" );
 
                 return 0;
             }
 
-            MENGINE_STRCPY( _userPath, currentPath );
-            MENGINE_STRCAT( _userPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
-            MENGINE_STRCAT( _userPath, "/" );
+            StdString::strcpy( _userPath, currentPath );
+            StdString::strcat( _userPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
+            StdString::strcat( _userPath, "/" );
 
-            size_t pathLen = MENGINE_STRLEN( _userPath );
+            size_t pathLen = StdString::strlen( _userPath );
 
             return pathLen;
         }
@@ -201,13 +201,13 @@ namespace Mengine
 
         Char * sdl_prefPath = SDL_GetPrefPath( Project_Company, Project_Name );
 
-        size_t sdl_prefPathLen = MENGINE_STRLEN( _userPath );
+        size_t sdl_prefPathLen = StdString::strlen( _userPath );
 
         if( sdl_prefPathLen >= MENGINE_MAX_PATH )
         {
             SDL_free( sdl_prefPath );
 
-            MENGINE_STRCPY( _userPath, "" );
+            StdString::strcpy( _userPath, "" );
 
             return 0;
         }
@@ -221,11 +221,11 @@ namespace Mengine
 
         if( ExtraPreferencesFolderNameLen != 0 )
         {
-            MENGINE_STRCAT( _userPath, extraPreferencesFolderName );
-            MENGINE_STRCAT( _userPath, "/" );
+            StdString::strcat( _userPath, extraPreferencesFolderName );
+            StdString::strcat( _userPath, "/" );
         }
 
-        size_t userPathLen = MENGINE_STRLEN( _userPath );
+        size_t userPathLen = StdString::strlen( _userPath );
 
         return userPathLen;
     }
@@ -234,9 +234,9 @@ namespace Mengine
     {
         const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE( "Project", "ExtraPreferencesFolderName", "" );
 
-        MENGINE_STRCPY( _folderName, Project_ExtraPreferencesFolderName );
+        StdString::strcpy( _folderName, Project_ExtraPreferencesFolderName );
         
-        size_t Project_ExtraPreferencesFolderNameLen = MENGINE_STRLEN( Project_ExtraPreferencesFolderName );
+        size_t Project_ExtraPreferencesFolderNameLen = StdString::strlen( Project_ExtraPreferencesFolderName );
 
         return Project_ExtraPreferencesFolderNameLen;
     }
@@ -527,7 +527,7 @@ namespace Mengine
         {
             const Char * sdlPlatform = SDL_GetPlatform();
 
-            if( MENGINE_STRCMP( sdlPlatform, "Windows" ) == 0 )
+            if( StdString::strcmp( sdlPlatform, "Windows" ) == 0 )
             {
                 m_desktop = true;
                 m_touchpad = false;
@@ -542,7 +542,7 @@ namespace Mengine
                 m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
 #endif
             }
-            else if( MENGINE_STRCMP( sdlPlatform, "WinRT" ) == 0 )
+            else if( StdString::strcmp( sdlPlatform, "WinRT" ) == 0 )
             {
                 m_desktop = true;
                 m_touchpad = false;
@@ -552,14 +552,14 @@ namespace Mengine
 
                 SDL_SetEventFilter( &Detail::SDL_EventFilter_EnterBackground, nullptr );
             }
-            else if( MENGINE_STRCMP( sdlPlatform, "Mac OS X" ) == 0 )
+            else if( StdString::strcmp( sdlPlatform, "Mac OS X" ) == 0 )
             {
                 m_desktop = true;
                 m_touchpad = false;
 
                 m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
             }
-            else if( MENGINE_STRCMP( sdlPlatform, "Android" ) == 0 )
+            else if( StdString::strcmp( sdlPlatform, "Android" ) == 0 )
             {
                 m_desktop = false;
                 m_touchpad = true;
@@ -577,7 +577,7 @@ namespace Mengine
 
                 SDL_SetEventFilter( &Detail::SDL_EventFilter_RemoveMouse, nullptr );
             }
-            else if( MENGINE_STRCMP( sdlPlatform, "iOS" ) == 0 )
+            else if( StdString::strcmp( sdlPlatform, "iOS" ) == 0 )
             {
                 m_desktop = false;
                 m_touchpad = true;
@@ -595,7 +595,7 @@ namespace Mengine
 
                 SDL_SetEventFilter( &Detail::SDL_EventFilter_RemoveMouse, nullptr );
             }
-            else if( MENGINE_STRCMP( sdlPlatform, "Linux" ) == 0 )
+            else if( StdString::strcmp( sdlPlatform, "Linux" ) == 0 )
             {
                 m_desktop = true;
                 m_touchpad = false;
@@ -623,8 +623,8 @@ namespace Mengine
 
         for( const ConstString & tag : m_platformTags.getValues() )
         {
-            MENGINE_STRCAT( platformTags, tag.c_str() );
-            MENGINE_STRCAT( platformTags, "-" );
+            StdString::strcat( platformTags, tag.c_str() );
+            StdString::strcat( platformTags, "-" );
         }
 
         LOGGER_INFO( "platform", "platform tags: %s"
@@ -775,11 +775,11 @@ namespace Mengine
 
             bool isAccelerometer = false;
 
-            if( MENGINE_STRCMP( joystickName, "Android Accelerometer" ) == 0 )
+            if( StdString::strcmp( joystickName, "Android Accelerometer" ) == 0 )
             {
                 isAccelerometer = true;
             }
-            else if( MENGINE_STRCMP( joystickName, "iOS Accelerometer" ) == 0 )
+            else if( StdString::strcmp( joystickName, "iOS Accelerometer" ) == 0 )
             {
                 isAccelerometer = true;
             }
@@ -965,9 +965,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::loopPlatform()
     {
-        THREAD_SERVICE()
-            ->updateMainThread();
-
         m_prevTime = Helper::getSystemTimestamp();
 
         for( ;; )
@@ -1135,6 +1132,10 @@ namespace Mengine
         }
 
         m_projectTitle.assign( _projectTitle );
+
+        LOGGER_INFO( "platform", "project title: %s"
+            , m_projectTitle.c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatformService::getProjectTitle( Char * const _projectTitle ) const
@@ -1580,13 +1581,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::setProcessDPIAware()
-    {
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::isDebuggerPresent() const
     {
 #if defined(MENGINE_PLATFORM_WINDOWS)
@@ -1882,7 +1876,7 @@ namespace Mengine
 
         Helper::pathRemoveFileSpecA( pathDirectory );
 
-        size_t len = MENGINE_STRLEN( pathDirectory );
+        size_t len = StdString::strlen( pathDirectory );
 
         if( len == 0 )	// current dir
         {
@@ -1910,7 +1904,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::createDirectory( const Char * _path, const Char * _directory )
     {
-        size_t directorySize = MENGINE_STRLEN( _directory );
+        size_t directorySize = StdString::strlen( _directory );
 
         if( directorySize == 0 )
         {
@@ -1922,7 +1916,7 @@ namespace Mengine
 
         Helper::pathRemoveFileSpecA( pathDirectory );
 
-        if( MENGINE_STRLEN( pathDirectory ) == 0 )
+        if( StdString::strlen( pathDirectory ) == 0 )
         {
             return true;
         }
@@ -1948,7 +1942,7 @@ namespace Mengine
                 break;
             }
 
-            if( MENGINE_STRLEN( _path ) == 0 )
+            if( StdString::strlen( _path ) == 0 )
             {
                 break;
             }
@@ -2086,9 +2080,9 @@ namespace Mengine
 
             {
                 WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
-                MENGINE_WCSCPY( sPath, sDir );
-                MENGINE_WCSCAT( sPath, _path );
-                MENGINE_WCSCAT( sPath, _mask );
+                StdString::wcscpy( sPath, sDir );
+                StdString::wcscat( sPath, _path );
+                StdString::wcscat( sPath, _mask );
 
                 WIN32_FIND_DATA fdFile;
                 HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
@@ -2097,8 +2091,8 @@ namespace Mengine
                 {
                     do
                     {
-                        if( MENGINE_WCSCMP( fdFile.cFileName, L"." ) == 0 ||
-                            MENGINE_WCSCMP( fdFile.cFileName, L".." ) == 0 )
+                        if( StdString::wcscmp( fdFile.cFileName, L"." ) == 0 ||
+                            StdString::wcscmp( fdFile.cFileName, L".." ) == 0 )
                         {
                             continue;
                         }
@@ -2109,8 +2103,8 @@ namespace Mengine
                         }
 
                         WChar sPath2[MENGINE_MAX_PATH] = {L'\0'};
-                        MENGINE_WCSCPY( sPath2, sPath );
-                        MENGINE_WCSCAT( sPath2, L"\0" );
+                        StdString::wcscpy( sPath2, sPath );
+                        StdString::wcscat( sPath2, L"\0" );
 
                         Helper::pathCorrectForwardslashW( sPath2 );
 
@@ -2120,17 +2114,17 @@ namespace Mengine
                         ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
 
                         WChar unicode_out[MENGINE_MAX_PATH] = {L'\0'};
-                        if( MENGINE_WCSLEN( sDir ) != 0 )
+                        if( StdString::wcslen( sDir ) != 0 )
                         {
-                            ::PathRelativePathTo( unicode_out,
-                                sDir,
-                                FILE_ATTRIBUTE_DIRECTORY,
-                                unicode_filepath,
-                                FILE_ATTRIBUTE_NORMAL );
+                            ::PathRelativePathTo( unicode_out
+                                , sDir
+                                , FILE_ATTRIBUTE_DIRECTORY
+                                , unicode_filepath
+                                , FILE_ATTRIBUTE_NORMAL );
                         }
                         else
                         {
-                            MENGINE_WCSCPY( unicode_out, unicode_filepath );
+                            StdString::wcscpy( unicode_out, unicode_filepath );
                         }
 
                         Char utf8_filepath[MENGINE_MAX_PATH] = {'\0'};
@@ -2160,9 +2154,9 @@ namespace Mengine
 
             {
                 WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
-                MENGINE_WCSCPY( sPath, sDir );
-                MENGINE_WCSCAT( sPath, _path );
-                MENGINE_WCSCAT( sPath, L"*.*" );
+                StdString::wcscpy( sPath, sDir );
+                StdString::wcscat( sPath, _path );
+                StdString::wcscat( sPath, L"*.*" );
 
                 WIN32_FIND_DATA fdFile;
                 HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
@@ -2174,8 +2168,8 @@ namespace Mengine
 
                 do
                 {
-                    if( MENGINE_WCSCMP( fdFile.cFileName, L"." ) == 0
-                        || MENGINE_WCSCMP( fdFile.cFileName, L".." ) == 0 )
+                    if( StdString::wcscmp( fdFile.cFileName, L"." ) == 0 || 
+                        StdString::wcscmp( fdFile.cFileName, L".." ) == 0 )
                     {
                         continue;
                     }
@@ -2186,15 +2180,15 @@ namespace Mengine
                     }
 
                     WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
-                    MENGINE_WCSCPY( currentPath, sPath );
-                    MENGINE_WCSCAT( currentPath, L"\0" );
+                    StdString::wcscpy( currentPath, sPath );
+                    StdString::wcscat( currentPath, L"\0" );
 
                     ::PathRemoveFileSpec( currentPath );
 
                     WChar nextPath[MENGINE_MAX_PATH] = {L'\0'};
                     ::PathCombine( nextPath, currentPath, fdFile.cFileName );
 
-                    MENGINE_WCSCAT( nextPath, L"\\" );
+                    StdString::wcscat( nextPath, L"\\" );
 
                     bool stop;
                     if( Detail::listDirectoryContents( sDir, _mask, nextPath, _lambda, &stop ) == false )
@@ -2284,70 +2278,6 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-    //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static time_t s_FileTimeToUnixTime( const FILETIME * filetime )
-        {
-            uint32_t a0;
-            uint32_t a1;
-            uint32_t a2;
-
-            uint32_t carry;
-            int negative;
-
-            a2 = filetime->dwHighDateTime;
-            a1 = ((uint32_t)filetime->dwLowDateTime) >> 16;
-            a0 = ((uint32_t)filetime->dwLowDateTime) & 0xffff;
-
-            if( a0 >= 32768 )
-                a0 -= 32768, carry = 0;
-            else
-                a0 += (1 << 16) - 32768, carry = 1;
-
-            if( a1 >= 54590 + carry )
-                a1 -= 54590 + carry, carry = 0;
-            else
-                a1 += (1 << 16) - 54590 - carry, carry = 1;
-
-            a2 -= 27111902 + carry;
-
-            negative = (a2 >= ((uint32_t)1) << 31);
-            if( negative )
-            {
-                a0 = 0xffff - a0;
-                a1 = 0xffff - a1;
-                a2 = ~a2;
-            }
-
-            a1 += (a2 % 10000) << 16;
-            a2 /= 10000;
-            a0 += (a1 % 10000) << 16;
-            a1 /= 10000;
-            a0 /= 10000;
-
-            a1 += (a2 % 1000) << 16;
-            a2 /= 1000;
-            a0 += (a1 % 1000) << 16;
-            a1 /= 1000;
-            a0 /= 1000;
-
-            if( negative )
-            {
-                /* Set a to -a - 1 (a is a2/a1/a0) */
-                a0 = 0xffff - a0;
-                a1 = 0xffff - a1;
-                a2 = ~a2;
-            }
-
-            return ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
-        }
-        //////////////////////////////////////////////////////////////////////////
-    }
-#endif
-    //////////////////////////////////////////////////////////////////////////
     uint64_t SDLPlatformService::getFileTime( const Char * _filePath ) const
     {
         MENGINE_UNUSED( _filePath );
@@ -2375,7 +2305,7 @@ namespace Mengine
 
         ::CloseHandle( handle );
 
-        time_t time = Detail::s_FileTimeToUnixTime( &write );
+        time_t time = Helper::Win32FileTimeToUnixTime( &write );
 
         return time;
 #else
@@ -2600,7 +2530,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_STRNCPY( _value, text, _capacity );
+        StdString::strncpy( _value, text, _capacity );
 
         SDL_free( text );
 

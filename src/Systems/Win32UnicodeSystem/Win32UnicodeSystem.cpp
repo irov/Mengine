@@ -28,7 +28,7 @@ namespace Mengine
 
         if( _unicodeSize == MENGINE_UNKNOWN_SIZE )
         {
-            _unicodeSize = MENGINE_WCSLEN( _unicode );
+            _unicodeSize = StdString::wcslen( _unicode );
         }
 
         if( _utf8 != nullptr )
@@ -97,7 +97,7 @@ namespace Mengine
 
         if( _utf8Size == MENGINE_UNKNOWN_SIZE )
         {
-            _utf8Size = MENGINE_STRLEN( _utf8 );
+            _utf8Size = StdString::strlen( _utf8 );
         }
 
         if( _unicode != nullptr )

@@ -11,20 +11,20 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void * s_treadJob( void * _userData )
+        static void * threadJob( void * _userData )
         {
             POSIXThreadProcessor * thread = reinterpret_cast<POSIXThreadProcessor *>(_userData);
 
             EThreadPriority priority = thread->getPriority();
 
-            pthread_t current_threadId = pthread_self();
+            pthread_t current_threadId = ::pthread_self();
 
             sched_param sch;
             int policy;
-            pthread_getschedparam( current_threadId, &policy, &sch );
+            ::pthread_getschedparam( current_threadId, &policy, &sch );
 
-            int priority_min = sched_get_priority_min( policy );
-            int priority_max = sched_get_priority_max( policy );
+            int priority_min = ::sched_get_priority_min( policy );
+            int priority_max = ::sched_get_priority_max( policy );
 
             switch( priority )
             {
@@ -50,7 +50,7 @@ namespace Mengine
                 break;
             }
 
-            if( pthread_setschedparam( current_threadId, policy, &sch ) != 0 )
+            if( ::pthread_setschedparam( current_threadId, policy, &sch ) != 0 )
             {
                 LOGGER_ERROR( "Failed to set thread priority: %d"
                     , sch.sched_priority
@@ -83,50 +83,57 @@ namespace Mengine
 
         m_mutex = _mutex;
 
-        pthread_mutex_init( &m_taskLock, nullptr );
-        pthread_mutex_init( &m_processLock, nullptr );
-        pthread_mutex_init( &m_conditionLock, nullptr );
-        pthread_cond_init( &m_conditionVariable, nullptr );
+        ::pthread_mutex_init( &m_taskLock, nullptr );
+        ::pthread_mutex_init( &m_processLock, nullptr );
+        ::pthread_mutex_init( &m_conditionLock, nullptr );
+        ::pthread_cond_init( &m_conditionVariable, nullptr );
 
-        int result = pthread_create( &m_thread, nullptr, &Detail::s_threadJob, reinterpret_cast<void *>(this) );
+        pthread_t threadId;
+        int status = ::pthread_create( &threadId, nullptr, &Detail::threadJob, reinterpret_cast<void *>(this) );
 
-        if( thread == nullptr )
+        if( status != 0 )
         {
-            LOGGER_ERROR( "invalid create thread error: %s"
-                , SDL_GetError()
+            LOGGER_ERROR( "invalid create thread error: %d"
+                , status
             );
 
             return false;
         }
 
-        m_thread = thread;
+        ::pthread_setname_np( threadId, m_name.c_str() );
+
+        m_threadId = threadId;
+
+        LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
+            , m_name.c_str()
+            , m_threadId
+            , m_priority
+        );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadProcessor::finalize()
     {
-        pthread_mutex_destroy( &m_taskLock );
-        pthread_mutex_destroy( &m_processLock );
-        pthread_mutex_destroy( &m_conditionLock );
-        pthread_cond_destroy( &m_conditionVariable );
+        ::pthread_mutex_destroy( &m_taskLock );
+        ::pthread_mutex_destroy( &m_processLock );
+        ::pthread_mutex_destroy( &m_conditionLock );
+        ::pthread_cond_destroy( &m_conditionVariable );
 
-        m_thread = nullptr;
+        m_threadId = 0;
         m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadProcessor::main()
     {
-        m_threadId = SDL_ThreadID();
-
         ALLOCATOR_SYSTEM()
             ->beginThread( m_threadId );
 
         while( m_exit == false )
         {
-            pthread_mutex_lock( &m_conditionLock );
+            ::pthread_mutex_lock( &m_conditionLock );
 
-            int cond_status = pthread_cond_wait( &m_conditionVariable, &m_conditionLock );
+            int cond_status = ::pthread_cond_wait( &m_conditionVariable, &m_conditionLock );
 
             if( cond_status != -1 && cond_status != ETIMEDOUT )
             {
@@ -135,14 +142,14 @@ namespace Mengine
                 );
             }
 
-            pthread_mutex_unlock( &m_conditionLock );
+            ::pthread_mutex_unlock( &m_conditionLock );
 
             if( m_exit == true )
             {
                 break;
             }
 
-            pthread_mutex_lock( &m_processLock );
+            ::pthread_mutex_lock( &m_processLock );
 
             if( m_task != nullptr )
             {
@@ -153,14 +160,14 @@ namespace Mengine
                     m_mutex->unlock();
                 }
 
-                pthread_mutex_lock( &m_taskLock );
+                ::pthread_mutex_lock( &m_taskLock );
 
                 m_task = nullptr;
 
-                pthread_mutex_unlock( &m_taskLock );
+                ::pthread_mutex_unlock( &m_taskLock );
             }
 
-            pthread_mutex_unlock( &m_processLock );
+            ::pthread_mutex_unlock( &m_processLock );
         }
 
         ALLOCATOR_SYSTEM()
@@ -179,7 +186,7 @@ namespace Mengine
             return false;
         }
 
-        int processLockResult = pthread_mutex_trylock( &m_processLock );
+        int processLockResult = ::pthread_mutex_trylock( &m_processLock );
 
         if( processLockResult != 0 )
         {
@@ -192,19 +199,19 @@ namespace Mengine
         {
             if( _task->run( m_mutex ) == true )
             {
-                pthread_mutex_lock( &m_taskLock );
+                ::pthread_mutex_lock( &m_taskLock );
 
                 m_task = _task;
 
-                pthread_mutex_unlock( &m_taskLock );
+                ::pthread_mutex_unlock( &m_taskLock );
 
-                pthread_cond_signal( &m_conditionVariable );
+                ::pthread_cond_signal( &m_conditionVariable );
 
                 successful = true;
             }
         }
 
-        pthread_mutex_unlock( &m_processLock );
+        ::pthread_mutex_unlock( &m_processLock );
 
         return successful;
     }
@@ -216,20 +223,20 @@ namespace Mengine
             return;
         }
 
-        pthread_mutex_lock( &m_taskLock );
+        ::pthread_mutex_lock( &m_taskLock );
 
         if( m_task != nullptr )
         {
             m_task->cancel();
         }
 
-        pthread_mutex_unlock( &m_taskLock );
+        ::pthread_mutex_unlock( &m_taskLock );
 
-        pthread_mutex_lock( &m_processLock );
+        ::pthread_mutex_lock( &m_processLock );
 
         m_task = nullptr;
 
-        pthread_mutex_unlock( &m_processLock );
+        ::pthread_mutex_unlock( &m_processLock );
     }
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadProcessor::join()
@@ -241,14 +248,15 @@ namespace Mengine
 
         m_exit = true;
 
-        pthread_cond_signal( &m_conditionVariable );
+        ::pthread_cond_signal( &m_conditionVariable );
 
         void * data;
-        int status = pthread_join( m_thread, &data );
+        int status = ::pthread_join( m_threadId, &data );
 
         if( status != 0 )
         {
-            LOGGER_ERROR( "join thread with error status: %d"
+            LOGGER_ERROR( "join thread: %ld with error status: %d"
+                , m_threadId
                 , status
             );
         }
@@ -258,7 +266,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool POSIXThreadProcessor::isCurrentThread() const
     {
-        pthread_t current_threadId = pthread_self();
+        pthread_t current_threadId = ::pthread_self();
 
         if( m_threadId != current_threadId )
         {

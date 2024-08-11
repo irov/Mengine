@@ -313,7 +313,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_setVolume( float _volume )
     {
-        if( MENGINE_FABSF( m_volume - _volume ) < 0.00001f )
+        if( Math::fabsf( m_volume - _volume ) < 0.00001f )
         {
             return;
         }

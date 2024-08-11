@@ -3,11 +3,11 @@
 #include "Config/Config.h"
 
 #if defined(MENGINE_SETJMP_SUPPORTED)
-#   include <setjmp.h>
+#   include <csetjmp>
 
 #   pragma warning(disable : 4611)
 
-#   define MENGINE_JMP_DECLARE(Var) jmp_buf Var
+#   define MENGINE_JMP_DECLARE(Var) std::jmp_buf Var
 #   define MENGINE_JMP_SET(Var) setjmp(Var)
 #   define MENGINE_JMP_JUMP(Var, Code) longjmp(Var, Code)
 #else

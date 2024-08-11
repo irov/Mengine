@@ -36,8 +36,24 @@ src
     
     AndroidProxyLogger.h
     AndroidProxyLogger.cpp
+    
+    AndroidPlatformServiceExtensionInterface.h
+    
+    stack_chk_fail_local.c
 )
 
 ADD_MENGINE_LIBRARY(Environment)
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} android)
+find_library(android-lib android)
+find_library(log-lib log)
+find_library(dl-lib dl)
+find_library(c-lib c)
+find_library(m-lib m)
+find_library(stdcxx-lib stdc++)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${android-lib})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${log-lib})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${stdcxx-lib})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${c-lib})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${m-lib})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${dl-lib})

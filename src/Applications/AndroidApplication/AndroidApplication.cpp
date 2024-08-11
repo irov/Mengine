@@ -14,6 +14,8 @@
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidLogger.h"
 
+#include "Mengine/MenginePlugin.h"
+
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/StringArguments.h"
 #include "Kernel/FactorableUnique.h"
@@ -21,73 +23,22 @@
 #include "Kernel/Error.h"
 
 #include "Config/Algorithm.h"
+#include "Config/StdString.h"
 
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_MENGINE_STATIC)
-extern Mengine::ServiceProviderInterface * API_MengineCreate();
-extern bool API_MengineBootstrap();
-extern bool API_MengineRun();
-extern void API_MengineFinalize();
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+#   include <dlfcn.h>
 #endif
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static bool addAndroidBuildConfigOptions( JNIEnv * _jenv, const Char * _buildConfig, const ArgumentsInterfacePtr & _arguments )
-        {
-            jclass jclass_BuildConfig = _jenv->FindClass( "org/Mengine/Project/BuildConfig" );
-
-            if( jclass_BuildConfig == nullptr )
-            {
-                return false;
-            }
-
-            jfieldID jfield_MENGINE_APP_OPTIONS = _jenv->GetStaticFieldID( jclass_BuildConfig, _buildConfig, "Ljava/lang/String;" );
-
-            if( _jenv->ExceptionCheck() == true )
-            {
-                _jenv->ExceptionClear();
-
-                _jenv->DeleteLocalRef( jclass_BuildConfig );
-
-                return false;
-            }
-
-            if( jfield_MENGINE_APP_OPTIONS == nullptr )
-            {
-                _jenv->DeleteLocalRef( jclass_BuildConfig );
-
-                return false;
-            }
-
-            jstring j_MENGINE_APP_OPTIONS = (jstring)_jenv->GetStaticObjectField( jclass_BuildConfig, jfield_MENGINE_APP_OPTIONS );
-
-            if( j_MENGINE_APP_OPTIONS == nullptr )
-            {
-                _jenv->DeleteLocalRef( jclass_BuildConfig );
-
-                return false;
-            }
-
-            const Char * MENGINE_APP_OPTIONS_str = _jenv->GetStringUTFChars( j_MENGINE_APP_OPTIONS, nullptr );
-
-            _arguments->addArguments( MENGINE_APP_OPTIONS_str );
-
-            _jenv->ReleaseStringUTFChars( j_MENGINE_APP_OPTIONS, MENGINE_APP_OPTIONS_str );
-            _jenv->DeleteLocalRef( j_MENGINE_APP_OPTIONS );
-            _jenv->DeleteLocalRef( jclass_BuildConfig );
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-    }
-    //////////////////////////////////////////////////////////////////////////
     AndroidApplication::AndroidApplication()
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        : m_handleLibrary( nullptr )
+#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -98,12 +49,6 @@ namespace Mengine
     bool AndroidApplication::initializeOptionsService_( int32_t _argc, Char ** const _argv )
     {
         ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        Detail::addAndroidBuildConfigOptions( jenv, "MENGINE_APP_OPTIONS", arguments );
 
 #if !defined(MENGINE_BUILD_PUBLISH)
         Char MengineApplePersistentArguments[1024] = {'\0'};
@@ -162,15 +107,42 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidApplication::bootstrap( int32_t _argc, Char ** const _argv )
+    bool AndroidApplication::bootstrap( const Mengine::Char * _nativeLibraryDir, int32_t _argc, Char ** const _argv )
     {
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-#   error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
-#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        ServiceProviderInterface * serviceProvider = API_MengineCreate();
-#else
-        ServiceProviderInterface * serviceProvider = nullptr;
+        MENGINE_UNUSED( _nativeLibraryDir );
+
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        Char mengineLibraryPath[MENGINE_MAX_PATH] = {'\0'};
+        Mengine::StdString::strcpy( mengineLibraryPath, _nativeLibraryDir );
+        Mengine::StdString::strcat( mengineLibraryPath, "/libMengine.so" );
+
+        void * handleLibrary = ::dlopen(mengineLibraryPath, RTLD_GLOBAL);
+
+        if( handleLibrary == nullptr )
+        {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "dlopen 'libMengine.so' failed" );
+
+            return false;
+        }
+
+        m_handleLibrary = handleLibrary;
 #endif
+
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        FAPI_MengineCreate API_MengineCreate = (FAPI_MengineCreate)::dlsym( m_handleLibrary, "API_MengineCreate" );
+
+        if( API_MengineCreate == nullptr )
+        {
+            return false;
+        }
+#endif
+
+        ServiceProviderInterface * serviceProvider = API_MengineCreate();
+
+        if( serviceProvider == nullptr )
+        {
+            return false;
+        }
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
@@ -200,28 +172,38 @@ namespace Mengine
             this->finalizeLoggerService_();
         } );
 
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-#error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
-#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        if( ::API_MengineBootstrap() == false )
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        FAPI_MengineBootstrap API_MengineBootstrap = (FAPI_MengineBootstrap)::dlsym( m_handleLibrary, "API_MengineBootstrap" );
+
+        if( API_MengineBootstrap == nullptr )
         {
             return false;
         }
 #endif
+
+        if( API_MengineBootstrap() == false )
+        {
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidApplication::initialize()
     {
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-#error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
-#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        if( ::API_MengineRun() == false )
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        FAPI_MengineRun API_MengineRun = (FAPI_MengineRun)::dlsym( m_handleLibrary, "API_MengineRun" );
+
+        if( API_MengineRun == nullptr )
         {
             return false;
         }
 #endif
+
+        if( API_MengineRun() == false )
+        {
+            return false;
+        }
 
         LOGGER_INFO( "application", "creating render window..." );
 
@@ -241,16 +223,10 @@ namespace Mengine
         else
         {
             projectTitle = entry->getValue( &projectTitleLen );
-            
-            LOGGER_INFO( "application", "project title '%.*s'"
-                , (int32_t)projectTitleLen
-                , projectTitle
-            );
         }
 
         PLATFORM_SERVICE()
             ->setProjectTitle( projectTitle );
-
 
         if( PLATFORM_SERVICE()
             ->createWindow( Resolution( 0, 0 ), true ) == false )
@@ -305,10 +281,20 @@ namespace Mengine
                 ->stop();
         }
 
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-#   error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
-#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        FAPI_MengineFinalize API_MengineFinalize = (FAPI_MengineFinalize)::dlsym( m_handleLibrary, "API_MengineFinalize" );
+
+        if( API_MengineFinalize != nullptr )
+        {
+            API_MengineFinalize();
+        }
+#else
         API_MengineFinalize();
+#endif
+
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        ::dlclose(m_handleLibrary);
+        m_handleLibrary = nullptr;
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

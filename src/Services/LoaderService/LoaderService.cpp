@@ -256,8 +256,7 @@ namespace Mengine
         {
             if( _reimport == nullptr )
             {
-                LOGGER_ERROR( "invalid uncompress"
-                );
+                LOGGER_ERROR( "invalid uncompress" );
             }
             else
             {

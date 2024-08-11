@@ -18,6 +18,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool loggerValidMessage( const Char * _category, ELoggerLevel _level, uint32_t _filter )
         {
+            if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == false )
+            {
+                return false;
+            }
+
             bool result = LOGGER_SERVICE()
                 ->validMessage( _category, _level, _filter );
 

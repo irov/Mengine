@@ -109,30 +109,30 @@ namespace Mengine
         public:
             void parse( const xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** const _keys, const xmlsax_char_t ** const _values )
             {
-                if( MENGINE_STRCMP( _node, "font" ) == 0 )
+                if( StdString::strcmp( _node, "font" ) == 0 )
                 {
                     for( uint32_t i = 0; i != _count; ++i )
                     {
                         const xmlsax_char_t * key = _keys[i];
                         const xmlsax_char_t * value = _values[i];
 
-                        if( MENGINE_STRCMP( key, "type" ) == 0 )
+                        if( StdString::strcmp( key, "type" ) == 0 )
                         {
-                            if( MENGINE_STRCMP( value, "GHL" ) == 0 )
+                            if( StdString::strcmp( value, "GHL" ) == 0 )
                             {
                                 m_successful = true;
                             }
                         }
                     }
                 }
-                else if( MENGINE_STRCMP( _node, "description" ) == 0 )
+                else if( StdString::strcmp( _node, "description" ) == 0 )
                 {
                     for( uint32_t i = 0; i != _count; ++i )
                     {
                         const xmlsax_char_t * key = _keys[i];
                         const xmlsax_char_t * value = _values[i];
 
-                        if( MENGINE_STRCMP( key, "size" ) == 0 )
+                        if( StdString::strcmp( key, "size" ) == 0 )
                         {
                             float size = 0.f;
                             if( Helper::stringalized( value, &size ) == false )
@@ -149,14 +149,14 @@ namespace Mengine
                         }
                     }
                 }
-                else if( MENGINE_STRCMP( _node, "metrics" ) == 0 )
+                else if( StdString::strcmp( _node, "metrics" ) == 0 )
                 {
                     for( uint32_t i = 0; i != _count; ++i )
                     {
                         const xmlsax_char_t * key = _keys[i];
                         const xmlsax_char_t * value = _values[i];
 
-                        if( MENGINE_STRCMP( key, "ascender" ) == 0 )
+                        if( StdString::strcmp( key, "ascender" ) == 0 )
                         {
                             float ascender = 0.f;
                             if( Helper::stringalized( value, &ascender ) == false )
@@ -171,7 +171,7 @@ namespace Mengine
 
                             m_symbols->setAscender( ascender );
                         }
-                        else if( MENGINE_STRCMP( key, "height" ) == 0 )
+                        else if( StdString::strcmp( key, "height" ) == 0 )
                         {
                             uint32_t height = 0;
                             if( Helper::stringalized( value, &height ) == false )
@@ -186,7 +186,7 @@ namespace Mengine
 
                             m_symbols->setHeight( height );
                         }
-                        else if( MENGINE_STRCMP( key, "descender" ) == 0 )
+                        else if( StdString::strcmp( key, "descender" ) == 0 )
                         {
                             float descender = 0.f;
                             if( Helper::stringalized( value, &descender ) == false )
@@ -203,14 +203,14 @@ namespace Mengine
                         }
                     }
                 }
-                else if( MENGINE_STRCMP( _node, "texture" ) == 0 )
+                else if( StdString::strcmp( _node, "texture" ) == 0 )
                 {
                     for( uint32_t i = 0; i != _count; ++i )
                     {
                         const xmlsax_char_t * key = _keys[i];
                         const xmlsax_char_t * value = _values[i];
 
-                        if( MENGINE_STRCMP( key, "width" ) == 0 )
+                        if( StdString::strcmp( key, "width" ) == 0 )
                         {
                             uint32_t width = 0;
                             if( Helper::stringalized( value, &width ) == false )
@@ -227,7 +227,7 @@ namespace Mengine
 
                             m_symbols->setTextureWidth( width_pow2 );
                         }
-                        else if( MENGINE_STRCMP( key, "height" ) == 0 )
+                        else if( StdString::strcmp( key, "height" ) == 0 )
                         {
                             uint32_t height = 0;
                             if( Helper::stringalized( value, &height ) == false )
@@ -246,7 +246,7 @@ namespace Mengine
                         }
                     }
                 }
-                else if( MENGINE_STRCMP( _node, "char" ) == 0 )
+                else if( StdString::strcmp( _node, "char" ) == 0 )
                 {
                     float advance = 0.f;
                     mt::vec2f offset( 0.f, 0.f );
@@ -258,7 +258,7 @@ namespace Mengine
                         const xmlsax_char_t * key = _keys[i];
                         const xmlsax_char_t * value = _values[i];
 
-                        if( MENGINE_STRCMP( key, "advance" ) == 0 )
+                        if( StdString::strcmp( key, "advance" ) == 0 )
                         {
                             if( Helper::stringalized( value, &advance ) == false )
                             {
@@ -270,7 +270,7 @@ namespace Mengine
                                 this->setError();
                             }
                         }
-                        else if( MENGINE_STRCMP( key, "offset" ) == 0 )
+                        else if( StdString::strcmp( key, "offset" ) == 0 )
                         {
                             if( Helper::stringalized( value, &offset ) == false )
                             {
@@ -282,7 +282,7 @@ namespace Mengine
                                 this->setError();
                             }
                         }
-                        else if( MENGINE_STRCMP( key, "rect" ) == 0 )
+                        else if( StdString::strcmp( key, "rect" ) == 0 )
                         {
                             if( Helper::stringalized( value, &rect ) == false )
                             {
@@ -294,7 +294,7 @@ namespace Mengine
                                 this->setError();
                             }
                         }
-                        else if( MENGINE_STRCMP( key, "id" ) == 0 )
+                        else if( StdString::strcmp( key, "id" ) == 0 )
                         {
                             id = value;
                         }
@@ -304,7 +304,7 @@ namespace Mengine
                     mt::vec2f size( rect.z, rect.w );
 
                     uint32_t code = 0;
-                    size_t code_length = MENGINE_STRLEN( id );
+                    size_t code_length = StdString::strlen( id );
 
                     if( Helper::Utf8NextCode( &id, id + code_length, &code ) == false )
                     {
@@ -334,7 +334,7 @@ namespace Mengine
 
                     m_glyphCode = glyphCode;
                 }
-                else if( MENGINE_STRCMP( _node, "kerning" ) == 0 )
+                else if( StdString::strcmp( _node, "kerning" ) == 0 )
                 {
                     float advance = 0.f;
                     GlyphCode nextCode = 0;
@@ -344,7 +344,7 @@ namespace Mengine
                         const xmlsax_char_t * key = _keys[i];
                         const xmlsax_char_t * value = _values[i];
 
-                        if( MENGINE_STRCMP( key, "advance" ) == 0 )
+                        if( StdString::strcmp( key, "advance" ) == 0 )
                         {
                             if( Helper::stringalized( value, &advance ) == false )
                             {
@@ -356,12 +356,12 @@ namespace Mengine
                                 this->setError();
                             }
                         }
-                        else if( MENGINE_STRCMP( key, "id" ) == 0 )
+                        else if( StdString::strcmp( key, "id" ) == 0 )
                         {
                             const xmlsax_char_t * id = value;
 
                             uint32_t code;
-                            size_t id_length = MENGINE_STRLEN( id );
+                            size_t id_length = StdString::strlen( id );
 
                             if( Helper::Utf8NextCode( &id, id + id_length, &code ) == false )
                             {

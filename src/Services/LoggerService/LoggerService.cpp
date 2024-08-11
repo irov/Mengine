@@ -295,7 +295,14 @@ namespace Mengine
 
         m_mutexLogger->unlock();
 
-        m_threadLogger->cancel();
+        m_threadRunner->cancel();
+
+        if( m_conditionLogger != nullptr )
+        {
+            m_conditionLogger->wake();
+        }
+
+        m_threadLogger->join();
 
         m_threadRunner = nullptr;
         m_threadLogger = nullptr;

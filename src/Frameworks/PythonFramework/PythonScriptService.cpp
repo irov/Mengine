@@ -176,42 +176,42 @@ namespace Mengine
                     return;
                 }
 
-                if( MENGINE_STRCMP( _className, "" ) == 0 && MENGINE_STRCMP( _functionName, "excepthook" ) == 0 )
+                if( StdString::strcmp( _className, "" ) == 0 && StdString::strcmp( _functionName, "excepthook" ) == 0 )
                 {
                     return;
                 }
 
-                if( MENGINE_STRCMP( _className, "" ) == 0 && MENGINE_STRCMP( _functionName, "logFatal" ) == 0 )
+                if( StdString::strcmp( _className, "" ) == 0 && StdString::strcmp( _functionName, "logFatal" ) == 0 )
                 {
                     return;
                 }
 
-                if( MENGINE_STRCMP( _className, "" ) == 0 && MENGINE_STRCMP( _functionName, "logError" ) == 0 )
+                if( StdString::strcmp( _className, "" ) == 0 && StdString::strcmp( _functionName, "logError" ) == 0 )
                 {
                     return;
                 }
 
-                if( MENGINE_STRCMP( _className, "" ) == 0 && MENGINE_STRCMP( _functionName, "logWarning" ) == 0 )
+                if( StdString::strcmp( _className, "" ) == 0 && StdString::strcmp( _functionName, "logWarning" ) == 0 )
                 {
                     return;
                 }
 
-                if( MENGINE_STRCMP( _className, "" ) == 0 && MENGINE_STRCMP( _functionName, "logMessage" ) == 0 )
+                if( StdString::strcmp( _className, "" ) == 0 && StdString::strcmp( _functionName, "logMessage" ) == 0 )
                 {
                     return;
                 }
 
-                if( MENGINE_STRCMP( _className, "" ) == 0 && MENGINE_STRCMP( _functionName, "logInfo" ) == 0 )
+                if( StdString::strcmp( _className, "" ) == 0 && StdString::strcmp( _functionName, "logInfo" ) == 0 )
                 {
                     return;
                 }
 
-                if( MENGINE_STRCMP( _className, "PythonScriptLogger" ) == 0 )
+                if( StdString::strcmp( _className, "PythonScriptLogger" ) == 0 )
                 {
                     return;
                 }
 
-                if( MENGINE_STRCMP( _className, "ErrorScriptLogger" ) == 0 )
+                if( StdString::strcmp( _className, "ErrorScriptLogger" ) == 0 )
                 {
                     return;
                 }

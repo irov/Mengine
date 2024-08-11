@@ -166,6 +166,14 @@ namespace Mengine
         return m_kernel;
     }
     //////////////////////////////////////////////////////////////////////////
+    void PythonScriptProviderService::updateScriptThread()
+    {
+        m_threadId = THREAD_SYSTEM()
+            ->getCurrentThreadId();
+
+        pybind::update_main_thread();
+    }
+    //////////////////////////////////////////////////////////////////////////
     ThreadId PythonScriptProviderService::getScriptThreadId() const
     {
         return m_threadId;

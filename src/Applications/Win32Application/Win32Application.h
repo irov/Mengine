@@ -1,6 +1,6 @@
 #pragma once
 
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
 #   include "Environment/Windows/WindowsIncluder.h"
 #endif
 
@@ -30,7 +30,7 @@ namespace Mengine
         void finalizeLoggerService_();
         
     protected:
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
         HINSTANCE m_hInstance;
 #endif
 

@@ -4,6 +4,10 @@
 
 #include "Kernel/PathHelper.h"
 
+#if defined(MENGINE_DEBUG)
+#   include "Config/DynamicCast.h"
+#endif
+
 namespace Mengine
 {
     namespace Helper
@@ -15,7 +19,7 @@ namespace Mengine
             MENGINE_UNUSED( _ptr );
 
 #if defined(MENGINE_DEBUG)
-            const DebugFileInterface * debug = dynamic_cast<const DebugFileInterface *>(_ptr);
+            const DebugFileInterface * debug = Helper::dynamicCast<const DebugFileInterface *>( _ptr );
 
             if( debug == nullptr )
             {
@@ -36,7 +40,7 @@ namespace Mengine
             MENGINE_UNUSED( _ptr );
 
 #if defined(MENGINE_DEBUG)
-            const DebugFileInterface * base = dynamic_cast<const DebugFileInterface *>(_ptr);
+            const DebugFileInterface * base = Helper::dynamicCast<const DebugFileInterface *>( _ptr );
 
             if( base == nullptr )
             {
@@ -57,7 +61,7 @@ namespace Mengine
             MENGINE_UNUSED( _ptr );
 
 #if defined(MENGINE_DEBUG)
-            const DebugFileInterface * base = dynamic_cast<const DebugFileInterface *>(_ptr);
+            const DebugFileInterface * base = Helper::dynamicCast<const DebugFileInterface *>( _ptr );
 
             if( base == nullptr )
             {

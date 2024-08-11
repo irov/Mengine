@@ -203,7 +203,7 @@ namespace Mengine
 
             for( const Char
                 * it = _string,
-                *it_end = _string + MENGINE_STRLEN( _string );
+                *it_end = _string + StdString::strlen( _string );
                 it != it_end;
                 ++it )
             {

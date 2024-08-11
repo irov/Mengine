@@ -25,14 +25,14 @@ namespace Mengine
 
             EThreadPriority priority = thread->getPriority();
 
-            pthread_t current_threadId = pthread_self();
+            pthread_t current_threadId = ::pthread_self();
 
             sched_param sch;
             int policy;
-            pthread_getschedparam( current_threadId, &policy, &sch );
+            ::pthread_getschedparam( current_threadId, &policy, &sch );
 
-            int priority_min = sched_get_priority_min( policy );
-            int priority_max = sched_get_priority_max( policy );
+            int priority_min = ::sched_get_priority_min( policy );
+            int priority_max = ::sched_get_priority_max( policy );
 
             switch( priority )
             {
@@ -58,7 +58,7 @@ namespace Mengine
                 break;
             }
 
-            if( pthread_setschedparam( current_threadId, policy, &sch ) != 0 )
+            if( ::pthread_setschedparam( current_threadId, policy, &sch ) != 0 )
             {
                 LOGGER_ERROR( "Failed to set thread priority: %d"
                     , sch.sched_priority 
@@ -101,9 +101,9 @@ namespace Mengine
         m_runner = Helper::makeFactorableUnique<POSIXThreadIdentityRunner>( MENGINE_DOCUMENT_FACTORABLE, _lambda );
 
         pthread_t threadId;
-        int status = pthread_create( &threadId, nullptr, &Detail::s_treadJob, reinterpret_cast<void *>(this) );
+        int status = ::pthread_create( &threadId, nullptr, &Detail::s_treadJob, reinterpret_cast<void *>(this) );
 
-        if( thread == nullptr )
+        if( status != 0 )
         {
             LOGGER_ERROR( "invalid create thread error: %d"
                 , status
@@ -112,7 +112,7 @@ namespace Mengine
             return nullptr;
         }
 
-        m_threadId = threadId;        
+        m_threadId = threadId;
 
         return m_runner;
     }
@@ -143,33 +143,11 @@ namespace Mengine
             return;
         }
 
-        int status = pthread_join( m_threadId, nullptr );
+        int status = ::pthread_join( m_threadId, nullptr );
 
         if( status != 0 )
         {
-            LOGGER_ERROR( "invalid join thread: %d error status: %d"
-                , m_threadId
-                , status
-            );
-        }
-
-        this->finalize();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void POSIXThreadIdentity::cancel()
-    {
-        if( m_runner->isCancel() == true )
-        {
-            return;
-        }
-
-        m_runner->cancel();
-
-        int status = pthread_cancel( m_threadId );
-        
-        if( status != 0 )
-        {
-            LOGGER_ERROR( "invalid cancel thread: %s error status: %d"
+            LOGGER_ERROR( "invalid join thread: %ld error status: %d"
                 , m_threadId
                 , status
             );
@@ -180,7 +158,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool POSIXThreadIdentity::isCurrentThread() const
     {
-        pthread_t current_threadId = pthread_self();
+        pthread_t current_threadId = ::pthread_self();
 
         if( m_threadId != current_threadId )
         {

@@ -3,6 +3,8 @@
 #include "Kernel/Visitor.h"
 #include "Kernel/Mixin.h"
 
+#include "Config/DynamicCast.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -21,7 +23,7 @@ namespace Mengine
 
             Visitor * visitor_ptr = _visitor.get();
 
-            TConcreteVisitor * ptr = dynamic_cast<TConcreteVisitor *>(visitor_ptr);
+            TConcreteVisitor * ptr = Helper::dynamicCast<TConcreteVisitor *>( visitor_ptr );
 
             if( ptr == nullptr )
             {
@@ -40,7 +42,7 @@ namespace Mengine
 
             Visitor * visitor_ptr = _visitor.get();
 
-            TConcreteVisitorR * ptr = dynamic_cast<TConcreteVisitorR *>(visitor_ptr);
+            TConcreteVisitorR * ptr = Helper::dynamicCast<TConcreteVisitorR *>( visitor_ptr );
 
             if( ptr == nullptr )
             {

@@ -29,21 +29,21 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool isLowerCharacterSet( Char _ch )
         {
-            bool result = MENGINE_ISLOWER( _ch );
+            bool result = StdCType::islower( _ch );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
         bool isUpperCharacterSet( Char _ch )
         {
-            bool result = MENGINE_ISUPPER( _ch );
+            bool result = StdCType::isupper( _ch );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
         bool isDigitCharacterSet( Char _ch )
         {
-            bool result = MENGINE_ISDIGIT( _ch );
+            bool result = StdCType::isdigit( _ch );
 
             return result;
         }

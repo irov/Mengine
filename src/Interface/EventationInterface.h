@@ -6,6 +6,7 @@
 
 #if defined(MENGINE_DEBUG)
 #   include "Config/TypeTraits.h"
+#   include "Config/DynamicCast.h"
 #endif
 
 namespace Mengine
@@ -54,7 +55,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            if( dynamic_cast<T>(r) == nullptr )
+            if( Helper::dynamicCast<T>( r ) == nullptr )
             {
                 throw std::runtime_error( "static event receiver cast" );
             }

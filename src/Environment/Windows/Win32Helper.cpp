@@ -40,7 +40,7 @@ namespace Mengine
                 DWORD dwConversionFlags = 0;
 #   endif
 
-                size_t unicode_path_len = MENGINE_WCSLEN( unicode_path );
+                size_t unicode_path_len = StdString::wcslen( unicode_path );
 
                 int32_t utf8_size = ::WideCharToMultiByte(
                     CP_UTF8
@@ -71,7 +71,7 @@ namespace Mengine
             {
                 if( Detail::__Win32GetCurrentDllPath( dllPath ) == false )
                 {
-                    MENGINE_STRCPY( dllPath, "Unsupport" );
+                    StdString::strcpy( dllPath, "Unsupport" );
                 }
             }
 

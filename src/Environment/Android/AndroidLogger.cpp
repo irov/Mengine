@@ -44,18 +44,18 @@ namespace Mengine
             size_t dateSize = Helper::makeLoggerShortDate( message.timestamp, "[%02u:%02u:%02u:%04u]", date, 0, 256 );
             MENGINE_UNUSED( dateSize );
 
-            MENGINE_STRCAT( buffer, date );
-            MENGINE_STRCAT( buffer, " " );
+            StdString::strcat( buffer, date );
+            StdString::strcat( buffer, " " );
         }
 
         if( message.flag & LFLAG_CATEGORYSTAMP )
         {
             const Char * category = message.category;
 
-            MENGINE_STRCAT( buffer, "[" );
-            MENGINE_STRCAT( buffer, category );
-            MENGINE_STRCAT( buffer, "]" );
-            MENGINE_STRCAT( buffer, " " );
+            StdString::strcat( buffer, "[" );
+            StdString::strcat( buffer, category );
+            StdString::strcat( buffer, "]" );
+            StdString::strcat( buffer, " " );
         }
 
         if( message.flag & LFLAG_THREADSTAMP )
@@ -64,8 +64,8 @@ namespace Mengine
             size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
             MENGINE_UNUSED( threadstampSize );
 
-            MENGINE_STRCAT( buffer, threadstamp );
-            MENGINE_STRCAT( buffer, " " );
+            StdString::strcat( buffer, threadstamp );
+            StdString::strcat( buffer, " " );
         }
 
         if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
@@ -77,21 +77,21 @@ namespace Mengine
             size_t functionstampSize = Helper::makeLoggerFunctionStamp( function, line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
             MENGINE_UNUSED( functionstampSize );
 
-            MENGINE_STRCAT( buffer, functionstamp );
-            MENGINE_STRCAT( buffer, " " );
+            StdString::strcat( buffer, functionstamp );
+            StdString::strcat( buffer, " " );
         }
 
         const Char * data = message.data;
-        size_t data_size = MENGINE_STRLEN( data );
+        size_t data_size = StdString::strlen( data );
 
-        size_t message_stamplen = MENGINE_STRLEN( buffer );
+        size_t message_stamplen = StdString::strlen( buffer );
 
         if( data_size + message_stamplen >= MENGINE_LOGGER_MAX_MESSAGE )
         {
             data_size = MENGINE_LOGGER_MAX_MESSAGE - message_stamplen - 1;
         }
 
-        MENGINE_STRNCAT( buffer, data, data_size );
+        StdString::strncat( buffer, data, data_size );
 
         if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {

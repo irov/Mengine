@@ -94,4 +94,5 @@
 #include <libloaderapi.h>
 #include <wincrypt.h>
 #include <wininet.h>
+#include <process.h>
 #pragma warning(pop) 

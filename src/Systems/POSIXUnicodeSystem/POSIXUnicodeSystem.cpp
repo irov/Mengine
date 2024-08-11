@@ -9,17 +9,11 @@
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
 
-#include <pthread.h>
-#include <iconv.h>
-#include <unistd.h>
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UnicodeSystem, Mengine::POSIXUnicodeSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    constexpr const Char * SDL_UCS_wchar_t = sizeof( WChar ) == 2 ? "UCS-2-INTERNAL" : "UCS-4-INTERNAL";
     //////////////////////////////////////////////////////////////////////////
     POSIXUnicodeSystem::POSIXUnicodeSystem()
     {
@@ -59,12 +53,12 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        size_t unicodeSize = (_unicodeSize == (size_t)-1) ? MENGINE_WCSLEN( _unicode ) + 1 : _unicodeSize + 1;
+        size_t unicodeSize = (_unicodeSize == (size_t)-1) ? StdString::wcslen( _unicode ) : _unicodeSize;
 
         size_t utf8Size = 0;
         for( size_t i = 0; i != unicodeSize; ++i )
         {
-            WChar wc = _unicode[i];
+            uint32_t wc = _unicode[i];
 
             if( wc < 0x80 )
             {
@@ -79,7 +73,7 @@ namespace Mengine
             {
                 if( _utf8 != nullptr && utf8Size + 1 < _utf8Capacity )
                 {
-                    _utf8[utf8Size] = (Char)(0xC0 | (wc >> 6));
+                    _utf8[utf8Size + 0] = (Char)(0xC0 | (wc >> 6));
                     _utf8[utf8Size + 1] = (Char)(0x80 | (wc & 0x3F));
                 }
 
@@ -89,18 +83,18 @@ namespace Mengine
             {
                 if( _utf8 != nullptr && utf8Size + 2 < _utf8Capacity )
                 {
-                    _utf8[utf8Size] = (Char)(0xE0 | (wc >> 12));
+                    _utf8[utf8Size + 0] = (Char)(0xE0 | (wc >> 12));
                     _utf8[utf8Size + 1] = (Char)(0x80 | ((wc >> 6) & 0x3F));
                     _utf8[utf8Size + 2] = (Char)(0x80 | (wc & 0x3F));
                 }
 
                 utf8Size += 3;
             }
-            else if( wc < 0x200000 )
+            else if( wc < 0x110000 )
             {
                 if( _utf8 != nullptr && utf8Size + 3 < _utf8Capacity )
                 {
-                    _utf8[utf8Size] = (Char)(0xF0 | (wc >> 18));
+                    _utf8[utf8Size + 0] = (Char)(0xF0 | (wc >> 18));
                     _utf8[utf8Size + 1] = (Char)(0x80 | ((wc >> 12) & 0x3F));
                     _utf8[utf8Size + 2] = (Char)(0x80 | ((wc >> 6) & 0x3F));
                     _utf8[utf8Size + 3] = (Char)(0x80 | (wc & 0x3F));
@@ -136,75 +130,93 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        iconv_t cd = ::iconv_open( SDL_UCS_wchar_t, "UTF-8" );
+        size_t utf8Index = 0;
+        size_t unicodeIndex = 0;
+        size_t unicodeSize = 0;
 
-        if( cd == (iconv_t)-1 )
+        while( utf8Index < _utf8Size && _utf8[utf8Index] != '\0' )
         {
-            return false;
-        }
+            WChar wc = 0;
 
-        size_t utf8Size = (_utf8Size == MENGINE_UNKNOWN_SIZE) ? MENGINE_STRLEN( _utf8 ) + 1 : _utf8Size + 1;
+            Char c = _utf8[utf8Index];
 
-        const char * iconv_inbuf = (const char *)_utf8;
-        size_t iconv_insize = utf8Size * sizeof( Char );
-
-        char * iconv_outbuf = (char *)_unicode;
-        size_t iconv_outsize = _unicodeCapacity * sizeof( WChar );
-
-        if( _unicode == nullptr )
-        {
-            m_unicodeBuffer[0] = L'\0';
-
-            iconv_outbuf = (char *)m_unicodeBuffer;
-            iconv_outsize = MENGINE_UNICODE_CONVERT_BUFFER * sizeof( WChar );
-        }
-
-        size_t iconv_capacity = iconv_outsize;
-
-        size_t code = ::iconv( cd, &iconv_inbuf, &iconv_insize, &iconv_outbuf, &iconv_outsize );
-
-        ::iconv_close( cd );
-
-        if( code == (size_t)-1 )
-        {
-            switch( errno )
+            if( (c & 0x80) == 0 )
             {
-            case E2BIG:
-                {
-                    MENGINE_ASSERTION_FATAL( _utf8 == nullptr, "utf8 override buffer [%u]", MENGINE_UNICODE_CONVERT_BUFFER );
+                wc = c;
 
-                    return false;
-                } break;
-            case EILSEQ:
-                {
-                    return false;
-                } break;
-            case EINVAL:
-                {
-                    return false;
-                } break;
-            default:
-                {
-                    return false;
-                } break;
+                utf8Index += 1;
             }
-        }
+            else if( (c & 0xE0) == 0xC0 )
+            {
+                if( utf8Index + 1 >= _utf8Size )
+                {
+                    return false;
+                }
 
-        size_t unicodeSize = (iconv_capacity - iconv_outsize) / sizeof( WChar ) - 1;
+                wc = (c & 0x1F) << 6;
+                wc |= (_utf8[utf8Index + 1] & 0x3F) << 0;
 
-        if( _sizeUnicode != nullptr )
-        {
-            *_sizeUnicode = unicodeSize;
-        }
+                utf8Index += 2;
+            }
+            else if( (c & 0xF0) == 0xE0 )
+            {
+                if( utf8Index + 2 >= _utf8Size )
+                {
+                    return false;
+                }
 
-        if( _unicode != nullptr )
-        {
-            if( _unicodeCapacity < unicodeSize )
+                wc = (c & 0x0F) << 12;
+                wc |= (_utf8[utf8Index + 1] & 0x3F) << 6;
+                wc |= (_utf8[utf8Index + 2] & 0x3F) << 0;
+
+                utf8Index += 3;
+            }
+            else if( (c & 0xF8) == 0xF0 )
+            {
+                if( utf8Index + 3 >= _utf8Size )
+                {
+                    return false;
+                }
+
+                wc = (c & 0x07) << 18;
+                wc |= (_utf8[utf8Index + 1] & 0x3F) << 12;
+                wc |= (_utf8[utf8Index + 2] & 0x3F) << 6;
+                wc |= (_utf8[utf8Index + 3] & 0x3F) << 0;
+
+                utf8Index += 4;
+            }
+            else
             {
                 return false;
             }
 
-            _unicode[unicodeSize] = L'\0';
+            if( _unicode != nullptr )
+            {
+                if( unicodeIndex >= _unicodeCapacity )
+                {
+                    return false;
+                }
+
+                _unicode[unicodeIndex] = wc;
+            }
+
+            unicodeIndex += 1;
+            unicodeSize += 1;
+        }
+
+        if( _unicode != nullptr )
+        {
+            if( unicodeIndex >= _unicodeCapacity )
+            {
+                return false;
+            }
+
+            _unicode[unicodeIndex] = L'\0';
+        }
+
+        if( _sizeUnicode != nullptr )
+        {
+            *_sizeUnicode = unicodeSize;
         }
 
         return true;

@@ -159,7 +159,7 @@ namespace Mengine
         void sleep( uint32_t _ms ) override;
 
     protected:
-        bool setProcessDPIAware() override;
+        bool setProcessDPIAware();
 
     public:
         bool isDebuggerPresent() const override;
@@ -198,9 +198,6 @@ namespace Mengine
     protected:
         UniqueId addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentInterfacePtr & _doc ) override;
         void removeWin32ProcessHandler( UniqueId _id ) override;
-
-    protected:
-        time_t getFileUnixTime( const FILETIME * filetime ) const override;
 
     protected:
         bool isNeedWindowRender() const;

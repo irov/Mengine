@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool POSIXThreadConditionVariable::initialize()
     {
-        int condition_status = pthread_cond_init( &m_conditionVariable, nullptr );
+        int condition_status = ::pthread_cond_init( &m_conditionVariable, nullptr );
 
         if( condition_status != 0 )
         {
@@ -27,7 +27,7 @@ namespace Mengine
             return false;
         }
 
-        int mutex_status = pthread_mutex_init( &m_conditionLock, nullptr );
+        int mutex_status = ::pthread_mutex_init( &m_conditionLock, nullptr );
 
         if( mutex_status != 0 )
         {
@@ -35,7 +35,7 @@ namespace Mengine
                 , mutex_status 
             );
 
-            pthread_cond_destroy( &m_conditionVariable );
+            ::pthread_cond_destroy( &m_conditionVariable );
 
             return false;
         }
@@ -45,19 +45,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadConditionVariable::finalize()
     {
-        pthread_cond_destroy( &m_conditionVariable );
-        pthread_mutex_destroy( &m_conditionLock );
+        ::pthread_cond_destroy( &m_conditionVariable );
+        ::pthread_mutex_destroy( &m_conditionLock );
     }
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadConditionVariable::wait( const LambdaCondition & _condition )
     {
         for( ;; )
         {
-            pthread_mutex_lock( &m_conditionLock );
+            ::pthread_mutex_lock( &m_conditionLock );
 
-            pthread_cond_wait( &m_conditionVariable, &m_conditionLock );
+            ::pthread_cond_wait( &m_conditionVariable, &m_conditionLock );
 
-            pthread_mutex_unlock( &m_conditionLock );
+            ::pthread_mutex_unlock( &m_conditionLock );
 
             if( _condition() == true )
             {
@@ -68,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadConditionVariable::wake()
     {
-        int status = pthread_cond_signal( &m_conditionVariable );
+        int status = ::pthread_cond_signal( &m_conditionVariable );
         
         if( status != 0 )
         {

@@ -61,8 +61,8 @@ jobs:
       - run:
           name: build dependencies
           command: |
-            pushd build/unix_android_sdl
-            sudo bash build_depends_android_sdl.bash Debug
+            pushd build/unix_android
+            sudo bash build_depends_android.bash Debug
             popd
             
       - run:

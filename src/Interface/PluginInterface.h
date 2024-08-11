@@ -78,13 +78,13 @@ namespace Mengine
 #define PLUGIN_FACTORY_DYNAMIC(Name, Type)\
     extern "C"\
     {\
-        MENGINE_DLL_EXPORT bool PLUGIN_FACTORY_CREATE_FUNCTION_NAME( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, Mengine::UniqueId _uid )\
+        MENGINE_EXPORT_API bool PLUGIN_FACTORY_CREATE_FUNCTION_NAME( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** const _plugin, Mengine::UniqueId _uid )\
         {\
             return PLUGIN_FUNCTION(Name)( _serviceProvider, _plugin, _uid, true );\
         }\
     }
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_DLL)
+#if defined(MENGINE_PLUGIN_SHARED)
 #   define PLUGIN_FACTORY(Name, Type)\
     PLUGIN_FACTORY_STATIC(Name, Type)\
     PLUGIN_FACTORY_DYNAMIC(Name, Type)

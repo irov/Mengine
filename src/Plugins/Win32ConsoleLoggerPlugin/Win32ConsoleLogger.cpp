@@ -218,7 +218,7 @@ namespace Mengine
 
         if( message.flag & LFLAG_CATEGORYSTAMP )
         {
-            size_t category_size = MENGINE_STRLEN( message.category );
+            size_t category_size = StdString::strlen( message.category );
 
             ::WriteConsoleA( output_handle, "[", 1, &dWritten, NULL );
             ::WriteConsoleA( output_handle, message.category, (DWORD)category_size, &dWritten, NULL );

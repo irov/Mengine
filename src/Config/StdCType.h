@@ -2,26 +2,24 @@
 
 #include "Config/Config.h"
 
-#include <ctype.h>
+#include <cctype>
 
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_ISLOWER
-#define MENGINE_ISLOWER(c) ::islower((c))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_ISUPPER
-#define MENGINE_ISUPPER(c) ::isupper((c))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_TOUPPER
-#define MENGINE_TOUPPER(c) ::toupper((c))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_TOLOWER
-#define MENGINE_TOLOWER(c) ::tolower((c))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_ISDIGIT
-#define MENGINE_ISDIGIT(c) ::isdigit((c))
-#endif
-//////////////////////////////////////////////////////////////////////////
+namespace Mengine
+{
+    namespace StdCType
+    {
+        using std::isalnum;
+        using std::isalpha;
+        using std::iscntrl;
+        using std::isdigit;
+        using std::isgraph;
+        using std::islower;
+        using std::isprint;
+        using std::ispunct;
+        using std::isspace;
+        using std::isupper;
+        using std::isxdigit;
+        using std::tolower;
+        using std::toupper;
+    }
+}

@@ -15,7 +15,7 @@ def MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary(project, "MENGINE_APP_L
 android {
     externalNativeBuild {
         cmake {
-            path "../../../cmake/Android_SDL/Mengine/CMakeLists.txt"
+            path "../../../cmake/Android/Mengine/CMakeLists.txt"
             buildStagingDirectory rootProject.projectDir.getAbsolutePath() + "/../outputs/gradle/.cxx/" + project.getName()
         }
     }
@@ -46,7 +46,7 @@ android {
                     arguments.add("-DCMAKE_BUILD_TYPE:STRING=Debug")
 
                     if (MENGINE_BUILD_ASSERTION_DEBUG != -1) {
-                        cppFlags "-DMENGINE_ASSERTION_DEBUG=" + MENGINE_BUILD_ASSERTION_DEBUG
+                        cppFlags += ["-DMENGINE_ASSERTION_DEBUG=" + MENGINE_BUILD_ASSERTION_DEBUG]
                     }
                 }
             }
@@ -62,7 +62,7 @@ android {
                     arguments.add("-DCMAKE_BUILD_TYPE:STRING=Release")
 
                     if (MENGINE_BUILD_ASSERTION_DEBUG != -1) {
-                        cppFlags "-DMENGINE_ASSERTION_DEBUG=${MENGINE_BUILD_ASSERTION_DEBUG}"
+                        cppFlags += ["-DMENGINE_ASSERTION_DEBUG=${MENGINE_BUILD_ASSERTION_DEBUG}"]
                     }
                 }
             }

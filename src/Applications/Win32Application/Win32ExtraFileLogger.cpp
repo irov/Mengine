@@ -110,7 +110,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ExtraFileLogger::writeMessage_( const Char * _msg )
     {
-        size_t msgLen = MENGINE_STRLEN( _msg );
+        size_t msgLen = StdString::strlen( _msg );
 
         DWORD bytesWritten = 0;
         BOOL result = ::WriteFile( m_hLogFile, _msg, (DWORD)msgLen, &bytesWritten, NULL );

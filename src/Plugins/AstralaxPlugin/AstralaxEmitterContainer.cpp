@@ -153,7 +153,7 @@ namespace Mengine
             MAGIC_STATIC_ATLAS atlas;
             Magic_GetStaticAtlas( m_mf, i, &atlas );
 
-            if( MENGINE_STRCMP( atlas.file, _file ) != 0 )
+            if( StdString::strcmp( atlas.file, _file ) != 0 )
             {
                 continue;
             }

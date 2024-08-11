@@ -135,6 +135,7 @@
 #include "Config/StdString.h"
 #include "Config/Lambda.h"
 #include "Config/StdMath.h"
+#include "Config/DynamicCast.h"
 
 #include "math/angle.h"
 #include "math/vec4.h"
@@ -1533,7 +1534,7 @@ namespace Mengine
 
                 ResourceCook cook;
                 cook.type = STRINGIZE_STRING_LOCAL( "ResourceImageDefault" );
-                
+
                 ResourceImageDefaultPtr resource = RESOURCE_SERVICE()
                     ->createResource( cook, MENGINE_DOCUMENT_PYBIND );
 
@@ -1574,7 +1575,7 @@ namespace Mengine
             }
             //////////////////////////////////////////////////////////////////////////
             ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const Color & _color, const mt::vec2f & _maxSize )
-            {                
+            {
                 ResourceCook cook;
                 cook.type = STRINGIZE_STRING_LOCAL( "ResourceImageSolid" );
 
@@ -2197,7 +2198,7 @@ namespace Mengine
 
                     float angle_length = mt::angle_length( isometric_angle, dir_angle );
 
-                    float abs_angle_length = MENGINE_FABSF( angle_length );
+                    float abs_angle_length = Math::fabsf( angle_length );
 
                     if( abs_angle_length < min_angle )
                     {
@@ -2270,7 +2271,7 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
-                MENGINE_STRCAT( projectName, "/" );
+                StdString::strcat( projectName, "/" );
 
                 if( PLATFORM_SERVICE()
                     ->updateDesktopWallpaper( projectName, _filePath.c_str() ) == false )
@@ -2297,7 +2298,7 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
-                MENGINE_STRCAT( projectName, "/" );
+                StdString::strcat( projectName, "/" );
 
                 const void * memoryBuffer = memory->getBuffer();
                 size_t memorySize = memory->getSize();
@@ -2327,7 +2328,7 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
-                MENGINE_STRCAT( projectName, "/" );
+                StdString::strcat( projectName, "/" );
 
                 const void * memoryBuffer = memory->getBuffer();
                 size_t memorySize = memory->getSize();
@@ -2601,7 +2602,7 @@ namespace Mengine
 
                                 float cv_a = cv.getA();
 
-                                float pos_distance = MENGINE_SQRTF( pos_sqrdistance );
+                                float pos_distance = Math::sqrtf( pos_sqrdistance );
 
                                 float a0 = (pos_distance - radius) / penumbra;
 
@@ -3186,7 +3187,7 @@ namespace Mengine
 
                 while( node_iterator != nullptr )
                 {
-                    Scene * node_scene = dynamic_cast<Scene *>(node_iterator);
+                    Scene * node_scene = Helper::dynamicCast<Scene *>( node_iterator );
 
                     if( node_scene != nullptr )
                     {
@@ -4478,7 +4479,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterString", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterString );
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterInteger", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterInteger );
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterDouble", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterDouble );
-        pybind::def_functor_deprecated( _kernel, "analyticsCustomEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEvent, "use analyticsEvent");
+        pybind::def_functor_deprecated( _kernel, "analyticsCustomEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEvent, "use analyticsEvent" );
         pybind::def_functor( _kernel, "analyticsEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEvent );
         pybind::def_functor( _kernel, "analyticsScreenView", nodeScriptMethod, &EngineScriptMethod::s_analyticsScreenView );
         pybind::def_functor( _kernel, "analyticsEventFlush", nodeScriptMethod, &EngineScriptMethod::s_analyticsEventFlush );

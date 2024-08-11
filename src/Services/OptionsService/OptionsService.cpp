@@ -12,8 +12,6 @@
 
 #include "Config/Algorithm.h"
 
-#include <ctype.h>
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( OptionsService, Mengine::OptionsService );
 //////////////////////////////////////////////////////////////////////////
@@ -48,7 +46,7 @@ namespace Mengine
         {
             const Char * option_str = _arguments->getArgument( index );
 
-            const Char * option_key_str = MENGINE_STRCHR( option_str, '-' );
+            const Char * option_key_str = StdString::strchr( option_str, '-' );
 
             if( option_key_str == nullptr )
             {
@@ -62,13 +60,13 @@ namespace Mengine
                 ++option_key_str;
             }
 
-            const Char * option_value_str = MENGINE_STRCHR( option_key_str, ':' );
+            const Char * option_value_str = StdString::strchr( option_key_str, ':' );
 
             Option op;
 
             if( option_value_str == nullptr )
             {
-                if( MENGINE_STRLEN( option_key_str ) >= MENGINE_OPTIONS_KEY_SIZE )
+                if( StdString::strlen( option_key_str ) >= MENGINE_OPTIONS_KEY_SIZE )
                 {
                     return false;
                 }
@@ -89,13 +87,13 @@ namespace Mengine
 
                 op.key.assign( option_key_str, key_size );
 
-                const Char * option_delim_str = MENGINE_STRCHR( option_key_str, '|' );
+                const Char * option_delim_str = StdString::strchr( option_key_str, '|' );
 
                 if( option_delim_str == nullptr )
                 {
                     const Char * op_value = option_value_str + 1;
 
-                    if( MENGINE_STRLEN( op_value ) >= MENGINE_OPTIONS_VALUE_SIZE )
+                    if( StdString::strlen( op_value ) >= MENGINE_OPTIONS_VALUE_SIZE )
                     {
                         return false;
                     }
@@ -119,7 +117,7 @@ namespace Mengine
                         op.value[op.value_count].append( option_value_str + 1, value_size );
                         ++op.value_count;
 
-                        const Char * option_delim_test_str = MENGINE_STRCHR( option_delim_str + 1, '|' );
+                        const Char * option_delim_test_str = StdString::strchr( option_delim_str + 1, '|' );
 
                         if( option_delim_test_str != nullptr )
                         {
@@ -130,7 +128,7 @@ namespace Mengine
 
                         const Char * op_value = option_delim_str + 1;
 
-                        if( MENGINE_STRLEN( op_value ) >= MENGINE_OPTIONS_VALUE_SIZE )
+                        if( StdString::strlen( op_value ) >= MENGINE_OPTIONS_VALUE_SIZE )
                         {
                             return false;
                         }
@@ -164,7 +162,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::hasOption( const Char * _key, bool _withValue ) const
     {
-        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, MENGINE_STRLEN( _key ) );
+        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, StdString::strlen( _key ) );
 
         for( const Option & op : m_options )
         {
@@ -186,20 +184,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::setOptionValue( const Char * _key, const Char * _value )
     {
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _key ) < MENGINE_OPTIONS_KEY_SIZE, "option '%s' invalid key size %zu (max %u)"
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _key ) < MENGINE_OPTIONS_KEY_SIZE, "option '%s' invalid key size %zu (max %u)"
             , _key
-            , MENGINE_STRLEN( _key )
+            , StdString::strlen( _key )
             , MENGINE_OPTIONS_KEY_SIZE
         );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _value ) < MENGINE_OPTIONS_VALUE_SIZE, "option '%s' invalid value size %zu (max %u)"
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _value ) < MENGINE_OPTIONS_VALUE_SIZE, "option '%s' invalid value size %zu (max %u)"
             , _key
-            , MENGINE_STRLEN( _value )
+            , StdString::strlen( _value )
             , MENGINE_OPTIONS_VALUE_SIZE
         );
 
-        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, MENGINE_STRLEN( _key ) );
-        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _value, MENGINE_STRLEN( _value ) );
+        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, StdString::strlen( _key ) );
+        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _value, StdString::strlen( _value ) );
 
         for( const Option & op : m_options )
         {
@@ -212,7 +210,7 @@ namespace Mengine
         Option op;
         op.key.assign( _key );
 
-        if( MENGINE_STRLEN( _value ) == 0 )
+        if( StdString::strlen( _value ) == 0 )
         {
             op.value[0].clear();
             op.value_count = 0;
@@ -230,7 +228,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Char * OptionsService::getOptionValue( const Char * _key, const Char * _default ) const
     {
-        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, MENGINE_STRLEN( _key ) );
+        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, StdString::strlen( _key ) );
 
         for( const Option & op : m_options )
         {
@@ -249,7 +247,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::getOptionValues( const Char * _key, const Char ** _values, uint32_t * const _count ) const
     {
-        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, MENGINE_STRLEN( _key ) );
+        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, StdString::strlen( _key ) );
 
         for( const Option & op : m_options )
         {
@@ -273,7 +271,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int32_t OptionsService::getOptionInt32( const Char * _key, int32_t _default ) const
     {
-        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, MENGINE_STRLEN( _key ) );
+        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, StdString::strlen( _key ) );
 
         for( const Option & op : m_options )
         {
@@ -301,7 +299,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t OptionsService::getOptionUInt32( const Char * _key, uint32_t _default ) const
     {
-        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, MENGINE_STRLEN( _key ) );
+        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, StdString::strlen( _key ) );
 
         for( const Option & op : m_options )
         {
@@ -329,8 +327,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::testOptionValue( const Char * _key, const Char * _value ) const
     {
-        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, MENGINE_STRLEN( _key ) );
-        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _value, MENGINE_STRLEN( _value ) );
+        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, StdString::strlen( _key ) );
+        MENGINE_ASSERTION_LOWER_CHARACTER_SET( _value, StdString::strlen( _value ) );
 
         if( this->hasOption( _key, true ) == false )
         {
@@ -339,7 +337,7 @@ namespace Mengine
 
         const Char * value = this->getOptionValue( _key, "" );
 
-        if( MENGINE_STRCMP( value, _value ) != 0 )
+        if( StdString::strcmp( value, _value ) != 0 )
         {
             return false;
         }

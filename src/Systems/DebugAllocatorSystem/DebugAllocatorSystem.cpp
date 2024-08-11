@@ -45,7 +45,7 @@ namespace Mengine
         {
             uint8_t * b = MENGINE_PVOID_OFFSET( _p, _size );
 
-            MENGINE_MEMSET( b, 0xEF, MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
+            StdString::memset( b, 0xEF, MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE );
         }
         ////////////////////////////////////////////////////////////////////////
         static bool checkMemoryOverrideCorruptionTrap( const void * _p, size_t _size )
@@ -110,7 +110,7 @@ namespace Mengine
 
         size_t total_size = _size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE;
 
-        void * new_mem = MENGINE_MALLOC( total_size );
+        void * new_mem = StdLib::malloc( total_size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_mem, "invalid alloc memory '%zu' total '%u' [%s]"
             , total_size
@@ -159,7 +159,7 @@ namespace Mengine
         }
 #endif
 
-        MENGINE_FREE( _mem );
+        StdLib::free( _mem );
 
         this->report( _doc, 0, old_size );
 
@@ -176,7 +176,7 @@ namespace Mengine
         size_t calloc_size = _num * _size;
         size_t total_size = calloc_size + MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_SIZE;
 
-        void * new_mem = MENGINE_MALLOC( total_size );
+        void * new_mem = StdLib::malloc( total_size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_mem, "invalid calloc memory '%zu' total '%u' [%s]"
             , total_size
@@ -184,7 +184,7 @@ namespace Mengine
             , _doc
         );
 
-        MENGINE_MEMSET( new_mem, 0x00, calloc_size );
+        StdString::memset( new_mem, 0x00, calloc_size );
 
 #if defined(MENGINE_DEBUG_ALLOCATOR_MEMORY_OVERRIDE_CORRUPTION_ENABLE)
         Detail::setMemoryOverrideCorruptionTrap( new_mem, calloc_size );
@@ -212,7 +212,7 @@ namespace Mengine
 
         if( _mem == nullptr )
         {
-            void * mem = MENGINE_MALLOC( total_size );
+            void * mem = StdLib::malloc( total_size );
 
             MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' total '%u' from nullptr [%s]"
                 , total_size
@@ -249,7 +249,7 @@ namespace Mengine
         }
 #endif
 
-        void * new_mem = MENGINE_REALLOC( _mem, total_size );
+        void * new_mem = StdLib::realloc( _mem, total_size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_mem, "invalid realloc memory '%zu' total '%u' from '%p' [%s]"
             , total_size

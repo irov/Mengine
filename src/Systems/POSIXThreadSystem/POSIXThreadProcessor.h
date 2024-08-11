@@ -50,11 +50,9 @@ namespace Mengine
         EThreadPriority m_priority;
         ConstString m_name;
 
-        pthread_t m_threadId;
-
         ThreadMutexInterfacePtr m_mutex;
 
-        pthread_t m_thread;
+        pthread_t m_threadId;
 
         pthread_mutex_t m_taskLock;
         pthread_mutex_t m_processLock;

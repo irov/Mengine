@@ -62,7 +62,6 @@ namespace Mengine
                 ConstString Finalizer;
                 meta_script.get_Finalizer( &Finalizer );
 
-
                 _package->addPackageScript( Path, Module, Initializer, Finalizer, Platform );
             }
         }

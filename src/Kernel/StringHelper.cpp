@@ -54,11 +54,11 @@ namespace Mengine
             Char buffer[2048] = {'\0'};
             MENGINE_SNPRINTF( buffer, 2048, "%.1024f", _value );
 
-            Char * float_point = MENGINE_STRCHR( buffer, '.' );
+            Char * float_point = StdString::strchr( buffer, '.' );
 
             if( float_point != nullptr )
             {
-                size_t len = MENGINE_STRLEN( float_point );
+                size_t len = StdString::strlen( float_point );
 
                 Char * end_buffer = float_point + len;
 
@@ -320,7 +320,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool toupper( const Char * _str, Char * _upper, size_t _capacity )
         {
-            size_t len = MENGINE_STRLEN( _str );
+            size_t len = StdString::strlen( _str );
 
             if( len >= _capacity )
             {
@@ -333,7 +333,7 @@ namespace Mengine
             {
                 Char ch = _str[index];
 
-                _upper[index] = (Char)MENGINE_TOUPPER( ch );
+                _upper[index] = (Char)StdCType::toupper( ch );
             }
 
             _upper[len] = '\0';
@@ -346,13 +346,13 @@ namespace Mengine
             Algorithm::transform( _in.begin(), _in.end(), _upper->begin(),
                 []( Char c )
             {
-                return (Char)MENGINE_TOUPPER( c );
+                return (Char)StdCType::toupper( c );
             } );
         }
         //////////////////////////////////////////////////////////////////////////
         bool tolower( const Char * _str, Char * _lower, size_t _capacity )
         {
-            size_t len = MENGINE_STRLEN( _str );
+            size_t len = StdString::strlen( _str );
 
             if( len >= _capacity )
             {
@@ -365,7 +365,7 @@ namespace Mengine
             {
                 Char ch = _str[index];
 
-                _lower[index] = (Char)MENGINE_TOLOWER( ch );
+                _lower[index] = (Char)StdCType::tolower( ch );
             }
 
             _lower[len] = '\0';
@@ -378,7 +378,7 @@ namespace Mengine
             Algorithm::transform( _str.begin(), _str.end(), _lower->begin(),
                 []( Char c )
             {
-                return (Char)MENGINE_TOLOWER( c );
+                return (Char)StdCType::tolower( c );
             } );
         }
         //////////////////////////////////////////////////////////////////////////

@@ -18,6 +18,9 @@
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/FactoryInterface.h"
 
+#include "Environment/Android/AndroidIncluder.h"
+#include "Environment/Android/AndroidPlatformServiceExtensionInterface.h"
+
 #include "AndroidInput.h"
 
 #include "Kernel/ServiceBase.h"
@@ -26,11 +29,16 @@
 
 #include "Config/Timestamp.h"
 
+#include <EGL/egl.h>
+
 namespace Mengine
 {
     class AndroidPlatformService
         : public ServiceBase<PlatformServiceInterface>
+        , public AndroidPlatformServiceExtensionInterface
     {
+        DECLARE_UNKNOWABLE();
+
     public:
         AndroidPlatformService();
         ~AndroidPlatformService() override;
@@ -85,8 +93,6 @@ namespace Mengine
 
         bool getNoFullscreen() const override;
         bool getAlwaysFullscreen() const override;
-
-        bool setProcessDPIAware() override;
 
         bool isDebuggerPresent() const override;
         void debugBreak() override;
@@ -160,6 +166,11 @@ namespace Mengine
         bool getClipboardText( Char * _value, size_t _capacity ) const override;
 
     protected:
+        void setAndroidNativeWindow( ANativeWindow * _nativeWindow ) override;
+        void destroyAndroidNativeWindow( ANativeWindow * _nativeWindow ) override;
+        void changeAndroidNativeWindow( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate ) override;
+
+    protected:
         bool changeWindow_( const Resolution & _resolution, bool _fullscreen );
         void setupWindow_();
         bool createWindow_( const Resolution & _resolution, bool _fullscreen );
@@ -176,12 +187,15 @@ namespace Mengine
         void setActive_( bool _active );
 
     protected:
-        bool isNeedWindowRender() const;
-
-    protected:
         Timestamp m_beginTime;
 
         Tags m_platformTags;
+
+        ANativeWindow * m_nativeWindow;
+
+        EGLDisplay m_eglDisplay;
+        EGLSurface m_eglSurface;
+        EGLContext m_eglContext;
 
         /*
         SDL_Window * m_sdlWindow;

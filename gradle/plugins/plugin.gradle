@@ -16,12 +16,8 @@ android {
     sourceSets {
         main {
             if (ANDROID_APP_ASSETS_RES_CI == true) {
-                println 'ANDROID_APP_ASSETS_RES_DIR: res_ci [CI]'
-
                 res.srcDirs += ['../../app/res_ci']
             } else if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR")) {
-                println "ANDROID_APP_ASSETS_RES_DIR: $ANDROID_APP_ASSETS_RES_DIR"
-
                 def f = new File(ANDROID_APP_ASSETS_RES_DIR)
 
                 if (f.exists() == false) {
@@ -30,8 +26,6 @@ android {
 
                 res.srcDirs += [ANDROID_APP_ASSETS_RES_DIR]
             } else {
-                println 'ANDROID_APP_ASSETS_RES_DIR: res [Default]'
-
                 res.srcDirs += ['../../app/res']
             }
         }

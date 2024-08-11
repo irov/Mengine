@@ -2043,13 +2043,13 @@ namespace Mengine
             dh = 1.f;
         }
 
-        float areaWidth = MENGINE_CEILF( dw * windowWidth );
-        float areaHeight = MENGINE_CEILF( dh * windowHeight );
+        float areaWidth = Math::ceilf( dw * windowWidth );
+        float areaHeight = Math::ceilf( dh * windowHeight );
 
         *_aspect = bestAspect;
 
-        _viewport->begin.x = MENGINE_CEILF( (windowWidth - areaWidth) * 0.5f );
-        _viewport->begin.y = MENGINE_CEILF( (windowHeight - areaHeight) * 0.5f );
+        _viewport->begin.x = Math::ceilf( (windowWidth - areaWidth) * 0.5f );
+        _viewport->begin.y = Math::ceilf( (windowHeight - areaHeight) * 0.5f );
         _viewport->end.x = _viewport->begin.x + areaWidth;
         _viewport->end.y = _viewport->begin.y + areaHeight;
     }
@@ -2418,13 +2418,13 @@ namespace Mengine
             dh = 1.f;
         }
 
-        float areaWidth = MENGINE_CEILF( dw * contentWidth );
-        float areaHeight = MENGINE_CEILF( dh * contentHeight );
+        float areaWidth = Math::ceilf( dw * contentWidth );
+        float areaHeight = Math::ceilf( dh * contentHeight );
 
         *_aspect = contentAspect;
 
-        _viewport->begin.x = MENGINE_CEILF( (contentWidth - areaWidth) * 0.5f );
-        _viewport->begin.y = MENGINE_CEILF( (contentHeight - areaHeight) * 0.5f );
+        _viewport->begin.x = Math::ceilf( (contentWidth - areaWidth) * 0.5f );
+        _viewport->begin.y = Math::ceilf( (contentHeight - areaHeight) * 0.5f );
         _viewport->end.x = _viewport->begin.x + areaWidth;
         _viewport->end.y = _viewport->begin.y + areaHeight;
     }

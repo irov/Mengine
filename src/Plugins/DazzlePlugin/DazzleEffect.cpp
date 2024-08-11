@@ -303,7 +303,7 @@ namespace Mengine
 
             m_renderVertices = Helper::reallocateArrayT<RenderVertex2D>( m_renderVertices, m_renderVertexCount );
 
-            MENGINE_MEMSET( m_renderVertices, 0x00, m_renderVertexCount * sizeof( RenderVertex2D ) );
+            StdString::memset( m_renderVertices, 0x00, m_renderVertexCount * sizeof( RenderVertex2D ) );
         }
 
         if( m_renderIndexCount < indexCount )

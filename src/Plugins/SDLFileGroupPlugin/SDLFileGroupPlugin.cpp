@@ -38,12 +38,12 @@ namespace Mengine
             ->getCurrentPath( utf8_currentPath );
         
 #if defined(MENGINE_PLATFORM_IOS)
-        MENGINE_STRCAT( utf8_currentPath, "Data/" );
+        StdString::strcat( utf8_currentPath, "Data/" );
 #elif defined(MENGINE_PLATFORM_MACOS)
-        MENGINE_STRCAT( utf8_currentPath, "Data/" );
+        StdString::strcat( utf8_currentPath, "Data/" );
 #endif
         
-        size_t utf8_currentPathLen = MENGINE_STRLEN( utf8_currentPath );
+        size_t utf8_currentPathLen = StdString::strlen( utf8_currentPath );
 
         FilePath relationPath = Helper::stringizeFilePathSize( utf8_currentPath, (FilePath::size_type)utf8_currentPathLen );
 

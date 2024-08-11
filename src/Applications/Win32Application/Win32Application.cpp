@@ -18,6 +18,8 @@
 #   include "Environment/Windows/Win32OutputDebugLogger.h"
 #endif
 
+#include "Mengine/MenginePlugin.h"
+
 #include "Win32ExtraFileLogger.h"
 
 #include "Kernel/ConfigHelper.h"
@@ -30,7 +32,6 @@
 #include "Config/StdIO.h"
 #include "Config/StdIntTypes.h"
 
-#include <clocale>
 #include <memory>
 #include <cerrno>
 #include <ctime>
@@ -38,33 +39,16 @@
 
 #include "resource.h"
 
-
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_DLL_NAME
 #define MENGINE_DLL_NAME L"Mengine.dll"
-#endif
-
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_MENGINE_STATIC)
-extern Mengine::ServiceProviderInterface * initializeMengine();
-extern bool bootstrapMengine();
-extern bool runMengine();
-extern void finalizeMengine();
 #endif
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-    //////////////////////////////////////////////////////////////////////////
-    typedef ServiceProviderInterface * (*FMengineInitialize)(void);
-    typedef bool (*FMengineBootstrap)(void);
-    typedef bool (*FMengineRun)(void);
-    typedef void (*FMengineFinalize)(void);
-    //////////////////////////////////////////////////////////////////////////
-#endif
-    //////////////////////////////////////////////////////////////////////////
     Win32Application::Win32Application()
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
         : m_hInstance( NULL )
 #endif
     {
@@ -221,7 +205,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initialize()
     {
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
         HINSTANCE hInstance = ::LoadLibrary( MENGINE_DLL_NAME );
 
         if( hInstance == NULL )
@@ -233,7 +217,7 @@ namespace Mengine
             WChar message[1024] = {L'\0'};
             MENGINE_WNSPRINTF( message, 1024, L"Invalid load %ls [%lu]"
                 , MENGINE_DLL_NAME
-                , error_code 
+                , error_code
             );
 
             ::MessageBox( NULL, message, L"Mengine Error", MB_OK );
@@ -242,10 +226,12 @@ namespace Mengine
         }
 
         m_hInstance = hInstance;
+#endif
 
-        FARPROC dllMengineCreate = ::GetProcAddress( m_hInstance, "API_MengineCreate" );
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        FAPI_MengineCreate API_MengineCreate = (FAPI_MengineCreate)::GetProcAddress( m_hInstance, "API_MengineCreate" );
 
-        if( dllMengineCreate == nullptr )
+        if( API_MengineCreate == nullptr )
         {
             DWORD error_code = ::GetLastError();
 
@@ -262,18 +248,14 @@ namespace Mengine
 
             return false;
         }
+#endif
 
-        FMengineInitialize dlMengineCreate = (FMengineInitialize)dllMengineCreate;
-
-        ServiceProviderInterface * serviceProvider = (*dlMengineCreate)();
+        ServiceProviderInterface * serviceProvider = API_MengineCreate();
 
         if( serviceProvider == nullptr )
         {
             return false;
         }
-#else
-        ServiceProviderInterface * serviceProvider = API_MengineCreate();
-#endif
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
@@ -282,7 +264,7 @@ namespace Mengine
             if( this->initializeOptionsService_() == false )
             {
                 return false;
-            }            
+            }
 
             return true;
         } );
@@ -302,47 +284,33 @@ namespace Mengine
             this->finalizeLoggerService_();
         } );
 
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-        FARPROC dllMengineBootstrap = ::GetProcAddress( m_hInstance, "API_MengineBootstrap" );
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        FAPI_MengineBootstrap API_MengineBootstrap = (FAPI_MengineBootstrap)::GetProcAddress( m_hInstance, "API_MengineBootstrap" );
 
-        if( dllMengineBootstrap == nullptr )
+        if( API_MengineBootstrap == nullptr )
         {
             return false;
         }
+#endif
 
-        FMengineBootstrap dlMengineBootstrap = (FMengineBootstrap)dllMengineBootstrap;
-
-        if( (*dlMengineBootstrap)() == false )
-        {
-            return false;
-        }        
-#else
         if( API_MengineBootstrap() == false )
         {
             return false;
         }
+
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        FAPI_MengineRun API_MengineRun = (FAPI_MengineRun)::GetProcAddress( m_hInstance, "API_MengineRun" );
+
+        if( API_MengineRun == nullptr )
+        {
+            return false;
+        }
 #endif
 
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-        FARPROC dllMengineRun = ::GetProcAddress( m_hInstance, "API_MengineRun" );
-
-        if( dllMengineRun == nullptr )
-        {
-            return false;
-        }
-
-        FMengineRun dlMengineRun = (FMengineRun)dllMengineRun;
-
-        if( (*dlMengineRun)() == false )
-        {
-            return false;
-        }
-#else
         if( API_MengineRun() == false )
         {
             return false;
         }
-#endif
 
         LOGGER_INFO( "system", "creating render window..." );
 
@@ -398,7 +366,7 @@ namespace Mengine
             LOGGER_FATAL( "invalid create window [%u:%u] fullscreen [%s]"
                 , windowResolution.getWidth()
                 , windowResolution.getHeight()
-                , fullscreen == true ? "YES" : "NO" 
+                , fullscreen == true ? "YES" : "NO"
             );
 
             return false;
@@ -458,20 +426,20 @@ namespace Mengine
             }
         }
 
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-        FARPROC dllMengineFinalize = ::GetProcAddress( m_hInstance, "API_MengineFinalize" );
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        FAPI_MengineFinalize API_MengineFinalize = (FAPI_MengineFinalize)::GetProcAddress( m_hInstance, "API_MengineFinalize" );
 
-        if( dllMengineFinalize != nullptr )
+        if( API_MengineFinalize != nullptr )
         {
-            FMengineFinalize dlMengineFinalize = (FMengineFinalize)dllMengineFinalize;
-
-            (*dlMengineFinalize)();
+            API_MengineFinalize();
         }
+#else
+        API_MengineFinalize();
+#endif
 
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
         ::FreeLibrary( m_hInstance );
         m_hInstance = NULL;
-#else
-        finalizeMengine();
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

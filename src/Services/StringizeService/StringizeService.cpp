@@ -72,7 +72,7 @@ namespace Mengine
 
         if( _size == MENGINE_STRINGIZE_UNKNOWN_SIZE )
         {
-            size_t len = MENGINE_STRLEN( _str );
+            size_t len = StdString::strlen( _str );
 
             _size = (ConstStringHolder::size_type)len;
         }
@@ -202,7 +202,7 @@ namespace Mengine
 
         if( holder_size == MENGINE_STRINGIZE_UNKNOWN_SIZE )
         {
-            holder_size = (ConstStringHolder::size_type)MENGINE_STRLEN( holder_str );
+            holder_size = (ConstStringHolder::size_type)StdString::strlen( holder_str );
         }
 
         if( holder_hash == MENGINE_STRINGIZE_UNKNOWN_HASH )
@@ -254,7 +254,7 @@ namespace Mengine
 
         if( test != nullptr )
         {
-            MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( test->c_str(), _str ) == 0, "stringize unique '%s' already exist"
+            MENGINE_ASSERTION_FATAL( StdString::strcmp( test->c_str(), _str ) == 0, "stringize unique '%s' already exist"
                 , _str
             );
 
@@ -297,7 +297,7 @@ namespace Mengine
 
             const ConstStringHolder::value_type * holder_str = holder->c_str();
 
-            if( MENGINE_STRNCMP( holder_str, _str, _size ) != 0 )
+            if( StdString::strncmp( holder_str, _str, _size ) != 0 )
             {
                 continue;
             }

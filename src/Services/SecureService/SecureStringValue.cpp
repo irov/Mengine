@@ -147,7 +147,7 @@ namespace Mengine
             return false;
         }
 
-        *_result = MENGINE_STRCMP( test_unprotected_value.c_str(), base_unprotected_value.c_str() );
+        *_result = StdString::strcmp( test_unprotected_value.c_str(), base_unprotected_value.c_str() );
 
         return true;
     }

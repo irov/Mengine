@@ -119,7 +119,7 @@ namespace Mengine
             return false;
         }
 
-        size_t buffer_size = MENGINE_STRLEN( buffer );
+        size_t buffer_size = StdString::strlen( buffer );
 
         if( stream->write( buffer, buffer_size ) != buffer_size )
         {
@@ -158,7 +158,7 @@ namespace Mengine
         const Char * memory_buffer = preferenceMemory->getBuffer();
         size_t memory_size = preferenceMemory->getSize();
 
-        MENGINE_STRNCPY( _value, memory_buffer, _capacity );
+        StdString::strncpy( _value, memory_buffer, _capacity );
 
         if( _size != nullptr )
         {
@@ -185,7 +185,7 @@ namespace Mengine
             return false;
         }
 
-        size_t value_size = MENGINE_STRLEN( _value );
+        size_t value_size = StdString::strlen( _value );
 
         if( stream->write( _value, value_size ) != value_size )
         {

@@ -8,8 +8,12 @@
 #include "Kernel/Typename.h"
 #include "Kernel/ServiceRequiredList.h"
 
+#if defined(MENGINE_DEBUG)
+#   include "Config/DynamicCast.h"
+#endif
+
 namespace Mengine
-{   
+{
     //////////////////////////////////////////////////////////////////////////
     class ServiceInterface
         : public Factorable
@@ -81,7 +85,7 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_DEBUG)
-                if( dynamic_cast<T *>(service_ptr) == nullptr )
+                if( Helper::dynamicCast<T *>( service_ptr ) == nullptr )
                 {
                     const Char * typenameValue = Typename<T>::value;
 

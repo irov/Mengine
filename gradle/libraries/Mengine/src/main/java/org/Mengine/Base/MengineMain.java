@@ -2,27 +2,58 @@ package org.Mengine.Base;
 
 import android.os.Process;
 
+import java.util.concurrent.CountDownLatch;
+
 public class MengineMain implements Runnable {
     public static final String TAG = "MengineMain";
 
-    private static native void AndroidMain_nativeRunMain(Object activity);
+    private static native boolean AndroidMain_main(Object application);
 
-    private String m_args;
+    MengineActivity m_activity;
 
-    public MengineMain(String args) {
-        m_args = args;
+    Object m_nativeApplication;
+    CountDownLatch m_runLatch;
+
+    public MengineMain(MengineActivity activity, Object nativeApplication, CountDownLatch runLatch) {
+        m_activity = activity;
+        m_nativeApplication = nativeApplication;
+        m_runLatch = runLatch;
     }
 
     @Override
     public void run() {
         try {
-            Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
+            Thread.currentThread().setName("MengineMain");
         } catch (Exception e) {
-            MengineLog.logError(TAG, "modify main thread priority exception: "
-                    , e.getMessage()
+            MengineLog.logMessage(TAG, "modify main thread name exception: %s"
+                , e.getMessage()
             );
         }
 
-        AndroidMain_nativeRunMain(m_args);
+        try {
+            Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
+        } catch (Exception e) {
+            MengineLog.logMessage(TAG, "modify main thread priority exception: %s"
+                , e.getMessage()
+            );
+        }
+
+        try {
+            m_runLatch.await();
+        } catch (InterruptedException e) {
+            MengineLog.logMessage(TAG, "wait runLatch exception: %s"
+                , e.getMessage()
+            );
+
+            return;
+        }
+
+        if (AndroidMain_main(m_nativeApplication) == false) {
+            MengineUtils.finishActivityWithAlertDialog(m_activity, "main finish with failed");
+
+            return;
+        }
+
+        MengineLog.logMessage(TAG, "main finish succesful");
     }
 }

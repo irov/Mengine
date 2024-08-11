@@ -12,6 +12,62 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
+        time_t Win32FileTimeToUnixTime( const FILETIME * _filetime )
+        {
+            uint32_t a0;
+            uint32_t a1;
+            uint32_t a2;
+
+            uint32_t carry;
+            int negative;
+
+            a2 = _filetime->dwHighDateTime;
+            a1 = ((uint32_t)_filetime->dwLowDateTime) >> 16;
+            a0 = ((uint32_t)_filetime->dwLowDateTime) & 0xffff;
+
+            if( a0 >= 32768 )
+                a0 -= 32768, carry = 0;
+            else
+                a0 += (1 << 16) - 32768, carry = 1;
+
+            if( a1 >= 54590 + carry )
+                a1 -= 54590 + carry, carry = 0;
+            else
+                a1 += (1 << 16) - 54590 - carry, carry = 1;
+
+            a2 -= 27111902 + carry;
+
+            negative = (a2 >= ((uint32_t)1) << 31);
+            if( negative )
+            {
+                a0 = 0xffff - a0;
+                a1 = 0xffff - a1;
+                a2 = ~a2;
+            }
+
+            a1 += (a2 % 10000) << 16;
+            a2 /= 10000;
+            a0 += (a1 % 10000) << 16;
+            a1 /= 10000;
+            a0 /= 10000;
+
+            a1 += (a2 % 1000) << 16;
+            a2 /= 1000;
+            a0 += (a1 % 1000) << 16;
+            a1 /= 1000;
+            a0 /= 1000;
+
+            if( negative )
+            {
+                /* Set a to -a - 1 (a is a2/a1/a0) */
+                a0 = 0xffff - a0;
+                a1 = 0xffff - a1;
+                a2 = ~a2;
+            }
+
+            return ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
+        }
+        //////////////////////////////////////////////////////////////////////////
         HANDLE Win32CreateFile( const WChar * _filePath, DWORD _desiredAccess, DWORD _sharedMode, DWORD _creationDisposition )
         {
             WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
@@ -68,7 +124,7 @@ namespace Mengine
 
             const WChar * filename = ::PathFindFileNameW( _path );
 
-            if( MENGINE_WCSCMP( filename, wfd.cFileName ) != 0 )
+            if( StdString::wcscmp( filename, wfd.cFileName ) != 0 )
             {
                 LOGGER_ERROR( "file invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
                     , _path
@@ -86,9 +142,9 @@ namespace Mengine
         {
             {
                 WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
-                MENGINE_WCSCPY( sPath, _dir );
-                MENGINE_WCSCAT( sPath, _path );
-                MENGINE_WCSCAT( sPath, _mask );
+                StdString::wcscpy( sPath, _dir );
+                StdString::wcscat( sPath, _path );
+                StdString::wcscat( sPath, _mask );
 
                 WIN32_FIND_DATA fdFile;
                 HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
@@ -97,8 +153,8 @@ namespace Mengine
                 {
                     do
                     {
-                        if( MENGINE_WCSCMP( fdFile.cFileName, L"." ) == 0 ||
-                            MENGINE_WCSCMP( fdFile.cFileName, L".." ) == 0 )
+                        if( StdString::wcscmp( fdFile.cFileName, L"." ) == 0 ||
+                            StdString::wcscmp( fdFile.cFileName, L".." ) == 0 )
                         {
                             continue;
                         }
@@ -109,8 +165,8 @@ namespace Mengine
                         }
 
                         WChar sPath2[MENGINE_MAX_PATH] = {L'\0'};
-                        MENGINE_WCSCPY( sPath2, sPath );
-                        MENGINE_WCSCAT( sPath2, L"\0" );
+                        StdString::wcscpy( sPath2, sPath );
+                        StdString::wcscat( sPath2, L"\0" );
 
                         Helper::pathCorrectForwardslashW( sPath2 );
 
@@ -120,7 +176,7 @@ namespace Mengine
                         ::PathCombineW( unicode_filepath, sPath2, fdFile.cFileName );
 
                         WChar unicode_out[MENGINE_MAX_PATH] = {L'\0'};
-                        if( MENGINE_WCSLEN( _dir ) != 0 )
+                        if( StdString::wcslen( _dir ) != 0 )
                         {
                             ::PathRelativePathToW( unicode_out,
                                 _dir,
@@ -130,7 +186,7 @@ namespace Mengine
                         }
                         else
                         {
-                            MENGINE_WCSCPY( unicode_out, unicode_filepath );
+                            StdString::wcscpy( unicode_out, unicode_filepath );
                         }
 
 
@@ -151,9 +207,9 @@ namespace Mengine
 
             {
                 WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
-                MENGINE_WCSCPY( sPath, _dir );
-                MENGINE_WCSCAT( sPath, _path );
-                MENGINE_WCSCAT( sPath, L"*.*" );
+                StdString::wcscpy( sPath, _dir );
+                StdString::wcscat( sPath, _path );
+                StdString::wcscat( sPath, L"*.*" );
 
                 WIN32_FIND_DATA fdFile;
                 HANDLE hFind = ::FindFirstFileExW( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
@@ -165,8 +221,8 @@ namespace Mengine
 
                 do
                 {
-                    if( MENGINE_WCSCMP( fdFile.cFileName, L"." ) == 0 ||
-                        MENGINE_WCSCMP( fdFile.cFileName, L".." ) == 0 )
+                    if( StdString::wcscmp( fdFile.cFileName, L"." ) == 0 ||
+                        StdString::wcscmp( fdFile.cFileName, L".." ) == 0 )
                     {
                         continue;
                     }
@@ -177,8 +233,8 @@ namespace Mengine
                     }
 
                     WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
-                    MENGINE_WCSCPY( currentPath, sPath );
-                    MENGINE_WCSCAT( currentPath, L"\0" );
+                    StdString::wcscpy( currentPath, sPath );
+                    StdString::wcscat( currentPath, L"\0" );
 
                     ::PathRemoveFileSpecW( currentPath );
 

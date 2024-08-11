@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool POSIXThreadSharedMutex::initialize()
     {
-        int status = pthread_rwlock_init( &m_rwlock, nullptr );
+        int status = ::pthread_rwlock_init( &m_rwlock, nullptr );
 
         if( status != 0 )
         {
@@ -33,7 +33,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadSharedMutex::finalize()
     {
-        int status = pthread_rwlock_destroy( &m_rwlock );
+        int status = ::pthread_rwlock_destroy( &m_rwlock );
 
         if( status != 0 )
         {
@@ -46,7 +46,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadSharedMutex::lock()
     {
-        int status = pthread_rwlock_wrlock( &m_rwlock );
+        int status = ::pthread_rwlock_wrlock( &m_rwlock );
 
         if( status != 0 )
         {
@@ -59,7 +59,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadSharedMutex::unlock()
     {
-        int status = pthread_rwlock_unlock( &m_rwlock );
+        int status = ::pthread_rwlock_unlock( &m_rwlock );
 
         if( status != 0 )
         {
@@ -72,7 +72,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool POSIXThreadSharedMutex::tryLock()
     {
-        int status = pthread_rwlock_trywrlock( &m_rwlock );
+        int status = ::pthread_rwlock_trywrlock( &m_rwlock );
 
         if( status == 0 )
         {
@@ -94,7 +94,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadSharedMutex::lockShared()
     {
-        int status = pthread_rwlock_rdlock( &m_rwlock );
+        int status = ::pthread_rwlock_rdlock( &m_rwlock );
 
         if( status != 0 )
         {
@@ -107,7 +107,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadSharedMutex::unlockShared()
     {
-        int status = pthread_rwlock_unlock( &m_rwlock );
+        int status = ::pthread_rwlock_unlock( &m_rwlock );
 
         if( status != 0 )
         {
@@ -120,7 +120,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool POSIXThreadSharedMutex::tryLockShared()
     {
-        int status = pthread_rwlock_tryrdlock( &m_rwlock );
+        int status = ::pthread_rwlock_tryrdlock( &m_rwlock );
 
         if( status == 0 )
         {

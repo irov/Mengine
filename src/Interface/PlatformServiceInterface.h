@@ -104,9 +104,6 @@ namespace Mengine
         virtual void onEvent( const ConstString & _event, const Params & _params ) = 0;
 
     public:
-        virtual float getJoystickAxis( uint32_t _index ) const = 0;
-
-    public:
         virtual size_t getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const = 0;
 
     public:

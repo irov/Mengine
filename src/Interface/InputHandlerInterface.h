@@ -18,6 +18,7 @@ namespace Mengine
     {
         IET_KEY,
         IET_TEXT,
+        IET_ACCELEROMETER,
         IET_MOUSE_BUTTON,
         IET_MOUSE_WHELL,
         IET_MOUSE_MOVE,
@@ -51,6 +52,15 @@ namespace Mengine
         float x;
         float y;
         WChar text[MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE];
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputAccelerometerEvent
+    {
+        InputSpecialData special;
+
+        float x;
+        float y;
+        float z;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseButtonEvent
@@ -114,6 +124,9 @@ namespace Mengine
     public:
         virtual bool handleKeyEvent( const InputKeyEvent & _event ) = 0;
         virtual bool handleTextEvent( const InputTextEvent & _event ) = 0;
+
+    public:
+        virtual bool handleAccelerometerEvent( const InputAccelerometerEvent & _event ) = 0;
 
     public:
         virtual bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) = 0;

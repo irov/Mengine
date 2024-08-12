@@ -178,5 +178,22 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
+        void pushAccelerometerEvent( float _x, float _y, float _z )
+        {
+            InputServiceInterface::InputUnionEvent ev;
+
+            ev.type = IET_ACCELEROMETER;
+
+            INPUT_SERVICE()
+                ->getSpecial( &ev.data.special );
+
+            ev.data.accelerometer.x = _x;
+            ev.data.accelerometer.y = _y;
+            ev.data.accelerometer.z = _z;
+
+            INPUT_SERVICE()
+                ->pushEvent( ev );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

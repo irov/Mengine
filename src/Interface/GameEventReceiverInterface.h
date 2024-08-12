@@ -25,6 +25,7 @@ namespace Mengine
         EVENT_GAME_VIEWPORT,
         EVENT_GAME_KEY,
         EVENT_GAME_TEXT,
+        EVENT_GAME_ACCELEROMETER,
         EVENT_GAME_MOUSE_BUTTON,
         EVENT_GAME_MOUSE_BUTTON_BEGIN,
         EVENT_GAME_MOUSE_BUTTON_END,
@@ -82,6 +83,7 @@ namespace Mengine
         virtual void onGameViewport( const Viewport & _viewport, float _aspect ) = 0;
         virtual bool onGameKey( const InputKeyEvent & _event ) = 0;
         virtual bool onGameText( const InputTextEvent & _event ) = 0;
+        virtual bool onGameAccelerometer( const InputAccelerometerEvent & _event ) = 0;
         virtual bool onGameMouseButton( const InputMouseButtonEvent & _event ) = 0;
         virtual bool onGameMouseButtonBegin( const InputMouseButtonEvent & _event ) = 0;
         virtual bool onGameMouseButtonEnd( const InputMouseButtonEvent & _event ) = 0;
@@ -135,6 +137,7 @@ namespace Mengine
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_VIEWPORT );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_KEY );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_TEXT );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ACCELEROMETER );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_MOUSE_BUTTON );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_MOUSE_BUTTON_BEGIN );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_MOUSE_BUTTON_END );

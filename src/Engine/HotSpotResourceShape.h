@@ -1,8 +1,8 @@
 #pragma once
 
-#include "HotSpotPolygon.h"
+#include "Engine/HotSpotPolygon.h"
 
-#include "ResourceShape.h"
+#include "Engine/ResourceShape.h"
 
 namespace Mengine
 {

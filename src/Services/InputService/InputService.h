@@ -1,14 +1,12 @@
 #pragma once
 
 #include "Interface/InputServiceInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
 #include "Kernel/Resolution.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Vector.h"
-
-#include "math/vec2.h"
 
 namespace Mengine
 {
@@ -63,6 +61,7 @@ namespace Mengine
     protected:
         void keyEvent_( const InputKeyEvent & _params );
         void textEvent_( const InputTextEvent & _params );
+        void accelerometerEvent_( const InputAccelerometerEvent & _params );
         void mouseButtonEvent_( const InputMouseButtonEvent & _params );
         void mouseMoveEvent_( const InputMouseMoveEvent & _params );
         void mouseWheelEvent_( const InputMouseWheelEvent & _params );
@@ -75,6 +74,8 @@ namespace Mengine
     protected:
         mt::vec2f m_cursorPosition[MENGINE_INPUT_MAX_TOUCH];
         float m_cursorPressure[MENGINE_INPUT_MAX_TOUCH];
+
+        ThreadMutexInterfacePtr m_mutex;
 
         struct InputMousePositionProviderDesc
         {

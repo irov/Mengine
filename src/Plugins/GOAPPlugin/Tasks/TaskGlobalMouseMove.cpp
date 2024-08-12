@@ -36,7 +36,7 @@ namespace Mengine
             _node->complete();
         };
 
-        UniqueId id = Helper::addGlobalMouseMoveEvent( lambda, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) );
+        UniqueId id = Helper::addGlobalMouseMoveHandler( lambda, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) );
 
         if( id == INVALID_UNIQUE_ID )
         {

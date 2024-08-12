@@ -26,6 +26,7 @@ namespace Mengine
         void onGameViewport( const Viewport & _viewport, float _aspect ) override;
         bool onGameKey( const InputKeyEvent & _event ) override;
         bool onGameText( const InputTextEvent & _event ) override;
+        bool onGameAccelerometer( const InputAccelerometerEvent & _event ) override;
         bool onGameMouseButton( const InputMouseButtonEvent & _event ) override;
         bool onGameMouseButtonBegin( const InputMouseButtonEvent & _event ) override;
         bool onGameMouseButtonEnd( const InputMouseButtonEvent & _event ) override;

@@ -73,8 +73,6 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1surfaceCreated )(JNIEnv * env, jclass cls, jobject surface)
     {
-        MENGINE_UNUSED( cls );
-
         ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, surface );
 
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
@@ -85,8 +83,6 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1surfaceDestroyed )(JNIEnv * env, jclass cls, jobject surface)
     {
-        MENGINE_UNUSED( cls );
-
         ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, surface );
 
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
@@ -97,14 +93,28 @@ extern "C"
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1surfaceChanged )(JNIEnv * env, jclass cls, jobject surface, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate)
     {
-        MENGINE_UNUSED( cls );
-
         ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, surface );
 
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
-                ->getUnknown();
+            ->getUnknown();
 
         platformExtension->changeAndroidNativeWindow( nativeWindow, surfaceWidth, surfaceHeight, deviceWidth, deviceHeight, rate );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1touchEvent )(JNIEnv * env, jclass cls, jint action, jint pointerId, jfloat x, jfloat y, jfloat pressure)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->touchEvent( action, pointerId, x, y, pressure );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1accelerationEvent )(JNIEnv * env, jclass cls, jfloat x, jfloat y, jfloat z)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->accelerationEvent( x, y, z );
     }
     ///////////////////////////////////////////////////////////////////////
 }
@@ -183,28 +193,6 @@ namespace Mengine
         size_t Project_ExtraPreferencesFolderNameLen = StdString::strlen( Project_ExtraPreferencesFolderName );
 
         return Project_ExtraPreferencesFolderNameLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float AndroidPlatformService::getJoystickAxis( uint32_t _index ) const
-    {
-        MENGINE_UNUSED( _index );
-
-        /*
-        if( m_sdlAccelerometer == nullptr )
-        {
-            return 0.f;
-        }
-
-        float axis = SDL_JoystickGetAxis( m_sdlAccelerometer, _index );
-
-        const float inv_maxint32f = 1.f / 32767.f;
-
-        axis *= inv_maxint32f;
-
-        return axis;
-         */
-
-        return 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidPlatformService::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const
@@ -1953,6 +1941,89 @@ namespace Mengine
     void AndroidPlatformService::changeAndroidNativeWindow( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate )
     {
 
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ETouchCode AndroidPlatformService::acquireFingerIndex_( jint _pointerId )
+    {
+        for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
+        {
+            jint fingerId = m_fingers[index];
+
+            if( fingerId == -1 )
+            {
+                m_fingers[index] = _pointerId;
+
+                return static_cast<ETouchCode>(index);
+            }
+        }
+
+        return TC_TOUCH_INVALID;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ETouchCode AndroidPlatformService::releaseFingerIndex_( jint _pointerId )
+    {
+        for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
+        {
+            jint pointerId = m_fingers[index];
+
+            if( pointerId == _pointerId )
+            {
+                m_fingers[index] = -1;
+
+                return static_cast<ETouchCode>(index);
+            }
+        }
+
+        return TC_TOUCH_INVALID;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ETouchCode AndroidPlatformService::getFingerIndex_( jint _pointerId ) const
+    {
+        for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
+        {
+            jint pointerId = m_fingers[index];
+
+            if( pointerId == _pointerId )
+            {
+                return static_cast<ETouchCode>(index);
+            }
+        }
+
+        return TC_TOUCH_INVALID;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::touchEvent( jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure )
+    {
+        switch( _action )
+        {
+        case 0 /*ACTION_DOWN*/:
+        case 5 /*ACTION_POINTER_DOWN*/:
+            {
+                ETouchCode fingerIndex = this->acquireFingerIndex_( _pointerId );
+
+                Helper::pushMouseButtonEvent( fingerIndex, _x, _y, MC_LBUTTON, _pressure, true );
+            }break;
+        case 1 /*ACTION_UP*/:
+        case 6 /*ACTION_POINTER_UP*/:
+            {
+                ETouchCode fingerIndex = this->releaseFingerIndex_( _pointerId );
+
+                Helper::pushMouseButtonEvent( fingerIndex, _x, _y, MC_LBUTTON, _pressure, false );
+            }break;
+        case 2/*ACTION_MOVE*/:
+            {
+                ETouchCode fingerIndex = this->getFingerIndex_( _pointerId );
+
+                Helper::pushMouseMoveEvent( fingerIndex, _x, _y, 0.f, 0.f, _pressure );
+            }break;
+        default:
+            break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::accelerationEvent( jfloat _x, jfloat _y, jfloat _z )
+    {
+        Helper::pushAccelerometerEvent( _x, _y, _z );
     }
     //////////////////////////////////////////////////////////////////////////
 }

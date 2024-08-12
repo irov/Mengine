@@ -40,7 +40,6 @@
 #include "Engine/ResourceShape.h"
 #include "Engine/ResourceCursorICO.h"
 #include "Engine/ResourceCursorSystem.h"
-#include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/HotSpotGlobal.h"
 #include "Engine/HotSpotCircle.h"

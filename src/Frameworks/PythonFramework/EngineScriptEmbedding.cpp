@@ -59,7 +59,6 @@
 #include "Engine/ResourceTestPick.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceShape.h"
-#include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/HotSpotCircle.h"
 #include "Engine/HotSpotImage.h"
@@ -184,6 +183,7 @@ namespace Mengine
                 m_factoryPyGlobalMouseHandlerButtonBegins = Helper::makeFactoryPool<PyGlobalMouseHandlerButtonBegin, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalKeyHandler = Helper::makeFactoryPool<PyGlobalKeyHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalTextHandler = Helper::makeFactoryPool<PyGlobalTextHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryPyGlobalAccelerometerHandler = Helper::makeFactoryPool<PyGlobalAccelerometerHandler, 8>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyInputMousePositionProvider = Helper::makeFactoryPool<PyInputMousePositionProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
                 m_creatorAffectorNodeFollowerLocalAlpha = Helper::makeFactorableUnique<AffectorNodeFollowerCreator<Node, float>>( MENGINE_DOCUMENT_FACTORABLE );
@@ -241,6 +241,7 @@ namespace Mengine
                 m_factoryPyGlobalMouseHandlerButtonBegins = nullptr;
                 m_factoryPyGlobalKeyHandler = nullptr;
                 m_factoryPyGlobalTextHandler = nullptr;
+                m_factoryPyGlobalAccelerometerHandler = nullptr;
                 m_factoryPyInputMousePositionProvider = nullptr;
             }
 
@@ -3466,6 +3467,16 @@ namespace Mengine
                 }
 
             protected:
+                bool handleAccelerometerEvent( const InputAccelerometerEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    //Empty
+
+                    return false;
+                }
+
+            protected:
                 bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
                 {
                     MENGINE_UNUSED( _event );
@@ -3934,6 +3945,48 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
+            class PyGlobalAccelerometerHandler
+                : public PyGlobalBaseHandler
+            {
+                DECLARE_FACTORABLE( PyGlobalAccelerometerHandler );
+
+            protected:
+                bool handleAccelerometerEvent( const InputAccelerometerEvent & _event ) override
+                {
+                    pybind::object py_result = m_cb.call_args( _event, m_args );
+
+                    if( py_result.is_none() == false )
+                    {
+                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
+                            , m_cb.repr().c_str()
+                            , py_result.repr().c_str()
+                            , py_result.repr_type().c_str()
+                        );
+                    }
+
+                    return false;
+                }
+            };
+            //////////////////////////////////////////////////////////////////////////
+            FactoryInterfacePtr m_factoryPyGlobalAccelerometerHandler;
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_addAccelerometerHandler( const pybind::object & _cb, const pybind::args & _args )
+            {
+                const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                    ->getGlobalInputHandler();
+
+                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem );
+
+                PyGlobalBaseHandlerPtr handler = m_factoryPyGlobalAccelerometerHandler
+                    ->createObject( MENGINE_DOCUMENT_PYBIND );
+
+                handler->initialize( _cb, _args );
+
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
             bool s_removeGlobalHandler( UniqueId _id )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
@@ -4386,6 +4439,7 @@ namespace Mengine
         pybind::def_functor_args( _kernel, "addMouseWheelHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseWheelHandler );
         pybind::def_functor_args( _kernel, "addKeyHandler", nodeScriptMethod, &EngineScriptMethod::s_addKeyHandler );
         pybind::def_functor_args( _kernel, "addTextHandler", nodeScriptMethod, &EngineScriptMethod::s_addTextHandler );
+        pybind::def_functor_args( _kernel, "addAccelerometerHandler", nodeScriptMethod, &EngineScriptMethod::s_addAccelerometerHandler );
 
         pybind::def_functor( _kernel, "removeGlobalHandler", nodeScriptMethod, &EngineScriptMethod::s_removeGlobalHandler );
         pybind::def_functor( _kernel, "enableGlobalHandler", nodeScriptMethod, &EngineScriptMethod::s_enableGlobalHandler );
@@ -4557,6 +4611,13 @@ namespace Mengine
             .def_member( "y", &InputTextEvent::y )
             .def_property_static( "symbol", &EngineScriptMethod::s_InputTextEvent_getSymbol, nullptr )
             .def_property_static( "text", &EngineScriptMethod::s_InputTextEvent_getText, nullptr )
+            ;
+
+        pybind::struct_<InputAccelerometerEvent>( _kernel, "InputAccelerometerEvent" )
+            .def_member( "special", &InputAccelerometerEvent::special )
+            .def_member( "x", &InputAccelerometerEvent::x )
+            .def_member( "y", &InputAccelerometerEvent::y )
+            .def_member( "z", &InputAccelerometerEvent::z )
             ;
 
         pybind::struct_<InputMouseButtonEvent>( _kernel, "InputMouseButtonEvent" )

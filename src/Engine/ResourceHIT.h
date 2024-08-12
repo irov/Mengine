@@ -2,7 +2,7 @@
 
 #include "Interface/MemoryInterface.h"
 
-#include "ResourceTestPick.h"
+#include "Engine/ResourceTestPick.h"
 
 namespace Mengine
 {

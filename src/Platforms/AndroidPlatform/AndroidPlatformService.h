@@ -121,9 +121,6 @@ namespace Mengine
         void onEvent( const ConstString & _event, const Params & _params ) override;
 
     public:
-        float getJoystickAxis( uint32_t _index ) const override;
-
-    public:
         size_t getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const override;
 
     public:
@@ -171,6 +168,17 @@ namespace Mengine
         void changeAndroidNativeWindow( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate ) override;
 
     protected:
+        ETouchCode acquireFingerIndex_( jint _fingerId );
+        ETouchCode releaseFingerIndex_( jint _fingerId );
+        ETouchCode getFingerIndex_( jint _fingerId ) const;
+
+    protected:
+        void touchEvent( jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure ) override;
+
+    protected:
+        void accelerationEvent( jfloat _x, jfloat _y, jfloat _z ) override;
+
+    protected:
         bool changeWindow_( const Resolution & _resolution, bool _fullscreen );
         void setupWindow_();
         bool createWindow_( const Resolution & _resolution, bool _fullscreen );
@@ -196,6 +204,8 @@ namespace Mengine
         EGLDisplay m_eglDisplay;
         EGLSurface m_eglSurface;
         EGLContext m_eglContext;
+
+        jint m_fingers[MENGINE_INPUT_MAX_TOUCH];
 
         /*
         SDL_Window * m_sdlWindow;

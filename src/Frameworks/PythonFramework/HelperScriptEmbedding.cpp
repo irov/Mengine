@@ -612,14 +612,6 @@ namespace Mengine
                     ->removeTextAliasArguments( _aliasEnvironment, _aliasId );
             }
             //////////////////////////////////////////////////////////////////////////
-            float s_getJoystickAxis( uint32_t _index )
-            {
-                float axis = PLATFORM_SERVICE()
-                    ->getJoystickAxis( _index );
-
-                return axis;
-            }
-            //////////////////////////////////////////////////////////////////////////
             ChronometerInterfacePtr s_addChronometer( const pybind::object & _cb, const pybind::args & _args )
             {
                 ChronometerInterfacePtr chronometer = CHRONOMETER_SERVICE()
@@ -4489,8 +4481,6 @@ namespace Mengine
 
         pybind::def_functor_args( _kernel, "setTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_setTextAliasArguments );
         pybind::def_functor( _kernel, "removeTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_removeTextAliasArguments );
-
-        pybind::def_functor( _kernel, "getJoystickAxis", helperScriptMethod, &HelperScriptMethod::s_getJoystickAxis );
 
         pybind::def_functor_args( _kernel, "addChronometer", helperScriptMethod, &HelperScriptMethod::s_addChronometer );
         pybind::def_functor( _kernel, "removeChronometer", helperScriptMethod, &HelperScriptMethod::s_removeChronometer );

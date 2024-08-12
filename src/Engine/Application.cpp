@@ -33,7 +33,6 @@
 #include "Interface/TimerServiceInterface.h"
 
 #include "Isometric.h"
-#include "HotSpot.h"
 #include "HotSpotPolygon.h"
 #include "HotSpotGlobal.h"
 #include "HotSpotCircle.h"
@@ -1371,6 +1370,23 @@ namespace Mengine
 
         if( GAME_SERVICE()
             ->handleTextEvent( _event ) == true )
+        {
+            return true;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::handleAccelerometerEvent( const InputAccelerometerEvent & _event )
+    {
+        if( MODULE_SERVICE()
+            ->handleAccelerometerEvent( _event ) == true )
+        {
+            return true;
+        }
+
+        if( GAME_SERVICE()
+            ->handleAccelerometerEvent( _event ) == true )
         {
             return true;
         }

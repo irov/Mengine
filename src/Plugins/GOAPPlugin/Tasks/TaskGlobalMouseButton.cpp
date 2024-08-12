@@ -45,7 +45,7 @@ namespace Mengine
             return false;
         };
 
-        uint32_t id = Helper::addGlobalMouseButtonEvent( m_button, m_isDown, lambda, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) );
+        uint32_t id = Helper::addGlobalMouseButtonHandler( m_button, m_isDown, lambda, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) );
 
         if( id == INVALID_UNIQUE_ID )
         {

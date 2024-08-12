@@ -47,9 +47,6 @@ Object\\\\Isometric
 
 ADD_FILTER(
 Object\\\\HotSpot
-    HotSpot.cpp
-    HotSpot.h
-    HotSpotEventReceiverInterface.h
     HotSpotPolygon.cpp
     HotSpotPolygon.h
     HotSpotImage.cpp

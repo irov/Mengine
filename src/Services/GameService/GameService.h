@@ -56,6 +56,9 @@ namespace Mengine
         bool handleTextEvent( const InputTextEvent & _event ) override;
 
     public:
+        bool handleAccelerometerEvent( const InputAccelerometerEvent & _event ) override;
+
+    public:
         bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;
         bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override;
         bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override;

@@ -138,11 +138,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadIdentity::join()
     {
-        if( m_runner->isCancel() == true )
-        {
-            return;
-        }
-
         int status = ::pthread_join( m_threadId, nullptr );
 
         if( status != 0 )

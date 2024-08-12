@@ -168,11 +168,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::join()
     {
-        if( m_runner->isCancel() == true )
-        {
-            return;
-        }
-
         ::WaitForSingleObject( m_thread, INFINITE );
 
         this->finalize();

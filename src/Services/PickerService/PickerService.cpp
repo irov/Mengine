@@ -461,6 +461,56 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PickerService::handleAccelerometerEvent( const InputAccelerometerEvent & _event )
+    {
+        MENGINE_VECTOR_AUX( m_states );
+
+        if( this->pickStates_( 0.f, 0.f, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
+        {
+            return false;
+        }
+
+        MENGINE_PROFILER_CATEGORY();
+
+        for( VectorPickerStates::reverse_iterator
+            it = m_states.rbegin(),
+            it_end = m_states.rend();
+            it != it_end;
+            ++it )
+        {
+            PickerStateDesc & desc = *it;
+
+            PickerInterface * picker = desc.picker;
+
+            if( picker->isPickerEnable() == false )
+            {
+                continue;
+            }
+
+            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+
+            InputAccelerometerEvent ne = _event;
+
+            LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] [%.4f;%.4f;%.4f] [accelerometer]"
+                , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
+                , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
+                , MENGINE_MIXIN_DEBUG_UID( inputHandler )
+                , ne.x
+                , ne.y
+                , ne.z
+            );
+
+            if( inputHandler->handleAccelerometerEvent( ne ) == false )
+            {
+                continue;
+            }
+
+            return m_handleValue;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
         MENGINE_VECTOR_AUX( m_states );

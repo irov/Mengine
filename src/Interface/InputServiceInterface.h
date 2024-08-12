@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Interface/Interface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/InputHandlerInterface.h"
 #include "Interface/InputMousePositionProviderInterface.h"
@@ -66,6 +65,7 @@ namespace Mengine
 
                 InputKeyEvent key;
                 InputTextEvent text;
+                InputAccelerometerEvent accelerometer;
                 InputMouseButtonEvent button;
                 InputMouseWheelEvent wheel;
                 InputMouseMoveEvent move;

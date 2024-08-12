@@ -12,6 +12,7 @@ namespace Mengine
     {
         EVENT_HOTSPOT_KEY = 0,
         EVENT_HOTSPOT_TEXT,
+        EVENT_HOTSPOT_ACCELEROMETER,
         EVENT_HOTSPOT_MOUSE_BUTTON,
         EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN,
         EVENT_HOTSPOT_MOUSE_BUTTON_END,
@@ -36,6 +37,7 @@ namespace Mengine
         virtual void onHotSpotMouseLeave( const InputMouseLeaveEvent & _event ) = 0;
         virtual bool onHotSpotKey( const InputKeyEvent & _event ) = 0;
         virtual bool onHotSpotText( const InputTextEvent & _event ) = 0;
+        virtual bool onHotSpotAccelerometer( const InputAccelerometerEvent & _event ) = 0;
         virtual bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) = 0;
         virtual bool onHotSpotMouseButtonBegin( const InputMouseButtonEvent & _event ) = 0;
         virtual bool onHotSpotMouseButtonEnd( const InputMouseButtonEvent & _event ) = 0;
@@ -50,6 +52,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_KEY );
     EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_TEXT );
+    EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_ACCELEROMETER );
     EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_MOUSE_BUTTON );
     EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN );
     EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_MOUSE_BUTTON_END );

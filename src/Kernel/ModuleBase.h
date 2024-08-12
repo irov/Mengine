@@ -57,6 +57,12 @@ namespace Mengine
         virtual bool _handleTextEvent( const InputTextEvent & _event );
 
     public:
+        bool handleAccelerometerEvent( const InputAccelerometerEvent & _event ) override;
+
+    protected:
+        virtual bool _handleAccelerometerEvent( const InputAccelerometerEvent & _event );
+
+    public:
         bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;
         bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override;
         bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override;

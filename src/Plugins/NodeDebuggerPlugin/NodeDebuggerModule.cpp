@@ -108,7 +108,7 @@ namespace Mengine
         m_globalKeyHandlerF2 = globalKeyHandlerF2;
 #endif
 
-        UniqueId idForSelectedNodeSender = Helper::addGlobalMouseButtonEvent( EMouseButtonCode::MC_LBUTTON, true, [this]( const InputMouseButtonEvent & _event )
+        UniqueId idForSelectedNodeSender = Helper::addGlobalMouseButtonHandler( EMouseButtonCode::MC_LBUTTON, true, [this]( const InputMouseButtonEvent & _event )
         {
             MENGINE_UNUSED( _event );
 

@@ -3759,15 +3759,6 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    float Win32PlatformService::getJoystickAxis( uint32_t _index ) const
-    {
-        MENGINE_UNUSED( _index );
-
-        //FixMe
-
-        return 0.f;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::openUrlInDefaultBrowser( const Char * _url )
     {
         LOGGER_INFO( "platform", "open url in default browser '%s'"

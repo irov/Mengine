@@ -2,7 +2,7 @@
 
 #include "Interface/PickerInterface.h"
 
-#include "Engine/HotSpotEventReceiverInterface.h"
+#include "Kernel/BaseHotSpotEventReceiver.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/DocumentHelper.h"
@@ -17,12 +17,12 @@ namespace Mengine
     namespace Detail
     {
         class TaskPickerableMouseButtonEventReceiver
-            : public HotSpotEventReceiverInterface
+            : public BaseHotSpotEventReceiver
             , public Factorable
         {
         public:
             TaskPickerableMouseButtonEventReceiver( GOAP::NodeInterface * _node, EMouseButtonCode _button, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter )
-                : m_node(_node)
+                : m_node( _node )
                 , m_button( _button )
                 , m_isDown( _isDown )
                 , m_isPressed( _isPressed )
@@ -80,108 +80,6 @@ namespace Mengine
                 m_node->complete();
 
                 return handle;
-            }
-
-        protected:
-            void onHotSpotActivate() override
-            {
-                //Empty
-            }
-
-            void onHotSpotDeactivate() override
-            {
-                //Empty
-            }
-
-            bool onHotSpotMouseEnter( const InputMouseEnterEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-
-                return false;
-            }
-
-            void onHotSpotMouseLeave( const InputMouseLeaveEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-            }
-
-            bool onHotSpotKey( const InputKeyEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-
-                return false;
-            }
-
-            bool onHotSpotText( const InputTextEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-
-                return false;
-            }
-
-            bool onHotSpotMouseButtonBegin( const InputMouseButtonEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-
-                return false;
-            }
-
-            bool onHotSpotMouseButtonEnd( const InputMouseButtonEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-
-                return false;
-            }
-
-            bool onHotSpotMouseMove( const InputMouseMoveEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-
-                return false;
-            }
-
-            bool onHotSpotMouseWheel( const InputMouseWheelEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-
-                return false;
-            }
-
-            void onHotSpotMouseOverDestroy() override
-            {
-                //Empty
-            }
-
-            void onHotSpotMouseButtonBegin( uint32_t _enumerator, bool _isEnd ) override
-            {
-                MENGINE_UNUSED( _enumerator );
-                MENGINE_UNUSED( _isEnd );
-
-                //Empty
-            }
-
-            void onHotSpotMouseButtonEnd( uint32_t _enumerator, bool _isEnd ) override
-            {
-                MENGINE_UNUSED( _enumerator );
-                MENGINE_UNUSED( _isEnd );
-
-                //Empty
             }
 
         protected:

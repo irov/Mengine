@@ -43,6 +43,14 @@ namespace Mengine
                 }
 
             protected:
+                bool handleAccelerometerEvent( const InputAccelerometerEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    return false;
+                }
+
+            protected:
                 bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
                 {
                     MENGINE_UNUSED( _event );
@@ -136,7 +144,34 @@ namespace Mengine
                 bool m_once;
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<GlobalKeyHandler> GlobalKeyHandlerPtr;
+            typedef IntrusivePtr<GlobalKeyHandler, InputHandlerInterface> GlobalKeyHandlerPtr;
+            //////////////////////////////////////////////////////////////////////////
+            class GlobalAccelerometerHandler
+                : public GlobalBaseHandler
+            {
+            public:
+                GlobalAccelerometerHandler( const LambdaInputAccelerometerEvent & _event )
+                    : m_event( _event )
+                {
+                }
+
+                ~GlobalAccelerometerHandler() override
+                {
+                }
+
+            protected:
+                bool handleAccelerometerEvent( const InputAccelerometerEvent & _event ) override
+                {
+                    m_event( _event );
+
+                    return false;
+                }
+
+            protected:
+                LambdaInputAccelerometerEvent m_event;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<GlobalAccelerometerHandler, InputHandlerInterface> GlobalAccelerometerHandlerPtr;
             //////////////////////////////////////////////////////////////////////////
             class GlobalMouseButtonHandler
                 : public GlobalBaseHandler
@@ -173,7 +208,7 @@ namespace Mengine
                 LambdaInputMouseButtonEvent m_event;
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<GlobalMouseButtonHandler> GlobalMouseButtonHandlerPtr;
+            typedef IntrusivePtr<GlobalMouseButtonHandler, InputHandlerInterface> GlobalMouseButtonHandlerPtr;
             //////////////////////////////////////////////////////////////////////////
             class GlobalMouseMoveHandler
                 : public GlobalBaseHandler
@@ -200,7 +235,7 @@ namespace Mengine
                 LambdaInputMouseMoveEvent m_event;
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<GlobalMouseMoveHandler> GlobalMouseMoveHandlerPtr;
+            typedef IntrusivePtr<GlobalMouseMoveHandler, InputHandlerInterface> GlobalMouseMoveHandlerPtr;
             //////////////////////////////////////////////////////////////////////////
             class GlobalMouseWheelHandler
                 : public GlobalBaseHandler
@@ -227,7 +262,7 @@ namespace Mengine
                 LambdaInputMouseWheelEvent m_event;
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<GlobalMouseMoveHandler> GlobalMouseMoveHandlerPtr;
+            typedef IntrusivePtr<GlobalMouseMoveHandler, InputHandlerInterface> GlobalMouseMoveHandlerPtr;
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
@@ -255,7 +290,19 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        UniqueId addGlobalMouseButtonEvent( EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _event, const DocumentInterfacePtr & _doc )
+        UniqueId addGlobalAccelerometerHandler( const LambdaInputAccelerometerEvent & _event, const DocumentInterfacePtr & _doc )
+        {
+            const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
+
+            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalAccelerometerHandler>( _doc, _event );
+
+            UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
+
+            return id;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        UniqueId addGlobalMouseButtonHandler( EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _event, const DocumentInterfacePtr & _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
@@ -267,7 +314,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        UniqueId addGlobalMouseMoveEvent( const LambdaInputMouseMoveEvent & _event, const DocumentInterfacePtr & _doc )
+        UniqueId addGlobalMouseMoveHandler( const LambdaInputMouseMoveEvent & _event, const DocumentInterfacePtr & _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
@@ -279,7 +326,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        UniqueId addGlobalMouseWheelEvent( const LambdaInputMouseWheelEvent & _event, const DocumentInterfacePtr & _doc )
+        UniqueId addGlobalMouseWheelHandler( const LambdaInputMouseWheelEvent & _event, const DocumentInterfacePtr & _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();

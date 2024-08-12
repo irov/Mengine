@@ -2,6 +2,10 @@ package org.Mengine.Base;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -18,14 +22,21 @@ import androidx.annotation.NonNull;
 
 import java.util.concurrent.CountDownLatch;
 
-public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Callback, View.OnKeyListener, View.OnTouchListener {
+public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Callback, View.OnKeyListener, View.OnTouchListener, SensorEventListener {
     public static final String TAG = "MengineSurfaceView";
 
     private static native void AndroidPlatform_surfaceCreated(Surface surface);
     private static native void AndroidPlatform_surfaceDestroyed(Surface surface);
     private static native void AndroidPlatform_surfaceChanged(Surface surface, int surfaceWidth, int surfaceHeight, int deviceWidth, int deviceHeight, float rate);
 
+    private static native void AndroidPlatform_touchEvent(int action, int pointerId, float x, float y, float pressure);
+    private static native void AndroidPlatform_accelerationEvent(float x, float y, float z);
+
     protected CountDownLatch m_runLatch;
+
+    private SensorManager m_sensorManager;
+    private Sensor m_accelerometer;
+    private Sensor m_linearAccelerometer;
 
     protected Display m_display;
 
@@ -48,12 +59,33 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
         m_display = windowManager.getDefaultDisplay();
 
-        m_surfaceWidth = 0;
-        m_surfaceHeight = 0;
+        m_sensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
+
+        if (m_sensorManager != null) {
+            m_accelerometer = m_sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            m_linearAccelerometer = m_sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        }
+
+        m_surfaceWidth = 1;
+        m_surfaceHeight = 1;
     }
 
     public MengineSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    public void handlePause() {
+        if (m_sensorManager != null) {
+            m_sensorManager.unregisterListener(this, m_accelerometer);
+            m_sensorManager.unregisterListener(this, m_linearAccelerometer);
+        }
+    }
+
+    public void handleResume() {
+        if (m_sensorManager != null) {
+            m_sensorManager.registerListener(this, m_accelerometer, SensorManager.SENSOR_DELAY_GAME);
+            m_sensorManager.registerListener(this, m_linearAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        }
     }
 
     Surface getSurface() {
@@ -120,61 +152,6 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         AndroidPlatform_surfaceChanged(surface, width, height, deviceWidth, deviceHeight, refreshRate);
 
         m_runLatch.countDown();
-        /*
-        Log.v("SDL", "Window size: " + width + "x" + height);
-        Log.v("SDL", "Device size: " + nDeviceWidth + "x" + nDeviceHeight);
-        SDLActivity.nativeSetScreenResolution(width, height, nDeviceWidth, nDeviceHeight, mDisplay.getRefreshRate());
-        SDLActivity.onNativeResize();
-
-        // Prevent a screen distortion glitch,
-        // for instance when the device is in Landscape and a Portrait App is resumed.
-        boolean skip = false;
-        int requestedOrientation = SDLActivity.mSingleton.getRequestedOrientation();
-
-        if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT || requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT) {
-            if (mWidth > mHeight) {
-                skip = true;
-            }
-        } else if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE || requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
-            if (mWidth < mHeight) {
-                skip = true;
-            }
-        }
-
-        // Special Patch for Square Resolution: Black Berry Passport
-        if (skip) {
-            double min = Math.min(mWidth, mHeight);
-            double max = Math.max(mWidth, mHeight);
-
-            if (max / min < 1.20) {
-                Log.v("SDL", "Don't skip on such aspect-ratio. Could be a square resolution.");
-                skip = false;
-            }
-        }
-
-        // Don't skip in MultiWindow.
-        if (skip) {
-            if (Build.VERSION.SDK_INT >= 24) {
-                if (SDLActivity.mSingleton.isInMultiWindowMode()) {
-                    Log.v("SDL", "Don't skip in Multi-Window");
-                    skip = false;
-                }
-            }
-        }
-
-        if (skip) {
-            Log.v("SDL", "Skip .. Surface is not ready.");
-            mIsSurfaceReady = false;
-            return;
-        }
-
-        SDLActivity.onNativeSurfaceChanged();
-
-        mIsSurfaceReady = true;
-
-        SDLActivity.mNextNativeState = SDLActivity.NativeState.RESUMED;
-        SDLActivity.handleNativeState();
-        */
     }
 
     @Override
@@ -184,10 +161,76 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         return false;
     }
 
+    protected void nativeTouchEvent(MotionEvent event, int index, int action) {
+        int pointerId = event.getPointerId(index);
+        float x = event.getX(index);
+        float y = event.getY(index);
+        float p = event.getPressure(index);
+
+        float xn = x / m_surfaceWidth;
+        float yn = y / m_surfaceHeight;
+        float pn = p > 1.f ? 1.f : p;
+
+        AndroidPlatform_touchEvent(action, pointerId, xn, yn, pn);
+    }
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         MengineLog.logMessage(TAG, "onTouch");
 
-        return false;
+        int pointerCount = event.getPointerCount();
+        int action = event.getActionMasked();
+
+        switch (action) {
+            case MotionEvent.ACTION_MOVE: {
+                for (int index = 0; index != pointerCount; ++index) {
+                    this.nativeTouchEvent(event, index, action);
+                }
+            }break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_DOWN: {
+                this.nativeTouchEvent(event, 0, action);
+            }break;
+            case MotionEvent.ACTION_POINTER_UP:
+            case MotionEvent.ACTION_POINTER_DOWN: {
+                int index = event.getActionIndex();
+
+                this.nativeTouchEvent(event, index, action);
+            }break;
+            case MotionEvent.ACTION_CANCEL: {
+                for (int index = 0; index != pointerCount; ++index) {
+                    this.nativeTouchEvent(event, index, MotionEvent.ACTION_UP);
+                }
+            }break;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        int type = event.sensor.getType();
+
+        switch (type) {
+            case Sensor.TYPE_ACCELEROMETER: {
+                float x = event.values[0];
+                float y = event.values[1];
+                float z = event.values[2];
+
+                float xn = x / SensorManager.GRAVITY_EARTH;
+                float yn = y / SensorManager.GRAVITY_EARTH;
+                float zn = z / SensorManager.GRAVITY_EARTH;
+
+                AndroidPlatform_accelerationEvent(xn, yn, zn);
+            }break;
+            case Sensor.TYPE_LINEAR_ACCELERATION: {
+                //AndroidPlatform_accelerationEvent(xn, yn, zn);
+            }break;
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        //ToDo: Handle accuracy changes here if needed
     }
 }

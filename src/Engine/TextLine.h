@@ -2,7 +2,7 @@
 
 #include "Interface/FontInterface.h"
 
-#include "TextChar.h"
+#include "Engine/TextChar.h"
 
 #include "Kernel/String.h"
 #include "Kernel/Vector.h"

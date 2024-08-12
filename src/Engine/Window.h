@@ -5,7 +5,7 @@
 #include "Kernel/BaseTransformation.h"
 #include "Kernel/FixedVertices.h"
 
-#include "ResourceWindow.h"
+#include "Engine/ResourceWindow.h"
 
 namespace Mengine
 {

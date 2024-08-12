@@ -1,22 +1,12 @@
 #pragma once
 
-#include "Environment/Python/PythonEventReceiver.h"
-
 #include "Kernel/HotSpotEventReceiverInterface.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
-{
-    class PythonHotSpotEventReceiver
+{    
+    class BaseHotSpotEventReceiver
         : public HotSpotEventReceiverInterface
-        , public PythonEventReceiver
-        , public Factorable
     {
-    public:
-        PythonHotSpotEventReceiver();
-        ~PythonHotSpotEventReceiver() override;
-
     public:
         void onHotSpotActivate() override;
         void onHotSpotDeactivate() override;
@@ -31,7 +21,7 @@ namespace Mengine
         bool onHotSpotMouseMove( const InputMouseMoveEvent & _event ) override;
         bool onHotSpotMouseWheel( const InputMouseWheelEvent & _event ) override;
         void onHotSpotMouseOverDestroy() override;
-        void onHotSpotMouseButtonBegin( uint32_t _playId, bool _isEnd ) override;
-        void onHotSpotMouseButtonEnd( uint32_t _playId, bool _isEnd ) override;
+        void onHotSpotMouseButtonBegin( UniqueId _enumerator, bool _isEnd ) override;
+        void onHotSpotMouseButtonEnd( UniqueId _enumerator, bool _isEnd ) override;
     };
 }

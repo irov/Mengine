@@ -45,6 +45,11 @@ namespace Mengine
         return m_cb.call( _event.x, _event.y, symbol );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PythonHotSpotEventReceiver::onHotSpotAccelerometer( const InputAccelerometerEvent & _event )
+    {
+        return m_cb.call( _event.x, _event.y, _event.z );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotMouseButton( const InputMouseButtonEvent & _event )
     {
         return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );

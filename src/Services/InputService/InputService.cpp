@@ -7,6 +7,7 @@
 #include "Kernel/AssertionContainer.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/EnumeratorHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -30,6 +31,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool InputService::_initializeService()
     {
+        m_mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
+
         m_eventsAux.reserve( 16 );
         m_events.reserve( 16 );
 
@@ -38,6 +41,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::_finalizeService()
     {
+        m_mutex = nullptr;
+
         m_events.clear();
         m_eventsAux.clear();
     }
@@ -62,8 +67,10 @@ namespace Mengine
     {
         MENGINE_PROFILER_CATEGORY();
 
+        m_mutex->lock();
         std::swap( m_events, m_eventsAux );
         m_eventsAux.clear();
+        m_mutex->unlock();
 
         for( const InputUnionEvent & ev : m_events )
         {
@@ -393,7 +400,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::pushEvent( const InputUnionEvent & _event )
     {
+        m_mutex->lock();
         m_eventsAux.emplace_back( _event );
+        m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::getSpecial( InputSpecialData * const _special ) const
@@ -438,6 +447,18 @@ namespace Mengine
 
         APPLICATION_SERVICE()
             ->handleTextEvent( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::accelerometerEvent_( const InputAccelerometerEvent & _event )
+    {
+        LOGGER_INFO( "input", "handle accelerometer: %.4f %.4f %.4f"
+            , _event.x
+            , _event.y
+            , _event.z
+        );
+
+        APPLICATION_SERVICE()
+            ->handleAccelerometerEvent( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseButtonEvent_( const InputMouseButtonEvent & _event )

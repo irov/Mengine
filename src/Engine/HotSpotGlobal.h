@@ -1,6 +1,6 @@
 #pragma once
 
-#include "HotSpot.h"
+#include "Kernel/HotSpot.h"
 
 namespace Mengine
 {

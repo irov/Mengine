@@ -12,15 +12,17 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         typedef Lambda<void( const InputKeyEvent & )> LambdaInputKeyEvent;
+        typedef Lambda<void( const InputAccelerometerEvent & )> LambdaInputAccelerometerEvent;
         typedef Lambda<void( const InputMouseButtonEvent & )> LambdaInputMouseButtonEvent;
         typedef Lambda<void( const InputMouseMoveEvent & )> LambdaInputMouseMoveEvent;
         typedef Lambda<void( const InputMouseWheelEvent & )> LambdaInputMouseWheelEvent;
         //////////////////////////////////////////////////////////////////////////
         UniqueId addGlobalKeyHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const DocumentInterfacePtr & _doc );
         UniqueId addGlobalKeyOnceHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const DocumentInterfacePtr & _doc );
-        UniqueId addGlobalMouseButtonEvent( EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _event, const DocumentInterfacePtr & _doc );
-        UniqueId addGlobalMouseMoveEvent( const LambdaInputMouseMoveEvent & _event, const DocumentInterfacePtr & _doc );
-        UniqueId addGlobalMouseWheelEvent( const LambdaInputMouseWheelEvent & _event, const DocumentInterfacePtr & _doc );
+        UniqueId addGlobalAccelerometerHandler( const LambdaInputAccelerometerEvent & _event, const DocumentInterfacePtr & _doc );
+        UniqueId addGlobalMouseButtonHandler( EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _event, const DocumentInterfacePtr & _doc );
+        UniqueId addGlobalMouseMoveHandler( const LambdaInputMouseMoveEvent & _event, const DocumentInterfacePtr & _doc );
+        UniqueId addGlobalMouseWheelHandler( const LambdaInputMouseWheelEvent & _event, const DocumentInterfacePtr & _doc );
         //////////////////////////////////////////////////////////////////////////
         void removeGlobalHandler( UniqueId _id );
         //////////////////////////////////////////////////////////////////////////

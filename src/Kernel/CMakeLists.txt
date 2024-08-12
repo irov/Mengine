@@ -871,6 +871,12 @@ Core
     DummySceneEventReceiver.h
     DummySceneEventReceiver.cpp
     
+    HotSpot.cpp
+    HotSpot.h
+    HotSpotEventReceiverInterface.h
+    BaseHotSpotEventReceiver.h
+    BaseHotSpotEventReceiver.cpp
+    
     LambdaPrefetchTask.h
     LambdaChronometer.h
     

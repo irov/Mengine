@@ -77,6 +77,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PythonGameEventReceiver::onGameAccelerometer( const InputAccelerometerEvent & _event )
+    {
+        bool result = m_cb.call( _event );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGameMouseButton( const InputMouseButtonEvent & _event )
     {
         mt::vec2f point( _event.x, _event.y );

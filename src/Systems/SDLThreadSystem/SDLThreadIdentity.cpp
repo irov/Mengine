@@ -133,11 +133,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadIdentity::join()
     {
-        if( m_runner->isCancel() == true )
-        {
-            return;
-        }
-
         int status = 0;
         SDL_WaitThread( m_thread, &status );
 

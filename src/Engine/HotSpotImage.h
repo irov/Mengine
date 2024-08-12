@@ -1,8 +1,8 @@
 #pragma once
 
-#include "HotSpot.h"
+#include "Kernel/HotSpot.h"
 
-#include "ResourceTestPick.h"
+#include "Engine/ResourceTestPick.h"
 
 namespace Mengine
 {

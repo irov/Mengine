@@ -1240,167 +1240,6 @@ namespace Mengine
             }
         }
 
-        /*
-        bool shouldQuit = false;
-        
-        SDL_Event sdlEvent;
-        while( SDL_PollEvent( &sdlEvent ) != 0 )
-        {
-            LOGGER_INFO( "platform", "platform event: %s (%u)"
-                , Detail::getPlatformEventMessage( sdlEvent.type )
-                , sdlEvent.type
-            );
-
-            for( const SDLEventHandlerDesc & desc : m_sdlEventHandlers )
-            {
-                desc.handler( &sdlEvent );
-            }
-
-            m_androidInput->handleEvent( m_sdlWindow, sdlEvent );
-
-            switch( sdlEvent.type )
-            {
-            case SDL_KEYDOWN:
-                {
-                    SDL_Keycode keyCode = sdlEvent.key.keysym.sym;
-                    Uint16 keyMod = sdlEvent.key.keysym.mod;
-
-                    switch( keyCode )
-                    {
-                    case SDLK_RETURN:
-                        {
-                            if( keyMod & KMOD_ALT )
-                            {
-                                bool fullscreen = APPLICATION_SERVICE()
-                                    ->getFullscreenMode();
-
-                                APPLICATION_SERVICE()
-                                    ->setFullscreenMode( !fullscreen );
-                            }
-                        }break;
-                    default:
-                        break;
-                    }
-                }break;
-            case SDL_WINDOWEVENT:
-                {
-                    Uint32 windowID = SDL_GetWindowID( m_sdlWindow );
-
-                    if( sdlEvent.window.windowID != windowID )
-                    {
-                        continue;
-                    }
-
-                    SDL_WindowEventID windowEventId = (SDL_WindowEventID)sdlEvent.window.event;
-
-                    LOGGER_INFO( "platform", "window event: %s (%u)"
-                        , Detail::getWindowEventMessage( windowEventId )
-                        , windowEventId
-                    );
-
-                    switch( windowEventId )
-                    {
-                    case SDL_WINDOWEVENT_SHOWN:
-                        {
-                            //TODO
-                        }break;
-                    case SDL_WINDOWEVENT_HIDDEN:
-                        {
-                            //TODO
-                        }break;
-                    case SDL_WINDOWEVENT_EXPOSED:
-                        {
-                            //TODO
-                        }break;
-                    case SDL_WINDOWEVENT_MOVED:
-                        {
-                            //TODO
-                        }break;
-                    case SDL_WINDOWEVENT_RESIZED:
-                        {
-                            Sint32 width = sdlEvent.window.data1;
-                            Sint32 height = sdlEvent.window.data2;
-
-                            Resolution windowResolution( width, height );
-
-                            APPLICATION_SERVICE()
-                                ->setWindowResolution( windowResolution );
-                        }break;
-                    case SDL_WINDOWEVENT_SIZE_CHANGED:
-                        {
-                            Sint32 width = sdlEvent.window.data1;
-                            Sint32 height = sdlEvent.window.data2;
-
-                            MENGINE_UNUSED( width );
-                            MENGINE_UNUSED( height );
-                            //TODO
-                        }break;
-                    case SDL_WINDOWEVENT_FOCUS_GAINED:
-                    case SDL_WINDOWEVENT_MAXIMIZED:
-                    case SDL_WINDOWEVENT_RESTORED:
-                    case SDL_WINDOWEVENT_ENTER:
-                        {
-                            this->setActive_( true );
-                        }break;
-                    case SDL_WINDOWEVENT_FOCUS_LOST:
-                    case SDL_WINDOWEVENT_MINIMIZED:
-                    case SDL_WINDOWEVENT_LEAVE:
-                        {
-                            this->setActive_( false );
-                        }break;
-                    case SDL_WINDOWEVENT_CLOSE:
-                        {
-                            this->pushQuitEvent_();
-                        }break;
-                    case SDL_WINDOWEVENT_TAKE_FOCUS:
-                        {
-                            //TODO
-                        }break;
-                    default:
-                        break;
-                    }
-                }break;
-            case SDL_QUIT:
-                {
-                    shouldQuit = true;
-                }break;
-#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
-            case SDL_APP_TERMINATING:
-                {
-                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
-                }break;
-            case SDL_APP_LOWMEMORY:
-                {                    
-                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
-                }break;
-            case SDL_APP_WILLENTERBACKGROUND:
-                {
-                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
-                }break;
-            case SDL_APP_DIDENTERBACKGROUND:
-                {
-                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUD );
-                }break;
-            case SDL_APP_WILLENTERFOREGROUND:
-                {
-                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
-                }break;
-            case SDL_APP_DIDENTERFOREGROUND:
-                {
-                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
-                }break;
-#endif
-            default:
-                break;
-            }
-        }
-
-        if( shouldQuit == true )
-        {
-            return true;
-        }
-        */
-
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2191,7 +2030,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::surfaceChangedEvent_( const PlatformUnionEvent::PlatformSurfaceChangedEvent & _event )
     {
-        // ToDo
+        jint surfaceWidth = _event.surfaceWidth;
+        jint surfaceHeight = _event.surfaceHeight;
+
+        Resolution windowResolution( surfaceWidth, surfaceHeight );
+
+        APPLICATION_SERVICE()
+            ->setWindowResolution( windowResolution );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::pushEvent( const PlatformUnionEvent & _event )

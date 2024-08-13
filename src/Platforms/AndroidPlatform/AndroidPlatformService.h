@@ -152,9 +152,6 @@ namespace Mengine
         bool createDirectoryUserPicture( const Char * _directoryPath, const Char * _file, const void * _data, size_t _size ) override;
         bool createDirectoryUserMusic( const Char * _directoryPath, const Char * _file, const void * _data, size_t _size ) override;
 
-    public:
-        void sleep( uint32_t _ms ) override;
-
     protected:
         void messageBox( const Char * _caption, const Char * _format, ... ) const override;
 

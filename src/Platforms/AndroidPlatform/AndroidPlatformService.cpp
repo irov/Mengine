@@ -431,12 +431,12 @@ namespace Mengine
 
         for( ;; )
         {
+            Timestamp currentTime = Helper::getSystemTimestamp();
+
             if( this->updatePlatform() == false )
             {
                 break;
             }
-
-            Timestamp currentTime = Helper::getSystemTimestamp();
 
             float frameTime = (float)(currentTime - m_prevTime);
 
@@ -445,6 +445,23 @@ namespace Mengine
             if( this->tickPlatform( frameTime, true, true, true ) == false )
             {
                 break;
+            }
+
+            if( m_sleepMode == true )
+            {
+                Timestamp endTime = Helper::getSystemTimestamp();
+
+                Timestamp deltaTime = endTime - currentTime;
+
+                const Timestamp frameTime60Ms = 1000 / 60;
+
+                if( deltaTime < frameTime60Ms )
+                {
+                    Timestamp sleepTime = frameTime60Ms - deltaTime;
+
+                    THREAD_SYSTEM()
+                        ->sleep( sleepTime );
+                }
             }
         }
     }
@@ -667,6 +684,24 @@ namespace Mengine
     {
 #if defined(MENGINE_PLATFORM_WINDOWS)
         if( ::IsDebuggerPresent() == FALSE )
+        {
+            return false;
+        }
+
+        return true;
+#elif defined(MENGINE_PLATFORM_ANDROID)
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        jclass debugClass = jenv->FindClass("android/os/Debug");
+        jmethodID isDebuggerConnectedMethod = jenv->GetStaticMethodID( debugClass, "isDebuggerConnected", "()Z" );
+
+        jboolean isDebuggerConnected = jenv->CallStaticBooleanMethod( debugClass, isDebuggerConnectedMethod );
+
+        Helper::AndroidEnvExceptionCheck( jenv );
+
+        jenv->DeleteLocalRef( debugClass );
+
+        if( isDebuggerConnected == JNI_FALSE )
         {
             return false;
         }
@@ -1083,13 +1118,6 @@ namespace Mengine
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::sleep( uint32_t _ms )
-    {
-        /*
-        SDL_Delay( _ms );
-         */
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::messageBox( const Char * _caption, const Char * _format, ... ) const

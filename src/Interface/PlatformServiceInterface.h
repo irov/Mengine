@@ -136,9 +136,6 @@ namespace Mengine
         virtual bool createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) = 0;
 
     public:
-        virtual void sleep( uint32_t _ms ) = 0;
-
-    public:
         virtual void messageBox( const Char * _caption, const Char * _format, ... ) const = 0;
 
     public:

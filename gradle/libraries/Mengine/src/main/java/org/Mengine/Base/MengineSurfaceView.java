@@ -59,12 +59,6 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         this.getHolder().addCallback(this);
 
-        this.setFocusable(true);
-        this.setFocusableInTouchMode(true);
-        this.requestFocus();
-        this.setOnKeyListener(this);
-        this.setOnTouchListener(this);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             m_display = context.getDisplay();
         } else {
@@ -83,11 +77,12 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         m_surfaceHeight = 1;
     }
 
-    public MengineSurfaceView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
     public void handlePause() {
+        this.setFocusable(false);
+        this.setFocusableInTouchMode(false);
+        this.setOnKeyListener(null);
+        this.setOnTouchListener(null);
+
         if (m_sensorManager != null) {
             m_sensorManager.unregisterListener(this, m_accelerometer);
             m_sensorManager.unregisterListener(this, m_linearAccelerometer);
@@ -97,6 +92,12 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     }
 
     public void handleResume() {
+        this.setFocusable(true);
+        this.setFocusableInTouchMode(true);
+        this.requestFocus();
+        this.setOnKeyListener(this);
+        this.setOnTouchListener(this);
+
         if (m_sensorManager != null) {
             m_sensorManager.registerListener(this, m_accelerometer, SensorManager.SENSOR_DELAY_GAME);
             m_sensorManager.registerListener(this, m_linearAccelerometer, SensorManager.SENSOR_DELAY_GAME);
@@ -177,23 +178,65 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         m_runLatch.countDown();
     }
 
+    public static boolean isKeyEventHasText(KeyEvent event) {
+        if (event.isCtrlPressed() == true) {
+            return false;
+        }
+
+        if (event.isPrintingKey() == true) {
+            return true;
+        }
+
+        if (event.getKeyCode() == KeyEvent.KEYCODE_SPACE) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isSystemKey(int keyCode) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+            case KeyEvent.KEYCODE_HOME:
+            case KeyEvent.KEYCODE_MENU:
+            case KeyEvent.KEYCODE_APP_SWITCH:
+            case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+            case KeyEvent.KEYCODE_CAMERA:
+            case KeyEvent.KEYCODE_POWER:
+            case KeyEvent.KEYCODE_SEARCH:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         int action = event.getAction();
-
         int repeatCount = event.getRepeatCount();
+
+        if (MengineSurfaceView.isSystemKey(keyCode) == true) {
+            return false;
+        }
 
         if (action == KeyEvent.ACTION_DOWN) {
             AndroidPlatform_keyEvent(true, keyCode, repeatCount);
 
-            int unicode = event.getUnicodeChar();
+            if (MengineSurfaceView.isKeyEventHasText(event) == true) {
+                int unicode = event.getUnicodeChar();
 
-            AndroidPlatform_textEvent(unicode);
+                AndroidPlatform_textEvent(unicode);
+            }
+
+            return true;
         } else if (action == KeyEvent.ACTION_UP) {
             AndroidPlatform_keyEvent(false, keyCode, repeatCount);
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     protected void nativeTouchEvent(MotionEvent event, int index, int action) {

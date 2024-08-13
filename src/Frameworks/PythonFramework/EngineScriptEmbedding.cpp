@@ -1712,12 +1712,6 @@ namespace Mengine
                 return _kernel->string_from_char( deviceLanguage );
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_sleep( uint32_t _time )
-            {
-                PLATFORM_SERVICE()
-                    ->sleep( _time );
-            }
-            //////////////////////////////////////////////////////////////////////////
             const RenderCameraOrthogonalPtr & s_getDefaultSceneRenderCamera2D()
             {
                 const RenderCameraOrthogonalPtr & camera = PLAYER_SERVICE()
@@ -4502,8 +4496,6 @@ namespace Mengine
         pybind::def_functor( _kernel, "getProjectCodename", nodeScriptMethod, &EngineScriptMethod::s_getProjectCodename );
 
         pybind::def_functor_kernel( _kernel, "getDeviceLanguage", nodeScriptMethod, &EngineScriptMethod::s_getDeviceLanguage );
-
-        pybind::def_functor( _kernel, "sleep", nodeScriptMethod, &EngineScriptMethod::s_sleep );
 
         pybind::def_functor( _kernel, "getDefaultSceneRenderCamera2D", nodeScriptMethod, &EngineScriptMethod::s_getDefaultSceneRenderCamera2D );
         pybind::def_functor( _kernel, "getDefaultRenderViewport2D", nodeScriptMethod, &EngineScriptMethod::s_getDefaultRenderViewport2D );

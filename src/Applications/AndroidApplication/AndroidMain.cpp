@@ -8,7 +8,7 @@
 extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jobject JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidMain_1bootstrap )(JNIEnv * _env, jclass _cls, jstring _nativeLibraryDir, jstring _args)
+    JNIEXPORT jobject JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidMain_1bootstrap )(JNIEnv * _env, jclass _cls, jstring _nativeLibraryDir, jobjectArray _args)
     {
         size_t size_AndroidApplication = sizeof( Mengine::AndroidApplication );
 
@@ -23,14 +23,38 @@ extern "C"
 
         const Mengine::Char * nativeLibraryDir_str = _env->GetStringUTFChars( _nativeLibraryDir, nullptr );
 
-        if( application->bootstrap( nativeLibraryDir_str, 0, nullptr ) == false )
-        {
-            _env->ReleaseStringUTFChars( _nativeLibraryDir, nativeLibraryDir_str );
+        jsize argc = _env->GetArrayLength( _args );
 
-            return nullptr;
+        Mengine::Char * argv[256];
+
+        for( jsize i = 0; i != argc; ++i )
+        {
+            jstring j_arg = (jstring)_env->GetObjectArrayElement( _args, i );
+
+            const Mengine::Char * arg_str = _env->GetStringUTFChars( j_arg, nullptr );
+
+            argv[i] = (Mengine::Char *)arg_str;
+        }
+
+        bool result = application->bootstrap( nativeLibraryDir_str, argc, argv );
+
+        for( jsize i = 0; i != argc; ++i )
+        {
+            jstring j_arg = (jstring)_env->GetObjectArrayElement( _args, i );
+
+            _env->ReleaseStringUTFChars( j_arg, argv[i] );
         }
 
         _env->ReleaseStringUTFChars( _nativeLibraryDir, nativeLibraryDir_str );
+
+        if( result == false )
+        {
+            application->~AndroidApplication();
+
+            Mengine::StdLib::free( memory_application );
+
+            return nullptr;
+        }
 
         jobject j_application = _env->NewDirectByteBuffer( memory_application, size_AndroidApplication );
 

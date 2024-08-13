@@ -29,8 +29,13 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     private static native void AndroidPlatform_surfaceDestroyed(Surface surface);
     private static native void AndroidPlatform_surfaceChanged(Surface surface, int surfaceWidth, int surfaceHeight, int deviceWidth, int deviceHeight, float rate);
 
+    private static native void AndroidPlatform_keyEvent(boolean isDown, int keyCode, int repeatCount);
+    private static native void AndroidPlatform_textEvent(int unicode);
     private static native void AndroidPlatform_touchEvent(int action, int pointerId, float x, float y, float pressure);
     private static native void AndroidPlatform_accelerationEvent(float x, float y, float z);
+
+    private static native void AndroidPlatform_handlePause();
+    private static native void AndroidPlatform_handleResume();
 
     protected CountDownLatch m_runLatch;
 
@@ -56,8 +61,12 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         this.setOnKeyListener(this);
         this.setOnTouchListener(this);
 
-        WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-        m_display = windowManager.getDefaultDisplay();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            m_display = context.getDisplay();
+        } else {
+            WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+            m_display = windowManager.getDefaultDisplay();
+        }
 
         m_sensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 
@@ -79,6 +88,8 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             m_sensorManager.unregisterListener(this, m_accelerometer);
             m_sensorManager.unregisterListener(this, m_linearAccelerometer);
         }
+
+        AndroidPlatform_handlePause();
     }
 
     public void handleResume() {
@@ -86,6 +97,8 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             m_sensorManager.registerListener(this, m_accelerometer, SensorManager.SENSOR_DELAY_GAME);
             m_sensorManager.registerListener(this, m_linearAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         }
+
+        AndroidPlatform_handleResume();
     }
 
     Surface getSurface() {
@@ -105,8 +118,6 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         }
 
         AndroidPlatform_surfaceCreated(surface);
-
-        //SDLActivity.onNativeSurfaceCreated();
     }
 
     @Override
@@ -122,9 +133,6 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         }
 
         AndroidPlatform_surfaceDestroyed(surface);
-
-        //mIsSurfaceReady = false;
-        //SDLActivity.onNativeSurfaceDestroyed();
     }
 
     @Override
@@ -156,9 +164,21 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        MengineLog.logMessage(TAG, "onKey");
+        int action = event.getAction();
 
-        return false;
+        int repeatCount = event.getRepeatCount();
+
+        if (action == KeyEvent.ACTION_DOWN) {
+            AndroidPlatform_keyEvent(true, keyCode, repeatCount);
+
+            int unicode = event.getUnicodeChar();
+
+            AndroidPlatform_textEvent(unicode);
+        } else if (action == KeyEvent.ACTION_UP) {
+            AndroidPlatform_keyEvent(false, keyCode, repeatCount);
+        }
+
+        return true;
     }
 
     protected void nativeTouchEvent(MotionEvent event, int index, int action) {
@@ -176,8 +196,6 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        MengineLog.logMessage(TAG, "onTouch");
-
         int pointerCount = event.getPointerCount();
         int action = event.getActionMasked();
 
@@ -187,7 +205,10 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
                     this.nativeTouchEvent(event, index, action);
                 }
             }break;
-            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_UP: {
+                this.nativeTouchEvent(event, 0, action);
+                v.performClick();
+            }break;
             case MotionEvent.ACTION_DOWN: {
                 this.nativeTouchEvent(event, 0, action);
             }break;

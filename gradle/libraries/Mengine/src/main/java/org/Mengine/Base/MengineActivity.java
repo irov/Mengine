@@ -36,7 +36,7 @@ import java.util.concurrent.CountDownLatch;
 public class MengineActivity extends AppCompatActivity {
     public static final String TAG = "MengineActivity";
 
-    private static native Object AndroidMain_bootstrap(String nativeLibraryDir, String _args);
+    private static native Object AndroidMain_bootstrap(String nativeLibraryDir, String[] _args);
     private static native void AndroidMain_destroy(Object application);
 
     private static native void AndroidEnv_setMengineAndroidActivityJNI(Object activity);
@@ -316,7 +316,9 @@ public class MengineActivity extends AppCompatActivity {
         String nativeLibraryDir = applicationInfo.nativeLibraryDir;
         String options = application.getApplicationOptions();
 
-        m_nativeApplication = AndroidMain_bootstrap(nativeLibraryDir, options);
+        String[] optinsArgs = options.split(" ");
+
+        m_nativeApplication = AndroidMain_bootstrap(nativeLibraryDir, optinsArgs);
 
         this.setState("activity.init", "create");
 
@@ -587,6 +589,10 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessageRelease(TAG, "onPause");
 
+        if (m_surfaceView != null) {
+            m_surfaceView.handlePause();
+        }
+
         MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
@@ -609,6 +615,10 @@ public class MengineActivity extends AppCompatActivity {
         this.setState("activity.lifecycle", "resume");
 
         MengineLog.logMessageRelease(TAG, "onResume");
+
+        if (m_surfaceView != null) {
+            m_surfaceView.handleResume();
+        }
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
@@ -697,6 +707,9 @@ public class MengineActivity extends AppCompatActivity {
                 , e.getMessage()
             );
         }
+
+        AndroidMain_destroy(m_nativeApplication);
+        m_nativeApplication = null;
 
         AndroidEnv_removeMengineAndroidActivityJNI();
 

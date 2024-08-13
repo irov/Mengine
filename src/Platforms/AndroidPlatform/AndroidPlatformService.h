@@ -179,8 +179,16 @@ namespace Mengine
         void accelerationEvent( jfloat _x, jfloat _y, jfloat _z ) override;
 
     protected:
-        bool changeWindow_( const Resolution & _resolution, bool _fullscreen );
-        void setupWindow_();
+        void keyEvent( jboolean _isDown, jint _keyCode, jint _repeatCount ) override;
+
+    protected:
+        void textEvent( jint _unicode ) override;
+
+    protected:
+        void handlePause() override;
+        void handleResume() override;
+
+    protected:
         bool createWindow_( const Resolution & _resolution, bool _fullscreen );
         bool applyWindow_();
         void destroyWindow_();
@@ -192,7 +200,42 @@ namespace Mengine
         void pushQuitEvent_();
 
     protected:
-        void setActive_( bool _active );
+        void setActive_( float _x, float _y, bool _active );
+
+    protected:
+        struct PlatformUnionEvent
+        {
+            enum EPlatformEventType
+            {
+                PET_PAUSE,
+                PET_RESUME
+            } type;
+
+            struct PlatformPauseEvent
+            {
+                float x;
+                float y;
+            };
+
+            struct PlatformResumeEvent
+            {
+                float x;
+                float y;
+            };
+
+            union
+            {
+                PlatformPauseEvent pause;
+                PlatformResumeEvent resume;
+            } data;
+        };
+
+    protected:
+        void pauseEvent_( const PlatformUnionEvent::PlatformPauseEvent & _event );
+        void resumeEvent_( const PlatformUnionEvent::PlatformResumeEvent & _event );
+
+    protected:
+        void pushEvent( const PlatformUnionEvent & _event );
 
     protected:
         Timestamp m_beginTime;
@@ -207,17 +250,15 @@ namespace Mengine
 
         jint m_fingers[MENGINE_INPUT_MAX_TOUCH];
 
-        /*
-        SDL_Window * m_sdlWindow;
+        jfloat m_currentFingersX[MENGINE_INPUT_MAX_TOUCH];
+        jfloat m_currentFingersY[MENGINE_INPUT_MAX_TOUCH];
+        jfloat m_currentFingersPressure[MENGINE_INPUT_MAX_TOUCH];
 
-        SDL_Joystick * m_sdlAccelerometer;
-         */
+        ThreadMutexInterfacePtr m_mutex;
 
-        FactoryInterfacePtr m_factoryDynamicLibraries;
-
-        /*
-        AndroidInputPtr m_androidInput;
-         */
+        typedef Vector<PlatformUnionEvent> VectorInputEvents;
+        VectorInputEvents m_eventsAux;
+        VectorInputEvents m_events;
 
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
 

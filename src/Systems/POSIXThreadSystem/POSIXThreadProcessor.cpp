@@ -132,16 +132,7 @@ namespace Mengine
         while( m_exit == false )
         {
             ::pthread_mutex_lock( &m_conditionLock );
-
-            int cond_status = ::pthread_cond_wait( &m_conditionVariable, &m_conditionLock );
-
-            if( cond_status != -1 && cond_status != ETIMEDOUT )
-            {
-                LOGGER_ERROR( "invalid cond wait timeout error status: %d"
-                    , cond_status
-                );
-            }
-
+            ::pthread_cond_wait( &m_conditionVariable, &m_conditionLock );
             ::pthread_mutex_unlock( &m_conditionLock );
 
             if( m_exit == true )

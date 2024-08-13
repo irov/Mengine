@@ -1,3 +1,4 @@
+#include <Interface/InputServiceInterface.h>
 #include "InputServiceHelper.h"
 
 #include "Interface/InputServiceInterface.h"
@@ -9,7 +10,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseMoveEvent( ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure )
+        void pushMouseMoveEvent( ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure )
         {
             float vx;
             float vy;
@@ -27,11 +28,14 @@ namespace Mengine
                 ->getSpecial( &ev.data.special );
 
             ev.data.move.touchId = _touchId;
+
             ev.data.move.x = vx;
             ev.data.move.y = vy;
+            ev.data.move.pressure = _pressure;
+
             ev.data.move.dx = _dx;
             ev.data.move.dy = _dy;
-            ev.data.move.pressure = _pressure;
+            ev.data.move.dpressure = _dpressure;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -52,10 +56,12 @@ namespace Mengine
                 ->getSpecial( &ev.data.special );
 
             ev.data.button.touchId = _touchId;
+
             ev.data.button.x = vx;
             ev.data.button.y = vy;
-            ev.data.button.button = _button;
             ev.data.button.pressure = _pressure;
+
+            ev.data.button.button = _button;
             ev.data.button.isDown = _isDown;
             ev.data.button.isPressed = true;
 
@@ -63,7 +69,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushKeyEvent( float _x, float _y, EKeyCode _code, bool _isDown, bool _repeating )
+        void pushKeyEvent( float _x, float _y, float _pressure, EKeyCode _code, bool _isDown, bool _repeating )
         {
             float vx;
             float vy;
@@ -79,6 +85,8 @@ namespace Mengine
 
             ev.data.key.x = vx;
             ev.data.key.y = vy;
+            ev.data.key.pressure = _pressure;
+
             ev.data.key.code = _code;
             ev.data.key.isDown = _isDown;
             ev.data.key.isRepeat = _repeating;
@@ -87,7 +95,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushTextEvent( float _x, float _y, const WChar * _key )
+        void pushTextEvent( float _x, float _y, float _pressure, const WChar * _key )
         {
             float vx;
             float vy;
@@ -103,6 +111,8 @@ namespace Mengine
 
             ev.data.text.x = vx;
             ev.data.text.y = vy;
+            ev.data.text.pressure = _pressure;
+
             StdString::wcsncpy( ev.data.text.text, _key, MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE );
 
             INPUT_SERVICE()
@@ -124,6 +134,7 @@ namespace Mengine
                 ->getSpecial( &ev.data.special );
 
             ev.data.leave.touchId = _touchId;
+
             ev.data.leave.x = vx;
             ev.data.leave.y = vy;
             ev.data.leave.pressure = _pressure;
@@ -147,6 +158,7 @@ namespace Mengine
                 ->getSpecial( &ev.data.special );
 
             ev.data.enter.touchId = _touchId;
+
             ev.data.enter.x = vx;
             ev.data.enter.y = vy;
             ev.data.enter.pressure = _pressure;
@@ -155,7 +167,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseWheelEvent( float _x, float _y, EWheelCode _wheel, int32_t _scroll )
+        void pushMouseWheelEvent( float _x, float _y, float _pressure, EWheelCode _wheel, int32_t _scroll )
         {
             float vx;
             float vy;
@@ -171,6 +183,8 @@ namespace Mengine
 
             ev.data.wheel.x = vx;
             ev.data.wheel.y = vy;
+            ev.data.wheel.pressure = _pressure;
+
             ev.data.wheel.wheel = _wheel;
             ev.data.wheel.scroll = _scroll;
 
@@ -178,7 +192,7 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushAccelerometerEvent( float _x, float _y, float _z )
+        void pushAccelerometerEvent( float _dx, float _dy, float _dz )
         {
             InputServiceInterface::InputUnionEvent ev;
 
@@ -187,9 +201,9 @@ namespace Mengine
             INPUT_SERVICE()
                 ->getSpecial( &ev.data.special );
 
-            ev.data.accelerometer.x = _x;
-            ev.data.accelerometer.y = _y;
-            ev.data.accelerometer.z = _z;
+            ev.data.accelerometer.dx = _dx;
+            ev.data.accelerometer.dy = _dy;
+            ev.data.accelerometer.dz = _dz;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );

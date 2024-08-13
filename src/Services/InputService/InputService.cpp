@@ -5,6 +5,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionContainer.h"
+#include "Kernel/Error.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
@@ -84,6 +85,10 @@ namespace Mengine
                 {
                     this->textEvent_( ev.data.text );
                 }break;
+            case IET_ACCELEROMETER:
+                {
+                    this->accelerometerEvent_( ev.data.accelerometer );
+                }break;
             case IET_MOUSE_BUTTON:
                 {
                     this->mouseButtonEvent_( ev.data.button );
@@ -106,7 +111,7 @@ namespace Mengine
                 }break;
             default:
                 {
-                    LOGGER_ERROR( "invalid input event type %u"
+                    MENGINE_ERROR_FATAL( "invalid input event type: %u"
                         , ev.type
                     );
                 }break;
@@ -452,9 +457,9 @@ namespace Mengine
     void InputService::accelerometerEvent_( const InputAccelerometerEvent & _event )
     {
         LOGGER_INFO( "input", "handle accelerometer: %.4f %.4f %.4f"
-            , _event.x
-            , _event.y
-            , _event.z
+            , _event.dx
+            , _event.dy
+            , _event.dz
         );
 
         APPLICATION_SERVICE()

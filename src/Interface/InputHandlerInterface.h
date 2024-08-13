@@ -40,6 +40,8 @@ namespace Mengine
 
         float x;
         float y;
+        float pressure;
+
         EKeyCode code;
         bool isDown;
         bool isRepeat;
@@ -51,6 +53,8 @@ namespace Mengine
 
         float x;
         float y;
+        float pressure;
+
         WChar text[MENGINE_INPUTTEXTEVENT_TEXT_MAX_SIZE];
     };
     //////////////////////////////////////////////////////////////////////////
@@ -58,9 +62,9 @@ namespace Mengine
     {
         InputSpecialData special;
 
-        float x;
-        float y;
-        float z;
+        float dx;
+        float dy;
+        float dz;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseButtonEvent
@@ -68,10 +72,12 @@ namespace Mengine
         InputSpecialData special;
 
         ETouchCode touchId;
+
         float x;
         float y;
-        EMouseButtonCode button;
         float pressure;
+
+        EMouseButtonCode button;
         bool isDown;
         bool isPressed;
     };
@@ -82,6 +88,8 @@ namespace Mengine
 
         float x;
         float y;
+        float pressure;
+
         EWheelCode wheel;
         int32_t scroll;
     };
@@ -91,11 +99,14 @@ namespace Mengine
         InputSpecialData special;
 
         ETouchCode touchId;
+
         float x;
         float y;
+        float pressure;
+
         float dx;
         float dy;
-        float pressure;
+        float dpressure;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseEnterEvent
@@ -103,6 +114,7 @@ namespace Mengine
         InputSpecialData special;
 
         ETouchCode touchId;
+
         float x;
         float y;
         float pressure;
@@ -113,6 +125,7 @@ namespace Mengine
         InputSpecialData special;
 
         ETouchCode touchId;
+
         float x;
         float y;
         float pressure;

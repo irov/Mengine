@@ -1657,7 +1657,7 @@ namespace Mengine
 
                 mt::vec2f mp = pos_screen - cp;
 
-                Helper::pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f );
+                Helper::pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f, 0.f );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_pushMouseButtonEvent( ETouchCode _touchId, const mt::vec2f & _pos, EMouseButtonCode _button, bool _isDown )
@@ -4600,6 +4600,7 @@ namespace Mengine
             .def_member( "special", &InputKeyEvent::special )
             .def_member( "x", &InputKeyEvent::x )
             .def_member( "y", &InputKeyEvent::y )
+            .def_member( "pressure", &InputKeyEvent::pressure )
             .def_member( "code", &InputKeyEvent::code )
             .def_member( "isDown", &InputKeyEvent::isDown )
             .def_member( "isRepeat", &InputKeyEvent::isRepeat )
@@ -4609,15 +4610,16 @@ namespace Mengine
             .def_member( "special", &InputTextEvent::special )
             .def_member( "x", &InputTextEvent::x )
             .def_member( "y", &InputTextEvent::y )
+            .def_member( "pressure", &InputTextEvent::pressure )
             .def_property_static( "symbol", &EngineScriptMethod::s_InputTextEvent_getSymbol, nullptr )
             .def_property_static( "text", &EngineScriptMethod::s_InputTextEvent_getText, nullptr )
             ;
 
         pybind::struct_<InputAccelerometerEvent>( _kernel, "InputAccelerometerEvent" )
             .def_member( "special", &InputAccelerometerEvent::special )
-            .def_member( "x", &InputAccelerometerEvent::x )
-            .def_member( "y", &InputAccelerometerEvent::y )
-            .def_member( "z", &InputAccelerometerEvent::z )
+            .def_member( "dx", &InputAccelerometerEvent::dx )
+            .def_member( "dy", &InputAccelerometerEvent::dy )
+            .def_member( "dz", &InputAccelerometerEvent::dz )
             ;
 
         pybind::struct_<InputMouseButtonEvent>( _kernel, "InputMouseButtonEvent" )
@@ -4625,6 +4627,7 @@ namespace Mengine
             .def_member( "touchId", &InputMouseButtonEvent::touchId )
             .def_member( "x", &InputMouseButtonEvent::x )
             .def_member( "y", &InputMouseButtonEvent::y )
+            .def_member( "pressure", &InputMouseButtonEvent::pressure )
             .def_member( "button", &InputMouseButtonEvent::button )
             .def_member( "isDown", &InputMouseButtonEvent::isDown )
             .def_member( "isPressed", &InputMouseButtonEvent::isPressed )
@@ -4634,6 +4637,7 @@ namespace Mengine
             .def_member( "special", &InputMouseWheelEvent::special )
             .def_member( "x", &InputMouseWheelEvent::x )
             .def_member( "y", &InputMouseWheelEvent::y )
+            .def_member( "pressure", &InputMouseWheelEvent::pressure )
             .def_member( "wheel", &InputMouseWheelEvent::wheel )
             .def_member( "scroll", &InputMouseWheelEvent::scroll )
             ;
@@ -4643,9 +4647,10 @@ namespace Mengine
             .def_member( "touchId", &InputMouseMoveEvent::touchId )
             .def_member( "x", &InputMouseMoveEvent::x )
             .def_member( "y", &InputMouseMoveEvent::y )
+            .def_member( "pressure", &InputMouseMoveEvent::pressure )
             .def_member( "dx", &InputMouseMoveEvent::dx )
             .def_member( "dy", &InputMouseMoveEvent::dy )
-            .def_member( "pressure", &InputMouseMoveEvent::pressure )
+            .def_member( "dpressure", &InputMouseMoveEvent::dpressure )
             ;
 
         pybind::struct_<InputMouseEnterEvent>( _kernel, "InputMouseEnterEvent" )

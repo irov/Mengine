@@ -47,7 +47,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotAccelerometer( const InputAccelerometerEvent & _event )
     {
-        return m_cb.call( _event.x, _event.y, _event.z );
+        return m_cb.call( _event.dx, _event.dy, _event.dz );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotMouseButton( const InputMouseButtonEvent & _event )
@@ -89,4 +89,5 @@ namespace Mengine
     {
         m_cb.call( _playId, _isEnd );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

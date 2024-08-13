@@ -101,6 +101,22 @@ extern "C"
         platformExtension->changeAndroidNativeWindow( nativeWindow, surfaceWidth, surfaceHeight, deviceWidth, deviceHeight, rate );
     }
     ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1keyEvent )(JNIEnv * env, jclass cls, jboolean isDown, jint keyCode, jint repeatCount)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+                ->getUnknown();
+
+        platformExtension->keyEvent( isDown, keyCode, repeatCount );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1textEvent )(JNIEnv * env, jclass cls, jint unicode)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->textEvent( unicode );
+    }
+    ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1touchEvent )(JNIEnv * env, jclass cls, jint action, jint pointerId, jfloat x, jfloat y, jfloat pressure)
     {
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
@@ -117,6 +133,22 @@ extern "C"
         platformExtension->accelerationEvent( x, y, z );
     }
     ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1handlePause )(JNIEnv * env, jclass cls)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->handlePause();
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1handleResume )(JNIEnv * env, jclass cls)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->handleResume();
+    }
+    ///////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PlatformService, Mengine::AndroidPlatformService );
@@ -127,11 +159,6 @@ namespace Mengine
     AndroidPlatformService::AndroidPlatformService()
         : m_beginTime( 0 )
         , m_nativeWindow( nullptr )
-        /*
-        , m_sdlWindow( nullptr )
-        , m_sdlAccelerometer( nullptr )
-        , m_sdlInput( nullptr )
-         */
         , m_prevTime( 0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
@@ -139,6 +166,11 @@ namespace Mengine
         , m_desktop( false )
         , m_touchpad( false )
     {
+        Algorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, -1 );
+
+        Algorithm::fill_n( m_currentFingersX, MENGINE_INPUT_MAX_TOUCH, 0.f );
+        Algorithm::fill_n( m_currentFingersY, MENGINE_INPUT_MAX_TOUCH, 0.f );
+        Algorithm::fill_n( m_currentFingersPressure, MENGINE_INPUT_MAX_TOUCH, 0.f );
     }
     //////////////////////////////////////////////////////////////////////////
     AndroidPlatformService::~AndroidPlatformService()
@@ -210,43 +242,12 @@ namespace Mengine
     {
         MENGINE_UNUSED( _resolution );
 
-        /*
-        int displayIndex = -1;
-        
-        if( m_sdlWindow == nullptr )
-        {
-            displayIndex = 0;
-        }
-        else
-        {
-            displayIndex = SDL_GetWindowDisplayIndex( m_sdlWindow );
+        int32_t width = ANativeWindow_getWidth( m_nativeWindow );
+        int32_t height = ANativeWindow_getHeight( m_nativeWindow );
 
-            if( displayIndex == -1 )
-            {
-                LOGGER_ERROR( "invalid get window display: %s"
-                    , SDL_GetError()
-                );
-
-                return false;
-            }
-        }
-
-        SDL_Rect rect;
-        if( SDL_GetDisplayUsableBounds( displayIndex, &rect ) != 0 )
-        {
-            LOGGER_ERROR( "invalid get max client resolution: %s"
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-
-        *_resolution = Resolution( (uint32_t)rect.w, (uint32_t)rect.h );
+        *_resolution = Resolution( width, height );
 
         return true;
-         */
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::_initializeService()
@@ -286,32 +287,13 @@ namespace Mengine
             , m_desktop
         );
 
-        /*
-        AndroidInputPtr androidInput = Helper::makeFactorableUnique<AndroidInput>( MENGINE_DOCUMENT_FACTORABLE );
-
-        if( androidInput->initialize() == false )
-        {
-            return false;
-        }
-
-        m_androidInput = androidInput;
-         */
-
-        /*
-#if defined(MENGINE_PLATFORM_ANDROID)
-        int AndroidSDKVersion = SDL_GetAndroidSDKVersion();
-        SDL_bool AndroidTV = SDL_IsAndroidTV();
-
-        LOGGER_INFO( "platform", "Android SDK version: %d", AndroidSDKVersion );
-        LOGGER_INFO( "platform", "Android TV: %d", AndroidTV );
-#endif
-         */
-
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
         LOGGER_INFO_PROTECTED( "plarform", "Device Seed: %u"
             , deviceSeed
         );
+
+        m_mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -358,14 +340,12 @@ namespace Mengine
 
         m_platformTags.clear();
 
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
-
-        m_factoryDynamicLibraries = nullptr;
+        m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::runPlatform()
     {
-        this->setActive_( true );
+        this->setActive_( 0, 0, true );
 
         if( this->updatePlatform() == false )
         {
@@ -579,8 +559,6 @@ namespace Mengine
             , _fullscreen
         );
 
-        this->setupWindow_();
-
         if( this->createWindow_( _windowResolution, _fullscreen ) == false )
         {
             return false;
@@ -596,168 +574,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::applyWindow_()
     {
-        /*
-        SDL_GLContext glContext = SDL_GL_CreateContext( m_sdlWindow );
-
-        if( glContext == nullptr )
-        {
-            LOGGER_ERROR( "invalid create GL context error: %s"
-                , SDL_GetError()
-            );
-
-            SDL_DestroyWindow( m_sdlWindow );
-            m_sdlWindow = nullptr;
-
-            return false;
-        }
-
-        int attribute_GL_CONTEXT_PROFILE_MASK = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &attribute_GL_CONTEXT_PROFILE_MASK ) != 0 )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_CONTEXT_PROFILE_MASK error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_GL_CONTEXT_MAJOR_VERSION = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &attribute_GL_CONTEXT_MAJOR_VERSION ) != 0 )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_CONTEXT_MAJOR_VERSION error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_GL_CONTEXT_MINOR_VERSION = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, &attribute_GL_CONTEXT_MINOR_VERSION ) != 0 )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_CONTEXT_MINOR_VERSION error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_SDL_GL_RED_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_RED_SIZE, &attribute_SDL_GL_RED_SIZE ) != 0 )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_RED_SIZE error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_SDL_GL_GREEN_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, &attribute_SDL_GL_GREEN_SIZE ) != 0 )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_GREEN_SIZE error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_SDL_GL_BLUE_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, &attribute_SDL_GL_BLUE_SIZE ) != 0 )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_BLUE_SIZE error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_SDL_GL_ALPHA_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, &attribute_SDL_GL_ALPHA_SIZE ) != 0 )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_ALPHA_SIZE error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_SDL_GL_DEPTH_SIZE = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_DEPTH_SIZE, &attribute_SDL_GL_DEPTH_SIZE ) != 0 )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_DEPTH_SIZE error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        int attribute_SDL_GL_DOUBLEBUFFER = 0;
-        if( SDL_GL_GetAttribute( SDL_GL_DOUBLEBUFFER, &attribute_SDL_GL_DOUBLEBUFFER ) != 0 )
-        {
-            LOGGER_WARNING( "get attribute SDL_GL_DOUBLEBUFFER error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        LOGGER_INFO( "platform", "SDL_GL_CONTEXT_PROFILE_MASK: %d"
-            , attribute_GL_CONTEXT_PROFILE_MASK
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_CONTEXT_MAJOR_VERSION: %d"
-            , attribute_GL_CONTEXT_MAJOR_VERSION
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_CONTEXT_MINOR_VERSION: %d"
-            , attribute_GL_CONTEXT_MINOR_VERSION
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_RED_SIZE: %d"
-            , attribute_SDL_GL_RED_SIZE
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_GREEN_SIZE: %d"
-            , attribute_SDL_GL_GREEN_SIZE
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_BLUE_SIZE: %d"
-            , attribute_SDL_GL_BLUE_SIZE
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_ALPHA_SIZE: %d"
-            , attribute_SDL_GL_ALPHA_SIZE
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_DEPTH_SIZE: %d"
-            , attribute_SDL_GL_DEPTH_SIZE
-        );
-
-        LOGGER_INFO( "platform", "SDL_GL_DOUBLEBUFFER: %d"
-            , attribute_SDL_GL_DOUBLEBUFFER
-        );
-
-        m_glContext = glContext;
-
-        int drawable_width;
-        int drawable_height;
-        SDL_GL_GetDrawableSize( m_sdlWindow, &drawable_width, &drawable_height );
-
-        LOGGER_INFO( "platform", "SDL drawable size [%d, %d]"
-            , drawable_width
-            , drawable_height
-        );
-
-        int win_width;
-        int win_height;
-        SDL_GetWindowSize( m_sdlWindow, &win_width, &win_height );
-
-        LOGGER_INFO( "platform", "SDL window size [%d, %d]"
-            , win_width
-            , win_height
-        );
-
-        int win_min_width;
-        int win_min_height;
-        SDL_GetWindowMinimumSize( m_sdlWindow, &win_min_width, &win_min_height );
-
-        LOGGER_INFO( "platform", "SDL window min size [%d, %d]"
-            , win_min_width
-            , win_min_height
-        );
-
-        int win_max_width;
-        int win_max_height;
-        SDL_GetWindowMaximumSize( m_sdlWindow, &win_max_width, &win_max_height );
-
-        LOGGER_INFO( "platform", "SDL window max size [%d, %d]"
-            , win_max_width
-            , win_max_height
-        );
-        */
-
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_ATACH_WINDOW );
 
         return true;
@@ -887,14 +703,14 @@ namespace Mengine
     {
         MENGINE_UNUSED( _icon );
 
-        //ToDo https://github.com/irov/Mengine/issues/93
+        // Empty
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::hasCursorIcon( const ConstString & _icon ) const
     {
         MENGINE_UNUSED( _icon );
 
-        //ToDo https://github.com/irov/Mengine/issues/93
+        // Empty
 
         return false;
     }
@@ -926,24 +742,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
     {
-        /*
-        if( m_sdlWindow == nullptr )
-        {
-            return true;
-        }
-
-        Uint32 flags = SDL_GetWindowFlags( m_sdlWindow );
-
-        bool alreadyFullscreen = (flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN;
-
-        if( _fullscreen != alreadyFullscreen )
-        {
-            if( this->changeWindow_( _resolution, _fullscreen ) == false )
-            {
-                return false;
-            }
-        }
-         */
+        MENGINE_UNUSED( _resolution );
 
         return true;
     }
@@ -952,54 +751,14 @@ namespace Mengine
     {
         MENGINE_UNUSED( _vsync );
 
-        /*
-        if( SDL_GetWindowFlags( m_sdlWindow ) & SDL_WINDOW_OPENGL )
-        {
-            int profile;
-            if( SDL_GL_GetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, &profile ) == -1 )
-            {
-                return;
-            }
-
-            if( profile == SDL_GL_CONTEXT_PROFILE_ES )
-            {
-                return;
-            }
-
-            if( _vsync == false )
-            {
-                if( SDL_GL_SetSwapInterval( 0 ) != 0 )
-                {
-                    LOGGER_WARNING( "notify vsync changed error: %s"
-                        , SDL_GetError()
-                    );
-                }
-            }
-            else
-            {
-                if( SDL_GL_SetSwapInterval( 1 ) != 0 )
-                {
-                    LOGGER_WARNING( "notify vsync changed error: %s"
-                        , SDL_GetError()
-                    );
-                }
-            }
-        }
-         */
+        // Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::notifyCursorModeChanged( bool _mode )
     {
-        /*
-        if( _mode == true )
-        {
-            SDL_ShowCursor( SDL_ENABLE );
-        }
-        else
-        {
-            SDL_ShowCursor( SDL_DISABLE );
-        }
-         */
+        MENGINE_UNUSED( _mode );
+
+        // Empty
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer )
@@ -1376,136 +1135,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidPlatformService::changeWindow_( const Resolution & _resolution, bool _fullscreen )
-    {
-        MENGINE_UNUSED( _resolution );
-
-        if( RENDER_SYSTEM()
-            ->onWindowChangeFullscreen( _fullscreen ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::setupWindow_()
-    {
-        /*
-        uint32_t Engine_SDL_GL_RED_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_RED_SIZE", 8 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, Engine_SDL_GL_RED_SIZE ) != 0 )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_RED_SIZE to [%u] error: %s"
-                , Engine_SDL_GL_RED_SIZE
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_GREEN_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_GREEN_SIZE", 8 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, Engine_SDL_GL_GREEN_SIZE ) != 0 )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_GREEN_SIZE to [%u] error: %s"
-                , Engine_SDL_GL_GREEN_SIZE
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_BLUE_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_BLUE_SIZE", 8 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, Engine_SDL_GL_BLUE_SIZE ) != 0 )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_BLUE_SIZE to [%u] error: %s"
-                , Engine_SDL_GL_BLUE_SIZE
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_ALPHA_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_ALPHA_SIZE", 0 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, Engine_SDL_GL_ALPHA_SIZE ) != 0 )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_ALPHA_SIZE to [%u] error: %s"
-                , Engine_SDL_GL_ALPHA_SIZE
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_DEPTH_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_DEPTH_SIZE", 24 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, Engine_SDL_GL_DEPTH_SIZE ) != 0 )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_DEPTH_SIZE to [%u] error: %s"
-                , Engine_SDL_GL_DEPTH_SIZE
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_DOUBLEBUFFER = CONFIG_VALUE( "SDL", "SDL_GL_DOUBLEBUFFER", 1 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, Engine_SDL_GL_DOUBLEBUFFER ) != 0 )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_DOUBLEBUFFER to [%u] error: %s"
-                , Engine_SDL_GL_DOUBLEBUFFER
-                , SDL_GetError()
-            );
-        }
-
-        SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengles2" );
-
-        uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_ES );
-
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to [%u] error: %s"
-                , Engine_SDL_GL_CONTEXT_PROFILE_MASK
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_MAJOR_VERSION", 2 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) != 0 )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to [%u] error: %s"
-                , Engine_SDL_GL_CONTEXT_MAJOR_VERSION
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE( "SDL", "Engine_SDL_GL_CONTEXT_MINOR_VERSION", 0 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) != 0 )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to [%u] error: %s"
-                , Engine_SDL_GL_CONTEXT_MINOR_VERSION
-                , SDL_GetError()
-            );
-        }
-
-        const Char * Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
-
-        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY ) != SDL_TRUE )
-        {
-            LOGGER_WARNING( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
-                , Engine_SDL_HINT_RENDER_SCALE_QUALITY
-                , SDL_GetError()
-            );
-        }
-
-        const Char * Engine_SDL_HINT_ORIENTATIONS = CONFIG_VALUE( "SDL", "SDL_HINT_ORIENTATIONS", "Portrait" );
-
-        if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDL_HINT_ORIENTATIONS ) != SDL_TRUE )
-        {
-            LOGGER_WARNING( "set hint SDL_HINT_ORIENTATIONS to [%s] error: %s"
-                , Engine_SDL_HINT_ORIENTATIONS
-                , SDL_GetError()
-            );
-        }
-         */
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::createWindow_( const Resolution & _windowResolution, bool _fullscreen )
     {
         MENGINE_UNUSED( _windowResolution );
@@ -1561,6 +1190,11 @@ namespace Mengine
 
         m_eglSurface = eglSurface;
 
+        EGLint width;
+        EGLint height;
+        eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_WIDTH, &width);
+        eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height);
+
         const EGLint contextAttribs[] = {
             EGL_CONTEXT_CLIENT_VERSION, 2,
             EGL_NONE
@@ -1582,50 +1216,6 @@ namespace Mengine
             return false;
         }
 
-        //::dlsym( handleGLESv2, "eglGetDisplay" );
-
-        /*
-        SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 );
-
-        Uint32 windowFlags = 0;
-
-        windowFlags |= SDL_WINDOW_OPENGL;
-        windowFlags |= SDL_WINDOW_SHOWN;
-        windowFlags |= SDL_WINDOW_RESIZABLE;
-        windowFlags |= SDL_WINDOW_FULLSCREEN;
-        windowFlags |= SDL_WINDOW_BORDERLESS;
-
-        LOGGER_INFO( "platform", "num video displays: %d"
-            , SDL_GetNumVideoDisplays()
-        );
-        
-        const Char * projectTitle_str = m_projectTitle.c_str();
-
-        SDL_Window * window = SDL_CreateWindow( projectTitle_str
-            , SDL_WINDOWPOS_UNDEFINED
-            , SDL_WINDOWPOS_UNDEFINED
-            , -1
-            , -1
-            , windowFlags );
-
-        if( window == nullptr )
-        {
-            LOGGER_ERROR( "create window failed: %s"
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-
-        m_sdlWindow = window;
-
-        LOGGER_INFO( "platform", "SDL_HINT_RENDER_DRIVER: %s", SDL_GetHint( SDL_HINT_RENDER_DRIVER ) );
-        LOGGER_INFO( "platform", "SDL_HINT_RENDER_SCALE_QUALITY: %s", SDL_GetHint( SDL_HINT_RENDER_SCALE_QUALITY ) );
-        LOGGER_INFO( "platform", "SDL_HINT_ORIENTATIONS: %s", SDL_GetHint( SDL_HINT_ORIENTATIONS ) );
-
-        return true;
-         */
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1633,23 +1223,33 @@ namespace Mengine
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
 
-        /*
-        if( m_glContext != nullptr )
-        {
-            SDL_GL_DeleteContext( m_glContext );
-            m_glContext = nullptr;
-        }
 
-        if( m_sdlWindow != nullptr )
-        {
-            SDL_DestroyWindow( m_sdlWindow );
-            m_sdlWindow = nullptr;
-        }
-         */
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::processEvents_()
     {
+        m_mutex->lock();
+        std::swap( m_events, m_eventsAux );
+        m_eventsAux.clear();
+        m_mutex->unlock();
+
+        for( const PlatformUnionEvent & ev : m_events )
+        {
+            switch( ev.type )
+            {
+            case PlatformUnionEvent::PET_PAUSE:
+                {
+                    this->pauseEvent_( ev.data.pause );
+                }break;
+            case PlatformUnionEvent::PET_RESUME:
+                {
+                    this->resumeEvent_( ev.data.resume );
+                }break;
+            default:
+                break;
+            }
+        }
+
         /*
         bool shouldQuit = false;
         
@@ -1830,7 +1430,7 @@ namespace Mengine
          */
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::setActive_( bool _active )
+    void AndroidPlatformService::setActive_( float _x, float _y, bool _active )
     {
         if( m_active == _active )
         {
@@ -1842,22 +1442,17 @@ namespace Mengine
         bool nopause = APPLICATION_SERVICE()
             ->getNopause();
 
-        /*
-        mt::vec2f point;
-        m_androidInput->getCursorPosition( m_sdlWindow, &point );
-
         if( m_active == false )
         {
             if( nopause == false )
             {
-                Helper::pushMouseLeaveEvent( TC_TOUCH0, point.x, point.y, 0.f );
+                Helper::pushMouseLeaveEvent( TC_TOUCH0, _x, _y, 0.f );
             }
         }
         else
         {
-            Helper::pushMouseEnterEvent( TC_TOUCH0, point.x, point.y, 0.f );
+            Helper::pushMouseEnterEvent( TC_TOUCH0, _x, _y, 0.f );
         }
-         */
 
         if( nopause == false )
         {
@@ -1930,17 +1525,29 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::setAndroidNativeWindow( ANativeWindow * _nativeWindow )
     {
+        LOGGER_INFO( "platform", "set android native window" );
 
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::destroyAndroidNativeWindow( ANativeWindow * _nativeWindow )
     {
+        LOGGER_INFO( "platform", "destroy android native window" );
 
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::changeAndroidNativeWindow( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate )
     {
+        LOGGER_INFO( "platform", "change android native window surface: %d;%d device: %d;%d rate: %f"
+            , surfaceWidth
+            , surfaceHeight
+            , deviceWidth
+            , deviceHeight
+            , rate
+        );
 
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     ETouchCode AndroidPlatformService::acquireFingerIndex_( jint _pointerId )
@@ -1996,34 +1603,464 @@ namespace Mengine
     {
         switch( _action )
         {
-        case 0 /*ACTION_DOWN*/:
-        case 5 /*ACTION_POINTER_DOWN*/:
+        case 0: //ACTION_DOWN
+        case 5: //ACTION_POINTER_DOWN
             {
                 ETouchCode fingerIndex = this->acquireFingerIndex_( _pointerId );
 
+                m_currentFingersX[fingerIndex] = _x;
+                m_currentFingersY[fingerIndex] = _y;
+                m_currentFingersPressure[fingerIndex] = _pressure;
+
+                LOGGER_INFO( "platform", "touch [%d] down position: %.4f;%.4f pressure: %.4f"
+                    , fingerIndex
+                    , _x
+                    , _y
+                    , _pressure
+                );
+
                 Helper::pushMouseButtonEvent( fingerIndex, _x, _y, MC_LBUTTON, _pressure, true );
             }break;
-        case 1 /*ACTION_UP*/:
-        case 6 /*ACTION_POINTER_UP*/:
+        case 1: //ACTION_UP
+        case 6: //ACTION_POINTER_UP
             {
                 ETouchCode fingerIndex = this->releaseFingerIndex_( _pointerId );
 
+                m_currentFingersX[fingerIndex] = _x;
+                m_currentFingersY[fingerIndex] = _y;
+                m_currentFingersPressure[fingerIndex] = _pressure;
+
+                LOGGER_INFO( "platform", "touch [%d] up position: %.4f;%.4f pressure: %.4f"
+                    , fingerIndex
+                    , _x
+                    , _y
+                    , _pressure
+                );
+
                 Helper::pushMouseButtonEvent( fingerIndex, _x, _y, MC_LBUTTON, _pressure, false );
             }break;
-        case 2/*ACTION_MOVE*/:
+        case 2: //ACTION_MOVE
             {
                 ETouchCode fingerIndex = this->getFingerIndex_( _pointerId );
 
-                Helper::pushMouseMoveEvent( fingerIndex, _x, _y, 0.f, 0.f, _pressure );
+                jfloat previousX = m_currentFingersX[fingerIndex];
+                jfloat previousY = m_currentFingersY[fingerIndex];
+                jfloat previousPressure = m_currentFingersPressure[fingerIndex];
+
+                jfloat dx = _x - previousX;
+                jfloat dy = _y - previousY;
+                jfloat dpressure = _pressure - previousPressure;
+
+                m_currentFingersX[fingerIndex] = _x;
+                m_currentFingersY[fingerIndex] = _y;
+                m_currentFingersPressure[fingerIndex] = _pressure;
+
+                LOGGER_INFO( "platform", "touch [%d] move position: %.4f;%.4f pressure: %.4f delta: %.4f;%.4f dpressure: %.4f"
+                    , fingerIndex
+                    , _x
+                    , _y
+                    , _pressure
+                    , dx
+                    , dy
+                    , dpressure
+                );
+
+                Helper::pushMouseMoveEvent( fingerIndex, _x, _y, dx, dy, _pressure, dpressure );
             }break;
         default:
             break;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::accelerationEvent( jfloat _x, jfloat _y, jfloat _z )
+    void AndroidPlatformService::accelerationEvent( jfloat _dx, jfloat _dy, jfloat _dz )
     {
-        Helper::pushAccelerometerEvent( _x, _y, _z );
+        Helper::pushAccelerometerEvent( _dx, _dy, _dz );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::keyEvent( jboolean _isDown, jint _keyCode, jint _repeatCount )
+    {
+        static EKeyCode Android_Keycodes[] = {
+            KC_UNASSIGNED,          /* AKEYCODE_UNKNOWN */
+            KC_UNASSIGNED,         /* AKEYCODE_SOFT_LEFT */
+            KC_UNASSIGNED,        /* AKEYCODE_SOFT_RIGHT */
+            KC_UNASSIGNED,          /* AKEYCODE_HOME */
+            KC_BROWSER_BACK,          /* AKEYCODE_BACK */
+            KC_UNASSIGNED,             /* AKEYCODE_CALL */
+            KC_UNASSIGNED,          /* AKEYCODE_ENDCALL */
+            KC_0,                /* AKEYCODE_0 */
+            KC_1,                /* AKEYCODE_1 */
+            KC_2,                /* AKEYCODE_2 */
+            KC_3,                /* AKEYCODE_3 */
+            KC_4,                /* AKEYCODE_4 */
+            KC_5,                /* AKEYCODE_5 */
+            KC_6,                /* AKEYCODE_6 */
+            KC_7,                /* AKEYCODE_7 */
+            KC_8,                /* AKEYCODE_8 */
+            KC_9,                /* AKEYCODE_9 */
+            KC_UNASSIGNED,          /* AKEYCODE_STAR */
+            KC_UNASSIGNED,          /* AKEYCODE_POUND */
+            KC_UP,               /* AKEYCODE_DPAD_UP */
+            KC_DOWN,             /* AKEYCODE_DPAD_DOWN */
+            KC_LEFT,             /* AKEYCODE_DPAD_LEFT */
+            KC_RIGHT,            /* AKEYCODE_DPAD_RIGHT */
+            KC_UNASSIGNED,           /* AKEYCODE_DPAD_CENTER */
+            KC_UNASSIGNED,         /* AKEYCODE_VOLUME_UP */
+            KC_UNASSIGNED,       /* AKEYCODE_VOLUME_DOWN */
+            KC_UNASSIGNED,            /* AKEYCODE_POWER */
+            KC_UNASSIGNED,          /* AKEYCODE_CAMERA */
+            KC_UNASSIGNED,            /* AKEYCODE_CLEAR */
+            KC_A,                /* AKEYCODE_A */
+            KC_B,                /* AKEYCODE_B */
+            KC_C,                /* AKEYCODE_C */
+            KC_D,                /* AKEYCODE_D */
+            KC_E,                /* AKEYCODE_E */
+            KC_F,                /* AKEYCODE_F */
+            KC_G,                /* AKEYCODE_G */
+            KC_H,                /* AKEYCODE_H */
+            KC_I,                /* AKEYCODE_I */
+            KC_J,                /* AKEYCODE_J */
+            KC_K,                /* AKEYCODE_K */
+            KC_L,                /* AKEYCODE_L */
+            KC_M,                /* AKEYCODE_M */
+            KC_N,                /* AKEYCODE_N */
+            KC_O,                /* AKEYCODE_O */
+            KC_P,                /* AKEYCODE_P */
+            KC_Q,                /* AKEYCODE_Q */
+            KC_R,                /* AKEYCODE_R */
+            KC_S,                /* AKEYCODE_S */
+            KC_T,                /* AKEYCODE_T */
+            KC_U,                /* AKEYCODE_U */
+            KC_V,                /* AKEYCODE_V */
+            KC_W,                /* AKEYCODE_W */
+            KC_X,                /* AKEYCODE_X */
+            KC_Y,                /* AKEYCODE_Y */
+            KC_Z,                /* AKEYCODE_Z */
+            KC_UNASSIGNED,            /* AKEYCODE_COMMA */
+            KC_UNASSIGNED,           /* AKEYCODE_PERIOD */
+            KC_LMENU,             /* AKEYCODE_ALT_LEFT */
+            KC_RMENU,             /* AKEYCODE_ALT_RIGHT */
+            KC_LSHIFT,           /* AKEYCODE_SHIFT_LEFT */
+            KC_RSHIFT,           /* AKEYCODE_SHIFT_RIGHT */
+            KC_TAB,              /* AKEYCODE_TAB */
+            KC_SPACE,            /* AKEYCODE_SPACE */
+            KC_UNASSIGNED,          /* AKEYCODE_SYM */
+            KC_UNASSIGNED,              /* AKEYCODE_EXPLORER */
+            KC_UNASSIGNED,             /* AKEYCODE_ENVELOPE */
+            KC_RETURN,           /* AKEYCODE_ENTER */
+            KC_BACK,        /* AKEYCODE_DEL */
+            KC_UNASSIGNED,            /* AKEYCODE_GRAVE */
+            KC_OEM_MINUS,            /* AKEYCODE_MINUS */
+            KC_OEM_PLUS,           /* AKEYCODE_EQUALS */
+            KC_OEM_4,      /* AKEYCODE_LEFT_BRACKET */
+            KC_OEM_6,     /* AKEYCODE_RIGHT_BRACKET */
+            KC_UNASSIGNED,        /* AKEYCODE_BACKSLASH */
+            KC_UNASSIGNED,        /* AKEYCODE_SEMICOLON */
+            KC_UNASSIGNED,       /* AKEYCODE_APOSTROPHE */
+            KC_UNASSIGNED,            /* AKEYCODE_SLASH */
+            KC_UNASSIGNED,          /* AKEYCODE_AT */
+            KC_UNASSIGNED,          /* AKEYCODE_NUM */
+            KC_UNASSIGNED,          /* AKEYCODE_HEADSETHOOK */
+            KC_UNASSIGNED,          /* AKEYCODE_FOCUS */
+            KC_UNASSIGNED,          /* AKEYCODE_PLUS */
+            KC_MENU,             /* AKEYCODE_MENU */
+            KC_UNASSIGNED,          /* AKEYCODE_NOTIFICATION */
+            KC_UNASSIGNED,        /* AKEYCODE_SEARCH */
+            KC_UNASSIGNED,        /* AKEYCODE_MEDIA_PLAY_PAUSE */
+            KC_UNASSIGNED,        /* AKEYCODE_MEDIA_STOP */
+            KC_UNASSIGNED,        /* AKEYCODE_MEDIA_NEXT */
+            KC_UNASSIGNED,        /* AKEYCODE_MEDIA_PREVIOUS */
+            KC_UNASSIGNED,      /* AKEYCODE_MEDIA_REWIND */
+            KC_UNASSIGNED, /* AKEYCODE_MEDIA_FAST_FORWARD */
+            KC_UNASSIGNED,             /* AKEYCODE_MUTE */
+            KC_PRIOR,           /* AKEYCODE_PAGE_UP */
+            KC_NEXT,         /* AKEYCODE_PAGE_DOWN */
+            KC_UNASSIGNED,          /* AKEYCODE_PICTSYMBOLS */
+            KC_UNASSIGNED,          /* AKEYCODE_SWITCH_CHARSET */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_A */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_B */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_C */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_X */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_Y */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_Z */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_L1 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_R1 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_L2 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_R2 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_THUMBL */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_THUMBR */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_START */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_SELECT */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_MODE */
+            KC_ESCAPE,           /* AKEYCODE_ESCAPE */
+            KC_DELETE,           /* AKEYCODE_FORWARD_DEL */
+            KC_LCONTROL,            /* AKEYCODE_CTRL_LEFT */
+            KC_RCONTROL,            /* AKEYCODE_CTRL_RIGHT */
+            KC_CAPITAL,         /* AKEYCODE_CAPS_LOCK */
+            KC_UNASSIGNED,       /* AKEYCODE_SCROLL_LOCK */
+            KC_UNASSIGNED,             /* AKEYCODE_META_LEFT */
+            KC_UNASSIGNED,             /* AKEYCODE_META_RIGHT */
+            KC_UNASSIGNED,          /* AKEYCODE_FUNCTION */
+            KC_UNASSIGNED,      /* AKEYCODE_SYSRQ */
+            KC_PAUSE,            /* AKEYCODE_BREAK */
+            KC_HOME,             /* AKEYCODE_MOVE_HOME */
+            KC_END,              /* AKEYCODE_MOVE_END */
+            KC_INSERT,           /* AKEYCODE_INSERT */
+            KC_UNASSIGNED,       /* AKEYCODE_FORWARD */
+            KC_UNASSIGNED,          /* AKEYCODE_MEDIA_PLAY */
+            KC_UNASSIGNED,          /* AKEYCODE_MEDIA_PAUSE */
+            KC_UNASSIGNED,          /* AKEYCODE_MEDIA_CLOSE */
+            KC_UNASSIGNED,            /* AKEYCODE_MEDIA_EJECT */
+            KC_UNASSIGNED,          /* AKEYCODE_MEDIA_RECORD */
+            KC_F1,               /* AKEYCODE_F1 */
+            KC_F2,               /* AKEYCODE_F2 */
+            KC_F3,               /* AKEYCODE_F3 */
+            KC_F4,               /* AKEYCODE_F4 */
+            KC_F5,               /* AKEYCODE_F5 */
+            KC_F6,               /* AKEYCODE_F6 */
+            KC_F7,               /* AKEYCODE_F7 */
+            KC_F8,               /* AKEYCODE_F8 */
+            KC_F9,               /* AKEYCODE_F9 */
+            KC_F10,              /* AKEYCODE_F10 */
+            KC_F11,              /* AKEYCODE_F11 */
+            KC_F12,              /* AKEYCODE_F12 */
+            KC_UNASSIGNED,          /* AKEYCODE_NUM_LOCK */
+            KC_NUMPAD0,             /* AKEYCODE_NUMPAD_0 */
+            KC_NUMPAD1,             /* AKEYCODE_NUMPAD_1 */
+            KC_NUMPAD2,             /* AKEYCODE_NUMPAD_2 */
+            KC_NUMPAD3,             /* AKEYCODE_NUMPAD_3 */
+            KC_NUMPAD4,             /* AKEYCODE_NUMPAD_4 */
+            KC_NUMPAD5,             /* AKEYCODE_NUMPAD_5 */
+            KC_NUMPAD6,             /* AKEYCODE_NUMPAD_6 */
+            KC_NUMPAD7,             /* AKEYCODE_NUMPAD_7 */
+            KC_NUMPAD8,             /* AKEYCODE_NUMPAD_8 */
+            KC_NUMPAD9,             /* AKEYCODE_NUMPAD_9 */
+            KC_DIVIDE,        /* AKEYCODE_NUMPAD_DIVIDE */
+            KC_UNASSIGNED,      /* AKEYCODE_NUMPAD_MULTIPLY */
+            KC_SUBTRACT,         /* AKEYCODE_NUMPAD_SUBTRACT */
+            KC_ADD,          /* AKEYCODE_NUMPAD_ADD */
+            KC_UNASSIGNED,        /* AKEYCODE_NUMPAD_DOT */
+            KC_UNASSIGNED,         /* AKEYCODE_NUMPAD_COMMA */
+            KC_UNASSIGNED,         /* AKEYCODE_NUMPAD_ENTER */
+            KC_UNASSIGNED,        /* AKEYCODE_NUMPAD_EQUALS */
+            KC_UNASSIGNED,     /* AKEYCODE_NUMPAD_LEFT_PAREN */
+            KC_UNASSIGNED,    /* AKEYCODE_NUMPAD_RIGHT_PAREN */
+            KC_UNASSIGNED,          /* AKEYCODE_VOLUME_MUTE */
+            KC_UNASSIGNED,          /* AKEYCODE_INFO */
+            KC_UNASSIGNED,          /* AKEYCODE_CHANNEL_UP */
+            KC_UNASSIGNED,          /* AKEYCODE_CHANNEL_DOWN */
+            KC_UNASSIGNED,          /* AKEYCODE_ZOOM_IN */
+            KC_UNASSIGNED,          /* AKEYCODE_ZOOM_OUT */
+            KC_UNASSIGNED,          /* AKEYCODE_TV */
+            KC_UNASSIGNED,          /* AKEYCODE_WINDOW */
+            KC_UNASSIGNED,          /* AKEYCODE_GUIDE */
+            KC_UNASSIGNED,          /* AKEYCODE_DVR */
+            KC_UNASSIGNED,     /* AKEYCODE_BOOKMARK */
+            KC_UNASSIGNED,          /* AKEYCODE_CAPTIONS */
+            KC_UNASSIGNED,          /* AKEYCODE_SETTINGS */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_POWER */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_INPUT */
+            KC_UNASSIGNED,          /* AKEYCODE_STB_POWER */
+            KC_UNASSIGNED,          /* AKEYCODE_STB_INPUT */
+            KC_UNASSIGNED,          /* AKEYCODE_AVR_POWER */
+            KC_UNASSIGNED,          /* AKEYCODE_AVR_INPUT */
+            KC_UNASSIGNED,          /* AKEYCODE_PROG_RED */
+            KC_UNASSIGNED,          /* AKEYCODE_PROG_GREEN */
+            KC_UNASSIGNED,          /* AKEYCODE_PROG_YELLOW */
+            KC_UNASSIGNED,          /* AKEYCODE_PROG_BLUE */
+            KC_UNASSIGNED,          /* AKEYCODE_APP_SWITCH */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_1 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_2 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_3 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_4 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_5 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_6 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_7 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_8 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_9 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_10 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_11 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_12 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_13 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_14 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_15 */
+            KC_UNASSIGNED,          /* AKEYCODE_BUTTON_16 */
+            KC_UNASSIGNED,          /* AKEYCODE_LANGUAGE_SWITCH */
+            KC_UNASSIGNED,          /* AKEYCODE_MANNER_MODE */
+            KC_UNASSIGNED,          /* AKEYCODE_3D_MODE */
+            KC_UNASSIGNED,          /* AKEYCODE_CONTACTS */
+            KC_UNASSIGNED,          /* AKEYCODE_CALENDAR */
+            KC_UNASSIGNED,          /* AKEYCODE_MUSIC */
+            KC_UNASSIGNED,       /* AKEYCODE_CALCULATOR */
+            KC_UNASSIGNED,            /* AKEYCODE_ZENKAKU_HANKAKU */
+            KC_UNASSIGNED,          /* AKEYCODE_EISU */
+            KC_UNASSIGNED,   /* AKEYCODE_MUHENKAN */
+            KC_UNASSIGNED,   /* AKEYCODE_HENKAN */
+            KC_UNASSIGNED,            /* AKEYCODE_KATAKANA_HIRAGANA */
+            KC_UNASSIGNED,   /* AKEYCODE_YEN */
+            KC_UNASSIGNED,          /* AKEYCODE_RO */
+            KC_UNASSIGNED,          /* AKEYCODE_KANA */
+            KC_UNASSIGNED,          /* AKEYCODE_ASSIST */
+            KC_UNASSIGNED,   /* AKEYCODE_BRIGHTNESS_DOWN */
+            KC_UNASSIGNED,     /* AKEYCODE_BRIGHTNESS_UP */
+            KC_UNASSIGNED,          /* AKEYCODE_MEDIA_AUDIO_TRACK */
+            KC_UNASSIGNED,            /* AKEYCODE_SLEEP */
+            KC_UNASSIGNED,          /* AKEYCODE_WAKEUP */
+            KC_UNASSIGNED,          /* AKEYCODE_PAIRING */
+            KC_UNASSIGNED,          /* AKEYCODE_MEDIA_TOP_MENU */
+            KC_UNASSIGNED,          /* AKEYCODE_11 */
+            KC_UNASSIGNED,          /* AKEYCODE_12 */
+            KC_UNASSIGNED,          /* AKEYCODE_LAST_CHANNEL */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_DATA_SERVICE */
+            KC_UNASSIGNED,          /* AKEYCODE_VOICE_ASSIST */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_RADIO_SERVICE */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_TELETEXT */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_NUMBER_ENTRY */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_TERRESTRIAL_ANALOG */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_TERRESTRIAL_DIGITAL */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_SATELLITE */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_SATELLITE_BS */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_SATELLITE_CS */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_SATELLITE_SERVICE */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_NETWORK */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_ANTENNA_CABLE */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_INPUT_HDMI_1 */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_INPUT_HDMI_2 */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_INPUT_HDMI_3 */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_INPUT_HDMI_4 */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_INPUT_COMPOSITE_1 */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_INPUT_COMPOSITE_2 */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_INPUT_COMPONENT_1 */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_INPUT_COMPONENT_2 */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_INPUT_VGA_1 */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_AUDIO_DESCRIPTION */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_AUDIO_DESCRIPTION_MIX_UP */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_AUDIO_DESCRIPTION_MIX_DOWN */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_ZOOM_MODE */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_CONTENTS_MENU */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_MEDIA_CONTEXT_MENU */
+            KC_UNASSIGNED,          /* AKEYCODE_TV_TIMER_PROGRAMMING */
+            KC_UNASSIGNED,             /* AKEYCODE_HELP */
+            KC_UNASSIGNED,          /* AKEYCODE_NAVIGATE_PREVIOUS */
+            KC_UNASSIGNED,          /* AKEYCODE_NAVIGATE_NEXT */
+            KC_UNASSIGNED,          /* AKEYCODE_NAVIGATE_IN */
+            KC_UNASSIGNED,          /* AKEYCODE_NAVIGATE_OUT */
+            KC_UNASSIGNED,          /* AKEYCODE_STEM_PRIMARY */
+            KC_UNASSIGNED,          /* AKEYCODE_STEM_1 */
+            KC_UNASSIGNED,          /* AKEYCODE_STEM_2 */
+            KC_UNASSIGNED,          /* AKEYCODE_STEM_3 */
+            KC_UNASSIGNED,          /* AKEYCODE_DPAD_UP_LEFT */
+            KC_UNASSIGNED,          /* AKEYCODE_DPAD_DOWN_LEFT */
+            KC_UNASSIGNED,          /* AKEYCODE_DPAD_UP_RIGHT */
+            KC_UNASSIGNED,          /* AKEYCODE_DPAD_DOWN_RIGHT */
+            KC_UNASSIGNED,          /* AKEYCODE_MEDIA_SKIP_FORWARD */
+            KC_UNASSIGNED,          /* AKEYCODE_MEDIA_SKIP_BACKWARD */
+            KC_UNASSIGNED,          /* AKEYCODE_MEDIA_STEP_FORWARD */
+            KC_UNASSIGNED,          /* AKEYCODE_MEDIA_STEP_BACKWARD */
+            KC_UNASSIGNED,          /* AKEYCODE_SOFT_SLEEP */
+            KC_UNASSIGNED,              /* AKEYCODE_CUT */
+            KC_UNASSIGNED,             /* AKEYCODE_COPY */
+            KC_UNASSIGNED,            /* AKEYCODE_PASTE */
+        };
+
+        if( _keyCode >= sizeof(Android_Keycodes) )
+        {
+            return;
+        }
+
+        EKeyCode keyCode = Android_Keycodes[_keyCode];
+
+        if( keyCode == KC_UNASSIGNED )
+        {
+            return;
+        }
+
+        jfloat x = m_currentFingersX[0];
+        jfloat y = m_currentFingersY[0];
+        jfloat pressure = m_currentFingersPressure[0];
+
+        LOGGER_INFO( "platform", "key event: %d down: %d repeat: %d"
+            , keyCode
+            , _isDown
+            , _repeatCount
+        );
+
+        Helper::pushKeyEvent( x, y, pressure, keyCode, _isDown, false );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::textEvent( jint _unicode )
+    {
+        jfloat x = m_currentFingersX[0];
+        jfloat y = m_currentFingersY[0];
+        jfloat pressure = m_currentFingersPressure[0];
+
+        WChar text[2] = {(WChar)_unicode, L'\0'};
+
+        LOGGER_INFO( "platform", "text event: %ls"
+            , text
+        );
+
+        Helper::pushTextEvent( x, y, pressure, text );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::handlePause()
+    {
+        float x = m_currentFingersX[0];
+        float y = m_currentFingersY[0];
+
+        PlatformUnionEvent event;
+        event.type = PlatformUnionEvent::PET_PAUSE;
+
+        event.data.pause.x = x;
+        event.data.pause.y = y;
+
+        LOGGER_INFO( "platform", "pause event: %.4f;%.4f"
+            , x
+            , y
+        );
+
+        this->pushEvent( event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::handleResume()
+    {
+        float x = m_currentFingersX[0];
+        float y = m_currentFingersY[0];
+
+        PlatformUnionEvent event;
+        event.type = PlatformUnionEvent::PET_RESUME;
+
+        event.data.resume.x = x;
+        event.data.resume.y = y;
+
+        LOGGER_INFO( "platform", "resume event: %.4f;%.4f"
+            , x
+            , y
+        );
+
+        this->pushEvent( event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::pauseEvent_( const PlatformUnionEvent::PlatformPauseEvent & _event )
+    {
+        float x = _event.x;
+        float y = _event.y;
+
+        this->setActive_( x, y, false );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::resumeEvent_( const PlatformUnionEvent::PlatformResumeEvent & _event )
+    {
+        float x = _event.x;
+        float y = _event.y;
+
+        this->setActive_( x, y, true );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::pushEvent( const PlatformUnionEvent & _event )
+    {
+        m_mutex->lock();
+        m_eventsAux.emplace_back( _event );
+        m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -141,6 +141,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_invalidateWorldMatrix() const
     {
+        /*
         if( this->isPickerEnable() == false )
         {
             return;
@@ -148,6 +149,7 @@ namespace Mengine
 
         PICKER_SERVICE()
             ->invalidateTraps();
+            */
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_USE_SCRIPT_SERVICE)

@@ -504,15 +504,7 @@ namespace Mengine
             m_globalInputHandler->handleAccelerometerEvent( _event );
         }
 
-        bool handler = false;
-
-        if( handler == false )
-        {
-            handler = PICKER_SERVICE()
-                ->handleAccelerometerEvent( _event );
-        }
-
-        return handler;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleMouseButtonEvent( const InputMouseButtonEvent & _event )

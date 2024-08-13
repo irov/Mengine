@@ -54,9 +54,7 @@ namespace Mengine
         for( ;; )
         {
             ::pthread_mutex_lock( &m_conditionLock );
-
             ::pthread_cond_wait( &m_conditionVariable, &m_conditionLock );
-
             ::pthread_mutex_unlock( &m_conditionLock );
 
             if( _condition() == true )

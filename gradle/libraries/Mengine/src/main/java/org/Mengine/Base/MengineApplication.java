@@ -134,9 +134,9 @@ public class MengineApplication extends Application {
         int versionCode = this.getVersionCode();
 
         MengineLog.logMessageRelease(TAG, "MengineApplication id: %s version: %s [%d]"
-                , applicationId
-                , versionName
-                , versionCode
+            , applicationId
+            , versionName
+            , versionCode
         );
 
         String[] plugins = this.getAndroidPlugins();

@@ -42,6 +42,7 @@
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/ThreadMutexScope.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -78,7 +79,7 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->setAndroidNativeWindow( nativeWindow );
+        platformExtension->androidNativeSurfaceCreated( nativeWindow );
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1surfaceDestroyed )(JNIEnv * env, jclass cls, jobject surface)
@@ -88,7 +89,7 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->destroyAndroidNativeWindow( nativeWindow );
+        platformExtension->androidNativeSurfaceDestroyed( nativeWindow );
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1surfaceChanged )(JNIEnv * env, jclass cls, jobject surface, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate)
@@ -98,7 +99,7 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->changeAndroidNativeWindow( nativeWindow, surfaceWidth, surfaceHeight, deviceWidth, deviceHeight, rate );
+        platformExtension->androidNativeSurfaceChanged( nativeWindow, surfaceWidth, surfaceHeight, deviceWidth, deviceHeight, rate );
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1keyEvent )(JNIEnv * env, jclass cls, jboolean isDown, jint keyCode, jint repeatCount)
@@ -106,7 +107,7 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
                 ->getUnknown();
 
-        platformExtension->keyEvent( isDown, keyCode, repeatCount );
+        platformExtension->androidNativeKeyEvent( isDown, keyCode, repeatCount );
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1textEvent )(JNIEnv * env, jclass cls, jint unicode)
@@ -114,7 +115,7 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->textEvent( unicode );
+        platformExtension->androidNativeTextEvent( unicode );
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1touchEvent )(JNIEnv * env, jclass cls, jint action, jint pointerId, jfloat x, jfloat y, jfloat pressure)
@@ -122,7 +123,7 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->touchEvent( action, pointerId, x, y, pressure );
+        platformExtension->androidNativeTouchEvent( action, pointerId, x, y, pressure );
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1accelerationEvent )(JNIEnv * env, jclass cls, jfloat x, jfloat y, jfloat z)
@@ -130,23 +131,23 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->accelerationEvent( x, y, z );
+        platformExtension->androidNativeAccelerationEvent( x, y, z );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1handlePause )(JNIEnv * env, jclass cls)
+    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1pauseEvent )(JNIEnv * env, jclass cls)
     {
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->handlePause();
+        platformExtension->androidNativePauseEvent();
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1handleResume )(JNIEnv * env, jclass cls)
+    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1resumeEvent )(JNIEnv * env, jclass cls)
     {
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->handleResume();
+        platformExtension->androidNativeResumeEvent();
     }
     ///////////////////////////////////////////////////////////////////////
 }
@@ -159,6 +160,9 @@ namespace Mengine
     AndroidPlatformService::AndroidPlatformService()
         : m_beginTime( 0 )
         , m_nativeWindow( nullptr )
+        , m_eglDisplay( EGL_NO_DISPLAY )
+        , m_eglSurface( EGL_NO_SURFACE )
+        , m_eglContext( EGL_NO_CONTEXT )
         , m_prevTime( 0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
@@ -242,8 +246,10 @@ namespace Mengine
     {
         MENGINE_UNUSED( _resolution );
 
+        m_nativeMutex->lock();
         int32_t width = ANativeWindow_getWidth( m_nativeWindow );
         int32_t height = ANativeWindow_getHeight( m_nativeWindow );
+        m_nativeMutex->unlock();
 
         *_resolution = Resolution( width, height );
 
@@ -293,7 +299,19 @@ namespace Mengine
             , deviceSeed
         );
 
-        m_mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
+        m_nativeMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
+        m_eventsMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
+
+        EGLDisplay eglDisplay = ::eglGetDisplay( EGL_DEFAULT_DISPLAY );
+
+        EGLint major;
+        EGLint minor;
+        if( ::eglInitialize( eglDisplay, &major, &minor ) == EGL_FALSE )
+        {
+            return false;
+        }
+
+        m_eglDisplay = eglDisplay;
 
         return true;
     }
@@ -340,7 +358,7 @@ namespace Mengine
 
         m_platformTags.clear();
 
-        m_mutex = nullptr;
+        m_eventsMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::runPlatform()
@@ -366,6 +384,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _pause );
         MENGINE_UNUSED( _flush );
+
+        if( m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT )
+        {
+            return true;
+        }
 
         bool updating = APPLICATION_SERVICE()
             ->beginUpdate( _time );
@@ -614,8 +637,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getDesktopResolution( Resolution * const _resolution ) const
     {
+        m_nativeMutex->lock();
         int32_t width = ANativeWindow_getWidth( m_nativeWindow );
         int32_t height = ANativeWindow_getHeight( m_nativeWindow );
+        m_nativeMutex->unlock();
 
         *_resolution = Resolution( width, height );
 
@@ -1140,82 +1165,6 @@ namespace Mengine
         MENGINE_UNUSED( _windowResolution );
         MENGINE_UNUSED( _fullscreen );
 
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return false;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        jobject surface = Helper::AndroidGetActivitySurface( jenv );
-
-        ANativeWindow * nativeWindow = ANativeWindow_fromSurface( jenv, surface );
-
-        m_nativeWindow = nativeWindow;
-
-        EGLDisplay eglDisplay = ::eglGetDisplay( EGL_DEFAULT_DISPLAY );
-
-        EGLint major;
-        EGLint minor;
-        if( ::eglInitialize( eglDisplay, &major, &minor ) == EGL_FALSE )
-        {
-            return false;
-        }
-
-        m_eglDisplay = eglDisplay;
-
-        const EGLint configAttribs[] = {
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-            EGL_RED_SIZE, 8,
-            EGL_GREEN_SIZE, 8,
-            EGL_BLUE_SIZE, 8,
-            EGL_ALPHA_SIZE, 8,
-            EGL_DEPTH_SIZE, 24,
-            EGL_NONE
-        };
-
-        EGLConfig config;
-        EGLint numConfigs;
-        if( ::eglChooseConfig( m_eglDisplay, configAttribs, &config, 1, &numConfigs ) == EGL_FALSE )
-        {
-            return false;
-        }
-
-        EGLSurface eglSurface = ::eglCreateWindowSurface( m_eglDisplay, config, m_nativeWindow, NULL );
-
-        if( eglSurface == EGL_NO_SURFACE )
-        {
-            return false;
-        }
-
-        m_eglSurface = eglSurface;
-
-        EGLint width;
-        EGLint height;
-        eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_WIDTH, &width);
-        eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height);
-
-        const EGLint contextAttribs[] = {
-            EGL_CONTEXT_CLIENT_VERSION, 2,
-            EGL_NONE
-        };
-
-        EGLContext eglShareContext = EGL_NO_CONTEXT;
-
-        EGLContext context = ::eglCreateContext( m_eglDisplay, config, eglShareContext, contextAttribs );
-
-        if( context == EGL_NO_CONTEXT )
-        {
-            return false;
-        }
-
-        m_eglContext = context;
-
-        if( ::eglMakeCurrent( m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext ) == EGL_FALSE )
-        {
-            return false;
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1223,15 +1172,16 @@ namespace Mengine
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
 
-
+        ::eglTerminate( m_eglDisplay );
+        m_eglDisplay = EGL_NO_DISPLAY;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::processEvents_()
     {
-        m_mutex->lock();
+        m_eventsMutex->lock();
         std::swap( m_events, m_eventsAux );
         m_eventsAux.clear();
-        m_mutex->unlock();
+        m_eventsMutex->unlock();
 
         for( const PlatformUnionEvent & ev : m_events )
         {
@@ -1244,6 +1194,18 @@ namespace Mengine
             case PlatformUnionEvent::PET_RESUME:
                 {
                     this->resumeEvent_( ev.data.resume );
+                }break;
+            case PlatformUnionEvent::PET_SURFACE_CREATE:
+                {
+                    this->surfaceCreateEvent_( ev.data.surfaceCreate );
+                }break;
+            case PlatformUnionEvent::PET_SURFACE_DESTROY:
+                {
+                    this->surfaceDestroyEvent_( ev.data.surfaceDestroy );
+                }break;
+            case PlatformUnionEvent::PET_SURFACE_CHANGED:
+                {
+                    this->surfaceChangedEvent_( ev.data.surfaceChanged );
                 }break;
             default:
                 break;
@@ -1523,23 +1485,51 @@ namespace Mengine
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::setAndroidNativeWindow( ANativeWindow * _nativeWindow )
+    void AndroidPlatformService::androidNativeSurfaceCreated( ANativeWindow * _nativeWindow )
     {
-        LOGGER_INFO( "platform", "set android native window" );
+        m_nativeMutex->lock();
+        m_nativeWindow = _nativeWindow;
+        m_nativeMutex->unlock();
 
-        //ToDo
+        PlatformUnionEvent ev;
+        ev.type = PlatformUnionEvent::PET_SURFACE_CREATE;
+        ev.data.surfaceCreate.nativeWindow = _nativeWindow;
+
+        LOGGER_INFO( "platform", "push surface create event" );
+
+        this->pushEvent( ev );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::destroyAndroidNativeWindow( ANativeWindow * _nativeWindow )
+    void AndroidPlatformService::androidNativeSurfaceDestroyed( ANativeWindow * _nativeWindow )
     {
-        LOGGER_INFO( "platform", "destroy android native window" );
+        m_nativeMutex->lock();
+        m_nativeWindow = _nativeWindow;
+        m_nativeMutex->unlock();
 
-        //ToDo
+        PlatformUnionEvent ev;
+        ev.type = PlatformUnionEvent::PET_SURFACE_DESTROY;
+        ev.data.surfaceDestroy.nativeWindow = _nativeWindow;
+
+        LOGGER_INFO( "platform", "push surface destroy event" );
+
+        this->pushEvent( ev );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::changeAndroidNativeWindow( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate )
+    void AndroidPlatformService::androidNativeSurfaceChanged( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate )
     {
-        LOGGER_INFO( "platform", "change android native window surface: %d;%d device: %d;%d rate: %f"
+        m_nativeMutex->lock();
+        m_nativeWindow = _nativeWindow;
+        m_nativeMutex->unlock();
+
+        PlatformUnionEvent ev;
+        ev.type = PlatformUnionEvent::PET_SURFACE_CHANGED;
+        ev.data.surfaceChanged.nativeWindow = _nativeWindow;
+        ev.data.surfaceChanged.surfaceWidth = surfaceWidth;
+        ev.data.surfaceChanged.surfaceHeight = surfaceHeight;
+        ev.data.surfaceChanged.deviceWidth = deviceWidth;
+        ev.data.surfaceChanged.deviceHeight = deviceHeight;
+
+        LOGGER_INFO( "platform", "push surface changed event surface: %d;%d device: %d;%d rate: %f"
             , surfaceWidth
             , surfaceHeight
             , deviceWidth
@@ -1547,7 +1537,7 @@ namespace Mengine
             , rate
         );
 
-        //ToDo
+        this->pushEvent( ev );
     }
     //////////////////////////////////////////////////////////////////////////
     ETouchCode AndroidPlatformService::acquireFingerIndex_( jint _pointerId )
@@ -1599,8 +1589,10 @@ namespace Mengine
         return TC_TOUCH_INVALID;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::touchEvent( jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure )
+    void AndroidPlatformService::androidNativeTouchEvent( jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
         switch( _action )
         {
         case 0: //ACTION_DOWN
@@ -1672,13 +1664,17 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::accelerationEvent( jfloat _dx, jfloat _dy, jfloat _dz )
+    void AndroidPlatformService::androidNativeAccelerationEvent( jfloat _dx, jfloat _dy, jfloat _dz )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
         Helper::pushAccelerometerEvent( _dx, _dy, _dz );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::keyEvent( jboolean _isDown, jint _keyCode, jint _repeatCount )
+    void AndroidPlatformService::androidNativeKeyEvent( jboolean _isDown, jint _keyCode, jint _repeatCount )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
         static EKeyCode Android_Keycodes[] = {
             KC_UNASSIGNED,          /* AKEYCODE_UNKNOWN */
             KC_UNASSIGNED,         /* AKEYCODE_SOFT_LEFT */
@@ -1987,8 +1983,10 @@ namespace Mengine
         Helper::pushKeyEvent( x, y, pressure, keyCode, _isDown, false );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::textEvent( jint _unicode )
+    void AndroidPlatformService::androidNativeTextEvent( jint _unicode )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
         jfloat x = m_currentFingersX[0];
         jfloat y = m_currentFingersY[0];
         jfloat pressure = m_currentFingersPressure[0];
@@ -2002,8 +2000,10 @@ namespace Mengine
         Helper::pushTextEvent( x, y, pressure, text );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::handlePause()
+    void AndroidPlatformService::androidNativePauseEvent()
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
         float x = m_currentFingersX[0];
         float y = m_currentFingersY[0];
 
@@ -2021,8 +2021,10 @@ namespace Mengine
         this->pushEvent( event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::handleResume()
+    void AndroidPlatformService::androidNativeResumeEvent()
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
         float x = m_currentFingersX[0];
         float y = m_currentFingersY[0];
 
@@ -2056,11 +2058,119 @@ namespace Mengine
         this->setActive_( x, y, true );
     }
     //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::surfaceCreateEvent_( const PlatformUnionEvent::PlatformSurfaceCreateEvent & _event )
+    {
+        MENGINE_ASSERTION_FATAL( m_eglDisplay != nullptr, "display not created" );
+        MENGINE_ASSERTION_FATAL( m_eglSurface == nullptr, "already created egl surface" );
+        MENGINE_ASSERTION_FATAL( m_eglContext == nullptr, "already created egl context" );
+
+        int32_t format_got = ANativeWindow_getFormat( m_nativeWindow );
+
+        const EGLint configAttribs[] = {
+            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+            EGL_RED_SIZE, 8,
+            EGL_GREEN_SIZE, 8,
+            EGL_BLUE_SIZE, 8,
+            EGL_ALPHA_SIZE, 8,
+            EGL_DEPTH_SIZE, 24,
+            EGL_NONE
+        };
+
+        EGLConfig config;
+        EGLint numConfigs;
+        if( ::eglChooseConfig( m_eglDisplay, configAttribs, &config, 1, &numConfigs ) == EGL_FALSE )
+        {
+            return;
+        }
+
+        EGLint format_wanted;
+        ::eglGetConfigAttrib( m_eglDisplay, config, EGL_NATIVE_VISUAL_ID, &format_wanted );
+
+        ANativeWindow_setBuffersGeometry( m_nativeWindow, 0, 0, format_wanted );
+
+        EGLSurface eglSurface = ::eglCreateWindowSurface( m_eglDisplay, config, m_nativeWindow, nullptr );
+
+        if( eglSurface == EGL_NO_SURFACE )
+        {
+            return;
+        }
+
+        m_eglSurface = eglSurface;
+
+        EGLint width;
+        EGLint height;
+        eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_WIDTH, &width );
+        eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height );
+
+        ::eglBindAPI( EGL_OPENGL_ES_API );
+
+        const EGLint contextAttribs[] = {
+            EGL_CONTEXT_CLIENT_VERSION, 2,
+            EGL_NONE
+        };
+
+        EGLContext eglShareContext = EGL_NO_CONTEXT;
+
+        EGLContext context = ::eglCreateContext( m_eglDisplay, config, eglShareContext, contextAttribs );
+
+        if( context == EGL_NO_CONTEXT )
+        {
+            return;
+        }
+
+        m_eglContext = context;
+
+        ::eglBindAPI( EGL_OPENGL_ES_API );
+
+        if( ::eglMakeCurrent( m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext ) == EGL_FALSE )
+        {
+            return;
+        }
+
+        if( RENDER_SERVICE()
+            ->onDeviceLostRestore() == false )
+        {
+            return;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::surfaceDestroyEvent_( const PlatformUnionEvent::PlatformSurfaceDestroyEvent & _event )
+    {
+        if( m_eglDisplay == EGL_NO_DISPLAY )
+        {
+            return;
+        }
+
+        RENDER_SERVICE()
+            ->onDeviceLostPrepare();
+
+        ::eglBindAPI( EGL_OPENGL_ES_API );
+
+        ::eglMakeCurrent( m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
+
+        if( m_eglContext != EGL_NO_CONTEXT )
+        {
+            ::eglDestroyContext( m_eglDisplay, m_eglContext );
+            m_eglContext = EGL_NO_CONTEXT;
+        }
+
+        if( m_eglSurface != EGL_NO_SURFACE )
+        {
+            ::eglDestroySurface( m_eglDisplay, m_eglSurface );
+            m_eglSurface = EGL_NO_SURFACE;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::surfaceChangedEvent_( const PlatformUnionEvent::PlatformSurfaceChangedEvent & _event )
+    {
+        // ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::pushEvent( const PlatformUnionEvent & _event )
     {
-        m_mutex->lock();
+        m_eventsMutex->lock();
         m_eventsAux.emplace_back( _event );
-        m_mutex->unlock();
+        m_eventsMutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -2,6 +2,8 @@ package org.Mengine.Base;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Insets;
+import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -16,7 +18,9 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowInsets;
 import android.view.WindowManager;
+import android.view.WindowMetrics;
 
 import androidx.annotation.NonNull;
 
@@ -34,8 +38,8 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     private static native void AndroidPlatform_touchEvent(int action, int pointerId, float x, float y, float pressure);
     private static native void AndroidPlatform_accelerationEvent(float x, float y, float z);
 
-    private static native void AndroidPlatform_handlePause();
-    private static native void AndroidPlatform_handleResume();
+    private static native void AndroidPlatform_pauseEvent();
+    private static native void AndroidPlatform_resumeEvent();
 
     protected CountDownLatch m_runLatch;
 
@@ -89,7 +93,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             m_sensorManager.unregisterListener(this, m_linearAccelerometer);
         }
 
-        AndroidPlatform_handlePause();
+        AndroidPlatform_pauseEvent();
     }
 
     public void handleResume() {
@@ -98,7 +102,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             m_sensorManager.registerListener(this, m_linearAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         }
 
-        AndroidPlatform_handleResume();
+        AndroidPlatform_resumeEvent();
     }
 
     Surface getSurface() {
@@ -145,11 +149,22 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         int deviceWidth = width;
         int deviceHeight = height;
         try {
-            DisplayMetrics realMetrics = new DisplayMetrics();
-            m_display.getRealMetrics( realMetrics );
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                Context context = this.getContext();
+                WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+                WindowMetrics windowMetrics = windowManager.getCurrentWindowMetrics();
 
-            deviceWidth = realMetrics.widthPixels;
-            deviceHeight = realMetrics.heightPixels;
+                Rect bounds = windowMetrics.getBounds();
+
+                deviceWidth = bounds.width();
+                deviceHeight = bounds.height();
+            } else {
+                DisplayMetrics realMetrics = new DisplayMetrics();
+                m_display.getRealMetrics( realMetrics );
+
+                deviceWidth = realMetrics.widthPixels;
+                deviceHeight = realMetrics.heightPixels;
+            }
         } catch(Exception e) {
             //Ignore
         }

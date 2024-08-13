@@ -86,7 +86,7 @@ namespace Mengine
 
         if( programId == 0 )
         {
-            LOGGER_ERROR( "invalid create program '%s'"
+            LOGGER_ERROR( "invalid compile program '%s'"
                 , m_name.c_str()
             );
 
@@ -97,7 +97,7 @@ namespace Mengine
         {
             if( m_vertexShader->compile() == false )
             {
-                LOGGER_ERROR( "invalid create program '%s' invalid compile vertex shader '%s'"
+                LOGGER_ERROR( "invalid compile program '%s' vertex shader '%s'"
                     , m_name.c_str()
                     , m_vertexShader->getName().c_str()
                 );
@@ -112,7 +112,7 @@ namespace Mengine
         {
             if( m_fragmentShader->compile() == false )
             {
-                LOGGER_ERROR( "invalid create program '%s' invalid compile fragment shader '%s'"
+                LOGGER_ERROR( "invalid compile program '%s' fragment shader '%s'"
                     , m_name.c_str()
                     , m_fragmentShader->getName().c_str()
                 );
@@ -143,7 +143,7 @@ namespace Mengine
 
         if( m_vertexAttribute->compile( programId ) == false )
         {
-            LOGGER_ERROR( "invalid program '%s' bind vertex attribute"
+            LOGGER_ERROR( "invalid compile program '%s' bind vertex attribute"
                 , m_name.c_str()
             );
 

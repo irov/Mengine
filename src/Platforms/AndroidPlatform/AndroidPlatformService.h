@@ -163,9 +163,9 @@ namespace Mengine
         bool getClipboardText( Char * _value, size_t _capacity ) const override;
 
     protected:
-        void setAndroidNativeWindow( ANativeWindow * _nativeWindow ) override;
-        void destroyAndroidNativeWindow( ANativeWindow * _nativeWindow ) override;
-        void changeAndroidNativeWindow( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate ) override;
+        void androidNativeSurfaceCreated( ANativeWindow * _nativeWindow ) override;
+        void androidNativeSurfaceDestroyed( ANativeWindow * _nativeWindow ) override;
+        void androidNativeSurfaceChanged( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate ) override;
 
     protected:
         ETouchCode acquireFingerIndex_( jint _fingerId );
@@ -173,20 +173,20 @@ namespace Mengine
         ETouchCode getFingerIndex_( jint _fingerId ) const;
 
     protected:
-        void touchEvent( jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure ) override;
+        void androidNativeTouchEvent( jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure ) override;
 
     protected:
-        void accelerationEvent( jfloat _x, jfloat _y, jfloat _z ) override;
+        void androidNativeAccelerationEvent( jfloat _x, jfloat _y, jfloat _z ) override;
 
     protected:
-        void keyEvent( jboolean _isDown, jint _keyCode, jint _repeatCount ) override;
+        void androidNativeKeyEvent( jboolean _isDown, jint _keyCode, jint _repeatCount ) override;
 
     protected:
-        void textEvent( jint _unicode ) override;
+        void androidNativeTextEvent( jint _unicode ) override;
 
     protected:
-        void handlePause() override;
-        void handleResume() override;
+        void androidNativePauseEvent() override;
+        void androidNativeResumeEvent() override;
 
     protected:
         bool createWindow_( const Resolution & _resolution, bool _fullscreen );
@@ -208,7 +208,10 @@ namespace Mengine
             enum EPlatformEventType
             {
                 PET_PAUSE,
-                PET_RESUME
+                PET_RESUME,
+                PET_SURFACE_CREATE,
+                PET_SURFACE_DESTROY,
+                PET_SURFACE_CHANGED,
             } type;
 
             struct PlatformPauseEvent
@@ -223,16 +226,42 @@ namespace Mengine
                 float y;
             };
 
+            struct PlatformSurfaceCreateEvent
+            {
+                ANativeWindow * nativeWindow;
+            };
+
+            struct PlatformSurfaceDestroyEvent
+            {
+                ANativeWindow * nativeWindow;
+            };
+
+            struct PlatformSurfaceChangedEvent
+            {
+                ANativeWindow * nativeWindow;
+                jint surfaceWidth;
+                jint surfaceHeight;
+                jint deviceWidth;
+                jint deviceHeight;
+                jfloat rate;
+            };
+
             union
             {
                 PlatformPauseEvent pause;
                 PlatformResumeEvent resume;
+                PlatformSurfaceCreateEvent surfaceCreate;
+                PlatformSurfaceDestroyEvent surfaceDestroy;
+                PlatformSurfaceChangedEvent surfaceChanged;
             } data;
         };
 
     protected:
         void pauseEvent_( const PlatformUnionEvent::PlatformPauseEvent & _event );
         void resumeEvent_( const PlatformUnionEvent::PlatformResumeEvent & _event );
+        void surfaceCreateEvent_( const PlatformUnionEvent::PlatformSurfaceCreateEvent & _event );
+        void surfaceDestroyEvent_( const PlatformUnionEvent::PlatformSurfaceDestroyEvent & _event );
+        void surfaceChangedEvent_( const PlatformUnionEvent::PlatformSurfaceChangedEvent & _event );
 
     protected:
         void pushEvent( const PlatformUnionEvent & _event );
@@ -241,6 +270,8 @@ namespace Mengine
         Timestamp m_beginTime;
 
         Tags m_platformTags;
+
+        ThreadMutexInterfacePtr m_nativeMutex;
 
         ANativeWindow * m_nativeWindow;
 
@@ -254,7 +285,7 @@ namespace Mengine
         jfloat m_currentFingersY[MENGINE_INPUT_MAX_TOUCH];
         jfloat m_currentFingersPressure[MENGINE_INPUT_MAX_TOUCH];
 
-        ThreadMutexInterfacePtr m_mutex;
+        ThreadMutexInterfacePtr m_eventsMutex;
 
         typedef Vector<PlatformUnionEvent> VectorInputEvents;
         VectorInputEvents m_eventsAux;

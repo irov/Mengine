@@ -228,6 +228,9 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->setProjectTitle( projectTitle );
 
+        PLATFORM_SERVICE()
+            ->updatePlatform();
+
         if( PLATFORM_SERVICE()
             ->createWindow( Resolution( 0, 0 ), true ) == false )
         {

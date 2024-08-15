@@ -2072,6 +2072,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::setWindowResolution( const Resolution & _resolution )
     {
+        if( m_createRenderWindow == false )
+        {
+            return;
+        }
+
         if( m_windowResolution == _resolution )
         {
             return;

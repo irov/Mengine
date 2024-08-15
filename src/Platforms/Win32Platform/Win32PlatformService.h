@@ -153,9 +153,6 @@ namespace Mengine
         bool createDirectoryUser_( const WChar * _userPath, const WChar * _directoryPath, const WChar * _filePath, const void * _data, size_t _size );
 
     protected:
-        void sleep( uint32_t _ms ) override;
-
-    protected:
         bool setProcessDPIAware();
 
     public:

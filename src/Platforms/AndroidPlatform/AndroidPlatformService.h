@@ -21,8 +21,6 @@
 #include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidPlatformServiceExtensionInterface.h"
 
-#include "AndroidInput.h"
-
 #include "Kernel/ServiceBase.h"
 #include "Kernel/SHA1.h"
 #include "Kernel/Unknowable.h"
@@ -262,6 +260,7 @@ namespace Mengine
 
     protected:
         void pushEvent( const PlatformUnionEvent & _event );
+        bool hasEvent( PlatformUnionEvent::EPlatformEventType _type ) const;
 
     protected:
         Timestamp m_beginTime;

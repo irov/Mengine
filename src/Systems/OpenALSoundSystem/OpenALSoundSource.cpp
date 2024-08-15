@@ -1,6 +1,6 @@
 #include "OpenALSoundSource.h"
 
-#include "OpenALSoundSystem.h"
+#include "OpenALSoundSystemExtensionInterface.h"
 #include "OpenALSoundBufferBase.h"
 #include "OpenALSoundErrorHelper.h"
 
@@ -13,8 +13,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundSource::OpenALSoundSource()
-        : m_soundSystem( nullptr )
-        , m_volume( 1.f )
+        : m_volume( 1.f )
         , m_sourceId( 0 )
         , m_time( 0.f )
         , m_headMode( true )
@@ -29,16 +28,6 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_sourceId == 0, "sound source id '%u' not released"
             , m_sourceId
         );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundSource::setSoundSystem( OpenALSoundSystem * _soundSystem )
-    {
-        m_soundSystem = _soundSystem;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    OpenALSoundSystem * OpenALSoundSource::getSoundSystem() const
-    {
-        return m_soundSystem;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundSource::initialize()
@@ -71,7 +60,10 @@ namespace Mengine
 
         if( m_pausing == false )
         {
-            m_sourceId = m_soundSystem->genSourceId();
+            OpenALSoundSystemExtensionInterface * soundSystemExtension = SOUND_SYSTEM()
+                ->getUnknown();
+
+            m_sourceId = soundSystemExtension->genSourceId();
 
             if( m_sourceId == 0 )
             {
@@ -186,6 +178,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSource::setVolume( float _volume )
     {
+        if( mt::equal_f_f( m_volume, _volume ) == true )
+        {
+            return;
+        }
+
         m_volume = _volume;
 
         if( m_playing == true && m_sourceId != 0 )
@@ -339,7 +336,11 @@ namespace Mengine
             m_sourceId = 0;
 
             m_soundBuffer->stopSource( sourceId );
-            m_soundSystem->releaseSourceId( sourceId );
+
+            OpenALSoundSystemExtensionInterface * soundSystemExtension = SOUND_SYSTEM()
+                ->getUnknown();
+
+            soundSystemExtension->releaseSourceId( sourceId );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -359,16 +360,14 @@ namespace Mengine
         {
             MENGINE_OPENAL_CALL( alSourcei, (_source, AL_SOURCE_RELATIVE, AL_TRUE) );
             MENGINE_OPENAL_CALL( alSourcef, (_source, AL_ROLLOFF_FACTOR, 0.f) );
-            MENGINE_OPENAL_CALL( alSource3f, (_source, AL_DIRECTION, 0.f, 0.f, 0.f) );
         }
         else
         {
             MENGINE_OPENAL_CALL( alSourcei, (_source, AL_SOURCE_RELATIVE, AL_FALSE) );
             MENGINE_OPENAL_CALL( alSourcef, (_source, AL_ROLLOFF_FACTOR, 1.f) );
-            MENGINE_OPENAL_CALL( alSource3f, (_source, AL_DIRECTION, 0.f, 0.f, 0.f) );
         }
 
-        MENGINE_OPENAL_CALL( alSourcei, (_source, AL_LOOPING, m_loop ? AL_TRUE : AL_FALSE) );
+        MENGINE_OPENAL_CALL( alSourcei, (_source, AL_LOOPING, m_loop == true ? AL_TRUE : AL_FALSE) );
         MENGINE_OPENAL_CALL( alSource3f, (_source, AL_POSITION, 0.f, 0.f, -1.f) );
         MENGINE_OPENAL_CALL( alSource3f, (_source, AL_VELOCITY, 0.f, 0.f, 0.f) );
         MENGINE_OPENAL_CALL( alSourcef, (_source, AL_MIN_GAIN, 0.f) );

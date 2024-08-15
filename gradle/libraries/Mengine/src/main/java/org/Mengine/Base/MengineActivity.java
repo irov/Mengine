@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,11 +67,13 @@ public class MengineActivity extends AppCompatActivity {
 
     private Thread m_threadMain;
 
+    private MengineCommandHandler m_commandHandler;
+
     private RelativeLayout m_contentView;
 
     private MengineSurfaceView m_surfaceView;
 
-    private MengineSensor m_sensor;
+    private MengineSoftInputView m_softInputView;
 
     public MengineActivity() {
         super();
@@ -249,6 +252,10 @@ public class MengineActivity extends AppCompatActivity {
         return surface;
     }
 
+    MengineSurfaceView getSurfaceView() {
+        return m_surfaceView;
+    }
+
     protected void finishWithAlertDialog(String format, Object... args) {
         MengineUtils.finishActivityWithAlertDialog(this, format, args);
     }
@@ -284,6 +291,7 @@ public class MengineActivity extends AppCompatActivity {
         m_initializePython = false;
         m_destroy = false;
 
+        m_commandHandler = new MengineCommandHandler(this);
         m_semaphores = new HashMap<>();
 
         int orientation = getResources().getInteger(R.integer.app_screen_orientation);
@@ -303,6 +311,12 @@ public class MengineActivity extends AppCompatActivity {
         m_surfaceView = surface;
 
         m_contentView.addView(m_surfaceView);
+
+        MengineSoftInputView softInput = new MengineSoftInputView(this, m_surfaceView);
+
+        m_softInputView = softInput;
+
+        m_contentView.addView(m_softInputView);
 
         this.setContentView(m_contentView);
 
@@ -362,10 +376,6 @@ public class MengineActivity extends AppCompatActivity {
         this.setState("activity.init", "setup_window");
 
         this.setupWindow();
-
-        this.setState("activity.init", "setup_sensor");
-
-        m_sensor = new MengineSensor(this);
 
         this.setState("activity.init", "setup_main");
 
@@ -698,8 +708,6 @@ public class MengineActivity extends AppCompatActivity {
             p.setActivity(null);
         }
 
-        m_semaphores = null;
-
         try {
             m_threadMain.join();
         } catch (InterruptedException e) {
@@ -712,6 +720,9 @@ public class MengineActivity extends AppCompatActivity {
         m_nativeApplication = null;
 
         AndroidEnv_removeMengineAndroidActivityJNI();
+
+        m_semaphores = null;
+        m_commandHandler = null;
 
         super.onDestroy();
     }
@@ -1006,6 +1017,30 @@ public class MengineActivity extends AppCompatActivity {
         MengineUtils.performOnMainThread(() -> {
             cb.call();
         });
+    }
+
+    /***********************************************************************************************
+     * Keyboard Methods
+     **********************************************************************************************/
+
+    public void showKeyboard() {
+        MengineLog.logMessage(TAG, "showKeyboard");
+
+        m_commandHandler.post(() -> {
+            m_softInputView.showKeyboard();
+        });
+    }
+
+    public void hideKeyboard() {
+        MengineLog.logMessage(TAG, "hideKeyboard");
+
+        m_commandHandler.post(() -> {
+            m_softInputView.hideKeyboard();
+        });
+    }
+
+    public boolean isShowKeyboard() {
+        return m_softInputView.isShowKeyboard();
     }
 
     /***********************************************************************************************

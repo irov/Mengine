@@ -4,10 +4,9 @@ ADD_FILTER(
 src
     AndroidPlatformService.h
     AndroidPlatformService.cpp
+    
     AndroidPlatformSystem.h
     AndroidPlatformSystem.cpp
-    AndroidInput.h
-    AndroidInput.cpp
 )
 
 ADD_MENGINE_LIBRARY(Platforms)

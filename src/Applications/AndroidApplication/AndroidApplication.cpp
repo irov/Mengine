@@ -247,9 +247,6 @@ namespace Mengine
             return false;
         }
 
-        APPLICATION_SERVICE()
-            ->turnSound( true );
-
         GAME_SERVICE()
             ->run();
 

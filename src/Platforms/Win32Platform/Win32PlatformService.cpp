@@ -1371,7 +1371,7 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                Helper::pushKeyEvent( point.x, point.y, code, true, false );
+                Helper::pushKeyEvent( point.x, point.y, 0.f, code, true, false );
             }break;
         case WM_SYSKEYUP:
             {
@@ -1392,7 +1392,7 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                Helper::pushKeyEvent( point.x, point.y, code, false, false );
+                Helper::pushKeyEvent( point.x, point.y, 0.f, code, false, false );
             }break;
         case WM_SYSCOMMAND:
             {
@@ -1701,7 +1701,7 @@ namespace Mengine
                 fdx /= width;
                 fdy /= height;
 
-                Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, fdx, fdy, 0.f );
+                Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, fdx, fdy, 0.f, 0.f );
 
                 handle = true;
                 *_result = 0;
@@ -1732,7 +1732,7 @@ namespace Mengine
 
                 int32_t scroll = zDelta / WHEEL_DELTA;
 
-                Helper::pushMouseWheelEvent( point.x, point.y, WC_CENTRAL, scroll );
+                Helper::pushMouseWheelEvent( point.x, point.y, 0.f, WC_CENTRAL, scroll );
 
                 handle = true;
                 *_result = 0;
@@ -2037,7 +2037,7 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                Helper::pushKeyEvent( point.x, point.y, code, true, false );
+                Helper::pushKeyEvent( point.x, point.y, 0.f, code, true, false );
 
                 handle = true;
                 *_result = 0;
@@ -2061,7 +2061,7 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                Helper::pushKeyEvent( point.x, point.y, code, false, false );
+                Helper::pushKeyEvent( point.x, point.y, 0.f, code, false, false );
 
                 handle = true;
                 *_result = 0;
@@ -2136,7 +2136,7 @@ namespace Mengine
             return false;
         }
 
-        Helper::pushTextEvent( point.x, point.y, unicode_code );
+        Helper::pushTextEvent( point.x, point.y, 0.f, unicode_code );
 
         return true;
     }
@@ -3410,11 +3410,6 @@ namespace Mengine
         }
 
         return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::sleep( uint32_t _ms )
-    {
-        ::Sleep( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr Win32PlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )

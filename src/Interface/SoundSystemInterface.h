@@ -11,6 +11,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/MixerValue.h"
+#include "Kernel/Unknowable.h"
 
 #include "math/vec3.h"
 
@@ -18,6 +19,7 @@ namespace Mengine
 {
     class SoundSystemInterface
         : public ServiceInterface
+        , public Unknowable
     {
         SERVICE_DECLARE( "SoundSystem" )
 

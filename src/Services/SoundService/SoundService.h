@@ -118,7 +118,6 @@ namespace Mengine
         void updateSourceVolume_( const SoundIdentityInterfacePtr & _source );
 
     protected:
-        void playSounds_();
         void stopSounds_();
         void pauseSounds_();
         void resumeSounds_();
@@ -144,7 +143,7 @@ namespace Mengine
 
         typedef Vector<SoundIdentityInterfacePtr> VectorSoundIdentity;
         VectorSoundIdentity m_soundIdentities;
-        VectorSoundIdentity m_soundIdentitiesAux;
+        VectorSoundIdentity m_soundIdentitiesEndAux;
 
         ThreadJobPtr m_threadJobSoundBufferUpdate;
 

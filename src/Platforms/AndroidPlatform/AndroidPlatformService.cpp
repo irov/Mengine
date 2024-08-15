@@ -17,6 +17,7 @@
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidDeclaration.h"
 #include "Environment/Android/AndroidHelper.h"
+#include "Environment/Android/AndroidActivityHelper.h"
 #include "Environment/Android/AndroidPlatformServiceExtensionInterface.h"
 
 #include "Kernel/FilePath.h"
@@ -244,12 +245,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getMaxClientResolution( Resolution * const _resolution ) const
     {
-        MENGINE_UNUSED( _resolution );
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
 
-        m_nativeMutex->lock();
+        if( m_nativeWindow == nullptr )
+        {
+            *_resolution = Resolution( 0.f, 0.f );
+
+            return false;
+        }
+
         int32_t width = ANativeWindow_getWidth( m_nativeWindow );
         int32_t height = ANativeWindow_getHeight( m_nativeWindow );
-        m_nativeMutex->unlock();
 
         *_resolution = Resolution( width, height );
 
@@ -363,8 +369,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::runPlatform()
     {
-        this->setActive_( 0, 0, true );
-
         if( this->updatePlatform() == false )
         {
             return false;
@@ -384,6 +388,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _pause );
         MENGINE_UNUSED( _flush );
+
+        if( this->hasEvent( PlatformUnionEvent::PET_SURFACE_DESTROY ) == true )
+        {
+            return true;
+        }
 
         if( m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT )
         {
@@ -415,7 +424,10 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->flush();
 
-                ::eglSwapBuffers( m_eglDisplay, m_eglSurface );
+                if( m_eglDisplay != EGL_NO_DISPLAY && m_eglSurface != EGL_NO_SURFACE )
+                {
+                    ::eglSwapBuffers( m_eglDisplay, m_eglSurface );
+                }
             }
         }
 
@@ -654,10 +666,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getDesktopResolution( Resolution * const _resolution ) const
     {
-        m_nativeMutex->lock();
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
+        if( m_nativeWindow == nullptr )
+        {
+            *_resolution = Resolution( 0.f, 0.f );
+
+            return false;
+        }
+
         int32_t width = ANativeWindow_getWidth( m_nativeWindow );
         int32_t height = ANativeWindow_getHeight( m_nativeWindow );
-        m_nativeMutex->unlock();
 
         *_resolution = Resolution( width, height );
 
@@ -777,27 +796,46 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::showKeyboard()
     {
-        /*
-        SDL_StartTextInput();
-         */
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        {
+            LOGGER_ERROR( "invalid show keyboard [not exist activity]" );
+
+            return;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        Helper::AndroidCallVoidActivityMethod( jenv, "showKeyboard", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::hideKeyboard()
     {
-        /*
-        SDL_StopTextInput();
-         */
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        {
+            LOGGER_ERROR( "invalid hide keyboard [not exist activity]" );
+
+            return;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        Helper::AndroidCallVoidActivityMethod( jenv, "hideKeyboard", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::isShowKeyboard() const
     {
-        /*
-        SDL_bool active = SDL_IsTextInputActive();
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        {
+            LOGGER_ERROR( "invalid check is show keyboard [not exist activity]" );
 
-        return active;
-         */
+            return false;
+        }
 
-        return false;
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        bool result = Helper::AndroidCallBooleanActivityMethod( jenv, "isShowKeyboard", "()Z" );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
@@ -2044,6 +2082,21 @@ namespace Mengine
         m_eventsMutex->lock();
         m_eventsAux.emplace_back( _event );
         m_eventsMutex->unlock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::hasEvent( PlatformUnionEvent::EPlatformEventType _type ) const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_eventsMutex );
+
+        for( const PlatformUnionEvent & event : m_events )
+        {
+            if( event.type == _type )
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -22,10 +22,6 @@ namespace Mengine
         ~OpenALSoundSource() override;
 
     public:
-        void setSoundSystem( OpenALSoundSystem * _soundSystem );
-        OpenALSoundSystem * getSoundSystem() const;
-
-    public:
         bool initialize();
         void finalize();
 
@@ -65,8 +61,6 @@ namespace Mengine
         void apply_( ALuint _source );
 
     protected:
-        OpenALSoundSystem * m_soundSystem;
-
         float m_volume;
 
         ALuint m_sourceId;

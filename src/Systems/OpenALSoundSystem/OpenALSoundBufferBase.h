@@ -20,10 +20,6 @@ namespace Mengine
         ~OpenALSoundBufferBase() override;
 
     public:
-        void setSoundSystem( OpenALSoundSystem * _soundSystem );
-        OpenALSoundSystem * getSoundSystem() const;
-
-    public:
         bool acquireSoundBuffer() override;
         void releaseSoundBuffer() override;
 
@@ -51,8 +47,10 @@ namespace Mengine
         float getTimeTotal() const;
 
     protected:
-        OpenALSoundSystem * m_soundSystem;
+        ALuint genBufferId();
+        void releaseBufferId( ALuint _bufferId );
 
+    protected:
         ReferenceCounter m_refacquire;
 
         SoundDecoderInterfacePtr m_soundDecoder;

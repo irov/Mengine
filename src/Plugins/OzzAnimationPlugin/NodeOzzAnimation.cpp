@@ -575,7 +575,7 @@ namespace Mengine
                     {
                         uint8_t * vbo_colors_buffer = reinterpret_cast<uint8_t *>(it);
 
-                        MENGINE_MEMCPY( vbo_colors_buffer, &argb, ozz_colors_size );
+                        StdString::memcpy( vbo_colors_buffer, &argb, ozz_colors_size );
                     }
                 }
 
@@ -588,7 +588,7 @@ namespace Mengine
                 {
                     uint8_t * vbo_uvs_buffer = reinterpret_cast<uint8_t *>(it);
 
-                    MENGINE_MEMCPY( vbo_uvs_buffer, part_uvs_buffer, ozz_uvs_size );
+                    StdString::memcpy( vbo_uvs_buffer, part_uvs_buffer, ozz_uvs_size );
 
                     part_uvs_buffer += ozz_uvs_size;
                 }

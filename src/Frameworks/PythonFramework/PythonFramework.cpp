@@ -45,6 +45,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonFramework::_runFramework()
     {
+        SCRIPTPROVIDER_SERVICE()
+            ->updateScriptThread();
+
         if( SCRIPT_SERVICE()
             ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ), Helper::makeFactorableUnique<ConstsScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {

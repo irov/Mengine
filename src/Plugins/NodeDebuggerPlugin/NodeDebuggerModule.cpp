@@ -63,6 +63,7 @@
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
 #include "Config/Iterator.h"
+#include "Config/DynamicCast.h"
 
 #define NODEDEBUGGERLISTEN_THREAD_NAME "NodeDebuggerListen"
 
@@ -107,7 +108,7 @@ namespace Mengine
         m_globalKeyHandlerF2 = globalKeyHandlerF2;
 #endif
 
-        UniqueId idForSelectedNodeSender = Helper::addGlobalMouseButtonEvent( EMouseButtonCode::MC_LBUTTON, true, [this]( const InputMouseButtonEvent & _event )
+        UniqueId idForSelectedNodeSender = Helper::addGlobalMouseButtonHandler( EMouseButtonCode::MC_LBUTTON, true, [this]( const InputMouseButtonEvent & _event )
         {
             MENGINE_UNUSED( _event );
 
@@ -325,7 +326,8 @@ namespace Mengine
                         
                         if( newSize != 0 )
                         {
-                            MENGINE_MEMMOVE( m_receivedData.data(), m_receivedData.data() + dataSizeWithHeader, newSize );
+                            StdString::memmove( m_receivedData.data(), m_receivedData.data() + dataSizeWithHeader, newSize );
+
                             m_receivedData.resize( newSize );
 
                             hdr = reinterpret_cast<PacketHeader *>(m_receivedData.data());
@@ -708,7 +710,7 @@ namespace Mengine
         {
             // this packet is uncompressed, just copy
             _packet.payload.resize( _hdr.compressedSize );
-            MENGINE_MEMCPY( _packet.payload.data(), _receivedData, _hdr.compressedSize );
+            StdString::memcpy( _packet.payload.data(), _receivedData, _hdr.compressedSize );
         }
         else
         {
@@ -775,7 +777,7 @@ namespace Mengine
 
             Renderable * relationRenderable = relationRender->getRenderable();
 
-            Node * relationNode = dynamic_cast<Node *>(relationRenderable);
+            Node * relationNode = Helper::dynamicCast<Node *>( relationRenderable );
 
             Detail::serializeNodeProp( relationNode->getUniqueIdentity(), "BaseRenderNodeUniqueIdentity", xmlRender );
             Detail::serializeNodeProp( relationNode->getName(), "BaseRenderNodeName", xmlRender );
@@ -1263,7 +1265,7 @@ namespace Mengine
     {
         Pickerable * pickerable = _picker->getPickerable();
 
-        Node * nodeChild = dynamic_cast<Node *>(pickerable);
+        Node * nodeChild = Helper::dynamicCast<Node *>( pickerable );
 
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
 
@@ -1287,7 +1289,7 @@ namespace Mengine
     {
         Renderable * renderable = _render->getRenderable();
 
-        Node * nodeChild = dynamic_cast<Node *>(renderable);
+        Node * nodeChild = Helper::dynamicCast<Node *>( renderable );
 
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
 

@@ -98,6 +98,27 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PlayerGlobalInputHandler::handleAccelerometerEvent( const InputAccelerometerEvent & _event )
+    {
+        for( const GlobalHandlerDesc & desc : m_handlers )
+        {
+            if( desc.dead == true )
+            {
+                continue;
+            }
+
+            if( desc.enable == false )
+            {
+                continue;
+            }
+
+            bool handle = desc.handler->handleAccelerometerEvent( _event );
+            MENGINE_UNUSED( handle );
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
         for( const GlobalHandlerDesc & desc : m_handlers )
@@ -302,121 +323,6 @@ namespace Mengine
         it_found->handler = nullptr;
 
         return handler;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        class GlobalKeyHandler
-            : public InputHandlerInterface
-            , public Factorable
-        {
-        public:
-            GlobalKeyHandler( EKeyCode _code, const PlayerGlobalInputHandler::LambdaKeyHandler & _handler )
-                : m_code( _code )
-                , m_handler( _handler )
-            {
-            }
-
-            ~GlobalKeyHandler() override
-            {
-            }
-
-        protected:
-            bool handleKeyEvent( const InputKeyEvent & _event ) override
-            {
-                if( _event.code == m_code && _event.isDown == true )
-                {
-                    m_handler( _event );
-                }
-
-                return false;
-            }
-
-            bool handleTextEvent( const InputTextEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-
-                return false;
-            }
-
-        protected:
-            bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-
-                return false;
-            }
-
-            bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-
-                return false;
-            }
-
-            bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-
-                return false;
-            }
-
-            bool handleMouseMove( const InputMouseMoveEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-
-                return false;
-            }
-
-            bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-
-                return false;
-            }
-
-            bool handleMouseEnter( const InputMouseEnterEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-
-                return false;
-            }
-
-            void handleMouseLeave( const InputMouseLeaveEvent & _event ) override
-            {
-                MENGINE_UNUSED( _event );
-
-                //Empty
-            }
-
-        protected:
-            EKeyCode m_code;
-            PlayerGlobalInputHandler::LambdaKeyHandler m_handler;
-        };
-    }
-    //////////////////////////////////////////////////////////////////////////
-    UniqueId PlayerGlobalInputHandler::addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const DocumentInterfacePtr & _doc )
-    {
-        InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalKeyHandler>( _doc, _code, _lambda );
-
-        UniqueId id = this->addGlobalHandler( handler, _doc );
-
-        return id;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::enableGlobalHandler( UniqueId _id, bool _value )

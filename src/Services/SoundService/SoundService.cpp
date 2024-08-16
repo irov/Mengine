@@ -38,8 +38,8 @@ namespace Mengine
         : m_timepipeId( INVALID_UNIQUE_ID )
         , m_supportStream( true )
         , m_muted( false )
-        , m_turnStream( true )
-        , m_turnSound( true )
+        , m_turnStream( false )
+        , m_turnSound( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -198,32 +198,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundService::playSounds_()
-    {
-        for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
-        {
-            identity->setTurn( true );
-
-            if( identity->getState() != ESS_PLAY )
-            {
-                continue;
-            }
-
-            this->updateSourceVolume_( identity );
-
-            const SoundSourceInterfacePtr & source = identity->getSoundSource();
-
-            if( source->play() == false )
-            {
-                LOGGER_ASSERTION( "invalid play" );
-
-                continue;
-            }
-
-            this->playSoundBufferUpdate_( identity );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     void SoundService::pauseSounds_()
     {
         for( const SoundIdentityInterfacePtr & identity : m_soundIdentities )
@@ -249,7 +223,7 @@ namespace Mengine
         {
             identity->setTurn( true );
 
-            if( identity->getState() != ESS_PLAY )
+            if( identity->getState() != ESS_PAUSE )
             {
                 continue;
             }
@@ -289,7 +263,7 @@ namespace Mengine
         {
             identity->setTurn( false );
 
-            if( identity->getState() != ESS_PLAY )
+            if( identity->getState() == ESS_STOP )
             {
                 continue;
             }
@@ -362,7 +336,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( identity );
 
-        bool turn = _streamable ? m_turnStream : m_turnSound;
+        bool turn = _streamable == true ? m_turnStream : m_turnSound;
 
         if( identity->initialize( source, _category, _streamable, turn ) == false )
         {
@@ -370,6 +344,14 @@ namespace Mengine
 
             return nullptr;
         }
+
+        LOGGER_INFO( "sound", "create sound identity: %u head: %d category: %d streamable: %d turn: %d"
+            , identity->getId()
+            , _isHeadMode
+            , _category
+            , _streamable
+            , turn
+        );
 
         this->updateSourceVolume_( identity );
 
@@ -401,50 +383,39 @@ namespace Mengine
         {
             const MixerValueInterfacePtr & emitterVolume = _emitter->getMixerVolume();
 
+            float mixVolume = 1.f;
+
+            float commonMixVolume = m_commonVolume->mixValue();
+            float emitterMixVolume = emitterVolume->mixValue();
+
+            mixVolume *= commonMixVolume;
+            mixVolume *= emitterMixVolume;
+
             ESoundSourceCategory type = _emitter->getCategory();
 
             switch( type )
             {
             case ES_SOURCE_CATEGORY_SOUND:
                 {
-                    float commonMixVolume = m_commonVolume->mixValue();
                     float soundMixVolume = m_soundVolume->mixValue();
-                    float emitterMixVolume = emitterVolume->mixValue();
 
-                    float mixVolume = 1.f;
-                    mixVolume *= commonMixVolume;
                     mixVolume *= soundMixVolume;
-                    mixVolume *= emitterMixVolume;
-
-                    source->setVolume( mixVolume );
                 }break;
             case ES_SOURCE_CATEGORY_MUSIC:
                 {
-                    float commonMixVolume = m_commonVolume->mixValue();
                     float musicMixVolume = m_musicVolume->mixValue();
-                    float emitterMixVolume = emitterVolume->mixValue();
 
-                    float mixVolume = 1.f;
-                    mixVolume *= commonMixVolume;
                     mixVolume *= musicMixVolume;
-                    mixVolume *= emitterMixVolume;
-
-                    source->setVolume( mixVolume );
                 }break;
             case ES_SOURCE_CATEGORY_VOICE:
                 {
-                    float commonMixVolume = m_commonVolume->mixValue();
                     float voiceMixVolume = m_voiceVolume->mixValue();
-                    float emitterMixVolume = emitterVolume->mixValue();
 
-                    float mixVolume = 1.f;
-                    mixVolume *= commonMixVolume;
                     mixVolume *= voiceMixVolume;
-                    mixVolume *= emitterMixVolume;
-
-                    source->setVolume( mixVolume );
                 }break;
             }
+
+            source->setVolume( mixVolume );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -733,7 +704,7 @@ namespace Mengine
 
                     if( identity->getSoundListener() != nullptr )
                     {
-                        m_soundIdentitiesAux.emplace_back( identity );
+                        m_soundIdentitiesEndAux.emplace_back(identity );
                     }
                 }
                 else
@@ -760,7 +731,7 @@ namespace Mengine
 
                     if( identity->getSoundListener() != nullptr )
                     {
-                        m_soundIdentitiesAux.emplace_back( identity );
+                        m_soundIdentitiesEndAux.emplace_back(identity );
                     }
                 }
                 else
@@ -777,18 +748,23 @@ namespace Mengine
             this->updateVolume();
         }
 
-        for( const SoundIdentityInterfacePtr & identity : m_soundIdentitiesAux )
+        for( const SoundIdentityInterfacePtr & identity : m_soundIdentitiesEndAux )
         {
             SoundListenerInterfacePtr keep_listener = identity->popSoundListener();
 
             keep_listener->onSoundEnd( identity );
         }
 
-        m_soundIdentitiesAux.clear();
+        m_soundIdentitiesEndAux.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::mute( bool _mute )
     {
+        if( m_muted == _mute )
+        {
+            return;
+        }
+
         m_muted = _mute;
 
         this->updateVolume();
@@ -1092,9 +1068,12 @@ namespace Mengine
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
-        bool stopped = identity->getState() == ESS_STOP;
+        if( identity->getState() != ESS_STOP )
+        {
+            return false;
+        }
 
-        return stopped;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::isEmitterPlay( const SoundIdentityInterfacePtr & _identity ) const

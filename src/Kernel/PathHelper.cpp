@@ -60,8 +60,8 @@ namespace Mengine
         {
             const Char * str_fullpath = _fullpath.c_str();
 
-            const Char * folder_delimiter_1 = MENGINE_STRRCHR( str_fullpath, MENGINE_WIN32_PATH_DELIM );
-            const Char * folder_delimiter_2 = MENGINE_STRRCHR( str_fullpath, MENGINE_PATH_DELIM );
+            const Char * folder_delimiter_1 = StdString::strrchr( str_fullpath, MENGINE_WIN32_PATH_DELIM );
+            const Char * folder_delimiter_2 = StdString::strrchr( str_fullpath, MENGINE_PATH_DELIM );
 
             const Char * folder_delimiter = (folder_delimiter_1 > folder_delimiter_2) ? folder_delimiter_1 : folder_delimiter_2;
 
@@ -81,8 +81,8 @@ namespace Mengine
         {
             const Char * str_fullpath = _fullpath.c_str();
 
-            const Char * folder_delimiter_1 = MENGINE_STRRCHR( str_fullpath, '\\' );
-            const Char * folder_delimiter_2 = MENGINE_STRRCHR( str_fullpath, '/' );
+            const Char * folder_delimiter_1 = StdString::strrchr( str_fullpath, '\\' );
+            const Char * folder_delimiter_2 = StdString::strrchr( str_fullpath, '/' );
 
             const Char * folder_delimiter = (folder_delimiter_1 > folder_delimiter_2) ? folder_delimiter_1 : folder_delimiter_2;
 
@@ -117,57 +117,57 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashW( WChar * const _filePath )
         {
-            WChar * pch = MENGINE_WCSCHR( _filePath, MENGINE_WIN32_PATH_WDELIM );
+            WChar * pch = StdString::wcschr( _filePath, MENGINE_WIN32_PATH_WDELIM );
 
             while( pch != nullptr )
             {
                 *pch = MENGINE_PATH_WDELIM;
 
-                pch = MENGINE_WCSCHR( pch, MENGINE_WIN32_PATH_WDELIM );
+                pch = StdString::wcschr( pch, MENGINE_WIN32_PATH_WDELIM );
             }
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashToA( Char * const _out, const Char * _in )
         {
-            MENGINE_STRCPY( _out, _in );
+            StdString::strcpy( _out, _in );
 
             Helper::pathCorrectBackslashA( _out );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashToW( WChar * const _out, const WChar * _in )
         {
-            MENGINE_WCSCPY( _out, _in );
+            StdString::wcscpy( _out, _in );
 
             Helper::pathCorrectBackslashW( _out );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectForwardslashW( WChar * const _filePath )
         {
-            WChar * pch = MENGINE_WCSCHR( _filePath, MENGINE_PATH_WDELIM );
+            WChar * pch = StdString::wcschr( _filePath, MENGINE_PATH_WDELIM );
 
             while( pch != nullptr )
             {
                 *pch = MENGINE_WIN32_PATH_WDELIM;
 
-                pch = MENGINE_WCSCHR( pch, MENGINE_PATH_WDELIM );
+                pch = StdString::wcschr( pch, MENGINE_PATH_WDELIM );
             }
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectForwardslashA( Char * const _filePath )
         {
-            Char * pch = MENGINE_STRCHR( _filePath, MENGINE_PATH_DELIM );
+            Char * pch = StdString::strchr( _filePath, MENGINE_PATH_DELIM );
 
             while( pch != nullptr )
             {
                 *pch = MENGINE_WIN32_PATH_DELIM;
 
-                pch = MENGINE_STRCHR( pch, MENGINE_PATH_DELIM );
+                pch = StdString::strchr( pch, MENGINE_PATH_DELIM );
             }
         }
         //////////////////////////////////////////////////////////////////////////
         void pathRemoveBackslashW( WChar * const _filePath )
         {
-            size_t len = MENGINE_WCSLEN( _filePath );
+            size_t len = StdString::wcslen( _filePath );
 
             WChar * pch = _filePath + len - 1;
 
@@ -179,7 +179,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool pathRemoveFileSpecW( WChar * const _filePath )
         {
-            size_t len = MENGINE_WCSLEN( _filePath );
+            size_t len = StdString::wcslen( _filePath );
 
             if( len == 0 )
             {
@@ -216,19 +216,19 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashA( Char * const _filePath )
         {
-            Char * pch = MENGINE_STRCHR( _filePath, MENGINE_WIN32_PATH_DELIM );
+            Char * pch = StdString::strchr( _filePath, MENGINE_WIN32_PATH_DELIM );
 
             while( pch != nullptr )
             {
                 *pch = MENGINE_PATH_DELIM;
 
-                pch = MENGINE_STRCHR( pch, MENGINE_WIN32_PATH_DELIM );
+                pch = StdString::strchr( pch, MENGINE_WIN32_PATH_DELIM );
             }
         }
         //////////////////////////////////////////////////////////////////////////
         void pathRemoveBackslashA( Char * const _filePath )
         {
-            size_t len = MENGINE_STRLEN( _filePath );
+            size_t len = StdString::strlen( _filePath );
 
             Char * pch = _filePath + len - 1;
 
@@ -240,7 +240,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool pathRemoveFileSpecA( Char * const _filePath )
         {
-            size_t len = MENGINE_STRLEN( _filePath );
+            size_t len = StdString::strlen( _filePath );
 
             if( len == 0 )
             {

@@ -1,5 +1,7 @@
 #include "AndroidEnv.h"
 
+#include "AndroidDeclaration.h"
+
 #include "Kernel/BuildMode.h"
 
 #include <pthread.h>
@@ -172,6 +174,8 @@ extern "C"
 
         JNIEnv *env;
         if(g_androidEnvJavaVM->GetEnv((void **)&env, JNI_VERSION_1_6 ) != JNI_OK ) {
+            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "JNI_OnLoad failed to get JNI Env");
+
             return JNI_ERR;
         }
 

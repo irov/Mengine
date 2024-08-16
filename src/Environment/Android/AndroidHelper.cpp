@@ -12,6 +12,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/StdIntTypes.h"
+#include "Config/StdString.h"
 #include "Config/Utf8.h"
 
 namespace Mengine
@@ -28,7 +29,7 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( jmethodID_getName != nullptr, "invalid get android method 'getName()Ljava/lang/String;'" );
 
             jstring obj_class_name = (jstring)_jenv->CallObjectMethod( _jclass, jmethodID_getName );
-            Helper::AndroidEnvExceptionCheck(_jenv);
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             const Char * obj_class_name_str = _jenv->GetStringUTFChars( obj_class_name, nullptr );
             jsize obj_class_name_size = _jenv->GetStringLength( obj_class_name );
@@ -374,7 +375,7 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Boolean [booleanValue] ()Z'" );
 
             jboolean value = _jenv->CallBooleanMethod( _jobject, methodValue );
-            Helper::AndroidEnvExceptionCheck(_jenv);
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             _jenv->DeleteLocalRef( jclass_Boolean );
 
@@ -390,7 +391,7 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Character [charValue] ()C'" );
 
             jchar value = _jenv->CallCharMethod( _jobject, methodValue );
-            Helper::AndroidEnvExceptionCheck(_jenv);
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             _jenv->DeleteLocalRef( jclass_Character );
 
@@ -406,7 +407,7 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Integer [intValue] ()I'" );
 
             jint value = _jenv->CallIntMethod( _jobject, methodValue );
-            Helper::AndroidEnvExceptionCheck(_jenv);
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             _jenv->DeleteLocalRef( jclass_Integer );
 
@@ -422,7 +423,7 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Long [longValue] ()J'" );
 
             jlong value = _jenv->CallLongMethod(_jobject, methodValue );
-            Helper::AndroidEnvExceptionCheck(_jenv);
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             _jenv->DeleteLocalRef( jclass_Long );
 
@@ -438,7 +439,7 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Float [floatValue] ()F'" );
 
             jfloat value = _jenv->CallFloatMethod( _jobject, methodValue );
-            Helper::AndroidEnvExceptionCheck(_jenv);
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             _jenv->DeleteLocalRef( jclass_Float );
 
@@ -454,7 +455,7 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( methodValue != nullptr, "invalid get android method 'java/lang/Double [doubleValue] ()D'" );
 
             jdouble value = _jenv->CallDoubleMethod( _jobject, methodValue );
-            Helper::AndroidEnvExceptionCheck(_jenv);
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             _jenv->DeleteLocalRef( jclass_Double );
 
@@ -517,24 +518,24 @@ namespace Mengine
             jmethodID jmethodID_MapEntry_getValue = _jenv->GetMethodID( jclass_MapEntry, "getValue", "()Ljava/lang/Object;" );
 
             jobject jset = _jenv->CallObjectMethod( _jmap, jmethodID_Map_entrySet );
-            Helper::AndroidEnvExceptionCheck(_jenv);
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             jobject jset_iterator = _jenv->CallObjectMethod( jset, jmethodID_Set_iterator );
-            Helper::AndroidEnvExceptionCheck(_jenv);
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             jboolean hasNext = _jenv->CallBooleanMethod( jset_iterator, jmethodID_Iterator_hasNext );
-            Helper::AndroidEnvExceptionCheck(_jenv);
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             while( hasNext == JNI_TRUE )
             {
                 jobject jentry = _jenv->CallObjectMethod( jset_iterator, jmethodID_Iterator_next );
-                Helper::AndroidEnvExceptionCheck(_jenv);
+                Helper::AndroidEnvExceptionCheck( _jenv );
 
                 jobject jkey = _jenv->CallObjectMethod( jentry, jmethodID_MapEntry_getKey );
-                Helper::AndroidEnvExceptionCheck(_jenv);
+                Helper::AndroidEnvExceptionCheck( _jenv );
 
                 jobject jvalue = (jstring)_jenv->CallObjectMethod( jentry, jmethodID_MapEntry_getValue );
-                Helper::AndroidEnvExceptionCheck(_jenv);
+                Helper::AndroidEnvExceptionCheck( _jenv );
 
                 _lambda( jkey, jvalue );
 
@@ -543,7 +544,7 @@ namespace Mengine
                 _jenv->DeleteLocalRef( jentry );
 
                 hasNext = _jenv->CallBooleanMethod( jset_iterator, jmethodID_Iterator_hasNext );
-                Helper::AndroidEnvExceptionCheck(_jenv);
+                Helper::AndroidEnvExceptionCheck( _jenv );
             }
 
             _jenv->DeleteLocalRef( jset_iterator );
@@ -562,7 +563,7 @@ namespace Mengine
             jmethodID List_size = _jenv->GetMethodID( jclass_List, "size", "()I");
 
             int list_size = _jenv->CallIntMethod( _jlist, List_size );
-            Helper::AndroidEnvExceptionCheck(_jenv);
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             _jenv->DeleteLocalRef( jclass_List );
 
@@ -582,12 +583,12 @@ namespace Mengine
             MENGINE_ASSERTION_FATAL( List_get != nullptr, "invalid get android method 'java/lang/List [get] (I)Ljava/lang/Object;'" );
 
             int list_size = _jenv->CallIntMethod( _jlist, List_size );
-            Helper::AndroidEnvExceptionCheck(_jenv);
+            Helper::AndroidEnvExceptionCheck( _jenv );
 
             for( jsize index = 0; index != list_size; ++index )
             {
                 jobject list_obj = _jenv->CallObjectMethod( _jlist, List_get, index );
-                Helper::AndroidEnvExceptionCheck(_jenv);
+                Helper::AndroidEnvExceptionCheck( _jenv );
 
                 _lambda( index, list_obj );
 
@@ -644,14 +645,58 @@ namespace Mengine
                 _jenv->CallVoidMethod( _writer, jmethodID_Writer_write_String, jvalue );
                 _jenv->DeleteLocalRef( jvalue );
 
-                __android_log_write( ANDROID_LOG_INFO, "Mengine", _utf8 );
-
                 return true;
             } );
 
             _jenv->DeleteLocalRef( jclass_Writer );
 
             return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool AndroidGetActivityFilesDirCanonicalPath( JNIEnv * _jenv, Char * const _path )
+        {
+            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+            jobject jobjectMengineActivity = Mengine_JNI_GetJObjectMengineActivity();
+
+            jmethodID midContext_GetFilesDir = _jenv->GetMethodID( jclassMengineActivity, "getFilesDir", "()Ljava/io/File;" );
+
+            jobject filesDir = _jenv->CallObjectMethod( jobjectMengineActivity, midContext_GetFilesDir );
+
+            if( filesDir == nullptr )
+            {
+                return false;
+            }
+
+            jclass jclassFilesDir = _jenv->GetObjectClass( filesDir );
+
+            jmethodID midFilesDir_getCanonicalPath = _jenv->GetMethodID( jclassFilesDir, "getCanonicalPath", "()Ljava/lang/String;" );
+
+            _jenv->DeleteLocalRef( jclassFilesDir );
+
+            jstring canonicalPath = (jstring)_jenv->CallObjectMethod( filesDir, midFilesDir_getCanonicalPath );
+
+            _jenv->DeleteLocalRef( filesDir );
+
+            const Char * canonicalPath_str = _jenv->GetStringUTFChars( canonicalPath, NULL );
+            StdString::strcpy( _path, canonicalPath_str );
+            _jenv->ReleaseStringUTFChars( canonicalPath, canonicalPath_str );
+
+            _jenv->DeleteLocalRef( canonicalPath );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        jobject AndroidGetActivitySurface( JNIEnv * _jenv )
+        {
+            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+            jobject jobjectMengineActivity = Mengine_JNI_GetJObjectMengineActivity();
+
+            jmethodID midMengineActivity_getNativeSurface = _jenv->GetMethodID( jclassMengineActivity, "getSurface", "()Landroid/view/Surface;" );
+
+            jobject jSurface = _jenv->CallObjectMethod( jobjectMengineActivity, midMengineActivity_getNativeSurface );
+            Helper::AndroidEnvExceptionCheck( _jenv );
+
+            return jSurface;
         }
         //////////////////////////////////////////////////////////////////////////
         void AndroidEnvExceptionCheck( JNIEnv * _jenv )

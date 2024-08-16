@@ -187,7 +187,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32FindPython3Service::getPython3Path( Char * const _python3Path ) const
     {
-        MENGINE_STRCPY( _python3Path, m_python3Path );
+        StdString::strcpy( _python3Path, m_python3Path );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -2,110 +2,50 @@
 
 #include "Config/Config.h"
 
-#include <string.h>
-#include <wchar.h>
+#include <cstring>
+#include <cwchar>
+
+namespace Mengine
+{
+    namespace StdString
+    {
+        using std::strlen;
+        using std::strcmp;
+        using std::strcpy;
+        using std::strncpy;
+        using std::strcat;
+        using std::strncat;
+        using std::strchr;
+        using std::strrchr;
+        using std::strncmp;
+        using std::strstr;
+
+        using std::wcslen;
+        using std::wcscmp;
+        using std::wcschr;
+        using std::wcscpy;
+        using std::wcsncpy;
+        using std::wcscat;
+        using std::wcsncat;
+        using std::wcsrchr;
+        using std::wcsncmp;
+
+        using std::memcpy;
+        using std::memset;
+        using std::memmove;
+        using std::memcmp;
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_STRLEN
-#define MENGINE_STRLEN(s) ::strlen((s))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_STRCMP
-#define MENGINE_STRCMP(a, b) ::strcmp((a), (b))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_STRCPY
-#define MENGINE_STRCPY(a, b) ::strcpy((a), (b))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_STRNCPY
-#define MENGINE_STRNCPY(a, b, n) ::strncpy((a), (b), (n))
-#endif
-//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_STRNCPY_STATIC
-#define MENGINE_STRNCPY_STATIC(a, b, n) (::strncpy((a), (b), (n)), MENGINE_STATIC_STRING_LENGTH(b))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_STRCAT
-#define MENGINE_STRCAT(a, b) ::strcat((a), (b))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_STRNCAT
-#define MENGINE_STRNCAT(a, b, n) ::strncat((a), (b), (n))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_STRCHR
-#define MENGINE_STRCHR(a, b) ::strchr((a), (b))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_STRRCHR
-#define MENGINE_STRRCHR(a, b) ::strrchr((a), (b))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_STRNCMP
-#define MENGINE_STRNCMP(a, b, n) ::strncmp((a), (b), (n))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_STRSTR
-#define MENGINE_STRSTR(a, b) ::strstr((a), (b))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_WCSLEN
-#define MENGINE_WCSLEN(s) ::wcslen((s))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_WCSCHR
-#define MENGINE_WCSCHR(s, c) ::wcschr((s), (c))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_WCSCPY
-#define MENGINE_WCSCPY(a, b) ::wcscpy((a), (b))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_WCSNCPY
-#define MENGINE_WCSNCPY(a, b, n) ::wcsncpy((a), (b), (n))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_WCSCAT
-#define MENGINE_WCSCAT(a, b) ::wcscat((a), (b))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_WCSNCAT
-#define MENGINE_WCSNCAT(a, b, n) ::wcsncat((a), (b), (n))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_WCSCMP
-#define MENGINE_WCSCMP(a, b) ::wcscmp((a), (b))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_WCSRCHR
-#define MENGINE_WCSRCHR(a, b) ::wcsrchr((a), (b))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_WCSNCMP
-#define MENGINE_WCSNCMP(a, b, n) ::wcsncmp((a), (b), (n))
+#define MENGINE_STRNCPY_STATIC(a, b, n) (Mengine::StdString::strncpy((a), (b), (n)), MENGINE_STATIC_STRING_LENGTH(b))
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WCSICMP
 #   if defined(MENGINE_PLATFORM_WINDOWS)
 #       define MENGINE_WCSICMP(a,b) ::_wcsicmp((a), (b))
 #   endif
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_MEMCPY
-#define MENGINE_MEMCPY(a, b, n) ::memcpy((a), (b), (n))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_MEMSET
-#define MENGINE_MEMSET(d, v, s) ::memset((d), (v), (s))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_MEMMOVE
-#define MENGINE_MEMMOVE(d, v, s) ::memmove((d), (v), (s))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_MEMCMP
-#define MENGINE_MEMCMP(a, b, n) ::memcmp((a), (b), (n))
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_STRICMP

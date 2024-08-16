@@ -18,8 +18,6 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.multidex.MultiDex;
 
-import org.libsdl.app.SDL;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,14 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MengineApplication extends Application {
     private static final String TAG = "MengineApplication";
-
-
-    /*
-    static {
-        System.loadLibrary("SDLApplication");
-    }
-     */
-
 
     private static native void AndroidEnv_setMengineAndroidApplicationJNI(Object activity, ClassLoader cl);
     private static native void AndroidEnv_removeMengineAndroidApplicationJNI();
@@ -144,16 +134,16 @@ public class MengineApplication extends Application {
         int versionCode = this.getVersionCode();
 
         MengineLog.logMessageRelease(TAG, "MengineApplication id: %s version: %s [%d]"
-                , applicationId
-                , versionName
-                , versionCode
+            , applicationId
+            , versionName
+            , versionCode
         );
 
         String[] plugins = this.getAndroidPlugins();
 
         for (String namePlugin : plugins) {
             if (this.createPlugin(namePlugin) == false) {
-                this.invalidInitialize("invalid create plugin: %s"
+                this.invalidInitialize("[ERROR] invalid create plugin: %s"
                     , namePlugin
                 );
 
@@ -162,28 +152,13 @@ public class MengineApplication extends Application {
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private static ApplicationInfo getPackageApplicationInfo(PackageManager packageManager, String packageName) throws PackageManager.NameNotFoundException {
-        ApplicationInfo applicationInfo;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            PackageManager.ApplicationInfoFlags flags = PackageManager.ApplicationInfoFlags.of(PackageManager.GET_META_DATA);
-
-            applicationInfo = packageManager.getApplicationInfo(packageName, flags);
-        } else {
-            applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
-        }
-
-        return applicationInfo;
-    }
-
     public Bundle getMetaDataBundle() {
         Context context = this.getApplicationContext();
         String packageName = context.getPackageName();
         PackageManager packageManager = context.getPackageManager();
 
         try {
-            ApplicationInfo ai = MengineApplication.getPackageApplicationInfo(packageManager, packageName);
+            ApplicationInfo ai = MengineUtils.getPackageApplicationInfo(packageManager, packageName);
 
             Bundle bundle = ai.metaData;
 
@@ -377,23 +352,6 @@ public class MengineApplication extends Application {
         String OSVersion = Build.VERSION.RELEASE;
 
         return OSVersion;
-    }
-
-    @SuppressWarnings("deprecation")
-    private PackageInfo getPackageInfo(PackageManager manager, String packageName) {
-        PackageInfo packageInfo;
-
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                packageInfo = manager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0));
-            } else {
-                packageInfo = manager.getPackageInfo(packageName, 0);
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            return null;
-        }
-
-        return packageInfo;
     }
 
     private String getSecureAndroidId() {
@@ -889,7 +847,7 @@ public class MengineApplication extends Application {
 
                 l.onAppInit(this, isMainProcess);
             } catch (MenginePluginInvalidInitializeException e) {
-                this.invalidInitialize("onAppInit plugin: %s exception: %s"
+                this.invalidInitialize("[ERROR] onAppInit plugin: %s exception: %s"
                     , l.getPluginName()
                     , e.getMessage()
                 );
@@ -1053,33 +1011,23 @@ public class MengineApplication extends Application {
             m_androidId = "0000000000000000";
         }
 
-        this.setState("application.init", "sdl_load_library");
-
         try {
-            SDL.loadLibrary("SDLApplication");
-        } catch (UnsatisfiedLinkError e) {
-            MengineAnalytics.buildEvent("mng_app_init_failed")
-                .addParameterThrowable("exception", e)
-                .logAndFlush();
+            Context context = this.getApplicationContext();
 
-            this.invalidInitialize("load library SDLApplication catch UnsatisfiedLinkError: %s"
-                , e.getMessage()
+            MengineUtils.loadLibrary(context, "AndroidApplication");
+        } catch(UnsatisfiedLinkError e) {
+            this.invalidInitialize("[ERROR] loadLibrary AndroidApplication UnsatisfiedLinkError: %s"
+                    , e.getMessage()
             );
 
             return;
-        } catch (Exception e) {
-            MengineAnalytics.buildEvent("mng_app_init_failed")
-                .addParameterException("exception", e)
-                .logAndFlush();
-
-            this.invalidInitialize("load library SDLApplication catch Exception: %s"
-                , e.getMessage()
+        } catch(SecurityException e) {
+            this.invalidInitialize("[ERROR] loadLibrary AndroidApplication SecurityException: %s"
+                    , e.getMessage()
             );
 
             return;
         }
-
-        this.setState("application.init", "sdl_init");
 
         ClassLoader cl = MengineApplication.class.getClassLoader();
 
@@ -1094,6 +1042,8 @@ public class MengineApplication extends Application {
         String engine_builddate = this.getBuildDate();
         this.setState("engine.build_date", engine_builddate);
 
+        this.setState("application.init", "plugins_prepare");
+
         for (MenginePluginApplicationListener l : applicationListeners) {
             try {
                 MengineLog.logMessage(TAG, "onAppPrepare plugin: %s"
@@ -1106,7 +1056,7 @@ public class MengineApplication extends Application {
                     .addParameterException("exception", e)
                     .logAndFlush();
 
-                this.invalidInitialize("onAppPrepare plugin: %s exception: %s"
+                this.invalidInitialize("[ERROR] onAppPrepare plugin: %s exception: %s"
                     , l.getPluginName()
                     , e.getMessage()
                 );
@@ -1133,7 +1083,7 @@ public class MengineApplication extends Application {
                     .addParameterException("exception", e)
                     .logAndFlush();
 
-                this.invalidInitialize("onAppCreate plugin: %s exception: %s"
+                this.invalidInitialize("[ERROR] onAppCreate plugin: %s exception: %s"
                     , l.getPluginName()
                     , e.getMessage()
                 );

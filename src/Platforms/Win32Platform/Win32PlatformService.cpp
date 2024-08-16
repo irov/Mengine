@@ -276,8 +276,8 @@ namespace Mengine
 
         for( const ConstString & tag : m_platformTags.getValues() )
         {
-            MENGINE_STRCAT( platformTagsInfo, tag.c_str() );
-            MENGINE_STRCAT( platformTagsInfo, "-" );
+            StdString::strcat( platformTagsInfo, tag.c_str() );
+            StdString::strcat( platformTagsInfo, "-" );
         }
 
         LOGGER_INFO( "platform", "platform tags: %s"
@@ -770,9 +770,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::loopPlatform()
     {
-        THREAD_SERVICE()
-            ->updateMainThread();
-
         m_prevTime = Helper::getSystemTimestamp();
 
         while( m_close == false )
@@ -867,6 +864,10 @@ namespace Mengine
         }
 
         Helper::utf8ToUnicodeSize( _projectTitle, MENGINE_UNKNOWN_SIZE, m_projectTitle.data(), MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
+
+        LOGGER_INFO( "platform", "project title: %s"
+            , _projectTitle
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32PlatformService::getProjectTitle( Char * const _projectTitle ) const
@@ -961,7 +962,7 @@ namespace Mengine
             // Found a match
             if( MENGINE_WCSICMP( unicode_fontName, valueName ) == 0 )
             {
-                MENGINE_MEMCPY( unicode_fontPath, valueData, valueDataSize );
+                StdString::memcpy( unicode_fontPath, valueData, valueDataSize );
 
                 break;
             }
@@ -969,7 +970,7 @@ namespace Mengine
 
         ::RegCloseKey( hKey );
 
-        if( MENGINE_WCSLEN( unicode_fontPath ) == 0 )
+        if( StdString::wcslen( unicode_fontPath ) == 0 )
         {
             _fontPath[0] = '\0';
 
@@ -1370,7 +1371,7 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                Helper::pushKeyEvent( point.x, point.y, code, true, false );
+                Helper::pushKeyEvent( point.x, point.y, 0.f, code, true, false );
             }break;
         case WM_SYSKEYUP:
             {
@@ -1391,7 +1392,7 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                Helper::pushKeyEvent( point.x, point.y, code, false, false );
+                Helper::pushKeyEvent( point.x, point.y, 0.f, code, false, false );
             }break;
         case WM_SYSCOMMAND:
             {
@@ -1700,7 +1701,7 @@ namespace Mengine
                 fdx /= width;
                 fdy /= height;
 
-                Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, fdx, fdy, 0.f );
+                Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, fdx, fdy, 0.f, 0.f );
 
                 handle = true;
                 *_result = 0;
@@ -1731,7 +1732,7 @@ namespace Mengine
 
                 int32_t scroll = zDelta / WHEEL_DELTA;
 
-                Helper::pushMouseWheelEvent( point.x, point.y, WC_CENTRAL, scroll );
+                Helper::pushMouseWheelEvent( point.x, point.y, 0.f, WC_CENTRAL, scroll );
 
                 handle = true;
                 *_result = 0;
@@ -2036,7 +2037,7 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                Helper::pushKeyEvent( point.x, point.y, code, true, false );
+                Helper::pushKeyEvent( point.x, point.y, 0.f, code, true, false );
 
                 handle = true;
                 *_result = 0;
@@ -2060,7 +2061,7 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                Helper::pushKeyEvent( point.x, point.y, code, false, false );
+                Helper::pushKeyEvent( point.x, point.y, 0.f, code, false, false );
 
                 handle = true;
                 *_result = 0;
@@ -2135,7 +2136,7 @@ namespace Mengine
             return false;
         }
 
-        Helper::pushTextEvent( point.x, point.y, unicode_code );
+        Helper::pushTextEvent( point.x, point.y, 0.f, unicode_code );
 
         return true;
     }
@@ -2710,17 +2711,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::existDirectory( const Char * _path, const Char * _directory ) const
     {
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0
-            || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM )
-                || _path[MENGINE_STRLEN( _path ) - 1] == MENGINE_PATH_DELIM
-                || _path[MENGINE_STRLEN( _path ) - 1] == MENGINE_WIN32_PATH_DELIM)
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _path ) == 0
+            || (StdString::strrchr( _path, '.' ) > StdString::strrchr( _path, MENGINE_PATH_DELIM )
+                || _path[StdString::strlen( _path ) - 1] == MENGINE_PATH_DELIM
+                || _path[StdString::strlen( _path ) - 1] == MENGINE_WIN32_PATH_DELIM)
             , "invalid path '%s'", _path
         );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0
-            || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM )
-                || _directory[MENGINE_STRLEN( _directory ) - 1] == MENGINE_PATH_DELIM
-                || _directory[MENGINE_STRLEN( _directory ) - 1] == MENGINE_WIN32_PATH_DELIM)
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _directory ) == 0
+            || (StdString::strrchr( _directory, '.' ) > StdString::strrchr( _directory, MENGINE_PATH_DELIM )
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_DELIM
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_WIN32_PATH_DELIM)
             , "invalid directory '%s'", _directory
         );
 
@@ -2741,7 +2742,7 @@ namespace Mengine
 
         Helper::pathRemoveFileSpecW( pathDirectory );
 
-        size_t len = MENGINE_WCSLEN( pathDirectory );
+        size_t len = StdString::wcslen( pathDirectory );
 
         if( len == 0 )
         {
@@ -2781,17 +2782,17 @@ namespace Mengine
             , _directory
         );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _path ) == 0
-            || (MENGINE_STRRCHR( _path, '.' ) > MENGINE_STRRCHR( _path, MENGINE_PATH_DELIM )
-                || _path[MENGINE_STRLEN( _path ) - 1] == MENGINE_PATH_DELIM
-                || _path[MENGINE_STRLEN( _path ) - 1] == MENGINE_WIN32_PATH_DELIM)
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _path ) == 0
+            || (StdString::strrchr( _path, '.' ) > StdString::strrchr( _path, MENGINE_PATH_DELIM )
+                || _path[StdString::strlen( _path ) - 1] == MENGINE_PATH_DELIM
+                || _path[StdString::strlen( _path ) - 1] == MENGINE_WIN32_PATH_DELIM)
             , "invalid path '%s'", _path
         );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _directory ) == 0
-            || (MENGINE_STRRCHR( _directory, '.' ) > MENGINE_STRRCHR( _directory, MENGINE_PATH_DELIM )
-                || _directory[MENGINE_STRLEN( _directory ) - 1] == MENGINE_PATH_DELIM
-                || _directory[MENGINE_STRLEN( _directory ) - 1] == MENGINE_WIN32_PATH_DELIM)
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _directory ) == 0
+            || (StdString::strrchr( _directory, '.' ) > StdString::strrchr( _directory, MENGINE_PATH_DELIM )
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_DELIM
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_WIN32_PATH_DELIM)
             , "invalid directory '%s'", _directory
         );
 
@@ -2814,7 +2815,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::createDirectory_( const WChar * _path, const WChar * _directory )
     {
-        size_t unicode_directorySize = MENGINE_WCSLEN( _directory );
+        size_t unicode_directorySize = StdString::wcslen( _directory );
 
         if( unicode_directorySize == 0 )
         {
@@ -2826,7 +2827,7 @@ namespace Mengine
 
         Helper::pathRemoveFileSpecW( pathDirectory );
 
-        if( MENGINE_WCSLEN( pathDirectory ) == 0 )
+        if( StdString::wcslen( pathDirectory ) == 0 )
         {
             return true;
         }
@@ -2929,7 +2930,7 @@ namespace Mengine
         WChar pathCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
 
-        size_t len = MENGINE_WCSLEN( pathCorrect );
+        size_t len = StdString::wcslen( pathCorrect );
 
         if( len == 0 )
         {
@@ -3146,7 +3147,7 @@ namespace Mengine
 
         ::CloseHandle( handle );
 
-        time_t time = this->getFileUnixTime( &write );
+        time_t time = Helper::Win32FileTimeToUnixTime( &write );
 
         return time;
     }
@@ -3162,7 +3163,7 @@ namespace Mengine
         WChar fileCorrect[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( fileCorrect, _file );
 
-        MENGINE_WCSCAT( szPath, pathCorrect );
+        StdString::wcscat( szPath, pathCorrect );
 
         if( this->existFile_( szPath ) == false )
         {
@@ -3178,7 +3179,7 @@ namespace Mengine
             }
         }
 
-        MENGINE_WCSCAT( szPath, fileCorrect );
+        StdString::wcscat( szPath, fileCorrect );
 
         HANDLE hFile = ::CreateFile( szPath, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
 
@@ -3267,12 +3268,12 @@ namespace Mengine
         WChar unicode_directoryPath_correct[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( unicode_directoryPath_correct, unicode_directoryPath );
 
-        MENGINE_WCSCAT( szPath, unicode_directoryPath_correct );
+        StdString::wcscat( szPath, unicode_directoryPath_correct );
 
         WChar unicode_filePath_correct[MENGINE_MAX_PATH] = {L'\0'};
         Helper::pathCorrectBackslashToW( unicode_filePath_correct, unicode_filePath );
 
-        MENGINE_WCSCAT( szPath, unicode_filePath_correct );
+        StdString::wcscat( szPath, unicode_filePath_correct );
 
         if( this->existFile_( szPath ) == false )
         {
@@ -3411,14 +3412,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::sleep( uint32_t _ms )
-    {
-        ::Sleep( _ms );
-    }
-    //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr Win32PlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )
     {
-        LOGGER_MESSAGE( "load dynamic library '%s'"
+        LOGGER_MESSAGE( "load dynamic library: %s"
             , _dynamicLibraryName
         );
 
@@ -3430,7 +3426,7 @@ namespace Mengine
 
         if( dynamicLibrary->load() == false )
         {
-            LOGGER_ERROR( "can't load dynamic library '%s' [invalid load]"
+            LOGGER_ERROR( "can't load dynamic library: %s [invalid load]"
                 , _dynamicLibraryName
             );
 
@@ -3489,7 +3485,7 @@ namespace Mengine
 
             Helper::pathCorrectBackslashA( _currentPath );
 
-            size_t option_workdir_len = MENGINE_STRLEN( _currentPath );
+            size_t option_workdir_len = StdString::strlen( _currentPath );
 
             return option_workdir_len;
         }
@@ -3547,7 +3543,7 @@ namespace Mengine
             ::PathRemoveBackslashW( currentPath );
             ::PathAddBackslashW( currentPath );
 
-            MENGINE_WCSCAT( currentPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
+            StdString::wcscat( currentPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
 
             uint32_t Engine_BotId = CONFIG_VALUE( "Engine", "BotId", ~0U );
 
@@ -3558,7 +3554,7 @@ namespace Mengine
                 WChar botId_suffix[16];
                 MENGINE_WNSPRINTF( botId_suffix, 16, L"%u", botId );
 
-                MENGINE_WCSCAT( currentPath, botId_suffix );
+                StdString::wcscat( currentPath, botId_suffix );
             }
 
             ::PathAddBackslashW( currentPath );
@@ -3605,7 +3601,7 @@ namespace Mengine
 
         const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "UNKNOWN" );
 
-        if( MENGINE_STRLEN( Project_Company ) == 0 )
+        if( StdString::strlen( Project_Company ) == 0 )
         {
             LOGGER_ERROR( "invalid get company name" );
 
@@ -3627,7 +3623,7 @@ namespace Mengine
 
         const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
-        if( MENGINE_STRLEN( Project_Name ) == 0 )
+        if( StdString::strlen( Project_Name ) == 0 )
         {
             LOGGER_ERROR( "invalid get project name" );
 
@@ -3665,9 +3661,9 @@ namespace Mengine
     {
         const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE( "Project", "ExtraPreferencesFolderName", "" );
 
-        MENGINE_STRCPY( _folderName, Project_ExtraPreferencesFolderName );
+        StdString::strcpy( _folderName, Project_ExtraPreferencesFolderName );
 
-        size_t Project_ExtraPreferencesFolderNameLen = MENGINE_STRLEN( Project_ExtraPreferencesFolderName );
+        size_t Project_ExtraPreferencesFolderNameLen = StdString::strlen( Project_ExtraPreferencesFolderName );
 
         return Project_ExtraPreferencesFolderNameLen;
     }
@@ -3756,15 +3752,6 @@ namespace Mengine
         MENGINE_UNUSED( _params );
 
         //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float Win32PlatformService::getJoystickAxis( uint32_t _index ) const
-    {
-        MENGINE_UNUSED( _index );
-
-        //FixMe
-
-        return 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::openUrlInDefaultBrowser( const Char * _url )
@@ -3897,7 +3884,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::setClipboardText( const Char * _value ) const
     {
-        size_t len = MENGINE_STRLEN( _value );
+        size_t len = StdString::strlen( _value );
         size_t len_alloc = len + 1;
 
         HGLOBAL hGlb = ::GlobalAlloc( GMEM_MOVEABLE, len_alloc );
@@ -3923,7 +3910,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_MEMCPY( memGlb, _value, len );
+        StdString::memcpy( memGlb, _value, len );
 
         ::GlobalUnlock( memGlb );
 
@@ -4010,67 +3997,6 @@ namespace Mengine
         );
 
         m_win32ProcessHandlers.erase( it_found );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    time_t Win32PlatformService::getFileUnixTime( const FILETIME * filetime ) const
-    {
-        uint32_t a2 = filetime->dwHighDateTime;
-        uint32_t a1 = ((uint32_t)filetime->dwLowDateTime) >> 16;
-        uint32_t a0 = ((uint32_t)filetime->dwLowDateTime) & 0xffff;
-
-        uint32_t carry;
-
-        if( a0 >= 32768 )
-        {
-            a0 -= 32768, carry = 0;
-        }
-        else
-        {
-            a0 += (1 << 16) - 32768, carry = 1;
-        }
-
-        if( a1 >= 54590 + carry )
-        {
-            a1 -= 54590 + carry, carry = 0;
-        }
-        else
-        {
-            a1 += (1 << 16) - 54590 - carry, carry = 1;
-        }
-
-        a2 -= 27111902 + carry;
-
-        int32_t negative = (a2 >= ((uint32_t)1) << 31);
-
-        if( negative != 0 )
-        {
-            a0 = 0xffff - a0;
-            a1 = 0xffff - a1;
-            a2 = ~a2;
-        }
-
-        a1 += (a2 % 10000) << 16;
-        a2 /= 10000;
-        a0 += (a1 % 10000) << 16;
-        a1 /= 10000;
-        a0 /= 10000;
-
-        a1 += (a2 % 1000) << 16;
-        a2 /= 1000;
-        a0 += (a1 % 1000) << 16;
-        a1 /= 1000;
-        a0 /= 1000;
-
-        if( negative != 0 )
-        {
-            a0 = 0xffff - a0;
-            a1 = 0xffff - a1;
-            a2 = ~a2;
-        }
-
-        time_t time = ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
-
-        return time;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::initializeFileService()

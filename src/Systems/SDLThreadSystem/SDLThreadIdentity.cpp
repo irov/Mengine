@@ -99,7 +99,13 @@ namespace Mengine
             return nullptr;
         }
 
-        m_thread = thread;        
+        m_thread = thread;
+
+        LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
+            , m_name.c_str()
+            , m_threadId
+            , m_priority
+        );
 
         return m_runner;
     }
@@ -127,39 +133,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadIdentity::join()
     {
-        if( m_runner->isCancel() == true )
-        {
-            return;
-        }
-
         int status = 0;
         SDL_WaitThread( m_thread, &status );
 
         if( status != 0 )
         {
             LOGGER_ERROR( "invalid join thread error status [%d]"
-                , status
-            );
-        }
-
-        this->finalize();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLThreadIdentity::cancel()
-    {
-        if( m_runner->isCancel() == true )
-        {
-            return;
-        }
-
-        m_runner->cancel();
-
-        int status = 0;
-        SDL_WaitThread( m_thread, &status );
-        
-        if( status != 0 )
-        {
-            LOGGER_ERROR( "invalid cancel thread error status [%d]"
                 , status
             );
         }

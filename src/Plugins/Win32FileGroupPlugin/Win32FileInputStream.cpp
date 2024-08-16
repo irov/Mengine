@@ -418,10 +418,7 @@ namespace Mengine
             return false;
         }
 
-        Win32PlatformServiceExtensionInterface * win32Platform = PLATFORM_SERVICE()
-            ->getUnknown();
-
-        time_t time = win32Platform->getFileUnixTime( &write );
+        time_t time = Helper::Win32FileTimeToUnixTime( &write );
 
         *_time = (uint64_t)time;
 

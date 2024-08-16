@@ -127,7 +127,7 @@ namespace Mengine
                 for( auto && [factory, objects] : objectLeaks )
                 {
                     const Char * factory_delimiter = "##########################################################\n";
-                    ::fwrite( factory_delimiter, MENGINE_STRLEN( factory_delimiter ), 1, f );
+                    ::fwrite( factory_delimiter, StdString::strlen( factory_delimiter ), 1, f );
 
                     const ConstString & factoryType = factory->getType();
 
@@ -139,12 +139,12 @@ namespace Mengine
 
                     ::fwrite( factorymsg, factorymsg_length, 1, f );
 
-                    ::fwrite( factory_delimiter, MENGINE_STRLEN( factory_delimiter ), 1, f );
+                    ::fwrite( factory_delimiter, StdString::strlen( factory_delimiter ), 1, f );
 
                     for( const DocumentInterfacePtr & obj : objects )
                     {
                         const Char * obj_delimiter = "**********************************************************\n";
-                        ::fwrite( obj_delimiter, MENGINE_STRLEN( obj_delimiter ), 1, f );
+                        ::fwrite( obj_delimiter, StdString::strlen( obj_delimiter ), 1, f );
 
                         Char objmsg[16384] = {'\0'};
                         int32_t objmsg_length = MENGINE_SNPRINTF( objmsg, 16383, "    doc: %s\n"

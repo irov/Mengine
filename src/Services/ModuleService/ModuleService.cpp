@@ -279,6 +279,19 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool ModuleService::handleAccelerometerEvent( const InputAccelerometerEvent & _event )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            if( module->handleAccelerometerEvent( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ModuleService::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
         for( const ModuleInterfacePtr & module : m_modules )

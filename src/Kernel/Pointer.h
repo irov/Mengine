@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Config/Utility.h"
+#include "Config/DynamicCast.h"
 
 #if defined(MENGINE_DEBUG)
 #include "stdex/mpl.h"
@@ -227,7 +228,7 @@ namespace Mengine
         template<class U>
         operator U * () const
         {
-            U * t = dynamic_cast<U *>(m_pointer);
+            U * t = Helper::dynamicCast<U *>( m_pointer );
 
             return t;
         }
@@ -288,7 +289,7 @@ namespace Mengine
         template<class U>
         operator const U * () const
         {
-            const U * t = dynamic_cast<const U *>(m_pointer);
+            const U * t = Helper::dynamicCast<const U *>( m_pointer );
 
             return t;
         }

@@ -22,7 +22,6 @@ namespace Mengine
 
     public:
         virtual void join() = 0;
-        virtual void cancel() = 0;
 
     public:
         virtual bool isCurrentThread() const = 0;

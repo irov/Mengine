@@ -27,7 +27,7 @@ namespace Mengine
                 return size_vsnprintf;
             }
 
-            int32_t size_correct = MENGINE_MIN( size_vsnprintf, MENGINE_MAX( 0, (int32_t)_bufferCount - 1 ) );
+            int32_t size_correct = MENGINE_MIN_MAX( size_vsnprintf, 0, (int32_t)_bufferCount - 1 );
 
             return size_correct;
         }

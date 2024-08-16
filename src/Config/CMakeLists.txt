@@ -95,6 +95,7 @@ src
     Stringz.h
     Typedef.h
     Typeinfo.h
+    New.h
     Atomic.h
     Lambda.h
     Config.h
@@ -128,6 +129,7 @@ src
     Variant.h
     Version.h
     TypeTraits.h
+    DynamicCast.h
 )
 
 ADD_FILTER(

@@ -75,8 +75,6 @@ if (extra.has("ANDROID_APP_DELIVERY_PACKAGES") == true) {
 
 includeLibrary("MENGINE_APP_LIBRARY_MENGINE", ":libraries:Mengine")
 includeLibrary("MENGINE_APP_LIBRARY_OPENAL32", ":libraries:OpenAL32")
-includeLibrary("MENGINE_APP_LIBRARY_SDL", ":libraries:SDL")
-
 
 /*****************************************************************************
 / * - MENGINE_APP_PLUGIN_FIREBASE [https://firebase.google.com]

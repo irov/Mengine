@@ -15,7 +15,7 @@ namespace Mengine
         {
             if( _len == MENGINE_UNKNOWN_SIZE )
             {
-                _len = MENGINE_STRLEN( _value );
+                _len = StdString::strlen( _value );
             }
 
             if( Helper::Utf8Validate( _value, _value + _len, nullptr ) == false )

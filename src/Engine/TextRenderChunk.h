@@ -1,12 +1,9 @@
 #pragma once
 
-#include "Kernel/IntrusivePtr.h"
+#include "Interface/RenderMaterialInterface.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     struct TextRenderChunk
     {
         uint32_t vertex_begin;
@@ -14,5 +11,4 @@ namespace Mengine
 
         RenderMaterialInterfacePtr material;
     };
-    //////////////////////////////////////////////////////////////////////////
 }

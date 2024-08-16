@@ -21,10 +21,6 @@ namespace Mengine
         virtual InputHandlerInterfacePtr removeGlobalHandler( UniqueId _id ) = 0;
 
     public:
-        typedef Lambda<void( const InputKeyEvent & _event )> LambdaKeyHandler;
-        virtual UniqueId addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const DocumentInterfacePtr & _doc ) = 0;
-
-    public:
         virtual bool enableGlobalHandler( UniqueId _id, bool _value ) = 0;
 
     public:

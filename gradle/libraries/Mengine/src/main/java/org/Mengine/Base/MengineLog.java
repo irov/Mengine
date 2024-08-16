@@ -197,6 +197,10 @@ public class MengineLog {
     }
 
     public static String buildTotalMsg(String format, Object ... args) {
+        if (args == null || args.length == 0) {
+            return format;
+        }
+
         StringBuilder sb = new StringBuilder();
 
         Formatter formatter = new Formatter(sb);

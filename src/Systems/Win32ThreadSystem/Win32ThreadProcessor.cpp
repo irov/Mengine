@@ -10,8 +10,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ProfilerHelper.h"
 
-#include <process.h>
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -47,7 +45,8 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     Win32ThreadProcessor::Win32ThreadProcessor()
-        : m_thread( INVALID_HANDLE_VALUE )
+        : m_priority( ETP_NORMAL )
+        , m_thread( INVALID_HANDLE_VALUE )
         , m_threadId( 0 )
         , m_task( nullptr )
         , m_exit( false )
@@ -61,6 +60,7 @@ namespace Mengine
     bool Win32ThreadProcessor::initialize( const ConstString & _name, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex )
     {
         m_name = _name;
+        m_priority = _priority;
 
         m_mutex = _mutex;
 
@@ -93,7 +93,7 @@ namespace Mengine
         }
 #endif
 
-        switch( _priority )
+        switch( m_priority )
         {
         case ETP_LOWEST:
             {
@@ -122,10 +122,16 @@ namespace Mengine
         default:
             {
                 LOGGER_ASSERTION( "invalid thread priority [%u]"
-                    , _priority
+                    , m_priority
                 );
             }break;
         }
+
+        LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
+            , m_name.c_str()
+            , m_threadId
+            , m_priority
+        );
 
         return true;
     }

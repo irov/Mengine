@@ -13,8 +13,6 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/DocumentHelper.h"
 
-#include <process.h>
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -138,6 +136,12 @@ namespace Mengine
             }break;
         }
 
+        LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
+            , m_name.c_str()
+            , m_threadId
+            , m_priority
+        );
+
         return m_runner;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -164,25 +168,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::join()
     {
-        if( m_runner->isCancel() == true )
-        {
-            return;
-        }
-
-        ::WaitForSingleObject( m_thread, INFINITE );
-
-        this->finalize();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32ThreadIdentity::cancel()
-    {
-        if( m_runner->isCancel() == true )
-        {
-            return;
-        }
-
-        m_runner->cancel();
-
         ::WaitForSingleObject( m_thread, INFINITE );
 
         this->finalize();

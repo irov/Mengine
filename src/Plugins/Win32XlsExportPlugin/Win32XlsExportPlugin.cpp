@@ -50,7 +50,7 @@ namespace Mengine
         WIN32_FINDPYTHON3_SERVICE()
             ->getPython3Path( m_python3Path );
 
-        if( MENGINE_STRLEN( m_python3Path ) == 0 )
+        if( StdString::strlen( m_python3Path ) == 0 )
         {
             LOGGER_ERROR( "not found python3" );
 

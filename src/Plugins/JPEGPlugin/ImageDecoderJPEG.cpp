@@ -254,7 +254,7 @@ namespace Mengine
             {
                 if( optionChannels == 1 )
                 {
-                    MENGINE_MEMSET( buffer, 255, size );
+                    StdString::memset( buffer, 255, size );
 
                     return size;
                 }

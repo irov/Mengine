@@ -5,6 +5,8 @@
 
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_DOCUMENT_ENABLE)
+#   include "Config/DynamicCast.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -15,7 +17,7 @@ namespace Mengine
         template<class D, class I>
         void getDocumentableMessage( const D * _documentable, const I * _identity, Char * const _message, size_t _capacity )
         {
-            Detail::getDocumentableMessage( dynamic_cast<const Mengine::Documentable *>(_documentable), dynamic_cast<const Mengine::Identity *>(_identity), _message, _capacity );
+            Detail::getDocumentableMessage( Helper::dynamicCast<const Mengine::Documentable *>( _documentable ), Helper::dynamicCast<const Mengine::Identity *>( _identity ), _message, _capacity );
         }
 
         template<class D, class I>

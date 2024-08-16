@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float EasingOut::easing( float _t ) const
     {
-        return MENGINE_SQRTF( _t );
+        return Math::sqrtf( _t );
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingInOut::easing( float _t ) const
@@ -38,17 +38,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float EasingSineIn::easing( float _t ) const
     {
-        return -1.f * MENGINE_COSF( _t * Mengine::Constant::half_pi ) + 1.f;
+        return -1.f * Math::cosf( _t * Math::constant_half_pi ) + 1.f;
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingSineOut::easing( float _t ) const
     {
-        return MENGINE_SINF( _t * Mengine::Constant::half_pi );
+        return Math::sinf( _t * Math::constant_half_pi );
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingSineInOut::easing( float _t ) const
     {
-        return -0.5f * (MENGINE_COSF( Mengine::Constant::pi * _t ) - 1.f);
+        return -0.5f * (Math::cosf( Math::constant_pi * _t ) - 1.f);
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingQuadIn::easing( float _t ) const
@@ -163,12 +163,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float EasingExpoIn::easing( float _t ) const
     {
-        return _t == 0.f ? 0.f : MENGINE_POWF( 2.f, 10.f * (_t - 1.f) ) - 0.001f;
+        return _t == 0.f ? 0.f : Math::powf( 2.f, 10.f * (_t - 1.f) ) - 0.001f;
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingExpoOut::easing( float _t ) const
     {
-        return _t == 1.f ? 1.f : -MENGINE_POWF( 2.f, -10.f * _t ) + 1.f;
+        return _t == 1.f ? 1.f : -Math::powf( 2.f, -10.f * _t ) + 1.f;
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingExpoInOut::easing( float _t ) const
@@ -180,24 +180,24 @@ namespace Mengine
 
         if( _t < 0.5f )
         {
-            return 0.5f * MENGINE_POWF( 2.f, 10.f * (_t * 2.f - 1.f) );
+            return 0.5f * Math::powf( 2.f, 10.f * (_t * 2.f - 1.f) );
         }
         else
         {
-            return 0.5f * (-MENGINE_POWF( 2.f, -10.f * (_t * 2.f - 1.f) ) + 2.f);
+            return 0.5f * (-Math::powf( 2.f, -10.f * (_t * 2.f - 1.f) ) + 2.f);
         }
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingCircIn::easing( float _t ) const
     {
-        return -1.f * (MENGINE_SQRTF( 1.f - _t * _t ) - 1.f);
+        return -1.f * (Math::sqrtf( 1.f - _t * _t ) - 1.f);
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingCircOut::easing( float _t ) const
     {
         _t -= 1.f;
 
-        return MENGINE_SQRTF( 1.f - _t * _t );
+        return Math::sqrtf( 1.f - _t * _t );
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingCircInOut::easing( float _t ) const
@@ -206,13 +206,13 @@ namespace Mengine
 
         if( _t < 1.f )
         {
-            return -0.5f * (MENGINE_SQRTF( 1.f - _t * _t ) - 1.f);
+            return -0.5f * (Math::sqrtf( 1.f - _t * _t ) - 1.f);
         }
         else
         {
             _t -= 2.f;
 
-            return 0.5f * (MENGINE_SQRTF( 1.f - _t * _t ) + 1.f);
+            return 0.5f * (Math::sqrtf( 1.f - _t * _t ) + 1.f);
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -225,7 +225,7 @@ namespace Mengine
 
         _t -= 1.f;
 
-        return -MENGINE_POWF( 2.f, 10.f * _t ) * MENGINE_SINF( (_t - 0.3f * 0.25f) * Mengine::Constant::two_pi / 0.3f );
+        return -Math::powf( 2.f, 10.f * _t ) * Math::sinf( (_t - 0.3f * 0.25f) * Math::constant_two_pi / 0.3f );
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingElasticOut::easing( float _t ) const
@@ -235,7 +235,7 @@ namespace Mengine
             return _t;
         }
 
-        return MENGINE_POWF( 2.f, -10.f * _t ) * MENGINE_SINF( (_t - 0.3f * 0.25f) * Mengine::Constant::two_pi / 0.3f ) + 1.f;
+        return Math::powf( 2.f, -10.f * _t ) * Math::sinf( (_t - 0.3f * 0.25f) * Math::constant_two_pi / 0.3f ) + 1.f;
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingElasticInOut::easing( float _t ) const
@@ -250,11 +250,11 @@ namespace Mengine
 
         if( _t < 0.f )
         {
-            return -0.5f * MENGINE_POWF( 2.f, 10.f * _t ) * MENGINE_SINF( (_t - 0.3f * 0.25f) * Mengine::Constant::two_pi / 0.3f );
+            return -0.5f * Math::powf( 2.f, 10.f * _t ) * Math::sinf( (_t - 0.3f * 0.25f) * Math::constant_two_pi / 0.3f );
         }
         else
         {
-            return MENGINE_POWF( 2.f, -10.f * _t ) * MENGINE_SINF( (_t - 0.3f * 0.25f) * Mengine::Constant::two_pi / 0.3f ) * 0.5f + 1.f;
+            return Math::powf( 2.f, -10.f * _t ) * Math::sinf( (_t - 0.3f * 0.25f) * Math::constant_two_pi / 0.3f ) * 0.5f + 1.f;
         }
     }
     //////////////////////////////////////////////////////////////////////////

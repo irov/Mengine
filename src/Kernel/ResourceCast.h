@@ -2,6 +2,8 @@
 
 #include "Kernel/Resource.h"
 
+#include "Config/DynamicCast.h"
+
 #if defined(MENGINE_DEBUG)
 #   include "Config/TypeTraits.h"
 #endif
@@ -41,7 +43,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            if( dynamic_cast<typename Detail::reinterpret_resource_cast_void_t<T>::type>(static_cast<T>(_resource)) == nullptr )
+            if( Helper::dynamicCast<typename Detail::reinterpret_resource_cast_void_t<T>::type>( static_cast<T>(_resource) ) == nullptr )
             {
                 throw std::runtime_error( "reinterpret resource cast" );
             }
@@ -61,7 +63,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            if( dynamic_cast<T>(_resource) == nullptr )
+            if( Helper::dynamicCast<T>( _resource ) == nullptr )
             {
                 throw std::runtime_error( "static resource cast" );
             }
@@ -81,7 +83,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            if( dynamic_cast<T>(_resource) == nullptr )
+            if( Helper::dynamicCast<T>( _resource ) == nullptr )
             {
                 throw std::runtime_error( "static resource cast" );
             }
@@ -119,7 +121,7 @@ namespace Mengine
             static_assert(TypeTraits::is_base_of<Resource, T>, "dynamic resource cast use on non 'Resourcable' type");
 #endif
 
-            T t = dynamic_cast<T>(_resource);
+            T t = Helper::dynamicCast<T>( _resource );
 
             return t;
         }
@@ -131,7 +133,7 @@ namespace Mengine
             static_assert(TypeTraits::is_base_of<Resource, T>, "dynamic resource cast use on non 'Resourcable' type");
 #endif
 
-            T t = dynamic_cast<T>(_resource);
+            T t = Helper::dynamicCast<T>( _resource );
 
             return t;
         }

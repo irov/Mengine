@@ -427,7 +427,7 @@ namespace Mengine
         float frameRate = m_resourceVideo->getFrameRate();
         float frameTime = 1000.f / frameRate;
 
-        if( MENGINE_FABSF( m_time - _time ) < frameTime )
+        if( Math::fabsf( m_time - _time ) < frameTime )
         {
             return;
         }

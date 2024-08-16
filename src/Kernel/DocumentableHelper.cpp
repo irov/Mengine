@@ -22,15 +22,15 @@ namespace Mengine
 
             const Char * message = parent->getMessage();
 
-            MENGINE_STRNCAT( _message, message, _capacity );
+            StdString::strncat( _message, message, _capacity );
 
             size_t size = parent->getMessageSize();
 
             Char delim[] = " ==> ";
 
-            MENGINE_STRNCAT( _message, delim, _capacity - size );
+            StdString::strncat( _message, delim, _capacity - size );
 
-            size_t size_delim = MENGINE_STRLEN( delim );
+            size_t size_delim = StdString::strlen( delim );
 
             size_t capacity = Detail::getParentDocumentableMessage( parent, _message, _capacity - size - size_delim );
 
@@ -39,13 +39,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void getDocumentableMessage( const Documentable * _documentable, const Identity * _identity, Char * const _message, size_t _capacity )
         {
-            MENGINE_STRNCPY( _message, "", _capacity );
+            StdString::strncpy( _message, "", _capacity );
 
             const DocumentInterfacePtr & document = _documentable->getDocument();
 
             if( document == nullptr )
             {
-                MENGINE_STRNCAT( _message, "[None Document]", _capacity );
+                StdString::strncat( _message, "[None Document]", _capacity );
 
                 return;
             }
@@ -54,7 +54,7 @@ namespace Mengine
 
             const Char * message = document->getMessage();
 
-            MENGINE_STRNCAT( _message, message, capacity );
+            StdString::strncat( _message, message, capacity );
 
             if( _identity != nullptr )
             {
@@ -64,10 +64,10 @@ namespace Mengine
 
                 Char suffix[] = " Name: ";
 
-                size_t size_suffix = MENGINE_STRLEN( suffix );
+                size_t size_suffix = StdString::strlen( suffix );
 
-                MENGINE_STRNCAT( _message, suffix, _capacity - size );
-                MENGINE_STRNCAT( _message, name.c_str(), _capacity - size - size_suffix );
+                StdString::strncat( _message, suffix, _capacity - size );
+                StdString::strncat( _message, name.c_str(), _capacity - size - size_suffix );
             }
         }
         //////////////////////////////////////////////////////////////////////////

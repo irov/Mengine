@@ -6,14 +6,14 @@
 
 namespace Mengine
 {
-    class SDLApplication
+    class AndroidApplication
     {
     public:
-        SDLApplication();
-        ~SDLApplication();
+        AndroidApplication();
+        ~AndroidApplication();
 
     public:
-        bool bootstrap( int32_t _argc, Char ** const _argv );
+        bool bootstrap( const Mengine::Char * _nativeLibraryDir, int32_t _argc, Char ** const _argv );
 
     public:
         bool initialize();
@@ -30,11 +30,10 @@ namespace Mengine
         void finalizeLoggerService_();
 
     protected:
-        LoggerInterfacePtr m_loggerMessageBox;
         LoggerInterfacePtr m_loggerStdio;
 
-#if defined(MENGINE_WINDOWS_DEBUG)
-        LoggerInterfacePtr m_loggerOutputDebug;
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        void * m_handleLibrary;
 #endif
     };
 }

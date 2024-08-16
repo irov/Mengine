@@ -36,7 +36,7 @@ namespace Mengine
 
         // Capture vendor string
         Char vendor[0x20];
-        MENGINE_MEMSET( vendor, 0, sizeof( vendor ) );
+        StdString::memset( vendor, 0, sizeof( vendor ) );
         *reinterpret_cast<int32_t *>(vendor) = m_data[0][1];
         *reinterpret_cast<int32_t *>(vendor + 4) = m_data[0][3];
         *reinterpret_cast<int32_t *>(vendor + 8) = m_data[0][2];
@@ -70,7 +70,7 @@ namespace Mengine
         m_nExIds = cpui[0];
 
         Char brand[0x40];
-        MENGINE_MEMSET( brand, 0, sizeof( brand ) );
+        StdString::memset( brand, 0, sizeof( brand ) );
 
         for( int32_t i = 0x80000000; i <= m_nExIds; ++i )
         {
@@ -88,9 +88,9 @@ namespace Mengine
         // Interpret CPU brand string if reported
         if( m_nExIds >= 0x80000004 )
         {
-            MENGINE_MEMCPY( brand, m_extdata[2].data(), sizeof( cpui ) );
-            MENGINE_MEMCPY( brand + 16, m_extdata[3].data(), sizeof( cpui ) );
-            MENGINE_MEMCPY( brand + 32, m_extdata[4].data(), sizeof( cpui ) );
+            StdString::memcpy( brand, m_extdata[2].data(), sizeof( cpui ) );
+            StdString::memcpy( brand + 16, m_extdata[3].data(), sizeof( cpui ) );
+            StdString::memcpy( brand + 32, m_extdata[4].data(), sizeof( cpui ) );
             m_brand = brand;
         }
     }

@@ -1,6 +1,9 @@
 #include "OpenALSoundBufferBase.h"
 
+#include "Interface/SoundSystemInterface.h"
 #include "Interface/SoundCodecInterface.h"
+
+#include "OpenALSoundSystemExtensionInterface.h"
 
 #include "Kernel/Assertion.h"
 
@@ -8,8 +11,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferBase::OpenALSoundBufferBase()
-        : m_soundSystem( nullptr )
-        , m_format( 0 )
+        : m_format( 0 )
         , m_frequency( 0 )
         , m_channels( 0 )
         , m_length( 0.f )
@@ -19,16 +21,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferBase::~OpenALSoundBufferBase()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferBase::setSoundSystem( OpenALSoundSystem * _soundSystem )
-    {
-        m_soundSystem = _soundSystem;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    OpenALSoundSystem * OpenALSoundBufferBase::getSoundSystem() const
-    {
-        return m_soundSystem;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferBase::acquireSoundBuffer()
@@ -81,6 +73,24 @@ namespace Mengine
     float OpenALSoundBufferBase::getTimeTotal() const
     {
         return m_length;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ALuint OpenALSoundBufferBase::genBufferId()
+    {
+        OpenALSoundSystemExtensionInterface * soundSystemExtension = SOUND_SYSTEM()
+            ->getUnknown();
+
+        ALuint bufferId = soundSystemExtension->genBufferId();
+
+        return bufferId;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenALSoundBufferBase::releaseBufferId( ALuint _bufferId )
+    {
+        OpenALSoundSystemExtensionInterface * soundSystemExtension = SOUND_SYSTEM()
+            ->getUnknown();
+
+        soundSystemExtension->releaseBufferId( _bufferId );
     }
     //////////////////////////////////////////////////////////////////////////
 }

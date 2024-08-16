@@ -14,7 +14,7 @@ namespace Mengine
         {
             const Char * filePath_str = _filePath.c_str();
 
-            if( MENGINE_STRCHR( filePath_str, ' ' ) != nullptr )
+            if( StdString::strchr( filePath_str, ' ' ) != nullptr )
             {
                 Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
                 MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "filepath '%s' should not contain spaces"

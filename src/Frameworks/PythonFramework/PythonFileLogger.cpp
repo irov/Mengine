@@ -68,7 +68,7 @@ namespace Mengine
             m_stream->write( " ", 1 );
         }
 
-        size_t len = MENGINE_STRLEN( _msg );
+        size_t len = StdString::strlen( _msg );
 
         m_stream->write( _msg, len );
         m_stream->write( "\n", MENGINE_STATIC_STRING_LENGTH( "\n" ) );

@@ -59,7 +59,6 @@
 #include "Engine/ResourceTestPick.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceShape.h"
-#include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/HotSpotCircle.h"
 #include "Engine/HotSpotImage.h"
@@ -135,6 +134,7 @@
 #include "Config/StdString.h"
 #include "Config/Lambda.h"
 #include "Config/StdMath.h"
+#include "Config/DynamicCast.h"
 
 #include "math/angle.h"
 #include "math/vec4.h"
@@ -183,6 +183,7 @@ namespace Mengine
                 m_factoryPyGlobalMouseHandlerButtonBegins = Helper::makeFactoryPool<PyGlobalMouseHandlerButtonBegin, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalKeyHandler = Helper::makeFactoryPool<PyGlobalKeyHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalTextHandler = Helper::makeFactoryPool<PyGlobalTextHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryPyGlobalAccelerometerHandler = Helper::makeFactoryPool<PyGlobalAccelerometerHandler, 8>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyInputMousePositionProvider = Helper::makeFactoryPool<PyInputMousePositionProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
                 m_creatorAffectorNodeFollowerLocalAlpha = Helper::makeFactorableUnique<AffectorNodeFollowerCreator<Node, float>>( MENGINE_DOCUMENT_FACTORABLE );
@@ -240,6 +241,7 @@ namespace Mengine
                 m_factoryPyGlobalMouseHandlerButtonBegins = nullptr;
                 m_factoryPyGlobalKeyHandler = nullptr;
                 m_factoryPyGlobalTextHandler = nullptr;
+                m_factoryPyGlobalAccelerometerHandler = nullptr;
                 m_factoryPyInputMousePositionProvider = nullptr;
             }
 
@@ -1533,7 +1535,7 @@ namespace Mengine
 
                 ResourceCook cook;
                 cook.type = STRINGIZE_STRING_LOCAL( "ResourceImageDefault" );
-                
+
                 ResourceImageDefaultPtr resource = RESOURCE_SERVICE()
                     ->createResource( cook, MENGINE_DOCUMENT_PYBIND );
 
@@ -1574,7 +1576,7 @@ namespace Mengine
             }
             //////////////////////////////////////////////////////////////////////////
             ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const Color & _color, const mt::vec2f & _maxSize )
-            {                
+            {
                 ResourceCook cook;
                 cook.type = STRINGIZE_STRING_LOCAL( "ResourceImageSolid" );
 
@@ -1655,7 +1657,7 @@ namespace Mengine
 
                 mt::vec2f mp = pos_screen - cp;
 
-                Helper::pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f );
+                Helper::pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f, 0.f );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_pushMouseButtonEvent( ETouchCode _touchId, const mt::vec2f & _pos, EMouseButtonCode _button, bool _isDown )
@@ -1708,12 +1710,6 @@ namespace Mengine
                     ->getDeviceLanguage( deviceLanguage );
 
                 return _kernel->string_from_char( deviceLanguage );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_sleep( uint32_t _time )
-            {
-                PLATFORM_SERVICE()
-                    ->sleep( _time );
             }
             //////////////////////////////////////////////////////////////////////////
             const RenderCameraOrthogonalPtr & s_getDefaultSceneRenderCamera2D()
@@ -2197,7 +2193,7 @@ namespace Mengine
 
                     float angle_length = mt::angle_length( isometric_angle, dir_angle );
 
-                    float abs_angle_length = MENGINE_FABSF( angle_length );
+                    float abs_angle_length = Math::fabsf( angle_length );
 
                     if( abs_angle_length < min_angle )
                     {
@@ -2270,7 +2266,7 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
-                MENGINE_STRCAT( projectName, "/" );
+                StdString::strcat( projectName, "/" );
 
                 if( PLATFORM_SERVICE()
                     ->updateDesktopWallpaper( projectName, _filePath.c_str() ) == false )
@@ -2297,7 +2293,7 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
-                MENGINE_STRCAT( projectName, "/" );
+                StdString::strcat( projectName, "/" );
 
                 const void * memoryBuffer = memory->getBuffer();
                 size_t memorySize = memory->getSize();
@@ -2327,7 +2323,7 @@ namespace Mengine
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
-                MENGINE_STRCAT( projectName, "/" );
+                StdString::strcat( projectName, "/" );
 
                 const void * memoryBuffer = memory->getBuffer();
                 size_t memorySize = memory->getSize();
@@ -2601,7 +2597,7 @@ namespace Mengine
 
                                 float cv_a = cv.getA();
 
-                                float pos_distance = MENGINE_SQRTF( pos_sqrdistance );
+                                float pos_distance = Math::sqrtf( pos_sqrdistance );
 
                                 float a0 = (pos_distance - radius) / penumbra;
 
@@ -3186,7 +3182,7 @@ namespace Mengine
 
                 while( node_iterator != nullptr )
                 {
-                    Scene * node_scene = dynamic_cast<Scene *>(node_iterator);
+                    Scene * node_scene = Helper::dynamicCast<Scene *>( node_iterator );
 
                     if( node_scene != nullptr )
                     {
@@ -3456,6 +3452,16 @@ namespace Mengine
                 }
 
                 bool handleTextEvent( const InputTextEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    //Empty
+
+                    return false;
+                }
+
+            protected:
+                bool handleAccelerometerEvent( const InputAccelerometerEvent & _event ) override
                 {
                     MENGINE_UNUSED( _event );
 
@@ -3933,6 +3939,48 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
+            class PyGlobalAccelerometerHandler
+                : public PyGlobalBaseHandler
+            {
+                DECLARE_FACTORABLE( PyGlobalAccelerometerHandler );
+
+            protected:
+                bool handleAccelerometerEvent( const InputAccelerometerEvent & _event ) override
+                {
+                    pybind::object py_result = m_cb.call_args( _event, m_args );
+
+                    if( py_result.is_none() == false )
+                    {
+                        LOGGER_ERROR( "'%s' return value '%s' type '%s' not None"
+                            , m_cb.repr().c_str()
+                            , py_result.repr().c_str()
+                            , py_result.repr_type().c_str()
+                        );
+                    }
+
+                    return false;
+                }
+            };
+            //////////////////////////////////////////////////////////////////////////
+            FactoryInterfacePtr m_factoryPyGlobalAccelerometerHandler;
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_addAccelerometerHandler( const pybind::object & _cb, const pybind::args & _args )
+            {
+                const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                    ->getGlobalInputHandler();
+
+                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem );
+
+                PyGlobalBaseHandlerPtr handler = m_factoryPyGlobalAccelerometerHandler
+                    ->createObject( MENGINE_DOCUMENT_PYBIND );
+
+                handler->initialize( _cb, _args );
+
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
             bool s_removeGlobalHandler( UniqueId _id )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
@@ -4385,6 +4433,7 @@ namespace Mengine
         pybind::def_functor_args( _kernel, "addMouseWheelHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseWheelHandler );
         pybind::def_functor_args( _kernel, "addKeyHandler", nodeScriptMethod, &EngineScriptMethod::s_addKeyHandler );
         pybind::def_functor_args( _kernel, "addTextHandler", nodeScriptMethod, &EngineScriptMethod::s_addTextHandler );
+        pybind::def_functor_args( _kernel, "addAccelerometerHandler", nodeScriptMethod, &EngineScriptMethod::s_addAccelerometerHandler );
 
         pybind::def_functor( _kernel, "removeGlobalHandler", nodeScriptMethod, &EngineScriptMethod::s_removeGlobalHandler );
         pybind::def_functor( _kernel, "enableGlobalHandler", nodeScriptMethod, &EngineScriptMethod::s_enableGlobalHandler );
@@ -4448,8 +4497,6 @@ namespace Mengine
 
         pybind::def_functor_kernel( _kernel, "getDeviceLanguage", nodeScriptMethod, &EngineScriptMethod::s_getDeviceLanguage );
 
-        pybind::def_functor( _kernel, "sleep", nodeScriptMethod, &EngineScriptMethod::s_sleep );
-
         pybind::def_functor( _kernel, "getDefaultSceneRenderCamera2D", nodeScriptMethod, &EngineScriptMethod::s_getDefaultSceneRenderCamera2D );
         pybind::def_functor( _kernel, "getDefaultRenderViewport2D", nodeScriptMethod, &EngineScriptMethod::s_getDefaultRenderViewport2D );
         pybind::def_functor( _kernel, "getDefaultArrowRenderCamera2D", nodeScriptMethod, &EngineScriptMethod::s_getDefaultArrowRenderCamera2D );
@@ -4478,7 +4525,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterString", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterString );
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterInteger", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterInteger );
         pybind::def_functor( _kernel, "analyticsAddGlobalContextParameterDouble", nodeScriptMethod, &EngineScriptMethod::s_addAnalyticsGlobalContextParameterDouble );
-        pybind::def_functor_deprecated( _kernel, "analyticsCustomEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEvent, "use analyticsEvent");
+        pybind::def_functor_deprecated( _kernel, "analyticsCustomEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEvent, "use analyticsEvent" );
         pybind::def_functor( _kernel, "analyticsEvent", nodeScriptMethod, &EngineScriptMethod::s_analyticsEvent );
         pybind::def_functor( _kernel, "analyticsScreenView", nodeScriptMethod, &EngineScriptMethod::s_analyticsScreenView );
         pybind::def_functor( _kernel, "analyticsEventFlush", nodeScriptMethod, &EngineScriptMethod::s_analyticsEventFlush );
@@ -4545,6 +4592,7 @@ namespace Mengine
             .def_member( "special", &InputKeyEvent::special )
             .def_member( "x", &InputKeyEvent::x )
             .def_member( "y", &InputKeyEvent::y )
+            .def_member( "pressure", &InputKeyEvent::pressure )
             .def_member( "code", &InputKeyEvent::code )
             .def_member( "isDown", &InputKeyEvent::isDown )
             .def_member( "isRepeat", &InputKeyEvent::isRepeat )
@@ -4554,8 +4602,16 @@ namespace Mengine
             .def_member( "special", &InputTextEvent::special )
             .def_member( "x", &InputTextEvent::x )
             .def_member( "y", &InputTextEvent::y )
+            .def_member( "pressure", &InputTextEvent::pressure )
             .def_property_static( "symbol", &EngineScriptMethod::s_InputTextEvent_getSymbol, nullptr )
             .def_property_static( "text", &EngineScriptMethod::s_InputTextEvent_getText, nullptr )
+            ;
+
+        pybind::struct_<InputAccelerometerEvent>( _kernel, "InputAccelerometerEvent" )
+            .def_member( "special", &InputAccelerometerEvent::special )
+            .def_member( "dx", &InputAccelerometerEvent::dx )
+            .def_member( "dy", &InputAccelerometerEvent::dy )
+            .def_member( "dz", &InputAccelerometerEvent::dz )
             ;
 
         pybind::struct_<InputMouseButtonEvent>( _kernel, "InputMouseButtonEvent" )
@@ -4563,6 +4619,7 @@ namespace Mengine
             .def_member( "touchId", &InputMouseButtonEvent::touchId )
             .def_member( "x", &InputMouseButtonEvent::x )
             .def_member( "y", &InputMouseButtonEvent::y )
+            .def_member( "pressure", &InputMouseButtonEvent::pressure )
             .def_member( "button", &InputMouseButtonEvent::button )
             .def_member( "isDown", &InputMouseButtonEvent::isDown )
             .def_member( "isPressed", &InputMouseButtonEvent::isPressed )
@@ -4572,6 +4629,7 @@ namespace Mengine
             .def_member( "special", &InputMouseWheelEvent::special )
             .def_member( "x", &InputMouseWheelEvent::x )
             .def_member( "y", &InputMouseWheelEvent::y )
+            .def_member( "pressure", &InputMouseWheelEvent::pressure )
             .def_member( "wheel", &InputMouseWheelEvent::wheel )
             .def_member( "scroll", &InputMouseWheelEvent::scroll )
             ;
@@ -4581,9 +4639,10 @@ namespace Mengine
             .def_member( "touchId", &InputMouseMoveEvent::touchId )
             .def_member( "x", &InputMouseMoveEvent::x )
             .def_member( "y", &InputMouseMoveEvent::y )
+            .def_member( "pressure", &InputMouseMoveEvent::pressure )
             .def_member( "dx", &InputMouseMoveEvent::dx )
             .def_member( "dy", &InputMouseMoveEvent::dy )
-            .def_member( "pressure", &InputMouseMoveEvent::pressure )
+            .def_member( "dpressure", &InputMouseMoveEvent::dpressure )
             ;
 
         pybind::struct_<InputMouseEnterEvent>( _kernel, "InputMouseEnterEvent" )

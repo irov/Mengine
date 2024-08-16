@@ -97,8 +97,6 @@ namespace Mengine
         bool getNoFullscreen() const override;
         bool getAlwaysFullscreen() const override;
 
-        bool setProcessDPIAware() override;
-
         bool isDebuggerPresent() const override;
         void debugBreak() override;
 

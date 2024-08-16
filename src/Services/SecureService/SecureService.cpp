@@ -35,7 +35,7 @@ namespace Mengine
     {
         const Char * secure = GET_OPTION_VALUE( "secure", MENGINE_PP_STRINGIZE( MENGINE_SECURE_VALUE ) );
 
-        size_t secure_len = MENGINE_STRLEN( secure );
+        size_t secure_len = StdString::strlen( secure );
 
         Helper::makeSHA1( secure, secure_len, reinterpret_cast<uint8_t *>(m_secureHash), sizeof( m_secureHash ) );
 

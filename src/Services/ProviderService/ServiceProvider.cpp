@@ -75,9 +75,9 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( service->getServiceId() ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
+        MENGINE_ASSERTION_FATAL( StdString::strlen( service->getServiceId() ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
             , service->getServiceId()
-            , MENGINE_STRLEN( service->getServiceId() )
+            , StdString::strlen( service->getServiceId() )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
@@ -334,9 +334,9 @@ namespace Mengine
     void ServiceProvider::dependencyService( const Char * _name, const Char * _dependency )
     {
         MENGINE_ASSERTION_FATAL( m_dependenciesCount < MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT, "overflow dependency count" );
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
             , _name
-            , MENGINE_STRLEN( _name )
+            , StdString::strlen( _name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
@@ -351,9 +351,9 @@ namespace Mengine
     bool ServiceProvider::waitService( const Char * _owner, const Char * _name, const LambdaWaitService & _lambda )
     {
         MENGINE_ASSERTION_FATAL( m_waitsCount < MENGINE_SERVICE_PROVIDER_MAX_WAIT, "overflow wait count" );
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
             , _name
-            , MENGINE_STRLEN( _name )
+            , StdString::strlen( _name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
@@ -391,9 +391,9 @@ namespace Mengine
     bool ServiceProvider::leaveService( const Char * _owner, const Char * _name, const LambdaLeaveService & _lambda )
     {
         MENGINE_ASSERTION_FATAL( m_leaveCount < MENGINE_SERVICE_PROVIDER_LEAVE_COUNT, "overflow leave count" );
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%zu' >= '%u'"
             , _name
-            , MENGINE_STRLEN( _name )
+            , StdString::strlen( _name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
@@ -579,7 +579,7 @@ namespace Mengine
     const bool * ServiceProvider::isExistServiceProvider( const Char * _name )
     {
 #if defined(MENGINE_DEBUG)
-        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || MENGINE_STRCMP( m_initializeServiceName, _name ) != 0, "service '%s' already initialize"
+        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || StdString::strcmp( m_initializeServiceName, _name ) != 0, "service '%s' already initialize"
             , _name
         );
 #endif
@@ -614,7 +614,7 @@ namespace Mengine
     const bool * ServiceProvider::isAvailableServiceProvider( const Char * _name )
     {
 #if defined(MENGINE_DEBUG)
-        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || MENGINE_STRCMP( m_initializeServiceName, _name ) != 0, "service '%s' in initialize process"
+        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || StdString::strcmp( m_initializeServiceName, _name ) != 0, "service '%s' in initialize process"
             , _name
         );
 #endif
@@ -649,7 +649,7 @@ namespace Mengine
     const bool * ServiceProvider::isInitializeServiceProvider( const Char * _name )
     {
 #if defined(MENGINE_DEBUG)
-        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || MENGINE_STRCMP( m_initializeServiceName, _name ) != 0, "service '%s' in initialize process"
+        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || StdString::strcmp( m_initializeServiceName, _name ) != 0, "service '%s' in initialize process"
             , _name
         );
 #endif

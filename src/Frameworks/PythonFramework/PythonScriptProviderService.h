@@ -23,6 +23,9 @@ namespace Mengine
         pybind::kernel_interface * getKernel() const override;
 
     protected:
+        void updateScriptThread() override;
+
+    protected:
         ThreadId getScriptThreadId() const override;
 
     protected:

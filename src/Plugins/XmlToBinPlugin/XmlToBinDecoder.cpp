@@ -34,7 +34,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _user );
 
-            uint32_t utf8_size = (uint32_t)MENGINE_STRLEN( _value );
+            uint32_t utf8_size = (uint32_t)StdString::strlen( _value );
 
             _metabuf->writeSize( utf8_size );
             _metabuf->writeCount( _value, utf8_size );
@@ -46,7 +46,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _user );
 
-            uint32_t utf8_size = (uint32_t)MENGINE_STRLEN( _value );
+            uint32_t utf8_size = (uint32_t)StdString::strlen( _value );
 
             _metabuf->writeSize( utf8_size );
             _metabuf->writeCount( _value, utf8_size );
@@ -58,7 +58,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _user );
 
-            size_t len = MENGINE_STRLEN( _value );
+            size_t len = StdString::strlen( _value );
             const char * text_it = _value;
             const char * text_end = _value + len;
 

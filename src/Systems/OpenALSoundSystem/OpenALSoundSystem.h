@@ -3,18 +3,24 @@
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/FactoryInterface.h"
 
+#include "OpenALSoundSystemExtensionInterface.h"
+
 #include "OpenALSoundIncluder.h"
 #include "OpenALSoundBufferBase.h"
 #include "OpenALSoundBufferStream.h"
 #include "OpenALSoundSource.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/Unknowable.h"
 
 namespace Mengine
 {    
     class OpenALSoundSystem
         : public ServiceBase<SoundSystemInterface>
+        , public OpenALSoundSystemExtensionInterface
     {
+        DECLARE_UNKNOWABLE();
+
     public:
         OpenALSoundSystem();
         ~OpenALSoundSystem() override;
@@ -37,11 +43,11 @@ namespace Mengine
         SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        ALuint genSourceId();
-        void releaseSourceId( ALuint _sourceId );
+        ALuint genSourceId() override;
+        void releaseSourceId( ALuint _sourceId ) override;
 
-        ALuint genBufferId();
-        void releaseBufferId( ALuint _bufferId );
+        ALuint genBufferId() override;
+        void releaseBufferId( ALuint _bufferId ) override;
 
     protected:
         void onDestroyOpenALSoundSource_( OpenALSoundSource * _soundSource );

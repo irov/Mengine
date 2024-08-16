@@ -2,6 +2,8 @@
 
 #include "Kernel/Node.h"
 
+#include "Config/DynamicCast.h"
+
 #if defined(MENGINE_DEBUG)
 #   include "Config/TypeTraits.h"
 #endif
@@ -42,7 +44,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            if( dynamic_cast<typename Detail::reinterpret_node_cast_void_t<T>::type>(static_cast<T>(_node)) == nullptr )
+            if( Helper::dynamicCast<typename Detail::reinterpret_node_cast_void_t<T>::type>( static_cast<T>(_node) ) == nullptr )
             {
                 throw std::runtime_error( "reinterpret node cast" );
             }
@@ -62,7 +64,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            if( dynamic_cast<T>(_node) == nullptr )
+            if( Helper::dynamicCast<T>( _node ) == nullptr )
             {
                 throw std::runtime_error( "static node cast" );
             }
@@ -82,7 +84,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            if( dynamic_cast<T>(_node) == nullptr )
+            if( Helper::dynamicCast<T>( _node ) == nullptr )
             {
                 throw std::runtime_error( "static node cast" );
             }
@@ -122,7 +124,7 @@ namespace Mengine
             static_assert(TypeTraits::is_base_of<Node, T>, "dynamic node cast use on non 'Nodeable' type");
 #endif
 
-            T t = dynamic_cast<T>(_node);
+            T t = Helper::dynamicCast<T>( _node );
 
             return t;
         }
@@ -134,7 +136,7 @@ namespace Mengine
             static_assert(TypeTraits::is_base_of<Node, T>, "dynamic node cast use on non 'Nodeable' type");
 #endif
 
-            T t = dynamic_cast<T>(_node);
+            T t = Helper::dynamicCast<T>( _node );
 
             return t;
         }

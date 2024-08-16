@@ -233,12 +233,12 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( uid ) == 20, "account '%s' invalid uid '%s'"
+        MENGINE_ASSERTION_FATAL( StdString::strlen( uid ) == 20, "account '%s' invalid uid '%s'"
             , m_id.c_str()
             , uid
         );
 
-        MENGINE_MEMCPY( m_uid.data, uid, 20 );
+        StdString::memcpy( m_uid.data, uid, 20 );
 
         LOGGER_INFO( "account", "load account '%s' projectVersion [%u] uid '%.20s' settings"
             , m_id.c_str()

@@ -1,1 +1,0 @@
-@call %~dp0build_depends_android_sdl.bat Release

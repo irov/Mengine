@@ -78,18 +78,6 @@ namespace Mengine
             return 0;
         }
         //////////////////////////////////////////////////////////////////////////
-        GLenum toGLShadeMode( EShadeType _type )
-        {
-            switch( _type )
-            {
-            case SHT_FLAT: return GL_FLAT;
-            case SHT_GOURAUD: return GL_SMOOTH;
-            case SHT_PHONG: return GL_SMOOTH;
-            default:;
-            }
-            return 0;
-        }
-        //////////////////////////////////////////////////////////////////////////
         GLenum toGLMagFilter( ETextureFilter _magFilter )
         {
             switch( _magFilter )
@@ -269,48 +257,6 @@ namespace Mengine
                 return GL_CLAMP_TO_EDGE;
             case TAM_WRAP:
                 return GL_REPEAT;
-            default:;
-            }
-
-            return 0;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        GLenum toGLTextureArg( ETextureArgument _arg )
-        {
-            switch( _arg )
-            {
-            case TARG_CURRENT:
-                return GL_PREVIOUS;
-            case TARG_DIFFUSE:
-                return GL_PRIMARY_COLOR;
-            case TARG_SPECULAR:
-                return GL_PRIMARY_COLOR;
-            case TARG_TFACTOR:
-                return GL_CONSTANT;
-            case TARG_TEXTURE:
-                return GL_TEXTURE;
-            default:;
-            }
-
-            return 0;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        GLenum toGLTextureOp( ETextureOp _op )
-        {
-            switch( _op )
-            {
-            case TOP_DISABLE:
-                return GL_REPLACE;
-            case TOP_SELECTARG1:
-                return GL_REPLACE;
-            case TOP_SELECTARG2:
-                return GL_REPLACE;
-            case TOP_MODULATE:
-                return GL_MODULATE;
-            case TOP_ADD:
-                return GL_ADD;
-            case TOP_SUBTRACT:
-                return GL_SUBTRACT;
             default:;
             }
 

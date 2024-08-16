@@ -14,7 +14,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _capacity );
 
-            size_t buffer_size = MENGINE_WCSLEN( _buffer );
+            size_t buffer_size = StdString::wcslen( _buffer );
 
             MENGINE_ASSERTION_FATAL( buffer_size < _capacity, "static wstring buffer '%ls' [size %zu] > [capacity %zu]"
                 , _buffer
@@ -61,7 +61,7 @@ namespace Mengine
 
             if( value_size == MENGINE_UNKNOWN_SIZE )
             {
-                value_size = MENGINE_WCSLEN( _value );
+                value_size = StdString::wcslen( _value );
             }
 
             MENGINE_ASSERTION_FATAL( value_size < _capacity, "static wstring buffer assign '%ls' [size %zu]"
@@ -74,7 +74,7 @@ namespace Mengine
                 value_size = _capacity - 1;
             }
 
-            MENGINE_WCSNCPY( _buffer, _value, value_size );
+            StdString::wcsncpy( _buffer, _value, value_size );
             _buffer[value_size] = L'\0';
         }
         //////////////////////////////////////////////////////////////////////////
@@ -86,10 +86,10 @@ namespace Mengine
 
             if( value_size == MENGINE_UNKNOWN_SIZE )
             {
-                value_size = MENGINE_WCSLEN( _value );
+                value_size = StdString::wcslen( _value );
             }
 
-            size_t buffer_size = MENGINE_WCSLEN( _buffer );
+            size_t buffer_size = StdString::wcslen( _buffer );
 
             MENGINE_ASSERTION_FATAL( buffer_size + value_size < _capacity, "static string buffer '%ls' [size %zu] append '%ls' [size %zu] > [capacity %zu]"
                 , _buffer
@@ -104,7 +104,7 @@ namespace Mengine
                 value_size = _capacity - 1;
             }
 
-            MENGINE_WCSNCAT( _buffer, _value, value_size );
+            StdString::wcsncat( _buffer, _value, value_size );
             _buffer[buffer_size + value_size] = L'\0';
         }
         //////////////////////////////////////////////////////////////////////////
@@ -112,14 +112,14 @@ namespace Mengine
         {
             MENGINE_UNUSED( _capacity );
 
-            MENGINE_WCSCPY( _value, _buffer );
+            StdString::wcscpy( _value, _buffer );
         }
         //////////////////////////////////////////////////////////////////////////
         int32_t staticWStringCompare( const WChar * _buffer, size_t _capacity, const WChar * _value )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _value );
 
-            int32_t result = MENGINE_WCSNCMP( _buffer, _value, _capacity );
+            int32_t result = StdString::wcsncmp( _buffer, _value, _capacity );
 
             return result;
         }

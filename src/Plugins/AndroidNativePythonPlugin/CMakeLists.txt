@@ -17,6 +17,9 @@ src
     AndroidNativePythonScriptEmbedding.h
     AndroidNativePythonScriptEmbedding.cpp
     
+    PythonAndroidSemaphoreListener.h
+    PythonAndroidSemaphoreListener.cpp
+    
     AndroidNativePythonFunctor.h
     AndroidNativePythonFunctor.cpp
     AndroidNativePythonFunctorVoid.h

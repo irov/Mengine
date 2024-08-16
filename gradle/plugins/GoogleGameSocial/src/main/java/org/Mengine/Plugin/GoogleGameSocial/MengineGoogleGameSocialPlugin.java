@@ -71,10 +71,9 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialShowAchievementSuccess");
 
-                    MengineActivity activity1 = MengineGoogleGameSocialPlugin.this.getMengineActivity();
 
                     try {
-                        activity1.startActivityForResult(intent, MengineGoogleGameSocialPlugin.RC_ACHIEVEMENT_UI);
+                        activity.startActivityForResult(intent, MengineGoogleGameSocialPlugin.RC_ACHIEVEMENT_UI);
                     } catch (ActivityNotFoundException e) {
                         MengineGoogleGameSocialPlugin.this.logError("[ERROR] showAchievements catch ActivityNotFoundException: %s"
                             , e.getMessage()

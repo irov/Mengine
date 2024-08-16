@@ -2,15 +2,14 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 
-#include "Environment/Android/AndroidSemaphoreListenerInterface.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
+#include "PythonAndroidSemaphoreListener.h"
 #include "AndroidNativePythonInterface.h"
 #include "AndroidNativePythonFunctorVoid.h"
 #include "AndroidNativePythonFunctorBoolean.h"
 
 #include "Kernel/ScriptablePrototypeGenerator.h"
-#include "Kernel/ThreadHelper.h"
 
 namespace Mengine
 {
@@ -79,31 +78,6 @@ namespace Mengine
             return ANDROID_NATIVEPYTHON_SERVICE()
                 ->androidObjectMethod( _plugin, _method, _args );
         }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonAndroidSemaphoreListener
-            : public AndroidSemaphoreListenerInterface
-        {
-        public:
-            PythonAndroidSemaphoreListener( const pybind::object & _cb, const pybind::args & _args )
-                : m_cb( _cb )
-                , m_args( _args )
-            {
-            }
-
-        protected:
-            void invoke() override
-            {
-                Helper::dispatchMainThreadEvent([this]() {
-                    m_cb.call_args(m_args);
-                });
-            }
-
-        protected:
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PythonAndroidSemaphoreListener, AndroidSemaphoreListenerInterface> PythonAndroidSemaphoreListenerPtr;
         //////////////////////////////////////////////////////////////////////////
         void AndroidNativePythonService_waitSemaphore( const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
         {

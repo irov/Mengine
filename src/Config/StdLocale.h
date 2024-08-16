@@ -2,4 +2,4 @@
 
 #include "Config/Config.h"
 
-#include <locale.h>
+#include <clocale>

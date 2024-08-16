@@ -226,7 +226,7 @@ namespace Mengine
             }
 
             const Char * type = typeAttrib.value();
-            if( MENGINE_STRCMP( type, _propType ) != 0 )
+            if( StdString::strcmp( type, _propType ) != 0 )
             {
                 return false;
             }

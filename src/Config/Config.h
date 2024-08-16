@@ -129,6 +129,25 @@
 #   define MENGINE_SETJMP_SUPPORTED
 #endif
 
+#ifndef MENGINE_RTTI
+#   if defined(MENGINE_COMPILER_GCC) || defined(MENGINE_COMPILER_CLANG)
+#       ifdef __GXX_RTTI
+#           define MENGINE_RTTI 1
+#       else
+#           define MENGINE_RTTI 0
+#       endif
+#   elif defined(MENGINE_COMPILER_MSVC)
+#       ifdef _CPPRTTI
+#           define MENGINE_RTTI 1
+#       else
+#           define MENGINE_RTTI 0
+#       endif
+#   else
+#       error "undefine MENGINE_RTTI for this compiler"
+#   endif
+#endif
+
+
 #if defined(MENGINE_DEBUG)
 #   if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_TOOLCHAIN_MINGW)
 #       define MENGINE_WINDOWS_DEBUG
@@ -361,18 +380,6 @@
 #define MENGINE_CPVOID_OFFSET(P, O) (reinterpret_cast<const unsigned char *>(P) + (O))
 #endif
 
-#ifndef MENGINE_FOURCC
-#define MENGINE_FOURCC(c0, c1, c2, c3) (((c0) << 0) | ((c1) << 8) | ((c2) << 16) | ((c3) << 24))
-#endif
-
-#ifndef MENGINE_MAX
-#define MENGINE_MAX(A, B) ((A) > (B) ? (A) : (B))
-#endif
-
-#ifndef MENGINE_MIN
-#define MENGINE_MIN(A, B) ((A) < (B) ? (A) : (B))
-#endif
-
 #ifndef MENGINE_MAX_ALIGNED_POINTER_VALUE
 #   if defined(MENGINE_ENVIRONMENT_ARCHITECTURE_X86)
 #       define MENGINE_MAX_ALIGNED_POINTER_VALUE (0xfffffffc)
@@ -383,16 +390,8 @@
 #   endif
 #endif
 
-#ifndef MENGINE_POWER2
-#define MENGINE_POWER2(N) (1 << N)
-#endif
-
 #ifndef MENGINE_STATIC_STRING_LENGTH
 #define MENGINE_STATIC_STRING_LENGTH(S) (sizeof( (S) ) - 1)
-#endif
-
-#ifndef MENGINE_CLAMP
-#define MENGINE_CLAMP(A, B, C) MENGINE_MAX( A, MENGINE_MIN(B, C) )
 #endif
 
 #ifndef MENGINE_STRING_EMPTY
@@ -407,4 +406,28 @@
 #ifndef MENGINE_PP_CONCATENATE
 #define MENGINE_PP_CONCATENATE_I(X, Y) X ## Y
 #define MENGINE_PP_CONCATENATE(X, Y) MENGINE_PP_CONCATENATE_I(X, Y)
+#endif
+
+#ifndef MENGINE_FOURCC
+#define MENGINE_FOURCC(c0, c1, c2, c3) (((c0) << 0) | ((c1) << 8) | ((c2) << 16) | ((c3) << 24))
+#endif
+
+#ifndef MENGINE_POWER2
+#define MENGINE_POWER2(N) (1 << N)
+#endif
+
+#ifndef MENGINE_CLAMP
+#define MENGINE_CLAMP(A, B, C) MENGINE_MAX( A, MENGINE_MIN(B, C) )
+#endif
+
+#ifndef MENGINE_MAX
+#define MENGINE_MAX(A, B) ((A) > (B) ? (A) : (B))
+#endif
+
+#ifndef MENGINE_MIN
+#define MENGINE_MIN(A, B) ((A) < (B) ? (A) : (B))
+#endif
+
+#ifndef MENGINE_MIN_MAX
+#define MENGINE_MIN_MAX(A, B, C) MENGINE_MIN(A, MENGINE_MAX(B, C))
 #endif

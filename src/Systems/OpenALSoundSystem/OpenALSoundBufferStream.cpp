@@ -3,7 +3,6 @@
 #include "Interface/SoundCodecInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 
-#include "OpenALSoundSystem.h"
 #include "OpenALSoundErrorHelper.h"
 
 #include "Kernel/ThreadMutexScope.h"
@@ -84,7 +83,7 @@ namespace Mengine
 
             m_alBuffersId[i] = 0;
 
-            m_soundSystem->releaseBufferId( id );
+            this->releaseBufferId( id );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -92,7 +91,7 @@ namespace Mengine
     {
         for( uint32_t i = 0; i != MENGINE_OPENAL_STREAM_BUFFER_COUNT; ++i )
         {
-            ALuint id = m_soundSystem->genBufferId();
+            ALuint id = this->genBufferId();
 
             if( id == 0 )
             {
@@ -169,14 +168,15 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::playSource( ALuint _source, bool _looped, float _pos )
+    bool OpenALSoundBufferStream::playSource( ALuint _sourceId, bool _looped, float _pos )
     {
-        m_sourceId = _source;
+        m_sourceId = _sourceId;
         m_looped = _looped;
 
         if( _pos > m_length )
         {
-            LOGGER_ASSERTION( "pos %f > length %f"
+            LOGGER_ASSERTION( "source: %u pos %f > length %f"
+                , m_sourceId
                 , _pos
                 , m_length
             );
@@ -187,14 +187,26 @@ namespace Mengine
         ALint state = 0;
         MENGINE_OPENAL_CALL( alGetSourcei, (m_sourceId, AL_SOURCE_STATE, &state) );
 
-        if( state != AL_STOPPED && state != AL_INITIAL )
+        switch( state )
         {
-            LOGGER_ASSERTION( "source [%u] invalid state [%u]"
-                , m_sourceId
-                , state
-            );
+        case AL_INITIAL:
+            {
+                //Empty
+            }break;
+        case AL_STOPPED:
+            {
+                //Empty
+            }break;
+        case AL_PLAYING:
+        case AL_PAUSED:
+            {
+                LOGGER_ASSERTION( "source [%u] invalid state [%u]"
+                    , m_sourceId
+                    , state
+                );
 
-            return false;
+                return false;
+            }break;
         }
 
         MENGINE_OPENAL_CALL( alSourceRewind, (m_sourceId) );
@@ -240,25 +252,37 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::resumeSource( ALuint _source )
+    bool OpenALSoundBufferStream::resumeSource( ALuint _sourceId )
     {
-        MENGINE_UNUSED( _source );
+        MENGINE_UNUSED( _sourceId );
+
+        MENGINE_ASSERTION_FATAL( m_sourceId == _sourceId, "invalid source: %u"
+            , _sourceId
+        );
 
         this->setUpdating_( true );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferStream::pauseSource( ALuint _source )
+    void OpenALSoundBufferStream::pauseSource( ALuint _sourceId )
     {
-        MENGINE_UNUSED( _source );
+        MENGINE_UNUSED( _sourceId );
+
+        MENGINE_ASSERTION_FATAL( m_sourceId == _sourceId, "invalid source: %u"
+            , _sourceId
+        );
 
         this->setUpdating_( false );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferStream::stopSource( ALuint _source )
+    void OpenALSoundBufferStream::stopSource( ALuint _sourceId )
     {
-        MENGINE_UNUSED( _source );
+        MENGINE_UNUSED( _sourceId );
+
+        MENGINE_ASSERTION_FATAL( m_sourceId == _sourceId, "invalid source: %u"
+            , _sourceId
+        );
 
         this->setUpdating_( false );
     }
@@ -275,18 +299,26 @@ namespace Mengine
         m_mutexUpdating->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::setTimePos( ALuint _source, float _pos ) const
+    bool OpenALSoundBufferStream::setTimePos( ALuint _sourceId, float _pos ) const
     {
-        MENGINE_UNUSED( _source );
+        MENGINE_UNUSED( _sourceId );
+
+        MENGINE_ASSERTION_FATAL( m_sourceId == _sourceId, "invalid source: %u"
+            , _sourceId
+        );
 
         bool result = m_soundDecoder->seek( _pos );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::getTimePos( ALuint _source, float * const _pos ) const
+    bool OpenALSoundBufferStream::getTimePos( ALuint _sourceId, float * const _pos ) const
     {
-        MENGINE_UNUSED( _source );
+        MENGINE_UNUSED( _sourceId );
+
+        MENGINE_ASSERTION_FATAL( m_sourceId == _sourceId, "invalid source: %u"
+            , _sourceId
+        );
 
         float timeTell = m_soundDecoder->tell();
 
@@ -344,20 +376,38 @@ namespace Mengine
         ALint state;
         MENGINE_OPENAL_CALL( alGetSourcei, (m_sourceId, AL_SOURCE_STATE, &state) );
 
-        if( state == AL_STOPPED )
+        switch( state )
         {
-            if( m_looped == false )
+        case AL_INITIAL:
             {
-                ALint queued_count = 0;
-                MENGINE_OPENAL_CALL( alGetSourcei, (m_sourceId, AL_BUFFERS_QUEUED, &queued_count) );
-
-                if( queued_count == 0 )
+                //Empty
+            }break;
+        case AL_PLAYING:
+            {
+                //Empty
+            }break;
+        case AL_PAUSED:
+            {
+                //Empty
+            }break;
+        case AL_STOPPED:
+            {
+                if( m_looped == false )
                 {
-                    return false;
-                }
-            }
+                    ALint queued_count = 0;
+                    MENGINE_OPENAL_CALL( alGetSourcei, (m_sourceId, AL_BUFFERS_QUEUED, &queued_count) );
 
-            MENGINE_OPENAL_CALL( alSourcePlay, (m_sourceId) );
+                    if( queued_count == 0 )
+                    {
+                        return false;
+                    }
+                }
+
+                MENGINE_IF_OPENAL_CALL( alSourcePlay, (m_sourceId) )
+                {
+                    return  false;
+                }
+            }break;
         }
 
         return true;
@@ -403,7 +453,7 @@ namespace Mengine
         ALsizei al_frequency = (ALsizei)m_frequency;
         MENGINE_IF_OPENAL_CALL( alBufferData, (_alBufferId, m_format, dataBuffer, al_bytesWritten, al_frequency) )
         {
-            LOGGER_ASSERTION( "invalid alBufferData buffer [%u] id [%u] format [%u] bytes [%zu] frequency [%u]"
+            LOGGER_ASSERTION( "invalid alBufferData buffer: %u source: %u format: %u bytes: %zu frequency: %u"
                 , _alBufferId
                 , m_sourceId
                 , m_format

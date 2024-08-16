@@ -137,6 +137,25 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool GameService::handleAccelerometerEvent( const InputAccelerometerEvent & _event )
+    {
+        bool handle = false;
+
+        if( handle == false )
+        {
+            handle = EVENTABLE_METHODR( EVENT_GAME_ACCELEROMETER, handle )
+                ->onGameAccelerometer( _event );
+        }
+
+        if( handle == false )
+        {
+            handle = PLAYER_SERVICE()
+                ->handleAccelerometerEvent( _event );
+        }
+
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool GameService::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
         bool handle = false;

@@ -179,22 +179,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _turn );
 
-        //if( _turn == false )
-        //{
-        //    alcMakeContextCurrent( NULL );
-        //    //OAL_CHECK_ERROR();
-
-        //    alcSuspendContext( m_context );
-        //    //OAL_CHECK_ERROR();
-        //}
-        //else
-        //{
-        //    alcMakeContextCurrent( m_context );
-        //    //OAL_CHECK_ERROR();
-
-        //    alcProcessContext( m_context );
-        //    //OAL_CHECK_ERROR();
-        //}
+        // ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     SoundSourceInterfacePtr OpenALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, const DocumentInterfacePtr & _doc )
@@ -202,8 +187,6 @@ namespace Mengine
         OpenALSoundSourcePtr soundSource = m_factoryOpenALSoundSource->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( soundSource );
-
-        soundSource->setSoundSystem( this );
 
         soundSource->setHeadMode( _isHeadMode );
         soundSource->setSoundBuffer( _buffer );
@@ -228,8 +211,6 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer );
 
-            buffer->setSoundSystem( this );
-
             base = buffer;
         }
         else
@@ -237,8 +218,6 @@ namespace Mengine
             OpenALSoundBufferStreamPtr buffer = m_factoryOpenALSoundBufferStream->createObject( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer );
-
-            buffer->setSoundSystem( this );
 
             base = buffer;
         }

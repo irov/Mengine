@@ -3,6 +3,11 @@ MENGINE_PROJECT(OpenALSoundSystem)
 ADD_FILTER(
 src
     OpenALSoundIncluder.h
+
+    OpenALSoundSystem.cpp
+    OpenALSoundSystem.h
+    OpenALSoundSystemExtensionInterface.h
+
     OpenALSoundBufferBase.cpp
     OpenALSoundBufferBase.h
     OpenALSoundBufferMemory.cpp
@@ -11,8 +16,6 @@ src
     OpenALSoundBufferStream.h
     OpenALSoundSource.cpp
     OpenALSoundSource.h
-    OpenALSoundSystem.cpp
-    OpenALSoundSystem.h
     OpenALSoundErrorHelper.cpp
     OpenALSoundErrorHelper.h
 )

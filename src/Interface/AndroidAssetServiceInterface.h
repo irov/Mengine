@@ -20,6 +20,9 @@ namespace Mengine
         virtual void close( AAsset * _asset ) const = 0;
 
     public:
+        virtual bool existFile( const Char * _path ) const = 0;
+
+    public:
         virtual size_t read( AAsset * _asset, void * _buffer, size_t _size ) const = 0;
         virtual int64_t size( AAsset * _asset ) const = 0;
         virtual int64_t seek( AAsset * _asset, int64_t _offset, int _whence ) const = 0;

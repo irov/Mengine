@@ -2,6 +2,8 @@
 
 #include "Kernel/Node.h"
 
+#include "Config/DynamicCast.h"
+
 namespace Mengine
 {
     namespace Helper
@@ -14,7 +16,7 @@ namespace Mengine
 
             while( parent != nullptr )
             {
-                if( dynamic_cast<T>(parent) != nullptr )
+                if( Helper::dynamicCast<T>( parent ) != nullptr )
                 {
                     return static_cast<T>(parent);
                 }
@@ -32,7 +34,7 @@ namespace Mengine
 
             while( parent != nullptr )
             {
-                if( dynamic_cast<T>(parent) != nullptr )
+                if( Helper::dynamicCast<T>( parent ) != nullptr )
                 {
                     return static_cast<T>(parent);
                 }

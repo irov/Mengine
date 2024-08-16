@@ -98,7 +98,7 @@ namespace Mengine
                 ConstString::size_type frame_name_size = frame_name.size();
 
                 char * region_name = MALLOC( char, frame_name_size + 1 );
-                MENGINE_MEMCPY( region_name, frame_name.c_str(), frame_name_size );
+                StdString::memcpy( region_name, frame_name.c_str(), frame_name_size );
                 region_name[frame_name_size] = '\0';
 
                 region->name = region_name;

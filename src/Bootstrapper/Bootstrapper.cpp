@@ -605,6 +605,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::run()
     {
+        THREAD_SERVICE()
+            ->updateMainThread();
+
         LOGGER_INFO( "bootstrapper", "bootstrapper run frameworks" );
 
         if( this->runFrameworks_() == false )
@@ -946,6 +949,22 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "MixerValue" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
+#define MENGINE_ADD_FRAMEWORK( Name, Info, Doc )\
+        {\
+            if(SERVICE_IS_INITIALIZE(LoggerServiceInterface) == true)\
+            {\
+                LOGGER_INFO( "bootstrapper", "%s", Info );\
+            }\
+            if( PLUGIN_CREATE(Name, Doc) == false )\
+            {\
+                if(SERVICE_IS_INITIALIZE(LoggerServiceInterface) == true)\
+                {\
+                    LOGGER_ERROR( "%s [invalid initialize]", Info );\
+                }\
+                return false;\
+            }\
+        }
+    //////////////////////////////////////////////////////////////////////////
 #define MENGINE_ADD_PLUGIN( Name, Info, Doc )\
         {\
             if(SERVICE_IS_INITIALIZE(LoggerServiceInterface) == true)\
@@ -1250,11 +1269,11 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC)
-        MENGINE_ADD_PLUGIN( PythonFramework, "plugin PythonFramework...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_FRAMEWORK( PythonFramework, "plugin PythonFramework...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_UIFRAMEWORK_STATIC)
-        MENGINE_ADD_PLUGIN( UIFramework, "plugin UIFramework...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_FRAMEWORK( UIFramework, "plugin UIFramework...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_NODEDEBUGRENDER_STATIC)
@@ -1430,7 +1449,7 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC)
-        MENGINE_ADD_PLUGIN( AndroidNativePython, "plugin AndroidKernelPython...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( AndroidNativePython, "plugin AndroidNativePython...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
         
 #if defined(MENGINE_PLUGIN_APPLE_NATIVE_PYTHON_STATIC)

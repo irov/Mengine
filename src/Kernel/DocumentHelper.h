@@ -7,6 +7,8 @@
 
 #   include "Kernel/BufferHelper.h"
 
+#   include "Config/DynamicCast.h"
+
 namespace Mengine
 {
     namespace Detail
@@ -15,7 +17,7 @@ namespace Mengine
         template<class T>
         const DocumentInterfacePtr & getDocumentableFromPtr( const T * _ptr )
         {
-            const Documentable * documentable = dynamic_cast<const Documentable *>(_ptr);
+            const Documentable * documentable = Helper::dynamicCast<const Documentable *>( _ptr );
 
             if( documentable == nullptr )
             {
@@ -32,7 +34,7 @@ namespace Mengine
         {
             const T * ptr_get = _ptr.get();
 
-            const Documentable * documentable = dynamic_cast<const Documentable *>(ptr_get);
+            const Documentable * documentable = Helper::dynamicCast<const Documentable *>( ptr_get );
 
             if( documentable == nullptr )
             {
@@ -47,7 +49,7 @@ namespace Mengine
         template<class T>
         const Char * getDocumentableMessageFromPtr( const T * _ptr )
         {
-            const Documentable * documentable = dynamic_cast<const Documentable *>(_ptr);
+            const Documentable * documentable = Helper::dynamicCast<const Documentable *>( _ptr );
 
             if( documentable == nullptr )
             {
@@ -71,7 +73,7 @@ namespace Mengine
         {
             const T * ptr_get = _ptr.get();
 
-            const Documentable * documentable = dynamic_cast<const Documentable *>(ptr_get);
+            const Documentable * documentable = Helper::dynamicCast<const Documentable *>( ptr_get );
 
             if( documentable == nullptr )
             {

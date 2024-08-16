@@ -1,0 +1,1 @@
+@call %~dp0build_depends_android.bat Debug

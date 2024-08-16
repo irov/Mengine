@@ -137,7 +137,7 @@ namespace Mengine
                 }
 
                 ogg_stream_state oggStreamStateTest;
-                MENGINE_MEMSET( &oggStreamStateTest, 0x00, sizeof( ogg_stream_state ) );
+                StdString::memset( &oggStreamStateTest, 0x00, sizeof( ogg_stream_state ) );
 
                 int32_t serialno = ogg_page_serialno( &page );
                 if( ogg_stream_init( &oggStreamStateTest, serialno ) != 0 )
@@ -168,7 +168,7 @@ namespace Mengine
                 }
                 else
                 {
-                    MENGINE_MEMCPY( &m_oggStreamState, &oggStreamStateTest, sizeof( ogg_stream_state ) );
+                    StdString::memcpy( &m_oggStreamState, &oggStreamStateTest, sizeof( ogg_stream_state ) );
 
                     theoraHeader = true;
                 }
@@ -292,11 +292,11 @@ namespace Mengine
         theora_comment_clear( &m_theoraComment );
         theora_info_clear( &m_theoraInfo );
 
-        MENGINE_MEMSET( &m_oggStreamState, 0, sizeof( m_oggStreamState ) );
-        MENGINE_MEMSET( &m_oggSyncState, 0, sizeof( m_oggSyncState ) );
-        MENGINE_MEMSET( &m_theoraState, 0, sizeof( m_theoraState ) );
-        MENGINE_MEMSET( &m_theoraComment, 0, sizeof( m_theoraComment ) );
-        MENGINE_MEMSET( &m_theoraInfo, 0, sizeof( m_theoraInfo ) );
+        StdString::memset( &m_oggStreamState, 0, sizeof( m_oggStreamState ) );
+        StdString::memset( &m_oggSyncState, 0, sizeof( m_oggSyncState ) );
+        StdString::memset( &m_theoraState, 0, sizeof( m_theoraState ) );
+        StdString::memset( &m_theoraComment, 0, sizeof( m_theoraComment ) );
+        StdString::memset( &m_theoraInfo, 0, sizeof( m_theoraInfo ) );
 
         ogg_sync_init( &m_oggSyncState );
 

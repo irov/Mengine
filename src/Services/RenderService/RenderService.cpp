@@ -849,16 +849,16 @@ namespace Mengine
         scaleViewport.begin += renderViewport.begin;
         scaleViewport.end += renderViewport.begin;
 
-        float vp_x = MENGINE_FLOORF( scaleViewport.begin.x + 0.5f );
-        float vp_y = MENGINE_FLOORF( scaleViewport.begin.y + 0.5f );
+        float vp_x = Math::floorf( scaleViewport.begin.x + 0.5f );
+        float vp_y = Math::floorf( scaleViewport.begin.y + 0.5f );
         //float vp_x = renderViewport.begin.x;
         //float vp_y = renderViewport.begin.y;
 
         float width = scaleViewport.getWidth();
         float height = scaleViewport.getHeight();
 
-        float vp_width = MENGINE_FLOORF( width + 0.5f );
-        float vp_height = MENGINE_FLOORF( height + 0.5f );
+        float vp_width = Math::floorf( width + 0.5f );
+        float vp_height = Math::floorf( height + 0.5f );
         //float vp_width = width;
         //float vp_height = height;
 

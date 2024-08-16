@@ -11,6 +11,8 @@ namespace Mengine
 {
     namespace Helper
     {
+        time_t Win32FileTimeToUnixTime( const FILETIME * _filetime );
+
         HANDLE Win32CreateFile( const WChar * _filePath, DWORD _desiredAccess, DWORD _sharedMode, DWORD _creationDisposition );
         bool Win32ValidateFile( const WChar * _path );
 

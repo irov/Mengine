@@ -49,6 +49,7 @@ SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
@@ -233,8 +234,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::bootstrap( int32_t _argc, Char ** const _argv )
     {
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-#   error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+#   error "MENGINE_PLUGIN_MENGINE_SHARED for SDL not implemented"
 #elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
         ServiceProviderInterface * serviceProvider = API_MengineCreate();
 #else
@@ -268,8 +269,8 @@ namespace Mengine
             this->finalizeLoggerService_();
         } );
 
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-#error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+#error "MENGINE_PLUGIN_MENGINE_SHARED for SDL not implemented"
 #elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
         if( ::API_MengineBootstrap() == false )
         {
@@ -282,8 +283,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initialize()
     {
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-#error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+#error "MENGINE_PLUGIN_MENGINE_SHARED for SDL not implemented"
 #elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
         if( ::API_MengineRun() == false )
         {
@@ -309,11 +310,6 @@ namespace Mengine
         else
         {
             projectTitle = entry->getValue( &projectTitleLen );
-            
-            LOGGER_INFO( "application", "project title '%.*s'"
-                , (int32_t)projectTitleLen
-                , projectTitle
-            );
         }
 
         PLATFORM_SERVICE()
@@ -414,8 +410,8 @@ namespace Mengine
                 ->stop();
         }
 
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-#   error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+#   error "MENGINE_PLUGIN_MENGINE_SHARED for SDL not implemented"
 #elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
         API_MengineFinalize();
 #endif

@@ -28,9 +28,6 @@ namespace Mengine
         InputHandlerInterfacePtr removeGlobalHandler( UniqueId _id ) override;
 
     public:
-        UniqueId addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const DocumentInterfacePtr & _doc ) override;
-
-    public:
         bool enableGlobalHandler( UniqueId _id, bool _value ) override;
 
     public:
@@ -39,6 +36,9 @@ namespace Mengine
     public:
         bool handleKeyEvent( const InputKeyEvent & _event ) override;
         bool handleTextEvent( const InputTextEvent & _event ) override;
+
+    public:
+        bool handleAccelerometerEvent( const InputAccelerometerEvent & _event ) override;
 
     public:
         bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;

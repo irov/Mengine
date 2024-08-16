@@ -2,7 +2,7 @@
 
 #include "Environment/Python/PythonEventReceiver.h"
 
-#include "Engine/HotSpotEventReceiverInterface.h"
+#include "Kernel/HotSpotEventReceiverInterface.h"
 
 #include "Kernel/Factorable.h"
 
@@ -24,6 +24,7 @@ namespace Mengine
         void onHotSpotMouseLeave( const InputMouseLeaveEvent & _event ) override;
         bool onHotSpotKey( const InputKeyEvent & _event ) override;
         bool onHotSpotText( const InputTextEvent & _event ) override;
+        bool onHotSpotAccelerometer( const InputAccelerometerEvent & _event ) override;
         bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override;
         bool onHotSpotMouseButtonBegin( const InputMouseButtonEvent & _event ) override;
         bool onHotSpotMouseButtonEnd( const InputMouseButtonEvent & _event ) override;

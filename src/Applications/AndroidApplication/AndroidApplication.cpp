@@ -1,4 +1,4 @@
-#include "SDLApplication.h"
+#include "AndroidApplication.h"
 
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/BootstrapperInterface.h"
@@ -11,23 +11,10 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PreferencesSystemInterface.h"
 
-#include "SDLMessageBoxLogger.h"
+#include "Environment/Android/AndroidEnv.h"
+#include "Environment/Android/AndroidLogger.h"
 
-#if defined(MENGINE_PLATFORM_ANDROID)
-#   include "Environment/Android/AndroidEnv.h"
-#endif
-
-#if defined(MENGINE_PLATFORM_ANDROID)
-#   include "Environment/Android/AndroidLogger.h"
-#elif defined(MENGINE_PLATFORM_APPLE)
-#   include "Environment/Apple/AppleNSLogger.h"
-#else
-#   include "Kernel/StdioLogger.h"
-#endif
-
-#if defined(MENGINE_WINDOWS_DEBUG)
-#   include "Environment/Windows/Win32OutputDebugLogger.h"
-#endif
+#include "Mengine/MenginePlugin.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/StringArguments.h"
@@ -36,94 +23,32 @@
 #include "Kernel/Error.h"
 
 #include "Config/Algorithm.h"
+#include "Config/StdString.h"
 
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_MENGINE_STATIC)
-extern Mengine::ServiceProviderInterface * API_MengineCreate();
-extern bool API_MengineBootstrap();
-extern bool API_MengineRun();
-extern void API_MengineFinalize();
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+#   include <dlfcn.h>
 #endif
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_ANDROID)
-        //////////////////////////////////////////////////////////////////////////
-        static bool addAndroidBuildConfigOptions( JNIEnv * _jenv, const Char * _buildConfig, const ArgumentsInterfacePtr & _arguments )
-        {
-            jclass jclass_BuildConfig = _jenv->FindClass( "org/Mengine/Project/BuildConfig" );
-
-            if( jclass_BuildConfig == nullptr )
-            {
-                return false;
-            }
-
-            jfieldID jfield_MENGINE_APP_OPTIONS = _jenv->GetStaticFieldID( jclass_BuildConfig, _buildConfig, "Ljava/lang/String;" );
-
-            if( _jenv->ExceptionCheck() == true )
-            {
-                _jenv->ExceptionClear();
-
-                _jenv->DeleteLocalRef( jclass_BuildConfig );
-
-                return false;
-            }
-
-            if( jfield_MENGINE_APP_OPTIONS == nullptr )
-            {
-                _jenv->DeleteLocalRef( jclass_BuildConfig );
-
-                return false;
-            }
-
-            jstring j_MENGINE_APP_OPTIONS = (jstring)_jenv->GetStaticObjectField( jclass_BuildConfig, jfield_MENGINE_APP_OPTIONS );
-
-            if( j_MENGINE_APP_OPTIONS == nullptr )
-            {
-                _jenv->DeleteLocalRef( jclass_BuildConfig );
-
-                return false;
-            }
-
-            const Char * MENGINE_APP_OPTIONS_str = _jenv->GetStringUTFChars( j_MENGINE_APP_OPTIONS, nullptr );
-
-            _arguments->addArguments( MENGINE_APP_OPTIONS_str );
-
-            _jenv->ReleaseStringUTFChars( j_MENGINE_APP_OPTIONS, MENGINE_APP_OPTIONS_str );
-            _jenv->DeleteLocalRef( j_MENGINE_APP_OPTIONS );
-            _jenv->DeleteLocalRef( jclass_BuildConfig );
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    AndroidApplication::AndroidApplication()
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        : m_handleLibrary( nullptr )
 #endif
-        //////////////////////////////////////////////////////////////////////////
-    }
-    //////////////////////////////////////////////////////////////////////////
-    SDLApplication::SDLApplication()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SDLApplication::~SDLApplication()
+    AndroidApplication::~AndroidApplication()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeOptionsService_( int32_t _argc, Char ** const _argv )
+    bool AndroidApplication::initializeOptionsService_( int32_t _argc, Char ** const _argv )
     {
         ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
-
-#if defined(MENGINE_PLATFORM_ANDROID)
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        Detail::addAndroidBuildConfigOptions( jenv, "MENGINE_APP_OPTIONS", arguments );
-#endif
 
 #if !defined(MENGINE_BUILD_PUBLISH)
         Char MengineApplePersistentArguments[1024] = {'\0'};
@@ -150,7 +75,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeLoggerService_()
+    bool AndroidApplication::initializeLoggerService_()
     {
         if( LOGGER_SERVICE()
             ->isSilent() == true )
@@ -158,13 +83,7 @@ namespace Mengine
             return true;
         }
 
-#if defined(MENGINE_PLATFORM_ANDROID)
         LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<AndroidLogger>( MENGINE_DOCUMENT_FUNCTION );
-#elif defined(MENGINE_PLATFORM_APPLE)
-        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<AppleNSLogger>( MENGINE_DOCUMENT_FUNCTION );
-#else
-        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<StdioLogger>( MENGINE_DOCUMENT_FUNCTION );
-#endif
 
         loggerStdio->setWriteHistory( true );
 
@@ -174,32 +93,10 @@ namespace Mengine
             m_loggerStdio = loggerStdio;
         }
 
-        LoggerInterfacePtr loggerMessageBox = Helper::makeFactorableUnique<SDLMessageBoxLogger>( MENGINE_DOCUMENT_FUNCTION );
-
-        loggerMessageBox->setVerboseLevel( LM_FATAL );
-
-        if( LOGGER_SERVICE()
-            ->registerLogger( loggerMessageBox ) == true )
-        {
-            m_loggerMessageBox = loggerMessageBox;
-        }
-
-#if defined(MENGINE_WINDOWS_DEBUG)
-        Win32OutputDebugLoggerPtr loggerOutputDebug = Helper::makeFactorableUnique<Win32OutputDebugLogger>( MENGINE_DOCUMENT_FUNCTION );
-
-        loggerOutputDebug->setVerboseLevel( LM_MESSAGE );
-
-        if( LOGGER_SERVICE()
-            ->registerLogger( loggerOutputDebug ) == true )
-        {
-            m_loggerOutputDebug = loggerOutputDebug;
-        }
-#endif
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLApplication::finalizeLoggerService_()
+    void AndroidApplication::finalizeLoggerService_()
     {
         if( m_loggerStdio != nullptr )
         {
@@ -208,42 +105,49 @@ namespace Mengine
 
             m_loggerStdio = nullptr;
         }
-
-        if( m_loggerMessageBox != nullptr )
-        {
-            LOGGER_SERVICE()
-                ->unregisterLogger( m_loggerMessageBox );
-
-            m_loggerMessageBox = nullptr;
-        }
-
-#if defined(MENGINE_WINDOWS_DEBUG)
-        if( m_loggerOutputDebug != nullptr )
-        {
-            if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
-            {
-                LOGGER_SERVICE()
-                    ->unregisterLogger( m_loggerOutputDebug );
-            }
-
-            m_loggerOutputDebug = nullptr;
-        }
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::bootstrap( int32_t _argc, Char ** const _argv )
+    bool AndroidApplication::bootstrap( const Mengine::Char * _nativeLibraryDir, int32_t _argc, Char ** const _argv )
     {
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-#   error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
-#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        ServiceProviderInterface * serviceProvider = API_MengineCreate();
-#else
-        ServiceProviderInterface * serviceProvider = nullptr;
+        MENGINE_UNUSED( _nativeLibraryDir );
+
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        Char mengineLibraryPath[MENGINE_MAX_PATH] = {'\0'};
+        Mengine::StdString::strcpy( mengineLibraryPath, _nativeLibraryDir );
+        Mengine::StdString::strcat( mengineLibraryPath, "/libMengine.so" );
+
+        void * handleLibrary = ::dlopen(mengineLibraryPath, RTLD_GLOBAL);
+
+        if( handleLibrary == nullptr )
+        {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "dlopen 'libMengine.so' failed" );
+
+            return false;
+        }
+
+        m_handleLibrary = handleLibrary;
 #endif
+
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        FAPI_MengineCreate API_MengineCreate = (FAPI_MengineCreate)::dlsym( m_handleLibrary, "API_MengineCreate" );
+
+        if( API_MengineCreate == nullptr )
+        {
+            return false;
+        }
+#endif
+
+        ServiceProviderInterface * serviceProvider = API_MengineCreate();
+
+        if( serviceProvider == nullptr )
+        {
+            return false;
+        }
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
-        SERVICE_PROVIDER_GET()->waitService( "SDLApplication", SERVICE_ID( OptionsServiceInterface ), [this, _argc, _argv]()
+        SERVICE_PROVIDER_GET()
+            ->waitService( "AndroidApplication", SERVICE_ID( OptionsServiceInterface ), [this, _argc, _argv]()
         {
             if( this->initializeOptionsService_( _argc, _argv ) == false )
             {
@@ -253,7 +157,7 @@ namespace Mengine
             return true;
         } );
 
-        UNKNOWN_SERVICE_WAIT( SDLApplication, LoggerServiceInterface, [this]()
+        UNKNOWN_SERVICE_WAIT( AndroidApplication, LoggerServiceInterface, [this]()
         {
             if( this->initializeLoggerService_() == false )
             {
@@ -263,33 +167,43 @@ namespace Mengine
             return true;
         } );
 
-        UNKNOWN_SERVICE_LEAVE( SDLApplication, LoggerServiceInterface, [this]()
+        UNKNOWN_SERVICE_LEAVE( AndroidApplication, LoggerServiceInterface, [this]()
         {
             this->finalizeLoggerService_();
         } );
 
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-#error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
-#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        if( ::API_MengineBootstrap() == false )
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        FAPI_MengineBootstrap API_MengineBootstrap = (FAPI_MengineBootstrap)::dlsym( m_handleLibrary, "API_MengineBootstrap" );
+
+        if( API_MengineBootstrap == nullptr )
         {
             return false;
         }
 #endif
 
+        if( API_MengineBootstrap() == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initialize()
+    bool AndroidApplication::initialize()
     {
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-#error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
-#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        if( ::API_MengineRun() == false )
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        FAPI_MengineRun API_MengineRun = (FAPI_MengineRun)::dlsym( m_handleLibrary, "API_MengineRun" );
+
+        if( API_MengineRun == nullptr )
         {
             return false;
         }
 #endif
+
+        if( API_MengineRun() == false )
+        {
+            return false;
+        }
 
         LOGGER_INFO( "application", "creating render window..." );
 
@@ -309,23 +223,14 @@ namespace Mengine
         else
         {
             projectTitle = entry->getValue( &projectTitleLen );
-            
-            LOGGER_INFO( "application", "project title '%.*s'"
-                , (int32_t)projectTitleLen
-                , projectTitle
-            );
         }
 
         PLATFORM_SERVICE()
             ->setProjectTitle( projectTitle );
 
-        if( PLATFORM_SERVICE()
-            ->alreadyRunningMonitor() == false )
-        {
-            return true;
-        }
+        PLATFORM_SERVICE()
+            ->updatePlatform();
 
-#if defined(MENGINE_PLATFORM_IOS)
         if( PLATFORM_SERVICE()
             ->createWindow( Resolution( 0, 0 ), true ) == false )
         {
@@ -333,41 +238,6 @@ namespace Mengine
 
             return false;
         }
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        if( PLATFORM_SERVICE()
-            ->createWindow( Resolution( 0, 0 ), true ) == false )
-        {
-            LOGGER_FATAL( "invalid create window" );
-
-            return false;
-        }
-#else
-        bool fullscreen = APPLICATION_SERVICE()
-            ->getFullscreenMode();
-
-        Resolution windowResolution;
-        if( APPLICATION_SERVICE()
-            ->calcWindowResolution( fullscreen, &windowResolution ) == false )
-        {
-            LOGGER_FATAL( "invalid calculate window resolution for fullscreen [%s]"
-                , fullscreen == true ? "YES" : "NO"
-            );
-
-            return false;
-        }
-
-        if( PLATFORM_SERVICE()
-            ->createWindow( windowResolution, fullscreen ) == false )
-        {
-            LOGGER_FATAL( "invalid create window [%u:%u] fullscreen [%s]"
-                , windowResolution.getWidth()
-                , windowResolution.getHeight()
-                , fullscreen == true ? "YES" : "NO"
-            );
-
-            return false;
-        }
-#endif
 
         if( APPLICATION_SERVICE()
             ->createRenderWindow() == false )
@@ -376,9 +246,6 @@ namespace Mengine
 
             return false;
         }
-
-        APPLICATION_SERVICE()
-            ->turnSound( true );
 
         GAME_SERVICE()
             ->run();
@@ -389,13 +256,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLApplication::loop()
+    void AndroidApplication::loop()
     {
         PLATFORM_SERVICE()
             ->loopPlatform();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLApplication::finalize()
+    void AndroidApplication::finalize()
     {
         if( SERVICE_PROVIDER_EXIST() == false )
         {
@@ -414,10 +281,20 @@ namespace Mengine
                 ->stop();
         }
 
-#if defined(MENGINE_PLUGIN_MENGINE_DLL)
-#   error "MENGINE_PLUGIN_MENGINE_DLL for SDL not implemented"
-#elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        FAPI_MengineFinalize API_MengineFinalize = (FAPI_MengineFinalize)::dlsym( m_handleLibrary, "API_MengineFinalize" );
+
+        if( API_MengineFinalize != nullptr )
+        {
+            API_MengineFinalize();
+        }
+#else
         API_MengineFinalize();
+#endif
+
+#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
+        ::dlclose(m_handleLibrary);
+        m_handleLibrary = nullptr;
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

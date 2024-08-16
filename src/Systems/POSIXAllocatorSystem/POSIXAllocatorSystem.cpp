@@ -35,7 +35,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        void * mem = MENGINE_MALLOC( _size );
+        void * mem = StdLib::malloc( _size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid alloc memory '%zu' [%s]"
             , _size
@@ -54,14 +54,14 @@ namespace Mengine
             return;
         }
 
-        MENGINE_FREE( _mem );
+        StdLib::free( _mem );
     }
     //////////////////////////////////////////////////////////////////////////
     void * POSIXAllocatorSystem::calloc( size_t _num, size_t _size, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
 
-        void * mem = MENGINE_CALLOC( _num, _size );
+        void * mem = StdLib::calloc( _num, _size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid calloc memory '%zu' [%s]"
             , _num * _size
@@ -77,7 +77,7 @@ namespace Mengine
 
         if( _mem == nullptr )
         {
-            void * mem = MENGINE_MALLOC( _size );
+            void * mem = StdLib::malloc( _size );
 
             MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' from [nullptr] [%s]"
                 , _size
@@ -87,7 +87,7 @@ namespace Mengine
             return mem;
         }
 
-        void * mem = MENGINE_REALLOC( _mem, _size );
+        void * mem = StdLib::realloc( _mem, _size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' from [%p] [%s]"
             , _size

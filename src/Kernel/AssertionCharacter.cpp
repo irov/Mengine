@@ -28,7 +28,7 @@ namespace Mengine
                         , (uint32_t)ch
                     );
 
-                    Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Standard Character Set" );
+                    Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Standard Character Set [No ASCII]" );
                 }
 
                 if( Helper::isStandardCharacterSet( ch ) == false )

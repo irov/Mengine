@@ -8,22 +8,17 @@
 #   include <cstdlib>
 #endif
 
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_MALLOC
-#define MENGINE_MALLOC(s) ::malloc((s))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_FREE
-#define MENGINE_FREE(p) ::free((p))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_CALLOC
-#define MENGINE_CALLOC(c, s) ::calloc((c), (s))
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_REALLOC
-#define MENGINE_REALLOC(p, s) ::realloc((p), (s))
-#endif
+namespace Mengine
+{
+    namespace StdLib
+    {
+        using std::malloc;
+        using std::free;
+        using std::calloc;
+        using std::realloc;
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_MALLOC_SIZE
 #   if defined(MENGINE_PLATFORM_WINDOWS)

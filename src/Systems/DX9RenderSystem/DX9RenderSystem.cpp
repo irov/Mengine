@@ -153,7 +153,7 @@ namespace Mengine
                 continue;
             }
 
-            if( MENGINE_STRSTR( AdapterId.Description, "PerfHUD" ) != 0 )
+            if( StdString::strstr( AdapterId.Description, "PerfHUD" ) != 0 )
             {
                 m_adapterToUse = Adapter;
                 m_deviceType = D3DDEVTYPE_REF;
@@ -1051,14 +1051,14 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         D3DVIEWPORT9 VP;
-        VP.X = (DWORD)MENGINE_FLOORF( _viewport.begin.x + 0.5f );
-        VP.Y = (DWORD)MENGINE_FLOORF( _viewport.begin.y + 0.5f );
+        VP.X = (DWORD)Math::floorf( _viewport.begin.x + 0.5f );
+        VP.Y = (DWORD)Math::floorf( _viewport.begin.y + 0.5f );
 
         float width = _viewport.getWidth();
         float height = _viewport.getHeight();
 
-        VP.Width = (DWORD)MENGINE_FLOORF( width + 0.5f );
-        VP.Height = (DWORD)MENGINE_FLOORF( height + 0.5f );
+        VP.Width = (DWORD)Math::floorf( width + 0.5f );
+        VP.Height = (DWORD)Math::floorf( height + 0.5f );
 
         VP.MinZ = 0.f;
         VP.MaxZ = 1.f;

@@ -2,9 +2,9 @@
 
 #include "Interface/TextEntryInterface.h"
 
-#include "TextRenderChunk.h"
-#include "TextChar.h"
-#include "TextLine.h"
+#include "Engine/TextRenderChunk.h"
+#include "Engine/TextChar.h"
+#include "Engine/TextLine.h"
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"

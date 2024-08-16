@@ -110,9 +110,6 @@ namespace Mengine
         void onEvent( const ConstString & _event, const Params & _params ) override;
 
     public:
-        float getJoystickAxis( uint32_t _index ) const override;
-
-    public:
         size_t getShortPathName( const Char * _path, Char * const _short ) const override;
         size_t getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const override;
 
@@ -156,10 +153,7 @@ namespace Mengine
         bool createDirectoryUser_( const WChar * _userPath, const WChar * _directoryPath, const WChar * _filePath, const void * _data, size_t _size );
 
     protected:
-        void sleep( uint32_t _ms ) override;
-
-    protected:
-        bool setProcessDPIAware() override;
+        bool setProcessDPIAware();
 
     public:
         bool isDebuggerPresent() const override;
@@ -198,9 +192,6 @@ namespace Mengine
     protected:
         UniqueId addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda, const DocumentInterfacePtr & _doc ) override;
         void removeWin32ProcessHandler( UniqueId _id ) override;
-
-    protected:
-        time_t getFileUnixTime( const FILETIME * filetime ) const override;
 
     protected:
         bool isNeedWindowRender() const;

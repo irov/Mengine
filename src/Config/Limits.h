@@ -2,7 +2,7 @@
 
 #include "Config/Config.h"
 
-#include <limits.h>
+#include <climits>
 
 #ifndef MENGINE_INT_MIN
 #define MENGINE_INT_MIN (INT_MIN)

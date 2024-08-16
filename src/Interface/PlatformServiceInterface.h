@@ -76,8 +76,6 @@ namespace Mengine
         virtual bool getNoFullscreen() const = 0;
         virtual bool getAlwaysFullscreen() const = 0;
 
-        virtual bool setProcessDPIAware() = 0;
-
         virtual bool isDebuggerPresent() const = 0;
         virtual void debugBreak() = 0;
 
@@ -104,9 +102,6 @@ namespace Mengine
 
     public:
         virtual void onEvent( const ConstString & _event, const Params & _params ) = 0;
-
-    public:
-        virtual float getJoystickAxis( uint32_t _index ) const = 0;
 
     public:
         virtual size_t getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const = 0;
@@ -139,9 +134,6 @@ namespace Mengine
     public:
         virtual bool createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) = 0;
         virtual bool createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) = 0;
-
-    public:
-        virtual void sleep( uint32_t _ms ) = 0;
 
     public:
         virtual void messageBox( const Char * _caption, const Char * _format, ... ) const = 0;

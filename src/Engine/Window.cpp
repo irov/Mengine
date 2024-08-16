@@ -478,12 +478,12 @@ namespace Mengine
 
         if( background.initialSize.x > 0.001f )
         {
-            clSize.x = MENGINE_CEILF( clSize.x / background.initialSize.x ) * background.initialSize.x;
+            clSize.x = Math::ceilf( clSize.x / background.initialSize.x ) * background.initialSize.x;
         }
 
         if( background.initialSize.y > 0.001f )
         {
-            clSize.y = MENGINE_CEILF( clSize.y / background.initialSize.y ) * background.initialSize.y;
+            clSize.y = Math::ceilf( clSize.y / background.initialSize.y ) * background.initialSize.y;
         }
 
         this->setClientSize( clSize );

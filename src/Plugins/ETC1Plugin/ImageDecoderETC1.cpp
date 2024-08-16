@@ -49,7 +49,7 @@ namespace Mengine
 
         stream->read( &m_header, sizeof( ETC1Header ) );
 
-        MENGINE_ASSERTION_FATAL( MENGINE_STRNCMP( m_header.tag, "PKM 10", 6 ) == 0, "Bad or not ETC1 file" );
+        MENGINE_ASSERTION_FATAL( StdString::strncmp( m_header.tag, "PKM 10", 6 ) == 0, "Bad or not ETC1 file" );
         MENGINE_ASSERTION_FATAL( m_header.texWidth >= m_header.origWidth, "Bad ETC1 file" );
         MENGINE_ASSERTION_FATAL( m_header.texWidth - m_header.origWidth < 4, "Bad ETC1 file" );
         MENGINE_ASSERTION_FATAL( m_header.texHeight >= m_header.origHeight, "Bad ETC1 file" );

@@ -17,7 +17,7 @@ namespace Mengine
         template<class T>
         static void makeVariableData( OpenGLRenderProgramVariable::ProgramVariableDesc & _variable, Vector<T> & _container, const Char * _uniform, const T * _values, uint32_t _size, uint32_t _count )
         {
-            MENGINE_STRCPY( _variable.uniform, _uniform );
+            StdString::strcpy( _variable.uniform, _uniform );
             _variable.offset = (uint32_t)_container.size();
             _variable.size = _size;
             _variable.count = _count;

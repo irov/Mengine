@@ -461,6 +461,15 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PickerService::handleAccelerometerEvent( const InputAccelerometerEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
         MENGINE_VECTOR_AUX( m_states );

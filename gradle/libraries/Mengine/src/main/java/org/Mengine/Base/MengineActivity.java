@@ -2,17 +2,27 @@ package org.Mengine.Base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.RelativeLayout;
 
-import org.libsdl.app.SDLActivity;
-import org.libsdl.app.SDLSurface;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,9 +35,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
-public class MengineActivity extends SDLActivity {
+public class MengineActivity extends AppCompatActivity {
     public static final String TAG = "MengineActivity";
+
+    private static native Object AndroidMain_bootstrap(String nativeLibraryDir, String[] _args);
+    private static native void AndroidMain_destroy(Object application);
 
     private static native void AndroidEnv_setMengineAndroidActivityJNI(Object activity);
     private static native void AndroidEnv_removeMengineAndroidActivityJNI();
@@ -46,37 +60,41 @@ public class MengineActivity extends SDLActivity {
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
     private static native void AndroidNativePython_call(String plugin, String method, Object []args);
 
+    public static native void AndroidPlatform_surfaceCreatedEvent(Surface surface);
+    public static native void AndroidPlatform_surfaceDestroyedEvent(Surface surface);
+    public static native void AndroidPlatform_surfaceChangedEvent(Surface surface, int surfaceWidth, int surfaceHeight, int deviceWidth, int deviceHeight, float rate);
+    public static native void AndroidPlatform_keyEvent(boolean isDown, int keyCode, int repeatCount);
+    public static native void AndroidPlatform_textEvent(int unicode);
+    public static native void AndroidPlatform_touchEvent(int action, int pointerId, float x, float y, float pressure);
+    public static native void AndroidPlatform_accelerationEvent(float x, float y, float z);
+    public static native void AndroidPlatform_pauseEvent();
+    public static native void AndroidPlatform_resumeEvent();
+    public static native void AndroidPlatform_clipboardChangedEvent();
+    public static native void AndroidPlatform_windowFocusChangedEvent( boolean focus );
+    public static native void AndroidPlatform_quitEvent();
+
     private boolean m_initializePython;
     private boolean m_destroy;
+
+    private Object m_nativeApplication;
 
     private static Map<String, Integer> m_requestCodes = new HashMap<>();
     private Map<String, MengineSemaphore> m_semaphores;
 
-    //private boolean mBrokenLibraries = false;
+    private Thread m_threadMain;
 
-    //RelativeLayout m_contentView;
+    private MengineCommandHandler m_commandHandler;
+
+    private RelativeLayout m_contentView;
+
+    private MengineSurfaceView m_surfaceView;
+
+    private MengineSoftInput m_softInput;
+
+    private MengineClipboard m_clipboard;
 
     public MengineActivity() {
-    }
-
-    @Override
-    public String[] getLibraries() {
-        return new String[] {
-            "SDL2",
-            "SDLApplication"
-        };
-    }
-
-    @Override
-    public void setOrientationBis(int w, int h, boolean resizable, String hint) {
-        // Empty
-    }
-
-    @Override
-    public String getMainSharedObject() {
-        String mainSharedObject = this.getApplicationInfo().nativeLibraryDir + "/" + "libSDLApplication.so";
-
-        return mainSharedObject;
+        super();
     }
 
     public boolean isDevelopmentMode() {
@@ -237,27 +255,24 @@ public class MengineActivity extends SDLActivity {
     }
 
     public ViewGroup getContentViewGroup() {
-        View view = SDLActivity.getContentView();
-
-        ViewGroup viewGroup = (ViewGroup)view;
-
-        return viewGroup;
-    }
-
-    /*
-    public ViewGroup getContentViewGroup() {
         ViewGroup viewGroup = (ViewGroup)m_contentView;
 
         return viewGroup;
-    }*/
-
-    /*
-    public static Context getContext() {
-        Context context = SDLActivity.getContext();
-
-        return context;
     }
-     */
+
+    public Surface getSurface() {
+        if (m_surfaceView == null) {
+            return null;
+        }
+
+        Surface surface = m_surfaceView.getSurface();
+
+        return surface;
+    }
+
+    MengineSurfaceView getSurfaceView() {
+        return m_surfaceView;
+    }
 
     protected void finishWithAlertDialog(String format, Object... args) {
         MengineUtils.finishActivityWithAlertDialog(this, format, args);
@@ -272,52 +287,15 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        m_initializePython = false;
-        m_destroy = false;
-
-        m_semaphores = new HashMap<>();
-
-        int orientation = getResources().getInteger(R.integer.app_screen_orientation);
-
-        this.setRequestedOrientation(orientation);
-
-        /*
-        RelativeLayout contentView = new RelativeLayout(this);
-        this.setContentView(contentView);
-        m_contentView = contentView;
-         */
-
-        this.setState("activity.lifecycle", "create");
-
-        this.setState("activity.init", "start");
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         try {
-            super.onCreate(savedInstanceState);
+            Thread.currentThread().setName("MengineActivity");
         } catch (Exception e) {
-            this.setState("activity.init", "sdl_exception");
-
-            MengineAnalytics.buildEvent("mng_activity_init_failed")
-                .addParameterException("reason", e)
-                .logAndFlush();
-
-            this.finishWithAlertDialog("[ERROR] SDL create exception: %s"
+            MengineLog.logMessage(TAG, "modify activity thread name exception: %s"
                 , e.getMessage()
             );
-
-            return;
-        }
-
-        if (mBrokenLibraries == true) {
-            this.setState("activity.init", "sdl_broken_libraries");
-
-            MengineAnalytics.buildEvent("mng_activity_init_failed")
-                .addParameterString("reason", "sdl broken libraries")
-                .logAndFlush();
-
-            this.finishWithAlertDialog("[ERROR] SDL broken libraries");
-
-            return;
         }
 
         MengineApplication application = (MengineApplication)this.getApplication();
@@ -328,11 +306,70 @@ public class MengineActivity extends SDLActivity {
             return;
         }
 
+        MengineLog.logMessageRelease(TAG, "onCreate");
+
+        this.setState("activity.lifecycle", "create");
+        this.setState("activity.init", "begin");
+
+        m_initializePython = false;
+        m_destroy = false;
+
+        m_commandHandler = new MengineCommandHandler(Looper.getMainLooper(), this);
+        m_semaphores = new HashMap<>();
+
+        this.setState("activity.init", "setup_orientation");
+
+        int orientation = getResources().getInteger(R.integer.app_screen_orientation);
+
+        this.setRequestedOrientation(orientation);
+
+        this.setState("activity.init", "setup_relativelayout");
+
+        RelativeLayout contentView = new RelativeLayout(this);
+
+        m_contentView = contentView;
+
+        this.setState("activity.init", "setup_surface");
+
+        CountDownLatch runLatch = new CountDownLatch(1);
+
+        MengineSurfaceView surface = new MengineSurfaceView(this, runLatch);
+
+        m_surfaceView = surface;
+
+        m_contentView.addView(m_surfaceView);
+
+        this.setState("activity.init", "setup_softinput");
+
+        MengineSoftInput softInput = new MengineSoftInput(this, m_surfaceView);
+
+        m_softInput = softInput;
+
+        m_contentView.addView(m_softInput);
+
+        this.setState("activity.init", "setup_contentview");
+
+        this.setContentView(m_contentView);
+
+        this.setState("activity.init", "setup_clipboard");
+
+        MengineClipboard clipboard = new MengineClipboard(this);
+
+        m_clipboard = clipboard;
+
+        this.setState("activity.init", "bootstrap");
+
         AndroidEnv_setMengineAndroidActivityJNI(this);
 
-        this.setState("activity.init", "create");
+        ApplicationInfo applicationInfo = application.getApplicationInfo();
+        String nativeLibraryDir = applicationInfo.nativeLibraryDir;
+        String options = application.getApplicationOptions();
 
-        MengineLog.logMessageRelease(TAG, "onCreate");
+        String[] optinsArgs = options.split(" ");
+
+        m_nativeApplication = AndroidMain_bootstrap(nativeLibraryDir, optinsArgs);
+
+        this.setState("activity.init", "plugin_create");
 
         List<MenginePlugin> plugins = this.getPlugins();
 
@@ -369,30 +406,92 @@ public class MengineActivity extends SDLActivity {
             }
         }
 
-        this.setState("activity.init", "completed");
+        this.setState("activity.init", "setup_main");
+
+        MengineMain main = new MengineMain(this, m_nativeApplication, runLatch);
+
+        m_threadMain = new Thread(main);
+        m_threadMain.start();
+
+        this.setState("activity.init", "end");
 
         this.setState("activity.lifecycle", "created");
+    }
 
-        /*
-        MengineGLSurfaceView surface = new MengineGLSurfaceView(this);
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
 
-        MengineGLSurfaceRenderer renderer = new MengineGLSurfaceRenderer();
-        surface.setRenderer(renderer);
+        this.setState("activity.lifecycle", "post_create");
 
-        m_contentView.addView(surface);
+        MengineLog.logMessage(TAG, "onPostCreate");
+    }
 
+    @SuppressWarnings("deprecation")
+    private void syncFullscreenWindow() {
         Window window = this.getWindow();
 
-        int flags = View.SYSTEM_UI_FLAG_FULLSCREEN |
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowInsetsController insetsController = window.getInsetsController();
+            if (insetsController == null) {
+                MengineLog.logError(TAG, "insets controller is null");
+
+                return;
+            }
+
+            insetsController.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+            insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+        } else {
+            int flags = View.SYSTEM_UI_FLAG_FULLSCREEN |
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.INVISIBLE;
-                window.getDecorView().setSystemUiVisibility(flags);
-                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-         */
+
+            View decorView = window.getDecorView();
+            decorView.setSystemUiVisibility(flags);
+
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        this.setState("activity.lifecycle", "window_focus_changed:" + (hasFocus == true ? "true" : "false"));
+
+        MengineLog.logMessage(TAG, "onWindowFocusChanged focus: %s"
+            , hasFocus
+        );
+
+        if (hasFocus == true) {
+            this.syncFullscreenWindow();
+        }
+
+        MengineActivity.AndroidPlatform_windowFocusChangedEvent(hasFocus);
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        this.setState("activity.lifecycle", "attached_to_window");
+
+        MengineLog.logMessage(TAG, "onAttachedToWindow");
+
+        this.syncFullscreenWindow();
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        this.setState("activity.lifecycle", "detached_from_window");
+
+        MengineLog.logMessage(TAG, "onDetachedFromWindow");
     }
 
     @Override
@@ -401,7 +500,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.lifecycle", "save_instance_state");
 
-        MengineLog.logMessageRelease(TAG, "onSaveInstanceState");
+        MengineLog.logMessage(TAG, "onSaveInstanceState");
     }
 
     @Override
@@ -410,7 +509,7 @@ public class MengineActivity extends SDLActivity {
 
         this.setState("activity.lifecycle", "restore_instance_state");
 
-        MengineLog.logMessageRelease(TAG, "onRestoreInstanceState: %s"
+        MengineLog.logMessage(TAG, "onRestoreInstanceState: %s"
             , savedInstanceState
         );
     }
@@ -581,6 +680,10 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logMessageRelease(TAG, "onPause");
 
+        if (m_surfaceView != null) {
+            m_surfaceView.handlePause();
+        }
+
         MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
@@ -603,6 +706,10 @@ public class MengineActivity extends SDLActivity {
         this.setState("activity.lifecycle", "resume");
 
         MengineLog.logMessageRelease(TAG, "onResume");
+
+        if (m_surfaceView != null) {
+            m_surfaceView.handleResume();
+        }
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
@@ -656,14 +763,6 @@ public class MengineActivity extends SDLActivity {
 
         MengineLog.logMessageRelease(TAG, "onDestroy");
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logMessage(TAG, "onDestroy: broken libraries");
-
-            super.onDestroy();
-
-            return;
-        }
-
         MengineApplication application = (MengineApplication)this.getApplication();
 
         if (application.isInvalidInitialize() == true) {
@@ -690,9 +789,31 @@ public class MengineActivity extends SDLActivity {
             p.setActivity(null);
         }
 
-        m_semaphores = null;
+        AndroidPlatform_quitEvent();
+
+        try {
+            m_threadMain.join();
+        } catch (InterruptedException e) {
+            MengineLog.logError(TAG, "thread main join exception: %s"
+                , e.getMessage()
+            );
+        }
+
+        AndroidMain_destroy(m_nativeApplication);
+        m_nativeApplication = null;
+
+        try {
+            m_threadMain.join();
+        } catch (InterruptedException e) {
+            MengineLog.logError(TAG, "thread main join exception: %s"
+                , e.getMessage()
+            );
+        }
 
         AndroidEnv_removeMengineAndroidActivityJNI();
+
+        m_semaphores = null;
+        m_commandHandler = null;
 
         super.onDestroy();
     }
@@ -783,12 +904,6 @@ public class MengineActivity extends SDLActivity {
             , event.getScanCode()
         );
 
-        if (mBrokenLibraries == true) {
-            MengineLog.logWarning(TAG, "dispatchKeyEvent: broken libraries");
-
-            return super.dispatchKeyEvent(event);
-        }
-
         MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginKeyListener> listeners = this.getKeyListeners();
@@ -804,11 +919,6 @@ public class MengineActivity extends SDLActivity {
         }
 
         return super.dispatchKeyEvent(event);
-    }
-
-    @Override
-    public SDLSurface createSDLSurface(Context context) {
-        return new MengineSurface(context);
     }
 
     /***********************************************************************************************
@@ -998,6 +1108,58 @@ public class MengineActivity extends SDLActivity {
         MengineUtils.performOnMainThread(() -> {
             cb.call();
         });
+    }
+
+    /***********************************************************************************************
+     * Keyboard Methods
+     **********************************************************************************************/
+
+    public void showKeyboard() {
+        MengineLog.logMessage(TAG, "showKeyboard");
+
+        m_commandHandler.post(() -> {
+            m_softInput.showKeyboard();
+        });
+    }
+
+    public void hideKeyboard() {
+        MengineLog.logMessage(TAG, "hideKeyboard");
+
+        m_commandHandler.post(() -> {
+            m_softInput.hideKeyboard();
+        });
+    }
+
+    public boolean isShowKeyboard() {
+        return m_softInput.isShowKeyboard();
+    }
+
+    /***********************************************************************************************
+     * Clipboard Methods
+     **********************************************************************************************/
+
+    public boolean hasClipboardText() {
+        boolean result = m_clipboard.hasText();
+
+        return result;
+    }
+
+    public String getClipboardText() {
+        String text = m_clipboard.getText();
+
+        return text;
+    }
+
+    public void setClipboardText(String text) {
+        m_clipboard.setText(text);
+    }
+
+    /***********************************************************************************************
+     * Alert Methods
+     **********************************************************************************************/
+
+    public void showAlertDialog(String title, String format, Object ... args) {
+        MengineUtils.showAlertDialogWithCb(this, () -> {}, title, format, args);
     }
 
     /***********************************************************************************************

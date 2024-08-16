@@ -9,7 +9,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void memoryZero( void * _dst, size_t _size )
         {
-            MENGINE_MEMSET( _dst, 0x00, _size );
+            StdString::memset( _dst, 0x00, _size );
         }
         //////////////////////////////////////////////////////////////////////////
     }

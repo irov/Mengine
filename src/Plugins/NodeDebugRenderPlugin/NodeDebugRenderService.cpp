@@ -30,6 +30,7 @@
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/PrefetcherHelper.h"
+#include "Kernel/GlobalInputHandlerHelper.h"
 
 #include <iomanip>
 
@@ -70,10 +71,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebugRenderService::_initializeService()
     {
-        const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-            ->getGlobalInputHandler();
-
-        m_globalKeyHandlerF9 = globalHandleSystem->addGlobalKeyHandler( KC_F9, [this]( const InputKeyEvent & _event )
+        m_globalKeyHandlerF9 = Helper::addGlobalKeyHandler( KC_F9, true, [this]( const InputKeyEvent & _event )
         {
             MENGINE_UNUSED( _event );
             this->toggleDebugText_();
@@ -104,10 +102,7 @@ namespace Mengine
     {
         if( m_globalKeyHandlerF9 != INVALID_UNIQUE_ID )
         {
-            const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-                ->getGlobalInputHandler();
-
-            globalHandleSystem->removeGlobalHandler( m_globalKeyHandlerF9 );
+            Helper::removeGlobalHandler( m_globalKeyHandlerF9 );
             m_globalKeyHandlerF9 = INVALID_UNIQUE_ID;
         }
 

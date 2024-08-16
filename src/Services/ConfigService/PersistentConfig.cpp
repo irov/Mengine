@@ -116,7 +116,7 @@ namespace Mengine
                 return false;
             }
 
-            size_t buffer_size = MENGINE_STRLEN( buffer );
+            size_t buffer_size = StdString::strlen( buffer );
 
             if( stream->write( buffer, buffer_size ) != buffer_size )
             {

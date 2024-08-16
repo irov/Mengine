@@ -177,6 +177,22 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::handleAccelerometerEvent( const InputAccelerometerEvent & _event )
+    {
+        bool handle = this->_handleAccelerometerEvent( _event );
+
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::_handleAccelerometerEvent( const InputAccelerometerEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ModuleBase::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
         bool handle = this->_handleMouseButtonEvent( _event );

@@ -497,6 +497,16 @@ namespace Mengine
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PlayerService::handleAccelerometerEvent( const InputAccelerometerEvent & _event )
+    {
+        if( m_globalInputHandler != nullptr )
+        {
+            m_globalInputHandler->handleAccelerometerEvent( _event );
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
         if( m_globalInputHandler != nullptr )

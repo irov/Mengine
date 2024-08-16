@@ -70,7 +70,7 @@ namespace Mengine
         {
             const Char * str_filePath = _filePath.c_str();
 
-            const Char * dot_find = MENGINE_STRRCHR( str_filePath, '.' );
+            const Char * dot_find = StdString::strrchr( str_filePath, '.' );
 
             if( dot_find == nullptr )
             {

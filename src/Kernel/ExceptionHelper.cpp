@@ -32,20 +32,20 @@ namespace Mengine
 
         Char exception_msg[MENGINE_EXCEPTION_MAX_MESSAGE] = {'\0'};
 
-        MENGINE_STRCAT( exception_msg, "message: " );
-        MENGINE_STRCAT( exception_msg, foramt_msg );
-        MENGINE_STRCAT( exception_msg, "\n" );
+        StdString::strcat( exception_msg, "message: " );
+        StdString::strcat( exception_msg, foramt_msg );
+        StdString::strcat( exception_msg, "\n" );
 
-        MENGINE_STRCAT( exception_msg, "file: " );
-        MENGINE_STRCAT( exception_msg, m_file );
-        MENGINE_STRCAT( exception_msg, "\n" );
+        StdString::strcat( exception_msg, "file: " );
+        StdString::strcat( exception_msg, m_file );
+        StdString::strcat( exception_msg, "\n" );
 
         Char format_line[32] = {'\0'};
         MENGINE_SNPRINTF( format_line, 32, "%u", m_line );
 
-        MENGINE_STRCAT( exception_msg, "line: " );
-        MENGINE_STRCAT( exception_msg, format_line );
-        MENGINE_STRCAT( exception_msg, "\n" );
+        StdString::strcat( exception_msg, "line: " );
+        StdString::strcat( exception_msg, format_line );
+        StdString::strcat( exception_msg, "\n" );
 
         throw Exception( exception_msg );
     }

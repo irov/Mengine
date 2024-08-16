@@ -2,6 +2,7 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/AndroidAssetServiceInterface.h"
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidActivityHelper.h"
@@ -70,7 +71,7 @@ namespace Mengine
         Char fullPath[MENGINE_MAX_PATH] = {'\0'};
         this->getFullPath( _filePath, fullPath );
 
-        if( PLATFORM_SERVICE()
+        if( ANDROID_ASSET_SERVICE()
             ->existFile( fullPath ) == true )
         {
             return true;

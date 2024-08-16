@@ -22,6 +22,9 @@ namespace Mengine
         void close( AAsset * _asset ) const override;
 
     public:
+        bool existFile( const Char * _path ) const override;
+
+    public:
         size_t read( AAsset * _asset, void * _buffer, size_t _size ) const override;
         int64_t size( AAsset * _asset ) const override;
         int64_t seek( AAsset * _asset, int64_t _offset, int _whence ) const override;

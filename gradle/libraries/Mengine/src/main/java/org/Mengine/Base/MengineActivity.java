@@ -514,26 +514,6 @@ public class MengineActivity extends AppCompatActivity {
         );
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        this.setState("activity.lifecycle", "save_instance_state");
-
-        MengineLog.logMessageRelease(TAG, "onSaveInstanceState");
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        this.setState("activity.lifecycle", "restore_instance_state");
-
-        MengineLog.logMessageRelease(TAG, "onRestoreInstanceState: %s"
-            , savedInstanceState
-        );
-    }
-
     public void quitMengineApplication() {
         AndroidEnvironmentService_quitMengineAndroidActivityJNI();
     }
@@ -923,8 +903,6 @@ public class MengineActivity extends AppCompatActivity {
             , event.getKeyCode()
             , event.getScanCode()
         );
-
-        MengineApplication application = (MengineApplication)this.getApplication();
 
         MengineApplication application = (MengineApplication)this.getApplication();
 

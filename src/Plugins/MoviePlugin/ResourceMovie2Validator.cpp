@@ -223,7 +223,7 @@ namespace Mengine
                     );
 
                     desc->successful = false;
-                }
+                }break;
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
                     ae_float_t immutable_scale_x;

@@ -628,14 +628,6 @@ public class MengineUtils {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         byte [] buffer = new byte[1024];
-        while ((len = stream.read(buffer)) != -1) {
-            out.write(buffer, 0, len);
-        }
-        out.close();
-
-        return out.toString("UTF-8");
-    }
-
         int len;
         while ((len = stream.read(buffer)) != -1) {
             out.write(buffer, 0, len);

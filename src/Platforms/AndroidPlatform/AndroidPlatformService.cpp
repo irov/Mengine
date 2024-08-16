@@ -388,9 +388,18 @@ namespace Mengine
 
         this->destroyWindow_();
 
+        m_nativeMutex = nullptr;
+
         m_platformTags.clear();
 
+        m_eventsMutex->lock();
+        m_eventsAux.clear();
+        m_events.clear();
+        m_eventsMutex->unlock();
+
         m_eventsMutex = nullptr;
+
+        m_platformTags.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::runPlatform()
@@ -1423,9 +1432,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceCreatedEvent( ANativeWindow * _nativeWindow )
     {
-        m_nativeMutex->lock();
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
         m_nativeWindow = _nativeWindow;
-        m_nativeMutex->unlock();
 
         PlatformUnionEvent ev;
         ev.type = PlatformUnionEvent::PET_SURFACE_CREATE;
@@ -1438,9 +1447,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceDestroyedEvent( ANativeWindow * _nativeWindow )
     {
-        m_nativeMutex->lock();
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
         m_nativeWindow = _nativeWindow;
-        m_nativeMutex->unlock();
 
         PlatformUnionEvent ev;
         ev.type = PlatformUnionEvent::PET_SURFACE_DESTROY;
@@ -1453,9 +1462,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceChangedEvent( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate )
     {
-        m_nativeMutex->lock();
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
         m_nativeWindow = _nativeWindow;
-        m_nativeMutex->unlock();
 
         PlatformUnionEvent ev;
         ev.type = PlatformUnionEvent::PET_SURFACE_CHANGED;

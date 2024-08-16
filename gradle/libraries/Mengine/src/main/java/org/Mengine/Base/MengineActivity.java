@@ -297,9 +297,7 @@ public class MengineActivity extends AppCompatActivity {
             );
         }
 
-        ApplicationInfo applicationInfo = application.getApplicationInfo();
-        String nativeLibraryDir = applicationInfo.nativeLibraryDir;
-        String options = application.getApplicationOptions();
+        MengineApplication application = (MengineApplication)this.getApplication();
 
         if (application.isInvalidInitialize() == true) {
             this.finishWithAlertDialog("[ERROR] Application invalid initialize");
@@ -634,6 +632,8 @@ public class MengineActivity extends AppCompatActivity {
         this.setState("activity.lifecycle", "start");
 
         MengineLog.logMessageRelease(TAG, "onStart");
+
+        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 

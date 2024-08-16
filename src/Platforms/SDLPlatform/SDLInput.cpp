@@ -110,7 +110,7 @@ namespace Mengine
 
                 Sint32 wheel_vertically = _event.wheel.y;
 
-                Helper::pushMouseWheelEvent( point.x, point.y, WC_CENTRAL, wheel_vertically );
+                Helper::pushMouseWheelEvent( point.x, point.y, 0.f, WC_CENTRAL, wheel_vertically );
             }break;
         case SDL_KEYDOWN:
         case SDL_KEYUP:
@@ -136,7 +136,7 @@ namespace Mengine
 
                 m_keyDown[code] = isDown;
 
-                Helper::pushKeyEvent( point.x, point.y, code, isDown, false );
+                Helper::pushKeyEvent( point.x, point.y, 0.f, code, isDown, false );
 
 #if defined(MENGINE_PLATFORM_MOBILE)
                 if( code == KC_RETURN )
@@ -162,7 +162,7 @@ namespace Mengine
                 UNICODE_SYSTEM()
                     ->utf8ToUnicode( text, MENGINE_UNKNOWN_SIZE, text_code, SDL_TEXTINPUTEVENT_TEXT_SIZE, &text_code_size );
 
-                Helper::pushTextEvent( point.x, point.y, text_code );
+                Helper::pushTextEvent( point.x, point.y, 0.f, text_code );
             }break;
         case SDL_MOUSEMOTION:
             {
@@ -178,7 +178,7 @@ namespace Mengine
                 mt::vec2f delta;
                 this->calcCursorPosition_( _sdlWindow, xrel, yrel, &delta );
 
-                Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, delta.x, delta.y, 0.f );
+                Helper::pushMouseMoveEvent( TC_TOUCH0, point.x, point.y, delta.x, delta.y, 0.f, 0.f );
             }break;
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP:
@@ -228,7 +228,7 @@ namespace Mengine
                 float dy = _event.tfinger.dy;
                 float pressure = _event.tfinger.pressure;
 
-                Helper::pushMouseMoveEvent( fingerIndex, x, y, dx, dy, pressure );
+                Helper::pushMouseMoveEvent( fingerIndex, x, y, dx, dy, pressure, 0.f );
             }break;
         case SDL_FINGERDOWN:
             {

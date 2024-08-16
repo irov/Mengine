@@ -9,9 +9,9 @@
 + (size_t)NSStringCopyToString:(NSString *) _src outString:(Mengine::Char *const _Nonnull) _dst withCapacity:(size_t) _capacity {
     const Mengine::Char * src_str = [_src UTF8String];
             
-    MENGINE_STRNCPY( _dst, src_str, _capacity );
+    Mengine::StdString::strncpy( _dst, src_str, _capacity );
             
-    size_t len = MENGINE_STRLEN( _dst );
+    size_t len = Mengine::StdString::strlen( _dst );
             
     return len;
 }

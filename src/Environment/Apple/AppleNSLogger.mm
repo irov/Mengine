@@ -33,8 +33,8 @@ namespace Mengine
 
             MENGINE_UNUSED( datestampSize );
             
-            MENGINE_STRCAT( buffer, datestamp );
-            MENGINE_STRCAT( buffer, " " );
+            StdString::strcat( buffer, datestamp );
+            StdString::strcat( buffer, " " );
         }
 
         if( message.flag & LFLAG_SYMBOLSTAMP )
@@ -43,18 +43,18 @@ namespace Mengine
 
             Char symbol = Helper::getLoggerLevelSymbol( level );
 
-            MENGINE_STRNCAT( buffer, &symbol, 1 );
-            MENGINE_STRCAT( buffer, " " );
+            StdString::strncat( buffer, &symbol, 1 );
+            StdString::strcat( buffer, " " );
         }
 
         if( message.flag & LFLAG_CATEGORYSTAMP )
         {
             const Char * category = message.category;
             
-            MENGINE_STRCAT( buffer, "[" );
-            MENGINE_STRCAT( buffer, category );
-            MENGINE_STRCAT( buffer, "]" );
-            MENGINE_STRCAT( buffer, " " );
+            StdString::strcat( buffer, "[" );
+            StdString::strcat( buffer, category );
+            StdString::strcat( buffer, "]" );
+            StdString::strcat( buffer, " " );
         }
         
         if( message.flag & LFLAG_THREADSTAMP )
@@ -64,8 +64,8 @@ namespace Mengine
 
             MENGINE_UNUSED( threadstampSize );
             
-            MENGINE_STRCAT( buffer, threadstamp );
-            MENGINE_STRCAT( buffer, " " );
+            StdString::strcat( buffer, threadstamp );
+            StdString::strcat( buffer, " " );
         }
 
         if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
@@ -78,23 +78,23 @@ namespace Mengine
             
             MENGINE_UNUSED( functionstampSize );
 
-            MENGINE_STRCAT( buffer, functionstamp );
-            MENGINE_STRCAT( buffer, " " );
+            StdString::strcat( buffer, functionstamp );
+            StdString::strcat( buffer, " " );
         }
 
         const Char * data = message.data;
-        size_t size = MENGINE_STRLEN( data );
+        size_t size = StdString::strlen( data );
 
-        size_t message_stamplen = MENGINE_STRLEN( buffer );
+        size_t message_stamplen = StdString::strlen( buffer );
 
         if( size + message_stamplen >= MENGINE_LOGGER_MAX_MESSAGE )
         {
             size = MENGINE_LOGGER_MAX_MESSAGE - message_stamplen - 1;
         }
 
-        MENGINE_STRNCAT( buffer, data, size );
+        StdString::strncat( buffer, data, size );
 
-        size_t buffer_len = MENGINE_STRLEN( buffer );
+        size_t buffer_len = StdString::strlen( buffer );
 
         size_t buffer_packages = buffer_len / MENGINE_APPLE_LOG_MAX_MESSAGE;
         size_t buffer_tail = buffer_len % MENGINE_APPLE_LOG_MAX_MESSAGE;

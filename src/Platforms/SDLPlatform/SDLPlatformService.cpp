@@ -241,25 +241,6 @@ namespace Mengine
         return Project_ExtraPreferencesFolderNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    float SDLPlatformService::getJoystickAxis( uint32_t _index ) const
-    {
-        if( m_sdlAccelerometer == nullptr )
-        {
-            return 0.f;
-        }
-
-        float axis = SDL_JoystickGetAxis( m_sdlAccelerometer, _index );
-
-        const float inv_maxint32f = 1.f / 32767.f;
-
-        axis *= inv_maxint32f;
-
-#if defined(MENGINE_PLATFORM_IOS)
-        axis *= SDL_IPHONE_MAX_GFORCE;
-#endif
-        return axis;
-    }
-    //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatformService::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const
     {
         MENGINE_UNUSED( _fontName );
@@ -2474,11 +2455,6 @@ namespace Mengine
 
         return false;
 #endif
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::sleep( uint32_t _ms )
-    {
-        SDL_Delay( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::messageBox( const Char * _caption, const Char * _format, ... ) const

@@ -95,7 +95,7 @@ namespace Mengine
         
         const Char * idfa_str = [m_idfa UTF8String];
         
-        MENGINE_STRCPY( _idfa, idfa_str );
+        StdString::strcpy( _idfa, idfa_str );
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::makeIDFA_()

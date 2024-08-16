@@ -124,9 +124,6 @@ namespace Mengine
         void onEvent( const ConstString & _event, const Params & _params ) override;
 
     public:
-        float getJoystickAxis( uint32_t _index ) const override;
-
-    public:
         size_t getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const override;
 
     public:
@@ -157,9 +154,6 @@ namespace Mengine
     public:
         bool createDirectoryUserPicture( const Char * _directoryPath, const Char * _file, const void * _data, size_t _size ) override;
         bool createDirectoryUserMusic( const Char * _directoryPath, const Char * _file, const void * _data, size_t _size ) override;
-
-    public:
-        void sleep( uint32_t _ms ) override;
 
     protected:
         void messageBox( const Char * _caption, const Char * _format, ... ) const override;

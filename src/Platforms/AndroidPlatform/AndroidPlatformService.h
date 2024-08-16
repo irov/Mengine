@@ -158,9 +158,9 @@ namespace Mengine
         bool getClipboardText( Char * _value, size_t _capacity ) const override;
 
     protected:
-        void androidNativeSurfaceCreated( ANativeWindow * _nativeWindow ) override;
-        void androidNativeSurfaceDestroyed( ANativeWindow * _nativeWindow ) override;
-        void androidNativeSurfaceChanged( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate ) override;
+        void androidNativeSurfaceCreatedEvent( ANativeWindow * _nativeWindow ) override;
+        void androidNativeSurfaceDestroyedEvent( ANativeWindow * _nativeWindow ) override;
+        void androidNativeSurfaceChangedEvent( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate ) override;
 
     protected:
         ETouchCode acquireFingerIndex_( jint _fingerId );
@@ -169,19 +169,16 @@ namespace Mengine
 
     protected:
         void androidNativeTouchEvent( jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure ) override;
-
-    protected:
         void androidNativeAccelerationEvent( jfloat _x, jfloat _y, jfloat _z ) override;
-
-    protected:
         void androidNativeKeyEvent( jboolean _isDown, jint _keyCode, jint _repeatCount ) override;
-
-    protected:
         void androidNativeTextEvent( jint _unicode ) override;
-
-    protected:
         void androidNativePauseEvent() override;
         void androidNativeResumeEvent() override;
+        void androidNativeClipboardChangedEvent() override;
+        void androidNativeWindowFocusChangedEvent( jboolean _focus ) override;
+
+    protected:
+        void androidNativeQuitEvent() override;
 
     protected:
         bool createWindow_( const Resolution & _resolution, bool _fullscreen );
@@ -202,12 +199,20 @@ namespace Mengine
         {
             enum EPlatformEventType
             {
+                PET_QUIT,
                 PET_PAUSE,
                 PET_RESUME,
                 PET_SURFACE_CREATE,
                 PET_SURFACE_DESTROY,
                 PET_SURFACE_CHANGED,
+                PET_CLIPBOARD_CHANGED,
+                PET_WINDOW_FOCUS_CHANGED,
             } type;
+
+            struct PlatformQuitEvent
+            {
+                int32_t dummy;
+            };
 
             struct PlatformPauseEvent
             {
@@ -241,6 +246,16 @@ namespace Mengine
                 jfloat rate;
             };
 
+            struct PlatformClipboardChangedEvent
+            {
+                int32_t dummy;
+            };
+
+            struct PlatformWindowFocusChangedEvent
+            {
+                jboolean focus;
+            };
+
             union
             {
                 PlatformPauseEvent pause;
@@ -248,6 +263,8 @@ namespace Mengine
                 PlatformSurfaceCreateEvent surfaceCreate;
                 PlatformSurfaceDestroyEvent surfaceDestroy;
                 PlatformSurfaceChangedEvent surfaceChanged;
+                PlatformClipboardChangedEvent clipboardChanged;
+                PlatformWindowFocusChangedEvent windowFocusChanged;
             } data;
         };
 
@@ -257,6 +274,8 @@ namespace Mengine
         void surfaceCreateEvent_( const PlatformUnionEvent::PlatformSurfaceCreateEvent & _event );
         void surfaceDestroyEvent_( const PlatformUnionEvent::PlatformSurfaceDestroyEvent & _event );
         void surfaceChangedEvent_( const PlatformUnionEvent::PlatformSurfaceChangedEvent & _event );
+        void clipboardChangedEvent_( const PlatformUnionEvent::PlatformClipboardChangedEvent & _event );
+        void windowFocusChangedEvent_( const PlatformUnionEvent::PlatformWindowFocusChangedEvent & _event );
 
     protected:
         void pushEvent( const PlatformUnionEvent & _event );

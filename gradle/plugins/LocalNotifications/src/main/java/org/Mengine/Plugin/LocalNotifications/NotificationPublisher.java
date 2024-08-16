@@ -11,22 +11,14 @@ public class NotificationPublisher extends BroadcastReceiver {
     public static String NOTIFICATION_ID = "NOTIFICATION_ID";
     public static String NOTIFICATION = "notification";
 
-    @SuppressWarnings("deprecation")
-    private Notification getParcelableExtra(Intent intent) {
-        Notification notification;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            notification = intent.getParcelableExtra(NOTIFICATION, Notification.class);
-        } else {
-            notification = intent.getParcelableExtra(NOTIFICATION);
-        }
-
-        return notification;
-    }
-
     public void onReceive(Context context, Intent intent) {
         NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Notification notification = this.getParcelableExtra(intent);
+        if (notificationManager == null) {
+            return;
+        }
+
+        Notification notification = MengineUtils.getParcelableExtra(intent, NOTIFICATION);
 
         int id = intent.getIntExtra(NOTIFICATION_ID, 0);
         notificationManager.notify(id, notification);

@@ -152,28 +152,13 @@ public class MengineApplication extends Application {
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private static ApplicationInfo getPackageApplicationInfo(PackageManager packageManager, String packageName) throws PackageManager.NameNotFoundException {
-        ApplicationInfo applicationInfo;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            PackageManager.ApplicationInfoFlags flags = PackageManager.ApplicationInfoFlags.of(PackageManager.GET_META_DATA);
-
-            applicationInfo = packageManager.getApplicationInfo(packageName, flags);
-        } else {
-            applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
-        }
-
-        return applicationInfo;
-    }
-
     public Bundle getMetaDataBundle() {
         Context context = this.getApplicationContext();
         String packageName = context.getPackageName();
         PackageManager packageManager = context.getPackageManager();
 
         try {
-            ApplicationInfo ai = MengineApplication.getPackageApplicationInfo(packageManager, packageName);
+            ApplicationInfo ai = MengineUtils.getPackageApplicationInfo(packageManager, packageName);
 
             Bundle bundle = ai.metaData;
 
@@ -367,23 +352,6 @@ public class MengineApplication extends Application {
         String OSVersion = Build.VERSION.RELEASE;
 
         return OSVersion;
-    }
-
-    @SuppressWarnings("deprecation")
-    private PackageInfo getPackageInfo(PackageManager manager, String packageName) {
-        PackageInfo packageInfo;
-
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                packageInfo = manager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0));
-            } else {
-                packageInfo = manager.getPackageInfo(packageName, 0);
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            return null;
-        }
-
-        return packageInfo;
     }
 
     private String getSecureAndroidId() {

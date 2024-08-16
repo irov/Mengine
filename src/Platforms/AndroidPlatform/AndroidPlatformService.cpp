@@ -73,37 +73,37 @@
 extern "C"
 {
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1surfaceCreated )(JNIEnv * env, jclass cls, jobject surface)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1surfaceCreatedEvent )(JNIEnv * env, jclass cls, jobject surface)
     {
         ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, surface );
 
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->androidNativeSurfaceCreated( nativeWindow );
+        platformExtension->androidNativeSurfaceCreatedEvent( nativeWindow );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1surfaceDestroyed )(JNIEnv * env, jclass cls, jobject surface)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1surfaceDestroyedEvent )(JNIEnv * env, jclass cls, jobject surface)
     {
         ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, surface );
 
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->androidNativeSurfaceDestroyed( nativeWindow );
+        platformExtension->androidNativeSurfaceDestroyedEvent( nativeWindow );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1surfaceChanged )(JNIEnv * env, jclass cls, jobject surface, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1surfaceChangedEvent )(JNIEnv * env, jclass cls, jobject surface, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate)
     {
         ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, surface );
 
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->androidNativeSurfaceChanged( nativeWindow, surfaceWidth, surfaceHeight, deviceWidth, deviceHeight, rate );
+        platformExtension->androidNativeSurfaceChangedEvent( nativeWindow, surfaceWidth, surfaceHeight, deviceWidth, deviceHeight, rate );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1keyEvent )(JNIEnv * env, jclass cls, jboolean isDown, jint keyCode, jint repeatCount)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1keyEvent )(JNIEnv * env, jclass cls, jboolean isDown, jint keyCode, jint repeatCount)
     {
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
                 ->getUnknown();
@@ -111,7 +111,7 @@ extern "C"
         platformExtension->androidNativeKeyEvent( isDown, keyCode, repeatCount );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1textEvent )(JNIEnv * env, jclass cls, jint unicode)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1textEvent )(JNIEnv * env, jclass cls, jint unicode)
     {
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
@@ -119,7 +119,7 @@ extern "C"
         platformExtension->androidNativeTextEvent( unicode );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1touchEvent )(JNIEnv * env, jclass cls, jint action, jint pointerId, jfloat x, jfloat y, jfloat pressure)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1touchEvent )(JNIEnv * env, jclass cls, jint action, jint pointerId, jfloat x, jfloat y, jfloat pressure)
     {
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
@@ -127,7 +127,7 @@ extern "C"
         platformExtension->androidNativeTouchEvent( action, pointerId, x, y, pressure );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1accelerationEvent )(JNIEnv * env, jclass cls, jfloat x, jfloat y, jfloat z)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1accelerationEvent )(JNIEnv * env, jclass cls, jfloat x, jfloat y, jfloat z)
     {
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
@@ -135,7 +135,7 @@ extern "C"
         platformExtension->androidNativeAccelerationEvent( x, y, z );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1pauseEvent )(JNIEnv * env, jclass cls)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1pauseEvent )(JNIEnv * env, jclass cls)
     {
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
@@ -143,12 +143,36 @@ extern "C"
         platformExtension->androidNativePauseEvent();
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_SURFACEVIEW_JAVA_INTERFACE( AndroidPlatform_1resumeEvent )(JNIEnv * env, jclass cls)
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1resumeEvent )(JNIEnv * env, jclass cls)
     {
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         platformExtension->androidNativeResumeEvent();
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1clipboardChangedEvent )(JNIEnv * env, jclass cls)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeClipboardChangedEvent();
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1windowFocusChangedEvent )(JNIEnv * env, jclass cls, jboolean _focus)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeWindowFocusChangedEvent( _focus );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1quitEvent )(JNIEnv * env, jclass cls)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeQuitEvent();
     }
     ///////////////////////////////////////////////////////////////////////
 }
@@ -314,6 +338,8 @@ namespace Mengine
         EGLint minor;
         if( ::eglInitialize( eglDisplay, &major, &minor ) == EGL_FALSE )
         {
+            LOGGER_ERROR( "[egl] invalid initialize" );
+
             return false;
         }
 
@@ -423,16 +449,19 @@ namespace Mengine
             {
                 APPLICATION_SERVICE()
                     ->flush();
-
-                if( m_eglDisplay != EGL_NO_DISPLAY && m_eglSurface != EGL_NO_SURFACE )
-                {
-                    ::eglSwapBuffers( m_eglDisplay, m_eglSurface );
-                }
             }
         }
 
         APPLICATION_SERVICE()
             ->endUpdate();
+
+        if( m_eglDisplay != EGL_NO_DISPLAY && m_eglSurface != EGL_NO_SURFACE )
+        {
+            if( ::eglSwapBuffers( m_eglDisplay, m_eglSurface ) == EGL_FALSE )
+            {
+                LOGGER_WARNING( "[egl] invalid swap buffers" );
+            }
+        }
 
         return true;
     }
@@ -542,13 +571,6 @@ namespace Mengine
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );
 
-        /*
-        if( m_sdlWindow != nullptr )
-        {
-            SDL_HideWindow( m_sdlWindow );
-        }
-         */
-        
         this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -741,41 +763,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::closeWindow()
     {
-        /*
-        if( m_sdlWindow != nullptr )
-        {
-            SDL_HideWindow( m_sdlWindow );
-        }
-         */
+        //Empty
         
         this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::minimizeWindow()
     {
-        /*
-        SDL_MinimizeWindow( m_sdlWindow );
-         */
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::setCursorPosition( const mt::vec2f & _pos )
     {
-        Resolution resolution;
-        if( this->getDesktopResolution( &resolution ) == false )
-        {
-            return;
-        }
-
-        uint32_t width = resolution.getWidth();
-        uint32_t height = resolution.getHeight();
-
-        int32_t wndPosX = static_cast<int32_t>(_pos.x * width);
-        int32_t wndPosY = static_cast<int32_t>(_pos.y * height);
-
-        // ! This function generates a mouse motion event !
-        /*
-        SDL_WarpMouseInWindow( m_sdlWindow, wndPosX, wndPosY );
-         */
+        INPUT_SERVICE()
+            ->setCursorPosition( TC_TOUCH0, _pos, 0.f );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::setCursorIcon( const ConstString & _icon )
@@ -1169,61 +1170,80 @@ namespace Mengine
 
         MENGINE_VA_LIST_END( args );
 
-        /*
         if( size_vsnprintf < 0 )
         {
             LOGGER_ERROR( "invalid message box format message '%s'"
                 , _format
             );
 
-            SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_INFORMATION, _caption, "invalid message box format message", nullptr );
+            return;
+        }
+
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        {
+            LOGGER_ERROR( "invalid message box [not exist activity]" );
 
             return;
         }
 
-        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_INFORMATION, _caption, str, nullptr );
-         */
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        jstring j_caption = jenv->NewStringUTF( _caption );
+        jstring j_message = jenv->NewStringUTF( str );
+
+        Helper::AndroidCallVoidActivityMethod( jenv, "showAlertDialog", "(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V", j_caption, j_message, nullptr );
+
+        jenv->DeleteLocalRef( j_caption );
+        jenv->DeleteLocalRef( j_message );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::setClipboardText( const Char * _value ) const
     {
-        MENGINE_UNUSED( _value );
-
-        /*
-        if( SDL_SetClipboardText( _value ) != 0 )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            LOGGER_WARNING( "set clipboard text [%s] error: %s"
-                , _value
-                , SDL_GetError()
-            );
+            LOGGER_ERROR( "invalid set clipboard text [not exist activity]" );
 
             return false;
         }
 
-        return true;
-         */
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
 
-        return false;
+        jstring j_text = jenv->NewStringUTF( _value );
+
+        Helper::AndroidCallVoidActivityMethod( jenv, "setClipboardText", "(Ljava/lang/String;)V", j_text );
+
+        jenv->DeleteLocalRef( j_text );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getClipboardText( Char * _value, size_t _capacity ) const
     {
-        /*
-        char * text = SDL_GetClipboardText();
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        {
+            LOGGER_ERROR( "invalid get clipboard text [not exist activity]" );
 
-        if( text == nullptr )
+            return false;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        jstring j_text = (jstring)Helper::AndroidCallObjectActivityMethod( jenv, "getClipboardText", "()Ljava/lang/String;" );
+
+        if( j_text == nullptr )
         {
             return false;
         }
 
-        MENGINE_STRNCPY( _value, text, _capacity );
+        const Char * text = jenv->GetStringUTFChars( j_text, nullptr );
 
-        SDL_free( text );
+        StdString::strncpy( _value, text, _capacity );
+
+        jenv->ReleaseStringUTFChars( j_text, text );
+
+        jenv->DeleteLocalRef( j_text );
 
         return true;
-         */
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::createWindow_( const Resolution & _windowResolution, bool _fullscreen )
@@ -1238,7 +1258,11 @@ namespace Mengine
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
 
-        ::eglTerminate( m_eglDisplay );
+        if( ::eglTerminate( m_eglDisplay ) == EGL_FALSE )
+        {
+            LOGGER_WARNING( "[egl] invalid terminate" );
+        }
+
         m_eglDisplay = EGL_NO_DISPLAY;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1253,6 +1277,10 @@ namespace Mengine
         {
             switch( ev.type )
             {
+            case PlatformUnionEvent::PET_QUIT:
+                {
+                    return true;
+                }break;
             case PlatformUnionEvent::PET_PAUSE:
                 {
                     this->pauseEvent_( ev.data.pause );
@@ -1273,6 +1301,14 @@ namespace Mengine
                 {
                     this->surfaceChangedEvent_( ev.data.surfaceChanged );
                 }break;
+            case PlatformUnionEvent::PET_CLIPBOARD_CHANGED:
+                {
+                    this->clipboardChangedEvent_( ev.data.clipboardChanged );
+                }break;
+            case PlatformUnionEvent::PET_WINDOW_FOCUS_CHANGED:
+                {
+                    this->windowFocusChangedEvent_( ev.data.windowFocusChanged );
+                }break;
             default:
                 break;
             }
@@ -1283,18 +1319,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::pushQuitEvent_()
     {
-        /*
-        SDL_Event e;
-        e.type = SDL_QUIT;
-        e.quit.timestamp = SDL_GetTicks();
+        PlatformUnionEvent ev;
 
-        if( SDL_PushEvent( &e ) == -1 )
-        {
-            LOGGER_WARNING( "invalid push event [SDL_QUIT] error: %s"
-                , SDL_GetError()
-            );
-        }
-         */
+        ev.type = PlatformUnionEvent::PET_QUIT;
+
+        LOGGER_INFO( "platform", "quit event" );
+
+        this->pushEvent( ev );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::setActive_( float _x, float _y, bool _active )
@@ -1390,7 +1421,7 @@ namespace Mengine
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeSurfaceCreated( ANativeWindow * _nativeWindow )
+    void AndroidPlatformService::androidNativeSurfaceCreatedEvent( ANativeWindow * _nativeWindow )
     {
         m_nativeMutex->lock();
         m_nativeWindow = _nativeWindow;
@@ -1405,7 +1436,7 @@ namespace Mengine
         this->pushEvent( ev );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeSurfaceDestroyed( ANativeWindow * _nativeWindow )
+    void AndroidPlatformService::androidNativeSurfaceDestroyedEvent( ANativeWindow * _nativeWindow )
     {
         m_nativeMutex->lock();
         m_nativeWindow = _nativeWindow;
@@ -1420,7 +1451,7 @@ namespace Mengine
         this->pushEvent( ev );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeSurfaceChanged( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate )
+    void AndroidPlatformService::androidNativeSurfaceChangedEvent( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate )
     {
         m_nativeMutex->lock();
         m_nativeWindow = _nativeWindow;
@@ -1947,6 +1978,41 @@ namespace Mengine
         this->pushEvent( event );
     }
     //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeClipboardChangedEvent()
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
+        PlatformUnionEvent event;
+        event.type = PlatformUnionEvent::PET_CLIPBOARD_CHANGED;
+
+        LOGGER_INFO( "platform", "clipboard changed event" );
+
+        this->pushEvent( event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeWindowFocusChangedEvent( jboolean _focus )
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
+        PlatformUnionEvent event;
+        event.type = PlatformUnionEvent::PET_WINDOW_FOCUS_CHANGED;
+
+        event.data.windowFocusChanged.focus = _focus;
+
+        LOGGER_INFO( "platform", "window focus changed event: %d"
+            , _focus
+        );
+
+        this->pushEvent( event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeQuitEvent()
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
+        this->pushQuitEvent_();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::pauseEvent_( const PlatformUnionEvent::PlatformPauseEvent & _event )
     {
         float x = _event.x;
@@ -1985,18 +2051,32 @@ namespace Mengine
         EGLint numConfigs;
         if( ::eglChooseConfig( m_eglDisplay, configAttribs, &config, 1, &numConfigs ) == EGL_FALSE )
         {
+            LOGGER_ERROR( "[egl] failed to choose config" );
+
             return;
         }
 
-        EGLint format_wanted;
-        ::eglGetConfigAttrib( m_eglDisplay, config, EGL_NATIVE_VISUAL_ID, &format_wanted );
+        EGLint format_wanted = 0;
+        if( ::eglGetConfigAttrib( m_eglDisplay, config, EGL_NATIVE_VISUAL_ID, &format_wanted ) == EGL_FALSE )
+        {
+            LOGGER_ERROR( "[egl] failed to get config attrib" );
+        }
 
-        ANativeWindow_setBuffersGeometry( m_nativeWindow, 0, 0, format_wanted );
+        int errSetBuffersGemometry = ANativeWindow_setBuffersGeometry( m_nativeWindow, 0, 0, format_wanted );
+
+        if( errSetBuffersGemometry != 0 )
+        {
+            LOGGER_WARNING( "[egl] failed to set buffers geometry: %d"
+                , errSetBuffersGemometry
+            );
+        }
 
         EGLSurface eglSurface = ::eglCreateWindowSurface( m_eglDisplay, config, m_nativeWindow, nullptr );
 
         if( eglSurface == EGL_NO_SURFACE )
         {
+            LOGGER_ERROR( "[egl] failed to create window surface" );
+
             return;
         }
 
@@ -2007,7 +2087,10 @@ namespace Mengine
         eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_WIDTH, &width );
         eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height );
 
-        ::eglBindAPI( EGL_OPENGL_ES_API );
+        if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
+        {
+            LOGGER_WARNING( "[egl] failed to bind ES api" );
+        }
 
         const EGLint contextAttribs[] = {
             EGL_CONTEXT_CLIENT_VERSION, 2,
@@ -2020,16 +2103,28 @@ namespace Mengine
 
         if( context == EGL_NO_CONTEXT )
         {
+            LOGGER_ERROR( "[egl] failed to create context" );
+
             return;
         }
 
         m_eglContext = context;
 
-        ::eglBindAPI( EGL_OPENGL_ES_API );
+        if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
+        {
+            LOGGER_WARNING( "[egl] failed to bind ES api" );
+        }
 
         if( ::eglMakeCurrent( m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext ) == EGL_FALSE )
         {
+            LOGGER_ERROR( "[egl] failed to make current" );
+
             return;
+        }
+
+        if( ::eglSwapInterval( m_eglDisplay, 1 ) == EGL_FALSE )
+        {
+            LOGGER_WARNING( "[egl] invalid set swap interval" );
         }
 
         if( RENDER_SERVICE()
@@ -2049,19 +2144,33 @@ namespace Mengine
         RENDER_SERVICE()
             ->onDeviceLostPrepare();
 
-        ::eglBindAPI( EGL_OPENGL_ES_API );
+        if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
+        {
+            LOGGER_WARNING( "[egl] failed to bind ES api" );
+        }
 
-        ::eglMakeCurrent( m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
+        if( ::eglMakeCurrent( m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT ) == EGL_FALSE )
+        {
+            LOGGER_WARNING( "[egl] failed to clear currents" );
+        }
 
         if( m_eglContext != EGL_NO_CONTEXT )
         {
-            ::eglDestroyContext( m_eglDisplay, m_eglContext );
+            if( ::eglDestroyContext( m_eglDisplay, m_eglContext ) == EGL_FALSE )
+            {
+                LOGGER_WARNING( "[egl] failed to destroy context" );
+            }
+
             m_eglContext = EGL_NO_CONTEXT;
         }
 
         if( m_eglSurface != EGL_NO_SURFACE )
         {
-            ::eglDestroySurface( m_eglDisplay, m_eglSurface );
+            if( ::eglDestroySurface( m_eglDisplay, m_eglSurface ) == EGL_FALSE )
+            {
+                LOGGER_WARNING( "[egl] failed to destroy surface" );
+            }
+
             m_eglSurface = EGL_NO_SURFACE;
         }
     }
@@ -2075,6 +2184,20 @@ namespace Mengine
 
         APPLICATION_SERVICE()
             ->setWindowResolution( windowResolution );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::clipboardChangedEvent_( const PlatformUnionEvent::PlatformClipboardChangedEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::windowFocusChangedEvent_( const PlatformUnionEvent::PlatformWindowFocusChangedEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::pushEvent( const PlatformUnionEvent & _event )

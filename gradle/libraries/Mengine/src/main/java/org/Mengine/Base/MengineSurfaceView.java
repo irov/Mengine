@@ -29,18 +29,6 @@ import java.util.concurrent.CountDownLatch;
 public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Callback, View.OnKeyListener, View.OnTouchListener, SensorEventListener {
     public static final String TAG = "MengineSurfaceView";
 
-    private static native void AndroidPlatform_surfaceCreated(Surface surface);
-    private static native void AndroidPlatform_surfaceDestroyed(Surface surface);
-    private static native void AndroidPlatform_surfaceChanged(Surface surface, int surfaceWidth, int surfaceHeight, int deviceWidth, int deviceHeight, float rate);
-
-    private static native void AndroidPlatform_keyEvent(boolean isDown, int keyCode, int repeatCount);
-    private static native void AndroidPlatform_textEvent(int unicode);
-    private static native void AndroidPlatform_touchEvent(int action, int pointerId, float x, float y, float pressure);
-    private static native void AndroidPlatform_accelerationEvent(float x, float y, float z);
-
-    private static native void AndroidPlatform_pauseEvent();
-    private static native void AndroidPlatform_resumeEvent();
-
     protected CountDownLatch m_runLatch;
 
     private SensorManager m_sensorManager;
@@ -59,12 +47,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         this.getHolder().addCallback(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            m_display = context.getDisplay();
-        } else {
-            WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-            m_display = windowManager.getDefaultDisplay();
-        }
+        m_display = MengineUtils.getDefaultDisplay(context);
 
         m_sensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 
@@ -88,7 +71,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             m_sensorManager.unregisterListener(this, m_linearAccelerometer);
         }
 
-        AndroidPlatform_pauseEvent();
+        MengineActivity.AndroidPlatform_pauseEvent();
     }
 
     public void handleResume() {
@@ -103,7 +86,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             m_sensorManager.registerListener(this, m_linearAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         }
 
-        AndroidPlatform_resumeEvent();
+        MengineActivity.AndroidPlatform_resumeEvent();
     }
 
     Surface getSurface() {
@@ -122,7 +105,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             return;
         }
 
-        AndroidPlatform_surfaceCreated(surface);
+        MengineActivity.AndroidPlatform_surfaceCreatedEvent(surface);
     }
 
     @Override
@@ -137,7 +120,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             return;
         }
 
-        AndroidPlatform_surfaceDestroyed(surface);
+        MengineActivity.AndroidPlatform_surfaceDestroyedEvent(surface);
     }
 
     @Override
@@ -149,31 +132,22 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         int deviceWidth = width;
         int deviceHeight = height;
+
         try {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-                Context context = this.getContext();
-                WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-                WindowMetrics windowMetrics = windowManager.getCurrentWindowMetrics();
+            Context context = this.getContext();
 
-                Rect bounds = windowMetrics.getBounds();
+            Rect windowRect = MengineUtils.getDeviceWindowRect(context, m_display);
 
-                deviceWidth = bounds.width();
-                deviceHeight = bounds.height();
-            } else {
-                DisplayMetrics realMetrics = new DisplayMetrics();
-                m_display.getRealMetrics( realMetrics );
-
-                deviceWidth = realMetrics.widthPixels;
-                deviceHeight = realMetrics.heightPixels;
-            }
-        } catch(Exception e) {
-            //Ignore
+            deviceWidth = windowRect.width();
+            deviceHeight = windowRect.height();
+        } catch (Exception e) {
+            MengineLog.logMessage(TAG, "surfaceChanged invalid get device window rect");
         }
 
         float refreshRate = m_display.getRefreshRate();
 
         Surface surface = holder.getSurface();
-        AndroidPlatform_surfaceChanged(surface, width, height, deviceWidth, deviceHeight, refreshRate);
+        MengineActivity.AndroidPlatform_surfaceChangedEvent(surface, width, height, deviceWidth, deviceHeight, refreshRate);
 
         m_runLatch.countDown();
     }
@@ -221,17 +195,17 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         }
 
         if (action == KeyEvent.ACTION_DOWN) {
-            AndroidPlatform_keyEvent(true, keyCode, repeatCount);
+            MengineActivity.AndroidPlatform_keyEvent(true, keyCode, repeatCount);
 
             if (MengineSurfaceView.isKeyEventHasText(event) == true) {
                 int unicode = event.getUnicodeChar();
 
-                AndroidPlatform_textEvent(unicode);
+                MengineActivity.AndroidPlatform_textEvent(unicode);
             }
 
             return true;
         } else if (action == KeyEvent.ACTION_UP) {
-            AndroidPlatform_keyEvent(false, keyCode, repeatCount);
+            MengineActivity.AndroidPlatform_keyEvent(false, keyCode, repeatCount);
 
             return true;
         }
@@ -249,7 +223,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         float yn = y / m_surfaceHeight;
         float pn = p > 1.f ? 1.f : p;
 
-        AndroidPlatform_touchEvent(action, pointerId, xn, yn, pn);
+        MengineActivity.AndroidPlatform_touchEvent(action, pointerId, xn, yn, pn);
     }
 
     @Override
@@ -300,7 +274,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
                 float yn = y / SensorManager.GRAVITY_EARTH;
                 float zn = z / SensorManager.GRAVITY_EARTH;
 
-                AndroidPlatform_accelerationEvent(xn, yn, zn);
+                MengineActivity.AndroidPlatform_accelerationEvent(xn, yn, zn);
             }break;
             case Sensor.TYPE_LINEAR_ACCELERATION: {
                 //AndroidPlatform_accelerationEvent(xn, yn, zn);
@@ -310,6 +284,6 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        //ToDo: Handle accuracy changes here if needed
+        //ToDo
     }
 }

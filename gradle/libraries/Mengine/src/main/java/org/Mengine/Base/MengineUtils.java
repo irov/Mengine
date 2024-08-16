@@ -3,14 +3,24 @@ package org.Mengine.Base;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.WindowManager;
+import android.view.WindowMetrics;
 import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
@@ -538,22 +548,24 @@ public class MengineUtils {
         toast.show();
     }
 
-    public static void showAlertDialog(Context context, Runnable cb, String format, Object ... args) {
+    public static void showAlertDialogWithCb(Context context, Runnable cb, String title, String format, Object ... args) {
         String message = MengineLog.buildTotalMsg(format, args);
 
-        MengineLog.logMessage(TAG, "show alert dialog: %s"
+        MengineLog.logMessage(TAG, "show alert dialog title: %s message: %s"
+            , title
             , message
         );
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
+        builder.setTitle(title);
         builder.setMessage(message);
         builder.setCancelable(false);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 cb.run();
-                dialog.cancel();
+                dialog.dismiss();
             }
         });
 
@@ -566,9 +578,9 @@ public class MengineUtils {
         MengineLog.logErrorException(TAG, format, args);
 
         MengineUtils.performOnMainThreadDelayed(() -> {
-            MengineUtils.showAlertDialog(activity, () -> {
+            MengineUtils.showAlertDialogWithCb(activity, () -> {
                 activity.finishAndRemoveTask();
-            }, format, args);
+            }, "Mengine", format, args);
         }, 0);
     }
 
@@ -704,6 +716,81 @@ public class MengineUtils {
             catch (final SecurityException se) {
                 throw se;
             }
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    public static ApplicationInfo getPackageApplicationInfo(PackageManager packageManager, String packageName) throws PackageManager.NameNotFoundException {
+        ApplicationInfo applicationInfo;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            PackageManager.ApplicationInfoFlags flags = PackageManager.ApplicationInfoFlags.of(PackageManager.GET_META_DATA);
+
+            applicationInfo = packageManager.getApplicationInfo(packageName, flags);
+        } else {
+            applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+        }
+
+        return applicationInfo;
+    }
+
+    @SuppressWarnings("deprecation")
+    public static PackageInfo getPackageInfo(PackageManager manager, String packageName) {
+        PackageInfo packageInfo;
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                packageInfo = manager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0));
+            } else {
+                packageInfo = manager.getPackageInfo(packageName, 0);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
+
+        return packageInfo;
+    }
+
+    @SuppressWarnings("deprecation")
+    public static Notification getParcelableExtra(Intent intent, String name) {
+        Notification notification;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            notification = intent.getParcelableExtra(name, Notification.class);
+        } else {
+            notification = intent.getParcelableExtra(name);
+        }
+
+        return notification;
+    }
+
+    @SuppressWarnings("deprecation")
+    public static Display getDefaultDisplay(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            return context.getDisplay();
+        } else {
+            WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+            return windowManager.getDefaultDisplay();
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    public static Rect getDeviceWindowRect(Context context, Display display)
+    {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+            WindowMetrics windowMetrics = windowManager.getCurrentWindowMetrics();
+
+            Rect bounds = windowMetrics.getBounds();
+
+            return bounds;
+        } else {
+            DisplayMetrics realMetrics = new DisplayMetrics();
+            display.getRealMetrics( realMetrics );
+
+            int width = realMetrics.widthPixels;
+            int height = realMetrics.heightPixels;
+
+            return new Rect(0, 0, width, height);
         }
     }
 }

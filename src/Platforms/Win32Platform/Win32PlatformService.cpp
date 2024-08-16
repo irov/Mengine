@@ -3414,7 +3414,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr Win32PlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )
     {
-        LOGGER_MESSAGE( "load dynamic library '%s'"
+        LOGGER_MESSAGE( "load dynamic library: %s"
             , _dynamicLibraryName
         );
 
@@ -3426,7 +3426,7 @@ namespace Mengine
 
         if( dynamicLibrary->load() == false )
         {
-            LOGGER_ERROR( "can't load dynamic library '%s' [invalid load]"
+            LOGGER_ERROR( "can't load dynamic library: %s [invalid load]"
                 , _dynamicLibraryName
             );
 

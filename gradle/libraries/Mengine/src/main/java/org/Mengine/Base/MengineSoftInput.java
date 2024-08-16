@@ -2,9 +2,7 @@ package org.Mengine.Base;
 
 import android.content.Context;
 import android.text.InputType;
-import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.view.Surface;
 import android.view.View;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
@@ -13,14 +11,14 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 
-public class MengineSoftInputView extends View implements View.OnKeyListener {
+public class MengineSoftInput extends View implements View.OnKeyListener {
     public static final String TAG = "MengineSoftInputView";
 
     InputMethodManager m_imm;
 
     View m_prevView;
 
-    public MengineSoftInputView(Context context, View prevView) {
+    public MengineSoftInput(Context context, View prevView) {
         super(context);
 
         InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);

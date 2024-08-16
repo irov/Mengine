@@ -1,6 +1,7 @@
 package org.Mengine.Base;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 
 public class MengineCommandHandler extends Handler {
@@ -8,7 +9,9 @@ public class MengineCommandHandler extends Handler {
 
     MengineActivity m_activity;
 
-    public MengineCommandHandler(MengineActivity activity) {
+    public MengineCommandHandler(Looper looper, MengineActivity activity) {
+        super(looper);
+
         m_activity = activity;
     }
 

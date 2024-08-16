@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.view.KeyEvent;
 import android.view.Surface;
@@ -16,9 +17,9 @@ import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
@@ -57,6 +58,19 @@ public class MengineActivity extends AppCompatActivity {
     private static native void AndroidNativePython_addPlugin(String name, Object plugin);
     private static native void AndroidNativePython_call(String plugin, String method, Object []args);
 
+    public static native void AndroidPlatform_surfaceCreatedEvent(Surface surface);
+    public static native void AndroidPlatform_surfaceDestroyedEvent(Surface surface);
+    public static native void AndroidPlatform_surfaceChangedEvent(Surface surface, int surfaceWidth, int surfaceHeight, int deviceWidth, int deviceHeight, float rate);
+    public static native void AndroidPlatform_keyEvent(boolean isDown, int keyCode, int repeatCount);
+    public static native void AndroidPlatform_textEvent(int unicode);
+    public static native void AndroidPlatform_touchEvent(int action, int pointerId, float x, float y, float pressure);
+    public static native void AndroidPlatform_accelerationEvent(float x, float y, float z);
+    public static native void AndroidPlatform_pauseEvent();
+    public static native void AndroidPlatform_resumeEvent();
+    public static native void AndroidPlatform_clipboardChangedEvent();
+    public static native void AndroidPlatform_windowFocusChangedEvent( boolean focus );
+    public static native void AndroidPlatform_quitEvent();
+
     private boolean m_initializePython;
     private boolean m_destroy;
 
@@ -73,7 +87,9 @@ public class MengineActivity extends AppCompatActivity {
 
     private MengineSurfaceView m_surfaceView;
 
-    private MengineSoftInputView m_softInputView;
+    private MengineSoftInput m_softInput;
+
+    private MengineClipboard m_clipboard;
 
     public MengineActivity() {
         super();
@@ -288,15 +304,24 @@ public class MengineActivity extends AppCompatActivity {
             return;
         }
 
+        MengineLog.logMessageRelease(TAG, "onCreate");
+
+        this.setState("activity.lifecycle", "create");
+        this.setState("activity.init", "begin");
+
         m_initializePython = false;
         m_destroy = false;
 
-        m_commandHandler = new MengineCommandHandler(this);
+        m_commandHandler = new MengineCommandHandler(Looper.getMainLooper(), this);
         m_semaphores = new HashMap<>();
+
+        this.setState("activity.init", "setup_orientation");
 
         int orientation = getResources().getInteger(R.integer.app_screen_orientation);
 
         this.setRequestedOrientation(orientation);
+
+        this.setState("activity.init", "setup_relativelayout");
 
         RelativeLayout contentView = new RelativeLayout(this);
 
@@ -312,17 +337,25 @@ public class MengineActivity extends AppCompatActivity {
 
         m_contentView.addView(m_surfaceView);
 
-        MengineSoftInputView softInput = new MengineSoftInputView(this, m_surfaceView);
+        this.setState("activity.init", "setup_softinput");
 
-        m_softInputView = softInput;
+        MengineSoftInput softInput = new MengineSoftInput(this, m_surfaceView);
 
-        m_contentView.addView(m_softInputView);
+        m_softInput = softInput;
+
+        m_contentView.addView(m_softInput);
+
+        this.setState("activity.init", "setup_contentview");
 
         this.setContentView(m_contentView);
 
-        this.setState("activity.lifecycle", "create");
+        this.setState("activity.init", "setup_clipboard");
 
-        this.setState("activity.init", "start");
+        MengineClipboard clipboard = new MengineClipboard(this);
+
+        m_clipboard = clipboard;
+
+        this.setState("activity.init", "bootstrap");
 
         AndroidEnv_setMengineAndroidActivityJNI(this);
 
@@ -334,9 +367,7 @@ public class MengineActivity extends AppCompatActivity {
 
         m_nativeApplication = AndroidMain_bootstrap(nativeLibraryDir, optinsArgs);
 
-        this.setState("activity.init", "create");
-
-        MengineLog.logMessageRelease(TAG, "onCreate");
+        this.setState("activity.init", "plugin_create");
 
         List<MenginePlugin> plugins = this.getPlugins();
 
@@ -373,10 +404,6 @@ public class MengineActivity extends AppCompatActivity {
             }
         }
 
-        this.setState("activity.init", "setup_window");
-
-        this.setupWindow();
-
         this.setState("activity.init", "setup_main");
 
         MengineMain main = new MengineMain(this, m_nativeApplication, runLatch);
@@ -384,21 +411,34 @@ public class MengineActivity extends AppCompatActivity {
         m_threadMain = new Thread(main);
         m_threadMain.start();
 
-        this.setState("activity.init", "completed");
+        this.setState("activity.init", "end");
 
         this.setState("activity.lifecycle", "created");
     }
 
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        this.setState("activity.lifecycle", "post_create");
+
+        MengineLog.logMessage(TAG, "onPostCreate");
+    }
+
     @SuppressWarnings("deprecation")
-    private void setupWindow() {
+    private void syncFullscreenWindow() {
         Window window = this.getWindow();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             WindowInsetsController insetsController = window.getInsetsController();
-            if (insetsController != null) {
-                insetsController.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-                insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            if (insetsController == null) {
+                MengineLog.logError(TAG, "insets controller is null");
+
+                return;
             }
+
+            insetsController.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+            insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
         } else {
             int flags = View.SYSTEM_UI_FLAG_FULLSCREEN |
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
@@ -407,10 +447,49 @@ public class MengineActivity extends AppCompatActivity {
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.INVISIBLE;
 
-            window.getDecorView().setSystemUiVisibility(flags);
+            View decorView = window.getDecorView();
+            decorView.setSystemUiVisibility(flags);
+
             window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
         }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        this.setState("activity.lifecycle", "window_focus_changed:" + (hasFocus == true ? "true" : "false"));
+
+        MengineLog.logMessage(TAG, "onWindowFocusChanged focus: %s"
+            , hasFocus
+        );
+
+        if (hasFocus == true) {
+            this.syncFullscreenWindow();
+        }
+
+        MengineActivity.AndroidPlatform_windowFocusChangedEvent(hasFocus);
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        this.setState("activity.lifecycle", "attached_to_window");
+
+        MengineLog.logMessage(TAG, "onAttachedToWindow");
+
+        this.syncFullscreenWindow();
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        this.setState("activity.lifecycle", "detached_from_window");
+
+        MengineLog.logMessage(TAG, "onDetachedFromWindow");
     }
 
     @Override
@@ -707,6 +786,8 @@ public class MengineActivity extends AppCompatActivity {
         for (MenginePlugin p : plugins) {
             p.setActivity(null);
         }
+
+        AndroidPlatform_quitEvent();
 
         try {
             m_threadMain.join();
@@ -1027,7 +1108,7 @@ public class MengineActivity extends AppCompatActivity {
         MengineLog.logMessage(TAG, "showKeyboard");
 
         m_commandHandler.post(() -> {
-            m_softInputView.showKeyboard();
+            m_softInput.showKeyboard();
         });
     }
 
@@ -1035,12 +1116,40 @@ public class MengineActivity extends AppCompatActivity {
         MengineLog.logMessage(TAG, "hideKeyboard");
 
         m_commandHandler.post(() -> {
-            m_softInputView.hideKeyboard();
+            m_softInput.hideKeyboard();
         });
     }
 
     public boolean isShowKeyboard() {
-        return m_softInputView.isShowKeyboard();
+        return m_softInput.isShowKeyboard();
+    }
+
+    /***********************************************************************************************
+     * Clipboard Methods
+     **********************************************************************************************/
+
+    public boolean hasClipboardText() {
+        boolean result = m_clipboard.hasText();
+
+        return result;
+    }
+
+    public String getClipboardText() {
+        String text = m_clipboard.getText();
+
+        return text;
+    }
+
+    public void setClipboardText(String text) {
+        m_clipboard.setText(text);
+    }
+
+    /***********************************************************************************************
+     * Alert Methods
+     **********************************************************************************************/
+
+    public void showAlertDialog(String title, String format, Object ... args) {
+        MengineUtils.showAlertDialogWithCb(this, () -> {}, title, format, args);
     }
 
     /***********************************************************************************************

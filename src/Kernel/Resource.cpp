@@ -177,7 +177,7 @@ namespace Mengine
             , this->getType().c_str()
         );
 
-        if( m_compileReferenceCount.incref() == false )
+        if( m_compileReferenceCount.incref() != 0 )
         {
             return true;
         }
@@ -210,7 +210,7 @@ namespace Mengine
             , this->getType().c_str()
         );
 
-        if( m_compileReferenceCount.decref() == false )
+        if( m_compileReferenceCount.decref() != 0 )
         {
             return;
         }
@@ -231,7 +231,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Resource::prefetch( const LambdaPrefetch & _lambda )
     {
-        if( m_prefetchReferenceCount.incref() == false )
+        if( m_prefetchReferenceCount.incref() != 0 )
         {
             return true;
         }
@@ -255,7 +255,7 @@ namespace Mengine
             return false;
         }
 
-        if( m_prefetchReferenceCount.decref() == false )
+        if( m_prefetchReferenceCount.decref() != 0 )
         {
             return true;
         }
@@ -272,7 +272,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Resource::cache()
     {
-        if( m_cacheReferenceCount.incref() == false )
+        if( m_cacheReferenceCount.incref() != 0 )
         {
             return true;
         }
@@ -296,7 +296,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Resource::uncache()
     {
-        if( m_cacheReferenceCount.decref() == false )
+        if( m_cacheReferenceCount.decref() != 0 )
         {
             return;
         }

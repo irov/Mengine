@@ -27,30 +27,14 @@ namespace Mengine
         m_counter = _counter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ReferenceCounter::incref()
+    uint32_t ReferenceCounter::incref()
     {
-        if( ++m_counter == 1 )
-        {
-            MENGINE_ASSERTION_FATAL( m_counter == 1, "reference count is not one '%u'"
-                , m_counter.load()
-            );
-
-            return true;
-        }
-
-        return false;
+        return m_counter++;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ReferenceCounter::decref()
+    uint32_t ReferenceCounter::decref()
     {
-        MENGINE_ASSERTION_FATAL( m_counter > 0, "reference count is already zero" );
-
-        if( --m_counter != 0 )
-        {
-            return false;
-        }
-
-        return true;
+        return --m_counter;
     }
     //////////////////////////////////////////////////////////////////////////
     void ReferenceCounter::reset()

@@ -2,13 +2,13 @@ MENGINE_PROJECT(Box2DPlugin)
 
 ADD_FILTER(
 src
-    Box2DInterface.h    
+    Box2DInterface.h
     Box2DIncluder.h
 
     Box2DPlugin.cpp
     Box2DPlugin.h
     Box2DService.cpp
-    Box2DService.h    
+    Box2DService.h
     Box2DScaler.h
     Box2DBody.cpp
     Box2DBody.h

@@ -17,13 +17,12 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Box2DWorld::Box2DWorld()
-        : m_timepipeId( 0 )
+        : m_timepipeId( INVALID_UNIQUE_ID )
         , m_dead( false )
         , m_time( 0.f )
-        , m_world( nullptr )
+        , m_worldId( b2_nullWorldId )
         , m_timeStep( 1000.f / 60.f )
-        , m_velocityIterations( 10 )
-        , m_positionIterations( 10 )
+        , m_subStepCount( 4 )
         , m_scaler( 128.f )
     {
     }
@@ -38,14 +37,13 @@ namespace Mengine
 
         b2Vec2 b2_gravity = m_scaler.toBox2DWorld( _gravity );
 
-        m_world = Helper::newT<b2World>( b2_gravity );
+        b2WorldDef worldDef = ::b2DefaultWorldDef();
+        worldDef.gravity = b2_gravity;
+        worldDef.enableSleep = true;
 
-        m_world->SetAllowSleeping( true );
-        m_world->SetDestructionListener( this );
-        m_world->SetContactFilter( this );
-        m_world->SetContactListener( this );
+        m_worldId = ::b2CreateWorld( &worldDef );
 
-        uint32_t timepipeId = TIMEPIPE_SERVICE()
+        UniqueId timepipeId = TIMEPIPE_SERVICE()
             ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         if( timepipeId == 0 )
@@ -60,16 +58,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Box2DWorld::finalize()
     {
-        if( m_timepipeId != 0 )
+        if( m_timepipeId != INVALID_UNIQUE_ID )
         {
             TIMEPIPE_SERVICE()
                 ->removeTimepipe( m_timepipeId );
 
-            m_timepipeId = 0;
+            m_timepipeId = INVALID_UNIQUE_ID;
         }
 
-        Helper::deleteT( m_world );
-        m_world = nullptr;
+        b2DestroyWorld( m_worldId );
+        m_worldId = b2_nullWorldId;
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DWorld::setDead()
@@ -82,11 +80,10 @@ namespace Mengine
         return m_dead;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Box2DWorld::setTimeStep( float _timeStep, uint32_t _velocityIterations, uint32_t _positionIterations )
+    void Box2DWorld::setTimeStep( float _timeStep, uint32_t _subStepCount )
     {
         m_timeStep = _timeStep;
-        m_velocityIterations = _velocityIterations;
-        m_positionIterations = _positionIterations;
+        m_subStepCount = _subStepCount;
     }
     //////////////////////////////////////////////////////////////////////////
     Box2DBodyInterfacePtr Box2DWorld::createBody( bool _static, const mt::vec2f & _pos, float _angle, float _linearDamping, float _angularDamping, bool _allowSleep, bool _isBullet, bool _fixedRotation, const DocumentInterfacePtr & _doc )
@@ -94,19 +91,21 @@ namespace Mengine
         b2BodyDef bodyDef;
 
         bodyDef.position = m_scaler.toBox2DWorld( _pos );
-        bodyDef.angle = _angle;
+        bodyDef.rotation = ::b2MakeRot( _angle );
         bodyDef.linearDamping = _linearDamping;
         bodyDef.angularDamping = _angularDamping;
-        bodyDef.allowSleep = _allowSleep;
-        bodyDef.bullet = _isBullet;
+        bodyDef.enableSleep = _allowSleep;
+        bodyDef.isBullet = _isBullet;
         bodyDef.fixedRotation = _fixedRotation;
-        bodyDef.type = _static ? b2_staticBody : b2_dynamicBody;
+        bodyDef.type = _static == true ? b2_staticBody : b2_dynamicBody;
 
         Box2DBodyPtr body = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( body );
 
-        if( body->initialize( m_scaler, m_world, &bodyDef ) == false )
+        b2BodyId bodyId = ::b2CreateBody( m_worldId, &bodyDef );
+
+        if( body->initialize( m_scaler, bodyId ) == false )
         {
             return nullptr;
         }
@@ -120,7 +119,7 @@ namespace Mengine
 
         while( m_time >= m_timeStep )
         {
-            m_world->Step( m_timeStep * 0.001f, m_velocityIterations, m_positionIterations );
+            ::b2World_Step( m_worldId, m_timeStep * 0.001f, m_subStepCount );
 
             m_time -= m_timeStep;
         }
@@ -128,143 +127,53 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        class MyRayCastCallback
-            : public b2RayCastCallback
+        //////////////////////////////////////////////////////////////////////////
+        struct Box2DCastResultDesc
         {
-        public:
-            MyRayCastCallback( const Box2DScaler & _scaler, const Box2DRayCastInterfacePtr & _response )
-                : m_scaler( _scaler )
-                , m_response( _response )
-                , m_index( 0 )
-            {
-            }
-
-            ~MyRayCastCallback() override
-            {
-            }
-
-        protected:
-            float ReportFixture( b2Fixture * fixture, const b2Vec2 & b2_point, const b2Vec2 & b2_normal, float _fraction ) override
-            {
-                const b2Body * b2_body = fixture->GetBody();
-
-                const Box2DBody * body = static_cast<const Box2DBody *>(b2_body->GetUserData());
-
-                mt::vec2f contact_point = m_scaler.toEngineWorld( b2_point );
-                mt::vec2f contact_normal = m_scaler.toEngineWorldNormal( b2_normal );
-                float fraction = _fraction;
-
-                float result = m_response->onResponse( m_index, body, contact_point, contact_normal, fraction );
-
-                ++m_index;
-
-                float b2_result = m_scaler.toBox2DWorld( result );
-
-                return b2_result;
-            }
-
-        protected:
-            Box2DScaler m_scaler;
-
-            Box2DRayCastInterfacePtr m_response;
-
-            uint32_t m_index;
+            Box2DScaler scaler;
+            Box2DRayCastInterfacePtr response;
+            uint32_t index;
         };
+        //////////////////////////////////////////////////////////////////////////
+        static float Box2DCastResultFcn( b2ShapeId shapeId, b2Vec2 b2_point, b2Vec2 b2_normal, float b2_fraction, void * context )
+        {
+            Box2DCastResultDesc * desc = (Box2DCastResultDesc *)context;
+
+            const Box2DScaler & scaler = desc->scaler;
+            const Box2DRayCastInterfacePtr & response = desc->response;
+
+            uint32_t index = desc->index++;
+            Box2DBody * body = (Box2DBody *)::b2Shape_GetUserData( shapeId );
+
+            mt::vec2f point = scaler.toEngineWorld( b2_point );
+            mt::vec2f normal = scaler.toEngineWorldNormal( b2_normal );
+            float fraction = b2_fraction;
+
+            float result = response->onResponse( index, body, point, normal, fraction );
+
+            float b2_result = scaler.toBox2DWorld( result );
+
+            return b2_result;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DWorld::rayCast( const mt::vec2f & _point1, const mt::vec2f & _point2, const Box2DRayCastInterfacePtr & _response ) const
     {
         b2Vec2 b2_point1 = m_scaler.toBox2DWorld( _point1 );
         b2Vec2 b2_point2 = m_scaler.toBox2DWorld( _point2 );
+        b2Vec2 b2_translation = ::b2Sub( b2_point2, b2_point1 );
 
-        Detail::MyRayCastCallback rayCast_cb( m_scaler, _response );
-        m_world->RayCast( &rayCast_cb, b2_point1, b2_point2 );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Box2DWorld::SayGoodbye( b2Joint * _joint )
-    {
-        MENGINE_UNUSED( _joint );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Box2DWorld::SayGoodbye( b2Fixture * _fixture )
-    {
-        MENGINE_UNUSED( _fixture );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Box2DWorld::ShouldCollide( b2Fixture * _fixtureA, b2Fixture * _fixtureB )
-    {
-        MENGINE_UNUSED( _fixtureA );
-        MENGINE_UNUSED( _fixtureB );
+        b2RayCastInput input = {b2_point1, ::b2Sub( b2_point2, b2_point1 ), 1.0f};
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Box2DWorld::BeginContact( b2Contact * _contact )
-    {
-        b2Body * body1 = _contact->GetFixtureA()->GetBody();
-        b2Body * body2 = _contact->GetFixtureB()->GetBody();
+        b2QueryFilter b2_queryFilter = ::b2DefaultQueryFilter();
 
-        if( !body1 || !body2 )
-        {
-            return;
-        }
+        Detail::Box2DCastResultDesc desc;
+        desc.scaler = m_scaler;
+        desc.response = _response;
+        desc.index = 0;
 
-        Box2DBody * mBody1 = static_cast<Box2DBody *>(body1->GetUserData());
-        Box2DBody * mBody2 = static_cast<Box2DBody *>(body2->GetUserData());
-
-        mBody1->onBeginContact( mBody2, _contact );
-        mBody2->onBeginContact( mBody1, _contact );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Box2DWorld::EndContact( b2Contact * _contact )
-    {
-        b2Body * body1 = _contact->GetFixtureA()->GetBody();
-        b2Body * body2 = _contact->GetFixtureB()->GetBody();
-
-        if( !body1 || !body2 )
-        {
-            return;
-        }
-
-        Box2DBody * mBody1 = static_cast<Box2DBody *>(body1->GetUserData());
-        Box2DBody * mBody2 = static_cast<Box2DBody *>(body2->GetUserData());
-
-        mBody1->onEndContact( mBody2, _contact );
-        mBody2->onEndContact( mBody1, _contact );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Box2DWorld::PreSolve( b2Contact * _contact, const b2Manifold * _oldManifold )
-    {
-        b2Body * body1 = _contact->GetFixtureA()->GetBody();
-        b2Body * body2 = _contact->GetFixtureB()->GetBody();
-
-        if( !body1 || !body2 )
-        {
-            return;
-        }
-
-        Box2DBody * mBody1 = static_cast<Box2DBody *>(body1->GetUserData());
-        Box2DBody * mBody2 = static_cast<Box2DBody *>(body2->GetUserData());
-
-        mBody1->onPreSolve( mBody2, _contact, _oldManifold );
-        mBody2->onPreSolve( mBody1, _contact, _oldManifold );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Box2DWorld::PostSolve( b2Contact * _contact, const b2ContactImpulse * _impulse )
-    {
-        b2Body * body1 = _contact->GetFixtureA()->GetBody();
-        b2Body * body2 = _contact->GetFixtureB()->GetBody();
-
-        if( !body1 || !body2 )
-        {
-            return;
-        }
-
-        Box2DBody * mBody1 = static_cast<Box2DBody *>(body1->GetUserData());
-        Box2DBody * mBody2 = static_cast<Box2DBody *>(body2->GetUserData());
-
-        mBody1->onPostSolve( mBody2, _contact, _impulse );
-        mBody2->onPostSolve( mBody1, _contact, _impulse );
+        ::b2World_CastRay( m_worldId, b2_point1, b2_translation, b2_queryFilter, &Detail::Box2DCastResultFcn, &desc );
     }
     //////////////////////////////////////////////////////////////////////////
     Box2DJointInterfacePtr Box2DWorld::createDistanceJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
@@ -274,24 +183,31 @@ namespace Mengine
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
 
-        b2Body * b2_body1 = body1->getBody();
-        b2Body * b2_body2 = body2->getBody();
-
-        b2DistanceJointDef jointDef;
-        jointDef.collideConnected = _collideBodies;
+        b2BodyId b2_body1 = body1->getBodyId();
+        b2BodyId b2_body2 = body2->getBodyId();
 
         b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody1 );
         b2Vec2 offsetBody2 = m_scaler.toBox2DWorld( _offsetBody2 );
 
-        b2Vec2 positionBody1 = b2_body1->GetPosition();
-        b2Vec2 positionBody2 = b2_body2->GetPosition();
+        b2Vec2 positionBody1 = ::b2Body_GetPosition( b2_body1 );
+        b2Vec2 positionBody2 = ::b2Body_GetPosition( b2_body2 );
 
-        b2Vec2 anchor1 = positionBody1 + offsetBody1;
-        b2Vec2 anchor2 = positionBody2 + offsetBody2;
+        b2Vec2 anchor1 = ::b2Add( positionBody1, offsetBody1 );
+        b2Vec2 anchor2 = ::b2Add( positionBody2, offsetBody2 );
 
-        jointDef.Initialize( b2_body1, b2_body2, anchor1, anchor2 );
+        b2DistanceJointDef jointDef = ::b2DefaultDistanceJointDef();
 
-        Box2DJointInterfacePtr joint = this->createJoint_( &jointDef, _doc );
+        jointDef.bodyIdA = b2_body1;
+        jointDef.bodyIdB = b2_body2;
+
+        jointDef.localAnchorA = anchor1;
+        jointDef.localAnchorB = anchor2;
+
+        jointDef.collideConnected = _collideBodies;
+
+        b2JointId jointId = ::b2CreateDistanceJoint( m_worldId, &jointDef );
+
+        Box2DJointInterfacePtr joint = this->createJoint_( jointId, _doc );
 
         return joint;
     }
@@ -303,16 +219,20 @@ namespace Mengine
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
 
-        b2Body * b2_body1 = body1->getBody();
-        b2Body * b2_body2 = body2->getBody();
-
-        b2RevoluteJointDef jointDef;
-        jointDef.collideConnected = _collideBodies;
+        b2BodyId b2_body1 = body1->getBodyId();
+        b2BodyId b2_body2 = body2->getBodyId();
 
         b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody1 );
-        b2Vec2 positionBody1 = b2_body1->GetPosition();
+        b2Vec2 positionBody1 = ::b2Body_GetPosition( b2_body1 );
 
-        b2Vec2 anchor1 = positionBody1 + offsetBody1;
+        b2Vec2 anchor1 = ::b2Add( positionBody1, offsetBody1 );
+
+        b2RevoluteJointDef jointDef = ::b2DefaultRevoluteJointDef();
+
+        jointDef.bodyIdA = b2_body1;
+        jointDef.bodyIdB = b2_body2;
+        jointDef.localAnchorA = anchor1;
+        jointDef.collideConnected = _collideBodies;
         jointDef.enableLimit = false;
 
         if( _limits.x - _limits.y > 0.01f )
@@ -322,9 +242,9 @@ namespace Mengine
             jointDef.upperAngle = _limits.y;
         }
 
-        jointDef.Initialize( b2_body1, b2_body2, anchor1 );
+        b2JointId jointId = ::b2CreateRevoluteJoint( m_worldId, &jointDef );
 
-        Box2DJointInterfacePtr joint = this->createJoint_( &jointDef, _doc );
+        Box2DJointInterfacePtr joint = this->createJoint_( jointId, _doc );
 
         return joint;
     }
@@ -337,17 +257,19 @@ namespace Mengine
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
 
-        b2Body * b2_body1 = body1->getBody();
-        b2Body * b2_body2 = body2->getBody();
-
-        b2PrismaticJointDef jointDef;
+        b2BodyId b2_body1 = body1->getBodyId();
+        b2BodyId b2_body2 = body2->getBodyId();
 
         b2Vec2 worldAxis = m_scaler.toBox2DWorldNormal( _unitsWorldAxis );
 
-        const b2Vec2 & body1_position = b2_body1->GetPosition();
+        b2Vec2 body1_position = ::b2Body_GetPosition( b2_body1 );
 
-        jointDef.Initialize( b2_body1, b2_body2, body1_position, worldAxis );
+        b2PrismaticJointDef jointDef = ::b2DefaultPrismaticJointDef();
 
+        jointDef.bodyIdA = b2_body1;
+        jointDef.bodyIdB = b2_body2;
+        jointDef.localAnchorA = body1_position;
+        jointDef.localAxisA = worldAxis;
         jointDef.enableLimit = _enableLimit;
 
         if( jointDef.enableLimit == true )
@@ -365,96 +287,37 @@ namespace Mengine
             jointDef.enableMotor = true;
         }
 
-        Box2DJointInterfacePtr joint = this->createJoint_( &jointDef, _doc );
+        b2JointId jointId = ::b2CreatePrismaticJoint( m_worldId, &jointDef );
+
+        Box2DJointInterfacePtr joint = this->createJoint_( jointId, _doc );
 
         return joint;
     }
     //////////////////////////////////////////////////////////////////////////
-    Box2DJointInterfacePtr Box2DWorld::createPulleyJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
-        , const mt::vec2f & _offsetBody1, const mt::vec2f & _offsetBody2
-        , const mt::vec2f & _offsetGroundBody1, const mt::vec2f & _offsetGroundBody2
-        , float _ratio, bool _collideConnected, const DocumentInterfacePtr & _doc )
+    Box2DJointInterfacePtr Box2DWorld::createWeldJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
+        , const mt::vec2f & _offsetBody1, const mt::vec2f & _offsetBody2, bool _collideConnected, const DocumentInterfacePtr & _doc )
     {
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
 
-        b2Body * b2_body1 = body1->getBody();
-        b2Body * b2_body2 = body2->getBody();
-
-        b2Vec2 centerBody1 = b2_body1->GetWorldCenter();
-        b2Vec2 centerBody2 = b2_body2->GetWorldCenter();
-
-        b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody1 );
-        b2Vec2 offsetBody2 = m_scaler.toBox2DWorld( _offsetBody2 );
-        b2Vec2 groundOffsetBody1 = m_scaler.toBox2DWorld( _offsetGroundBody1 );
-        b2Vec2 groundOffsetBody2 = m_scaler.toBox2DWorld( _offsetGroundBody2 );
-
-        b2Vec2 anchor1 = centerBody1 + offsetBody1;
-        b2Vec2 anchor2 = centerBody2 + offsetBody2;
-        b2Vec2 groundAnchor1 = centerBody1 + groundOffsetBody1;
-        b2Vec2 groundAnchor2 = centerBody2 + groundOffsetBody2;
-
-        b2PulleyJointDef jointDef;
-        jointDef.Initialize( b2_body1, b2_body2, groundAnchor1, groundAnchor2, anchor1, anchor2, _ratio );
-        jointDef.collideConnected = _collideConnected;
-
-        Box2DJointInterfacePtr joint = this->createJoint_( &jointDef, _doc );
-
-        return joint;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Box2DJointInterfacePtr Box2DWorld::createGearJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
-        , const Box2DJointInterfacePtr & _joint1, const Box2DJointInterfacePtr & _joint2
-        , float _ratio, bool _collideConnected, const DocumentInterfacePtr & _doc )
-    {
-        Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
-        Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
-
-        b2Body * b2_body1 = body1->getBody();
-        b2Body * b2_body2 = body2->getBody();
-
-        Box2DJoint * joint1 = Box2DJointPtr::ptr( _joint1 );
-        Box2DJoint * joint2 = Box2DJointPtr::ptr( _joint2 );
-
-        b2Joint * b2_joint1 = joint1->getJoint();
-        b2Joint * b2_joint2 = joint2->getJoint();
-
-        b2GearJointDef jointDef;
-        jointDef.bodyA = b2_body1;
-        jointDef.bodyB = b2_body2;
-        jointDef.joint1 = b2_joint1;
-        jointDef.joint2 = b2_joint2;
-        jointDef.ratio = _ratio;
-        jointDef.collideConnected = _collideConnected;
-
-        Box2DJointInterfacePtr joint = this->createJoint_( &jointDef, _doc );
-
-        return joint;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Box2DJointInterfacePtr Box2DWorld::createRopeJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2
-        , const mt::vec2f & _offsetBody1, const mt::vec2f & _offsetBody2, float _maxlength
-        , bool _collideConnected, const DocumentInterfacePtr & _doc )
-    {
-        Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
-        Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
-
-        b2Body * b2_body1 = body1->getBody();
-        b2Body * b2_body2 = body2->getBody();
+        b2BodyId b2_body1 = body1->getBodyId();
+        b2BodyId b2_body2 = body2->getBodyId();
 
         b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody1 );
         b2Vec2 offsetBody2 = m_scaler.toBox2DWorld( _offsetBody2 );
 
-        b2RopeJointDef jointDef;
 
+        b2WeldJointDef jointDef = ::b2DefaultWeldJointDef();
+
+        jointDef.bodyIdA = b2_body1;
+        jointDef.bodyIdB = b2_body2;
         jointDef.localAnchorA = offsetBody1;
         jointDef.localAnchorB = offsetBody2;
         jointDef.collideConnected = _collideConnected;
-        jointDef.maxLength = m_scaler.toBox2DWorld( _maxlength );
-        jointDef.bodyA = b2_body1;
-        jointDef.bodyB = b2_body2;
 
-        Box2DJointInterfacePtr joint = this->createJoint_( &jointDef, _doc );
+        b2JointId jointId = ::b2CreateWeldJoint( m_worldId, &jointDef );
+
+        Box2DJointInterfacePtr joint = this->createJoint_( jointId, _doc );
 
         return joint;
     }
@@ -463,33 +326,36 @@ namespace Mengine
         , const mt::vec2f & _offsetBody, const mt::vec2f & _localAxis, bool _collideConnected
         , bool _enableLimit, float _lowerTranslation, float _upperTranslation, float _maxMotorTorque, bool _enableMotor, float _motorSpeed, float _stiffness, float _damping, const DocumentInterfacePtr & _doc )
     {
+        MENGINE_UNUSED( _stiffness );
+
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
 
-        b2Body * b2_body1 = body1->getBody();
-        b2Body * b2_body2 = body2->getBody();
+        b2BodyId b2_body1 = body1->getBodyId();
+        b2BodyId b2_body2 = body2->getBodyId();
 
         b2Vec2 localAxis = m_scaler.toBox2DWorldNormal( _localAxis );
         b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody );
 
-        //b2Vec2 positionBody1 = b2_body1->GetPosition();
         b2Vec2 anchor1 = offsetBody1;
 
-        b2WheelJointDef jointDef;
-
-        jointDef.Initialize( b2_body1, b2_body2, anchor1, localAxis );
+        b2WheelJointDef jointDef = ::b2DefaultWheelJointDef();
+        jointDef.bodyIdA = b2_body1;
+        jointDef.bodyIdB = b2_body2;
+        jointDef.localAnchorA = anchor1;
+        jointDef.localAxisA = localAxis;
+        jointDef.dampingRatio = _damping;
         jointDef.enableLimit = _enableLimit;
         jointDef.collideConnected = _collideConnected;
         jointDef.lowerTranslation = _lowerTranslation;
         jointDef.upperTranslation = _upperTranslation;
-
         jointDef.enableMotor = _enableMotor;
         jointDef.maxMotorTorque = _maxMotorTorque;
         jointDef.motorSpeed = _motorSpeed;
-        jointDef.stiffness = _stiffness;
-        jointDef.damping = _damping;
 
-        Box2DJointInterfacePtr joint = this->createJoint_( &jointDef, _doc );
+        b2JointId jointId = ::b2CreateWheelJoint( m_worldId, &jointDef );
+
+        Box2DJointInterfacePtr joint = this->createJoint_( jointId, _doc );
 
         return joint;
     }
@@ -503,15 +369,16 @@ namespace Mengine
         Box2DBody * body1 = Box2DBodyPtr::ptr( _body1 );
         Box2DBody * body2 = Box2DBodyPtr::ptr( _body2 );
 
-        b2Body * b2_body1 = body1->getBody();
-        b2Body * b2_body2 = body2->getBody();
+        b2BodyId b2_body1 = body1->getBodyId();
+        b2BodyId b2_body2 = body2->getBodyId();
 
         b2Vec2 b2_localAnchor = m_scaler.toBox2DWorld( _localAnchor );
 
-        b2RevoluteJointDef jointDef;
+        b2RevoluteJointDef jointDef = ::b2DefaultRevoluteJointDef();
 
-        jointDef.Initialize( b2_body1, b2_body2, b2_localAnchor );
-
+        jointDef.bodyIdA = b2_body1;
+        jointDef.bodyIdB = b2_body2;
+        jointDef.localAnchorA = b2_localAnchor;
         jointDef.enableLimit = _enableLimit;
         jointDef.lowerAngle = _lowerAngle;
         jointDef.upperAngle = _upperAngle;
@@ -519,18 +386,20 @@ namespace Mengine
         jointDef.motorSpeed = _motorSpeed;
         jointDef.maxMotorTorque = _maxMotorTorque;
 
-        Box2DJointInterfacePtr joint = this->createJoint_( &jointDef, _doc );
+        b2JointId jointId = ::b2CreateRevoluteJoint( m_worldId, &jointDef );
+
+        Box2DJointInterfacePtr joint = this->createJoint_( jointId, _doc );
 
         return joint;
     }
     //////////////////////////////////////////////////////////////////////////
-    Box2DJointInterfacePtr Box2DWorld::createJoint_( const b2JointDef * _jointDef, const DocumentInterfacePtr & _doc )
+    Box2DJointInterfacePtr Box2DWorld::createJoint_( b2JointId jointId, const DocumentInterfacePtr & _doc )
     {
         Box2DJointPtr join = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DJoint" ), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( join );
 
-        if( join->initialize( m_world, _jointDef ) == false )
+        if( join->initialize( jointId ) == false )
         {
             return nullptr;
         }

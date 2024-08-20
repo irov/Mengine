@@ -8,31 +8,24 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Box2DBody::Box2DBody()
-        : m_world( nullptr )
-        , m_body( nullptr )
+        : m_bodyId( b2_nullBodyId )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     Box2DBody::~Box2DBody()
     {
-        if( m_world != nullptr && m_body != nullptr )
+        if( B2_IS_NON_NULL( m_bodyId ) )
         {
-            m_world->DestroyBody( m_body );
+            ::b2DestroyBody( m_bodyId );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Box2DBody::initialize( const Box2DScaler & _scaler, b2World * _world, const b2BodyDef * _bodyDef )
+    bool Box2DBody::initialize( const Box2DScaler & _scaler, b2BodyId _bodyId )
     {
         m_scaler = _scaler;
+        m_bodyId = _bodyId;
 
-        b2Body * b2_body = _world->CreateBody( _bodyDef );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( b2_body );
-
-        b2_body->SetUserData( this );
-
-        m_world = _world;
-        m_body = b2_body;
+        ::b2Body_SetUserData( m_bodyId, this );        
 
         return true;
     }
@@ -47,14 +40,9 @@ namespace Mengine
         return m_eventable;
     }
     //////////////////////////////////////////////////////////////////////////
-    b2World * Box2DBody::getWorld() const
+    b2BodyId Box2DBody::getBodyId() const
     {
-        return m_world;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    b2Body * Box2DBody::getBody() const
-    {
-        return m_body;
+        return m_bodyId;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Box2DBody::addShapeConvex( const Polygon & _polygon
@@ -81,24 +69,26 @@ namespace Mengine
             vertices[i] = m_scaler.toBox2DWorld( v );
         }
 
-        b2PolygonShape shape;
-        shape.Set( vertices, (int32)num_points );
+        b2Hull hull = ::b2ComputeHull( vertices, num_points );
 
-        b2FixtureDef fd;
+        MENGINE_ASSERTION_FATAL( ::b2ValidateHull( &hull ) == true, "invalid hull" );
 
-        fd.shape = &shape;
-        fd.density = _density;
-        fd.friction = _friction;
-        fd.filter.categoryBits = _categoryBits;
-        fd.filter.maskBits = _collisionMask;
-        fd.filter.groupIndex = _groupIndex;
-        fd.restitution = _restitution;
-        fd.isSensor = _isSensor;
+        b2Polygon polygon = ::b2MakePolygon( &hull, 0.f );
 
-        //density as second argument?
-        b2Fixture * fixture = m_body->CreateFixture( &fd );
+        b2ShapeDef shapeDef = ::b2DefaultShapeDef();
 
-        if( fixture == nullptr )
+        shapeDef.userData = this;
+        shapeDef.density = _density;
+        shapeDef.friction = _friction;
+        shapeDef.restitution = _restitution;
+        shapeDef.isSensor = _isSensor;
+        shapeDef.filter.categoryBits = _categoryBits;
+        shapeDef.filter.maskBits = _collisionMask;
+        shapeDef.filter.groupIndex = _groupIndex;
+
+        b2ShapeId shapeId = ::b2CreatePolygonShape( m_bodyId, &shapeDef, &polygon );
+
+        if( B2_IS_NULL( shapeId ) )
         {
             return false;
         }
@@ -112,24 +102,25 @@ namespace Mengine
         , uint16_t _categoryBits
         , uint16_t _groupIndex )
     {
-        b2CircleShape shape;
-        shape.m_radius = m_scaler.toBox2DWorld( _radius );
+        float b2_radius = m_scaler.toBox2DWorld( _radius );
         b2Vec2 b2_position = m_scaler.toBox2DWorld( _position );
-        shape.m_p = b2_position;
 
-        b2FixtureDef fd;
-        fd.shape = &shape;
-        fd.density = _density;
-        fd.friction = _friction;
-        fd.restitution = _restitution;
-        fd.filter.maskBits = _collisionMask;
-        fd.filter.categoryBits = _categoryBits;
-        fd.filter.groupIndex = _groupIndex;
-        fd.isSensor = _isSensor;
+        b2Circle circle = {b2_position, b2_radius};
 
-        b2Fixture * fixture = m_body->CreateFixture( &fd );
+        b2ShapeDef shapeDef = ::b2DefaultShapeDef();
 
-        if( fixture == nullptr )
+        shapeDef.userData = this;
+        shapeDef.density = _density;
+        shapeDef.friction = _friction;
+        shapeDef.restitution = _restitution;
+        shapeDef.isSensor = _isSensor;
+        shapeDef.filter.categoryBits = _categoryBits;
+        shapeDef.filter.maskBits = _collisionMask;
+        shapeDef.filter.groupIndex = _groupIndex;
+
+        b2ShapeId shapeId = ::b2CreateCircleShape( m_bodyId, &shapeDef, &circle );
+
+        if( B2_IS_NULL( shapeId ) )
         {
             return false;
         }
@@ -147,26 +138,22 @@ namespace Mengine
         float b2_width = m_scaler.toBox2DWorld( _width );
         float b2_height = m_scaler.toBox2DWorld( _height );
 
-        b2PolygonShape shape;
-        shape.SetAsBox( b2_width, b2_height
-            , b2_position
-            , _angle
-        );
+        b2Polygon box = ::b2MakeOffsetBox( b2_width, b2_height, b2_position, _angle );
 
-        b2FixtureDef fd;
+        b2ShapeDef shapeDef = ::b2DefaultShapeDef();
 
-        fd.shape = &shape;
-        fd.density = _density;
-        fd.friction = _friction;
-        fd.restitution = _restitution;
-        fd.filter.maskBits = _collisionMask;
-        fd.filter.categoryBits = _categoryBits;
-        fd.filter.groupIndex = _groupIndex;
-        fd.isSensor = _isSensor;
+        shapeDef.userData = this;
+        shapeDef.density = _density;
+        shapeDef.friction = _friction;
+        shapeDef.restitution = _restitution;
+        shapeDef.isSensor = _isSensor;
+        shapeDef.filter.categoryBits = _categoryBits;
+        shapeDef.filter.maskBits = _collisionMask;
+        shapeDef.filter.groupIndex = _groupIndex;
 
-        b2Fixture * fixture = m_body->CreateFixture( &fd );
+        b2ShapeId shapeId = ::b2CreatePolygonShape( m_bodyId, &shapeDef, &box );
 
-        if( fixture == nullptr )
+        if( B2_IS_NULL( shapeId ) )
         {
             return false;
         }
@@ -174,68 +161,75 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    mt::vec2f Box2DBody::getPosition() const
+    mt::vec2f Box2DBody::getBodyPosition() const
     {
-        const b2Vec2 & b2_position = m_body->GetPosition();
+        b2Vec2 b2_position = ::b2Body_GetPosition( m_bodyId );
 
         mt::vec2f position = m_scaler.toEngineWorld( b2_position );
 
         return position;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Box2DBody::getAngle() const
+    float Box2DBody::getBodyAngle() const
     {
-        float angle = m_body->GetAngle();
+        b2Rot b2_rot = ::b2Body_GetRotation( m_bodyId );
+
+        float angle = ::b2Rot_GetAngle( b2_rot );
 
         return angle;
     }
     //////////////////////////////////////////////////////////////////////////
-    mt::vec2f Box2DBody::getWorldVector( const mt::vec2f & _localVector )
+    mt::vec2f Box2DBody::getBodyWorldVector( const mt::vec2f & _localVector )
     {
         b2Vec2 b2_localVector = m_scaler.toBox2DWorld( _localVector );
-        b2Vec2 b2_worldVector = m_body->GetWorldVector( b2_localVector );
+
+        b2Vec2 b2_worldVector = b2Body_GetWorldVector( m_bodyId, b2_localVector );
+
         mt::vec2f worldVector = m_scaler.toEngineWorld( b2_worldVector );
+
         return worldVector;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Box2DBody::getMass() const
+    float Box2DBody::getBodyMass() const
     {
-        float mass = m_body->GetMass();
+        float mass = ::b2Body_GetMass( m_bodyId );
 
         return mass;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Box2DBody::getInertia() const
+    float Box2DBody::getBodyInertiaTensor() const
     {
-        float inertia = m_body->GetInertia();
+        float inertiaTensor = ::b2Body_GetInertiaTensor( m_bodyId );
 
-        return inertia;
+        return inertiaTensor;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Box2DBody::setLinearVelocity( const mt::vec2f & _velocity )
+    void Box2DBody::setBodyLinearVelocity( const mt::vec2f & _velocity )
     {
         b2Vec2 b2_velocity = m_scaler.toBox2DWorld( _velocity );
 
-        m_body->SetLinearVelocity( b2_velocity );
+        ::b2Body_SetLinearVelocity( m_bodyId, b2_velocity );
     }
     //////////////////////////////////////////////////////////////////////////
-    mt::vec2f Box2DBody::getLinearVelocity() const
+    mt::vec2f Box2DBody::getBodyLinearVelocity() const
     {
-        const b2Vec2 & b2_velocity = m_body->GetLinearVelocity();
+        b2Vec2 b2_linearVelocity = ::b2Body_GetLinearVelocity( m_bodyId );
 
-        mt::vec2f velocity = m_scaler.toEngineWorld( b2_velocity );
+        mt::vec2f linearVelocity = m_scaler.toEngineWorld( b2_linearVelocity );
 
-        return velocity;
+        return linearVelocity;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Box2DBody::setAngularVelocity( float _w )
+    void Box2DBody::setBodyAngularVelocity( float _angularVelocity )
     {
-        m_body->SetAngularVelocity( _w );
+        ::b2Body_SetAngularVelocity( m_bodyId, _angularVelocity );
     }
     //////////////////////////////////////////////////////////////////////////
-    float Box2DBody::getAngularVelocity() const
+    float Box2DBody::getBodyAngularVelocity() const
     {
-        return m_body->GetAngularVelocity();
+        float b2_angularVelocity = ::b2Body_GetAngularVelocity( m_bodyId );
+
+        return b2_angularVelocity;
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::applyForce( const mt::vec2f & _force, const mt::vec2f & _point )
@@ -243,10 +237,11 @@ namespace Mengine
         b2Vec2 b2_force = m_scaler.toBox2DWorld( _force );
         b2Vec2 b2_point = m_scaler.toBox2DWorld( _point );
 
-        b2Vec2 b2_world_center = m_body->GetWorldCenter();
+        b2Vec2 b2_worldCenterOfMass = ::b2Body_GetWorldCenterOfMass( m_bodyId );
 
-        b2Vec2 b2_total_point = b2_world_center + b2_point;
-        m_body->ApplyForce( b2_force, b2_total_point, true );
+        b2Vec2 b2_forcePoint = ::b2Add( b2_worldCenterOfMass, b2_point );
+        
+        ::b2Body_ApplyForce( m_bodyId, b2_force, b2_forcePoint, true );
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::applyImpulse( const mt::vec2f & _impulse, const mt::vec2f & _point )
@@ -254,188 +249,158 @@ namespace Mengine
         b2Vec2 b2_impulse = m_scaler.toBox2DWorld( _impulse );
         b2Vec2 b2_point = m_scaler.toBox2DWorld( _point );
 
-        b2Vec2 b2_world_center = m_body->GetWorldCenter();
-        b2Vec2 b2_total_point = b2_world_center + b2_point;
-        m_body->ApplyLinearImpulse( b2_impulse, b2_total_point, true );
+        b2Vec2 b2_worldCenterOfMass = ::b2Body_GetWorldCenterOfMass( m_bodyId );
+
+        b2Vec2 b2_forcePoint = ::b2Add( b2_worldCenterOfMass, b2_point );
+
+        ::b2Body_ApplyLinearImpulse( m_bodyId, b2_impulse, b2_forcePoint, true );
     }
     //////////////////////////////////////////////////////////////////////////      
     void Box2DBody::applyAngularImpulse( float _impulse )
     {
-        m_body->ApplyAngularImpulse( _impulse, true );
+        ::b2Body_ApplyAngularImpulse( m_bodyId, _impulse, true );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Box2DBody::onBeginContact( Box2DBody * _body, b2Contact * _contact )
+    void Box2DBody::setBodyLinearDumping( float _dumping )
     {
-        MENGINE_UNUSED( _contact );
-
-        EVENTABLE_OTHER_METHOD( m_eventable, EVENT_BOX2DBODY_BEGIN_CONTACT )
-            ->onBox2DBodyBeginContact( _body, nullptr );
+        ::b2Body_SetLinearDamping( m_bodyId, _dumping );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Box2DBody::onEndContact( Box2DBody * _body, b2Contact * _contact )
+    float Box2DBody::getBodyLinearDumping() const
     {
-        MENGINE_UNUSED( _contact );
+        float b2_dumping = ::b2Body_GetLinearDamping( m_bodyId );
 
-        EVENTABLE_OTHER_METHOD( m_eventable, EVENT_BOX2DBODY_END_CONTACT )
-            ->onBox2DBodyEndContact( _body, nullptr );
+        return b2_dumping;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Box2DBody::onPreSolve( Box2DBody * _body, b2Contact * _contact, const b2Manifold * _oldManifold )
+    void Box2DBody::setBodyAngularDumping( float _dumping )
     {
-        MENGINE_UNUSED( _contact );
-
-        EBox2DManifoldType oldManifoldType = EVENT_BOX2DMANIFOLD_NONE;
-
-        Box2DManifold oldManifold;
-
-        if( _oldManifold->pointCount > 0 )
-        {
-            oldManifold.localPoint = m_scaler.toEngineWorld( _oldManifold->localPoint );
-            oldManifold.localNormal = {_oldManifold->localNormal.x, _oldManifold->localNormal.y};            
-
-            switch( _oldManifold->type )
-            {
-            case b2Manifold::e_circles:
-                {
-                    oldManifoldType = EVENT_BOX2DMANIFOLD_CIRCLES;
-
-                    for( int32 index = 0; index != _oldManifold->pointCount; ++index )
-                    {
-                        const b2ManifoldPoint * b2_point = _oldManifold->points + index;
-
-                        Box2DManifoldPoint point;
-                        point.localPoint = m_scaler.toEngineWorld( b2_point->localPoint );
-                        point.normalImpulse = b2_point->normalImpulse;
-                        point.tangentImpulse = b2_point->tangentImpulse;
-
-                        oldManifold.points[index] = point;
-                    }
-                }break;
-            case b2Manifold::e_faceA:
-                {
-                    oldManifoldType = EVENT_BOX2DMANIFOLD_FACE_A;
-                }break;
-            case b2Manifold::e_faceB:
-                {
-                    oldManifoldType = EVENT_BOX2DMANIFOLD_FACE_B;
-                }break;
-            default:
-                return;
-            }
-        }
-
-        EVENTABLE_OTHER_METHOD( m_eventable, EVENT_BOX2DBODY_PRE_SOLVE )
-            ->onBox2DBodyPreSolve( _body, nullptr, oldManifoldType, (uint32_t)_oldManifold->pointCount, oldManifold );
+        ::b2Body_SetAngularDamping( m_bodyId, _dumping );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Box2DBody::onPostSolve( Box2DBody * _body, b2Contact * _contact, const b2ContactImpulse * _impulse )
+    float Box2DBody::getBodyAngularDumping() const
     {
-        MENGINE_UNUSED( _contact );
+        float b2_dumping = ::b2Body_GetAngularDamping( m_bodyId );
 
-        Box2DContactImpulse impulse;
+        return b2_dumping;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Box2DBody::setBodyFixedRotation( bool _rotation )
+    {
+        ::b2Body_SetFixedRotation( m_bodyId, _rotation );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Box2DBody::isBodyFixedRotation() const
+    {
+        bool result = ::b2Body_IsFixedRotation( m_bodyId );
 
-        for( int32 index = 0; index != _impulse->count; ++index )
-        {
-            impulse.normalImpulses[index] = _impulse->normalImpulses[index];
-            impulse.tangentImpulses[index] = _impulse->tangentImpulses[index];
-        }
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Box2DBody::setBodyBulletMode( bool _bulletMode )
+    {
+        ::b2Body_SetBullet( m_bodyId, _bulletMode );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Box2DBody::isBodyBulletMode() const
+    {
+        bool result = ::b2Body_IsBullet( m_bodyId );
 
-        EVENTABLE_OTHER_METHOD( m_eventable, EVENT_BOX2DBODY_POST_SOLVE )
-            ->onBox2DBodyPostSolve( _body, nullptr, (uint32_t)_impulse->count, impulse );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Box2DBody::setLinearDumping( float _dumping )
-    {
-        m_body->SetLinearDamping( _dumping );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float Box2DBody::getLinearDumping() const
-    {
-        return m_body->GetLinearDamping();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Box2DBody::setAngularDumping( float _dumping )
-    {
-        m_body->SetAngularDamping( _dumping );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float Box2DBody::getAngularDumping() const
-    {
-        return m_body->GetAngularDamping();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Box2DBody::setFixedRotation( bool _rotation )
-    {
-        m_body->SetFixedRotation( _rotation );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Box2DBody::getFixedRotation() const
-    {
-        return m_body->IsFixedRotation();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Box2DBody::setIsBullet( bool _isBullet )
-    {
-        m_body->SetBullet( _isBullet );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Box2DBody::getIsBullet() const
-    {
-        return m_body->IsBullet();
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Box2DBody::isFrozen() const
     {
-        return !(m_body->IsEnabled());
+        if( ::b2Body_IsEnabled( m_bodyId ) == false )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Box2DBody::isSleeping() const
     {
-        return m_body->IsSleepingAllowed();
+        bool result = ::b2Body_IsSleepEnabled( m_bodyId );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Box2DBody::isStatic() const
     {
-        b2BodyType type = m_body->GetType();
+        b2BodyType b2_type = ::b2Body_GetType( m_bodyId );
 
-        return type == b2_staticBody;
+        if( b2_type != b2_staticBody )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Box2DBody::isKinematic() const
+    {
+        b2BodyType b2_type = ::b2Body_GetType( m_bodyId );
+
+        if( b2_type != b2_kinematicBody )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Box2DBody::isDynamic() const
+    {
+        b2BodyType b2_type = ::b2Body_GetType( m_bodyId );
+
+        if( b2_type != b2_dynamicBody )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::setTransform( const mt::vec2f & _position, float _angle )
     {
         b2Vec2 b2_position = m_scaler.toBox2DWorld( _position );
+        b2Rot b2_rot = ::b2MakeRot( _angle );
 
-        m_body->SetTransform( b2_position, _angle );
+        ::b2Body_SetTransform( m_bodyId, b2_position, b2_rot );
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::sleep()
     {
-        m_body->SetSleepingAllowed( true );
+        ::b2Body_EnableSleep( m_bodyId, true );
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::wakeUp()
     {
-        m_body->SetAwake( true );
+        ::b2Body_SetAwake( m_bodyId, true );
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::applyTorque( float _torque )
     {
-        m_body->ApplyTorque( _torque, true );
+        ::b2Body_ApplyTorque( m_bodyId, _torque, true );
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::setFilterData( uint16_t _categoryBits, uint16_t _collisionMask, int16_t _groupIndex )
     {
-        b2Filter filter;
+        b2Filter filter = ::b2DefaultFilter();
+
         filter.categoryBits = _categoryBits;
         filter.maskBits = _collisionMask;
         filter.groupIndex = _groupIndex;
 
-        b2Fixture * fixture = m_body->GetFixtureList();
-        while( fixture != 0 )
+        b2ShapeId shapes[64];
+        int shapeCount = ::b2Body_GetShapes( m_bodyId, shapes, 64 );
+
+        for( int i = 0; i != shapeCount; ++i )
         {
-            fixture->SetFilterData( filter );
-            //may be not need : m_world->Refilter( shape );
-            fixture = fixture->GetNext();
+            b2ShapeId shapeId = shapes[i];
+
+            ::b2Shape_SetFilter( shapeId, filter );
         }
     }
     //////////////////////////////////////////////////////////////////////////

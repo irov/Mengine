@@ -75,7 +75,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Factorable::decref()
     {
-        if( m_reference.decref() == false )
+        if( m_reference.decref() != 0 )
         {
             return;
         }

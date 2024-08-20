@@ -15,7 +15,7 @@ namespace Mengine
     {
     public:
         TaskNotify( Args && ... _args )
-            : m_args( std::forward<Args &&>( _args ) ... )
+            : m_args( std::forward<Args>( _args ) ... )
         {
 
         }

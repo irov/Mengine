@@ -103,7 +103,7 @@ namespace Mengine
         {
             void * memory_buffer = Helper::allocateT<T>();
 
-            new (memory_buffer)T( std::forward<Args &&>( _args ) ... );
+            new (memory_buffer)T( std::forward<Args>( _args ) ... );
 
             return static_cast<T *>(memory_buffer);
         }

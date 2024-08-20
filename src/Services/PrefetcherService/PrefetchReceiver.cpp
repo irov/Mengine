@@ -35,7 +35,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetchReceiver::release()
     {
-        if( m_prefetchRefcount.decref() == false )
+        if( m_prefetchRefcount.decref() != 0 )
         {
             return true;
         }

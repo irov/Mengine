@@ -25,7 +25,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferBase::acquireSoundBuffer()
     {
-        if( m_refacquire.incref() == false )
+        if( m_refacquire.incref() != 0 )
         {
             return true;
         }
@@ -40,7 +40,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferBase::releaseSoundBuffer()
     {
-        if( m_refacquire.decref() == false )
+        if( m_refacquire.decref() != 0 )
         {
             return;
         }

@@ -12,7 +12,7 @@ namespace Mengine
         {
             PythonEntityBehavior * py_behavior = _behavior.getT<PythonEntityBehavior *>();
 
-            py_behavior->call( _cb, std::forward<Args &&>( _args ) ... );
+            py_behavior->call( _cb, std::forward<Args>( _args ) ... );
         }
     }
     //////////////////////////////////////////////////////////////////////////

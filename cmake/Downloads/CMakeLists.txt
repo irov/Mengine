@@ -66,7 +66,7 @@ GIT_CLONE(GOAP https://github.com/irov/GOAP.git)
 GIT_CLONE(SDL https://github.com/libsdl-org/SDL.git "release-2.30.5")
 GIT_CLONE(SDL_net https://github.com/libsdl-org/SDL_net.git "release-2.2.0")
 GIT_CLONE(xmlsax https://github.com/irov/xmlsax.git)
-GIT_CLONE(box2d https://github.com/erincatto/Box2D.git "v2.4.0")
+GIT_CLONE(box2d https://github.com/erincatto/Box2D.git "v3.0.0")
 GIT_CLONE(graphics https://github.com/irov/graphics.git)
 GIT_CLONE(cmake-modules https://github.com/rpavlik/cmake-modules.git "228f41efa54d6b552f5ef65e5ef46b14f8316f8b")
 

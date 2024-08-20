@@ -13,7 +13,7 @@ namespace Mengine
         template<class F, class Type, class ... Args>
         FactoryInterfacePtr makeFactory( const DocumentInterfacePtr & _doc, Args && ... _args )
         {
-            FactoryInterfacePtr factory = Helper::makeFactorableUnique<F>( _doc, std::forward<Args &&>( _args ) ... );
+            FactoryInterfacePtr factory = Helper::makeFactorableUnique<F>( _doc, std::forward<Args>( _args ) ... );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory );
 

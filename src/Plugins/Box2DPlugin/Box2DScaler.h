@@ -39,7 +39,7 @@ namespace Mengine
             float x = this->toBox2DWorld( _v.x );
             float y = this->toBox2DWorld( _v.y );
 
-            return b2Vec2( x, -y );
+            return {x, -y};
         }
 
         MENGINE_INLINE mt::vec2f toEngineWorld( const b2Vec2 & _v ) const
@@ -52,7 +52,7 @@ namespace Mengine
 
         MENGINE_INLINE b2Vec2 toBox2DWorldNormal( const mt::vec2f & _v ) const
         {
-            return b2Vec2( _v.x, -_v.y );
+            return {_v.x, -_v.y};
         }
 
         MENGINE_INLINE mt::vec2f toEngineWorldNormal( const b2Vec2 & _v ) const

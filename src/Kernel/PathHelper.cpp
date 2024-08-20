@@ -46,7 +46,7 @@ namespace Mengine
         FilePath concatenateFilePath( InitializerList<FilePath> && _paths )
         {
             Char concatenatePath[MENGINE_MAX_PATH];
-            if( Helper::concatenateFilePath( std::forward<InitializerList<FilePath> &&>( _paths ), concatenatePath ) == false )
+            if( Helper::concatenateFilePath( std::forward<InitializerList<FilePath>>( _paths ), concatenatePath ) == false )
             {
                 return FilePath::none();
             }

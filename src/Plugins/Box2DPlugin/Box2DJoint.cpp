@@ -6,41 +6,30 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Box2DJoint::Box2DJoint()
-        : m_world( nullptr )
-        , m_joint( nullptr )
+        : m_jointId( b2_nullJointId )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     Box2DJoint::~Box2DJoint()
     {
-        if( m_world != nullptr && m_joint != nullptr )
+        if( B2_IS_NON_NULL( m_jointId ) )
         {
-            m_world->DestroyJoint( m_joint );
+            ::b2DestroyJoint( m_jointId );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Box2DJoint::initialize( b2World * _world, const b2JointDef * _jointDef )
+    bool Box2DJoint::initialize( b2JointId _jointId )
     {
-        b2Joint * b2_joint = _world->CreateJoint( _jointDef );
+        m_jointId = _jointId;
 
-        MENGINE_ASSERTION_MEMORY_PANIC( b2_joint );
-
-        b2_joint->SetUserData( this );
-
-        m_world = _world;
-        m_joint = b2_joint;
+        ::b2Joint_SetUserData( m_jointId, this );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    b2World * Box2DJoint::getWorld() const
+    b2JointId Box2DJoint::getJointId() const
     {
-        return m_world;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    b2Joint * Box2DJoint::getJoint() const
-    {
-        return m_joint;
+        return m_jointId;
     }
     //////////////////////////////////////////////////////////////////////////
 }

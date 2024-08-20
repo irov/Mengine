@@ -12,7 +12,7 @@ namespace Mengine
         template<class T, class ... Args>
         bool execute( const DocumentInterfacePtr & _doc, Args && ... _args )
         {
-            ExecutorInterfacePtr executor = Helper::makeFactorableUnique<T>( _doc, std::forward<Args &&>( _args ) ... );
+            ExecutorInterfacePtr executor = Helper::makeFactorableUnique<T>( _doc, std::forward<Args>( _args ) ... );
 
             bool result = executor->execute();
 

@@ -17,7 +17,7 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( CompilableReference, this );
 
-        if( m_compileReferenceCount.incref() == false )
+        if( m_compileReferenceCount.incref() != 0 )
         {
             return true;
         }
@@ -34,7 +34,7 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( CompilableReference, this );
 
-        if( m_compileReferenceCount.decref() == false )
+        if( m_compileReferenceCount.decref() != 0 )
         {
             return;
         }

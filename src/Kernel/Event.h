@@ -89,7 +89,7 @@ namespace Mengine
         {
             for( const EventDesc & desc : m_events )
             {
-                desc.lambda( std::forward<Args &&>( _args )... );
+                desc.lambda( std::forward<Args>( _args )... );
             }
         }
 

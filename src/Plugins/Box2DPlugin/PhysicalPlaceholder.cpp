@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PhysicalPlaceholder::setBox2DBody( const Box2DBodyInterfacePtr & _body )
     {
-        m_body = Box2DBodyPtr::from( _body );
+        m_body = _body;
 
         m_body->setEventable( EventablePtr::from( this ) );
     }
@@ -33,8 +33,8 @@ namespace Mengine
         //always update local matrix
         this->invalidateLocalMatrix();
 
-        mt::vec2f position = m_body->getPosition();
-        float angle = m_body->getAngle();
+        mt::vec2f position = m_body->getBodyPosition();
+        float angle = m_body->getBodyAngle();
 
         mt::vec3f new_position = m_position + mt::vec3f( position, 0.f );
         mt::vec3f new_origin = m_origin;

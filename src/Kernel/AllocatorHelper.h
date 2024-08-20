@@ -51,7 +51,7 @@ namespace Mengine
             size_t element_size = sizeof( T );
             void * memory_buffer = Helper::allocateMemory( element_size, _doc );
 
-            new (memory_buffer)T( std::forward<Args &&>( _args ) ... );
+            new (memory_buffer)T( std::forward<Args>( _args ) ... );
 
             return static_cast<T *>(memory_buffer);
         }

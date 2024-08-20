@@ -2,7 +2,6 @@
 
 #include "Box2DInterface.h"
 #include "Box2DIncluder.h"
-#include "Box2DBody.h"
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseTransformation.h"
@@ -32,7 +31,7 @@ namespace Mengine
         void updateLocalMatrix() const override;
 
     protected:
-        Box2DBodyPtr m_body;
+        Box2DBodyInterfacePtr m_body;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PhysicalPlaceholder> PhysicalPlaceholderPtr;

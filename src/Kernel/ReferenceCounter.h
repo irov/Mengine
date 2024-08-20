@@ -22,8 +22,8 @@ namespace Mengine
         MENGINE_INLINE bool isReferencing() const;
 
     public:
-        bool incref();
-        bool decref();
+        uint32_t incref();
+        uint32_t decref();
 
     public:
         void reset();

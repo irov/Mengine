@@ -54,13 +54,13 @@ namespace Mengine
     protected:
         void call( typename Notificator<ID>::args_type && _args ) override
         {
-            this->call_with_tuple( std::forward<typename Notificator<ID>::args_type && >( _args ), std::make_integer_sequence<NotificatorId, sizeof ... (Args)>() );
+            this->call_with_tuple( std::forward<typename Notificator<ID>::args_type>( _args ), std::make_integer_sequence<NotificatorId, sizeof ... (Args)>() );
         }
 
         template<NotificatorId ... I>
         void call_with_tuple( typename Notificator<ID>::args_type && _args, std::integer_sequence<NotificatorId, I...> )
         {
-            (m_self->*m_method)(std::get<I>( _args )...);
+            (m_self->*m_method)(std::get<I>( std::forward<typename Notificator<ID>::args_type>( _args ) )...);
         }
 
     protected:        
@@ -160,7 +160,7 @@ namespace Mengine
         template<NotificatorId ID, class ... Args>
         bool notify( Args && ... _args )
         {
-            bool successful = this->notify_tuple<ID>( std::forward_as_tuple( std::forward<Args &&>( _args ) ... ) );
+            bool successful = this->notify_tuple<ID>( std::forward_as_tuple( std::forward<Args>( _args ) ... ) );
 
             return successful;
         }
@@ -171,11 +171,11 @@ namespace Mengine
         {
             typedef ArgsObserverCallable<ID> args_observer_type;
 
-            bool successful = this->foreachObservers( ID, [args = std::forward<typename Notificator<ID>::args_type &&>( _args )]( const ObserverCallableInterfacePtr & _observer ) mutable
+            bool successful = this->foreachObservers( ID, [args = std::forward<typename Notificator<ID>::args_type>( _args )]( const ObserverCallableInterfacePtr & _observer ) mutable
             {
                 args_observer_type * args_observer = _observer.getT<args_observer_type *>();
 
-                args_observer->call( std::forward<typename Notificator<ID>::args_type &&>( args ) );
+                args_observer->call( std::forward<typename Notificator<ID>::args_type>( args ) );
             } );
 
             return successful;

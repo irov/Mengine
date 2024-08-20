@@ -44,7 +44,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _doc );
 
-            FactoryInterfacePtr factory = Helper::makeFactorableUnique<FactoryDefault<Type>>( _doc, std::forward<Args &&>( _args ) ... );
+            FactoryInterfacePtr factory = Helper::makeFactorableUnique<FactoryDefault<Type>>( _doc, std::forward<Args>( _args ) ... );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory );
 

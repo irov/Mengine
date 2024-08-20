@@ -323,7 +323,7 @@ namespace Mengine
         }
 
         PointerT( PointerT && _pointer ) noexcept
-            : m_pointer( std::forward<PointerT &&>( _pointer.m_pointer ) )
+            : m_pointer( std::forward<PointerT>( _pointer.m_pointer ) )
         {
         }
 
@@ -340,7 +340,7 @@ namespace Mengine
 
         template<class U>
         PointerT( IntrusivePtr<U> && _pointer )
-            : m_pointer( std::forward<IntrusivePtr<U> &&>( _pointer ) )
+            : m_pointer( std::forward<IntrusivePtr<U>>( _pointer ) )
         {
         }
 
@@ -352,7 +352,7 @@ namespace Mengine
 
         template<class U, class D>
         PointerT( IntrusivePtr<U, D> && _pointer )
-            : m_pointer( std::forward<IntrusivePtr<U, D> &&>( _pointer ) )
+            : m_pointer( std::forward<IntrusivePtr<U, D>>( _pointer ) )
         {
         }
 
@@ -431,7 +431,7 @@ namespace Mengine
         }
 
         DynamicPointerT( DynamicPointerT && _pointer )
-            : m_pointer( std::forward<DynamicPointerT &&>( _pointer.m_pointer ) )
+            : m_pointer( std::forward<DynamicPointerT>( _pointer.m_pointer ) )
         {
         }
 
@@ -448,7 +448,7 @@ namespace Mengine
 
         template<class U>
         DynamicPointerT( IntrusivePtr<U> && _pointer )
-            : m_pointer( std::forward<IntrusivePtr<U> &&>( _pointer ) )
+            : m_pointer( std::forward<IntrusivePtr<U>>( _pointer ) )
         {
         }
 
@@ -460,7 +460,7 @@ namespace Mengine
 
         template<class U, class D>
         DynamicPointerT( IntrusivePtr<U, D> && _pointer )
-            : m_pointer( std::forward<IntrusivePtr<U, D> &&>( _pointer ) )
+            : m_pointer( std::forward<IntrusivePtr<U, D>>( _pointer ) )
         {
         }
 

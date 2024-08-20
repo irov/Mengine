@@ -5,8 +5,6 @@
 #include "Box2DIncluder.h"
 #include "Box2DScaler.h"
 
-#include "Kernel/Eventable.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -20,15 +18,14 @@ namespace Mengine
         ~Box2DBody() override;
 
     public:
-        bool initialize( const Box2DScaler & _scaler, b2World * _world, const b2BodyDef * _bodyDef );
+        bool initialize( const Box2DScaler & _scaler, b2BodyId _bodyId );
 
     public:
-        void setEventable( const EventablePtr & _eventable );
-        const EventablePtr & getEventable() const;
+        void setEventable( const EventablePtr & _eventable ) override;
+        const EventablePtr & getEventable() const override;
 
-    public:        
-        b2World * getWorld() const;
-        b2Body * getBody() const;
+    public:
+        b2BodyId getBodyId() const;
 
     public:
         bool addShapeConvex( const Polygon & _polygon, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) override;
@@ -36,21 +33,21 @@ namespace Mengine
         bool addShapeBox( float _width, float _height, const mt::vec2f & _localPos, float _angle, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) override;
 
     public:
-        mt::vec2f getPosition() const override;
-        float getAngle() const override;
+        mt::vec2f getBodyPosition() const override;
+        float getBodyAngle() const override;
 
     public:
-        mt::vec2f getWorldVector( const mt::vec2f & _localVector ) override;        
+        mt::vec2f getBodyWorldVector( const mt::vec2f & _localVector ) override;
 
     public:
-        float getMass() const override;
-        float getInertia() const override;
+        float getBodyMass() const override;
+        float getBodyInertiaTensor() const override;
 
-        void setLinearVelocity( const mt::vec2f & _velocity ) override;
-        mt::vec2f getLinearVelocity() const override;
+        void setBodyLinearVelocity( const mt::vec2f & _velocity ) override;
+        mt::vec2f getBodyLinearVelocity() const override;
 
-        void setAngularVelocity( float _w ) override;
-        float getAngularVelocity() const override;
+        void setBodyAngularVelocity( float _angularVelocity ) override;
+        float getBodyAngularVelocity() const override;
 
         void applyForce( const mt::vec2f & _force, const mt::vec2f & _point ) override;
         void applyImpulse( const mt::vec2f & _impulse, const mt::vec2f & _point ) override;
@@ -61,17 +58,19 @@ namespace Mengine
         bool isFrozen() const override;
         bool isSleeping() const override;
         bool isStatic() const override;
+        bool isKinematic() const override;
+        bool isDynamic() const override;
 
         void setTransform( const mt::vec2f & _position, float _angle ) override;
 
-        void setLinearDumping( float _dumping ) override;
-        float getLinearDumping() const override;
-        void setAngularDumping( float _dumping ) override;
-        float getAngularDumping() const override;
-        void setFixedRotation( bool _rotation ) override;
-        bool getFixedRotation() const override;
-        void setIsBullet( bool _isBullet ) override;
-        bool getIsBullet() const override;
+        void setBodyLinearDumping( float _dumping ) override;
+        float getBodyLinearDumping() const override;
+        void setBodyAngularDumping( float _dumping ) override;
+        float getBodyAngularDumping() const override;
+        void setBodyFixedRotation( bool _rotation ) override;
+        bool isBodyFixedRotation() const override;
+        void setBodyBulletMode( bool _bulletMode ) override;
+        bool isBodyBulletMode() const override;
 
         void sleep() override;
         void wakeUp() override;
@@ -79,20 +78,11 @@ namespace Mengine
         void setFilterData( uint16_t _categoryBits, uint16_t _collisionMask, int16_t _groupIndex ) override;
 
     protected:
-        void onBeginContact( Box2DBody * _body, b2Contact * _contact );
-        void onEndContact( Box2DBody * _body, b2Contact * _contact );
-        void onPreSolve( Box2DBody * _body, b2Contact * _contact, const b2Manifold * _oldManifold );
-        void onPostSolve( Box2DBody * _body, b2Contact * _contact, const b2ContactImpulse * _impulse );
-
-    protected:
         Box2DScaler m_scaler;
 
-        b2World * m_world;
-        b2Body * m_body;
+        b2BodyId m_bodyId;
 
         EventablePtr m_eventable;
-
-        friend class Box2DWorld;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Box2DBody, Box2DBodyInterface> Box2DBodyPtr;

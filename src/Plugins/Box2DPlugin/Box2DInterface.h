@@ -7,6 +7,7 @@
 #include "Interface/DocumentInterface.h"
 
 #include "Kernel/Polygon.h"
+#include "Kernel/Eventable.h"
 
 #include "math/vec2.h"
 
@@ -67,7 +68,7 @@ namespace Mengine
         virtual void onBox2DBodyPostSolve( class Box2DBody * _other, Box2DContactInterface * _contact, uint32_t _count, const Box2DContactImpulse & _impulse ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Box2DBodyEventReceiverInterface> Box2DBodyEventReceiverInterfacePtr;
+    typedef IntrusivePtr<Box2DBodyEventReceiverInterface, EventReceiverInterface> Box2DBodyEventReceiverInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     EVENTATION_TYPEID( Box2DBodyEventReceiverInterface, EVENT_BOX2DBODY_BEGIN_CONTACT );
     EVENTATION_TYPEID( Box2DBodyEventReceiverInterface, EVENT_BOX2DBODY_END_CONTACT );
@@ -79,26 +80,30 @@ namespace Mengine
         : public ServantInterface
     {
     public:
+        virtual void setEventable( const EventablePtr & _eventable ) = 0;
+        virtual const EventablePtr & getEventable() const = 0;
+
+    public:
         virtual bool addShapeConvex( const Polygon & _vertices, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) = 0;
         virtual bool addShapeCircle( float _radius, const mt::vec2f & _localPos, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) = 0;
         virtual bool addShapeBox( float _width, float _height, const mt::vec2f & _localPos, float _angle, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) = 0;
 
     public:
-        virtual mt::vec2f getPosition() const = 0;
-        virtual float getAngle() const = 0;
+        virtual mt::vec2f getBodyPosition() const = 0;
+        virtual float getBodyAngle() const = 0;
 
     public:
-        virtual mt::vec2f getWorldVector( const mt::vec2f & _localVector ) = 0;
+        virtual mt::vec2f getBodyWorldVector( const mt::vec2f & _localVector ) = 0;
 
     public:
-        virtual float getMass() const = 0;
-        virtual float getInertia() const = 0;
+        virtual float getBodyMass() const = 0;
+        virtual float getBodyInertiaTensor() const = 0;
 
-        virtual void setLinearVelocity( const mt::vec2f & _velocity ) = 0;
-        virtual mt::vec2f getLinearVelocity() const = 0;
+        virtual void setBodyLinearVelocity( const mt::vec2f & _velocity ) = 0;
+        virtual mt::vec2f getBodyLinearVelocity() const = 0;
 
-        virtual void setAngularVelocity( float _w ) = 0;
-        virtual float getAngularVelocity() const = 0;
+        virtual void setBodyAngularVelocity( float _w ) = 0;
+        virtual float getBodyAngularVelocity() const = 0;
 
     public:
         virtual void applyForce( const mt::vec2f & _force, const mt::vec2f & _point ) = 0;
@@ -110,17 +115,19 @@ namespace Mengine
         virtual bool isFrozen() const = 0;
         virtual bool isSleeping() const = 0;
         virtual bool isStatic() const = 0;
+        virtual bool isKinematic() const = 0;
+        virtual bool isDynamic() const = 0;
 
     public:
         virtual void setTransform( const mt::vec2f & _position, float _angle ) = 0;
-        virtual void setLinearDumping( float _dumping ) = 0;
-        virtual float getLinearDumping() const = 0;
-        virtual void setAngularDumping( float _dumping ) = 0;
-        virtual float getAngularDumping() const = 0;
-        virtual void setFixedRotation( bool _rotation ) = 0;
-        virtual bool getFixedRotation() const = 0;
-        virtual void setIsBullet( bool _isBullet ) = 0;
-        virtual bool getIsBullet() const = 0;
+        virtual void setBodyLinearDumping( float _dumping ) = 0;
+        virtual float getBodyLinearDumping() const = 0;
+        virtual void setBodyAngularDumping( float _dumping ) = 0;
+        virtual float getBodyAngularDumping() const = 0;
+        virtual void setBodyFixedRotation( bool _rotation ) = 0;
+        virtual bool isBodyFixedRotation() const = 0;
+        virtual void setBodyBulletMode( bool _isBullet ) = 0;
+        virtual bool isBodyBulletMode() const = 0;
 
     public:
         virtual void sleep() = 0;
@@ -162,7 +169,7 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void setTimeStep( float _timeStep, uint32_t _velocityIterations, uint32_t _positionIterations ) = 0;
+        virtual void setTimeStep( float _timeStep, uint32_t _subStepCount ) = 0;
 
     public:
         virtual Box2DBodyInterfacePtr createBody( bool _static
@@ -201,32 +208,12 @@ namespace Mengine
             , float _motorSpeed
             , const DocumentInterfacePtr & _doc ) = 0;
 
-        virtual Box2DJointInterfacePtr createPulleyJoint( const Box2DBodyInterfacePtr & _body1
+        virtual Box2DJointInterfacePtr createWeldJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
             , const mt::vec2f & _offsetBody1
             , const mt::vec2f & _offsetBody2
-            , const mt::vec2f & _offsetGroundBody1
-            , const mt::vec2f & _offsetGroundBody2
-            , float _ratio
             , bool _collideConnected
             , const DocumentInterfacePtr & _doc ) = 0;
-
-        virtual Box2DJointInterfacePtr createGearJoint( const Box2DBodyInterfacePtr & _body1
-            , const Box2DBodyInterfacePtr & _body2
-            , const Box2DJointInterfacePtr & _joint1
-            , const Box2DJointInterfacePtr & _joint2
-            , float _ratio
-            , bool _collideConnected
-            , const DocumentInterfacePtr & _doc ) = 0;
-
-        virtual Box2DJointInterfacePtr createRopeJoint( const Box2DBodyInterfacePtr & _body1
-            , const Box2DBodyInterfacePtr & _body2
-            , const mt::vec2f & _offsetBody1
-            , const mt::vec2f & _offsetBody2
-            , float _maxlength
-            , bool _collideConnected
-            , const DocumentInterfacePtr & _doc ) = 0;
-
 
         virtual Box2DJointInterfacePtr createWheelJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2

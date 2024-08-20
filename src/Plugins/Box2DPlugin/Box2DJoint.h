@@ -16,15 +16,13 @@ namespace Mengine
         ~Box2DJoint() override;
 
     public:
-        bool initialize( b2World * _world, const b2JointDef * _jointDef );
+        bool initialize( b2JointId _jointId );
 
     public:
-        b2World * getWorld() const;
-        b2Joint * getJoint() const;
+        b2JointId getJointId() const;
 
     protected:
-        b2World * m_world;
-        b2Joint * m_joint;
+        b2JointId m_jointId;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Box2DJoint, Box2DJointInterface> Box2DJointPtr;

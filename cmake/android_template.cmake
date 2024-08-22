@@ -21,6 +21,8 @@ SET(CMAKE_DEBUG_POSTFIX "" CACHE STRING "Set debug library postfix" FORCE)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
+
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11" )
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -frtti -fexceptions -Wno-register" )
 

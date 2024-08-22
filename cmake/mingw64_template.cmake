@@ -5,6 +5,8 @@ set(CMAKE_DEBUG_POSTFIX "")
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -femulated-tls -fuse-ld=lld -DWIN32 -D_WIN64 -m64")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -femulated-tls -fuse-ld=lld -DWIN32 -D_WIN64 -m64")
 

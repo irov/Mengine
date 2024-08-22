@@ -126,6 +126,7 @@ if(MENGINE_DEPENDENCE_BOX2D)
     message("================box2d================")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/box2d/include/box2d/math_functions.h ${THIRDPARTY_DIR}/box2d/include/box2d/math_functions.h COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/box2d/src/core.h ${THIRDPARTY_DIR}/box2d/src/core.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/box2d/src/allocate.c ${THIRDPARTY_DIR}/box2d/src/allocate.c COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/box2d/CMakeLists.txt ${THIRDPARTY_DIR}/box2d/CMakeLists.txt COPYONLY)
 
     SET(BOX2D_SAMPLES OFF CACHE BOOL "BOX2D_SAMPLES" FORCE)

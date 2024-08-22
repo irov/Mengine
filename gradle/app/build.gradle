@@ -339,7 +339,11 @@ android {
 
     packagingOptions {
         jniLibs {
-            pickFirsts += ['lib/**/libc++_shared.so', 'lib/**/libopenal.so']
+            pickFirsts += ['lib/**/libc++_shared.so']
+
+            if(MENGINE_APP_LIBRARY_OPENAL32) {
+                pickFirsts += ['lib/**/libopenal.so']
+            }
         }
     }
 

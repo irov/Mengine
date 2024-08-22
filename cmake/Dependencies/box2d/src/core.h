@@ -48,6 +48,18 @@
 	#define B2_CPU_ARM
 #elif defined( __EMSCRIPTEN__ )
 	#define B2_CPU_WASM
+#elif defined( __ANDROID__ )
+	#if defined( __i386__ )
+		#define B2_CPU_X86
+	#elif defined( __x86_64__ )
+		#define B2_CPU_X64
+	#elif defined( __aarch64__ )
+		#define B2_CPU_ARM
+	#elif defined( __arm__ )
+		#define B2_CPU_ARM32
+	#else
+		#error Unsupported ANDROID CPU
+	#endif
 #else
 	#error Unsupported CPU
 #endif
@@ -72,11 +84,13 @@
 #elif defined( B2_COMPILER_GCC ) || defined( B2_COMPILER_CLANG )
 	#if defined( B2_CPU_X64 ) || defined( B2_CPU_X86 )
 		#define B2_BREAKPOINT __asm volatile( "int $0x3" )
-	#elif defined( B2_CPU_ARM )
+	#elif defined( B2_CPU_ARM ) || defined( B2_CPU_ARM32 )
 		#define B2_BREAKPOINT __builtin_trap()
+	#else
+		#error B2_BREAKPOINT Unknown CPU
 	#endif
 #else
-	#error Unknown platform
+	#error B2_BREAKPOINT Unknown platform
 #endif
 
 #if !defined( NDEBUG ) || defined( B2_ENABLE_ASSERT )

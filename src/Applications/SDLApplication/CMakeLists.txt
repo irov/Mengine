@@ -173,12 +173,16 @@ if(MENGINE_TARGET_APPLE)
         MESSAGE(FATAL_ERROR "Deploy plist path setup invalid path '${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PLIST}'")
     endif()
     
-    find_package(Python3 REQUIRED COMPONENTS Interpreter)
-    
+    find_package(PythonInterp)
+	
+    if(NOT PYTHONINTERP_FOUND)
+        message(FATAL_ERROR "PythonInterp not found.")
+    endif()
+	
     set(PYTHON_MERGE_PLISTS_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/merge_plists.py")
     set(MENGINE_MERGE_PLIST "${MENGINE_SOLUTIONS_CONFIG_DIR}/res/Configuration/info.plist.in")
 	
-	MESSAGE("APPLICATION_APPLE_PLISTS: ${APPLICATION_APPLE_PLISTS}")
+    MESSAGE("APPLICATION_APPLE_PLISTS: ${APPLICATION_APPLE_PLISTS}")
     
     execute_process(
         COMMAND ${PYTHON_EXECUTABLE} ${PYTHON_MERGE_PLISTS_SCRIPT} ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PLIST} ${APPLICATION_APPLE_PLISTS} ${MENGINE_MERGE_PLIST}
@@ -188,7 +192,7 @@ if(MENGINE_TARGET_APPLE)
     )
 	
 	if(NOT MENGINE_PROCESS_MERGE_PLISTS_RESULT EQUAL 0)
-	    message(FATAL_ERROR "Python script failed with error: ${MENGINE_PROCESS_MERGE_PLISTS_ERROR}")
+	    message(FATAL_ERROR "Python script failed with result: ${MENGINE_PROCESS_MERGE_PLISTS_RESULT} output: ${MENGINE_PROCESS_MERGE_PLISTS_OUTPUT} error: ${MENGINE_PROCESS_MERGE_PLISTS_ERROR}")
 	else()
 	    message(STATUS "Python script executed successfully: ${MENGINE_MERGE_PLIST}")
 	endif()

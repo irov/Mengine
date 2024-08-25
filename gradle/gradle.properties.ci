@@ -11,8 +11,7 @@
 # http://www.gradle.org/docs/current/userguide/multi_project_builds.html#sec:decoupled_projects
 # org.gradle.parallel=true
 #Thu Dec 22 15:16:00 CET 2022
-android.enableJetifier=true
 org.gradle.jvmargs=-Xms4096M -Xmx4096M -Dkotlin.daemon.jvm.options\="-Xmx4096M"
 android.useAndroidX=true
-file.encoding=utf-8
-org.gradle.warning.mode=all
+android.useFullClasspathForDexingTransform=true
+android.enableJetifier=true

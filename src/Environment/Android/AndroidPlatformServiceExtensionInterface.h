@@ -21,10 +21,13 @@ namespace Mengine
         virtual void androidNativeAccelerationEvent( jfloat _x, jfloat _y, jfloat _z ) = 0;
         virtual void androidNativePauseEvent() = 0;
         virtual void androidNativeResumeEvent() = 0;
+        virtual void androidNativeStopEvent() = 0;
+        virtual void androidNativeStartEvent() = 0;
         virtual void androidNativeClipboardChangedEvent() = 0;
         virtual void androidNativeWindowFocusChangedEvent( jboolean _focus ) = 0;
 
     public:
         virtual void androidNativeQuitEvent() = 0;
+        virtual void androidNativeLowMemoryEvent() = 0;
     };
 }

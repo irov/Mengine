@@ -174,11 +174,12 @@ namespace Mengine
         void androidNativeTextEvent( jint _unicode ) override;
         void androidNativePauseEvent() override;
         void androidNativeResumeEvent() override;
+        void androidNativeStopEvent() override;
+        void androidNativeStartEvent() override;
         void androidNativeClipboardChangedEvent() override;
         void androidNativeWindowFocusChangedEvent( jboolean _focus ) override;
-
-    protected:
         void androidNativeQuitEvent() override;
+        void androidNativeLowMemoryEvent() override;
 
     protected:
         bool createWindow_( const Resolution & _resolution, bool _fullscreen );
@@ -202,11 +203,14 @@ namespace Mengine
                 PET_QUIT,
                 PET_PAUSE,
                 PET_RESUME,
+                PET_STOP,
+                PET_START,
                 PET_SURFACE_CREATE,
                 PET_SURFACE_DESTROY,
                 PET_SURFACE_CHANGED,
                 PET_CLIPBOARD_CHANGED,
                 PET_WINDOW_FOCUS_CHANGED,
+                PET_LOW_MEMORY,
             } type;
 
             struct PlatformQuitEvent
@@ -224,6 +228,16 @@ namespace Mengine
             {
                 float x;
                 float y;
+            };
+
+            struct PlatformStopEvent
+            {
+                int32_t dummy;
+            };
+
+            struct PlatformStartEvent
+            {
+                int32_t dummy;
             };
 
             struct PlatformSurfaceCreateEvent
@@ -256,26 +270,38 @@ namespace Mengine
                 jboolean focus;
             };
 
+            struct PlatformLowMemoryEvent
+            {
+                int32_t dummy;
+            };
+
             union
             {
+                PlatformQuitEvent quit;
                 PlatformPauseEvent pause;
                 PlatformResumeEvent resume;
+                PlatformStopEvent stop;
+                PlatformStartEvent start;
                 PlatformSurfaceCreateEvent surfaceCreate;
                 PlatformSurfaceDestroyEvent surfaceDestroy;
                 PlatformSurfaceChangedEvent surfaceChanged;
                 PlatformClipboardChangedEvent clipboardChanged;
                 PlatformWindowFocusChangedEvent windowFocusChanged;
+                PlatformLowMemoryEvent lowMemory;
             } data;
         };
 
     protected:
         void pauseEvent_( const PlatformUnionEvent::PlatformPauseEvent & _event );
         void resumeEvent_( const PlatformUnionEvent::PlatformResumeEvent & _event );
+        void stopEvent_( const PlatformUnionEvent::PlatformStopEvent & _event );
+        void startEvent_( const PlatformUnionEvent::PlatformStartEvent & _event );
         void surfaceCreateEvent_( const PlatformUnionEvent::PlatformSurfaceCreateEvent & _event );
         void surfaceDestroyEvent_( const PlatformUnionEvent::PlatformSurfaceDestroyEvent & _event );
         void surfaceChangedEvent_( const PlatformUnionEvent::PlatformSurfaceChangedEvent & _event );
         void clipboardChangedEvent_( const PlatformUnionEvent::PlatformClipboardChangedEvent & _event );
         void windowFocusChangedEvent_( const PlatformUnionEvent::PlatformWindowFocusChangedEvent & _event );
+        void lowMemoryEvent_( const PlatformUnionEvent::PlatformLowMemoryEvent & _event );
 
     protected:
         void pushEvent( const PlatformUnionEvent & _event );

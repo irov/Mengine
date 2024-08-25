@@ -69,9 +69,12 @@ public class MengineActivity extends AppCompatActivity {
     public static native void AndroidPlatform_accelerationEvent(float x, float y, float z);
     public static native void AndroidPlatform_pauseEvent();
     public static native void AndroidPlatform_resumeEvent();
+    public static native void AndroidPlatform_stopEvent();
+    public static native void AndroidPlatform_startEvent();
     public static native void AndroidPlatform_clipboardChangedEvent();
     public static native void AndroidPlatform_windowFocusChangedEvent( boolean focus );
     public static native void AndroidPlatform_quitEvent();
+    public static native void AndroidPlatform_lowMemory();
 
     private boolean m_initializePython;
     private boolean m_destroy;
@@ -763,6 +766,8 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessageRelease(TAG, "onDestroy");
 
+        AndroidPlatform_quitEvent();
+
         MengineApplication application = (MengineApplication)this.getApplication();
 
         if (application.isInvalidInitialize() == true) {
@@ -788,8 +793,6 @@ public class MengineActivity extends AppCompatActivity {
         for (MenginePlugin p : plugins) {
             p.setActivity(null);
         }
-
-        AndroidPlatform_quitEvent();
 
         try {
             m_threadMain.join();

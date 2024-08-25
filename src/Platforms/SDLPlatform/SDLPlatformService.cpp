@@ -21,9 +21,6 @@
 #   elif defined(MENGINE_PLATFORM_IOS)
 #       include "Interface/iOSKernelServiceInterface.h"
 #   endif
-#elif defined(MENGINE_PLATFORM_ANDROID)
-#   include "Interface/AndroidKernelServiceInterface.h"
-#   include "Environment/Android/AndroidEnv.h"
 #endif
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
@@ -156,10 +153,6 @@ namespace Mengine
         SDL_free( basePath );
 
         return StdString::strlen( _currentPath );
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        _currentPath[0] = L'\0';
-
-        return 0;
 #else
         StdString::strcpy( _currentPath, "" );
 
@@ -641,14 +634,6 @@ namespace Mengine
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<SDLDynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
-#if defined(MENGINE_PLATFORM_ANDROID)
-        int AndroidSDKVersion = SDL_GetAndroidSDKVersion();
-        SDL_bool AndroidTV = SDL_IsAndroidTV();
-
-        LOGGER_INFO( "platform", "Android SDK version: %d", AndroidSDKVersion );
-        LOGGER_INFO( "platform", "Android TV: %d", AndroidTV );
-#endif
-
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
         LOGGER_INFO_PROTECTED( "plarform", "Device Seed: %u"
@@ -988,19 +973,7 @@ namespace Mengine
             , _url
         );
 
-#if defined(MENGINE_PLATFORM_ANDROID)
-        if( ANDROID_KERNEL_SERVICE()
-            ->openUrlInDefaultBrowser( _url ) == false )
-        {
-            LOGGER_ERROR( "error open url in default browser '%s'"
-                , _url
-            );
-
-            return false;
-        }
-
-        return true;
-#elif defined(MENGINE_PLATFORM_IOS)
+#if defined(MENGINE_PLATFORM_IOS)
         if( IOS_KERNEL_SERVICE()
             ->openUrlInDefaultBrowser( _url ) == false )
         {
@@ -1033,21 +1006,7 @@ namespace Mengine
             , _body
         );
 
-#if defined(MENGINE_PLATFORM_ANDROID)
-        if( ANDROID_KERNEL_SERVICE()
-            ->openMail( _email, _subject, _body ) == false )
-        {
-            LOGGER_ERROR( "error open mail '%s' subject '%s' body '%s'"
-                , _email
-                , _subject
-                , _body
-            );
-
-            return false;
-        }
-
-        return true;
-#elif defined(MENGINE_PLATFORM_IOS)
+#if defined(MENGINE_PLATFORM_IOS)
         if( IOS_KERNEL_SERVICE()
             ->openMail( _email, _subject, _body ) == false )
         {
@@ -1499,13 +1458,6 @@ namespace Mengine
 
         width = (uint32_t)drawable_width;
         height = (uint32_t)drawable_height;
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        int drawable_width;
-        int drawable_height;
-        SDL_GL_GetDrawableSize( m_sdlWindow, &drawable_width, &drawable_height );
-
-        width = (uint32_t)drawable_width;
-        height = (uint32_t)drawable_height;
 #else
         int displayIndex;
 
@@ -1554,8 +1506,6 @@ namespace Mengine
     bool SDLPlatformService::getAlwaysFullscreen() const
     {
 #if defined(MENGINE_PLATFORM_IOS)
-        return true;
-#elif defined(MENGINE_PLATFORM_ANDROID)
         return true;
 #endif
 
@@ -1767,18 +1717,6 @@ namespace Mengine
             }
 
 #elif defined(MENGINE_PLATFORM_LINUX)
-            int status = ::mkdir( _fullpath, S_IRWXU );
-
-            if( status != 0 )
-            {
-                LOGGER_WARNING( "'%s' already exists"
-                    , _fullpath
-                );
-
-                return false;
-            }
-
-#elif defined(MENGINE_PLATFORM_ANDROID)
             int status = ::mkdir( _fullpath, S_IRWXU );
 
             if( status != 0 )
@@ -2663,12 +2601,6 @@ namespace Mengine
         {
             return false;
         }
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        if( RENDER_SYSTEM()
-            ->onWindowChangeFullscreen( _fullscreen ) == false )
-        {
-            return false;
-        }
 #elif defined(MENGINE_PLATFORM_UWP)
         if( RENDER_SYSTEM()
             ->onWindowChangeFullscreen( _fullscreen ) == false )
@@ -2832,59 +2764,6 @@ namespace Mengine
             );
         }
 
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengles2" );
-
-        uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_ES );
-
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_PROFILE_MASK to [%u] error: %s"
-                , Engine_SDL_GL_CONTEXT_PROFILE_MASK
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_MAJOR_VERSION", 2 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) != 0 )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_MAJOR_VERSION to [%u] error: %s"
-                , Engine_SDL_GL_CONTEXT_MAJOR_VERSION
-                , SDL_GetError()
-            );
-        }
-
-        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE( "SDL", "Engine_SDL_GL_CONTEXT_MINOR_VERSION", 0 );
-
-        if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) != 0 )
-        {
-            LOGGER_WARNING( "set attribute SDL_GL_CONTEXT_MINOR_VERSION to [%u] error: %s"
-                , Engine_SDL_GL_CONTEXT_MINOR_VERSION
-                , SDL_GetError()
-            );
-        }
-
-        const Char * Engine_SDL_HINT_RENDER_SCALE_QUALITY = CONFIG_VALUE( "SDL", "SDL_HINT_RENDER_SCALE_QUALITY", "linear" );
-
-        if( SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, Engine_SDL_HINT_RENDER_SCALE_QUALITY ) != SDL_TRUE )
-        {
-            LOGGER_WARNING( "set hint SDL_HINT_RENDER_SCALE_QUALITY to [%s] error: %s"
-                , Engine_SDL_HINT_RENDER_SCALE_QUALITY
-                , SDL_GetError()
-            );
-        }
-
-        const Char * Engine_SDL_HINT_ORIENTATIONS = CONFIG_VALUE( "SDL", "SDL_HINT_ORIENTATIONS", "Portrait" );
-
-        if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDL_HINT_ORIENTATIONS ) != SDL_TRUE )
-        {
-            LOGGER_WARNING( "set hint SDL_HINT_ORIENTATIONS to [%s] error: %s"
-                , Engine_SDL_HINT_ORIENTATIONS
-                , SDL_GetError()
-            );
-        }
-
 #elif defined(MENGINE_PLATFORM_UWP)
         SDL_SetHint( SDL_HINT_RENDER_DRIVER, "direct3d11" );
 
@@ -2940,8 +2819,6 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_IOS)
         SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 );
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 );
 #elif defined(MENGINE_PLATFORM_UWP)
        //Empty
 #else
@@ -2957,13 +2834,6 @@ namespace Mengine
         windowFlags |= SDL_WINDOW_FULLSCREEN;
         windowFlags |= SDL_WINDOW_BORDERLESS;
         windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
-
-#elif defined(MENGINE_PLATFORM_ANDROID)
-        windowFlags |= SDL_WINDOW_OPENGL;
-        windowFlags |= SDL_WINDOW_SHOWN;
-        windowFlags |= SDL_WINDOW_RESIZABLE;
-        windowFlags |= SDL_WINDOW_FULLSCREEN;
-        windowFlags |= SDL_WINDOW_BORDERLESS;
 
 #elif defined(MENGINE_PLATFORM_UWP)
         windowFlags |= SDL_WINDOW_SHOWN;
@@ -2990,14 +2860,6 @@ namespace Mengine
         const Char * projectTitle_str = m_projectTitle.c_str();
 
 #if defined(MENGINE_PLATFORM_IOS)
-        SDL_Window * window = SDL_CreateWindow( projectTitle_str
-            , SDL_WINDOWPOS_UNDEFINED
-            , SDL_WINDOWPOS_UNDEFINED
-            , -1
-            , -1
-            , windowFlags );
-
-#elif defined(MENGINE_PLATFORM_ANDROID)
         SDL_Window * window = SDL_CreateWindow( projectTitle_str
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED
@@ -3347,7 +3209,7 @@ namespace Mengine
                 {
                     shouldQuit = true;
                 }break;
-#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
+#if defined(MENGINE_PLATFORM_IOS)
             case SDL_APP_TERMINATING:
                 {
                     NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
@@ -3362,7 +3224,7 @@ namespace Mengine
                 }break;
             case SDL_APP_DIDENTERBACKGROUND:
                 {
-                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUD );
+                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
                 }break;
             case SDL_APP_WILLENTERFOREGROUND:
                 {

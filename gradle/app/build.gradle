@@ -16,7 +16,6 @@ def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_SP
 def ANDROID_APP_BUNDLE_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_BUNDLE_ENABLE", false)
 def ANDROID_APP_DELIVERY_PACKAGES = Utils.getStringProperty(project, "ANDROID_APP_DELIVERY_PACKAGES", null)
 def ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty(project, "ANDROID_APP_BUILD_NUMBER", 0)
-def ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
 def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
 
 def MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_MENGINE")
@@ -227,9 +226,7 @@ android {
         buildTypes {
             debug {
                 firebaseCrashlytics {
-                    if (ANDROID_APP_DEBUG_MINIFY_ENABLE == true) {
-                        mappingFileUploadEnabled true
-                    }
+                    mappingFileUploadEnabled true
 
                     nativeSymbolUploadEnabled true
 
@@ -245,9 +242,7 @@ android {
 
             release {
                 firebaseCrashlytics {
-                    if (ANDROID_APP_RELEASE_MINIFY_ENABLE == true) {
-                        mappingFileUploadEnabled true
-                    }
+                    mappingFileUploadEnabled true
 
                     nativeSymbolUploadEnabled true
 

@@ -1,23 +1,24 @@
 import com.Mengine.Utils
 
-def ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
 def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
 
 android {
     buildTypes {
-        if (ANDROID_APP_DEBUG_MINIFY_ENABLE) {
-            debug {
-                minifyEnabled false
-
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            }
+        debug {
+            minifyEnabled false
         }
 
         if (ANDROID_APP_RELEASE_MINIFY_ENABLE) {
             release {
-                minifyEnabled false
+                minifyEnabled true
 
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+                consumerProguardFiles 'proguard-rules.pro'
+            }
+        } else {
+            release {
+                minifyEnabled false
             }
         }
     }

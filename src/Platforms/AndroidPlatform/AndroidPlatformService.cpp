@@ -151,6 +151,22 @@ extern "C"
         platformExtension->androidNativeResumeEvent();
     }
     ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1stopEvent )(JNIEnv * env, jclass cls)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeStopEvent();
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1startEvent )(JNIEnv * env, jclass cls)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeStartEvent();
+    }
+    ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1clipboardChangedEvent )(JNIEnv * env, jclass cls)
     {
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
@@ -173,6 +189,13 @@ extern "C"
             ->getUnknown();
 
         platformExtension->androidNativeQuitEvent();
+    }
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1lowMemory )(JNIEnv * env, jclass cls)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeLowMemoryEvent();
     }
     ///////////////////////////////////////////////////////////////////////
 }
@@ -1298,6 +1321,14 @@ namespace Mengine
                 {
                     this->resumeEvent_( ev.data.resume );
                 }break;
+            case PlatformUnionEvent::PET_STOP:
+                {
+                    this->stopEvent_( ev.data.stop );
+                }break;
+            case PlatformUnionEvent::PET_START:
+                {
+                    this->startEvent_( ev.data.start );
+                }break;
             case PlatformUnionEvent::PET_SURFACE_CREATE:
                 {
                     this->surfaceCreateEvent_( ev.data.surfaceCreate );
@@ -1317,6 +1348,10 @@ namespace Mengine
             case PlatformUnionEvent::PET_WINDOW_FOCUS_CHANGED:
                 {
                     this->windowFocusChangedEvent_( ev.data.windowFocusChanged );
+                }break;
+            case PlatformUnionEvent::PET_LOW_MEMORY:
+                {
+                    this->lowMemoryEvent_( ev.data.lowMemory );
                 }break;
             default:
                 break;
@@ -1987,6 +2022,30 @@ namespace Mengine
         this->pushEvent( event );
     }
     //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeStopEvent()
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
+        PlatformUnionEvent event;
+        event.type = PlatformUnionEvent::PET_STOP;
+
+        LOGGER_INFO( "platform", "stop event" );
+
+        this->pushEvent( event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeStartEvent()
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
+        PlatformUnionEvent event;
+        event.type = PlatformUnionEvent::PET_START;
+
+        LOGGER_INFO( "platform", "start event" );
+
+        this->pushEvent( event );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeClipboardChangedEvent()
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
@@ -2022,12 +2081,26 @@ namespace Mengine
         this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeLowMemoryEvent()
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
+        PlatformUnionEvent event;
+        event.type = PlatformUnionEvent::PET_LOW_MEMORY;
+
+        LOGGER_INFO( "platform", "low memory event" );
+
+        this->pushEvent( event );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::pauseEvent_( const PlatformUnionEvent::PlatformPauseEvent & _event )
     {
         float x = _event.x;
         float y = _event.y;
 
         this->setActive_( x, y, false );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::resumeEvent_( const PlatformUnionEvent::PlatformResumeEvent & _event )
@@ -2036,6 +2109,22 @@ namespace Mengine
         float y = _event.y;
 
         this->setActive_( x, y, true );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::stopEvent_( const PlatformUnionEvent::PlatformStopEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::startEvent_( const PlatformUnionEvent::PlatformStartEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::surfaceCreateEvent_( const PlatformUnionEvent::PlatformSurfaceCreateEvent & _event )
@@ -2207,6 +2296,13 @@ namespace Mengine
         MENGINE_UNUSED( _event );
 
         //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::lowMemoryEvent_( const PlatformUnionEvent::PlatformLowMemoryEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::pushEvent( const PlatformUnionEvent & _event )

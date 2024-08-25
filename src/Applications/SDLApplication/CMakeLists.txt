@@ -26,13 +26,6 @@ elseif(MENGINE_TARGET_WINDOWS)
     main
         Win32Main.cpp
     )
-elseif(MENGINE_TARGET_ANDROID)
-    ADD_FILTER(
-    main
-        AndroidMain.cpp
-        
-        stack_chk_fail_local.c
-    )
 elseif(MENGINE_TARGET_MACOS)
     ADD_FILTER(
     main
@@ -163,10 +156,6 @@ endif()
 
 if(MENGINE_TARGET_UNIX)
     ADD_MENGINE_EXECUTABLE_UNIX()
-endif()
-
-if(MENGINE_TARGET_ANDROID)
-    ADD_MENGINE_EXECUTABLE_ANDROID()
 endif()
 
 if(MENGINE_TARGET_APPLE)
@@ -482,25 +471,6 @@ IF(MENGINE_TARGET_MACOS)
     ADD_MENGINE_APPLE_FRAMEWORK(Metal)
     ADD_MENGINE_APPLE_FRAMEWORK(SystemConfiguration)
     ADD_MENGINE_APPLE_FRAMEWORK(GameController)
-ENDIF()
-
-IF(MENGINE_TARGET_ANDROID)
-    ADD_LIBRARY_IMPORTED(SDL_IMPORTED "${MENGINE_DEPENDENCIES_LIBRARY_OUTPUT_DIRECTORY}/libSDL2.so")
-    
-    find_library(log-lib log)
-    find_library(android-lib android)
-    
-    MESSAGE("log-lib: ${log-lib}")
-    MESSAGE("android-lib: ${android-lib}")
-
-    target_link_libraries(${PROJECT_NAME}
-        stdc++
-        c
-        m
-        dl
-        ${log-lib}
-        ${android-lib}
-    )
 ENDIF()
 
 IF(MENGINE_TARGET_WINDOWS)

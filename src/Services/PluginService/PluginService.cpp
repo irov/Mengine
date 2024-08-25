@@ -122,7 +122,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PluginService::unloadPlugins()
     {
-        VectorPlugins reverse_plugins = std::move( m_plugins );
+        VectorPlugins reverse_plugins;
+        std::swap( reverse_plugins, m_plugins );
+        
         Algorithm::reverse( reverse_plugins.begin(), reverse_plugins.end() );
 
         for( PluginDesc & desc : reverse_plugins )

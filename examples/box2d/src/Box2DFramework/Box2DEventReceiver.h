@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Kernel/Factory.h"
 #include "Kernel/DummySceneEventReceiver.h"
 
 #include "Plugins/Box2DPlugin/Box2DInterface.h"

@@ -1,0 +1,68 @@
+{
+    "Project": {
+        "Name": "Box2D",
+        "Codename": "Box2D",
+        "Company": "Wonderland"
+    },
+    
+    "Locale": {
+        "Default": "en"
+    },
+    
+    "Game": {
+        "Localized": true,
+        "ContentResolution": [1024, 768],
+        "FixedContentResolution": 1,
+        "FixedDisplayResolution": 0,
+        "FixedViewportResolution": 1,
+        "PersonalityModule": "Personality",
+        "AlreadyRunning": true,
+        "WindowModeCheck": true
+    },
+
+    "Frameworks": {
+        "Name": [
+            "Box2DFramework"
+        ]
+    },
+
+    "Window": {
+		"ApplicationTitleTextId": "APPLICATION_TITLE",
+        "Bits": 32,
+        "Fullscreen": false,
+        "VSync": true,
+        "Size": [1024, 768]
+    },
+
+    "DevPlugins-PC": {
+        "Name": [
+            "Win32AntifreezeMonitorPlugin.dll",
+            "Win32ConsoleLoggerPlugin.dll",
+            "XmlToBinPlugin.dll",
+            "DevelopmentConverterPlugin.dll",
+            "NodeDebuggerPlugin.dll"
+        ]
+    },
+    
+    "Engine": {
+        "VideoPluginAvailable": true,
+        "RenderMaxVertexCount": 64000,
+        "RenderMaxIndexCount": 96000,
+        "RenderMaxObject": 16000,
+        "RenderMaxQuadBatch": 4000,
+        "FxcPath": "fxc.exe",
+        "AntifreezeMonitorSeconds": 10,
+        "ProtocolPath": "../../../src/Metacode/protocol.xml"
+    },
+    
+    "Win32AntifreezeMonitorPlugin": {
+        "Seconds": 90
+    },
+
+    "DevModules": {
+        "Name": [
+            "ModuleNodeDebugger",
+            "ModuleCameraDebugGizmo"
+        ]
+    }
+}

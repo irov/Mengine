@@ -18,7 +18,6 @@
 #include "Kernel/ShapeQuadFixed.h"
 #include "Kernel/ShapeCircle.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 #include "Kernel/Surface.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EntityHelper.h"
@@ -28,6 +27,8 @@
 #include "Kernel/TimepipeHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Vector.h"
+#include "Kernel/NodeCast.h"
+#include "Kernel/ColorHelper.h"
 
 namespace Mengine
 {
@@ -112,10 +113,9 @@ namespace Mengine
         m_world = world;
 
         float timeStep = 1000.f / 60.0f;
-        uint32_t velocityIterations = 8;
-        uint32_t positionIterations = 3;
+        uint32_t subStepCount = 4;
 
-        m_world->setTimeStep( timeStep, velocityIterations, positionIterations );
+        m_world->setTimeStep( timeStep, subStepCount );
 
         // create box with dynamic body
         if( true )
@@ -136,7 +136,7 @@ namespace Mengine
             );
 
             // transforms
-            body->setLinearVelocity( { 20.f, 0.f } );
+            body->setBodyLinearVelocity( { 20.f, 0.f } );
             //body->setAngularVelocity( -90.f * mt::constant::deg2rad );
 
             // vectorizer
@@ -147,8 +147,8 @@ namespace Mengine
 
             GraphicsInterface * graphics = graphicsNode->getUnknown();
 
-            Color colorLine( Helper::makeRGBA8( 255, 0, 0, 255 ) );
-            Color colorFill( Helper::makeRGBA8( 0, 255, 0, 255 ) );
+            Color colorLine = Helper::makeColor8( 255, 0, 0, 255 );
+            Color colorFill = Helper::makeColor8( 0, 255, 0, 255 );
 
             graphics->setLineColor( colorLine );
             graphics->setLineWidth( 1.f );
@@ -207,8 +207,8 @@ namespace Mengine
 
             GraphicsInterface * graphics = graphicsNode->getUnknown();
 
-            Color colorLine( Helper::makeRGBA8( 255, 0, 0, 255 ) );
-            Color colorFill( Helper::makeRGBA8( 0, 255, 255, 255 ) );
+            Color colorLine = Helper::makeColor8( 255, 0, 0, 255 );
+            Color colorFill = Helper::makeColor8( 0, 255, 255, 255 );
 
             graphics->setLineColor( colorLine );
             graphics->setLineWidth( 1.f );

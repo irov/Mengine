@@ -8,7 +8,6 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Scene.h"
 #include "Kernel/SceneHelper.h"
-#include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 
 #include "Box2DEventReceiver.h"

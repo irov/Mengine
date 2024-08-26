@@ -1,0 +1,13 @@
+{
+    "GAME_PACKAGES": {
+        "FrameworkPack": [
+            "Shaders"
+        ]
+    },
+    
+    "Shaders": {
+        "Name": "Shaders",
+        "Path": "../../shaders/",
+        "Description": "Pak.bin"
+    }
+}

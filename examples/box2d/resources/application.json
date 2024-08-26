@@ -1,0 +1,9 @@
+{
+  "Configs": {
+    "Path": [ "Configs.json" ]
+  },
+  
+  "Packages": {
+    "Path": [ "Packages.json" ]
+  }
+}

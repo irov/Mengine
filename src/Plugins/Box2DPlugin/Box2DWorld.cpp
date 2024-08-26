@@ -66,7 +66,7 @@ namespace Mengine
             m_timepipeId = INVALID_UNIQUE_ID;
         }
 
-        b2DestroyWorld( m_worldId );
+        ::b2DestroyWorld( m_worldId );
         m_worldId = b2_nullWorldId;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Box2DBodyInterfacePtr Box2DWorld::createBody( bool _static, const mt::vec2f & _pos, float _angle, float _linearDamping, float _angularDamping, bool _allowSleep, bool _isBullet, bool _fixedRotation, const DocumentInterfacePtr & _doc )
     {
-        b2BodyDef bodyDef;
+        b2BodyDef bodyDef = ::b2DefaultBodyDef();
 
         bodyDef.position = m_scaler.toBox2DWorld( _pos );
         bodyDef.rotation = ::b2MakeRot( _angle );
@@ -119,7 +119,9 @@ namespace Mengine
 
         while( m_time >= m_timeStep )
         {
-            ::b2World_Step( m_worldId, m_timeStep * 0.001f, m_subStepCount );
+            float timeStepSeconds = m_timeStep * 0.001f;
+
+            ::b2World_Step( m_worldId, timeStepSeconds, m_subStepCount );
 
             m_time -= m_timeStep;
         }
@@ -143,6 +145,7 @@ namespace Mengine
             const Box2DRayCastInterfacePtr & response = desc->response;
 
             uint32_t index = desc->index++;
+
             Box2DBody * body = (Box2DBody *)::b2Shape_GetUserData( shapeId );
 
             mt::vec2f point = scaler.toEngineWorld( b2_point );

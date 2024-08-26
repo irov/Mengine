@@ -1,12 +1,10 @@
 #include "Box2DFrameworkPlugin.h"
 
-#include "Interface/FrameworkFactoryInterface.h"
-#include "Interface/VocabularyServiceInterface.h"
-
 #include "Box2DFramework.h"
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FrameworkFactory.h"
+#include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Box2DFramework, Mengine::Box2DFrameworkPlugin )

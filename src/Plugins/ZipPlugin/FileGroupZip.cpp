@@ -6,7 +6,6 @@
 #include "Interface/FileServiceInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"

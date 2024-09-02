@@ -8,7 +8,6 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionContainer.h"
 #include "Kernel/EnumeratorHelper.h"
-#include "Kernel/DocumentHelper.h"
 
 #include "Config/Algorithm.h"
 

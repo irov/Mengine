@@ -13,6 +13,7 @@ import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
@@ -104,6 +105,10 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
             return false;
         }
 
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            return false;
+        }
+
         boolean ready = m_interstitialAd.isReady();
 
         this.log("canYouShowInterstitial", Map.of("placement", placement, "ready", ready));
@@ -122,6 +127,10 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
     public boolean showInterstitial(MengineActivity activity, String placement) {
         if (m_interstitialAd == null) {
+            return false;
+        }
+
+        if (MengineNetwork.isNetworkAvailable() == false) {
             return false;
         }
 

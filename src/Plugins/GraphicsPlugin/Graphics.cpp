@@ -5,7 +5,6 @@
 #include "Kernel/BezierHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/MemoryAllocator.h"
 
 #include "math/line2.h"

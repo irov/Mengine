@@ -6,7 +6,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/PathString.h"
 #include "Kernel/FilePathHelper.h"

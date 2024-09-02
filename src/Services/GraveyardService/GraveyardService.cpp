@@ -17,8 +17,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     GraveyardService::GraveyardService()
-        : m_timepipeId( INVALID_UNIQUE_ID )
-        , m_count( 0 )
+        : m_count( 0 )
         , m_graveyardTime( 1000.f )
     {
     }
@@ -33,10 +32,8 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_TEXTURE_DESTROY, &GraveyardService::onEngineTextureDestroy, MENGINE_DOCUMENT_FACTORABLE );
 
-        UniqueId timepipe = TIMEPIPE_SERVICE()
+        TIMEPIPE_SERVICE()
             ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
-
-        m_timepipeId = timepipe;
 
         return true;
     }
@@ -47,13 +44,8 @@ namespace Mengine
 
         this->clearTextures();
 
-        if( m_timepipeId != INVALID_UNIQUE_ID )
-        {
-            TIMEPIPE_SERVICE()
-                ->removeTimepipe( m_timepipeId );
-
-            m_timepipeId = INVALID_UNIQUE_ID;
-        }
+        TIMEPIPE_SERVICE()
+            ->removeTimepipe( TimepipeInterfacePtr::from( this ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void GraveyardService::clearTextures()

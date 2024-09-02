@@ -3,6 +3,8 @@
 #include "Interface/ThreadMutexInterface.h"
 #include "Interface/DocumentInterface.h"
 
+#include "Kernel/DocumentHelper.h"
+
 namespace Mengine
 {
     namespace Helper

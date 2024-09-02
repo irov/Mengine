@@ -3,7 +3,6 @@
 #include "ButtonEventReceiverInterface.h"
 
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

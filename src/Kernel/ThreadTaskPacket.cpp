@@ -1,7 +1,6 @@
 #include "ThreadTaskPacket.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexHelper.h"
 

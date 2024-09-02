@@ -65,6 +65,7 @@ Common
     PlayerServiceInterface.h
     SchedulerInterface.h
     PickerInterface.h
+    PickerInputHandlerInterface.h
     PickerServiceInterface.h
     PrototypeGeneratorInterface.h
     PrototypeServiceInterface.h

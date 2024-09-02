@@ -7,7 +7,6 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryAllocator.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/PrototypeHelper.h"
 
 #include "Config/Algorithm.h"
@@ -16,14 +15,60 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        struct Box2DOverlapResultDesc
+        {
+            Box2DBodyInterface ** bodies;
+            uint32_t capacity;
+            uint32_t found;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        static bool b2OverlapResult( b2ShapeId _shapeId, void * _context )
+        {
+            b2BodyId bodyId = ::b2Shape_GetBody( _shapeId );
+
+            b2BodyType bodyType = ::b2Body_GetType( bodyId );
+
+            if( bodyType == b2_staticBody )
+            {
+                return true;
+            }
+
+            Box2DOverlapResultDesc * desc = (Box2DOverlapResultDesc *)_context;
+
+            Box2DBodyInterface * body = (Box2DBodyInterface *)::b2Shape_GetUserData( _shapeId );
+
+            for( Box2DBodyInterface ** it_body = desc->bodies, **it_body_end = desc->bodies + desc->capacity; it_body != it_body_end; ++it_body )
+            {
+                if( *it_body == nullptr )
+                {
+                    *it_body = body;
+
+                    ++desc->found;
+
+                    return true;
+                }
+
+                if( *it_body == body )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     Box2DWorld::Box2DWorld()
-        : m_timepipeId( INVALID_UNIQUE_ID )
-        , m_dead( false )
+        : m_dead( false )
         , m_time( 0.f )
         , m_worldId( b2_nullWorldId )
         , m_timeStep( 1000.f / 60.f )
         , m_subStepCount( 4 )
-        , m_scaler( 128.f )
+        , m_scaler( 1024.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -43,28 +88,16 @@ namespace Mengine
 
         m_worldId = ::b2CreateWorld( &worldDef );
 
-        UniqueId timepipeId = TIMEPIPE_SERVICE()
+        TIMEPIPE_SERVICE()
             ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
-
-        if( timepipeId == 0 )
-        {
-            return false;
-        }
-
-        m_timepipeId = timepipeId;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DWorld::finalize()
     {
-        if( m_timepipeId != INVALID_UNIQUE_ID )
-        {
-            TIMEPIPE_SERVICE()
-                ->removeTimepipe( m_timepipeId );
-
-            m_timepipeId = INVALID_UNIQUE_ID;
-        }
+        TIMEPIPE_SERVICE()
+            ->removeTimepipe( TimepipeInterfacePtr::from( this ) );
 
         ::b2DestroyWorld( m_worldId );
         m_worldId = b2_nullWorldId;
@@ -84,6 +117,29 @@ namespace Mengine
     {
         m_timeStep = _timeStep;
         m_subStepCount = _subStepCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Box2DWorld::overlapCircle( const mt::vec2f & _pos, float _radius, uint32_t _categoryBits, uint32_t _maskBits, Box2DBodyInterface ** _bodies, uint32_t _capacity ) const
+    {
+        b2Vec2 b2_position = m_scaler.toBox2DWorld( _pos );
+        float b2_radius = m_scaler.toBox2DWorld( _radius );
+
+        b2Circle b2_circle = {{0.f, 0.f}, b2_radius};
+        b2Transform b2_transform = {b2_position, ::b2MakeRot( 0.f )};
+
+        b2QueryFilter b2_queryFilter = ::b2DefaultQueryFilter();
+        
+        b2_queryFilter.categoryBits = _categoryBits;
+        b2_queryFilter.maskBits = _maskBits;
+
+        Detail::Box2DOverlapResultDesc desc;
+        desc.bodies = _bodies;
+        desc.capacity = _capacity;
+        desc.found = 0;
+
+        ::b2World_OverlapCircle( m_worldId, &b2_circle, b2_transform, b2_queryFilter, &Detail::b2OverlapResult, &desc );
+
+        return desc.found;
     }
     //////////////////////////////////////////////////////////////////////////
     Box2DBodyInterfacePtr Box2DWorld::createBody( bool _static, const mt::vec2f & _pos, float _angle, float _linearDamping, float _angularDamping, bool _allowSleep, bool _isBullet, bool _fixedRotation, const DocumentInterfacePtr & _doc )
@@ -146,13 +202,13 @@ namespace Mengine
 
             uint32_t index = desc->index++;
 
-            Box2DBody * body = (Box2DBody *)::b2Shape_GetUserData( shapeId );
+            Box2DBodyInterface * body = (Box2DBodyInterface *)::b2Shape_GetUserData( shapeId );
 
             mt::vec2f point = scaler.toEngineWorld( b2_point );
             mt::vec2f normal = scaler.toEngineWorldNormal( b2_normal );
             float fraction = b2_fraction;
 
-            float result = response->onResponse( index, body, point, normal, fraction );
+            float result = response->onBox2DRayCast( index, body, point, normal, fraction );
 
             float b2_result = scaler.toBox2DWorld( result );
 

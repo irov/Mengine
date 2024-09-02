@@ -42,7 +42,6 @@
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/JSONHelper.h"
 #include "Kernel/ThreadWorkerHelper.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/Fingerprint.h"
 #include "Kernel/DataHelper.h"

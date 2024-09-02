@@ -1,6 +1,5 @@
 #include "DevToDebugTab.h"
 
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexHelper.h"

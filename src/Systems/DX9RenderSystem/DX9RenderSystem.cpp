@@ -36,7 +36,6 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Error.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/TextureHelper.h"

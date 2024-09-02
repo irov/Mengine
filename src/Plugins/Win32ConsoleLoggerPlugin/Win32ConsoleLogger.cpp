@@ -4,7 +4,6 @@
 #include "Environment/Windows/Win32Helper.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/LoggerHelper.h"
 

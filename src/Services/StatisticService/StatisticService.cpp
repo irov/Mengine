@@ -2,7 +2,6 @@
 
 #include "Interface/ThreadSystemInterface.h"
 
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadSharedMutexScope.h"
 #include "Kernel/AssertionMemoryPanic.h"
 

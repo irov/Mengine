@@ -3,7 +3,6 @@
 #include "EasingHelper.h"
 
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/AssertionMemoryPanic.h"

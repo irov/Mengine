@@ -8,6 +8,7 @@
 #include "Interface/ThreadConditionVariableInterface.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "Config/Thread.h"
 

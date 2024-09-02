@@ -3,7 +3,6 @@
 #include "Kernel/Surface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 
 #include "Config/StdMath.h"
 

@@ -11,7 +11,6 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"
@@ -35,8 +34,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SoundService::SoundService()
-        : m_timepipeId( INVALID_UNIQUE_ID )
-        , m_supportStream( true )
+        : m_supportStream( true )
         , m_muted( false )
         , m_turnStream( false )
         , m_turnSound( false )
@@ -111,10 +109,8 @@ namespace Mengine
         m_factoryWorkerTaskSoundBufferUpdate = Helper::makeFactoryPool<ThreadWorkerSoundBufferUpdate, 32>( MENGINE_DOCUMENT_FACTORABLE );
         m_factorySoundIdentity = Helper::makeFactoryPool<SoundIdentity, 32>( MENGINE_DOCUMENT_FACTORABLE );
 
-        UniqueId timepipe = TIMEPIPE_SERVICE()
+        TIMEPIPE_SERVICE()
             ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
-
-        m_timepipeId = timepipe;
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE, &SoundService::notifyEnginePrepareFinalize, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -152,13 +148,8 @@ namespace Mengine
 
         m_soundVolumeProviders.clear();
 
-        if( m_timepipeId != INVALID_UNIQUE_ID )
-        {
-            TIMEPIPE_SERVICE()
-                ->removeTimepipe( m_timepipeId );
-
-            m_timepipeId = INVALID_UNIQUE_ID;
-        }
+        TIMEPIPE_SERVICE()
+            ->removeTimepipe( TimepipeInterfacePtr::from( this ) );
 
         m_commonVolume = nullptr;
         m_soundVolume = nullptr;

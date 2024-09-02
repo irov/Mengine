@@ -11,7 +11,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionStatistic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/StatisticHelper.h"
 
 #include "Config/Algorithm.h"

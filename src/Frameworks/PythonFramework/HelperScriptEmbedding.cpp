@@ -3471,12 +3471,14 @@ namespace Mengine
             {
                 MENGINE_ASSERTION_MEMORY_PANIC( _node, "node is nullptr" );
 
-                RenderCameraInterfacePtr camera = Helper::getNodeRenderCameraInheritance( _node );
+                const RenderCameraInterface * camera = Helper::getNodeRenderCameraInheritance( _node );
 
                 if( camera == nullptr )
                 {
-                    camera = PLAYER_SERVICE()
+                    const RenderCameraInterfacePtr & player_camera = PLAYER_SERVICE()
                         ->getRenderCamera();
+
+                    camera = player_camera.get();
                 }
 
                 const TransformationInterface * transformation = _node->getTransformation();

@@ -5,7 +5,6 @@
 #include "DecoderRenderImageLoader.h"
 
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/DocumentHelper.h"
 
 #include "Kernel/Logger.h"
 

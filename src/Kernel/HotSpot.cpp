@@ -78,30 +78,30 @@ namespace Mengine
         return picked;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpot::addInputHandler( const InputHandlerInterfacePtr & _inputHandler, const DocumentInterfacePtr & _doc )
+    void HotSpot::addPickerInputHandler( const PickerInputHandlerInterfacePtr & _inputHandler, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
-        InputHandlerDesc desc;
+        PickerInputHandlerDesc desc;
         desc.handler = _inputHandler;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
         desc.doc = _doc;
 #endif
         
-        m_inputHandlers.emplace_back( desc );
+        m_pickerInputHandlers.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpot::removeInputHandler( const InputHandlerInterfacePtr & _inputHandler )
+    void HotSpot::removePickerInputHandler( const PickerInputHandlerInterfacePtr & _inputHandler )
     {
-        VectorInputHandlers::iterator it_found = Algorithm::find_if( m_inputHandlers.begin(), m_inputHandlers.end(), [_inputHandler]( const InputHandlerDesc & _desc )
+        VectorPickerInputHandlers::iterator it_found = Algorithm::find_if( m_pickerInputHandlers.begin(), m_pickerInputHandlers.end(), [_inputHandler]( const PickerInputHandlerDesc & _desc )
         {
             return _desc.handler == _inputHandler;
         } );
 
-        MENGINE_ASSERTION_FATAL( it_found != m_inputHandlers.end(), "input handler not found" );
+        MENGINE_ASSERTION_FATAL( it_found != m_pickerInputHandlers.end(), "input handler not found" );
 
-        m_inputHandlers.erase( it_found );
+        m_pickerInputHandlers.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::activatePicker_()
@@ -166,26 +166,26 @@ namespace Mengine
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputHandlerInterface * HotSpot::getPickerInputHandler()
+    PickerInputHandlerInterface * HotSpot::getPickerInputHandler()
     {
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleMouseEnter( const InputMouseEnterEvent & _event )
+    bool HotSpot::handleMouseEnter( const RenderContext * _context, const InputMouseEnterEvent & _event )
     {
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_MOUSE_ENTER, m_defaultHandle )
-            ->onHotSpotMouseEnter( _event );
+            ->onHotSpotMouseEnter( _context, _event );
 
         if( handle == true )
         {
             return true;
         }
 
-        for( const InputHandlerDesc & desc : m_inputHandlers )
+        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
         {
-            const InputHandlerInterfacePtr & handler = desc.handler;
+            const PickerInputHandlerInterfacePtr & handler = desc.handler;
 
-            if( handler->handleMouseEnter( _event ) == true )
+            if( handler->handleMouseEnter( _context, _event ) == true )
             {
                 return true;
             }
@@ -194,34 +194,34 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpot::handleMouseLeave( const InputMouseLeaveEvent & _event )
+    void HotSpot::handleMouseLeave( const RenderContext * _context, const InputMouseLeaveEvent & _event )
     {
         EVENTABLE_METHOD( EVENT_HOTSPOT_MOUSE_LEAVE )
-            ->onHotSpotMouseLeave( _event );
+            ->onHotSpotMouseLeave( _context, _event );
         
-        for( const InputHandlerDesc & desc : m_inputHandlers )
+        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
         {
-            const InputHandlerInterfacePtr & handler = desc.handler;
+            const PickerInputHandlerInterfacePtr & handler = desc.handler;
 
-            handler->handleMouseLeave( _event );
+            handler->handleMouseLeave( _context, _event );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleKeyEvent( const InputKeyEvent & _event )
+    bool HotSpot::handleKeyEvent( const RenderContext * _context, const InputKeyEvent & _event )
     {
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_KEY, m_defaultHandle )
-            ->onHotSpotKey( _event );
+            ->onHotSpotKey( _context, _event );
 
         if( handle == true )
         {
             return true;
         }
 
-        for( const InputHandlerDesc & desc : m_inputHandlers )
+        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
         {
-            const InputHandlerInterfacePtr & handler = desc.handler;
+            const PickerInputHandlerInterfacePtr & handler = desc.handler;
 
-            if( handler->handleKeyEvent( _event ) == true )
+            if( handler->handleKeyEvent( _context, _event ) == true )
             {
                 return true;
             }
@@ -230,21 +230,21 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleTextEvent( const InputTextEvent & _event )
+    bool HotSpot::handleTextEvent( const RenderContext * _context, const InputTextEvent & _event )
     {
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_TEXT, m_defaultHandle )
-            ->onHotSpotText( _event );
+            ->onHotSpotText( _context, _event );
 
         if( handle == true )
         {
             return true;
         }
 
-        for( const InputHandlerDesc & desc : m_inputHandlers )
+        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
         {
-            const InputHandlerInterfacePtr & handler = desc.handler;
+            const PickerInputHandlerInterfacePtr & handler = desc.handler;
 
-            if( handler->handleTextEvent( _event ) == true )
+            if( handler->handleTextEvent( _context, _event ) == true )
             {
                 return true;
             }
@@ -253,44 +253,21 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleAccelerometerEvent( const InputAccelerometerEvent & _event )
-    {
-        bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_ACCELEROMETER, m_defaultHandle )
-            ->onHotSpotAccelerometer( _event );
-
-        if( handle == true )
-        {
-            return true;
-        }
-
-        for( const InputHandlerDesc & desc : m_inputHandlers )
-        {
-            const InputHandlerInterfacePtr & handler = desc.handler;
-
-            if( handler->handleAccelerometerEvent( _event ) == true )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
+    bool HotSpot::handleMouseButtonEvent( const RenderContext * _context, const InputMouseButtonEvent & _event )
     {
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_MOUSE_BUTTON, m_defaultHandle )
-            ->onHotSpotMouseButton( _event );
+            ->onHotSpotMouseButton( _context, _event );
 
         if( handle == true )
         {
             return true;
         }
 
-        for( const InputHandlerDesc & desc : m_inputHandlers )
+        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
         {
-            const InputHandlerInterfacePtr & handler = desc.handler;
+            const PickerInputHandlerInterfacePtr & handler = desc.handler;
 
-            if( handler->handleMouseButtonEvent( _event ) == true )
+            if( handler->handleMouseButtonEvent( _context, _event ) == true )
             {
                 return true;
             }
@@ -299,21 +276,21 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
+    bool HotSpot::handleMouseButtonEventBegin( const RenderContext * _context, const InputMouseButtonEvent & _event )
     {
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN, false )
-            ->onHotSpotMouseButtonBegin( _event );
+            ->onHotSpotMouseButtonBegin( _context, _event );
 
         if( handle == true )
         {
             return true;
         }
 
-        for( const InputHandlerDesc & desc : m_inputHandlers )
+        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
         {
-            const InputHandlerInterfacePtr & handler = desc.handler;
+            const PickerInputHandlerInterfacePtr & handler = desc.handler;
 
-            if( handler->handleMouseButtonEventBegin( _event ) == true )
+            if( handler->handleMouseButtonEventBegin( _context, _event ) == true )
             {
                 return true;
             }
@@ -322,21 +299,21 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
+    bool HotSpot::handleMouseButtonEventEnd( const RenderContext * _context, const InputMouseButtonEvent & _event )
     {
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_MOUSE_BUTTON_END, false )
-            ->onHotSpotMouseButtonEnd( _event );
+            ->onHotSpotMouseButtonEnd( _context, _event );
 
         if( handle == true )
         {
             return true;
         }
 
-        for( const InputHandlerDesc & desc : m_inputHandlers )
+        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
         {
-            const InputHandlerInterfacePtr & handler = desc.handler;
+            const PickerInputHandlerInterfacePtr & handler = desc.handler;
 
-            if( handler->handleMouseButtonEventEnd( _event ) == true )
+            if( handler->handleMouseButtonEventEnd( _context, _event ) == true )
             {
                 return true;
             }
@@ -345,21 +322,21 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleMouseMove( const InputMouseMoveEvent & _event )
+    bool HotSpot::handleMouseMove( const RenderContext * _context, const InputMouseMoveEvent & _event )
     {
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_MOUSE_MOVE, m_defaultHandle )
-            ->onHotSpotMouseMove( _event );
+            ->onHotSpotMouseMove( _context, _event );
 
         if( handle == true )
         {
             return true;
         }
 
-        for( const InputHandlerDesc & desc : m_inputHandlers )
+        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
         {
-            const InputHandlerInterfacePtr & handler = desc.handler;
+            const PickerInputHandlerInterfacePtr & handler = desc.handler;
 
-            if( handler->handleMouseMove( _event ) == true )
+            if( handler->handleMouseMove( _context, _event ) == true )
             {
                 return true;
             }
@@ -368,21 +345,21 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleMouseWheel( const InputMouseWheelEvent & _event )
+    bool HotSpot::handleMouseWheel( const RenderContext * _context, const InputMouseWheelEvent & _event )
     {
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_MOUSE_WHEEL, m_defaultHandle )
-            ->onHotSpotMouseWheel( _event );
+            ->onHotSpotMouseWheel( _context, _event );
 
         if( handle == true )
         {
             return true;
         }
 
-        for( const InputHandlerDesc & desc : m_inputHandlers )
+        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
         {
-            const InputHandlerInterfacePtr & handler = desc.handler;
+            const PickerInputHandlerInterfacePtr & handler = desc.handler;
 
-            if( handler->handleMouseWheel( _event ) == true )
+            if( handler->handleMouseWheel( _context, _event ) == true )
             {
                 return true;
             }
@@ -448,9 +425,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_dispose()
     {
-        MENGINE_ASSERTION_CONTAINER_EMPTY( m_inputHandlers );
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_pickerInputHandlers );
 
-        m_inputHandlers.clear();
+        m_pickerInputHandlers.clear();
 
         Node::_dispose();
     }

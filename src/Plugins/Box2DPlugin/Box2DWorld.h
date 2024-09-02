@@ -39,6 +39,9 @@ namespace Mengine
         void setTimeStep( float _timeStep, uint32_t _subStepCount ) override;
 
     public:
+        uint32_t overlapCircle( const mt::vec2f & _pos, float _radius, uint32_t _categoryBits, uint32_t _maskBits, Box2DBodyInterface ** _bodies, uint32_t _capacity ) const override;
+
+    public:
         Box2DBodyInterfacePtr createBody( bool _static
             , const mt::vec2f & _pos
             , float _angle
@@ -115,8 +118,6 @@ namespace Mengine
         Box2DJointInterfacePtr createJoint_( b2JointId jointId, const DocumentInterfacePtr & _doc );
 
     protected:
-        UniqueId m_timepipeId;
-
         bool m_dead;
 
         float m_time;

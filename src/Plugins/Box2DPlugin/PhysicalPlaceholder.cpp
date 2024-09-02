@@ -18,7 +18,7 @@ namespace Mengine
     {
         m_body = _body;
 
-        m_body->setEventable( EventablePtr::from( this ) );
+        m_body->setNode( NodePtr::from( this ) );
     }
     //////////////////////////////////////////////////////////////////////////
     const Box2DBodyInterfacePtr & PhysicalPlaceholder::getBox2DBody() const

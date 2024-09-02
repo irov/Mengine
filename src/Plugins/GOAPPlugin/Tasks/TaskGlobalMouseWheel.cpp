@@ -1,7 +1,6 @@
 #include "TaskGlobalMouseWheel.h"
 
 #include "Kernel/GlobalInputHandlerHelper.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 
 #include "GOAP/NodeInterface.h"

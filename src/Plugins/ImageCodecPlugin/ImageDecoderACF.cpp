@@ -3,7 +3,6 @@
 
 #include "Kernel/StreamHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"

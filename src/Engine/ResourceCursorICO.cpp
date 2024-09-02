@@ -4,7 +4,6 @@
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryStreamHelper.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine

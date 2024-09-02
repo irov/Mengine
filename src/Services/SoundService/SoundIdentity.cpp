@@ -2,7 +2,6 @@
 
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Assertion.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/PrototypeHelper.h"
 
 namespace Mengine

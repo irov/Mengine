@@ -78,6 +78,9 @@ namespace Mengine
         virtual float getLocalPositionZ() const = 0;
 
     public:
+        virtual void moveLocalPosition( const mt::vec3f & _delta ) = 0;
+
+    public:
         virtual bool isIdentityPosition() const = 0;
 
     public:

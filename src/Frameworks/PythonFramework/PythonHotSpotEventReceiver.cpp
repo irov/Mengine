@@ -21,57 +21,69 @@ namespace Mengine
         m_cb.call();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotMouseEnter( const InputMouseEnterEvent & _event )
+    bool PythonHotSpotEventReceiver::onHotSpotMouseEnter( const RenderContext * _context, const InputMouseEnterEvent & _event )
     {
+        MENGINE_UNUSED( _context );
+
         return m_cb.call( _event.x, _event.y );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonHotSpotEventReceiver::onHotSpotMouseLeave( const InputMouseLeaveEvent & _event )
+    void PythonHotSpotEventReceiver::onHotSpotMouseLeave( const RenderContext * _context, const InputMouseLeaveEvent & _event )
     {
+        MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );
 
         m_cb.call();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotKey( const InputKeyEvent & _event )
+    bool PythonHotSpotEventReceiver::onHotSpotKey( const RenderContext * _context, const InputKeyEvent & _event )
     {
+        MENGINE_UNUSED( _context );
+
         return m_cb.call( _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotText( const InputTextEvent & _event )
+    bool PythonHotSpotEventReceiver::onHotSpotText( const RenderContext * _context, const InputTextEvent & _event )
     {
+        MENGINE_UNUSED( _context );
+
         WChar symbol = _event.text[0];
 
         return m_cb.call( _event.x, _event.y, symbol );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotAccelerometer( const InputAccelerometerEvent & _event )
+    bool PythonHotSpotEventReceiver::onHotSpotMouseButton( const RenderContext * _context, const InputMouseButtonEvent & _event )
     {
-        return m_cb.call( _event.dx, _event.dy, _event.dz );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotMouseButton( const InputMouseButtonEvent & _event )
-    {
+        MENGINE_UNUSED( _context );
+
         return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotMouseButtonBegin( const InputMouseButtonEvent & _event )
+    bool PythonHotSpotEventReceiver::onHotSpotMouseButtonBegin( const RenderContext * _context, const InputMouseButtonEvent & _event )
     {
+        MENGINE_UNUSED( _context );
+
         return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotMouseButtonEnd( const InputMouseButtonEvent & _event )
+    bool PythonHotSpotEventReceiver::onHotSpotMouseButtonEnd( const RenderContext * _context, const InputMouseButtonEvent & _event )
     {
+        MENGINE_UNUSED( _context );
+
         return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotMouseMove( const InputMouseMoveEvent & _event )
+    bool PythonHotSpotEventReceiver::onHotSpotMouseMove( const RenderContext * _context, const InputMouseMoveEvent & _event )
     {
+        MENGINE_UNUSED( _context );
+
         return m_cb.call( _event.touchId, _event.x, _event.y, _event.dx, _event.dy, _event.pressure );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotMouseWheel( const InputMouseWheelEvent & _event )
+    bool PythonHotSpotEventReceiver::onHotSpotMouseWheel( const RenderContext * _context, const InputMouseWheelEvent & _event )
     {
+        MENGINE_UNUSED( _context );
+
         return m_cb.call( _event.x, _event.y, _event.wheel, _event.scroll );
     }
     //////////////////////////////////////////////////////////////////////////

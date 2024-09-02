@@ -1,6 +1,5 @@
 #include "DevToDebugPropertyGetterBoolean.h"
 
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 
 namespace Mengine

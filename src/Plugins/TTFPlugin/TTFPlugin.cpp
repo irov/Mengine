@@ -13,7 +13,6 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/PixelFormat.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/AssertionAllocator.h"

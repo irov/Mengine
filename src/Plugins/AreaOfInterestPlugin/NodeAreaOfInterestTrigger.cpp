@@ -2,7 +2,6 @@
 #include "NodeAreaOfInterestActor.h"
 
 #include "Kernel/EventableHelper.h"
-#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

@@ -1,7 +1,6 @@
 #include "TaskGlobalMouseButton.h"
 
 #include "Kernel/GlobalInputHandlerHelper.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 
 #include "GOAP/NodeInterface.h"
@@ -9,11 +8,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskGlobalMouseButton::TaskGlobalMouseButton( GOAP::Allocator * _allocator, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentInterfacePtr & _doc )
+    TaskGlobalMouseButton::TaskGlobalMouseButton( GOAP::Allocator * _allocator, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonFilter & _filter, const LambdaInputMouseButtonComplete & _cb, const DocumentInterfacePtr & _doc )
         : GOAP::TaskInterface( _allocator )
         , m_button( _button )
         , m_isDown( _isDown )
         , m_filter( _filter )
+        , m_cb( _cb )
 #if defined(MENGINE_DOCUMENT_ENABLE)
         , m_doc( _doc )
 #endif
@@ -34,11 +34,21 @@ namespace Mengine
             {
                 if( m_filter( _event ) == true )
                 {
+                    if( m_cb != nullptr )
+                    {
+                        m_cb( _event );
+                    }
+
                     _node->complete();
                 }
             }
             else
             {
+                if( m_cb != nullptr )
+                {
+                    m_cb( _event );
+                }
+
                 _node->complete();
             }
 
@@ -68,6 +78,7 @@ namespace Mengine
         }
 
         m_filter = nullptr;
+        m_cb = nullptr;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
         m_doc = nullptr;

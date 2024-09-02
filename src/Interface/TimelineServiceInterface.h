@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Kernel/UpdateContext.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

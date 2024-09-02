@@ -787,12 +787,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter::onProviderEmitterCamera( bool * const _orthogonality, mt::vec3f * const _position, mt::vec3f * const _direction )
     {
-        RenderCameraInterfacePtr camera = Helper::getNodeRenderCameraInheritance( this );
+        const RenderCameraInterface * camera = Helper::getNodeRenderCameraInheritance( this );
 
         if( camera == nullptr )
         {
-            camera = PLAYER_SERVICE()
+            const RenderCameraInterfacePtr & player_camera = PLAYER_SERVICE()
                 ->getRenderCamera();
+
+            camera = player_camera.get();
         }
 
         *_orthogonality = true;

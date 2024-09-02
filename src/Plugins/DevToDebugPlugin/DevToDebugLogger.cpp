@@ -5,7 +5,6 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/HttpServiceInterface.h"
 
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/LoggerHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/AssertionMemoryPanic.h"

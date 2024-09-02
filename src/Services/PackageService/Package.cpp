@@ -18,7 +18,6 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Resource.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"

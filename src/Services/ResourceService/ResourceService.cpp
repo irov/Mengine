@@ -11,7 +11,6 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Resource.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Error.h"
 #include "Kernel/FactoryPool.h"

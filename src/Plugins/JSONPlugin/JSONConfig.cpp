@@ -9,8 +9,6 @@
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Ravingcode.h"
-#include "Kernel/DocumentHelper.h"
-#include "Kernel/DocumentableHelper.h"
 #include "Kernel/ArrayString.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/JSONHelper.h"

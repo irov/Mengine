@@ -10,12 +10,12 @@
 
 #include "Kernel/ArrayString.h"
 #include "Kernel/FactoryPool.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/FilePathDateTimeHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadMutexHelper.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ProfilerSystem, Mengine::OptickProfilerSystem );
 //////////////////////////////////////////////////////////////////////////

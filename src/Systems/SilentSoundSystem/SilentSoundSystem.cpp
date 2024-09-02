@@ -2,7 +2,6 @@
 
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 

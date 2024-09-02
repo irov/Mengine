@@ -8,7 +8,6 @@
 #include "Kernel/Scene.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FactorableUnique.h"

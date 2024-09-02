@@ -12,7 +12,6 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FactoryPool.h"
 

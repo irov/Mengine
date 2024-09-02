@@ -36,13 +36,13 @@ namespace Mengine
         void addNodeDisable( const GOAP::SourceInterfacePtr & _source, const NodePtr & _node );
         void addNodeEnable( const GOAP::SourceInterfacePtr & _source, const NodePtr & _node );
 
-        typedef Lambda<bool( const InputMouseButtonEvent &, bool * )> LambdaPickerMouseButtonEvent;
+        typedef Lambda<bool( const RenderContext *, const InputMouseButtonEvent &, bool * )> LambdaPickerMouseButtonEvent;
         void addPickerableMouseButton( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, EMouseButtonCode _button, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter, const DocumentInterfacePtr & _doc );
 
-        typedef Lambda<bool( const InputMouseEnterEvent &, bool * )> LambdaPickerMouseEnterEvent;
+        typedef Lambda<bool( const RenderContext *, const InputMouseEnterEvent &, bool * )> LambdaPickerMouseEnterEvent;
         void addPickerableMouseEnter( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter, const DocumentInterfacePtr & _doc );
 
-        typedef Lambda<bool( const InputMouseLeaveEvent & )> LambdaPickerMouseLeaveEvent;
+        typedef Lambda<bool( const RenderContext *, const InputMouseLeaveEvent & )> LambdaPickerMouseLeaveEvent;
         void addPickerableMouseLeave( const GOAP::SourceInterfacePtr & _source, const PickerablePtr & _pickerable, const LambdaPickerMouseLeaveEvent & _filter, const DocumentInterfacePtr & _doc );
 
         void addTransformationRotateX( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed, const DocumentInterfacePtr & _doc );
@@ -78,17 +78,43 @@ namespace Mengine
             Cook::addTask<TaskEventable>( _source, _eventable, _event, _method, std::forward<Args>( _args ) ... );
         }
         //////////////////////////////////////////////////////////////////////////
-        typedef Lambda<bool( const InputKeyEvent & )> LambdaInputKeyEvent;
-        void addGlobalKeyPress( const GOAP::SourceInterfacePtr & _source, EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter, const DocumentInterfacePtr & _doc );
+        typedef Lambda<bool( const InputKeyEvent & )> LambdaInputKeyFilter;
+        typedef Lambda<void( const InputKeyEvent & )> LambdaInputKeyComplete;
         //////////////////////////////////////////////////////////////////////////
-        typedef Lambda<bool( const InputMouseButtonEvent & )> LambdaInputMouseButtonEvent;
-        void addGlobalMouseButton( const GOAP::SourceInterfacePtr & _source, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentInterfacePtr & _doc );
+        void addGlobalKeyPress( const GOAP::SourceInterfacePtr & _source, EKeyCode _code, bool _isDown, const LambdaInputKeyFilter & _filter, const LambdaInputKeyComplete & _cb, const DocumentInterfacePtr & _doc );
         //////////////////////////////////////////////////////////////////////////
-        typedef Lambda<bool( const InputMouseMoveEvent & )> LambdaInputMouseMoveEvent;
-        void addGlobalMouseMove( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseMoveEvent & _filter, const DocumentInterfacePtr & _doc );
+        template<class C, class M, class ... Args>
+        void addGlobalKeyPress( const GOAP::SourceInterfacePtr & _source, EKeyCode _code, bool _isDown, const LambdaInputKeyFilter & _filter, C * _class, M _method, Args && ... _args, const DocumentInterfacePtr & _doc )
+        {
+            LambdaInputKeyComplete cb = [_class, _method, _args ...]( const InputKeyEvent & _event )
+            {
+                (_class->*_method)(_event, _args ...);
+            };
+
+            Cook::addGlobalKeyPress( _source, _code, _isDown, _filter, cb, _doc );
+        }
         //////////////////////////////////////////////////////////////////////////
-        typedef Lambda<bool( const InputMouseWheelEvent & )> LambdaInputMouseWheelEvent;
-        void addGlobalMouseWheel( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseWheelEvent & _filter, const DocumentInterfacePtr & _doc );
+        typedef Lambda<bool( const InputMouseButtonEvent & )> LambdaInputMouseButtonFilter;
+        typedef Lambda<void( const InputMouseButtonEvent & )> LambdaInputMouseButtonComplete;
+        //////////////////////////////////////////////////////////////////////////
+        void addGlobalMouseButton( const GOAP::SourceInterfacePtr & _source, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonFilter & _filter, const LambdaInputMouseButtonComplete & _cb, const DocumentInterfacePtr & _doc );
+        //////////////////////////////////////////////////////////////////////////
+        template<class C, class M, class ... Args>
+        void addGlobalMouseButton( const GOAP::SourceInterfacePtr & _source, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonFilter & _filter, C * _class, M _method, Args && ... _args, const DocumentInterfacePtr & _doc )
+        {
+            LambdaInputMouseButtonComplete cb = [_class, _method, _args ...]( const InputMouseButtonEvent & _event )
+            {
+                (_class->*_method)(_event, _args ...);
+            };
+
+            Cook::addGlobalMouseButton( _source, _button, _isDown, _filter, cb, _doc );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        typedef Lambda<bool( const InputMouseMoveEvent & )> LambdaInputMouseMoveFilter;
+        void addGlobalMouseMove( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseMoveFilter & _filter, const DocumentInterfacePtr & _doc );
+        //////////////////////////////////////////////////////////////////////////
+        typedef Lambda<bool( const InputMouseWheelEvent & )> LambdaInputMouseWheelFilter;
+        void addGlobalMouseWheel( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseWheelFilter & _filter, const DocumentInterfacePtr & _doc );
         //////////////////////////////////////////////////////////////////////////
         using GOAP::Cook::addFunction;
         //////////////////////////////////////////////////////////////////////////
@@ -100,6 +126,7 @@ namespace Mengine
             GOAP::FunctionProviderInterfacePtr provider = GOAP::Helper::makeFunctionProvider( allocator, [&, _self, _method, _args ...]()
             {
                 P * p = _self.get();
+
                 (p->*_method)(_args ...);
             } );
 
@@ -116,6 +143,7 @@ namespace Mengine
             GOAP::FunctionContextProviderInterfacePtr provider = GOAP::Helper::makeFunctionContextProvider( allocator, [&, _self, _method, _args ...]( bool _skip )
             {
                 P * p = _self.get();
+
                 (p->*_method)(_skip, _args ...);
             } );
 
@@ -132,6 +160,7 @@ namespace Mengine
             GOAP::CallbackProviderInterfacePtr provider = GOAP::Helper::makeCallbackProvider( allocator, [&, _self, _method, _args ...]( const GOAP::CallbackObserverInterfacePtr & _callback, bool _skip )
             {
                 P * p = _self.get();
+
                 (p->*_method)(_callback, _skip, _args ...);
             } );
 
@@ -148,6 +177,7 @@ namespace Mengine
             GOAP::ScopeProviderInterfacePtr provider = GOAP::Helper::makeScopeProvider( allocator, [&, _self, _method, _args ...]( const GOAP::SourceInterfacePtr & _source )
             {
                 P * p = _self.get();
+
                 (p->*_method)(_source, _args ...);
             } );
 
@@ -164,6 +194,7 @@ namespace Mengine
             GOAP::IfProviderInterfacePtr provider = GOAP::Helper::makeIfProvider( allocator, [&, _self, _method, _args ...]()
             {
                 P * p = _self.get();
+
                 return (p->*_method)(_args ...);
             } );
 
@@ -182,6 +213,7 @@ namespace Mengine
             GOAP::WhileProviderInterfacePtr provider = GOAP::Helper::makeWhileProvider( allocator, [&, _self, _method, _args ...]( const GOAP::SourceInterfacePtr & _source )
             {
                 P * p = _self.get();
+
                 return (p->*_method)(_source, _args ...);
             } );
 

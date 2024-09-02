@@ -5,7 +5,6 @@
 #include "Kernel/BaseHotSpotEventReceiver.h"
 
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/Assertion.h"
 
@@ -32,11 +31,11 @@ namespace Mengine
             }
 
         protected:
-            void onHotSpotMouseLeave( const InputMouseLeaveEvent & _event ) override
+            void onHotSpotMouseLeave( const RenderContext * _context, const InputMouseLeaveEvent & _event ) override
             {
                 if( m_filter != nullptr )
                 {
-                    if( m_filter( _event ) == false )
+                    if( m_filter( _context, _event ) == false )
                     {
                         return;
                     }

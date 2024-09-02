@@ -6,7 +6,6 @@
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/TagsHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"

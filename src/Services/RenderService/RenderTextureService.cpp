@@ -24,7 +24,6 @@
 #include "Kernel/NotificationHelper.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderTextureService, Mengine::RenderTextureService );

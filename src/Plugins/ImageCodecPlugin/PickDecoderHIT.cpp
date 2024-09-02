@@ -2,7 +2,6 @@
 #include "PickVerifyHIT.h"
 
 #include "Kernel/StreamHelper.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"

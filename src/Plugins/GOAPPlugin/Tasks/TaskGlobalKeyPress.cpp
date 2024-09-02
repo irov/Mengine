@@ -1,7 +1,6 @@
 #include "TaskGlobalKeyPress.h"
 
 #include "Kernel/GlobalInputHandlerHelper.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 
 #include "GOAP/NodeInterface.h"
@@ -9,11 +8,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskGlobalKeyPress::TaskGlobalKeyPress( GOAP::Allocator * _allocator, EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter, const DocumentInterfacePtr & _doc )
+    TaskGlobalKeyPress::TaskGlobalKeyPress( GOAP::Allocator * _allocator, EKeyCode _code, bool _isDown, const LambdaInputKeyFilter & _filter, const LambdaInputKeyComplete & _cb, const DocumentInterfacePtr & _doc )
         : GOAP::TaskInterface( _allocator )
         , m_code( _code )
         , m_isDown( _isDown )
         , m_filter( _filter )
+        , m_cb( _cb )
 #if defined(MENGINE_DOCUMENT_ENABLE)
         , m_doc( _doc )
 #endif
@@ -39,11 +39,21 @@ namespace Mengine
             {
                 if( m_filter( _event ) == true )
                 {
+                    if( m_cb != nullptr )
+                    {
+                        m_cb( _event );
+                    }
+
                     _node->complete();
                 }
             }
             else
             {
+                if( m_cb != nullptr )
+                {
+                    m_cb( _event );
+                }
+
                 _node->complete();
             }
 
@@ -73,6 +83,7 @@ namespace Mengine
         }
 
         m_filter = nullptr;
+        m_cb = nullptr;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
         m_doc = nullptr;

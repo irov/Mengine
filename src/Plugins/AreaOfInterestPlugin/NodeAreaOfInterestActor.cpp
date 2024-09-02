@@ -1,7 +1,5 @@
 #include "NodeAreaOfInterestActor.h"
 
-#include "Kernel/DocumentHelper.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

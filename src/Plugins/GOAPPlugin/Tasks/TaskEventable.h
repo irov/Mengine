@@ -14,7 +14,7 @@ namespace Mengine
     struct ClassOf;
 
     template<class R, class C, class ... Args>
-    struct ClassOf<R (C::*)( Args ... )>
+    struct ClassOf<R( C:: * )(Args ...)>
     {
         typedef R result_type;
         typedef C class_type;
@@ -55,6 +55,7 @@ namespace Mengine
             , m_invoke( [&, _method, _args ...]( EventReceiverInterface * _receiver )
         {
             typename ClassOf<M>::class_type * t = static_cast<typename ClassOf<M>::class_type *>(_receiver);
+
             (t->*_method)(_args ...);
         } )
         {

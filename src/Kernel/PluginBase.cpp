@@ -5,7 +5,6 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/VocabularyHelper.h"

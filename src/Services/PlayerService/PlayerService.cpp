@@ -38,8 +38,6 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
-#include "Kernel/DocumentableHelper.h"
 #include "Kernel/Resource.h"
 #include "Kernel/Documentable.h"
 #include "Kernel/RenderContextHelper.h"
@@ -49,6 +47,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/PrototypeHelper.h"
+#include "Kernel/DocumentableHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -690,6 +689,7 @@ namespace Mengine
         PICKER_SERVICE()
             ->setRenderTarget( m_renderTarget );
     }
+    //////////////////////////////////////////////////////////////////////////
     const RenderTargetInterfacePtr & PlayerService::getRenderTarget() const
     {
         return m_renderTarget;

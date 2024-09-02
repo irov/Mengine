@@ -16,7 +16,6 @@
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
-#include "Kernel/DocumentHelper.h"
 
 #include "Config/Algorithm.h"
 

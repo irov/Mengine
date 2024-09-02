@@ -6,7 +6,6 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ContentHelper.h"

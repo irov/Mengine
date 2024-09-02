@@ -34,6 +34,6 @@ namespace Mengine
         Box2DBodyInterfacePtr m_body;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PhysicalPlaceholder> PhysicalPlaceholderPtr;
+    typedef IntrusiveNodePtr<PhysicalPlaceholder> PhysicalPlaceholderPtr;
     //////////////////////////////////////////////////////////////////////////
 }

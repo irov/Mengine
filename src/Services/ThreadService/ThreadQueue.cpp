@@ -6,8 +6,6 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/ThreadMutexHelper.h"
 
-#include "Kernel/DocumentHelper.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

@@ -215,6 +215,15 @@ namespace Mengine
         return m_position.z;
     }
     //////////////////////////////////////////////////////////////////////////
+    void BaseTransformation::moveLocalPosition( const mt::vec3f & _delta )
+    {
+        const mt::vec3f & position = this->getLocalPosition();
+
+        mt::vec3f new_pos = position + _delta;
+
+        this->setLocalPosition( new_pos );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool BaseTransformation::isIdentityPosition() const
     {
         return (m_transformationFlag & TRANSFORMATION_INVALIDATE_POSITION) == TRANSFORMATION_INVALIDATE_POSITION;

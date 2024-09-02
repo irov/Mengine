@@ -6,6 +6,7 @@
 
 #include "Kernel/Mixin.h"
 #include "Kernel/IntrusivePtr.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

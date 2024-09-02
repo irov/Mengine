@@ -10,7 +10,6 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/VocabularyHelper.h"
 
 //////////////////////////////////////////////////////////////////////////

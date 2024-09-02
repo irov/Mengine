@@ -7,7 +7,6 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Ravingcode.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"

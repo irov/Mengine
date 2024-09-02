@@ -7,12 +7,11 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Documentable.h"
-#include "Kernel/DocumentHelper.h"
-#include "Kernel/DocumentableHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryCopy.h"
 #include "Kernel/StatisticHelper.h"
+#include "Kernel/DocumentableHelper.h"
 
 namespace Mengine
 {

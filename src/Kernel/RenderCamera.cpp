@@ -3,7 +3,6 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/NotificationHelper.h"
-#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

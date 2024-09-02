@@ -2,8 +2,6 @@
 
 #include "Interface/RenderServiceInterface.h"
 
-#include "Kernel/DocumentHelper.h"
-
 #include "Config/StdMath.h"
 
 namespace Mengine

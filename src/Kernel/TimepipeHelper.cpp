@@ -9,11 +9,17 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
+        void addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentInterfacePtr & _doc )
+        {
+            TIMEPIPE_SERVICE()
+                ->addTimepipe( _timepipe, _doc );
+        }
+        //////////////////////////////////////////////////////////////////////////
         namespace Detail
         {
             class MyTimepipe
-                : public TimepipeInterface
-                , public Factorable
+                : public Factorable
+                , public TimepipeInterface
             {
             public:
                 MyTimepipe( const LambdaTimepipe & _lambda )
@@ -36,20 +42,20 @@ namespace Mengine
             };
         }
         //////////////////////////////////////////////////////////////////////////
-        UniqueId addTimepipe( const LambdaTimepipe & _lambda, const DocumentInterfacePtr & _doc )
+        TimepipeInterfacePtr addTimepipe( const LambdaTimepipe & _lambda, const DocumentInterfacePtr & _doc )
         {
             TimepipeInterfacePtr timepipe = Helper::makeFactorableUnique<Detail::MyTimepipe>( _doc, _lambda );
 
-            UniqueId id = TIMEPIPE_SERVICE()
+            TIMEPIPE_SERVICE()
                 ->addTimepipe( timepipe, _doc );
 
-            return id;
+            return timepipe;
         }
         //////////////////////////////////////////////////////////////////////////
-        void removeTimepipe( UniqueId _id )
+        void removeTimepipe( const TimepipeInterfacePtr & _timepipe )
         {
             TIMEPIPE_SERVICE()
-                ->removeTimepipe( _id );
+                ->removeTimepipe( _timepipe );
         }
         //////////////////////////////////////////////////////////////////////////
     }

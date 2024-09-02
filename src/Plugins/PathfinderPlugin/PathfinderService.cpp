@@ -11,7 +11,6 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/AssertionFactory.h"
-#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

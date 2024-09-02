@@ -30,7 +30,6 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -112,7 +111,7 @@ namespace Mengine
         , m_prevTime( 0 )
         , m_cursorInArea( false )
         , m_cursorMode( false )
-        , m_cursor( nullptr )
+        , m_cursor( NULL )
         , m_lastMouse( false )
         , m_lastMouseX( 0 )
         , m_lastMouseY( 0 )
@@ -363,6 +362,8 @@ namespace Mengine
         m_active = false;
 
         m_platformTags.clear();
+
+        m_cursor = NULL;
 
         ::SetCursor( NULL );
 
@@ -2382,9 +2383,14 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::notifyCursorModeChanged( bool _mode )
+    void Win32PlatformService::notifyCursorModeChanged( bool _cursorMode )
     {
-        m_cursorMode = _mode;
+        if( m_cursorMode == _cursorMode )
+        {
+            return;
+        }
+
+        m_cursorMode = _cursorMode;
 
         if( m_cursorMode == true )
         {
@@ -2392,13 +2398,13 @@ namespace Mengine
             {
                 m_cursor = ::LoadCursor( NULL, IDC_ARROW );
             }
+
+            ::SetCursor( m_cursor );
         }
         else
         {
-            m_cursor = NULL;
+            ::SetCursor( NULL );
         }
-
-        ::SetCursor( m_cursor );
     }
     //////////////////////////////////////////////////////////////////////////
     HCURSOR Win32PlatformService::loadCursorICO_( const FilePath & _filePath, const MemoryInterfacePtr & _buffer ) const
@@ -2516,7 +2522,10 @@ namespace Mengine
 
         m_cursor = cursor;
 
-        ::SetCursor( m_cursor );
+        if( m_cursorMode == true )
+        {
+            ::SetCursor( m_cursor );
+        }
 
         return true;
     }
@@ -3716,7 +3725,10 @@ namespace Mengine
 
         m_cursor = desc.cursor;
 
-        ::SetCursor( m_cursor );
+        if( m_cursorMode == true )
+        {
+            ::SetCursor( m_cursor );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::hasCursorIcon( const ConstString & _icon ) const
@@ -3846,16 +3858,22 @@ namespace Mengine
 
         if( m_active == true )
         {
-            if( m_cursor == NULL )
+            if( m_cursorMode == true )
             {
-                m_cursor = ::LoadCursor( NULL, IDC_ARROW );
-            }
+                if( m_cursor == NULL )
+                {
+                    m_cursor = ::LoadCursor( NULL, IDC_ARROW );
+                }
 
-            ::SetCursor( m_cursor );
+                ::SetCursor( m_cursor );
+            }
         }
         else
         {
-            ::SetCursor( NULL );
+            if( m_cursorMode == true )
+            {
+                ::SetCursor( NULL );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -13,13 +13,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<bool( const InputKeyEvent & )> LambdaInputKeyEvent;
+    typedef Lambda<bool( const InputKeyEvent & )> LambdaInputKeyFilter;
+    typedef Lambda<void( const InputKeyEvent & )> LambdaInputKeyComplete;
     //////////////////////////////////////////////////////////////////////////
     class TaskGlobalKeyPress
         : public GOAP::TaskInterface
     {
     public:
-        TaskGlobalKeyPress( GOAP::Allocator * _allocator, EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter, const DocumentInterfacePtr & _doc );
+        TaskGlobalKeyPress( GOAP::Allocator * _allocator, EKeyCode _code, bool _isDown, const LambdaInputKeyFilter & _filter, const LambdaInputKeyComplete & _cb, const DocumentInterfacePtr & _doc );
         ~TaskGlobalKeyPress() override;
 
     protected:
@@ -30,7 +31,8 @@ namespace Mengine
         EKeyCode m_code;
         bool m_isDown;
 
-        LambdaInputKeyEvent m_filter;
+        LambdaInputKeyFilter m_filter;
+        LambdaInputKeyComplete m_cb;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
         DocumentInterfacePtr m_doc;

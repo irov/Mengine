@@ -1,7 +1,6 @@
 #include "BitmapFontPrototypeGenerator.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/EnumeratorHelper.h"
 
 #include "BitmapFont.h"

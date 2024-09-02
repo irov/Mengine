@@ -5,7 +5,6 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Eventable.h"
-#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

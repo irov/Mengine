@@ -14,7 +14,6 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/PathString.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/AssertionVocabulary.h"

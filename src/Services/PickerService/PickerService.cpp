@@ -379,7 +379,7 @@ namespace Mengine
                 continue;
             }
 
-            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+            PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             mt::vec2f wp;
             m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
@@ -396,7 +396,7 @@ namespace Mengine
                 , ne.y
             );
 
-            if( inputHandler->handleKeyEvent( ne ) == false )
+            if( inputHandler->handleKeyEvent( &desc.context, ne ) == false )
             {
                 continue;
             }
@@ -433,7 +433,7 @@ namespace Mengine
                 continue;
             }
 
-            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+            PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             mt::vec2f wp;
             m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
@@ -450,7 +450,7 @@ namespace Mengine
                 , ne.y
             );
 
-            if( inputHandler->handleTextEvent( ne ) == false )
+            if( inputHandler->handleTextEvent( &desc.context, ne ) == false )
             {
                 continue;
             }
@@ -504,7 +504,7 @@ namespace Mengine
             mt::vec2f wp;
             m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
 
-            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+            PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             InputMouseButtonEvent ne = _event;
             ne.x = wp.x;
@@ -519,7 +519,7 @@ namespace Mengine
                 , ne.y
             );
 
-            if( inputHandler->handleMouseButtonEvent( ne ) == false )
+            if( inputHandler->handleMouseButtonEvent( &desc.context, ne ) == false )
             {
                 continue;
             }
@@ -569,7 +569,7 @@ namespace Mengine
             mt::vec2f wp;
             m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
 
-            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+            PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             InputMouseButtonEvent ne = _event;
             ne.x = wp.x;
@@ -584,7 +584,7 @@ namespace Mengine
                 , ne.y
             );
 
-            if( inputHandler->handleMouseButtonEventBegin( ne ) == false )
+            if( inputHandler->handleMouseButtonEventBegin( &desc.context, ne ) == false )
             {
                 continue;
             }
@@ -641,7 +641,7 @@ namespace Mengine
             mt::vec2f wp;
             m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
 
-            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+            PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             InputMouseButtonEvent ne = _event;
             ne.x = wp.x;
@@ -656,7 +656,7 @@ namespace Mengine
                 , ne.y
             );
 
-            if( inputHandler->handleMouseButtonEventEnd( ne ) == false )
+            if( inputHandler->handleMouseButtonEventEnd( &desc.context, ne ) == false )
             {
                 continue;
             }
@@ -704,7 +704,7 @@ namespace Mengine
             mt::vec2f dp;
             m_arrow->calcPointDelta( &desc.context, mt::vec2f( _event.dx, _event.dy ), &dp );
 
-            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+            PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             InputMouseMoveEvent ne = _event;
             ne.x = wp.x;
@@ -720,7 +720,7 @@ namespace Mengine
                 , ne.y
             );
 
-            if( inputHandler->handleMouseMove( ne ) == false )
+            if( inputHandler->handleMouseMove( &desc.context, ne ) == false )
             {
                 continue;
             }
@@ -765,7 +765,7 @@ namespace Mengine
             mt::vec2f wp;
             m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
 
-            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+            PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             InputMouseWheelEvent ne = _event;
             ne.x = wp.x;
@@ -779,7 +779,7 @@ namespace Mengine
                 , ne.y
             );
 
-            if( inputHandler->handleMouseWheel( ne ) == false )
+            if( inputHandler->handleMouseWheel( &desc.context, ne ) == false )
             {
                 continue;
             }
@@ -837,7 +837,7 @@ namespace Mengine
 
             picker->setPickerPicked( false );
 
-            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+            PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             mt::vec2f wp;
             m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
@@ -854,7 +854,7 @@ namespace Mengine
                 , ne.y
             );
 
-            inputHandler->handleMouseLeave( _event );
+            inputHandler->handleMouseLeave( &desc.context, _event );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -930,7 +930,7 @@ namespace Mengine
                     {
                         picker->setPickerPicked( true );
 
-                        InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+                        PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
                         mt::vec2f wp;
                         m_arrow->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
@@ -950,7 +950,7 @@ namespace Mengine
                             , ne.y
                         );
 
-                        handle = inputHandler->handleMouseEnter( ne );
+                        handle = inputHandler->handleMouseEnter( &desc.context, ne );
 
                         picker->setPickerHandle( handle );
                     }
@@ -967,7 +967,7 @@ namespace Mengine
                     {
                         picker->setPickerPicked( false );
 
-                        InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+                        PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
                         mt::vec2f wp;
                         m_arrow->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
@@ -987,7 +987,7 @@ namespace Mengine
                             , ne.y
                         );
 
-                        inputHandler->handleMouseLeave( ne );
+                        inputHandler->handleMouseLeave( &desc.context, ne );
                     }
                 }
             }
@@ -997,7 +997,7 @@ namespace Mengine
                 {
                     picker->setPickerPicked( false );
 
-                    InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+                    PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
                     mt::vec2f wp;
                     m_arrow->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
@@ -1017,7 +1017,7 @@ namespace Mengine
                         , ne.y
                     );
 
-                    inputHandler->handleMouseLeave( ne );
+                    inputHandler->handleMouseLeave( &desc.context, ne );
                 }
             }
         }

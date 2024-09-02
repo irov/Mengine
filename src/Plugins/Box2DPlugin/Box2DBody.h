@@ -21,8 +21,8 @@ namespace Mengine
         bool initialize( const Box2DScaler & _scaler, b2BodyId _bodyId );
 
     public:
-        void setEventable( const EventablePtr & _eventable ) override;
-        const EventablePtr & getEventable() const override;
+        void setNode( const NodePtr & _node ) override;
+        const NodePtr & getNode() const override;
 
     public:
         b2BodyId getBodyId() const;
@@ -61,8 +61,10 @@ namespace Mengine
         bool isKinematic() const override;
         bool isDynamic() const override;
 
+    public:
         void setTransform( const mt::vec2f & _position, float _angle ) override;
 
+    public:
         void setBodyLinearDumping( float _dumping ) override;
         float getBodyLinearDumping() const override;
         void setBodyAngularDumping( float _dumping ) override;
@@ -72,9 +74,11 @@ namespace Mengine
         void setBodyBulletMode( bool _bulletMode ) override;
         bool isBodyBulletMode() const override;
 
+    public:
         void sleep() override;
         void wakeUp() override;
 
+    public:
         void setFilterData( uint16_t _categoryBits, uint16_t _collisionMask, int16_t _groupIndex ) override;
 
     protected:
@@ -82,7 +86,7 @@ namespace Mengine
 
         b2BodyId m_bodyId;
 
-        EventablePtr m_eventable;
+        NodePtr m_node;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Box2DBody, Box2DBodyInterface> Box2DBodyPtr;

@@ -7,7 +7,6 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
-#include "Kernel/DocumentableHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionReferenceCount.h"
 #include "Kernel/ContentHelper.h"

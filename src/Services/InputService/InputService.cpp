@@ -435,13 +435,13 @@ namespace Mengine
 
         m_keyBuffer[_event.code] = _event.isDown;
 
-        InputKeyEvent event = _event;
+        InputKeyEvent ev = _event;
 
         //ToDo
-        event.isRepeat = isRepeat;
+        ev.isRepeat = isRepeat;
 
         APPLICATION_SERVICE()
-            ->handleKeyEvent( event );
+            ->handleKeyEvent( ev );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::textEvent_( const InputTextEvent & _event )

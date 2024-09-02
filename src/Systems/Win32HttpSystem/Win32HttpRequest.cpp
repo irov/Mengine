@@ -4,7 +4,6 @@
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 

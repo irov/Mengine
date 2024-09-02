@@ -2,7 +2,6 @@
 
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -31,7 +30,7 @@ namespace Mengine
     {
         m_timepipe.erase( Algorithm::remove_if( m_timepipe.begin(), m_timepipe.end(), []( const TimepipeDesc & _desc )
         {
-            return _desc.id == REMOVE_UNIQUE_ID;
+            return _desc.timepipe == nullptr;
         } ), m_timepipe.end() );
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
@@ -47,14 +46,25 @@ namespace Mengine
         m_timepipeAdd.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId TimepipeService::addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentInterfacePtr & _doc )
+    void TimepipeService::addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId newid = Helper::generateUniqueIdentity();
+        MENGINE_ASSERTION_FATAL( Algorithm::find_if( m_timepipeAdd.begin(), m_timepipeAdd.end(), [_timepipe]( const TimepipeDesc & _desc )
+        {
+            return _desc.timepipe == _timepipe;
+        } ) == m_timepipeAdd.end(), "timepipe '%s' already added"
+            , MENGINE_DOCUMENT_STR( _doc )
+            );
+
+        MENGINE_ASSERTION_FATAL( Algorithm::find_if( m_timepipe.begin(), m_timepipe.end(), [_timepipe]( const TimepipeDesc & _desc )
+        {
+            return _desc.timepipe == _timepipe;
+        } ) == m_timepipe.end(), "timepipe '%s' already added"
+            , MENGINE_DOCUMENT_STR( _doc )
+            );
 
         TimepipeDesc desc;
-        desc.id = newid;
         desc.timepipe = _timepipe;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
@@ -62,46 +72,36 @@ namespace Mengine
 #endif
 
         m_timepipeAdd.emplace_back( desc );
-
-        return newid;
     }
     //////////////////////////////////////////////////////////////////////////
-    TimepipeInterfacePtr TimepipeService::removeTimepipe( UniqueId _id )
+    void TimepipeService::removeTimepipe( const TimepipeInterfacePtr & _timepipe )
     {
-        VectorTimepipe::iterator it_find = Algorithm::find_if( m_timepipe.begin(), m_timepipe.end(), [_id]( const TimepipeDesc & _desc )
+        VectorTimepipe::iterator it_found = Algorithm::find_if( m_timepipe.begin(), m_timepipe.end(), [_timepipe]( const TimepipeDesc & _desc )
         {
-            return _desc.id == _id;
+            return _desc.timepipe == _timepipe;
         } );
 
-        if( it_find != m_timepipe.end() )
+        if( it_found != m_timepipe.end() )
         {
-            TimepipeDesc & desc = *it_find;
-
-            desc.id = REMOVE_UNIQUE_ID;
+            TimepipeDesc & desc = *it_found;
 
             TimepipeInterfacePtr old_timepipe = desc.timepipe;
             desc.timepipe = nullptr;
 
-            return old_timepipe;
+            return;
         }
 
-        VectorTimepipe::iterator it_add_find = Algorithm::find_if( m_timepipeAdd.begin(), m_timepipeAdd.end(), [_id]( const TimepipeDesc & _desc )
+        VectorTimepipe::iterator it_add_found = Algorithm::find_if( m_timepipeAdd.begin(), m_timepipeAdd.end(), [_timepipe]( const TimepipeDesc & _desc )
         {
-            return _desc.id == _id;
+            return _desc.timepipe == _timepipe;
         } );
 
-        if( it_add_find == m_timepipeAdd.end() )
+        if( it_add_found == m_timepipeAdd.end() )
         {
-            return nullptr;
+            return;
         }
 
-        TimepipeDesc & add_desc = *it_add_find;
-
-        TimepipeInterfacePtr old_timepipe = add_desc.timepipe;
-
-        m_timepipeAdd.erase( it_add_find );
-
-        return old_timepipe;
+        m_timepipeAdd.erase( it_add_found );
     }
     //////////////////////////////////////////////////////////////////////////
     void TimepipeService::tick( const UpdateContext * _context )
@@ -111,7 +111,7 @@ namespace Mengine
 
         for( const TimepipeDesc & desc : m_timepipe )
         {
-            if( desc.id == REMOVE_UNIQUE_ID )
+            if( desc.timepipe == nullptr )
             {
                 continue;
             }
@@ -121,7 +121,7 @@ namespace Mengine
 
         m_timepipe.erase( Algorithm::remove_if( m_timepipe.begin(), m_timepipe.end(), []( const TimepipeDesc & _desc )
         {
-            return _desc.id == REMOVE_UNIQUE_ID;
+            return _desc.timepipe == nullptr;
         } ), m_timepipe.end() );
     }
     //////////////////////////////////////////////////////////////////////////

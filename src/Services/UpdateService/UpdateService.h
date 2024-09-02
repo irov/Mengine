@@ -39,8 +39,6 @@ namespace Mengine
         void onTimepipe( const UpdateContext * _context ) override;
 
     protected:
-        UniqueId m_timepipeId;
-
         struct UpdatableProxy
         {
             UpdationInterfacePtr updation;

@@ -8,6 +8,7 @@
 
 #include "Kernel/Polygon.h"
 #include "Kernel/Eventable.h"
+#include "Kernel/Node.h"
 
 #include "math/vec2.h"
 
@@ -80,8 +81,8 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void setEventable( const EventablePtr & _eventable ) = 0;
-        virtual const EventablePtr & getEventable() const = 0;
+        virtual void setNode( const NodePtr & _node ) = 0;
+        virtual const NodePtr & getNode() const = 0;
 
     public:
         virtual bool addShapeConvex( const Polygon & _vertices, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) = 0;
@@ -150,7 +151,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual float onResponse( uint32_t _index, const Box2DBodyInterface * _body, const mt::vec2f & _point, const mt::vec2f & _normal, float _fraction ) = 0;
+        virtual float onBox2DRayCast( uint32_t _index, const Box2DBodyInterface * _body, const mt::vec2f & _point, const mt::vec2f & _normal, float _fraction ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Box2DRayCastInterface> Box2DRayCastInterfacePtr;
@@ -170,6 +171,9 @@ namespace Mengine
     {
     public:
         virtual void setTimeStep( float _timeStep, uint32_t _subStepCount ) = 0;
+
+    public:
+        virtual uint32_t overlapCircle( const mt::vec2f & _pos, float _radius, uint32_t _categoryBits, uint32_t _maskBits, Box2DBodyInterface ** _bodies, uint32_t _capacity ) const = 0;
 
     public:
         virtual Box2DBodyInterfacePtr createBody( bool _static

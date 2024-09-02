@@ -5,6 +5,8 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "Kernel/DocumentHelper.h"
+
 #include "Config/Typedef.h"
 #include "Config/Lambda.h"
 #include "Config/Thread.h"

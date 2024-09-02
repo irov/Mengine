@@ -39,7 +39,7 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputHandlerInterface * DummyPicker::getPickerInputHandler()
+    PickerInputHandlerInterface * DummyPicker::getPickerInputHandler()
     {
         return nullptr;
     }

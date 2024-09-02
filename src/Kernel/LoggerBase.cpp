@@ -2,7 +2,6 @@
 
 #include "Interface/LoggerServiceInterface.h"
 
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadMutexHelper.h"

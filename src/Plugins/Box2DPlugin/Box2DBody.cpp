@@ -25,19 +25,19 @@ namespace Mengine
         m_scaler = _scaler;
         m_bodyId = _bodyId;
 
-        ::b2Body_SetUserData( m_bodyId, this );        
+        ::b2Body_SetUserData( m_bodyId, (Box2DBodyInterface *)this );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Box2DBody::setEventable( const EventablePtr & _eventable )
+    void Box2DBody::setNode( const NodePtr & _node )
     {
-        m_eventable = _eventable;
+        m_node = _node;
     }
     //////////////////////////////////////////////////////////////////////////
-    const EventablePtr & Box2DBody::getEventable() const
+    const NodePtr & Box2DBody::getNode() const
     {
-        return m_eventable;
+        return m_node;
     }
     //////////////////////////////////////////////////////////////////////////
     b2BodyId Box2DBody::getBodyId() const
@@ -77,7 +77,7 @@ namespace Mengine
 
         b2ShapeDef shapeDef = ::b2DefaultShapeDef();
 
-        shapeDef.userData = this;
+        shapeDef.userData = (Box2DBodyInterface *)this;
         shapeDef.density = _density;
         shapeDef.friction = _friction;
         shapeDef.restitution = _restitution;
@@ -109,7 +109,7 @@ namespace Mengine
 
         b2ShapeDef shapeDef = ::b2DefaultShapeDef();
 
-        shapeDef.userData = this;
+        shapeDef.userData = (Box2DBodyInterface *)this;
         shapeDef.density = _density;
         shapeDef.friction = _friction;
         shapeDef.restitution = _restitution;
@@ -142,7 +142,7 @@ namespace Mengine
 
         b2ShapeDef shapeDef = ::b2DefaultShapeDef();
 
-        shapeDef.userData = this;
+        shapeDef.userData = (Box2DBodyInterface *)this;
         shapeDef.density = _density;
         shapeDef.friction = _friction;
         shapeDef.restitution = _restitution;

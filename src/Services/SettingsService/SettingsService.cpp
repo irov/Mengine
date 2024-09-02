@@ -6,7 +6,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/Logger.h"

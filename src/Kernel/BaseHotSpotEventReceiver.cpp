@@ -13,8 +13,9 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseHotSpotEventReceiver::onHotSpotMouseEnter( const InputMouseEnterEvent & _event )
+    bool BaseHotSpotEventReceiver::onHotSpotMouseEnter( const RenderContext * _context, const InputMouseEnterEvent & _event )
     {
+        MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );
 
         //Empty
@@ -22,24 +23,17 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseHotSpotEventReceiver::onHotSpotMouseLeave( const InputMouseLeaveEvent & _event )
+    void BaseHotSpotEventReceiver::onHotSpotMouseLeave( const RenderContext * _context, const InputMouseLeaveEvent & _event )
     {
+        MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseHotSpotEventReceiver::onHotSpotKey( const InputKeyEvent & _event )
+    bool BaseHotSpotEventReceiver::onHotSpotKey( const RenderContext * _context, const InputKeyEvent & _event )
     {
-        MENGINE_UNUSED( _event );
-
-        //Empty
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool BaseHotSpotEventReceiver::onHotSpotText( const InputTextEvent & _event )
-    {
+        MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );
 
         //Empty
@@ -47,8 +41,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseHotSpotEventReceiver::onHotSpotAccelerometer( const InputAccelerometerEvent & _event )
+    bool BaseHotSpotEventReceiver::onHotSpotText( const RenderContext * _context, const InputTextEvent & _event )
     {
+        MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );
 
         //Empty
@@ -56,8 +51,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseHotSpotEventReceiver::onHotSpotMouseButton( const InputMouseButtonEvent & _event )
+    bool BaseHotSpotEventReceiver::onHotSpotMouseButton( const RenderContext * _context, const InputMouseButtonEvent & _event )
     {
+        MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );
 
         //Empty
@@ -65,8 +61,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseHotSpotEventReceiver::onHotSpotMouseButtonBegin( const InputMouseButtonEvent & _event )
+    bool BaseHotSpotEventReceiver::onHotSpotMouseButtonBegin( const RenderContext * _context, const InputMouseButtonEvent & _event )
     {
+        MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );
 
         //Empty
@@ -74,8 +71,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseHotSpotEventReceiver::onHotSpotMouseButtonEnd( const InputMouseButtonEvent & _event )
+    bool BaseHotSpotEventReceiver::onHotSpotMouseButtonEnd( const RenderContext * _context, const InputMouseButtonEvent & _event )
     {
+        MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );
 
         //Empty
@@ -83,8 +81,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseHotSpotEventReceiver::onHotSpotMouseMove( const InputMouseMoveEvent & _event )
+    bool BaseHotSpotEventReceiver::onHotSpotMouseMove( const RenderContext * _context, const InputMouseMoveEvent & _event )
     {
+        MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );
 
         //Empty
@@ -92,8 +91,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseHotSpotEventReceiver::onHotSpotMouseWheel( const InputMouseWheelEvent & _event )
+    bool BaseHotSpotEventReceiver::onHotSpotMouseWheel( const RenderContext * _context, const InputMouseWheelEvent & _event )
     {
+        MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );
 
         //Empty

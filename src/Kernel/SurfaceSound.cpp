@@ -6,7 +6,6 @@
 #include "Kernel/ResourceSound.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/EventableHelper.h"
 #include "Kernel/ResourceHelper.h"

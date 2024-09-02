@@ -4,17 +4,16 @@
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TextureHelper.h"
 #include "Kernel/PixelFormatHelper.h"
-#include "Kernel/DocumentableHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/MemoryCopy.h"
 #include "Kernel/PrefetcherHelper.h"
+#include "Kernel/DocumentableHelper.h"
 
 namespace Mengine
 {

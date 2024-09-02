@@ -16,7 +16,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Stringalized.h"
 
 #include "Environment/Windows/WindowsIncluder.h"

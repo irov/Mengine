@@ -1,7 +1,6 @@
 #include "TaskColorableAlphaTime.h"
 
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Assertion.h"
 
 #include "GOAP/NodeInterface.h"

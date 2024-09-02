@@ -6,7 +6,6 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/MixinDebug.h"
 #include "Kernel/NotificationName.h"

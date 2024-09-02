@@ -3,7 +3,6 @@
 #include "Interface/TransformationInterface.h"
 
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/DocumentHelper.h"
 
 #include "GOAP/NodeInterface.h"
 

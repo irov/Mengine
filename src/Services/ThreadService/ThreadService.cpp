@@ -11,7 +11,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadMutexHelper.h"
 

@@ -13,13 +13,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<bool( const InputMouseButtonEvent & )> LambdaInputMouseButtonEvent;
+    typedef Lambda<bool( const InputMouseButtonEvent & )> LambdaInputMouseButtonFilter;
+    typedef Lambda<void( const InputMouseButtonEvent & )> LambdaInputMouseButtonComplete;
     //////////////////////////////////////////////////////////////////////////
     class TaskGlobalMouseButton
         : public GOAP::TaskInterface
     {
     public:
-        TaskGlobalMouseButton( GOAP::Allocator * _allocator, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentInterfacePtr & _doc );
+        TaskGlobalMouseButton( GOAP::Allocator * _allocator, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonFilter & _filter, const LambdaInputMouseButtonComplete & _cb, const DocumentInterfacePtr & _doc );
         ~TaskGlobalMouseButton() override;
 
     protected:
@@ -30,7 +31,8 @@ namespace Mengine
         EMouseButtonCode m_button;
         bool m_isDown;
 
-        LambdaInputMouseButtonEvent m_filter;
+        LambdaInputMouseButtonFilter m_filter;
+        LambdaInputMouseButtonComplete m_cb;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
         DocumentInterfacePtr m_doc;

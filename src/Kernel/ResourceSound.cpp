@@ -6,7 +6,6 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/DocumentableHelper.h"
 #include "Kernel/ContentHelper.h"
 
 namespace Mengine

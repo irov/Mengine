@@ -4,7 +4,6 @@
 #include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"

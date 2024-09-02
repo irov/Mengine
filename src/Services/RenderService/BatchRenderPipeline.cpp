@@ -4,7 +4,6 @@
 #include "Kernel/RenderHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/RenderContextHelper.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/StatisticHelper.h"

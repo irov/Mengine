@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/DocumentInterface.h"
+#include "Interface/PickerInputHandlerInterface.h"
 
 #include "Kernel/HotSpotEventReceiverInterface.h"
 
@@ -15,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class HotSpot
         : public Node
-        , public InputHandlerInterface
+        , public PickerInputHandlerInterface
         , protected BaseEventation
         , protected BasePicker
         , protected BaseTransformation
@@ -49,8 +50,8 @@ namespace Mengine
         bool isMousePickerOver() const;
 
     public:
-        void addInputHandler( const InputHandlerInterfacePtr & _inputHandler, const DocumentInterfacePtr & _doc );
-        void removeInputHandler( const InputHandlerInterfacePtr & _inputHandler );
+        void addPickerInputHandler( const PickerInputHandlerInterfacePtr & _inputHandler, const DocumentInterfacePtr & _doc );
+        void removePickerInputHandler( const PickerInputHandlerInterfacePtr & _inputHandler );
 
     public:
         virtual bool testPoint( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _point ) const = 0;
@@ -81,25 +82,22 @@ namespace Mengine
 
     public:
         Eventable * getPickerEventable() override;
-        InputHandlerInterface * getPickerInputHandler() override;
+        PickerInputHandlerInterface * getPickerInputHandler() override;
 
     public:
-        bool handleKeyEvent( const InputKeyEvent & _event ) override;
-        bool handleTextEvent( const InputTextEvent & _event ) override;
+        bool handleKeyEvent( const RenderContext * _context, const InputKeyEvent & _event ) override;
+        bool handleTextEvent( const RenderContext * _context, const InputTextEvent & _event ) override;
 
     public:
-        bool handleAccelerometerEvent( const InputAccelerometerEvent & _event ) override;
-
-    public:
-        bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;
-        bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override;
-        bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override;
-        bool handleMouseMove( const InputMouseMoveEvent & _event ) override;
-        bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
+        bool handleMouseButtonEvent( const RenderContext * _context, const InputMouseButtonEvent & _event ) override;
+        bool handleMouseButtonEventBegin( const RenderContext * _context, const InputMouseButtonEvent & _event ) override;
+        bool handleMouseButtonEventEnd( const RenderContext * _context, const InputMouseButtonEvent & _event ) override;
+        bool handleMouseMove( const RenderContext * _context, const InputMouseMoveEvent & _event ) override;
+        bool handleMouseWheel( const RenderContext * _context, const InputMouseWheelEvent & _event ) override;
 
     protected:
-        bool handleMouseEnter( const InputMouseEnterEvent & _event ) override;
-        void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
+        bool handleMouseEnter( const RenderContext * _context, const InputMouseEnterEvent & _event ) override;
+        void handleMouseLeave( const RenderContext * _context, const InputMouseLeaveEvent & _event ) override;
 
     protected:
         void activatePicker_();
@@ -112,17 +110,17 @@ namespace Mengine
         void _invalidateWorldMatrix() const override;
 
     protected:
-        struct InputHandlerDesc
+        struct PickerInputHandlerDesc
         {
-            InputHandlerInterfacePtr handler;
+            PickerInputHandlerInterfacePtr handler;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentInterfacePtr doc;
 #endif
         };
 
-        typedef Vector<InputHandlerDesc> VectorInputHandlers;
-        VectorInputHandlers m_inputHandlers;
+        typedef Vector<PickerInputHandlerDesc> VectorPickerInputHandlers;
+        VectorPickerInputHandlers m_pickerInputHandlers;
 
         bool m_outward;
         bool m_global;

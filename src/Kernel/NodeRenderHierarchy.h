@@ -18,23 +18,23 @@ namespace Mengine
         bool hasNodeRenderInheritance( const Node * _node );
         RenderInterface * getNodeRenderInheritance( Node * _node, Node ** const _nodeRender );
         //////////////////////////////////////////////////////////////////////////
-        const RenderViewportInterfacePtr & getRenderViewportInheritance( const RenderInterface * _render );
-        const RenderCameraInterfacePtr & getRenderCameraInheritance( const RenderInterface * _render );
-        const RenderTransformationInterfacePtr & getRenderTransformationInheritance( const RenderInterface * _render );
-        const RenderScissorInterfacePtr & getRenderScissorInheritance( const RenderInterface * _render );
-        const RenderTargetInterfacePtr & getRenderTargetInheritance( const RenderInterface * _render );
+        const RenderViewportInterface * getRenderViewportInheritance( const RenderInterface * _render );
+        const RenderCameraInterface * getRenderCameraInheritance( const RenderInterface * _render );
+        const RenderTransformationInterface * getRenderTransformationInheritance( const RenderInterface * _render );
+        const RenderScissorInterface * getRenderScissorInheritance( const RenderInterface * _render );
+        const RenderTargetInterface * getRenderTargetInheritance( const RenderInterface * _render );
         ZGroupType getRenderZGroupInheritance( const RenderInterface * _render );
         ZIndexType getRenderZIndexInheritance( const RenderInterface * _render );
         //////////////////////////////////////////////////////////////////////////
-        void fillNodeRenderContext( const NodePtr & _node, RenderContext * const _context );
-        //////////////////////////////////////////////////////////////////////////
-        const RenderViewportInterfacePtr & getNodeRenderViewportInheritance( const Node * _node );
-        const RenderCameraInterfacePtr & getNodeRenderCameraInheritance( const Node * _node );
-        const RenderTransformationInterfacePtr & getNodeRenderTransformationInheritance( const Node * _node );
-        const RenderScissorInterfacePtr & getNodeRenderScissorInheritance( const Node * _node );
-        const RenderTargetInterfacePtr & getNodeRenderTargetInheritance( const Node * _node );
+        const RenderViewportInterface * getNodeRenderViewportInheritance( const Node * _node );
+        const RenderCameraInterface * getNodeRenderCameraInheritance( const Node * _node );
+        const RenderTransformationInterface * getNodeRenderTransformationInheritance( const Node * _node );
+        const RenderScissorInterface * getNodeRenderScissorInheritance( const Node * _node );
+        const RenderTargetInterface * getNodeRenderTargetInheritance( const Node * _node );
         ZGroupType getNodeRenderZGroupInheritance( const Node * _node );
         ZIndexType getNodeRenderZIndexInheritance( const Node * _node );
+        //////////////////////////////////////////////////////////////////////////
+        void fillNodeRenderContextInheritance( const NodePtr & _node, RenderContext * const _context );
         //////////////////////////////////////////////////////////////////////////
     }
 }

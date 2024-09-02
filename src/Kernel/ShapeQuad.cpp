@@ -2,7 +2,6 @@
 
 #include "Kernel/Surface.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

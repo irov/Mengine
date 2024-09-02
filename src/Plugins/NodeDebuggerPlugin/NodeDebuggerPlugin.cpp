@@ -3,7 +3,6 @@
 #include "NodeDebuggerModule.h"
 
 #include "Kernel/ModuleFactory.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////

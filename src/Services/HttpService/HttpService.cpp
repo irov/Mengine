@@ -15,7 +15,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Stringstream.h"

@@ -11,7 +11,6 @@
 #include "Kernel/AssertionUtf8.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadSharedMutexScope.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/String.h"
 #include "Kernel/StringRegex.h"

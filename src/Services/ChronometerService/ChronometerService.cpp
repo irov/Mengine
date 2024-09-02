@@ -5,7 +5,6 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/FactoryPool.h"
 
 #include "Config/Algorithm.h"

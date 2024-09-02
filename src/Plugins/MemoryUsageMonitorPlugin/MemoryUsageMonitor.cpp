@@ -9,7 +9,6 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionObservable.h"

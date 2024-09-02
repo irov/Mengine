@@ -21,8 +21,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        UniqueId addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentInterfacePtr & _doc ) override;
-        TimepipeInterfacePtr removeTimepipe( UniqueId _id ) override;
+        void addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentInterfacePtr & _doc ) override;
+        void removeTimepipe( const TimepipeInterfacePtr & _timepipe ) override;
 
     public:
         void tick( const UpdateContext * _context ) override;
@@ -30,7 +30,6 @@ namespace Mengine
     protected:
         struct TimepipeDesc
         {
-            UniqueId id;
             TimepipeInterfacePtr timepipe;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)

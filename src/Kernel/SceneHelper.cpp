@@ -4,7 +4,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/EntityEventable.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/PrototypeHelper.h"
 
 namespace Mengine

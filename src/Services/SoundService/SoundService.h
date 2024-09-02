@@ -132,8 +132,6 @@ namespace Mengine
         bool checkMaxSoundPlay_() const;
 
     protected:
-        UniqueId m_timepipeId;
-
         MixerValueInterfacePtr m_commonVolume;
         MixerValueInterfacePtr m_soundVolume;
         MixerValueInterfacePtr m_musicVolume;

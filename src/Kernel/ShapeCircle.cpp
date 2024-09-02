@@ -1,7 +1,6 @@
 #include "ShapeCircle.h"
 
 #include "Kernel/Surface.h"
-#include "Kernel/DocumentHelper.h"
 
 #include "Config/StdMath.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/Interface.h"
-#include "Interface/InputHandlerInterface.h"
+#include "Interface/PickerInputHandlerInterface.h"
 
 #include "Kernel/Resolution.h"
 #include "Kernel/BoundingBox.h"
@@ -70,7 +70,7 @@ namespace Mengine
     public:
         virtual Eventable * getPickerEventable() = 0;
 
-        virtual InputHandlerInterface * getPickerInputHandler() = 0;
+        virtual PickerInputHandlerInterface * getPickerInputHandler() = 0;
 
     public:
         virtual const RenderViewportInterfacePtr & getPickerViewport() const = 0;

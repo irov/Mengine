@@ -5,7 +5,6 @@
 #include "Kernel/BaseHotSpotEventReceiver.h"
 
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/Assertion.h"
 
@@ -32,13 +31,13 @@ namespace Mengine
             }
 
         protected:
-            bool onHotSpotMouseEnter( const InputMouseEnterEvent & _event ) override
+            bool onHotSpotMouseEnter( const RenderContext * _context, const InputMouseEnterEvent & _event ) override
             {
                 bool handle = true;
 
                 if( m_filter != nullptr )
                 {
-                    if( m_filter( _event, &handle ) == false )
+                    if( m_filter( _context, _event, &handle ) == false )
                     {
                         return false;
                     }

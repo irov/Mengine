@@ -4,7 +4,6 @@
 
 #include "Kernel/Updatable.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ProfilerHelper.h"
@@ -42,7 +41,6 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     UpdateService::UpdateService()
-        : m_timepipeId( INVALID_UNIQUE_ID )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -62,10 +60,8 @@ namespace Mengine
         m_leafs.resize( Engine_DefaultUpdateLeafs );
         m_afterLeaf.resize( 16 );
 
-        uint32_t timepipe = TIMEPIPE_SERVICE()
+        TIMEPIPE_SERVICE()
             ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
-
-        m_timepipeId = timepipe;
 
         return true;
     }
@@ -79,13 +75,8 @@ namespace Mengine
         m_proxyFrees.clear();
         m_proxies.clear();
 
-        if( m_timepipeId != INVALID_UNIQUE_ID )
-        {
-            TIMEPIPE_SERVICE()
-                ->removeTimepipe( m_timepipeId );
-
-            m_timepipeId = INVALID_UNIQUE_ID;
-        }
+        TIMEPIPE_SERVICE()
+            ->removeTimepipe( TimepipeInterfacePtr::from( this ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void UpdateService::_stopService()

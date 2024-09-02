@@ -5,7 +5,6 @@
 #include "Kernel/BaseHotSpotEventReceiver.h"
 
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/Assertion.h"
 
@@ -35,7 +34,7 @@ namespace Mengine
             }
 
         protected:
-            bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override
+            bool onHotSpotMouseButton( const RenderContext * _context, const InputMouseButtonEvent & _event ) override
             {
                 if( _event.button != m_button )
                 {
@@ -71,7 +70,7 @@ namespace Mengine
 
                 if( m_filter != nullptr )
                 {
-                    if( m_filter( _event, &handle ) == false )
+                    if( m_filter( _context, _event, &handle ) == false )
                     {
                         return false;
                     }

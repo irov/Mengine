@@ -4,7 +4,6 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
-#include "Kernel/DocumentHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Box2DService, Mengine::Box2DService );

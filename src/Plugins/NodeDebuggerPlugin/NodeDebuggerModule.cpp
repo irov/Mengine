@@ -44,7 +44,6 @@
 #include "Kernel/Surface.h"
 #include "Kernel/StringFormat.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/GlobalInputHandlerHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
@@ -538,7 +537,7 @@ namespace Mengine
         }
 
         RenderContext node_context = *_context;
-        Helper::fillNodeRenderContext( node, &node_context );
+        Helper::fillNodeRenderContextInheritance( node, &node_context );
 
         mt::box2f bbox;
         if( s_absorbBoundingBox( node, &bbox ) == false )

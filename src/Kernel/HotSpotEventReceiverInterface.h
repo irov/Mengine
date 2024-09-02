@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/EventationInterface.h"
-#include "Interface/InputHandlerInterface.h"
+#include "Interface/PickerInputHandlerInterface.h"
 
 #include "Config/UniqueId.h"
 
@@ -12,7 +12,6 @@ namespace Mengine
     {
         EVENT_HOTSPOT_KEY = 0,
         EVENT_HOTSPOT_TEXT,
-        EVENT_HOTSPOT_ACCELEROMETER,
         EVENT_HOTSPOT_MOUSE_BUTTON,
         EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN,
         EVENT_HOTSPOT_MOUSE_BUTTON_END,
@@ -33,16 +32,15 @@ namespace Mengine
     public:
         virtual void onHotSpotActivate() = 0;
         virtual void onHotSpotDeactivate() = 0;
-        virtual bool onHotSpotMouseEnter( const InputMouseEnterEvent & _event ) = 0;
-        virtual void onHotSpotMouseLeave( const InputMouseLeaveEvent & _event ) = 0;
-        virtual bool onHotSpotKey( const InputKeyEvent & _event ) = 0;
-        virtual bool onHotSpotText( const InputTextEvent & _event ) = 0;
-        virtual bool onHotSpotAccelerometer( const InputAccelerometerEvent & _event ) = 0;
-        virtual bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) = 0;
-        virtual bool onHotSpotMouseButtonBegin( const InputMouseButtonEvent & _event ) = 0;
-        virtual bool onHotSpotMouseButtonEnd( const InputMouseButtonEvent & _event ) = 0;
-        virtual bool onHotSpotMouseMove( const InputMouseMoveEvent & _event ) = 0;
-        virtual bool onHotSpotMouseWheel( const InputMouseWheelEvent & _event ) = 0;
+        virtual bool onHotSpotMouseEnter( const RenderContext * _context, const InputMouseEnterEvent & _event ) = 0;
+        virtual void onHotSpotMouseLeave( const RenderContext * _context, const InputMouseLeaveEvent & _event ) = 0;
+        virtual bool onHotSpotKey( const RenderContext * _context, const InputKeyEvent & _event ) = 0;
+        virtual bool onHotSpotText( const RenderContext * _context, const InputTextEvent & _event ) = 0;
+        virtual bool onHotSpotMouseButton( const RenderContext * _context, const InputMouseButtonEvent & _event ) = 0;
+        virtual bool onHotSpotMouseButtonBegin( const RenderContext * _context, const InputMouseButtonEvent & _event ) = 0;
+        virtual bool onHotSpotMouseButtonEnd( const RenderContext * _context, const InputMouseButtonEvent & _event ) = 0;
+        virtual bool onHotSpotMouseMove( const RenderContext * _context, const InputMouseMoveEvent & _event ) = 0;
+        virtual bool onHotSpotMouseWheel( const RenderContext * _context, const InputMouseWheelEvent & _event ) = 0;
         virtual void onHotSpotMouseOverDestroy() = 0;
         virtual void onHotSpotMouseButtonBegin( UniqueId _enumerator, bool _isEnd ) = 0;
         virtual void onHotSpotMouseButtonEnd( UniqueId _enumerator, bool _isEnd ) = 0;
@@ -52,7 +50,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_KEY );
     EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_TEXT );
-    EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_ACCELEROMETER );
     EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_MOUSE_BUTTON );
     EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN );
     EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_MOUSE_BUTTON_END );

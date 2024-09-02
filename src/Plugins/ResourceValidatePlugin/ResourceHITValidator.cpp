@@ -5,7 +5,6 @@
 
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FileGroupHelper.h"

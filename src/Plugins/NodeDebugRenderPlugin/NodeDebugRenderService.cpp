@@ -23,7 +23,6 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/SchedulerHelper.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/Stringstream.h"

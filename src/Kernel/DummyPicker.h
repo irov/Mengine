@@ -25,7 +25,7 @@ namespace Mengine
 
     protected:
         Eventable * getPickerEventable() override;
-        InputHandlerInterface * getPickerInputHandler() override;
+        PickerInputHandlerInterface * getPickerInputHandler() override;
     };
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool DummyPicker::isPickerDummy() const

@@ -9,7 +9,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/FilePathHelper.h"

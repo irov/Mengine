@@ -4,7 +4,6 @@
 #include "Kernel/Logger.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Assertion.h"
-#include "Kernel/DocumentHelper.h"
 
 #include "Config/StdIntTypes.h"
 #include "Config/Algorithm.h"

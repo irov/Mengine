@@ -52,6 +52,9 @@ namespace Mengine
         float getLocalPositionZ() const override final;
 
     public:
+        void moveLocalPosition( const mt::vec3f & _delta ) override final;
+
+    public:
         bool isIdentityPosition() const override final;
 
     public:

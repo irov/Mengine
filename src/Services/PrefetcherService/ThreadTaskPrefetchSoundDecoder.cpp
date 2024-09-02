@@ -6,7 +6,6 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"

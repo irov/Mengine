@@ -5,6 +5,7 @@
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

@@ -1,7 +1,6 @@
 #include "StreamLogger.h"
 
 #include "Kernel/Assertion.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/LoggerHelper.h"

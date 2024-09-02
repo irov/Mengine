@@ -38,8 +38,6 @@ namespace Mengine
         void onEngineTextureDestroy( RenderTextureInterface * _texture );
 
     protected:
-        UniqueId m_timepipeId;
-
         uint32_t m_count;
         float m_graveyardTime;
 

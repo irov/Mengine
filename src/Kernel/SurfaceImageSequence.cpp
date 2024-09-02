@@ -5,7 +5,6 @@
 #include "Kernel/ResourceImageSequence.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/EventableHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"

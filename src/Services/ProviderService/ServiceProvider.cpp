@@ -5,7 +5,6 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/DocumentHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"

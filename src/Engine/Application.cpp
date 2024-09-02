@@ -79,7 +79,6 @@
 #include "Kernel/ResourceImageSubstract.h"
 #include "Kernel/ResourceImageSubstractRGBAndAlpha.h"
 #include "Kernel/ResourceSound.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Scene.h"
 #include "Kernel/FactoryDefault.h"

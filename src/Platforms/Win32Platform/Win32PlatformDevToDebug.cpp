@@ -4,7 +4,6 @@
 
 #include "Plugins/DevToDebugPlugin/DevToDebugInterface.h"
 
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/ColorHelper.h"

@@ -354,8 +354,8 @@ namespace Mengine
                 const Resolution & contentResolution = APPLICATION_SERVICE()
                     ->getContentResolution();
 
-                const RenderCameraInterfacePtr & camera = Helper::getNodeRenderCameraInheritance( _hs );
-                const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( _hs );
+                const RenderCameraInterface * camera = Helper::getNodeRenderCameraInheritance( _hs );
+                const RenderViewportInterface * viewport = Helper::getNodeRenderViewportInheritance( _hs );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( camera, "invalid get node '%s' render camera inheritance"
                     , _hs->getName().c_str()
@@ -368,8 +368,8 @@ namespace Mengine
                 RenderContext context;
                 Helper::clearRenderContext( &context );
 
-                context.camera = camera.get();
-                context.viewport = viewport.get();
+                context.camera = camera;
+                context.viewport = viewport;
 
                 mt::box2f b1;
                 _hs->getScreenPolygon( &context, contentResolution, &b1, nullptr );

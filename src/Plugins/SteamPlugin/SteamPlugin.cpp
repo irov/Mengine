@@ -3,7 +3,6 @@
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ConfigHelper.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Error.h"
 #include "Kernel/Logger.h"
 #include "Kernel/OptionHelper.h"

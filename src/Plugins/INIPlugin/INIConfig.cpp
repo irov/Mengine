@@ -4,7 +4,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ArrayString.h"
 #include "Kernel/FileStreamHelper.h"
 

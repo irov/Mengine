@@ -5,7 +5,6 @@
 #include "AffectorTransformationRotateTime.h"
 
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/Delegate.h"
 
 #include "math/angle.h"

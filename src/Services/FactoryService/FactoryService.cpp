@@ -10,7 +10,6 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
-#include "Kernel/DocumentHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"

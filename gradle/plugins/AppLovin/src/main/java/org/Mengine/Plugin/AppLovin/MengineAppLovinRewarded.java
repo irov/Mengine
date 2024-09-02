@@ -14,6 +14,7 @@ import com.applovin.mediation.MaxRewardedAdListener;
 import com.applovin.mediation.ads.MaxRewardedAd;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.Map;
@@ -103,6 +104,10 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             return false;
         }
 
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            return false;
+        }
+
         boolean ready = m_rewardedAd.isReady();
 
         this.log("canOfferRewarded", Map.of("placement", placement, "ready", ready));
@@ -124,6 +129,10 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
             return false;
         }
 
+        if (MengineNetwork.isNetworkAvailable() == false) {
+            return false;
+        }
+
         boolean ready = m_rewardedAd.isReady();
 
         this.log("canYouShowRewarded", Map.of("placement", placement, "ready", ready));
@@ -142,6 +151,10 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
     public boolean showRewarded(MengineActivity activity, String placement) {
         if(m_rewardedAd == null) {
+            return false;
+        }
+
+        if (MengineNetwork.isNetworkAvailable() == false) {
             return false;
         }
 

@@ -206,22 +206,22 @@ namespace Mengine
             Cook::addTask<TaskLocalDelay>( _source, _time, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addGlobalKeyPress( const GOAP::SourceInterfacePtr & _source, EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter, const DocumentInterfacePtr & _doc )
+        void addGlobalKeyPress( const GOAP::SourceInterfacePtr & _source, EKeyCode _code, bool _isDown, const LambdaInputKeyFilter & _filter, const LambdaInputKeyComplete & _cb, const DocumentInterfacePtr & _doc )
         {
-            Cook::addTask<TaskGlobalKeyPress>( _source, _code, _isDown, _filter, _doc );
+            Cook::addTask<TaskGlobalKeyPress>( _source, _code, _isDown, _filter, _cb, _doc );
         }
         //////////////////////////////////////////////////////////////////////////    
-        void addGlobalMouseButton( const GOAP::SourceInterfacePtr & _source, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _filter, const DocumentInterfacePtr & _doc )
+        void addGlobalMouseButton( const GOAP::SourceInterfacePtr & _source, EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonFilter & _filter, const LambdaInputMouseButtonComplete & _cb, const DocumentInterfacePtr & _doc )
         {
-            Cook::addTask<TaskGlobalMouseButton>( _source, _button, _isDown, _filter, _doc );
+            Cook::addTask<TaskGlobalMouseButton>( _source, _button, _isDown, _filter, _cb, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addGlobalMouseMove( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseMoveEvent & _filter, const DocumentInterfacePtr & _doc )
+        void addGlobalMouseMove( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseMoveFilter & _filter, const DocumentInterfacePtr & _doc )
         {
             Cook::addTask<TaskGlobalMouseMove>( _source, _filter, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void addGlobalMouseWheel( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseWheelEvent & _filter, const DocumentInterfacePtr & _doc )
+        void addGlobalMouseWheel( const GOAP::SourceInterfacePtr & _source, const LambdaInputMouseWheelFilter & _filter, const DocumentInterfacePtr & _doc )
         {
             Cook::addTask<TaskGlobalMouseWheel>( _source, _filter, _doc );
         }

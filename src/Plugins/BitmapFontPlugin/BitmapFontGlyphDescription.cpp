@@ -6,7 +6,6 @@
 #include "Kernel/TextureHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Stringalized.h"

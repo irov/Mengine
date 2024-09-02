@@ -1,6 +1,5 @@
 #include "DevToDebugPropertyGetterColor.h"
 
-#include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdIO.h"

@@ -13,7 +13,6 @@
 
 #include "Kernel/Entity.h"
 #include "Kernel/Scene.h"
-#include "Kernel/Arrow.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -256,45 +255,6 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        class superclass_new_Arrow
-            : public pybind::new_adapter_interface
-        {
-        public:
-            void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
-            {
-                MENGINE_UNUSED( _scope );
-                MENGINE_UNUSED( _args );
-                MENGINE_UNUSED( _kwds );
-
-                ArrowPtr arrow = Helper::generateFactorable<Node, Arrow>( MENGINE_DOCUMENT_PYBIND );
-
-                arrow->setEmbed( _kernel, _obj );
-
-                _kernel->decref( _obj );
-
-                Arrow * arrow_ptr = arrow.get();
-
-                IntrusivePtrBase::intrusive_ptr_add_ref( arrow_ptr );
-
-                return arrow_ptr;
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        class superclass_destroy_Arrow
-            : public pybind::destroy_adapter_interface
-        {
-        public:
-            void call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, void * _impl ) override
-            {
-                MENGINE_UNUSED( _kernel );
-                MENGINE_UNUSED( _scope );
-
-                Arrow * arrow_ptr = static_cast<Arrow *>(_impl);
-
-                IntrusivePtrBase::intrusive_ptr_dec_ref( arrow_ptr );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
         class superclass_new_Scene
             : public pybind::new_adapter_interface
         {
@@ -353,16 +313,6 @@ namespace Mengine
             .def( "getPrototype", &Entity::getPrototype )
             ;
 
-        pybind::superclass_<Arrow, pybind::bases<Entity>>( _kernel, "Arrow", nullptr, allocator->newT<superclass_new_Arrow>(), allocator->newT<superclass_destroy_Arrow>(), false )
-            .def_constructor( pybind::init<>() )
-            .def( "setOffsetClick", &Arrow::setOffsetClick )
-            .def( "getOffsetClick", &Arrow::getOffsetClick )
-            .def( "setPolygon", &Arrow::setPolygon )
-            .def( "getPolygon", &Arrow::getPolygon )
-            .def( "setRadius", &Arrow::setRadius )
-            .def( "getRadius", &Arrow::getRadius )
-            ;
-
         pybind::superclass_<Scene, pybind::bases<Entity>>( _kernel, "Scene", nullptr, allocator->newT<superclass_new_Scene>(), allocator->newT<superclass_destroy_Scene>(), false )
             .def_constructor( pybind::init<>() )
             ;
@@ -395,7 +345,6 @@ namespace Mengine
 
         m_implement = entityScriptMethod;
 
-        Helper::registerScriptWrapping<Arrow>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<Entity>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<Scene>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -411,7 +360,6 @@ namespace Mengine
 
         m_implement = nullptr;
 
-        Helper::unregisterScriptWrapping<Arrow>();
         Helper::unregisterScriptWrapping<Entity>();
         Helper::unregisterScriptWrapping<Scene>();
     }

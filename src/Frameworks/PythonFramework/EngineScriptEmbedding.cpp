@@ -80,7 +80,6 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
-#include "Kernel/Arrow.h"
 #include "Kernel/MT19937Randomizer.h"
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/FileStreamHelper.h"
@@ -958,40 +957,22 @@ namespace Mengine
                 return scene;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_setArrow( const ConstString & _prototype )
+            const ArrowInterfacePtr & s_getArrow()
             {
-                ArrowPtr arrow = Helper::generatePrototype( Arrow::getFactorableType(), _prototype, MENGINE_DOCUMENT_PYBIND );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( arrow, "Error: can't setup arrow '%s'"
-                    , _prototype.c_str()
-                );
-
-                PLAYER_SERVICE()
-                    ->setArrow( arrow );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            const pybind::object & s_getArrow()
-            {
-                const ArrowPtr & arrow = PLAYER_SERVICE()
+                const ArrowInterfacePtr & arrow = PLAYER_SERVICE()
                     ->getArrow();
 
-                if( arrow == nullptr )
-                {
-                    return pybind::object::get_invalid();
-                }
-
-                const PythonEntityBehaviorPtr & behavior = arrow->getBehavior();
-                const pybind::object & py_arrow = behavior->getScriptObject();
-
-                return py_arrow;
+                return arrow;
             }
             //////////////////////////////////////////////////////////////////////////
             void s_hideArrow( bool _hide )
             {
-                const ArrowPtr & arrow = PLAYER_SERVICE()
+                const ArrowInterfacePtr & arrow = PLAYER_SERVICE()
                     ->getArrow();
 
-                RenderInterface * render = arrow->getRender();
+                const NodePtr & node = arrow->getNode();
+
+                RenderInterface * render = node->getRender();
 
                 render->setLocalHide( _hide );
             }
@@ -1031,7 +1012,7 @@ namespace Mengine
                     return false;
                 }
 
-                const ArrowPtr & arrow = PLAYER_SERVICE()
+                const ArrowInterfacePtr & arrow = PLAYER_SERVICE()
                     ->getArrow();
 
                 if( arrow == nullptr )
@@ -1039,7 +1020,9 @@ namespace Mengine
                     return false;
                 }
 
-                _layer->addChild( arrow );
+                const NodePtr & node = arrow->getNode();
+
+                _layer->addChild( node );
 
                 return true;
             }
@@ -1612,7 +1595,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f * const _screen )
             {
-                const ArrowPtr & arrow = PLAYER_SERVICE()
+                const ArrowInterfacePtr & arrow = PLAYER_SERVICE()
                     ->getArrow();
 
                 if( arrow == nullptr )
@@ -1620,18 +1603,15 @@ namespace Mengine
                     return false;
                 }
 
-                const RenderInterface * render = arrow->getRender();
+                const NodePtr & node = arrow->getNode();
+
+                const RenderInterface * render = node->getRender();
 
                 const RenderCameraInterfacePtr & camera = render->getRenderCamera();
                 const RenderViewportInterfacePtr & viewport = render->getRenderViewport();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( camera, "invalid get arrow '%s' render camera inheritance"
-                    , arrow->getName().c_str()
-                );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( viewport, "invalid get arrow '%s' render viewport inheritance"
-                    , arrow->getName().c_str()
-                );
+                MENGINE_ASSERTION_MEMORY_PANIC( camera, "invalid get arrow render camera inheritance" );
+                MENGINE_ASSERTION_MEMORY_PANIC( viewport, "invalid get arrow render viewport inheritance" );
 
                 RenderContext context;
                 Helper::clearRenderContext( &context );
@@ -2352,7 +2332,7 @@ namespace Mengine
                 }
 
             public:
-                void initialize( const ArrowPtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
+                void initialize( const ArrowInterfacePtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
                 {
                     m_arrow = _arrow;
                     m_renderCamera = _camera;
@@ -2381,7 +2361,7 @@ namespace Mengine
                 }
 
             protected:
-                ArrowPtr m_arrow;
+                ArrowInterfacePtr m_arrow;
                 RenderCameraInterfacePtr m_renderCamera;
                 RenderViewportInterfacePtr m_renderViewport;
                 pybind::object m_cb;
@@ -2392,9 +2372,10 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPyInputMousePositionProvider;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addMousePositionProvider( const ArrowPtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
+            uint32_t s_addMousePositionProvider( const ArrowInterfacePtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
             {
-                ArrowPtr arrow = _arrow;
+                ArrowInterfacePtr arrow = _arrow;
+
                 if( arrow == nullptr )
                 {
                     arrow = PLAYER_SERVICE()
@@ -2435,9 +2416,9 @@ namespace Mengine
                     ->removeMousePositionProvider( _id );
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_screenToWorldPoint( const ArrowPtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint )
+            mt::vec2f s_screenToWorldPoint( const ArrowInterfacePtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint )
             {
-                ArrowPtr arrow = _arrow;
+                ArrowInterfacePtr arrow = _arrow;
 
                 if( arrow == nullptr )
                 {
@@ -2477,9 +2458,9 @@ namespace Mengine
                 return wp;
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_screenToWorldClick( const ArrowPtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint )
+            mt::vec2f s_screenToWorldClick( const ArrowInterfacePtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint )
             {
-                ArrowPtr arrow = _arrow;
+                ArrowInterfacePtr arrow = _arrow;
 
                 if( arrow == nullptr )
                 {
@@ -4353,7 +4334,6 @@ namespace Mengine
         pybind::def_functor( _kernel, "getTouchPosition", nodeScriptMethod, &EngineScriptMethod::s_getTouchPosition );
         pybind::def_functor( _kernel, "getMousePosition", nodeScriptMethod, &EngineScriptMethod::s_getMousePosition );
 
-        pybind::def_functor( _kernel, "setArrow", nodeScriptMethod, &EngineScriptMethod::s_setArrow );
         pybind::def_functor( _kernel, "getArrow", nodeScriptMethod, &EngineScriptMethod::s_getArrow );
         pybind::def_functor( _kernel, "hideArrow", nodeScriptMethod, &EngineScriptMethod::s_hideArrow );
 

@@ -32,19 +32,6 @@
 #include "Kernel/ShapeQuadFlex.h"
 
 //////////////////////////////////////////////////////////////////////////
-namespace Mengine
-{
-    namespace Helper
-    {
-        NodePtr generateNode( const DocumentInterfacePtr & _doc )
-        {
-            NodePtr node = Helper::generateFactorable<Node, Interender>( _doc );
-
-            return node;
-        }
-    }
-}
-//////////////////////////////////////////////////////////////////////////
 #define MENGINE_NODE_GENERATE(X)\
 namespace Mengine::Helper{\
         X ## Ptr generate ## X( const DocumentInterfacePtr & _doc ){\

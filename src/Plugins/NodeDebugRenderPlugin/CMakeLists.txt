@@ -15,8 +15,6 @@ src
     BaseDebugRender.h
     NodeDebugRenderHelper.cpp
     NodeDebugRenderHelper.h
-    ArrowDebugRender.cpp
-    ArrowDebugRender.h
     PointDebugRender.cpp
     PointDebugRender.h
     TextFieldDebugRender.cpp

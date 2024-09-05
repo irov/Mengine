@@ -18,6 +18,8 @@
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 
+#include "NodeDebugRenderHelper.h"
+
 #include "Engine/TextDebug.h"
 
 #include "Kernel/Assertion.h"
@@ -112,6 +114,41 @@ namespace Mengine
 
             m_timerFPS = INVALID_UNIQUE_ID;
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebugRenderService::renderDebugArrow( const ArrowInterfacePtr & _arrow, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external, bool _hide )
+    {
+        const NodePtr & node = _arrow->getNode();
+
+        this->renderDebugNode( node, _renderPipeline, _context, _external, _hide );
+
+        const TransformationInterface * transformation = node->getTransformation();
+
+        const mt::mat4f & wm = transformation->getWorldMatrix();
+
+        EArrowType arrowType = _arrow->getArrowType();
+
+        switch( arrowType )
+        {
+        case EAT_POINT:
+            {
+                float radius = 2.5f;
+
+                Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 4, 0x8080FFFF, MENGINE_DOCUMENT_FORWARD );
+            }break;
+        case EAT_RADIUS:
+            {
+                float radius = _arrow->getRadius();
+
+                Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 32, 0x8080FFFF, MENGINE_DOCUMENT_FORWARD );
+            }break;
+        case EAT_POLYGON:
+            {
+                const Polygon & polygon = _arrow->getPolygon();
+
+                Helper::nodeDebugRenderPolygon( _renderPipeline, _context, wm, polygon, 0x8080FFFF, MENGINE_DOCUMENT_FORWARD );
+            }break;
+        }        
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::renderDebugNode( const NodePtr & _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external, bool _hide )

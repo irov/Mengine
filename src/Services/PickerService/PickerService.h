@@ -35,7 +35,7 @@ namespace Mengine
         void setHandleValue( bool _value ) override;
 
     public:
-        void setArrow( const ArrowPtr & _arrow ) override;
+        void setArrow( const ArrowInterfacePtr & _arrow ) override;
         void setScene( const ScenePtr & _scene ) override;
 
     public:
@@ -82,7 +82,7 @@ namespace Mengine
         bool getStates_( float _x, float _y, VectorPickerStates * const _states ) const;
 
     protected:
-        ArrowPtr m_arrow;
+        ArrowInterfacePtr m_arrow;
         ScenePtr m_scene;
 
         RenderViewportInterfacePtr m_viewport;

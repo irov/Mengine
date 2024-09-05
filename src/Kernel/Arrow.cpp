@@ -44,14 +44,9 @@ namespace Mengine
         return m_pointClick;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Arrow::_activate()
+    bool Arrow::initialize()
     {
-        if( Entity::_activate() == false )
-        {
-            return false;
-        }
-
-        ArrowInputMousePositionProviderPtr provider = Helper::makeFactorableUnique<ArrowInputMousePositionProvider>( MENGINE_DOCUMENT_FACTORABLE, this );
+        ArrowInputMousePositionProviderPtr provider = Helper::makeFactorableUnique<ArrowInputMousePositionProvider>( MENGINE_DOCUMENT_FACTORABLE, ArrowInterfacePtr::from( this ) );
 
         UniqueId inputMousePositionProviderId = INPUT_SERVICE()
             ->addMousePositionProvider( provider, MENGINE_DOCUMENT_FACTORABLE );
@@ -60,52 +55,14 @@ namespace Mengine
 
         m_inputMousePositionProviderId = inputMousePositionProviderId;
 
-        const mt::vec2f & cursor_pos = INPUT_SERVICE()
-            ->getCursorPosition( TC_TOUCH0 );
-
-        RenderContext context;
-        this->makeRenderContext( &context );
-
-        if( context.camera != nullptr && context.viewport != nullptr )
-        {
-            mt::vec2f wp;
-            this->calcMouseWorldPosition( &context, cursor_pos, &wp );
-
-            mt::vec3f pos;
-            pos.x = wp.x;
-            pos.y = wp.y;
-            pos.z = 0.f;
-
-            this->setLocalPosition( pos );
-        }
-        else
-        {
-            mt::vec3f pos;
-            pos.x = 0.f;
-            pos.y = 0.f;
-            pos.z = 0.f;
-
-            this->setLocalPosition( pos );
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::_deactivate()
+    void Arrow::finalize()
     {
         INPUT_SERVICE()
             ->removeMousePositionProvider( m_inputMousePositionProviderId );
         m_inputMousePositionProviderId = INVALID_UNIQUE_ID;
-
-        Entity::_deactivate();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Arrow::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
-    {
-        MENGINE_UNUSED( _renderPipeline );
-        MENGINE_UNUSED( _context );
-
-        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void Arrow::setPolygon( const Polygon & _polygon )
@@ -132,17 +89,14 @@ namespace Mengine
         return m_radius;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::onAppMouseLeave()
+    void Arrow::setNode( const NodePtr & _node )
     {
-        BaseRender::setHide( true );
+        m_node = _node;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::onAppMouseEnter()
+    const NodePtr & Arrow::getNode() const
     {
-        if( m_hided == false )
-        {
-            BaseRender::setHide( false );
-        }
+        return m_node;
     }
     //////////////////////////////////////////////////////////////////////////
     void Arrow::calcMouseWorldPosition( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const

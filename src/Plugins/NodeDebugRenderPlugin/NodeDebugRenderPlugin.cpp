@@ -2,7 +2,6 @@
 
 #include "NodeDebugRenderServiceInterface.h"
 
-#include "ArrowDebugRender.h"
 #include "PointDebugRender.h"
 #include "HotSpotCircleDebugRender.h"
 #include "HotSpotImageDebugRender.h"
@@ -42,9 +41,6 @@ namespace Mengine
         }
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Arrow" ), Helper::makeFactorableUnique<ArrowDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
-
-        NODEDEBUGRENDER_SERVICE()
             ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Point" ), Helper::makeFactorableUnique<PointDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         NODEDEBUGRENDER_SERVICE()
@@ -71,9 +67,6 @@ namespace Mengine
         {
             return;
         }
-
-        NODEDEBUGRENDER_SERVICE()
-            ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "Arrow" ) );
 
         NODEDEBUGRENDER_SERVICE()
             ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "Point" ) );

@@ -3,7 +3,6 @@
 #include "Interface/PickerServiceInterface.h"
 
 #include "Kernel/RenderCameraHelper.h"
-#include "Kernel/Arrow.h"
 #include "Kernel/EventableHelper.h"
 #include "Kernel/AssertionContainer.h"
 
@@ -432,7 +431,7 @@ namespace Mengine
         Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const
+    bool HotSpot::pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowInterfacePtr & _arrow ) const
     {
         EArrowType arrowType = _arrow->getArrowType();
 

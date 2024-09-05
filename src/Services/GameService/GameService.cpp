@@ -17,7 +17,6 @@
 #include "GameServiceAccountProvider.h"
 #include "GameServiceSoundVolumeProvider.h"
 
-#include "Kernel/Arrow.h"
 #include "Kernel/Logger.h"
 #include "Kernel/StreamHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -29,6 +28,7 @@
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/PrototypeHelper.h"
+#include "Kernel/Interender.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( GameService, Mengine::GameService );
@@ -321,18 +321,18 @@ namespace Mengine
             }
         }
 
-        ConstString DefaultArrow_Prototype = CONFIG_VALUE( "DefaultArrow", "Prototype", ConstString::none() );
+        ArrowInterfacePtr arrow = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
-        ArrowPtr defaultArrow = Helper::generatePrototype( Arrow::getFactorableType(), DefaultArrow_Prototype, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ASSERTION_MEMORY_PANIC( arrow, "failed create arrow" );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( defaultArrow, "failed create defaultArrow 'Default'" );
+        NodePtr node = Helper::generateFactorable<Node, Interender>( MENGINE_DOCUMENT_FACTORABLE );
 
-        ConstString DefaultArrow_Name = CONFIG_VALUE( "DefaultArrow", "Name", STRINGIZE_STRING_LOCAL( "Default" ) );
+        MENGINE_ASSERTION_MEMORY_PANIC( node, "failed create Interender for arrow" );
 
-        defaultArrow->setName( DefaultArrow_Name );
+        arrow->setNode( node );
 
         PLAYER_SERVICE()
-            ->setArrow( defaultArrow );
+            ->setArrow( arrow );
 
         bool EVENT_INITIALIZE_result = EVENTABLE_METHODR( EVENT_GAME_INITIALIZE, true )
             ->onGameInitialize();

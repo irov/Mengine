@@ -31,8 +31,8 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        void setArrow( const ArrowPtr & _arrow ) override;
-        const ArrowPtr & getArrow() const override;
+        void setArrow( const ArrowInterfacePtr & _arrow ) override;
+        const ArrowInterfacePtr & getArrow() const override;
 
     public:
         void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) override;
@@ -131,7 +131,7 @@ namespace Mengine
         void notifyRemoveSceneDestroy();
 
     protected:
-        ArrowPtr m_arrow;
+        ArrowInterfacePtr m_arrow;
 
         RenderCameraOrthogonalPtr m_defaultCamera2D;
         RenderViewportPtr m_defaultViewport2D;

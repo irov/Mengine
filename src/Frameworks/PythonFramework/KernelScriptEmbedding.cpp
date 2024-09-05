@@ -16,6 +16,7 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ChronometerInterface.h"
+#include "Interface/ArrowInterface.h"
 
 #include "Plugins/MoviePlugin/ResourceMovie2.h"
 
@@ -71,7 +72,6 @@
 #include "Kernel/Eventable.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
-#include "Kernel/Arrow.h"
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/MatrixProxy.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -2638,6 +2638,24 @@ namespace Mengine
             .def( "resume", &ChronometerInterface::resume )
             .def( "isPause", &ChronometerInterface::isPause )
             .def( "getTime", &ChronometerInterface::getTime )
+            ;
+
+        pybind::enum_<EArrowType>( _kernel, "ArrowType" )
+            .def( "EAT_POINT", EAT_POINT )
+            .def( "EAT_RADIUS", EAT_RADIUS )
+            .def( "EAT_POLYGON", EAT_POLYGON )
+            ;
+
+        pybind::interface_<ArrowInterface, pybind::bases<Mixin>>( _kernel, "ArrowInterface", true )
+            .def( "getArrowType", &ArrowInterface::getArrowType )
+            .def( "setOffsetClick", &ArrowInterface::setOffsetClick )
+            .def( "getOffsetClick", &ArrowInterface::getOffsetClick )
+            .def( "setPolygon", &ArrowInterface::setPolygon )
+            .def( "getPolygon", &ArrowInterface::getPolygon )
+            .def( "setRadius", &ArrowInterface::setRadius )
+            .def( "getRadius", &ArrowInterface::getRadius )
+            .def( "setNode", &ArrowInterface::setNode )
+            .def( "getNode", &ArrowInterface::getNode )
             ;
 
         m_implement = scriptMethod;

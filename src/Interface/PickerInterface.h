@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Pickerable;
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Arrow, class Node> ArrowPtr;
+    typedef IntrusivePtr<class ArrowInterface> ArrowInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class PickerInterface
         : public Interface
@@ -80,7 +80,7 @@ namespace Mengine
         virtual const RenderTargetInterfacePtr & getPickerTarget() const = 0;
 
     public:
-        virtual bool pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const = 0;
+        virtual bool pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowInterfacePtr & _arrow ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PickerInterface> PickerInterfacePtr;

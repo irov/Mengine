@@ -2,12 +2,10 @@
 
 #include "Interface/TransformationInterface.h"
 
-#include "Kernel/Arrow.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ArrowInputMousePositionProvider::ArrowInputMousePositionProvider( Arrow * _arrow )
+    ArrowInputMousePositionProvider::ArrowInputMousePositionProvider( const ArrowInterfacePtr & _arrow )
         : m_arrow( _arrow )
     {
     }
@@ -25,7 +23,14 @@ namespace Mengine
             return;
         }
 
-        RenderInterface * render = m_arrow->getRender();
+        const NodePtr & node = m_arrow->getNode();
+
+        if( node == nullptr )
+        {
+            return;
+        }
+
+        RenderInterface * render = node->getRender();
 
         RenderContext context;
         render->makeRenderContext( &context );
@@ -35,7 +40,7 @@ namespace Mengine
 
         mt::vec3f v3( wp.x, wp.y, 0.f );
 
-        TransformationInterface * transformation = m_arrow->getTransformation();
+        TransformationInterface * transformation = node->getTransformation();
 
         transformation->setLocalPosition( v3 );
     }

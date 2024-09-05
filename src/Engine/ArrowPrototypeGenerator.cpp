@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer ArrowPrototypeGenerator::generate( const DocumentInterfacePtr & _doc )
     {
-        ArrowPtr arrow = Helper::generateFactorable<Node, Arrow>( _doc );
+        ArrowInterfacePtr arrow = Helper::makeFactorableUnique<Arrow>( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( arrow, "can't create '%s' '%s' doc '%s'"
             , m_category.c_str()

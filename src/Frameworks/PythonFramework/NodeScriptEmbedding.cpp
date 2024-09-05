@@ -61,7 +61,6 @@
 #include "Kernel/Eventable.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
-#include "Kernel/Arrow.h"
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/MatrixProxy.h"
 #include "Kernel/AssertionMemoryPanic.h"

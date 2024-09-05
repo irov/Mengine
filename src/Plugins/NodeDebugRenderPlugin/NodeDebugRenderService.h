@@ -25,6 +25,7 @@ namespace Mengine
         void _stopService() override;
 
     public:
+        void renderDebugArrow( const ArrowInterfacePtr & _arrow, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external, bool _hide ) override;
         void renderDebugNode( const NodePtr & _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external, bool _hide ) override;
 
     public:

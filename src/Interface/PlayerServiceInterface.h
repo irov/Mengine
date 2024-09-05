@@ -13,8 +13,8 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Arrow, class Node> ArrowPtr;
     typedef IntrusivePtr<class Affectorable> AffectorablePtr;
+    typedef IntrusivePtr<class ArrowInterface> ArrowInterfacePtr;
     typedef IntrusivePtr<class RenderViewportInterface> RenderViewportInterfacePtr;
     typedef IntrusivePtr<class RenderCameraInterface> RenderCameraInterfacePtr;
     typedef IntrusivePtr<class RenderScissorInterface> RenderScissorInterfacePtr;
@@ -37,8 +37,8 @@ namespace Mengine
         virtual void finalizeRenderResources() = 0;
 
     public:
-        virtual void setArrow( const ArrowPtr & _arrow ) = 0;
-        virtual const ArrowPtr & getArrow() const = 0;
+        virtual void setArrow( const ArrowInterfacePtr & _arrow ) = 0;
+        virtual const ArrowInterfacePtr & getArrow() const = 0;
 
     public:
         virtual void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) = 0;

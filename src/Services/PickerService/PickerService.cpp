@@ -4,7 +4,6 @@
 #include "Interface/ApplicationInterface.h"
 
 #include "Kernel/EnumeratorHelper.h"
-#include "Kernel/Arrow.h"
 #include "Kernel/Scene.h"
 #include "Kernel/VectorAuxScope.h"
 #include "Kernel/Logger.h"
@@ -187,7 +186,7 @@ namespace Mengine
         this->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
-    void PickerService::setArrow( const ArrowPtr & _arrow )
+    void PickerService::setArrow( const ArrowInterfacePtr & _arrow )
     {
         if( m_arrow == _arrow )
         {

@@ -1,62 +1,49 @@
 #pragma once
 
-#include "Kernel/Entity.h"
-#include "Kernel/Resolution.h"
-#include "Kernel/Polygon.h"
+#include "Interface/ArrowInterface.h"
 
-#include "math/vec4.h"
+#include "Config/UniqueId.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum EArrowType
-    {
-        EAT_POINT,
-        EAT_RADIUS,
-        EAT_POLYGON
-    };
-    //////////////////////////////////////////////////////////////////////////
     class Arrow
-        : public Entity
+        : public ArrowInterface
     {
         DECLARE_FACTORABLE( Arrow );
-        DECLARE_VISITABLE( Entity );
 
     public:
         Arrow();
         ~Arrow() override;
 
-    public:
-        EArrowType getArrowType() const;
-
-    public:
-        void setOffsetClick( const mt::vec2f & _offsetClick );
-        const mt::vec2f & getOffsetClick() const;
-
-        void setPolygon( const Polygon & _polygon );
-        const Polygon & getPolygon() const;
-
-        void setRadius( float _radius );
-        float getRadius() const;
-
-    public:
-        void calcMouseWorldPosition( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const;
-        void calcPointClick( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const;
-        void calcPointDelta( const RenderContext * _context, const mt::vec2f & _screenDelta, mt::vec2f * _worldDelta ) const;
-
-    public:
-        void calcMouseScreenPosition( const RenderContext * _context, const mt::vec2f & _worldPoint, mt::vec2f * const _screenPoint ) const;
-
-    public:
-        void onAppMouseLeave();
-        void onAppMouseEnter();
+    protected:
+        EArrowType getArrowType() const override;
 
     protected:
-        bool _activate() override;
-        void _deactivate() override;
+        void setOffsetClick( const mt::vec2f & _offsetClick ) override;
+        const mt::vec2f & getOffsetClick() const override;
+
+        void setPolygon( const Polygon & _polygon ) override;
+        const Polygon & getPolygon() const override;
+
+        void setRadius( float _radius ) override;
+        float getRadius() const override;
 
     protected:
-        void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
+        void setNode( const NodePtr & _node ) override;
+        const NodePtr & getNode() const override;
+
+    protected:
+        bool initialize() override;
+        void finalize() override;
+
+    protected:
+        void calcMouseWorldPosition( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const override;
+        void calcPointClick( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) const override;
+        void calcPointDelta( const RenderContext * _context, const mt::vec2f & _screenDelta, mt::vec2f * _worldDelta ) const override;
+
+    protected:
+        void calcMouseScreenPosition( const RenderContext * _context, const mt::vec2f & _worldPoint, mt::vec2f * const _screenPoint ) const override;
 
     protected:
         EArrowType m_arrowType;
@@ -68,9 +55,11 @@ namespace Mengine
         Polygon m_polygon;
         mutable Polygon m_polygonScreen;
 
+        NodePtr m_node;
+
         bool m_hided;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveNodePtr<Arrow> ArrowPtr;
+    typedef IntrusivePtr<Arrow, ArrowInterface> ArrowPtr;
     //////////////////////////////////////////////////////////////////////////
 }

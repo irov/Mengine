@@ -85,7 +85,6 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/TagsHelper.h"
 #include "Kernel/Entity.h"
-#include "Kernel/Arrow.h"
 #include "Kernel/Interender.h"
 #include "Kernel/MatrixProxy.h"
 #include "Kernel/FileContent.h"
@@ -512,7 +511,6 @@ namespace Mengine
         }
 
         NODE_FACTORY( Entity );
-        NODE_FACTORY( Arrow );
         NODE_FACTORY( Scene );
         NODE_FACTORY( Gyroscope );
         NODE_FACTORY( Isometric );
@@ -573,7 +571,6 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), nullptr )
 
         NODE_FACTORY( Entity );
-        NODE_FACTORY( Arrow );
         NODE_FACTORY( Scene );
         NODE_FACTORY( Gyroscope );
         NODE_FACTORY( Isometric );

@@ -5,14 +5,6 @@
 #include "Kernel/Node.h"
 
 //////////////////////////////////////////////////////////////////////////
-namespace Mengine
-{
-    namespace Helper
-    {
-        NodePtr generateNode( const DocumentInterfacePtr & _doc );
-    }
-}
-//////////////////////////////////////////////////////////////////////////
 #define MENGINE_NODE_GENERATE(X)\
     namespace Mengine{typedef IntrusiveNodePtr<class X> X ## Ptr;}\
     namespace Mengine::Helper{X ## Ptr generate ## X( const DocumentInterfacePtr & _doc );}

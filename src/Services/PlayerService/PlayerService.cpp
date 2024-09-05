@@ -29,7 +29,6 @@
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/MT19937Randomizer.h"
-#include "Kernel/Arrow.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Scheduler.h"
@@ -184,20 +183,15 @@ namespace Mengine
     {
         if( m_arrow != nullptr )
         {
-            m_arrow->disable();
+            const NodePtr & node = m_arrow->getNode();
 
-            RenderInterface * arrowRender = m_arrow->getRender();
-
-            arrowRender->setRenderCamera( nullptr );
-            arrowRender->setRenderViewport( nullptr );
-            arrowRender->setRenderTransformation( nullptr );
-            arrowRender->setRenderScissor( nullptr );
-            arrowRender->setRenderTarget( nullptr );
+            node->disable();
 
             PICKER_SERVICE()
                 ->setArrow( nullptr );
 
-            m_arrow->dispose();
+            node->dispose();
+
             m_arrow = nullptr;
         }
 
@@ -257,26 +251,21 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::setArrow( const ArrowPtr & _arrow )
+    void PlayerService::setArrow( const ArrowInterfacePtr & _arrow )
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_ARROW_PREPARE_DESTROY, m_arrow );
 
         if( m_arrow != nullptr )
         {
-            m_arrow->disable();
+            const NodePtr & node = m_arrow->getNode();
 
-            RenderInterface * arrowRender = m_arrow->getRender();
-
-            arrowRender->setRenderCamera( nullptr );
-            arrowRender->setRenderViewport( nullptr );
-            arrowRender->setRenderTransformation( nullptr );
-            arrowRender->setRenderScissor( nullptr );
-            arrowRender->setRenderTarget( nullptr );
+            node->disable();
 
             PICKER_SERVICE()
                 ->setArrow( nullptr );
 
-            m_arrow->dispose();
+            node->dispose();
+
             m_arrow = nullptr;
         }
 
@@ -284,22 +273,24 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            RenderInterface * arrowRender = m_arrow->getRender();
+            const NodePtr & node = m_arrow->getNode();
 
-            arrowRender->setRenderCamera( m_defaultArrowCamera2D );
-            arrowRender->setRenderViewport( m_renderViewport );
-            arrowRender->setRenderScissor( m_renderScissor );
+            RenderInterface * render = node->getRender();
+
+            render->setRenderCamera( m_defaultArrowCamera2D );
+            render->setRenderViewport( m_renderViewport );
+            render->setRenderScissor( m_renderScissor );
 
             PICKER_SERVICE()
                 ->setArrow( m_arrow );
 
-            m_arrow->enable();
+            node->enable();
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_ARROW_COMPLETE, m_arrow );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ArrowPtr & PlayerService::getArrow() const
+    const ArrowInterfacePtr & PlayerService::getArrow() const
     {
         return m_arrow;
     }
@@ -427,11 +418,13 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            RenderInterface * arrowRender = m_arrow->getRender();
+            const NodePtr & node = m_arrow->getNode();
 
-            arrowRender->setRenderCamera( m_defaultArrowCamera2D );
-            arrowRender->setRenderViewport( m_renderViewport );
-            arrowRender->setRenderScissor( m_renderScissor );
+            RenderInterface * render = node->getRender();
+
+            render->setRenderCamera( m_defaultArrowCamera2D );
+            render->setRenderViewport( m_renderViewport );
+            render->setRenderScissor( m_renderScissor );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -742,14 +735,16 @@ namespace Mengine
         {
             if( debugMask == 0 )
             {
-                Helper::nodeRenderChildren( m_arrow.get(), _renderPipeline, &m_renderContext, false );
+                const NodePtr & node = m_arrow->getNode();
+
+                Helper::nodeRenderChildren( node.get(), _renderPipeline, &m_renderContext, false );
             }
             else
             {
                 if( SERVICE_IS_INITIALIZE( NodeDebugRenderServiceInterface ) == true )
                 {
                     NODEDEBUGRENDER_SERVICE()
-                        ->renderDebugNode( m_arrow, _renderPipeline, &m_renderContext, false, false );
+                        ->renderDebugArrow( m_arrow, _renderPipeline, &m_renderContext, false, false );
                 }
             }
         }
@@ -771,11 +766,6 @@ namespace Mengine
             m_globalInputHandler->handleMouseEnter( _event );
         }
 
-        if( m_arrow != nullptr )
-        {
-            m_arrow->onAppMouseEnter();
-        }
-
         const ScenePtr & scene = SCENE_SERVICE()
             ->getCurrentScene();
 
@@ -795,11 +785,6 @@ namespace Mengine
         if( m_globalInputHandler != nullptr )
         {
             m_globalInputHandler->handleMouseLeave( _event );
-        }
-
-        if( m_arrow != nullptr )
-        {
-            m_arrow->onAppMouseLeave();
         }
 
         const ScenePtr & scene = SCENE_SERVICE()
@@ -839,8 +824,10 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->removeFromParent();
-            m_arrow->disable();
+            const NodePtr & arrow = m_arrow->getNode();
+
+            arrow->removeFromParent();
+            arrow->disable();
         }
 
         if( m_localScheduler != nullptr )
@@ -882,7 +869,9 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->enableForce();
+            const NodePtr & arrow = m_arrow->getNode();
+
+            arrow->enableForce();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -900,8 +889,10 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->removeFromParent();
-            m_arrow->disable();
+            const NodePtr & node = m_arrow->getNode();
+
+            node->removeFromParent();
+            node->disable();
         }
 
         if( m_localScheduler != nullptr )
@@ -937,7 +928,9 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->enableForce();
+            const NodePtr & node = m_arrow->getNode();
+
+            node->enableForce();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -947,8 +940,10 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->removeFromParent();
-            m_arrow->disable();
+            const NodePtr & node = m_arrow->getNode();
+
+            node->removeFromParent();
+            node->disable();
         }
 
         if( m_localScheduler != nullptr )

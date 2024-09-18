@@ -72,14 +72,14 @@ extern "C"
 
         application->loop();
 
+        application->finalize();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidMain_1destroy )(JNIEnv * _env, jclass _cls, jobject _application)
     {
         Mengine::AndroidApplication * application = (Mengine::AndroidApplication *)_env->GetDirectBufferAddress( _application );
-
-        application->finalize();
 
         application->~AndroidApplication();
 

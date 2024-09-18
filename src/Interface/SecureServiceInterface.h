@@ -16,5 +16,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define SECURE_SERVICE()\
-    ((Mengine::SecureServiceInterface*)SERVICE_GET(Mengine::SecureServiceInterface))
+    ((Mengine::SecureServiceInterface *)SERVICE_GET(Mengine::SecureServiceInterface))
 //////////////////////////////////////////////////////////////////////////

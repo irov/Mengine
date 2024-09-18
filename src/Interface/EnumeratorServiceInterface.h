@@ -17,5 +17,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define ENUMERATOR_SERVICE()\
-    ((Mengine::EnumeratorServiceInterface*)SERVICE_GET(Mengine::EnumeratorServiceInterface))
+    ((Mengine::EnumeratorServiceInterface *)SERVICE_GET(Mengine::EnumeratorServiceInterface))
 //////////////////////////////////////////////////////////////////////////

@@ -63,7 +63,6 @@ namespace Mengine
         bool registerBaseResourceTypes_();
         bool registerEntityGenerator_();
         bool registerSceneGenerator_();
-        bool registerArrowGenerator_();
 
     protected:
         void unregisterBaseTypes_();
@@ -71,7 +70,6 @@ namespace Mengine
         void unregisterBaseResourceTypes_();
         void unregisterEntityGenerator_();
         void unregisterSceneGenerator_();
-        void unregisterArrowGenerator_();
 
     public:
         bool createRenderWindow() override;

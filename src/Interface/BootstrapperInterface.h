@@ -20,5 +20,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define BOOTSTRAPPER_SERVICE()\
-    ((Mengine::BootstrapperInterface*)SERVICE_GET(Mengine::BootstrapperInterface))
+    ((Mengine::BootstrapperInterface *)SERVICE_GET(Mengine::BootstrapperInterface))
 //////////////////////////////////////////////////////////////////////////

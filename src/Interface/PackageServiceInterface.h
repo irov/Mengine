@@ -37,5 +37,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define PACKAGE_SERVICE()\
-    ((Mengine::PackageServiceInterface*)SERVICE_GET(Mengine::PackageServiceInterface))
+    ((Mengine::PackageServiceInterface *)SERVICE_GET(Mengine::PackageServiceInterface))
 //////////////////////////////////////////////////////////////////////////

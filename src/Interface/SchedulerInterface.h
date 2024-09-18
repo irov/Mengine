@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
 #include "Interface/ServiceInterface.h"
-#include "Interface/UpdationInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
@@ -41,15 +40,11 @@ namespace Mengine
     typedef IntrusivePtr<SchedulerPipeInterface> SchedulerPipeInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class SchedulerInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual bool initialize() = 0;
         virtual void finalize() = 0;
-
-    public:
-        virtual void setName( const ConstString & _name ) = 0;
-        virtual const ConstString & getName() const = 0;
 
     public:
         virtual UniqueId event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentInterfacePtr & _doc ) = 0;

@@ -45,5 +45,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define IMGUI_SERVICE()\
-    ((Mengine::ImGUIServiceInterface*)SERVICE_GET(Mengine::ImGUIServiceInterface))
+    ((Mengine::ImGUIServiceInterface *)SERVICE_GET(Mengine::ImGUIServiceInterface))
 //////////////////////////////////////////////////////////////////////////

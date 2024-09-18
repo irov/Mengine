@@ -28,7 +28,7 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define STRINGIZE_SERVICE()\
-    ((Mengine::StringizeServiceInterface*)SERVICE_GET(Mengine::StringizeServiceInterface))
+    ((Mengine::StringizeServiceInterface *)SERVICE_GET(Mengine::StringizeServiceInterface))
 //////////////////////////////////////////////////////////////////////////
 
 

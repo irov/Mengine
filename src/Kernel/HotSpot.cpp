@@ -1,6 +1,7 @@
 #include "HotSpot.h"
 
 #include "Interface/PickerServiceInterface.h"
+#include "Interface/ArrowServiceInterface.h"
 
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/EventableHelper.h"
@@ -431,9 +432,10 @@ namespace Mengine
         Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution, const ArrowInterfacePtr & _arrow ) const
+    bool HotSpot::pick( const mt::vec2f & _point, const RenderContext * _context, const Resolution & _contentResolution ) const
     {
-        EArrowType arrowType = _arrow->getArrowType();
+        EArrowType arrowType = ARROW_SERVICE()
+            ->getArrowType();
 
         switch( arrowType )
         {
@@ -445,7 +447,8 @@ namespace Mengine
             }break;
         case EAT_RADIUS:
             {
-                float radius = _arrow->getRadius();
+                float radius = ARROW_SERVICE()
+                    ->getRadius();
 
                 bool result = this->testRadius( _context, _contentResolution, _point, radius );
 
@@ -453,7 +456,8 @@ namespace Mengine
             }break;
         case EAT_POLYGON:
             {
-                const Polygon & polygon = _arrow->getPolygon();
+                const Polygon & polygon = ARROW_SERVICE()
+                    ->getPolygon();
 
                 bool result = this->testPolygon( _context, _contentResolution, _point, polygon );
 

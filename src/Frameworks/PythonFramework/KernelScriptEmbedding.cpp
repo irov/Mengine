@@ -16,7 +16,7 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ChronometerInterface.h"
-#include "Interface/ArrowInterface.h"
+#include "Interface/ArrowServiceInterface.h"
 
 #include "Plugins/MoviePlugin/ResourceMovie2.h"
 
@@ -2646,16 +2646,15 @@ namespace Mengine
             .def( "EAT_POLYGON", EAT_POLYGON )
             ;
 
-        pybind::interface_<ArrowInterface, pybind::bases<Mixin>>( _kernel, "ArrowInterface", true )
-            .def( "getArrowType", &ArrowInterface::getArrowType )
-            .def( "setOffsetClick", &ArrowInterface::setOffsetClick )
-            .def( "getOffsetClick", &ArrowInterface::getOffsetClick )
-            .def( "setPolygon", &ArrowInterface::setPolygon )
-            .def( "getPolygon", &ArrowInterface::getPolygon )
-            .def( "setRadius", &ArrowInterface::setRadius )
-            .def( "getRadius", &ArrowInterface::getRadius )
-            .def( "setNode", &ArrowInterface::setNode )
-            .def( "getNode", &ArrowInterface::getNode )
+        pybind::interface_<ArrowServiceInterface, pybind::bases<Mixin>>( _kernel, "ArrowServiceInterface", true )
+            .def( "getArrowType", &ArrowServiceInterface::getArrowType )
+            .def( "setOffsetClick", &ArrowServiceInterface::setOffsetClick )
+            .def( "getOffsetClick", &ArrowServiceInterface::getOffsetClick )
+            .def( "setPolygon", &ArrowServiceInterface::setPolygon )
+            .def( "getPolygon", &ArrowServiceInterface::getPolygon )
+            .def( "setRadius", &ArrowServiceInterface::setRadius )
+            .def( "getRadius", &ArrowServiceInterface::getRadius )
+            .def( "getNode", &ArrowServiceInterface::getNode )
             ;
 
         m_implement = scriptMethod;

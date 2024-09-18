@@ -6,7 +6,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    class Holder
+    class SingleHolder
     {
     public:
         static void keep( T * _hostage )
@@ -42,6 +42,6 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    T * Holder<T>::m_hostage = nullptr;
+    T * SingleHolder<T>::m_hostage = nullptr;
     //////////////////////////////////////////////////////////////////////////
 }

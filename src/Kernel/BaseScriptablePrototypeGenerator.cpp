@@ -60,6 +60,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseScriptablePrototypeGenerator::setupScriptable( const ScriptablePtr & _scriptable )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( m_scriptWrapper );
+
         _scriptable->setScriptWrapper( m_scriptWrapper );
     }
     //////////////////////////////////////////////////////////////////////////

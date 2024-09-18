@@ -170,5 +170,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define RENDER_SYSTEM()\
-    ((Mengine::RenderSystemInterface*)SERVICE_GET(Mengine::RenderSystemInterface))    
+    ((Mengine::RenderSystemInterface *)SERVICE_GET(Mengine::RenderSystemInterface))    
 //////////////////////////////////////////////////////////////////////////

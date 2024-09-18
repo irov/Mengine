@@ -81,7 +81,6 @@ namespace Mengine
         void onThreadWorkerDone( UniqueId _id ) override;
 
     public:
-        void setArrow( const ArrowInterfacePtr & _arrow );
         void updateArrow();
 
     public:
@@ -131,7 +130,6 @@ namespace Mengine
         void pathToString( const VectorNodePath & _path, String * const _outStr ) const;
 
     protected:
-        void notifyChangeArrow( const ArrowInterfacePtr & _arrow );
         void notifyChangeSceneComplete( const ScenePtr & _scene );
         void notifyChangeSceneDestroy( const ScenePtr & _scene );
         void notifyRemoveSceneDestroy();
@@ -180,7 +178,6 @@ namespace Mengine
         UniqueId m_globalKeyHandlerF2;
         UniqueId m_globalKeyHandlerForSendingSelectedNode;
 
-        ArrowInterfacePtr m_arrow;
         ScenePtr m_scene;
         NodePtr m_selectedNode;
 

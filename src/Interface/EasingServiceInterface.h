@@ -12,5 +12,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define EASING_SERVICE()\
-    ((Mengine::EasingServiceInterface*)SERVICE_GET(Mengine::EasingServiceInterface))
+    ((Mengine::EasingServiceInterface *)SERVICE_GET(Mengine::EasingServiceInterface))
 //////////////////////////////////////////////////////////////////////////

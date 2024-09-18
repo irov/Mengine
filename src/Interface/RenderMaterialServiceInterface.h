@@ -86,5 +86,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define RENDERMATERIAL_SERVICE()\
-    ((Mengine::RenderMaterialServiceInterface*)SERVICE_GET(Mengine::RenderMaterialServiceInterface))
+    ((Mengine::RenderMaterialServiceInterface *)SERVICE_GET(Mengine::RenderMaterialServiceInterface))
 //////////////////////////////////////////////////////////////////////////

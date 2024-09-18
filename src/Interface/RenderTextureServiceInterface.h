@@ -43,5 +43,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define RENDERTEXTURE_SERVICE()\
-    ((Mengine::RenderTextureServiceInterface*)SERVICE_GET(Mengine::RenderTextureServiceInterface))
+    ((Mengine::RenderTextureServiceInterface *)SERVICE_GET(Mengine::RenderTextureServiceInterface))
 //////////////////////////////////////////////////////////////////////////

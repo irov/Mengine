@@ -60,6 +60,7 @@ SERVICE_EXTERN( SecureService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( LoggerService );
+SERVICE_EXTERN( ArrowService );
 SERVICE_EXTERN( PlatformService );
 SERVICE_EXTERN( NotificationService );
 SERVICE_EXTERN( FileService );
@@ -1019,7 +1020,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( TimerService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );        
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         MENGINE_ADD_SERVICE( AndroidKernelService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1211,6 +1212,7 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( PrefetcherService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ConverterService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( InputService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( ArrowService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ChronometerService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( EasingService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( UpdateService, MENGINE_DOCUMENT_FACTORABLE );
@@ -2143,6 +2145,7 @@ namespace Mengine
         SERVICE_FINALIZE( HttpService );
         SERVICE_FINALIZE( GameService );
         SERVICE_FINALIZE( Application );
+        SERVICE_FINALIZE( ArrowService );
 
         SERVICE_FINALIZE( SecureService );
         SERVICE_FINALIZE( AccountService );
@@ -2306,6 +2309,7 @@ namespace Mengine
         SERVICE_DESTROY( VocabularyService );
         SERVICE_DESTROY( EnumeratorService );
         SERVICE_DESTROY( PluginService );
+        SERVICE_DESTROY( ArrowService );
         SERVICE_DESTROY( FileService );
         SERVICE_DESTROY( ThreadSystem );
         SERVICE_DESTROY( TimepipeService );

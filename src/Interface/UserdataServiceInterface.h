@@ -31,5 +31,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define USERDATA_SERVICE()\
-    ((Mengine::UserdataServiceInterface*)SERVICE_GET(Mengine::UserdataServiceInterface))
+    ((Mengine::UserdataServiceInterface *)SERVICE_GET(Mengine::UserdataServiceInterface))
 //////////////////////////////////////////////////////////////////////////

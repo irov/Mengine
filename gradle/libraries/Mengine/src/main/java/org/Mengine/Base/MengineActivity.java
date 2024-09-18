@@ -802,16 +802,10 @@ public class MengineActivity extends AppCompatActivity {
             );
         }
 
+        m_threadMain = null;
+
         AndroidMain_destroy(m_nativeApplication);
         m_nativeApplication = null;
-
-        try {
-            m_threadMain.join();
-        } catch (InterruptedException e) {
-            MengineLog.logError(TAG, "thread main join exception: %s"
-                , e.getMessage()
-            );
-        }
 
         AndroidEnv_removeMengineAndroidActivityJNI();
 

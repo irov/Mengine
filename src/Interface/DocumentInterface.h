@@ -42,6 +42,6 @@ namespace Mengine
 #if defined(MENGINE_DOCUMENT_ENABLE)
 #   define MENGINE_DOCUMENT_STR(Doc) Doc->getMessage()
 #else
-#   define MENGINE_DOCUMENT_STR(Doc)
+#   define MENGINE_DOCUMENT_STR(Doc) MENGINE_STRING_EMPTY
 #endif
 //////////////////////////////////////////////////////////////////////////

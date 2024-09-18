@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/ArrowInterface.h"
 
 #include "NodeDebugRenderInterface.h"
 
@@ -18,7 +17,7 @@ namespace Mengine
         SERVICE_DECLARE( "NodeDebugRenderService" );
 
     public:
-        virtual void renderDebugArrow( const ArrowInterfacePtr & _arrow, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external, bool _hide ) = 0;
+        virtual void renderDebugArrow( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external, bool _hide ) = 0;
         virtual void renderDebugNode( const NodePtr & _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external, bool _hide ) = 0;
 
     public:

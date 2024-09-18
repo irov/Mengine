@@ -24,6 +24,7 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/SHA1.h"
 #include "Kernel/Unknowable.h"
+#include "Kernel/StaticString.h"
 
 #include "Config/Timestamp.h"
 

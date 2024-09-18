@@ -34,5 +34,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define SETTINGS_SERVICE()\
-    ((Mengine::SettingsServiceInterface*)SERVICE_GET(Mengine::SettingsServiceInterface))
+    ((Mengine::SettingsServiceInterface *)SERVICE_GET(Mengine::SettingsServiceInterface))
 //////////////////////////////////////////////////////////////////////////

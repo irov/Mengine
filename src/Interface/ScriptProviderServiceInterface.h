@@ -29,5 +29,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define SCRIPTPROVIDER_SERVICE()\
-    ((Mengine::ScriptProviderServiceInterface*)SERVICE_GET(Mengine::ScriptProviderServiceInterface))
+    ((Mengine::ScriptProviderServiceInterface *)SERVICE_GET(Mengine::ScriptProviderServiceInterface))
 //////////////////////////////////////////////////////////////////////////

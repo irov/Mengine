@@ -8,7 +8,6 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/Observable.h"
-#include "Kernel/Exception.h"
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/Tuple.h"
 
@@ -185,5 +184,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_SERVICE()\
-    ((Mengine::NotificationServiceInterface*)SERVICE_GET(Mengine::NotificationServiceInterface))
+    ((Mengine::NotificationServiceInterface *)SERVICE_GET(Mengine::NotificationServiceInterface))
 //////////////////////////////////////////////////////////////////////////

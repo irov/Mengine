@@ -1459,7 +1459,7 @@ namespace Mengine
                     continue;
                 }
 
-                LOGGER_ASSERTION( "sound: %s [%s] "
+                LOGGER_ASSERTION( "sound: %s (doc: %s)"
                     , identity->getStreamable() == true ? "streamable" : "instance"
                     , MENGINE_DOCUMENT_STR( identity->getDocument() )
                 );

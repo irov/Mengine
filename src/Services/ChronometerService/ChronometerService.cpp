@@ -35,7 +35,7 @@ namespace Mengine
 #if defined(MENGINE_DOCUMENT_ENABLE)
         for( const ChronometerPtr & chronometer : m_chronometers )
         {
-            LOGGER_ASSERTION( "Not remove chronometer '%s'"
+            LOGGER_ASSERTION( "Not remove chronometer (doc: %s)"
                 , MENGINE_DOCUMENT_STR( chronometer->getDocument() )
             );
         }

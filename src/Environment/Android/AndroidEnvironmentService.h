@@ -3,6 +3,7 @@
 #include "Interface/EnvironmentServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/StaticString.h"
 
 namespace Mengine
 {

@@ -7,58 +7,94 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static uint32_t calcModeDeep( EUpdateMode _mode, uint32_t _deep )
+        {
+            switch( _mode )
+            {
+            case EUM_NODE_BASE:
+                return _deep * 2U + 0U;
+                break;
+            case EUM_NODE_AFFECTOR:
+                return _deep * 2U + 1U;
+                break;
+            case EUM_SERVICE_BEFORE:
+                return _deep;
+                break;
+            case EUM_SERVICE_AFTER:
+                return _deep;
+                break;
+            default:
+                return ~0U;
+            };
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     BaseUpdation::BaseUpdation()
-        : m_updatableProxyId( INVALID_UPDATABLE_ID )
+        : m_mode( EUM_NODE_BASE )
+        , m_state( EUS_NORMAL )
+        , m_deep( 0U )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     BaseUpdation::~BaseUpdation()
     {
-        MENGINE_ASSERTION_FATAL( m_updatableProxyId == INVALID_UPDATABLE_ID, "updatable id '%u' not removed"
-            , m_updatableProxyId
-        );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseUpdation::activate( EUpdateMode _mode, uint32_t _deep )
+    void BaseUpdation::activate( EUpdateMode _mode, uint32_t _deep )
     {
-        MENGINE_ASSERTION_FATAL( m_updatableProxyId == INVALID_UPDATABLE_ID, "updatable id '%u' already activate"
-            , m_updatableProxyId
-        );
+        m_mode = _mode;
 
-        uint32_t updatableProxyId = UPDATE_SERVICE()
-            ->createUpdatater( _mode, _deep, UpdationInterfacePtr::from( this ) );
+        uint32_t mode_deep = Detail::calcModeDeep( m_mode, _deep );
+        m_deep = mode_deep;
 
-        if( updatableProxyId == INVALID_UPDATABLE_ID )
-        {
-            return false;
-        }
+        m_state = EUS_NORMAL;
 
-        m_updatableProxyId = updatableProxyId;
-
-        return true;
+        UPDATE_SERVICE()
+            ->placeUpdatater( UpdationInterfacePtr::from( this ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseUpdation::deactivate()
     {
-        MENGINE_ASSERTION_FATAL( m_updatableProxyId != INVALID_UPDATABLE_ID, "updatable id '%u' not activate"
-            , m_updatableProxyId
-        );
-
-        UPDATE_SERVICE()
-            ->removeUpdatater( m_updatableProxyId );
-
-        m_updatableProxyId = INVALID_UPDATABLE_ID;
+        m_state = EUS_REMOVE;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseUpdation::replace( uint32_t _deep )
     {
-        if( m_updatableProxyId == INVALID_UPDATABLE_ID )
+        if( m_state == EUS_REMOVE )
         {
             return;
         }
 
+        uint32_t mode_deep = Detail::calcModeDeep( m_mode, _deep );
+
+        if( m_deep == mode_deep )
+        {
+            return;
+        }
+
+        m_deep = mode_deep;
+
         UPDATE_SERVICE()
-            ->replaceUpdatater( m_updatableProxyId, _deep );
+            ->placeUpdatater( UpdationInterfacePtr::from( this ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EUpdateMode BaseUpdation::getMode() const
+    {
+        return m_mode;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EUpdateState BaseUpdation::getState() const
+    {
+        return m_state;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t BaseUpdation::getDeep() const
+    {
+        return m_deep;
     }
     //////////////////////////////////////////////////////////////////////////
 }

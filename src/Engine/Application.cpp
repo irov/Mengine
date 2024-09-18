@@ -59,7 +59,6 @@
 
 #include "EntityPrototypeGenerator.h"
 #include "ScenePrototypeGenerator.h"
-#include "ArrowPrototypeGenerator.h"
 
 #include "Kernel/ShapeCircle.h"
 #include "Kernel/ShapePacMan.h"
@@ -207,13 +206,6 @@ namespace Mengine
         if( this->registerSceneGenerator_() == false )
         {
             LOGGER_ERROR( "invalid register scene generator" );
-
-            return false;
-        }
-
-        if( this->registerArrowGenerator_() == false )
-        {
-            LOGGER_ERROR( "invalid register arrow generator" );
 
             return false;
         }
@@ -441,7 +433,6 @@ namespace Mengine
         this->unregisterBaseResourceTypes_();
         this->unregisterEntityGenerator_();
         this->unregisterSceneGenerator_();
-        this->unregisterArrowGenerator_();
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::_stopService()
@@ -661,29 +652,6 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none(), nullptr );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Application::registerArrowGenerator_()
-    {
-        LOGGER_INFO( "system", "register arrow generator..." );
-
-        PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ArrowPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
-
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), ConstString::none(), generator ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Application::unregisterArrowGenerator_()
-    {
-        LOGGER_INFO( "system", "unregister arrow generator..." );
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), ConstString::none(), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseResourceTypes_()

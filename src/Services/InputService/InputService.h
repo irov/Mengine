@@ -46,8 +46,8 @@ namespace Mengine
         bool validCursorPosition( float _x, float _y, float * const _vx, float * const _vy ) const override;
 
     public:
-        UniqueId addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc ) override;
-        void removeMousePositionProvider( UniqueId _id ) override;
+        void addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc ) override;
+        void removeMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider ) override;
 
     public:
         void onFocus( bool _focus ) override;
@@ -79,7 +79,6 @@ namespace Mengine
 
         struct InputMousePositionProviderDesc
         {
-            UniqueId id;
             InputMousePositionProviderInterfacePtr provider;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)

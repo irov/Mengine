@@ -12,5 +12,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define PLATFORM_SYSTEM()\
-    ((Mengine::PlatformSystemInterface*)SERVICE_GET(Mengine::PlatformSystemInterface))
+    ((Mengine::PlatformSystemInterface *)SERVICE_GET(Mengine::PlatformSystemInterface))
 //////////////////////////////////////////////////////////////////////////

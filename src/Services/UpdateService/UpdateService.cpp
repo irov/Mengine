@@ -16,29 +16,6 @@ SERVICE_FACTORY( UpdateService, Mengine::UpdateService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    namespace Detail
-    {
-        static uint32_t calcDeep( EUpdateMode _mode, uint32_t _deep )
-        {
-            switch( _mode )
-            {
-            case EUM_NODE_BASE:
-                return _deep * 2U + 0U;
-                break;
-            case EUM_NODE_AFFECTOR:
-                return _deep * 2U + 1U;
-                break;
-            case EUM_SERVICE_BEFORE:
-                return _deep;
-                break;
-            case EUM_SERVICE_AFTER:
-                return _deep;
-                break;
-            default:
-                return ~0U;
-            };
-        }
-    }
     //////////////////////////////////////////////////////////////////////////
     UpdateService::UpdateService()
     {
@@ -50,15 +27,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UpdateService::_initializeService()
     {
-        uint32_t Engine_DefaultUpdateProxies = CONFIG_VALUE( "Engine", "DefaultUpdateProxies", 16384U );
         uint32_t Engine_DefaultUpdateLeafs = CONFIG_VALUE( "Engine", "DefaultUpdateLeafs", 256U );
 
-        m_proxies.reserve( Engine_DefaultUpdateProxies );
-        m_proxyFrees.reserve( Engine_DefaultUpdateProxies );
-
-        m_beforeLeaf.resize( 16 );
+        m_beforeLeaf.resize( 32 );
         m_leafs.resize( Engine_DefaultUpdateLeafs );
-        m_afterLeaf.resize( 16 );
+        m_afterLeaf.resize( 32 );
 
         TIMEPIPE_SERVICE()
             ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
@@ -68,23 +41,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void UpdateService::_finalizeService()
     {
-        m_beforeLeaf.clear();
-        m_leafs.clear();
-        m_afterLeaf.clear();
-
-        m_proxyFrees.clear();
-        m_proxies.clear();
-
         TIMEPIPE_SERVICE()
             ->removeTimepipe( TimepipeInterfacePtr::from( this ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void UpdateService::_stopService()
     {
-        for( UpdatableProxy & proxy : m_proxies )
-        {
-            proxy.updation = nullptr;
-        }
+        m_beforeLeaf.clear();
+        m_leafs.clear();
+        m_afterLeaf.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     UpdateService::LeafUpdatable * UpdateService::getLeafUpdatable( EUpdateMode _mode, uint32_t _deep )
@@ -92,22 +57,13 @@ namespace Mengine
         switch( _mode )
         {
         case EUM_NODE_BASE:
-            {
-                MENGINE_ASSERTION_FATAL( _deep * 2 + 0 < m_leafs.size(), "deep %u"
-                    , _deep
-                );
-
-                LeafUpdatable & leaf = m_leafs[_deep * 2 + 0];
-
-                return &leaf;
-            }break;
         case EUM_NODE_AFFECTOR:
             {
-                MENGINE_ASSERTION_FATAL( _deep * 2 + 1 < m_leafs.size(), "deep %u"
+                MENGINE_ASSERTION_FATAL( _deep < m_leafs.size(), "deep %u"
                     , _deep
                 );
 
-                LeafUpdatable & leaf = m_leafs[_deep * 2 + 1];
+                LeafUpdatable & leaf = m_leafs[_deep];
 
                 return &leaf;
             }break;
@@ -139,139 +95,56 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t UpdateService::placeProxy_( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updation )
+    void UpdateService::placeUpdatater( const UpdationInterfacePtr & _updation )
     {
-        UpdatableProxy proxy;
-        proxy.updation = _updation;
-        proxy.mode = _mode;
-        proxy.deep = Detail::calcDeep( _mode, _deep );
+        EUpdateMode update_mode = _updation->getMode();
+        uint32_t update_deep = _updation->getDeep();
 
-        proxy.state = EUS_NORMAL;
+        LeafUpdatable * leaf = this->getLeafUpdatable( update_mode, update_deep );
 
-        if( m_proxyFrees.empty() == true )
-        {
-            uint32_t new_id = (uint32_t)m_proxies.size();
-
-            m_proxies.emplace_back( proxy );
-
-            return new_id;
-        }
-
-        uint32_t free_id = m_proxyFrees.back();
-        m_proxyFrees.pop_back();
-
-        m_proxies[free_id] = proxy;
-
-        return free_id;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    UniqueId UpdateService::createUpdatater( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updation )
-    {
-        uint32_t id = this->placeProxy_( _mode, _deep, _updation );
-
-        LeafUpdatable * leaf = this->getLeafUpdatable( _mode, _deep );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( leaf, "unsupport mode '%u'"
-            , _mode
+        MENGINE_ASSERTION_MEMORY_PANIC( leaf, "unsupport mode '%u' deep '%u'"
+            , update_mode
+            , update_deep
         );
 
-        leaf->indeciesAdd.emplace_back( id );
-
-        return id;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void UpdateService::replaceUpdatater( uint32_t _id, uint32_t _deep )
-    {
-        UpdatableProxy & proxy = m_proxies[_id];
-
-        if( proxy.state == EUS_REMOVE )
-        {
-            return;
-        }
-
-        uint32_t mode_deep = Detail::calcDeep( proxy.mode, _deep );
-
-        if( proxy.deep == mode_deep )
-        {
-            return;
-        }
-
-        proxy.deep = mode_deep;
-
-        LeafUpdatable * new_leaf = this->getLeafUpdatable( proxy.mode, proxy.deep );
-
-        new_leaf->indeciesAdd.emplace_back( _id );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void UpdateService::removeUpdatater( uint32_t _id )
-    {
-        UpdatableProxy & proxy = m_proxies[_id];
-
-        proxy.updation = nullptr;
-        proxy.state = EUS_REMOVE;
+        leaf->indeciesAdd.emplace_back( _updation );
     }
     //////////////////////////////////////////////////////////////////////////
     void UpdateService::updateLeaf_( uint32_t _deep, LeafUpdatable * const _leaf, const UpdateContext * _context )
     {
-        if( _leaf->indeciesAdd.empty() == false )
+        MENGINE_UNUSED( _deep );
+
+        VectorUpdatableIndecies & leaf_indecies = _leaf->indecies;
+        VectorUpdatableIndecies & leaf_indeciesAdd = _leaf->indeciesAdd;
+
+        if( leaf_indeciesAdd.empty() == false )
         {
-            _leaf->indecies.insert( _leaf->indecies.end(), _leaf->indeciesAdd.begin(), _leaf->indeciesAdd.end() );
-            _leaf->indeciesAdd.clear();
+            leaf_indecies.insert( leaf_indecies.end(), leaf_indeciesAdd.begin(), leaf_indeciesAdd.end() );
+            leaf_indeciesAdd.clear();
         }
 
-        for( VectorUpdatableIndecies::iterator
-            it = _leaf->indecies.begin(),
-            it_end = _leaf->indecies.end();
-            it != it_end;)
+        leaf_indecies.erase( Algorithm::remove_if( leaf_indecies.begin(), leaf_indecies.end(), [_deep]( const UpdationInterfacePtr & _updation )
         {
-            uint32_t id = *it;
+            uint32_t updation_deep = _updation->getDeep();
 
-            UpdatableProxy & proxy = m_proxies[id];
-
-            if( proxy.deep != _deep )
+            if( updation_deep != _deep )
             {
-                if( it + 1 == it_end )
-                {
-                    _leaf->indecies.pop_back();
-
-                    break;
-                }
-                else
-                {
-                    *it = _leaf->indecies.back();
-                    _leaf->indecies.pop_back();
-
-                    it_end = _leaf->indecies.end();
-                }
-
-                continue;
-            }
-            else if( proxy.state == EUS_REMOVE )
-            {
-                m_proxyFrees.emplace_back( id );
-
-                if( it + 1 == it_end )
-                {
-                    _leaf->indecies.pop_back();
-
-                    break;
-                }
-                else
-                {
-                    *it = _leaf->indecies.back();
-                    _leaf->indecies.pop_back();
-
-                    it_end = _leaf->indecies.end();
-                }
-
-                continue;
+                return true;
             }
 
-            const UpdationInterfacePtr & updation = proxy.updation;
+            EUpdateState updation_state = _updation->getState();
 
+            if( updation_state == EUS_REMOVE )
+            {
+                return true;
+            }
+
+            return false;
+        } ), leaf_indecies.end() );
+
+        for( const UpdationInterfacePtr & updation : leaf_indecies )
+        {
             updation->update( _context );
-
-            ++it;
         }
     }
     //////////////////////////////////////////////////////////////////////////

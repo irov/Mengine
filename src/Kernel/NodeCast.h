@@ -6,6 +6,7 @@
 
 #if defined(MENGINE_DEBUG)
 #   include "Config/TypeTraits.h"
+#   include "Config/StdException.h"
 #endif
 
 //////////////////////////////////////////////////////////////////////////
@@ -46,7 +47,7 @@ namespace Mengine
 
             if( Helper::dynamicCast<typename Detail::reinterpret_node_cast_void_t<T>::type>( static_cast<T>(_node) ) == nullptr )
             {
-                throw std::runtime_error( "reinterpret node cast" );
+                throw StdException::runtime_error( "reinterpret node cast" );
             }
 #endif
 
@@ -66,7 +67,7 @@ namespace Mengine
 
             if( Helper::dynamicCast<T>( _node ) == nullptr )
             {
-                throw std::runtime_error( "static node cast" );
+                throw StdException::runtime_error( "static node cast" );
             }
 #endif
 
@@ -86,7 +87,7 @@ namespace Mengine
 
             if( Helper::dynamicCast<T>( _node ) == nullptr )
             {
-                throw std::runtime_error( "static node cast" );
+                throw StdException::runtime_error( "static node cast" );
             }
 #endif
 
@@ -108,7 +109,7 @@ namespace Mengine
 
             if( T::dynamic_from( _node ) == nullptr )
             {
-                throw std::runtime_error( "static node cast" );
+                throw StdException::runtime_error( "static node cast" );
             }
 #endif
 

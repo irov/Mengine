@@ -2,7 +2,6 @@
 
 #include "Interface/SchedulerInterface.h"
 
-#include "Kernel/Factorable.h"
 #include "Kernel/Updatable.h"
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/Vector.h"
@@ -14,7 +13,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Scheduler
         : public SchedulerInterface
-        , public Factorable
         , public Updatable
         , protected BaseUpdation
     {
@@ -28,10 +26,6 @@ namespace Mengine
     public:
         bool initialize() override;
         void finalize() override;
-
-    public:
-        void setName( const ConstString & _name ) override;
-        const ConstString & getName() const override;
 
     public:
         UniqueId event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentInterfacePtr & _doc ) override;
@@ -71,8 +65,6 @@ namespace Mengine
         void update( const UpdateContext * _context ) override;
 
     protected:
-        ConstString m_name;
-
         float m_speedFactor;
         float m_time;
 

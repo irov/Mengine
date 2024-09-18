@@ -44,5 +44,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define FONT_SERVICE()\
-    ((Mengine::FontServiceInterface*)SERVICE_GET(Mengine::FontServiceInterface))
+    ((Mengine::FontServiceInterface *)SERVICE_GET(Mengine::FontServiceInterface))
 //////////////////////////////////////////////////////////////////////////

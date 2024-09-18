@@ -4,7 +4,6 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 
-#include "Kernel/Exception.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionFactory.h"

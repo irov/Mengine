@@ -11,12 +11,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum EUpdateState
-    {
-        EUS_NORMAL,
-        EUS_REMOVE,
-    };
-    //////////////////////////////////////////////////////////////////////////
     class UpdateService
         : public ServiceBase<UpdateServiceInterface>
         , public TimepipeInterface
@@ -31,27 +25,13 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        uint32_t createUpdatater( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updation ) override;
-        void replaceUpdatater( uint32_t _id, uint32_t _deep ) override;
-        void removeUpdatater( uint32_t _id ) override;
+        void placeUpdatater( const UpdationInterfacePtr & _updation ) override;
 
     public:
         void onTimepipe( const UpdateContext * _context ) override;
 
     protected:
-        struct UpdatableProxy
-        {
-            UpdationInterfacePtr updation;
-            EUpdateMode mode;
-            uint32_t deep;
-            EUpdateState state;
-        };
-
-        typedef Vector<UpdatableProxy> VectorUpdatableProxies;
-        VectorUpdatableProxies m_proxies;
-
-        typedef Vector<uint32_t> VectorUpdatableIndecies;
-        VectorUpdatableIndecies m_proxyFrees;
+        typedef Vector<UpdationInterfacePtr> VectorUpdatableIndecies;
 
         struct LeafUpdatable
         {
@@ -66,8 +46,8 @@ namespace Mengine
         LeafUpdatables m_afterLeaf;
 
     protected:
-        uint32_t placeProxy_( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updatable );
         void updateLeaf_( uint32_t _deep, LeafUpdatable * const _leaf, const UpdateContext * _context );
+        void finalizeLeaf_( LeafUpdatables & _leafs );
         LeafUpdatable * getLeafUpdatable( EUpdateMode _mode, uint32_t _deep );
     };
 }

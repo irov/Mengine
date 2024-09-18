@@ -30,6 +30,7 @@
 #include "Interface/DocumentInterface.h"
 #include "Interface/TimerServiceInterface.h"
 #include "Interface/PreferencesSystemInterface.h"
+#include "Interface/ArrowServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
@@ -365,10 +366,10 @@ namespace Mengine
                 return successful;
             }
             //////////////////////////////////////////////////////////////////////////
-            SchedulerInterfacePtr s_createScheduler( const ConstString & _name )
+            SchedulerInterfacePtr s_createScheduler()
             {
                 SchedulerInterfacePtr sm = PLAYER_SERVICE()
-                    ->createScheduler( _name, MENGINE_DOCUMENT_PYBIND );
+                    ->createScheduler( MENGINE_DOCUMENT_PYBIND );
 
                 return sm;
             }
@@ -957,20 +958,17 @@ namespace Mengine
                 return scene;
             }
             //////////////////////////////////////////////////////////////////////////
-            const ArrowInterfacePtr & s_getArrow()
+            ArrowServiceInterface * s_getArrowService()
             {
-                const ArrowInterfacePtr & arrow = PLAYER_SERVICE()
-                    ->getArrow();
+                ArrowServiceInterface * arrowService = ARROW_SERVICE();
 
-                return arrow;
+                return arrowService;
             }
             //////////////////////////////////////////////////////////////////////////
             void s_hideArrow( bool _hide )
             {
-                const ArrowInterfacePtr & arrow = PLAYER_SERVICE()
-                    ->getArrow();
-
-                const NodePtr & node = arrow->getNode();
+                const NodePtr & node = ARROW_SERVICE()
+                    ->getNode();
 
                 RenderInterface * render = node->getRender();
 
@@ -1012,15 +1010,8 @@ namespace Mengine
                     return false;
                 }
 
-                const ArrowInterfacePtr & arrow = PLAYER_SERVICE()
-                    ->getArrow();
-
-                if( arrow == nullptr )
-                {
-                    return false;
-                }
-
-                const NodePtr & node = arrow->getNode();
+                const NodePtr & node = ARROW_SERVICE()
+                    ->getNode();
 
                 _layer->addChild( node );
 
@@ -1595,15 +1586,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f * const _screen )
             {
-                const ArrowInterfacePtr & arrow = PLAYER_SERVICE()
-                    ->getArrow();
-
-                if( arrow == nullptr )
-                {
-                    return false;
-                }
-
-                const NodePtr & node = arrow->getNode();
+                const NodePtr & node = ARROW_SERVICE()
+                    ->getNode();
 
                 const RenderInterface * render = node->getRender();
 
@@ -1619,7 +1603,8 @@ namespace Mengine
                 context.camera = camera.get();
                 context.viewport = viewport.get();
 
-                arrow->calcMouseScreenPosition( &context, _pos, _screen );
+                ARROW_SERVICE()
+                    ->calcMouseScreenPosition( &context, _pos, _screen );
 
                 return true;
             }
@@ -2325,16 +2310,14 @@ namespace Mengine
 
             public:
                 PyInputMousePositionProvider()
-                    : m_arrow( nullptr )
-                    , m_renderCamera( nullptr )
+                    : m_renderCamera( nullptr )
                     , m_renderViewport( nullptr )
                 {
                 }
 
             public:
-                void initialize( const ArrowInterfacePtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
+                void initialize( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
                 {
-                    m_arrow = _arrow;
                     m_renderCamera = _camera;
                     m_renderViewport = _viewport;
                     m_cb = _cb;
@@ -2353,7 +2336,8 @@ namespace Mengine
                     context.viewport = m_renderViewport.get();
 
                     mt::vec2f wp;
-                    m_arrow->calcMouseWorldPosition( &context, _position, &wp );
+                    ARROW_SERVICE()
+                        ->calcMouseWorldPosition( &context, _position, &wp );
 
                     mt::vec3f v3( wp.x, wp.y, 0.f );
 
@@ -2361,32 +2345,18 @@ namespace Mengine
                 }
 
             protected:
-                ArrowInterfacePtr m_arrow;
                 RenderCameraInterfacePtr m_renderCamera;
                 RenderViewportInterfacePtr m_renderViewport;
                 pybind::object m_cb;
                 pybind::args m_args;
             };
             //////////////////////////////////////////////////////////////////////////
-            typedef IntrusivePtr<PyInputMousePositionProvider> PyInputMousePositionProviderPtr;
+            typedef IntrusivePtr<PyInputMousePositionProvider, InputMousePositionProviderInterface> PyInputMousePositionProviderPtr;
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPyInputMousePositionProvider;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_addMousePositionProvider( const ArrowInterfacePtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
+            InputMousePositionProviderInterfacePtr s_addMousePositionProvider( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
             {
-                ArrowInterfacePtr arrow = _arrow;
-
-                if( arrow == nullptr )
-                {
-                    arrow = PLAYER_SERVICE()
-                        ->getArrow();
-
-                    if( arrow == nullptr )
-                    {
-                        return 0;
-                    }
-                }
-
                 RenderCameraInterfacePtr camera = _camera;
                 if( camera == nullptr )
                 {
@@ -2402,35 +2372,22 @@ namespace Mengine
                 }
 
                 PyInputMousePositionProviderPtr provider = m_factoryPyInputMousePositionProvider->createObject( MENGINE_DOCUMENT_PYBIND );
-                provider->initialize( arrow, camera, viewport, _cb, _args );
+                provider->initialize( camera, viewport, _cb, _args );
 
-                UniqueId id = INPUT_SERVICE()
+                INPUT_SERVICE()
                     ->addMousePositionProvider( provider, MENGINE_DOCUMENT_PYBIND );
 
-                return id;
+                return provider;
             }
             //////////////////////////////////////////////////////////////////////////
-            void s_removeMousePositionProvider( UniqueId _id )
+            void s_removeMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider )
             {
                 INPUT_SERVICE()
-                    ->removeMousePositionProvider( _id );
+                    ->removeMousePositionProvider( _provider );
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_screenToWorldPoint( const ArrowInterfacePtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint )
+            mt::vec2f s_screenToWorldPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint )
             {
-                ArrowInterfacePtr arrow = _arrow;
-
-                if( arrow == nullptr )
-                {
-                    arrow = PLAYER_SERVICE()
-                        ->getArrow();
-
-                    if( arrow == nullptr )
-                    {
-                        return mt::vec2f( 0.f, 0.f );
-                    }
-                }
-
                 RenderCameraInterfacePtr camera = _camera;
 
                 if( camera == nullptr )
@@ -2453,26 +2410,14 @@ namespace Mengine
                 context.viewport = viewport.get();
 
                 mt::vec2f wp;
-                arrow->calcMouseWorldPosition( &context, _screenPoint, &wp );
+                ARROW_SERVICE()
+                    ->calcMouseWorldPosition( &context, _screenPoint, &wp );
 
                 return wp;
             }
             //////////////////////////////////////////////////////////////////////////
-            mt::vec2f s_screenToWorldClick( const ArrowInterfacePtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint )
+            mt::vec2f s_screenToWorldClick( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint )
             {
-                ArrowInterfacePtr arrow = _arrow;
-
-                if( arrow == nullptr )
-                {
-                    arrow = PLAYER_SERVICE()
-                        ->getArrow();
-
-                    if( arrow == nullptr )
-                    {
-                        return mt::vec2f( 0.f, 0.f );
-                    }
-                }
-
                 RenderCameraInterfacePtr camera = _camera;
                 if( camera == nullptr )
                 {
@@ -2494,7 +2439,8 @@ namespace Mengine
                 context.viewport = viewport.get();
 
                 mt::vec2f wp;
-                arrow->calcPointClick( &context, _screenPoint, &wp );
+                ARROW_SERVICE()
+                    ->calcPointClick( &context, _screenPoint, &wp );
 
                 return wp;
             }
@@ -4334,7 +4280,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "getTouchPosition", nodeScriptMethod, &EngineScriptMethod::s_getTouchPosition );
         pybind::def_functor( _kernel, "getMousePosition", nodeScriptMethod, &EngineScriptMethod::s_getMousePosition );
 
-        pybind::def_functor( _kernel, "getArrow", nodeScriptMethod, &EngineScriptMethod::s_getArrow );
+        pybind::def_functor( _kernel, "getArrow", nodeScriptMethod, &EngineScriptMethod::s_getArrowService );
         pybind::def_functor( _kernel, "hideArrow", nodeScriptMethod, &EngineScriptMethod::s_hideArrow );
 
         pybind::def_functor( _kernel, "setArrowLayer", nodeScriptMethod, &EngineScriptMethod::s_setArrowLayer );

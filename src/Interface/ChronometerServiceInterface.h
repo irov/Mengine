@@ -27,5 +27,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define CHRONOMETER_SERVICE()\
-    ((Mengine::ChronometerServiceInterface*)SERVICE_GET(Mengine::ChronometerServiceInterface))
+    ((Mengine::ChronometerServiceInterface *)SERVICE_GET(Mengine::ChronometerServiceInterface))
 //////////////////////////////////////////////////////////////////////////

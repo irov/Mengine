@@ -3,8 +3,7 @@
 #include "Interface/DocumentInterface.h"
 
 #include "Kernel/IntrusivePtr.h"
-#include "Kernel/Holder.h"
-#include "Kernel/Exception.h"
+#include "Kernel/SingleHolder.h"
 #include "Kernel/Typename.h"
 
 #include "Config/Typedef.h"
@@ -63,16 +62,16 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_PROVIDER_SETUP( Ptr )\
-    Mengine::Holder<Mengine::ServiceProviderInterface>::keep( (Ptr) )
+    Mengine::SingleHolder<Mengine::ServiceProviderInterface>::keep( (Ptr) )
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_PROVIDER_GET()\
-    Mengine::Holder<Mengine::ServiceProviderInterface>::get()
+    Mengine::SingleHolder<Mengine::ServiceProviderInterface>::get()
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_PROVIDER_PUT()\
-    Mengine::Holder<Mengine::ServiceProviderInterface>::put()
+    Mengine::SingleHolder<Mengine::ServiceProviderInterface>::put()
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_PROVIDER_EXIST()\
-    Mengine::Holder<Mengine::ServiceProviderInterface>::isKeep()
+    Mengine::SingleHolder<Mengine::ServiceProviderInterface>::isKeep()
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_PROVIDER_STOP()\
     SERVICE_PROVIDER_GET()->stopServices()

@@ -123,8 +123,6 @@ namespace Mengine
         return doc; \
     }(MENGINE_CODE_FILE, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE)
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_DOCUMENT_STR(Doc) Doc->getMessage()
-    //////////////////////////////////////////////////////////////////////////
 #else
 #   define MENGINE_DOCUMENT_FORWARD nullptr
 #   define MENGINE_DOCUMENT_FORWARD_PTR(Ptr) nullptr
@@ -133,5 +131,4 @@ namespace Mengine
 #   define MENGINE_DOCUMENT_FACTORABLE nullptr
 #   define MENGINE_DOCUMENT_FACTORABLE_PTR(Ptr) nullptr
 #   define MENGINE_DOCUMENT_FACTORABLE_MEMBER(Ptr) nullptr
-#   define MENGINE_DOCUMENT_STR(Doc) MENGINE_STRING_EMPTY
 #endif

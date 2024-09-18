@@ -6,6 +6,7 @@
 
 #if defined(MENGINE_DEBUG)
 #   include "Config/TypeTraits.h"
+#   include "Config/StdException.h"
 #endif
 
 namespace Mengine
@@ -43,16 +44,9 @@ namespace Mengine
                 return nullptr;
             }
 
-            try
+            if( Helper::dynamicCast<typename Detail::reinterpret_surface_cast_void_t<T>::type>( static_cast<T>(_surface) ) == nullptr )
             {
-                if( Helper::dynamicCast<typename Detail::reinterpret_surface_cast_void_t<T>::type>( static_cast<T>(_surface) ) == nullptr )
-                {
-                    throw std::runtime_error( "reinterpret surface cast" );
-                }
-            }
-            catch( const std::exception & )
-            {
-                throw;
+                throw StdException::runtime_error( "reinterpret surface cast" );
             }
 #endif
 
@@ -72,7 +66,7 @@ namespace Mengine
 
             if( Helper::dynamicCast<T>( _surface ) == nullptr )
             {
-                throw std::runtime_error( "static surface cast" );
+                throw StdException::runtime_error( "static surface cast" );
             }
 #endif
 
@@ -92,7 +86,7 @@ namespace Mengine
 
             if( Helper::dynamicCast<T>( _surface ) == nullptr )
             {
-                throw std::runtime_error( "static surface cast" );
+                throw StdException::runtime_error( "static surface cast" );
             }
 #endif
 

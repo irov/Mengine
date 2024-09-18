@@ -28,5 +28,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define GOAP_SERVICE()\
-    ((Mengine::GOAPServiceInterface*)SERVICE_GET(Mengine::GOAPServiceInterface))
+    ((Mengine::GOAPServiceInterface *)SERVICE_GET(Mengine::GOAPServiceInterface))
 //////////////////////////////////////////////////////////////////////////

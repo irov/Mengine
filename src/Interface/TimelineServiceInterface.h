@@ -43,5 +43,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define TIMELINE_SERVICE()\
-    ((Mengine::TimelineServiceInterface*)SERVICE_GET(Mengine::TimelineServiceInterface))
+    ((Mengine::TimelineServiceInterface *)SERVICE_GET(Mengine::TimelineServiceInterface))
 //////////////////////////////////////////////////////////////////////////

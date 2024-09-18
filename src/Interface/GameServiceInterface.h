@@ -62,5 +62,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define GAME_SERVICE()\
-    ((Mengine::GameServiceInterface*)SERVICE_GET(Mengine::GameServiceInterface))
+    ((Mengine::GameServiceInterface *)SERVICE_GET(Mengine::GameServiceInterface))
 //////////////////////////////////////////////////////////////////////////

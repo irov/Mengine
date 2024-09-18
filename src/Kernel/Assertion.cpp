@@ -5,7 +5,6 @@
 #include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/Crash.h"
-#include "Kernel/Exception.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Abort.h"
 #include "Kernel/DebugBreak.h"

@@ -321,19 +321,6 @@ namespace Mengine
             }
         }
 
-        ArrowInterfacePtr arrow = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( arrow, "failed create arrow" );
-
-        NodePtr node = Helper::generateFactorable<Node, Interender>( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( node, "failed create Interender for arrow" );
-
-        arrow->setNode( node );
-
-        PLAYER_SERVICE()
-            ->setArrow( arrow );
-
         bool EVENT_INITIALIZE_result = EVENTABLE_METHODR( EVENT_GAME_INITIALIZE, true )
             ->onGameInitialize();
 
@@ -380,9 +367,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::removePersonality()
     {
-        PLAYER_SERVICE()
-            ->setArrow( nullptr );
-
         EVENTABLE_METHOD( EVENT_GAME_ACCOUNT_FINALIZE )
             ->onGameAccountFinalize();
 

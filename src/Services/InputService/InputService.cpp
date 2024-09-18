@@ -42,14 +42,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::_finalizeService()
     {
-        m_mutex = nullptr;
-
-        m_events.clear();
-        m_eventsAux.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void InputService::_stopService()
-    {
 #if defined(MENGINE_DOCUMENT_ENABLE)
         for( const InputMousePositionProviderDesc & desc : m_mousePositionProviders )
         {
@@ -62,6 +54,16 @@ namespace Mengine
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_mousePositionProviders );
 
         m_mousePositionProviders.clear();
+
+        m_mutex = nullptr;
+
+        m_events.clear();
+        m_eventsAux.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::_stopService()
+    {
+
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::update()
@@ -357,14 +359,11 @@ namespace Mengine
         return pressure;
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId InputService::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc )
+    void InputService::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
-        UniqueId new_id = Helper::generateUniqueIdentity();
-
         InputMousePositionProviderDesc desc;
-        desc.id = new_id;
         desc.provider = _provider;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
@@ -372,23 +371,19 @@ namespace Mengine
 #endif
 
         m_mousePositionProviders.emplace_back( desc );
-
-        return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::removeMousePositionProvider( UniqueId _id )
+    void InputService::removeMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider )
     {
         VectorMousePositionProviders::iterator it_found =
-            Algorithm::find_if( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), [_id]( const InputService::InputMousePositionProviderDesc & _desc )
+            Algorithm::find_if( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), [_provider]( const InputService::InputMousePositionProviderDesc & _desc )
         {
-            return _desc.id == _id;
+            return _desc.provider == _provider;
         } );
 
         if( it_found == m_mousePositionProviders.end() )
         {
-            LOGGER_ERROR( "not found provider '%u'"
-                , _id
-            );
+            LOGGER_ERROR( "not found mouse provider" );
 
             return;
         }

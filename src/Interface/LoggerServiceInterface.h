@@ -68,6 +68,6 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_SERVICE()\
-    ((Mengine::LoggerServiceInterface*)SERVICE_GET(Mengine::LoggerServiceInterface))
+    ((Mengine::LoggerServiceInterface *)SERVICE_GET(Mengine::LoggerServiceInterface))
 //////////////////////////////////////////////////////////////////////////
 

@@ -20,7 +20,7 @@ buildscript {
         }
 
         if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_SENTRY") == true) {
-            classpath 'io.sentry:sentry-android-gradle-plugin:4.10.0'
+            classpath 'io.sentry:sentry-android-gradle-plugin:4.11.0'
         }
 
         if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS") == true) {
@@ -32,7 +32,7 @@ buildscript {
         }
 
         if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN") == true) {
-            classpath 'com.applovin.quality:AppLovinQualityServiceGradlePlugin:5.4.2'
+            classpath 'com.applovin.quality:AppLovinQualityServiceGradlePlugin:5.4.6'
         }
     }
 }

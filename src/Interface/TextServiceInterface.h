@@ -79,5 +79,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define TEXT_SERVICE()\
-    ((Mengine::TextServiceInterface*)SERVICE_GET(Mengine::TextServiceInterface))
+    ((Mengine::TextServiceInterface *)SERVICE_GET(Mengine::TextServiceInterface))
 //////////////////////////////////////////////////////////////////////////

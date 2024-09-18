@@ -54,5 +54,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define PREFETCHER_SERVICE()\
-    ((Mengine::PrefetcherServiceInterface*)SERVICE_GET(Mengine::PrefetcherServiceInterface))
+    ((Mengine::PrefetcherServiceInterface *)SERVICE_GET(Mengine::PrefetcherServiceInterface))
 //////////////////////////////////////////////////////////////////////////

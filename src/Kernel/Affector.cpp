@@ -12,7 +12,6 @@ namespace Mengine
     Affector::Affector()
         : m_type( ETA_POSITION )
         , m_id( INVALID_UNIQUE_ID )
-        , m_updataterId( INVALID_UPDATABLE_ID )
         , m_speedFactor( 1.f )
         , m_freeze( false )
         , m_affecting( false )
@@ -91,8 +90,7 @@ namespace Mengine
 
         UpdationInterface * updation = this->getUpdation();
 
-        m_updataterId = UPDATE_SERVICE()
-            ->createUpdatater( _updatableMode, _updatableLeaf, UpdationInterfacePtr( updation ) );
+        updation->activate( _updatableMode, _updatableLeaf );
 
         return true;
     }
@@ -148,10 +146,9 @@ namespace Mengine
             , this->getId()
         );
 
-        UPDATE_SERVICE()
-            ->removeUpdatater( m_updataterId );
+        UpdationInterface * updation = this->getUpdation();
 
-        m_updataterId = INVALID_UPDATABLE_ID;
+        updation->deactivate();
 
         this->IntrusiveSlugLinkedPtr<Affector, void, IntrusivePtr, IntrusivePtrBase>::unlink();
 

@@ -31,15 +31,14 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        void setArrow( const ArrowInterfacePtr & _arrow ) override;
-        const ArrowInterfacePtr & getArrow() const override;
+        void setArrow() override;
 
     public:
         void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) override;
         void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDelta, mt::vec2f * const _worldDelta ) override;
 
     public:
-        SchedulerInterfacePtr createScheduler( const ConstString & _name, const DocumentInterfacePtr & _doc ) override;
+        SchedulerInterfacePtr createScheduler( const DocumentInterfacePtr & _doc ) override;
         bool destroyScheduler( const SchedulerInterfacePtr & _scheduler ) override;
 
     public:
@@ -131,8 +130,6 @@ namespace Mengine
         void notifyRemoveSceneDestroy();
 
     protected:
-        ArrowInterfacePtr m_arrow;
-
         RenderCameraOrthogonalPtr m_defaultCamera2D;
         RenderViewportPtr m_defaultViewport2D;
         RenderCameraOrthogonalPtr m_defaultArrowCamera2D;
@@ -154,7 +151,7 @@ namespace Mengine
 
         RandomizerInterfacePtr m_randomizer;
 
-        FactoryInterfacePtr m_factoryScheduleManager;
+        FactoryInterfacePtr m_factoryScheduler;
 
         typedef Vector<SchedulerInterfacePtr> VectorUserScheduler;
         VectorUserScheduler m_schedulers;

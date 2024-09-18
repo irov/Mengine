@@ -2,6 +2,7 @@
 
 #include "Interface/InputServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
+#include "Interface/ArrowServiceInterface.h"
 
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Scene.h"
@@ -145,12 +146,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::_initializeService()
     {
+        //Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::_finalizeService()
     {
-        m_arrow = nullptr;
         m_scene = nullptr;
 
         m_viewport = nullptr;
@@ -182,18 +184,6 @@ namespace Mengine
         }
 
         m_handleValue = _value;
-
-        this->invalidateTraps();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PickerService::setArrow( const ArrowInterfacePtr & _arrow )
-    {
-        if( m_arrow == _arrow )
-        {
-            return;
-        }
-
-        m_arrow = _arrow;
 
         this->invalidateTraps();
     }
@@ -381,7 +371,8 @@ namespace Mengine
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
+            ARROW_SERVICE()
+                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
 
             InputKeyEvent ne = _event;
             ne.x = wp.x;
@@ -435,7 +426,8 @@ namespace Mengine
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
+            ARROW_SERVICE()
+                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
 
             InputTextEvent ne = _event;
             ne.x = wp.x;
@@ -501,7 +493,8 @@ namespace Mengine
             }
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
+            ARROW_SERVICE()
+                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
 
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
@@ -566,7 +559,8 @@ namespace Mengine
             }
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
+            ARROW_SERVICE()
+                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
 
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
@@ -638,7 +632,8 @@ namespace Mengine
             }
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
+            ARROW_SERVICE()
+                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
 
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
@@ -698,10 +693,12 @@ namespace Mengine
             }
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
+            ARROW_SERVICE()
+                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
 
             mt::vec2f dp;
-            m_arrow->calcPointDelta( &desc.context, mt::vec2f( _event.dx, _event.dy ), &dp );
+            ARROW_SERVICE()
+                ->calcPointDelta( &desc.context, mt::vec2f( _event.dx, _event.dy ), &dp );
 
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
@@ -762,7 +759,8 @@ namespace Mengine
             }
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
+            ARROW_SERVICE()
+                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
 
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
@@ -800,11 +798,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PickerService::handleMouseLeave( const InputMouseLeaveEvent & _event )
     {
-        if( m_arrow == nullptr )
-        {
-            return;
-        }
-
         if( m_scene == nullptr )
         {
             return;
@@ -839,7 +832,8 @@ namespace Mengine
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
+            ARROW_SERVICE()
+                ->calcPointClick( &desc.context, mt::vec2f( _event.x, _event.y ), &wp );
 
             InputMouseLeaveEvent ne = _event;
             ne.x = wp.x;
@@ -879,11 +873,6 @@ namespace Mengine
 
         MENGINE_PROFILER_CATEGORY();
 
-        if( m_arrow == nullptr )
-        {
-            return false;
-        }
-
         if( m_scene == nullptr )
         {
             return false;
@@ -921,7 +910,7 @@ namespace Mengine
 
             if( handle == false || m_handleValue == false )
             {
-                bool picked = picker->pick( adapt_screen_position, &desc.context, contentResolution, m_arrow );
+                bool picked = picker->pick( adapt_screen_position, &desc.context, contentResolution );
 
                 if( m_block == false && picked == true )
                 {
@@ -932,7 +921,8 @@ namespace Mengine
                         PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
                         mt::vec2f wp;
-                        m_arrow->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
+                        ARROW_SERVICE()
+                            ->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
 
                         InputMouseEnterEvent ne;
                         ne.special = _special;
@@ -969,7 +959,8 @@ namespace Mengine
                         PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
                         mt::vec2f wp;
-                        m_arrow->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
+                        ARROW_SERVICE()
+                            ->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
 
                         InputMouseLeaveEvent ne;
                         ne.special = _special;
@@ -999,7 +990,8 @@ namespace Mengine
                     PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
                     mt::vec2f wp;
-                    m_arrow->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
+                    ARROW_SERVICE()
+                        ->calcPointClick( &desc.context, mt::vec2f( _x, _y ), &wp );
 
                     InputMouseLeaveEvent ne;
                     ne.special = _special;
@@ -1027,11 +1019,6 @@ namespace Mengine
     bool PickerService::getStates_( float _x, float _y, VectorPickerStates * const _states ) const
     {
         MENGINE_ASSERTION_FATAL( _states->empty() == true, "states not empty" );
-
-        if( m_arrow == nullptr )
-        {
-            return false;
-        }
 
         if( m_scene == nullptr )
         {
@@ -1066,7 +1053,7 @@ namespace Mengine
                 continue;
             }
 
-            bool picked = picker->pick( adapt_screen_position, &desc.context, contentResolution, m_arrow );
+            bool picked = picker->pick( adapt_screen_position, &desc.context, contentResolution );
 
             if( picked == false )
             {

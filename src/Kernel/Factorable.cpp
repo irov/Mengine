@@ -2,7 +2,6 @@
 
 #include "Interface/FactoryInterface.h"
 
-#include "Kernel/Exception.h"
 #include "Kernel/ExceptionHelper.h"
 
 namespace Mengine

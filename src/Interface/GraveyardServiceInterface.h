@@ -26,6 +26,6 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define GRAVEYARD_SERVICE()\
-    ((Mengine::GraveyardServiceInterface*)SERVICE_GET(Mengine::GraveyardServiceInterface))
+    ((Mengine::GraveyardServiceInterface *)SERVICE_GET(Mengine::GraveyardServiceInterface))
 //////////////////////////////////////////////////////////////////////////
 

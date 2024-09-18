@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/InputHandlerInterface.h"
 #include "Interface/InputMousePositionProviderInterface.h"
 
+#include "Kernel/InputEvent.h"
 #include "Kernel/KeyCode.h"
 #include "Kernel/MouseButtonCode.h"
 #include "Kernel/TouchCode.h"
@@ -15,6 +15,19 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    enum EInputEventType
+    {
+        IET_KEY,
+        IET_TEXT,
+        IET_ACCELEROMETER,
+        IET_MOUSE_BUTTON,
+        IET_MOUSE_WHELL,
+        IET_MOUSE_MOVE,
+        IET_MOUSE_ENTER,
+        IET_MOUSE_LEAVE
+    };
+    //////////////////////////////////////////////////////////////////////////
     class InputServiceInterface
         : public ServiceInterface
     {
@@ -45,8 +58,8 @@ namespace Mengine
         virtual bool validCursorPosition( float _x, float _y, float * const _vx, float * const _vy ) const = 0;
 
     public:
-        virtual UniqueId addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc ) = 0;
-        virtual void removeMousePositionProvider( UniqueId _id ) = 0;
+        virtual void addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc ) = 0;
+        virtual void removeMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider ) = 0;
 
     public:
         virtual void onFocus( bool _focus ) = 0;
@@ -76,8 +89,9 @@ namespace Mengine
 
         virtual void pushEvent( const InputUnionEvent & _event ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define INPUT_SERVICE()\
-    ((Mengine::InputServiceInterface*)SERVICE_GET(Mengine::InputServiceInterface))
+    ((Mengine::InputServiceInterface *)SERVICE_GET(Mengine::InputServiceInterface))
 //////////////////////////////////////////////////////////////////////////

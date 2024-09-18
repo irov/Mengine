@@ -24,5 +24,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define TIMER_SERVICE()\
-    ((Mengine::TimerServiceInterface*)SERVICE_GET(Mengine::TimerServiceInterface))
+    ((Mengine::TimerServiceInterface *)SERVICE_GET(Mengine::TimerServiceInterface))
 //////////////////////////////////////////////////////////////////////////

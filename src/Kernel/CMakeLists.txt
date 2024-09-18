@@ -200,14 +200,6 @@ Scene
 )
 
 ADD_FILTER(
-Arrow
-    Arrow.cpp
-    Arrow.h
-    ArrowInputMousePositionProvider.cpp
-    ArrowInputMousePositionProvider.h
-)
-
-ADD_FILTER(
 Layer
     Layer.cpp
     Layer.h
@@ -512,9 +504,6 @@ Core
 
     BaseFileGroup.h
     BaseFileGroup.cpp
-
-    Exception.h
-    Exception.cpp
     
     ExceptionHelper.h
     ExceptionHelper.cpp
@@ -589,6 +578,8 @@ Core
     
     PlatformLogFormat.cpp
     PlatformLogFormat.h
+    
+    InputEvent.h
     
     InputServiceHelper.cpp
     InputServiceHelper.h
@@ -736,7 +727,8 @@ Core
     
     FrameworkFactory.h
     
-    Holder.h
+    SingleHolder.h
+    ValueHolder.h
     
     RenderVertex2D.h
     RenderIndex.h

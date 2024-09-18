@@ -5,6 +5,7 @@
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/StaticString.h"
 
 namespace Mengine
 {

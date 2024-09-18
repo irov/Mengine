@@ -24,9 +24,10 @@
 #include "Interface/SettingsServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/ArrowServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-#include "Environment/Windows/Win32CreateProcess.h"
+#   include "Environment/Windows/Win32CreateProcess.h"
 #endif
 
 #include "NodeDebuggerSerialization.h"
@@ -89,7 +90,6 @@ namespace Mengine
         VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotSurface" ), Helper::makeFactorableUnique<HotSpotPolygonDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ), Helper::makeFactorableUnique<TextFieldDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_ARROW_COMPLETE, &NodeDebuggerModule::notifyChangeArrow, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY, &NodeDebuggerModule::notifyChangeSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE, &NodeDebuggerModule::notifyChangeSceneComplete, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY, &NodeDebuggerModule::notifyRemoveSceneDestroy, MENGINE_DOCUMENT_FACTORABLE );
@@ -150,7 +150,6 @@ namespace Mengine
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotSurface" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ) );
 
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_ARROW_COMPLETE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY );
@@ -172,7 +171,6 @@ namespace Mengine
         THREAD_SERVICE()
             ->destroyThreadProcessor( STRINGIZE_STRING_LOCAL_I( NODEDEBUGGERLISTEN_THREAD_NAME ) );
 
-        m_arrow = nullptr;
         m_scene = nullptr;
 
         if( m_socket != nullptr )
@@ -354,16 +352,6 @@ namespace Mengine
         MENGINE_UNUSED( _id );
 
         //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::setArrow( const ArrowInterfacePtr & _arrow )
-    {
-        if( m_arrow != _arrow )
-        {
-            m_arrow = _arrow;
-
-            m_shouldUpdateScene = true;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::setScene( const ScenePtr & _scene )
@@ -2107,11 +2095,6 @@ namespace Mengine
         *_outStr = stream.str();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::notifyChangeArrow( const ArrowInterfacePtr & _arrow )
-    {
-        this->setArrow( _arrow );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::notifyChangeSceneComplete( const ScenePtr & _scene )
     {
         this->setScene( _scene );
@@ -2220,7 +2203,7 @@ namespace Mengine
                 const Resolution & contentResolution = APPLICATION_SERVICE()
                     ->getContentResolution();
 
-                if( picker->pick( m_cursorAdaptScreenPosition, renderContext, contentResolution, m_arrow ) == true )
+                if( picker->pick( m_cursorAdaptScreenPosition, renderContext, contentResolution ) == true )
                 {
                     m_selectedNode = _child;
 
@@ -2458,10 +2441,8 @@ namespace Mengine
         mt::box2f boundingBox;
         this->getWorldBoundingBox( _node, _imageDesc, &boundingBox );
 
-        const ArrowInterfacePtr & arrow = PLAYER_SERVICE()
-            ->getArrow();
-
-        const NodePtr & node = arrow->getNode();
+        const NodePtr & node = ARROW_SERVICE()
+            ->getNode();
 
         RenderInterface * render = node->getRender();
 

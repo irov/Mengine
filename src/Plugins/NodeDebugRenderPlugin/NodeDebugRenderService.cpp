@@ -15,6 +15,7 @@
 #include "Interface/TextServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
+#include "Interface/ArrowServiceInterface.h"
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 
@@ -116,9 +117,10 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebugRenderService::renderDebugArrow( const ArrowInterfacePtr & _arrow, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external, bool _hide )
+    void NodeDebugRenderService::renderDebugArrow( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external, bool _hide )
     {
-        const NodePtr & node = _arrow->getNode();
+        const NodePtr & node = ARROW_SERVICE()
+            ->getNode();
 
         this->renderDebugNode( node, _renderPipeline, _context, _external, _hide );
 
@@ -126,7 +128,8 @@ namespace Mengine
 
         const mt::mat4f & wm = transformation->getWorldMatrix();
 
-        EArrowType arrowType = _arrow->getArrowType();
+        EArrowType arrowType = ARROW_SERVICE()
+            ->getArrowType();
 
         switch( arrowType )
         {
@@ -138,13 +141,15 @@ namespace Mengine
             }break;
         case EAT_RADIUS:
             {
-                float radius = _arrow->getRadius();
+                float radius = ARROW_SERVICE()
+                    ->getRadius();
 
                 Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 32, 0x8080FFFF, MENGINE_DOCUMENT_FORWARD );
             }break;
         case EAT_POLYGON:
             {
-                const Polygon & polygon = _arrow->getPolygon();
+                const Polygon & polygon = ARROW_SERVICE()
+                    ->getPolygon();
 
                 Helper::nodeDebugRenderPolygon( _renderPipeline, _context, wm, polygon, 0x8080FFFF, MENGINE_DOCUMENT_FORWARD );
             }break;

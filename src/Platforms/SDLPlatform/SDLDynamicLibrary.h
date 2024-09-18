@@ -4,6 +4,7 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/String.h"
+#include "Kernel/StaticString.h"
 
 namespace Mengine
 {

@@ -34,10 +34,7 @@ namespace Mengine
     {
         UpdationInterface * updation = this->getUpdation();
 
-        if( updation->activate( EUM_SERVICE_BEFORE, 0U ) == false )
-        {
-            return false;
-        }
+        updation->activate( EUM_SERVICE_BEFORE, 0U );
 
         return true;
     }
@@ -59,9 +56,8 @@ namespace Mengine
 
         for( const SchedulerEventDesc & desc : m_schedulers )
         {
-            LOGGER_ASSERTION( "forgot remove event '%u' from scheduler '%s' (doc: %s)"
+            LOGGER_ASSERTION( "forgot remove event '%u' from scheduler (doc: %s)"
                 , desc.id
-                , this->getName().c_str()
                 , MENGINE_DOCUMENT_STR( desc.doc )
             );
         }
@@ -71,23 +67,13 @@ namespace Mengine
         m_schedulersAdd.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Scheduler::setName( const ConstString & _name )
-    {
-        m_name = _name;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & Scheduler::getName() const
-    {
-        return m_name;
-    }
-    //////////////////////////////////////////////////////////////////////////
     UniqueId Scheduler::event( float _delay, const SchedulerEventInterfacePtr & _event, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
-        MENGINE_ASSERTION_FATAL( _event != nullptr, "scheduler '%s' event delay '%f' is nullptr"
-            , this->getName().c_str()
+        MENGINE_ASSERTION_FATAL( _event != nullptr, "scheduler event delay '%f' is nullptr (doc: %s)"
             , _delay
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         UniqueId new_id = Helper::generateUniqueIdentity();
@@ -124,12 +110,12 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        MENGINE_ASSERTION_FATAL( _pipe != nullptr, "scheduler '%s' _pipe is nullptr"
-            , this->getName().c_str()
+        MENGINE_ASSERTION_FATAL( _pipe != nullptr, "scheduler _pipe is nullptr (doc: %s)"
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        MENGINE_ASSERTION_FATAL( _timer != nullptr, "scheduler '%s' _timer is nullptr"
-            , this->getName().c_str()
+        MENGINE_ASSERTION_FATAL( _timer != nullptr, "scheduler _timer is nullptr (doc: %s)"
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         UniqueId new_id = Helper::generateUniqueIdentity();

@@ -26,5 +26,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define DATETIME_SYSTEM()\
-    ((Mengine::DateTimeSystemInterface*)SERVICE_GET(Mengine::DateTimeSystemInterface))
+    ((Mengine::DateTimeSystemInterface *)SERVICE_GET(Mengine::DateTimeSystemInterface))
 //////////////////////////////////////////////////////////////////////////

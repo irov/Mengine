@@ -33,21 +33,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonFramework::_initializeFramework()
     {
-        //Empty
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PythonFramework::_finalizeFramework()
-    {
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PythonFramework::_runFramework()
-    {
-        SCRIPTPROVIDER_SERVICE()
-            ->updateScriptThread();
-
         if( SCRIPT_SERVICE()
             ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ), Helper::makeFactorableUnique<ConstsScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
@@ -112,7 +97,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonFramework::_stopFramework()
+    void PythonFramework::_finalizeFramework()
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
@@ -144,6 +129,19 @@ namespace Mengine
 
         SCRIPT_SERVICE()
             ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PythonFramework::_runFramework()
+    {
+        SCRIPTPROVIDER_SERVICE()
+            ->updateScriptThread();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonFramework::_stopFramework()
+    {
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonFramework::notifyBootstrapperInitializeGame()

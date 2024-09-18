@@ -149,5 +149,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define APPLICATION_SERVICE()\
-    ((Mengine::ApplicationInterface*)SERVICE_GET(Mengine::ApplicationInterface))
+    ((Mengine::ApplicationInterface *)SERVICE_GET(Mengine::ApplicationInterface))
 //////////////////////////////////////////////////////////////////////////

@@ -37,7 +37,6 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_SDK_KEY = "mengine.applovin.sdk_key";
-    public static final String PLUGIN_METADATA_IS_AGE_RESTRICTED_USER = "mengine.applovin.is_age_restricted_user";
     public static final String PLUGIN_METADATA_CCPA = "mengine.applovin.CCPA";
     public static final String PLUGIN_METADATA_ENABLE_PRIVACY_POLICY_FLOW = "mengine.applovin.enable_privacy_policy_flow";
     public static final String PLUGIN_METADATA_PRIVACY_POLICY_URL = "mengine.privacy.privacy_policy_url";
@@ -61,26 +60,6 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(activity);
         AppLovinSdkSettings settings = appLovinSdk.getSettings();
-
-        String MengineAppLovinPlugin_IsAgeRestrictedUser = this.getMetaDataString(PLUGIN_METADATA_IS_AGE_RESTRICTED_USER);
-
-        this.logMessage("%s: %s"
-            , PLUGIN_METADATA_IS_AGE_RESTRICTED_USER
-            , MengineAppLovinPlugin_IsAgeRestrictedUser
-        );
-
-        if (MengineAppLovinPlugin_IsAgeRestrictedUser.equalsIgnoreCase("YES") == true) {
-            AppLovinPrivacySettings.setIsAgeRestrictedUser(true, activity);
-        } else if (MengineAppLovinPlugin_IsAgeRestrictedUser.equalsIgnoreCase("NO") == true) {
-            AppLovinPrivacySettings.setIsAgeRestrictedUser(false, activity);
-        } else if (MengineAppLovinPlugin_IsAgeRestrictedUser.equalsIgnoreCase("UNKNOWN") == true) {
-            // Nothing
-        } else {
-            this.invalidInitialize("invalid %s: %s [YES|NO|UNKNOWN]"
-                , PLUGIN_METADATA_IS_AGE_RESTRICTED_USER
-                , MengineAppLovinPlugin_IsAgeRestrictedUser
-            );
-        }
 
         String MengineAppLovinPlugin_CCPA = this.getMetaDataString(PLUGIN_METADATA_CCPA);
 

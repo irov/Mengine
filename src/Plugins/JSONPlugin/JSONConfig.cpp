@@ -3,7 +3,6 @@
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/SecureServiceInterface.h"
 
-#include "Kernel/Exception.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionJSONInvalid.h"
 #include "Kernel/AssertionNotImplemented.h"

@@ -123,7 +123,7 @@ namespace Mengine
         {
             GOAP::Allocator * allocator = _source->getAllocator();
 
-            GOAP::FunctionProviderInterfacePtr provider = GOAP::Helper::makeFunctionProvider( allocator, [&, _self, _method, _args ...]()
+            GOAP::FunctionProviderInterfacePtr provider = GOAP::Helper::makeFunctionProvider( allocator, [_self, _method, _args ...]()
             {
                 P * p = _self.get();
 
@@ -140,7 +140,7 @@ namespace Mengine
         {
             GOAP::Allocator * allocator = _source->getAllocator();
 
-            GOAP::FunctionContextProviderInterfacePtr provider = GOAP::Helper::makeFunctionContextProvider( allocator, [&, _self, _method, _args ...]( bool _skip )
+            GOAP::FunctionContextProviderInterfacePtr provider = GOAP::Helper::makeFunctionContextProvider( allocator, [_self, _method, _args ...]( bool _skip )
             {
                 P * p = _self.get();
 
@@ -174,7 +174,7 @@ namespace Mengine
         {
             GOAP::Allocator * allocator = _source->getAllocator();
 
-            GOAP::ScopeProviderInterfacePtr provider = GOAP::Helper::makeScopeProvider( allocator, [&, _self, _method, _args ...]( const GOAP::SourceInterfacePtr & _source )
+            GOAP::ScopeProviderInterfacePtr provider = GOAP::Helper::makeScopeProvider( allocator, [_self, _method, _args ...]( const GOAP::SourceInterfacePtr & _source )
             {
                 P * p = _self.get();
 
@@ -191,7 +191,7 @@ namespace Mengine
         {
             GOAP::Allocator * allocator = _source->getAllocator();
 
-            GOAP::IfProviderInterfacePtr provider = GOAP::Helper::makeIfProvider( allocator, [&, _self, _method, _args ...]()
+            GOAP::IfProviderInterfacePtr provider = GOAP::Helper::makeIfProvider( allocator, [_self, _method, _args ...]()
             {
                 P * p = _self.get();
 
@@ -210,7 +210,7 @@ namespace Mengine
         {
             GOAP::Allocator * allocator = _source->getAllocator();
 
-            GOAP::WhileProviderInterfacePtr provider = GOAP::Helper::makeWhileProvider( allocator, [&, _self, _method, _args ...]( const GOAP::SourceInterfacePtr & _source )
+            GOAP::WhileProviderInterfacePtr provider = GOAP::Helper::makeWhileProvider( allocator, [_self, _method, _args ...]( const GOAP::SourceInterfacePtr & _source )
             {
                 P * p = _self.get();
 

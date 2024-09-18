@@ -37,15 +37,14 @@ namespace Mengine
         virtual void finalizeRenderResources() = 0;
 
     public:
-        virtual void setArrow( const ArrowInterfacePtr & _arrow ) = 0;
-        virtual const ArrowInterfacePtr & getArrow() const = 0;
+        virtual void setArrow() = 0;
 
     public:
         virtual void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint ) = 0;
         virtual void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDelta, mt::vec2f * const _worldDelta ) = 0;
 
     public:
-        virtual SchedulerInterfacePtr createScheduler( const ConstString & _name, const DocumentInterfacePtr & _doc ) = 0;
+        virtual SchedulerInterfacePtr createScheduler( const DocumentInterfacePtr & _doc ) = 0;
         virtual bool destroyScheduler( const SchedulerInterfacePtr & _scheduler ) = 0;
 
     public:
@@ -97,5 +96,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define PLAYER_SERVICE()\
-    ((Mengine::PlayerServiceInterface*)SERVICE_GET(Mengine::PlayerServiceInterface))
+    ((Mengine::PlayerServiceInterface *)SERVICE_GET(Mengine::PlayerServiceInterface))
 //////////////////////////////////////////////////////////////////////////

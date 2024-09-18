@@ -10,6 +10,60 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
+        bool isSpecialDown()
+        {
+            return INPUT_SERVICE()
+                ->isSpecialDown();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool isAltDown()
+        {
+            return INPUT_SERVICE()
+                ->isAltDown();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool isShiftDown()
+        {
+            return INPUT_SERVICE()
+                ->isShiftDown();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool isControlDown()
+        {
+            return INPUT_SERVICE()
+                ->isControlDown();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool isKeyDown( EKeyCode _keyCode )
+        {
+            return INPUT_SERVICE()
+                ->isKeyDown( _keyCode );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool isExclusiveKeyDown( EKeyCode _keyCode )
+        {
+            return INPUT_SERVICE()
+                ->isExclusiveKeyDown( _keyCode );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool isAnyKeyDown()
+        {
+            return INPUT_SERVICE()
+                ->isAnyKeyDown();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool isAnyMouseButtonDown()
+        {
+            return INPUT_SERVICE()
+                ->isAnyMouseButtonDown();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool isMouseButtonDown( EMouseButtonCode _button )
+        {
+            return INPUT_SERVICE()
+                ->isMouseButtonDown( _button );
+        }
+        //////////////////////////////////////////////////////////////////////////
         void pushMouseMoveEvent( ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure )
         {
             float vx;

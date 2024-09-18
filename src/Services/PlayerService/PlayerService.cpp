@@ -14,6 +14,7 @@
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
+#include "Interface/ArrowServiceInterface.h"
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
@@ -71,11 +72,9 @@ namespace Mengine
     {
         m_globalInputHandler = Helper::makeFactorableUnique<PlayerGlobalInputHandler>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryScheduleManager = Helper::makeFactoryPool<Scheduler, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryScheduler = Helper::makeFactoryPool<Scheduler, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
-        SchedulerPtr scheduler = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FACTORABLE );
-
-        scheduler->setName( STRINGIZE_STRING_LOCAL( "LocalScheduleManager" ) );
+        SchedulerPtr scheduler = m_factoryScheduler->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         if( scheduler->initialize() == false )
         {
@@ -84,9 +83,7 @@ namespace Mengine
 
         m_localScheduler = scheduler;
 
-        SchedulerPtr schedulerGlobal = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FACTORABLE );
-
-        schedulerGlobal->setName( STRINGIZE_STRING_LOCAL( "GlobalScheduleManager" ) );
+        SchedulerPtr schedulerGlobal = m_factoryScheduler->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         if( schedulerGlobal->initialize() == false )
         {
@@ -158,8 +155,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
             const Char * doc = MENGINE_DOCUMENTABLE_STR( scheduler.get(), "forgotten scheduler" );
 
-            LOGGER_ASSERTION( "was forgotten finalize scheduler '%s' (doc: %s)"
-                , scheduler->getName().c_str()
+            LOGGER_ASSERTION( "was forgotten finalize scheduler (doc: %s)"
                 , doc
             );
 #endif
@@ -174,26 +170,18 @@ namespace Mengine
         m_affectorable = nullptr;
         m_affectorableGlobal = nullptr;
 
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScheduleManager );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScheduler );
 
-        m_factoryScheduleManager = nullptr;
+        m_factoryScheduler = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::_stopService()
     {
-        if( m_arrow != nullptr )
-        {
-            const NodePtr & node = m_arrow->getNode();
+        const NodePtr & arrowNode = ARROW_SERVICE()
+            ->getNode();
 
-            node->disable();
-
-            PICKER_SERVICE()
-                ->setArrow( nullptr );
-
-            node->dispose();
-
-            m_arrow = nullptr;
-        }
+        arrowNode->disable();
+        arrowNode->dispose();
 
         m_renderViewport = nullptr;
         m_renderCamera = nullptr;
@@ -251,48 +239,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::setArrow( const ArrowInterfacePtr & _arrow )
+    void PlayerService::setArrow()
     {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_ARROW_PREPARE_DESTROY, m_arrow );
+        const NodePtr & node = ARROW_SERVICE()
+            ->getNode();
 
-        if( m_arrow != nullptr )
-        {
-            const NodePtr & node = m_arrow->getNode();
-
-            node->disable();
-
-            PICKER_SERVICE()
-                ->setArrow( nullptr );
-
-            node->dispose();
-
-            m_arrow = nullptr;
-        }
-
-        m_arrow = _arrow;
-
-        if( m_arrow != nullptr )
-        {
-            const NodePtr & node = m_arrow->getNode();
-
-            RenderInterface * render = node->getRender();
-
-            render->setRenderCamera( m_defaultArrowCamera2D );
-            render->setRenderViewport( m_renderViewport );
-            render->setRenderScissor( m_renderScissor );
-
-            PICKER_SERVICE()
-                ->setArrow( m_arrow );
-
-            node->enable();
-        }
-
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_ARROW_COMPLETE, m_arrow );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ArrowInterfacePtr & PlayerService::getArrow() const
-    {
-        return m_arrow;
+        node->enable();
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint )
@@ -305,13 +257,11 @@ namespace Mengine
         Helper::screenToWorldDelta( &m_renderContext, _screenDelta, _worldDelta );
     }
     //////////////////////////////////////////////////////////////////////////
-    SchedulerInterfacePtr PlayerService::createScheduler( const ConstString & _name, const DocumentInterfacePtr & _doc )
+    SchedulerInterfacePtr PlayerService::createScheduler( const DocumentInterfacePtr & _doc )
     {
-        SchedulerPtr sm = m_factoryScheduleManager->createObject( _doc );
+        SchedulerPtr sm = m_factoryScheduler->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( sm );
-
-        sm->setName( _name );
 
         if( sm->initialize() == false )
         {
@@ -329,8 +279,8 @@ namespace Mengine
 
         if( it_found == m_schedulers.end() )
         {
-            LOGGER_ERROR( "scheduler '%s' not found!"
-                , _scheduler->getName().c_str()
+            LOGGER_ERROR( "scheduler not found (doc: %s)"
+                , MENGINE_DOCUMENT_STR( _scheduler->getDocument() )
             );
 
             return false;
@@ -416,16 +366,14 @@ namespace Mengine
         m_defaultArrowCamera2D->setOrthogonalViewport( gameViewport );
         m_defaultArrowCamera2D->enableForce();
 
-        if( m_arrow != nullptr )
-        {
-            const NodePtr & node = m_arrow->getNode();
+        const NodePtr & node = ARROW_SERVICE()
+            ->getNode();
 
-            RenderInterface * render = node->getRender();
+        RenderInterface * render = node->getRender();
 
-            render->setRenderCamera( m_defaultArrowCamera2D );
-            render->setRenderViewport( m_renderViewport );
-            render->setRenderScissor( m_renderScissor );
-        }
+        render->setRenderCamera( m_defaultArrowCamera2D );
+        render->setRenderViewport( m_renderViewport );
+        render->setRenderScissor( m_renderScissor );
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::finalizeRenderResources()
@@ -731,21 +679,19 @@ namespace Mengine
 
         _renderPipeline->endDebugLimitRenderObjects();
 
-        if( m_arrow != nullptr )
+        if( debugMask == 0 )
         {
-            if( debugMask == 0 )
-            {
-                const NodePtr & node = m_arrow->getNode();
+            const NodePtr & node = ARROW_SERVICE()
+                ->getNode();
 
-                Helper::nodeRenderChildren( node.get(), _renderPipeline, &m_renderContext, false );
-            }
-            else
+            Helper::nodeRenderChildren( node.get(), _renderPipeline, &m_renderContext, false );
+        }
+        else
+        {
+            if( SERVICE_IS_INITIALIZE( NodeDebugRenderServiceInterface ) == true )
             {
-                if( SERVICE_IS_INITIALIZE( NodeDebugRenderServiceInterface ) == true )
-                {
-                    NODEDEBUGRENDER_SERVICE()
-                        ->renderDebugArrow( m_arrow, _renderPipeline, &m_renderContext, false, false );
-                }
+                NODEDEBUGRENDER_SERVICE()
+                    ->renderDebugArrow( _renderPipeline, &m_renderContext, false, false );
             }
         }
 
@@ -822,13 +768,11 @@ namespace Mengine
         MENGINE_UNUSED( _oldScene );
         MENGINE_UNUSED( _newScene );
 
-        if( m_arrow != nullptr )
-        {
-            const NodePtr & arrow = m_arrow->getNode();
+        const NodePtr & arrowNode = ARROW_SERVICE()
+            ->getNode();
 
-            arrow->removeFromParent();
-            arrow->disable();
-        }
+        arrowNode->removeFromParent();
+        arrowNode->disable();
 
         if( m_localScheduler != nullptr )
         {
@@ -867,12 +811,10 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        if( m_arrow != nullptr )
-        {
-            const NodePtr & arrow = m_arrow->getNode();
+        const NodePtr & arrowNode = ARROW_SERVICE()
+            ->getNode();
 
-            arrow->enableForce();
-        }
+        arrowNode->enableForce();
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::notifyChangeScenePrepareComplete( const ScenePtr & _scene )
@@ -887,13 +829,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        if( m_arrow != nullptr )
-        {
-            const NodePtr & node = m_arrow->getNode();
+        const NodePtr & arrowNode = ARROW_SERVICE()
+            ->getNode();
 
-            node->removeFromParent();
-            node->disable();
-        }
+        arrowNode->removeFromParent();
+        arrowNode->disable();
 
         if( m_localScheduler != nullptr )
         {
@@ -926,26 +866,22 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        if( m_arrow != nullptr )
-        {
-            const NodePtr & node = m_arrow->getNode();
+        const NodePtr & arrowNode = ARROW_SERVICE()
+            ->getNode();
 
-            node->enableForce();
-        }
+        arrowNode->enableForce();
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::notifyRemoveScenePrepareDestroy( const ScenePtr & _scene )
     {
         MENGINE_UNUSED( _scene );
 
-        if( m_arrow != nullptr )
-        {
-            const NodePtr & node = m_arrow->getNode();
+        const NodePtr & arrowNode = ARROW_SERVICE()
+            ->getNode();
 
-            node->removeFromParent();
-            node->disable();
-        }
-
+        arrowNode->removeFromParent();
+        arrowNode->disable();
+        
         if( m_localScheduler != nullptr )
         {
             m_localScheduler->removeAll();

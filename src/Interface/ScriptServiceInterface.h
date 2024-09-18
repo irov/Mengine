@@ -76,5 +76,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define SCRIPT_SERVICE()\
-    ((Mengine::ScriptServiceInterface*)SERVICE_GET(Mengine::ScriptServiceInterface))
+    ((Mengine::ScriptServiceInterface *)SERVICE_GET(Mengine::ScriptServiceInterface))
 //////////////////////////////////////////////////////////////////////////

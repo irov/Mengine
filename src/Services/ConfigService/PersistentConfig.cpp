@@ -2,7 +2,6 @@
 
 #include "Interface/FileServiceInterface.h"
 
-#include "Kernel/Exception.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/Logger.h"

@@ -112,6 +112,7 @@ src
     StdCType.h
     StdMath.h
     StdSetJMP.h
+    StdException.h
     Limits.h
     UInt32ToPointer.h
     Metaprogramming.h

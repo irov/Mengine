@@ -6,6 +6,7 @@
 
 #if defined(MENGINE_DEBUG)
 #   include "Config/TypeTraits.h"
+#   include "Config/StdException.h"
 #endif
 
 namespace Mengine
@@ -45,7 +46,7 @@ namespace Mengine
 
             if( Helper::dynamicCast<typename Detail::reinterpret_resource_cast_void_t<T>::type>( static_cast<T>(_resource) ) == nullptr )
             {
-                throw std::runtime_error( "reinterpret resource cast" );
+                throw StdException::runtime_error( "reinterpret resource cast" );
             }
 #endif
 
@@ -65,7 +66,7 @@ namespace Mengine
 
             if( Helper::dynamicCast<T>( _resource ) == nullptr )
             {
-                throw std::runtime_error( "static resource cast" );
+                throw StdException::runtime_error( "static resource cast" );
             }
 #endif
 
@@ -85,7 +86,7 @@ namespace Mengine
 
             if( Helper::dynamicCast<T>( _resource ) == nullptr )
             {
-                throw std::runtime_error( "static resource cast" );
+                throw StdException::runtime_error( "static resource cast" );
             }
 #endif
 
@@ -105,7 +106,7 @@ namespace Mengine
 
             if( T::dynamic_from( _resource ) == nullptr )
             {
-                throw std::runtime_error( "static resource cast" );
+                throw StdException::runtime_error( "static resource cast" );
             }
 #endif
 

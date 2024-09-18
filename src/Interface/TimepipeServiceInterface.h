@@ -21,5 +21,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define TIMEPIPE_SERVICE()\
-    ((Mengine::TimepipeServiceInterface*)SERVICE_GET(Mengine::TimepipeServiceInterface))
+    ((Mengine::TimepipeServiceInterface *)SERVICE_GET(Mengine::TimepipeServiceInterface))
 //////////////////////////////////////////////////////////////////////////

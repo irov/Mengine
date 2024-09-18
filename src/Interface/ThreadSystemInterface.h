@@ -35,5 +35,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define THREAD_SYSTEM()\
-    ((Mengine::ThreadSystemInterface*)SERVICE_GET(Mengine::ThreadSystemInterface))
+    ((Mengine::ThreadSystemInterface *)SERVICE_GET(Mengine::ThreadSystemInterface))
 //////////////////////////////////////////////////////////////////////////

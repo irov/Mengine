@@ -79,8 +79,6 @@ namespace Mengine
 
         EasingInterfacePtr m_easing;
 
-        uint32_t m_updataterId;
-
         float m_speedFactor;
 
         bool m_freeze;

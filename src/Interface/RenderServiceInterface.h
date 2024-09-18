@@ -102,5 +102,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define RENDER_SERVICE()\
-    ((Mengine::RenderServiceInterface*)SERVICE_GET(Mengine::RenderServiceInterface))
+    ((Mengine::RenderServiceInterface *)SERVICE_GET(Mengine::RenderServiceInterface))
 //////////////////////////////////////////////////////////////////////////

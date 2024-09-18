@@ -1,9 +1,12 @@
 #include "ExceptionHelper.h"
-#include "Exception.h"
+
+#include "Kernel/DebugBreak.h"
+#include "Kernel/LoggerMessage.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdArg.h"
 #include "Config/StdString.h"
+#include "Config/StdException.h"
 
 namespace Mengine
 {
@@ -20,17 +23,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ExceptionHelper::operator () ( const Char * _format, ... ) const
     {
-        Char foramt_msg[MENGINE_EXCEPTION_MAX_MESSAGE] = {'\0'};
+        Char foramt_msg[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
 
-        int32_t size_vsnprintf = MENGINE_VSNPRINTF( foramt_msg, MENGINE_EXCEPTION_MAX_MESSAGE - 1, _format, args );
+        int32_t size_vsnprintf = MENGINE_VSNPRINTF( foramt_msg, MENGINE_LOGGER_MAX_MESSAGE - 1, _format, args );
         MENGINE_UNUSED( size_vsnprintf );
 
         MENGINE_VA_LIST_END( args );
 
-        Char exception_msg[MENGINE_EXCEPTION_MAX_MESSAGE] = {'\0'};
+        Char exception_msg[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
 
         StdString::strcat( exception_msg, "message: " );
         StdString::strcat( exception_msg, foramt_msg );
@@ -47,7 +50,9 @@ namespace Mengine
         StdString::strcat( exception_msg, format_line );
         StdString::strcat( exception_msg, "\n" );
 
-        throw Exception( exception_msg );
+        Helper::debuggerBreak();
+
+        throw StdException::runtime_error( exception_msg );
     }
     //////////////////////////////////////////////////////////////////////////
 }

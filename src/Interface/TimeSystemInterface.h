@@ -17,5 +17,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define TIME_SYSTEM()\
-    ((Mengine::TimeSystemInterface*)SERVICE_GET(Mengine::TimeSystemInterface))
+    ((Mengine::TimeSystemInterface *)SERVICE_GET(Mengine::TimeSystemInterface))
 //////////////////////////////////////////////////////////////////////////

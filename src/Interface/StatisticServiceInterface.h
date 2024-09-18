@@ -45,5 +45,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define STATISTIC_SERVICE()\
-    ((Mengine::StatisticServiceInterface*)SERVICE_GET(Mengine::StatisticServiceInterface))
+    ((Mengine::StatisticServiceInterface *)SERVICE_GET(Mengine::StatisticServiceInterface))
 //////////////////////////////////////////////////////////////////////////

@@ -91,13 +91,6 @@ namespace Mengine
                 return result;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_hasArrowPrototypeFinder( const ConstString & _prototype )
-            {
-                bool result = s_hasPrototypeFinder( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype );
-
-                return result;
-            }
-            //////////////////////////////////////////////////////////////////////////
             bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
             {
                 PythonEntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject( MENGINE_DOCUMENT_PYBIND );
@@ -122,13 +115,6 @@ namespace Mengine
             bool s_addScenePrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
             {
                 bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype, _module );
-
-                return result;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            bool s_addArrowPrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
-            {
-                bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype, _module );
 
                 return result;
             }
@@ -163,11 +149,6 @@ namespace Mengine
             void s_removeScenePrototypeFinder( const ConstString & _prototype )
             {
                 s_removePrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype );
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_removeArrowPrototypeFinder( const ConstString & _prototype )
-            {
-                s_removePrototypeFinder( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype );
             }
             //////////////////////////////////////////////////////////////////////////
             pybind::object s_createEntity( const ConstString & _prototype )
@@ -327,17 +308,14 @@ namespace Mengine
         pybind::def_functor( _kernel, "hasPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_hasPrototypeFinder );
         pybind::def_functor( _kernel, "hasEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_hasEntityPrototypeFinder );
         pybind::def_functor( _kernel, "hasScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_hasScenePrototypeFinder );
-        pybind::def_functor( _kernel, "hasArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_hasArrowPrototypeFinder );
         
         pybind::def_functor( _kernel, "removePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_removePrototypeFinder );
         pybind::def_functor( _kernel, "removeEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_removeEntityPrototypeFinder );
         pybind::def_functor( _kernel, "removeScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_removeScenePrototypeFinder );
-        pybind::def_functor( _kernel, "removeArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_removeArrowPrototypeFinder );
 
         pybind::def_functor( _kernel, "addPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addPrototypeFinder );
         pybind::def_functor( _kernel, "addEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addEntityPrototypeFinder );
         pybind::def_functor( _kernel, "addScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addScenePrototypeFinder );
-        pybind::def_functor( _kernel, "addArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addArrowPrototypeFinder );
 
         pybind::def_functor( _kernel, "createEntity", entityScriptMethod, &EntityScriptMethod::s_createEntity );
         pybind::def_functor( _kernel, "destroyEntity", entityScriptMethod, &EntityScriptMethod::s_destroyEntity );

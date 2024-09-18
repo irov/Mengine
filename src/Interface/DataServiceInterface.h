@@ -21,7 +21,7 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define DATA_SERVICE()\
-    ((Mengine::DataServiceInterface*)SERVICE_GET(Mengine::DataServiceInterface))
+    ((Mengine::DataServiceInterface *)SERVICE_GET(Mengine::DataServiceInterface))
 //////////////////////////////////////////////////////////////////////////
 
 

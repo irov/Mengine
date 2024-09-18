@@ -32,5 +32,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define SCENE_SERVICE()\
-    ((Mengine::SceneServiceInterface*)SERVICE_GET(Mengine::SceneServiceInterface))
+    ((Mengine::SceneServiceInterface *)SERVICE_GET(Mengine::SceneServiceInterface))
 //////////////////////////////////////////////////////////////////////////

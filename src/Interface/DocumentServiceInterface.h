@@ -17,5 +17,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define DOCUMENT_SERVICE()\
-    ((Mengine::DocumentServiceInterface*)SERVICE_GET(Mengine::DocumentServiceInterface))
+    ((Mengine::DocumentServiceInterface *)SERVICE_GET(Mengine::DocumentServiceInterface))
 //////////////////////////////////////////////////////////////////////////

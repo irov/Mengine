@@ -19,8 +19,6 @@ Application
     Application.h
     EntityPrototypeGenerator.cpp
     EntityPrototypeGenerator.h
-    ArrowPrototypeGenerator.cpp
-    ArrowPrototypeGenerator.h
     ScenePrototypeGenerator.cpp
     ScenePrototypeGenerator.h
 )

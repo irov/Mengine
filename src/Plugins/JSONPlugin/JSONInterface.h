@@ -30,5 +30,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define JSON_SERVICE()\
-    ((Mengine::JSONServiceInterface*)SERVICE_GET(Mengine::JSONServiceInterface))
+    ((Mengine::JSONServiceInterface *)SERVICE_GET(Mengine::JSONServiceInterface))
 //////////////////////////////////////////////////////////////////////////

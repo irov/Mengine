@@ -3,6 +3,7 @@
 #include "ModuleDebugPanel.h"
 
 #include "Kernel/ModuleFactory.h"
+#include "Kernel/ConfigHelper.h"
 #include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -17,6 +18,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DebugPanelPlugin::~DebugPanelPlugin()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DebugPanelPlugin::_availablePlugin() const
+    {
+        bool DebugPanelPlugin_Available = CONFIG_VALUE( "DebugPanelPlugin", "Available", true );
+
+        if( DebugPanelPlugin_Available == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DebugPanelPlugin::_initializePlugin()

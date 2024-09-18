@@ -14,6 +14,7 @@ namespace Mengine
         ~CameraDebugGizmoPlugin() override;
 
     protected:
+        bool _availablePlugin() const override;
         bool _initializePlugin() override;
         void _finalizePlugin() override;
     };

@@ -58,6 +58,13 @@ namespace Mengine
             return false;
         }
 
+        if( CONFIG_EXIST( "CachalotPlugin", "DSN" ) == false )
+        {
+            LOGGER_MESSAGE( "Cachalot unavailable [not setup DSN]" );
+
+            return false;
+        }
+
         bool CachalotPlugin_Available = CONFIG_VALUE( "CachalotPlugin", "Available", true );
 
         if( CachalotPlugin_Available == false )
@@ -71,13 +78,6 @@ namespace Mengine
     bool CachalotPlugin::_initializePlugin()
     {
         String CachalotPlugin_DSN = CONFIG_VALUE( "CachalotPlugin", "DSN", "" );
-
-        if( CachalotPlugin_DSN.empty() == true )
-        {
-            LOGGER_ERROR( "invalid DSN" );
-
-            return false;
-        }
 
         LOGGER_MESSAGE( "Cachalot DSN: %s"
             , CachalotPlugin_DSN.c_str()

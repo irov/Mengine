@@ -5,6 +5,7 @@
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/Logger.h"
 #include "Kernel/BuildMode.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -60,7 +61,14 @@ namespace Mengine
             return false;
         }
 
-        bool DevToDebugPlugin_Available = CONFIG_VALUE( "DevToDebugPlugin", "Available", true );
+        if( CONFIG_EXIST( "DevToDebugPlugin", "DSN" ) == false )
+        {
+            LOGGER_MESSAGE( "DevToDebugPlugin unavailable [not setup DSN]" );
+
+            return false;
+        }
+
+        bool DevToDebugPlugin_Available = CONFIG_VALUE( "DevToDebugPlugin", "Available", false );
 
         if( DevToDebugPlugin_Available == false )
         {

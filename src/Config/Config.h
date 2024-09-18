@@ -276,6 +276,12 @@
 #   define MENGINE_DOCUMENT_ARGUMENTS(...)
 #endif
 
+#if defined(MENGINE_DOCUMENT_ENABLE)
+#   define MENGINE_DOCUMENT_STR(Doc) ((Doc)->getMessage())
+#else
+#   define MENGINE_DOCUMENT_STR(Doc) MENGINE_STRING_EMPTY
+#endif
+
 #ifndef MENGINE_CONSTEXPR
 #define MENGINE_CONSTEXPR constexpr
 #endif

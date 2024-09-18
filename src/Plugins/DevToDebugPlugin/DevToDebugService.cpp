@@ -150,20 +150,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevToDebugService::_initializeService()
     {
-        const Char * DevToDebug_DSN = CONFIG_VALUE( "DevToDebugPlugin", "DSN", "" );
-
-        if( StdString::strcmp( DevToDebug_DSN, "" ) == 0 )
-        {
-            LOGGER_ERROR( "DevToDebug don't setup DSN" );
-
-            return false;
-        }
-
-        m_dsn = DevToDebug_DSN;
+        String DevToDebug_DSN = CONFIG_VALUE( "DevToDebugPlugin", "DSN", "" );
 
         LOGGER_MESSAGE( "DevToDebug DSN: %s"
-            , m_dsn.c_str()
+            , DevToDebug_DSN.c_str()
         );
+
+        m_dsn = DevToDebug_DSN;
 
         m_mutexTabs = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_mutexCommands = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );

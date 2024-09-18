@@ -4,6 +4,7 @@
 #include "Interface/LoggerInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/StaticString.h"
 
 namespace Mengine
 {

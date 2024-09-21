@@ -50,9 +50,9 @@ namespace Mengine
         , float _friction
         , float _restitution
         , bool _isSensor
-        , uint16_t _collisionMask
-        , uint16_t _categoryBits
-        , uint16_t _groupIndex )
+        , uint32_t _categoryBits
+        , uint32_t _collisionMask
+        , int32_t _groupIndex )
     {
         uint32_t num_points = _polygon.size();
 
@@ -97,10 +97,13 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool Box2DBody::addShapeCircle( float _radius, const mt::vec2f & _position
-        , float _density, float _friction, float _restitution, bool _isSensor
-        , uint16_t _collisionMask
-        , uint16_t _categoryBits
-        , uint16_t _groupIndex )
+        , float _density
+        , float _friction
+        , float _restitution
+        , bool _isSensor
+        , uint32_t _categoryBits
+        , uint32_t _collisionMask
+        , int32_t _groupIndex )
     {
         float b2_radius = m_scaler.toBox2DWorld( _radius );
         b2Vec2 b2_position = m_scaler.toBox2DWorld( _position );
@@ -129,10 +132,13 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool Box2DBody::addShapeBox( float _width, float _height, const mt::vec2f & _position, float _angle
-        , float _density, float _friction, float _restitution, bool _isSensor
-        , uint16_t _collisionMask
-        , uint16_t _categoryBits
-        , uint16_t _groupIndex )
+        , float _density
+        , float _friction
+        , float _restitution
+        , bool _isSensor
+        , uint32_t _categoryBits
+        , uint32_t _collisionMask
+        , int32_t _groupIndex )
     {
         b2Vec2 b2_position = m_scaler.toBox2DWorld( _position );
         float b2_width = m_scaler.toBox2DWorld( _width );
@@ -261,24 +267,24 @@ namespace Mengine
         ::b2Body_ApplyAngularImpulse( m_bodyId, _impulse, true );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Box2DBody::setBodyLinearDumping( float _dumping )
+    void Box2DBody::setBodyLinearDamping( float _dumping )
     {
         ::b2Body_SetLinearDamping( m_bodyId, _dumping );
     }
     //////////////////////////////////////////////////////////////////////////
-    float Box2DBody::getBodyLinearDumping() const
+    float Box2DBody::getBodyLinearDamping() const
     {
         float b2_dumping = ::b2Body_GetLinearDamping( m_bodyId );
 
         return b2_dumping;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Box2DBody::setBodyAngularDumping( float _dumping )
+    void Box2DBody::setBodyAngularDamping( float _dumping )
     {
         ::b2Body_SetAngularDamping( m_bodyId, _dumping );
     }
     //////////////////////////////////////////////////////////////////////////
-    float Box2DBody::getBodyAngularDumping() const
+    float Box2DBody::getBodyAngularDamping() const
     {
         float b2_dumping = ::b2Body_GetAngularDamping( m_bodyId );
 

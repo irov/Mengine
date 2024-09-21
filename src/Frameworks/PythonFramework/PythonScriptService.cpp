@@ -12,7 +12,6 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
-#include "Interface/DocumentInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"

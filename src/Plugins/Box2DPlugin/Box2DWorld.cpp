@@ -193,7 +193,7 @@ namespace Mengine
             uint32_t index;
         };
         //////////////////////////////////////////////////////////////////////////
-        static float Box2DCastResultFcn( b2ShapeId shapeId, b2Vec2 b2_point, b2Vec2 b2_normal, float b2_fraction, void * context )
+        static float box2dCastResultFcn( b2ShapeId shapeId, b2Vec2 b2_point, b2Vec2 b2_normal, float b2_fraction, void * context )
         {
             Box2DCastResultDesc * desc = (Box2DCastResultDesc *)context;
 
@@ -232,7 +232,7 @@ namespace Mengine
         desc.response = _response;
         desc.index = 0;
 
-        ::b2World_CastRay( m_worldId, b2_point1, b2_translation, b2_queryFilter, &Detail::Box2DCastResultFcn, &desc );
+        ::b2World_CastRay( m_worldId, b2_point1, b2_translation, b2_queryFilter, &Detail::box2dCastResultFcn, &desc );
     }
     //////////////////////////////////////////////////////////////////////////
     Box2DJointInterfacePtr Box2DWorld::createDistanceJoint( const Box2DBodyInterfacePtr & _body1, const Box2DBodyInterfacePtr & _body2

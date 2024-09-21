@@ -28,9 +28,9 @@ namespace Mengine
         b2BodyId getBodyId() const;
 
     public:
-        bool addShapeConvex( const Polygon & _polygon, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) override;
-        bool addShapeCircle( float _radius, const mt::vec2f & _localPos, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) override;
-        bool addShapeBox( float _width, float _height, const mt::vec2f & _localPos, float _angle, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) override;
+        bool addShapeConvex( const Polygon & _polygon, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _categoryBits, uint32_t _collisionMask, int32_t _groupIndex ) override;
+        bool addShapeCircle( float _radius, const mt::vec2f & _localPos, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _categoryBits, uint32_t _collisionMask, int32_t _groupIndex ) override;
+        bool addShapeBox( float _width, float _height, const mt::vec2f & _localPos, float _angle, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _categoryBits, uint32_t _collisionMask, int32_t _groupIndex ) override;
 
     public:
         mt::vec2f getBodyPosition() const override;
@@ -65,10 +65,10 @@ namespace Mengine
         void setTransform( const mt::vec2f & _position, float _angle ) override;
 
     public:
-        void setBodyLinearDumping( float _dumping ) override;
-        float getBodyLinearDumping() const override;
-        void setBodyAngularDumping( float _dumping ) override;
-        float getBodyAngularDumping() const override;
+        void setBodyLinearDamping( float _dumping ) override;
+        float getBodyLinearDamping() const override;
+        void setBodyAngularDamping( float _dumping ) override;
+        float getBodyAngularDamping() const override;
         void setBodyFixedRotation( bool _rotation ) override;
         bool isBodyFixedRotation() const override;
         void setBodyBulletMode( bool _bulletMode ) override;

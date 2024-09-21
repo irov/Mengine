@@ -21,7 +21,6 @@
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/StatisticServiceInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
-#include "Interface/DocumentInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"

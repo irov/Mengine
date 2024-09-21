@@ -1,7 +1,5 @@
 #include "AreaOfInterestScriptEmbedding.h"
 
-#include "Interface/DocumentInterface.h"
-
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"

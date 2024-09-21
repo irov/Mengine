@@ -85,9 +85,9 @@ namespace Mengine
         virtual const NodePtr & getNode() const = 0;
 
     public:
-        virtual bool addShapeConvex( const Polygon & _vertices, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) = 0;
-        virtual bool addShapeCircle( float _radius, const mt::vec2f & _localPos, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) = 0;
-        virtual bool addShapeBox( float _width, float _height, const mt::vec2f & _localPos, float _angle, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) = 0;
+        virtual bool addShapeConvex( const Polygon & _vertices, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _collisionMask, uint32_t _categoryBits, int32_t _groupIndex ) = 0;
+        virtual bool addShapeCircle( float _radius, const mt::vec2f & _localPos, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _collisionMask, uint32_t _categoryBits, int32_t _groupIndex ) = 0;
+        virtual bool addShapeBox( float _width, float _height, const mt::vec2f & _localPos, float _angle, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _collisionMask, uint32_t _categoryBits, int32_t _groupIndex ) = 0;
 
     public:
         virtual mt::vec2f getBodyPosition() const = 0;
@@ -121,10 +121,10 @@ namespace Mengine
 
     public:
         virtual void setTransform( const mt::vec2f & _position, float _angle ) = 0;
-        virtual void setBodyLinearDumping( float _dumping ) = 0;
-        virtual float getBodyLinearDumping() const = 0;
-        virtual void setBodyAngularDumping( float _dumping ) = 0;
-        virtual float getBodyAngularDumping() const = 0;
+        virtual void setBodyLinearDamping( float _dumping ) = 0;
+        virtual float getBodyLinearDamping() const = 0;
+        virtual void setBodyAngularDamping( float _dumping ) = 0;
+        virtual float getBodyAngularDamping() const = 0;
         virtual void setBodyFixedRotation( bool _rotation ) = 0;
         virtual bool isBodyFixedRotation() const = 0;
         virtual void setBodyBulletMode( bool _isBullet ) = 0;

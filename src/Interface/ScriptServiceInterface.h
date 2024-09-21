@@ -6,6 +6,7 @@
 #include "Interface/PrefetcherObserverInterface.h"
 #include "Interface/ScriptModuleInterface.h"
 #include "Interface/ScriptEmbeddingInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Environment/Python/PythonForwardDeclaration.h"
 

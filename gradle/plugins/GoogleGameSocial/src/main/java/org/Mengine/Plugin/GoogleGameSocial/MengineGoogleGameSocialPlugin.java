@@ -1,9 +1,13 @@
 package org.Mengine.Plugin.GoogleGameSocial;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.google.android.gms.games.GamesSignInClient;
 import com.google.android.gms.games.PlayGames;
@@ -21,7 +25,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
     public static final String PLUGIN_NAME = "MengineGGameSocial";
     public static final boolean PLUGIN_EMBEDDING = true;
 
-    private static final int RC_ACHIEVEMENT_UI = MengineActivity.genRequestCode("RC_ACHIEVEMENT_UI");
+    private ActivityResultLauncher<Intent> m_achievementLauncher;
 
     @Override
     public boolean onAvailable(MengineApplication application) {
@@ -49,13 +53,22 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
                 this.pythonCall("onGoogleGameSocialOnAuthenticatedError");
             }
         });
-    }
 
-    @Override
-    public void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
-        if (requestCode == MengineGoogleGameSocialPlugin.RC_ACHIEVEMENT_UI) {
-            //ToDo
-        }
+        ActivityResultLauncher<Intent> achievementLauncher = activity.registerForActivityResult(new ActivityResultContracts.StartActivityForResult()
+            ,   result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+
+                    MengineGoogleGameSocialPlugin.this.logMessage("achievementLauncher onActivityResult intent: %s"
+                        , data
+                    );
+
+                    //ToDo
+                }
+            }
+        );
+
+        m_achievementLauncher = achievementLauncher;
     }
 
     public boolean showAchievements() {
@@ -71,14 +84,7 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
 
                     MengineGoogleGameSocialPlugin.this.pythonCall("onGoogleGameSocialShowAchievementSuccess");
 
-
-                    try {
-                        activity.startActivityForResult(intent, MengineGoogleGameSocialPlugin.RC_ACHIEVEMENT_UI);
-                    } catch (ActivityNotFoundException e) {
-                        MengineGoogleGameSocialPlugin.this.logError("[ERROR] showAchievements catch ActivityNotFoundException: %s"
-                            , e.getMessage()
-                        );
-                    }
+                    m_achievementLauncher.launch(intent);
                 })
                 .addOnFailureListener(e -> {
                     MengineGoogleGameSocialPlugin.this.logError("[ERROR] get achievements error: %s"

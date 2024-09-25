@@ -16,7 +16,7 @@ namespace Mengine
     namespace Helper
     {
         template<class T>
-        T atomicLoad( const Atomic<T> & _value )
+        MENGINE_CONSTEXPR T atomicLoad( const Atomic<T> & _value )
         {
             T value = _value.load();
 

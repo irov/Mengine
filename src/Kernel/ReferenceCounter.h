@@ -34,7 +34,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE uint32_t ReferenceCounter::getReferenceCount() const
     {
-        return m_counter;
+        uint32_t counter = Helper::atomicLoad( m_counter );
+
+        return counter;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool ReferenceCounter::isReferencing() const

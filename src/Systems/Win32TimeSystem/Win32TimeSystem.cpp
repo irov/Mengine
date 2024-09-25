@@ -1,7 +1,5 @@
 #include "Win32TimeSystem.h"
 
-#include "Environment/Windows/WindowsIncluder.h"
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TimeSystem, Mengine::Win32TimeSystem );
 //////////////////////////////////////////////////////////////////////////
@@ -18,6 +16,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32TimeSystem::_initializeService()
     {
+        ::QueryPerformanceFrequency( &m_frequency );
+        ::QueryPerformanceCounter( &m_initialCounter );
+        ::GetSystemTimeAsFileTime( &m_initialSystemTime );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -28,12 +30,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Timestamp Win32TimeSystem::getSystemTimestamp() const
     {
-        FILETIME ft;
-        ::GetSystemTimeAsFileTime( &ft );
+        LARGE_INTEGER currentCounter;
+        ::QueryPerformanceCounter( &currentCounter );
+
+        LONGLONG elapsedTime = (currentCounter.QuadPart - m_initialCounter.QuadPart) * 10000000 / m_frequency.QuadPart;
 
         ULARGE_INTEGER ui;
-        ui.LowPart = ft.dwLowDateTime;
-        ui.HighPart = ft.dwHighDateTime;
+        ui.LowPart = m_initialSystemTime.dwLowDateTime;
+        ui.HighPart = m_initialSystemTime.dwHighDateTime;
+
+        ui.QuadPart += elapsedTime;
 
         Timestamp timestamp = (ui.QuadPart / 10000ULL) - 11644473600000ULL;
 

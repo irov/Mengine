@@ -2,6 +2,8 @@
 
 #include "Interface/TimeSystemInterface.h"
 
+#include "Environment/Windows/WindowsIncluder.h"
+
 #include "Kernel/ServiceBase.h"
 
 namespace Mengine
@@ -19,5 +21,10 @@ namespace Mengine
 
     public:
         Timestamp getSystemTimestamp() const override;
+
+    protected:
+        LARGE_INTEGER m_frequency;
+        LARGE_INTEGER m_initialCounter;
+        FILETIME m_initialSystemTime;
     };
 };

@@ -16,7 +16,6 @@ def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_SP
 def ANDROID_APP_BUNDLE_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_BUNDLE_ENABLE", false)
 def ANDROID_APP_DELIVERY_PACKAGES = Utils.getStringProperty(project, "ANDROID_APP_DELIVERY_PACKAGES", null)
 def ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty(project, "ANDROID_APP_BUILD_NUMBER", 0)
-def ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
 
 def MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_MENGINE")
 def MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_OPENAL32")
@@ -30,6 +29,7 @@ def MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL = Utils.existAppPlugin(project, "MENGI
 def MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING")
 def MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS")
 def MENGINE_APP_PLUGIN_GOOGLE_CONSENT = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_CONSENT")
+def MENGINE_APP_PLUGIN_GOOGLE_LICENSING = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_LICENSING")
 def MENGINE_APP_PLUGIN_FIREBASE = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE")
 def MENGINE_APP_PLUGIN_FIREBASE_APPCHECK = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_APPCHECK")
 def MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS = Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS")
@@ -646,6 +646,20 @@ if (MENGINE_APP_PLUGIN_GOOGLE_CONSENT == true) {
 
     dependencies {
         implementation project(':plugins:GoogleConsent')
+    }
+}
+
+Utils.logAvailable("MENGINE_APP_PLUGIN_GOOGLE_LICENSING", MENGINE_APP_PLUGIN_GOOGLE_LICENSING)
+
+if (MENGINE_APP_PLUGIN_GOOGLE_LICENSING == true) {
+    if (MENGINE_APP_PLUGIN_GOOGLE_SERVICE == false) {
+        throw new GradleException("MENGINE_APP_PLUGIN_GOOGLE_LICENSING required enable MENGINE_APP_PLUGIN_GOOGLE_SERVICE")
+    }
+
+    android.ext.plugins += 'org.Mengine.Plugin.GoogleLicensing.MengineGoogleLicensingPlugin'
+
+    dependencies {
+        implementation project(':plugins:GoogleLicensing')
     }
 }
 

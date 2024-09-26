@@ -1,0 +1,26 @@
+import com.Mengine.Utils
+
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
+apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
+
+def ANDROID_APP_LICENSING_KEY = Utils.getStringProperty(project, "ANDROID_APP_LICENSING_KEY", null)
+
+if (ANDROID_APP_LICENSING_KEY == null) {
+    throw new GradleException("google licensing ned key ANDROID_APP_LICENSING_KEY")
+}
+
+Utils.logString("ANDROID_APP_LICENSING_KEY", ANDROID_APP_LICENSING_KEY)
+
+android {
+    namespace "org.Mengine.Plugin.GoogleLicensing"
+}
+
+dependencies {
+    //TODO: Add dependencies
+}
+
+android {
+    defaultConfig {
+        buildConfigField "String[]", "ANDROID_APP_LICENSING_KEY", "${ANDROID_APP_LICENSING_KEY}"
+    }
+}

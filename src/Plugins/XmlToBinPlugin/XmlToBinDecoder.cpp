@@ -199,7 +199,7 @@ namespace Mengine
 
         if( decoderData->useProtocolCrc32 != xml_protocol.getCrc32() )
         {
-            LOGGER_ERROR( "protocol '%s' invalid version '%u' use '%u'"
+            LOGGER_ERROR( "protocol '%s' invalid crc32 '%u' use '%u'"
                 , decoderData->pathProtocol.c_str()
                 , xml_protocol.getVersion()
                 , decoderData->useProtocolCrc32

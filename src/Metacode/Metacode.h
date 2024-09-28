@@ -48,17 +48,21 @@ namespace Metacode
             }
             
         public:
-            bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+            // cppcheck-suppress duplInheritedMember
+            bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
         
         protected:
+            // cppcheck-suppress duplInheritedMember
             void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+            // cppcheck-suppress duplInheritedMember
             void _preparationIncludes( uint32_t _id, uint32_t _count );
+            // cppcheck-suppress duplInheritedMember
             void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             void _parseGenerators( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
         
         public:
             class Meta_FragmentShader
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_FragmentShader();
@@ -167,12 +171,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -185,7 +194,7 @@ namespace Metacode
             };
             
             class Meta_Include
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_Include();
@@ -203,11 +212,15 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -216,7 +229,7 @@ namespace Metacode
             };
             
             class Meta_Material
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_Material();
@@ -672,17 +685,22 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_TextureStages
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_TextureStages();
@@ -800,12 +818,17 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -844,7 +867,7 @@ namespace Metacode
             };
             
             class Meta_Program
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_Program();
@@ -957,12 +980,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -976,7 +1004,7 @@ namespace Metacode
             };
             
             class Meta_VertexAttribute
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_VertexAttribute();
@@ -1016,16 +1044,20 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_Attribute
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_Attribute();
@@ -1109,11 +1141,15 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -1144,7 +1180,7 @@ namespace Metacode
             };
             
             class Meta_VertexShader
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_VertexShader();
@@ -1253,12 +1289,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -1271,7 +1312,7 @@ namespace Metacode
             };
             
             class Meta_Resource
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_Resource();
@@ -1416,12 +1457,17 @@ namespace Metacode
                     return true;
                 }
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -1529,17 +1575,22 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_Atlas
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_Atlas();
@@ -1568,11 +1619,15 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -1653,12 +1708,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -1722,12 +1782,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -1791,12 +1856,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -1860,12 +1930,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -1929,12 +2004,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -1950,10 +2030,13 @@ namespace Metacode
                 Meta_ResourceExternal();
             
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -2015,12 +2098,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -2146,12 +2234,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -2414,12 +2507,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -2718,12 +2816,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -2759,11 +2862,15 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -2778,15 +2885,18 @@ namespace Metacode
                 Meta_ResourceImageSequence();
             
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_Sequence
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_Sequence();
@@ -2815,11 +2925,15 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -2871,11 +2985,15 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -3085,12 +3203,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -3328,12 +3451,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -3380,11 +3508,15 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -3479,12 +3611,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -3622,12 +3759,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -3893,17 +4035,22 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_MovieCamera3D
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_MovieCamera3D();
@@ -3976,11 +4123,15 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -3994,7 +4145,7 @@ namespace Metacode
                 };
                 
                 class Meta_MovieLayer2D
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_MovieLayer2D();
@@ -4878,12 +5029,17 @@ namespace Metacode
                         return true;
                     }
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -4913,7 +5069,7 @@ namespace Metacode
                 };
                 
                 class Meta_MovieLayer3D
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_MovieLayer3D();
@@ -5753,12 +5909,17 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -5916,17 +6077,22 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_Composition
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_Composition();
@@ -6071,17 +6237,22 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
                     class Meta_Layer
-                        : public Metabuf::Metadata
+                        : public Metabuf::Metaparse
                     { 
                     public:
                         Meta_Layer();
@@ -6304,12 +6475,17 @@ namespace Metacode
                         }
                         
                     public:
-                        bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                        // cppcheck-suppress duplInheritedMember
+                        bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                     
                     protected:
+                        // cppcheck-suppress duplInheritedMember
                         void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                        // cppcheck-suppress duplInheritedMember
                         void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                        // cppcheck-suppress duplInheritedMember
                         void _preparationIncludes( uint32_t _id, uint32_t _count );
+                        // cppcheck-suppress duplInheritedMember
                         void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                     
                     public:
@@ -6324,7 +6500,7 @@ namespace Metacode
                     };
                     
                     class Meta_SubComposition
-                        : public Metabuf::Metadata
+                        : public Metabuf::Metaparse
                     { 
                     public:
                         Meta_SubComposition();
@@ -6375,11 +6551,15 @@ namespace Metacode
                         }
                         
                     public:
-                        bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                        // cppcheck-suppress duplInheritedMember
+                        bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                     
                     protected:
+                        // cppcheck-suppress duplInheritedMember
                         void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                        // cppcheck-suppress duplInheritedMember
                         void _preparationIncludes( uint32_t _id, uint32_t _count );
+                        // cppcheck-suppress duplInheritedMember
                         void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                     
                     public:
@@ -6613,12 +6793,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -6728,17 +6913,22 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_Atlas
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_Atlas();
@@ -6767,11 +6957,15 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -6816,11 +7010,15 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -7007,12 +7205,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -7111,17 +7314,22 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_Image
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_Image();
@@ -7150,11 +7358,15 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -7223,11 +7435,15 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -7352,12 +7568,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -7398,11 +7619,15 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -7714,12 +7939,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -7956,12 +8186,17 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -8089,16 +8324,20 @@ namespace Metacode
             }
             
         public:
-            bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+            // cppcheck-suppress duplInheritedMember
+            bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
         
         protected:
+            // cppcheck-suppress duplInheritedMember
             void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+            // cppcheck-suppress duplInheritedMember
             void _preparationIncludes( uint32_t _id, uint32_t _count );
+            // cppcheck-suppress duplInheritedMember
             void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
         
         public:
             class Meta_ImageShape
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_ImageShape();
@@ -8384,17 +8623,22 @@ namespace Metacode
                     return true;
                 }
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_Shape
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_Shape();
@@ -8412,11 +8656,15 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -8445,7 +8693,7 @@ namespace Metacode
             };
             
             class Meta_KeyFrames2D
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_KeyFrames2D();
@@ -8578,17 +8826,22 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_KeyFrame2D
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_KeyFrame2D();
@@ -8950,11 +9203,15 @@ namespace Metacode
                         return true;
                     }
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -8985,7 +9242,7 @@ namespace Metacode
             };
             
             class Meta_KeyFrames3D
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_KeyFrames3D();
@@ -9118,17 +9375,22 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_KeyFrame3D
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_KeyFrame3D();
@@ -9524,11 +9786,15 @@ namespace Metacode
                         return true;
                     }
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -9560,7 +9826,7 @@ namespace Metacode
             };
             
             class Meta_Polygon
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_Polygon();
@@ -9589,11 +9855,15 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -9603,7 +9873,7 @@ namespace Metacode
             };
             
             class Meta_TimeRemap
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_TimeRemap();
@@ -9632,11 +9902,15 @@ namespace Metacode
                 }
                 
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
@@ -9707,15 +9981,18 @@ namespace Metacode
             Meta_Pak();
         
         public:
-            bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+            // cppcheck-suppress duplInheritedMember
+            bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
         
         protected:
+            // cppcheck-suppress duplInheritedMember
             void _preparationIncludes( uint32_t _id, uint32_t _count );
+            // cppcheck-suppress duplInheritedMember
             void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
         
         public:
             class Meta_Datas
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_Datas();
@@ -9773,16 +10050,20 @@ namespace Metacode
                     return true;
                 }
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_Data
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_Data();
@@ -9811,11 +10092,15 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -9839,7 +10124,7 @@ namespace Metacode
             };
             
             class Meta_Fonts
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_Fonts();
@@ -9897,16 +10182,20 @@ namespace Metacode
                     return true;
                 }
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_Font
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_Font();
@@ -9924,11 +10213,15 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -9950,8 +10243,128 @@ namespace Metacode
                 VectorMeta_Font includes_Meta_Font;
             };
             
+            class Meta_Glyphs
+                : public Metabuf::Metaparse
+            { 
+            public:
+                Meta_Glyphs();
+            
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Platform = (1 <<0),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
+            public:
+                bool has_Platform() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_Platform) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_Platform( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_Platform );
+                
+                    return true;
+                }
+                
+                bool get_Platform( Mengine::Tags * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_Platform;
+                
+                    return true;
+                }
+                
+                bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
+                    {
+                        *_value = _default;
+                
+                        return false;
+                    }
+                
+                    *_value = this->m_Platform;
+                
+                    return true;
+                }
+            public:
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
+            
+            protected:
+                // cppcheck-suppress duplInheritedMember
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
+                void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+            
+            public:
+                class Meta_Glyph
+                    : public Metabuf::Metaparse
+                { 
+                public:
+                    Meta_Glyph();
+                
+                public:
+                    template<class C, class M>
+                    void getm_Path( C _self, M _method ) const
+                    {
+                        (_self->*_method)( this->m_Path );
+                    }
+                    
+                    const Mengine::FilePath & get_Path() const
+                    {
+                        return this->m_Path;
+                    }
+                    
+                public:
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
+                
+                protected:
+                    // cppcheck-suppress duplInheritedMember
+                    void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
+                    void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                
+                public:
+                protected:
+                    Mengine::FilePath m_Path;
+                };
+                
+            protected:
+                Mengine::Tags m_Platform;
+            public:
+                typedef Metabuf::Vector<Meta_Glyph> VectorMeta_Glyph;
+            
+                const VectorMeta_Glyph & get_Includes_Glyph() const
+                {
+                    return this->includes_Meta_Glyph;
+                }
+            
+            protected:
+                VectorMeta_Glyph includes_Meta_Glyph;
+            };
+            
             class Meta_Materials
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_Materials();
@@ -10009,16 +10422,20 @@ namespace Metacode
                     return true;
                 }
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_Material
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_Material();
@@ -10036,11 +10453,15 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -10063,7 +10484,7 @@ namespace Metacode
             };
             
             class Meta_Resources
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_Resources();
@@ -10229,16 +10650,20 @@ namespace Metacode
                     return true;
                 }
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_Resource
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_Resource();
@@ -10307,12 +10732,17 @@ namespace Metacode
                         return true;
                     }
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -10338,7 +10768,7 @@ namespace Metacode
             };
             
             class Meta_Scripts
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_Scripts();
@@ -10396,16 +10826,20 @@ namespace Metacode
                     return true;
                 }
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_Script
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_Script();
@@ -10562,12 +10996,17 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -10593,7 +11032,7 @@ namespace Metacode
             };
             
             class Meta_Settings
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_Settings();
@@ -10651,16 +11090,20 @@ namespace Metacode
                     return true;
                 }
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_Setting
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_Setting();
@@ -10689,11 +11132,15 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -10717,7 +11164,7 @@ namespace Metacode
             };
             
             class Meta_Texts
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_Texts();
@@ -10775,16 +11222,20 @@ namespace Metacode
                     return true;
                 }
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
                 class Meta_Text
-                    : public Metabuf::Metadata
+                    : public Metabuf::Metaparse
                 { 
                 public:
                     Meta_Text();
@@ -10802,11 +11253,15 @@ namespace Metacode
                     }
                     
                 public:
-                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
                 
                 protected:
+                    // cppcheck-suppress duplInheritedMember
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    // cppcheck-suppress duplInheritedMember
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    // cppcheck-suppress duplInheritedMember
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
@@ -10849,6 +11304,16 @@ namespace Metacode
         
         protected:
             VectorMeta_Fonts includes_Meta_Fonts;
+        public:
+            typedef Metabuf::Vector<Meta_Glyphs> VectorMeta_Glyphs;
+        
+            const VectorMeta_Glyphs & get_Includes_Glyphs() const
+            {
+                return this->includes_Meta_Glyphs;
+            }
+        
+        protected:
+            VectorMeta_Glyphs includes_Meta_Glyphs;
         public:
             typedef Metabuf::Vector<Meta_Materials> VectorMeta_Materials;
         
@@ -10908,15 +11373,18 @@ namespace Metacode
             Meta_Texts();
         
         public:
-            bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+            // cppcheck-suppress duplInheritedMember
+            bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
         
         protected:
+            // cppcheck-suppress duplInheritedMember
             void _preparationIncludes( uint32_t _id, uint32_t _count );
+            // cppcheck-suppress duplInheritedMember
             void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
         
         public:
             class Meta_Text
-                : public Metabuf::Metadata
+                : public Metabuf::Metaparse
             { 
             public:
                 Meta_Text();
@@ -11137,12 +11605,17 @@ namespace Metacode
                     return true;
                 }
             public:
-                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData ) override;
             
             protected:
+                // cppcheck-suppress duplInheritedMember
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                // cppcheck-suppress duplInheritedMember
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
+                // cppcheck-suppress duplInheritedMember
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:

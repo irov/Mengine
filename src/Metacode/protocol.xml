@@ -1,4 +1,4 @@
-<Protocol Version = "151">
+<Protocol Version = "152">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -514,7 +514,7 @@
 
       <Node Name="Pak">
         <Node Name="Scripts">
-      <Attribute Name="Platform" Type="Mengine::Tags"/>
+          <Attribute Name="Platform" Type="Mengine::Tags"/>
 
           <Node Name="Script">
               <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
@@ -523,13 +523,21 @@
               <Attribute Name="Finalizer" Type="Mengine::ConstString"/>
           </Node>
         </Node>
+        
+        <Node Name="Glyphs">
+          <Attribute Name="Platform" Type="Mengine::Tags"/>
+
+          <Node Name="Glyph">
+            <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
+          </Node>
+        </Node>
 
         <Node Name="Fonts">
           <Attribute Name="Platform" Type="Mengine::Tags"/>
 
           <Node Name="Font">
-      <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
-      </Node>
+            <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
+          </Node>
         </Node>
 
         <Node Name="Resources">

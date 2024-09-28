@@ -66,6 +66,23 @@ namespace Mengine
             }
         }
 
+        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Glyphs & includes_glyphs = pak.get_Includes_Glyphs();
+
+        for( const Metacode::Meta_Data::Meta_Pak::Meta_Glyphs & meta_glyphs : includes_glyphs )
+        {
+            Tags Platform;
+            meta_glyphs.get_Platform( &Platform );
+
+            const Metacode::Meta_Data::Meta_Pak::Meta_Glyphs::VectorMeta_Glyph & includes_glyph = meta_glyphs.get_Includes_Glyph();
+
+            for( const Metacode::Meta_Data::Meta_Pak::Meta_Glyphs::Meta_Glyph & meta_glyph : includes_glyph )
+            {
+                const FilePath & Path = meta_glyph.get_Path();
+
+                _package->addPackageGlyphPath( Path, Platform );
+            }
+        }
+
         const Metacode::Meta_Data::Meta_Pak::VectorMeta_Fonts & includes_fonts = pak.get_Includes_Fonts();
 
         for( const Metacode::Meta_Data::Meta_Pak::Meta_Fonts & meta_fonts : includes_fonts )

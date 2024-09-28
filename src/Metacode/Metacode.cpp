@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 151;
+        return 152;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 2467575927; 
+        return 102503243; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -191,7 +191,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_DataBlock()
-            : Metabuf::Metaparse()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -310,11 +309,13 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -354,6 +355,7 @@ namespace Metacode
             }
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -638,8 +640,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_FragmentShader::Meta_FragmentShader()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -661,6 +662,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_FragmentShader::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
@@ -668,6 +670,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_FragmentShader::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_File_Compile) != 0 )
@@ -682,12 +685,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_FragmentShader::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_FragmentShader::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -699,7 +704,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_Include::Meta_Include()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -714,17 +718,20 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Include::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Include::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Include::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -736,8 +743,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_Material::Meta_Material()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -772,11 +778,13 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Material::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Material::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Debug) != 0 )
@@ -846,12 +854,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Material::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Material::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -875,8 +885,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_Material::Meta_TextureStages::Meta_TextureStages()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -898,11 +907,13 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Material::Meta_TextureStages::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Stage );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Material::Meta_TextureStages::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_AddressMode_Border) != 0 )
@@ -922,12 +933,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Material::Meta_TextureStages::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Material::Meta_TextureStages::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -939,8 +952,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_Program::Meta_Program()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -962,6 +974,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Program::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
@@ -971,6 +984,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_VertexShader_Name );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Program::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_RenderPlatform) != 0 )
@@ -980,12 +994,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Program::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Program::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -997,7 +1013,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_VertexAttribute::Meta_VertexAttribute()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1025,6 +1040,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_VertexAttribute::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
@@ -1032,12 +1048,14 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Element_Size );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_VertexAttribute::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_VertexAttribute::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1061,7 +1079,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute::Meta_Attribute()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1076,6 +1093,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Index );
@@ -1087,12 +1105,14 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Uniform );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1104,8 +1124,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_VertexShader::Meta_VertexShader()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1127,6 +1146,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_VertexShader::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
@@ -1134,6 +1154,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_VertexShader::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_File_Compile) != 0 )
@@ -1148,12 +1169,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_VertexShader::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_VertexShader::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1165,8 +1188,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_Resource::Meta_Resource()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1192,12 +1214,14 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Resource::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Type );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Resource::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Precompile) != 0 )
@@ -1212,12 +1236,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Resource::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_Resource::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1270,6 +1296,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceAstralax::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -1278,6 +1305,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceAstralax::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -1294,6 +1322,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceAstralax::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -1302,6 +1331,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceAstralax::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1327,7 +1357,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceAstralax::Meta_Atlas::Meta_Atlas()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1342,18 +1371,21 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceAstralax::Meta_Atlas::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Index );
             Metabuf::read( _buff, _size, _read, _userData, this->m_ResourceName );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceAstralax::Meta_Atlas::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceAstralax::Meta_Atlas::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1387,6 +1419,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCal3dAnimation::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -1394,6 +1427,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCal3dAnimation::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -1405,6 +1439,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCal3dAnimation::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -1412,6 +1447,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCal3dAnimation::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1447,6 +1483,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCal3dMesh::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -1454,6 +1491,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCal3dMesh::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -1465,6 +1503,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCal3dMesh::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -1472,6 +1511,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCal3dMesh::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1507,6 +1547,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCal3dSkeleton::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -1514,6 +1555,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCal3dSkeleton::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -1525,6 +1567,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCal3dSkeleton::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -1532,6 +1575,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCal3dSkeleton::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1567,6 +1611,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCursorICO::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -1574,6 +1619,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCursorICO::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -1585,6 +1631,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCursorICO::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -1592,6 +1639,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCursorICO::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1627,6 +1675,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCursorSystem::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -1634,6 +1683,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCursorSystem::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -1645,6 +1695,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCursorSystem::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -1652,6 +1703,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceCursorSystem::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1687,6 +1739,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceExternal::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -1694,6 +1747,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceExternal::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1729,6 +1783,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceFile::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -1736,6 +1791,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceFile::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -1747,6 +1803,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceFile::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -1754,6 +1811,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceFile::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1789,6 +1847,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceHIT::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -1796,6 +1855,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceHIT::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -1817,6 +1877,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceHIT::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -1824,6 +1885,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceHIT::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1859,6 +1921,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageData::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -1867,6 +1930,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageData::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -1908,6 +1972,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageData::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -1915,6 +1980,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageData::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -1950,6 +2016,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageDefault::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -1958,6 +2025,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageDefault::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -2004,6 +2072,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageDefault::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -2011,6 +2080,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageDefault::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -2046,6 +2116,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageEmpty::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -2053,6 +2124,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_MaxSize );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageEmpty::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -2060,6 +2132,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageEmpty::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -2114,6 +2187,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSequence::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -2122,6 +2196,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSequence::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -2147,7 +2222,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceImageSequence::Meta_Sequence::Meta_Sequence()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -2162,18 +2236,21 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSequence::Meta_Sequence::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Delay );
             Metabuf::read( _buff, _size, _read, _userData, this->m_ResourceImageName );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSequence::Meta_Sequence::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSequence::Meta_Sequence::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -2207,6 +2284,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSolid::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -2215,6 +2293,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Size_Value );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSolid::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -2222,6 +2301,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSolid::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -2257,6 +2337,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSubstract::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -2266,6 +2347,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Image_UV );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSubstract::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -2297,6 +2379,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSubstract::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -2304,6 +2387,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSubstract::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -2339,6 +2423,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -2350,6 +2435,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Image_UVRGB );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -2381,6 +2467,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -2388,6 +2475,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -2423,6 +2511,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceInternalObject::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -2431,6 +2520,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Internal_Name );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceInternalObject::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -2438,6 +2528,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceInternalObject::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -2473,6 +2564,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceJSON::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -2480,6 +2572,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceJSON::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -2496,6 +2589,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceJSON::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -2503,6 +2597,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceJSON::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -2538,6 +2633,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceModel3D::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -2546,6 +2642,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Resource );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceModel3D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -2567,6 +2664,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceModel3D::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -2574,6 +2672,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceModel3D::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -2628,6 +2727,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -2639,6 +2739,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Width_Value );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -2675,6 +2776,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -2700,6 +2802,7 @@ namespace Metacode
             }
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -2739,7 +2842,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::Meta_MovieCamera3D()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -2754,6 +2856,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_CameraAspect );
@@ -2764,12 +2867,14 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Width );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -2781,8 +2886,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::Meta_MovieLayer2D()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -2804,6 +2908,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_In );
@@ -2814,6 +2919,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Type );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) != 0 )
@@ -2898,12 +3004,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -2915,8 +3023,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::Meta_MovieLayer3D()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -2938,6 +3045,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_In );
@@ -2948,6 +3056,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Type );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) != 0 )
@@ -3027,12 +3136,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -3085,6 +3196,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -3092,6 +3204,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -3108,6 +3221,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -3116,6 +3230,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -3141,8 +3256,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Composition()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3198,6 +3312,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Duration );
@@ -3205,6 +3320,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Bounds) != 0 )
@@ -3219,6 +3335,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -3238,6 +3355,7 @@ namespace Metacode
             }
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -3268,8 +3386,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer::Meta_Layer()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3291,6 +3408,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Index );
@@ -3298,6 +3416,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Type );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Color) != 0 )
@@ -3322,12 +3441,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -3339,7 +3460,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition::Meta_SubComposition()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3354,6 +3474,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Duration );
@@ -3362,12 +3483,14 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -3401,6 +3524,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMusic::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -3408,6 +3532,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMusic::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -3439,6 +3564,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMusic::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -3446,6 +3572,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceMusic::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -3500,6 +3627,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceParticle::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -3508,6 +3636,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceParticle::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -3524,6 +3653,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceParticle::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -3532,6 +3662,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceParticle::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -3557,7 +3688,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas::Meta_Atlas()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3572,18 +3702,21 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Index );
             Metabuf::read( _buff, _size, _read, _userData, this->m_ResourceName );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -3617,6 +3750,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceShape::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -3624,6 +3758,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Polygon_Value );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceShape::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -3631,6 +3766,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceShape::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -3666,6 +3802,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSound::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -3673,6 +3810,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSound::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -3704,6 +3842,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSound::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -3711,6 +3850,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSound::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -3765,6 +3905,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSpineAtlas::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -3772,6 +3913,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSpineAtlas::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -3788,6 +3930,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSpineAtlas::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -3796,6 +3939,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSpineAtlas::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -3821,7 +3965,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceSpineAtlas::Meta_Image::Meta_Image()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3836,18 +3979,21 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSpineAtlas::Meta_Image::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Resource );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSpineAtlas::Meta_Image::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSpineAtlas::Meta_Image::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -3881,6 +4027,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -3892,6 +4039,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -3899,6 +4047,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -3934,6 +4083,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSpineSkeleton::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -3941,6 +4091,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSpineSkeleton::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -3962,6 +4113,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSpineSkeleton::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -3969,6 +4121,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceSpineSkeleton::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -4004,6 +4157,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceTexturepacker::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -4012,6 +4166,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_JSON_Name );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceTexturepacker::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -4019,6 +4174,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceTexturepacker::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -4054,6 +4210,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceVideo::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -4061,6 +4218,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceVideo::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -4112,6 +4270,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceVideo::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -4119,6 +4278,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceVideo::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -4154,6 +4314,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceWindow::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
@@ -4176,6 +4337,7 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_WindowTop_ResourceImageName );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceWindow::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
@@ -4187,6 +4349,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceWindow::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -4194,6 +4357,7 @@ namespace Metacode
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_DataBlock::Meta_ResourceWindow::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -4207,7 +4371,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_KeyFramesPack::Meta_KeyFramesPack()
-            : Metabuf::Metaparse()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4283,12 +4446,14 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_MaxIndex );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Version );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
@@ -4320,6 +4485,7 @@ namespace Metacode
             }
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -4371,8 +4537,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_KeyFramesPack::Meta_ImageShape::Meta_ImageShape()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4407,12 +4572,14 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_ImageShape::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_ImageMaxSize );
             Metabuf::read( _buff, _size, _read, _userData, this->m_LayerIndex );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_ImageShape::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Count) != 0 )
@@ -4442,12 +4609,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_ImageShape::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_ImageShape::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -4471,7 +4640,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::Meta_Shape()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4486,17 +4654,20 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Polygon );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -4508,8 +4679,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrames2D()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4544,11 +4714,13 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_KeyFrames2D::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_LayerIndex );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_KeyFrames2D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Count) != 0 )
@@ -4563,12 +4735,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_KeyFrames2D::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_KeyFrames2D::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -4592,8 +4766,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::Meta_KeyFrame2D()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4613,6 +4786,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) != 0 )
@@ -4652,12 +4826,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -4669,8 +4845,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrames3D()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4705,11 +4880,13 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_KeyFrames3D::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_LayerIndex );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_KeyFrames3D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Count) != 0 )
@@ -4724,12 +4901,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_KeyFrames3D::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_KeyFrames3D::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -4753,8 +4932,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::Meta_KeyFrame3D()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4774,6 +4952,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) != 0 )
@@ -4818,12 +4997,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -4835,7 +5016,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_KeyFramesPack::Meta_Polygon::Meta_Polygon()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4850,18 +5030,21 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_Polygon::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_LayerIndex );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Value );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_Polygon::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_Polygon::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -4873,7 +5056,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_KeyFramesPack::Meta_TimeRemap::Meta_TimeRemap()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4888,18 +5070,21 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_TimeRemap::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_LayerIndex );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Time );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_TimeRemap::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_KeyFramesPack::Meta_TimeRemap::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -4911,7 +5096,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Pak()
-            : Metabuf::Metaparse()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4934,7 +5118,7 @@ namespace Metacode
         
                 switch( id )
                 {
-                case 5:
+                case 6:
                     {
                         includes_Meta_Datas.resize( includeCount );
         
@@ -4943,7 +5127,7 @@ namespace Metacode
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
-                case 2:
+                case 3:
                     {
                         includes_Meta_Fonts.resize( includeCount );
         
@@ -4952,7 +5136,16 @@ namespace Metacode
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
-                case 6:
+                case 2:
+                    {
+                        includes_Meta_Glyphs.resize( includeCount );
+        
+                        for( Meta_Pak::Meta_Glyphs & metadata : includes_Meta_Glyphs )
+                        {
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                case 7:
                     {
                         includes_Meta_Materials.resize( includeCount );
         
@@ -4961,7 +5154,7 @@ namespace Metacode
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
-                case 3:
+                case 4:
                     {
                         includes_Meta_Resources.resize( includeCount );
         
@@ -4979,7 +5172,7 @@ namespace Metacode
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
-                case 7:
+                case 8:
                     {
                         includes_Meta_Settings.resize( includeCount );
         
@@ -4988,7 +5181,7 @@ namespace Metacode
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
-                case 4:
+                case 5:
                     {
                         includes_Meta_Texts.resize( includeCount );
         
@@ -5003,25 +5196,30 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
             switch( _id )
             {
-            case 5:
+            case 6:
                 {
                     includes_Meta_Datas.reserve( _count );
                 }break;
-            case 2:
+            case 3:
                 {
                     includes_Meta_Fonts.reserve( _count );
                 }break;
-            case 6:
+            case 2:
+                {
+                    includes_Meta_Glyphs.reserve( _count );
+                }break;
+            case 7:
                 {
                     includes_Meta_Materials.reserve( _count );
                 }break;
-            case 3:
+            case 4:
                 {
                     includes_Meta_Resources.reserve( _count );
                 }break;
@@ -5029,11 +5227,11 @@ namespace Metacode
                 {
                     includes_Meta_Scripts.reserve( _count );
                 }break;
-            case 7:
+            case 8:
                 {
                     includes_Meta_Settings.reserve( _count );
                 }break;
-            case 4:
+            case 5:
                 {
                     includes_Meta_Texts.reserve( _count );
                 }break;
@@ -5042,6 +5240,7 @@ namespace Metacode
             }
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5051,28 +5250,35 @@ namespace Metacode
             METABUF_UNUSED( _userData );
             switch( _id )
             {
-            case 5:
+            case 6:
                 {
                     includes_Meta_Datas.emplace_back( Meta_Pak::Meta_Datas() );
                     Meta_Pak::Meta_Datas & metadata = includes_Meta_Datas.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 2:
+            case 3:
                 {
                     includes_Meta_Fonts.emplace_back( Meta_Pak::Meta_Fonts() );
                     Meta_Pak::Meta_Fonts & metadata = includes_Meta_Fonts.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 6:
+            case 2:
+                {
+                    includes_Meta_Glyphs.emplace_back( Meta_Pak::Meta_Glyphs() );
+                    Meta_Pak::Meta_Glyphs & metadata = includes_Meta_Glyphs.back();
+        
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            case 7:
                 {
                     includes_Meta_Materials.emplace_back( Meta_Pak::Meta_Materials() );
                     Meta_Pak::Meta_Materials & metadata = includes_Meta_Materials.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 3:
+            case 4:
                 {
                     includes_Meta_Resources.emplace_back( Meta_Pak::Meta_Resources() );
                     Meta_Pak::Meta_Resources & metadata = includes_Meta_Resources.back();
@@ -5086,14 +5292,14 @@ namespace Metacode
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 7:
+            case 8:
                 {
                     includes_Meta_Settings.emplace_back( Meta_Pak::Meta_Settings() );
                     Meta_Pak::Meta_Settings & metadata = includes_Meta_Settings.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 4:
+            case 5:
                 {
                     includes_Meta_Texts.emplace_back( Meta_Pak::Meta_Texts() );
                     Meta_Pak::Meta_Texts & metadata = includes_Meta_Texts.back();
@@ -5107,8 +5313,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Datas::Meta_Datas()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5141,6 +5346,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Datas::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
@@ -5150,12 +5356,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Datas::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Datas::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5179,7 +5387,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Datas::Meta_Data::Meta_Data()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5194,18 +5401,21 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Datas::Meta_Data::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Datas::Meta_Data::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Datas::Meta_Data::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5217,8 +5427,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Fonts::Meta_Fonts()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5251,6 +5460,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Fonts::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
@@ -5260,12 +5470,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Fonts::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Fonts::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5289,7 +5501,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Fonts::Meta_Font::Meta_Font()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5304,17 +5515,20 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Fonts::Meta_Font::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Fonts::Meta_Font::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Fonts::Meta_Font::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5325,9 +5539,121 @@ namespace Metacode
         }
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
+        Meta_Pak::Meta_Glyphs::Meta_Glyphs()
+            : m_flagNoRequiredAttribute(0)
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_Pak::Meta_Glyphs::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
+        
+            if( m_flagNoRequiredAttribute != 0 )
+            {
+                this->_parseArguments( _buff, _size, _read, _userData );
+            }
+        
+            uint32_t includeCount;
+            Metabuf::readSize( _buff, _size, _read, includeCount );
+        
+            if( includeCount != 0 )
+            {
+                includes_Meta_Glyph.resize( includeCount );
+        
+                for( Meta_Pak::Meta_Glyphs::Meta_Glyph & metadata : includes_Meta_Glyph )
+                {
+                    metadata.parse( _buff, _size, _read, _userData );
+                }
+            }
+        
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_Pak::Meta_Glyphs::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
+            }
+        
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_Pak::Meta_Glyphs::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_Pak::Meta_Glyphs::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+            switch( _id )
+            {
+            case 1:
+                {
+                    includes_Meta_Glyph.emplace_back( Meta_Pak::Meta_Glyphs::Meta_Glyph() );
+                    Meta_Pak::Meta_Glyphs::Meta_Glyph & metadata = includes_Meta_Glyph.back();
+        
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            default:
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_Pak::Meta_Glyphs::Meta_Glyph::Meta_Glyph()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_Pak::Meta_Glyphs::Meta_Glyph::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+        
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_Pak::Meta_Glyphs::Meta_Glyph::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_Pak::Meta_Glyphs::Meta_Glyph::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_Pak::Meta_Glyphs::Meta_Glyph::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Materials::Meta_Materials()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5360,6 +5686,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Materials::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
@@ -5369,12 +5696,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Materials::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Materials::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5398,7 +5727,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Materials::Meta_Material::Meta_Material()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5413,17 +5741,20 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Materials::Meta_Material::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Materials::Meta_Material::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Materials::Meta_Material::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5435,8 +5766,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Resources::Meta_Resources()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5469,6 +5799,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Resources::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Demand) != 0 )
@@ -5488,12 +5819,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Resources::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Resources::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5517,8 +5850,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Resources::Meta_Resource::Meta_Resource()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5540,11 +5872,13 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Resources::Meta_Resource::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Resources::Meta_Resource::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Tags) != 0 )
@@ -5554,12 +5888,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Resources::Meta_Resource::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Resources::Meta_Resource::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5571,8 +5907,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Scripts::Meta_Scripts()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5605,6 +5940,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Scripts::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
@@ -5614,12 +5950,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Scripts::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Scripts::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5643,8 +5981,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Scripts::Meta_Script::Meta_Script()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5666,11 +6003,13 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Scripts::Meta_Script::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Scripts::Meta_Script::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Finalizer) != 0 )
@@ -5690,12 +6029,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Scripts::Meta_Script::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Scripts::Meta_Script::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5707,8 +6048,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Settings::Meta_Settings()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5741,6 +6081,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Settings::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
@@ -5750,12 +6091,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Settings::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Settings::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5779,7 +6122,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Settings::Meta_Setting::Meta_Setting()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5794,18 +6136,21 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Settings::Meta_Setting::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Settings::Meta_Setting::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Settings::Meta_Setting::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5817,8 +6162,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Texts::Meta_Texts()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5851,6 +6195,7 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Texts::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
@@ -5860,12 +6205,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Texts::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Texts::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5889,7 +6236,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Texts::Meta_Text::Meta_Text()
-            : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5904,17 +6250,20 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Texts::Meta_Text::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Texts::Meta_Text::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Pak::Meta_Texts::Meta_Text::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5926,7 +6275,6 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Texts::Meta_Texts()
-            : Metabuf::Metaparse()
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5952,12 +6300,14 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Texts::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Texts::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
@@ -5981,8 +6331,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
         Meta_Texts::Meta_Text::Meta_Text()
-            : Metabuf::Metadata()
-            , m_flagNoRequiredAttribute(0)
+            : m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -6004,11 +6353,13 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Texts::Meta_Text::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Key );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Texts::Meta_Text::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_CharOffset) != 0 )
@@ -6033,12 +6384,14 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Texts::Meta_Text::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             METABUF_UNUSED( _id );
             METABUF_UNUSED( _count );
         }
         //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
         void Meta_Texts::Meta_Text::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );

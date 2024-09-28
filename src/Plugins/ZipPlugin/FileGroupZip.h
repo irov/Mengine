@@ -7,7 +7,7 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/BaseFileGroup.h"
 #include "Kernel/VectorFilePath.h"
-#include "Kernel/UnorderedMap.h"
+#include "Kernel/UnorderedFilePathMap.h"
 #include "Kernel/List.h"
 
 namespace Mengine
@@ -98,7 +98,7 @@ namespace Mengine
             const ZipInfo * zip;
         };
 
-        typedef UnorderedMap<FilePath, FileInfo, Hashgen<FilePath>> UnorderedMapFileInfo;
+        typedef UnorderedFilePathMap<FileInfo> UnorderedMapFileInfo;
         UnorderedMapFileInfo m_files;
 
         VectorFilePath m_indexes;

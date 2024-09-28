@@ -24,6 +24,8 @@ Containers
     Map.h
     Pair.h
     UnorderedMap.h
+    UnorderedFilePathMap.h
+    UnorderedConstStringMap.h
     List.h
     Tuple.h
     Regex.h

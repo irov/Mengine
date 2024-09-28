@@ -47,6 +47,7 @@ namespace Mengine
         void addPackageResource( const FilePath & _filePath, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored ) override;
         void addPackageTextPath( const FilePath & _filePath, const Tags & _platform ) override;
         void addPackageScript( const FilePath & _filePath, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform ) override;
+        void addPackageGlyphPath( const FilePath & _filePath, const Tags & _tags ) override;
         void addPackageFontPath( const FilePath & _filePath, const Tags & _tags ) override;
         void addPackageData( const ConstString & _name, const FilePath & _filePath, const Tags & _platform ) override;
         void addPackageMaterial( const FilePath & _filePath, const Tags & _platform ) override;
@@ -80,6 +81,15 @@ namespace Mengine
         PackageDesc m_desc;
 
         VectorScriptModulePack m_scriptsPackages;
+
+        struct PackageGlyphDesc
+        {
+            ContentInterfacePtr content;
+            Tags platform;
+        };
+
+        typedef Vector<PackageGlyphDesc> VectorPackageGlyphDesc;
+        VectorPackageGlyphDesc m_glyphsDesc;
 
         struct PackageFontDesc
         {
@@ -134,6 +144,8 @@ namespace Mengine
     protected:
         bool enableText_( const PackageTextDesc & _desc );
         bool disableText_( const PackageTextDesc & _desc );
+        bool enableGlyph_( const PackageGlyphDesc & _desc );
+        bool disableGlyph_( const PackageGlyphDesc & _desc );
         bool enableFont_( const PackageFontDesc & _desc );
         bool disableFont_( const PackageFontDesc & _desc );
         bool enableData_( const PackageDataDesc & _desc );

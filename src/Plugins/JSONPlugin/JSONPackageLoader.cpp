@@ -56,6 +56,22 @@ namespace Mengine
             }
         }
 
+        jpp::object json_Glyphs = json.get( "Glyphs" );
+
+        if( json_Glyphs.invalid() == false )
+        {
+            Tags platform = json_Glyphs["Platform"];
+
+            jpp::array json_Glyphs_Glyph = json_Glyphs["Glyph"];
+
+            for( const jpp::object & item : json_Glyphs_Glyph )
+            {
+                FilePath path = item["Path"];
+
+                _package->addPackageGlyphPath( path, platform );
+            }
+        }
+
         jpp::object json_Fonts = json.get( "Fonts" );
 
         if( json_Fonts.invalid() == false )
@@ -84,9 +100,8 @@ namespace Mengine
 
             for( const jpp::object & item : json_Resources_Resource )
             {
-                Tags tags = item["Tags"];
-
                 FilePath path = item["Path"];
+                Tags tags = item["Tags"];
 
                 _package->addPackageResource( path, tags, platform, demand, ignored );
             }

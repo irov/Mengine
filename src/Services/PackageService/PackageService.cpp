@@ -16,6 +16,7 @@
 #include "Kernel/ContentHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -32,15 +33,18 @@ namespace Mengine
         {
             _config->hasValue( _name.c_str(), "Name", ConstString::none(), &_pack->name );
             _config->hasValue( _name.c_str(), "Type", STRINGIZE_STRING_LOCAL( "dir" ), &_pack->type );
-            _config->hasValue( _name.c_str(), "Format", STRINGIZE_STRING_LOCAL( "xml" ), &_pack->format );
             
+            _config->getValues( _name.c_str(), "Locales", &_pack->locales );
+
             ConstString locale;
             _config->hasValue( _name.c_str(), "Locale", ConstString::none(), &locale );
 
-            _config->getValues( _name.c_str(), "Locales", &_pack->locales );
-
             if( locale.empty() == false )
             {
+                LOGGER_MESSAGE( "[Deprecated] Package '%s' use 'Locales' instead of 'Locale'"
+                    , _name.c_str() 
+                );
+
                 _pack->locales.emplace_back( locale );
             }
             
@@ -51,11 +55,28 @@ namespace Mengine
             _config->hasValue( _name.c_str(), "Parent", ConstString::none(), &_pack->parent );
             _config->hasValue( _name.c_str(), "Description", FilePath::none(), &_pack->descriptionPath );
             _config->hasValue( _name.c_str(), "Path", FilePath::none(), &_pack->path );
-            _config->hasValue( _name.c_str(), "Fonts", FilePath::none(), &_pack->fontsPath );
-            _config->hasValue( _name.c_str(), "Texts", FilePath::none(), &_pack->textsPath );
             _config->hasValue( _name.c_str(), "Dev", false, &_pack->dev );
             _config->hasValue( _name.c_str(), "PreLoad", true, &_pack->preload );
             _config->hasValue( _name.c_str(), "Immediately", _immediately, &_pack->immediately );
+
+            ConstString format;
+            _config->hasValue( _name.c_str(), "Format", ConstString::none(), &format );
+
+            if( format.empty() == true )
+            {
+                ConstString descriptionExt = Helper::getFilePathExt( _pack->descriptionPath );
+
+                if( descriptionExt == STRINGIZE_STRING_LOCAL( "bin" ) )
+                {
+                    format = STRINGIZE_STRING_LOCAL( "xml" );
+                } 
+                else if( descriptionExt == STRINGIZE_STRING_LOCAL( "json" ) )
+                {
+                    format = STRINGIZE_STRING_LOCAL( "json" );
+                }
+            }
+
+            _pack->format = format;
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -436,11 +457,18 @@ namespace Mengine
             packages.emplace_back( package );
         }
 
+        this->loadLocalePacksByName_( STRINGIZE_STRING_LOCAL( "all" ), _platformTags, &packages );
+
         if( this->loadLocalePacksByName_( _locale, _platformTags, &packages ) == false )
         {
-            if( this->loadLocalePacksByName_( STRINGIZE_STRING_LOCAL( "en" ), _platformTags, &packages ) == false )
+            LOGGER_MESSAGE( "not set locale '%s' platform '%s' pack"
+                , _locale.c_str()
+                , Helper::tagsToString( _platformTags ).c_str()
+            );
+
+            if( _locale != STRINGIZE_STRING_LOCAL( "en" ) )
             {
-                LOGGER_WARNING( "not set locale pack" );
+                this->loadLocalePacksByName_( STRINGIZE_STRING_LOCAL( "en" ), _platformTags, &packages );
             }
         }
 

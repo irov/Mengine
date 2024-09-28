@@ -40,6 +40,7 @@ namespace Mengine
         virtual void addPackageResource( const FilePath & _filePath, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored ) = 0;
         virtual void addPackageTextPath( const FilePath & _filePath, const Tags & _platform ) = 0;
         virtual void addPackageScript( const FilePath & _filePath, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform ) = 0;
+        virtual void addPackageGlyphPath( const FilePath & _filePath, const Tags & _tags ) = 0;
         virtual void addPackageFontPath( const FilePath & _filePath, const Tags & _tags ) = 0;
         virtual void addPackageData( const ConstString & _name, const FilePath & _filePath, const Tags & _platform ) = 0;
         virtual void addPackageMaterial( const FilePath & _filePath, const Tags & _platform ) = 0;

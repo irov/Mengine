@@ -176,17 +176,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FontService::loadFonts( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
+    bool FontService::loadGlyphs( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
         ConfigInterfacePtr config = CONFIG_SERVICE()
             ->loadConfig( _content, ConstString::none(), _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load glyph config '%s'"
             , Helper::getContentFullPath( _content )
         );
 
         VectorConstString glyphs;
-        config->getValues( "GAME_FONTS", "Glyph", &glyphs );
+        config->getValues( "GAME_GLYPHS", "Glyph", &glyphs );
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         bool developmentMode = Helper::isDevelopmentMode();
@@ -196,7 +196,7 @@ namespace Mengine
         if( developmentMode == true )
         {
             VectorConstString glyphsDev;
-            config->getValues( "GAME_FONTS", "GlyphDev", &glyphsDev );
+            config->getValues( "GAME_GLYPHS", "GlyphDev", &glyphsDev );
 
             glyphs.insert( glyphs.end(), glyphsDev.begin(), glyphsDev.end() );
         }
@@ -252,6 +252,72 @@ namespace Mengine
             }
         }
 
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontService::unloadGlyphs( const ContentInterfacePtr & _content )
+    {
+        ConfigInterfacePtr config = CONFIG_SERVICE()
+            ->loadConfig( _content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load glyphs config '%s'"
+            , Helper::getContentFullPath( _content )
+        );
+
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
+        bool developmentMode = Helper::isDevelopmentMode();
+#endif
+
+        VectorConstString glyphs;
+        config->getValues( "GAME_FONTS", "Glyph", &glyphs );
+
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
+        if( developmentMode == true )
+        {
+            VectorConstString glyphsDev;
+            config->getValues( "GAME_FONTS", "GlyphDev", &glyphsDev );
+
+            glyphs.insert( glyphs.end(), glyphsDev.begin(), glyphsDev.end() );
+        }
+#endif
+
+        for( const ConstString & glyphName : glyphs )
+        {
+            if( config->hasSection( glyphName.c_str() ) == false )
+            {
+                LOGGER_ERROR( "invalid '%s' section for [Glyph] '%s'"
+                    , Helper::getContentFullPath( _content )
+                    , glyphName.c_str()
+                );
+
+                return false;
+            }
+
+            FontGlyphInterfacePtr glyph = m_fontGlyphs.erase( glyphName );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( glyph );
+
+            glyph->unfetch();
+
+            glyph->finalize();
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontService::loadFonts( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
+    {
+        ConfigInterfacePtr config = CONFIG_SERVICE()
+            ->loadConfig( _content, ConstString::none(), _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
+            , Helper::getContentFullPath( _content )
+        );
+
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
+        bool developmentMode = Helper::isDevelopmentMode();
+#endif
+
         VectorConstString fonts;
         config->getValues( "GAME_FONTS", "Font", &fonts );
 
@@ -264,6 +330,8 @@ namespace Mengine
             fonts.insert( fonts.end(), fontsDev.begin(), fontsDev.end() );
         }
 #endif
+
+        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
 
         for( const ConstString & fontName : fonts )
         {
@@ -376,40 +444,6 @@ namespace Mengine
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         bool developmentMode = Helper::isDevelopmentMode();
 #endif
-
-        VectorConstString glyphs;
-        config->getValues( "GAME_FONTS", "Glyph", &glyphs );
-
-#if defined(MENGINE_MASTER_RELEASE_DISABLE)
-        if( developmentMode == true )
-        {
-            VectorConstString glyphsDev;
-            config->getValues( "GAME_FONTS", "GlyphDev", &glyphsDev );
-
-            glyphs.insert( glyphs.end(), glyphsDev.begin(), glyphsDev.end() );
-        }
-#endif
-
-        for( const ConstString & glyphName : glyphs )
-        {
-            if( config->hasSection( glyphName.c_str() ) == false )
-            {
-                LOGGER_ERROR( "invalid '%s' section for [Glyph] '%s'"
-                    , Helper::getContentFullPath( _content )
-                    , glyphName.c_str()
-                );
-
-                return false;
-            }
-
-            FontGlyphInterfacePtr glyph = m_fontGlyphs.erase( glyphName );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( glyph );
-
-            glyph->unfetch();
-
-            glyph->finalize();
-        }
 
         VectorConstString fonts;
         config->getValues( "GAME_FONTS", "Font", &fonts );

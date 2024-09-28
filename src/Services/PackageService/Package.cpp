@@ -54,6 +54,7 @@ namespace Mengine
         m_baseFileGroup = nullptr;
 
         m_scriptsPackages.clear();
+        m_glyphsDesc.clear();
         m_fontsDesc.clear();
         m_textsDesc.clear();
         m_datasDesc.clear();
@@ -138,16 +139,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Package::loadPackage_( const DocumentInterfacePtr & _doc )
     {
-        if( m_desc.fontsPath.empty() == false )
-        {
-            this->addPackageFontPath( m_desc.fontsPath, Tags() );
-        }
-
-        if( m_desc.textsPath.empty() == false )
-        {
-            this->addPackageTextPath( m_desc.textsPath, Tags() );
-        }
-
         if( m_desc.descriptionPath.empty() == true )
         {
             return true;
@@ -203,6 +194,25 @@ namespace Mengine
             if( this->enableResources_( m_desc.locales, desc ) == false )
             {
                 LOGGER_ERROR( "invalid load file '%s' name '%s' resource '%s'"
+                    , m_desc.path.c_str()
+                    , m_desc.name.c_str()
+                    , Helper::getContentFullPath( desc.content )
+                );
+
+                return false;
+            }
+        }
+
+        for( const PackageGlyphDesc & desc : m_glyphsDesc )
+        {
+            if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
+            {
+                continue;
+            }
+
+            if( this->enableGlyph_( desc ) == false )
+            {
+                LOGGER_ERROR( "file '%s' package '%s' invalid load glyph '%s'"
                     , m_desc.path.c_str()
                     , m_desc.name.c_str()
                     , Helper::getContentFullPath( desc.content )
@@ -355,6 +365,19 @@ namespace Mengine
             }
         }
 
+        for( const PackageGlyphDesc & desc : m_glyphsDesc )
+        {
+            if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
+            {
+                continue;
+            }
+
+            if( this->disableGlyph_( desc ) == false )
+            {
+                return false;
+            }
+        }
+
         for( const PackageFontDesc & desc : m_fontsDesc )
         {
             if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
@@ -444,6 +467,22 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Package::enableGlyph_( const PackageGlyphDesc & _desc )
+    {
+        bool successful = FONT_SERVICE()
+            ->loadGlyphs( _desc.content, MENGINE_DOCUMENT_FACTORABLE );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::disableGlyph_( const PackageGlyphDesc & _desc )
+    {
+        bool successful = FONT_SERVICE()
+            ->unloadGlyphs( _desc.content );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Package::enableFont_( const PackageFontDesc & _desc )
     {
         bool successful = FONT_SERVICE()
@@ -529,6 +568,17 @@ namespace Mengine
         package.platform = _platform;
 
         m_scriptsPackages.emplace_back( package );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::addPackageGlyphPath( const FilePath & _filePath, const Tags & _platform )
+    {
+        ContentInterfacePtr content = Helper::makeFileContent( m_fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+
+        PackageGlyphDesc desc;
+        desc.content = content;
+        desc.platform = _platform;
+
+        m_glyphsDesc.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
     void Package::addPackageFontPath( const FilePath & _filePath, const Tags & _platform )

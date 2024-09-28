@@ -23,6 +23,11 @@ namespace Mengine
         virtual FontInterfacePtr createFont( const ConstString & _fontName, const ConstString & _fontType, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool removeFont( const ConstString & _fontName ) = 0;
 
+    public:
+        virtual bool loadGlyphs( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool unloadGlyphs( const ContentInterfacePtr & _content ) = 0;
+
+    public:
         virtual bool loadFonts( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool unloadFonts( const ContentInterfacePtr & _content ) = 0;
 

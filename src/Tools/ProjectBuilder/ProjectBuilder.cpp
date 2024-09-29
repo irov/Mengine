@@ -4,7 +4,6 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/LoggerInterface.h"
-#include "Interface/CodecInterface.h"
 #include "Interface/DataInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
@@ -70,7 +69,7 @@ PLUGIN_EXPORT( PNG );
 PLUGIN_EXPORT( WebP );
 PLUGIN_EXPORT( Theora );
 PLUGIN_EXPORT( OggVorbis );
-PLUGIN_EXPORT( MetabufLoader );
+PLUGIN_EXPORT( Metabuf );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
@@ -226,7 +225,7 @@ namespace Mengine
         PLUGIN_CREATE( OggVorbis, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( ImageCodec, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( Movie, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( MetabufLoader, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( Metabuf, MENGINE_DOCUMENT_FUNCTION );
 
         if( PLUGIN_SERVICE()
             ->loadPlugin( "DevelopmentConverterPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )
@@ -284,7 +283,7 @@ namespace Mengine
         SERVICE_FINALIZE( PlatformSystem );
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_convert( const WString & _fromPath, const WString & _toPath, const WString & _convertType, const MapWParams & _params )
+    static bool s_convert( const WString & _fromPath, const WString & _toPath, const WString & _convertType, const Params & _params )
     {
         MENGINE_UNUSED( _params );
 
@@ -338,7 +337,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool convert( const WString & fromPath, const WString & toPath, const WString & convertType, const MapWParams & params )
+    static bool convert( const WString & fromPath, const WString & toPath, const WString & convertType, const Params & params )
     {
         if( s_convert( fromPath, toPath, convertType, params ) == false )
         {
@@ -1063,7 +1062,7 @@ bool run()
     {
         LOGGER_ERROR( "invalid GetShortPathName '%ls' get error %ls"
             , exportPath
-            , Mengine::Helper::Win32GetLastErrorMessage()
+            , Mengine::Helper::Win32GetLastErrorMessageW()
         );
 
         return false;
@@ -1105,8 +1104,7 @@ bool run()
         .def_hash( &s_ConstString_hash )
         ;
 
-    pybind::registration_stl_map_type_cast<Mengine::MapParams>(kernel);
-    pybind::registration_stl_map_type_cast<Mengine::MapWParams>(kernel);
+    pybind::registration_stl_map_type_cast<Mengine::Params>(kernel);
 
     pybind::interface_<Mengine::PythonLogger>( kernel, "XlsScriptLogger", true, py_tools_module )
         .def_native_silent_kernel( "write", &Mengine::PythonLogger::py_write )

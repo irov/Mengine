@@ -3,7 +3,6 @@
 #include "Interface/ServiceProviderInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/LoggerInterface.h"
-#include "Interface/CodecInterface.h"
 #include "Interface/DataInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -202,8 +201,8 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     const Mengine::FilePath & path = fileGroup->getRelationPath();
 
-    data.pathXml = Mengine::Helper::concatenationFilePath( path, fp_in );
-    data.pathBin = Mengine::Helper::concatenationFilePath( path, fp_out );
+    data.pathXml = Mengine::Helper::concatenateFilePath( {path, fp_in} );
+    data.pathBin = Mengine::Helper::concatenateFilePath( {path, fp_out} );
 
     if( decoder->decode( &data ) == 0 )
     {

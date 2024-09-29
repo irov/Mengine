@@ -1770,14 +1770,14 @@ namespace Mengine
                                 desc->end = true;
                             }
 
-                            MENGINE_STRNCAT( desc->buffer, _buffer, _size );
+                            StdString::strncat( desc->buffer, _buffer, _size );
 
                             return 0;
                         }, &desc );
 
                         if( desc.end == true )
                         {
-                            MENGINE_STRCAT( desc.buffer, "..." );
+                            StdString::strcat( desc.buffer, "..." );
                         }
 
                         ImGui::TextColored( ImVec4( 1.0f, 1.0f, 1.0f, 0.5f ), "%s", buffer_value );
@@ -2375,7 +2375,7 @@ namespace Mengine
         auto uiReadOnlyString = [_node]( const char * _caption, const String & _prop )
         {
             Char testValue[2048] = {'\0'};
-            MENGINE_STRNCPY( testValue, _prop.c_str(), 2047 );
+            StdString::strncpy( testValue, _prop.c_str(), 2047 );
 
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
             ImGui::InputText( _caption, testValue, 2048, ImGuiInputTextFlags_ReadOnly );
@@ -2450,8 +2450,8 @@ namespace Mengine
             ImGui::SameLine();
             ImGui::Text( "UID:" );
             ImGui::SameLine();
-            ImGui::PushItemWidth( 25.f + 8.f * MENGINE_STRLEN( uid_text ) );
-            ImGui::InputText( "##node_uid", uid_text, MENGINE_STRLEN( uid_text ), ImGuiInputTextFlags_ReadOnly );
+            ImGui::PushItemWidth( 25.f + 8.f * StdString::strlen( uid_text ) );
+            ImGui::InputText( "##node_uid", uid_text, StdString::strlen( uid_text ), ImGuiInputTextFlags_ReadOnly );
             ImGui::PopItemWidth();
             ImGui::Spacing();
 
@@ -2517,7 +2517,7 @@ namespace Mengine
                 Char uid_text[64] = {'\0'};
                 MENGINE_SPRINTF( uid_text, "%u", _node->uid );
 
-                ImGui::InputText( "Base Node UID:", uid_text, MENGINE_STRLEN( uid_text ), ImGuiInputTextFlags_ReadOnly );
+                ImGui::InputText( "Base Node UID:", uid_text, StdString::strlen( uid_text ), ImGuiInputTextFlags_ReadOnly );
             }
 
             if( _node->render.camera.exist == true && ImGui::CollapsingHeader( "Render Camera:", ImGuiTreeNodeFlags_DefaultOpen ) )

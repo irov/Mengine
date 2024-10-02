@@ -96,9 +96,9 @@ namespace Mengine
         m_runner = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityRunnerInterfacePtr POSIXThreadIdentity::run( const LambdaThreadRunner & _lambda )
+    ThreadIdentityRunnerInterfacePtr POSIXThreadIdentity::run( const LambdaThreadRunner & _lambda, const DocumentInterfacePtr & _doc )
     {
-        m_runner = Helper::makeFactorableUnique<POSIXThreadIdentityRunner>( MENGINE_DOCUMENT_FACTORABLE, _lambda );
+        m_runner = Helper::makeFactorableUnique<POSIXThreadIdentityRunner>( _doc, _lambda );
 
         pthread_t threadId;
         int status = ::pthread_create( &threadId, nullptr, &Detail::s_treadJob, reinterpret_cast<void *>(this) );
@@ -113,6 +113,12 @@ namespace Mengine
         }
 
         m_threadId = threadId;
+
+        LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
+            , m_name.c_str()
+            , m_threadId
+            , m_priority
+        );
 
         return m_runner;
     }

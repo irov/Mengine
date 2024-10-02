@@ -24,7 +24,7 @@ namespace Mengine
             Helper::utf8ToUnicode( _process, unicode_process, MENGINE_MAX_PATH );
 
             WChar unicode_command[MENGINE_MAX_COMMAND_LENGTH] = {L'\0'};
-            StdString::wcschr( unicode_command, L' ' );
+            StdString::wcscpy( unicode_command, L" " );
             StdString::wcscat( unicode_command, _command );
 
             if( _wait == true )

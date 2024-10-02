@@ -18,14 +18,14 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define VOCABULARY_SET(T, Category, Prototype, Value, Document)\
-    Helper::vocabularySet(Category, Prototype, Mengine::IntrusivePtr<T>::from(Value), Document)
+    Mengine::Helper::vocabularySet(Category, Prototype, Mengine::IntrusivePtr<T>::from(Value), Document)
 //////////////////////////////////////////////////////////////////////////
 #define VOCABULARY_REMOVE(Category, Prototype)\
-    Helper::vocabularyRemove(Category, Prototype)
+    Mengine::Helper::vocabularyRemove(Category, Prototype)
 //////////////////////////////////////////////////////////////////////////
 #define VOCABULARY_GET(Category, Prototype)\
-    Helper::vocabularyGet(Category, Prototype)
+    Mengine::Helper::vocabularyGet(Category, Prototype)
 //////////////////////////////////////////////////////////////////////////
 #define VOCABULARY_HAS(Category, Prototype)\
-    Helper::vocabularyHas(Category, Prototype)
+    Mengine::Helper::vocabularyHas(Category, Prototype)
 //////////////////////////////////////////////////////////////////////////

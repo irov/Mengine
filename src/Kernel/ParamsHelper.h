@@ -10,7 +10,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         String getParam( const Params & _params, const ConstString & _key, const Char * _default );
-        WString getParam( const Params & _params, const ConstString & _key, WString && _default );
+        WString getParam( const Params & _params, const ConstString & _key, const WChar * _default );
         //////////////////////////////////////////////////////////////////////////
         template<class T>
         T getParam( const Params & _params, const ConstString & _key, T && _default )

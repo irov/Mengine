@@ -979,7 +979,7 @@ namespace Mengine
         }
 
         WChar fullDir[MENGINE_MAX_PATH] = {L'\0'};
-        MENGINE_WNSPRINTF( fullDir, MENGINE_MAX_PATH, L"Fonts\\%ls"
+        MENGINE_SWPRINTF( fullDir, MENGINE_MAX_PATH, L"Fonts\\%ls"
             , unicode_fontPath
         );
 
@@ -2759,7 +2759,7 @@ namespace Mengine
         }
 
         WChar pathFull[MENGINE_MAX_PATH] = {'\0'};
-        MENGINE_WNSPRINTF( pathFull, MENGINE_MAX_PATH, L"%ls%ls"
+        MENGINE_SWPRINTF( pathFull, MENGINE_MAX_PATH, L"%ls%ls"
             , unicode_path
             , pathDirectory
         );
@@ -2842,7 +2842,7 @@ namespace Mengine
         }
 
         WChar pathTestDirectory[MENGINE_MAX_PATH] = {L'\0'};
-        MENGINE_WNSPRINTF( pathTestDirectory, MENGINE_MAX_PATH, L"%ls%ls", _path, pathDirectory );
+        MENGINE_SWPRINTF( pathTestDirectory, MENGINE_MAX_PATH, L"%ls%ls", _path, pathDirectory );
 
         if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
         {
@@ -2864,7 +2864,7 @@ namespace Mengine
 
             Helper::pathRemoveBackslashW( pathDirectory );
 
-            MENGINE_WNSPRINTF( pathTestDirectory, MENGINE_MAX_PATH, L"%ls%ls", _path, pathDirectory );
+            MENGINE_SWPRINTF( pathTestDirectory, MENGINE_MAX_PATH, L"%ls%ls", _path, pathDirectory );
 
             if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
             {
@@ -2883,7 +2883,7 @@ namespace Mengine
             const WChar * path_str = path.c_str();
 
             WChar pathCreateDirectory[MENGINE_MAX_PATH] = {L'\0'};
-            MENGINE_WNSPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, L"%ls%ls", _path, path_str );
+            MENGINE_SWPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, L"%ls%ls", _path, path_str );
 
             BOOL successful = ::CreateDirectory( pathCreateDirectory, NULL );
 
@@ -3561,7 +3561,7 @@ namespace Mengine
                 uint32_t botId = GET_OPTION_VALUE_UINT32( "bot", Engine_BotId );
 
                 WChar botId_suffix[16];
-                MENGINE_WNSPRINTF( botId_suffix, 16, L"%u", botId );
+                MENGINE_SWPRINTF( botId_suffix, 16, L"%u", botId );
 
                 StdString::wcscat( currentPath, botId_suffix );
             }

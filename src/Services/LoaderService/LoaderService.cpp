@@ -44,12 +44,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderService::_initializeService()
     {
-        ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
-
-        m_archivator = archivator;
-
         m_protocolPath = CONFIG_VALUE( "Engine", "ProtocolPath", STRINGIZE_FILEPATH_LOCAL( "protocol.xml" ) );
 
         LOGGER_MESSAGE( "Metacode version: %u protocol: %u"
@@ -62,8 +56,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoaderService::_finalizeService()
     {
-        m_archivator = nullptr;
-
         m_loaders.clear();
 
         m_metacache.strings.clear();
@@ -249,9 +241,13 @@ namespace Mengine
 
         uint8_t * binary_memory = binary_buffer->getBuffer();
 
+        ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+
         size_t uncompress_size;
         if( ARCHIVE_SERVICE()
-            ->decompressStream( m_archivator, _stream, compress_size, binary_memory, bin_size, &uncompress_size ) == false )
+            ->decompressStream( archivator, _stream, compress_size, binary_memory, bin_size, &uncompress_size ) == false )
         {
             if( _reimport == nullptr )
             {

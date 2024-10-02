@@ -45,38 +45,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FindPython3Service::_initializeService()
     {
-        WChar ENVPython3Path[MENGINE_MAX_PATH] = {L'\0'};
-        if( ::GetEnvironmentVariable( L"MENGINE_PYTHON3_PATH", ENVPython3Path, MENGINE_MAX_PATH ) != 0 )
-        {
-            if( ::PathFileExistsW( ENVPython3Path ) == FALSE )
-            {
-                LOGGER_ERROR( "invalid python3 path not found: %ls"
-                    , ENVPython3Path
-                );
-
-                return false;
-            }
-
-            if( Helper::unicodeToUtf8( ENVPython3Path, m_python3Path, MENGINE_MAX_PATH, nullptr ) == false )
-            {
-                LOGGER_ERROR( "invalid convert python3 path to utf8: %ls"
-                    , ENVPython3Path
-                );
-
-                return false;
-            }
-
-            LOGGER_MESSAGE( "found python3 path [Env]: %s", m_python3Path );
-
-            return true;
-        }
-
-        HKEY hBases[] = {HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE};
-
-        BOOL bInstallPathFound = FALSE;
-        HKEY hInstallPathKeyFound = NULL;
         int32_t minorVersion = 0;
         int32_t majorVersion = 0;
+
+        WChar Python3PathW[MENGINE_MAX_PATH] = {L'\0'};
+        HKEY hBases[] = {HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE};
+
+        BOOL bPythonFound = FALSE;
+        HKEY hInstallPathKeyFound = NULL;
+        HKEY hPythonPathKeyFound = NULL;
 
         for( HKEY hBase : hBases )
         {
@@ -97,7 +74,7 @@ namespace Mengine
                 }
 
                 WChar KeySysVersionPath[MENGINE_MAX_PATH] = {L'\0'};
-                MENGINE_WNSPRINTF( KeySysVersionPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s", subKeyName );
+                MENGINE_SWPRINTF( KeySysVersionPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s", subKeyName );
 
                 HKEY hKeySysVersion;
                 if( ::RegOpenKeyEx( hBase, KeySysVersionPath, 0, KEY_READ | KEY_WOW64_64KEY, &hKeySysVersion ) != ERROR_SUCCESS )
@@ -105,17 +82,30 @@ namespace Mengine
                     continue;
                 }
 
-                DWORD dataType;
-                WChar data[MENGINE_MAX_PATH] = {L'\0'};
-                DWORD dataSize = MENGINE_MAX_PATH;
-                if( ::RegQueryValueExW( hKeySysVersion, L"SysVersion", NULL, &dataType, (LPBYTE)data, &dataSize ) != ERROR_SUCCESS )
+                DWORD SysArchitectureType;
+                WChar SysArchitecture[MENGINE_MAX_PATH] = {L'\0'};
+                DWORD SysArchitectureSize = MENGINE_MAX_PATH;
+                if( ::RegQueryValueExW( hKeySysVersion, L"SysArchitecture", NULL, &SysArchitectureType, (LPBYTE)SysArchitecture, &SysArchitectureSize ) != ERROR_SUCCESS )
+                {
+                    continue;
+                }
+
+                if( StdString::wcscmp( SysArchitecture, L"64bit" ) != 0 )
+                {
+                    continue;
+                }
+
+                DWORD SysVersionType;
+                WChar SysVersion[MENGINE_MAX_PATH] = {L'\0'};
+                DWORD SysVersionSize = MENGINE_MAX_PATH;
+                if( ::RegQueryValueExW( hKeySysVersion, L"SysVersion", NULL, &SysVersionType, (LPBYTE)SysVersion, &SysVersionSize ) != ERROR_SUCCESS )
                 {
                     continue;
                 }
 
                 int32_t major;
                 int32_t minor;
-                MENGINE_SWSCANF( data, L"%d.%d"
+                MENGINE_SWSCANF( SysVersion, L"%d.%d"
                     , &major
                     , &minor
                 );
@@ -123,7 +113,7 @@ namespace Mengine
                 if( Detail::isVersionGreater( major, minor, majorVersion, minorVersion ) == true )
                 {
                     WChar subKeyPython3InstallPath[MENGINE_MAX_PATH] = {L'\0'};
-                    MENGINE_WNSPRINTF( subKeyPython3InstallPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s\\InstallPath", subKeyName );
+                    MENGINE_SWPRINTF( subKeyPython3InstallPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s\\InstallPath", subKeyName );
 
                     HKEY hInstallPathKey;
                     if( ::RegOpenKeyExW( hBase, subKeyPython3InstallPath, 0, KEY_READ | KEY_WOW64_64KEY, &hInstallPathKey ) != ERROR_SUCCESS )
@@ -136,46 +126,111 @@ namespace Mengine
                         return false;
                     }
 
+                    WChar subKeyPython3PythonPath[MENGINE_MAX_PATH] = {L'\0'};
+                    MENGINE_SWPRINTF( subKeyPython3PythonPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s\\PythonPath", subKeyName );
+
+                    HKEY hPythonPathKey;
+                    if( ::RegOpenKeyExW( hBase, subKeyPython3PythonPath, 0, KEY_READ | KEY_WOW64_64KEY, &hPythonPathKey ) != ERROR_SUCCESS )
+                    {
+                        LOGGER_ERROR( "invalid open registry key '%ls' error: %ls"
+                            , subKeyPython3PythonPath
+                            , Helper::Win32GetLastErrorMessageW()
+                        );
+
+                        return false;
+                    }
+
                     majorVersion = major;
                     minorVersion = minor;
-                    
+
                     hInstallPathKeyFound = hInstallPathKey;
-                    bInstallPathFound = TRUE;
+                    hPythonPathKeyFound = hPythonPathKey;
+                    bPythonFound = TRUE;
                 }
             }
         }
 
-        if( bInstallPathFound == FALSE )
+        if( bPythonFound == FALSE )
         {
             LOGGER_ERROR( "not found python version" );
 
             return false;
         }
 
-        WChar hPython3PathInstallPathValue[MENGINE_MAX_PATH] = {L'\0'};
-        DWORD hPython3PathInstallPathLen = MENGINE_MAX_PATH;
-        LSTATUS nError = ::RegQueryValueExW( hInstallPathKeyFound, NULL, 0, NULL, (LPBYTE)hPython3PathInstallPathValue, &hPython3PathInstallPathLen );
+        WChar Python3PathInstallPathValue[MENGINE_MAX_PATH] = {L'\0'};
+        DWORD Python3PathInstallPathLen = MENGINE_MAX_PATH;
+        LSTATUS nPython3PathInstallPathError = ::RegQueryValueExW( hInstallPathKeyFound, NULL, 0, NULL, (LPBYTE)Python3PathInstallPathValue, &Python3PathInstallPathLen );
 
         ::RegCloseKey( hInstallPathKeyFound );
 
-        if( nError != ERROR_SUCCESS )
+        if( nPython3PathInstallPathError != ERROR_SUCCESS )
         {
-            LOGGER_ERROR( "RegQueryValueExW '%ls' get Error [%ld]"
-                , hPython3PathInstallPathValue
-                , nError
+            LOGGER_ERROR( "RegQueryValueExW 'hInstallPathKeyFound' get Error [%ld]"
+                , nPython3PathInstallPathError
             );
 
             return false;
         }
 
-        Char RegPython3Path[MENGINE_MAX_PATH] = {'\0'};
-        Helper::unicodeToUtf8( hPython3PathInstallPathValue, RegPython3Path, MENGINE_MAX_PATH );
+        StdString::wcscpy( Python3PathW, Python3PathInstallPathValue );
 
-        ::PathCombineA( m_python3Path, RegPython3Path, "python.exe" );
+        WChar Python3PathPythonPathValue[MENGINE_MAX_PATH] = {L'\0'};
+        DWORD Python3PathPythonPathLen = MENGINE_MAX_PATH;
+        LSTATUS nPython3PathPythonPathError = ::RegQueryValueExW( hPythonPathKeyFound, NULL, 0, NULL, (LPBYTE)Python3PathPythonPathValue, &Python3PathPythonPathLen );
 
-        LOGGER_MESSAGE( "Found python3: %s"
-            , m_python3Path
+        ::RegCloseKey( hPythonPathKeyFound );
+
+        if( nPython3PathPythonPathError != ERROR_SUCCESS )
+        {
+            LOGGER_ERROR( "RegQueryValueExW 'hPythonPathKeyFound' get Error [%ld]"
+                , nPython3PathPythonPathError
+            );
+
+            return false;
+        }
+
+        StdString::wcscpy( m_python3LibraryPathW, Python3PathPythonPathValue );
+
+        ::PathCombineW( m_python3ExecutablePathW, Python3PathW, L"python.exe" );
+
+        if( ::PathFileExistsW( m_python3ExecutablePathW ) == FALSE )
+        {
+            LOGGER_ERROR( "invalid python3 lib path not found: %ls"
+                , m_python3ExecutablePathW
+            );
+
+            return false;
+        }
+
+        WCHAR Python3DllNameW[MENGINE_MAX_PATH] = {L'\0'};
+        MENGINE_SWPRINTF( Python3DllNameW, MENGINE_MAX_PATH, L"python%d%d.dll", majorVersion, minorVersion );
+
+        ::PathCombineW( m_python3DllPathW, Python3PathW, Python3DllNameW );
+
+        if( ::PathFileExistsW( m_python3DllPathW ) == FALSE )
+        {
+            LOGGER_ERROR( "invalid python3 lib path not found: %ls"
+                , m_python3DllPathW
+            );
+
+            return false;
+        }
+
+        LOGGER_MESSAGE( "Found python3 executable: %ls"
+            , m_python3ExecutablePathW
         );
+
+        LOGGER_MESSAGE( "Found python3 libraries: %ls"
+            , m_python3LibraryPathW
+        );
+
+        LOGGER_MESSAGE( "Found python3 dll: %ls"
+            , m_python3DllPathW
+        );
+
+        Helper::unicodeToUtf8( m_python3ExecutablePathW, m_python3ExecutablePathA, MENGINE_MAX_PATH );
+        Helper::unicodeToUtf8( m_python3LibraryPathW, m_python3LibraryPathA, MENGINE_MAX_PATH );
+        Helper::unicodeToUtf8( m_python3DllPathW, m_python3DllPathA, MENGINE_MAX_PATH );
 
         return true;
     }
@@ -185,9 +240,34 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32FindPython3Service::getPython3Path( Char * const _python3Path ) const
+    void Win32FindPython3Service::getPython3ExecutablePathW( WChar * const _path ) const
     {
-        StdString::strcpy( _python3Path, m_python3Path );
+        StdString::wcscpy( _path, m_python3ExecutablePathW );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32FindPython3Service::getPython3LibraryPathW( WChar * const _path ) const
+    {
+        StdString::wcscpy( _path, m_python3LibraryPathW );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32FindPython3Service::getPython3DllPathW( WChar * const _path ) const
+    {
+        StdString::wcscpy( _path, m_python3DllPathW );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32FindPython3Service::getPython3ExecutablePathA( Char * const _path ) const
+    {
+        StdString::strcpy( _path, m_python3ExecutablePathA );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32FindPython3Service::getPython3LibraryPathA( Char * const _path ) const
+    {
+        StdString::strcpy( _path, m_python3LibraryPathA );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32FindPython3Service::getPython3DllPathA( Char * const _path ) const
+    {
+        StdString::strcpy( _path, m_python3DllPathA );
     }
     //////////////////////////////////////////////////////////////////////////
 }

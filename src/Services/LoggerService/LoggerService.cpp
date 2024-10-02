@@ -237,24 +237,6 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CONFIGS_LOAD, &LoggerService::notifyConfigsLoad_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE, &LoggerService::notifyBootstrapperRunCompete_, MENGINE_DOCUMENT_FACTORABLE );
 
-        ThreadConditionVariableInterfacePtr conditionLogger = THREAD_SYSTEM()
-            ->createConditionVariable( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( conditionLogger );
-
-        m_conditionLogger = conditionLogger;
-
-        ThreadIdentityInterfacePtr threadLogger = THREAD_SYSTEM()
-            ->createThreadIdentity( STRINGIZE_STRING_LOCAL( "LoggerService" ), ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
-
-        ThreadIdentityRunnerInterfacePtr threadRunner = threadLogger->run( [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
-        {
-            this->processMessages_( _runner );
-        } );
-
-        m_threadLogger = threadLogger;
-        m_threadRunner = threadRunner;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -279,6 +261,29 @@ namespace Mengine
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryLoggerRecord );
         m_factoryLoggerRecord = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool LoggerService::_runService()
+    {
+        ThreadConditionVariableInterfacePtr conditionLogger = THREAD_SYSTEM()
+            ->createConditionVariable( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( conditionLogger );
+
+        m_conditionLogger = conditionLogger;
+
+        ThreadIdentityInterfacePtr threadLogger = THREAD_SYSTEM()
+            ->createThreadIdentity( STRINGIZE_STRING_LOCAL( "LoggerService" ), ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
+
+        ThreadIdentityRunnerInterfacePtr threadRunner = threadLogger->run( [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
+        {
+            this->processMessages_( _runner );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        m_threadLogger = threadLogger;
+        m_threadRunner = threadRunner;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::_stopService()
@@ -461,6 +466,8 @@ namespace Mengine
         ELoggerLevel level = message.level;
 
         uint32_t statisticId = m_staticsticLevel[level];
+
+        MENGINE_UNUSED( statisticId );
 
         STATISTIC_INC_INTEGER( statisticId );
 

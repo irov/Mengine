@@ -116,7 +116,7 @@ namespace Mengine
             {
                 DWORD lastError = ::GetLastError();
 
-                MENGINE_WNSPRINTF( _message, _capacity, L"error format message [%u] error: %u"
+                MENGINE_SWPRINTF( _message, _capacity, L"error format message [%u] error: %u"
                     , _id
                     , lastError
                 );
@@ -165,7 +165,7 @@ namespace Mengine
 
             static MENGINE_THREAD_LOCAL WChar errorMessageBufferWithErrorCode[2048] = {L'\0'};
 
-            MENGINE_WNSPRINTF( errorMessageBufferWithErrorCode, 2048, L"%ls [%lu]"
+            MENGINE_SWPRINTF( errorMessageBufferWithErrorCode, 2048, L"%ls [%lu]"
                 , errorMessage
                 , error
             );

@@ -61,7 +61,7 @@ endif()
 add_python_module(signal    MOD_SRCS ${SOURCE_DIR}/Modules/signalmodule.c)
 add_python_module(errno     MOD_SRCS ${SOURCE_DIR}/Modules/errnomodule.c)
 #add_python_module(pwd       MOD_SRCS ${TRUE_DIR}/Modules/pwdmodule.c)
-add_python_module(_sre      MOD_SRCS ${SOURCE_DIR}/Modules/_sre.c)
+add_python_module(_sre      MOD_SRCS ${SOURCE_DIR}/Modules/_sre/sre.c)
 add_python_module(_codecs   MOD_SRCS ${SOURCE_DIR}/Modules/_codecsmodule.c)
 add_python_module(_symtable MOD_SRCS ${SOURCE_DIR}/Modules/symtablemodule.c)
 add_python_module(xxsubtype MOD_SRCS ${SOURCE_DIR}/Modules/xxsubtype.c)
@@ -81,20 +81,20 @@ set( HAVE_DEVICE_MACROS 0 )
 
 ############################## 
 
-set(P_SRCS                                     
-        ${SOURCE_DIR}/Parser/acceler.c
-        ${SOURCE_DIR}/Parser/grammar1.c
-        ${SOURCE_DIR}/Parser/listnode.c
-        ${SOURCE_DIR}/Parser/node.c
+set(PARSER_SRCS
+        ${SOURCE_DIR}/Parser/action_helpers.c
+        ${SOURCE_DIR}/Parser/myreadline.c
         ${SOURCE_DIR}/Parser/parser.c
-        ${SOURCE_DIR}/Parser/parsetok.c
+        ${SOURCE_DIR}/Parser/peg_api.c
+        ${SOURCE_DIR}/Parser/pegen.c
+        ${SOURCE_DIR}/Parser/pegen_errors.c
+        ${SOURCE_DIR}/Parser/string_parser.c
         ${SOURCE_DIR}/Parser/token.c
         ${SOURCE_DIR}/Parser/tokenizer.c
-    )
+        )
 
-set(PARSER_SRCS ${P_SRCS} ${SOURCE_DIR}/Parser/myreadline.c ${SOURCE_DIR}/Parser/tokenizer.c )
 
-set(OBJECT_SRCS                
+set(OBJECT_SRCS
         ${SOURCE_DIR}/Objects/abstract.c
         ${SOURCE_DIR}/Objects/call.c
         ${SOURCE_DIR}/Objects/boolobject.c
@@ -137,10 +137,9 @@ set(OBJECT_SRCS
         ${SOURCE_DIR}/Objects/unicodectype.c
         ${SOURCE_DIR}/Objects/unicodeobject.c
         ${SOURCE_DIR}/Objects/unicodetype_db.h
-        ${SOURCE_DIR}/Objects/weakrefobject.c        
+        ${SOURCE_DIR}/Objects/weakrefobject.c
         ${SOURCE_DIR}/Objects/namespaceobject.c
         ${SOURCE_DIR}/Objects/odictobject.c
-        ${SOURCE_DIR}/Objects/accu.c
         ${SOURCE_DIR}/Objects/picklebufobject.c
         ${SOURCE_DIR}/Objects/interpreteridobject.c
         )
@@ -148,182 +147,168 @@ set(OBJECT_SRCS
 set(OBJECT_SRCS ${OBJECT_SRCS} ${SOURCE_DIR}/Objects/unicodeobject.c ${SOURCE_DIR}/Objects/unicodectype.c)
 
 
-set(PYTHON_SRCS              
-                ${SOURCE_DIR}/Python/_warnings.c
-                ${SOURCE_DIR}/Python/preconfig.c
-                ${SOURCE_DIR}/Python/initconfig.c
-                ${SOURCE_DIR}/Python/asdl.c
-                ${SOURCE_DIR}/Python/ast.c
-                ${SOURCE_DIR}/Python/ast_opt.c
-                ${SOURCE_DIR}/Python/ast_unparse.c
-                ${SOURCE_DIR}/Python/bltinmodule.c
-                ${SOURCE_DIR}/Python/ceval.c
-                ${SOURCE_DIR}/Python/codecs.c
-                ${SOURCE_DIR}/Python/compile.c
-                ${SOURCE_DIR}/Python/dynamic_annotations.c
-                ${SOURCE_DIR}/Python/errors.c
-                ${SOURCE_DIR}/Python/fileutils.c
-                ${SOURCE_DIR}/Python/formatter_unicode.c
-                ${SOURCE_DIR}/Python/frozen.c
-                ${SOURCE_DIR}/Python/future.c
-                ${SOURCE_DIR}/Python/getargs.c
-                ${SOURCE_DIR}/Python/getcompiler.c
-                ${SOURCE_DIR}/Python/getcopyright.c
-                ${SOURCE_DIR}/Python/getopt.c
-                ${SOURCE_DIR}/Python/getplatform.c
-                ${SOURCE_DIR}/Python/getversion.c
-                ${SOURCE_DIR}/Python/graminit.c
-                ${SOURCE_DIR}/Python/import.c
-                ${SOURCE_DIR}/Python/importdl.c
-                ${SOURCE_DIR}/Python/importdl.h
-                ${SOURCE_DIR}/Python/marshal.c
-                ${SOURCE_DIR}/Python/modsupport.c
-                ${SOURCE_DIR}/Python/mysnprintf.c
-                ${SOURCE_DIR}/Python/mystrtoul.c
-                ${SOURCE_DIR}/Python/peephole.c
-                ${SOURCE_DIR}/Python/pyarena.c
-                ${SOURCE_DIR}/Python/pyctype.c
-                ${SOURCE_DIR}/Python/pyfpe.c
-                ${SOURCE_DIR}/Python/pymath.c
-                ${SOURCE_DIR}/Python/pytime.c
-                ${SOURCE_DIR}/Python/pystate.c
-                ${SOURCE_DIR}/Python/pystrcmp.c
-                ${SOURCE_DIR}/Python/pystrtod.c
-                ${SOURCE_DIR}/Python/dtoa.c
-                ${SOURCE_DIR}/Python/Python-ast.c
-                ${SOURCE_DIR}/Python/pythonrun.c
-                ${SOURCE_DIR}/Python/structmember.c
-                ${SOURCE_DIR}/Python/symtable.c
-                ${SOURCE_DIR}/Python/sysmodule.c
-                ${SOURCE_DIR}/Python/thread.c
-                ${SOURCE_DIR}/Python/thread_nt.h
-                ${SOURCE_DIR}/Python/traceback.c
-                ${SOURCE_DIR}/Python/dynload_win.c
-                ${SOURCE_DIR}/Python/pyhash.c    
-                ${SOURCE_DIR}/Python/pylifecycle.c
-                ${SOURCE_DIR}/Python/pystrhex.c
-                ${SOURCE_DIR}/Python/bootstrap_hash.c
-				${SOURCE_DIR}/Python/pyhash.c
-                ${SOURCE_DIR}/Python/pathconfig.c
-                ${SOURCE_DIR}/Python/context.c
-                ${SOURCE_DIR}/Python/hamt.c
-                
-                ${SOURCE_DIR}/PC/config.c
-                ${SOURCE_DIR}/PC/dl_nt.c
-                ${SOURCE_DIR}/PC/getpathp.c
-                ${SOURCE_DIR}/PC/msvcrtmodule.c
-                ${SOURCE_DIR}/PC/winreg.c
-                ${SOURCE_DIR}/PC/invalid_parameter_handler.c
-                
-                
-                ${DYNLOAD_SRC}
-                )
- 
-                
-set(MODULE_SRCS                
-                ${SOURCE_DIR}/Modules/_bisectmodule.c
-                ${SOURCE_DIR}/Modules/_codecsmodule.c
-                ${SOURCE_DIR}/Modules/_collectionsmodule.c
-                ${SOURCE_DIR}/Modules/_csv.c
-                ${SOURCE_DIR}/Modules/_functoolsmodule.c
-                ${SOURCE_DIR}/Modules/_heapqmodule.c
-                ${SOURCE_DIR}/Modules/_json.c
-                ${SOURCE_DIR}/Modules/_localemodule.c
-                ${SOURCE_DIR}/Modules/_lsprof.c
-                ${SOURCE_DIR}/Modules/_math.c
-                ${SOURCE_DIR}/Modules/_math.h
-                ${SOURCE_DIR}/Modules/_pickle.c
-                ${SOURCE_DIR}/Modules/_randommodule.c
-                ${SOURCE_DIR}/Modules/_sre.c
-                ${SOURCE_DIR}/Modules/_struct.c
-                ${SOURCE_DIR}/Modules/_weakref.c
-                ${SOURCE_DIR}/Modules/_tracemalloc.c
-                ${SOURCE_DIR}/Modules/_opcode.c
-                ${SOURCE_DIR}/Modules/_stat.c
-                ${SOURCE_DIR}/Modules/_winapi.c
-                ${SOURCE_DIR}/Modules/_operator.c
-                ${SOURCE_DIR}/Modules/_contextvarsmodule.c
-                ${SOURCE_DIR}/Modules/_ssl.c
-                ${SOURCE_DIR}/Modules/_abc.c
-                
-                ${SOURCE_DIR}/Modules/_multiprocessing/multiprocessing.c
-                ${SOURCE_DIR}/Modules/_multiprocessing/posixshmem.c
-                ${SOURCE_DIR}/Modules/_multiprocessing/semaphore.c
+set(PYTHON_SRCS
+        ${SOURCE_DIR}/Python/_warnings.c
+        ${SOURCE_DIR}/Python/preconfig.c
+        ${SOURCE_DIR}/Python/initconfig.c
+        ${SOURCE_DIR}/Python/asdl.c
+        ${SOURCE_DIR}/Python/ast.c
+        ${SOURCE_DIR}/Python/ast_opt.c
+        ${SOURCE_DIR}/Python/ast_unparse.c
+        ${SOURCE_DIR}/Python/bltinmodule.c
+        ${SOURCE_DIR}/Python/ceval.c
+        ${SOURCE_DIR}/Python/codecs.c
+        ${SOURCE_DIR}/Python/compile.c
+        ${SOURCE_DIR}/Python/dynamic_annotations.c
+        ${SOURCE_DIR}/Python/errors.c
+        ${SOURCE_DIR}/Python/fileutils.c
+        ${SOURCE_DIR}/Python/formatter_unicode.c
+        ${SOURCE_DIR}/Python/frozen.c
+        ${SOURCE_DIR}/Python/future.c
+        ${SOURCE_DIR}/Python/getargs.c
+        ${SOURCE_DIR}/Python/getcompiler.c
+        ${SOURCE_DIR}/Python/getcopyright.c
+        ${SOURCE_DIR}/Python/getopt.c
+        ${SOURCE_DIR}/Python/getplatform.c
+        ${SOURCE_DIR}/Python/getversion.c
+        ${SOURCE_DIR}/Python/import.c
+        ${SOURCE_DIR}/Python/importdl.c
+        ${SOURCE_DIR}/Python/importdl.h
+        ${SOURCE_DIR}/Python/marshal.c
+        ${SOURCE_DIR}/Python/modsupport.c
+        ${SOURCE_DIR}/Python/mysnprintf.c
+        ${SOURCE_DIR}/Python/mystrtoul.c
+        ${SOURCE_DIR}/Python/pyarena.c
+        ${SOURCE_DIR}/Python/pyctype.c
+        ${SOURCE_DIR}/Python/pyfpe.c
+        ${SOURCE_DIR}/Python/pymath.c
+        ${SOURCE_DIR}/Python/pytime.c
+        ${SOURCE_DIR}/Python/pystate.c
+        ${SOURCE_DIR}/Python/pystrcmp.c
+        ${SOURCE_DIR}/Python/pystrtod.c
+        ${SOURCE_DIR}/Python/dtoa.c
+        ${SOURCE_DIR}/Python/Python-ast.c
+        ${SOURCE_DIR}/Python/pythonrun.c
+        ${SOURCE_DIR}/Python/structmember.c
+        ${SOURCE_DIR}/Python/symtable.c
+        ${SOURCE_DIR}/Python/sysmodule.c
+        ${SOURCE_DIR}/Python/thread.c
+        ${SOURCE_DIR}/Python/thread_nt.h
+        ${SOURCE_DIR}/Python/traceback.c
+        ${SOURCE_DIR}/Python/dynload_win.c
+        ${SOURCE_DIR}/Python/pyhash.c    
+        ${SOURCE_DIR}/Python/pylifecycle.c
+        ${SOURCE_DIR}/Python/pystrhex.c
+        ${SOURCE_DIR}/Python/bootstrap_hash.c
+        ${SOURCE_DIR}/Python/pyhash.c
+        ${SOURCE_DIR}/Python/pathconfig.c
+        ${SOURCE_DIR}/Python/context.c
+        ${SOURCE_DIR}/Python/hamt.c
+        
+        ${SOURCE_DIR}/PC/config.c
+        ${SOURCE_DIR}/PC/dl_nt.c
+        ${SOURCE_DIR}/PC/msvcrtmodule.c
+        ${SOURCE_DIR}/PC/winreg.c
+        ${SOURCE_DIR}/PC/invalid_parameter_handler.c
+        
+        
+        ${DYNLOAD_SRC}
+        )
 
-                ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_cn.c
-                ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_hk.c
-                ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_iso2022.c
-                ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_jp.c
-                ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_kr.c
-                ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_tw.c
-                                
-                ${SOURCE_DIR}/Modules/_io/_iomodule.c
-                ${SOURCE_DIR}/Modules/_io/bufferedio.c
-                ${SOURCE_DIR}/Modules/_io/bytesio.c
-                ${SOURCE_DIR}/Modules/_io/fileio.c
-                ${SOURCE_DIR}/Modules/_io/iobase.c
-                ${SOURCE_DIR}/Modules/_io/stringio.c
-                ${SOURCE_DIR}/Modules/_io/textio.c
-                ${SOURCE_DIR}/Modules/_io/winconsoleio.c
-                
-                ${SOURCE_DIR}/Modules/_blake2/blake2b_impl.c
-                ${SOURCE_DIR}/Modules/_blake2/blake2module.c
-                ${SOURCE_DIR}/Modules/_blake2/blake2s_impl.c
-                
-                ${SOURCE_DIR}/Modules/_sha3/sha3module.c               
-                
-                
-                ${SOURCE_DIR}/Modules/cjkcodecs/multibytecodec.c
-                
-                ${SOURCE_DIR}/Modules/arraymodule.c
-                ${SOURCE_DIR}/Modules/atexitmodule.c
-                ${SOURCE_DIR}/Modules/audioop.c
-                ${SOURCE_DIR}/Modules/binascii.c
-                ${SOURCE_DIR}/Modules/cmathmodule.c
-                ${SOURCE_DIR}/Modules/errnomodule.c
-                ${SOURCE_DIR}/Modules/gcmodule.c
-                ${SOURCE_DIR}/Modules/itertoolsmodule.c
-                ${SOURCE_DIR}/Modules/main.c
-                ${SOURCE_DIR}/Modules/mathmodule.c
-                ${SOURCE_DIR}/Modules/md5module.c
-                ${SOURCE_DIR}/Modules/mmapmodule.c
-                ${SOURCE_DIR}/Modules/parsermodule.c
-                ${SOURCE_DIR}/Modules/posixmodule.c
-                ${SOURCE_DIR}/Modules/rotatingtree.c
-                ${SOURCE_DIR}/Modules/rotatingtree.h
-                ${SOURCE_DIR}/Modules/sha1module.c
-                ${SOURCE_DIR}/Modules/sha256module.c
-                ${SOURCE_DIR}/Modules/sha512module.c
-                ${SOURCE_DIR}/Modules/signalmodule.c
-                ${SOURCE_DIR}/Modules/symtablemodule.c
-                ${SOURCE_DIR}/Modules/_threadmodule.c
-                ${SOURCE_DIR}/Modules/_datetimemodule.c
-                ${SOURCE_DIR}/Modules/xxsubtype.c
-                ${SOURCE_DIR}/Modules/unicodedata.c
-                
-                ${SOURCE_DIR}/Modules/faulthandler.c
-                ${SOURCE_DIR}/Modules/hashtable.c
-                
-                ${SOURCE_DIR}/Modules/pyexpat.c
-                
-                ${SOURCE_DIR}/Modules/socketmodule.c
-              
-                ${SOURCE_DIR}/Modules/expat/xmlparse.c
-                ${SOURCE_DIR}/Modules/expat/xmlrole.c
-                ${SOURCE_DIR}/Modules/expat/xmltok.c
-                ${SOURCE_DIR}/Modules/expat/xmltok_impl.c
-                ${SOURCE_DIR}/Modules/expat/xmltok_ns.c
-                
-                ${SOURCE_DIR}/Modules/zlibmodule.c
-                
-                
-                ${SOURCE_DIR}/Modules/timemodule.c
-                ${SOURCE_DIR}/Modules/selectmodule.c
-                ${MOD_SRCS} )
+set(MODULE_SRCS
+        ${SOURCE_DIR}/Modules/_bisectmodule.c
+        ${SOURCE_DIR}/Modules/_codecsmodule.c
+        ${SOURCE_DIR}/Modules/_collectionsmodule.c
+        ${SOURCE_DIR}/Modules/_csv.c
+        ${SOURCE_DIR}/Modules/_functoolsmodule.c
+        ${SOURCE_DIR}/Modules/_heapqmodule.c
+        ${SOURCE_DIR}/Modules/_json.c
+        ${SOURCE_DIR}/Modules/_localemodule.c
+        ${SOURCE_DIR}/Modules/_lsprof.c
+        ${SOURCE_DIR}/Modules/_math.h
+        ${SOURCE_DIR}/Modules/_pickle.c
+        ${SOURCE_DIR}/Modules/_randommodule.c
+        ${SOURCE_DIR}/Modules/_struct.c
+        ${SOURCE_DIR}/Modules/_weakref.c
+        ${SOURCE_DIR}/Modules/_tracemalloc.c
+        ${SOURCE_DIR}/Modules/_opcode.c
+        ${SOURCE_DIR}/Modules/_stat.c
+        ${SOURCE_DIR}/Modules/_winapi.c
+        ${SOURCE_DIR}/Modules/_operator.c
+        ${SOURCE_DIR}/Modules/_contextvarsmodule.c
+        ${SOURCE_DIR}/Modules/_ssl.c
+        ${SOURCE_DIR}/Modules/_abc.c
+        
+        ${SOURCE_DIR}/Modules/_multiprocessing/multiprocessing.c
+        ${SOURCE_DIR}/Modules/_multiprocessing/posixshmem.c
+        ${SOURCE_DIR}/Modules/_multiprocessing/semaphore.c
+
+        ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_cn.c
+        ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_hk.c
+        ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_iso2022.c
+        ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_jp.c
+        ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_kr.c
+        ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_tw.c
+                        
+        ${SOURCE_DIR}/Modules/_io/_iomodule.c
+        ${SOURCE_DIR}/Modules/_io/bufferedio.c
+        ${SOURCE_DIR}/Modules/_io/bytesio.c
+        ${SOURCE_DIR}/Modules/_io/fileio.c
+        ${SOURCE_DIR}/Modules/_io/iobase.c
+        ${SOURCE_DIR}/Modules/_io/stringio.c
+        ${SOURCE_DIR}/Modules/_io/textio.c
+        ${SOURCE_DIR}/Modules/_io/winconsoleio.c
+        
+        ${SOURCE_DIR}/Modules/_blake2/blake2b_impl.c
+        ${SOURCE_DIR}/Modules/_blake2/blake2module.c
+        ${SOURCE_DIR}/Modules/_blake2/blake2s_impl.c
+        
+        ${SOURCE_DIR}/Modules/cjkcodecs/multibytecodec.c
+        
+        ${SOURCE_DIR}/Modules/arraymodule.c
+        ${SOURCE_DIR}/Modules/atexitmodule.c
+        ${SOURCE_DIR}/Modules/audioop.c
+        ${SOURCE_DIR}/Modules/binascii.c
+        ${SOURCE_DIR}/Modules/cmathmodule.c
+        ${SOURCE_DIR}/Modules/errnomodule.c
+        ${SOURCE_DIR}/Modules/gcmodule.c
+        ${SOURCE_DIR}/Modules/itertoolsmodule.c
+        ${SOURCE_DIR}/Modules/main.c
+        ${SOURCE_DIR}/Modules/mathmodule.c
+        ${SOURCE_DIR}/Modules/md5module.c
+        ${SOURCE_DIR}/Modules/mmapmodule.c
+        ${SOURCE_DIR}/Modules/posixmodule.c
+        ${SOURCE_DIR}/Modules/rotatingtree.c
+        ${SOURCE_DIR}/Modules/rotatingtree.h
+        ${SOURCE_DIR}/Modules/sha1module.c
+        ${SOURCE_DIR}/Modules/signalmodule.c
+        ${SOURCE_DIR}/Modules/symtablemodule.c
+        ${SOURCE_DIR}/Modules/_threadmodule.c
+        ${SOURCE_DIR}/Modules/_datetimemodule.c
+        ${SOURCE_DIR}/Modules/xxsubtype.c
+        ${SOURCE_DIR}/Modules/unicodedata.c
+        
+        ${SOURCE_DIR}/Modules/faulthandler.c
+        
+        ${SOURCE_DIR}/Modules/pyexpat.c
+        
+        ${SOURCE_DIR}/Modules/socketmodule.c
+      
+        ${SOURCE_DIR}/Modules/expat/xmlparse.c
+        ${SOURCE_DIR}/Modules/expat/xmlrole.c
+        ${SOURCE_DIR}/Modules/expat/xmltok.c
+        ${SOURCE_DIR}/Modules/expat/xmltok_impl.c
+        ${SOURCE_DIR}/Modules/expat/xmltok_ns.c
+        
+        ${SOURCE_DIR}/Modules/zlibmodule.c
+        
+        
+        ${SOURCE_DIR}/Modules/timemodule.c
+        ${SOURCE_DIR}/Modules/selectmodule.c
+        ${MOD_SRCS} )
+        
 if(NOT WIN32)
     set(MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c)
-else()
-    set(MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/PC/getpathp.c)
 endif()
 
 include_directories(${OPENSSL_INCLUDE_DIR})

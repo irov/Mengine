@@ -4,6 +4,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/ThreadMutexScope.h"
@@ -17,6 +18,8 @@
 #include "Kernel/PathString.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/AssertionVocabulary.h"
+#include "Kernel/DefaultPrototypeGenerator.h"
+#include "Kernel/FileContent.h"
 
 #include "Config/StdString.h"
 
@@ -36,13 +39,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileService::_initializeService()
     {
-        //Empty
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Content" ), STRINGIZE_STRING_LOCAL( "File" ), Helper::makeDefaultPrototypeGenerator<FileContent, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void FileService::_finalizeService()
     {
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Content" ), STRINGIZE_STRING_LOCAL( "File" ), nullptr );
+
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "FileGroup" ) );
 
 #if defined(MENGINE_DEBUG)

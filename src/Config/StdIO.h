@@ -77,8 +77,8 @@ namespace Mengine
 #define MENGINE_SSCANF(Buffer, ...) std::sscanf( Buffer, __VA_ARGS__ )
 #endif
 //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_WNSPRINTF
-#define MENGINE_WNSPRINTF(Buffer, Capacity, ...) std::swprintf(Buffer, Capacity, __VA_ARGS__ )
+#ifndef MENGINE_SWPRINTF
+#define MENGINE_SWPRINTF(Buffer, Capacity, ...) std::swprintf(Buffer, Capacity, __VA_ARGS__ )
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_SPRINTF
@@ -91,6 +91,8 @@ namespace Mengine
 {
     namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
+        MENGINE_INLINE int32_t __mengine_SNPRINTF( Char * const _buffer, size_t const _bufferCount, Char const * const _format, ... ) MENGINE_ATTRIBUTE_FORMAT_STRING( 3, 4 );
         //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE int32_t __mengine_SNPRINTF( Char * const _buffer, size_t const _bufferCount, Char const * const _format, ... )
         {

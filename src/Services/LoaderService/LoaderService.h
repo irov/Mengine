@@ -45,8 +45,6 @@ namespace Mengine
 #endif
 
     protected:
-        ArchivatorInterfacePtr m_archivator;
-
         FilePath m_protocolPath;
 
         typedef Hashtable<ConstString, MetabufLoaderInterfacePtr> HashtableLoaders;

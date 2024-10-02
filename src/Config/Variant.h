@@ -22,9 +22,9 @@ namespace Mengine
         Overloaded( Ts... ) -> Overloaded<Ts...>;
 
         template<class ... Types, class ... Lambdas>
-        void visit( const Variant<Types ...> & _variant, Lambdas ... _lambda )
+        void visit( const Variant<Types ...> & _variant, Lambdas && ... _lambda )
         {
-            std::visit( Helper::Overloaded{_lambda ...}, _variant );
+            std::visit( Helper::Overloaded{std::forward<Lambdas>( _lambda ) ...}, _variant );
         }
 
         template<class ... Types, class T>

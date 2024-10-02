@@ -52,7 +52,7 @@ namespace Mengine
         full_output += outputFilePath.c_str();
 
         WChar command[MENGINE_MAX_COMMAND_LENGTH] = {'\0'};
-        MENGINE_WNSPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"-loglevel error -y -i \"%S\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 8 -max_muxing_queue_size 1024 \"%S\""
+        MENGINE_SWPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"-loglevel error -y -i \"%S\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 8 -max_muxing_queue_size 1024 \"%S\""
             , full_input.c_str()
             , full_output.c_str()
         );

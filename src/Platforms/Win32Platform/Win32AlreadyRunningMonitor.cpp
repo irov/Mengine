@@ -69,7 +69,7 @@ namespace Mengine
         case Mengine::EARP_SHOWMESSAGE:
             {
                 WChar message[1024] = {L'\0'};
-                MENGINE_WNSPRINTF( message, 1024, L"Another instance of '%ls' is already running"
+                MENGINE_SWPRINTF( message, 1024, L"Another instance of '%ls' is already running"
                     , _projectTitle
                 );
 

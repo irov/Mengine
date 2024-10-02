@@ -95,17 +95,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * writeAek( pybind::kernel_interface * _kernel, const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * aekPath )
+    void writeAek( const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * aekPath )
     {
         if( s_writeAek( protocolPath, xmlPath, aekPath ) == false )
         {
-            LOGGER_ERROR( "writeAek: error write bin"
-            );
-
-            return nullptr;
+            LOGGER_ERROR( "writeAek: error write bin" );
         }
-
-        return _kernel->ret_none();
     }
+    //////////////////////////////////////////////////////////////////////////
 }
 

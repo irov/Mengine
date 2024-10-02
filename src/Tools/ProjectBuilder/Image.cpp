@@ -15,22 +15,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static const FactoryInterfacePtr & getFactoryImage()
-    {
-        static FactoryInterfacePtr factoryLoader = Helper::makeFactoryDefault<Image>( nullptr );
-
-        return factoryLoader;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ImagePtr newImage()
-    {
-        const FactoryInterfacePtr & factory = getFactoryImage();
-
-        ImagePtr image = factory->createObject( MENGINE_DOCUMENT_FUNCTION );
-
-        return image;
-    }
-    //////////////////////////////////////////////////////////////////////////
     Image::Image()
         : m_width( 0 )
         , m_height( 0 )
@@ -230,7 +214,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Image::paste( const ImagePtr & _image, uint32_t _x, uint32_t _y )
+    bool Image::paste( Image * _image, uint32_t _x, uint32_t _y )
     {
         uint32_t paste_width = _image->getWidth();
         uint32_t paste_height = _image->getHeight();
@@ -297,73 +281,13 @@ namespace Mengine
         return channels;
     }
     //////////////////////////////////////////////////////////////////////////
-    pybind::list Image::getdata() const
-    {
-        uint32_t channels = Helper::getPixelFormatChannels( m_format );
-
-        uint8_t * memory = this->getMemory();
-
-        pybind::kernel_interface * kernel = pybind::get_kernel();
-
-        pybind::list pixels( kernel, m_width * m_height );
-
-        for( uint32_t j = 0; j != m_height; ++j )
-        {
-            for( uint32_t i = 0; i != m_width; ++i )
-            {
-                uint32_t pixel_index = i + (j * m_width);
-                uint32_t index = pixel_index * channels;
-
-                pybind::list pixel( kernel, channels );
-
-                for( uint32_t k = 0; k != channels; ++k )
-                {
-                    uint8_t color = memory[index + k];
-
-                    pixel[k] = color;
-                }
-
-                pixels[pixel_index] = pixel;
-            }
-        }
-
-        return pixels;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Image::putdata( const pybind::list & _data )
-    {
-        uint32_t channels = Helper::getPixelFormatChannels( m_format );
-
-        uint8_t * memory = this->getMemory();
-
-        for( uint32_t j = 0; j != m_height; ++j )
-        {
-            for( uint32_t i = 0; i != m_width; ++i )
-            {
-                uint32_t pixel_index = i + (j * m_width);
-                uint32_t index = pixel_index * channels;
-
-                pybind::list pixel = _data[pixel_index];
-
-                for( uint32_t k = 0; k != channels; ++k )
-                {
-                    uint8_t color = pixel[k];
-
-                    memory[index + k] = color;
-                }
-            }
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ImagePtr Image::rotate( float _angle )
+    Image * Image::rotate( float _angle )
     {
         MENGINE_UNUSED( _angle );
 
         uint32_t channels = Helper::getPixelFormatChannels( m_format );
 
-        ImagePtr image = newImage();
+        Image * image = new Image;
 
         image->create( m_height, m_width, channels );
 
@@ -387,12 +311,9 @@ namespace Mengine
         return image;
     }
     //////////////////////////////////////////////////////////////////////////
-    pybind::list Image::getextrema() const
+    void Image::getExtremColor( uint8_t min_color[4], uint8_t max_color[4] ) const
     {
         uint32_t channels = Helper::getPixelFormatChannels( m_format );
-
-        uint8_t min_color[4];
-        uint8_t max_color[4];
 
         for( uint32_t k = 0; k != channels; ++k )
         {
@@ -424,17 +345,6 @@ namespace Mengine
                 }
             }
         }
-
-        pybind::kernel_interface * kernel = pybind::get_kernel();
-
-        pybind::list py_extrema( kernel, channels );
-
-        for( uint32_t k = 0; k != channels; ++k )
-        {
-            py_extrema[k] = pybind::make_tuple_t( kernel, min_color[k], max_color[k] );
-        }
-
-        return py_extrema;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Image::uselessalpha() const
@@ -473,14 +383,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    pybind::tuple Image::split() const
+    void Image::split( Image ** _imageRGB, Image ** _imageAlpha ) const
     {
         uint32_t channels = Helper::getPixelFormatChannels( m_format );
 
-        ImagePtr imageRGB = newImage();
+        Image * imageRGB = new Image;
         imageRGB->create( m_width, m_height, 3 );
 
-        ImagePtr imageAlpha = newImage();
+        Image * imageAlpha = new Image;
         imageAlpha->create( m_width, m_height, 1 );
 
         uint8_t * memory_buffer_this = m_memory->getBuffer();
@@ -503,9 +413,8 @@ namespace Mengine
             }
         }
 
-        pybind::kernel_interface * kernel = pybind::get_kernel();
-
-        return pybind::make_tuple_t( kernel, imageRGB, imageAlpha );
+        *_imageRGB = imageRGB;
+        *_imageAlpha = imageAlpha;
     }
     //////////////////////////////////////////////////////////////////////////
     void Image::release()
@@ -513,21 +422,21 @@ namespace Mengine
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Image::embedding( pybind::kernel_interface * _kernel, PyObject * _module )
-    {
-        pybind::interface_<Image>( _kernel, "Image", true, _module )
-            .def_smart_pointer()
-            .def( "getWidth", &Image::getWidth )
-            .def( "getHeight", &Image::getHeight )
-            .def( "getChannels", &Image::getChannels )
-            .def( "paste", &Image::paste )
-            .def( "getdata", &Image::getdata )
-            .def( "putdata", &Image::putdata )
-            .def( "rotate", &Image::rotate )
-            .def( "getextrema", &Image::getextrema )
-            .def( "uselessalpha", &Image::uselessalpha )
-            .def( "split", &Image::split )
-            .def( "release", &Image::release )
-            ;
-    }
+    //void Image::embedding( pybind::kernel_interface * _kernel, PyObject * _module )
+    //{
+    //    pybind::interface_<Image>( _kernel, "Image", true, _module )
+    //        .def_smart_pointer()
+    //        .def( "getWidth", &Image::getWidth )
+    //        .def( "getHeight", &Image::getHeight )
+    //        .def( "getChannels", &Image::getChannels )
+    //        .def( "paste", &Image::paste )
+    //        .def( "getdata", &Image::getdata )
+    //        .def( "putdata", &Image::putdata )
+    //        .def( "rotate", &Image::rotate )
+    //        .def( "getextrema", &Image::getExtremColor )
+    //        .def( "uselessalpha", &Image::uselessalpha )
+    //        .def( "split", &Image::split )
+    //        .def( "release", &Image::release )
+    //        ;
+    //}
 }

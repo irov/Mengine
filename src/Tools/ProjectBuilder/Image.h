@@ -7,18 +7,10 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Factorable.h"
 
-#include "pybind/pybind.hpp"
-
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Image> ImagePtr;
-    //////////////////////////////////////////////////////////////////////////
     class Image
-        : public Factorable
     {
-        DECLARE_FACTORABLE( Image );
-
     public:
         Image();
         ~Image();
@@ -31,17 +23,14 @@ namespace Mengine
 
         void fill( const Color & _colour );
 
-        bool paste( const ImagePtr & _image, uint32_t _x, uint32_t _y );
+        bool paste( Image * _image, uint32_t _x, uint32_t _y );
 
-        pybind::list getdata() const;
-        bool putdata( const pybind::list & _data );
+        Image * rotate( float _angle );
 
-        ImagePtr rotate( float _angle );
-
-        pybind::list getextrema() const;
+        void getExtremColor( uint8_t min_color[4], uint8_t max_color[4] ) const;
         bool uselessalpha() const;
 
-        pybind::tuple split() const;
+        void split( Image ** _imageRGB, Image ** _imageAlpha ) const;
 
         void release();
 
@@ -51,9 +40,6 @@ namespace Mengine
         uint32_t getWidth() const;
         uint32_t getHeight() const;
         uint32_t getChannels() const;
-
-    public:
-        static void embedding( pybind::kernel_interface * _kernel, PyObject * _module );
 
     protected:
         FilePath m_path;
@@ -65,9 +51,4 @@ namespace Mengine
 
         EPixelFormat m_format;
     };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Image> ImagePtr;
-    //////////////////////////////////////////////////////////////////////////
-    ImagePtr newImage();
-    //////////////////////////////////////////////////////////////////////////
 }

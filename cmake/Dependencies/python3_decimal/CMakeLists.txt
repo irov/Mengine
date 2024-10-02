@@ -27,11 +27,10 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/_decimal/libmpdec/fnt.c
                 ${SOURCE_DIR}/Modules/_decimal/libmpdec/fourstep.c
                 ${SOURCE_DIR}/Modules/_decimal/libmpdec/io.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/memory.c
                 ${SOURCE_DIR}/Modules/_decimal/libmpdec/mpdecimal.c
                 ${SOURCE_DIR}/Modules/_decimal/libmpdec/numbertheory.c
                 ${SOURCE_DIR}/Modules/_decimal/libmpdec/sixstep.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/transpose.c                
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/transpose.c
                 )
 				
 include_directories(${SOURCE_DIR})

@@ -83,7 +83,7 @@ namespace Mengine
         full_output += outputFilePath.c_str();
 
         WChar command[MENGINE_MAX_COMMAND_LENGTH] = {'\0'};
-        MENGINE_WNSPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"/nologo /T vs_1_1 /O3 /Fo \"%S\" \"%S\""
+        MENGINE_SWPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"/nologo /T vs_1_1 /O3 /Fo \"%S\" \"%S\""
             , full_output.c_str()
             , full_input.c_str()
         );

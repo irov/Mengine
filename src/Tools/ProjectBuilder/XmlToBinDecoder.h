@@ -1,8 +1,8 @@
 #pragma once
 
-#include "pybind/pybind.hpp"
+#include "Config/Config.h"
 
 namespace Mengine
 {
-    PyObject * writeBin( pybind::kernel_interface * _kernel, const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * binPath );
+    void writeBin( const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * binPath );
 }

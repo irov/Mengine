@@ -76,9 +76,9 @@ namespace Mengine
         m_runner = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityRunnerInterfacePtr Win32ThreadIdentity::run( const LambdaThreadRunner & _lambda )
+    ThreadIdentityRunnerInterfacePtr Win32ThreadIdentity::run( const LambdaThreadRunner & _lambda, const DocumentInterfacePtr & _doc )
     {
-        m_runner = Helper::makeFactorableUnique<Win32ThreadIdentityRunner>( MENGINE_DOCUMENT_FACTORABLE, _lambda );
+        m_runner = Helper::makeFactorableUnique<Win32ThreadIdentityRunner>( _doc, _lambda );
 
         HANDLE thread = ::CreateThread( NULL, 0, &Detail::s_treadJob, (LPVOID)this, 0, NULL );
 
@@ -89,7 +89,7 @@ namespace Mengine
             );
 
             return nullptr;
-        }        
+        }
 
 #if defined(MENGINE_DEBUG) && defined(MENGINE_TOOLCHAIN_MSVC) && defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         if( ::IsDebuggerPresent() == TRUE )
@@ -145,7 +145,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::main()
-    {        
+    {
         m_threadId = ::GetCurrentThreadId();
 
         ALLOCATOR_SYSTEM()

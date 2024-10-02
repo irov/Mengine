@@ -48,7 +48,7 @@ namespace Mengine
     bool Win32XlsExportPlugin::_initializePlugin()
     {
         WIN32_FINDPYTHON3_SERVICE()
-            ->getPython3Path( m_python3Path );
+            ->getPython3ExecutablePathA( m_python3Path );
 
         if( StdString::strlen( m_python3Path ) == 0 )
         {
@@ -130,7 +130,7 @@ namespace Mengine
         }
         
         WChar command[MENGINE_MAX_COMMAND_LENGTH] = {'\0'};
-        MENGINE_WNSPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"-m %ls %S"
+        MENGINE_SWPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"\"%ls\" %S"
             , shortpath_xlsxExporterModulePath
             , Project_Codename.c_str()
         );

@@ -73,5 +73,28 @@ namespace Mengine
         bool stringalized( const Color & _value, Char * const _string, size_t _capacity );
         bool stringalized( const AspectRatioViewport & _value, Char * const _string, size_t _capacity );
         //////////////////////////////////////////////////////////////////////////
+        bool stringalized( bool _value, WChar * const _string, size_t _capacity );
+        bool stringalized( int8_t _value, WChar * const _string, size_t _capacity );
+        bool stringalized( uint8_t _value, WChar * const _string, size_t _capacity );
+        bool stringalized( int16_t _value, WChar * const _string, size_t _capacity );
+        bool stringalized( uint16_t _value, WChar * const _string, size_t _capacity );
+        bool stringalized( int32_t _value, WChar * const _string, size_t _capacity );
+        bool stringalized( uint32_t _value, WChar * const _string, size_t _capacity );
+        bool stringalized( int64_t _value, WChar * const _string, size_t _capacity );
+        bool stringalized( uint64_t _value, WChar * const _string, size_t _capacity );
+#if defined(MENGINE_STRINGALIZED_SIZE_T)
+        bool stringalized( size_t _value, WChar * const _string, size_t _capacity );
+#endif
+        bool stringalized( float _value, WChar * const _string, size_t _capacity );
+        bool stringalized( double _value, WChar * const _string, size_t _capacity );
+        bool stringalized( const mt::vec2f & _value, WChar * const _string, size_t _capacity );
+        bool stringalized( const mt::vec3f & _value, WChar * const _string, size_t _capacity );
+        bool stringalized( const mt::vec4f & _value, WChar * const _string, size_t _capacity );
+        bool stringalized( const WChar * _value, WChar * const _string, size_t _capacity );
+        bool stringalized( const WString & _value, WChar * const _string, size_t _capacity );
+        bool stringalized( const Resolution & _value, WChar * const _string, size_t _capacity );
+        bool stringalized( const Color & _value, WChar * const _string, size_t _capacity );
+        bool stringalized( const AspectRatioViewport & _value, WChar * const _string, size_t _capacity );
+        //////////////////////////////////////////////////////////////////////////
     }
 }

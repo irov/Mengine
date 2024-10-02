@@ -4527,6 +4527,8 @@ namespace Mengine
         pybind::unregistration_stl_vector_type_cast<VectorResourceImages>(_kernel);
         pybind::unregistration_stl_vector_type_cast<VectorHotSpotPolygons>(_kernel);
 
+        pybind::unregistration_type_cast<ParamVariant>(_kernel);
+
         pybind::unregistration_stl_map_type_cast<Params>(_kernel);
 
         pybind::unregistration_type_cast<String>(_kernel);

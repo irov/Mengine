@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ThreadIdentityRunnerInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Kernel/Mixin.h"
 #include "Kernel/ThreadEnum.h"
@@ -18,7 +19,7 @@ namespace Mengine
         virtual ThreadId getThreadId() const = 0;
 
     public:        
-        virtual ThreadIdentityRunnerInterfacePtr run( const LambdaThreadRunner & _lambda ) = 0;
+        virtual ThreadIdentityRunnerInterfacePtr run( const LambdaThreadRunner & _lambda, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual void join() = 0;

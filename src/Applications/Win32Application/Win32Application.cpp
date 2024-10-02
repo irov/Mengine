@@ -215,7 +215,7 @@ namespace Mengine
             MENGINE_UNUSED( error_code );
 
             WChar message[1024] = {L'\0'};
-            MENGINE_WNSPRINTF( message, 1024, L"Invalid load %ls [%lu]"
+            MENGINE_SWPRINTF( message, 1024, L"Invalid load %ls [%lu]"
                 , MENGINE_DLL_NAME
                 , error_code
             );
@@ -238,7 +238,7 @@ namespace Mengine
             MENGINE_UNUSED( error_code );
 
             WChar message[1024] = {L'\0'};
-            MENGINE_WNSPRINTF( message, 1024, L"Invalid get function '%hs' from dll '%ls' [%lu]"
+            MENGINE_SWPRINTF( message, 1024, L"Invalid get function '%hs' from dll '%ls' [%lu]"
                 , "initializeMengine"
                 , MENGINE_DLL_NAME
                 , error_code

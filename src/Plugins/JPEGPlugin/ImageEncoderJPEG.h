@@ -36,7 +36,7 @@ namespace Mengine
         jpeg_destination_mgr m_destinationMgr;
         jpeg_error_mgr m_errorMgr;
 
-        JOCTET m_JOCTETBuffer[MENGINE_JPEG_OUTPUT_BUF_SIZE];        
+        JOCTET m_JOCTETBuffer[MENGINE_JPEG_OUTPUT_BUF_SIZE];
 
         MENGINE_JMP_DECLARE( m_jmpBuffer );
     };

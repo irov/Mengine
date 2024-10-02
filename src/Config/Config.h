@@ -322,7 +322,7 @@
 #endif
 
 #if defined(MENGINE_DEBUG)
-#   if defined(MENGINE_COMPILER_GCC)
+#   if defined(MENGINE_COMPILER_GCC) || defined(MENGINE_COMPILER_CLANG)
 #       define MENGINE_ATTRIBUTE_FORMAT_STRING(Format, Args) __attribute__ (( __format__ (printf, Format, Args) ))
 #   else
 #       define MENGINE_ATTRIBUTE_FORMAT_STRING(Format, Args)

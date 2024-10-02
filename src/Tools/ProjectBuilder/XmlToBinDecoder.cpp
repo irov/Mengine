@@ -80,17 +80,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * writeBin( pybind::kernel_interface * _kernel, const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * binPath )
+    void writeBin( const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * binPath )
     {
         if( s_writeBin( protocolPath, xmlPath, binPath ) == false )
         {
-            LOGGER_ERROR( "writeBin: error write bin"
-            );
-
-            return nullptr;
+            LOGGER_ERROR( "writeBin: error write bin" );
         }
-
-        return _kernel->ret_none();
     }
+    //////////////////////////////////////////////////////////////////////////
 }
 

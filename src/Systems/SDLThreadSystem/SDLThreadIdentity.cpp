@@ -84,9 +84,9 @@ namespace Mengine
         m_runner = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityRunnerInterfacePtr SDLThreadIdentity::run( const LambdaThreadRunner & _lambda )
+    ThreadIdentityRunnerInterfacePtr SDLThreadIdentity::run( const LambdaThreadRunner & _lambda, const DocumentInterfacePtr & _doc )
     {
-        m_runner = Helper::makeFactorableUnique<SDLThreadIdentityRunner>( MENGINE_DOCUMENT_FACTORABLE, _lambda );
+        m_runner = Helper::makeFactorableUnique<SDLThreadIdentityRunner>( _doc, _lambda );
 
         SDL_Thread * thread = SDL_CreateThread( &Detail::s_treadJob, m_name.c_str(), reinterpret_cast<void *>(this) );
 

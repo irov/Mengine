@@ -339,8 +339,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
         int lz_size = ::LZ4_compressBound( f_size );
 
-        std::vector<char> lz4_buffer( lz_size );
-        char * lz4_memory = &lz4_buffer[0];
+        char * lz4_memory = new char[lz_size];
 
         char * dst_buffer = (char *)lz4_memory;
         const char * src_buffer = (const char *)mf_buffer;
@@ -361,6 +360,8 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
         fwrite( dst_buffer, compressSize, 1, fz );
         fclose( fz );
+
+        delete [] lz4_memory;
 
         _wremove( outCanonicalize );
     }

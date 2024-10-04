@@ -100,8 +100,7 @@ static bool writeCompress( const std::wstring & _filepath, const std::vector<uin
 
     int lz_size = ::LZ4_compressBound( buffer_size );
 
-    std::vector<char> lz4_buffer( lz_size );
-    char * lz4_memory = &lz4_buffer[0];
+    char * lz4_memory = new char[lz_size];
 
     char * dst_buffer = (char *)lz4_memory;
     const char * src_buffer = (const char *)&_buffer[0];
@@ -124,6 +123,8 @@ static bool writeCompress( const std::wstring & _filepath, const std::vector<uin
 
     ::fwrite( dst_buffer, compressSize, 1, fz );
     ::fclose( fz );
+
+    delete [] lz4_memory;
 
     return true;
 }

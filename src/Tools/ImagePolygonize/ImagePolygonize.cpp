@@ -31,14 +31,14 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     {
         message_error( "not found 'texturepacker' param" );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     if( in_path.empty() == true )
     {
         message_error( "not found 'image' param" );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     std::wstring system_cmd;
@@ -108,7 +108,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
             , lpCommandLine
         );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     CloseHandle( lpProcessInformation.hThread );
@@ -127,7 +127,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
             , exit_code
         );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     FILE * f = _wfopen( outCanonicalize, L"rb" );
@@ -138,7 +138,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
             , outCanonicalize
         );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     fseek( f, 0, SEEK_END );
@@ -289,7 +289,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
             , err
         );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     fprintf_s( f_result, "%u\n", vertex_count );
@@ -324,5 +324,5 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     fclose( f_result );
 
-    return 0;
+    return EXIT_SUCCESS;
 }

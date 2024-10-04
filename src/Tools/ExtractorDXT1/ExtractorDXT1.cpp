@@ -114,17 +114,17 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     {
         message_error( "not found 'in' param" );
 
-        return 1;
+        return EXIT_FAILURE;
     }
 
     if( out.empty() == true )
     {
         message_error( "not found 'out' param" );
 
-        return 1;
+        return EXIT_FAILURE;
     }
 
-    WCHAR inCanonicalizeQuote[MAX_PATH];
+    WCHAR inCanonicalizeQuote[MAX_PATH] = {L'\0'};
     ::ForcePathQuoteSpaces( inCanonicalizeQuote, in.c_str() );
     ::PathUnquoteSpaces( inCanonicalizeQuote );
 
@@ -139,7 +139,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
             , in.c_str()
         );
 
-        return 1;
+        return EXIT_FAILURE;
     }
 
     DDS_HEADER header;
@@ -161,21 +161,21 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
             , in.c_str()
         );
 
-        return 1;
+        return EXIT_FAILURE;
     }
 
     if( (header.ddspf.dwFlags & DDPF_FOURCC) == 0 )
     {
         message_error( "ExtractDXT1 dds file no compress" );
 
-        return false;
+        return EXIT_FAILURE;
     }
 
     if( header.ddspf.dwFourCC != FOURCC( 'D', 'X', 'T', '1' ) )
     {
         message_error( "ExtractDXT1 dds file no DXT1" );
 
-        return false;
+        return EXIT_FAILURE;
     }
 
     uint32_t w = (header.dwWidth + 3) / 4;
@@ -187,7 +187,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     fread( dxt1_byte, 1, size, file_in );
     fclose( file_in );
 
-    WCHAR outCanonicalizeQuote[MAX_PATH];
+    WCHAR outCanonicalizeQuote[MAX_PATH] = {'\0'};
     ::ForcePathQuoteSpaces( outCanonicalizeQuote, out.c_str() );
     ::PathUnquoteSpaces( outCanonicalizeQuote );
 
@@ -198,5 +198,5 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     delete[] dxt1_byte;
 
-    return 0;
+    return EXIT_SUCCESS;
 }

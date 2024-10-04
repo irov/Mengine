@@ -92,7 +92,7 @@ namespace Mengine
                 , (DWORD)_id
                 , MAKELANGID( LANG_ENGLISH, SUBLANG_ENGLISH_US )
                 , (LPSTR)_message
-                , _capacity
+                , (DWORD)_capacity
                 , NULL ) == 0 )
             {
                 DWORD lastError = ::GetLastError();
@@ -111,7 +111,7 @@ namespace Mengine
                 , (DWORD)_id
                 , MAKELANGID( LANG_ENGLISH, SUBLANG_ENGLISH_US )
                 , (LPWSTR)_message
-                , _capacity
+                , (DWORD)_capacity
                 , NULL ) == 0 )
             {
                 DWORD lastError = ::GetLastError();

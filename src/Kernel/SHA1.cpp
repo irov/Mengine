@@ -30,12 +30,12 @@ namespace Mengine
                 uint8_t  buffer[64];
             };
             //////////////////////////////////////////////////////////////////////////
-            static uint32_t SHA1_rotl32( uint32_t var, uint32_t hops )
+            MENGINE_CONSTEXPR uint32_t SHA1_rotl32( uint32_t var, uint32_t hops )
             {
                 return (var << hops) | (var >> (32 - hops));
             }
             //////////////////////////////////////////////////////////////////////////
-            static void SHA1_Transform( uint32_t state[5], const uint8_t buffer[64] )
+            MENGINE_CONSTEXPR void SHA1_Transform( uint32_t state[5], const uint8_t buffer[64] )
             {
                 typedef union
                 {
@@ -79,7 +79,7 @@ namespace Mengine
                 state[4] += e;
             }
             //////////////////////////////////////////////////////////////////////////
-            static void SHA1_Init( SHA1_CTX * context )
+            MENGINE_INLINE void SHA1_Init( SHA1_CTX * context )
             {
                 context->state[0] = 0x67452301;
                 context->state[1] = 0xEFCDAB89;
@@ -90,7 +90,7 @@ namespace Mengine
                 context->count[1] = 0;
             }
             //////////////////////////////////////////////////////////////////////////
-            static void SHA1_Update( SHA1_CTX * context, const uint8_t * data, size_t len )
+            MENGINE_INLINE void SHA1_Update( SHA1_CTX * context, const uint8_t * data, size_t len )
             {
                 size_t j = (context->count[0] >> 3) & 63;
 
@@ -124,7 +124,7 @@ namespace Mengine
                 StdString::memcpy( &context->buffer[j], &data[i], (len - i) * sizeof( uint8_t ) );
             }
             //////////////////////////////////////////////////////////////////////////
-            static void SHA1_Final( SHA1_CTX * context, uint8_t * const digest, size_t _size )
+            MENGINE_INLINE void SHA1_Final( SHA1_CTX * context, uint8_t * const digest, size_t _size )
             {
                 uint8_t finalcount[8];
 

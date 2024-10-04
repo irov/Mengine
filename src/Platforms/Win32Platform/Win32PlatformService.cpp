@@ -350,6 +350,8 @@ namespace Mengine
 
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
+        MENGINE_UNUSED( deviceSeed );
+
         LOGGER_INFO_PROTECTED( "platform", "device seed: %u"
             , deviceSeed
         );

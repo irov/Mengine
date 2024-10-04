@@ -49,7 +49,7 @@ int WINAPI WinMain( HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpsz
 
     /* Register the window class, and if it fails quit the program */
     if( !RegisterClassEx( &wincl ) )
-        return 0;
+        return EXIT_FAILURE;
 
     /* The class is registered, let's create the program*/
     hwnd = CreateWindowEx(
@@ -80,7 +80,7 @@ int WINAPI WinMain( HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpsz
     }
 
     /* The program return-value is 0 - The value that PostQuitMessage() gave */
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 #define ID_BTN_Game 1

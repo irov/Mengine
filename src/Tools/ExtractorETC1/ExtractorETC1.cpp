@@ -86,18 +86,16 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     if( in.empty() == true )
     {
-        message_error( "not found 'in' param"
-        );
+        message_error( "not found 'in' param" );
 
-        return 1;
+        return EXIT_FAILURE;
     }
 
     if( out.empty() == true )
     {
-        message_error( "not found 'out' param"
-        );
+        message_error( "not found 'out' param" );
 
-        return 1;
+        return EXIT_FAILURE;
     }
 
     WCHAR inCanonicalizeQuote[MAX_PATH];
@@ -112,7 +110,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
             , inCanonicalizeQuote
         );
 
-        return 1;
+        return EXIT_FAILURE;
     }
 
     PVRTextureHeader header;
@@ -141,7 +139,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
             , inCanonicalizeQuote
         );
 
-        return 1;
+        return EXIT_FAILURE;
     }
 
     fwrite( etc1_byte, 1, size, file_out );
@@ -149,5 +147,5 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     delete[] etc1_byte;
 
-    return 0;
+    return EXIT_SUCCESS;
 }

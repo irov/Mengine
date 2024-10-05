@@ -35,8 +35,8 @@ namespace Mengine
         uint32_t getVerboseFilter() const override;
 
     public:
-        void setThreadMode( bool _threadMode ) override;
-        bool getThreadMode() const override;
+        void setThreadMode( ELoggerMode _threadMode ) override;
+        ELoggerMode getThreadMode() const override;
 
     public:
         void setSilent( bool _silent ) override;
@@ -130,7 +130,7 @@ namespace Mengine
 
         bool m_historically;
         bool m_threadly;
-        bool m_threadMode;
+        ELoggerMode m_threadMode;
 
         MemoryInterfacePtr m_memoryOldLog;
         ContentInterfacePtr m_currentContentLog;

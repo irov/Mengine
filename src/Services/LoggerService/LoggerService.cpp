@@ -60,7 +60,7 @@ namespace Mengine
         , m_silentMessageRelease( false )
         , m_historically( true )
         , m_threadly( false )
-        , m_threadMode( MENGINE_BUILD_PUBLISH_VALUE( true, false ) )
+        , m_threadMode( MENGINE_BUILD_PUBLISH_VALUE( LMODE_DEFERRED_THREAD, LMODE_NORMAL ) )
     {
         m_staticsticLevel[LM_SILENT] = STATISTIC_LOGGER_MESSAGE_SILENT;
         m_staticsticLevel[LM_FATAL] = STATISTIC_LOGGER_MESSAGE_FATAL;
@@ -334,12 +334,12 @@ namespace Mengine
         return m_verboseFilter;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerService::setThreadMode( bool _threadMode )
+    void LoggerService::setThreadMode( ELoggerMode _threadMode )
     {
         m_threadMode = _threadMode;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoggerService::getThreadMode() const
+    ELoggerMode LoggerService::getThreadMode() const
     {
         return m_threadMode;
     }
@@ -535,11 +535,11 @@ namespace Mengine
 
         this->clearHistory();
 
-        if( m_threadMode == true )
+        if( m_threadMode == LMODE_DEFERRED_THREAD )
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexMessageBlock );
 
-            m_threadly = true;
+            m_threadly = LMODE_THREAD;
         }
     }
     //////////////////////////////////////////////////////////////////////////

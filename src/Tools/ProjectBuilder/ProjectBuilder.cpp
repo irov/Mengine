@@ -301,7 +301,7 @@ namespace Mengine
             ->setVerboseLevel( LM_MESSAGE );
 
         LOGGER_SERVICE()
-            ->setThreadMode( false );
+            ->setThreadMode( LMODE_THREAD );
 
         LOGGER_SERVICE()
             ->registerLogger( Helper::makeFactorableUnique<ToolLogger>( MENGINE_DOCUMENT_FUNCTION ) );

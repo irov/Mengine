@@ -28,7 +28,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static bool s_writeBin( const WString & _protocolPath, const WString & _xmlPath, const WString & _binPath )
+    bool writeBin( const wchar_t * _protocolPath, const wchar_t * _xmlPath, const wchar_t * _binPath )
     {
         String utf8_protocolPath;
         Helper::unicodeToUtf8( _protocolPath, &utf8_protocolPath );
@@ -78,14 +78,6 @@ namespace Mengine
         }
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void writeBin( const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * binPath )
-    {
-        if( s_writeBin( protocolPath, xmlPath, binPath ) == false )
-        {
-            LOGGER_ERROR( "writeBin: error write bin" );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

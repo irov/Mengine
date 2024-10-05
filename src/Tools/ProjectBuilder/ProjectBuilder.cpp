@@ -49,6 +49,7 @@
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/TextureHelper.h"
+#include "Kernel/AssertionUtf8.h"
 
 #include "ToolUtils/ToolLogger.h"
 
@@ -142,11 +143,11 @@ typedef PyObject * (*PYIMPROT_IMPORTMODULE)(const char *);
 typedef int (*PYARG_PARSETUPLE)(PyObject *, const char *, ...);
 typedef int (*PYDICT_NEXT)(PyObject *, Py_ssize_t *, PyObject **, PyObject **);
 typedef const char * (*PYUNICODE_ASUTF8ANDSIZE)(PyObject *, Py_ssize_t *);
-typedef Py_ssize_t (*PYUNICODE_ASWIDECHAR)(PyObject *, wchar_t *, Py_ssize_t);
+typedef Py_ssize_t( *PYUNICODE_ASWIDECHAR )(PyObject *, wchar_t *, Py_ssize_t);
 typedef PyObject * (*PYUNICODE_FROMWIDECHAR)(const wchar_t *, Py_ssize_t);
 typedef PyObject * (*PYUNICODE_JOIN)(PyObject *, PyObject *);
 typedef PyObject * (*PYBOOL_FROMLONG)(long);
-typedef PyObject * (*PYCAPSULE_NEW)(void *, const char *, void (*)(void *));
+typedef PyObject * (*PYCAPSULE_NEW)(void *, const char *, void (*)(PyObject *));
 typedef void * (*PYCAPSULE_GETPOINTER)(PyObject *, const char *);
 typedef long long (*PYLONG_ASUNSIGNEDLONGLONG)(PyObject *);
 typedef PyObject * (*PYLONG_FROMUNSIGNEDLONGLONG)(long long);
@@ -164,7 +165,7 @@ typedef PyObject * (*PYOBJECT_STR)(PyObject *);
 typedef PyObject * (*PYOBJECT_CALLOBJECT)(PyObject *, PyObject *);
 typedef PyObject * (*PYOBJECT_GETATTRSTRING)(PyObject *, const char *);
 typedef int (*PYOBJECT_SETATTRSTRING)(PyObject *, const char *, PyObject *);
-typedef PyObject * (*PYOBJECT_CALLFUNCTIONOBJARGS)( PyObject * callable, ... );
+typedef PyObject * (*PYOBJECT_CALLFUNCTIONOBJARGS)(PyObject * callable, ...);
 typedef int (*PYOBJECT_ISTRUE)(PyObject *);
 typedef int (*PYSYS_SETOBJECT)(const char *, PyObject *);
 typedef PyObject * (*PYDICT_NEW)(void);
@@ -281,20 +282,26 @@ namespace Mengine
         SERVICE_CREATE( AllocatorSystem, nullptr );
         SERVICE_CREATE( StringizeService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
-        
+
         SERVICE_CREATE( PlatformSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DateTimeSystem, MENGINE_DOCUMENT_FUNCTION );
-        
+
         SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
-        
+
         SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
+
+        LOGGER_SERVICE()
+            ->setVerboseLevel( LM_MESSAGE );
+
+        LOGGER_SERVICE()
+            ->setThreadMode( false );
 
         LOGGER_SERVICE()
             ->registerLogger( Helper::makeFactorableUnique<ToolLogger>( MENGINE_DOCUMENT_FUNCTION ) );
@@ -428,9 +435,12 @@ static PyObject * py_writeBin( PyObject * _self, PyObject * _args )
     wchar_t binPath[MENGINE_MAX_PATH] = {L'\0'};
     PyUnicode_AsWideChar( py_binPath, binPath, MENGINE_MAX_PATH );
 
-    Mengine::writeBin( protocolPath, xmlPath, binPath );
+    if( Mengine::writeBin( protocolPath, xmlPath, binPath ) == false )
+    {
+        return Py_False;
+    }
 
-    return Py_None;
+    return Py_True;
 }
 //////////////////////////////////////////////////////////////////////////
 static PyObject * py_writeAek( PyObject * _self, PyObject * _args )
@@ -455,9 +465,12 @@ static PyObject * py_writeAek( PyObject * _self, PyObject * _args )
     wchar_t aekPath[MENGINE_MAX_PATH] = {L'\0'};
     PyUnicode_AsWideChar( py_aekPath, aekPath, MENGINE_MAX_PATH );
 
-    Mengine::writeAek( protocolPath, xmlPath, aekPath );
+    if( Mengine::writeAek( protocolPath, xmlPath, aekPath ) == false )
+    {
+        return Py_False;
+    }
 
-    return Py_None;
+    return Py_True;
 }
 //////////////////////////////////////////////////////////////////////////
 static PyObject * py_convert( PyObject * _self, PyObject * _args )
@@ -641,7 +654,7 @@ static PyObject * py_isPow2SquadImageFile( PyObject * _self, PyObject * _args )
     const Mengine::ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
 
     uint32_t width = dataInfo->width;
-    uint32_t height = dataInfo->height;        
+    uint32_t height = dataInfo->height;
 
     if( Mengine::Helper::isTexturePow2( width ) == false )
     {
@@ -661,9 +674,11 @@ static PyObject * py_isPow2SquadImageFile( PyObject * _self, PyObject * _args )
     return Py_True;
 }
 //////////////////////////////////////////////////////////////////////////
-static void py_deleteImage( void * _ptr )
+static void py_deleteImage( PyObject * _capsule )
 {
-    delete _ptr;
+    Mengine::Image * image = (Mengine::Image *)PyCapsule_GetPointer( _capsule, "Image" );
+
+    delete image;
 }
 //////////////////////////////////////////////////////////////////////////
 static PyObject * py_loadImage( PyObject * _self, PyObject * _args )
@@ -704,11 +719,6 @@ static PyObject * py_saveImage( PyObject * _self, PyObject * _args )
     }
 
     Mengine::Image * image = (Mengine::Image *)PyCapsule_GetPointer( py_image, "Image" );
-
-    if( image == nullptr )
-    {
-        return nullptr;
-    }
 
     const char * utf8_path = PyUnicode_AsUTF8AndSize( py_path, nullptr );
 
@@ -764,11 +774,6 @@ static PyObject * py_getImageWidth( PyObject * _self, PyObject * _args )
 
     Mengine::Image * image = (Mengine::Image *)PyCapsule_GetPointer( py_image, "Image" );
 
-    if( image == nullptr )
-    {
-        return nullptr;
-    }
-
     uint32_t width = image->getWidth();
 
     return PyLong_FromUnsignedLongLong( width );
@@ -787,11 +792,6 @@ static PyObject * py_getImageHeight( PyObject * _self, PyObject * _args )
 
     Mengine::Image * image = (Mengine::Image *)PyCapsule_GetPointer( py_image, "Image" );
 
-    if( image == nullptr )
-    {
-        return nullptr;
-    }
-
     uint32_t height = image->getHeight();
 
     return PyLong_FromUnsignedLongLong( height );
@@ -809,11 +809,6 @@ static PyObject * py_getImageChannels( PyObject * _self, PyObject * _args )
     }
 
     Mengine::Image * image = (Mengine::Image *)PyCapsule_GetPointer( py_image, "Image" );
-
-    if( image == nullptr )
-    {
-        return nullptr;
-    }
 
     uint32_t channels = image->getChannels();
 
@@ -899,9 +894,9 @@ static PyObject * py_rotateImage( PyObject * _self, PyObject * _args )
 
     Mengine::Image * image = (Mengine::Image *)PyCapsule_GetPointer( py_image, "Image" );
 
-    bool result = image->rotate( angle );
+    Mengine::Image * rotate_image = image->rotate( angle );
 
-    return PyBool_FromLong( result );
+    return PyCapsule_New( rotate_image, "Image", &py_deleteImage );
 }
 //////////////////////////////////////////////////////////////////////////
 static PyObject * py_getImageExtremColor( PyObject * _self, PyObject * _args )
@@ -970,7 +965,10 @@ static PyObject * py_splitImage( PyObject * _self, PyObject * _args )
     Mengine::Image * imageAlpha;
     image->split( &imageRGB, &imageAlpha );
 
-    return PyTuple_Pack( 2, PyCapsule_New( imageRGB, "Image", &py_deleteImage ), PyCapsule_New( imageAlpha, "Image", &py_deleteImage ) );
+    PyObject * py_imageRGB = PyCapsule_New( imageRGB, "Image", &py_deleteImage );
+    PyObject * py_imageAlpha = PyCapsule_New( imageAlpha, "Image", &py_deleteImage );
+
+    return PyTuple_Pack( 2, py_imageRGB, py_imageAlpha );
 }
 //////////////////////////////////////////////////////////////////////////
 static PyObject * py_releaseImage( PyObject * _self, PyObject * _args )
@@ -1079,6 +1077,19 @@ static PyObject * py_pathSHA1( PyObject * _self, PyObject * _args )
 //////////////////////////////////////////////////////////////////////////
 static char g_message[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 //////////////////////////////////////////////////////////////////////////
+bool is_ascii( const char * str )
+{
+    while( *str )
+    {
+        if( (unsigned char)*str > 0x7F )
+        {
+            return false;
+        }
+        str++;
+    }
+    return true;
+}
+//////////////////////////////////////////////////////////////////////////
 static PyObject * py_log( PyObject * _self, PyObject * _args )
 {
     (void)_self;
@@ -1098,6 +1109,8 @@ static PyObject * py_log( PyObject * _self, PyObject * _args )
 
         return Py_None;
     }
+
+    MENGINE_ASSERTION_VALIDATE_UTF8( g_message, MENGINE_UNKNOWN_SIZE );
 
     LOGGER_MESSAGE( "%s"
         , g_message
@@ -1191,15 +1204,21 @@ static bool run()
         return false;
     }
 
-    LOGGER_ERROR( "initialize complete" );
+    LOGGER_MESSAGE( "initialize complete" );
 
     WCHAR currentPath[MENGINE_MAX_PATH] = {L'\0'};
     DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
     if( len == 0 )
     {
+        LOGGER_MESSAGE( "invalid get current directory" );
+
         return false;
     }
+
+    LOGGER_MESSAGE( "current directory: %ls"
+        , currentPath
+    );
 
     currentPath[len + 0] = MENGINE_PATH_WDELIM;
     currentPath[len + 1] = L'\0';
@@ -1231,6 +1250,10 @@ static bool run()
 
         return false;
     }
+
+    LOGGER_MESSAGE( "load python dll '%ls'"
+        , python3DllPath
+    );
 
     Py_InitializeEx = (PY_INITIALIZEEX)::GetProcAddress( hPythonDll, "Py_InitializeEx" );
     Py_GetPath = (PY_GETPATH)::GetProcAddress( hPythonDll, "Py_GetPath" );
@@ -1275,19 +1298,25 @@ static bool run()
 
     Py_SetPath( python3LibPath );
 
+    LOGGER_MESSAGE( "Python initialize" );
+
     Py_InitializeEx( 0 );
 
     if( CheckPythonException() == false )
     {
+        LOGGER_ERROR( "Invalid python initialize" );
+
         return false;
     }
+
+    LOGGER_MESSAGE( "Python successful" );
 
     PyObject * py_tools_module = PyImport_AddModule( "ToolsBuilderPlugin" );
 
     AddCFunctionToModule( py_tools_module, "writeBin", &py_writeBin );
     AddCFunctionToModule( py_tools_module, "writeAek", &py_writeAek );
     AddCFunctionToModule( py_tools_module, "convert", &py_convert );
-       
+
     AddCFunctionToModule( py_tools_module, "isAlphaInImageFile", &py_isAlphaInImageFile );
     AddCFunctionToModule( py_tools_module, "isUselessAlphaInImageFile", &py_isUselessAlphaInImageFile );
     AddCFunctionToModule( py_tools_module, "isPow2SquadImageFile", &py_isPow2SquadImageFile );
@@ -1308,13 +1337,10 @@ static bool run()
     AddCFunctionToModule( py_tools_module, "getImageData", &py_getImageData );
 
     AddCFunctionToModule( py_tools_module, "pathSHA1", &py_pathSHA1 );
-    
+
     AddCFunctionToModule( py_tools_module, "log", &py_log );
 
-    if( CheckPythonException() == false )
-    {
-        return false;
-    }
+    LOGGER_MESSAGE( "ToolsBuilderPlugin python module successful" );
 
     WCHAR python3LibPathCount[MENGINE_MAX_PATH] = {L'\0'};
     Mengine::StdString::wcscpy( python3LibPathCount, python3LibPath );
@@ -1323,53 +1349,74 @@ static bool run()
     Mengine::StdString::wcscpy( python3LibPathItem, python3LibPath );
 
     wchar_t * token;
-    wchar_t * context;    
+    wchar_t * context;
 
-    token = ::wcstok( python3LibPathCount, L";", &context);
+    token = ::wcstok( python3LibPathCount, L";", &context );
 
-    Py_ssize_t pathCount = 1;
+    Py_ssize_t pathCount = 0;
     while( token != NULL )
     {
         ++pathCount;
 
-        token = ::wcstok( NULL, L";", &context );
+        token = ::wcstok( nullptr, L";", &context );
     }
 
-    PyObject * py_syspath = PyList_New( pathCount + 1 );
-
-    PyList_SetItem( py_syspath, 0, PyUnicode_FromWideChar( currentPath, -1 ) );
-
-    token = ::wcstok( python3LibPathItem, L";", &context );
+    PyObject * py_syspath = PyList_New( pathCount * 2 + 1 );
 
     Py_ssize_t pathIndex = 0;
-    while( token != NULL )
-    {
-        PyList_SetItem( py_syspath, pathIndex + 1, PyUnicode_FromWideChar( token, -1 ) );
 
+    PyList_SetItem( py_syspath, pathIndex, PyUnicode_FromWideChar( currentPath, -1 ) );
+
+    ++pathIndex;
+
+    token = ::wcstok( python3LibPathItem, L";", &context );
+    
+    while( token != nullptr )
+    {
+        WCHAR token_site[MENGINE_MAX_PATH] = {L'\0'};
+        ::PathCombineW( token_site, token, L"site-packages\\" );
+
+        LOGGER_MESSAGE( "ToolsBuilderPlugin python add sys path: %ls"
+            , token
+        );
+
+        LOGGER_MESSAGE( "ToolsBuilderPlugin python add sys path: %ls"
+            , token_site
+        );
+
+        PyList_SetItem( py_syspath, pathIndex + 0, PyUnicode_FromWideChar( token, -1 ) );
+        PyList_SetItem( py_syspath, pathIndex + 1, PyUnicode_FromWideChar( token_site, -1 ) );
+
+        ++pathIndex;
         ++pathIndex;
 
         token = ::wcstok( NULL, L";", &context );
     }
 
-    PyList_SetItem( py_syspath, pathIndex + 1, PyUnicode_FromWideChar( L"C:\\Users\\irov1\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\", -1 ) );
-
     PySys_SetObject( "path", py_syspath );
+
+    LOGGER_MESSAGE( "ToolsBuilderPlugin python setup sys path successful" );
 
     if( CheckPythonException() == false )
     {
+        LOGGER_ERROR( "invalid set python path" );
+
         return false;
     }
 
-    //kernel->incref( py_tools_module );
-    //kernel->module_addobject( module_builtins, "ToolsBuilderPlugin", py_tools_module );
-
     LPWSTR lpwCmdLine = ::GetCommandLineW();
+
+    LOGGER_MESSAGE( "ToolsBuilderPlugin command line: %ls"
+        , lpwCmdLine
+    );
 
     int nArgs = 0;
     LPWSTR * szArglist = ::CommandLineToArgvW( lpwCmdLine, &nArgs );
 
     if( nArgs < 3 )
     {
+        LOGGER_ERROR( "invalid command line" );
+
         return false;
     }
 
@@ -1383,7 +1430,7 @@ static bool run()
     Mengine::Char utf8_FunctionName[256] = {'\0'};
     Mengine::Helper::unicodeToUtf8( szFunctionName, utf8_FunctionName, 256 );
 
-    LOGGER_ERROR( "Module '%s' Function '%s'"
+    LOGGER_MESSAGE( "ToolsBuilderPlugin run module '%s' function '%s'"
         , utf8_ModuleName
         , utf8_FunctionName
     );
@@ -1392,6 +1439,10 @@ static bool run()
 
     if( CheckPythonException() == false )
     {
+        LOGGER_ERROR( "invalid import module '%s'"
+            , utf8_ModuleName
+        );
+
         return false;
     }
 
@@ -1410,40 +1461,38 @@ static bool run()
 
     if( CheckPythonException() == false )
     {
+        LOGGER_ERROR( "invalid call function '%s'"
+            , utf8_FunctionName
+        );
+
         return false;
     }
 
     if( PyObject_IsTrue( presult ) == 0 )
     {
+        LOGGER_ERROR( "invalid call function '%s' result"
+            , utf8_FunctionName
+        );
+
         return false;
     }
+
+    LOGGER_MESSAGE( "build successful" );
 
     Mengine::finalize();
 
     return true;
 }
 ///////////////////////////////////////////////////////////////////////////////////
-#ifdef _MSC_VER
-int CALLBACK WinMain( _In_  HINSTANCE hInstance, _In_  HINSTANCE hPrevInstance, _In_  LPSTR lpCmdLine, _In_  int nCmdShow )
-#elif __MINGW32__
 int main( int argc, char * argv[] )
-#else
-#   error unsupport
-#endif
 {
-#ifdef _MSC_VER
-    ( void )hInstance;
-    (void)hPrevInstance;
-    (void)lpCmdLine;
-    (void)nCmdShow;
-#elif __MINGW32__
-    ( void )argc;
-    (void)argv;
-#else
-#   error unsupport
-#endif
+    MENGINE_UNUSED( argc );
+    MENGINE_UNUSED( argv );
 
-    Mengine::createConsole();
+    if( ::IsDebuggerPresent() == TRUE )
+    {
+        Mengine::createConsole();
+    }
 
     try
     {

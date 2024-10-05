@@ -16,7 +16,7 @@ namespace Mengine
     }
 }
 
-#   define MENGINE_ASSERTION_VOCABULARY_EMPTY(Key) Detail::assertionVocabularyEmpty(MENGINE_CODE_LIBRARY, Key, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
+#   define MENGINE_ASSERTION_VOCABULARY_EMPTY(Key) Mengine::Detail::assertionVocabularyEmpty(MENGINE_CODE_LIBRARY, Key, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
 #else
 #   define MENGINE_ASSERTION_VOCABULARY_EMPTY(Key)
 #endif

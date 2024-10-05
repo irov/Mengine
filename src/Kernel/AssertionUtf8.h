@@ -15,7 +15,7 @@ namespace Mengine
     }
 }
 
-#   define MENGINE_ASSERTION_VALIDATE_UTF8(Value, Len) Detail::assertionValidateUtf8(MENGINE_CODE_LIBRARY, Value, Len, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
+#   define MENGINE_ASSERTION_VALIDATE_UTF8(Value, Len) Mengine::Detail::assertionValidateUtf8(MENGINE_CODE_LIBRARY, Value, Len, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
 #else
 #   define MENGINE_ASSERTION_VALIDATE_UTF8(Value, Len)
 #endif

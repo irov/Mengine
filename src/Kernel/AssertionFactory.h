@@ -14,7 +14,7 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_ASSERTION_FACTORY_EMPTY(F) Detail::assertionFactoryEmpty(MENGINE_CODE_LIBRARY, F, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
+#   define MENGINE_ASSERTION_FACTORY_EMPTY(F) Mengine::Detail::assertionFactoryEmpty(MENGINE_CODE_LIBRARY, F, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
 #else
 #   define MENGINE_ASSERTION_FACTORY_EMPTY(F)
 #endif

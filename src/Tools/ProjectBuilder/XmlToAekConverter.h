@@ -4,5 +4,5 @@
 
 namespace Mengine
 {
-    void writeAek( const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * aekPath );
+    bool writeAek( const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * aekPath );
 }

@@ -1,4 +1,6 @@
-﻿#include "ToolUtils/ToolUtils.h"
+﻿#include "Config/Config.h"
+
+#include "ToolUtils/ToolUtils.h"
 
 #define STBI_ONLY_PNG
 #define STB_IMAGE_IMPLEMENTATION
@@ -10,12 +12,10 @@
 #include <malloc.h>
 
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
+int main( int argc, char * argv[] )
 {
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)lpCmdLine;
-    (void)nShowCmd;
+    MENGINE_UNUSED( argc );
+    MENGINE_UNUSED( argv );
 
     PWSTR pwCmdLine = ::GetCommandLineW();
 

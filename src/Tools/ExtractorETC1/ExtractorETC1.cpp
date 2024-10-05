@@ -54,12 +54,10 @@ const unsigned int PVRTEX_IDENTIFIER = 0x21525650;  // the pvr identifier is the
 
 const unsigned int PVRTEX_V1_HEADER_SIZE = 44; // old header size was 44 for identification purposes
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
+int main( int argc, char * argv[] )
 {
-    MENGINE_UNUSED( hInstance );
-    MENGINE_UNUSED( hPrevInstance );
-    MENGINE_UNUSED( lpCmdLine );
-    MENGINE_UNUSED( nShowCmd );
+    MENGINE_UNUSED( argc );
+    MENGINE_UNUSED( argv );
 
     PWSTR pwCmdLine = ::GetCommandLineW();
 

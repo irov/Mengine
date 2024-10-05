@@ -48,8 +48,8 @@ namespace Mengine
 
         if( hInstance == NULL )
         {
-            LOGGER_ERROR( "invalid load '%s' %ls"
-                , name
+            LOGGER_ERROR( "invalid load '%ls' %ls"
+                , unicode_name
                 , Helper::Win32GetLastErrorMessageW()
             );
 

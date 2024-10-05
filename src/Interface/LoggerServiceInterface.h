@@ -24,6 +24,10 @@ namespace Mengine
         virtual uint32_t getVerboseFilter() const = 0;
 
     public:
+        virtual void setThreadMode( bool _threadMode ) = 0;
+        virtual bool getThreadMode() const = 0;
+
+    public:
         virtual void setSilent( bool _silent ) = 0;
         virtual bool isSilent() const = 0;
 

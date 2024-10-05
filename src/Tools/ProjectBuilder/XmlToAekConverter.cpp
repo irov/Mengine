@@ -32,7 +32,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static bool s_writeAek( const WString & _protocolPath, const WString & _xmlPath, const WString & _aekPath )
+    bool writeAek( const wchar_t * _protocolPath, const wchar_t * _xmlPath, const wchar_t * _aekPath )
     {
         String utf8_protocolPath;
         Helper::unicodeToUtf8( _protocolPath, &utf8_protocolPath );
@@ -48,9 +48,9 @@ namespace Mengine
         LOADER_SERVICE()
             ->setProtocolPath( fp_protocolPath );
 
-        String framePackPath( utf8_xmlPath.c_str(), utf8_xmlPath.size() );
+        String framePackPath = utf8_xmlPath;
 
-        String::size_type size = framePackPath.size();
+        String::size_type size = utf8_xmlPath.size();
         framePackPath[size - 3] = L'x';
         framePackPath[size - 2] = L'm';
         framePackPath[size - 1] = L'l';
@@ -93,14 +93,6 @@ namespace Mengine
         }
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void writeAek( const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * aekPath )
-    {
-        if( s_writeAek( protocolPath, xmlPath, aekPath ) == false )
-        {
-            LOGGER_ERROR( "writeAek: error write bin" );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

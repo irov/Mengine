@@ -129,12 +129,10 @@ static bool writeCompress( const std::wstring & _filepath, const std::vector<uin
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
+int main( int argc, char * argv[] )
 {
-    MENGINE_UNUSED( hInstance );
-    MENGINE_UNUSED( hPrevInstance );
-    MENGINE_UNUSED( lpCmdLine );
-    MENGINE_UNUSED( nShowCmd );
+    MENGINE_UNUSED( argc );
+    MENGINE_UNUSED( argv );
 
     PWSTR pwCmdLine = ::GetCommandLineW();
 

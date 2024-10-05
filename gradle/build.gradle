@@ -13,7 +13,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.6.1'
+        classpath 'com.android.tools.build:gradle:8.7.0'
 
         if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_SERVICE") == true) {
             classpath 'com.google.gms:google-services:4.4.2'
@@ -64,7 +64,7 @@ allprojects {
         if (ANDROID_APP_CMAKE_VERSION != null) {
             cmakeVersion = ANDROID_APP_CMAKE_VERSION
         } else {
-            cmakeVersion = "3.30.3"
+            cmakeVersion = "3.30.4"
         }
 
         if (ANDROID_APP_MULTIDEX_ENABLE != null) {

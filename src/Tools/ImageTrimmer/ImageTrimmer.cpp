@@ -96,7 +96,7 @@ namespace Mengine
         SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
 
         LOGGER_SERVICE()
-            ->setVerboseLevel( LM_WARNING );
+            ->setVerboseLevel( LM_MESSAGE );
 
         LOGGER_SERVICE()
             ->registerLogger( Helper::makeFactorableUnique<ToolLogger>( MENGINE_DOCUMENT_FUNCTION ) );
@@ -616,12 +616,10 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
+int main( int argc, char * argv[] )
 {
-    MENGINE_UNUSED( hInstance );
-    MENGINE_UNUSED( hPrevInstance );
-    MENGINE_UNUSED( lpCmdLine );
-    MENGINE_UNUSED( nShowCmd );
+    MENGINE_UNUSED( argc );
+    MENGINE_UNUSED( argv );
 
     try
     {

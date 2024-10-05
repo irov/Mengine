@@ -11,7 +11,7 @@
 #   define MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME( ResourceName, ResourceType, Ret, ... )\
     if( RESOURCE_SERVICE()->hasResource(ConstString::none(), ResourceName, false, nullptr) == true )\
     {\
-        if( Helper::dynamicResourceCast<ResourceType>(RESOURCE_SERVICE()->getResourceReference(ConstString::none(), ResourceName)) == nullptr )\
+        if( Mengine::Helper::dynamicResourceCast<ResourceType>(RESOURCE_SERVICE()->getResourceReference(Mengine::ConstString::none(), ResourceName)) == nullptr )\
         {\
             Mengine::Helper::Assertion(MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, #ResourceType, MENGINE_CODE_FILE, MENGINE_CODE_LINE, __VA_ARGS__);\
             return Ret;\
@@ -20,7 +20,7 @@
 #   define MENGINE_ASSERTION_RESOURCE_TYPE_BY_NAME_VOID( ResourceName, ResourceType, Ret, ... )\
     if( RESOURCE_SERVICE()->hasResource(ConstString::none(), ResourceName, false, nullptr) == true )\
     {\
-        if( Helper::dynamicResourceCast<ResourceType>(RESOURCE_SERVICE()->getResourceReference(ConstString::none(), ResourceName)) == nullptr )\
+        if( Mengine::Helper::dynamicResourceCast<ResourceType>(RESOURCE_SERVICE()->getResourceReference(Mengine::ConstString::none(), ResourceName)) == nullptr )\
         {\
             Mengine::Helper::Assertion(MENGINE_CODE_LIBRARY, Mengine::ASSERTION_LEVEL_FATAL, #ResourceType, MENGINE_CODE_FILE, MENGINE_CODE_LINE, __VA_ARGS__);\
             return;\

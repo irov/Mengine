@@ -17,7 +17,7 @@ namespace Mengine
     }
 }
 
-#   define MENGINE_ASSERTION_IDENTITY(Identity) Detail::assertionIdentity(MENGINE_CODE_LIBRARY, Identity, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
+#   define MENGINE_ASSERTION_IDENTITY(Identity) Mengine::Detail::assertionIdentity(MENGINE_CODE_LIBRARY, Identity, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
 #else
 #   define MENGINE_ASSERTION_IDENTITY(Identity)
 #endif

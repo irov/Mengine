@@ -780,8 +780,46 @@ MACRO(ADD_MENGINE_SHARED)
     SET(APPLICATION_DEPENDENCIES ${APPLICATION_DEPENDENCIES} ${PROJECT_NAME} PARENT_SCOPE)
 ENDMACRO()
 
+MACRO(ADD_MENGINE_EXECUTABLE_WIN32_CONSOLE)
+    ADD_DEFINITIONS(-DMENGINE_LIBRARY_NAME="${PROJECT_NAME}")
+    
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE")
+
+    ADD_EXECUTABLE(${PROJECT_NAME} WIN32 ${SRC_FILES})
+    
+    if(MSVC)
+        target_sources(${PROJECT_NAME} INTERFACE ${MENGINE_REPOSITORY}/contributing/codestyle/mengine.natvis)
+    endif()
+    
+    if(MENGINE_EXTERNAL_PDB)
+        if(MSVC)
+            set_target_properties(${PROJECT_NAME} PROPERTIES
+                COMPILE_PDB_NAME ${PROJECT_NAME}
+                PDB_OUTPUT_DIRECTORY ${MENGINE_EXTERNAL_PDB_PATH}
+            )
+        elseif(MINGW)
+            target_compile_options(${PROJECT_NAME} PRIVATE -gcodeview)
+            target_link_options(${PROJECT_NAME} PRIVATE -Wl,-pdb=${MENGINE_EXTERNAL_PDB_PATH}/${PROJECT_NAME}.pdb)
+        endif()
+    else()
+        if(MENGINE_BUILD_TYPE_DEBUG)
+            if(MINGW)
+                target_compile_options(${PROJECT_NAME} PRIVATE -gcodeview)
+                target_link_options(${PROJECT_NAME} PRIVATE -Wl,-pdb=)
+            endif()
+        endif()
+    endif()
+    
+    IF(MSVC AND MENGINE_USE_PRECOMPILED_HEADER)
+        ADD_DEPENDENCIES(${PROJECT_NAME} PrecompiledHeader)
+        TARGET_LINK_LIBRARIES(${PROJECT_NAME} PrecompiledHeader)
+    ENDIF()
+ENDMACRO()
+
 MACRO(ADD_MENGINE_EXECUTABLE_WIN32)
     ADD_DEFINITIONS(-DMENGINE_LIBRARY_NAME="${PROJECT_NAME}")
+    
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
 
     ADD_EXECUTABLE(${PROJECT_NAME} WIN32 ${SRC_FILES})
     

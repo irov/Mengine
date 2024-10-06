@@ -1506,8 +1506,8 @@ namespace Mengine
         {
             ImGui::PushStyleColor( ImGuiCol_Text, ImVec4( 0.f, 1.f, 0.f, 1.f ) );
 
-            Char label_node[32] = {'\0'};
-            MENGINE_SPRINTF( label_node, "##tree_node_%u"
+            Char label_node[32 + 1] = {'\0'};
+            MENGINE_SNPRINTF( label_node, 32, "##tree_node_%u"
                 , index
             );
 
@@ -1617,8 +1617,8 @@ namespace Mengine
             {
                 if( desk.type == "Request" )
                 {
-                    Char label_node[32] = {'\0'};
-                    MENGINE_SPRINTF( label_node, "Url: ##request%u"
+                    Char label_node[32 + 1] = {'\0'};
+                    MENGINE_SNPRINTF( label_node, 32, "Url: ##request%u"
                         , desk.id
                     );
 
@@ -1626,8 +1626,8 @@ namespace Mengine
 
                     ImGui::SameLine();
 
-                    Char label[32] = {'\0'};
-                    MENGINE_SPRINTF( label, "##url%u", desk.id );
+                    Char label[32 + 1] = {'\0'};
+                    MENGINE_SNPRINTF( label, 32, "##url%u", desk.id );
 
                     ImGui::InputText( label, (Char *)desk.url.data(), desk.url.size(), ImGuiInputTextFlags_ReadOnly );
 
@@ -1655,8 +1655,8 @@ namespace Mengine
             return (_id == _desk.id) && (_desk.type == "Response");
         } );
 
-        Char label[32] = {'\0'};
-        MENGINE_SPRINTF( label, "copy##%u"
+        Char label[32 + 1] = {'\0'};
+        MENGINE_SNPRINTF( label, 32, "copy##%u"
             , _id
         );
 
@@ -1729,8 +1729,8 @@ namespace Mengine
                     }
                     else
                     {
-                        Char label[32] = {'\0'};
-                        MENGINE_SPRINTF( label, "##o%u%u"
+                        Char label[32 + 1] = {'\0'};
+                        MENGINE_SNPRINTF( label, 32, "##o%u%u"
                             , *_labelCounter
                             , objectElementsEnumerator
                         );
@@ -1741,7 +1741,7 @@ namespace Mengine
                         ImGui::Text( "%s%s:", spaces.c_str(), key );
                         ImGui::SameLine();
 
-                        Char buffer_value[256] = {'\0'};
+                        Char buffer_value[256 + 1] = {'\0'};
 
                         struct buffer_desc
                         {
@@ -1813,8 +1813,8 @@ namespace Mengine
                     }
                     else
                     {
-                        Char label[32] = {'\0'};
-                        MENGINE_SPRINTF( label, "##a%u%u"
+                        Char label[32 + 1] = {'\0'};
+                        MENGINE_SNPRINTF( label, 32, "##a%u%u"
                             , *_labelCounter
                             , arrayElementsEnumerator
                         );
@@ -1841,8 +1841,8 @@ namespace Mengine
 
                 ++ * _labelCounter;
 
-                Char label[32] = {'\0'};
-                MENGINE_SPRINTF( label, "##v%u"
+                Char label[32 + 1] = {'\0'};
+                MENGINE_SNPRINTF( label, 32, "##v%u"
                     , *_labelCounter
                 );
 
@@ -2360,9 +2360,9 @@ namespace Mengine
 
         auto uiEditorString = [_node]( const char * _caption, String & _prop )
         {
-            char testValue[2048] = {'\0'};
-            strcpy( testValue, _prop.c_str() );
-            testValue[2047] = 0;
+            Char testValue[2048 + 1] = {'\0'};
+            StdString::strcpy( testValue, _prop.c_str(), 2048 );
+
             bool input = ImGui::InputText( _caption, testValue, 2048 );
 
             if( input && _prop != testValue )
@@ -2374,8 +2374,8 @@ namespace Mengine
 
         auto uiReadOnlyString = [_node]( const char * _caption, const String & _prop )
         {
-            Char testValue[2048] = {'\0'};
-            StdString::strncpy( testValue, _prop.c_str(), 2047 );
+            Char testValue[2048 + 1] = {'\0'};
+            StdString::strncpy( testValue, _prop.c_str(), 2048 );
 
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
             ImGui::InputText( _caption, testValue, 2048, ImGuiInputTextFlags_ReadOnly );
@@ -2514,8 +2514,8 @@ namespace Mengine
                 ImGui::InputText( "Base Node Name:", _node->name.data(), _node->name.size(), ImGuiInputTextFlags_ReadOnly );
                 ImGui::InputText( "Base Node Type:", _node->type.data(), _node->type.size(), ImGuiInputTextFlags_ReadOnly );
 
-                Char uid_text[64] = {'\0'};
-                MENGINE_SPRINTF( uid_text, "%u", _node->uid );
+                Char uid_text[64 + 1] = {'\0'};
+                MENGINE_SNPRINTF( uid_text, 64, "%u", _node->uid );
 
                 ImGui::InputText( "Base Node UID:", uid_text, StdString::strlen( uid_text ), ImGuiInputTextFlags_ReadOnly );
             }

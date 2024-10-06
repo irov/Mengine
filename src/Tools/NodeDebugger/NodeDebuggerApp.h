@@ -785,7 +785,7 @@ namespace Mengine
         String m_selectedNodePath;
         String m_lastSelectedNodePath;
 
-        Char m_selectFilter[2048] = {'\0'};
+        Char m_selectFilter[2048 + 1] = {'\0'};
 
         int m_sceneUpdateFreq;
         double m_sceneUpdateTimer;

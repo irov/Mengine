@@ -82,7 +82,7 @@ namespace Mengine
             MENGINE_UNUSED( _ptr );
 
 #if defined(MENGINE_DEBUG)
-            static MENGINE_THREAD_LOCAL Char fullPath[MENGINE_MAX_PATH] = {'\0'};
+            static MENGINE_THREAD_LOCAL Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
 
             const FilePath & relationPath = Helper::getDebugRelationPath( _ptr );
             const FilePath & folderPath = Helper::getDebugFolderPath( _ptr );

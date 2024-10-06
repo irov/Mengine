@@ -11,8 +11,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool writeIniSetting( const OutputStreamInterfacePtr & _stream, const Char * _key, uint32_t _value )
         {
-            Char value_str[64] = {'\0'};
-            if( Helper::stringalized( _value, value_str, 63 ) == false )
+            Char value_str[64 + 1] = {'\0'};
+            if( Helper::stringalized( _value, value_str, 64 ) == false )
             {
                 return false;
             }
@@ -24,8 +24,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool writeIniSetting( const OutputStreamInterfacePtr & _stream, const Char * _key, float _value )
         {
-            Char value_str[64] = {'\0'};
-            if( Helper::stringalized( _value, value_str, 63 ) == false )
+            Char value_str[64 + 1] = {'\0'};
+            if( Helper::stringalized( _value, value_str, 64 ) == false )
             {
                 return false;
             }

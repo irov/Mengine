@@ -39,7 +39,7 @@ namespace Mengine
         int32_t m_softspace;
         ELoggerLevel m_level;
 
-        Char m_message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        Char m_message[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PythonScriptLogger> PythonScriptLoggerPtr;

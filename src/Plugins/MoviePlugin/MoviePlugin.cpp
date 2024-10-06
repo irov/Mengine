@@ -99,7 +99,7 @@ namespace Mengine
                 }break;
             }
 
-            Char msg[4096] = {'\0'};
+            Char msg[4096 + 1] = {'\0'};
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );

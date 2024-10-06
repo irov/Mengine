@@ -54,7 +54,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const AssertionOperator & AssertionOperator::operator()( const Char * _format, ... ) const
         {
-            Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+            Char str_info[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
 
             MENGINE_VA_LIST_TYPE argList;
             MENGINE_VA_LIST_START( argList, _format );
@@ -76,14 +76,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void Assertion( const Char * _category, EAssertionLevel _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... )
         {
-            Char message_info[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+            Char message_info[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
             MENGINE_VSNPRINTF( message_info, MENGINE_ASSERTION_MAX_MESSAGE, _format, args );            
             MENGINE_VA_LIST_END( args );
 
-            Char assertion_info[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+            Char assertion_info[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
             MENGINE_SNPRINTF( assertion_info, MENGINE_ASSERTION_MAX_MESSAGE, "%s[%d] Assertion [%s] [%s]: %s"
                 , _file
                 , _line

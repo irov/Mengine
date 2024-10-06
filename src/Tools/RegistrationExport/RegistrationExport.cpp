@@ -1,25 +1,10 @@
-#ifdef _WIN32_WINNT	
-#   undef _WIN32_WINNT
-#   define _WIN32_WINNT 0x0500
-#endif
-
-#ifdef _WIN32_WINDOWS
-#   undef _WIN32_WINDOWS
-#   define _WIN32_WINDOWS 0x0500
-#endif
-
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-
-#include "shlobj.h"
-
-#include <string>
+#include "Environment/Windows/WindowsIncluder.h"
 
 /*  Declare Windows procedure  */
 LRESULT CALLBACK WindowProcedure( HWND, UINT, WPARAM, LPARAM );
 
 /*  Make the class name into a global variable  */
-WCHAR szClassName[] = L"RegistrationExport";
+WCHAR szClassName[] = L"MengineRegistrationExport";
 
 int WINAPI WinMain( HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, int nFunsterStil )
 {
@@ -55,7 +40,7 @@ int WINAPI WinMain( HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpsz
     hwnd = CreateWindowEx(
         0,                   /* Extended possibilites for variation */
         szClassName,         /* Classname */
-        L"RegistrationExport",       /* Title Text */
+        L"MengineRegistrationExport",       /* Title Text */
         WS_SYSMENU,          /* default window */
         CW_USEDEFAULT,       /* Windows decides the position */
         CW_USEDEFAULT,       /* where the window ends up on the screen */
@@ -101,7 +86,7 @@ static HWND hwndText_PathParams;
 static HWND hwndText_PathArt;
 static HWND hwndText_Ok;
 
-void SetElementPathText( HWND element, HWND hwnd )
+static void SetElementPathText( HWND element, HWND hwnd )
 {
     BROWSEINFO bi;
     memset( &bi, 0, sizeof( bi ) );
@@ -115,7 +100,7 @@ void SetElementPathText( HWND element, HWND hwnd )
     {
         // Create a buffer to store the path, then 
         // get the path.
-        WCHAR buffer[_MAX_PATH] = {'\0'};
+        WCHAR buffer[_MAX_PATH + 1] = {'\0'};
         if( ::SHGetPathFromIDList( pIDL, buffer ) != 0 )
         {
             SetWindowText( element, buffer );

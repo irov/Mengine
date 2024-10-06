@@ -107,10 +107,10 @@ namespace Mengine
                         return FALSE;
                     }
 
-                    Char mFileName[MAX_PATH] = {'\0'};
+                    Char mFileName[MAX_PATH + 1] = {'\0'};
                     DWORD FileNameLen = (*pGetModuleFileNameExA)(hProcess, hMods[i], mFileName, MAX_PATH);
 
-                    Char mBaseName[MAX_PATH] = {'\0'};
+                    Char mBaseName[MAX_PATH + 1] = {'\0'};
                     DWORD BaseNameLen = (*pGetModuleBaseNameA)(hProcess, hMods[i], mBaseName, MAX_PATH);
 
                     if( FileNameLen <= 0 || BaseNameLen <= 0 )
@@ -188,7 +188,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             static size_t OnCallstackEntry( Char * const _stack, size_t _capacity, CallstackEntry * const _entry )
             {
-                CHAR buffer[MENGINE_STACKWALK_MAX_NAMELEN] = {'\0'};
+                CHAR buffer[MENGINE_STACKWALK_MAX_NAMELEN + 1] = {'\0'};
 
                 if( _entry->offset == 0 )
                 {

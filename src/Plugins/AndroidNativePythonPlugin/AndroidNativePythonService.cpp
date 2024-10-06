@@ -773,7 +773,7 @@ namespace Mengine
             return false;
         }
 
-        Char signature[1024] = {'\0'};
+        Char signature[1024 + 1] = {'\0'};
 
         StdString::strcat( signature, "(" );
 

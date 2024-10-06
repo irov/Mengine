@@ -28,7 +28,7 @@ namespace Mengine
                     return false;
                 }
 
-                WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
+                WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
                 if( ::GetModuleFileName( hm, unicode_path, MENGINE_MAX_PATH ) == 0 )
                 {
                     return false;
@@ -65,7 +65,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const Char * Win32GetCurrentDllPath()
         {
-            static MENGINE_THREAD_LOCAL Char dllPath[MENGINE_MAX_PATH] = {'\0'};
+            static MENGINE_THREAD_LOCAL Char dllPath[MENGINE_MAX_PATH + 1] = {'\0'};
 
             if( dllPath[0] == '\0' )
             {
@@ -125,7 +125,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const Char * Win32GetErrorMessageA( uint32_t _id )
         {
-            static MENGINE_THREAD_LOCAL Char errorMessageBuffer[2048] = {'\0'};
+            static MENGINE_THREAD_LOCAL Char errorMessageBuffer[2048 + 1] = {'\0'};
 
             Helper::Win32ReadErrorMessageA( _id, errorMessageBuffer, 2048 );
 
@@ -134,7 +134,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const WChar * Win32GetErrorMessageW( uint32_t _id )
         {
-            static MENGINE_THREAD_LOCAL WChar errorMessageBuffer[2048] = {L'\0'};
+            static MENGINE_THREAD_LOCAL WChar errorMessageBuffer[2048 + 1] = {L'\0'};
 
             Helper::Win32ReadErrorMessageW( _id, errorMessageBuffer, 2048 );
 
@@ -147,7 +147,7 @@ namespace Mengine
 
             const Char * errorMessage = Helper::Win32GetErrorMessageA( error );
 
-            static MENGINE_THREAD_LOCAL Char errorMessageBufferWithErrorCode[2048] = {'\0'};
+            static MENGINE_THREAD_LOCAL Char errorMessageBufferWithErrorCode[2048 + 1] = {'\0'};
 
             MENGINE_SNPRINTF( errorMessageBufferWithErrorCode, 2048, "%s [%lu]"
                 , errorMessage
@@ -163,7 +163,7 @@ namespace Mengine
 
             const WChar * errorMessage = Helper::Win32GetErrorMessageW( error );
 
-            static MENGINE_THREAD_LOCAL WChar errorMessageBufferWithErrorCode[2048] = {L'\0'};
+            static MENGINE_THREAD_LOCAL WChar errorMessageBufferWithErrorCode[2048 + 1] = {L'\0'};
 
             MENGINE_SWPRINTF( errorMessageBufferWithErrorCode, 2048, L"%ls [%lu]"
                 , errorMessage

@@ -38,13 +38,13 @@ namespace Mengine
         agent.append( MENGINE_ENGINE_VERSION_STRING );
         agent.append( " (" );
 
-        Char osFamily[MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME] = {'\0'};
+        Char osFamily[MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
             ->getOSFamily( osFamily );
 
         agent.append( osFamily );
 
-        Char osVersion[MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME] = {'\0'};
+        Char osVersion[MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
             ->getOSVersion( osVersion );
 

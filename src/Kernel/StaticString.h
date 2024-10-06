@@ -173,6 +173,6 @@ namespace Mengine
         }
 
     protected:
-        Char m_buffer[N] = {'\0'};
+        Char m_buffer[N + 1] = {'\0'};
     };
 }

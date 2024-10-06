@@ -102,7 +102,7 @@ namespace Mengine
             return true;
         }
 
-        WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
+        WChar currentPath[MENGINE_MAX_PATH + 1] = {L'\0'};
         DWORD currentPathLen = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
         if( currentPathLen == 0 )
@@ -112,11 +112,11 @@ namespace Mengine
             return false;
         }
 
-        WChar xlsxExporterModulePath[MENGINE_MAX_PATH] = {L'\0'};
+        WChar xlsxExporterModulePath[MENGINE_MAX_PATH + 1] = {L'\0'};
         ::PathCombine( xlsxExporterModulePath, currentPath, L"XlsxExport" );
         ::PathCombine( xlsxExporterModulePath, xlsxExporterModulePath, L"xlsxExporter.py" );
 
-        WChar shortpath_xlsxExporterModulePath[MENGINE_MAX_PATH] = {L'\0'};
+        WChar shortpath_xlsxExporterModulePath[MENGINE_MAX_PATH + 1] = {L'\0'};
         DWORD ShortPathNameLen = ::GetShortPathName( xlsxExporterModulePath, shortpath_xlsxExporterModulePath, MENGINE_MAX_PATH );
 
         if( ShortPathNameLen == 0 )
@@ -129,7 +129,7 @@ namespace Mengine
             return false;
         }
         
-        WChar command[MENGINE_MAX_COMMAND_LENGTH] = {'\0'};
+        WChar command[MENGINE_MAX_COMMAND_LENGTH + 1] = {'\0'};
         MENGINE_SWPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"\"%ls\" %S"
             , shortpath_xlsxExporterModulePath
             , Project_Codename.c_str()

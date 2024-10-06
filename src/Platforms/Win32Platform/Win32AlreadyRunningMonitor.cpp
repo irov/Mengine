@@ -21,7 +21,7 @@ namespace Mengine
     bool Win32AlreadyRunningMonitor::initialize( EAlreadyRunningPolicy _policy, const WChar * _windowClassName, const WChar * _projectTitle, bool * const _stop )
     {
         // try to create mutex to sure that we are not running already
-        WChar mutexName[MENGINE_MAX_PATH] = {L'\0'};
+        WChar mutexName[MENGINE_MAX_PATH + 1] = {L'\0'};
         StdString::wcscpy( mutexName, L"Mengine_ARM_Mutex_" );
         StdString::wcscat( mutexName, _windowClassName );
         StdString::wcscat( mutexName, _projectTitle );
@@ -68,7 +68,7 @@ namespace Mengine
             }break;
         case Mengine::EARP_SHOWMESSAGE:
             {
-                WChar message[1024] = {L'\0'};
+                WChar message[1024 + 1] = {L'\0'};
                 MENGINE_SWPRINTF( message, 1024, L"Another instance of '%ls' is already running"
                     , _projectTitle
                 );

@@ -182,8 +182,8 @@ namespace Mengine
         
         bool developmentMode = Helper::isDevelopmentMode();
 
-        Char loggerLevelMessage[256] = {'\0'};
-        size_t loggerLevelMessageLen = MENGINE_SNPRINTF( loggerLevelMessage, 255, "start logger with verbose level [%s] Mode [%s] Debug [%s] Master [%s] Publish [%s]"
+        Char loggerLevelMessage[256 + 1] = {'\0'};
+        size_t loggerLevelMessageLen = MENGINE_SNPRINTF( loggerLevelMessage, 256, "start logger with verbose level [%s] Mode [%s] Debug [%s] Master [%s] Publish [%s]"
             , loggerLevel
             , developmentMode == true ? "Dev" : "Normal"
             , MENGINE_DEBUG_VALUE( "True", "False" )

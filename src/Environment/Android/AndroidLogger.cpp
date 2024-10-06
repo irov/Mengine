@@ -35,11 +35,11 @@ namespace Mengine
 
         ELoggerLevel level = message.level;
 
-        Char buffer[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        Char buffer[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
         if( message.flag & LFLAG_TIMESTAMP )
         {
-            Char date[256] = {'\0'};
+            Char date[256 + 1] = {'\0'};
 
             size_t dateSize = Helper::makeLoggerShortDate( message.timestamp, "[%02u:%02u:%02u:%04u]", date, 0, 256 );
             MENGINE_UNUSED( dateSize );
@@ -60,7 +60,7 @@ namespace Mengine
 
         if( message.flag & LFLAG_THREADSTAMP )
         {
-            Char threadstamp[256] = {'\0'};
+            Char threadstamp[256 + 1] = {'\0'};
             size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
             MENGINE_UNUSED( threadstampSize );
 
@@ -70,7 +70,7 @@ namespace Mengine
 
         if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
-            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+            Char functionstamp[MENGINE_MAX_PATH + 1] = {'\0'};
 
             const Char * function = message.function;
             int32_t line = message.line;

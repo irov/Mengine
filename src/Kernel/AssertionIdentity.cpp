@@ -20,7 +20,7 @@ namespace Mengine
                 return;
             }
 
-            Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+            Char msg[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
             MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "Identity '%s' has invalid uniqueId [%s]"
                 , _identity->getName().c_str()
                 , MENGINE_MIXIN_DEBUG_TYPE( _identity )

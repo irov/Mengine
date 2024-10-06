@@ -49,7 +49,6 @@
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/TextureHelper.h"
-#include "Kernel/AssertionUtf8.h"
 
 #include "ToolUtils/ToolLogger.h"
 
@@ -426,13 +425,13 @@ static PyObject * py_writeBin( PyObject * _self, PyObject * _args )
         return nullptr;
     }
 
-    wchar_t protocolPath[MENGINE_MAX_PATH] = {L'\0'};
+    wchar_t protocolPath[MENGINE_MAX_PATH + 1] = {L'\0'};
     PyUnicode_AsWideChar( py_protocolPath, protocolPath, MENGINE_MAX_PATH );
 
-    wchar_t xmlPath[MENGINE_MAX_PATH] = {L'\0'};
+    wchar_t xmlPath[MENGINE_MAX_PATH + 1] = {L'\0'};
     PyUnicode_AsWideChar( py_xmlPath, xmlPath, MENGINE_MAX_PATH );
 
-    wchar_t binPath[MENGINE_MAX_PATH] = {L'\0'};
+    wchar_t binPath[MENGINE_MAX_PATH + 1] = {L'\0'};
     PyUnicode_AsWideChar( py_binPath, binPath, MENGINE_MAX_PATH );
 
     if( Mengine::writeBin( protocolPath, xmlPath, binPath ) == false )
@@ -456,13 +455,13 @@ static PyObject * py_writeAek( PyObject * _self, PyObject * _args )
         return nullptr;
     }
 
-    wchar_t protocolPath[MENGINE_MAX_PATH] = {L'\0'};
+    wchar_t protocolPath[MENGINE_MAX_PATH + 1] = {L'\0'};
     PyUnicode_AsWideChar( py_protocolPath, protocolPath, MENGINE_MAX_PATH );
 
-    wchar_t xmlPath[MENGINE_MAX_PATH] = {L'\0'};
+    wchar_t xmlPath[MENGINE_MAX_PATH + 1] = {L'\0'};
     PyUnicode_AsWideChar( py_xmlPath, xmlPath, MENGINE_MAX_PATH );
 
-    wchar_t aekPath[MENGINE_MAX_PATH] = {L'\0'};
+    wchar_t aekPath[MENGINE_MAX_PATH + 1] = {L'\0'};
     PyUnicode_AsWideChar( py_aekPath, aekPath, MENGINE_MAX_PATH );
 
     if( Mengine::writeAek( protocolPath, xmlPath, aekPath ) == false )
@@ -1075,20 +1074,7 @@ static PyObject * py_pathSHA1( PyObject * _self, PyObject * _args )
     return PyUnicode_FromWideChar( hex, 40 );
 }
 //////////////////////////////////////////////////////////////////////////
-static char g_message[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
-//////////////////////////////////////////////////////////////////////////
-bool is_ascii( const char * str )
-{
-    while( *str )
-    {
-        if( (unsigned char)*str > 0x7F )
-        {
-            return false;
-        }
-        str++;
-    }
-    return true;
-}
+static Mengine::Char g_message[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 //////////////////////////////////////////////////////////////////////////
 static PyObject * py_log( PyObject * _self, PyObject * _args )
 {
@@ -1109,8 +1095,6 @@ static PyObject * py_log( PyObject * _self, PyObject * _args )
 
         return Py_None;
     }
-
-    MENGINE_ASSERTION_VALIDATE_UTF8( g_message, MENGINE_UNKNOWN_SIZE );
 
     LOGGER_MESSAGE( "%s"
         , g_message
@@ -1193,7 +1177,7 @@ static bool run()
     }
     catch( const std::exception & se )
     {
-        char MSG[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        Mengine::Char MSG[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
         MENGINE_SNPRINTF( MSG, MENGINE_LOGGER_MAX_MESSAGE, "PyInit_ToolsBuilderPlugin exception: %s"
             , se.what()
@@ -1206,7 +1190,7 @@ static bool run()
 
     LOGGER_MESSAGE( "initialize complete" );
 
-    WCHAR currentPath[MENGINE_MAX_PATH] = {L'\0'};
+    WCHAR currentPath[MENGINE_MAX_PATH + 1] = {L'\0'};
     DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
     if( len == 0 )
@@ -1223,7 +1207,7 @@ static bool run()
     currentPath[len + 0] = MENGINE_PATH_WDELIM;
     currentPath[len + 1] = L'\0';
 
-    WCHAR python3LibPath[MENGINE_MAX_PATH] = {L'\0'};
+    WCHAR python3LibPath[MENGINE_MAX_PATH + 1] = {L'\0'};
     WIN32_FINDPYTHON3_SERVICE()
         ->getPython3LibraryPathW( python3LibPath );
 
@@ -1231,7 +1215,7 @@ static bool run()
         , python3LibPath
     );
 
-    WCHAR python3DllPath[MENGINE_MAX_PATH] = {L'\0'};
+    WCHAR python3DllPath[MENGINE_MAX_PATH + 1] = {L'\0'};
     WIN32_FINDPYTHON3_SERVICE()
         ->getPython3DllPathW( python3DllPath );
 
@@ -1342,10 +1326,10 @@ static bool run()
 
     LOGGER_MESSAGE( "ToolsBuilderPlugin python module successful" );
 
-    WCHAR python3LibPathCount[MENGINE_MAX_PATH] = {L'\0'};
+    WCHAR python3LibPathCount[MENGINE_MAX_PATH + 1] = {L'\0'};
     Mengine::StdString::wcscpy( python3LibPathCount, python3LibPath );
 
-    WCHAR python3LibPathItem[MENGINE_MAX_PATH] = {L'\0'};
+    WCHAR python3LibPathItem[MENGINE_MAX_PATH + 1] = {L'\0'};
     Mengine::StdString::wcscpy( python3LibPathItem, python3LibPath );
 
     wchar_t * token;
@@ -1373,7 +1357,7 @@ static bool run()
     
     while( token != nullptr )
     {
-        WCHAR token_site[MENGINE_MAX_PATH] = {L'\0'};
+        WCHAR token_site[MENGINE_MAX_PATH + 1] = {L'\0'};
         ::PathCombineW( token_site, token, L"site-packages\\" );
 
         LOGGER_MESSAGE( "ToolsBuilderPlugin python add sys path: %ls"
@@ -1422,12 +1406,12 @@ static bool run()
 
     PWSTR szModuleName = szArglist[1];
 
-    Mengine::Char utf8_ModuleName[256] = {'\0'};
+    Mengine::Char utf8_ModuleName[256 + 1] = {'\0'};
     Mengine::Helper::unicodeToUtf8( szModuleName, utf8_ModuleName, 256 );
 
     PWSTR szFunctionName = szArglist[2];
 
-    Mengine::Char utf8_FunctionName[256] = {'\0'};
+    Mengine::Char utf8_FunctionName[256 + 1] = {'\0'};
     Mengine::Helper::unicodeToUtf8( szFunctionName, utf8_FunctionName, 256 );
 
     LOGGER_MESSAGE( "ToolsBuilderPlugin run module '%s' function '%s'"

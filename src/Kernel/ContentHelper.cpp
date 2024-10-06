@@ -26,7 +26,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const Char * getContentFullPath( const ContentInterfacePtr & _content )
         {
-            static MENGINE_THREAD_LOCAL Char fullPath[MENGINE_MAX_PATH] = {'\0'};
+            static MENGINE_THREAD_LOCAL Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
 
             if( _content == nullptr )
             {

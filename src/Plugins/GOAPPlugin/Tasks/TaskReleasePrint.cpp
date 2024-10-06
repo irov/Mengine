@@ -13,7 +13,7 @@ namespace Mengine
     TaskReleasePrint::TaskReleasePrint( GOAP::Allocator * _allocator, const Char * _format, ... )
         : GOAP::TaskInterface( _allocator )
     {
-        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        Char message[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
@@ -32,7 +32,7 @@ namespace Mengine
     TaskReleasePrint::TaskReleasePrint( GOAP::Allocator * _allocator, const Char * _format, MENGINE_VA_LIST_TYPE _args )
         : GOAP::TaskInterface( _allocator )
     {
-        Char message[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        Char message[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
         int32_t size_vsnprintf = MENGINE_VSNPRINTF( message, MENGINE_LOGGER_MAX_MESSAGE, _format, _args );
 

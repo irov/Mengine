@@ -27,7 +27,7 @@ namespace Mengine
         template<class D, class I>
         const Char * getDocumentableThreadLocalMessage( const D * _documentable, const I * _identity, const Char * _message )
         {
-            static MENGINE_THREAD_LOCAL Char message[4096] = {'\0'};
+            static MENGINE_THREAD_LOCAL Char message[4096 + 1] = {'\0'};
             Detail::getDocumentableMessage( _documentable, _identity, message, 4096 );
             StdString::strcat( message, " [" );
             StdString::strcat( message, _message );

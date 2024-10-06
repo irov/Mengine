@@ -164,8 +164,8 @@ namespace Mengine
 
         for( uint32_t index = 0; index != m_samplerCount; ++index )
         {
-            Char samplerVar[16] = {'\0'};
-            MENGINE_SNPRINTF( samplerVar, 15, "inSampler%u", index );
+            Char samplerVar[16 + 1] = {'\0'};
+            MENGINE_SNPRINTF( samplerVar, 16, "inSampler%u", index );
 
             GLint location;
             MENGINE_GLCALLR( location, glGetUniformLocation, (programId, samplerVar) );

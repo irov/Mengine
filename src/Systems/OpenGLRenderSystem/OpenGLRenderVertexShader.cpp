@@ -70,7 +70,7 @@ namespace Mengine
         if( status == GL_FALSE )
         {
             GLchar errorLog[1024] = {'\0'};
-            MENGINE_GLCALL( glGetShaderInfoLog, (shaderId, 1023, NULL, errorLog) );
+            MENGINE_GLCALL( glGetShaderInfoLog, (shaderId, 1024, NULL, errorLog) );
 
             LOGGER_ERROR( "compilation vertex shader '%s' error '%s'"
                 , m_name.c_str()

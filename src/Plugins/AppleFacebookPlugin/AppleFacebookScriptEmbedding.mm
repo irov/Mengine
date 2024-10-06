@@ -79,7 +79,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * s_AppleFacebook_getAccessToken( pybind::kernel_interface * _kernel )
         {
-            Char token[256] = {'\0'};
+            Char token[256 + 1] = {'\0'};
             if( APPLE_FACEBOOK_SERVICE()
                ->getAccessToken( token, 256 ) == false )
             {
@@ -93,7 +93,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * s_AppleFacebook_getUserId( pybind::kernel_interface * _kernel )
         {
-            Char userId[256] = {'\0'};
+            Char userId[256 + 1] = {'\0'};
             if( APPLE_FACEBOOK_SERVICE()
                ->getUserId( userId, 256 ) == false )
             {

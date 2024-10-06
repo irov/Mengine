@@ -200,7 +200,7 @@ namespace Mengine
 
         if( message.flag & LFLAG_TIMESTAMP )
         {
-            Char timestamp[256] = {'\0'};
+            Char timestamp[256 + 1] = {'\0'};
             size_t timestampSize = Helper::makeLoggerShortDate( message.timestamp, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
             ::WriteConsoleA( output_handle, timestamp, (DWORD)timestampSize, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
@@ -227,7 +227,7 @@ namespace Mengine
 
         if( message.flag & LFLAG_THREADSTAMP )
         {
-            Char threadstamp[256] = {'\0'};
+            Char threadstamp[256 + 1] = {'\0'};
             size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
             ::WriteConsoleA( output_handle, threadstamp, (DWORD)threadstampSize, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );
@@ -235,7 +235,7 @@ namespace Mengine
 
         if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
-            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+            Char functionstamp[MENGINE_MAX_PATH + 1] = {'\0'};
             size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
             ::WriteConsoleA( output_handle, functionstamp, (DWORD)functionstampSize, &dWritten, NULL );
             ::WriteConsoleA( output_handle, " ", 1, &dWritten, NULL );

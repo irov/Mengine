@@ -72,7 +72,7 @@ namespace Mengine
             pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
                 ->getKernel();
 
-            Char traceback[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+            Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
             kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE );
 
             MENGINE_ERROR_FATAL( "invalid parameter detected in function %ls.\nFile: %ls Line: %u\nExpression: %ls\nTrackeback:\n%s"
@@ -243,7 +243,7 @@ namespace Mengine
                     , ss_kwds.str().c_str()
                     );
 
-                Char traceback[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+                Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
                 _kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE );
 
                 LOGGER_VERBOSE_LEVEL( "script", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE, LFLAG_SHORT )("traceback:\n%s"
@@ -509,10 +509,10 @@ namespace Mengine
             {
                 const Char * option_global = option_globals[index];
 
-                Char uppercase_option_global[256] = {'\0'};
+                Char uppercase_option_global[256 + 1] = {'\0'};
                 Helper::toupper( option_global, uppercase_option_global, 256 );
 
-                Char total_global[256] = {'\0'};
+                Char total_global[256 + 1] = {'\0'};
                 MENGINE_SNPRINTF( total_global, 256, "_%s", uppercase_option_global );
 
                 this->addGlobalModuleT( total_global, true );
@@ -1215,7 +1215,7 @@ namespace Mengine
             return;
         }
 
-        Char traceback[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
         if( m_kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE ) == false )
         {
             return;
@@ -1247,7 +1247,7 @@ namespace Mengine
             PyObject * trace_line = m_kernel->tuple_getitem( item, 1 );
             PyObject * trace_function = m_kernel->tuple_getitem( item, 2 );
 
-            Char trace_str[MENGINE_MAX_PATH] = {'\0'};
+            Char trace_str[MENGINE_MAX_PATH + 1] = {'\0'};
             MENGINE_SNPRINTF( trace_str, MENGINE_MAX_PATH, "File \"%s\", line %d, in %s"
                 , m_kernel->string_to_char( trace_file )
                 , pybind::extract<int32_t>( m_kernel, trace_line )
@@ -1332,7 +1332,7 @@ namespace Mengine
                     , m_kernel->object_repr( _kwds ).c_str()
                 );
 
-                Char traceback[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+                Char traceback[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
                 m_kernel->get_traceback( traceback, MENGINE_LOGGER_MAX_MESSAGE );
 
                 LOGGER_STATISTIC( "%s", traceback );
@@ -1352,7 +1352,7 @@ namespace Mengine
 
             for( const FilePath & path : _desc.pathes )
             {
-                Char fullpath[MENGINE_MAX_PATH] = {'\0'};
+                Char fullpath[MENGINE_MAX_PATH + 1] = {'\0'};
                 fileGroup->getFullPath( path, fullpath );
 
                 l.append( fullpath );

@@ -20,7 +20,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         String stringFormat( const Char * _format, ... )
         {
-            Char str[2048] = {'\0'};
+            Char str[2048 + 1] = {'\0'};
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
@@ -43,7 +43,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         String stringInt32( int32_t _value )
         {
-            Char buffer[64] = {'\0'};
+            Char buffer[64 + 1] = {'\0'};
             MENGINE_SNPRINTF( buffer, 64, "%d", _value );
 
             return String( buffer );
@@ -51,7 +51,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         String stringFloat( float _value )
         {
-            Char buffer[2048] = {'\0'};
+            Char buffer[2048 + 1] = {'\0'};
             MENGINE_SNPRINTF( buffer, 2048, "%.1024f", _value );
 
             Char * float_point = StdString::strchr( buffer, '.' );

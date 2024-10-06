@@ -510,7 +510,7 @@ namespace Mengine
             {
                 MENGINE_ASSERTION_FATAL( _length < 1024, "max UID length equal 1024" );
 
-                Char uid[1024] = {'\0'};
+                Char uid[1024 + 1] = {'\0'};
                 Helper::makeUID( _length, uid );
 
                 return String( uid, _length );
@@ -743,7 +743,7 @@ namespace Mengine
 
                 Stringstream ss;
 
-                Char uid[1024] = {'\0'};
+                Char uid[1024 + 1] = {'\0'};
                 Helper::makeUID( _length, uid );
                 uid[_length] = '\0';
 
@@ -877,7 +877,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getClipboardText( pybind::kernel_interface * _kernel )
             {
-                Char value[1024] = {'\0'};
+                Char value[1024 + 1] = {'\0'};
                 if( PLATFORM_SERVICE()
                     ->getClipboardText( value, 1024 ) == false )
                 {
@@ -936,7 +936,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logInfo( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Char function[MENGINE_MAX_PATH] = {'\0'};
+                Char function[MENGINE_MAX_PATH + 1] = {'\0'};
                 uint32_t lineno = 0;
                 _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
@@ -960,7 +960,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logMessage( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Char function[MENGINE_MAX_PATH] = {'\0'};
+                Char function[MENGINE_MAX_PATH + 1] = {'\0'};
                 uint32_t lineno = 0;
                 _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
@@ -984,7 +984,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logWarning( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Char function[MENGINE_MAX_PATH] = {'\0'};
+                Char function[MENGINE_MAX_PATH + 1] = {'\0'};
                 uint32_t lineno = 0;
                 _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
@@ -1008,7 +1008,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logError( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Char function[MENGINE_MAX_PATH] = {'\0'};
+                Char function[MENGINE_MAX_PATH + 1] = {'\0'};
                 uint32_t lineno = 0;
                 _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
@@ -1032,7 +1032,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logMessageRelease( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Char function[MENGINE_MAX_PATH] = {'\0'};
+                Char function[MENGINE_MAX_PATH + 1] = {'\0'};
                 uint32_t lineno = 0;
                 _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
@@ -1056,7 +1056,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logFatal( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Char function[MENGINE_MAX_PATH] = {'\0'};
+                Char function[MENGINE_MAX_PATH + 1] = {'\0'};
                 uint32_t lineno = 0;
                 _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
@@ -1627,7 +1627,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             String s_getDatePathTimestamp()
             {
-                Char pathTimestamp[1024] = {'\0'};
+                Char pathTimestamp[1024 + 1] = {'\0'};
                 Helper::makeFilePathDateTimestamp( pathTimestamp, 1024 );
 
                 return pathTimestamp;
@@ -1637,7 +1637,7 @@ namespace Mengine
             {
                 Timestamp timestamp = Helper::getLocalTimestamp();
 
-                Char shortDate[1024] = {'\0'};
+                Char shortDate[1024 + 1] = {'\0'};
                 Helper::makeLoggerShortDate( timestamp, _format, shortDate, 0, 1024 );
 
                 return shortDate;
@@ -1645,7 +1645,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             String s_getTimeString()
             {
-                Char timestamp[256] = {'\0'};
+                Char timestamp[256 + 1] = {'\0'};
                 Helper::makeLoggerDateTimestamp( timestamp, 256 );
 
                 return timestamp;
@@ -2001,8 +2001,8 @@ namespace Mengine
                     return false;
                 }
 
-                Char setting_value[32] = {'\0'};
-                if( Helper::stringalized( _value, setting_value, 31 ) == false )
+                Char setting_value[32 + 1] = {'\0'};
+                if( Helper::stringalized( _value, setting_value, 32 ) == false )
                 {
                     return false;
                 }
@@ -2061,8 +2061,8 @@ namespace Mengine
                     return false;
                 }
 
-                Char setting_value[32] = {'\0'};
-                if( Helper::stringalized( _value, setting_value, 31 ) == false )
+                Char setting_value[32 + 1] = {'\0'};
+                if( Helper::stringalized( _value, setting_value, 32 ) == false )
                 {
                     return false;
                 }
@@ -2091,8 +2091,8 @@ namespace Mengine
                     return false;
                 }
 
-                Char setting_value[64] = {'\0'};
-                if( Helper::stringalized( _value, setting_value, 63 ) == false )
+                Char setting_value[64 + 1] = {'\0'};
+                if( Helper::stringalized( _value, setting_value, 64 ) == false )
                 {
                     return false;
                 }

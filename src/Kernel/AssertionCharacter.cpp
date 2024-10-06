@@ -21,7 +21,7 @@ namespace Mengine
 
                 if( Helper::isASCIICharacterSet( ch ) == false )
                 {
-                    Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+                    Char msg[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
                     MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "string '%.*s' has non ASCII char code: %u"
                         , (int32_t)_len
                         , _value
@@ -33,7 +33,7 @@ namespace Mengine
 
                 if( Helper::isStandardCharacterSet( ch ) == false )
                 {
-                    Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+                    Char msg[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
                     MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "string '%.*s' has non standard char '%c' code: %u"
                         , (int32_t)_len
                         , _value
@@ -54,7 +54,7 @@ namespace Mengine
 
                 if( Helper::isASCIICharacterSet( ch ) == false )
                 {
-                    Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+                    Char msg[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
                     MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "string '%.*s' has non ASCII char code: %u"
                         , (int32_t)_len
                         , _value
@@ -66,7 +66,7 @@ namespace Mengine
 
                 if( Helper::isUpperCharacterSet( ch ) == true )
                 {
-                    Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+                    Char msg[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
                     MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "string '%.*s' has non lower char '%c' code: %u"
                         , (int32_t)_len
                         , _value
@@ -87,7 +87,7 @@ namespace Mengine
 
                 if( Helper::isASCIICharacterSet( ch ) == false )
                 {
-                    Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+                    Char msg[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
                     MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "string '%.*s' has non ASCII char code: %u"
                         , (int32_t)_len
                         , _value
@@ -99,7 +99,7 @@ namespace Mengine
 
                 if( Helper::isLowerCharacterSet( ch ) == true )
                 {
-                    Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+                    Char msg[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
                     MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "string '%.*s' has non upper char '%c' code: %u"
                         , (int32_t)_len
                         , _value

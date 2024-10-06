@@ -58,7 +58,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerOperator::logMessageArgs( const Char * _format, MENGINE_VA_LIST_TYPE _args ) const
     {
-        Char str[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        Char str[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
         int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_LOGGER_MAX_MESSAGE - 2, _format, _args );
 
         if( size_vsnprintf < 0 )

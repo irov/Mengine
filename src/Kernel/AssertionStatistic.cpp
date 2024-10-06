@@ -22,7 +22,7 @@ namespace Mengine
                 return;
             }
 
-            Char msg[1024] = {'\0'};
+            Char msg[1024 + 1] = {'\0'};
             MENGINE_SNPRINTF( msg, 1024, "Statistics '%s' not empty ['%" MENGINE_PRId64 "']"
                 , Helper::getStatisticName( _id )
                 , value

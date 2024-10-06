@@ -16,7 +16,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE const Char * getTracebackPybind()
         {
-            static MENGINE_THREAD_LOCAL Char traceback[MENGINE_PYBIND_TRACEBACK_MAX_MESSAGE] = {'\0'};
+            static MENGINE_THREAD_LOCAL Char traceback[MENGINE_PYBIND_TRACEBACK_MAX_MESSAGE + 1] = {'\0'};
 
             pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
                 ->getKernel();
@@ -28,7 +28,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE DocumentInterfacePtr createDocumentPybind( const Char * _file, const Char * _function, uint32_t _line )
         {
-            Char traceback[MENGINE_PYBIND_TRACEBACK_MAX_MESSAGE] = {'\0'};
+            Char traceback[MENGINE_PYBIND_TRACEBACK_MAX_MESSAGE + 1] = {'\0'};
 
             pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
                 ->getKernel();

@@ -271,7 +271,7 @@ namespace Mengine
             };
         }
 
-        ColorValue_ARGB cacheFontARGB[16] = {'\0'};
+        ColorValue_ARGB cacheFontARGB[16 + 1] = {'\0'};
 
         const Color & paramsFontColor = this->calcFontColor();
         Color colorBaseFont = paramsFontColor * _color;
@@ -1836,7 +1836,7 @@ namespace Mengine
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
 
-        Char str[MENGINE_TEXT_FIELD_MAX_TEXT] = {'\0'};
+        Char str[MENGINE_TEXT_FIELD_MAX_TEXT + 1] = {'\0'};
         int32_t size_vsnprintf = MENGINE_VSNPRINTF( str, MENGINE_TEXT_FIELD_MAX_TEXT, _format, args );
 
         MENGINE_VA_LIST_END( args );

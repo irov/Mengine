@@ -38,7 +38,7 @@ namespace Mengine
 
         const Char * name = this->getName();
 
-        WChar unicode_name[MENGINE_MAX_PATH] = {L'\0'};
+        WChar unicode_name[MENGINE_MAX_PATH + 1] = {L'\0'};
         if( Helper::utf8ToUnicode( name, unicode_name, MENGINE_MAX_PATH ) == false )
         {
             return false;
@@ -56,7 +56,7 @@ namespace Mengine
             return false;
         }
 
-        WCHAR dllFilename[MENGINE_MAX_PATH] = {L'\0'};
+        WCHAR dllFilename[MENGINE_MAX_PATH + 1] = {L'\0'};
         ::GetModuleFileName( hInstance, dllFilename, MENGINE_MAX_PATH );
 
         m_hInstance = hInstance;

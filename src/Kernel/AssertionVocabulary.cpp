@@ -40,7 +40,7 @@ namespace Mengine
                 return;
             }
 
-            Char msg[1024] = {'\0'};
+            Char msg[1024 + 1] = {'\0'};
             MENGINE_SNPRINTF( msg, 1024, "Vocabulary '%s' not empty ['%u']"
                 , _key.c_str()
                 , count

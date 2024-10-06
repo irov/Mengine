@@ -20,10 +20,10 @@ namespace Mengine
                 , _command
             );
 
-            WChar unicode_process[MENGINE_MAX_PATH] = {L'\0'};
+            WChar unicode_process[MENGINE_MAX_PATH + 1] = {L'\0'};
             Helper::utf8ToUnicode( _process, unicode_process, MENGINE_MAX_PATH );
 
-            WChar unicode_command[MENGINE_MAX_COMMAND_LENGTH] = {L'\0'};
+            WChar unicode_command[MENGINE_MAX_COMMAND_LENGTH + 1] = {L'\0'};
             StdString::wcscpy( unicode_command, L" " );
             StdString::wcscat( unicode_command, _command );
 
@@ -36,10 +36,10 @@ namespace Mengine
                 sa.lpSecurityDescriptor = NULL;
                 sa.bInheritHandle = TRUE;
 
-                WChar tempPathBuffer[MENGINE_MAX_PATH] = {L'\0'};
+                WChar tempPathBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
                 ::GetTempPathW( MENGINE_MAX_PATH, tempPathBuffer );
 
-                WChar tempFileNameBuffer[MENGINE_MAX_PATH] = {L'\0'};
+                WChar tempFileNameBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
                 ::GetTempFileNameW( tempPathBuffer
                     , L"Process"
                     , 0
@@ -140,7 +140,7 @@ namespace Mengine
 
                 if( tempFileSize != 0 )
                 {
-                    Char tempFileBuffer[4096] = {'\0'};
+                    Char tempFileBuffer[4096 + 1] = {'\0'};
 
                     DWORD dwBytesRead;
                     DWORD nNumberOfBytesToRead = MENGINE_MIN( tempFileSize, 4095 );

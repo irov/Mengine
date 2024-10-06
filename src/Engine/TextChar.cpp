@@ -72,7 +72,7 @@ namespace Mengine
                 TextLineChunk c;
                 c.value = _in.substr( new_begin, new_end - new_begin );
 
-                Char buffer_name[256] = {'\0'};
+                Char buffer_name[256 + 1] = {'\0'};
 
                 Char * buffer_name_iterator = buffer_name;
                 for( U32String::value_type v : name )

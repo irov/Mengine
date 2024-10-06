@@ -124,7 +124,7 @@ namespace Mengine
 
             jpp::object j_desc = jpp::make_object();
 
-            Char loggerTimestamp[1024] = {'\0'};
+            Char loggerTimestamp[1024 + 1] = {'\0'};
             Helper::makeLoggerShortDate( message.timestamp, "[%02u:%02u:%02u:%04u]", loggerTimestamp, 0, 1024 );
 
             j_desc.set( "ts", loggerTimestamp );

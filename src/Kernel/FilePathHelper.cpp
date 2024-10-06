@@ -36,7 +36,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FilePath stringizeFilePathFormat( const Char * _format, ... )
         {
-            Char str[MENGINE_MAX_PATH] = {'\0'};
+            Char str[MENGINE_MAX_PATH + 1] = {'\0'};
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );

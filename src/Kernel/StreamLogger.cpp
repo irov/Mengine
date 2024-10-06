@@ -52,7 +52,7 @@ namespace Mengine
 
         if( message.flag & LFLAG_TIMESTAMP )
         {
-            Char timestamp[256] = {'\0'};
+            Char timestamp[256 + 1] = {'\0'};
             size_t timestampSize = Helper::makeLoggerShortDate( message.timestamp, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
             m_stream->write( timestamp, timestampSize );
             m_stream->write( " ", 1 );
@@ -79,7 +79,7 @@ namespace Mengine
 
         if( message.flag & LFLAG_THREADSTAMP )
         {
-            Char threadstamp[256] = {'\0'};
+            Char threadstamp[256 + 1] = {'\0'};
             size_t threadstampSize = Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
             m_stream->write( threadstamp, threadstampSize );
             m_stream->write( " ", 1 );
@@ -87,7 +87,7 @@ namespace Mengine
 
         if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
-            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+            Char functionstamp[MENGINE_MAX_PATH + 1] = {'\0'};
             size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
             m_stream->write( functionstamp, functionstampSize );
             m_stream->write( " ", 1 );

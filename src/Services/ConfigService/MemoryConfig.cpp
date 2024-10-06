@@ -144,7 +144,7 @@ namespace Mengine
                 tag_record = &_records.emplace_back( desc );
             }
 
-            Char buffer[1024] = {'\0'};
+            Char buffer[1024 + 1] = {'\0'};
             if( Helper::stringalized( _value, buffer, 1024 ) == false )
             {
                 return false;

@@ -7,8 +7,8 @@ void message_error( const char * _format, ... )
 
     va_start( argList, _format );
 
-    char str[2048] = {'\0'};
-    vsnprintf( str, 2048 - 1, _format, argList );
+    char str[2048 + 1] = {'\0'};
+    vsnprintf( str, 2048, _format, argList );
 
     va_end( argList );
 

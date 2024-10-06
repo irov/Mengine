@@ -162,7 +162,7 @@ namespace Mengine
         ThreadId mainThreadId = THREAD_SERVICE()
             ->getMainThreadId();
 
-        Char stack_msg[8096] = {'\0'};
+        Char stack_msg[8096 + 1] = {'\0'};
         if( Helper::Win32GetCallstack( (DWORD)mainThreadId, nullptr, stack_msg, 8095 ) == false )
         {
             LOGGER_ERROR( "antifreeze monitor invalid callstack" );
@@ -174,7 +174,7 @@ namespace Mengine
             );
         }
 
-        Char userPath[MENGINE_MAX_PATH] = {'\0'};
+        Char userPath[MENGINE_MAX_PATH + 1] = {'\0'};
         PLATFORM_SERVICE()
             ->getUserPath( userPath );
 
@@ -183,7 +183,7 @@ namespace Mengine
         processDumpPath += "Antifreeze";
         processDumpPath += "_";
 
-        Char filePathDate[1024] = {'\0'};
+        Char filePathDate[1024 + 1] = {'\0'};
         Helper::makeFilePathDateTimestamp( filePathDate, 1024 );
 
         processDumpPath += filePathDate;

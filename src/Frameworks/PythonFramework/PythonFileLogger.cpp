@@ -61,7 +61,7 @@ namespace Mengine
         {
             Timestamp timestamp = Helper::getLocalTimestamp();
 
-            Char shortDate[128] = {'\0'};
+            Char shortDate[128 + 1] = {'\0'};
             size_t shortDateLen = Helper::makeLoggerShortDate( timestamp, "[%02u:%02u:%02u:%04u]", shortDate, 0, 128 );
 
             m_stream->write( shortDate, shortDateLen );

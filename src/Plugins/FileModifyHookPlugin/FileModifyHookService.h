@@ -43,7 +43,7 @@ namespace Mengine
 
         struct FileModifyDesc
         {
-            Char fullPath[MENGINE_MAX_PATH] = {'\0'};
+            Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
 
             LambdaFileModifyHook lambda;
 

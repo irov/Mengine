@@ -85,7 +85,7 @@ namespace Mengine
         optPath += "Optick";
         optPath += "_";
 
-        Char filePathDate[1024] = {'\0'};
+        Char filePathDate[1024 + 1] = {'\0'};
         Helper::makeFilePathDateTimestamp( filePathDate, 1024 );
 
         optPath += filePathDate;

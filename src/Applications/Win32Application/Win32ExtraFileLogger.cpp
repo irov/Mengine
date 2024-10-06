@@ -27,7 +27,7 @@ namespace Mengine
     {
         const Char * OPTION_extralog = GET_OPTION_VALUE( "extralog", "" );
 
-        WChar UNICODE_setuplog[MENGINE_MAX_PATH] = {L'\0'};
+        WChar UNICODE_setuplog[MENGINE_MAX_PATH + 1] = {L'\0'};
         Helper::utf8ToUnicode( OPTION_extralog, UNICODE_setuplog, MENGINE_MAX_PATH );
 
         HANDLE hLogFile = Helper::Win32CreateFile( UNICODE_setuplog, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, CREATE_ALWAYS );
@@ -59,7 +59,7 @@ namespace Mengine
 
         if( message.flag & LFLAG_TIMESTAMP )
         {
-            Char timestamp[256] = {'\0'};
+            Char timestamp[256 + 1] = {'\0'};
             Helper::makeLoggerShortDate( message.timestamp, "[%02u:%02u:%02u:%04u]", timestamp, 0, 256 );
             this->writeMessage_( timestamp );
             this->writeMessage_( " " );
@@ -85,7 +85,7 @@ namespace Mengine
 
         if( message.flag & LFLAG_THREADSTAMP )
         {
-            Char threadstamp[256] = {'\0'};
+            Char threadstamp[256 + 1] = {'\0'};
             Helper::makeLoggerThreadStamp( message.threadName, "|%s|", threadstamp, 0, 256 );
             this->writeMessage_( threadstamp );
             this->writeMessage_( " " );
@@ -93,7 +93,7 @@ namespace Mengine
 
         if( message.flag & LFLAG_FUNCTIONSTAMP )
         {
-            Char functionstamp[MENGINE_MAX_PATH] = {'\0'};
+            Char functionstamp[MENGINE_MAX_PATH + 1] = {'\0'};
             Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
             this->writeMessage_( functionstamp );
             this->writeMessage_( " " );

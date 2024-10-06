@@ -292,7 +292,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_loadPlugin( const WString & _pluginName )
             {
-                Char utf8_pluginName[MENGINE_MAX_PATH] = {'\0'};
+                Char utf8_pluginName[MENGINE_MAX_PATH + 1] = {'\0'};
                 if( Helper::unicodeToUtf8( _pluginName, utf8_pluginName, MENGINE_MAX_PATH ) == false )
                 {
                     return false;
@@ -1643,7 +1643,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getCompanyName( pybind::kernel_interface * _kernel )
             {
-                Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
+                Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME + 1] = {'\0'};
                 APPLICATION_SERVICE()
                     ->getCompanyName( companyName );
 
@@ -1652,7 +1652,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getProjectName( pybind::kernel_interface * _kernel )
             {
-                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
+                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = {'\0'};
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
@@ -1669,7 +1669,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getDeviceLanguage( pybind::kernel_interface * _kernel )
             {
-                Char deviceLanguage[MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME] = {'\0'};
+                Char deviceLanguage[MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME + 1] = {'\0'};
                 ENVIRONMENT_SERVICE()
                     ->getDeviceLanguage( deviceLanguage );
 
@@ -2226,7 +2226,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_updateUserWallpaper( const String & _filePath )
             {
-                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
+                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = {'\0'};
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
@@ -2253,7 +2253,7 @@ namespace Mengine
                     return false;
                 }
 
-                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
+                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = {'\0'};
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
@@ -2283,7 +2283,7 @@ namespace Mengine
                     return false;
                 }
 
-                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
+                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = {'\0'};
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
@@ -3083,7 +3083,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getPersistentArguments( pybind::kernel_interface * _kernel )
             {
-                Char persistentArguments[1024] = {'\0'};
+                Char persistentArguments[1024 + 1] = {'\0'};
                 size_t persistentArgumentsLen = 0;
                 if( PREFERENCES_SYSTEM()
                     ->getPreferenceString( "persistent_arguments", persistentArguments, 1024, &persistentArgumentsLen ) == false )
@@ -4050,8 +4050,8 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_openUrlInDefaultBrowser( const WString & _url )
             {
-                Char utf8_url[4096] = {'\0'};
-                Helper::unicodeToUtf8( _url, utf8_url, 4095 );
+                Char utf8_url[4096 + 1] = {'\0'};
+                Helper::unicodeToUtf8( _url, utf8_url, 4096 );
 
                 bool val = PLATFORM_SERVICE()
                     ->openUrlInDefaultBrowser( utf8_url );
@@ -4061,14 +4061,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_openMail( const WString & _email, const WString & _subject, const WString & _body )
             {
-                Char utf8_email[4096] = {'\0'};
-                Helper::unicodeToUtf8( _email, utf8_email, 4095 );
+                Char utf8_email[4096 + 1] = {'\0'};
+                Helper::unicodeToUtf8( _email, utf8_email, 4096 );
 
-                Char utf8_subject[4096] = {'\0'};
-                Helper::unicodeToUtf8( _subject, utf8_subject, 4095 );
+                Char utf8_subject[4096 + 1] = {'\0'};
+                Helper::unicodeToUtf8( _subject, utf8_subject, 4096 );
 
-                Char utf8_body[4096] = {'\0'};
-                Helper::unicodeToUtf8( _body, utf8_body, 4095 );
+                Char utf8_body[4096 + 1] = {'\0'};
+                Helper::unicodeToUtf8( _body, utf8_body, 4096 );
 
                 bool val = PLATFORM_SERVICE()
                     ->openMail( utf8_email, utf8_subject, utf8_body );

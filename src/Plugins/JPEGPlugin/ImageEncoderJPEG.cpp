@@ -132,7 +132,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     noreturn_t ImageEncoderJPEG::jpeg_error_exit( j_common_ptr _cinfo )
     {
-        Char buffer[JMSG_LENGTH_MAX] = {'\0'};
+        Char buffer[JMSG_LENGTH_MAX + 1] = {'\0'};
 
         (*m_errorMgr.format_message)(_cinfo, buffer);
 
@@ -150,7 +150,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ImageEncoderJPEG::jpeg_output_message( j_common_ptr _cinfo )
     {
-        Char buffer[JMSG_LENGTH_MAX] = {'\0'};
+        Char buffer[JMSG_LENGTH_MAX + 1] = {'\0'};
 
         (*m_errorMgr.format_message)(_cinfo, buffer);
 

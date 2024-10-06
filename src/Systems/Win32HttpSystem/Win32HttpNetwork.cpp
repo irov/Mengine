@@ -76,7 +76,7 @@ namespace Mengine
                 else if( lastError == ERROR_INTERNET_EXTENDED_ERROR )
                 {
                     DWORD errorCode = 0;
-                    Char errorMessage[4096] = {'\0'};
+                    Char errorMessage[4096 + 1] = {'\0'};
                     DWORD bufferLength = sizeof( errorMessage );
 
                     if( ::InternetGetLastResponseInfoA( &errorCode, errorMessage, &bufferLength ) == FALSE )
@@ -91,7 +91,7 @@ namespace Mengine
                 }
                 else
                 {
-                    Char errorMessage[2048] = {'\0'};
+                    Char errorMessage[2048 + 1] = {'\0'};
                     Helper::Win32ReadErrorMessageA( lastError, errorMessage, 2048 );
 
                     _response->setError( errorMessage, lastError );
@@ -111,12 +111,12 @@ namespace Mengine
                 ::ZeroMemory( &urlComponents, sizeof( urlComponents ) );
                 urlComponents.dwStructSize = sizeof( urlComponents );
 
-                Char password[1024] = {'\0'};
-                Char userName[1024] = {'\0'};
-                Char scheme[1024] = {'\0'};
-                Char hostName[1024] = {'\0'};
-                Char urlPath[1024] = {'\0'};
-                Char extraInfo[1024] = {'\0'};
+                Char password[1024 + 1] = {'\0'};
+                Char userName[1024 + 1] = {'\0'};
+                Char scheme[1024 + 1] = {'\0'};
+                Char hostName[1024 + 1] = {'\0'};
+                Char urlPath[1024 + 1] = {'\0'};
+                Char extraInfo[1024 + 1] = {'\0'};
 
                 urlComponents.lpszScheme = scheme;
                 urlComponents.dwSchemeLength = sizeof( scheme ) / sizeof( Char );
@@ -296,7 +296,7 @@ namespace Mengine
 
                     DWORD bytesRequest = bytesAvailable > 4096 ? 4096 : bytesAvailable;
 
-                    BYTE buffer[4096] = {'\0'};
+                    BYTE buffer[4096 + 1] = {'\0'};
                     DWORD bytesRead = 0;
                     if( ::InternetReadFile( _hRequest, buffer, bytesRequest, &bytesRead ) == FALSE )
                     {
@@ -356,7 +356,7 @@ namespace Mengine
                 return false;
             }
 
-            Char boundary[17] = {'\0'};
+            Char boundary[16 + 1] = {'\0'};
             CRYPTOGRAPHY_SYSTEM()
                 ->generateRandomHexadecimal( 16, boundary, false );
 
@@ -460,7 +460,7 @@ namespace Mengine
             ArrayString<1024> header;
             header.append( "Content-Length: " );
 
-            Char strContentLength[32] = {'\0'};
+            Char strContentLength[32 + 1] = {'\0'};
             Helper::stringalized( data_size, strContentLength, 32 );
 
             header.append( strContentLength );

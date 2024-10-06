@@ -61,7 +61,7 @@ namespace Mengine
             quality_cmd = " -q " + quality;
         }
 
-        WChar command[MENGINE_MAX_COMMAND_LENGTH] = {'\0'};
+        WChar command[MENGINE_MAX_COMMAND_LENGTH + 1] = {'\0'};
         MENGINE_SWPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"-loglevel error -y -threads 8 -i \"%S\" -vf \"split [a], pad=iw:ih*2 [b], [a] alphaextract, [b] overlay=0:h\" -vcodec libtheora -f ogg -map_metadata -1 -an%S -pix_fmt yuv420p -max_muxing_queue_size 1024 \"%S\""
             , full_input.c_str()
             , quality_cmd.c_str()

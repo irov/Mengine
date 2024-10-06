@@ -856,7 +856,7 @@ namespace Mengine
 
         j.set( "did", m_fingerprint );
 
-        Char userName[MENGINE_ENVIRONMENT_USER_MAXNAME] = {'\0'};
+        Char userName[MENGINE_ENVIRONMENT_USER_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
             ->getUserName( userName );
 

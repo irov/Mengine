@@ -60,7 +60,7 @@ namespace Mengine
 
         ColorValue_ARGB argb = m_test.getAsARGB();
 
-        Char hex_value[32] = {'\0'};
+        Char hex_value[32 + 1] = {'\0'};
         MENGINE_SNPRINTF( hex_value, 32, "#%08X"
             , argb
         );

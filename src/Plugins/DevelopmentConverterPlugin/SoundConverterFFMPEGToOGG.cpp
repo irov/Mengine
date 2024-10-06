@@ -72,7 +72,7 @@ namespace Mengine
             aq = " -aq " + aq;
         }
 
-        WChar command[MENGINE_MAX_COMMAND_LENGTH] = {'\0'};
+        WChar command[MENGINE_MAX_COMMAND_LENGTH + 1] = {'\0'};
         MENGINE_SWPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"-loglevel error -y -threads 8 -i \"%S\" -map_metadata -1%S%S%S -acodec libvorbis -max_muxing_queue_size 1024 \"%S\""
             , full_input.c_str()
             , ac.c_str()

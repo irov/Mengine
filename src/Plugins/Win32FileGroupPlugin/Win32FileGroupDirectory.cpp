@@ -73,7 +73,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::existFile( const FilePath & _filePath, bool _recursive ) const
     {
-        Char utf8_filePath[MENGINE_MAX_PATH] = {'\0'};
+        Char utf8_filePath[MENGINE_MAX_PATH + 1] = {'\0'};
         this->getFullPath( _filePath, utf8_filePath );
 
         bool result = PLATFORM_SERVICE()
@@ -176,7 +176,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
-        Char fullPathBase[MENGINE_MAX_PATH] = {'\0'};
+        Char fullPathBase[MENGINE_MAX_PATH + 1] = {'\0'};
         this->getFullPath( FilePath::none(), fullPathBase );
 
         Helper::pathCorrectForwardslashA( fullPathBase );

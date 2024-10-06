@@ -32,7 +32,7 @@ namespace Mengine
     protected:
         ThreadMutexInterfacePtr m_mutex;
 
-        Char m_utf8Buffer[MENGINE_UNICODE_CONVERT_BUFFER] = {'\0'};
-        WChar m_unicodeBuffer[MENGINE_UNICODE_CONVERT_BUFFER] = {L'\0'};
+        Char m_utf8Buffer[MENGINE_UNICODE_CONVERT_BUFFER + 1] = {'\0'};
+        WChar m_unicodeBuffer[MENGINE_UNICODE_CONVERT_BUFFER + 1] = {L'\0'};
     };
 }

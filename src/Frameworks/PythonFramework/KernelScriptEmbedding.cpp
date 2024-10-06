@@ -258,7 +258,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             const Char * s_FileGroupInterface_getFullPath( FileGroupInterface * _fileGroup, const FilePath & _path )
             {
-                static Char fullpath[MENGINE_MAX_PATH] = {'\0'};
+                static Char fullpath[MENGINE_MAX_PATH + 1] = {'\0'};
                 _fileGroup->getFullPath( _path, fullpath );
 
                 return fullpath;
@@ -486,7 +486,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             String s_Node_getDebugId( Node * _node )
             {
-                Char debugId[256] = {'\0'};
+                Char debugId[256 + 1] = {'\0'};
                 MENGINE_SNPRINTF( debugId, 256, "%p"
                     , _node
                 );

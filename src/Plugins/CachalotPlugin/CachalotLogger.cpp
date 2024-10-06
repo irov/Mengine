@@ -97,18 +97,18 @@ namespace Mengine
             return;
         }
 
-        Char session_id[MENGINE_ENVIRONMENT_SESSIONID_MAXNAME] = {'\0'};
+        Char session_id[MENGINE_ENVIRONMENT_SESSIONID_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
             ->getSessionId( session_id );
 
-        Char install_key[MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME] = {'\0'};
+        Char install_key[MENGINE_ENVIRONMENT_INSTALLKEY_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
             ->getInstallKey( install_key );
 
         int64_t install_timestamp = ENVIRONMENT_SERVICE()
             ->getInstallTimestamp();
 
-        Char install_version[MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME] = {'\0'};
+        Char install_version[MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
             ->getInstallVersion( install_version );
 
@@ -121,19 +121,19 @@ namespace Mengine
         Timestamp live = PLATFORM_SERVICE()
             ->getPlatfomTime();
 
-        Char device_model[MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME] = {'\0'};
+        Char device_model[MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
             ->getDeviceModel( device_model );
 
-        Char os_family[MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME] = {'\0'};
+        Char os_family[MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
             ->getOSFamily( os_family );
 
-        Char os_version[MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME] = {'\0'};
+        Char os_version[MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
             ->getOSVersion( os_version );
         
-        Char build_bundle[MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME] = {'\0'};
+        Char build_bundle[MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
             ->getBundleId( build_bundle );
 

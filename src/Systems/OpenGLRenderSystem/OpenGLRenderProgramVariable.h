@@ -37,7 +37,7 @@ namespace Mengine
     public:
         struct ProgramVariableDesc
         {
-            Char uniform[32] = {'\0'};
+            Char uniform[32 + 1] = {'\0'};
             uint32_t offset;
             uint32_t size;
             uint32_t count;

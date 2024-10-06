@@ -32,7 +32,7 @@ namespace Mengine
 
         VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), factoryGlobalFileGroupDirectory, MENGINE_DOCUMENT_FACTORABLE );
 
-        Char currentPath[MENGINE_MAX_PATH] = {'\0'};
+        Char currentPath[MENGINE_MAX_PATH + 1] = {'\0'};
         size_t currentPathLen = PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 

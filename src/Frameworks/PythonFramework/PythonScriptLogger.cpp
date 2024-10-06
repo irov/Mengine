@@ -96,7 +96,7 @@ namespace Mengine
 
         if( HAS_OPTION( "tracescriptlog" ) == true )
         {
-            Char function[MENGINE_MAX_PATH] = {'\0'};
+            Char function[MENGINE_MAX_PATH + 1] = {'\0'};
             uint32_t lineno = 0;
             _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 

@@ -254,7 +254,7 @@ namespace Mengine
             return 0;
         }
 
-        Char extraPreferencesFolderName[MENGINE_MAX_PATH] = {'\0'};
+        Char extraPreferencesFolderName[MENGINE_MAX_PATH + 1] = {'\0'};
         size_t ExtraPreferencesFolderNameLen = this->getExtraPreferencesFolderName( extraPreferencesFolderName );
 
         if( ExtraPreferencesFolderNameLen != 0 )
@@ -324,7 +324,7 @@ namespace Mengine
 
         m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
 
-        Char platformTags[1024] = {'\0'};
+        Char platformTags[1024 + 1] = {'\0'};
 
         for( const ConstString & tag : m_platformTags.getValues() )
         {
@@ -966,7 +966,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::existDirectory( const Char * _path, const Char * _directory ) const
     {
-        Char pathDirectory[MENGINE_MAX_PATH] = {'\0'};
+        Char pathDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathDirectory, _directory );
 
         Helper::pathRemoveFileSpecA( pathDirectory );
@@ -978,7 +978,7 @@ namespace Mengine
             return true;
         }
 
-        Char pathFull[MENGINE_MAX_PATH] = {'\0'};
+        Char pathFull[MENGINE_MAX_PATH + 1] = {'\0'};
         MENGINE_SNPRINTF( pathFull, MENGINE_MAX_PATH, "%s%s", _path, pathDirectory );
 
         if( pathFull[len - 1] == ':' )	// root dir
@@ -1000,7 +1000,7 @@ namespace Mengine
             return true;
         }
 
-        Char pathDirectory[MENGINE_MAX_PATH] = {'\0'};
+        Char pathDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathDirectory, _directory );
 
         Helper::pathRemoveFileSpecA( pathDirectory );
@@ -1010,7 +1010,7 @@ namespace Mengine
             return true;
         }
 
-        Char pathTestDirectory[MENGINE_MAX_PATH] = {'\0'};
+        Char pathTestDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
         MENGINE_SNPRINTF( pathTestDirectory, MENGINE_MAX_PATH, "%s%s", _path, pathDirectory );
 
         if( Detail::s_isDirectoryFullpath( pathTestDirectory ) == true )
@@ -1056,7 +1056,7 @@ namespace Mengine
 
             const Char * path_str = path.c_str();
 
-            Char pathCreateDirectory[MENGINE_MAX_PATH] = {'\0'};
+            Char pathCreateDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
             MENGINE_SNPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, "%s%s", _path, path_str );
 
             if( Detail::s_createDirectoryFullpath( pathCreateDirectory ) == false )
@@ -1070,7 +1070,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::existFile( const Char * _filePath )
     {
-        Char pathCorrect[MENGINE_MAX_PATH] = {'\0'};
+        Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
         bool exist = Detail::s_isFileFullpath( pathCorrect );
@@ -1080,7 +1080,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::removeFile( const Char * _filePath )
     {
-        Char pathCorrect[MENGINE_MAX_PATH] = {'\0'};
+        Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
         int result = ::remove( pathCorrect );
@@ -1095,10 +1095,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::moveFile( const Char * _oldFilePath, const Char * _newFilePath )
     {
-        Char oldPathCorrect[MENGINE_MAX_PATH] = {'\0'};
+        Char oldPathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( oldPathCorrect, _oldFilePath );
 
-        Char newPathCorrect[MENGINE_MAX_PATH] = {'\0'};
+        Char newPathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( newPathCorrect, _newFilePath );
 
         struct stat sb;
@@ -1193,7 +1193,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::messageBox( const Char * _caption, const Char * _format, ... ) const
     {
-        Char str[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        Char str[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );

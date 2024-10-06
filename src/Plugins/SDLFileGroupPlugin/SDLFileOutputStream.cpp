@@ -29,7 +29,7 @@ namespace Mengine
 
         m_withTemp = _withTemp;
 
-        Char concatenatePath[MENGINE_MAX_PATH] = {'\0'};
+        Char concatenatePath[MENGINE_MAX_PATH + 1] = {'\0'};
 
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         if( m_withTemp == true )
@@ -102,7 +102,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         if( m_withTemp == true )
         {
-            Char fullPathTemp[MENGINE_MAX_PATH] = {'\0'};
+            Char fullPathTemp[MENGINE_MAX_PATH + 1] = {'\0'};
             if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath, STRINGIZE_FILEPATH_LOCAL( ".~tmp" )}, fullPathTemp ) == false )
             {
                 LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
@@ -113,7 +113,7 @@ namespace Mengine
                 return false;
             }
 
-            Char fullPath[MENGINE_MAX_PATH] = {'\0'};
+            Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
             if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath}, fullPath ) == false )
             {
                 LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"

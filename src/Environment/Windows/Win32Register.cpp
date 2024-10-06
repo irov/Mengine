@@ -29,7 +29,7 @@ namespace Mengine
                 return false;
             }
 
-            WChar unicode_value[1024] = {L'\0'};
+            WChar unicode_value[1024 + 1] = {L'\0'};
             DWORD dwBufferSize = 1024;
             LSTATUS nError = ::RegQueryValueExW( hKey, _key, 0, NULL, (LPBYTE)unicode_value, &dwBufferSize );
 

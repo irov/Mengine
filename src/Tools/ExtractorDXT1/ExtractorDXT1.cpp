@@ -1,15 +1,4 @@
-#ifdef _WIN32_WINNT
-#   undef _WIN32_WINNT
-#   define _WIN32_WINNT 0x0500
-#endif
-
-#ifdef _WIN32_WINDOWS
-#   undef _WIN32_WINDOWS
-#   define _WIN32_WINDOWS 0x0500
-#endif
-
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+#include "Environment/Windows/WindowsIncluder.h"
 
 #include "ToolUtils/ToolUtils.h"
 
@@ -122,7 +111,7 @@ int main( int argc, char * argv[] )
         return EXIT_FAILURE;
     }
 
-    WCHAR inCanonicalizeQuote[MAX_PATH] = {L'\0'};
+    WCHAR inCanonicalizeQuote[MAX_PATH + 1] = {L'\0'};
     ::ForcePathQuoteSpaces( inCanonicalizeQuote, in.c_str() );
     ::PathUnquoteSpaces( inCanonicalizeQuote );
 
@@ -185,7 +174,7 @@ int main( int argc, char * argv[] )
     fread( dxt1_byte, 1, size, file_in );
     fclose( file_in );
 
-    WCHAR outCanonicalizeQuote[MAX_PATH] = {'\0'};
+    WCHAR outCanonicalizeQuote[MAX_PATH + 1] = {'\0'};
     ::ForcePathQuoteSpaces( outCanonicalizeQuote, out.c_str() );
     ::PathUnquoteSpaces( outCanonicalizeQuote );
 

@@ -201,7 +201,7 @@ namespace Mengine
             uint32_t enumerator = 0;
             for( ;; ++enumerator )
             {
-                Char folderPathSplit[MENGINE_MAX_PATH] = {'\0'};
+                Char folderPathSplit[MENGINE_MAX_PATH + 1] = {'\0'};
                 int32_t size_sprintf = MENGINE_SNPRINTF( folderPathSplit, MENGINE_MAX_PATH, m_folderPath.c_str(), enumerator );
 
                 if( size_sprintf < 0 )
@@ -327,7 +327,7 @@ namespace Mengine
             return false;
         }
 
-        Char fileNameBuffer[ZIP_MAX_FILEPATH] = {'\0'};
+        Char fileNameBuffer[ZIP_MAX_FILEPATH + 1] = {'\0'};
 
         for( ;;)
         {

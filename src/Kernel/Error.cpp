@@ -32,14 +32,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void ErrorOperator::operator () ( const Char * _format, ... ) const
         {
-            Char message_info[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+            Char message_info[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
             MENGINE_VSNPRINTF( message_info, MENGINE_LOGGER_MAX_MESSAGE, _format, args );
             MENGINE_VA_LIST_END( args );
 
-            Char error_info[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+            Char error_info[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
             MENGINE_SNPRINTF( error_info, MENGINE_LOGGER_MAX_MESSAGE, "%s[%d] Error [%s]: %s"
                 , m_file
                 , m_line

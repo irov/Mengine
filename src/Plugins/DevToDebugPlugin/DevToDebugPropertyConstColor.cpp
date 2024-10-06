@@ -45,7 +45,7 @@ namespace Mengine
 
         argb &= 0x00FFFFFF;
 
-        Char hex_value[32] = {'\0'};
+        Char hex_value[32 + 1] = {'\0'};
         MENGINE_SNPRINTF( hex_value, 32, "#%06X"
             , argb
         );

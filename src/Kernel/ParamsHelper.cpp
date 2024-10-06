@@ -36,14 +36,14 @@ namespace Mengine
             }
                 , [&string_value]( const ParamInteger & _element )
             {
-                Char buffer[256] = {'\0'};
+                Char buffer[256 + 1] = {'\0'};
                 Helper::stringalized( _element, buffer, 256 );
 
                 string_value.assign( buffer );
             }
                 , [&string_value]( const ParamDouble & _element )
             {
-                Char buffer[256] = {'\0'};
+                Char buffer[256 + 1] = {'\0'};
                 Helper::stringalized( _element, buffer, 256 );
 
                 string_value.assign( buffer );
@@ -97,14 +97,14 @@ namespace Mengine
             }
                 , [&wstring_value]( const ParamInteger & _element )
             {
-                WChar buffer[256] = {'\0'};
+                WChar buffer[256 + 1] = {'\0'};
                 Helper::stringalized( _element, buffer, 256 );
 
                 wstring_value.assign( buffer );
             }
                 , [&wstring_value]( const ParamDouble & _element )
             {
-                WChar buffer[256] = {'\0'};
+                WChar buffer[256 + 1] = {'\0'};
                 Helper::stringalized( _element, buffer, 256 );
 
                 wstring_value.assign( buffer );

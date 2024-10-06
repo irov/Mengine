@@ -110,6 +110,6 @@ namespace Mengine
         }
 
     protected:
-        WChar m_buffer[N] = {'\0'};
+        WChar m_buffer[N + 1] = {'\0'};
     };
 }

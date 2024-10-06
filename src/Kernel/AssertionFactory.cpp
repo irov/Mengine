@@ -21,7 +21,7 @@ namespace Mengine
             const ConstString & type = _factory->getType();
             uint32_t count = _factory->getCountObject();
 
-            Char msg[4096] = {'\0'};
+            Char msg[4096 + 1] = {'\0'};
 
             int32_t msg_offset = 0;
             int32_t msg_size = MENGINE_SNPRINTF( msg + msg_offset, 4096 - msg_offset, "Factory '%s' not empty [%u]\n"

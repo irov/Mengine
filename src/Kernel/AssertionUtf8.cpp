@@ -20,11 +20,11 @@ namespace Mengine
 
             if( Helper::Utf8Validate( _value, _value + _len, nullptr ) == false )
             {
-                Char replace_msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+                Char replace_msg[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
                 const Char * replace_msg_end = Helper::Utf8ReplaceInvalid( _value, _value + _len, replace_msg);
                 size_t replace_msg_len = replace_msg_end - replace_msg;
 
-                Char msg[MENGINE_ASSERTION_MAX_MESSAGE] = {'\0'};
+                Char msg[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
                 MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "original string '%.*s' has invalid utf8"
                     , (int32_t)replace_msg_len
                     , replace_msg_end

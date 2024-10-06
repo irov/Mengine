@@ -30,6 +30,6 @@ namespace Mengine
         bool findPython3Path_();
 
     protected:
-        Char m_python3Path[MENGINE_MAX_PATH] = {L'\0'};
+        Char m_python3Path[MENGINE_MAX_PATH + 1] = {L'\0'};
     };
 }

@@ -64,7 +64,7 @@ namespace Mengine
         float currentValue = _histogram.getLastValue();
         const float * values = _histogram.getValues();
 
-        Char overlayText[32] = {'\0'};
+        Char overlayText[32 + 1] = {'\0'};
         MENGINE_SNPRINTF( overlayText, 32, _overlayFormat, currentValue );
 
         ImGui::PlotHistogram( "", values, MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT, 0, overlayText, 0.f, _maxValue, ImVec2( 0, _height ) );
@@ -75,7 +75,7 @@ namespace Mengine
         float currentValue = _histogram.getLastValue();
         const float * values = _histogram.getValues();
 
-        Char overlayText[32] = {'\0'};
+        Char overlayText[32 + 1] = {'\0'};
         MENGINE_SNPRINTF( overlayText, 32, _overlayFormat, currentValue );
 
         ImGui::PlotHistogram( "", values, MENGINE_DEBUG_PANEL_HISTOGRAM_PERFRAME_COUNT, 0, overlayText, 0.f, _maxValue, ImVec2( 0, _height ) );

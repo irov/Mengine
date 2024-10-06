@@ -43,7 +43,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getCompanyName )(JNIEnv * env, jclass cls)
     {
-        Mengine::Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
+        Mengine::Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME + 1] = {'\0'};
         APPLICATION_SERVICE()
             ->getCompanyName( companyName );
 
@@ -54,7 +54,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getProjectName )(JNIEnv * env, jclass cls)
     {
-        Mengine::Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
+        Mengine::Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME + 1] = {'\0'};
         APPLICATION_SERVICE()
             ->getProjectName( projectName );
 
@@ -65,7 +65,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getExtraPreferencesFolderName )(JNIEnv * env, jclass cls)
     {
-        Mengine::Char extraPreferencesFolderName[MENGINE_MAX_PATH] = {'\0'};
+        Mengine::Char extraPreferencesFolderName[MENGINE_MAX_PATH + 1] = {'\0'};
         PLATFORM_SERVICE()
             ->getExtraPreferencesFolderName( extraPreferencesFolderName );
 

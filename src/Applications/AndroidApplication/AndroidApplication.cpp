@@ -51,7 +51,7 @@ namespace Mengine
         ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
 
 #if !defined(MENGINE_BUILD_PUBLISH)
-        Char MengineApplePersistentArguments[1024] = {'\0'};
+        Char MengineApplePersistentArguments[1024 + 1] = {'\0'};
         if( PREFERENCES_SYSTEM()
             ->getPreferenceString( "persistent_arguments", MengineApplePersistentArguments, 1024, nullptr ) == true )
         {
@@ -112,7 +112,7 @@ namespace Mengine
         MENGINE_UNUSED( _nativeLibraryDir );
 
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-        Char mengineLibraryPath[MENGINE_MAX_PATH] = {'\0'};
+        Char mengineLibraryPath[MENGINE_MAX_PATH + 1] = {'\0'};
         Mengine::StdString::strcpy( mengineLibraryPath, _nativeLibraryDir );
         Mengine::StdString::strcat( mengineLibraryPath, "/libMengine.so" );
 

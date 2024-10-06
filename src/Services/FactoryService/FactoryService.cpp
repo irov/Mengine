@@ -112,8 +112,8 @@ namespace Mengine
 
             if( f != NULL )
             {
-                Char objectleakmsg[1024] = {'\0'};
-                int32_t objectleakmsg_length = MENGINE_SNPRINTF( objectleakmsg, 1023,
+                Char objectleakmsg[1024 + 1] = {'\0'};
+                int32_t objectleakmsg_length = MENGINE_SNPRINTF( objectleakmsg, 1024,
                     "**********************************************************\n"
                     "<<<<<                OBJECT LEAK [% .7u]           >>>>>\n"
                     "**********************************************************\n"
@@ -130,8 +130,8 @@ namespace Mengine
 
                     const ConstString & factoryType = factory->getType();
 
-                    Char factorymsg[2048] = {'\0'};
-                    int32_t factorymsg_length = MENGINE_SNPRINTF( factorymsg, 2047, "Factory '%s' [%zu]:\n"
+                    Char factorymsg[2048 + 1] = {'\0'};
+                    int32_t factorymsg_length = MENGINE_SNPRINTF( factorymsg, 2048, "Factory '%s' [%zu]:\n"
                         , factoryType.c_str()
                         , objects.size()
                     );
@@ -145,8 +145,8 @@ namespace Mengine
                         const Char * obj_delimiter = "**********************************************************\n";
                         ::fwrite( obj_delimiter, StdString::strlen( obj_delimiter ), 1, f );
 
-                        Char objmsg[16384] = {'\0'};
-                        int32_t objmsg_length = MENGINE_SNPRINTF( objmsg, 16383, "    doc: %s\n"
+                        Char objmsg[16384 + 1] = {'\0'};
+                        int32_t objmsg_length = MENGINE_SNPRINTF( objmsg, 16384, "    doc: %s\n"
                             , MENGINE_DOCUMENT_STR( obj )
                         );
 

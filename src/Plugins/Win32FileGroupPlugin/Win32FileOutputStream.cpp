@@ -41,7 +41,7 @@ namespace Mengine
 
         m_withTemp = _withTemp;
 
-        WChar fullPathTemp[MENGINE_MAX_PATH] = {L'\0'};
+        WChar fullPathTemp[MENGINE_MAX_PATH + 1] = {L'\0'};
 
         if( m_withTemp == true )
         {
@@ -103,7 +103,7 @@ namespace Mengine
 
         if( m_withTemp == true )
         {
-            Char fullPathTemp[MENGINE_MAX_PATH] = {'\0'};
+            Char fullPathTemp[MENGINE_MAX_PATH + 1] = {'\0'};
             size_t fullPathTempLen = Helper::Win32ConcatenateFilePathTempA( m_relationPath, m_folderPath, m_filePath, fullPathTemp, MENGINE_MAX_PATH );
 
             MENGINE_UNUSED( fullPathTempLen );
@@ -113,7 +113,7 @@ namespace Mengine
                 , m_filePath.c_str()
             );
 
-            Char fullPath[MENGINE_MAX_PATH] = {'\0'};
+            Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
             size_t fullPathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, m_filePath, fullPath, MENGINE_MAX_PATH );
 
             MENGINE_UNUSED( fullPathLen );

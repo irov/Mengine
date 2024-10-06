@@ -85,7 +85,7 @@ namespace Mengine
             }
 
             ConstString groupName;
-            Char utf8_ttfPath[MENGINE_MAX_PATH] = {'\0'};
+            Char utf8_ttfPath[MENGINE_MAX_PATH + 1] = {'\0'};
             if( PLATFORM_SERVICE()
                 ->getSystemFontPath( &groupName, ttfName, utf8_ttfPath ) == MENGINE_UNKNOWN_SIZE )
             {

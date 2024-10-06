@@ -22,7 +22,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool Win32CreateProcessDump( const Char * _dumpPath, PEXCEPTION_POINTERS _pExceptionPointers, bool _fullDump )
         {
-            WChar unicode_processDumpPath[MENGINE_MAX_PATH] = {L'\0'};
+            WChar unicode_processDumpPath[MENGINE_MAX_PATH + 1] = {L'\0'};
             Helper::utf8ToUnicode( _dumpPath, unicode_processDumpPath, MENGINE_MAX_PATH );
 
             HANDLE hFile = ::CreateFile( unicode_processDumpPath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );

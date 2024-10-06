@@ -108,7 +108,7 @@ namespace Mengine
                 return false;
             }
 
-            Char buffer[1024] = {'\0'};
+            Char buffer[1024 + 1] = {'\0'};
             if( Helper::stringalized( _value, buffer, 1024 ) == false )
             {
                 return false;

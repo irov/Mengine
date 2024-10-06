@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ExceptionHelper::operator () ( const Char * _format, ... ) const
     {
-        Char foramt_msg[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        Char foramt_msg[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
@@ -33,7 +33,7 @@ namespace Mengine
 
         MENGINE_VA_LIST_END( args );
 
-        Char exception_msg[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        Char exception_msg[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
         StdString::strcat( exception_msg, "message: " );
         StdString::strcat( exception_msg, foramt_msg );
@@ -43,7 +43,7 @@ namespace Mengine
         StdString::strcat( exception_msg, m_file );
         StdString::strcat( exception_msg, "\n" );
 
-        Char format_line[32] = {'\0'};
+        Char format_line[32 + 1] = {'\0'};
         MENGINE_SNPRINTF( format_line, 32, "%u", m_line );
 
         StdString::strcat( exception_msg, "line: " );

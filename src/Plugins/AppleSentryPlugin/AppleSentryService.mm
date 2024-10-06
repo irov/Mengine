@@ -70,7 +70,7 @@ namespace Mengine
             
             [scope setExtraValue:bundleIdentifier forKey:@"Application"];
             
-            Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
+            Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME + 1] = {'\0'};
             APPLICATION_SERVICE()
                 ->getCompanyName( companyName );
 
@@ -80,7 +80,7 @@ namespace Mengine
             
             [scope setExtraValue:@(companyName) forKey:@"Company"];
             
-            Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
+            Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME + 1] = {'\0'};
             APPLICATION_SERVICE()
                 ->getProjectName( projectName );
 
@@ -91,7 +91,7 @@ namespace Mengine
             [scope setExtraValue:@(projectName) forKey:@"Project"];
             
 #ifdef MENGINE_DEBUG
-            Char userName[MENGINE_PLATFORM_USER_MAXNAME] = {'\0'};
+            Char userName[MENGINE_PLATFORM_USER_MAXNAME + 1] = {'\0'};
             PLATFORM_SERVICE()
                 ->getUserName( userName );
 
@@ -177,7 +177,7 @@ namespace Mengine
             
             Timestamp timestamp = Helper::getLocalTimestamp();
 
-            Char LOG_DATE[256] = {'\0'};
+            Char LOG_DATE[256 + 1] = {'\0'};
             Helper::makeLoggerShortDate( timestamp, "%02u:%02u:%02u:%04u", LOG_DATE, 0, 256 );
 
             [scope setExtraValue:@(LOG_DATE) forKey:@"Log Date"];

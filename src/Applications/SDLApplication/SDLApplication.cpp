@@ -52,7 +52,7 @@ namespace Mengine
         ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
 
 #if !defined(MENGINE_BUILD_PUBLISH)
-        Char MengineApplePersistentArguments[1024] = {'\0'};
+        Char MengineApplePersistentArguments[1024 + 1] = {'\0'};
         if( PREFERENCES_SYSTEM()
             ->getPreferenceString( "persistent_arguments", MengineApplePersistentArguments, 1024, nullptr ) == true )
         {

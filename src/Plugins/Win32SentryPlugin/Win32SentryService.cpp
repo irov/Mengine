@@ -153,7 +153,7 @@ namespace Mengine
 
         sentry_options_set_logger( options, &Detail::sentry_logger_func, nullptr );
 
-        Char userPath[MENGINE_MAX_PATH] = {'\0'};
+        Char userPath[MENGINE_MAX_PATH + 1] = {'\0'};
         size_t userPathLen = PLATFORM_SERVICE()
             ->getUserPath( userPath );
 
@@ -166,7 +166,7 @@ namespace Mengine
         );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        WChar unicode_sentryDatabasePath[MENGINE_MAX_PATH] = {L'\0'};
+        WChar unicode_sentryDatabasePath[MENGINE_MAX_PATH + 1] = {L'\0'};
         Helper::utf8ToUnicode( sentryDatabasePath, unicode_sentryDatabasePath, MENGINE_MAX_PATH, nullptr );
 
         sentry_options_set_database_pathw( options, unicode_sentryDatabasePath );
@@ -176,7 +176,7 @@ namespace Mengine
         sentry_options_set_database_path( options, str_sentryDatabasePath );
 #endif
 
-        Char currentPath[MENGINE_MAX_PATH] = {'\0'};
+        Char currentPath[MENGINE_MAX_PATH + 1] = {'\0'};
         size_t currentPathLen = PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 
@@ -196,7 +196,7 @@ namespace Mengine
         sentryHandlerPath.append( Win32SentryPlugin_Handler );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        WChar unicode_sentryHandlerPath[MENGINE_MAX_PATH] = {L'\0'};
+        WChar unicode_sentryHandlerPath[MENGINE_MAX_PATH + 1] = {L'\0'};
         Helper::utf8ToUnicode( sentryHandlerPath, unicode_sentryHandlerPath, MENGINE_MAX_PATH, nullptr );
 
         sentry_options_set_handler_pathw( options, unicode_sentryHandlerPath );
@@ -215,7 +215,7 @@ namespace Mengine
         const Char * BUILD_NUMBER_STRING = Helper::getBuildNumberString();
         sentry_options_set_dist( options, BUILD_NUMBER_STRING );
 
-        Char environment[128] = {'\0'};
+        Char environment[128 + 1] = {'\0'};
 
 #if defined(MENGINE_BUILD_PUBLISH_ENABLE)
         StdString::strcat( environment, "publish_" );
@@ -319,7 +319,7 @@ namespace Mengine
 
         sentry_set_extra( "Application", sentry_value_new_string( Win32SentryPlugin_Application ) );
 
-        Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME] = {'\0'};
+        Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME + 1] = {'\0'};
         APPLICATION_SERVICE()
             ->getCompanyName( companyName );
 
@@ -329,7 +329,7 @@ namespace Mengine
 
         sentry_set_extra( "Company", sentry_value_new_string( companyName ) );
 
-        Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME] = {'\0'};
+        Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = {'\0'};
         APPLICATION_SERVICE()
             ->getProjectName( projectName );
 
@@ -346,7 +346,7 @@ namespace Mengine
         sentry_set_tag( "project", projectName );
 
 #if defined(MENGINE_DEBUG)
-        Char userName[MENGINE_ENVIRONMENT_USER_MAXNAME] = {'\0'};
+        Char userName[MENGINE_ENVIRONMENT_USER_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
             ->getUserName( userName );
 
@@ -360,8 +360,8 @@ namespace Mengine
         uint32_t projectVersion = APPLICATION_SERVICE()
             ->getProjectVersion();
 
-        Char projectVersionString[32] = {'\0'};
-        Helper::stringalized( projectVersion, projectVersionString, 31 );
+        Char projectVersionString[32 + 1] = {'\0'};
+        Helper::stringalized( projectVersion, projectVersionString, 32 );
         
         LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Version: %s]"
             , projectVersionString
@@ -443,7 +443,7 @@ namespace Mengine
 
         Timestamp timestamp = Helper::getLocalTimestamp();
 
-        Char INIT_DATE[256] = {'\0'};
+        Char INIT_DATE[256 + 1] = {'\0'};
         Helper::makeLoggerFullDate( timestamp, "%04u.%02u.%02u %02u:%02u:%02u:%04u", INIT_DATE, 0, 256 );
 
         LOGGER_INFO_PROTECTED( "sentry", "Sentry set extra [Init Date: %s]"

@@ -116,7 +116,7 @@ namespace Mengine
     size_t SDLPlatformService::getCurrentPath( Char * const _currentPath ) const
     {
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
+        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
         DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH - 2, unicode_path );
 
         if( len == 0 )
@@ -169,7 +169,7 @@ namespace Mengine
 
         if( (developmentMode == true && OPTION_roaming == false) || OPTION_noroaming == true )
         {
-            Char currentPath[MENGINE_MAX_PATH] = {'\0'};
+            Char currentPath[MENGINE_MAX_PATH + 1] = {'\0'};
             size_t currentPathLen = this->getCurrentPath( currentPath );
 
             if( MENGINE_MAX_PATH <= currentPathLen + 5 )
@@ -209,7 +209,7 @@ namespace Mengine
 
         SDL_free( sdl_prefPath );
 
-        Char extraPreferencesFolderName[MENGINE_MAX_PATH] = {'\0'};
+        Char extraPreferencesFolderName[MENGINE_MAX_PATH + 1] = {'\0'};
         size_t ExtraPreferencesFolderNameLen = this->getExtraPreferencesFolderName( extraPreferencesFolderName );
 
         if( ExtraPreferencesFolderNameLen != 0 )
@@ -440,7 +440,7 @@ namespace Mengine
             {
                 const Char * option_platform = option_platforms[index];
 
-                Char uppercase_option_platform[256] = {'\0'};;
+                Char uppercase_option_platform[256 + 1] = {'\0'};;
                 Helper::toupper( option_platform, uppercase_option_platform, 255 );
 
                 m_platformTags.addTag( Helper::stringizeString( option_platform ) );
@@ -593,7 +593,7 @@ namespace Mengine
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PHONE" ) );
         }
 
-        Char platformTags[1024] = {'\0'};
+        Char platformTags[1024 + 1] = {'\0'};
 
         for( const ConstString & tag : m_platformTags.getValues() )
         {
@@ -1367,7 +1367,7 @@ namespace Mengine
 
         SDL_Window * sharePixelFormatWindow = SDL_CreateWindow( "MengineSharePixelFormatWindow", 0, 0, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN );
 
-        Char sBuf[64] = {'\0'};
+        Char sBuf[64 + 1] = {'\0'};
         MENGINE_SNPRINTF( sBuf, 64, "%p", sharePixelFormatWindow );
 
         SDL_SetHint( SDL_HINT_VIDEO_WINDOW_SHARE_PIXEL_FORMAT, sBuf );
@@ -1729,7 +1729,7 @@ namespace Mengine
             }
 
 #elif defined(MENGINE_PLATFORM_WINDOWS)
-            WChar unicode_fullpath[MENGINE_MAX_PATH] = {L'\0'};
+            WChar unicode_fullpath[MENGINE_MAX_PATH + 1] = {L'\0'};
             Helper::utf8ToUnicode( _fullpath, unicode_fullpath, MENGINE_MAX_PATH - 1 );
 
             BOOL successful = ::CreateDirectoryW( unicode_fullpath, NULL );
@@ -1790,7 +1790,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::existDirectory( const Char * _path, const Char * _directory ) const
     {
-        Char pathDirectory[MENGINE_MAX_PATH] = {'\0'};
+        Char pathDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathDirectory, _directory );
 
         Helper::pathRemoveFileSpecA( pathDirectory );
@@ -1802,7 +1802,7 @@ namespace Mengine
             return true;
         }
 
-        Char pathFull[MENGINE_MAX_PATH] = {'\0'};
+        Char pathFull[MENGINE_MAX_PATH + 1] = {'\0'};
         MENGINE_SNPRINTF( pathFull, MENGINE_MAX_PATH, "%s%s", _path, pathDirectory );
 
         if( pathFull[len - 1] == ':' )	// root dir
@@ -1830,7 +1830,7 @@ namespace Mengine
             return true;
         }
 
-        Char pathDirectory[MENGINE_MAX_PATH] = {'\0'};
+        Char pathDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathDirectory, _directory );
 
         Helper::pathRemoveFileSpecA( pathDirectory );
@@ -1840,7 +1840,7 @@ namespace Mengine
             return true;
         }
 
-        Char pathTestDirectory[MENGINE_MAX_PATH] = {'\0'};
+        Char pathTestDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
         MENGINE_SNPRINTF( pathTestDirectory, MENGINE_MAX_PATH, "%s%s", _path, pathDirectory );
 
         if( Detail::s_isDirectoryFullpath( pathTestDirectory ) == true )
@@ -1886,7 +1886,7 @@ namespace Mengine
 
             const Char * path_str = path.c_str();
 
-            Char pathCreateDirectory[MENGINE_MAX_PATH] = {'\0'};
+            Char pathCreateDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
             MENGINE_SNPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, "%s%s", _path, path_str );
 
             if( Detail::s_createDirectoryFullpath( pathCreateDirectory ) == false )
@@ -1900,7 +1900,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::existFile( const Char * _filePath )
     {
-        Char pathCorrect[MENGINE_MAX_PATH] = {'\0'};
+        Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
         SDL_SuppressError( SDL_TRUE );
@@ -1929,7 +1929,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::removeFile( const Char * _filePath )
     {
-        Char pathCorrect[MENGINE_MAX_PATH] = {'\0'};
+        Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
         int result = ::remove( pathCorrect );
@@ -1944,10 +1944,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::moveFile( const Char * _oldFilePath, const Char * _newFilePath )
     {
-        Char oldPathCorrect[MENGINE_MAX_PATH] = {'\0'};
+        Char oldPathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( oldPathCorrect, _oldFilePath );
 
-        Char newPathCorrect[MENGINE_MAX_PATH] = {'\0'};
+        Char newPathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( newPathCorrect, _newFilePath );
 
         struct stat sb;
@@ -1994,11 +1994,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * const _stop )
         {
-            WChar sDir[MENGINE_MAX_PATH] = {L'\0'};
+            WChar sDir[MENGINE_MAX_PATH + 1] = {L'\0'};
             ::PathCanonicalizeW( sDir, _dir );
 
             {
-                WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
+                WChar sPath[MENGINE_MAX_PATH + 1] = {L'\0'};
                 StdString::wcscpy( sPath, sDir );
                 StdString::wcscat( sPath, _path );
                 StdString::wcscat( sPath, _mask );
@@ -2021,7 +2021,7 @@ namespace Mengine
                             continue;
                         }
 
-                        WChar sPath2[MENGINE_MAX_PATH] = {L'\0'};
+                        WChar sPath2[MENGINE_MAX_PATH + 1] = {L'\0'};
                         StdString::wcscpy( sPath2, sPath );
                         StdString::wcscat( sPath2, L"\0" );
 
@@ -2029,10 +2029,10 @@ namespace Mengine
 
                         ::PathRemoveFileSpec( sPath2 );
 
-                        WChar unicode_filepath[MENGINE_MAX_PATH] = {L'\0'};
+                        WChar unicode_filepath[MENGINE_MAX_PATH + 1] = {L'\0'};
                         ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
 
-                        WChar unicode_out[MENGINE_MAX_PATH] = {L'\0'};
+                        WChar unicode_out[MENGINE_MAX_PATH + 1] = {L'\0'};
                         if( StdString::wcslen( sDir ) != 0 )
                         {
                             ::PathRelativePathTo( unicode_out
@@ -2046,7 +2046,7 @@ namespace Mengine
                             StdString::wcscpy( unicode_out, unicode_filepath );
                         }
 
-                        Char utf8_filepath[MENGINE_MAX_PATH] = {'\0'};
+                        Char utf8_filepath[MENGINE_MAX_PATH + 1] = {'\0'};
                         if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH ) == false )
                         {
                             ::FindClose( hFind );
@@ -2072,7 +2072,7 @@ namespace Mengine
             }
 
             {
-                WChar sPath[MENGINE_MAX_PATH] = {L'\0'};
+                WChar sPath[MENGINE_MAX_PATH + 1] = {L'\0'};
                 StdString::wcscpy( sPath, sDir );
                 StdString::wcscat( sPath, _path );
                 StdString::wcscat( sPath, L"*.*" );
@@ -2098,13 +2098,13 @@ namespace Mengine
                         continue;
                     }
 
-                    WChar currentPath[MENGINE_MAX_PATH] = {L'\0'};
+                    WChar currentPath[MENGINE_MAX_PATH + 1] = {L'\0'};
                     StdString::wcscpy( currentPath, sPath );
                     StdString::wcscat( currentPath, L"\0" );
 
                     ::PathRemoveFileSpec( currentPath );
 
-                    WChar nextPath[MENGINE_MAX_PATH] = {L'\0'};
+                    WChar nextPath[MENGINE_MAX_PATH + 1] = {L'\0'};
                     ::PathCombine( nextPath, currentPath, fdFile.cFileName );
 
                     StdString::wcscat( nextPath, L"\\" );
@@ -2145,30 +2145,30 @@ namespace Mengine
         MENGINE_UNUSED( _lambda );
 
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        WChar unicode_base[MENGINE_MAX_PATH] = {L'\0'};
+        WChar unicode_base[MENGINE_MAX_PATH + 1] = {L'\0'};
         if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH - 1 ) == false )
         {
             return false;
         }
 
-        WChar unicode_mask[MENGINE_MAX_PATH] = {L'\0'};
+        WChar unicode_mask[MENGINE_MAX_PATH + 1] = {L'\0'};
         if( Helper::utf8ToUnicode( _mask, unicode_mask, MENGINE_MAX_PATH - 1 ) == false )
         {
             return false;
         }
 
-        WChar unicode_path[MENGINE_MAX_PATH] = {L'\0'};
+        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
         if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
         {
             return false;
         }
 
-        WChar unicode_fullbase[MENGINE_MAX_PATH] = {L'\0'};
+        WChar unicode_fullbase[MENGINE_MAX_PATH + 1] = {L'\0'};
         ::GetFullPathName( unicode_base, MENGINE_MAX_PATH, unicode_fullbase, NULL );
 
         Helper::LambdaListDirectoryFilePath lambda_listdirectory = [_lambda]( const WChar * _filePath )
         {
-            Char utf8_filepath[MENGINE_MAX_PATH] = {'\0'};
+            Char utf8_filepath[MENGINE_MAX_PATH + 1] = {'\0'};
             if( Helper::unicodeToUtf8( _filePath, utf8_filepath, MENGINE_MAX_PATH ) == false )
             {
                 return false;
@@ -2202,7 +2202,7 @@ namespace Mengine
         MENGINE_UNUSED( _filePath );
 
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        WChar unicode_filePath[MENGINE_MAX_PATH] = {L'\0'};
+        WChar unicode_filePath[MENGINE_MAX_PATH + 1] = {L'\0'};
         if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH - 1 ) == false )
         {
             return 0U;
@@ -2238,7 +2238,7 @@ namespace Mengine
         MENGINE_UNUSED( _filePath );
 
 #if defined(MENGINE_PLATFORM_MACOS)
-        Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
+        Char path_pictures[MENGINE_MAX_PATH + 1] = {'\0'};
         if( Helper::MacOSGetPicturesDirectory( path_pictures ) == false )
         {
             LOGGER_ERROR( "invalid get pictures directory" );
@@ -2246,7 +2246,7 @@ namespace Mengine
             return false;
         }
         
-        Char path_file[MENGINE_MAX_PATH] = {'\0'};
+        Char path_file[MENGINE_MAX_PATH + 1] = {'\0'};
         MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_pictures, _directoryPath, _filePath );
 
         if( Helper::MacOSSetDesktopWallpaper( path_file ) == false )
@@ -2272,7 +2272,7 @@ namespace Mengine
     bool SDLPlatformService::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
 #if defined(MENGINE_PLATFORM_MACOS)
-        Char path_pictures[MENGINE_MAX_PATH] = {'\0'};
+        Char path_pictures[MENGINE_MAX_PATH + 1] = {'\0'};
         if( Helper::MacOSGetPicturesDirectory( path_pictures ) == false )
         {
             LOGGER_ERROR( "invalid get pictures directory" );
@@ -2290,7 +2290,7 @@ namespace Mengine
             return false;
         };
 
-        Char path_file[MENGINE_MAX_PATH] = {'\0'};
+        Char path_file[MENGINE_MAX_PATH + 1] = {'\0'};
         MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_pictures, _directoryPath, _filePath );
 
         SDL_RWops * rwops = SDL_RWFromFile( path_file, "wb" );
@@ -2335,7 +2335,7 @@ namespace Mengine
     bool SDLPlatformService::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
 #if defined(MENGINE_PLATFORM_MACOS)
-        Char path_music[MENGINE_MAX_PATH] = {'\0'};
+        Char path_music[MENGINE_MAX_PATH + 1] = {'\0'};
         if( Helper::MacOSGetMusicDirectory( path_music ) == false )
         {
             LOGGER_ERROR( "invalid get music directory" );
@@ -2353,7 +2353,7 @@ namespace Mengine
             return false;
         };
 
-        Char path_file[MENGINE_MAX_PATH] = {'\0'};
+        Char path_file[MENGINE_MAX_PATH + 1] = {'\0'};
         MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_music, _directoryPath, _filePath );
 
         SDL_RWops * rwops = SDL_RWFromFile( path_file, "wb" );
@@ -2397,7 +2397,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::messageBox( const Char * _caption, const Char * _format, ... ) const
     {
-        Char str[MENGINE_LOGGER_MAX_MESSAGE] = {'\0'};
+        Char str[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
@@ -3043,7 +3043,7 @@ namespace Mengine
 
             if( _eventId >= SDL_USEREVENT )
             {
-                static MENGINE_THREAD_LOCAL Char userEventMessage[32] = {'\0'};
+                static MENGINE_THREAD_LOCAL Char userEventMessage[32 + 1] = {'\0'};
                 MENGINE_SNPRINTF( userEventMessage, 32, "[User event: %u]"
                     , _eventId
                 );

@@ -82,7 +82,7 @@ namespace Mengine
         LOGGER_ERROR( "exception catch" );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        Char stack[8096] = {'\0'};
+        Char stack[8096 + 1] = {'\0'};
         if( Helper::Win32GetCallstack( ~0U, pExceptionPointers->ContextRecord, stack, 8095 ) == false )
         {
             LOGGER_FATAL( "catch exception and write dumb '%s'"
@@ -105,7 +105,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32CriticalErrorsMonitorPlugin::_initializePlugin()
     {
-        Char userPath[MENGINE_MAX_PATH] = {'\0'};
+        Char userPath[MENGINE_MAX_PATH + 1] = {'\0'};
         PLATFORM_SERVICE()
             ->getUserPath( userPath );
 

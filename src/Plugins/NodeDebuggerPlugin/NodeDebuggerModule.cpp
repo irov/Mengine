@@ -1170,7 +1170,7 @@ namespace Mengine
 
         const FilePath & filePath = _content->getFilePath();
 
-        Char fullPath[MENGINE_MAX_PATH] = {'\0'};
+        Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
         fileGroup->getFullPath( filePath, fullPath );
 
         Detail::serializeNodeProp( fullPath, "FilePath", xmlNode );
@@ -1400,7 +1400,7 @@ namespace Mengine
             const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
             const FilePath & filePath = content->getFilePath();
 
-            Char fullPath[MENGINE_MAX_PATH] = {'\0'};
+            Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
             fileGroup->getFullPath( filePath, fullPath );
 
             pugi::xml_node xml_setting = payloadNode.append_child( "Setting" );

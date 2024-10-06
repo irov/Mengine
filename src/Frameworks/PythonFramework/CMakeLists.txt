@@ -74,6 +74,8 @@ Wrapper
     KernelScriptEmbedding.cpp
     NodeScriptEmbedding.h
     NodeScriptEmbedding.cpp
+    ResourceScriptEmbedding.h
+    ResourceScriptEmbedding.cpp
     EngineScriptEmbedding.h
     EngineScriptEmbedding.cpp
     MathScriptEmbedding.h

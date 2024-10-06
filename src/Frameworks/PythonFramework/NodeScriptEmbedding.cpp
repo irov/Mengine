@@ -665,92 +665,6 @@ namespace Mengine
             return false;
         }
 
-        pybind::interface_<ResourceImage, pybind::bases<Resource>>( _kernel, "ResourceImage", false )
-            .def( "setMaxSize", &ResourceImage::setMaxSize )
-            .def( "getMaxSize", &ResourceImage::getMaxSize )
-            .def( "setSize", &ResourceImage::setSize )
-            .def( "getSize", &ResourceImage::getSize )
-            .def( "setOffset", &ResourceImage::setOffset )
-            .def( "getOffset", &ResourceImage::getOffset )
-            .def( "setUVImage", &ResourceImage::setUVImage )
-            .def( "getUVImage", &ResourceImage::getUVImage )
-            .def( "setUVAlpha", &ResourceImage::setUVAlpha )
-            .def( "getUVAlpha", &ResourceImage::getUVAlpha )
-            .def( "getUVTextureImage", &ResourceImage::getUVTextureImage )
-            .def( "getUVTextureAlpha", &ResourceImage::getUVTextureAlpha )
-            .def( "setAlpha", &ResourceImage::setAlpha )
-            .def( "isAlpha", &ResourceImage::hasAlpha )
-            .def( "setPremultiply", &ResourceImage::setPremultiply )
-            .def( "isPremultiply", &ResourceImage::isPremultiply )
-            .def( "setPow2", &ResourceImage::setPow2 )
-            .def( "isPow2", &ResourceImage::isPow2 )
-            .def( "setColor", &ResourceImage::setColor )
-            .def( "getColor", &ResourceImage::getColor )
-            ;
-
-        pybind::interface_<ResourceImageData, pybind::bases<Resource>>( _kernel, "ResourceImageData", false )
-            .def( "setImageMaxSize", &ResourceImageData::setImageMaxSize )
-            .def( "getImageMaxSize", &ResourceImageData::getImageMaxSize )
-            .def( "setImageWidth", &ResourceImageData::setImageWidth )
-            .def( "getImageWidth", &ResourceImageData::getImageWidth )
-            .def( "setImageHeight", &ResourceImageData::setImageHeight )
-            .def( "getImageHeight", &ResourceImageData::getImageHeight )
-            ;
-
-        pybind::interface_<ResourceImageDefault, pybind::bases<ResourceImage>>( _kernel, "ResourceImageDefault", false )
-            .def( "correctUVTexture", &ResourceImageDefault::correctUVTexture )
-            ;
-
-        pybind::interface_<ResourceImageSubstractRGBAndAlpha, pybind::bases<ResourceImage>>( _kernel, "ResourceImageSubstractRGBAndAlpha", false )
-            ;
-
-        pybind::interface_<ResourceImageSubstract, pybind::bases<ResourceImage>>( _kernel, "ResourceImageSubstract", false )
-            ;
-
-        pybind::interface_<ResourceImageSolid, pybind::bases<ResourceImage>>( _kernel, "ResourceImageSolid", false )
-            ;
-
-        pybind::interface_<ResourceMusic, pybind::bases<Resource>>( _kernel, "ResourceMusic", false )
-            ;
-
-        pybind::interface_<ResourceImageSequence, pybind::bases<Resource>>( _kernel, "ResourceImageSequence", false )
-            ;
-
-        pybind::interface_<ResourceSound, pybind::bases<Resource>>( _kernel, "ResourceSound", false )
-            ;
-
-        pybind::interface_<ResourceFile, pybind::bases<Resource>>( _kernel, "ResourceFile", false )
-            ;
-
-        pybind::interface_<ResourceShape, pybind::bases<Resource>>( _kernel, "ResourceShape", false )
-            .def( "setPolygon", &ResourceShape::setPolygon )
-            .def( "getPolygon", &ResourceShape::getPolygon )
-            ;
-
-        pybind::interface_<ResourceCursor, pybind::bases<Resource>>( _kernel, "ResourceCursor", false )
-            ;
-
-        pybind::interface_<ResourceCursorICO, pybind::bases<ResourceCursor>>( _kernel, "ResourceCursorICO", false )
-            ;
-
-        pybind::interface_<ResourceCursorSystem, pybind::bases<ResourceCursor>>( _kernel, "ResourceCursorSystem", false )
-            ;
-
-        pybind::interface_<ResourceWindow, pybind::bases<Resource>>( _kernel, "ResourceWindow", false )
-            ;
-
-        pybind::interface_<ResourceTestPick, pybind::bases<Resource>>( _kernel, "ResourceTestPick", false )
-            .def_deprecated( "getWidth", &ResourceTestPick::getImageWidth, "use getImageWidth" )
-            .def_deprecated( "getHeight", &ResourceTestPick::getImageHeight, "use getImageHeight" )
-            .def( "getImageWidth", &ResourceTestPick::getImageWidth )
-            .def( "getImageHeight", &ResourceTestPick::getImageHeight )
-            .def( "getImageWidthF", &ResourceTestPick::getImageWidthF )
-            .def( "getImageHeightF", &ResourceTestPick::getImageHeightF )
-            ;
-
-        pybind::interface_<ResourceHIT, pybind::bases<ResourceTestPick>>( _kernel, "ResourceHIT", false )
-            ;
-
         pybind::interface_<SurfaceSound, pybind::bases<Surface, Soundable>>( _kernel, "SurfaceSound", false )
             .def( "setResourceSound", &SurfaceSound::setResourceSound )
             .def( "getResourceSound", &SurfaceSound::getResourceSound )
@@ -1151,7 +1065,6 @@ namespace Mengine
         }
 
         Helper::registerScriptWrappingEx<Node>( _kernel, STRINGIZE_STRING_LOCAL( "Node" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrappingEx<Resource>( _kernel, STRINGIZE_STRING_LOCAL( "Resource" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrappingEx<Layer>( _kernel, STRINGIZE_STRING_LOCAL( "Layer" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrappingEx<HotSpot>( _kernel, STRINGIZE_STRING_LOCAL( "HotSpot" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrappingEx<Surface>( _kernel, STRINGIZE_STRING_LOCAL( "Surface" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -1195,26 +1108,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonal );
         SCRIPT_CLASS_WRAPPING( RenderCameraProjection );
         SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalTarget );
-
-        SCRIPT_CLASS_WRAPPING( ResourceImage );        
-        SCRIPT_CLASS_WRAPPING( ResourceImageData );
-        SCRIPT_CLASS_WRAPPING( ResourceImageDefault );
-        SCRIPT_CLASS_WRAPPING( ResourceImageEmpty );
-        SCRIPT_CLASS_WRAPPING( ResourceMusic );
-        SCRIPT_CLASS_WRAPPING( ResourceImageSequence );
-        SCRIPT_CLASS_WRAPPING( ResourceSound );
-        SCRIPT_CLASS_WRAPPING( ResourceFile );
-
-        SCRIPT_CLASS_WRAPPING( ResourceImageSolid );
-        SCRIPT_CLASS_WRAPPING( ResourceShape );
-        SCRIPT_CLASS_WRAPPING( ResourceCursorICO );
-        SCRIPT_CLASS_WRAPPING( ResourceCursorSystem );
-        SCRIPT_CLASS_WRAPPING( ResourceWindow );
-        SCRIPT_CLASS_WRAPPING( ResourceImageSubstractRGBAndAlpha );
-        SCRIPT_CLASS_WRAPPING( ResourceImageSubstract );
-
-        SCRIPT_CLASS_WRAPPING( ResourceTestPick );
-        SCRIPT_CLASS_WRAPPING( ResourceHIT );
 
         SCRIPT_CLASS_WRAPPING( SurfaceSound );
         SCRIPT_CLASS_WRAPPING( SurfaceImage );
@@ -1277,26 +1170,6 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( RenderCameraOrthogonal );
         UNSCRIPT_CLASS_WRAPPING( RenderCameraProjection );
         UNSCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalTarget );
-
-        UNSCRIPT_CLASS_WRAPPING( ResourceImage );
-        UNSCRIPT_CLASS_WRAPPING( ResourceImageEmpty );
-        UNSCRIPT_CLASS_WRAPPING( ResourceImageData );
-        UNSCRIPT_CLASS_WRAPPING( ResourceImageDefault );
-        UNSCRIPT_CLASS_WRAPPING( ResourceMusic );
-        UNSCRIPT_CLASS_WRAPPING( ResourceImageSequence );
-        UNSCRIPT_CLASS_WRAPPING( ResourceSound );
-        UNSCRIPT_CLASS_WRAPPING( ResourceFile );
-
-        UNSCRIPT_CLASS_WRAPPING( ResourceImageSolid );
-        UNSCRIPT_CLASS_WRAPPING( ResourceShape );
-        UNSCRIPT_CLASS_WRAPPING( ResourceCursorICO );
-        UNSCRIPT_CLASS_WRAPPING( ResourceCursorSystem );
-        UNSCRIPT_CLASS_WRAPPING( ResourceWindow );
-        UNSCRIPT_CLASS_WRAPPING( ResourceImageSubstractRGBAndAlpha );
-        UNSCRIPT_CLASS_WRAPPING( ResourceImageSubstract );
-
-        UNSCRIPT_CLASS_WRAPPING( ResourceTestPick );
-        UNSCRIPT_CLASS_WRAPPING( ResourceHIT );
 
         UNSCRIPT_CLASS_WRAPPING( SurfaceSound );
         UNSCRIPT_CLASS_WRAPPING( SurfaceImage );

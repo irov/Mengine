@@ -5,6 +5,7 @@
 
 #include "Environment/DirectX9/DX9RenderIncluder.h"
 
+#include "Kernel/ReferenceCounter.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/Vector.h"
 
@@ -44,7 +45,7 @@ namespace Mengine
         ConstString m_name;
         uint32_t m_elementSize;
 
-        uint32_t m_compileReferenceCount;
+        ReferenceCounter m_compileReferenceCount;
 
         IDirect3DVertexDeclaration9 * m_pD3DVertexDeclaration;
 

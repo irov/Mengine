@@ -17,6 +17,7 @@
 
 #include "Kernel/IntrusiveList.h"
 #include "Kernel/ServiceBase.h"
+#include "Kernel/Hashtable.h"
 
 namespace Mengine
 {
@@ -130,11 +131,11 @@ namespace Mengine
         void findFormatFromChannels_( EPixelFormat _format, EPixelFormat * const _hwFormat ) const;
 
     protected:
-        void onRenderVertexBufferDestroy_( OpenGLRenderVertexBuffer * _buffer );
-        void onRenderIndexBufferDestroy_( OpenGLRenderIndexBuffer * _buffer );
+        void onRenderVertexBufferDestroy_( OpenGLRenderVertexBuffer * _vertexBuffer );
+        void onRenderIndexBufferDestroy_( OpenGLRenderIndexBuffer * _indexBuffer );
         void onRenderImageDestroy_( OpenGLRenderImage * _image );
-        void onRenderImageTargetDestroy_( OpenGLRenderImageTarget * _image );
-        void onRenderTargetTextureDestroy_( OpenGLRenderTargetTexture * _renderTarget );
+        void onRenderImageTargetDestroy_( OpenGLRenderImageTarget * _imageTarget );
+        void onRenderTargetTextureDestroy_( OpenGLRenderTargetTexture * _targetTexture );
         void onRenderVertexShaderDestroy_( OpenGLRenderVertexShader * _vertexShader );
         void onRenderFragmentShaderDestroy_( OpenGLRenderFragmentShader * _fragmentShader );
         void onRenderProgramDestroy_( OpenGLRenderProgram * _program );
@@ -177,6 +178,18 @@ namespace Mengine
         OpenGLRenderIndexBufferPtr m_currentIndexBuffer;
         OpenGLRenderVertexBufferPtr m_currentVertexBuffer;
 
+        typedef Hashtable<ConstString, OpenGLRenderVertexAttributePtr> HashtableRenderVertexAttributes;
+        HashtableRenderVertexAttributes m_renderVertexAttributes;
+
+        typedef Hashtable<ConstString, OpenGLRenderVertexShaderPtr> HashtableRenderVertexShaders;
+        HashtableRenderVertexShaders m_renderVertexShaders;
+
+        typedef Hashtable<ConstString, OpenGLRenderFragmentShaderPtr> HashtableRenderFragmentShaders;
+        HashtableRenderFragmentShaders m_renderFragmentShaders;
+
+        typedef Hashtable<ConstString, OpenGLRenderProgramPtr> HashtableRenderPrograms;
+        HashtableRenderPrograms m_renderPrograms;
+
         typedef Vector<OpenGLRenderProgramPtr> VectorDeferredRenderPrograms;
         VectorDeferredRenderPrograms m_deferredCompilePrograms;
 
@@ -204,7 +217,7 @@ namespace Mengine
 
         Color m_clearColor;
 
-#if !defined(MENGINE_RENDER_OPENGL_ES)
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         GLclampd m_clearDepth;
 #endif
 

@@ -9,6 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX11RenderProgram::DX11RenderProgram()
+        : m_deferredCompile( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -53,6 +54,16 @@ namespace Mengine
         m_fragmentShader = nullptr;
         m_vertexAttribute = nullptr;
         m_bindMatrixBuffer = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX11RenderProgram::setDeferredCompile( bool _deferredCompile )
+    {
+        m_deferredCompile = _deferredCompile;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX11RenderProgram::getDeferredCompile() const
+    {
+        return m_deferredCompile;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderProgram::compile( const ID3D11DevicePtr & _pD3DDevice )

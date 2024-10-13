@@ -13,6 +13,7 @@ namespace Mengine
     OpenGLRenderProgram::OpenGLRenderProgram()
         : m_programId( 0 )
         , m_samplerCount( 0 )
+        , m_deferredCompile( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -73,6 +74,16 @@ namespace Mengine
         m_vertexAttribute = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderProgram::setDeferredCompile( bool _deferredCompile )
+    {
+        m_deferredCompile = _deferredCompile;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderProgram::getDeferredCompile() const
+    {
+        return m_deferredCompile;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderProgram::_compile()
     {
         MENGINE_ASSERTION_FATAL( m_samplerCount <= MENGINE_MAX_TEXTURE_STAGES, "program '%s' don't support sampler count %d max %d"
@@ -95,6 +106,11 @@ namespace Mengine
 
         if( m_vertexShader != nullptr )
         {
+            LOGGER_MESSAGE( "[PROGRAM] compile program '%s' vertex shader '%s'"
+                , m_name.c_str()
+                , m_vertexShader->getName().c_str()
+            );
+
             if( m_vertexShader->compile() == false )
             {
                 LOGGER_ERROR( "invalid compile program '%s' vertex shader '%s'"
@@ -110,6 +126,11 @@ namespace Mengine
 
         if( m_fragmentShader != nullptr )
         {
+            LOGGER_MESSAGE( "[PROGRAM] compile program '%s' fragment shader '%s'"
+                , m_name.c_str()
+                , m_fragmentShader->getName().c_str()
+            );
+
             if( m_fragmentShader->compile() == false )
             {
                 LOGGER_ERROR( "invalid compile program '%s' fragment shader '%s'"
@@ -196,11 +217,21 @@ namespace Mengine
 
         if( m_vertexShader != nullptr )
         {
+            LOGGER_MESSAGE( "[PROGRAM] release program '%s' vertex shader '%s'"
+                , m_name.c_str()
+                , m_vertexShader->getName().c_str()
+            );
+
             m_vertexShader->release();
         }
 
         if( m_fragmentShader != nullptr )
         {
+            LOGGER_MESSAGE( "[PROGRAM] release program '%s' fragment shader '%s'"
+                , m_name.c_str()
+                , m_fragmentShader->getName().c_str()
+            );
+
             m_fragmentShader->release();
         }
     }

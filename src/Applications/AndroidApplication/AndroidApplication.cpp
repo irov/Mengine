@@ -293,7 +293,7 @@ namespace Mengine
 #endif
 
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-        ::dlclose(m_handleLibrary);
+        ::dlclose( m_handleLibrary );
         m_handleLibrary = nullptr;
 #endif
     }

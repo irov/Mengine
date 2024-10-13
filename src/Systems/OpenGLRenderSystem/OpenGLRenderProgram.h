@@ -55,6 +55,10 @@ namespace Mengine
         void finalize();
 
     public:
+        void setDeferredCompile( bool _deferredCompile );
+        bool getDeferredCompile() const;
+
+    public:
         bool _compile() override;
         void _release() override;
 
@@ -82,6 +86,8 @@ namespace Mengine
 
         GLint m_matrixLocation[EPML_MAX_COUNT];
         GLint m_samplerLocation[MENGINE_MAX_TEXTURE_STAGES];
+
+        bool m_deferredCompile;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<OpenGLRenderProgram, RenderProgramInterface> OpenGLRenderProgramPtr;

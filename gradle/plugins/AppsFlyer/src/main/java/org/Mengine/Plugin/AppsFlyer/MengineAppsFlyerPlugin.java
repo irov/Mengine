@@ -26,21 +26,11 @@ import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener {
+public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginSessionIdListener {
     public static final String PLUGIN_NAME = "MengineAppsFlyer";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_API_KEY = "mengine.appsflyer.api_key";
-
-    @Override
-    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (event == MengineEvent.EVENT_SESSION_ID) {
-            String sessionId = (String)args[0];
-
-            AppsFlyerLib appsFlyer = AppsFlyerLib.getInstance();
-            appsFlyer.setCustomerUserId(sessionId);
-        }
-    }
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
@@ -62,6 +52,12 @@ public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePlug
 
         AppsFlyerAdRevenue.Builder afRevenueBuilder = new AppsFlyerAdRevenue.Builder(application);
         AppsFlyerAdRevenue.initialize(afRevenueBuilder.build());
+    }
+
+    @Override
+    void onMengineSessionId(MengineApplication application, String sessionId) {
+        AppsFlyerLib appsFlyer = AppsFlyerLib.getInstance();
+        appsFlyer.setCustomerUserId(sessionId);
     }
 
     @Override

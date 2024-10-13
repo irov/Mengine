@@ -40,6 +40,7 @@
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/TextureHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/Assertion.h"
 
 #include "Config/StdString.h"
 #include "Config/StdMath.h"
@@ -156,6 +157,7 @@ namespace Mengine
             {
                 m_adapterToUse = Adapter;
                 m_deviceType = D3DDEVTYPE_REF;
+
                 break;
             }
         }
@@ -220,6 +222,11 @@ namespace Mengine
     void DX9RenderSystem::_finalizeService()
     {
         m_deferredCompilePrograms.clear();
+
+        m_renderVertexAttributes.clear();
+        m_renderVertexShaders.clear();
+        m_renderFragmentShaders.clear();
+        m_renderPrograms.clear();
 
         this->release_();
 
@@ -580,6 +587,8 @@ namespace Mengine
             {
                 return false;
             }
+
+            program->setDeferredCompile( false );
         }
 
         m_deferredCompilePrograms.clear();
@@ -1714,13 +1723,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertexAttributeInterfacePtr DX9RenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentInterfacePtr & _doc )
     {
-        DX9RenderVertexAttributePtr attribute = m_factoryRenderVertexAttribute->createObject( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( attribute, "invalid create attribute '%s'"
+        MENGINE_ASSERTION_FATAL( m_renderVertexAttributes.exist( _name ) == false, "vertex attribute '%s' already exist"
             , _name.c_str()
         );
 
-        if( attribute->initialize( _name, _elementSize ) == false )
+        DX9RenderVertexAttributePtr vertexAttribute = m_factoryRenderVertexAttribute->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, "invalid create attribute '%s'"
+            , _name.c_str()
+        );
+
+        if( vertexAttribute->initialize( _name, _elementSize ) == false )
         {
             LOGGER_ERROR( "invalid initialize attribute '%s'"
                 , _name.c_str()
@@ -1729,18 +1742,24 @@ namespace Mengine
             return nullptr;
         }
 
-        return attribute;
+        m_renderVertexAttributes.emplace( _name, vertexAttribute );
+
+        return vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderFragmentShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentInterfacePtr & _doc )
     {
-        DX9RenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, "invalid create shader '%s'"
+        MENGINE_ASSERTION_FATAL( m_renderFragmentShaders.exist( _name ) == false, "fragment shader '%s' already exist"
             , _name.c_str()
         );
 
-        if( shader->initialize( _name, _memory, _compile ) == false )
+        DX9RenderFragmentShaderPtr fragmentShader = m_factoryRenderFragmentShader->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, "invalid create shader '%s'"
+            , _name.c_str()
+        );
+
+        if( fragmentShader->initialize( _name, _memory, _compile ) == false )
         {
             LOGGER_ERROR( "invalid initialize shader '%s'"
                 , _name.c_str()
@@ -1749,18 +1768,24 @@ namespace Mengine
             return nullptr;
         }
 
-        return shader;
+        m_renderFragmentShaders.emplace( _name, fragmentShader );
+
+        return fragmentShader;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertexShaderInterfacePtr DX9RenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentInterfacePtr & _doc )
     {
-        DX9RenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, "invalid create shader '%s'"
+        MENGINE_ASSERTION_FATAL( m_renderVertexShaders.exist( _name ) == false, "vertex shader '%s' already exist"
             , _name.c_str()
         );
 
-        if( shader->initialize( _name, _memory, _compile ) == false )
+        DX9RenderVertexShaderPtr vertexShader = m_factoryRenderVertexShader->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexShader, "invalid create shader '%s'"
+            , _name.c_str()
+        );
+
+        if( vertexShader->initialize( _name, _memory, _compile ) == false )
         {
             LOGGER_ERROR( "invalid initialize shader '%s'"
                 , _name.c_str()
@@ -1769,12 +1794,18 @@ namespace Mengine
             return nullptr;
         }
 
-        return shader;
+        m_renderVertexShaders.emplace( _name, vertexShader );
+
+        return vertexShader;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _samplerCount );
+
+        MENGINE_ASSERTION_FATAL( m_renderPrograms.exist( _name ) == false, "program '%s' already exist"
+            , _name.c_str()
+        );
 
         DX9RenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
 
@@ -1804,8 +1835,12 @@ namespace Mengine
         }
         else
         {
+            program->setDeferredCompile( true );
+
             m_deferredCompilePrograms.emplace_back( program );
         }
+
+        m_renderPrograms.emplace( _name, program );
 
         return program;
     }
@@ -1960,7 +1995,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onDestroyDX9Program_( DX9RenderProgram * _program )
     {
-        _program->release();
+        if( _program->getDeferredCompile() == false )
+        {
+            _program->release();
+        }
+
         _program->finalize();
     }
     //////////////////////////////////////////////////////////////////////////

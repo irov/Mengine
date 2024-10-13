@@ -3,19 +3,20 @@
 #include "AndroidDeclaration.h"
 
 #include "Kernel/BuildMode.h"
+#include "Kernel/Assertion.h"
 
 #include <pthread.h>
 
+static JavaVM * g_androidEnvJavaVM;
+
+static jclass g_jclass_MengineApplication;
+static jobject g_jobject_MengineApplication;
+static jobject g_jobject_MengineClassLoader;
+static jclass g_jclass_MengineActivity;
+static jobject g_jobject_MengineActivity;
+
 extern "C" 
 {
-    //////////////////////////////////////////////////////////////////////////
-    static jclass g_jclass_MengineApplication;
-    static jobject g_jobject_MengineApplication;
-    //////////////////////////////////////////////////////////////////////////
-    static jobject g_jobject_MengineClassLoader;
-    //////////////////////////////////////////////////////////////////////////
-    static jclass g_jclass_MengineActivity;
-    static jobject g_jobject_MengineActivity;
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidApplicationJNI )(JNIEnv * env, jclass cls, jobject obj, jobject cl)
     {
@@ -96,7 +97,31 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    jboolean Mengine_JNI_ExistMengineApplication( void )
+    JNIEXPORT jint JNICALL JNI_OnLoad( JavaVM * vm, void * reserved )
+    {
+        MENGINE_UNUSED( reserved );
+
+        g_androidEnvJavaVM = vm;
+
+        JNIEnv *env;
+        int get_status = g_androidEnvJavaVM->GetEnv( (void **)&env, JNI_VERSION_1_6 );
+
+        if( get_status != JNI_OK )
+        {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "JNI_OnLoad failed to get JNI Env" );
+
+            return JNI_ERR;
+        }
+
+        return JNI_VERSION_1_6;
+    }
+    //////////////////////////////////////////////////////////////////////////
+}
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    jboolean Mengine_JNI_ExistMengineApplication()
     {
         if( g_jclass_MengineApplication == nullptr )
         {
@@ -106,17 +131,17 @@ extern "C"
         return JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetJClassMengineApplication( void )
+    jclass Mengine_JNI_GetJClassMengineApplication()
     {
         return g_jclass_MengineApplication;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_GetJObjectMengineApplication( void )
+    jobject Mengine_JNI_GetJObjectMengineApplication()
     {
         return g_jobject_MengineApplication;
     }
     //////////////////////////////////////////////////////////////////////////
-    jboolean Mengine_JNI_ExistMengineActivity( void )
+    jboolean Mengine_JNI_ExistMengineActivity()
     {
         if( g_jclass_MengineActivity == nullptr )
         {
@@ -126,60 +151,131 @@ extern "C"
         return JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetJClassMengineActivity( void )
+    jclass Mengine_JNI_GetJClassMengineActivity()
     {
         return g_jclass_MengineActivity;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject Mengine_JNI_GetJObjectMengineActivity( void )
+    jobject Mengine_JNI_GetJObjectMengineActivity()
     {
         return g_jobject_MengineActivity;
     }
     //////////////////////////////////////////////////////////////////////////
-    static pthread_key_t g_androidEnvThreadKey;
-    static JavaVM * g_androidEnvJavaVM;
+    static pthread_key_t g_androidEnvThreadKey = 0;
     //////////////////////////////////////////////////////////////////////////
-    JNIEnv * Mengine_JNI_GetEnv( void )
+    static void Mengine_JNI_ThreadDestroyed( void * _value )
     {
-        JNIEnv *env;
-        int get_status = g_androidEnvJavaVM->GetEnv((void **)&env, JNI_VERSION_1_6);
-        if (get_status == JNI_OK) {
-            return env;
-        } else if (get_status == JNI_EDETACHED ) {
-            int attach_status = g_androidEnvJavaVM->AttachCurrentThread(&env, nullptr);
-            if (attach_status < 0) {
-                return nullptr;
-            }
+        JNIEnv * env = (JNIEnv *)_value;
 
-            pthread_setspecific(g_androidEnvThreadKey, (void *) env);
-
-            return env;
+        if( env == nullptr )
+        {
+            return;
         }
 
-        return nullptr;
+        g_androidEnvJavaVM->DetachCurrentThread();
+
+        ::pthread_setspecific( g_androidEnvThreadKey, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void Mengine_JNI_ThreadDestroyed( void *value )
+    static int Mengine_JNI_SetEnv(JNIEnv * _env )
     {
-        /* The thread is being destroyed, detach it from the Java VM and set the mThreadKey value to NULL as required */
-        JNIEnv *env = (JNIEnv *)value;
-        if( env != NULL ) {
-            g_androidEnvJavaVM->DetachCurrentThread();
-            pthread_setspecific( g_androidEnvThreadKey, NULL );
+        MENGINE_ASSERTION_FATAL( g_androidEnvThreadKey != 0, "android ENV thread key not initialized" );
+        MENGINE_ASSERTION_FATAL( pthread_getspecific( g_androidEnvThreadKey ) == nullptr, "ENV thread key already set" );
+
+        int status = ::pthread_setspecific( g_androidEnvThreadKey, (void *)_env );
+
+        if( status != JNI_OK )
+        {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "JNI_SetEnv failed to set pthread key" );
+
+            return JNI_FALSE;
         }
+
+        return JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jint JNICALL JNI_OnLoad( JavaVM *vm, void *reserved ) {
-        g_androidEnvJavaVM = vm;
+    int Mengine_JNI_Initialize( JNIEnv * _env )
+    {
+        MENGINE_ASSERTION_FATAL( g_androidEnvThreadKey == 0, "android ENV thread key already initialize" );
 
-        JNIEnv *env;
-        if(g_androidEnvJavaVM->GetEnv((void **)&env, JNI_VERSION_1_6 ) != JNI_OK ) {
-            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "JNI_OnLoad failed to get JNI Env");
+        int status = ::pthread_key_create( &g_androidEnvThreadKey, &Mengine_JNI_ThreadDestroyed );
 
-            return JNI_ERR;
+        if( status < JNI_OK )
+        {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "JNI_SetEnv failed to create pthread key" );
+
+            return JNI_FALSE;
         }
 
-        return JNI_VERSION_1_6;
+        if( Mengine_JNI_SetEnv( _env ) == JNI_FALSE )
+        {
+            return JNI_FALSE;
+        }
+
+        return JNI_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEnv * Mengine_JNI_GetEnv()
+    {
+        MENGINE_ASSERTION_FATAL( g_androidEnvThreadKey != 0, "android ENV thread key not initialized" );
+
+        JNIEnv * env = (JNIEnv *)::pthread_getspecific( g_androidEnvThreadKey );
+
+        if( env != nullptr )
+        {
+            return env;
+        }
+
+        if( g_androidEnvJavaVM == nullptr )
+        {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "JNI_GetEnv failed to get JavaVM" );
+
+            return nullptr;
+        }
+
+        JNIEnv * new_env;
+        jint attach_status = g_androidEnvJavaVM->AttachCurrentThread( &new_env, nullptr );
+
+        if( attach_status != JNI_OK )
+        {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "JNI_GetEnv failed to attach current thread" );
+
+            return nullptr;
+        }
+
+        if( Mengine_JNI_SetEnv( new_env ) == JNI_FALSE )
+        {
+        	return nullptr;
+        }
+
+        return new_env;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int Mengine_JNI_SetupThread()
+    {
+        if( g_androidEnvJavaVM == nullptr )
+        {
+            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "JNI_SetupThread failed to get JavaVM");
+
+            return JNI_FALSE;
+        }
+
+        JNIEnv * env;
+        jint attach_status = g_androidEnvJavaVM->AttachCurrentThread( &env, nullptr );
+
+        if( attach_status != JNI_OK )
+        {
+            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "JNI_SetupThread failed to attach current thread");
+
+            return JNI_FALSE;
+        }
+
+        if( Mengine_JNI_SetEnv( env ) == JNI_FALSE )
+        {
+            return JNI_FALSE;
+        }
+
+        return JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     jclass Mengine_JNI_FindClass( JNIEnv * _jenv, const char * _className )

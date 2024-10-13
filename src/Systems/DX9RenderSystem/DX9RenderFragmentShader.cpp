@@ -10,7 +10,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderFragmentShader::DX9RenderFragmentShader()
         : m_pD3DPixelShader( nullptr )
-        , m_compileReferenceCount( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -44,7 +43,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderFragmentShader::compile( IDirect3DDevice9 * _pD3DDevice )
     {
-        if( m_compileReferenceCount == 0 )
+        if( m_compileReferenceCount.incref() == 0 )
         {
             MENGINE_ASSERTION_FATAL( m_pD3DPixelShader == nullptr, "shader is already compile" );
 
@@ -63,16 +62,12 @@ namespace Mengine
             m_pD3DPixelShader = pD3DPixelShader;
         }
 
-        ++m_compileReferenceCount;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderFragmentShader::release()
     {
-        --m_compileReferenceCount;
-
-        if( m_compileReferenceCount == 0 )
+        if( m_compileReferenceCount.decref() == 0 )
         {
             MENGINE_DXRELEASE( m_pD3DPixelShader );
         }

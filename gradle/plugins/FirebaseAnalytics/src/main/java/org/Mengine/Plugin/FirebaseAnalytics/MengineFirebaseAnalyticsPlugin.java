@@ -12,32 +12,23 @@ import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginAdRevenueListener;
 import org.Mengine.Base.MenginePluginAnalyticsListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MenginePluginSessionIdListener;
 import org.Mengine.Base.MenginePluginTransparencyConsentListener;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 
 import java.util.EnumMap;
 import java.util.Map;
 
-public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginTransparencyConsentListener, MenginePluginApplicationListener {
+public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginTransparencyConsentListener, MenginePluginApplicationListener, MenginePluginSessionIdListener {
     public static final String PLUGIN_NAME = "MengineFBAnalytics";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     FirebaseAnalytics m_firebaseAnalytics;
-
-    @Override
-    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (event == MengineEvent.EVENT_SESSION_ID) {
-            String sessionId = (String)args[0];
-
-            m_firebaseAnalytics.setUserId(sessionId);
-        }
-    }
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
@@ -69,6 +60,25 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         firebaseAnalytics.setUserProperty("life_time", String.valueOf(lifeTime));
 
         m_firebaseAnalytics = firebaseAnalytics;
+    }
+
+    @Override
+    public void onMengineSetSessionId(MengineApplication application, String sessionId) {
+        if (m_firebaseAnalytics == null) {
+            return;
+        }
+
+        m_firebaseAnalytics.setUserId(sessionId);
+    }
+
+    @Override
+    public void onMengineRemoveSessionData(MengineApplication application) {
+        if (m_firebaseAnalytics == null) {
+            return;
+        }
+
+        m_firebaseAnalytics.resetAnalyticsData();
+        m_firebaseAnalytics.setUserId(null);
     }
 
     @Override

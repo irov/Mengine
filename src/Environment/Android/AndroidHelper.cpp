@@ -46,7 +46,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void AndroidCallVoidStaticClassMethod( JNIEnv * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... )
         {
-            jclass jclass_name = _jenv->FindClass( _name );
+            jclass jclass_name = Mengine::Mengine_JNI_FindClass( _jenv, _name );
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 
@@ -72,7 +72,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         jobject AndroidCallObjectStaticClassMethod( JNIEnv * _jenv, const Char * _name, const Char * _method, const Char * _signature, ... )
         {
-            jclass jclass_name = ::Mengine_JNI_FindClass( _jenv, _name );
+            jclass jclass_name = Mengine::Mengine_JNI_FindClass( _jenv, _name );
 
             Helper::AndroidEnvExceptionCheck( _jenv );
 

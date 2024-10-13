@@ -360,6 +360,8 @@ namespace Mengine
 
                 return false;
             }
+
+            program->setDeferredCompile( false );
         }
 
         m_deferredCompilePrograms.clear();
@@ -1355,6 +1357,8 @@ namespace Mengine
         }
         else
         {
+            program->setDeferredCompile( true );
+
             m_deferredCompilePrograms.emplace_back( program );
         }
 
@@ -1692,7 +1696,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::onDestroyProgram_( DX11RenderProgram * _program )
     {
-        _program->release();
+        if( _program->getDeferredCompile() == false )
+        {
+            _program->release();
+        }
+
         _program->finalize();
     }
     //////////////////////////////////////////////////////////////////////////

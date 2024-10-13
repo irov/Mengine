@@ -1,4 +1,5 @@
 #include "Environment/Android/AndroidDeclaration.h"
+#include "Environment/Android/AndroidEnv.h"
 
 #include "AndroidApplication.h"
 
@@ -10,16 +11,14 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jobject JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidMain_1bootstrap )(JNIEnv * _env, jclass _cls, jstring _nativeLibraryDir, jobjectArray _args)
     {
-        size_t size_AndroidApplication = sizeof( Mengine::AndroidApplication );
-
-        void * memory_application = Mengine::StdLib::malloc( size_AndroidApplication );
-
-        if( memory_application == nullptr )
+        if( Mengine::Mengine_JNI_Initialize( _env ) == JNI_FALSE )
         {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "Android bootstrap JNI initialize failed" );
+
             return nullptr;
         }
 
-        Mengine::AndroidApplication * application = new (memory_application) Mengine::AndroidApplication();
+        Mengine::AndroidApplication * application = new Mengine::AndroidApplication();
 
         const Mengine::Char * nativeLibraryDir_str = _env->GetStringUTFChars( _nativeLibraryDir, nullptr );
 
@@ -49,24 +48,33 @@ extern "C"
 
         if( result == false )
         {
-            application->~AndroidApplication();
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "Android bootstrap failed" );
 
-            Mengine::StdLib::free( memory_application );
+            delete application;
 
             return nullptr;
         }
 
-        jobject j_application = _env->NewDirectByteBuffer( memory_application, size_AndroidApplication );
+        jobject j_application = _env->NewDirectByteBuffer( application, sizeof(Mengine::AndroidApplication) );
 
         return j_application;
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jboolean JNICALL MENGINE_MAIN_JAVA_INTERFACE( AndroidMain_1main )(JNIEnv * _env, jclass _cls, jobject _application)
     {
+        if( Mengine::Mengine_JNI_SetupThread() == JNI_FALSE )
+        {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "Android main JNI setup thread failed" );
+
+            return false;
+        }
+
         Mengine::AndroidApplication * application = (Mengine::AndroidApplication *)_env->GetDirectBufferAddress( _application );
 
         if( application->initialize() == false )
         {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "Android main initialize failed" );
+
             return false;
         }
 
@@ -81,9 +89,7 @@ extern "C"
     {
         Mengine::AndroidApplication * application = (Mengine::AndroidApplication *)_env->GetDirectBufferAddress( _application );
 
-        application->~AndroidApplication();
-
-        Mengine::StdLib::free( application );
+        delete application;
     }
     //////////////////////////////////////////////////////////////////////////
 }

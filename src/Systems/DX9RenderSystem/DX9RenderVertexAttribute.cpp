@@ -12,7 +12,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexAttribute::DX9RenderVertexAttribute()
         : m_elementSize( 0 )
-        , m_compileReferenceCount( 0 )
         , m_pD3DVertexDeclaration( nullptr )
     {
     }
@@ -39,7 +38,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexAttribute::compile( IDirect3DDevice9 * _pD3DDevice )
     {
-        if( m_compileReferenceCount == 0 )
+        if( m_compileReferenceCount.incref() == 0 )
         {
             MENGINE_ASSERTION_FATAL( m_pD3DVertexDeclaration == nullptr, "vertex declaration is already compile" );
 
@@ -82,14 +81,15 @@ namespace Mengine
             m_pD3DVertexDeclaration = pD3DVertexDeclaration;
         }
 
-        ++m_compileReferenceCount;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::release()
     {
-        MENGINE_DXRELEASE( m_pD3DVertexDeclaration );
+        if( m_compileReferenceCount.decref() == 0 )
+        {
+            MENGINE_DXRELEASE( m_pD3DVertexDeclaration );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & DX9RenderVertexAttribute::getName() const

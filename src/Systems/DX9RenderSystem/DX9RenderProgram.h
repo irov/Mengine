@@ -8,7 +8,7 @@
 #include "DX9RenderFragmentShader.h"
 #include "DX9RenderVertexAttribute.h"
 
-#include "Kernel/CompilableReference.h"
+#include "Kernel/ReferenceCounter.h"
 
 #include "math/uv4.h"
 #include "math/mat4.h"
@@ -39,6 +39,10 @@ namespace Mengine
         void finalize();
 
     public:
+        void setDeferredCompile( bool _deferredCompile );
+        bool getDeferredCompile() const;
+
+    public:
         bool compile( IDirect3DDevice9 * _pD3DDevice );
         void release();
 
@@ -50,11 +54,15 @@ namespace Mengine
         void bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix );
 
     protected:
-        ConstString m_name;        
+        ConstString m_name;
+
+        ReferenceCounter m_compileReferenceCount;
 
         DX9RenderVertexShaderPtr m_vertexShader;
         DX9RenderFragmentShaderPtr m_fragmentShader;
         DX9RenderVertexAttributePtr m_vertexAttribute;
+
+        bool m_deferredCompile;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX9RenderProgram, RenderProgramInterface> DX9RenderProgramPtr;

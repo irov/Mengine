@@ -72,7 +72,7 @@ public class MengineAnalyticsEventBuilder {
     }
 
     private void validateJSON(String key, String json) {
-        if (json == null || json.isEmpty() == true || json.charAt(0) != '{' || json.charAt(json.length() - 1) != '}') {
+        if (json == null || json.isEmpty() == true || json.length() < 2 || json.charAt(0) != '{' || json.charAt(json.length() - 1) != '}') {
             String msg = String.format(Locale.US, "event builder '%s' parameter '%s' invalid json", m_name, key);
             throw new AssertionError(msg);
         }

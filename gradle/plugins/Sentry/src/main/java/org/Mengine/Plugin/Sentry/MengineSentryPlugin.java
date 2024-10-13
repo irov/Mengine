@@ -14,7 +14,7 @@ import io.sentry.Sentry;
 import io.sentry.android.core.SentryAndroid;
 import io.sentry.protocol.User;
 
-public class MengineSentryPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginEngineListener {
+public class MengineSentryPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginEngineListener, MenginePluginSessionIdListener {
     public static final String PLUGIN_NAME = "MengineSentry";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -29,13 +29,6 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
             boolean passGDPR = (boolean)args[0];
 
             m_passGDPR = passGDPR;
-        } else if (event == MengineEvent.EVENT_SESSION_ID) {
-            String sessionId = (String)args[0];
-
-            User user = new User();
-            user.setId(sessionId);
-
-            Sentry.setUser(user);
         }
     }
 
@@ -141,6 +134,14 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
             scope.setExtra("Project", projectName);
             scope.setExtra("Version", String.valueOf(projectVersion));
         });
+    }
+
+    @Override
+    void onMengineSessionId(MengineApplication application, String sessionId) {
+        User user = new User();
+        user.setId(sessionId);
+
+        Sentry.setUser(user);
     }
 
     @Override

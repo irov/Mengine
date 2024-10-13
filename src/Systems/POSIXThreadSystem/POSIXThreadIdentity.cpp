@@ -1,6 +1,7 @@
 #include "POSIXThreadIdentity.h"
 
 #include "Interface/AllocatorSystemInterface.h"
+#include "Interface/PlatformSystemInterface.h"
 
 #include "POSIXThreadIdentityRunner.h"
 
@@ -128,10 +129,16 @@ namespace Mengine
         ALLOCATOR_SYSTEM()
             ->beginThread( m_threadId );
 
+        PLATFORM_SYSTEM()
+            ->beginThread( m_threadId );
+
         MENGINE_PROFILER_THREAD( m_name.c_str() );
         
         ThreadIdentityRunnerInterfacePtr runner = m_runner;
         runner->run();
+
+        PLATFORM_SYSTEM()
+            ->endThread( m_threadId );
 
         ALLOCATOR_SYSTEM()
             ->endThread( m_threadId );

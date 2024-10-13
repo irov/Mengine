@@ -89,6 +89,7 @@ public class MengineApplication extends Application {
     private ArrayList<MenginePluginEngineListener> m_engineListeners = new ArrayList<>();
     private ArrayList<MenginePluginPushTokenListener> m_pushTokenListeners = new ArrayList<>();
     private ArrayList<MenginePluginAdvertisingIdListener> m_advertisingIdListeners = new ArrayList<>();
+    private ArrayList<MenginePluginSessionIdListener> m_sessionIdListeners = new ArrayList<>();
 
     private final Object m_syncEvent = new Object();
     private final Object m_syncState = new Object();
@@ -314,7 +315,38 @@ public class MengineApplication extends Application {
 
         this.setState("user.session_id", m_sessionId);
 
-        this.sendEvent(MengineEvent.EVENT_SESSION_ID, m_sessionId);
+        List<MenginePluginSessionIdListener> listeners = this.getSessionIdListeners();
+
+        for (MenginePluginSessionIdListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
+            l.onMengineSetSessionId(this, m_sessionId);
+        }
+    }
+
+    public void removeSessionData() {
+        String installKey = MengineApplication.generateInstallKey();
+
+        m_installKey = installKey;
+        m_sessionId = installKey;
+
+        this.removePreference("install_key");
+        this.removePreference("session_id");
+
+        this.setState("user.install_key", m_installKey);
+        this.setState("user.session_id", m_sessionId);
+
+        List<MenginePluginSessionIdListener> listeners = this.getSessionIdListeners();
+
+        for (MenginePluginSessionIdListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
+            l.onMengineRemoveSessionData(this);
+        }
     }
 
     public String getSessionId() {
@@ -432,6 +464,10 @@ public class MengineApplication extends Application {
 
     public List<MenginePluginAdvertisingIdListener> getAdvertisingIdListeners() {
         return m_advertisingIdListeners;
+    }
+
+    public List<MenginePluginSessionIdListener> getSessionIdListeners() {
+        return m_sessionIdListeners;
     }
 
     public MenginePlugin findPlugin(String name) {
@@ -567,6 +603,10 @@ public class MengineApplication extends Application {
             m_advertisingIdListeners.add(listener);
         }
 
+        if (plugin instanceof MenginePluginSessionIdListener listener) {
+            m_sessionIdListeners.add(listener);
+        }
+
         MengineLog.logMessage(TAG, "create plugin: %s [%s]"
             , type
             , name
@@ -609,6 +649,22 @@ public class MengineApplication extends Application {
         boolean has = settings.contains(name);
 
         return has;
+    }
+
+    public boolean getPreferenceBoolean(@NonNull String name, boolean defaultValue) {
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+
+        boolean value = settings.getBoolean(name, defaultValue);
+
+        return value;
+    }
+
+    public void setPreferenceBoolean(@NonNull String name, boolean value) {
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(name, value);
+        editor.apply();
     }
 
     public long getPreferenceInteger(@NonNull String name, long defaultValue) {
@@ -817,6 +873,12 @@ public class MengineApplication extends Application {
         return m_invalidInitializeReason;
     }
 
+    protected static String generateInstallKey() {
+        String installKey = "MNIK" + MengineUtils.getSecureRandomHexString(16).toUpperCase();
+
+        return installKey;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -888,7 +950,7 @@ public class MengineApplication extends Application {
         editor.putLong("save_version", MENGINE_APPLICATION_SAVE_VERSION);
 
         if (installKey == null) {
-            installKey = "MNIK" + MengineUtils.getSecureRandomHexString(16).toUpperCase();
+            installKey = MengineApplication.generateInstallKey();
             installTimestamp = MengineUtils.getTimestamp();
             installVersion = this.getVersionName();
 

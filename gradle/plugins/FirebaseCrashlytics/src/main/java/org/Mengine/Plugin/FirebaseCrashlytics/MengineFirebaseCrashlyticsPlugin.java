@@ -7,7 +7,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MengineFatalErrorException;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MenginePlugin;
@@ -16,9 +15,10 @@ import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginLoggerListener;
+import org.Mengine.Base.MenginePluginSessionIdListener;
 import org.Mengine.Base.MengineUtils;
 
-public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginEngineListener {
+public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginEngineListener, MenginePluginSessionIdListener {
     public static final String PLUGIN_NAME = "MengineFBCrashlytics";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -49,15 +49,6 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     @Override
-    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (event == MengineEvent.EVENT_SESSION_ID) {
-            String sessionId = (String)args[0];
-
-            FirebaseCrashlytics.getInstance().setUserId(sessionId);
-        }
-    }
-
-    @Override
     public void onMengineCaughtException(MengineApplication activity, Throwable throwable) {
         throwable.printStackTrace(System.err);
 
@@ -67,6 +58,16 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     @Override
     public void onState(MengineApplication application, String name, Object value) {
         this.setCustomKey(name, value);
+    }
+
+    @Override
+    public void onMengineSetSessionId(MengineApplication application, String sessionId) {
+        FirebaseCrashlytics.getInstance().setUserId(sessionId);
+    }
+
+    @Override
+    public void onMengineRemoveSessionData(MengineApplication application) {
+        FirebaseCrashlytics.getInstance().setUserId("");
     }
 
     public void recordException(Throwable throwable) {

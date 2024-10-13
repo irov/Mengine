@@ -53,6 +53,42 @@ namespace Mengine
 
             return TF_GAUSSIANCUBIC;
         }
+        //////////////////////////////////////////////////////////////////////////
+        static bool equalMaterial( const RenderMaterial * _material
+            , EPrimitiveType _primitiveType
+            , uint32_t _textureCount
+            , const RenderTextureInterfacePtr * _textures
+            , const RenderMaterialStage * _stage
+        )
+        {
+            if( _material->getPrimitiveType() != _primitiveType )
+            {
+                return false;
+            }
+
+            if( _material->getTextureCount() != _textureCount )
+            {
+                return false;
+            }
+
+            for( uint32_t i = 0; i != _textureCount; ++i )
+            {
+                const RenderTextureInterfacePtr & texture = _material->getTexture( i );
+
+                if( texture != _textures[i] )
+                {
+                    return false;
+                }
+            }
+
+            if( _material->getStage() != _stage )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialService::RenderMaterialService()
@@ -226,41 +262,6 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMaterial );
 
         m_factoryMaterial = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static bool s_equalMaterial( const RenderMaterial * _material
-        , EPrimitiveType _primitiveType
-        , uint32_t _textureCount
-        , const RenderTextureInterfacePtr * _textures
-        , const RenderMaterialStage * _stage
-    )
-    {
-        if( _material->getPrimitiveType() != _primitiveType )
-        {
-            return false;
-        }
-
-        if( _material->getTextureCount() != _textureCount )
-        {
-            return false;
-        }
-
-        for( uint32_t i = 0; i != _textureCount; ++i )
-        {
-            const RenderTextureInterfacePtr & texture = _material->getTexture( i );
-
-            if( texture != _textures[i] )
-            {
-                return false;
-            }
-        }
-
-        if( _material->getStage() != _stage )
-        {
-            return false;
-        }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderMaterialService::setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification )
@@ -526,7 +527,7 @@ namespace Mengine
                 continue;
             }
 
-            if( s_equalMaterial( material, _primitiveType, _textureCount, _textures, _stage ) == false )
+            if( Detail::equalMaterial( material, _primitiveType, _textureCount, _textures, _stage ) == false )
             {
                 continue;
             }
@@ -574,7 +575,7 @@ namespace Mengine
                 continue;
             }
 
-            if( s_equalMaterial( material, _primitiveType, _textureCount, _textures, stage ) == false )
+            if( Detail::equalMaterial( material, _primitiveType, _textureCount, _textures, stage ) == false )
             {
                 continue;
             }

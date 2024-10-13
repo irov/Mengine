@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderVertexShader::~OpenGLRenderVertexShader()
     {
-        MENGINE_ASSERTION_FATAL( m_shaderId == 0, "shader is not release" );
+        MENGINE_ASSERTION_FATAL( m_shaderId == 0, "vertex shader is not release" );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & OpenGLRenderVertexShader::getName() const
@@ -35,7 +35,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexShader::finalize()
     {
-        MENGINE_ASSERTION_FATAL( this->getCompileReferenceCount() == 0, "shader '%s' is used"
+        MENGINE_ASSERTION_FATAL( this->getCompileReferenceCount() == 0, "vertex shader '%s' is used"
             , m_name.c_str()
         );
 
@@ -51,7 +51,7 @@ namespace Mengine
 
         if( shaderId == 0 )
         {
-            LOGGER_ERROR( "'%s' invalid create shader"
+            LOGGER_ERROR( "'%s' invalid create vertex shader"
                 , m_name.c_str()
             );
 
@@ -69,7 +69,7 @@ namespace Mengine
 
         if( status == GL_FALSE )
         {
-            GLchar errorLog[1024] = {'\0'};
+            GLchar errorLog[1024 + 1] = {'\0'};
             MENGINE_GLCALL( glGetShaderInfoLog, (shaderId, 1024, NULL, errorLog) );
 
             LOGGER_ERROR( "compilation vertex shader '%s' error '%s'"

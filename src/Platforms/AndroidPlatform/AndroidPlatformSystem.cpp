@@ -1,5 +1,7 @@
 #include "AndroidPlatformSystem.h"
 
+#include "Environment/Android/AndroidEnv.h"
+
 #include "Kernel/AllocatorHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -26,6 +28,20 @@ namespace Mengine
     void AndroidPlatformSystem::_finalizeService()
     {
         // Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformSystem::beginThread( ThreadId _threadId )
+    {
+        MENGINE_UNUSED( _threadId );
+
+        Mengine_JNI_SetupThread();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformSystem::endThread( ThreadId _threadId )
+    {
+        MENGINE_UNUSED( _threadId );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -772,7 +772,7 @@ if (project.hasProperty("MENGINE_APP_OPTIONS")) {
         }
     }
 } else {
-    println "MENGINE_APP_OPTIONS:"
+    println "MENGINE_APP_OPTIONS: [None]"
 
     android {
         defaultConfig {

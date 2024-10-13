@@ -331,8 +331,11 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_plugin.onEventRevenuePaid(ad);
 
-        m_plugin.pythonCall("onAppLovinRewardedOnAdRevenuePaid", m_adUnitId,
-                Map.of("revenue", ad.getRevenue())
+        double revenue = ad.getRevenue();
+
+        m_plugin.pythonCall("onAppLovinRewardedOnAdRevenuePaid"
+            , m_adUnitId
+            , Map.of("revenue", revenue)
         );
     }
 

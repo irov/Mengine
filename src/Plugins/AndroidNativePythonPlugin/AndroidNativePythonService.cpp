@@ -713,7 +713,7 @@ namespace Mengine
 
         jstring jname = jenv->NewStringUTF( name_str );
 
-        jclass jclass_MengineSemaphoreListener = jenv->FindClass( "org/Mengine/Base/MengineSemaphoreListener" );
+        jclass jclass_MengineSemaphoreListener = Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineSemaphoreListener" );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
@@ -721,7 +721,7 @@ namespace Mengine
 
         AndroidSemaphoreListenerInterface * listener_ptr = _listener.get();
         AndroidSemaphoreListenerInterface::intrusive_ptr_add_ref( listener_ptr );
-        jobject jpoint_listener = jenv->NewDirectByteBuffer( listener_ptr, sizeof(listener_ptr) );
+        jobject jpoint_listener = jenv->NewDirectByteBuffer( listener_ptr, sizeof(AndroidSemaphoreListenerInterface) );
 
         jobject jfunctor = jenv->NewObject( jclass_MengineSemaphoreListener, jmethodID_MengineSemaphoreListener_constructor, jpoint_listener );
 

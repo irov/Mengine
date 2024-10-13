@@ -26,4 +26,18 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32PlatformSystem::beginThread( ThreadId _threadId )
+    {
+        MENGINE_UNUSED( _threadId );
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32PlatformSystem::endThread( ThreadId _threadId )
+    {
+        MENGINE_UNUSED( _threadId );
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

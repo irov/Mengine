@@ -19,20 +19,11 @@ import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener, FlurryAgentListener {
+public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener, MenginePluginSessionIdListener, FlurryAgentListener {
     public static final String PLUGIN_NAME = "MengineFlurry";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_API_KEY = "mengine.flurry.api_key";
-
-    @Override
-    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (event == MengineEvent.EVENT_SESSION_ID) {
-            String sessionId = (String)args[0];
-
-            FlurryAgent.setUserId(sessionId);
-        }
-    }
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
@@ -62,6 +53,11 @@ public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginA
     @Override
     public void onSessionStarted() {
         this.logInfo("Flurry session started");
+    }
+
+    @Override
+    void onMengineSessionId(MengineApplication application, String sessionId) {
+        FlurryAgent.setUserId(sessionId);
     }
 
     @Override

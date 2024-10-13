@@ -1,6 +1,7 @@
 #include "POSIXThreadProcessor.h"
 
 #include "Interface/AllocatorSystemInterface.h"
+#include "Interface/PlatformSystemInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadEnum.h"
@@ -129,6 +130,9 @@ namespace Mengine
         ALLOCATOR_SYSTEM()
             ->beginThread( m_threadId );
 
+        PLATFORM_SYSTEM()
+            ->beginThread( m_threadId );
+
         while( m_exit == false )
         {
             ::pthread_mutex_lock( &m_conditionLock );
@@ -160,6 +164,9 @@ namespace Mengine
 
             ::pthread_mutex_unlock( &m_processLock );
         }
+
+        PLATFORM_SYSTEM()
+            ->endThread( m_threadId );
 
         ALLOCATOR_SYSTEM()
             ->endThread( m_threadId );

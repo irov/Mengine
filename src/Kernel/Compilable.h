@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Kernel/Mixin.h"
+#include "Kernel/ThreadGuard.h"
+
 #include "Config/Typedef.h"
 #include "Config/Lambda.h"
-
-#include "Kernel/Mixin.h"
+#include "Config/Atomic.h"
 
 namespace Mengine
 {
@@ -35,6 +37,8 @@ namespace Mengine
 
     private:
         bool m_compile;
+
+        MENGINE_THREAD_GUARD_INIT( Compilable );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Compilable> CompilablePtr;

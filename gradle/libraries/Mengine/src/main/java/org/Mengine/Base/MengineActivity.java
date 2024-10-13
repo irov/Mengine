@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
@@ -46,7 +44,6 @@ public class MengineActivity extends AppCompatActivity {
     private static native void AndroidEnv_setMengineAndroidActivityJNI(Object activity);
     private static native void AndroidEnv_removeMengineAndroidActivityJNI();
 
-    private static native void AndroidEnvironmentService_quitMengineAndroidActivityJNI();
     private static native boolean AndroidEnvironmentService_isDevelopmentMode();
     private static native String AndroidEnvironmentService_getCompanyName();
     private static native String AndroidEnvironmentService_getProjectName();
@@ -419,6 +416,8 @@ public class MengineActivity extends AppCompatActivity {
         this.setState("activity.init", "end");
 
         this.setState("activity.lifecycle", "created");
+
+        this.deleteAccount();
     }
 
     @Override
@@ -515,10 +514,6 @@ public class MengineActivity extends AppCompatActivity {
         MengineLog.logMessage(TAG, "onRestoreInstanceState: %s"
             , savedInstanceState
         );
-    }
-
-    public void quitMengineApplication() {
-        AndroidEnvironmentService_quitMengineAndroidActivityJNI();
     }
 
     public void onMengineInitializeBaseServices() {
@@ -778,22 +773,6 @@ public class MengineActivity extends AppCompatActivity {
             return;
         }
 
-        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
-
-        for (MenginePluginActivityListener l : listeners) {
-            if (l.onAvailable(application) == false) {
-                continue;
-            }
-
-            l.onDestroy(this);
-        }
-
-        List<MenginePlugin> plugins = this.getPlugins();
-
-        for (MenginePlugin p : plugins) {
-            p.setActivity(null);
-        }
-
         try {
             m_threadMain.join();
         } catch (InterruptedException e) {
@@ -811,6 +790,22 @@ public class MengineActivity extends AppCompatActivity {
 
         m_semaphores = null;
         m_commandHandler = null;
+
+        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
+
+        for (MenginePluginActivityListener l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
+            l.onDestroy(this);
+        }
+
+        List<MenginePlugin> plugins = this.getPlugins();
+
+        for (MenginePlugin p : plugins) {
+            p.setActivity(null);
+        }
 
         super.onDestroy();
     }
@@ -1108,6 +1103,31 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     /***********************************************************************************************
+     * Account Methods
+     **********************************************************************************************/
+
+    public void deleteAccount() {
+        MengineLog.logMessage(TAG, "deleteAccount");
+
+        MengineUtils.showAreYouSureAlertDialog(this
+            , () -> { //Yes
+                MengineApplication application = (MengineApplication)this.getApplication();
+
+                application.removeSessionData();
+
+                MengineUtils.showOkAlertDialog(this, () -> {
+                    this.finishAndRemoveTask();
+                }, "Account Deleted", "Account data has been deleted. The application will now close.");
+            }
+            , () -> { //Cancel
+                //Empty
+            }
+            , "Delete Account"
+            , "Click 'YES' will delete all account data. All game progress, virtual goods, and currency will be permanently removed and unrecoverable."
+        );
+    }
+
+    /***********************************************************************************************
      * Keyboard Methods
      **********************************************************************************************/
 
@@ -1149,14 +1169,6 @@ public class MengineActivity extends AppCompatActivity {
 
     public void setClipboardText(String text) {
         m_clipboard.setText(text);
-    }
-
-    /***********************************************************************************************
-     * Alert Methods
-     **********************************************************************************************/
-
-    public void showAlertDialog(String title, String format, Object ... args) {
-        MengineUtils.showAlertDialogWithCb(this, () -> {}, title, format, args);
     }
 
     /***********************************************************************************************

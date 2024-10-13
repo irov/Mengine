@@ -20,26 +20,13 @@ import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import java.util.Map;
 
-public class MengineDevToDevPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener {
+public class MengineDevToDevPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginSessionIdListener {
     public static final String PLUGIN_NAME = "MengineDevToDev";
     public static final boolean PLUGIN_EMBEDDING = true;
 
     public static final String PLUGIN_METADATA_APP_ID = "mengine.devtodev.app_id";
 
     private boolean m_initializeSuccessful;
-
-    @Override
-    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (m_initializeSuccessful == false) {
-            return;
-        }
-
-        if (event == MengineEvent.EVENT_SESSION_ID) {
-            String sessionId = (String)args[0];
-
-            DTDAnalytics.INSTANCE.setUserId(sessionId);
-        }
-    }
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
@@ -76,6 +63,15 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
         Context context = application.getApplicationContext();
 
         DTDAnalytics.INSTANCE.initialize(MengineDevToDevPlugin_AppId, configuration, context);
+    }
+
+    @Override
+    void onMengineSessionId(MengineApplication application, String sessionId) {
+        if (m_initializeSuccessful == false) {
+            return;
+        }
+
+        DTDAnalytics.INSTANCE.setUserId(sessionId);
     }
 
     @Override

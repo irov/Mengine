@@ -361,7 +361,9 @@ namespace Mengine
         EGLint minor;
         if( ::eglInitialize( eglDisplay, &major, &minor ) == EGL_FALSE )
         {
-            LOGGER_ERROR( "[egl] invalid initialize" );
+            LOGGER_ERROR( "[egl] invalid initialize [%d]"
+                , ::eglGetError()
+            );
 
             return false;
         }
@@ -491,7 +493,9 @@ namespace Mengine
         {
             if( ::eglSwapBuffers( m_eglDisplay, m_eglSurface ) == EGL_FALSE )
             {
-                LOGGER_WARNING( "[egl] invalid swap buffers" );
+                LOGGER_WARNING( "[egl] invalid swap buffers [%d]"
+                    , ::eglGetError()
+                );
             }
         }
 
@@ -1292,7 +1296,9 @@ namespace Mengine
 
         if( ::eglTerminate( m_eglDisplay ) == EGL_FALSE )
         {
-            LOGGER_WARNING( "[egl] invalid terminate" );
+            LOGGER_WARNING( "[egl] invalid terminate [%d]"
+                , ::eglGetError()
+            );
         }
 
         m_eglDisplay = EGL_NO_DISPLAY;
@@ -2149,7 +2155,9 @@ namespace Mengine
         EGLint numConfigs;
         if( ::eglChooseConfig( m_eglDisplay, configAttribs, &config, 1, &numConfigs ) == EGL_FALSE )
         {
-            LOGGER_ERROR( "[egl] failed to choose config" );
+            LOGGER_ERROR( "[egl] failed to choose config [%d]"
+                , ::eglGetError()
+            );
 
             return;
         }
@@ -2157,7 +2165,9 @@ namespace Mengine
         EGLint format_wanted = 0;
         if( ::eglGetConfigAttrib( m_eglDisplay, config, EGL_NATIVE_VISUAL_ID, &format_wanted ) == EGL_FALSE )
         {
-            LOGGER_ERROR( "[egl] failed to get config attrib" );
+            LOGGER_ERROR( "[egl] failed to get config attrib [%d]"
+                , ::eglGetError()
+            );
         }
 
         int errSetBuffersGemometry = ANativeWindow_setBuffersGeometry( m_nativeWindow, 0, 0, format_wanted );
@@ -2173,7 +2183,9 @@ namespace Mengine
 
         if( eglSurface == EGL_NO_SURFACE )
         {
-            LOGGER_ERROR( "[egl] failed to create window surface" );
+            LOGGER_ERROR( "[egl] failed to create window surface [%d]"
+                , ::eglGetError()
+            );
 
             return;
         }
@@ -2187,7 +2199,9 @@ namespace Mengine
 
         if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
         {
-            LOGGER_WARNING( "[egl] failed to bind ES api" );
+            LOGGER_WARNING( "[egl] failed to bind ES api [%d]"
+                , ::eglGetError()
+            );
         }
 
         const EGLint contextAttribs[] = {
@@ -2201,7 +2215,9 @@ namespace Mengine
 
         if( context == EGL_NO_CONTEXT )
         {
-            LOGGER_ERROR( "[egl] failed to create context" );
+            LOGGER_ERROR( "[egl] failed to create context [%d]"
+                , ::eglGetError()
+            );
 
             return;
         }
@@ -2210,19 +2226,25 @@ namespace Mengine
 
         if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
         {
-            LOGGER_WARNING( "[egl] failed to bind ES api" );
+            LOGGER_WARNING( "[egl] failed to bind ES api [%d]"
+                , ::eglGetError()
+            );
         }
 
         if( ::eglMakeCurrent( m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext ) == EGL_FALSE )
         {
-            LOGGER_ERROR( "[egl] failed to make current" );
+            LOGGER_ERROR( "[egl] failed to make current [%d]"
+                , ::eglGetError()
+            );
 
             return;
         }
 
         if( ::eglSwapInterval( m_eglDisplay, 1 ) == EGL_FALSE )
         {
-            LOGGER_WARNING( "[egl] invalid set swap interval" );
+            LOGGER_WARNING( "[egl] invalid set swap interval [%d]"
+                , ::eglGetError()
+            );
         }
 
         if( RENDER_SERVICE()
@@ -2244,19 +2266,25 @@ namespace Mengine
 
         if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
         {
-            LOGGER_WARNING( "[egl] failed to bind ES api" );
+            LOGGER_WARNING( "[egl] failed to bind ES api [%d]"
+                , ::eglGetError()
+            );
         }
 
         if( ::eglMakeCurrent( m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT ) == EGL_FALSE )
         {
-            LOGGER_WARNING( "[egl] failed to clear currents" );
+            LOGGER_WARNING( "[egl] failed to clear currents [%d]"
+                , ::eglGetError()
+            );
         }
 
         if( m_eglContext != EGL_NO_CONTEXT )
         {
             if( ::eglDestroyContext( m_eglDisplay, m_eglContext ) == EGL_FALSE )
             {
-                LOGGER_WARNING( "[egl] failed to destroy context" );
+                LOGGER_WARNING( "[egl] failed to destroy context [%d]"
+                    , ::eglGetError()
+                );
             }
 
             m_eglContext = EGL_NO_CONTEXT;
@@ -2266,7 +2294,9 @@ namespace Mengine
         {
             if( ::eglDestroySurface( m_eglDisplay, m_eglSurface ) == EGL_FALSE )
             {
-                LOGGER_WARNING( "[egl] failed to destroy surface" );
+                LOGGER_WARNING( "[egl] failed to destroy surface [%d]"
+                    , ::eglGetError()
+                );
             }
 
             m_eglSurface = EGL_NO_SURFACE;

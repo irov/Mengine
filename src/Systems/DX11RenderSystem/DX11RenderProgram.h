@@ -37,6 +37,10 @@ namespace Mengine
         void finalize();
 
     public:
+        void setDeferredCompile( bool _deferredCompile );
+        bool getDeferredCompile() const;
+
+    public:
         bool compile( const ID3D11DevicePtr & _pD3DDevice );
         void release();
 
@@ -56,6 +60,8 @@ namespace Mengine
         DX11RenderVertexAttributePtr m_vertexAttribute;
 
         ID3D11BufferPtr m_bindMatrixBuffer;
+
+        bool m_deferredCompile;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX11RenderProgram, RenderProgramInterface> DX11RenderProgramPtr;

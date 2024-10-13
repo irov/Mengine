@@ -267,7 +267,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _op );
 
-#if !defined(MENGINE_RENDER_OPENGL_ES)
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
             switch( _op )
             {
             case FM_POINT:

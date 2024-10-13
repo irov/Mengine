@@ -69,7 +69,7 @@ namespace Mengine
 
         jobject jcookies = Helper::AndroidMakeJObjectString( jenv, m_cookies );
 
-        jclass jclass_MengineHttpRequestParam = ::Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineHttpRequestParam" );
+        jclass jclass_MengineHttpRequestParam = Mengine::Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineHttpRequestParam" );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
@@ -108,7 +108,7 @@ namespace Mengine
             return true;
         }
 
-        jclass jclass_MengineHttpResponseParam = ::Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineHttpResponseParam" );
+        jclass jclass_MengineHttpResponseParam = Mengine::Mengine_JNI_FindClass( jenv, "org/Mengine/Base/MengineHttpResponseParam" );
 
         Helper::AndroidEnvExceptionCheck( jenv );
 

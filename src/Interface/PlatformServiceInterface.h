@@ -18,6 +18,7 @@
 
 #include "Config/UniqueId.h"
 #include "Config/Timestamp.h"
+#include "Config/Thread.h"
 
 #ifndef MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME
 #define MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME 256

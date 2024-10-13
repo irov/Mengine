@@ -2,14 +2,17 @@
 
 #include "Environment/Android/AndroidIncluder.h"
 
-extern "C" 
+namespace Mengine
 {
-    JNIEnv * Mengine_JNI_GetEnv( void );
-    jboolean Mengine_JNI_ExistMengineApplication( void );
-    jclass Mengine_JNI_GetJClassMengineApplication( void );
-    jobject Mengine_JNI_GetJObjectMengineApplication( void );
-    jboolean Mengine_JNI_ExistMengineActivity( void );
-    jclass Mengine_JNI_GetJClassMengineActivity( void );
-    jobject Mengine_JNI_GetJObjectMengineActivity( void );
-    jclass Mengine_JNI_FindClass( JNIEnv * _jenv, const char * _className );
+    int Mengine_JNI_Initialize( JNIEnv *_env );
+    JNIEnv * Mengine_JNI_GetEnv();
+    int Mengine_JNI_SetupThread();
+
+    jboolean Mengine_JNI_ExistMengineApplication();
+    jclass Mengine_JNI_GetJClassMengineApplication();
+    jobject Mengine_JNI_GetJObjectMengineApplication();
+    jboolean Mengine_JNI_ExistMengineActivity();
+    jclass Mengine_JNI_GetJClassMengineActivity();
+    jobject Mengine_JNI_GetJObjectMengineActivity();
+    jclass Mengine_JNI_FindClass( JNIEnv *_jenv, const char *_className );
 }

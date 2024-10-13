@@ -26,7 +26,7 @@ import io.appmetrica.analytics.AdType;
 import io.appmetrica.analytics.AppMetrica;
 import io.appmetrica.analytics.AppMetricaConfig;
 
-public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginEngineListener {
+public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginEngineListener, MenginePluginSessionIdListener {
     public static final String PLUGIN_NAME = "MengineAppMetrica";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -37,15 +37,6 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     public static final String PLUGIN_METADATA_SESSION_TIMEOUT = "mengine.appmetrica.session_timeout";
     public static final String PLUGIN_METADATA_LOGS = "mengine.appmetrica.logs";
     public static final String PLUGIN_METADATA_HANDLE_FIRST_ACTIVATION_AS_UPDATE = "mengine.appmetrica.handle_first_activation_as_update";
-
-    @Override
-    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (event == MengineEvent.EVENT_SESSION_ID) {
-            String sessionId = (String)args[0];
-
-            AppMetrica.setUserProfileID(sessionId);
-        }
-    }
 
     @Override
     public void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
@@ -86,6 +77,11 @@ public class MengineAppMetricaPlugin extends MenginePlugin implements MenginePlu
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         String sessionId = application.getSessionId();
+        AppMetrica.setUserProfileID(sessionId);
+    }
+
+    @Override
+    void onMengineSessionId(MengineApplication application, String sessionId) {
         AppMetrica.setUserProfileID(sessionId);
     }
 

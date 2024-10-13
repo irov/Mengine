@@ -23,7 +23,7 @@ import org.Mengine.Base.MenginePluginLoggerListener;
 
 import java.util.Map;
 
-public class MengineDataDogPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginActivityListener {
+public class MengineDataDogPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginSessionIdListener {
     public static final String PLUGIN_NAME = "MengineDataDog";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -32,15 +32,6 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
     public static final String PLUGIN_METADATA_SERVICE_NAME = "mengine.datadog.service_name";
 
     private Logger m_loggerDataDog;
-
-    @Override
-    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (event == MengineEvent.EVENT_SESSION_ID) {
-            String sessionId = (String)args[0];
-
-            m_loggerDataDog.addAttribute("session_id", sessionId);
-        }
-    }
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
@@ -147,6 +138,15 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
     @Override
     public void onDestroy(MengineActivity activity) {
         m_loggerDataDog = null;
+    }
+
+    @Override
+    void onMengineSessionId(MengineApplication application, String sessionId) {
+        if (m_loggerDataDog == null) {
+            return;
+        }
+
+        m_loggerDataDog.addAttribute("session_id", sessionId);
     }
 
     @Override

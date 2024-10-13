@@ -1,5 +1,6 @@
 #include "Compilable.h"
 
+#include "Kernel/ThreadGuardScope.h"
 #include "Kernel/Assertion.h"
 
 namespace Mengine
@@ -17,6 +18,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Compilable::compile()
     {
+        MENGINE_THREAD_GUARD_SCOPE( Compilable, this );
+
         if( m_compile == true )
         {
             return true;
@@ -34,6 +37,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Compilable::release()
     {
+        MENGINE_THREAD_GUARD_SCOPE( Compilable, this );
+
         if( m_compile == false )
         {
             return;
@@ -98,4 +103,5 @@ namespace Mengine
     {
         //Empty
     }
+    //////////////////////////////////////////////////////////////////////////
 }

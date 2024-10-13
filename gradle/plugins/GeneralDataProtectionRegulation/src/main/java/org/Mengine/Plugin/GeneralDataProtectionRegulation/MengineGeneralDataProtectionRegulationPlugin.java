@@ -12,7 +12,7 @@ public class MengineGeneralDataProtectionRegulationPlugin extends MenginePlugin 
     public static final String PLUGIN_NAME = "MengineGDPR";
     public static final boolean PLUGIN_EMBEDDING = true;
 
-    private boolean m_passGDPR = false;
+    private boolean m_passGDPR;
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
@@ -26,15 +26,17 @@ public class MengineGeneralDataProtectionRegulationPlugin extends MenginePlugin 
     }
 
     public void setGDPRPass(boolean passGDPR) {
-        SharedPreferences settings = this.getPrivateSharedPreferences();
+        if (m_passGDPR == passGDPR) {
+            return;
+        }
 
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean("gdpr_pass", passGDPR);
-        editor.apply();
+        MengineApplication application = this.getMengineApplication();
+
+        application.setPreferenceBoolean("gdpr_pass", passGDPR);
 
         m_passGDPR = passGDPR;
 
-        this.sendEvent(MengineEvent.EVENT_GDPR_PASS, true);
+        this.sendEvent(MengineEvent.EVENT_GDPR_PASS, m_passGDPR);
     }
 
     public boolean isGDPRPass() {

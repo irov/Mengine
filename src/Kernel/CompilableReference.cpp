@@ -1,6 +1,7 @@
 #include "CompilableReference.h"
 
 #include "Kernel/ThreadGuardScope.h"
+#include "Kernel/Assertion.h"
 
 namespace Mengine
 {
@@ -33,6 +34,8 @@ namespace Mengine
     void CompilableReference::release()
     {
         MENGINE_THREAD_GUARD_SCOPE( CompilableReference, this );
+
+        MENGINE_ASSERTION_FATAL( m_compileReferenceCount.getReferenceCount() != 0, "invalid release compilable zero reference" );
 
         if( m_compileReferenceCount.decref() != 0 )
         {

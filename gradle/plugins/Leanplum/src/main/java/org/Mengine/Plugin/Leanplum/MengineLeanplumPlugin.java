@@ -11,22 +11,13 @@ import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
-public class MengineLeanplumPlugin extends MenginePlugin implements MenginePluginApplicationListener {
+public class MengineLeanplumPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginSessionIdListener {
     public static final String PLUGIN_NAME = "MengineLeanplum";
 
     public static final String PLUGIN_METADATA_APP_ID = "mengine.leanplum.app_id";
     public static final String PLUGIN_METADATA_DEV_KEY = "mengine.leanplum.dev_key";
     public static final String PLUGIN_METADATA_PROD_KEY = "mengine.leanplum.prod_key";
     public static final String PLUGIN_METADATA_ENVIRONMENT = "mengine.leanplum.environment";
-
-    @Override
-    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        if (event == MengineEvent.EVENT_SESSION_ID) {
-            String sessionId = (String)args[0];
-
-            Leanplum.setUserId(sessionId);
-        }
-    }
 
     @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
@@ -73,5 +64,10 @@ public class MengineLeanplumPlugin extends MenginePlugin implements MenginePlugi
         }
 
         Leanplum.start(application);
+    }
+
+    @Override
+    void onMengineSessionId(MengineApplication application, String sessionId) {
+        Leanplum.setUserId(sessionId);
     }
 }

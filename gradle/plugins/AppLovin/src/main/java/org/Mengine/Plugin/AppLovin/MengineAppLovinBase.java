@@ -159,12 +159,17 @@ public class MengineAppLovinBase {
     }
 
     protected void log(String callback) {
+        this.log(callback, null);
+    }
+
+    protected void log(String callback, Map<String, Object> params) {
         StringBuilder sb = new StringBuilder(512);
 
         String label = m_adFormat.getLabel();
 
         sb.append(String.format(Locale.US, "[%s] %s ", label, callback));
 
+        this.writeParams(sb, params);
         this.writeBaseInfo(sb);
 
         sb.setLength(sb.length() - 1); //remove last ' '
@@ -190,41 +195,8 @@ public class MengineAppLovinBase {
         m_plugin.logError(message);
     }
 
-    protected void log(String callback, Map<String, Object> params) {
-        StringBuilder sb = new StringBuilder(512);
-
-        String label = m_adFormat.getLabel();
-
-        sb.append(String.format(Locale.US, "[%s] %s %s ", label, callback, params));
-
-        this.writeBaseInfo(sb);
-
-        sb.setLength(sb.length() - 1); //remove last ' '
-
-        String message = sb.toString();
-
-        m_plugin.logMessage(message);
-    }
-
     protected void logMaxAd(String callback, @NonNull MaxAd ad) {
-        StringBuilder sb = new StringBuilder(2048);
-
-        String label = m_adFormat.getLabel();
-
-        sb.append(String.format(Locale.US, "[%s] %s ", label, callback));
-
-        this.writeBaseInfo(sb);
-        this.writeMaxAdBaseInfo(sb, ad);
-
-        MaxAdWaterfallInfo waterfall = ad.getWaterfall();
-
-        this.writeMaxAdWaterfallInfo(sb, waterfall);
-
-        sb.setLength(sb.length() - 1); //remove last ' '
-
-        String message = sb.toString();
-
-        m_plugin.logMessage(message);
+        this.logMaxAd(callback, ad, null);
     }
 
     protected void logMaxAd(String callback, @NonNull MaxAd ad, Map<String, Object> params) {
@@ -232,8 +204,9 @@ public class MengineAppLovinBase {
 
         String label = m_adFormat.getLabel();
 
-        sb.append(String.format(Locale.US, "[%s] %s %s ", label, callback, params));
+        sb.append(String.format(Locale.US, "[%s] %s ", label, callback));
 
+        this.writeParams(sb, params);
         this.writeBaseInfo(sb);
         this.writeMaxAdBaseInfo(sb, ad);
 
@@ -297,6 +270,14 @@ public class MengineAppLovinBase {
         String message = sb.toString();
 
         m_plugin.logWarning(message);
+    }
+
+    protected void writeParams(StringBuilder sb, Map<String, Object> params) {
+        if (params == null) {
+            return;
+        }
+
+        sb.append(String.format(Locale.US, "%s ", params));
     }
 
     protected void writeBaseInfo(StringBuilder sb) {

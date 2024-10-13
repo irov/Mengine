@@ -6,6 +6,7 @@
 #include "Environment/DirectX9/DX9RenderIncluder.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/ReferenceCounter.h"
 
 namespace Mengine
 {
@@ -37,7 +38,7 @@ namespace Mengine
     protected:
         IDirect3DVertexShader9 * m_pD3DVertexShader;
 
-        uint32_t m_compileReferenceCount;
+        ReferenceCounter m_compileReferenceCount;
 
         ConstString m_name;
 

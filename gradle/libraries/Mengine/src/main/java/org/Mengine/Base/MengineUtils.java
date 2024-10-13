@@ -12,11 +12,15 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -548,10 +552,10 @@ public class MengineUtils {
         toast.show();
     }
 
-    public static void showAlertDialogWithCb(Context context, Runnable cb, String title, String format, Object ... args) {
+    public static void showOkAlertDialog(Context context, Runnable ok, String title, String format, Object ... args) {
         String message = MengineLog.buildTotalMsg(format, args);
 
-        MengineLog.logMessage(TAG, "show alert dialog title: %s message: %s"
+        MengineLog.logMessage(TAG, "show OK alert dialog title: %s message: %s"
             , title
             , message
         );
@@ -564,7 +568,9 @@ public class MengineUtils {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                cb.run();
+                MengineLog.logMessage(TAG, "show OK alert dialog OK clicked");
+
+                ok.run();
                 dialog.dismiss();
             }
         });
@@ -574,11 +580,65 @@ public class MengineUtils {
         alert.show();
     }
 
+    public static void showAreYouSureAlertDialog(Context context, Runnable yes, Runnable cancel, String title, String format, Object ... args) {
+        String messageText = MengineLog.buildTotalMsg(format, args);
+
+        MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog title: %s message: %s"
+            , title
+            , messageText
+        );
+
+        String AreYouSureText = "\n\nAre you sure?";
+
+        SpannableString spannableMessage = new SpannableString(messageText + AreYouSureText);
+
+        spannableMessage.setSpan(new StyleSpan(Typeface.BOLD), messageText.length(), (messageText + AreYouSureText).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setTitle(title);
+        builder.setMessage(spannableMessage);
+        builder.setCancelable(false);
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog YES clicked");
+
+                yes.run();
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog CANCEL clicked");
+
+                cancel.run();
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+
+        alert.show();
+
+        alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+        alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(android.R.color.holo_red_light));
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+            }
+        }, 3000);
+    }
+
     public static void finishActivityWithAlertDialog(Activity activity, String format, Object... args) {
         MengineLog.logErrorException(TAG, format, args);
 
         MengineUtils.performOnMainThreadDelayed(() -> {
-            MengineUtils.showAlertDialogWithCb(activity, () -> {
+            MengineUtils.showOkAlertDialog(activity, () -> {
                 activity.finishAndRemoveTask();
             }, "Mengine", format, args);
         }, 0);

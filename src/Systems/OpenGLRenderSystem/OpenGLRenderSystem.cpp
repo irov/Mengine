@@ -32,7 +32,7 @@ namespace Mengine
         : m_glMaxCombinedTextureImageUnits( 0 )
         , m_renderWindowCreate( false )
         , m_depthMask( false )
-#if !defined(MENGINE_RENDER_OPENGL_ES)
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         , m_clearDepth( 1.0 )
 #endif
         , m_clearStencil( 0 )
@@ -104,6 +104,18 @@ namespace Mengine
             }
         }
 
+        LOGGER_MESSAGE( "[PROGRAM] 0");
+
+        m_renderVertexAttributes.clear();
+        m_renderVertexShaders.clear();
+        m_renderFragmentShaders.clear();
+
+        LOGGER_MESSAGE( "[PROGRAM] 1");
+
+        m_renderPrograms.clear();
+
+        LOGGER_MESSAGE( "[PROGRAM] 2");
+
         m_deferredCompilePrograms.clear();
 
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_renderResourceHandlers );
@@ -143,7 +155,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ERenderPlatform OpenGLRenderSystem::getRenderPlatformType() const
     {
-#if !defined(MENGINE_RENDER_OPENGL_ES)
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         return RP_OPENGL;
 #else
         return RP_OPENGLES;
@@ -225,7 +237,7 @@ namespace Mengine
 
         MENGINE_GLCALL( glClearColor, (r, g, b, a) );
 
-#if !defined(MENGINE_RENDER_OPENGL_ES)
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         MENGINE_GLCALL( glClearDepth, (m_clearDepth) );
 #endif
 
@@ -249,6 +261,8 @@ namespace Mengine
             {
                 return false;
             }
+
+            program->setDeferredCompile( false );
 
             OpenGLRenderProgram * program_ptr = program.get();
             m_renderResourceHandlers.push_back( program_ptr );
@@ -429,6 +443,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertexAttributeInterfacePtr OpenGLRenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentInterfacePtr & _doc )
     {
+        MENGINE_ASSERTION_FATAL( m_renderVertexAttributes.exist( _name ) == false, "vertex attribute '%s' already exist"
+            , _name.c_str()
+        );
+
         OpenGLRenderVertexAttributePtr vertexAttribute = m_factoryRenderVertexAttribute->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, "invalid create vertex attribute '%s'"
@@ -445,6 +463,8 @@ namespace Mengine
             return nullptr;
         }
 
+        m_renderVertexAttributes.emplace( _name, vertexAttribute );
+
         return vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -452,13 +472,17 @@ namespace Mengine
     {
         MENGINE_UNUSED( _compile );
 
-        OpenGLRenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, "invalid create shader '%s'"
+        MENGINE_ASSERTION_FATAL( m_renderFragmentShaders.exist( _name ) == false, "fragment shader '%s' already exist"
             , _name.c_str()
         );
 
-        if( shader->initialize( _name, _memory ) == false )
+        OpenGLRenderFragmentShaderPtr fragmentShader = m_factoryRenderFragmentShader->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, "invalid create shader '%s'"
+            , _name.c_str()
+        );
+
+        if( fragmentShader->initialize( _name, _memory ) == false )
         {
             LOGGER_ERROR( "invalid initialize shader '%s' (doc: %s)"
                 , _name.c_str()
@@ -468,20 +492,26 @@ namespace Mengine
             return nullptr;
         }
 
-        return shader;
+        m_renderFragmentShaders.emplace( _name, fragmentShader );
+
+        return fragmentShader;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertexShaderInterfacePtr OpenGLRenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _compile );
 
-        OpenGLRenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, "invalid create shader '%s'"
+        MENGINE_ASSERTION_FATAL( m_renderVertexShaders.exist( _name ) == false, "vertex shader '%s' already exist"
             , _name.c_str()
         );
 
-        if( shader->initialize( _name, _memory ) == false )
+        OpenGLRenderVertexShaderPtr vertexShader = m_factoryRenderVertexShader->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexShader, "invalid create shader '%s'"
+            , _name.c_str()
+        );
+
+        if( vertexShader->initialize( _name, _memory ) == false )
         {
             LOGGER_ERROR( "invalid initialize shader '%s' (doc: %s)"
                 , _name.c_str()
@@ -491,18 +521,24 @@ namespace Mengine
             return nullptr;
         }
 
-        return shader;
+        m_renderVertexShaders.emplace( _name, vertexShader );
+
+        return vertexShader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramInterfacePtr OpenGLRenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentInterfacePtr & _doc )
+    RenderProgramInterfacePtr OpenGLRenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentInterfacePtr & _doc )
     {
+        MENGINE_ASSERTION_FATAL( m_renderPrograms.exist( _name ) == false, "program '%s' already exist"
+            , _name.c_str()
+        );
+
         OpenGLRenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( program, "invalid create program '%s'"
             , _name.c_str()
         );
 
-        if( program->initialize( _name, _vertex, _fragment, _vertexAttribute, _samplerCount ) == false )
+        if( program->initialize( _name, _vertexShader, _fragmentShader, _vertexAttribute, _samplerCount ) == false )
         {
             LOGGER_ERROR( "invalid initialize program '%s'"
                 , _name.c_str()
@@ -527,8 +563,12 @@ namespace Mengine
         }
         else
         {
+            program->setDeferredCompile( true );
+
             m_deferredCompilePrograms.push_back( program );
         }
+
+        m_renderPrograms.emplace( _name, program );
 
         return program;
     }
@@ -807,7 +847,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _mode );
 
-#if !defined(MENGINE_RENDER_OPENGL_ES)
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
         GLenum mode = Helper::toGLFillMode( _mode );
 
         MENGINE_GLCALL( glPolygonMode, (GL_FRONT_AND_BACK, mode) );
@@ -954,7 +994,7 @@ namespace Mengine
                 MENGINE_GLCALL( glDepthMask, (GL_TRUE) );
             }
 
-#if !defined(MENGINE_RENDER_OPENGL_ES)
+#if defined(MENGINE_RENDER_OPENGL_NORMAL)
             GLclampd depth = static_cast<GLclampd>(_depth);
 
             if( m_clearDepth != depth )
@@ -1165,14 +1205,14 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::onRenderVertexBufferDestroy_( OpenGLRenderVertexBuffer * _buffer )
+    void OpenGLRenderSystem::onRenderVertexBufferDestroy_( OpenGLRenderVertexBuffer * _vertexBuffer )
     {
-        _buffer->finalize();
+        _vertexBuffer->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::onRenderIndexBufferDestroy_( OpenGLRenderIndexBuffer * _buffer )
+    void OpenGLRenderSystem::onRenderIndexBufferDestroy_( OpenGLRenderIndexBuffer * _indexBuffer )
     {
-        _buffer->finalize();
+        _indexBuffer->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderImageDestroy_( OpenGLRenderImage * _image )
@@ -1180,19 +1220,19 @@ namespace Mengine
         _image->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::onRenderImageTargetDestroy_( OpenGLRenderImageTarget * _image )
+    void OpenGLRenderSystem::onRenderImageTargetDestroy_( OpenGLRenderImageTarget * _imageTarget )
     {
-        _image->finalize();
+        _imageTarget->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::onRenderTargetTextureDestroy_( OpenGLRenderTargetTexture * _renderTarget )
+    void OpenGLRenderSystem::onRenderTargetTextureDestroy_( OpenGLRenderTargetTexture * _targetTexture )
     {
-        _renderTarget->finalize();
+        _targetTexture->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderVertexShaderDestroy_( OpenGLRenderVertexShader * _vertexShader )
     {
-        MENGINE_ASSERTION_FATAL( _vertexShader->isCompile() == false, "shader '%s' not release"
+        MENGINE_ASSERTION_FATAL( _vertexShader->isCompile() == false, "vertex shader '%s' not release"
             , _vertexShader->getName().c_str()
         );
 
@@ -1201,7 +1241,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderFragmentShaderDestroy_( OpenGLRenderFragmentShader * _fragmentShader )
     {
-        MENGINE_ASSERTION_FATAL( _fragmentShader->isCompile() == false, "shader '%s' not release"
+        MENGINE_ASSERTION_FATAL( _fragmentShader->isCompile() == false, "fragment shader '%s' not release"
             , _fragmentShader->getName().c_str()
         );
 
@@ -1210,7 +1250,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderProgramDestroy_( OpenGLRenderProgram * _program )
     {
-        if( _program->isCompile() == true )
+        if( _program->getDeferredCompile() == false )
         {
             _program->release();
         }

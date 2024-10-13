@@ -8,6 +8,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX9RenderProgram::DX9RenderProgram()
+        : m_deferredCompile( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -53,28 +54,44 @@ namespace Mengine
         m_vertexAttribute = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX9RenderProgram::setDeferredCompile( bool _deferredCompile )
+    {
+        m_deferredCompile = _deferredCompile;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderProgram::getDeferredCompile() const
+    {
+        return m_deferredCompile;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DX9RenderProgram::compile( IDirect3DDevice9 * _pD3DDevice )
     {
-        LOGGER_INFO( "render", "compile program '%s'"
-            , this->getName().c_str()
-        );
+        if( m_compileReferenceCount.incref() == 0 )
+        {
+            LOGGER_INFO( "render", "compile program '%s'"
+                , this->getName().c_str()
+            );
 
-        m_vertexShader->compile( _pD3DDevice );
-        m_fragmentShader->compile( _pD3DDevice );
-        m_vertexAttribute->compile( _pD3DDevice );
+            m_vertexShader->compile( _pD3DDevice );
+            m_fragmentShader->compile( _pD3DDevice );
+            m_vertexAttribute->compile( _pD3DDevice );
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderProgram::release()
     {
-        LOGGER_INFO( "render", "release program '%s'"
-            , this->getName().c_str()
-        );
+        if( m_compileReferenceCount.decref() == 0 )
+        {
+            LOGGER_INFO( "render", "release program '%s'"
+                , this->getName().c_str()
+            );
 
-        m_vertexShader->release();
-        m_fragmentShader->release();
-        m_vertexAttribute->release();
+            m_vertexShader->release();
+            m_fragmentShader->release();
+            m_vertexAttribute->release();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderProgram::enable( IDirect3DDevice9 * _pD3DDevice )

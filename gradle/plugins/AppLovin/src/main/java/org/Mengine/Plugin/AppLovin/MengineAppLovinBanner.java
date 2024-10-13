@@ -423,8 +423,11 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
         m_plugin.onEventRevenuePaid(ad);
 
-        m_plugin.pythonCall("onAppLovinBannerOnAdRevenuePaid", m_adUnitId,
-                Map.of("revenue", ad.getRevenue())
+        double revenue = ad.getRevenue();
+
+        m_plugin.pythonCall("onAppLovinBannerOnAdRevenuePaid"
+            , m_adUnitId
+            , Map.of("revenue", revenue)
         );
     }
 

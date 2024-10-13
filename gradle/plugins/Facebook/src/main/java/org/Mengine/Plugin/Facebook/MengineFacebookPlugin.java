@@ -57,7 +57,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         try {
             AppEventsLogger.activateApp(application);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             this.logError("[ERROR] AppEventsLogger activateApp caught exception: %s"
                 , e.getMessage()
             );
@@ -574,7 +574,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 String pictureURL = "";
                 try {
                     pictureURL = responseObject.getJSONObject("data").getString("url");
-                } catch (JSONException e) {
+                } catch (final JSONException e) {
                     MengineFacebookPlugin.this.logError("[ERROR] profile user picture link [%s] catch JSONException: %s"
                             , graphPath
                             , e.getMessage()

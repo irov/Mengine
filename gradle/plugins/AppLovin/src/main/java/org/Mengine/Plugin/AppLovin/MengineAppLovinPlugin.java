@@ -261,7 +261,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             MengineAppLovinBanner banner = new MengineAppLovinBanner(this, adUnitId, placement);
 
             m_banners.put(adUnitId, banner);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             this.logError("[ERROR] initBanner adUnitId: %s placement: %s catch exception: %s"
                 , adUnitId
                 , placement
@@ -324,7 +324,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             MengineAppLovinInterstitial interstitial = new MengineAppLovinInterstitial(this, adUnitId);
 
             m_interstitials.put(adUnitId, interstitial);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             this.logError("[ERROR] initInterstitial adUnitId: %s catch exception: %s"
                 , adUnitId
                 , e.getMessage()
@@ -390,7 +390,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             MengineAppLovinRewarded rewarded = new MengineAppLovinRewarded(this, adUnitId);
 
             m_rewardeds.put(adUnitId, rewarded);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             this.logError("[ERROR] initRewarded adUnitId: %s catch exception: %s"
                 , adUnitId
                 , e.getMessage()

@@ -27,6 +27,7 @@ import android.view.WindowManager;
 import android.view.WindowMetrics;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import org.json.JSONArray;
@@ -88,7 +89,7 @@ public class MengineUtils {
             Class<?> clazz = cl.loadClass(name);
 
             return clazz;
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             if (required == true) {
                 MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s ClassNotFoundException: %s"
                     , name
@@ -122,27 +123,27 @@ public class MengineUtils {
             T ob = (T)ctr.newInstance();
 
             return ob;
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s NoSuchMethodException: %s"
                 , name
                 , e.getMessage()
             );
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s IllegalAccessException: %s"
                 , name
                 , e.getMessage()
             );
-        } catch (InstantiationException e) {
+        } catch (final InstantiationException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s InstantiationException: %s"
                 , name
                 , e.getMessage()
             );
-        } catch (InvocationTargetException e) {
+        } catch (final InvocationTargetException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s InvocationTargetException: %s"
                 , name
                 , e.getMessage()
             );
-        } catch (NullPointerException e) {
+        } catch (final NullPointerException e) {
             MengineLog.logError(TAG, "[ERROR] invalid create new instance: %s NullPointerException: %s"
                 , name
                 , e.getMessage()
@@ -153,15 +154,15 @@ public class MengineUtils {
     }
 
     public static Handler performOnMainThread(Runnable runnable) {
-        Looper looper = Looper.getMainLooper();
+        Looper mainLooper = Looper.getMainLooper();
 
-        if (Looper.myLooper() == looper) {
+        if (Looper.myLooper() == mainLooper) {
             runnable.run();
 
             return null;
         }
 
-        Handler handler = new Handler(looper);
+        Handler handler = new Handler(mainLooper);
 
         handler.post(runnable);
 
@@ -169,8 +170,8 @@ public class MengineUtils {
     }
 
     public static Handler performOnMainThreadDelayed(Runnable runnable, long delayMillis) {
-        Looper looper = Looper.getMainLooper();
-        Handler handler = new Handler(looper);
+        Looper mainLooper = Looper.getMainLooper();
+        Handler handler = new Handler(mainLooper);
 
         handler.postDelayed(runnable, delayMillis);
 
@@ -400,7 +401,7 @@ public class MengineUtils {
 
             out.close();
             dest.close();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             MengineLog.logError(TAG, "[ERROR] zipFiles exception: %s"
                 , e.getMessage()
             );
@@ -430,7 +431,7 @@ public class MengineUtils {
 
         try {
             tempFile = File.createTempFile(prefix, suffix, cacheDir);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MengineLog.logError(TAG, "[ERROR] failed create temp file %s***%s in dir: %s exception: %s"
                 , prefix
                 , suffix
@@ -456,7 +457,7 @@ public class MengineUtils {
             Uri uri = FileProvider.getUriForFile(context, packageName + ".fileprovider", file);
 
             return uri;
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             MengineLog.logError(TAG, "[ERROR] failed get uri for file: %s exception: %s"
                 , file.getPath()
                 , e.getMessage()
@@ -514,11 +515,11 @@ public class MengineUtils {
             Document document = builder.parse(stream);
 
             return document;
-        } catch (ParserConfigurationException e) {
+        } catch (final ParserConfigurationException e) {
             MengineLog.logError(TAG, "parseDocument catch ParserConfigurationException: %s", e.getMessage());
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             MengineLog.logError(TAG, "parseDocument catch SAXException: %s", e.getMessage());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             MengineLog.logError(TAG, "parseDocument catch IOException: %s", e.getMessage());
         }
 
@@ -532,7 +533,7 @@ public class MengineUtils {
 
         try {
             context.startActivity(intent);
-        } catch (ActivityNotFoundException e) {
+        } catch (final ActivityNotFoundException e) {
             MengineLog.logWarning(TAG, "openUrl url: %s catch ActivityNotFoundException: %s"
                 , url
                 , e.getMessage()
@@ -622,15 +623,16 @@ public class MengineUtils {
 
         alert.show();
 
-        alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+        int darker_gray = ContextCompat.getColor(context, android.R.color.darker_gray);
+
+        alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(darker_gray);
         alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(android.R.color.holo_red_light));
-                alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-            }
+        MengineUtils.performOnMainThreadDelayed(() -> {
+            int holo_red_light = ContextCompat.getColor(context, android.R.color.holo_red_light);
+
+            alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(holo_red_light);
+            alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
         }, 3000);
     }
 
@@ -647,7 +649,7 @@ public class MengineUtils {
     public static void sleep(long millis) {
         try {
             Thread.sleep(millis);
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             // Ignore
         }
     }
@@ -704,7 +706,7 @@ public class MengineUtils {
             Map<String, Object> map = MengineUtils.jsonObjectToMap(jsonObject);
 
             return map;
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             MengineLog.logError(TAG, "parseJSONMap json: %s JSONException: %s"
                 , json
                 , e.getMessage()
@@ -770,11 +772,11 @@ public class MengineUtils {
             try {
                 System.loadLibrary(libraryName);
             }
-            catch (final UnsatisfiedLinkError ule) {
-                throw ule;
+            catch (final UnsatisfiedLinkError e2) {
+                throw e2;
             }
-            catch (final SecurityException se) {
-                throw se;
+            catch (final SecurityException e2) {
+                throw e2;
             }
         }
     }
@@ -804,7 +806,7 @@ public class MengineUtils {
             } else {
                 packageInfo = manager.getPackageInfo(packageName, 0);
             }
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (final PackageManager.NameNotFoundException e) {
             return null;
         }
 

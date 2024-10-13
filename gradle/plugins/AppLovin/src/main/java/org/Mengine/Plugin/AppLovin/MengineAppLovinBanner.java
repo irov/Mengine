@@ -139,7 +139,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
 
         try {
             m_adView.loadAd();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             m_plugin.logError("[Banner] loadAd adUnitId: %s exception: %s"
                 , m_adUnitId
                 , e.getMessage()

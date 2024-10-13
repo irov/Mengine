@@ -87,7 +87,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         try {
             m_interstitialAd.loadAd();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             this.logError("loadAd", e);
 
             this.buildAdEvent("mng_ad_interstitial_load_exception")

@@ -142,7 +142,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
             params.setExtension(extension);
             params.setChannelOrderID(channelOrderID);
             params.setState(state);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             this.logError("[ERROR] makePayParams jsonData: %s error: %s"
                 , jsonData
                 , e.getMessage()
@@ -278,7 +278,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
             );
 
             this.pythonCall("onMarSDKSaveClipboard", hasPrimaryClip, code);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             this.logError("[ERROR] pasteCode exception: %s"
                 , e.getMessage()
             );
@@ -332,7 +332,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
             data.setPartyName(partyName);
             data.setPartyMasterID(partyMasterID);
             data.setPartyMasterName(partyMasterName);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             this.logError("[ERROR] makeUserExtraData jsonData: %s error: %s"
                 , jsonData
                 , e.getMessage()
@@ -618,7 +618,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
 
                 this.pythonCall("onMarSDKPayFail", productId);
             }
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             this.logError("[ERROR] pay msg: %s JSONException: %s"
                 , msg
                 , e.getMessage()
@@ -644,7 +644,7 @@ public class MengineMARPlugin extends MenginePlugin implements MARInitListener, 
             String message = json.getString("msg");
 
             this.pythonCall("onMarSDKRedeemResult", propNumber, propType, message);
-        } catch(JSONException e) {
+        } catch(final JSONException e) {
             this.logError("[ERROR] onRedeemResult msg: %s JSONException: %s"
                 , msg
                 , e.getMessage()

@@ -140,7 +140,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
             deviceWidth = windowRect.width();
             deviceHeight = windowRect.height();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             MengineLog.logMessage(TAG, "surfaceChanged invalid get device window rect");
         }
 

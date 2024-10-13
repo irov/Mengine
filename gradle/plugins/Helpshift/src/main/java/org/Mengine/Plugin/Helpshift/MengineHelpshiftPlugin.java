@@ -64,11 +64,11 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
             MengineApplication application = this.getMengineApplication();
 
             Helpshift.install(application, MengineHelpshiftPlugin_PlatformId, MengineHelpshiftPlugin_Domain, config);
-        } catch (UnsupportedOSVersionException e) {
+        } catch (final UnsupportedOSVersionException e) {
             this.invalidInitialize("Android OS versions prior to Lollipop (< SDK 21) are not supported.");
 
             return;
-        } catch (HelpshiftInstallException e) {
+        } catch (final HelpshiftInstallException e) {
             this.invalidInitialize("install exception: %s"
                 , e.getMessage()
             );

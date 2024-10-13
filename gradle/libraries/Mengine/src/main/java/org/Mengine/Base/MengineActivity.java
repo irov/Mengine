@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -292,7 +293,7 @@ public class MengineActivity extends AppCompatActivity {
 
         try {
             Thread.currentThread().setName("MengineActivity");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             MengineLog.logMessage(TAG, "modify activity thread name exception: %s"
                 , e.getMessage()
             );
@@ -314,12 +315,14 @@ public class MengineActivity extends AppCompatActivity {
         m_initializePython = false;
         m_destroy = false;
 
-        m_commandHandler = new MengineCommandHandler(Looper.getMainLooper(), this);
+        Looper mainLooper = Looper.getMainLooper();
+        m_commandHandler = new MengineCommandHandler(mainLooper, this);
         m_semaphores = new HashMap<>();
 
         this.setState("activity.init", "setup_orientation");
 
-        int orientation = getResources().getInteger(R.integer.app_screen_orientation);
+        Resources resources = this.getResources();
+        int orientation = resources.getInteger(R.integer.app_screen_orientation);
 
         this.setRequestedOrientation(orientation);
 
@@ -390,7 +393,7 @@ public class MengineActivity extends AppCompatActivity {
 
             try {
                 l.onCreate(this, savedInstanceState);
-            } catch (MenginePluginInvalidInitializeException e) {
+            } catch (final MenginePluginInvalidInitializeException e) {
                 this.setState("activity.init", "plugin_create_exception." + l.getPluginName());
 
                 MengineAnalytics.buildEvent("mng_activity_init_failed")
@@ -645,6 +648,8 @@ public class MengineActivity extends AppCompatActivity {
         }
 
         this.setState("activity.lifecycle", "started");
+
+        MengineActivity.AndroidPlatform_startEvent();
     }
 
     @Override
@@ -668,6 +673,8 @@ public class MengineActivity extends AppCompatActivity {
         }
 
         this.setState("activity.lifecycle", "stoped");
+
+        MengineActivity.AndroidPlatform_stopEvent();
     }
 
     @Override
@@ -695,6 +702,8 @@ public class MengineActivity extends AppCompatActivity {
         }
 
         this.setState("activity.lifecycle", "paused");
+
+        MengineActivity.AndroidPlatform_pauseEvent();
     }
 
     @Override
@@ -722,6 +731,8 @@ public class MengineActivity extends AppCompatActivity {
         }
 
         this.setState("activity.lifecycle", "resumed");
+
+        MengineActivity.AndroidPlatform_resumeEvent();
     }
 
     @Override
@@ -775,7 +786,7 @@ public class MengineActivity extends AppCompatActivity {
 
         try {
             m_threadMain.join();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             MengineLog.logError(TAG, "thread main join exception: %s"
                 , e.getMessage()
             );
@@ -960,9 +971,9 @@ public class MengineActivity extends AppCompatActivity {
                 if( PLUGIN_EMBEDDING.getBoolean(null) == false ) {
                     continue;
                 }
-            } catch (NoSuchFieldException ex) {
+            } catch (final NoSuchFieldException e) {
                 continue;
-            } catch (IllegalAccessException ex) {
+            } catch (final IllegalAccessException e) {
                 continue;
             }
 

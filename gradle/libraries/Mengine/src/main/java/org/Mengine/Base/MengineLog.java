@@ -209,7 +209,7 @@ public class MengineLog {
 
         try {
             msg = formatter.format(format, args).toString();
-        } catch (IllegalFormatException e) {
+        } catch (final IllegalFormatException e) {
             String error = "Catch illegal format: '" + format + "' args: '" + Arrays.toString(args) + "' exception: " + e.getMessage();
 
             return error;

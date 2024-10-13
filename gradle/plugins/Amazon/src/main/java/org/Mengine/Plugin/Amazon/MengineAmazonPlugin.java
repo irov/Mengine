@@ -32,7 +32,7 @@ public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginA
 
         try {
             AdRegistration.getInstance(MengineAmazonPlugin_AppId, application);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             this.invalidInitialize("AdRegistration get instance failed: %s"
                 , MengineAmazonPlugin_AppId
                 , e.getMessage()

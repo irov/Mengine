@@ -163,7 +163,7 @@ public class MengineApplication extends Application {
             Bundle bundle = ai.metaData;
 
             return bundle;
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (final PackageManager.NameNotFoundException e) {
             MengineLog.logError(TAG, "[ERROR] Unable to load meta-data: %s"
                 , e.getMessage()
             );
@@ -484,13 +484,13 @@ public class MengineApplication extends Application {
             Field PLUGIN_NAME = cls.getField("PLUGIN_NAME");
 
             name = (String)PLUGIN_NAME.get(null);
-        } catch (NoSuchFieldException ex) {
+        } catch (final NoSuchFieldException ex) {
             MengineLog.logError(TAG, "[ERROR] plugin not found field PLUGIN_NAME: %s"
                 , cls.getName()
             );
 
             return null;
-        } catch (IllegalAccessException ex) {
+        } catch (final IllegalAccessException ex) {
             MengineLog.logError(TAG, "[ERROR] plugin invalid field PLUGIN_NAME: %s"
                 , cls.getName()
             );
@@ -522,7 +522,7 @@ public class MengineApplication extends Application {
             Field PLUGIN_NAME = cls.getField("PLUGIN_NAME");
 
             name = (String)PLUGIN_NAME.get(plugin);
-        } catch (NoSuchFieldException ex) {
+        } catch (final NoSuchFieldException ex) {
             MengineLog.logError(TAG, "[ERROR] plugin [%s] not found field PLUGIN_NAME"
                 , type
             );
@@ -907,7 +907,7 @@ public class MengineApplication extends Application {
                 );
 
                 l.onAppInit(this, isMainProcess);
-            } catch (MenginePluginInvalidInitializeException e) {
+            } catch (final MenginePluginInvalidInitializeException e) {
                 this.invalidInitialize("[ERROR] onAppInit plugin: %s exception: %s"
                     , l.getPluginName()
                     , e.getMessage()
@@ -1076,13 +1076,13 @@ public class MengineApplication extends Application {
             Context context = this.getApplicationContext();
 
             MengineUtils.loadLibrary(context, "AndroidApplication");
-        } catch(UnsatisfiedLinkError e) {
+        } catch(final UnsatisfiedLinkError e) {
             this.invalidInitialize("[ERROR] loadLibrary AndroidApplication UnsatisfiedLinkError: %s"
                     , e.getMessage()
             );
 
             return;
-        } catch(SecurityException e) {
+        } catch(final SecurityException e) {
             this.invalidInitialize("[ERROR] loadLibrary AndroidApplication SecurityException: %s"
                     , e.getMessage()
             );
@@ -1112,7 +1112,7 @@ public class MengineApplication extends Application {
                 );
 
                 l.onAppPrepare(this);
-            } catch (MenginePluginInvalidInitializeException e) {
+            } catch (final MenginePluginInvalidInitializeException e) {
                 MengineAnalytics.buildEvent("mng_app_init_failed")
                     .addParameterException("exception", e)
                     .logAndFlush();

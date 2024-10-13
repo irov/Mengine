@@ -90,13 +90,13 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
                 this.addNonetBanner(activity, image, url);
             }
-        } catch (XmlPullParserException e) {
+        } catch (final XmlPullParserException e) {
             m_plugin.logError("[NONET_BANNER] XmlPullParserException: %s"
                 , e.getMessage()
             );
 
             return;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             m_plugin.logError("[NONET_BANNER] IOException: %s"
                 , e.getMessage()
             );

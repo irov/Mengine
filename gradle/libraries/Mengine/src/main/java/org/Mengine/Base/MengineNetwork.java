@@ -74,7 +74,7 @@ public class MengineNetwork {
             connection.disconnect();
 
             return response;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
 
             return response;
@@ -106,7 +106,7 @@ public class MengineNetwork {
             connection.disconnect();
 
             return response;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
 
             return response;
@@ -135,7 +135,7 @@ public class MengineNetwork {
             connection.disconnect();
 
             return response;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
 
             return response;
@@ -164,7 +164,7 @@ public class MengineNetwork {
             connection.disconnect();
 
             return response;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
 
             return response;
@@ -194,7 +194,7 @@ public class MengineNetwork {
             connection.disconnect();
 
             return response;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
 
             return response;
@@ -204,7 +204,7 @@ public class MengineNetwork {
     protected static MengineHttpResponseParam catchException(@NonNull MengineHttpRequestParam request, @NonNull Exception exception) {
         try {
             throw exception;
-        } catch (UnknownHostException e) {
+        } catch (final UnknownHostException e) {
             MengineHttpResponseParam response = new MengineHttpResponseParam();
 
             response.HTTP_RESPONSE_CODE = HttpURLConnection.HTTP_NOT_FOUND;
@@ -213,7 +213,7 @@ public class MengineNetwork {
             response.HTTP_ERROR_MESSAGE = e.getMessage();
 
             return response;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             MengineLog.logMessage(TAG, "invalid http request url: %s exception: %s"
                 , request.HTTP_URL
                 , e.getMessage()

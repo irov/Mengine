@@ -24,7 +24,7 @@ public class MengineMain implements Runnable {
     public void run() {
         try {
             Thread.currentThread().setName("MengineMain");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             MengineLog.logMessage(TAG, "modify main thread name exception: %s"
                 , e.getMessage()
             );
@@ -32,7 +32,7 @@ public class MengineMain implements Runnable {
 
         try {
             Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             MengineLog.logMessage(TAG, "modify main thread priority exception: %s"
                 , e.getMessage()
             );
@@ -40,7 +40,7 @@ public class MengineMain implements Runnable {
 
         try {
             m_runLatch.await();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             MengineLog.logMessage(TAG, "wait runLatch exception: %s"
                 , e.getMessage()
             );

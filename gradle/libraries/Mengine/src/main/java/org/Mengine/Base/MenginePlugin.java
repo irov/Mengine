@@ -201,7 +201,7 @@ public class MenginePlugin implements MenginePluginInterface {
             boolean value = m_application.getMetaDataBoolean(name);
 
             return value;
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
             this.invalidInitialize("invalid get meta data [%s]", name);
         }
 
@@ -213,7 +213,7 @@ public class MenginePlugin implements MenginePluginInterface {
             int value = m_application.getMetaDataInteger(name);
 
             return value;
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
             this.invalidInitialize("invalid get meta data [%s]", name);
         }
 
@@ -225,7 +225,7 @@ public class MenginePlugin implements MenginePluginInterface {
             long value = m_application.getMetaDataInteger(name);
 
             return value;
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
             this.invalidInitialize("invalid get meta data [%s]", name);
         }
 
@@ -237,7 +237,7 @@ public class MenginePlugin implements MenginePluginInterface {
             String value = m_application.getMetaDataString(name);
 
             return value;
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
             this.invalidInitialize("invalid get meta data [%s]", name);
         }
 

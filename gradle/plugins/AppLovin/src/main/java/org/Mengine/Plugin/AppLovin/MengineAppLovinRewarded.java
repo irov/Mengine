@@ -88,7 +88,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         try {
             m_rewardedAd.loadAd();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             this.logError("loadAd", e);
 
             this.buildAdEvent("mng_ad_rewarded_load_exception")

@@ -52,7 +52,7 @@ allprojects {
         if (ANDROID_APP_NDK_VERSION != null) {
             ndkVersion = ANDROID_APP_NDK_VERSION
         } else {
-            ndkVersion = "28.0.12433566"
+            ndkVersion = "27.1.12297006"
         }
 
         if (ANDROID_APP_BUILD_TOOLS_VERSION != null) {
@@ -64,7 +64,7 @@ allprojects {
         if (ANDROID_APP_CMAKE_VERSION != null) {
             cmakeVersion = ANDROID_APP_CMAKE_VERSION
         } else {
-            cmakeVersion = "3.30.4"
+            cmakeVersion = "3.30.5"
         }
 
         if (ANDROID_APP_MULTIDEX_ENABLE != null) {

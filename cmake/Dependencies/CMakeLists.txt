@@ -499,11 +499,8 @@ if(MENGINE_DEPENDENCE_SDL)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/include/SDL_error.h ${THIRDPARTY_DIR}/SDL/include/SDL_error.h COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/src/dynapi/SDL_dynapi_procs.h ${THIRDPARTY_DIR}/SDL/src/dynapi/SDL_dynapi_procs.h COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/src/dynapi/SDL_dynapi_overrides.h ${THIRDPARTY_DIR}/SDL/src/dynapi/SDL_dynapi_overrides.h COPYONLY)
-    #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/src/video/android/SDL_androidvideo.c ${THIRDPARTY_DIR}/SDL/src/video/android/SDL_androidvideo.c COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/src/video/android/SDL_androidwindow.c ${THIRDPARTY_DIR}/SDL/src/video/android/SDL_androidwindow.c COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/src/video/uikit/SDL_uikitwindow.m ${THIRDPARTY_DIR}/SDL/src/video/uikit/SDL_uikitwindow.m COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SDL/android/SDLActivity.java ${THIRDPARTY_DIR}/SDL/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java COPYONLY)
-
+    
     set(SDL_CMAKE_DEBUG_POSTFIX "d" CACHE STRING "Name suffix for debug builds" FORCE)
     
     SET(SDL2_DISABLE_INSTALL ON CACHE BOOL "Disable installation of SDL2" FORCE)

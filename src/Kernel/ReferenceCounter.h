@@ -43,7 +43,7 @@ namespace Mengine
     {
         uint32_t counter = this->getReferenceCount();
 
-        return m_counter != 0;
+        return counter != 0;
     }
     //////////////////////////////////////////////////////////////////////////
 }

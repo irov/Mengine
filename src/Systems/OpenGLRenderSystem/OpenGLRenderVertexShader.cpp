@@ -35,15 +35,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexShader::finalize()
     {
-        MENGINE_ASSERTION_FATAL( this->getCompileReferenceCount() == 0, "vertex shader '%s' is used"
-            , m_name.c_str()
-        );
-
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexShader::_compile()
     {
+        LOGGER_INFO( "render", "compile vertex shader '%s'"
+            , m_name.c_str()
+        );
+
         OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
             ->getUnknown();
 
@@ -87,6 +87,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexShader::_release()
     {
+        LOGGER_INFO( "render", "release vertex shader '%s'"
+            , m_name.c_str()
+        );
+
         if( m_shaderId != 0 )
         {
             OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()

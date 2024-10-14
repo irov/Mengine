@@ -213,6 +213,7 @@ namespace Mengine
         IntrusiveListOpenGLRenderResourceHandler m_renderResourceHandlers;
 
         bool m_renderWindowCreate;
+        bool m_renderDeviceLost;
         bool m_depthMask;
 
         Color m_clearColor;

@@ -28,7 +28,6 @@ namespace Mengine
     class OpenGLRenderProgram
         : public RenderProgramInterface
         , public OpenGLRenderResourceHandler
-        , public CompilableReference
         , public Factorable
     {
         DECLARE_FACTORABLE( OpenGLRenderProgram );
@@ -59,8 +58,8 @@ namespace Mengine
         bool getDeferredCompile() const;
 
     public:
-        bool _compile() override;
-        void _release() override;
+        bool compile();
+        void release();
 
     public:
         bool enable() const;

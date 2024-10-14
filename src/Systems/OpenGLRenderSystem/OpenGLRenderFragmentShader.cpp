@@ -33,15 +33,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderFragmentShader::finalize()
     {
-        MENGINE_ASSERTION_FATAL( this->getCompileReferenceCount() == 0, "fragment shader '%s' is used"
-            , m_name.c_str()
-        );
-
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderFragmentShader::_compile()
     {
+        LOGGER_INFO( "render", "compile fragment shader '%s'"
+            , m_name.c_str()
+        );
+
         OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
             ->getUnknown();
 
@@ -85,6 +85,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderFragmentShader::_release()
     {
+        LOGGER_INFO( "render", "release fragment shader '%s'"
+            , m_name.c_str()
+        );
+
         if( m_shaderId != 0 )
         {
             OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()

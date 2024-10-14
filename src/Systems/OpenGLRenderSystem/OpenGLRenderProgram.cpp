@@ -65,10 +65,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgram::finalize()
     {
-        MENGINE_ASSERTION_FATAL( this->getCompileReferenceCount() == 0, "program '%s' is used"
-            , m_name.c_str()
-        );
-
         m_vertexShader = nullptr;
         m_fragmentShader = nullptr;
         m_vertexAttribute = nullptr;
@@ -84,12 +80,16 @@ namespace Mengine
         return m_deferredCompile;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderProgram::_compile()
+    bool OpenGLRenderProgram::compile()
     {
         MENGINE_ASSERTION_FATAL( m_samplerCount <= MENGINE_MAX_TEXTURE_STAGES, "program '%s' don't support sampler count %d max %d"
             , m_name.c_str()
             , m_samplerCount
             , MENGINE_MAX_TEXTURE_STAGES
+        );
+
+        LOGGER_INFO( "render", "compile program '%s'"
+            , m_name.c_str()
         );
 
         GLuint programId;
@@ -106,11 +106,6 @@ namespace Mengine
 
         if( m_vertexShader != nullptr )
         {
-            LOGGER_MESSAGE( "[PROGRAM] compile program '%s' vertex shader '%s'"
-                , m_name.c_str()
-                , m_vertexShader->getName().c_str()
-            );
-
             if( m_vertexShader->compile() == false )
             {
                 LOGGER_ERROR( "invalid compile program '%s' vertex shader '%s'"
@@ -126,11 +121,6 @@ namespace Mengine
 
         if( m_fragmentShader != nullptr )
         {
-            LOGGER_MESSAGE( "[PROGRAM] compile program '%s' fragment shader '%s'"
-                , m_name.c_str()
-                , m_fragmentShader->getName().c_str()
-            );
-
             if( m_fragmentShader->compile() == false )
             {
                 LOGGER_ERROR( "invalid compile program '%s' fragment shader '%s'"
@@ -204,8 +194,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgram::_release()
+    void OpenGLRenderProgram::release()
     {
+        LOGGER_INFO( "render", "release program '%s'"
+            , m_name.c_str()
+        );
+
         Algorithm::fill_n( m_matrixLocation, EPML_MAX_COUNT, -1 );
         Algorithm::fill_n( m_samplerLocation, MENGINE_MAX_TEXTURE_STAGES, -1 );
 
@@ -217,21 +211,11 @@ namespace Mengine
 
         if( m_vertexShader != nullptr )
         {
-            LOGGER_MESSAGE( "[PROGRAM] release program '%s' vertex shader '%s'"
-                , m_name.c_str()
-                , m_vertexShader->getName().c_str()
-            );
-
             m_vertexShader->release();
         }
 
         if( m_fragmentShader != nullptr )
         {
-            LOGGER_MESSAGE( "[PROGRAM] release program '%s' fragment shader '%s'"
-                , m_name.c_str()
-                , m_fragmentShader->getName().c_str()
-            );
-
             m_fragmentShader->release();
         }
     }
@@ -305,12 +289,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgram::onRenderReset()
     {
-        this->_release();
+        if( m_deferredCompile == true )
+        {
+            return;
+        }
+
+        this->release();
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderProgram::onRenderRestore()
     {
-        bool successful = this->_compile();
+        if( m_deferredCompile == true )
+        {
+            return true;
+        }
+
+        bool successful = this->compile();
 
         return successful;
     }

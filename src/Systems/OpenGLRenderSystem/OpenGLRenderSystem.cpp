@@ -32,6 +32,7 @@ namespace Mengine
         : m_glMaxCombinedTextureImageUnits( 0 )
         , m_renderWindowCreate( false )
         , m_depthMask( false )
+        , m_renderDeviceLost( false )
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
         , m_clearDepth( 1.0 )
 #endif
@@ -104,17 +105,11 @@ namespace Mengine
             }
         }
 
-        LOGGER_MESSAGE( "[PROGRAM] 0");
-
         m_renderVertexAttributes.clear();
         m_renderVertexShaders.clear();
         m_renderFragmentShaders.clear();
 
-        LOGGER_MESSAGE( "[PROGRAM] 1");
-
         m_renderPrograms.clear();
-
-        LOGGER_MESSAGE( "[PROGRAM] 2");
 
         m_deferredCompilePrograms.clear();
 
@@ -582,9 +577,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _program );
 
-        //OpenGLRenderProgramPtr ogl_program = stdex::intrusive_static_cast<OpenGLRenderProgramPtr>(_program);
-
-        //ogl_program->bindMatrix( m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_totalWVPMatrix );
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     RenderProgramVariableInterfacePtr OpenGLRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
@@ -1059,6 +1052,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onDeviceLostPrepare()
     {
+        MENGINE_ASSERTION_FATAL( m_renderDeviceLost == false, "already device lost" );
+
+        m_renderDeviceLost = true;
+
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
         if( m_vertexArrayId != 0 )
         {
@@ -1075,6 +1072,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::onDeviceLostRestore()
     {
+        if( m_renderDeviceLost == false )
+        {
+            return true;
+        }
+
+        m_renderDeviceLost = false;
+
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
         GLuint vertexArrayId = 0;
         MENGINE_GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
@@ -1250,14 +1254,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderProgramDestroy_( OpenGLRenderProgram * _program )
     {
-        if( _program->getDeferredCompile() == false )
+        if( m_renderDeviceLost == false )
         {
-            _program->release();
+            if( _program->getDeferredCompile() == false )
+            {
+                _program->release();
+            }
         }
-
-        MENGINE_ASSERTION_FATAL( _program->isCompile() == false, "program '%s' not release"
-            , _program->getName().c_str()
-        );
 
         _program->finalize();
     }

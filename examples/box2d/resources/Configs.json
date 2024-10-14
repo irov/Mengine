@@ -9,6 +9,10 @@
         "Default": "en"
     },
     
+    "Platform": {
+        "Cursor": true
+    },
+    
     "Game": {
         "Localized": true,
         "ContentResolution": [1024, 768],

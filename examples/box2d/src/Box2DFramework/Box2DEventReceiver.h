@@ -7,6 +7,8 @@
 
 #include "Interface/TimepipeServiceInterface.h"
 
+#include "Hero.h"
+
 #include "Kernel/Scene.h"
 
 #include "GOAP/GOAP.h"
@@ -16,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Box2DEventReceiver
         : public DummySceneEventReceiver
-        , public Factorable
+        , public Factorable        
     {
     public:
         Box2DEventReceiver();
@@ -30,13 +32,18 @@ namespace Mengine
         void onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior ) override;
 
     protected:
+        void clickExplosion( const InputMouseButtonEvent & _event );
+
+    protected:
         Scene * m_scene;
 
         NodePtr m_boxNode;
 
-        GOAP::ChainInterfacePtr m_chain;
+        //GOAP::ChainInterfacePtr m_chain;
 
         Box2DWorldInterfacePtr m_world;
+
+        HeroPtr m_hero;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Box2DEventReceiver> Box2DEventReceiverPtr;

@@ -8,10 +8,27 @@ Box2DFramework
     Box2DFrameworkPlugin.h
     Box2DEventReceiver.cpp
     Box2DEventReceiver.h
+    
+    Unit.h
+    Unit.cpp
+    
+    Hero.h
+    Hero.cpp
+    HeroMoveController.h
+    HeroMoveController.cpp
+    HeroWeaponController.h
+    HeroWeaponController.cpp
+    HeroBullet.h
+    HeroBullet.cpp
+    
+    Enemy.h
+    Enemy.cpp
 )
 
 INCLUDE_DIRECTORIES(${MENGINE_CMAKE_DEPENDENCIES_DIR}/GOAP/Config)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)
+
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jpp/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_EXAMPLEFRAMEWORK Frameworks)
 

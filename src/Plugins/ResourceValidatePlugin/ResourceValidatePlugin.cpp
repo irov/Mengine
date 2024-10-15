@@ -13,6 +13,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ResourceValidateService );

@@ -5,6 +5,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
+#include "Kernel/PluginHelper.h"
 
 #include "PhysicalPlaceholder.h"
 

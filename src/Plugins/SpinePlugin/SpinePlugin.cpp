@@ -29,6 +29,7 @@
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
 
 #include "spine/extension.h"
 

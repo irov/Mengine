@@ -9,6 +9,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/PluginHelper.h"
 
 #include "CachalotLogger.h"
 

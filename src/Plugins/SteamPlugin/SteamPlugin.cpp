@@ -7,6 +7,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/PluginHelper.h"
 
 #include "Config/StdIO.h"
 

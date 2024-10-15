@@ -110,6 +110,37 @@ namespace Mengine
         return glyph;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool FontService::removeGlyph( const ConstString & _glyphName )
+    {
+        FontGlyphInterfacePtr glyph = m_fontGlyphs.erase( _glyphName );
+
+        if( glyph == nullptr )
+        {
+            return false;
+        }
+
+        glyph->finalize();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontService::hasGlyph( const ConstString & _glyphName, FontGlyphInterfacePtr * const _glyph ) const
+    {
+        const FontGlyphInterfacePtr & glyph = m_fontGlyphs.find( _glyphName );
+
+        if( glyph == nullptr )
+        {
+            return false;
+        }
+
+        if( _glyph != nullptr )
+        {
+            *_glyph = glyph;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const FontGlyphInterfacePtr & FontService::getGlyph( const ConstString & _glyphName ) const
     {
         const FontGlyphInterfacePtr & glyph = m_fontGlyphs.find( _glyphName );
@@ -269,13 +300,13 @@ namespace Mengine
 #endif
 
         VectorConstString glyphs;
-        config->getValues( "GAME_FONTS", "Glyph", &glyphs );
+        config->getValues( "GAME_GLYPHS", "Glyph", &glyphs );
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         if( developmentMode == true )
         {
             VectorConstString glyphsDev;
-            config->getValues( "GAME_FONTS", "GlyphDev", &glyphsDev );
+            config->getValues( "GAME_GLYPHS", "GlyphDev", &glyphsDev );
 
             glyphs.insert( glyphs.end(), glyphsDev.begin(), glyphsDev.end() );
         }

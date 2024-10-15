@@ -5,6 +5,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/PluginHelper.h"
 
 #include "Win32ConsoleLogger.h"
 

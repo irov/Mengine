@@ -21,6 +21,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 void * _ft_malloc( size_t _size )

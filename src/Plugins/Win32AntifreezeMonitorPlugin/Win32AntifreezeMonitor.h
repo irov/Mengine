@@ -31,6 +31,11 @@ namespace Mengine
         bool initialize();
         void finalize();
 
+    public:
+        bool run();
+        void stop();
+
+    public:
         void ping();
 
     protected:
@@ -57,7 +62,8 @@ namespace Mengine
         AtomicUInt32 m_refAbort;
         AtomicUInt32 m_oldRefAlive;
 
-        AtomicUInt32 m_countLogger;
+        AtomicUInt32 m_countLoggerBegin;
+        AtomicUInt32 m_countLoggerEnd;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32AntifreezeMonitor, ThreadWorkerInterface> Win32AntifreezeMonitorPtr;

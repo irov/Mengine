@@ -5,6 +5,7 @@
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( DebugPanel, Mengine::DebugPanelPlugin );

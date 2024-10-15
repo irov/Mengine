@@ -213,18 +213,6 @@ namespace Mengine
         FactoryInterfacePtr m_factoryRenderTargetTexture;
         FactoryInterfacePtr m_factoryRenderTargetOffscreen;
 
-        typedef Hashtable<ConstString, DX9RenderVertexAttributePtr> HashtableRenderVertexAttributes;
-        HashtableRenderVertexAttributes m_renderVertexAttributes;
-
-        typedef Hashtable<ConstString, DX9RenderVertexShaderPtr> HashtableRenderVertexShaders;
-        HashtableRenderVertexShaders m_renderVertexShaders;
-
-        typedef Hashtable<ConstString, DX9RenderFragmentShaderPtr> HashtableRenderFragmentShaders;
-        HashtableRenderFragmentShaders m_renderFragmentShaders;
-
-        typedef Hashtable<ConstString, DX9RenderProgramPtr> HashtableRenderPrograms;
-        HashtableRenderPrograms m_renderPrograms;
-
         typedef Vector<DX9RenderProgramPtr> VectorRenderPrograms;
         VectorRenderPrograms m_deferredCompilePrograms;
 

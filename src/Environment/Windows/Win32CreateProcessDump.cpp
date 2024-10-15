@@ -1,15 +1,6 @@
 #include "Win32CreateProcessDump.h"
 
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(push, 0) 
-#endif
-
-#include "Environment/Windows/DbgHelp.h"
-
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(pop) 
-#endif
-
+#include "Environment/Windows/DbgHelpIncluder.h"
 #include "Environment/Windows/Win32Helper.h"
 
 #include "Kernel/UnicodeHelper.h"

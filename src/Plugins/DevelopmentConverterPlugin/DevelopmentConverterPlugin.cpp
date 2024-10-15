@@ -18,6 +18,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ConverterFactory.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( DevelopmentConverter, Mengine::DevelopmentConverterPlugin );

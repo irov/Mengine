@@ -3,6 +3,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ImGUIService );

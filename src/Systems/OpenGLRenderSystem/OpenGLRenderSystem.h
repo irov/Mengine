@@ -178,18 +178,6 @@ namespace Mengine
         OpenGLRenderIndexBufferPtr m_currentIndexBuffer;
         OpenGLRenderVertexBufferPtr m_currentVertexBuffer;
 
-        typedef Hashtable<ConstString, OpenGLRenderVertexAttributePtr> HashtableRenderVertexAttributes;
-        HashtableRenderVertexAttributes m_renderVertexAttributes;
-
-        typedef Hashtable<ConstString, OpenGLRenderVertexShaderPtr> HashtableRenderVertexShaders;
-        HashtableRenderVertexShaders m_renderVertexShaders;
-
-        typedef Hashtable<ConstString, OpenGLRenderFragmentShaderPtr> HashtableRenderFragmentShaders;
-        HashtableRenderFragmentShaders m_renderFragmentShaders;
-
-        typedef Hashtable<ConstString, OpenGLRenderProgramPtr> HashtableRenderPrograms;
-        HashtableRenderPrograms m_renderPrograms;
-
         typedef Vector<OpenGLRenderProgramPtr> VectorDeferredRenderPrograms;
         VectorDeferredRenderPrograms m_deferredCompilePrograms;
 

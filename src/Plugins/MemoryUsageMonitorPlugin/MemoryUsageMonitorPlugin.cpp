@@ -5,6 +5,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( MemoryUsageMonitor, Mengine::MemoryUsageMonitorPlugin )

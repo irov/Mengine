@@ -33,6 +33,8 @@ namespace Mengine
         , m_refLogger( 0 )
         , m_refAbort( 0 )
         , m_oldRefAlive( 0 )
+        , m_countLoggerBegin( 0 )
+        , m_countLoggerEnd( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -42,6 +44,26 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32AntifreezeMonitor::initialize()
+    {
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE, &Win32AntifreezeMonitor::notifyChangeLocalePrepare, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_POST, &Win32AntifreezeMonitor::notifyChangeLocalePost, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_LOGGER_BEGIN, &Win32AntifreezeMonitor::notifyLoggerBegin, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_LOGGER_END, &Win32AntifreezeMonitor::notifyLoggerEnd, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ABORT, &Win32AntifreezeMonitor::notifyAbort, MENGINE_DOCUMENT_FACTORABLE );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32AntifreezeMonitor::finalize()
+    {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_POST );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_LOGGER_BEGIN );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_LOGGER_END );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ABORT );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32AntifreezeMonitor::run()
     {
         uint32_t Win32AntifreezeMonitorPlugin_Seconds = CONFIG_VALUE( "Win32AntifreezeMonitorPlugin", "Seconds", 10U );
 
@@ -72,23 +94,11 @@ namespace Mengine
 
         m_workerId = workerId;
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE, &Win32AntifreezeMonitor::notifyChangeLocalePrepare, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_POST, &Win32AntifreezeMonitor::notifyChangeLocalePost, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_LOGGER_BEGIN, &Win32AntifreezeMonitor::notifyLoggerBegin, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_LOGGER_END, &Win32AntifreezeMonitor::notifyLoggerEnd, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ABORT, &Win32AntifreezeMonitor::notifyAbort, MENGINE_DOCUMENT_FACTORABLE );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::finalize()
+    void Win32AntifreezeMonitor::stop()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_POST );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_LOGGER_BEGIN );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_LOGGER_END );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ABORT );
-
         if( m_workerId != 0 )
         {
             m_threadJob->removeWorker( m_workerId );
@@ -245,7 +255,7 @@ namespace Mengine
         MENGINE_UNUSED( _loggerMessage );
 
         ++m_refLogger;
-        ++m_countLogger;
+        ++m_countLoggerBegin;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::notifyLoggerEnd( const LoggerMessage & _loggerMessage )
@@ -259,7 +269,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( refLogger != 0, "invalid logger %u", refLogger );
 
         --m_refLogger;
-        ++m_countLogger;
+        ++m_countLoggerEnd;
 
         ++m_refAlive;
     }

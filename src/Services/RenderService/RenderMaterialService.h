@@ -34,16 +34,16 @@ namespace Mengine
 
     protected:
         RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t elementSize, const DocumentInterfacePtr & _doc ) override;
-        RenderVertexAttributeInterfacePtr removeVertexAttribute( const ConstString & _name ) override;
+        void removeVertexAttribute( const ConstString & _name ) override;
 
         RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const ContentInterfacePtr & _content, bool _compile, const DocumentInterfacePtr & _doc ) override;
-        RenderVertexShaderInterfacePtr removeVertexShader( const ConstString & _name ) override;
+        void removeVertexShader( const ConstString & _name ) override;
 
         RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const ContentInterfacePtr & _content, bool _compile, const DocumentInterfacePtr & _doc ) override;
-        RenderFragmentShaderInterfacePtr removeFragmentShader( const ConstString & _name ) override;
+        void removeFragmentShader( const ConstString & _name ) override;
 
         RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentInterfacePtr & _doc ) override;
-        RenderProgramInterfacePtr removeProgram( const ConstString & _name ) override;
+        void removeProgram( const ConstString & _name ) override;
 
     protected:
         const RenderVertexShaderInterfacePtr & getVertexShader( const ConstString & _name ) const override;

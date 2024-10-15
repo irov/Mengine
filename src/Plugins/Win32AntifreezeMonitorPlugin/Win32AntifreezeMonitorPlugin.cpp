@@ -5,6 +5,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Win32AntifreezeMonitorPlugin, Mengine::Win32AntifreezeMonitorPlugin )
@@ -46,6 +47,8 @@ namespace Mengine
     {
         m_antifreezeMonitor = Helper::makeFactorableUnique<Win32AntifreezeMonitor>( MENGINE_DOCUMENT_FACTORABLE );
 
+        m_antifreezeMonitor->initialize();
+
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_RUN, &Win32AntifreezeMonitorPlugin::notifyPlatformRun_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_UPDATE, &Win32AntifreezeMonitorPlugin::notifyPlatformUpdate_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_STOP, &Win32AntifreezeMonitorPlugin::notifyPlatformStop_, MENGINE_DOCUMENT_FACTORABLE );
@@ -59,12 +62,14 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_UPDATE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_STOP );
 
+        m_antifreezeMonitor->finalize();
+
         m_antifreezeMonitor = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitorPlugin::notifyPlatformRun_()
     {
-        m_antifreezeMonitor->initialize();
+        m_antifreezeMonitor->run();
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitorPlugin::notifyPlatformUpdate_()
@@ -74,7 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitorPlugin::notifyPlatformStop_()
     {
-        m_antifreezeMonitor->finalize();
+        m_antifreezeMonitor->stop();
     }
     //////////////////////////////////////////////////////////////////////////
 }

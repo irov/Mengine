@@ -105,12 +105,6 @@ namespace Mengine
             }
         }
 
-        m_renderVertexAttributes.clear();
-        m_renderVertexShaders.clear();
-        m_renderFragmentShaders.clear();
-
-        m_renderPrograms.clear();
-
         m_deferredCompilePrograms.clear();
 
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_renderResourceHandlers );
@@ -438,10 +432,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertexAttributeInterfacePtr OpenGLRenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( m_renderVertexAttributes.exist( _name ) == false, "vertex attribute '%s' already exist"
-            , _name.c_str()
-        );
-
         OpenGLRenderVertexAttributePtr vertexAttribute = m_factoryRenderVertexAttribute->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, "invalid create vertex attribute '%s'"
@@ -458,18 +448,12 @@ namespace Mengine
             return nullptr;
         }
 
-        m_renderVertexAttributes.emplace( _name, vertexAttribute );
-
         return vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderFragmentShaderInterfacePtr OpenGLRenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _compile );
-
-        MENGINE_ASSERTION_FATAL( m_renderFragmentShaders.exist( _name ) == false, "fragment shader '%s' already exist"
-            , _name.c_str()
-        );
 
         OpenGLRenderFragmentShaderPtr fragmentShader = m_factoryRenderFragmentShader->createObject( _doc );
 
@@ -487,18 +471,12 @@ namespace Mengine
             return nullptr;
         }
 
-        m_renderFragmentShaders.emplace( _name, fragmentShader );
-
         return fragmentShader;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertexShaderInterfacePtr OpenGLRenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _compile );
-
-        MENGINE_ASSERTION_FATAL( m_renderVertexShaders.exist( _name ) == false, "vertex shader '%s' already exist"
-            , _name.c_str()
-        );
 
         OpenGLRenderVertexShaderPtr vertexShader = m_factoryRenderVertexShader->createObject( _doc );
 
@@ -516,17 +494,11 @@ namespace Mengine
             return nullptr;
         }
 
-        m_renderVertexShaders.emplace( _name, vertexShader );
-
         return vertexShader;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderProgramInterfacePtr OpenGLRenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( m_renderPrograms.exist( _name ) == false, "program '%s' already exist"
-            , _name.c_str()
-        );
-
         OpenGLRenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( program, "invalid create program '%s'"
@@ -562,8 +534,6 @@ namespace Mengine
 
             m_deferredCompilePrograms.push_back( program );
         }
-
-        m_renderPrograms.emplace( _name, program );
 
         return program;
     }

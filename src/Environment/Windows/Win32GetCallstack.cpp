@@ -1,16 +1,6 @@
 #include "Win32GetCallstack.h"
 
-#if !defined(MENGINE_PLATFORM_UWP)
-#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#       pragma warning(push, 0)
-#   endif
-
-#   include "Environment/Windows/DbgHelp.h"
-
-#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#       pragma warning(pop)
-#   endif
-#endif
+#include "Environment/Windows/DbgHelpIncluder.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"

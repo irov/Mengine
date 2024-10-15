@@ -20,6 +20,7 @@
 #include "Kernel/ObjectPrototypeGenerator.h"
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/PluginHelper.h"
 
 #include "Config/StdString.h"
 

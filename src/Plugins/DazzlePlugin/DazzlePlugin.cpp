@@ -22,6 +22,7 @@
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/ConverterFactory.h"
+#include "Kernel/PluginHelper.h"
 
 #include "Config/StdMath.h"
 

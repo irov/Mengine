@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/PluginHelper.h"
 
 #include "GOAP/Allocator.h"
 

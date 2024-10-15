@@ -5,8 +5,6 @@
 #include "Interface/DynamicLibraryInterface.h"
 #include "Interface/DocumentInterface.h"
 
-#include "Config/Export.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

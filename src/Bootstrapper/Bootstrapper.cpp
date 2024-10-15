@@ -42,6 +42,7 @@
 #include "Kernel/EntityEventable.h"
 #include "Kernel/MT19937Randomizer.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_BOOTSTRAPPER_LOAD_CONFIG

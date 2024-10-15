@@ -10,6 +10,7 @@
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 void * _ogg_malloc( size_t _size )

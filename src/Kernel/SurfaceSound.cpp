@@ -385,7 +385,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _enumerator );
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_setTime( float _time )

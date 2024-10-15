@@ -1,6 +1,7 @@
 #include "ResourceDebuggerPlugin.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( ResourceDebugger, Mengine::ResourceDebuggerPlugin );

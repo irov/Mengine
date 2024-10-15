@@ -8,6 +8,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( WAV, Mengine::WAVPlugin );

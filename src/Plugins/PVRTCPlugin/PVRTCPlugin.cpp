@@ -9,6 +9,7 @@
 #include "Kernel/EncoderFactory.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( PVRTC, Mengine::PVRTCPlugin );

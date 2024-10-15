@@ -717,15 +717,13 @@ namespace Mengine
         return vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexAttributeInterfacePtr RenderMaterialService::removeVertexAttribute( const ConstString & _name )
+    void RenderMaterialService::removeVertexAttribute( const ConstString & _name )
     {
         MENGINE_ASSERTION_FATAL( m_vertexAttributes.exist( _name ) == true, "absent vertex attribute '%s'"
             , _name.c_str()
         );
 
-        RenderVertexAttributeInterfacePtr vertexAttribute = m_vertexAttributes.erase( _name );
-
-        return vertexAttribute;
+        m_vertexAttributes.erase( _name );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertexShaderInterfacePtr RenderMaterialService::createVertexShader( const ConstString & _name, const ContentInterfacePtr & _content, bool _compile, const DocumentInterfacePtr & _doc )
@@ -766,15 +764,13 @@ namespace Mengine
         return vertexShader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr RenderMaterialService::removeVertexShader( const ConstString & _name )
+    void RenderMaterialService::removeVertexShader( const ConstString & _name )
     {
         MENGINE_ASSERTION_FATAL( m_vertexShaders.exist( _name ) == true, "absent vertex shader '%s'"
             , _name.c_str()
         );
-
-        RenderVertexShaderInterfacePtr vertexShader = m_vertexShaders.erase( _name );
-
-        return vertexShader;
+        
+        m_vertexShaders.erase( _name );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderFragmentShaderInterfacePtr RenderMaterialService::createFragmentShader( const ConstString & _name, const ContentInterfacePtr & _content, bool _compile, const DocumentInterfacePtr & _doc )
@@ -815,15 +811,13 @@ namespace Mengine
         return fragmentShader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr RenderMaterialService::removeFragmentShader( const ConstString & _name )
+    void RenderMaterialService::removeFragmentShader( const ConstString & _name )
     {
         MENGINE_ASSERTION_FATAL( m_fragmentShaders.exist( _name ) == true, "absent fragment shader '%s'"
             , _name.c_str()
         );
-
-        RenderFragmentShaderInterfacePtr fragmentShader = m_fragmentShaders.erase( _name );
-
-        return fragmentShader;
+        
+        m_fragmentShaders.erase( _name );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderProgramInterfacePtr RenderMaterialService::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentInterfacePtr & _doc )
@@ -843,15 +837,13 @@ namespace Mengine
         return program;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramInterfacePtr RenderMaterialService::removeProgram( const ConstString & _name )
+    void RenderMaterialService::removeProgram( const ConstString & _name )
     {
         MENGINE_ASSERTION_FATAL( m_programs.exist( _name ) == true, "absent program '%s'"
             , _name.c_str()
         );
-
-        RenderProgramInterfacePtr program = m_programs.erase( _name );
-
-        return program;
+        
+        m_programs.erase( _name );
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderVertexShaderInterfacePtr & RenderMaterialService::getVertexShader( const ConstString & _name ) const

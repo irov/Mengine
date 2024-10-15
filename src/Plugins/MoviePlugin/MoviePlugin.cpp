@@ -38,6 +38,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
 
 #include "Config/StdIO.h"
 

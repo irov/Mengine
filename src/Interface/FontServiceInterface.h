@@ -13,6 +13,10 @@ namespace Mengine
 
     public:
         virtual FontGlyphInterfacePtr createGlyph( const ConstString & _glyphName, const ConstString & _glyphType, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool removeGlyph( const ConstString & _glyphName ) = 0;
+
+    public:
+        virtual bool hasGlyph( const ConstString & _glyphName, FontGlyphInterfacePtr * const _glyph ) const = 0;
         virtual const FontGlyphInterfacePtr & getGlyph( const ConstString & _glyphName ) const = 0;
 
     public:

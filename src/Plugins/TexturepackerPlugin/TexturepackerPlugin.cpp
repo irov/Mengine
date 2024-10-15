@@ -17,6 +17,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Texturepacker, Mengine::TexturepackerPlugin );

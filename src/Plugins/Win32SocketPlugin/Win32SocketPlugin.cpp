@@ -3,6 +3,7 @@
 #include "Interface/SocketSystemInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( SocketSystem );

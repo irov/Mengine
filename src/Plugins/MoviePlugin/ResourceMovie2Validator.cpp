@@ -213,13 +213,14 @@ namespace Mengine
                         break;
                     }
 
-                    LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' image layer '%s' scale [%f - %f - %f]"
+                    LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' image layer '%s' scale [%f - %f - %f] limit %f"
                         , desc->resource->getName().c_str()
                         , compositionDataName
                         , layerDataName
                         , immutable_scale_x
                         , immutable_scale_y
                         , immutable_scale_z
+                        , Limit_Movie2ImageImmutableScale
                     );
 
                     desc->successful = false;
@@ -241,13 +242,14 @@ namespace Mengine
                         break;
                     }
 
-                    LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' video layer '%s' scale [%f - %f - %f]"
+                    LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' video layer '%s' scale [%f - %f - %f] limit %f"
                         , desc->resource->getName().c_str()
                         , compositionDataName
                         , layerDataName
                         , immutable_scale_x
                         , immutable_scale_y
                         , immutable_scale_z
+                        , Limit_Movie2VideoImmutableScale
                     );
 
                     desc->successful = false;

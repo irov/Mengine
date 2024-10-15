@@ -32,6 +32,7 @@
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ConverterFactory.h"
+#include "Kernel/PluginHelper.h"
 
 #include "Config/StdString.h"
 

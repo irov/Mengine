@@ -9,6 +9,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FrameworkFactory.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( UIFramework, Mengine::UIFrameworkPlugin )

@@ -15,7 +15,7 @@ SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
-MENGINE_EXPORT_API Mengine::ServiceProviderInterface * API_MengineCreate()
+extern "C" Mengine::ServiceProviderInterface * API_MengineCreate()
 {
     if( SERVICE_PROVIDER_EXIST() == true )
     {
@@ -48,7 +48,7 @@ MENGINE_EXPORT_API Mengine::ServiceProviderInterface * API_MengineCreate()
     return serviceProvider;
 }
 //////////////////////////////////////////////////////////////////////////
-MENGINE_EXPORT_API bool API_MengineBootstrap()
+extern "C" bool API_MengineBootstrap()
 {
     if( SERVICE_CREATE( Bootstrapper, MENGINE_DOCUMENT_FUNCTION ) == false )
     {
@@ -64,7 +64,7 @@ MENGINE_EXPORT_API bool API_MengineBootstrap()
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-MENGINE_EXPORT_API bool API_MengineRun()
+extern "C" bool API_MengineRun()
 {
     if( BOOTSTRAPPER_SERVICE()
         ->run() == false )
@@ -75,7 +75,7 @@ MENGINE_EXPORT_API bool API_MengineRun()
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-MENGINE_EXPORT_API void API_MengineFinalize()
+extern "C" void API_MengineFinalize()
 {
     SERVICE_FINALIZE( Bootstrapper );
     SERVICE_DESTROY( Bootstrapper );

@@ -8,6 +8,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 extern "C"

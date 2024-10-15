@@ -24,6 +24,10 @@ namespace Mengine
 
     public:
         FontGlyphInterfacePtr createGlyph( const ConstString & _glyphName, const ConstString & _glyphType, const DocumentInterfacePtr & _doc ) override;
+        bool removeGlyph( const ConstString & _glyphName ) override;
+
+    public:
+        bool hasGlyph( const ConstString & _glyphName, FontGlyphInterfacePtr * const _glyph ) const override;
         const FontGlyphInterfacePtr & getGlyph( const ConstString & _glyphName ) const override;
 
     public:

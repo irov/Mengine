@@ -5,6 +5,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( XmlToBin, Mengine::XmlToBinPlugin )

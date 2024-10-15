@@ -2,6 +2,7 @@
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ResourcePrefetcherService );

@@ -17,6 +17,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/PluginHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"

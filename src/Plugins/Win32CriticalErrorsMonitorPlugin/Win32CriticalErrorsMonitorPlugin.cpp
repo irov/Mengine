@@ -10,6 +10,7 @@
 #include "Kernel/BuildMode.h"
 #include "Kernel/Logger.h"
 #include "Kernel/OptionHelper.h"
+#include "Kernel/PluginHelper.h"
 
 #include "Config/StdIO.h"
 

@@ -28,6 +28,7 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
 
 #ifndef MENGINE_PLUGIN_JSON_SEED
 #define MENGINE_PLUGIN_JSON_SEED 1

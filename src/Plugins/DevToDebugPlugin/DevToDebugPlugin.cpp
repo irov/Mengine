@@ -7,6 +7,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( DevToDebugService );

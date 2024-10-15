@@ -9,6 +9,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FrameworkFactory.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ScriptProviderService );

@@ -3,10 +3,9 @@ MENGINE_PROJECT(Windows)
 ADD_FILTER(
 src
     WindowsIncluder.h
+    DbgHelpIncluder.h
     
     Win32PlatformServiceExtensionInterface.h
-    
-    DbgHelp.h
     
     Win32Helper.h
     Win32Helper.cpp

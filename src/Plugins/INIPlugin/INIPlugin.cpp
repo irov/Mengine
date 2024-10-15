@@ -6,6 +6,7 @@
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( INI, Mengine::INIPlugin );

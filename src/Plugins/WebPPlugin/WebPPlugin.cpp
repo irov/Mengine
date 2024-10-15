@@ -8,6 +8,7 @@
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/EncoderFactory.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/PluginHelper.h"
 
 #include "webp/decode.h"
 

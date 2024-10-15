@@ -5,10 +5,11 @@
 #include "Kernel/String.h"
 
 #include "Config/Variant.h"
+#include "Config/StdDef.h"
 
 namespace Mengine
 {
-    typedef nullptr_t ParamNull;
+    typedef std::nullptr_t ParamNull;
     typedef bool ParamBool;
     typedef int64_t ParamInteger;
     typedef double ParamDouble;

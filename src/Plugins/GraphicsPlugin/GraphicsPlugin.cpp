@@ -7,6 +7,7 @@
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionAllocator.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Graphics, Mengine::GraphicsPlugin );

@@ -11,6 +11,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Zip, Mengine::ZipPlugin )

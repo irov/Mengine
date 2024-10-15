@@ -11,6 +11,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
 
 #include "FEDataflow.h"
 #include "FEFontEffectFile.h"

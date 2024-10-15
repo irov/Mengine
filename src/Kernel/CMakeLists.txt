@@ -719,6 +719,9 @@ Core
     PluginBase.h
     PluginBase.cpp
     
+    PluginHelper.h
+    PluginHelper.cpp
+    
     ModuleBase.h
     ModuleBase.cpp
     

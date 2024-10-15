@@ -2,6 +2,8 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "Kernel/PluginHelper.h"
+
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
@@ -22,8 +24,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
                 HMODULE hm = NULL;
 
-                if( ::GetModuleHandleExA( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                    MENGINE_PP_STRINGIZE( PLUGIN_FACTORY_CREATE_FUNCTION_NAME ), &hm ) == 0 )
+                if( ::GetModuleHandleExA( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, PLUGIN_FACTORY_CREATE_FUNCTION_NAME, &hm ) == 0 )
                 {
                     return false;
                 }

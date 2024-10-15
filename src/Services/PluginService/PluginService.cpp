@@ -7,6 +7,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/PluginHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
@@ -51,7 +52,7 @@ namespace Mengine
             return false;
         }
 
-        const Char * symbol = MENGINE_PP_STRINGIZE( PLUGIN_FACTORY_CREATE_FUNCTION_NAME );
+        const Char * symbol = PLUGIN_FACTORY_CREATE_FUNCTION_NAME;
 
         TDynamicLibraryFunction function_dllCreatePlugin = dynamicLibrary->getSymbol( symbol );
 

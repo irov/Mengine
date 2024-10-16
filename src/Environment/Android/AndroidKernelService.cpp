@@ -27,6 +27,9 @@
 #include "Kernel/ProxyLogger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/LoggerHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/ThreadMutexScope.h"
+#include "Kernel/ThreadHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIntTypes.h"
@@ -74,6 +77,15 @@ extern "C"
             ->hasCurrentAccount();
 
         return (jboolean)result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1deleteCurrentAccount )(JNIEnv * env, jclass cls)
+    {
+        Mengine::Helper::dispatchMainThreadEvent( []()
+        {
+            ACCOUNT_SERVICE()
+                ->deleteCurrentAccount();
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getCurrentAccountFolderName )(JNIEnv * env, jclass cls)
@@ -254,17 +266,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidKernelService::_initializeService()
     {
-        AndroidEventationHubPtr androidEventationHub = Helper::makeFactorableUnique<AndroidEventationHub>( MENGINE_DOCUMENT_FACTORABLE );
-
-        if( androidEventationHub->initialize() == false )
-        {
-            return false;
-        }
-
-        m_androidEventationHub = androidEventationHub;
+        m_androidAnalyticsEventProvider = Helper::makeFactorableUnique<AndroidAnalyticsEventProvider>( MENGINE_DOCUMENT_FACTORABLE );
 
         ANALYTICS_SERVICE()
-            ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
+            ->addEventProvider( m_androidAnalyticsEventProvider );
+
+        ThreadMutexInterfacePtr mutexCommands = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        m_mutexCommands = mutexCommands;
+
+        ThreadMutexInterfacePtr mutexJStrings = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
+
+        m_mutexJStrings = mutexJStrings;
 
         AndroidProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<AndroidProxyLogger>(MENGINE_DOCUMENT_FACTORABLE);
 
@@ -295,6 +308,8 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_END_UPDATE );
 
+        m_mutexJStrings = nullptr;
+
         if( m_proxyLogger != nullptr )
         {
             LOGGER_SERVICE()
@@ -303,11 +318,13 @@ namespace Mengine
             m_proxyLogger = nullptr;
         }
 
-        ANALYTICS_SERVICE()
-            ->removeEventProvider( AnalyticsEventProviderInterfacePtr::from(this) );
+        if( m_androidAnalyticsEventProvider != nullptr )
+        {
+            ANALYTICS_SERVICE()
+                ->removeEventProvider( m_androidAnalyticsEventProvider );
 
-        m_androidEventationHub->finalize();
-        m_androidEventationHub = nullptr;
+            m_androidAnalyticsEventProvider = nullptr;
+        }
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -364,6 +381,8 @@ namespace Mengine
             return;
         }
 
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexJStrings );
+
         ConstStringHolderJString * holder = m_poolJString.createT();
 
         holder->setJString( _jenv, _value );
@@ -381,136 +400,26 @@ namespace Mengine
         m_holdersJString.push_back( holder );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::addAndroidEventation( const AndroidEventationInterfacePtr & _eventation )
+    void AndroidKernelService::addCommand( const LambdaCommand & _command )
     {
-        m_androidEventationHub->addAndroidEventation( _eventation );
+        m_mutexCommands->lock();
+        m_commandsAux.emplace_back( _command );
+        m_mutexCommands->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::removeAndroidEventation( const AndroidEventationInterfacePtr & _eventation )
+    void AndroidKernelService::invokeCommands()
     {
-        m_androidEventationHub->removeAndroidEventation( _eventation );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::invokeAndroidEventations()
-    {
-        m_androidEventationHub->invoke();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event )
-    {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
+        m_mutexCommands->lock();
+        std::swap( m_commands, m_commandsAux );
+        m_commandsAux.clear();
+        m_mutexCommands->unlock();
+
+        for( const LambdaCommand & command : m_commands )
         {
-            return;
+            command();
         }
 
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        const ConstString & eventName = _event->getName();
-
-        jobject eventName_jobject = Helper::AndroidMakeJObjectString( jenv, eventName );
-
-        Timestamp eventTimestamp = _event->getTimestamp();
-
-        jobject bases_jobject = Helper::AndroidMakeJObjectHashMap( jenv, 0 );
-
-        uint32_t countParameters = _event->getCountParameters();
-
-        jobject parameters_jobject = Helper::AndroidMakeJObjectHashMap( jenv, countParameters );
-
-        _event->foreachParameters( [parameters_jobject, jenv]( const ConstString & _name, const AnalyticsEventParameterInterfacePtr & _parameter )
-           {
-               jobject name_jvalue = Helper::AndroidMakeJObjectString(jenv, _name);
-
-               EAnalyticsEventParameterType parameterType = _parameter->getType();
-
-               jobject parameter_jobject = nullptr;
-
-               switch( parameterType )
-               {
-               case EAEPT_BOOLEAN:
-                   {
-                       AnalyticsEventParameterBooleanInterfacePtr parameter_boolean = AnalyticsEventParameterBooleanInterfacePtr::from( _parameter );
-                       bool parameter_value = parameter_boolean->resolveValue();
-
-                       parameter_jobject = Helper::AndroidMakeJObjectBoolean( jenv, parameter_value );
-                   }break;
-               case EAEPT_INTEGER:
-                   {
-                       AnalyticsEventParameterIntegerInterfacePtr parameter_integer = AnalyticsEventParameterIntegerInterfacePtr::from( _parameter );
-                       int64_t parameter_value = parameter_integer->resolveValue();
-
-                       parameter_jobject = Helper::AndroidMakeJObjectLong( jenv, parameter_value );
-                   }break;
-               case EAEPT_DOUBLE:
-                   {
-                       AnalyticsEventParameterDoubleInterfacePtr parameter_double = AnalyticsEventParameterDoubleInterfacePtr::from( _parameter );
-                       double parameter_value = parameter_double->resolveValue();
-
-                       parameter_jobject = Helper::AndroidMakeJObjectDouble( jenv, parameter_value );
-                   }break;
-               case EAEPT_STRING:
-                   {
-                       AnalyticsEventParameterStringInterfacePtr parameter_string = AnalyticsEventParameterStringInterfacePtr::from( _parameter );
-                       const String & parameter_value = parameter_string->resolveValue();
-
-                       parameter_jobject = Helper::AndroidMakeJObjectString( jenv, parameter_value );
-                   }break;
-               case EAEPT_CONSTSTRING:
-                   {
-                       AnalyticsEventParameterConstStringInterfacePtr parameter_conststring = AnalyticsEventParameterConstStringInterfacePtr::from( _parameter );
-                       const ConstString & parameter_value = parameter_conststring->resolveValue();
-
-                       parameter_jobject = Helper::AndroidMakeJObjectString( jenv, parameter_value );
-                   }break;
-               }
-
-               jobject result_jobject = Helper::AndroidPutJObjectMap( jenv, parameters_jobject, name_jvalue, parameter_jobject );
-
-               jenv->DeleteLocalRef( result_jobject );
-               jenv->DeleteLocalRef( parameter_jobject );
-           });
-
-        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineAnalyticsEvent", "(Ljava/lang/String;JLjava/util/Map;Ljava/util/Map;)V", eventName_jobject, (jlong)eventTimestamp, bases_jobject, parameters_jobject );
-
-        jenv->DeleteLocalRef( eventName_jobject );
-        jenv->DeleteLocalRef( bases_jobject );
-        jenv->DeleteLocalRef( parameters_jobject );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName )
-    {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jobject screenType_jobject = Helper::AndroidMakeJObjectString( jenv, _screenType );
-        jobject screenName_jobject = Helper::AndroidMakeJObjectString( jenv, _screenName );
-
-        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineAnalyticsScreenView", "(Ljava/lang/String;Ljava/lang/String;)V", screenType_jobject, screenName_jobject );
-
-        jenv->DeleteLocalRef( screenType_jobject );
-        jenv->DeleteLocalRef( screenName_jobject );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::onAnalyticsFlush()
-    {
-        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
-        {
-            return;
-        }
-
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineAnalyticsFlush", "()V" );
+        m_commands.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidKernelService::openUrlInDefaultBrowser( const Char * _url )
@@ -570,7 +479,7 @@ namespace Mengine
 
         Helper::AndroidCallVoidActivityMethod( jenv, "onMenginePlatformRun", "()V" );
 
-        m_androidEventationHub->invoke();
+        this->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::notifyPlatformStop_()
@@ -586,7 +495,7 @@ namespace Mengine
 
         Helper::AndroidCallVoidActivityMethod( jenv, "onMenginePlatformStop", "()V" );
 
-        m_androidEventationHub->invoke();
+        this->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::notifyApplicationBeginUpdate_()
@@ -596,7 +505,7 @@ namespace Mengine
             return;
         }
 
-        m_androidEventationHub->invoke();
+        this->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::notifyApplicationEndUpdate_()
@@ -606,7 +515,7 @@ namespace Mengine
             return;
         }
 
-        m_androidEventationHub->invoke();
+        this->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::notifyBootstrapperInitializeBaseServices_()
@@ -622,7 +531,7 @@ namespace Mengine
 
         Helper::AndroidCallVoidActivityMethod( jenv, "onMengineInitializeBaseServices", "()V" );
 
-        m_androidEventationHub->invoke();
+        this->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::notifyBootstrapperCreateApplication_()
@@ -638,7 +547,7 @@ namespace Mengine
 
         Helper::AndroidCallVoidActivityMethod( jenv, "onMengineCreateApplication", "()V" );
 
-        m_androidEventationHub->invoke();
+        this->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
 }

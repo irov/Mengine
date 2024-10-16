@@ -38,10 +38,8 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, jobjectArray _args)
     {
-        Mengine::ConstString plugin = Mengine::Helper::AndroidMakeConstStringFromJString(env,
-                                                                                         _plugin);
-        Mengine::ConstString method = Mengine::Helper::AndroidMakeConstStringFromJString(env,
-                                                                                         _method);
+        Mengine::ConstString plugin = Mengine::Helper::AndroidMakeConstStringFromJString( env, _plugin );
+        Mengine::ConstString method = Mengine::Helper::AndroidMakeConstStringFromJString( env, _method );
 
         if( s_androidNativePythonService == nullptr )
         {
@@ -53,16 +51,17 @@ extern "C"
             return;
         }
 
-        if( s_androidNativePythonService->hasPythonMethod(plugin, method) == false )
+        if( s_androidNativePythonService->hasPythonMethod( plugin, method ) == false )
         {
             return;
         }
 
         jobjectArray new_args = (jobjectArray)env->NewGlobalRef( _args );
 
-        s_androidNativePythonService->addCommand([plugin, method, new_args]( const Mengine::AndroidNativePythonEventHandlerInterfacePtr & _handler )
+        ANDROID_KERNEL_SERVICE()
+            ->addCommand([plugin, method, new_args]()
         {
-            _handler->callPythonMethod( plugin, method, new_args );
+            s_androidNativePythonService->callPythonMethod( plugin, method, new_args );
         } );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -81,9 +80,10 @@ extern "C"
 
         jobject new_plugin = env->NewGlobalRef( _plugin );
 
-        s_androidNativePythonService->addCommand([name, new_plugin]( const Mengine::AndroidNativePythonEventHandlerInterfacePtr & _handler )
+        ANDROID_KERNEL_SERVICE()
+            ->addCommand([name, new_plugin]()
         {
-            _handler->addPlugin( name, new_plugin );
+            s_androidNativePythonService->addPlugin( name, new_plugin );
         } );
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,27 +128,12 @@ namespace Mengine
         m_factoryAndroidNativePythonFunctorVoid = Helper::makeFactoryPool<AndroidNativePythonFunctorVoid, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryAndroidNativePythonFunctorBoolean = Helper::makeFactoryPool<AndroidNativePythonFunctorBoolean, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_eventation = Helper::makeFactorableUnique<PythonEventation>( MENGINE_DOCUMENT_FACTORABLE );
-
-        ThreadMutexInterfacePtr eventationMutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        if( m_eventation->initialize( eventationMutex ) == false )
-        {
-            return false;
-        }
-
         ThreadMutexInterfacePtr callbacksMutex = THREAD_SYSTEM()
-                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         m_callbacksMutex = callbacksMutex;
 
         s_androidNativePythonService = this;
-
-        m_eventation->setEventHandler( AndroidNativePythonEventHandlerInterfacePtr::from( this ) );
-
-        ANDROID_KERNEL_SERVICE()
-            ->addAndroidEventation( m_eventation );
 
         if( Mengine_JNI_ExistMengineActivity() == JNI_TRUE )
         {
@@ -159,7 +144,7 @@ namespace Mengine
             Helper::AndroidCallVoidActivityMethod( jenv, "onPythonEmbeddedInitialize", "()V" );
 
             ANDROID_KERNEL_SERVICE()
-                ->invokeAndroidEventations();
+                ->invokeCommands();
         }
 
         return true;
@@ -181,7 +166,7 @@ namespace Mengine
             Helper::AndroidCallVoidActivityMethod( jenv, "onPythonEmbeddedFinalize", "()V" );
 
             ANDROID_KERNEL_SERVICE()
-                ->invokeAndroidEventations();
+                ->invokeCommands();
         }
 
         s_androidNativePythonService = nullptr;
@@ -197,22 +182,11 @@ namespace Mengine
 
         m_plugins.clear();
 
-        ANDROID_KERNEL_SERVICE()
-            ->removeAndroidEventation( m_eventation );
-
-        m_eventation->finalize();
-        m_eventation = nullptr;
-
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAndroidNativePythonFunctorVoid );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAndroidNativePythonFunctorBoolean );
 
         m_factoryAndroidNativePythonFunctorVoid = nullptr;
         m_factoryAndroidNativePythonFunctorBoolean = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::addCommand( const LambdaPythonEventHandler & _command )
-    {
-        m_eventation->addCommand( _command );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonService::hasPythonMethod( const ConstString & _plugin, const ConstString & _method ) const
@@ -405,7 +379,7 @@ namespace Mengine
         }
 
         ANDROID_KERNEL_SERVICE()
-            ->invokeAndroidEventations();
+            ->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonService::androidBooleanMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
@@ -443,7 +417,7 @@ namespace Mengine
         }
 
         ANDROID_KERNEL_SERVICE()
-            ->invokeAndroidEventations();
+            ->invokeCommands();
 
         return (bool)jresult;
     }
@@ -483,7 +457,7 @@ namespace Mengine
         }
 
         ANDROID_KERNEL_SERVICE()
-            ->invokeAndroidEventations();
+            ->invokeCommands();
 
         return (int32_t)jresult;
     }
@@ -523,7 +497,7 @@ namespace Mengine
         }
 
         ANDROID_KERNEL_SERVICE()
-            ->invokeAndroidEventations();
+            ->invokeCommands();
 
         return (int64_t)jresult;
     }
@@ -563,7 +537,7 @@ namespace Mengine
         }
 
         ANDROID_KERNEL_SERVICE()
-            ->invokeAndroidEventations();
+            ->invokeCommands();
 
         return (float)jresult;
     }
@@ -603,7 +577,7 @@ namespace Mengine
         }
 
         ANDROID_KERNEL_SERVICE()
-            ->invokeAndroidEventations();
+            ->invokeCommands();
 
         return (double)jresult;
     }
@@ -652,7 +626,7 @@ namespace Mengine
         jenv->DeleteLocalRef( jresult );
 
         ANDROID_KERNEL_SERVICE()
-            ->invokeAndroidEventations();
+            ->invokeCommands();
 
         return py_value;
     }
@@ -694,7 +668,7 @@ namespace Mengine
         PyObject * py_result = Helper::androidNativePythonMakePyObject( m_kernel, jenv, jresult, MENGINE_DOCUMENT_FACTORABLE );
 
         ANDROID_KERNEL_SERVICE()
-            ->invokeAndroidEventations();
+            ->invokeCommands();
 
         return py_result;
     }
@@ -931,7 +905,7 @@ namespace Mengine
         jenv->DeleteLocalRef( sceneName_jvalue );
 
         ANDROID_KERNEL_SERVICE()
-            ->invokeAndroidEventations();
+            ->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::notifyRemoveSceneComplete_()
@@ -952,7 +926,7 @@ namespace Mengine
         jenv->DeleteLocalRef( sceneName_jvalue );
 
         ANDROID_KERNEL_SERVICE()
-            ->invokeAndroidEventations();
+            ->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
 }

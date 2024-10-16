@@ -4,6 +4,7 @@
 
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AndroidNativePythonService );

@@ -10,6 +10,7 @@
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AndroidFileGroup, Mengine::AndroidFileGroupPlugin )

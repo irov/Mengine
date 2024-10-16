@@ -35,5 +35,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define ANDROID_NATIVEPYTHON_SERVICE()\
-    ((AndroidNativePythonServiceInterface *)SERVICE_GET(Mengine::AndroidNativePythonServiceInterface))
+    ((Mengine::AndroidNativePythonServiceInterface *)SERVICE_GET(Mengine::AndroidNativePythonServiceInterface))
 //////////////////////////////////////////////////////////////////////////

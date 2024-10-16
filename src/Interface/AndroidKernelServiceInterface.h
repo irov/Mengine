@@ -3,7 +3,6 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Environment/Android/AndroidIncluder.h"
-#include "Environment/Android/AndroidEventationHub.h"
 
 #include "Config/Char.h"
 
@@ -21,9 +20,9 @@ namespace Mengine
         virtual void stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr ) = 0;
 
     public:
-        virtual void addAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) = 0;
-        virtual void removeAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) = 0;
-        virtual void invokeAndroidEventations() = 0;
+        typedef Lambda<void()> LambdaCommand;
+        virtual void addCommand( const LambdaCommand & _lambda ) = 0;
+        virtual void invokeCommands() = 0;
 
     public:
         virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;

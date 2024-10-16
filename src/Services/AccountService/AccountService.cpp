@@ -279,13 +279,18 @@ namespace Mengine
         return exist;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AccountService::deleteAccount( const ConstString & _accountId )
+    bool AccountService::deleteAccount( const ConstString & _accountId )
     {
         AccountPtr account = m_accounts.erase( _accountId );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( account, "can't delete account '%s'. There is no account with such ID"
-            , _accountId.c_str()
-        );
+        if( account == nullptr )
+        {
+            LOGGER_ERROR( "can't delete account '%s'. There is no account with such ID"
+                , _accountId.c_str()
+            );
+
+            return false;
+        }
 
         if( m_currentAccountId.empty() == false )
         {
@@ -308,6 +313,8 @@ namespace Mengine
         }
 
         m_invalidateAccounts = true;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::selectAccount( const ConstString & _accountId )
@@ -353,6 +360,23 @@ namespace Mengine
     bool AccountService::hasCurrentAccount() const
     {
         return m_currentAccountId.empty() == false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AccountService::deleteCurrentAccount()
+    {
+        if( m_currentAccountId.empty() == true )
+        {
+            LOGGER_ERROR( "can't delete current account. Current account not selected" );
+
+            return false;
+        }
+
+        if( this->deleteAccount( m_currentAccountId ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & AccountService::getCurrentAccountId() const

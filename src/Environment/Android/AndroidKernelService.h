@@ -2,19 +2,21 @@
 
 #include "Interface/AndroidKernelServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 #include "Interface/LoggerInterface.h"
 
 #include "ConstStringHolderJString.h"
+#include "AndroidAnalyticsEventProvider.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Pool.h"
 #include "Kernel/IntrusiveList.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {
     class AndroidKernelService
         : public ServiceBase<AndroidKernelServiceInterface>
-        , public AnalyticsEventProviderInterface
     {
     public:
         AndroidKernelService();
@@ -31,16 +33,8 @@ namespace Mengine
         void stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr ) override;
 
     protected:
-        void addAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) override;
-        void removeAndroidEventation( const AndroidEventationInterfacePtr & _eventation ) override;
-        void invokeAndroidEventations() override;
-
-    protected:
-        void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;
-        void onAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName ) override;
-
-    protected:
-        void onAnalyticsFlush() override;
+        void addCommand( const LambdaCommand & _lambda ) override;
+        void invokeCommands() override;
 
     protected:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
@@ -55,7 +49,15 @@ namespace Mengine
         void notifyBootstrapperCreateApplication_();
 
     protected:
-        AndroidEventationHubPtr m_androidEventationHub;
+        AndroidAnalyticsEventProviderPtr m_androidAnalyticsEventProvider;
+
+        ThreadMutexInterfacePtr m_mutexCommands;
+
+        typedef Vector<LambdaCommand> VectorCommand;
+        VectorCommand m_commands;
+        VectorCommand m_commandsAux;
+
+        ThreadMutexInterfacePtr m_mutexJStrings;
 
         typedef Pool<ConstStringHolderJString, 256> PoolConstStringHolderJString;
         PoolConstStringHolderJString m_poolJString;

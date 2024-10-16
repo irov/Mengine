@@ -4,10 +4,6 @@ ADD_FILTER(
 src
     AndroidIncluder.h
     AndroidDeclaration.h
-    AndroidEventation.h
-    AndroidEventationInterface.h
-    AndroidEventationHub.h
-    AndroidEventationHub.cpp
     AndroidEnv.h
     AndroidEnv.cpp
     AndroidActivityHelper.h
@@ -16,6 +12,9 @@ src
     AndroidApplicationHelper.cpp
     AndroidHelper.h
     AndroidHelper.cpp
+
+    AndroidAnalyticsEventProvider.h
+    AndroidAnalyticsEventProvider.cpp
     
     AndroidKernelService.h
     AndroidKernelService.cpp

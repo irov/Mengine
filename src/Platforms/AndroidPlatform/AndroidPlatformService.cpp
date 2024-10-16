@@ -190,6 +190,7 @@ extern "C"
 
         platformExtension->androidNativeQuitEvent();
     }
+    ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1lowMemory )(JNIEnv * env, jclass cls)
     {
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()

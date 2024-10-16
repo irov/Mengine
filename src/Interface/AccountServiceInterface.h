@@ -24,7 +24,7 @@ namespace Mengine
 
     public:
         virtual bool hasAccount( const ConstString & _accountId ) const = 0;
-        virtual void deleteAccount( const ConstString & _accountId ) = 0;
+        virtual bool deleteAccount( const ConstString & _accountId ) = 0;
         virtual bool selectAccount( const ConstString & _accountId ) = 0;
 
     public:
@@ -51,6 +51,7 @@ namespace Mengine
 
     public:
         virtual bool hasCurrentAccount() const = 0;
+        virtual bool deleteCurrentAccount() = 0;
         virtual const ConstString & getCurrentAccountId() const = 0;
 
         virtual const AccountInterfacePtr & getCurrentAccount() const = 0;

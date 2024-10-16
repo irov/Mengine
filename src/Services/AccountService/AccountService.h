@@ -32,7 +32,7 @@ namespace Mengine
 
     public:
         bool hasAccount( const ConstString & _accountId ) const override;
-        void deleteAccount( const ConstString & _accountId ) override;
+        bool deleteAccount( const ConstString & _accountId ) override;
         bool selectAccount( const ConstString & _accountId ) override;
 
     public:
@@ -52,7 +52,6 @@ namespace Mengine
         bool isCurrentDefaultAccount() const override;
 
         bool hasDefaultAccount() const override;
-
         bool selectDefaultAccount() override;
 
     public:
@@ -63,8 +62,9 @@ namespace Mengine
 
     public:
         bool hasCurrentAccount() const override;
-        const ConstString & getCurrentAccountId() const override;
+        bool deleteCurrentAccount() override;
 
+        const ConstString & getCurrentAccountId() const override;
         const AccountInterfacePtr & getCurrentAccount() const override;
 
     public:

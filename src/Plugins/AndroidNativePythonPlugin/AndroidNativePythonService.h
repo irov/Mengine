@@ -3,7 +3,6 @@
 #include "Interface/FactoryInterface.h"
 
 #include "Environment/Android/AndroidIncluder.h"
-#include "Environment/Android/AndroidEventation.h"
 #include "Environment/Python/PythonIncluder.h"
 
 #include "AndroidNativePythonInterface.h"
@@ -27,14 +26,6 @@ namespace Mengine
     protected:
         bool _initializeService() override;
         void _finalizeService() override;
-
-    public:
-        typedef AndroidEventation<AndroidNativePythonEventHandlerInterface> PythonEventation;
-        typedef IntrusivePtr<PythonEventation> PythonEventationPtr;
-        typedef typename PythonEventation::LambdaEventHandler LambdaPythonEventHandler;
-
-    public:
-        void addCommand( const LambdaPythonEventHandler & _command );
 
     public:
         bool hasPythonMethod( const ConstString & _plugin, const ConstString & _method ) const override;
@@ -86,7 +77,5 @@ namespace Mengine
 
         typedef Map<ConstString, jobject> MapAndroidPlugins;
         MapAndroidPlugins m_plugins;
-
-        PythonEventationPtr m_eventation;
     };
 }

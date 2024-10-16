@@ -7,6 +7,8 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
 
+#include "Config/Lambda.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

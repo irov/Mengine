@@ -50,6 +50,7 @@ public class MengineActivity extends AppCompatActivity {
     private static native String AndroidEnvironmentService_getProjectName();
     private static native String AndroidEnvironmentService_getExtraPreferencesFolderName();
     private static native boolean AndroidEnvironmentService_hasCurrentAccount();
+    private static native void AndroidEnvironmentService_deleteCurrentAccount();
     private static native String AndroidEnvironmentService_getCurrentAccountFolderName();
     private static native boolean AndroidEnvironmentService_writeCurrentLogToFile(Writer writer);
     private static native boolean AndroidEnvironmentService_writeOldLogToFile(Writer writer);
@@ -851,6 +852,8 @@ public class MengineActivity extends AppCompatActivity {
         this.setState("activity.low_memory", true);
 
         MengineLog.logMessage(TAG, "onLowMemory");
+
+        MengineActivity.AndroidPlatform_lowMemory();
     }
 
     @Override
@@ -1125,6 +1128,8 @@ public class MengineActivity extends AppCompatActivity {
                 MengineApplication application = (MengineApplication)this.getApplication();
 
                 application.removeSessionData();
+
+                MengineActivity.AndroidEnvironmentService_deleteCurrentAccount();
 
                 MengineUtils.showOkAlertDialog(this, () -> {
                     this.finishAndRemoveTask();

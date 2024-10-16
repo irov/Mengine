@@ -20,11 +20,6 @@ namespace Mengine
         virtual void stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr ) = 0;
 
     public:
-        typedef Lambda<void()> LambdaCommand;
-        virtual void addCommand( const LambdaCommand & _lambda ) = 0;
-        virtual void invokeCommands() = 0;
-
-    public:
         virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
         virtual bool openMail( const Char * _email, const Char * _subject, const Char * _body ) = 0;
     };

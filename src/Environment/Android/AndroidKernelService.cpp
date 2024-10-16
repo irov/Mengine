@@ -271,10 +271,6 @@ namespace Mengine
         ANALYTICS_SERVICE()
             ->addEventProvider( m_androidAnalyticsEventProvider );
 
-        ThreadMutexInterfacePtr mutexCommands = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        m_mutexCommands = mutexCommands;
-
         ThreadMutexInterfacePtr mutexJStrings = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         m_mutexJStrings = mutexJStrings;
@@ -293,8 +289,6 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_STOP, &AndroidKernelService::notifyPlatformStop_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES, &AndroidKernelService::notifyBootstrapperInitializeBaseServices_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AndroidKernelService::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE, &AndroidKernelService::notifyApplicationBeginUpdate_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_END_UPDATE, &AndroidKernelService::notifyApplicationEndUpdate_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -305,8 +299,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_STOP );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_END_UPDATE );
 
         m_mutexJStrings = nullptr;
 
@@ -400,28 +392,6 @@ namespace Mengine
         m_holdersJString.push_back( holder );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::addCommand( const LambdaCommand & _command )
-    {
-        m_mutexCommands->lock();
-        m_commandsAux.emplace_back( _command );
-        m_mutexCommands->unlock();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::invokeCommands()
-    {
-        m_mutexCommands->lock();
-        std::swap( m_commands, m_commandsAux );
-        m_commandsAux.clear();
-        m_mutexCommands->unlock();
-
-        for( const LambdaCommand & command : m_commands )
-        {
-            command();
-        }
-
-        m_commands.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool AndroidKernelService::openUrlInDefaultBrowser( const Char * _url )
     {
         if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
@@ -478,8 +448,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         Helper::AndroidCallVoidActivityMethod( jenv, "onMenginePlatformRun", "()V" );
-
-        this->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::notifyPlatformStop_()
@@ -494,28 +462,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         Helper::AndroidCallVoidActivityMethod( jenv, "onMenginePlatformStop", "()V" );
-
-        this->invokeCommands();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::notifyApplicationBeginUpdate_()
-    {
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
-        {
-            return;
-        }
-
-        this->invokeCommands();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::notifyApplicationEndUpdate_()
-    {
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
-        {
-            return;
-        }
-
-        this->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::notifyBootstrapperInitializeBaseServices_()
@@ -530,8 +476,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         Helper::AndroidCallVoidActivityMethod( jenv, "onMengineInitializeBaseServices", "()V" );
-
-        this->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::notifyBootstrapperCreateApplication_()
@@ -546,8 +490,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         Helper::AndroidCallVoidActivityMethod( jenv, "onMengineCreateApplication", "()V" );
-
-        this->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
 }

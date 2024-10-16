@@ -33,29 +33,17 @@ namespace Mengine
         void stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr ) override;
 
     protected:
-        void addCommand( const LambdaCommand & _lambda ) override;
-        void invokeCommands() override;
-
-    protected:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
         bool openMail( const Char * _email, const Char * _subject, const Char * _body ) override;
 
     protected:
         void notifyPlatformRun_();
         void notifyPlatformStop_();
-        void notifyApplicationBeginUpdate_();
-        void notifyApplicationEndUpdate_();
         void notifyBootstrapperInitializeBaseServices_();
         void notifyBootstrapperCreateApplication_();
 
     protected:
         AndroidAnalyticsEventProviderPtr m_androidAnalyticsEventProvider;
-
-        ThreadMutexInterfacePtr m_mutexCommands;
-
-        typedef Vector<LambdaCommand> VectorCommand;
-        VectorCommand m_commands;
-        VectorCommand m_commandsAux;
 
         ThreadMutexInterfacePtr m_mutexJStrings;
 

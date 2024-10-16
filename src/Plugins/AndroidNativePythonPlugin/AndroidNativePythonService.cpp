@@ -14,6 +14,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/ThreadHelper.h"
 
 #include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidEnv.h"
@@ -58,8 +59,7 @@ extern "C"
 
         jobjectArray new_args = (jobjectArray)env->NewGlobalRef( _args );
 
-        ANDROID_KERNEL_SERVICE()
-            ->addCommand([plugin, method, new_args]()
+        Mengine::Helper::dispatchMainThreadEvent( [plugin, method, new_args]()
         {
             s_androidNativePythonService->callPythonMethod( plugin, method, new_args );
         } );
@@ -80,8 +80,7 @@ extern "C"
 
         jobject new_plugin = env->NewGlobalRef( _plugin );
 
-        ANDROID_KERNEL_SERVICE()
-            ->addCommand([name, new_plugin]()
+        Mengine::Helper::dispatchMainThreadEvent([name, new_plugin]()
         {
             s_androidNativePythonService->addPlugin( name, new_plugin );
         } );
@@ -142,9 +141,6 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
             Helper::AndroidCallVoidActivityMethod( jenv, "onPythonEmbeddedInitialize", "()V" );
-
-            ANDROID_KERNEL_SERVICE()
-                ->invokeCommands();
         }
 
         return true;
@@ -164,9 +160,6 @@ namespace Mengine
         if( Mengine_JNI_ExistMengineActivity() == JNI_TRUE )
         {
             Helper::AndroidCallVoidActivityMethod( jenv, "onPythonEmbeddedFinalize", "()V" );
-
-            ANDROID_KERNEL_SERVICE()
-                ->invokeCommands();
         }
 
         s_androidNativePythonService = nullptr;
@@ -377,9 +370,6 @@ namespace Mengine
 
             jenv->DeleteLocalRef( j );
         }
-
-        ANDROID_KERNEL_SERVICE()
-            ->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonService::androidBooleanMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const
@@ -415,9 +405,6 @@ namespace Mengine
 
             jenv->DeleteLocalRef( j );
         }
-
-        ANDROID_KERNEL_SERVICE()
-            ->invokeCommands();
 
         return (bool)jresult;
     }
@@ -456,9 +443,6 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        ANDROID_KERNEL_SERVICE()
-            ->invokeCommands();
-
         return (int32_t)jresult;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -495,9 +479,6 @@ namespace Mengine
 
             jenv->DeleteLocalRef( j );
         }
-
-        ANDROID_KERNEL_SERVICE()
-            ->invokeCommands();
 
         return (int64_t)jresult;
     }
@@ -536,9 +517,6 @@ namespace Mengine
             jenv->DeleteLocalRef( j );
         }
 
-        ANDROID_KERNEL_SERVICE()
-            ->invokeCommands();
-
         return (float)jresult;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -575,9 +553,6 @@ namespace Mengine
 
             jenv->DeleteLocalRef( j );
         }
-
-        ANDROID_KERNEL_SERVICE()
-            ->invokeCommands();
 
         return (double)jresult;
     }
@@ -625,9 +600,6 @@ namespace Mengine
 
         jenv->DeleteLocalRef( jresult );
 
-        ANDROID_KERNEL_SERVICE()
-            ->invokeCommands();
-
         return py_value;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -666,9 +638,6 @@ namespace Mengine
         }
 
         PyObject * py_result = Helper::androidNativePythonMakePyObject( m_kernel, jenv, jresult, MENGINE_DOCUMENT_FACTORABLE );
-
-        ANDROID_KERNEL_SERVICE()
-            ->invokeCommands();
 
         return py_result;
     }
@@ -903,9 +872,6 @@ namespace Mengine
         Helper::AndroidCallVoidActivityMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
 
         jenv->DeleteLocalRef( sceneName_jvalue );
-
-        ANDROID_KERNEL_SERVICE()
-            ->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::notifyRemoveSceneComplete_()
@@ -924,9 +890,6 @@ namespace Mengine
         Helper::AndroidCallVoidActivityMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
 
         jenv->DeleteLocalRef( sceneName_jvalue );
-
-        ANDROID_KERNEL_SERVICE()
-            ->invokeCommands();
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -4,6 +4,7 @@ ADD_FILTER(
 src
     CachalotPlugin.h
     CachalotPlugin.cpp
+    CachalotPlugin.def
     
     CachalotLogger.h
     CachalotLogger.cpp

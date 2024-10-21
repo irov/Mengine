@@ -4,7 +4,7 @@ set "VERSION=17"
 set "YEAR=2022"
 
 set "SOLUTION_NAME=dependencies_msvc%VERSION%_uwp"
-set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Depends_WIN32_UWP"
+set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Depends_UWP"
 set "GENERATOR=Visual Studio %VERSION% %YEAR%"
 set "ARCHITECTURE=x64"
 

@@ -436,6 +436,22 @@ namespace Mengine
         return jresult;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AndroidKernelService::openDeleteAccount()
+    {
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        {
+            return false;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenDeleteAccount", "()Z" );
+
+        return jresult;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::notifyPlatformRun_()
     {
         if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )

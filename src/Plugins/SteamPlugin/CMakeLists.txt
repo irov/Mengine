@@ -31,6 +31,7 @@ endif()
 
 IF(MENGINE_TARGET_WINDOWS)
     IF(MENGINE_ARCHITECTURE_X86)
+        MESSAGE("${THIRDPARTY_DIR}/steam/redistributable_bin/steam_api.lib")
         TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_DIR}/steam/redistributable_bin/steam_api.lib)
     ENDIF()
     

@@ -566,8 +566,6 @@ namespace Mengine
             , _event.pressure
         );
 
-        this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
-
         APPLICATION_SERVICE()
             ->handleMouseLeave( _event );
     }

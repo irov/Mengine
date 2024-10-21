@@ -1,0 +1,2 @@
+LIBRARY		"CachalotPlugin"
+EXPORTS 	dllCreatePlugin 	@1

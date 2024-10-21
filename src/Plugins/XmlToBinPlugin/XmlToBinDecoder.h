@@ -20,7 +20,7 @@ namespace Mengine
         ~XmlToBinDecoder() override;
 
     public:
-        bool initialize() override;
+        bool initialize( const ThreadMutexInterfacePtr & _mutex ) override;
         void finalize() override;
 
     protected:

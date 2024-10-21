@@ -558,9 +558,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::openUrlInDefaultBrowser( const Char * _url )
     {
-        MENGINE_UNUSED( _url );
-
-        LOGGER_INFO( "platform", "open url in default browser '%s'"
+        LOGGER_MESSAGE( "open url in default browser '%s'"
             , _url
         );
 
@@ -579,11 +577,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body )
     {
-        MENGINE_UNUSED( _email );
-        MENGINE_UNUSED( _subject );
-        MENGINE_UNUSED( _body );
-
-        LOGGER_INFO( "platform", "open mail '%s' subject '%s' body '%s'"
+        LOGGER_MESSAGE( "open mail '%s' subject '%s' body '%s'"
             , _email
             , _subject
             , _body
@@ -597,6 +591,21 @@ namespace Mengine
                 , _subject
                 , _body
             );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::openDeleteAccount()
+    {
+        LOGGER_MESSAGE( "open delete account" );
+
+        if( ANDROID_KERNEL_SERVICE()
+            ->openDeleteAccount() == false )
+        {
+            LOGGER_ERROR( "error open delete account" );
 
             return false;
         }

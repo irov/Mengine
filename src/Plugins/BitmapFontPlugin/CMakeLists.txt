@@ -4,6 +4,8 @@ ADD_FILTER(
 src
     BitmapFontPlugin.h
     BitmapFontPlugin.cpp
+    BitmapFontPlugin.def
+    
     BitmapFontInterface.h
     BitmapFont.h
     BitmapFont.cpp

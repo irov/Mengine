@@ -2,6 +2,7 @@
 
 #include "Interface/Interface.h"
 #include "Interface/InputStreamInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/DecoderData.h"
 #include "Kernel/CodecDataInfo.h"
@@ -15,7 +16,7 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual bool initialize() = 0;
+        virtual bool initialize( const ThreadMutexInterfacePtr & _mutex ) = 0;
         virtual void finalize() = 0;
 
     public:

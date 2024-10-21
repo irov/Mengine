@@ -4,6 +4,7 @@ ADD_FILTER(
 src
     Win32ConsoleLoggerPlugin.h
     Win32ConsoleLoggerPlugin.cpp
+    Win32ConsoleLoggerPlugin.def
     
     Win32ConsoleLogger.h
     Win32ConsoleLogger.cpp

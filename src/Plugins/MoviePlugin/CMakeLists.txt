@@ -6,6 +6,7 @@ src
     
     MoviePlugin.h
     MoviePlugin.cpp
+    MoviePlugin.def
     
     Movie2.cpp
     Movie2.h

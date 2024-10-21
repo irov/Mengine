@@ -4076,6 +4076,14 @@ namespace Mengine
                 return val;
             }
             //////////////////////////////////////////////////////////////////////////
+            bool s_openDeleteAccount()
+            {
+                bool val = PLATFORM_SERVICE()
+                    ->openDeleteAccount();
+
+                return val;
+            }
+            //////////////////////////////////////////////////////////////////////////
             ConstString s_getDefaultResourceFontName()
             {
                 const FontInterfacePtr & defaultResourceFont = FONT_SERVICE()
@@ -4408,6 +4416,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "openUrlInDefaultBrowser", nodeScriptMethod, &EngineScriptMethod::s_openUrlInDefaultBrowser );
         pybind::def_functor( _kernel, "openMail", nodeScriptMethod, &EngineScriptMethod::s_openMail );
+        pybind::def_functor( _kernel, "openDeleteAccount", nodeScriptMethod, &EngineScriptMethod::s_openDeleteAccount );
 
         pybind::def_functor( _kernel, "getDefaultResourceFontName", nodeScriptMethod, &EngineScriptMethod::s_getDefaultResourceFontName );
 
@@ -4482,6 +4491,9 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "screenToWorldPoint", nodeScriptMethod, &EngineScriptMethod::s_screenToWorldPoint );
         pybind::def_functor( _kernel, "screenToWorldClick", nodeScriptMethod, &EngineScriptMethod::s_screenToWorldClick );
+
+        pybind::interface_<InputMousePositionProviderInterface, pybind::bases<Mixin>>( _kernel, "InputMousePositionProvider" )
+            ;
 
         pybind::def_functor_args( _kernel, "addMousePositionProvider", nodeScriptMethod, &EngineScriptMethod::s_addMousePositionProvider );
         pybind::def_functor( _kernel, "removeMousePositionProvider", nodeScriptMethod, &EngineScriptMethod::s_removeMousePositionProvider );

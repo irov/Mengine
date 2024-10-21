@@ -99,20 +99,22 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool XmlToBinDecoder::initialize()
+    bool XmlToBinDecoder::initialize( const ThreadMutexInterfacePtr & _mutex )
     {
+        MENGINE_UNUSED( _mutex );
+
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( archivator );
 
         m_archivator = archivator;
 
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+        const FileGroupInterfacePtr & fileGroupDev = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup );
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroupDev );
 
-        m_fileGroupDev = fileGroup;
+        m_fileGroupDev = fileGroupDev;
 
         return true;
     }

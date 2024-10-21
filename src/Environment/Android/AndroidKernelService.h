@@ -35,6 +35,7 @@ namespace Mengine
     protected:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
         bool openMail( const Char * _email, const Char * _subject, const Char * _body ) override;
+        bool openDeleteAccount() override;
 
     protected:
         void notifyPlatformRun_();

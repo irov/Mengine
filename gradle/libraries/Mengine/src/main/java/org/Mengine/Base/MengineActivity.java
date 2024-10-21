@@ -420,8 +420,6 @@ public class MengineActivity extends AppCompatActivity {
         this.setState("activity.init", "end");
 
         this.setState("activity.lifecycle", "created");
-
-        this.deleteAccount();
     }
 
     @Override
@@ -1117,33 +1115,6 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     /***********************************************************************************************
-     * Account Methods
-     **********************************************************************************************/
-
-    public void deleteAccount() {
-        MengineLog.logMessage(TAG, "deleteAccount");
-
-        MengineUtils.showAreYouSureAlertDialog(this
-            , () -> { //Yes
-                MengineApplication application = (MengineApplication)this.getApplication();
-
-                application.removeSessionData();
-
-                MengineActivity.AndroidEnvironmentService_deleteCurrentAccount();
-
-                MengineUtils.showOkAlertDialog(this, () -> {
-                    this.finishAndRemoveTask();
-                }, "Account Deleted", "Account data has been deleted. The application will now close.");
-            }
-            , () -> { //Cancel
-                //Empty
-            }
-            , "Delete Account"
-            , "Click 'YES' will delete all account data. All game progress, virtual goods, and currency will be permanently removed and unrecoverable."
-        );
-    }
-
-    /***********************************************************************************************
      * Keyboard Methods
      **********************************************************************************************/
 
@@ -1427,5 +1398,30 @@ public class MengineActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    public void linkingOpenDeleteAccount() {
+        MengineLog.logMessage(TAG, "request delete account");
+
+        MengineUtils.showAreYouSureAlertDialog(this
+            , () -> { //Yes
+                MengineLog.logMessage(TAG, "delete account [OK]");
+
+                MengineApplication application = (MengineApplication)this.getApplication();
+
+                application.removeSessionData();
+
+                MengineActivity.AndroidEnvironmentService_deleteCurrentAccount();
+
+                MengineUtils.showOkAlertDialog(this, () -> {
+                    this.finishAndRemoveTask();
+                }, "Account Deleted", "Account data has been deleted. The application will now close.");
+            }
+            , () -> { //Cancel
+                MengineLog.logMessage(TAG, "delete account [CANCEL]");
+            }
+            , "Delete Account"
+            , "Click 'YES' will delete all account data. All game progress, virtual goods, and currency will be permanently removed and unrecoverable."
+        );
     }
 }

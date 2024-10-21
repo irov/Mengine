@@ -1,0 +1,2 @@
+LIBRARY		"BitmapFontPlugin"
+EXPORTS 	dllCreatePlugin 	@1

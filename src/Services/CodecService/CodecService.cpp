@@ -7,6 +7,7 @@
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( CodecService, Mengine::CodecService );
@@ -59,7 +60,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder );
 
-        if( decoder->initialize() == false )
+        ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( _doc );
+
+        if( decoder->initialize( mutex ) == false )
         {
             LOGGER_ERROR( "invalid initialize codec '%s' doc '%s'"
                 , _type.c_str()

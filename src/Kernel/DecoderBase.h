@@ -2,10 +2,12 @@
 
 #include "Interface/DecoderInterface.h"
 #include "Interface/InputStreamInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
-#include "Kernel/ThreadGuardScope.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/Logger.h"
+#include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/ThreadMutexScope.h"
 
 #include "Config/TypeTraits.h"
 
@@ -30,18 +32,23 @@ namespace Mengine
         }
 
     public:
-        bool initialize() override
+        bool initialize( const ThreadMutexInterfacePtr & _mutex ) override
         {
-            MENGINE_THREAD_GUARD_SCOPE( DecoderBase, this );
-
             if( m_initialize == true )
             {
                 return false;
             }
 
-            m_initialize = this->_initialize();
+            if( this->_initialize() == false )
+            {
+                return false;
+            }
 
-            return m_initialize;
+            m_mutex = _mutex;
+
+            m_initialize = true;
+
+            return true;
         }
 
     protected:
@@ -55,8 +62,6 @@ namespace Mengine
     public:
         void finalize() override
         {
-            MENGINE_THREAD_GUARD_SCOPE( DecoderBase, this );
-
             if( m_initialize == false )
             {
                 return;
@@ -64,6 +69,7 @@ namespace Mengine
 
             this->_finalize();
 
+            m_mutex = nullptr;
             m_stream = nullptr;
         }
 
@@ -88,7 +94,7 @@ namespace Mengine
     private:
         bool prepareData( const InputStreamInterfacePtr & _stream ) override
         {
-            MENGINE_THREAD_GUARD_SCOPE( DecoderBase, this );
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
             m_stream = _stream;
 
@@ -113,7 +119,7 @@ namespace Mengine
     private:
         size_t decode( const DecoderData * _data ) override
         {
-            MENGINE_THREAD_GUARD_SCOPE( DecoderBase, this );
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
             size_t byte = this->_decode( _data );
 
@@ -126,7 +132,7 @@ namespace Mengine
     private:
         bool seek( float _time ) override
         {
-            MENGINE_THREAD_GUARD_SCOPE( DecoderBase, this );
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
             bool successful = this->_seek( _time );
 
@@ -144,7 +150,7 @@ namespace Mengine
     private:
         float tell() const override
         {
-            MENGINE_THREAD_GUARD_SCOPE( DecoderBase, this );
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
             float value = this->_tell();
 
@@ -162,7 +168,7 @@ namespace Mengine
     private:
         bool rewind() override
         {
-            MENGINE_THREAD_GUARD_SCOPE( DecoderBase, this );
+            MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
             bool successful = this->_rewind();
 
@@ -178,12 +184,11 @@ namespace Mengine
         }
 
     private:
+        ThreadMutexInterfacePtr m_mutex;
         InputStreamInterfacePtr m_stream;
 
         size_t m_rewindPos;
 
         bool m_initialize;
-
-        MENGINE_THREAD_GUARD_INIT( DecoderBase );
     };
 }

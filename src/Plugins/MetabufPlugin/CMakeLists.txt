@@ -38,6 +38,7 @@ src
 
     MetabufPlugin.cpp
     MetabufPlugin.h
+    MetabufPlugin.def
 )
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)

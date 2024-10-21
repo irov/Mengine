@@ -3815,6 +3815,13 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32PlatformService::openDeleteAccount()
+    {
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::setActive_( bool _active )
     {
         if( m_active == _active )

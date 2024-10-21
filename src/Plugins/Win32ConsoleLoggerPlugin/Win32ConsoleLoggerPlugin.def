@@ -1,0 +1,3 @@
+LIBRARY "Win32ConsoleLoggerPlugin"
+EXPORTS
+   dllCreatePlugin @1

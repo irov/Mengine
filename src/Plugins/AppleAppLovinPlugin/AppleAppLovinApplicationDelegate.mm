@@ -26,20 +26,6 @@
     
     [AppleLog withFormat:@"AppLovin: %@", ALSdk.version];
     
-    NSString * MengineAppleAppLovinPlugin_IsAgeRestrictedUser = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"IsAgeRestrictedUser" withDefault:@"UNKNOWN"];
-    
-    if( [MengineAppleAppLovinPlugin_IsAgeRestrictedUser caseInsensitiveCompare:@"YES"] == NSOrderedSame ) {
-        [ALPrivacySettings setIsAgeRestrictedUser: YES];
-    } else if( [MengineAppleAppLovinPlugin_IsAgeRestrictedUser caseInsensitiveCompare:@"NO"] == NSOrderedSame ) {
-        [ALPrivacySettings setIsAgeRestrictedUser: NO];
-    } else if( [MengineAppleAppLovinPlugin_IsAgeRestrictedUser caseInsensitiveCompare:@"UNKNOWN"] == NSOrderedSame ) {
-        //Nothing
-    } else {
-        [AppleLog withFormat:@"🔴 [ERROR] AppLovin plugin invalid config [%@.IsAgeRestrictedUser] value %@ [YES|NO|UNKNOWN]", @PLUGIN_BUNDLE_NAME, MengineAppleAppLovinPlugin_IsAgeRestrictedUser];
-        
-        return NO;
-    }
-    
     NSString * MengineAppleAppLovinPlugin_CCPA = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"CCPA" withDefault:@"UNKNOWN"];
     
     if( [MengineAppleAppLovinPlugin_CCPA caseInsensitiveCompare:@"YES"] == NSOrderedSame ) {

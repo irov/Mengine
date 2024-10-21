@@ -1,26 +1,15 @@
 @echo off
 
-if ["%~1"]==[""] (
-  @echo invalid arguments, please select configuration
-  goto end
-)
-
-set "CONFIGURATION=%1"
-
-@echo Starting make solution SDL %CONFIGURATION% configuration...
-
 set "VERSION=17"
 set "YEAR=2022"
 
-@pushd %~dp0..
-@call vcvarsall_msvc%VERSION%.bat
-@popd
+set "SOLUTION_NAME=solution_msvc%VERSION%_sdl"
+set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Win32_SDL"
+set "GENERATOR=Visual Studio %VERSION% %YEAR%"
+set "ARCHITECTURE=Win32"
 
-@pushd %~dp0..
-@call make_solution.bat "SOLUTION_NAME=solution_msvc%VERSION%_sdl" "SOURCE_DIRECTORY=%CD%\..\cmake\Win32_SDL" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "ARCHITECTURE=Win32"
-@popd
+@call %~dp0../vcvarsall_msvc%VERSION%.bat
 
-:end
+@call %~dp0../make_solution.bat %* "SOLUTION_NAME=%SOLUTION_NAME%" "SOURCE_DIRECTORY=%SOURCE_DIRECTORY%" "GENERATOR=%GENERATOR%" "ARCHITECTURE=%ARCHITECTURE%"
 
-@pause
-exit /b %errorlevel%
+@exit /b %errorlevel%

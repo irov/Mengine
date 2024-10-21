@@ -19,6 +19,10 @@ namespace Mengine
         bool _initializeService() override;
         void _finalizeService() override;
 
+    public:
+        void beginThread( ThreadId _threadId ) override;
+        void endThread( ThreadId _threadId ) override;
+
     protected:
 #if !defined(MENGINE_PLATFORM_UWP)
         SDL_malloc_func m_old_SDL_malloc_func;

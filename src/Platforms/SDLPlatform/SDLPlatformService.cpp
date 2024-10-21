@@ -1031,6 +1031,15 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatformService::openDeleteAccount()
+    {
+        LOGGER_INFO( "platform", "open delete account" );
+
+        //Empty
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SDLPlatformService::stopPlatform()
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );

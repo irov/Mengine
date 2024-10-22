@@ -18,8 +18,10 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.style.AlignmentSpan;
 import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -546,104 +548,112 @@ public class MengineUtils {
     }
 
     public static void showToast(Context context, String format, Object ... args) {
-        String message = MengineLog.buildTotalMsg(format, args);
+        MengineUtils.performOnMainThread(() -> {
+            String message = MengineLog.buildTotalMsg(format, args);
 
-        Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
 
-        toast.show();
+            toast.show();
+        });
     }
 
     public static void showOkAlertDialog(Context context, Runnable ok, String title, String format, Object ... args) {
-        String message = MengineLog.buildTotalMsg(format, args);
+        MengineUtils.performOnMainThread(() -> {
+            String message = MengineLog.buildTotalMsg(format, args);
 
-        MengineLog.logMessage(TAG, "show OK alert dialog title: %s message: %s"
-            , title
-            , message
-        );
+            MengineLog.logMessage(TAG, "show OK alert dialog title: %s message: %s"
+                , title
+                , message
+            );
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setCancelable(false);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                MengineLog.logMessage(TAG, "show OK alert dialog OK clicked");
+            builder.setTitle(title);
+            builder.setMessage(message);
+            builder.setCancelable(false);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    MengineLog.logMessage(TAG, "show OK alert dialog OK clicked");
 
-                ok.run();
-                dialog.dismiss();
-            }
+                    ok.run();
+                    dialog.dismiss();
+                }
+            });
+
+            AlertDialog alert = builder.create();
+
+            alert.show();
         });
-
-        AlertDialog alert = builder.create();
-
-        alert.show();
     }
 
-    public static void showAreYouSureAlertDialog(Context context, Runnable yes, Runnable cancel, String title, String format, Object ... args) {
-        String messageText = MengineLog.buildTotalMsg(format, args);
+    public static void showAreYouSureAlertDialog(Context context, Runnable yes, Runnable cancel, long delayMillis, String title, String format, Object ... args) {
+        MengineUtils.performOnMainThread(() -> {
+            String messageText = MengineLog.buildTotalMsg(format, args);
 
-        MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog title: %s message: %s"
-            , title
-            , messageText
-        );
+            MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog title: %s message: %s"
+                , title
+                , messageText
+            );
 
-        String AreYouSureText = "\n\nAre you sure?";
+            String AreYouSureText = "\n\nAre you sure?";
 
-        SpannableString spannableMessage = new SpannableString(messageText + AreYouSureText);
+            SpannableString spannableMessage = new SpannableString(messageText + AreYouSureText);
 
-        spannableMessage.setSpan(new StyleSpan(Typeface.BOLD), messageText.length(), (messageText + AreYouSureText).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableMessage.setSpan(new StyleSpan(Typeface.BOLD), messageText.length(), (messageText + AreYouSureText).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableMessage.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), messageText.length(), spannableMessage.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        builder.setTitle(title);
-        builder.setMessage(spannableMessage);
-        builder.setCancelable(false);
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog YES clicked");
+            builder.setTitle(title);
+            builder.setMessage(spannableMessage);
+            builder.setCancelable(false);
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog YES clicked");
 
-                yes.run();
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog CANCEL clicked");
+                    yes.run();
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog CANCEL clicked");
 
-                cancel.run();
-                dialog.dismiss();
-            }
-        });
+                    cancel.run();
+                    dialog.dismiss();
+                }
+            });
 
-        AlertDialog alert = builder.create();
+            AlertDialog alert = builder.create();
 
-        alert.show();
+            alert.show();
 
-        int darker_gray = ContextCompat.getColor(context, android.R.color.darker_gray);
-
-        alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(darker_gray);
-        alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-
-        MengineUtils.performOnMainThreadDelayed(() -> {
+            int darker_gray = ContextCompat.getColor(context, android.R.color.darker_gray);
             int holo_red_light = ContextCompat.getColor(context, android.R.color.holo_red_light);
 
-            alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(holo_red_light);
-            alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-        }, 3000);
+            if (delayMillis > 0) {
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(darker_gray);
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+
+                MengineUtils.performOnMainThreadDelayed(() -> {
+                    alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(holo_red_light);
+                    alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                }, delayMillis);
+            } else {
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(holo_red_light);
+            }
+        });
     }
 
     public static void finishActivityWithAlertDialog(Activity activity, String format, Object... args) {
         MengineLog.logErrorException(TAG, format, args);
 
-        MengineUtils.performOnMainThreadDelayed(() -> {
-            MengineUtils.showOkAlertDialog(activity, () -> {
-                activity.finishAndRemoveTask();
-            }, "Mengine", format, args);
-        }, 0);
+        MengineUtils.showOkAlertDialog(activity, () -> {
+            activity.finishAndRemoveTask();
+        }, "Mengine", format, args);
     }
 
     public static void sleep(long millis) {

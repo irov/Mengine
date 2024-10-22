@@ -1400,7 +1400,7 @@ public class MengineActivity extends AppCompatActivity {
         return true;
     }
 
-    public void linkingOpenDeleteAccount() {
+    public boolean linkingOpenDeleteAccount() {
         MengineLog.logMessage(TAG, "request delete account");
 
         MengineUtils.showAreYouSureAlertDialog(this
@@ -1420,8 +1420,11 @@ public class MengineActivity extends AppCompatActivity {
             , () -> { //Cancel
                 MengineLog.logMessage(TAG, "delete account [CANCEL]");
             }
+            , 3000
             , "Delete Account"
             , "Click 'YES' will delete all account data. All game progress, virtual goods, and currency will be permanently removed and unrecoverable."
         );
+
+        return true;
     }
 }

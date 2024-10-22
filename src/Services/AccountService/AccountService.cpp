@@ -281,6 +281,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::deleteAccount( const ConstString & _accountId )
     {
+        if( m_currentAccountId.empty() == false )
+        {
+            if( m_currentAccountId == _accountId )
+            {
+                this->unselectCurrentAccount_();
+            }
+        }
+
+        if( m_accountProvider != nullptr )
+        {
+            m_accountProvider->onDeleteAccount( _accountId );
+        }
+
         AccountPtr account = m_accounts.erase( _accountId );
 
         if( account == nullptr )
@@ -292,14 +305,6 @@ namespace Mengine
             return false;
         }
 
-        if( m_currentAccountId.empty() == false )
-        {
-            if( m_currentAccountId == _accountId )
-            {
-                this->unselectCurrentAccount_();
-            }
-        }
-
         LOGGER_INFO( "account", "delete account '%s' UID '%.20s'"
             , account->getId().c_str()
             , account->getUID().data
@@ -307,12 +312,9 @@ namespace Mengine
 
         account->finalize();
 
-        if( m_accountProvider != nullptr )
-        {
-            m_accountProvider->onDeleteAccount( _accountId );
-        }
-
         m_invalidateAccounts = true;
+
+        this->saveAccounts();
 
         return true;
     }
@@ -371,7 +373,9 @@ namespace Mengine
             return false;
         }
 
-        if( this->deleteAccount( m_currentAccountId ) == false )
+        ConstString deleteAccountId = m_currentAccountId;
+
+        if( this->deleteAccount( deleteAccountId ) == false )
         {
             return false;
         }
@@ -598,7 +602,10 @@ namespace Mengine
                 continue;
             }
 
-            validAccount = account;
+            if( accountId != m_globalAccountId )
+            {
+                validAccount = account;
+            }
         }
 
         if( this->hasAccount( selectAccountId ) == false )

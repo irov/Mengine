@@ -240,8 +240,8 @@ endif()
 
 include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Python)
-include_directories(${THIRDPARTY_CONFIG_DIR}/zlib)
-include_directories(${THIRDPARTY_DIR}/zlib)
+
+include_directories(${ZLIB_INCLUDE_DIRS})
 
 if(WIN32)
   add_definitions(-D_WINDOWS)

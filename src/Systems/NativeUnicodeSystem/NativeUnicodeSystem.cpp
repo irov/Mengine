@@ -1,58 +1,39 @@
-#include "POSIXUnicodeSystem.h"
-
-#include "Interface/ThreadSystemInterface.h"
+#include "NativeUnicodeSystem.h"
 
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/ThreadMutexScope.h"
 
 #include "Config/StdString.h"
 #include "Config/Algorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( UnicodeSystem, Mengine::POSIXUnicodeSystem );
+SERVICE_FACTORY( UnicodeSystem, Mengine::NativeUnicodeSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    POSIXUnicodeSystem::POSIXUnicodeSystem()
+    NativeUnicodeSystem::NativeUnicodeSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    POSIXUnicodeSystem::~POSIXUnicodeSystem()
+    NativeUnicodeSystem::~NativeUnicodeSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    const ServiceRequiredList & POSIXUnicodeSystem::requiredServices() const
+    bool NativeUnicodeSystem::_initializeService()
     {
-        static ServiceRequiredList required = {
-            SERVICE_ID( ThreadSystemInterface )
-        };
-
-        return required;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool POSIXUnicodeSystem::_initializeService()
-    {
-        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
-
-        m_mutex = mutex;
-
+        //Empty
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void POSIXUnicodeSystem::_finalizeService()
+    void NativeUnicodeSystem::_finalizeService()
     {
-        m_mutex = nullptr;
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool POSIXUnicodeSystem::unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, Char * const _utf8, size_t _utf8Capacity, size_t * const _utf8Size )
+    bool NativeUnicodeSystem::unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, Char * const _utf8, size_t _utf8Capacity, size_t * const _utf8Size )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
-
         size_t unicodeSize = (_unicodeSize == (size_t)-1) ? StdString::wcslen( _unicode ) : _unicodeSize;
 
         size_t utf8Size = 0;
@@ -126,10 +107,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool POSIXUnicodeSystem::utf8ToUnicode( const Char * _utf8, size_t _utf8Size, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _sizeUnicode )
+    bool NativeUnicodeSystem::utf8ToUnicode( const Char * _utf8, size_t _utf8Size, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _sizeUnicode )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
-
         size_t utf8Index = 0;
         size_t unicodeIndex = 0;
         size_t unicodeSize = 0;

@@ -24,9 +24,19 @@ namespace Mengine
         {
             POSIXThreadIdentity * thread = reinterpret_cast<POSIXThreadIdentity *>(_userData);
 
-            EThreadPriority priority = thread->getPriority();
-
             pthread_t current_threadId = ::pthread_self();
+            
+            const ConstString & name = thread->getName();
+            
+            const Char * name_str = name.c_str();
+            
+#if defined(MENGINE_PLATFORM_APPLE)
+            ::pthread_setname_np( name_str );
+#else
+            ::pthread_setname_np( current_threadId, name_str );
+#endif
+            
+            EThreadPriority priority = thread->getPriority();
 
             sched_param sch;
             int policy;
@@ -115,9 +125,9 @@ namespace Mengine
 
         m_threadId = threadId;
 
-        LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
+        LOGGER_INFO( "thread", "create thread name: %s id: %" MENGINE_PRIu64 " priority: %d"
             , m_name.c_str()
-            , m_threadId
+            , (ThreadId)m_threadId
             , m_priority
         );
 
@@ -127,10 +137,10 @@ namespace Mengine
     void POSIXThreadIdentity::main()
     {
         ALLOCATOR_SYSTEM()
-            ->beginThread( m_threadId );
+            ->beginThread( (ThreadId)m_threadId );
 
         PLATFORM_SYSTEM()
-            ->beginThread( m_threadId );
+            ->beginThread( (ThreadId)m_threadId );
 
         MENGINE_PROFILER_THREAD( m_name.c_str() );
         
@@ -138,10 +148,10 @@ namespace Mengine
         runner->run();
 
         PLATFORM_SYSTEM()
-            ->endThread( m_threadId );
+            ->endThread( (ThreadId)m_threadId );
 
         ALLOCATOR_SYSTEM()
-            ->endThread( m_threadId );
+            ->endThread( (ThreadId)m_threadId );
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadId POSIXThreadIdentity::getThreadId() const
@@ -155,8 +165,8 @@ namespace Mengine
 
         if( status != 0 )
         {
-            LOGGER_ERROR( "invalid join thread: %ld error status: %d"
-                , m_threadId
+            LOGGER_ERROR( "invalid join thread: %" MENGINE_PRIu64 " error status: %d"
+                , (ThreadId)m_threadId
                 , status
             );
         }
@@ -179,6 +189,11 @@ namespace Mengine
     EThreadPriority POSIXThreadIdentity::getPriority() const
     {
         return m_priority;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & POSIXThreadIdentity::getName() const
+    {
+        return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
 }

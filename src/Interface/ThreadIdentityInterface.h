@@ -5,6 +5,7 @@
 
 #include "Kernel/Mixin.h"
 #include "Kernel/ThreadEnum.h"
+#include "Kernel/ConstString.h"
 
 #include "Config/Lambda.h"
 #include "Config/Thread.h"
@@ -15,6 +16,10 @@ namespace Mengine
     class ThreadIdentityInterface
         : public Mixin
     {
+    public:
+        virtual EThreadPriority getPriority() const = 0;
+        virtual const ConstString & getName() const = 0;
+        
     public:
         virtual ThreadId getThreadId() const = 0;
 

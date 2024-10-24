@@ -15,10 +15,20 @@ namespace Mengine
         static void * threadJob( void * _userData )
         {
             POSIXThreadProcessor * thread = reinterpret_cast<POSIXThreadProcessor *>(_userData);
+            
+            pthread_t current_threadId = ::pthread_self();
+            
+            const ConstString & name = thread->getName();
+            
+            const Char * name_str = name.c_str();
+            
+#if defined(MENGINE_PLATFORM_APPLE)
+            ::pthread_setname_np( name_str );
+#else
+            ::pthread_setname_np( current_threadId, name_str );
+#endif
 
             EThreadPriority priority = thread->getPriority();
-
-            pthread_t current_threadId = ::pthread_self();
 
             sched_param sch;
             int policy;
@@ -101,13 +111,11 @@ namespace Mengine
             return false;
         }
 
-        ::pthread_setname_np( threadId, m_name.c_str() );
-
         m_threadId = threadId;
 
-        LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
+        LOGGER_INFO( "thread", "create thread name: %s id: %" MENGINE_PRIu64 " priority: %d"
             , m_name.c_str()
-            , m_threadId
+            , (ThreadId)m_threadId
             , m_priority
         );
 
@@ -128,10 +136,10 @@ namespace Mengine
     void POSIXThreadProcessor::main()
     {
         ALLOCATOR_SYSTEM()
-            ->beginThread( m_threadId );
+            ->beginThread( (ThreadId)m_threadId );
 
         PLATFORM_SYSTEM()
-            ->beginThread( m_threadId );
+            ->beginThread( (ThreadId)m_threadId );
 
         while( m_exit == false )
         {
@@ -166,10 +174,10 @@ namespace Mengine
         }
 
         PLATFORM_SYSTEM()
-            ->endThread( m_threadId );
+            ->endThread( (ThreadId)m_threadId );
 
         ALLOCATOR_SYSTEM()
-            ->endThread( m_threadId );
+            ->endThread( (ThreadId)m_threadId );
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadId POSIXThreadProcessor::getThreadId() const
@@ -253,8 +261,8 @@ namespace Mengine
 
         if( status != 0 )
         {
-            LOGGER_ERROR( "join thread: %ld with error status: %d"
-                , m_threadId
+            LOGGER_ERROR( "join thread: %" MENGINE_PRIu64 " with error status: %d"
+                , (ThreadId)m_threadId
                 , status
             );
         }
@@ -277,6 +285,11 @@ namespace Mengine
     EThreadPriority POSIXThreadProcessor::getPriority() const
     {
         return m_priority;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & POSIXThreadProcessor::getName() const
+    {
+        return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
 }

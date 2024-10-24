@@ -10,6 +10,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AppleAppLovinService );

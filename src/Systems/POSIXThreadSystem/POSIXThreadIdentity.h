@@ -34,6 +34,10 @@ namespace Mengine
         void main();
 
     public:
+        EThreadPriority getPriority() const override;
+        const ConstString & getName() const override;
+        
+    public:
         ThreadId getThreadId() const override;
 
     public:
@@ -41,9 +45,6 @@ namespace Mengine
 
     public:
         bool isCurrentThread() const override;
-
-    public:
-        EThreadPriority getPriority() const;
 
     protected:
         EThreadPriority m_priority;

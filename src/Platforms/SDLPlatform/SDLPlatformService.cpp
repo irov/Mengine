@@ -840,7 +840,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->tickPlatform( 0.f, false, false, false ) == false )
+        if( this->tickPlatform( 0, 0.f, false, false, false ) == false )
         {
             return false;
         }
@@ -850,21 +850,21 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::tickPlatform( float _time, bool _render, bool _flush, bool _pause )
+    bool SDLPlatformService::tickPlatform( Timestamp _frameTime, float _frameTimeF, bool _render, bool _flush, bool _pause )
     {
         bool updating = APPLICATION_SERVICE()
-            ->beginUpdate( _time );
+            ->beginUpdate( _frameTime );
 
         if( updating == true )
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
-                _time = m_pauseUpdatingTime;
+                _frameTimeF = m_pauseUpdatingTime;
                 m_pauseUpdatingTime = -1.f;
             }
 
             APPLICATION_SERVICE()
-                ->tick( _time );
+                ->tick( _frameTimeF );
         }
 
         if( this->isNeedWindowRender() == true && _render == true )
@@ -941,12 +941,14 @@ namespace Mengine
             }
 
             Timestamp currentTime = Helper::getSystemTimestamp();
-
-            float frameTime = (float)(currentTime - m_prevTime);
+            
+            Timestamp frameTime = currentTime - m_prevTime;
 
             m_prevTime = currentTime;
+            
+            float frameTimeF = (float)frameTime;
 
-            if( this->tickPlatform( frameTime, true, true, true ) == false )
+            if( this->tickPlatform( frameTime, frameTimeF, true, true, true ) == false )
             {
                 break;
             }

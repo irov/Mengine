@@ -1701,12 +1701,12 @@ namespace Mengine
             ->minimizeWindow();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::beginUpdate( float _time )
+    bool Application::beginUpdate( Timestamp _frameTime )
     {
         MENGINE_PROFILER_CATEGORY();
 
         TIMER_SERVICE()
-            ->update( _time );
+            ->update( _frameTime );
 
         if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == true )
         {

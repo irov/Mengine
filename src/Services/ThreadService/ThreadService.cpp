@@ -113,21 +113,21 @@ namespace Mengine
         return threadJob;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::createThreadProcessor( const ConstString & _threadName, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
+    bool ThreadService::createThreadProcessor( const ConstString & _processorName, const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_ASSERTION_FATAL( this->hasThreadProcessor( _threadName ) == false, "thread '%s' already exist"
-            , _threadName.c_str()
+        MENGINE_ASSERTION_FATAL( this->hasThreadProcessor( _processorName ) == false, "thread '%s' already exist"
+            , _processorName.c_str()
         );
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexThreads );
 
         ThreadProcessorInterfacePtr threadProcessor = THREAD_SYSTEM()
-            ->createThreadProcessor( _threadName, _priority, _doc );
+            ->createThreadProcessor( _description, _priority, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( threadProcessor );
 
         ThreadProcessorDesc td;
-        td.name = _threadName;
+        td.name = _processorName;
         td.processor = threadProcessor;
 
         m_threadProcessors.emplace_back( td );
@@ -135,7 +135,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::destroyThreadProcessor( const ConstString & _threadName )
+    bool ThreadService::destroyThreadProcessor( const ConstString & _processorName )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexThreads );
 
@@ -147,7 +147,7 @@ namespace Mengine
         {
             ThreadProcessorDesc & td = *it;
 
-            if( td.name != _threadName )
+            if( td.name != _processorName )
             {
                 continue;
             }
@@ -163,11 +163,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::hasThreadProcessor( const ConstString & _threadName ) const
+    bool ThreadService::hasThreadProcessor( const ConstString & _processorName ) const
     {
         for( const ThreadProcessorDesc & td : m_threadProcessors )
         {
-            if( td.name == _threadName )
+            if( td.name == _processorName )
             {
                 return true;
             }
@@ -192,16 +192,16 @@ namespace Mengine
         m_mutexDispatchEvents->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentInterfacePtr & _doc )
+    bool ThreadService::addTask( const ConstString & _processorName, const ThreadTaskInterfacePtr & _task, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( _task, "thread [%s] add null task (doc: %s)"
-            , _threadName.c_str()
+            , _processorName.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        if( this->hasThreadProcessor( _threadName ) == false )
+        if( this->hasThreadProcessor( _processorName ) == false )
         {
             return false;
         }
@@ -209,7 +209,7 @@ namespace Mengine
         ThreadTaskDesc desc;
 
         desc.task = _task;
-        desc.threadName = _threadName;
+        desc.processorName = _processorName;
         desc.processor = nullptr;
         desc.progress = false;
         desc.complete = false;
@@ -386,7 +386,7 @@ namespace Mengine
 
                 for( ThreadProcessorDesc & desc_thread : m_threadProcessors )
                 {
-                    if( desc_thread.name != desc_task.threadName )
+                    if( desc_thread.name != desc_task.processorName )
                     {
                         continue;
                     }
@@ -536,7 +536,7 @@ namespace Mengine
     {
         for( ThreadProcessorDesc & desc_thread : m_threadProcessors )
         {
-            if( desc_thread.name != _desc.threadName )
+            if( desc_thread.name != _desc.processorName )
             {
                 continue;
             }

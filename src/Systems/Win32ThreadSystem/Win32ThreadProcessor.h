@@ -25,11 +25,15 @@ namespace Mengine
         ~Win32ThreadProcessor() override;
 
     public:
-        bool initialize( const ConstString & _name, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex );
+        bool initialize( const ThreadDescription & _description, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex );
         void finalize();
 
     public:
         void main();
+
+    public:
+        EThreadPriority getPriority() const override;
+        const ThreadDescription & getDescription() const override;
 
     public:
         ThreadId getThreadId() const override;
@@ -45,7 +49,7 @@ namespace Mengine
         bool isCurrentThread() const override;
 
     protected:
-        ConstString m_name;
+        ThreadDescription m_description;
         EThreadPriority m_priority;
 
         ThreadMutexInterfacePtr m_mutex;

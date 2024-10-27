@@ -3,16 +3,17 @@
 #include "FileModifyHookInterface.h"
 
 #include "Interface/ThreadMutexInterface.h"
-#include "Interface/ThreadWorkerInterface.h"
+#include "Interface/ThreadIdentityInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
+
+#include "Config/UniqueId.h"
 
 namespace Mengine
 {
     class FileModifyHookService
         : public ServiceBase<FileModifyHookServiceInterface>
-        , public ThreadWorkerInterface
     {
     public:
         FileModifyHookService();
@@ -30,16 +31,15 @@ namespace Mengine
         void removeFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
 
     protected:
-        void onThreadWorkerUpdate( UniqueId _id ) override;
-        bool onThreadWorkerWork( UniqueId _id ) override;
-        void onThreadWorkerDone( UniqueId _id ) override;
-
-    protected:
         void notifyFileModifies() const;
-        void checkFileModifies() const;
+        void process( const ThreadIdentityRunnerInterfacePtr & _runner ) const;
 
     protected:
-        ThreadMutexInterfacePtr m_fileModifyMutex;
+        ThreadMutexInterfacePtr m_mutex;
+
+        ThreadIdentityInterfacePtr m_thread;
+
+        UniqueId m_timerId;
 
         struct FileModifyDesc
         {

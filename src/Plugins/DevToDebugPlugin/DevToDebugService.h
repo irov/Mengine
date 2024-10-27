@@ -2,8 +2,9 @@
 
 #include "DevToDebugInterface.h"
 
-#include "Interface/ThreadWorkerInterface.h"
-#include "Interface/HttpSystemInterface.h"
+#include "Interface/ThreadMutexInterface.h"
+#include "Interface/ThreadIdentityInterface.h"
+#include "Interface/HttpReceiverInterface.h"
 
 #include "Plugins/JSONPlugin/JSONInterface.h"
 
@@ -18,7 +19,6 @@ namespace Mengine
 {
     class DevToDebugService
         : public ServiceBase<DevToDebugServiceInterface>
-        , public ThreadWorkerInterface
         , public HttpReceiverInterface
     {
     public:
@@ -38,14 +38,9 @@ namespace Mengine
         void removeTab( const ConstString & _name ) override;
 
     protected:
-        void process();
+        void process( const ThreadIdentityRunnerInterfacePtr & _runner );
         void sync();
         void stop();
-
-    public:
-        void onThreadWorkerUpdate( UniqueId _id ) override;
-        bool onThreadWorkerWork( UniqueId _id ) override;
-        void onThreadWorkerDone( UniqueId _id ) override;
 
     protected:
         void onHttpRequestComplete( const HttpResponseInterfacePtr & _response ) override;
@@ -66,6 +61,8 @@ namespace Mengine
 
         ThreadMutexInterfacePtr m_mutexTabs;
         ThreadMutexInterfacePtr m_mutexCommands;
+
+        ThreadIdentityInterfacePtr m_thread;
 
         typedef Hashtable<ConstString, DevToDebugTabInterfacePtr> HashtableDevToDebugTabs;
         HashtableDevToDebugTabs m_tabsProcess;

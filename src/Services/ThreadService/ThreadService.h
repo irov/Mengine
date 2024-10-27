@@ -30,17 +30,17 @@ namespace Mengine
         ThreadJobPtr createJob( uint32_t _sleep, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        bool createThreadProcessor( const ConstString & _threadName, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) override;
-        bool destroyThreadProcessor( const ConstString & _threadName ) override;
+        bool createThreadProcessor( const ConstString & _processorName, const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) override;
+        bool destroyThreadProcessor( const ConstString & _processorName ) override;
 
     public:
-        bool hasThreadProcessor( const ConstString & _threadName ) const override;
+        bool hasThreadProcessor( const ConstString & _processorName ) const override;
 
     public:
         void dispatchMainThreadEvent( const LambdaEvent & _event ) override;
 
     public:
-        bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentInterfacePtr & _doc ) override;
+        bool addTask( const ConstString & _processorName, const ThreadTaskInterfacePtr & _task, const DocumentInterfacePtr & _doc ) override;
         bool joinTask( const ThreadTaskInterfacePtr & _task ) override;
 
     public:
@@ -75,7 +75,7 @@ namespace Mengine
         {
             ThreadTaskInterfacePtr task;
             ThreadProcessorInterfacePtr processor;
-            ConstString threadName;
+            ConstString processorName;
             bool progress;
             bool complete;
 

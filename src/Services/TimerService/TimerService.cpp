@@ -45,7 +45,7 @@ namespace Mengine
         m_timers.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId TimerService::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc )
+    UniqueId TimerService::addTimer( Timestamp _milliseconds, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -83,7 +83,7 @@ namespace Mengine
         desc.lambda = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TimerService::update( float _time )
+    void TimerService::update( Timestamp _frameTime )
     {
         for( TimerDesc & desc : m_timers )
         {
@@ -92,9 +92,9 @@ namespace Mengine
                 continue;
             }
 
-            desc.time -= _time;
+            desc.time -= _frameTime;
 
-            if( desc.time > 0.f )
+            if( desc.time > 0 )
             {
                 continue;
             }

@@ -6,6 +6,7 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/ThreadEnum.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/ThreadDescription.h"
 
 #include "Config/Lambda.h"
 #include "Config/Thread.h"
@@ -18,16 +19,19 @@ namespace Mengine
     {
     public:
         virtual EThreadPriority getPriority() const = 0;
-        virtual const ConstString & getName() const = 0;
-        
+        virtual const ThreadDescription & getDescription() const = 0;
+
     public:
         virtual ThreadId getThreadId() const = 0;
 
-    public:        
-        virtual ThreadIdentityRunnerInterfacePtr run( const LambdaThreadRunner & _lambda, const DocumentInterfacePtr & _doc ) = 0;
+    public:
+        virtual ThreadIdentityRunnerInterfacePtr run( const LambdaThreadRunner & _lambda, uint32_t _sleep, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual void join() = 0;
+        virtual const ThreadIdentityRunnerInterfacePtr & getRunner() const = 0;
+
+    public:
+        virtual void join( bool _cancel ) = 0;
 
     public:
         virtual bool isCurrentThread() const = 0;

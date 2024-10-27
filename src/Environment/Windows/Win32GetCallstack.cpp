@@ -462,7 +462,7 @@ namespace Mengine
                 return false;
             }
 
-            HMODULE hKernel32 = ::LoadLibraryW( L"Kernel32.dll" );
+            HMODULE hKernel32 = ::GetModuleHandleW( L"kernel32.dll" );
 
             if( hKernel32 == NULL )
             {
@@ -474,7 +474,6 @@ namespace Mengine
             if( (*pSymInitialize)(hProcess, NULL, FALSE) == FALSE )
             {
                 ::FreeLibrary( hDbgHelp );
-                ::FreeLibrary( hKernel32 );
 
                 return false;
             }
@@ -493,7 +492,6 @@ namespace Mengine
             if( hThread == NULL )
             {
                 ::FreeLibrary( hDbgHelp );
-                ::FreeLibrary( hKernel32 );
 
                 return false;
             }
@@ -508,7 +506,6 @@ namespace Mengine
             }
 
             ::FreeLibrary( hDbgHelp );
-            ::FreeLibrary( hKernel32 );
 
             return successful;
         }

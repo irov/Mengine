@@ -61,14 +61,14 @@ namespace Mengine
         {
             Stringstream ss;
             ss << "PrefetcherService_" << index;
-            ConstString threadName = Helper::stringizeString( ss.str() );
+            ConstString processorName = Helper::stringizeString( ss.str() );
 
             THREAD_SERVICE()
-                ->createThreadProcessor( threadName, ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
+                ->createThreadProcessor( processorName, MENGINE_THREAD_DESCRIPTION( "MNGPrefetcher" ), ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
 
-            m_threads.emplace_back( threadName );
+            m_threads.emplace_back( processorName );
 
-            m_threadQueue->addThread( threadName );
+            m_threadQueue->addThread( processorName );
         }
 
         m_factoryThreadTaskPrefetchImageDecoder = Helper::makeFactoryPool<ThreadTaskPrefetchImageDecoder, 16>( MENGINE_DOCUMENT_FACTORABLE );

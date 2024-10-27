@@ -93,7 +93,7 @@ namespace Mengine
     public:
         bool render() override;
         void flush() override;
-        bool beginUpdate( float _time ) override;
+        bool beginUpdate( Timestamp _time ) override;
         void tick( float _time ) override;
         void endUpdate() override;
         void setFocus( bool _focus ) override;

@@ -24,31 +24,34 @@ namespace Mengine
         ~POSIXThreadIdentity() override;
 
     public:
-        bool initialize( EThreadPriority _priority, const ConstString & _name );
+        bool initialize( const ThreadDescription & _description, EThreadPriority _priority );
         void finalize();
 
     public:
-        ThreadIdentityRunnerInterfacePtr run( const LambdaThreadRunner & _lambda, const DocumentInterfacePtr & _doc ) override;
+        ThreadIdentityRunnerInterfacePtr run( const LambdaThreadRunner & _lambda, uint32_t _sleep, const DocumentInterfacePtr & _doc ) override;
+
+    public:
+        const ThreadIdentityRunnerInterfacePtr & getRunner() const override;
 
     public:
         void main();
 
     public:
         EThreadPriority getPriority() const override;
-        const ConstString & getName() const override;
+        const ThreadDescription & getDescription() const override;
         
     public:
         ThreadId getThreadId() const override;
 
     public:
-        void join() override;
+        void join( bool _cancel ) override;
 
     public:
         bool isCurrentThread() const override;
 
     protected:
+        ThreadDescription m_description;
         EThreadPriority m_priority;
-        ConstString m_name;
 
         ThreadIdentityRunnerInterfacePtr m_runner;
 

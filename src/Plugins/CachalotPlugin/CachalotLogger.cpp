@@ -10,15 +10,13 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/LoggerHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
-#include "Kernel/ThreadWorkerHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/VectorHelper.h"
 #include "Kernel/JSON2Helper.h"
 #include "Kernel/BuildMode.h"
+#include "Kernel/ThreadHelper.h"
 
 #include "Config/StdString.h"
-
-#define CACHALOTLOGGER_THREAD_NAME "CachalotLogger"
 
 namespace Mengine
 {
@@ -54,10 +52,14 @@ namespace Mengine
 
         uint32_t CachalotPlugin_LoggerTime = CONFIG_VALUE( "CachalotPlugin", "Time", 2000 );
 
-        if( Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( CACHALOTLOGGER_THREAD_NAME ), ETP_BELOW_NORMAL, CachalotPlugin_LoggerTime, ThreadWorkerInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        ThreadIdentityInterfacePtr thread = Helper::createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGCachalot" ), ETP_BELOW_NORMAL, [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
         {
-            return false;
-        }        
+            this->process( _runner );
+
+            return true;
+        }, CachalotPlugin_LoggerTime, MENGINE_DOCUMENT_FACTORABLE );
+
+        m_thread = thread;
 
         return true;
     }
@@ -79,8 +81,10 @@ namespace Mengine
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    void CachalotLogger::process()
+    void CachalotLogger::process( const ThreadIdentityRunnerInterfacePtr & _runner )
     {
+        MENGINE_UNUSED( _runner );
+
         if( m_status != ECS_READY )
         {
             return;
@@ -265,32 +269,13 @@ namespace Mengine
         m_messages.clear();
         m_mutex->unlock();
 
-        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( CACHALOTLOGGER_THREAD_NAME ) );
+        if( m_thread != nullptr )
+        {
+            m_thread->join( true );
+            m_thread = nullptr;
+        }
 
         m_mutex = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void CachalotLogger::onThreadWorkerUpdate( UniqueId _id )
-    {
-        MENGINE_UNUSED( _id );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool CachalotLogger::onThreadWorkerWork( UniqueId _id )
-    {
-        MENGINE_UNUSED( _id );
-
-        this->process();
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void CachalotLogger::onThreadWorkerDone( UniqueId _id )
-    {
-        MENGINE_UNUSED( _id );
-
-        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void CachalotLogger::onHttpRequestComplete( const HttpResponseInterfacePtr & _response )

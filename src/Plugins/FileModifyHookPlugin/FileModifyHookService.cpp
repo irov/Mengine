@@ -2,11 +2,13 @@
 
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/TimerServiceInterface.h"
 
-#include "Kernel/ThreadWorkerHelper.h"
+#include "Kernel/ThreadHelper.h"
 #include "Kernel/AssertionContainer.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/StdString.h"
 
@@ -19,6 +21,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     FileModifyHookService::FileModifyHookService()
+        : m_timerId( INVALID_UNIQUE_ID )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -37,20 +40,52 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileModifyHookService::_initializeService()
     {
-        Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( FILEMODIFYHOOK_THREAD_NAME ), ETP_BELOW_NORMAL, 500, ThreadWorkerInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+        ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        ThreadMutexInterfacePtr fileModifyMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
+        m_mutex = mutex;
 
-        m_fileModifyMutex = fileModifyMutex;
+        uint32_t FileModifyHook_Time = CONFIG_VALUE( "FileModifyHookPlugin", "Time", 500 );
+
+        ThreadIdentityInterfacePtr thread = Helper::createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGFileModify" ), ETP_BELOW_NORMAL, [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
+        {
+            this->process( _runner );
+
+            return true;
+        }, FileModifyHook_Time, MENGINE_DOCUMENT_FACTORABLE );
+
+        m_thread = thread;
+
+        UniqueId timerId = TIMER_SERVICE()
+            ->addTimer( FileModifyHook_Time, [this]( UniqueId _id )
+        {
+            MENGINE_UNUSED( _id );
+
+            this->notifyFileModifies();
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_FATAL( timerId != INVALID_UNIQUE_ID, "invalid add timer" );
+
+        m_timerId = timerId;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void FileModifyHookService::_finalizeService()
     {
-        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( FILEMODIFYHOOK_THREAD_NAME ) );
+        if( m_thread != nullptr )
+        {
+            m_thread->join( true );
+            m_thread = nullptr;
+        }
 
-        m_fileModifyMutex = nullptr;
+        if( m_timerId != INVALID_UNIQUE_ID )
+        {
+            TIMER_SERVICE()
+                ->removeTimer( m_timerId );
+            m_timerId = INVALID_UNIQUE_ID;
+        }
+
+        m_mutex = nullptr;
 
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_fileModifies );
 
@@ -69,7 +104,7 @@ namespace Mengine
 
         desc.modify = false;
 
-        MENGINE_THREAD_MUTEX_SCOPE( m_fileModifyMutex );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         m_fileModifies.emplace_back( desc );
 
@@ -81,7 +116,7 @@ namespace Mengine
         Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
         _fileGroup->getFullPath( _filePath, fullPath );
 
-        MENGINE_THREAD_MUTEX_SCOPE( m_fileModifyMutex );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         for( VectorFileModifyDesc::iterator
             it = m_fileModifies.begin(),
@@ -103,32 +138,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void FileModifyHookService::onThreadWorkerUpdate( UniqueId _id )
-    {
-        MENGINE_UNUSED( _id );
-
-        this->notifyFileModifies();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool FileModifyHookService::onThreadWorkerWork( UniqueId _id )
-    {
-        MENGINE_UNUSED( _id );
-
-        this->checkFileModifies();
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void FileModifyHookService::onThreadWorkerDone( UniqueId _id )
-    {
-        MENGINE_UNUSED( _id );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
     void FileModifyHookService::notifyFileModifies() const
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_fileModifyMutex );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         for( const FileModifyDesc & desc : m_fileModifies )
         {
@@ -142,9 +154,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void FileModifyHookService::checkFileModifies() const
+    void FileModifyHookService::process( const ThreadIdentityRunnerInterfacePtr & _runner ) const
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_fileModifyMutex );
+        MENGINE_UNUSED( _runner );
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         for( const FileModifyDesc & desc : m_fileModifies )
         {

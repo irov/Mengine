@@ -25,7 +25,7 @@
 
 #include "math/utils.h"
 
-#define SOUNDBUFFERUPDATE_THREAD_NAME "SoundBufferUpdate"
+#define SOUNDBUFFERUPDATE_PROCESSOR_NAME "SoundBufferUpdate"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SoundService, Mengine::SoundService );
@@ -75,13 +75,13 @@ namespace Mengine
             m_threadJobSoundBufferUpdate = threadJobSoundBufferUpdate;
 
             if( THREAD_SERVICE()
-                ->createThreadProcessor( STRINGIZE_STRING_LOCAL_I( SOUNDBUFFERUPDATE_THREAD_NAME ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->createThreadProcessor( STRINGIZE_STRING_LOCAL_I( SOUNDBUFFERUPDATE_PROCESSOR_NAME ), MENGINE_THREAD_DESCRIPTION( "MNGSoundUpdate" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 return false;
             }
 
             if( THREAD_SERVICE()
-                ->addTask( STRINGIZE_STRING_LOCAL_I( SOUNDBUFFERUPDATE_THREAD_NAME ), m_threadJobSoundBufferUpdate, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->addTask( STRINGIZE_STRING_LOCAL_I( SOUNDBUFFERUPDATE_PROCESSOR_NAME ), m_threadJobSoundBufferUpdate, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 return false;
             }
@@ -143,7 +143,7 @@ namespace Mengine
         if( m_supportStream == true )
         {
             THREAD_SERVICE()
-                ->destroyThreadProcessor( STRINGIZE_STRING_LOCAL_I( SOUNDBUFFERUPDATE_THREAD_NAME ) );
+                ->destroyThreadProcessor( STRINGIZE_STRING_LOCAL_I( SOUNDBUFFERUPDATE_PROCESSOR_NAME ) );
         }
 
         m_soundVolumeProviders.clear();

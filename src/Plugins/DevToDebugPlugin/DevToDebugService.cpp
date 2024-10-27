@@ -7,6 +7,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
 #include "Interface/HttpServiceInterface.h"
+#include "Interface/HttpRequestInterface.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Environment/Android/AndroidDeclaration.h"
@@ -41,15 +42,12 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/JSONHelper.h"
-#include "Kernel/ThreadWorkerHelper.h"
-#include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/ThreadHelper.h"
 #include "Kernel/Fingerprint.h"
 #include "Kernel/DataHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
-
-#define DEVTODEBUGPROCESS_THREAD_NAME "DevToDebugProcess"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 //////////////////////////////////////////////////////////////////////////
@@ -238,12 +236,16 @@ namespace Mengine
 
         uint32_t DevToDebug_ProccesTime = CONFIG_VALUE( "DevToDebugPlugin", "ProccesTime", 2000 );
 
-        if( Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( DEVTODEBUGPROCESS_THREAD_NAME ), ETP_BELOW_NORMAL, DevToDebug_ProccesTime, ThreadWorkerInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        ThreadIdentityInterfacePtr thread = Helper::createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGD2DProcess" ), ETP_BELOW_NORMAL, [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
         {
-            return false;
-        }
+            this->process( _runner );
 
-        float DevToDebug_PropertySyncTime = CONFIG_VALUE( "DevToDebugPlugin", "PropertySyncTime", 1000.f );
+            return true;
+        }, DevToDebug_ProccesTime, MENGINE_DOCUMENT_FACTORABLE );
+
+        m_thread = thread;
+
+        Timestamp DevToDebug_PropertySyncTime = CONFIG_VALUE( "DevToDebugPlugin", "PropertySyncTime", 1000 );
 
         UniqueId timerId = TIMER_SERVICE()
             ->addTimer( DevToDebug_PropertySyncTime, [this]( UniqueId _id )
@@ -353,7 +355,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::_stopService()
     {
-        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( DEVTODEBUGPROCESS_THREAD_NAME ) );
+        if( m_thread != nullptr )
+        {
+            m_thread->join( true );
+            m_thread = nullptr;
+        }
 
         if( m_timerId != INVALID_UNIQUE_ID )
         {
@@ -433,8 +439,10 @@ namespace Mengine
         m_mutexCommands->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugService::process()
+    void DevToDebugService::process( const ThreadIdentityRunnerInterfacePtr & _runner )
     {
+        MENGINE_UNUSED( _runner );
+
         switch( m_status )
         {
         case EDTDS_NONE:
@@ -503,29 +511,6 @@ namespace Mengine
         default:
             break;
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DevToDebugService::onThreadWorkerUpdate( UniqueId _id )
-    {
-        MENGINE_UNUSED( _id );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DevToDebugService::onThreadWorkerWork( UniqueId _id )
-    {
-        MENGINE_UNUSED( _id );
-
-        this->process();
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DevToDebugService::onThreadWorkerDone( UniqueId _id )
-    {
-        MENGINE_UNUSED( _id );
-
-        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugService::onHttpRequestComplete( const HttpResponseInterfacePtr & _response )

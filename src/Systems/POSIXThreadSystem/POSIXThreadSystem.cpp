@@ -66,19 +66,19 @@ namespace Mengine
         m_factoryThreadConditionVariable = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityInterfacePtr POSIXThreadSystem::createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
+    ThreadIdentityInterfacePtr POSIXThreadSystem::createThreadIdentity( const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
         POSIXThreadIdentityPtr identity = m_factoryThreadIdentity->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( identity, "invalid create thread identity '%s' (doc: %s)"
-            , _name.c_str()
+            , _description.nameA
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        if( identity->initialize( _priority, _name ) == false )
+        if( identity->initialize( _description, _priority ) == false )
         {
             LOGGER_ERROR( "invalid initialize thread '%s' (doc: %s)"
-                , _name.c_str()
+                , _description.nameA
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
@@ -88,12 +88,12 @@ namespace Mengine
         return identity;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadProcessorInterfacePtr POSIXThreadSystem::createThreadProcessor( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
+    ThreadProcessorInterfacePtr POSIXThreadSystem::createThreadProcessor( const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
         POSIXThreadProcessorPtr identity = m_factoryThreadProcessor->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( identity, "invalid create thread processor '%s' (doc: %s)"
-            , _name.c_str()
+            , _description.nameA
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
@@ -101,10 +101,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex" );
 
-        if( identity->initialize( _priority, _name, mutex ) == false )
+        if( identity->initialize( _description, _priority, mutex ) == false )
         {
             LOGGER_ERROR( "invalid initialize thread '%s' (doc: %s)"
-                , _name.c_str()
+                , _description.nameA
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 

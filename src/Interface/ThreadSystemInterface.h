@@ -10,6 +10,8 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/DocumentHelper.h"
 
+#include "Kernel/ThreadDescription.h"
+
 #include "Config/Thread.h"
 
 namespace Mengine
@@ -20,8 +22,8 @@ namespace Mengine
         SERVICE_DECLARE( "ThreadSystem" )
 
     public:
-        virtual ThreadIdentityInterfacePtr createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) = 0;
-        virtual ThreadProcessorInterfacePtr createThreadProcessor( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) = 0;
+        virtual ThreadIdentityInterfacePtr createThreadIdentity( const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) = 0;
+        virtual ThreadProcessorInterfacePtr createThreadProcessor( const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) = 0;
         virtual ThreadMutexInterfacePtr createMutex( const DocumentInterfacePtr & _doc ) = 0;
         virtual ThreadSharedMutexInterfacePtr createSharedMutex( const DocumentInterfacePtr & _doc ) = 0;
         virtual ThreadConditionVariableInterfacePtr createConditionVariable( const DocumentInterfacePtr & _doc ) = 0;

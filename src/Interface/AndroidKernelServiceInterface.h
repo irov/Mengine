@@ -4,7 +4,7 @@
 
 #include "Environment/Android/AndroidIncluder.h"
 
-#include "Config/Char.h"
+#include "Kernel/ConstString.h"
 
 namespace Mengine
 {
@@ -14,15 +14,7 @@ namespace Mengine
         SERVICE_DECLARE( "AndroidKernelService" )
 
     public:
-        virtual size_t getAndroidId( Char * _androidId, size_t _capacity ) const = 0;
-
-    public:
         virtual void stringize( JNIEnv * _jenv, jstring _value, ConstString * const _cstr ) = 0;
-
-    public:
-        virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
-        virtual bool openMail( const Char * _email, const Char * _subject, const Char * _body ) = 0;
-        virtual bool openDeleteAccount() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Interface/ThreadWorkerInterface.h"
-#include "Interface/HttpSystemInterface.h"
+#include "Interface/HttpReceiverInterface.h"
+#include "Interface/ThreadMutexInterface.h"
+#include "Interface/ThreadIdentityInterface.h"
 
 #include "Kernel/LoggerBase.h"
 
@@ -10,7 +11,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class CachalotLogger
         : public LoggerBase
-        , public ThreadWorkerInterface
         , public HttpReceiverInterface
     {
     public:
@@ -29,13 +29,8 @@ namespace Mengine
         void _log( const LoggerRecordInterfacePtr & _record ) override;
 
     protected:
-        void process();
+        void process( const ThreadIdentityRunnerInterfacePtr & _runner );
         void stop();
-
-    protected:
-        void onThreadWorkerUpdate( UniqueId _id ) override;
-        bool onThreadWorkerWork( UniqueId _id ) override;
-        void onThreadWorkerDone( UniqueId _id ) override;
 
     protected:
         void onHttpRequestComplete( const HttpResponseInterfacePtr & _response ) override;
@@ -53,6 +48,7 @@ namespace Mengine
         ECachalotStatus m_status;
 
         ThreadMutexInterfacePtr m_mutex;
+        ThreadIdentityInterfacePtr m_thread;
 
         typedef Vector<LoggerRecordInterfacePtr> VectorMessages;
         VectorMessages m_messages;

@@ -23,18 +23,18 @@ namespace Mengine
         virtual ThreadJobPtr createJob( uint32_t _sleep, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
-        virtual bool createThreadProcessor( const ConstString & _threadName, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) = 0;
-        virtual bool destroyThreadProcessor( const ConstString & _threadName ) = 0;
+        virtual bool createThreadProcessor( const ConstString & _processorName, const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool destroyThreadProcessor( const ConstString & _processorName ) = 0;
 
     public:
-        virtual bool hasThreadProcessor( const ConstString & _threadName ) const = 0;
+        virtual bool hasThreadProcessor( const ConstString & _processorName ) const = 0;
 
     public:
         typedef Lambda<void()> LambdaEvent;
         virtual void dispatchMainThreadEvent( const LambdaEvent & _event ) = 0;
 
     public:
-        virtual bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool addTask( const ConstString & _processorName, const ThreadTaskInterfacePtr & _task, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool joinTask( const ThreadTaskInterfacePtr & _task ) = 0;
 
     public:

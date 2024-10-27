@@ -26,14 +26,12 @@ namespace Mengine
 
             pthread_t current_threadId = ::pthread_self();
             
-            const ConstString & name = thread->getName();
-            
-            const Char * name_str = name.c_str();
-            
+            const ThreadDescription & description = thread->getDescription();
+
 #if defined(MENGINE_PLATFORM_APPLE)
-            ::pthread_setname_np( name_str );
+            ::pthread_setname_np( description.nameA );
 #else
-            ::pthread_setname_np( current_threadId, name_str );
+            ::pthread_setname_np( current_threadId, description.nameA );
 #endif
             
             EThreadPriority priority = thread->getPriority();
@@ -71,7 +69,8 @@ namespace Mengine
 
             if( ::pthread_setschedparam( current_threadId, policy, &sch ) != 0 )
             {
-                LOGGER_ERROR( "Failed to set thread priority: %d"
+                LOGGER_ERROR( "Failed to set thread: %s priority: %d"
+                    , description.nameA
                     , sch.sched_priority 
                 );
             }
@@ -93,10 +92,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool POSIXThreadIdentity::initialize( EThreadPriority _priority, const ConstString & _name )
+    bool POSIXThreadIdentity::initialize( const ThreadDescription & _description, EThreadPriority _priority )
     {
+        m_description = _description;
         m_priority = _priority;
-        m_name = _name;
 
         return true;
     }
@@ -107,16 +106,17 @@ namespace Mengine
         m_runner = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityRunnerInterfacePtr POSIXThreadIdentity::run( const LambdaThreadRunner & _lambda, const DocumentInterfacePtr & _doc )
+    ThreadIdentityRunnerInterfacePtr POSIXThreadIdentity::run( const LambdaThreadRunner & _lambda, uint32_t _sleep, const DocumentInterfacePtr & _doc )
     {
-        m_runner = Helper::makeFactorableUnique<POSIXThreadIdentityRunner>( _doc, _lambda );
+        m_runner = Helper::makeFactorableUnique<POSIXThreadIdentityRunner>( _doc, _lambda, _sleep );
 
         pthread_t threadId;
         int status = ::pthread_create( &threadId, nullptr, &Detail::s_treadJob, reinterpret_cast<void *>(this) );
 
         if( status != 0 )
         {
-            LOGGER_ERROR( "invalid create thread error: %d"
+            LOGGER_ERROR( "invalid create thread: %s error: %d"
+                , m_description.nameA
                 , status
             );
 
@@ -125,12 +125,17 @@ namespace Mengine
 
         m_threadId = threadId;
 
-        LOGGER_INFO( "thread", "create thread name: %s id: %" MENGINE_PRIu64 " priority: %d"
-            , m_name.c_str()
+        LOGGER_INFO( "thread", "create thread: %s id: %" MENGINE_PRIu64 " priority: %d"
+            , m_description.nameA
             , (ThreadId)m_threadId
             , m_priority
         );
 
+        return m_runner;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ThreadIdentityRunnerInterfacePtr & POSIXThreadIdentity::getRunner() const
+    {
         return m_runner;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -145,7 +150,11 @@ namespace Mengine
         MENGINE_PROFILER_THREAD( m_name.c_str() );
         
         ThreadIdentityRunnerInterfacePtr runner = m_runner;
-        runner->run();
+
+        while( runner->run() == true && runner->isCancel() == false )
+        {
+            runner->sleep();
+        }
 
         PLATFORM_SYSTEM()
             ->endThread( (ThreadId)m_threadId );
@@ -159,8 +168,13 @@ namespace Mengine
         return (ThreadId)m_threadId;
     }
     //////////////////////////////////////////////////////////////////////////
-    void POSIXThreadIdentity::join()
+    void POSIXThreadIdentity::join( bool _cancel )
     {
+        if( _cancel == true )
+        {
+            m_runner->cancel();
+        }
+
         int status = ::pthread_join( m_threadId, nullptr );
 
         if( status != 0 )
@@ -191,9 +205,9 @@ namespace Mengine
         return m_priority;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & POSIXThreadIdentity::getName() const
+    const ThreadDescription & POSIXThreadIdentity::getDescription() const
     {
-        return m_name;
+        return m_description;
     }
     //////////////////////////////////////////////////////////////////////////
 }

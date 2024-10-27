@@ -32,7 +32,7 @@ namespace Mengine
         void _destroy() override;
 
     protected:
-        pthread_mutex_t m_cs;
+        pthread_mutex_t m_mutex;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<POSIXThreadMutex, ThreadMutexInterface> POSIXThreadMutexPtr;

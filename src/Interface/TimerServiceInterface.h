@@ -5,6 +5,7 @@
 
 #include "Config/Lambda.h"
 #include "Config/UniqueId.h"
+#include "Config/Timestamp.h"
 
 namespace Mengine
 {
@@ -15,11 +16,11 @@ namespace Mengine
 
     public:
         typedef Lambda<void( UniqueId _id )> LambdaTimer;
-        virtual UniqueId addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) = 0;
+        virtual UniqueId addTimer( Timestamp _milliseconds, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) = 0;
         virtual void removeTimer( UniqueId _id ) = 0;
 
     public:
-        virtual void update( float _time ) = 0;
+        virtual void update( Timestamp _frameTime ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

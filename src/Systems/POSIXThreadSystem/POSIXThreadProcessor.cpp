@@ -18,14 +18,12 @@ namespace Mengine
             
             pthread_t current_threadId = ::pthread_self();
             
-            const ConstString & name = thread->getName();
-            
-            const Char * name_str = name.c_str();
-            
+            const ThreadDescription & description = thread->getDescription();
+
 #if defined(MENGINE_PLATFORM_APPLE)
-            ::pthread_setname_np( name_str );
+            ::pthread_setname_np( description.nameA );
 #else
-            ::pthread_setname_np( current_threadId, name_str );
+            ::pthread_setname_np( current_threadId, description.nameA );
 #endif
 
             EThreadPriority priority = thread->getPriority();
@@ -87,10 +85,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool POSIXThreadProcessor::initialize( EThreadPriority _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex )
+    bool POSIXThreadProcessor::initialize( const ThreadDescription & _description, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex )
     {
+        m_description = _description;
         m_priority = _priority;
-        m_name = _name;
 
         m_mutex = _mutex;
 
@@ -104,7 +102,8 @@ namespace Mengine
 
         if( status != 0 )
         {
-            LOGGER_ERROR( "invalid create thread error: %d"
+            LOGGER_ERROR( "invalid create thread '%s' error: %d"
+                , m_description.nameA
                 , status
             );
 
@@ -114,7 +113,7 @@ namespace Mengine
         m_threadId = threadId;
 
         LOGGER_INFO( "thread", "create thread name: %s id: %" MENGINE_PRIu64 " priority: %d"
-            , m_name.c_str()
+            , m_description.nameA
             , (ThreadId)m_threadId
             , m_priority
         );
@@ -287,9 +286,9 @@ namespace Mengine
         return m_priority;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & POSIXThreadProcessor::getName() const
+    const ThreadDescription & POSIXThreadProcessor::getDescription() const
     {
-        return m_name;
+        return m_description;
     }
     //////////////////////////////////////////////////////////////////////////
 }

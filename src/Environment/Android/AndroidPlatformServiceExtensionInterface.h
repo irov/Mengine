@@ -10,6 +10,9 @@ namespace Mengine
         : public UnknownInterface
     {
     public:
+        virtual size_t androidNativeGetAndroidId( Char * _androidId, size_t _capacity ) const = 0;
+
+    public:
         virtual void androidNativeSurfaceCreatedEvent( ANativeWindow * _nativeWindow ) = 0;
         virtual void androidNativeSurfaceDestroyedEvent( ANativeWindow * _nativeWindow ) = 0;
         virtual void androidNativeSurfaceChangedEvent( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate ) = 0;

@@ -7,6 +7,12 @@ src
     
     AndroidPlatformSystem.h
     AndroidPlatformSystem.cpp
+    
+    AndroidAnalyticsEventProvider.h
+    AndroidAnalyticsEventProvider.cpp
+    
+    AndroidProxyLogger.h
+    AndroidProxyLogger.cpp
 )
 
 ADD_MENGINE_LIBRARY(Platforms)

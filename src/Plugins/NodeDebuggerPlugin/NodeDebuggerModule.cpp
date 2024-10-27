@@ -614,7 +614,7 @@ namespace Mengine
             ->createJob( 50u, MENGINE_DOCUMENT_FACTORABLE );
 
         if( THREAD_SERVICE()
-            ->createThreadProcessor( STRINGIZE_STRING_LOCAL_I( NODEDEBUGGERLISTEN_THREAD_NAME ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->createThreadProcessor( STRINGIZE_STRING_LOCAL_I( NODEDEBUGGERLISTEN_THREAD_NAME ), MENGINE_THREAD_DESCRIPTION( "MNGNodeDebugger" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }

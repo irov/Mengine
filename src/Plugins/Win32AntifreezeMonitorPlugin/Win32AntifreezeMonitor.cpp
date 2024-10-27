@@ -79,7 +79,7 @@ namespace Mengine
         m_threadJob = threadJob;
 
         if( THREAD_SERVICE()
-            ->createThreadProcessor( STRINGIZE_STRING_LOCAL_I( WIN32ANTIFREEZEMONITOR_THREAD_NAME ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->createThreadProcessor( STRINGIZE_STRING_LOCAL_I( WIN32ANTIFREEZEMONITOR_THREAD_NAME ), MENGINE_THREAD_DESCRIPTION( "MNGAntiFreeze" ), ETP_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }

@@ -1079,7 +1079,7 @@ namespace Mengine
                 return surface;
             }
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addTimer( float _delay, const pybind::object & _timer, const pybind::args & _args )
+            UniqueId s_addTimer( Timestamp _delay, const pybind::object & _timer, const pybind::args & _args )
             {
                 UniqueId id = TIMER_SERVICE()
                     ->addTimer( _delay, [_timer, _args]( UniqueId _id )

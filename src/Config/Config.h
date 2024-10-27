@@ -347,6 +347,10 @@
 #   endif
 #endif
 
+#ifndef MENGINE_MAX_THREAD_NAME
+#define MENGINE_MAX_THREAD_NAME 15
+#endif
+
 #ifndef MENGINE_MAX_COMMAND_LENGTH
 #   if defined(MENGINE_PLATFORM_WINDOWS)
 #       define MENGINE_MAX_COMMAND_LENGTH 32768

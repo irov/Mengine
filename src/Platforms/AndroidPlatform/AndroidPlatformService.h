@@ -17,6 +17,8 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/FactoryInterface.h"
+#include "Interface/AnalyticsEventProviderInterface.h"
+#include "Interface/LoggerInterface.h"
 
 #include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidPlatformServiceExtensionInterface.h"
@@ -56,7 +58,7 @@ namespace Mengine
         bool runPlatform()	override;
         void loopPlatform() override;
         bool updatePlatform() override;
-        bool tickPlatform( float _time, bool _render, bool _flush, bool _pause ) override;
+        bool tickPlatform( Timestamp _frameTime, float _frameTimeF, bool _render, bool _flush, bool _pause ) override;
         void stopPlatform()	override;
 
     public:
@@ -160,9 +162,16 @@ namespace Mengine
         bool getClipboardText( Char * _value, size_t _capacity ) const override;
 
     protected:
+        size_t androidNativeGetAndroidId( Char * _androidId, size_t _capacity ) const override;
+
+    protected:
         void androidNativeSurfaceCreatedEvent( ANativeWindow * _nativeWindow ) override;
         void androidNativeSurfaceDestroyedEvent( ANativeWindow * _nativeWindow ) override;
         void androidNativeSurfaceChangedEvent( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate ) override;
+
+    protected:
+        void notifyBootstrapperInitializeBaseServices_();
+        void notifyBootstrapperCreateApplication_();
 
     protected:
         ETouchCode acquireFingerIndex_( jint _fingerId );
@@ -313,6 +322,10 @@ namespace Mengine
         Timestamp m_beginTime;
 
         Tags m_platformTags;
+
+        AnalyticsEventProviderInterfacePtr m_androidAnalyticsEventProvider;
+
+        LoggerInterfacePtr m_proxyLogger;
 
         ThreadMutexInterfacePtr m_nativeMutex;
 

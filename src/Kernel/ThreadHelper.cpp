@@ -1,13 +1,11 @@
 #include "ThreadHelper.h"
 
-#include "Interface/ThreadWorkerInterface.h"
 #include "Interface/ThreadServiceInterface.h"
-
+#include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/ThreadJob.h"
 
 namespace Mengine
 {
@@ -20,7 +18,7 @@ namespace Mengine
             {
                 return ConstString::none();
             }
-             
+
             const ConstString & threadName = THREAD_SERVICE()
                 ->getCurrentThreadName();
 
@@ -38,6 +36,23 @@ namespace Mengine
 
             THREAD_SERVICE()
                 ->dispatchMainThreadEvent( _event );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        ThreadIdentityInterfacePtr createThreadIdentity( const ThreadDescription & _description, EThreadPriority _priority, const LambdaThreadRunner & _lambda, uint32_t _sleep, const DocumentInterfacePtr & _doc )
+        {
+            if( SERVICE_IS_INITIALIZE( ThreadSystemInterface ) == false )
+            {
+                return nullptr;
+            }
+
+            ThreadIdentityInterfacePtr identity = THREAD_SYSTEM()
+                ->createThreadIdentity( _description, _priority, _doc );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( identity, "invalid create thread identity" );
+
+            identity->run( _lambda, _sleep, _doc );
+
+            return identity;
         }
         //////////////////////////////////////////////////////////////////////////
     }

@@ -32,6 +32,10 @@
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocumentTraceback.h"
 
+#if defined(MENGINE_PLATFORM_ANDROID)
+#   include "Environment/Android/AndroidPlatformServiceExtensionInterface.h"
+#endif
+
 #include "Engine/HotSpotPolygon.h"
 
 #include "Kernel/ConfigHelper.h"
@@ -893,9 +897,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             String s_getAndroidId()
             {
+                AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+                    ->getUnknown();
+
                 Char androidId[128];
-                ANDROID_KERNEL_SERVICE()
-                    ->getAndroidId( androidId, 128 );
+                platformExtension->androidNativeGetAndroidId( androidId, 128 );
 
                 return String( androidId );
             }

@@ -31,8 +31,25 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
     private static final String CHANNEL_ID = "mengine_channel_id";
     private static final CharSequence CHANNEL_NAME = "Mengine Channel";
 
+    private boolean m_notificationPermission = false;
+
+    @Override
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+        this.cancelAll();
+
+        m_notificationPermission = activity.checkNotificationPermission();
+
+        if (m_notificationPermission == false) {
+            return;
+        }
+    }
+
     @Override
     public void onNewIntent(MengineActivity activity, Intent intent) {
+        if (m_notificationPermission == false) {
+            return;
+        }
+
         if (intent.hasExtra(NotificationPublisher.NOTIFICATION_ID) == false) {
             return;
         }
@@ -42,7 +59,6 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
         this.pythonCall("onLocalNotificationsPress", id);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void scheduleJobServiceNotification(int id, String title, String content, long delay) {
         this.logMessage("scheduleJobServiceNotification id: %d title: %s content: %s delay: %d"
             , id
@@ -50,6 +66,10 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
             , content
             , delay
         );
+
+        if (m_notificationPermission == false) {
+            return;
+        }
 
         PersistableBundle bundle = NotificationJobService.notificationBundle(id, title, content);
 
@@ -61,6 +81,10 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
             , id
             , delay
         );
+
+        if (m_notificationPermission == false) {
+            return;
+        }
 
         MengineActivity activity = this.getMengineActivity();
         
@@ -87,6 +111,10 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
             , id
         );
 
+        if (m_notificationPermission == false) {
+            return;
+        }
+
         MengineActivity activity = this.getMengineActivity();
         
         NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -95,6 +123,10 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
     
     public void run() {
         this.logMessage("run");
+
+        if (m_notificationPermission == false) {
+            return;
+        }
 
         MengineActivity activity = this.getMengineActivity();
         
@@ -131,10 +163,8 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
         NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            JobScheduler jobScheduler = (JobScheduler)activity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            jobScheduler.cancelAll();
-        }
+        JobScheduler jobScheduler = (JobScheduler)activity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.cancelAll();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -162,9 +192,12 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
             .build();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleJobNotification(long delayMillis, PersistableBundle bundle){
         this.logMessage("schedule notification with delay: %d", delayMillis);
+
+        if (m_notificationPermission == false) {
+            return;
+        }
         
         MengineActivity activity = this.getMengineActivity();
 

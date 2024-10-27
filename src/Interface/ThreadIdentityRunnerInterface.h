@@ -11,8 +11,11 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void run() = 0;
+        virtual bool run() = 0;
         virtual void cancel() = 0;
+
+    public:
+        virtual void sleep() = 0;
 
     public:
         virtual bool isCancel() const = 0;
@@ -20,6 +23,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadIdentityRunnerInterface> ThreadIdentityRunnerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<void( const ThreadIdentityRunnerInterfacePtr & )> LambdaThreadRunner;
+    typedef Lambda<bool( const ThreadIdentityRunnerInterfacePtr & )> LambdaThreadRunner;
     //////////////////////////////////////////////////////////////////////////
 }

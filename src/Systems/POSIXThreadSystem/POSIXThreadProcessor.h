@@ -24,7 +24,7 @@ namespace Mengine
         ~POSIXThreadProcessor() override;
 
     public:
-        bool initialize( EThreadPriority _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex );
+        bool initialize( const ThreadDescription & _description, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex );
         void finalize();
 
     public:
@@ -32,7 +32,7 @@ namespace Mengine
 
     public:
         EThreadPriority getPriority() const override;
-        const ConstString & getName() const override;
+        const ThreadDescription & getDescription() const override;
         
     public:
         ThreadId getThreadId() const override;
@@ -48,8 +48,8 @@ namespace Mengine
         bool isCurrentThread() const override;
         
     protected:
+        ThreadDescription m_description;
         EThreadPriority m_priority;
-        ConstString m_name;
 
         ThreadMutexInterfacePtr m_mutex;
 

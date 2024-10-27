@@ -13,18 +13,22 @@ namespace Mengine
         , public Factorable
     {
     public:
-        POSIXThreadIdentityRunner( const LambdaThreadRunner & _lambda );
+        POSIXThreadIdentityRunner( const LambdaThreadRunner & _lambda, uint32_t _sleep );
         ~POSIXThreadIdentityRunner() override;
 
     public:
-        void run() override;
+        bool run() override;
         void cancel() override;
+
+    public:
+        void sleep() override;
 
     public:
         bool isCancel() const override;
 
     protected:
         LambdaThreadRunner m_lambda;
+        uint32_t m_sleep;
 
         AtomicBool m_cancel;
     };

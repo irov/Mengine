@@ -669,7 +669,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->tickPlatform( 0.f, false, false, false ) == false )
+        if( this->tickPlatform( 0, 0.f, false, false, false ) == false )
         {
             return false;
         }
@@ -695,8 +695,10 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32PlatformService::tickPlatform( float _frameTime, bool _render, bool _flush, bool _pause )
+    bool Win32PlatformService::tickPlatform( Timestamp _frameTime, float _frameTimeF, bool _render, bool _flush, bool _pause )
     {
+        MENGINE_UNUSED( _frameTime );
+
 #if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         if( m_sessionLock == true )
         {
@@ -713,13 +715,16 @@ namespace Mengine
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
-                _frameTime = m_pauseUpdatingTime;
+                _frameTimeF = m_pauseUpdatingTime;
                 m_pauseUpdatingTime = -1.f;
             }
 
             APPLICATION_SERVICE()
-                ->tick( _frameTime );
+                ->tick( _frameTimeF );
         }
+
+        APPLICATION_SERVICE()
+            ->endUpdate();
 
         if( this->isNeedWindowRender() == true && _render == true )
         {
@@ -735,16 +740,13 @@ namespace Mengine
             m_windowExposed = false;
         }
 
-        APPLICATION_SERVICE()
-            ->endUpdate();
-
         if( _pause == true )
         {
             if( updating == false )
             {
                 if( m_pauseUpdatingTime < 0.f )
                 {
-                    m_pauseUpdatingTime = _frameTime;
+                    m_pauseUpdatingTime = _frameTimeF;
                 }
 
                 if( m_sleepMode == true )
@@ -788,11 +790,13 @@ namespace Mengine
 
             Timestamp currentTime = Helper::getSystemTimestamp();
 
-            float frameTime = (float)(currentTime - m_prevTime);
+            Timestamp frameTime = currentTime - m_prevTime;
 
             m_prevTime = currentTime;
 
-            if( this->tickPlatform( frameTime, true, true, true ) == false )
+            float frameTimeF = (float)frameTime;
+
+            if( this->tickPlatform( frameTime, frameTimeF, true, true, true ) == false )
             {
                 break;
             }

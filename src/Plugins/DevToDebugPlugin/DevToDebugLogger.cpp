@@ -9,11 +9,11 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConfigHelper.h"
-#include "Kernel/ThreadWorkerHelper.h"
 #include "Kernel/JSONHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/VectorHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/ThreadHelper.h"
 
 #define DEVTODEBUGLOGGER_THREAD_NAME "DevToDebugLogger"
 
@@ -51,18 +51,26 @@ namespace Mengine
 
         uint32_t DevToDebug_LoggerTime = CONFIG_VALUE( "DevToDebugPlugin", "LoggerTime", 2000 );
 
-        if( Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( DEVTODEBUGLOGGER_THREAD_NAME ), ETP_BELOW_NORMAL, DevToDebug_LoggerTime, ThreadWorkerInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE ) == false )
+        ThreadIdentityInterfacePtr thread = Helper::createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGD2DLogger" ), ETP_BELOW_NORMAL, [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
         {
-            return false;
-        }
+            this->process( _runner );
+
+            return true;
+        }, DevToDebug_LoggerTime, MENGINE_DOCUMENT_FACTORABLE );
+
+        m_thread = thread;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugLogger::_finalizeLogger()
-    {
-        Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL_I( DEVTODEBUGLOGGER_THREAD_NAME ) );
-        
+    {   
+        if( m_thread != nullptr )
+        {
+            m_thread->join( true );
+            m_thread = nullptr;
+        }
+
         m_mutex = nullptr;
 
         m_messages.clear();
@@ -94,8 +102,10 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevToDebugLogger::process()
+    void DevToDebugLogger::process( const ThreadIdentityRunnerInterfacePtr & _runner )
     {
+        MENGINE_UNUSED( _runner );
+
         m_mutex->lock();
         bool wait = m_workerURL.empty();
         m_mutex->unlock();
@@ -185,29 +195,6 @@ namespace Mengine
             ->headerData( m_workerURL, headers, data, 2000, EHRE_LOW_PRIORITY, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_UNUSED( id );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DevToDebugLogger::onThreadWorkerUpdate( UniqueId _id )
-    {
-        MENGINE_UNUSED( _id );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DevToDebugLogger::onThreadWorkerWork( UniqueId _id )
-    {
-        MENGINE_UNUSED( _id );
-
-        this->process();
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DevToDebugLogger::onThreadWorkerDone( UniqueId _id )
-    {
-        MENGINE_UNUSED( _id );
-
-        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugLogger::onHttpRequestComplete( const HttpResponseInterfacePtr & _response )

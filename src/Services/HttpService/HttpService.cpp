@@ -79,17 +79,17 @@ namespace Mengine
         {
             Stringstream ss;
             ss << "HttpLow_" << index;
-            ConstString threadName = Helper::stringizeString( ss.str() );
+            ConstString processorName = Helper::stringizeString( ss.str() );
 
             if( THREAD_SERVICE()
-                ->createThreadProcessor( threadName, ETP_LOWEST, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->createThreadProcessor( processorName, MENGINE_THREAD_DESCRIPTION( "MNGHttp" ), ETP_LOWEST, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 return false;
             }
 
-            m_threads.emplace_back( threadName );
+            m_threads.emplace_back( processorName );
 
-            m_threadQueueLow->addThread( threadName );
+            m_threadQueueLow->addThread( processorName );
         }
 
         uint32_t Http_ThreadCountHigh = CONFIG_VALUE( "Http", "ThreadCountHigh", 8 );
@@ -105,17 +105,17 @@ namespace Mengine
         {
             Stringstream ss;
             ss << "HttpHigh_" << index;
-            ConstString threadName = Helper::stringizeString( ss.str() );
+            ConstString processorName = Helper::stringizeString( ss.str() );
 
             if( THREAD_SERVICE()
-                ->createThreadProcessor( threadName, ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                ->createThreadProcessor( processorName, MENGINE_THREAD_DESCRIPTION( "MNGHttpHigh" ), ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 return false;
             }
 
-            m_threads.emplace_back( threadName );
+            m_threads.emplace_back( processorName );
 
-            m_threadQueueHigh->addThread( threadName );
+            m_threadQueueHigh->addThread( processorName );
         }
 
         ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );

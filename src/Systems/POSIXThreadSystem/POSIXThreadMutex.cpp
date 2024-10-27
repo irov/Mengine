@@ -21,7 +21,7 @@ namespace Mengine
 
         ::pthread_mutexattr_settype( &attr, PTHREAD_MUTEX_RECURSIVE );
 
-        int status = ::pthread_mutex_init( &m_cs, &attr );
+        int status = ::pthread_mutex_init( &m_mutex, &attr );
 
         if( status != 0 )
         {
@@ -38,7 +38,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadMutex::finalize()
     {
-        int status = ::pthread_mutex_destroy( &m_cs );
+        int status = ::pthread_mutex_destroy( &m_mutex );
 
         if( status != 0 )
         {
@@ -51,7 +51,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadMutex::lock()
     {
-        int status = ::pthread_mutex_lock( &m_cs );
+        int status = ::pthread_mutex_lock( &m_mutex );
 
         if( status != 0 )
         {
@@ -64,7 +64,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadMutex::unlock()
     {
-        int status = ::pthread_mutex_unlock( &m_cs );
+        int status = ::pthread_mutex_unlock( &m_mutex );
 
         if( status != 0 )
         {
@@ -77,7 +77,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool POSIXThreadMutex::tryLock()
     {
-        int status = ::pthread_mutex_trylock( &m_cs );
+        int status = ::pthread_mutex_trylock( &m_mutex );
 
         if( status == 0 )
         {

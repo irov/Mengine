@@ -146,6 +146,7 @@ Common
     AppleKernelServiceInterface.h
     iOSKernelServiceInterface.h
     ArrowServiceInterface.h
+    Win32KernelServiceInterface.h
 )
 
 ADD_FILTER(

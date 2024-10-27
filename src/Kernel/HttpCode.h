@@ -2,6 +2,8 @@
 
 #include "Config/Typedef.h"
 
+#define MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY (-1)
+
 namespace Mengine
 {
     enum EHttpCode : uint32_t

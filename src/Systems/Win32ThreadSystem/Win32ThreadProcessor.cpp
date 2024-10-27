@@ -1,10 +1,9 @@
 #include "Win32ThreadProcessor.h"
 
 #include "Interface/AllocatorSystemInterface.h"
+#include "Interface/Win32KernelServiceInterface.h"
 
 #include "Environment/Windows/Win32Helper.h"
-
-#include "Win32ThreadHelper.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -57,9 +56,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadProcessor::initialize( const ConstString & _name, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex )
+    bool Win32ThreadProcessor::initialize( const ThreadDescription & _description, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex )
     {
-        m_name = _name;
+        m_description = _description;
         m_priority = _priority;
 
         m_mutex = _mutex;
@@ -83,41 +82,34 @@ namespace Mengine
             return false;
         }
 
-        m_thread = thread;
-
-#if defined(MENGINE_DEBUG) && defined(MENGINE_TOOLCHAIN_MSVC) && defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
-        if( ::IsDebuggerPresent() == TRUE )
-        {
-            DWORD threadId = ::GetThreadId( m_thread );
-            Helper::Win32SetThreadName( threadId, _name.c_str() );
-        }
-#endif
+        WIN32_KERNEL_SERVICE()
+            ->setThreadDescription( thread, m_description );
 
         switch( m_priority )
         {
         case ETP_LOWEST:
             {
-                ::SetThreadPriority( m_thread, THREAD_PRIORITY_LOWEST );
+                ::SetThreadPriority( thread, THREAD_PRIORITY_LOWEST );
             }break;
         case ETP_BELOW_NORMAL:
             {
-                ::SetThreadPriority( m_thread, THREAD_PRIORITY_BELOW_NORMAL );
+                ::SetThreadPriority( thread, THREAD_PRIORITY_BELOW_NORMAL );
             }break;
         case ETP_NORMAL:
             {
-                ::SetThreadPriority( m_thread, THREAD_PRIORITY_NORMAL );
+                ::SetThreadPriority( thread, THREAD_PRIORITY_NORMAL );
             }break;
         case ETP_ABOVE_NORMAL:
             {
-                ::SetThreadPriority( m_thread, THREAD_PRIORITY_ABOVE_NORMAL );
+                ::SetThreadPriority( thread, THREAD_PRIORITY_ABOVE_NORMAL );
             }break;
         case ETP_HIGHEST:
             {
-                ::SetThreadPriority( m_thread, THREAD_PRIORITY_HIGHEST );
+                ::SetThreadPriority( thread, THREAD_PRIORITY_HIGHEST );
             }break;
         case ETP_TIME_CRITICAL:
             {
-                ::SetThreadPriority( m_thread, THREAD_PRIORITY_TIME_CRITICAL );
+                ::SetThreadPriority( thread, THREAD_PRIORITY_TIME_CRITICAL );
             }break;
         default:
             {
@@ -127,11 +119,7 @@ namespace Mengine
             }break;
         }
 
-        LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
-            , m_name.c_str()
-            , m_threadId
-            , m_priority
-        );
+        m_thread = thread;
 
         return true;
     }
@@ -161,7 +149,13 @@ namespace Mengine
         ALLOCATOR_SYSTEM()
             ->beginThread( m_threadId );
 
-        MENGINE_PROFILER_THREAD( m_name.c_str() );
+        LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
+            , m_description.nameA
+            , m_threadId
+            , m_priority
+        );
+
+        MENGINE_PROFILER_THREAD( m_description.nameA );
 
         while( m_exit == false )
         {
@@ -305,6 +299,16 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EThreadPriority Win32ThreadProcessor::getPriority() const
+    {
+        return m_priority;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ThreadDescription & Win32ThreadProcessor::getDescription() const
+    {
+        return m_description;
     }
     //////////////////////////////////////////////////////////////////////////
 }

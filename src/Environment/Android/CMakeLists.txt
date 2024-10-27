@@ -12,9 +12,6 @@ src
     AndroidApplicationHelper.cpp
     AndroidHelper.h
     AndroidHelper.cpp
-
-    AndroidAnalyticsEventProvider.h
-    AndroidAnalyticsEventProvider.cpp
     
     AndroidKernelService.h
     AndroidKernelService.cpp
@@ -32,9 +29,6 @@ src
     
     AndroidLogger.h
     AndroidLogger.cpp
-    
-    AndroidProxyLogger.h
-    AndroidProxyLogger.cpp
     
     AndroidPlatformServiceExtensionInterface.h
     

@@ -274,12 +274,12 @@ namespace Mengine
         m_conditionLogger = conditionLogger;
 
         ThreadIdentityInterfacePtr threadLogger = THREAD_SYSTEM()
-            ->createThreadIdentity( STRINGIZE_STRING_LOCAL( "LoggerService" ), ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
+            ->createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGLogger" ), ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
 
         ThreadIdentityRunnerInterfacePtr threadRunner = threadLogger->run( [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
         {
-            this->processMessages_( _runner );
-        }, MENGINE_DOCUMENT_FACTORABLE );
+            return this->processMessages_( _runner );
+        }, 0, MENGINE_DOCUMENT_FACTORABLE );
 
         m_threadLogger = threadLogger;
         m_threadRunner = threadRunner;
@@ -307,7 +307,7 @@ namespace Mengine
             m_conditionLogger->wake();
         }
 
-        m_threadLogger->join();
+        m_threadLogger->join( false );
 
         m_threadRunner = nullptr;
         m_threadLogger = nullptr;
@@ -543,50 +543,49 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerService::processMessages_( const ThreadIdentityRunnerInterfacePtr & _runner )
+    bool LoggerService::processMessages_( const ThreadIdentityRunnerInterfacePtr & _runner )
     {
-        for( ;; )
+        m_conditionLogger->wait( [this, _runner]()
         {
-            m_conditionLogger->wait( [this, _runner]()
-            {
-                if( _runner->isCancel() == true )
-                {
-                    return true;
-                }
-
-                if( m_messages.empty() == false )
-                {
-                    return true;
-                }
-
-                return false;
-            } );
-
             if( _runner->isCancel() == true )
             {
-                break;
+                return true;
             }
 
-            m_mutexMessage->lock();
-            std::swap( m_messagesAux, m_messages );
-            m_messages.clear();
-            m_mutexMessage->unlock();
-
-            MENGINE_THREAD_SHARED_MUTEX_SCOPE( m_mutexLogger );
-
-            for( const LoggerInterfacePtr & logger : m_loggers )
+            if( m_messages.empty() == false )
             {
-                for( const LoggerRecordInterfacePtr & record : m_messagesAux )
-                {
-                    if( logger->validMessage( record ) == false )
-                    {
-                        continue;
-                    }
+                return true;
+            }
 
-                    logger->log( record );
+            return false;
+        } );
+
+        if( _runner->isCancel() == true )
+        {
+            return false;
+        }
+
+        m_mutexMessage->lock();
+        std::swap( m_messagesAux, m_messages );
+        m_messages.clear();
+        m_mutexMessage->unlock();
+
+        MENGINE_THREAD_SHARED_MUTEX_SCOPE( m_mutexLogger );
+
+        for( const LoggerInterfacePtr & logger : m_loggers )
+        {
+            for( const LoggerRecordInterfacePtr & record : m_messagesAux )
+            {
+                if( logger->validMessage( record ) == false )
+                {
+                    continue;
                 }
+
+                logger->log( record );
             }
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::lockMessages()

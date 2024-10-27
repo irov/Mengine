@@ -413,6 +413,7 @@ Vertices
 ADD_FILTER(
 Thread
     ThreadEnum.h
+    ThreadDescription.h
     ThreadTask.h
     ThreadTask.cpp
     ThreadJob.h
@@ -421,8 +422,6 @@ Thread
     ThreadTaskPacket.cpp
     ThreadHelper.h
     ThreadHelper.cpp
-    ThreadWorkerHelper.h
-    ThreadWorkerHelper.cpp
     ThreadMutexHelper.h
     ThreadMutexHelper.cpp
     ThreadGuard.h

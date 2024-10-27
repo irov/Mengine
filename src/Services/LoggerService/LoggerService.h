@@ -96,7 +96,7 @@ namespace Mengine
         void notifyBootstrapperRunCompete_();
 
     protected:
-        void processMessages_( const ThreadIdentityRunnerInterfacePtr & _runner );
+        bool processMessages_( const ThreadIdentityRunnerInterfacePtr & _runner );
 
     protected:
         FactoryInterfacePtr m_factoryLoggerRecord;

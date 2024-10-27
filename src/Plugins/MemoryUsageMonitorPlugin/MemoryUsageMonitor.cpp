@@ -50,7 +50,7 @@ namespace Mengine
         m_threadJob = threadJob;
 
         if( THREAD_SERVICE()
-            ->createThreadProcessor( STRINGIZE_STRING_LOCAL_I( MEMORYUSAGEMONITOR_THREAD_NAME ), ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->createThreadProcessor( STRINGIZE_STRING_LOCAL_I( MEMORYUSAGEMONITOR_THREAD_NAME ), MENGINE_THREAD_DESCRIPTION( "MNGMemoryUsage" ), ETP_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }

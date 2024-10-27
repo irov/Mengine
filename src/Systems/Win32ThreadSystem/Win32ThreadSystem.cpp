@@ -71,15 +71,16 @@ namespace Mengine
         m_factoryThreadConditionVariable = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityInterfacePtr Win32ThreadSystem::createThreadIdentity( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
+    ThreadIdentityInterfacePtr Win32ThreadSystem::createThreadIdentity( const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
         Win32ThreadIdentityPtr threadIdentity = m_factoryThreadIdentity->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( threadIdentity, "invalid create identity" );
+        MENGINE_ASSERTION_MEMORY_PANIC( threadIdentity, "invalid create thread identity", _description.nameA );
 
-        if( threadIdentity->initialize( _name, _priority ) == false )
+        if( threadIdentity->initialize( _description, _priority ) == false )
         {
-            LOGGER_ERROR( "invalid thread identity initialize (doc: %s)"
+            LOGGER_ERROR( "invalid thread identity '%s' initialize (doc: %s)"
+                , _description.nameA
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
@@ -89,19 +90,20 @@ namespace Mengine
         return threadIdentity;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadProcessorInterfacePtr Win32ThreadSystem::createThreadProcessor( const ConstString & _name, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
+    ThreadProcessorInterfacePtr Win32ThreadSystem::createThreadProcessor( const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
         Win32ThreadProcessorPtr threadProcessor = m_factoryThreadProcessor->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( threadProcessor, "invalid create identity" );
+        MENGINE_ASSERTION_MEMORY_PANIC( threadProcessor, "invalid create thread processor '%s'", _description.nameA );
 
         ThreadMutexInterfacePtr mutex = this->createMutex( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex" );
 
-        if( threadProcessor->initialize( _name, _priority, mutex ) == false )
+        if( threadProcessor->initialize( _description, _priority, mutex ) == false )
         {
-            LOGGER_ERROR( "invalid thread processor initialize (doc: %s)"
+            LOGGER_ERROR( "invalid thread processor '%s' initialize (doc: %s)"
+                , _description.nameA
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 

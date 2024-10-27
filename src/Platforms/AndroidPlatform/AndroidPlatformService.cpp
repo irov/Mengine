@@ -13,12 +13,19 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/AndroidKernelServiceInterface.h"
+#include "Interface/AccountServiceInterface.h"
+#include "Interface/AnalyticsServiceInterface.h"
 
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidDeclaration.h"
 #include "Environment/Android/AndroidHelper.h"
+#include "Environment/Android/AndroidApplicationHelper.h"
 #include "Environment/Android/AndroidActivityHelper.h"
 #include "Environment/Android/AndroidPlatformServiceExtensionInterface.h"
+#include "Environment/Android/AndroidSemaphoreListenerInterface.h"
+
+#include "AndroidAnalyticsEventProvider.h"
+#include "AndroidProxyLogger.h"
 
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
@@ -44,6 +51,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/ThreadHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -72,6 +80,218 @@
 //////////////////////////////////////////////////////////////////////////
 extern "C"
 {
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getCompanyName )(JNIEnv * env, jclass cls)
+    {
+        Mengine::Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME + 1] = {'\0'};
+        APPLICATION_SERVICE()
+            ->getCompanyName( companyName );
+
+        jstring result = env->NewStringUTF( companyName );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getProjectName )(JNIEnv * env, jclass cls)
+    {
+        Mengine::Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME + 1] = {'\0'};
+        APPLICATION_SERVICE()
+            ->getProjectName( projectName );
+
+        jstring result = env->NewStringUTF( projectName );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getExtraPreferencesFolderName )(JNIEnv * env, jclass cls)
+    {
+        Mengine::Char extraPreferencesFolderName[MENGINE_MAX_PATH + 1] = {'\0'};
+        PLATFORM_SERVICE()
+            ->getExtraPreferencesFolderName( extraPreferencesFolderName );
+
+        jstring result = env->NewStringUTF( extraPreferencesFolderName );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1hasCurrentAccount )(JNIEnv * env, jclass cls)
+    {
+        bool result = ACCOUNT_SERVICE()
+            ->hasCurrentAccount();
+
+        return (jboolean)result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1deleteCurrentAccount )(JNIEnv * env, jclass cls)
+    {
+        Mengine::Helper::dispatchMainThreadEvent( []()
+        {
+            ACCOUNT_SERVICE()
+                ->deleteCurrentAccount();
+        } );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getCurrentAccountFolderName )(JNIEnv * env, jclass cls)
+    {
+        const Mengine::AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            ->getCurrentAccount();
+
+        if( account == nullptr )
+        {
+            return env->NewStringUTF( "" );
+        }
+
+        const Mengine::ConstString & folderName = account->getFolderName();
+
+        const Mengine::Char * folderName_str = folderName.c_str();
+
+        jstring result = env->NewStringUTF( folderName_str );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1writeCurrentLogToFile )(JNIEnv * env, jclass cls, jobject _writer)
+    {
+        LOGGER_SERVICE()
+            ->flushMessages();
+
+        const Mengine::ContentInterfacePtr & content = LOGGER_SERVICE()
+            ->getCurrentContentLog();
+
+        if( content == nullptr )
+        {
+            return JNI_FALSE;
+        }
+
+        Mengine::MemoryInterfacePtr memory = content->createMemoryFile( false, true, MENGINE_DOCUMENT_FUNCTION );
+
+        if( memory == nullptr )
+        {
+            return JNI_FALSE;
+        }
+
+        if( Mengine::Helper::AndroidWriteMemory( env, memory, _writer ) == false )
+        {
+            return JNI_FALSE;
+        }
+
+        return JNI_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1writeOldLogToFile )(JNIEnv * env, jclass cls, jobject _writer)
+    {
+        const Mengine::MemoryInterfacePtr & memory = LOGGER_SERVICE()
+            ->getOldLogMemory();
+
+        if( memory == nullptr )
+        {
+            return JNI_FALSE;
+        }
+
+        if( Mengine::Helper::AndroidWriteMemory( env, memory, _writer ) == false )
+        {
+            return JNI_FALSE;
+        }
+
+        return JNI_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jboolean JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1isDevelopmentMode )(JNIEnv * env, jclass cls)
+    {
+        bool mode = Mengine::Helper::isDevelopmentMode();
+
+        jboolean result = (jboolean)mode;
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT jint JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getProjectVersion )(JNIEnv * env, jclass cls)
+    {
+        uint32_t projectVersion = APPLICATION_SERVICE()
+            ->getProjectVersion();
+
+        jint result = (jint)projectVersion;
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_SEMAPHORE_LISTENER_JAVA_INTERFACE( AnroidEnvironmentService_1callMengineSemaphoreListener )(JNIEnv * env, jclass cls, jobject _impl)
+    {
+        void * impl_MengineFunctorVoid = env->GetDirectBufferAddress( _impl );
+
+        Mengine::AndroidSemaphoreListenerInterface * functor = reinterpret_cast<Mengine::AndroidSemaphoreListenerInterface *>(impl_MengineFunctorVoid);
+
+        functor->invoke();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_SEMAPHORE_LISTENER_JAVA_INTERFACE( AnroidEnvironmentService_1destroyMengineSemaphoreListener )(JNIEnv * env, jclass cls, jobject _impl)
+    {
+        void * impl_MengineFunctorVoid = env->GetDirectBufferAddress( _impl );
+
+        Mengine::AndroidSemaphoreListenerInterface * functor = reinterpret_cast<Mengine::AndroidSemaphoreListenerInterface *>(impl_MengineFunctorVoid);
+
+        Mengine::IntrusivePtrBase::intrusive_ptr_dec_ref( functor );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_LOG_JAVA_INTERFACE( AndroidEnvironmentService_1log )(JNIEnv * env, jclass cls, jint _level, jstring _tag, jstring _msg)
+    {
+        if( SERVICE_IS_INITIALIZE( Mengine::LoggerServiceInterface ) == false )
+        {
+            return;
+        }
+
+        const Mengine::Char * tag_str = env->GetStringUTFChars( _tag, nullptr );
+        const Mengine::Char * msg_str = env->GetStringUTFChars( _msg, nullptr );
+
+        Mengine::ELoggerLevel level;
+        uint32_t color;
+
+        switch( _level )
+        {
+        case Mengine::LM_SILENT:
+            return;
+        case Mengine::LM_FATAL:
+            level = Mengine::LM_FATAL;
+            color = Mengine::LCOLOR_RED;
+            break;
+        case Mengine::LM_MESSAGE_RELEASE:
+            level = Mengine::LM_MESSAGE_RELEASE;
+            color = Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE;
+            break;
+        case Mengine::LM_ERROR:
+            level = Mengine::LM_ERROR;
+            color = Mengine::LCOLOR_RED;
+            break;
+        case Mengine::LM_WARNING:
+            level = Mengine::LM_WARNING;
+            color = Mengine::LCOLOR_RED | Mengine::LCOLOR_GREEN;
+            break;
+        case Mengine::LM_MESSAGE:
+            level = Mengine::LM_MESSAGE;
+            color = Mengine::LCOLOR_RED | Mengine::LCOLOR_BLUE;
+            break;
+        case Mengine::LM_INFO:
+            level = Mengine::LM_INFO;
+            color = Mengine::LCOLOR_GREEN | Mengine::LCOLOR_BLUE;
+            break;
+        case Mengine::LM_DEBUG:
+            level = Mengine::LM_DEBUG;
+            color = Mengine::LCOLOR_BLUE;
+            break;
+        case Mengine::LM_VERBOSE:
+            level = Mengine::LM_VERBOSE;
+            color = Mengine::LCOLOR_NONE;
+            break;
+        }
+
+        LOGGER_VERBOSE_LEVEL( "android", level, Mengine::LFILTER_NONE | Mengine::LFILTER_ANDROID, color, nullptr, 0, Mengine::LFLAG_SHORT )("[%s] %s"
+            , tag_str
+            , msg_str
+            );
+
+        env->ReleaseStringUTFChars( _msg, tag_str );
+        env->ReleaseStringUTFChars( _msg, msg_str );
+    }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1surfaceCreatedEvent )(JNIEnv * env, jclass cls, jobject surface)
     {
@@ -353,6 +573,21 @@ namespace Mengine
             , deviceSeed
         );
 
+        m_androidAnalyticsEventProvider = Helper::makeFactorableUnique<AndroidAnalyticsEventProvider>( MENGINE_DOCUMENT_FACTORABLE );
+
+        ANALYTICS_SERVICE()
+            ->addEventProvider( m_androidAnalyticsEventProvider );
+
+        AndroidProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<AndroidProxyLogger>( MENGINE_DOCUMENT_FACTORABLE );
+
+        proxyLogger->setVerboseFilter( Mengine::LFILTER_ANDROID );
+
+        if( LOGGER_SERVICE()
+            ->registerLogger( proxyLogger ) == true )
+        {
+            m_proxyLogger = proxyLogger;
+        }
+
         m_nativeMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
         m_eventsMutex = Helper::createThreadMutex(MENGINE_DOCUMENT_FACTORABLE );
 
@@ -370,6 +605,9 @@ namespace Mengine
         }
 
         m_eglDisplay = eglDisplay;
+
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES, &AndroidPlatformService::notifyBootstrapperInitializeBaseServices_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AndroidPlatformService::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -410,6 +648,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_RUN );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_STOP );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
+
+        if( m_proxyLogger != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_proxyLogger );
+
+            m_proxyLogger = nullptr;
+        }
+
+        if( m_androidAnalyticsEventProvider != nullptr )
+        {
+            ANALYTICS_SERVICE()
+                ->removeEventProvider( m_androidAnalyticsEventProvider );
+
+            m_androidAnalyticsEventProvider = nullptr;
+        }
+
         m_active = false;
 
         this->destroyWindow_();
@@ -435,17 +694,26 @@ namespace Mengine
             return false;
         }
 
-        if( this->tickPlatform( 0.f, false, false, false ) == false )
+        if( this->tickPlatform( 0, 0.f, false, false, false ) == false )
         {
             return false;
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_RUN );
+
+        if( Mengine_JNI_ExistMengineActivity() == JNI_TRUE )
+        {
+            JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+            MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+            Helper::AndroidCallVoidActivityMethod( jenv, "onMenginePlatformRun", "()V" );
+        }
         
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidPlatformService::tickPlatform( float _time, bool _render, bool _flush, bool _pause )
+    bool AndroidPlatformService::tickPlatform( Timestamp _frameTime, float _frameTimeF, bool _render, bool _flush, bool _pause )
     {
         MENGINE_UNUSED( _pause );
         MENGINE_UNUSED( _flush );
@@ -461,18 +729,18 @@ namespace Mengine
         }
 
         bool updating = APPLICATION_SERVICE()
-            ->beginUpdate( _time );
+            ->beginUpdate( _frameTime );
 
         if( updating == true )
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
-                _time = m_pauseUpdatingTime;
+                _frameTimeF = m_pauseUpdatingTime;
                 m_pauseUpdatingTime = -1.f;
             }
 
             APPLICATION_SERVICE()
-                ->tick( _time );
+                ->tick( _frameTimeF );
         }
 
         if( _render == true )
@@ -516,11 +784,13 @@ namespace Mengine
                 break;
             }
 
-            float frameTime = (float)(currentTime - m_prevTime);
+            Timestamp frameTime = currentTime - m_prevTime;
+
+            float frameTimeF = (float)frameTime;
 
             m_prevTime = currentTime;
 
-            if( this->tickPlatform( frameTime, true, true, true ) == false )
+            if( this->tickPlatform( frameTime, frameTimeF, true, true, true ) == false )
             {
                 break;
             }
@@ -562,17 +832,22 @@ namespace Mengine
             , _url
         );
 
-        if( ANDROID_KERNEL_SERVICE()
-            ->openUrlInDefaultBrowser( _url ) == false )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            LOGGER_ERROR( "error open url in default browser '%s'"
-                , _url
-            );
-
             return false;
         }
 
-        return true;
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jstring jurl = jenv->NewStringUTF( _url );
+
+        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenURL", "(Ljava/lang/String;)Z", jurl );
+
+        jenv->DeleteLocalRef( jurl );
+
+        return jresult;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body )
@@ -583,17 +858,26 @@ namespace Mengine
             , _body
         );
 
-        if( ANDROID_KERNEL_SERVICE()
-            ->openMail( _email, _subject, _body ) == false )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            LOGGER_ERROR( "error open mail '%s' subject '%s' body '%s'"
-                , _email
-                , _subject
-                , _body
-            );
-
             return false;
         }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jstring jemail = jenv->NewStringUTF( _email );
+        jstring jsubject = jenv->NewStringUTF( _subject );
+        jstring jbody = jenv->NewStringUTF( _body );
+
+        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenMail", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z", jemail, jsubject, jbody );
+
+        jenv->DeleteLocalRef( jemail );
+        jenv->DeleteLocalRef( jsubject );
+        jenv->DeleteLocalRef( jbody );
+
+        return jresult;
 
         return true;
     }
@@ -602,20 +886,62 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "open delete account" );
 
-        if( ANDROID_KERNEL_SERVICE()
-            ->openDeleteAccount() == false )
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
         {
-            LOGGER_ERROR( "error open delete account" );
-
             return false;
         }
 
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenDeleteAccount", "()Z" );
+
+        return jresult;
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::notifyBootstrapperInitializeBaseServices_()
+    {
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        {
+            return;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        Helper::AndroidCallVoidActivityMethod( jenv, "onMengineInitializeBaseServices", "()V" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::notifyBootstrapperCreateApplication_()
+    {
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        {
+            return;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        Helper::AndroidCallVoidActivityMethod( jenv, "onMengineCreateApplication", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::stopPlatform()
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );
+
+        if( Mengine_JNI_ExistMengineActivity() == JNI_TRUE )
+        {
+            JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+            MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+            Helper::AndroidCallVoidActivityMethod( jenv, "onMenginePlatformStop", "()V" );
+        }
 
         this->pushQuitEvent_();
     }
@@ -1479,6 +1805,33 @@ namespace Mengine
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t AndroidPlatformService::androidNativeGetAndroidId( Char * _androidId, size_t _capacity ) const
+    {
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
+        {
+            return 0;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jstring jReturnValue = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getAndroidId", "()Ljava/lang/String;" );
+
+        size_t size = Helper::AndroidCopyStringFromJString( jenv, jReturnValue, _androidId, _capacity );
+
+        jenv->DeleteLocalRef( jReturnValue );
+
+        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        {
+            LOGGER_ERROR( "invalid get android id [not exist activity]" );
+
+            return 0;
+        }
+
+        return size;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceCreatedEvent( ANativeWindow * _nativeWindow )

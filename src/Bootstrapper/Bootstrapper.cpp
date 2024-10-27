@@ -154,6 +154,10 @@ SERVICE_EXTERN( PlatformSystem );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( EnvironmentService );
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_WINDOWS)
+SERVICE_EXTERN( Win32KernelService );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_ANDROID)
 SERVICE_EXTERN( AndroidKernelService );
 SERVICE_EXTERN( AndroidAssetService );
@@ -1001,18 +1005,10 @@ namespace Mengine
         MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PreferencesSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( CryptographySystem, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( MemoryService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( LoggerService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( AnalyticsService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( TimerService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );        
+
+#if defined(MENGINE_PLATFORM_WINDOWS)
+        MENGINE_ADD_SERVICE( Win32KernelService, MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         MENGINE_ADD_SERVICE( AndroidKernelService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1026,6 +1022,19 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_IOS)
         MENGINE_ADD_SERVICE( iOSKernelService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
+
+        MENGINE_ADD_SERVICE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( MemoryService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( LoggerService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( AnalyticsService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( TimerService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );        
 
         MENGINE_ADD_SERVICE( EnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -2213,6 +2222,10 @@ namespace Mengine
         SERVICE_FINALIZE( HttpSystem );
 #endif
 
+#if defined(MENGINE_PLATFORM_WINDOWS)
+        SERVICE_FINALIZE( Win32KernelService );
+#endif
+
 #if defined(MENGINE_PLATFORM_ANDROID)
         SERVICE_FINALIZE( AndroidAssetService );
         SERVICE_FINALIZE( AndroidKernelService );
@@ -2307,6 +2320,10 @@ namespace Mengine
         SERVICE_DESTROY( TimepipeService );
         SERVICE_DESTROY( AnalyticsService );
         SERVICE_DESTROY( StatisticService );
+
+#if defined(MENGINE_PLATFORM_WINDOWS)
+        SERVICE_DESTROY( Win32KernelService );
+#endif
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         SERVICE_DESTROY( AndroidAssetService );

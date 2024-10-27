@@ -5,8 +5,6 @@
 #include "Interface/HttpReceiverInterface.h"
 #include "Interface/ThreadTaskInterface.h"
 
-#define MENGINE_HTTP_REQUEST_TIMEOUT_INFINITY (-1)
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

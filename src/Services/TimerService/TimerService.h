@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/TimerServiceInterface.h"
+#include "Interface/TimepipeInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Vector.h"
@@ -19,18 +20,18 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        UniqueId addTimer( float _delay, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) override;
+        UniqueId addTimer( Timestamp _delay, const LambdaTimer & _lambda, const DocumentInterfacePtr & _doc ) override;
         void removeTimer( UniqueId _id ) override;
 
     public:
-        void update( float _time ) override;
+        void update( Timestamp _frameTime ) override;
         
     protected:
         struct TimerDesc
         {
             UniqueId id;
-            float milliseconds;
-            float time;
+            Timestamp milliseconds;
+            int64_t time;
             LambdaTimer lambda;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)

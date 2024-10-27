@@ -25,17 +25,24 @@ namespace Mengine
         ~Win32ThreadIdentity() override;
 
     public:
-        bool initialize( const ConstString & _name, EThreadPriority _priority );
+        bool initialize( const ThreadDescription & _description, EThreadPriority _priority );
         void finalize();
+
+    public:
+        EThreadPriority getPriority() const override;
+        const ThreadDescription & getDescription() const override;
 
     public:
         uint64_t getThreadId() const override;
 
     public:
-        ThreadIdentityRunnerInterfacePtr run( const LambdaThreadRunner & _lambda, const DocumentInterfacePtr & _doc ) override;
+        ThreadIdentityRunnerInterfacePtr run( const LambdaThreadRunner & _lambda, uint32_t _sleep, const DocumentInterfacePtr & _doc ) override;
 
     public:
-        void join() override;
+        const ThreadIdentityRunnerInterfacePtr & getRunner() const override;
+
+    public:
+        void join( bool _cancel ) override;
 
     public:
         bool isCurrentThread() const override;
@@ -44,7 +51,7 @@ namespace Mengine
         void main();
 
     protected:
-        ConstString m_name;
+        ThreadDescription m_description;
         EThreadPriority m_priority;
 
         ThreadIdentityRunnerInterfacePtr m_runner;

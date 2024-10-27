@@ -27,6 +27,9 @@ src
     
     Win32EnvironmentService.h
     Win32EnvironmentService.cpp
+    
+    Win32KernelService.h
+    Win32KernelService.cpp
 )
 
 if(NOT MENGINE_TARGET_UWP)

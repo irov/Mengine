@@ -6,10 +6,14 @@
 
 - (instancetype)initWithCompletion:(FBlockMailComposeCompletion)completion {
     self = [super init];
-
+    
     self.m_completion = completion;
     
     return self;
+}
+
+- (void)dealloc {
+    self.m_completion = nil;
 }
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(nullable NSError *)error {
@@ -32,7 +36,7 @@
             break;
     }
 
-    [controller dismissViewControllerAnimated:YES completion:^{
+    [controller dismissViewControllerAnimated:YES completion:^ {
         self.m_completion();
     }];
 }

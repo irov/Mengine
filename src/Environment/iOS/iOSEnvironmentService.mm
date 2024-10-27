@@ -4,7 +4,6 @@
 #include "Interface/LoggerServiceInterface.h"
 
 #import "Environment/iOS/iOSApplication.h"
-#import "Environment/iOS/iOSProxyLogger.h"
 #import "Environment/iOS/iOSDetail.h"
 
 #include "Config/StdString.h"
@@ -30,7 +29,6 @@ namespace Mengine
         m_userName.assign( [deviceName UTF8String] );
         
         NSString * deviceModel = [[UIDevice currentDevice] model];
-        
         m_deviceModel.assign( [deviceModel UTF8String] );
         
         NSString * language = [[NSLocale preferredLanguages] firstObject];

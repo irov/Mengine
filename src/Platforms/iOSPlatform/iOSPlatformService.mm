@@ -12,8 +12,9 @@
 #include "Interface/DateTimeSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
-
 #include "Interface/iOSKernelServiceInterface.h"
+
+#include "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
@@ -537,7 +538,7 @@ namespace Mengine
             , m_desktop
         );
 
-        SDLInputPtr sdlInput = Helper::makeFactorableUnique<SDLInput>( MENGINE_DOCUMENT_FACTORABLE );
+        iOSInputPtr sdlInput = Helper::makeFactorableUnique<iOSInput>( MENGINE_DOCUMENT_FACTORABLE );
 
         if( sdlInput->initialize() == false )
         {
@@ -545,8 +546,6 @@ namespace Mengine
         }
 
         m_sdlInput = sdlInput;
-
-        m_factoryDynamicLibraries = Helper::makeFactoryPool<SDLDynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
 
@@ -692,7 +691,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::_stopService()
+    void iOSPlatformService::_stopService()
     {
         PlatformDateTime dateTime;
         DATETIME_SYSTEM()
@@ -718,7 +717,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::_finalizeService()
+    void iOSPlatformService::_finalizeService()
     {
         m_active = false;
 
@@ -739,13 +738,9 @@ namespace Mengine
         }        
 
         m_platformTags.clear();
-
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
-
-        m_factoryDynamicLibraries = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::runPlatform()
+    bool iOSPlatformService::runPlatform()
     {
         this->setActive_( true );
 
@@ -754,7 +749,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->tickPlatform( 0.f, false, false, false ) == false )
+        if( this->tickPlatform( 0, 0.f, false, false, false ) == false )
         {
             return false;
         }
@@ -764,21 +759,21 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::tickPlatform( float _time, bool _render, bool _flush, bool _pause )
+    bool iOSPlatformService::tickPlatform( Timestamp _frameTime, float _frameTimeF, bool _render, bool _flush, bool _pause )
     {
         bool updating = APPLICATION_SERVICE()
-            ->beginUpdate( _time );
+            ->beginUpdate( _frameTime );
 
         if( updating == true )
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
-                _time = m_pauseUpdatingTime;
+                _frameTimeF = m_pauseUpdatingTime;
                 m_pauseUpdatingTime = -1.f;
             }
 
             APPLICATION_SERVICE()
-                ->tick( _time );
+                ->tick( _frameTimeF );
         }
 
         if( this->isNeedWindowRender() == true && _render == true )
@@ -811,7 +806,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::loopPlatform()
+    void iOSPlatformService::loopPlatform()
     {
         m_prevTime = Helper::getSystemTimestamp();
 
@@ -824,18 +819,20 @@ namespace Mengine
 
             Timestamp currentTime = Helper::getSystemTimestamp();
 
-            float frameTime = (float)(currentTime - m_prevTime);
-
+            Timestamp frameTime = currentTime - m_prevTime;
+            
             m_prevTime = currentTime;
+            
+            float frameTimeF = (float)frameTime;
 
-            if( this->tickPlatform( frameTime, true, true, true ) == false )
+            if( this->tickPlatform( frameTime, frameTimeF, true, true, true ) == false )
             {
                 break;
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::updatePlatform()
+    bool iOSPlatformService::updatePlatform()
     {
         bool quitRequest = this->processEvents_();
 
@@ -847,7 +844,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::openUrlInDefaultBrowser( const Char * _url )
+    bool iOSPlatformService::openUrlInDefaultBrowser( const Char * _url )
     {
         LOGGER_INFO( "platform", "open url in default browser '%s'"
             , _url
@@ -867,7 +864,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body )
+    bool iOSPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body )
     {
         LOGGER_INFO( "platform", "open mail '%s' subject '%s' body '%s'"
             , _email
@@ -875,11 +872,11 @@ namespace Mengine
             , _body
         );
 
-        UIViewController * view = [iOSDetail getRootViewController];
+        UIViewController * viewController = [iOSDetail getRootViewController];
 
         if( [MFMailComposeViewController canSendMail] == NO )
         {
-            [iOSDetail alertWithViewController:view title:@"Yikes." message:@"Log into your mailbox using the standard Mail app" callback:^{}];
+            [iOSDetail alertWithViewController:viewController title:@"Yikes." message:@"Log into your mailbox using the standard Mail app" callback:^{}];
 
             return false;
         }
@@ -888,15 +885,15 @@ namespace Mengine
 
         [mailCompose setModalPresentationStyle:UIModalPresentationFormSheet];
 
-        iOSMailComposeDelegate * mailComposeDelegate = [[iOSMailComposeDelegate alloc] initWithCompletion:^ {
+        static iOSMailComposeDelegate * mailComposeDelegate = [[iOSMailComposeDelegate alloc] initWithCompletion:^ {
             //ToDo callback
         }];
 
         [mailCompose setMailComposeDelegate:mailComposeDelegate];
 
-        [mailCompose setToRecipients:[NSArray arrayWithObjects:email, nil]];
-        [mailCompose setSubject:subject];
-        [mailCompose setMessageBody:message isHTML:NO];
+        [mailCompose setToRecipients:[NSArray arrayWithObjects:@(_email), nil]];
+        [mailCompose setSubject:@(_subject)];
+        [mailCompose setMessageBody:@(_body) isHTML:NO];
 
         [viewController presentViewController:mailCompose animated:YES completion:^ {
             //ToDo callback
@@ -1285,25 +1282,10 @@ namespace Mengine
         LOGGER_INFO( "platform", "load dynamic library '%s'"
             , _dynamicLibraryName
         );
-
-        SDLDynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, "can't create dynamic library '%s'"
-            , _dynamicLibraryName
-        );
-
-        dynamicLibrary->setName( _dynamicLibraryName );
-
-        if( dynamicLibrary->load() == false )
-        {
-            LOGGER_ERROR( "can't load '%s' plugin [invalid load]"
-                , _dynamicLibraryName
-            );
-
-            return nullptr;
-        }
-
-        return dynamicLibrary;
+        
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::getDesktopResolution( Resolution * const _resolution ) const

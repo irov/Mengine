@@ -3,8 +3,6 @@
 #include "Interface/iOSKernelServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 
-#import "Environment/iOS/iOSMailCompose.h"
-
 #include "Kernel/ServiceBase.h"
 
 namespace Mengine

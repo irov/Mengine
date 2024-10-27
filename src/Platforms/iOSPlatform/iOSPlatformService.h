@@ -20,18 +20,12 @@
 
 #include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
 
-#if defined(MENGINE_PLATFORM_IOS)
-#   import "iOSMailCompose.h"
-#   import "iOSProxyLogger.h"
-#endif
-
-#if defined(MENGINE_PLATFORM_MACOS)
-#   import "MacOSWorkspace.h"
-#endif
+#import "iOSMailComposeDelegate.h"
+#import "iOSProxyLogger.h"
 
 #include "Environment/SDL/SDLIncluder.h"
 
-#include "SDLInput.h"
+#include "iOSInput.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/SHA1.h"
@@ -65,7 +59,7 @@ namespace Mengine
         bool runPlatform()	override;
         void loopPlatform() override;
         bool updatePlatform() override;
-        bool tickPlatform( float _time, bool _render, bool _flush, bool _pause ) override;
+        bool tickPlatform( Timestamp _frameTime, float _frameTimeF, bool _render, bool _flush, bool _pause ) override;
         void stopPlatform()	override;
 
     public:
@@ -172,26 +166,8 @@ namespace Mengine
     public:
         SDL_Window * getWindow() const override;
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
-#   if defined(MENGINE_PLATFORM_UWP)
-    public:
-        IInspectable * getWindowHandle() const override;
-#   else
-    public:
-        HWND getWindowHWND() const override;
-        HDC getWindowHDC() const override;
-        HINSTANCE getWindowHinstance() const override;
-#   endif
-#elif defined(MENGINE_PLATFORM_LINUX)
-    public:
-        Window getWindowInstance() const override;
-        Display * getWindowDisplay() const override;
-#endif
-
-#if defined(MENGINE_PLATFORM_IOS)
     public:
         UIWindow * getUIWindow() const override;
-#endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     public:
@@ -239,8 +215,6 @@ namespace Mengine
         typedef Vector<SDLEventHandlerDesc> VectorSDLEventHandlers;
         VectorSDLEventHandlers m_sdlEventHandlers;
 
-        FactoryInterfacePtr m_factoryDynamicLibraries;
-
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         SDL_GLContext m_glContext;
 #endif
@@ -249,11 +223,7 @@ namespace Mengine
         iOSProxyLoggerPtr m_proxyLogger;
 #endif
 
-#if defined(MENGINE_PLATFORM_MACOS)
-        MacOSWorkspace * m_macOSWorkspace;
-#endif
-
-        SDLInputPtr m_sdlInput;
+        iOSInputPtr m_sdlInput;
 
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
 

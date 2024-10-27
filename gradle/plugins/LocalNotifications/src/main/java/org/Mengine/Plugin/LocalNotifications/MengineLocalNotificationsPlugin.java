@@ -3,10 +3,10 @@ package org.Mengine.Plugin.LocalNotifications;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -184,8 +184,8 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
 
         return builder.setContentTitle(title)
             .setContentText(content)
-            .setSmallIcon(R.drawable.ic_stat_onesignal_default)
-            .setColor(Color.parseColor("#422b00"))  // todo: take out in xml
+            .setSmallIcon(R.drawable.mengine_local_notification_small_icon)
+            .setColor(ContextCompat.getColor(context, R.color.mengine_local_notification_color))  // <color name="mengine_local_notification_color">#422b00</color>
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_MAX)

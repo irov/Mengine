@@ -15,8 +15,8 @@ src
 IF(MENGINE_TARGET_MACOS)
     ADD_FILTER(
     macos
-        SDLPlatformMacOSWorkspace.h
-        SDLPlatformMacOSWorkspace.mm
+        MacOSWorkspace.h
+        MacOSWorkspace.mm
     )
 ENDIF()
 
@@ -27,10 +27,6 @@ INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL/include)
 ADD_MENGINE_LIBRARY(Platforms)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
-
-IF(MENGINE_TARGET_IOS)
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} iOS)
-ENDIF()
 
 IF(MENGINE_TARGET_MACOS)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} MacOS)

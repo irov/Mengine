@@ -1,32 +1,12 @@
-#import "iOSMailCompose.h"
+#import "iOSMailComposeDelegate.h"
 
 #include "Kernel/Logger.h"
 
-@implementation iOSMailCompose
+@implementation iOSMailComposeDelegate
 
-+ (BOOL)canSendMail {
-    BOOL result = [MFMailComposeViewController canSendMail];
-
-    return result;
-}
-
-- (instancetype)initWithViewController:(UIViewController *)viewController email:(NSString *)email subject:(NSString *)subject message:(NSString *)message completion:(FBlockMailComposeCompletion)completion {
+- (instancetype)initWithCompletion:(FBlockMailComposeCompletion)completion {
     self = [super init];
 
-    MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
-    
-    [mailCompose setModalPresentationStyle:UIModalPresentationFormSheet];
-    
-    [mailCompose setMailComposeDelegate:self];
-
-    [mailCompose setToRecipients:[NSArray arrayWithObjects:email, nil]];
-    [mailCompose setSubject:subject];
-    [mailCompose setMessageBody:message isHTML:NO];
-
-    [viewController presentViewController:mailCompose animated:YES completion:^{
-    }];
-
-    self.m_mailCompose = mailCompose;
     self.m_completion = completion;
     
     return self;
@@ -44,7 +24,7 @@
             LOGGER_MESSAGE( "MFMailComposeResultSent: The email message was queued in the useris outbox. It is ready to send the next time the user connects to email" );
             break;
         case MFMailComposeResultFailed:
-            LOGGER_MESSAGE( "MFMailComposeResultFailed: The email message was not saved or queued, possibly due to an error [%s]"
+            LOGGER_ERROR( "MFMailComposeResultFailed: The email message was not saved or queued, possibly due to an error [%s]"
                 , [[error localizedDescription] UTF8String]
             );
             break;
@@ -52,7 +32,7 @@
             break;
     }
 
-    [self.m_mailCompose dismissViewControllerAnimated:YES completion:^{
+    [controller dismissViewControllerAnimated:YES completion:^{
         self.m_completion();
     }];
 }

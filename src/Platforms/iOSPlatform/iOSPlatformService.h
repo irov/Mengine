@@ -20,6 +20,11 @@
 
 #include "Environment/SDL/SDLPlatformServiceExtensionInterface.h"
 
+#if defined(MENGINE_PLATFORM_IOS)
+#   import "iOSMailCompose.h"
+#   import "iOSProxyLogger.h"
+#endif
+
 #if defined(MENGINE_PLATFORM_MACOS)
 #   import "MacOSWorkspace.h"
 #endif
@@ -36,15 +41,15 @@
 
 namespace Mengine
 {
-    class SDLPlatformService
+    class iOSPlatformService
         : public ServiceBase<PlatformServiceInterface>
         , public SDLPlatformServiceExtensionInterface
     {
         DECLARE_UNKNOWABLE();
 
     public:
-        SDLPlatformService();
-        ~SDLPlatformService() override;
+        iOSPlatformService();
+        ~iOSPlatformService() override;
 
     public:
         bool _initializeService() override;
@@ -60,7 +65,7 @@ namespace Mengine
         bool runPlatform()	override;
         void loopPlatform() override;
         bool updatePlatform() override;
-        bool tickPlatform( Timestamp _frameTime, float _frameTimeF, bool _render, bool _flush, bool _pause ) override;
+        bool tickPlatform( float _time, bool _render, bool _flush, bool _pause ) override;
         void stopPlatform()	override;
 
     public:
@@ -183,6 +188,11 @@ namespace Mengine
         Display * getWindowDisplay() const override;
 #endif
 
+#if defined(MENGINE_PLATFORM_IOS)
+    public:
+        UIWindow * getUIWindow() const override;
+#endif
+
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     public:
         SDL_GLContext getGLContext() const override;
@@ -233,6 +243,10 @@ namespace Mengine
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         SDL_GLContext m_glContext;
+#endif
+
+#if defined(MENGINE_PLATFORM_IOS)
+        iOSProxyLoggerPtr m_proxyLogger;
 #endif
 
 #if defined(MENGINE_PLATFORM_MACOS)

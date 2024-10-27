@@ -10,10 +10,6 @@ namespace Mengine
         : public ServiceInterface
     {
         SERVICE_DECLARE( "iOSKernelService" )
-
-    public:
-        virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
-        virtual bool openMail( const Char * _email, const Char * _subject, const Char * _body ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

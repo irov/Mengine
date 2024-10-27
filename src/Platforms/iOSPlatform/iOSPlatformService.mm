@@ -1,4 +1,4 @@
-#include "SDLPlatformService.h"
+#include "iOSPlatformService.h"
 
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -13,20 +13,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
-#   include "Environment/Windows/WindowsIncluder.h"
-#elif defined(MENGINE_PLATFORM_APPLE)
-#   if defined(MENGINE_PLATFORM_MACOS)
-#       include "Environment/MacOS/MacOSUtils.h"
-#   endif
-#endif
-
-#if defined(MENGINE_PLATFORM_WINDOWS)
-#   include "Environment/Windows/Win32Helper.h"
-#   include "Environment/Windows/Win32FileHelper.h"
-#endif
-
-#include "SDLDynamicLibrary.h"
+#include "Interface/iOSKernelServiceInterface.h"
 
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
@@ -76,12 +63,16 @@
 #define MENGINE_DEVELOPMENT_USER_FOLDER_NAME "User"
 #endif
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( PlatformService, Mengine::SDLPlatformService );
+#ifndef SDL_IPHONE_MAX_GFORCE
+#define SDL_IPHONE_MAX_GFORCE 5.0f
+#endif
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( PlatformService, Mengine::iOSPlatformService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    SDLPlatformService::SDLPlatformService()
+    iOSPlatformService::iOSPlatformService()
         : m_beginTime( 0 )
         , m_sdlWindow( nullptr )
         , m_sdlAccelerometer( nullptr )
@@ -95,87 +86,23 @@ namespace Mengine
 #if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         , m_glContext( nullptr )
 #endif
-#if defined( MENGINE_PLATFORM_MACOS )
-        , m_macOSWorkspace( nullptr )
-#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SDLPlatformService::~SDLPlatformService()
+    iOSPlatformService::~iOSPlatformService()
     {
     }
     //////////////////////////////////////////////////////////////////////////    
-    size_t SDLPlatformService::getCurrentPath( Char * const _currentPath ) const
+    size_t iOSPlatformService::getCurrentPath( Char * const _currentPath ) const
     {
-#if defined(MENGINE_PLATFORM_WINDOWS)
-        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
-        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH - 2, unicode_path );
+        const Char deploy_mac_data[] = "";
+        StdString::strcpy( _currentPath, deploy_mac_data );
 
-        if( len == 0 )
-        {
-            StdString::strcpy( _currentPath, "" );
-
-            return 0;
-        }
-
-        unicode_path[len] = MENGINE_PATH_WDELIM;
-        unicode_path[len + 1] = L'\0';
-
-        Helper::pathCorrectBackslashToW( unicode_path, unicode_path );
-
-        size_t pathLen;
-        if( Helper::unicodeToUtf8( unicode_path, _currentPath, MENGINE_MAX_PATH, &pathLen ) == false )
-        {
-            StdString::strcpy( _currentPath, "" );
-
-            return 0;
-        }
-
-        return pathLen;
-#elif defined(MENGINE_PLATFORM_MACOS)
-        char * basePath = SDL_GetBasePath();
-
-        StdString::strcpy( _currentPath, basePath );
-
-        SDL_free( basePath );
-
-        return StdString::strlen( _currentPath );
-#else
-        StdString::strcpy( _currentPath, "" );
-
-        return 0;
-#endif
+        return sizeof( deploy_mac_data ) - 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatformService::getUserPath( Char * const _userPath ) const
+    size_t iOSPlatformService::getUserPath( Char * const _userPath ) const
     {
-#if defined(MENGINE_PLATFORM_WINDOWS)
-        bool developmentMode = Helper::isDevelopmentMode();
-        bool OPTION_roaming = HAS_OPTION( "roaming" );
-        bool OPTION_noroaming = HAS_OPTION( "noroaming" );
-
-        if( (developmentMode == true && OPTION_roaming == false) || OPTION_noroaming == true )
-        {
-            Char currentPath[MENGINE_MAX_PATH + 1] = {'\0'};
-            size_t currentPathLen = this->getCurrentPath( currentPath );
-
-            if( MENGINE_MAX_PATH <= currentPathLen + 5 )
-            {
-                StdString::strcpy( _userPath, "" );
-
-                return 0;
-            }
-
-            StdString::strcpy( _userPath, currentPath );
-            StdString::strcat( _userPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
-            StdString::strcat( _userPath, "/" );
-
-            size_t pathLen = StdString::strlen( _userPath );
-
-            return pathLen;
-        }
-#endif
-
         const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "UNKNOWN" );
         const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
@@ -210,7 +137,7 @@ namespace Mengine
         return userPathLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
+    size_t iOSPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
         const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE( "Project", "ExtraPreferencesFolderName", "" );
 
@@ -221,7 +148,7 @@ namespace Mengine
         return Project_ExtraPreferencesFolderNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatformService::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const
+    size_t iOSPlatformService::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const
     {
         MENGINE_UNUSED( _fontName );
         MENGINE_UNUSED( _fontPath );
@@ -232,7 +159,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::getMaxClientResolution( Resolution * const _resolution ) const
+    bool iOSPlatformService::getMaxClientResolution( Resolution * const _resolution ) const
     {
         int displayIndex = -1;
         
@@ -379,7 +306,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::_initializeService()
+    bool iOSPlatformService::_initializeService()
     {
         m_beginTime = Helper::getSystemTimestamp();
 
@@ -627,10 +554,18 @@ namespace Mengine
             , deviceSeed
         );
 
+        iOSProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<iOSProxyLogger>( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( LOGGER_SERVICE()
+            ->registerLogger( proxyLogger ) == true )
+        {
+            m_proxyLogger = proxyLogger;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::_runService()
+    bool iOSPlatformService::_runService()
     {
         PlatformDateTime dateTime;
         DATETIME_SYSTEM()
@@ -753,11 +688,6 @@ namespace Mengine
         {
             LOGGER_INFO( "platform", "accelerometer not found" );
         }
-
-#if defined(MENGINE_PLATFORM_MACOS)
-        //cppcheck-suppress syntaxError
-        m_macOSWorkspace = [[MacOSWorkspace alloc] initialize];        
-#endif
         
         return true;
     }
@@ -799,10 +729,14 @@ namespace Mengine
             m_sdlInput->finalize();
             m_sdlInput = nullptr;
         }
-        
-#if defined(MENGINE_PLATFORM_MACOS)
-        m_macOSWorkspace = nil;
-#endif
+
+        if( m_proxyLogger != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_proxyLogger );
+
+            m_proxyLogger = nullptr;
+        }        
 
         m_platformTags.clear();
 
@@ -820,7 +754,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->tickPlatform( 0, 0.f, false, false, false ) == false )
+        if( this->tickPlatform( 0.f, false, false, false ) == false )
         {
             return false;
         }
@@ -830,21 +764,21 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::tickPlatform( Timestamp _frameTime, float _frameTimeF, bool _render, bool _flush, bool _pause )
+    bool SDLPlatformService::tickPlatform( float _time, bool _render, bool _flush, bool _pause )
     {
         bool updating = APPLICATION_SERVICE()
-            ->beginUpdate( _frameTime );
+            ->beginUpdate( _time );
 
         if( updating == true )
         {
             if( m_pauseUpdatingTime >= 0.f )
             {
-                _frameTimeF = m_pauseUpdatingTime;
+                _time = m_pauseUpdatingTime;
                 m_pauseUpdatingTime = -1.f;
             }
 
             APPLICATION_SERVICE()
-                ->tick( _frameTimeF );
+                ->tick( _time );
         }
 
         if( this->isNeedWindowRender() == true && _render == true )
@@ -874,38 +808,6 @@ namespace Mengine
 
         MENGINE_UNUSED( _pause );
 
-#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS)
-        if( _pause == true )
-        {
-            if( updating == false )
-            {
-                if( m_pauseUpdatingTime < 0.f )
-                {
-                    m_pauseUpdatingTime = _time;
-                }
-
-                if( m_sleepMode == true )
-                {
-                    SDL_Delay( 100 );
-                }
-                else
-                {
-                    SDL_Delay( 1 );
-                }
-            }
-            else
-            {
-                bool OPTION_maxfps = HAS_OPTION( "maxfps" );
-
-                if( APPLICATION_SERVICE()
-                    ->getVSync() == false && OPTION_maxfps == false )
-                {
-                    SDL_Delay( 1 );
-                }
-            }
-        }
-#endif
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -921,14 +823,12 @@ namespace Mengine
             }
 
             Timestamp currentTime = Helper::getSystemTimestamp();
-            
-            Timestamp frameTime = currentTime - m_prevTime;
+
+            float frameTime = (float)(currentTime - m_prevTime);
 
             m_prevTime = currentTime;
-            
-            float frameTimeF = (float)frameTime;
 
-            if( this->tickPlatform( frameTime, frameTimeF, true, true, true ) == false )
+            if( this->tickPlatform( frameTime, true, true, true ) == false )
             {
                 break;
             }
@@ -949,25 +849,63 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::openUrlInDefaultBrowser( const Char * _url )
     {
-        LOGGER_ERROR( "not supported open url in default browser '%s'"
+        LOGGER_INFO( "platform", "open url in default browser '%s'"
             , _url
         );
 
-        return false;
+        NSURL * ns_url = [NSURL URLWithString:@(_url)];
+
+        if( [[UIApplication sharedApplication]canOpenURL:ns_url] == NO ) 
+        {
+            return false;
+        }
+
+        [[UIApplication sharedApplication]openURL:ns_url options:@{} completionHandler:^(BOOL success) {
+            //ToDo callback
+        }];
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatformService::openMail( const Char * _email, const Char * _subject, const Char * _body )
     {
-        LOGGER_ERROR( "not supported open mail '%s' subject '%s' body '%s'"
+        LOGGER_INFO( "platform", "open mail '%s' subject '%s' body '%s'"
             , _email
             , _subject
             , _body
         );
 
-        return false;
+        UIViewController * view = [iOSDetail getRootViewController];
+
+        if( [MFMailComposeViewController canSendMail] == NO )
+        {
+            [iOSDetail alertWithViewController:view title:@"Yikes." message:@"Log into your mailbox using the standard Mail app" callback:^{}];
+
+            return false;
+        }
+
+        MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
+
+        [mailCompose setModalPresentationStyle:UIModalPresentationFormSheet];
+
+        iOSMailComposeDelegate * mailComposeDelegate = [[iOSMailComposeDelegate alloc] initWithCompletion:^ {
+            //ToDo callback
+        }];
+
+        [mailCompose setMailComposeDelegate:mailComposeDelegate];
+
+        [mailCompose setToRecipients:[NSArray arrayWithObjects:email, nil]];
+        [mailCompose setSubject:subject];
+        [mailCompose setMessageBody:message isHTML:NO];
+
+        [viewController presentViewController:mailCompose animated:YES completion:^ {
+            //ToDo callback
+        }] ;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::openDeleteAccount()
+    bool iOSPlatformService::openDeleteAccount()
     {
         LOGGER_INFO( "platform", "open delete account" );
 
@@ -976,7 +914,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::stopPlatform()
+    void iOSPlatformService::stopPlatform()
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );
 
@@ -988,17 +926,17 @@ namespace Mengine
         this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::setSleepMode( bool _sleepMode )
+    void iOSPlatformService::setSleepMode( bool _sleepMode )
     {
         m_sleepMode = _sleepMode;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::getSleepMode() const
+    bool iOSPlatformService::getSleepMode() const
     {
         return m_sleepMode;
     }
     //////////////////////////////////////////////////////////////////////////
-    Timestamp SDLPlatformService::getPlatfomTime() const
+    Timestamp iOSPlatformService::getPlatfomTime() const
     {
         Timestamp currentTime = Helper::getSystemTimestamp();
 
@@ -1007,7 +945,7 @@ namespace Mengine
         return platformTime;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::setProjectTitle( const Char * _projectTitle )
+    void iOSPlatformService::setProjectTitle( const Char * _projectTitle )
     {
         if( _projectTitle == nullptr )
         {
@@ -1023,7 +961,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatformService::getProjectTitle( Char * const _projectTitle ) const
+    size_t iOSPlatformService::getProjectTitle( Char * const _projectTitle ) const
     {
         m_projectTitle.copy( _projectTitle );
 
@@ -1032,14 +970,14 @@ namespace Mengine
         return len;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::alreadyRunningMonitor()
+    bool iOSPlatformService::alreadyRunningMonitor()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::createWindow( const Resolution & _windowResolution, bool _fullscreen )
+    bool iOSPlatformService::createWindow( const Resolution & _windowResolution, bool _fullscreen )
     {
         LOGGER_INFO( "platform", "create window size %u:%u fullscreen %d"
             , _windowResolution.getWidth()
@@ -1062,10 +1000,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::applyWindow_()
+    bool iOSPlatformService::applyWindow_()
     {
-#if defined(MENGINE_PLATFORM_UWP)
-#else
         SDL_GLContext glContext = SDL_GL_CreateContext( m_sdlWindow );
 
         if( glContext == nullptr )
@@ -1198,7 +1134,6 @@ namespace Mengine
             , drawable_width
             , drawable_height
         );
-#endif
 
         int win_width;
         int win_height;
@@ -1208,26 +1143,6 @@ namespace Mengine
             , win_width
             , win_height
         );
-
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        int win_top;
-        int win_left;
-        int win_bottom;
-        int win_right;
-        if( SDL_GetWindowBordersSize( m_sdlWindow, &win_top, &win_left, &win_bottom, &win_right ) != 0 )
-        {
-            LOGGER_WARNING( "SDL window borders get error: %s"
-                , SDL_GetError()
-            );
-        }
-
-        LOGGER_INFO( "platform", "SDL window borders [%d, %d] - [%d, %d]"
-            , win_left
-            , win_top
-            , win_right
-            , win_bottom
-        );
-#endif
 
         int win_min_width;
         int win_min_height;
@@ -1306,7 +1221,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::attachWindow( const void * _hWND )
+    bool iOSPlatformService::attachWindow( const void * _hWND )
     {
         this->setupWindow_();
 
@@ -1343,29 +1258,29 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::hasPlatformTag( const ConstString & _tag ) const
+    bool iOSPlatformService::hasPlatformTag( const ConstString & _tag ) const
     {
         bool exist = m_platformTags.hasTag( _tag );
 
         return exist;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Tags & SDLPlatformService::getPlatformTags() const
+    const Tags & iOSPlatformService::getPlatformTags() const
     {
         return m_platformTags;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::isDesktop() const
+    bool iOSPlatformService::isDesktop() const
     {
         return m_desktop;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::hasTouchpad() const
+    bool iOSPlatformService::hasTouchpad() const
     {
         return m_touchpad;
     }
     //////////////////////////////////////////////////////////////////////////
-    DynamicLibraryInterfacePtr SDLPlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )
+    DynamicLibraryInterfacePtr iOSPlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "platform", "load dynamic library '%s'"
             , _dynamicLibraryName
@@ -1391,82 +1306,44 @@ namespace Mengine
         return dynamicLibrary;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::getDesktopResolution( Resolution * const _resolution ) const
+    bool iOSPlatformService::getDesktopResolution( Resolution * const _resolution ) const
     {
         uint32_t width;
         uint32_t height;
 
-        int displayIndex;
+        int drawable_width;
+        int drawable_height;
+        SDL_GL_GetDrawableSize( m_sdlWindow, &drawable_width, &drawable_height );
 
-        if( m_sdlWindow == nullptr )
-        {
-            displayIndex = 0;
-        }
-        else
-        {
-            displayIndex = SDL_GetWindowDisplayIndex( m_sdlWindow );
-
-            if( displayIndex == -1 )
-            {
-                LOGGER_ERROR( "invalid get window display: %s"
-                    , SDL_GetError()
-                );
-
-                return false;
-            }
-        }
-
-        SDL_DisplayMode dm;
-        if( SDL_GetDesktopDisplayMode( displayIndex, &dm ) != 0 )
-        {
-            LOGGER_ERROR( "invalid get desktop resolution error: %s"
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-
-        width = (uint32_t)dm.w;
-        height = (uint32_t)dm.h;
+        width = (uint32_t)drawable_width;
+        height = (uint32_t)drawable_height;
 
         * _resolution = Resolution( width, height );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::getNoFullscreen() const
+    bool iOSPlatformService::getNoFullscreen() const
     {
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::getAlwaysFullscreen() const
+    bool iOSPlatformService::getAlwaysFullscreen() const
     {
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::isDebuggerPresent() const
-    {
-#if defined(MENGINE_PLATFORM_WINDOWS)
-        if( ::IsDebuggerPresent() == FALSE )
-        {
-            return false;
-        }
-
         return true;
-#else
-
-        return false;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::debugBreak()
+    bool iOSPlatformService::isDebuggerPresent() const
     {
-#if defined(MENGINE_PLATFORM_WINDOWS)
-        ::DebugBreak();
-#endif
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::closeWindow()
+    void iOSPlatformService::debugBreak()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::closeWindow()
     {
         if( m_sdlWindow != nullptr )
         {
@@ -1476,12 +1353,12 @@ namespace Mengine
         this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::minimizeWindow()
+    void iOSPlatformService::minimizeWindow()
     {
         SDL_MinimizeWindow( m_sdlWindow );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::setCursorPosition( const mt::vec2f & _pos )
+    void iOSPlatformService::setCursorPosition( const mt::vec2f & _pos )
     {
         Resolution resolution;
         if( this->getDesktopResolution( &resolution ) == false )
@@ -1499,14 +1376,14 @@ namespace Mengine
         SDL_WarpMouseInWindow( m_sdlWindow, wndPosX, wndPosY );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::setCursorIcon( const ConstString & _icon )
+    void iOSPlatformService::setCursorIcon( const ConstString & _icon )
     {
         MENGINE_UNUSED( _icon );
 
         //ToDo https://github.com/irov/Mengine/issues/93
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::hasCursorIcon( const ConstString & _icon ) const
+    bool iOSPlatformService::hasCursorIcon( const ConstString & _icon ) const
     {
         MENGINE_UNUSED( _icon );
 
@@ -1515,24 +1392,24 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::showKeyboard()
+    void iOSPlatformService::showKeyboard()
     {
         SDL_StartTextInput();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::hideKeyboard()
+    void iOSPlatformService::hideKeyboard()
     {
         SDL_StopTextInput();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::isShowKeyboard() const
+    bool iOSPlatformService::isShowKeyboard() const
     {
         SDL_bool active = SDL_IsTextInputActive();
 
         return active;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
+    bool iOSPlatformService::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
     {
         if( m_sdlWindow == nullptr )
         {
@@ -1554,7 +1431,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::notifyVsyncChanged( bool _vsync )
+    void iOSPlatformService::notifyVsyncChanged( bool _vsync )
     {
         MENGINE_UNUSED( _vsync );
 
@@ -1592,7 +1469,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::notifyCursorModeChanged( bool _mode )
+    void iOSPlatformService::notifyCursorModeChanged( bool _mode )
     {
         if( _mode == true )
         {
@@ -1604,7 +1481,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer )
+    bool iOSPlatformService::notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer )
     {
         MENGINE_UNUSED( _name );
         MENGINE_UNUSED( _content );
@@ -1613,7 +1490,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::onEvent( const ConstString & _event, const Params & _params )
+    void iOSPlatformService::onEvent( const ConstString & _event, const Params & _params )
     {
         MENGINE_UNUSED( _event );
         MENGINE_UNUSED( _params );
@@ -1624,7 +1501,6 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_createDirectoryFullpath( const Char * _fullpath )
         {
-#if defined(MENGINE_PLATFORM_MACOS)
             int status = ::mkdir( _fullpath, S_IRWXU );
 
             if( status != 0 )
@@ -1635,55 +1511,6 @@ namespace Mengine
 
                 return false;
             }
-
-#elif defined(MENGINE_PLATFORM_LINUX)
-            int status = ::mkdir( _fullpath, S_IRWXU );
-
-            if( status != 0 )
-            {
-                LOGGER_WARNING( "'%s' already exists"
-                    , _fullpath
-                );
-
-                return false;
-            }
-
-#elif defined(MENGINE_PLATFORM_WINDOWS)
-            WChar unicode_fullpath[MENGINE_MAX_PATH + 1] = {L'\0'};
-            Helper::utf8ToUnicode( _fullpath, unicode_fullpath, MENGINE_MAX_PATH - 1 );
-
-            BOOL successful = ::CreateDirectoryW( unicode_fullpath, NULL );
-
-            if( successful == FALSE )
-            {
-                DWORD err = GetLastError();
-
-                switch( err )
-                {
-                case ERROR_ALREADY_EXISTS:
-                    {
-                        return true;
-                    }break;
-                case ERROR_PATH_NOT_FOUND:
-                    {
-                        LOGGER_WARNING( "'%s' not found"
-                            , _fullpath
-                        );
-
-                        return false;
-                    }break;
-                default:
-                    {
-                        LOGGER_WARNING( "'%s' unknown error %d"
-                            , _fullpath
-                            , err
-                        );
-                    }break;
-                }
-
-                return false;
-            }
-#endif
 
             return true;
         }
@@ -1708,7 +1535,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::existDirectory( const Char * _path, const Char * _directory ) const
+    bool iOSPlatformService::existDirectory( const Char * _path, const Char * _directory ) const
     {
         Char pathDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathDirectory, _directory );
@@ -1729,19 +1556,13 @@ namespace Mengine
         {
             return true;	// let it be
         }
-#if defined(MENGINE_PLATFORM_MACOS)
-        else if( pathFull[len - 1] == '~' )	// root dir
-        {
-            return true;	// let it be
-        }
-#endif
 
         bool exist = Detail::s_isDirectoryFullpath( pathFull );
 
         return exist;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::createDirectory( const Char * _path, const Char * _directory )
+    bool iOSPlatformService::createDirectory( const Char * _path, const Char * _directory )
     {
         size_t directorySize = StdString::strlen( _directory );
 
@@ -1818,7 +1639,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::existFile( const Char * _filePath )
+    bool iOSPlatformService::existFile( const Char * _filePath )
     {
         Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
@@ -1847,7 +1668,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::removeFile( const Char * _filePath )
+    bool iOSPlatformService::removeFile( const Char * _filePath )
     {
         Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
@@ -1862,7 +1683,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::moveFile( const Char * _oldFilePath, const Char * _newFilePath )
+    bool iOSPlatformService::moveFile( const Char * _oldFilePath, const Char * _newFilePath )
     {
         Char oldPathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( oldPathCorrect, _oldFilePath );
@@ -1907,340 +1728,37 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-    //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static bool listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * const _stop )
-        {
-            WChar sDir[MENGINE_MAX_PATH + 1] = {L'\0'};
-            ::PathCanonicalizeW( sDir, _dir );
-
-            {
-                WChar sPath[MENGINE_MAX_PATH + 1] = {L'\0'};
-                StdString::wcscpy( sPath, sDir );
-                StdString::wcscat( sPath, _path );
-                StdString::wcscat( sPath, _mask );
-
-                WIN32_FIND_DATA fdFile;
-                HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
-
-                if( hFind != INVALID_HANDLE_VALUE )
-                {
-                    do
-                    {
-                        if( StdString::wcscmp( fdFile.cFileName, L"." ) == 0 ||
-                            StdString::wcscmp( fdFile.cFileName, L".." ) == 0 )
-                        {
-                            continue;
-                        }
-
-                        if( fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
-                        {
-                            continue;
-                        }
-
-                        WChar sPath2[MENGINE_MAX_PATH + 1] = {L'\0'};
-                        StdString::wcscpy( sPath2, sPath );
-                        StdString::wcscat( sPath2, L"\0" );
-
-                        Helper::pathCorrectForwardslashW( sPath2 );
-
-                        ::PathRemoveFileSpec( sPath2 );
-
-                        WChar unicode_filepath[MENGINE_MAX_PATH + 1] = {L'\0'};
-                        ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
-
-                        WChar unicode_out[MENGINE_MAX_PATH + 1] = {L'\0'};
-                        if( StdString::wcslen( sDir ) != 0 )
-                        {
-                            ::PathRelativePathTo( unicode_out
-                                , sDir
-                                , FILE_ATTRIBUTE_DIRECTORY
-                                , unicode_filepath
-                                , FILE_ATTRIBUTE_NORMAL );
-                        }
-                        else
-                        {
-                            StdString::wcscpy( unicode_out, unicode_filepath );
-                        }
-
-                        Char utf8_filepath[MENGINE_MAX_PATH + 1] = {'\0'};
-                        if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH ) == false )
-                        {
-                            ::FindClose( hFind );
-
-                            return false;
-                        }
-
-                        FilePath fp = Helper::stringizeFilePath( utf8_filepath );
-
-                        if( _lambda( fp ) == false )
-                        {
-                            ::FindClose( hFind );
-
-                            *_stop = true;
-
-                            return true;
-                        }
-
-                    } while( ::FindNextFile( hFind, &fdFile ) != FALSE );
-                }
-
-                ::FindClose( hFind );
-            }
-
-            {
-                WChar sPath[MENGINE_MAX_PATH + 1] = {L'\0'};
-                StdString::wcscpy( sPath, sDir );
-                StdString::wcscat( sPath, _path );
-                StdString::wcscat( sPath, L"*.*" );
-
-                WIN32_FIND_DATA fdFile;
-                HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
-
-                if( hFind == INVALID_HANDLE_VALUE )
-                {
-                    return true;
-                }
-
-                do
-                {
-                    if( StdString::wcscmp( fdFile.cFileName, L"." ) == 0 || 
-                        StdString::wcscmp( fdFile.cFileName, L".." ) == 0 )
-                    {
-                        continue;
-                    }
-
-                    if( (fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
-                    {
-                        continue;
-                    }
-
-                    WChar currentPath[MENGINE_MAX_PATH + 1] = {L'\0'};
-                    StdString::wcscpy( currentPath, sPath );
-                    StdString::wcscat( currentPath, L"\0" );
-
-                    ::PathRemoveFileSpec( currentPath );
-
-                    WChar nextPath[MENGINE_MAX_PATH + 1] = {L'\0'};
-                    ::PathCombine( nextPath, currentPath, fdFile.cFileName );
-
-                    StdString::wcscat( nextPath, L"\\" );
-
-                    bool stop;
-                    if( Detail::listDirectoryContents( sDir, _mask, nextPath, _lambda, &stop ) == false )
-                    {
-                        ::FindClose( hFind );
-
-                        return false;
-                    }
-
-                    if( stop == true )
-                    {
-                        ::FindClose( hFind );
-
-                        *_stop = true;
-
-                        return true;
-                    }
-
-                } while( ::FindNextFile( hFind, &fdFile ) != FALSE );
-
-                ::FindClose( hFind );
-            }
-
-            return true;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-#endif
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const
+    bool iOSPlatformService::findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
         MENGINE_UNUSED( _base );
         MENGINE_UNUSED( _path );
         MENGINE_UNUSED( _mask );
         MENGINE_UNUSED( _lambda );
 
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        WChar unicode_base[MENGINE_MAX_PATH + 1] = {L'\0'};
-        if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH - 1 ) == false )
-        {
-            return false;
-        }
-
-        WChar unicode_mask[MENGINE_MAX_PATH + 1] = {L'\0'};
-        if( Helper::utf8ToUnicode( _mask, unicode_mask, MENGINE_MAX_PATH - 1 ) == false )
-        {
-            return false;
-        }
-
-        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
-        {
-            return false;
-        }
-
-        WChar unicode_fullbase[MENGINE_MAX_PATH + 1] = {L'\0'};
-        ::GetFullPathName( unicode_base, MENGINE_MAX_PATH, unicode_fullbase, NULL );
-
-        Helper::LambdaListDirectoryFilePath lambda_listdirectory = [_lambda]( const WChar * _filePath )
-        {
-            Char utf8_filepath[MENGINE_MAX_PATH + 1] = {'\0'};
-            if( Helper::unicodeToUtf8( _filePath, utf8_filepath, MENGINE_MAX_PATH ) == false )
-            {
-                return false;
-            }
-
-            FilePath fp = Helper::stringizeFilePath( utf8_filepath );
-
-            bool result = _lambda( fp );
-
-            return result;
-        };
-
-        bool stop;
-        if( Helper::Win32ListDirectory( unicode_fullbase, unicode_mask, unicode_path, lambda_listdirectory, &stop ) == false )
-        {
-            return false;
-        }
-
-        MENGINE_UNUSED( stop );
-
-        return true;
-#else
         LOGGER_WARNING("SDLPlatformService::findFiles not support");
 
         return false;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t SDLPlatformService::getFileTime( const Char * _filePath ) const
+    uint64_t iOSPlatformService::getFileTime( const Char * _filePath ) const
     {
         MENGINE_UNUSED( _filePath );
 
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        WChar unicode_filePath[MENGINE_MAX_PATH + 1] = {L'\0'};
-        if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH - 1 ) == false )
-        {
-            return 0U;
-        }
-
-        HANDLE handle = ::CreateFile( unicode_filePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL,
-            OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
-
-        FILETIME creation;
-        FILETIME access;
-        FILETIME write;
-
-        if( ::GetFileTime( handle, &creation, &access, &write ) == FALSE )
-        {
-            ::CloseHandle( handle );
-
-            return 0U;
-        }
-
-        ::CloseHandle( handle );
-
-        time_t time = Helper::Win32FileTimeToUnixTime( &write );
-
-        return time;
-#else
         return 0U;
-#endif		
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )
+    bool iOSPlatformService::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )
     {
         MENGINE_UNUSED( _directoryPath );
         MENGINE_UNUSED( _filePath );
-
-#if defined(MENGINE_PLATFORM_MACOS)
-        Char path_pictures[MENGINE_MAX_PATH + 1] = {'\0'};
-        if( Helper::MacOSGetPicturesDirectory( path_pictures ) == false )
-        {
-            LOGGER_ERROR( "invalid get pictures directory" );
-            
-            return false;
-        }
-        
-        Char path_file[MENGINE_MAX_PATH + 1] = {'\0'};
-        MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_pictures, _directoryPath, _filePath );
-
-        if( Helper::MacOSSetDesktopWallpaper( path_file ) == false )
-        {
-            LOGGER_ERROR( "error set desktop wallpaper '%s'"
-                , path_file
-            );
-        }
-        
-        Uint32 flags = SDL_GetWindowFlags( m_sdlWindow );
-
-        if( (flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN )
-        {
-            [m_macOSWorkspace changeDesktopWallpaper:path_file];
-        }
-#endif
 
         //MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
+    bool iOSPlatformService::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
-#if defined(MENGINE_PLATFORM_MACOS)
-        Char path_pictures[MENGINE_MAX_PATH + 1] = {'\0'};
-        if( Helper::MacOSGetPicturesDirectory( path_pictures ) == false )
-        {
-            LOGGER_ERROR( "invalid get pictures directory" );
-            
-            return false;
-        }
-
-        if( this->createDirectory( path_pictures, _directoryPath ) == false )
-        {
-            LOGGER_ERROR( "invalid create directory '%s%s'"
-                , path_pictures
-                , _directoryPath
-            );
-
-            return false;
-        };
-
-        Char path_file[MENGINE_MAX_PATH + 1] = {'\0'};
-        MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_pictures, _directoryPath, _filePath );
-
-        SDL_RWops * rwops = SDL_RWFromFile( path_file, "wb" );
-
-        if( rwops == nullptr )
-        {
-            LOGGER_ERROR( "invalid create file '%s'"
-                , path_file
-            );
-
-            return false;
-        }
-
-        size_t written = SDL_RWwrite( rwops, _data, 1, _size );
-
-        if( written != _size )
-        {
-            LOGGER_ERROR( "invalid write file '%s' size %zu [error: %s]"
-                , path_file
-                , _size
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-
-        SDL_RWclose( rwops );
-
-        return true;
-#else
         MENGINE_UNUSED( _directoryPath );
         MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _data );
@@ -2249,61 +1767,10 @@ namespace Mengine
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
+    bool iOSPlatformService::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
-#if defined(MENGINE_PLATFORM_MACOS)
-        Char path_music[MENGINE_MAX_PATH + 1] = {'\0'};
-        if( Helper::MacOSGetMusicDirectory( path_music ) == false )
-        {
-            LOGGER_ERROR( "invalid get music directory" );
-            
-            return false;
-        }
-
-        if( this->createDirectory( path_music, _directoryPath ) == false )
-        {
-            LOGGER_ERROR( "invalid create directory '%s%s'"
-                , path_music
-                , _directoryPath
-            );
-
-            return false;
-        };
-
-        Char path_file[MENGINE_MAX_PATH + 1] = {'\0'};
-        MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_music, _directoryPath, _filePath );
-
-        SDL_RWops * rwops = SDL_RWFromFile( path_file, "wb" );
-
-        if( rwops == nullptr )
-        {
-            LOGGER_ERROR( "invalid create file '%s'"
-                , path_file
-            );
-
-            return false;
-        }
-
-        size_t written = SDL_RWwrite( rwops, _data, 1, _size );
-
-        if( written != _size )
-        {
-            LOGGER_ERROR( "invalid write file '%s' size %zu [error: %s]"
-                , path_file
-                , _size
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-
-        SDL_RWclose( rwops );
-
-        return true;
-#else
         MENGINE_UNUSED( _directoryPath );
         MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _data );
@@ -2312,10 +1779,9 @@ namespace Mengine
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::messageBox( const Char * _caption, const Char * _format, ... ) const
+    void iOSPlatformService::messageBox( const Char * _caption, const Char * _format, ... ) const
     {
         Char str[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
@@ -2340,7 +1806,7 @@ namespace Mengine
         SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_INFORMATION, _caption, str, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::setClipboardText( const Char * _value ) const
+    bool iOSPlatformService::setClipboardText( const Char * _value ) const
     {
         if( SDL_SetClipboardText( _value ) != 0 )
         {
@@ -2355,7 +1821,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::getClipboardText( Char * _value, size_t _capacity ) const
+    bool iOSPlatformService::getClipboardText( Char * _value, size_t _capacity ) const
     {
         char * text = SDL_GetClipboardText();
 
@@ -2371,103 +1837,33 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    SDL_Window * SDLPlatformService::getWindow() const
+    SDL_Window * iOSPlatformService::getWindow() const
     {
         return m_sdlWindow;
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLATFORM_WINDOWS)
-#   if defined(MENGINE_PLATFORM_UWP)
-    //////////////////////////////////////////////////////////////////////////
-    IInspectable * SDLPlatformService::getWindowHandle() const
+    UIWindow * iOSPlatformService::getUIWindow() const
     {
         SDL_SysWMinfo wmInfo;
         SDL_VERSION( &wmInfo.version );
 
         SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
 
-        IInspectable * iwindow = wmInfo.info.winrt.window;
+        UIWindow * uiwindow = wmInfo.info.uikit.window;
 
-        return iwindow;
+        return uiwindow;
     }
-    //////////////////////////////////////////////////////////////////////////
-#   else
-    //////////////////////////////////////////////////////////////////////////
-    HWND SDLPlatformService::getWindowHWND() const
-    {
-        SDL_SysWMinfo wmInfo;
-        SDL_VERSION( &wmInfo.version );
-
-        SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
-
-        HWND hwnd = wmInfo.info.win.window;
-
-        return hwnd;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    HDC SDLPlatformService::getWindowHDC() const
-    {
-        SDL_SysWMinfo wmInfo;
-        SDL_VERSION( &wmInfo.version );
-
-        SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
-
-        HDC hdc = wmInfo.info.win.hdc;
-
-        return hdc;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    HINSTANCE SDLPlatformService::getWindowHinstance() const
-    {
-        SDL_SysWMinfo wmInfo;
-        SDL_VERSION( &wmInfo.version );
-
-        SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
-
-        HINSTANCE hinstance = wmInfo.info.win.hinstance;
-
-        return hinstance;
-    }
-    //////////////////////////////////////////////////////////////////////////
-#   endif
-#elif defined(MENGINE_PLATFORM_LINUX)
-    //////////////////////////////////////////////////////////////////////////
-    Window SDLPlatformService::getWindowInstance() const
-    {
-        SDL_SysWMinfo wmInfo;
-        SDL_VERSION( &wmInfo.version );
-
-        SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
-
-        Window w = wmInfo.info.x11.window;
-
-        return w;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Display * SDLPlatformService::getWindowDisplay() const
-    {
-        SDL_SysWMinfo wmInfo;
-        SDL_VERSION( &wmInfo.version );
-
-        SDL_GetWindowWMInfo( m_sdlWindow, &wmInfo );
-
-        Display * dispaly = wmInfo.info.x11.display;
-
-        return dispaly;
-    }
-    //////////////////////////////////////////////////////////////////////////
-#endif
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     //////////////////////////////////////////////////////////////////////////
-    SDL_GLContext SDLPlatformService::getGLContext() const
+    SDL_GLContext iOSPlatformService::getGLContext() const
     {
         return m_glContext;
     }
     //////////////////////////////////////////////////////////////////////////
 #endif
     //////////////////////////////////////////////////////////////////////////
-    UniqueId SDLPlatformService::addSDLEventHandler( const LambdaSDLEventHandler & _handler )
+    UniqueId iOSPlatformService::addSDLEventHandler( const LambdaSDLEventHandler & _handler )
     {
         UniqueId id = ENUMERATOR_SERVICE()
             ->generateUniqueIdentity();
@@ -2481,7 +1877,7 @@ namespace Mengine
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::removeSDLEventHandler( UniqueId _handlerId )
+    void iOSPlatformService::removeSDLEventHandler( UniqueId _handlerId )
     {
         VectorSDLEventHandlers::iterator it_found = Algorithm::find_if( m_sdlEventHandlers.begin(), m_sdlEventHandlers.end(), [_handlerId]( const SDLEventHandlerDesc & _desc )
         {
@@ -2495,49 +1891,21 @@ namespace Mengine
         m_sdlEventHandlers.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::changeWindow_( const Resolution & _resolution, bool _fullscreen )
+    bool iOSPlatformService::changeWindow_( const Resolution & _resolution, bool _fullscreen )
     {
         MENGINE_UNUSED( _resolution );
 
-#if defined(MENGINE_PLATFORM_UWP)
         if( RENDER_SYSTEM()
             ->onWindowChangeFullscreen( _fullscreen ) == false )
         {
             return false;
         }
-#else
-        RENDER_SERVICE()
-            ->onDeviceLostPrepare();
-
-        RENDER_SYSTEM()
-            ->onWindowChangeFullscreenPrepare( _fullscreen );
-
-        this->destroyWindow_();
-        this->createWindow( _resolution, _fullscreen );
-
-        if( RENDER_SERVICE()
-            ->onDeviceLostRestore() == false )
-        {
-            return false;
-        }
-
-        SDL_RaiseWindow( m_sdlWindow );
-        SDL_ShowWindow( m_sdlWindow );
-
-        if( RENDER_SYSTEM()
-            ->onWindowChangeFullscreen( _fullscreen ) == false )
-        {
-            return false;
-        }
-#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::setupWindow_()
+    void iOSPlatformService::setupWindow_()
     {
-#if defined(MENGINE_PLATFORM_UWP)
-#else
         uint32_t Engine_SDL_GL_RED_SIZE = CONFIG_VALUE( "SDL", "SDL_GL_RED_SIZE", 8 );
 
         if( SDL_GL_SetAttribute( SDL_GL_RED_SIZE, Engine_SDL_GL_RED_SIZE ) != 0 )
@@ -2597,15 +1965,10 @@ namespace Mengine
                 , SDL_GetError()
             );
         }
-#endif
 
-#if defined(MENGINE_PLATFORM_UWP)
-        SDL_SetHint( SDL_HINT_RENDER_DRIVER, "direct3d11" );
+        SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengles2" );
 
-#else
-        SDL_SetHint( SDL_HINT_RENDER_DRIVER, "opengl" );
-
-        uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_CORE );
+        uint32_t Engine_SDL_GL_CONTEXT_PROFILE_MASK = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_PROFILE_MASK", (uint32_t)SDL_GL_CONTEXT_PROFILE_ES );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, Engine_SDL_GL_CONTEXT_PROFILE_MASK ) != 0 )
         {
@@ -2615,7 +1978,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_MAJOR_VERSION", 3 );
+        uint32_t Engine_SDL_GL_CONTEXT_MAJOR_VERSION = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_MAJOR_VERSION", 2 );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, Engine_SDL_GL_CONTEXT_MAJOR_VERSION ) != 0 )
         {
@@ -2625,7 +1988,7 @@ namespace Mengine
             );
         }
 
-        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE( "SDL", "SDL_GL_CONTEXT_MINOR_VERSION", 2 );
+        uint32_t Engine_SDL_GL_CONTEXT_MINOR_VERSION = CONFIG_VALUE( "SDL", "Engine_SDL_GL_CONTEXT_MINOR_VERSION", 0 );
 
         if( SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, Engine_SDL_GL_CONTEXT_MINOR_VERSION ) != 0 )
         {
@@ -2644,84 +2007,56 @@ namespace Mengine
                 , SDL_GetError()
             );
         }
-#endif
+
+        const Char * Engine_SDL_HINT_ORIENTATIONS = CONFIG_VALUE( "SDL", "SDL_HINT_ORIENTATIONS", "Portrait" );
+
+        if( SDL_SetHint( SDL_HINT_ORIENTATIONS, Engine_SDL_HINT_ORIENTATIONS ) != SDL_TRUE )
+        {
+            LOGGER_WARNING( "set hint SDL_HINT_ORIENTATIONS to [%s] error: %s"
+                , Engine_SDL_HINT_ORIENTATIONS
+                , SDL_GetError()
+            );
+        }
+
+        const Char * Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR = CONFIG_VALUE( "SDL", "SDL_HINT_IOS_HIDE_HOME_INDICATOR", "1" );
+
+        if( SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR ) != SDL_TRUE )
+        {
+            LOGGER_WARNING( "set hint SDL_HINT_IOS_HIDE_HOME_INDICATOR to [%s] error: %s"
+                , Engine_SDL_HINT_IOS_HIDE_HOME_INDICATOR
+                , SDL_GetError()
+            );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::createWindow_( const Resolution & _windowResolution, bool _fullscreen )
+    bool iOSPlatformService::createWindow_( const Resolution & _windowResolution, bool _fullscreen )
     {
         MENGINE_UNUSED( _windowResolution );
         MENGINE_UNUSED( _fullscreen );
 
-#if defined(MENGINE_PLATFORM_UWP)
-       //Empty
-#else
         SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 );
-#endif
 
         Uint32 windowFlags = 0;
 
-#if defined(MENGINE_PLATFORM_UWP)
-        windowFlags |= SDL_WINDOW_SHOWN;
-
-        if( _fullscreen == true )
-        {
-            windowFlags |= SDL_WINDOW_FULLSCREEN;
-        }
-
-#else
         windowFlags |= SDL_WINDOW_OPENGL;
-        windowFlags |= SDL_WINDOW_HIDDEN;
-
-        if( _fullscreen == true )
-        {
-            windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-        }
-#endif
+        windowFlags |= SDL_WINDOW_SHOWN;
+        windowFlags |= SDL_WINDOW_RESIZABLE;
+        windowFlags |= SDL_WINDOW_FULLSCREEN;
+        windowFlags |= SDL_WINDOW_BORDERLESS;
+        windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
 
         LOGGER_INFO( "platform", "num video displays: %d"
             , SDL_GetNumVideoDisplays()
         );
-        
+
         const Char * projectTitle_str = m_projectTitle.c_str();
 
-        SDL_DisplayMode mode;
-        if( SDL_GetDesktopDisplayMode( 0, &mode ) != 0 )
-        {
-            LOGGER_ERROR( "get desktop display mode error: %s"
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-
-        SDL_Window * window;
-
-        if( _fullscreen == false )
-        {
-            int width = static_cast<int>(_windowResolution.getWidth());
-            int height = static_cast<int>(_windowResolution.getHeight());
-
-            uint32_t window_x_mode = (mode.w > width) ? SDL_WINDOWPOS_CENTERED : 50;
-            uint32_t window_y_mode = (mode.h > height) ? SDL_WINDOWPOS_CENTERED : 50;
-
-            window = SDL_CreateWindow( projectTitle_str
-                , window_x_mode
-                , window_y_mode
-                , width
-                , height
-                , windowFlags
-            );
-        }
-        else
-        {
-            window = SDL_CreateWindow( projectTitle_str
-                , SDL_WINDOWPOS_UNDEFINED
-                , SDL_WINDOWPOS_UNDEFINED
-                , mode.w
-                , mode.h
-                , windowFlags
-            );
-        }
+        SDL_Window * window = SDL_CreateWindow( projectTitle_str
+            , SDL_WINDOWPOS_UNDEFINED
+            , SDL_WINDOWPOS_UNDEFINED
+            , -1
+            , -1
+            , windowFlags );
 
         if( window == nullptr )
         {
@@ -2741,7 +2076,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::destroyWindow_()
+    void iOSPlatformService::destroyWindow_()
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
 
@@ -2899,7 +2234,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::processEvents_()
+    bool iOSPlatformService::processEvents_()
     {
         bool shouldQuit = false;
         
@@ -3024,6 +2359,30 @@ namespace Mengine
                 {
                     shouldQuit = true;
                 }break;
+            case SDL_APP_TERMINATING:
+                {
+                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
+                }break;
+            case SDL_APP_LOWMEMORY:
+                {                    
+                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
+                }break;
+            case SDL_APP_WILLENTERBACKGROUND:
+                {
+                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
+                }break;
+            case SDL_APP_DIDENTERBACKGROUND:
+                {
+                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
+                }break;
+            case SDL_APP_WILLENTERFOREGROUND:
+                {
+                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
+                }break;
+            case SDL_APP_DIDENTERFOREGROUND:
+                {
+                    NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
+                }break;
             default:
                 break;
             }
@@ -3037,7 +2396,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::pushQuitEvent_()
+    void iOSPlatformService::pushQuitEvent_()
     {
         SDL_Event e;
         e.type = SDL_QUIT;
@@ -3051,7 +2410,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::setActive_( bool _active )
+    void iOSPlatformService::setActive_( bool _active )
     {
         if( m_active == _active )
         {
@@ -3102,7 +2461,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::isNeedWindowRender() const
+    bool iOSPlatformService::isNeedWindowRender() const
     {
         bool nopause = APPLICATION_SERVICE()
             ->getNopause();
@@ -3128,7 +2487,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatformService::initializeFileService()
+    bool iOSPlatformService::initializeFileService()
     {
         FileGroupInterfacePtr defaultFileGroup = nullptr;
 
@@ -3159,7 +2518,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatformService::finalizeFileService()
+    void iOSPlatformService::finalizeFileService()
     {
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         FILE_SERVICE()

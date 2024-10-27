@@ -15,12 +15,6 @@ src
     
     iOSEnvironmentService.h
     iOSEnvironmentService.mm
-    
-    iOSMailCompose.h
-    iOSMailCompose.mm
-    
-    iOSProxyLogger.h
-    iOSProxyLogger.mm
 
     iOSTransparencyConsentParam.h
     iOSTransparencyConsentParam.mm

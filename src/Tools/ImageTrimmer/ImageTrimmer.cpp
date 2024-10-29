@@ -22,6 +22,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/PluginHelper.h"
 
 static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
 {

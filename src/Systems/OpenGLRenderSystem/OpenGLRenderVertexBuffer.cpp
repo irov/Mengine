@@ -57,7 +57,7 @@ namespace Mengine
             ->createMemoryProxy( MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory" );
 
         m_memory = memory;
 

@@ -60,7 +60,9 @@ namespace Mengine
             FileGroupInterface * fileGroup;
             InputStreamInterfacePtr stream = userFileGroup->createInputFile( propertyPath, false, &fileGroup, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream );
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s'"
+                , propertyPath.c_str()
+            );
 
             if( fileGroup->openInputFile( propertyPath, stream, 0, MENGINE_UNKNOWN_SIZE, false, true ) == false )
             {
@@ -71,7 +73,9 @@ namespace Mengine
 
             MemoryInterfacePtr memory = Helper::createMemoryStreamString( stream, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory '%s'"
+                , propertyPath.c_str()
+            );
 
             const Char * memory_buffer = memory->getBuffer();
 
@@ -101,7 +105,7 @@ namespace Mengine
 
             OutputStreamInterfacePtr stream = userFileGroup->createOutputFile( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream );
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create output file" );
 
             if( userFileGroup->openOutputFile( propertyPath, stream, false ) == false )
             {

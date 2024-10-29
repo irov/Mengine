@@ -10,7 +10,6 @@ Common
     FactoryInterface.h
     PluginInterface.h
     ModuleInterface.h
-    ModuleFactoryInterface.h
     ModuleServiceInterface.h
     ScriptModuleInterface.h
     ScriptCodeDataInterface.h
@@ -19,9 +18,7 @@ Common
     ScriptServiceInterface.h
     CodecFactoryInterface.h
     DecoderInterface.h
-    DecoderFactoryInterface.h
     EncoderInterface.h
-    EncoderFactoryInterface.h
     CodecServiceInterface.h
     ConfigInterface.h
     ConfigServiceInterface.h
@@ -54,7 +51,6 @@ Common
     BootstrapperInterface.h
     SecureServiceInterface.h
     ConverterInterface.h
-    ConverterFactoryInterface.h
     ConverterServiceInterface.h
     ComponentInterface.h
     ComponentHubInterface.h

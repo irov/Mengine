@@ -32,7 +32,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugTab::addWidget( const DevToDebugWidgetInterfacePtr & _widget )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _widget );
+        MENGINE_ASSERTION_MEMORY_PANIC( _widget, "invalid add widget" );
         
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 

@@ -81,7 +81,7 @@ namespace Mengine
         if( written != _size )
         {
             LOGGER_ERROR( "invalid write file '%s' size: %zu error: %d"
-                , Helper::getDebugFullPath( this )
+                , Helper::getDebugFullPath( this ).c_str()
                 , _size
                 , errno
             );

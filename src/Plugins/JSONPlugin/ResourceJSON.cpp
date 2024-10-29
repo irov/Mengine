@@ -37,7 +37,7 @@ namespace Mengine
             ->load( content, &json, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "invalid load json '%s'"
-                , Helper::getContentFullPath( this->getContent() )
+                , Helper::getContentFullPath( this->getContent() ).c_str()
             );
 
             return false;

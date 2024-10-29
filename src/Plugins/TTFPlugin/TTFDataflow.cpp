@@ -83,7 +83,7 @@ namespace Mengine
     {
         TTFDataPtr data = m_factoryTTFData->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data );
+        MENGINE_ASSERTION_MEMORY_PANIC( data, "invalid create data" );
 
         return data;
     }
@@ -92,7 +92,7 @@ namespace Mengine
     {
         MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory" );
 
         return memory;
     }
@@ -109,7 +109,7 @@ namespace Mengine
         FT_Byte * memory_byte = _memory->getBuffer();
         size_t memory_size = _memory->getSize();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory_byte );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_byte, "invalid memory" );
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 

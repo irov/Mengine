@@ -21,7 +21,7 @@ namespace Mengine
         const FileGroupInterfacePtr & devFileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( devFileGroup );
+        MENGINE_ASSERTION_MEMORY_PANIC( devFileGroup, "not found 'dev' file group" );
 
         m_devFileGroup = devFileGroup;
 
@@ -42,14 +42,14 @@ namespace Mengine
         return m_convertExt;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevelopmentConverter::setOptions( const ConverterOptions * _options )
+    void DevelopmentConverter::setOptions( const ConverterOptions & _options )
     {
-        m_options = *(_options);
+        m_options = _options;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConverterOptions * DevelopmentConverter::getOptions() const
+    const ConverterOptions & DevelopmentConverter::getOptions() const
     {
-        return &m_options;
+        return m_options;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DevelopmentConverter::validateVersion( const InputStreamInterfacePtr & _stream ) const

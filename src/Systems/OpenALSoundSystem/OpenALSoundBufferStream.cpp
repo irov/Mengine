@@ -42,14 +42,14 @@ namespace Mengine
     {
         ThreadMutexInterfacePtr mutexUpdating = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutexUpdating );
+        MENGINE_ASSERTION_MEMORY_PANIC( mutexUpdating, "invalid create mutex" );
 
         m_mutexUpdating = mutexUpdating;
 
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory" );
 
         memory->newBuffer( MENGINE_OPENAL_STREAM_BUFFER_SIZE );
 

@@ -74,7 +74,7 @@ namespace Mengine
         InputStreamInterfacePtr stream = fileGroup->createInputFile( filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create input stream '%s'"
-            , Helper::getContentFullPath( m_content )
+            , Helper::getContentFullPath( m_content ).c_str()
         );
 
         m_stream = stream;
@@ -85,7 +85,7 @@ namespace Mengine
     bool ThreadTaskPrefetchStream::_onThreadTaskProcess()
     {
         LOGGER_INFO( "prefetch", "prefetch stream file '%s'"
-            , Helper::getContentFullPath( m_content )
+            , Helper::getContentFullPath( m_content ).c_str()
         );
 
         const FilePath & filePath = m_content->getFilePath();
@@ -93,7 +93,7 @@ namespace Mengine
         if( m_realFileGroup->openInputFile( filePath, m_stream, 0, MENGINE_UNKNOWN_SIZE, false, false ) == false )
         {
             LOGGER_ERROR( "invalid open file '%s'"
-                , Helper::getContentFullPath( m_content )
+                , Helper::getContentFullPath( m_content ).c_str()
             );
 
             return false;
@@ -102,7 +102,7 @@ namespace Mengine
         MemoryInterfacePtr memory = Helper::readStreamArchiveMagicMemory( m_stream, m_archivator, m_magicNumber, m_magicVersion, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid stream archive magic memory '%s'"
-            , Helper::getContentFullPath( m_content )
+            , Helper::getContentFullPath( m_content ).c_str()
         );
 
         m_memory = memory;

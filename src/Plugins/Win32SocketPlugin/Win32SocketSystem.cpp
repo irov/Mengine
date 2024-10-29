@@ -55,7 +55,7 @@ namespace Mengine
     {
         Win32SocketPtr socket = m_factoryWin32Socket->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( socket );
+        MENGINE_ASSERTION_MEMORY_PANIC( socket, "invalid create socket" );
 
         return socket;
     }

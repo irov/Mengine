@@ -44,21 +44,21 @@ namespace Mengine
         {
             LOGGER_ERROR( "can't create convert '%s'\nfrom: %s\nto: %s\n"
                 , utf8_convertType.c_str()
-                , Helper::getContentFullPath( options.inputContent )
-                , Helper::getContentFullPath( options.outputContent )
+                , Helper::getContentFullPath( options.inputContent ).c_str()
+                , Helper::getContentFullPath( options.outputContent ).c_str()
             );
 
             return false;
         }
 
-        converter->setOptions( &options );
+        converter->setOptions( options );
 
         if( converter->convert() == false )
         {
             LOGGER_ERROR( "can't convert '%s'\nfrom: %s\nto: %s\n"
                 , utf8_convertType.c_str()
-                , Helper::getContentFullPath( options.inputContent )
-                , Helper::getContentFullPath( options.outputContent )
+                , Helper::getContentFullPath( options.inputContent ).c_str()
+                , Helper::getContentFullPath( options.outputContent ).c_str()
             );
 
             return false;

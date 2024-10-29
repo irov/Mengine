@@ -39,7 +39,11 @@ namespace Mengine
 
         DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dataflow );
+        MENGINE_ASSERTION_MEMORY_PANIC( dataflow, "resource '%s' type '%s' invalid get dataflow '%s'"
+            , resource->getName().c_str()
+            , resource->getType().c_str()
+            , dataflowType.c_str()
+        );
 
         content->setDataflow( dataflow );
 

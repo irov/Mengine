@@ -48,7 +48,7 @@ namespace Mengine
 
                 MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( featuresBufferSize, MENGINE_DOCUMENT_FACTORABLE );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+                MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create memory cache buffer" );
 
                 uint8_t * featuresMemory = buffer->getBuffer();
 
@@ -111,8 +111,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageDecoderWEBP::_decode( const DecoderData * _decoderData )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
-        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData, "invalid decode data" );
+        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData *, "invalid decode data" );
 
         MENGINE_PROFILER_CATEGORY();
 
@@ -130,7 +130,7 @@ namespace Mengine
 
             const uint8_t * buffer_memory = buffer->getBuffer();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer_memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer_memory, "invalid get memory" );
 
             size_t buffer_size = buffer->getSize();
 

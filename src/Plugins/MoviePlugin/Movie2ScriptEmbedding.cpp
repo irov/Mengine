@@ -38,7 +38,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _args );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( _kwds );
+            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "kwds is nullptr" );
 
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<PythonMovie2EventReceiver>( _kernel, py_kwds, _node, MENGINE_DOCUMENT_PYBIND );
@@ -125,7 +125,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _args );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( _kwds );
+            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "kwds is nullptr" );
 
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<PythonMovie2SubCompositionEventReceiver>( _kernel, py_kwds, _node, MENGINE_DOCUMENT_PYBIND );
@@ -323,11 +323,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static pybind::dict s_getNullObjectsFromResourceMovie2( pybind::kernel_interface * _kernel, ResourceMovie2 * _resourceMovie2, const ConstString & _compositionName )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _resourceMovie2 );
+            MENGINE_ASSERTION_MEMORY_PANIC( _resourceMovie2, "resource is nullptr" );
 
             const aeMovieCompositionData * compositionData = _resourceMovie2->getCompositionData( _compositionName );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compositionData );
+            MENGINE_ASSERTION_MEMORY_PANIC( compositionData, "not found composition '%s'"
+                , _compositionName.c_str()
+            );
 
             movie_desc_t desc;
             desc.result = pybind::dict( _kernel );

@@ -124,7 +124,9 @@ namespace Mengine
         ThreadProcessorInterfacePtr threadProcessor = THREAD_SYSTEM()
             ->createThreadProcessor( _description, _priority, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( threadProcessor );
+        MENGINE_ASSERTION_MEMORY_PANIC( threadProcessor, "invalid create thread processor '%s'"
+            , _processorName.c_str()
+        );
 
         ThreadProcessorDesc td;
         td.name = _processorName;

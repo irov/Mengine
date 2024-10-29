@@ -106,7 +106,9 @@ namespace Mengine
 
         OutputStreamInterfacePtr stream = userFileGroup->createOutputFile( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create output file '%s'"
+            , propertyPath.c_str()
+        );
 
         if( userFileGroup->openOutputFile( propertyPath, stream, false ) == false )
         {
@@ -178,7 +180,9 @@ namespace Mengine
 
         OutputStreamInterfacePtr stream = userFileGroup->createOutputFile( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create output file '%s'"
+            , propertyPath.c_str()
+        );
 
         if( userFileGroup->openOutputFile( propertyPath, stream, false ) == false )
         {
@@ -243,7 +247,9 @@ namespace Mengine
 
         OutputStreamInterfacePtr stream = userFileGroup->createOutputFile( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create output file '%s'"
+            , propertyPath.c_str()
+        );
 
         if( userFileGroup->openOutputFile( propertyPath, stream, false ) == false )
         {

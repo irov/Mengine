@@ -295,7 +295,7 @@ namespace Mengine
                 RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
                     ->makeTextureGlyph( _width, _height, texture_border, _bytespp, &provider, &uv, _doc );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( texture );
+                MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid make texture glyph" );
 
                 TTFGlyphQuad & quad = ttf_glyph.quads[_index];
 
@@ -315,7 +315,7 @@ namespace Mengine
             RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
                 ->makeTextureGlyph( glyph_bitmap.width, glyph_bitmap.rows, texture_border, bitmap_channel, &provider, &uv, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( texture );
+            MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid make texture glyph" );
 
             TTFGlyphQuad & quad = ttf_glyph.quads[0];
 

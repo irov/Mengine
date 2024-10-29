@@ -30,14 +30,16 @@ namespace Mengine
 
         FEDataInterfacePtr data = Helper::getDataflow( content, &context, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data );
+        MENGINE_ASSERTION_MEMORY_PANIC( data, "invalid get dataflow '%s'"
+            , Helper::getContentFullPath( content ).c_str()
+        );
 
         fe_bundle * bundle = data->getFEBundle();
 
         if( this->compileFEBundle( bundle ) == false )
         {
             LOGGER_ERROR( "invalid compile text font effect '%s'"
-                , Helper::getContentFullPath( content )
+                , Helper::getContentFullPath( content ).c_str()
             );
 
             return false;

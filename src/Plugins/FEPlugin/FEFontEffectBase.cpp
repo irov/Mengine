@@ -63,7 +63,9 @@ namespace Mengine
     {
         fe_effect * effect = fe_bundle_get_effect_by_name( _bundle, m_effectName.c_str() );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( effect );
+        MENGINE_ASSERTION_MEMORY_PANIC( effect, "invalid get effect '%s'"
+            , m_effectName.c_str()
+        );
 
         fe_node * effect_node_out = fe_effect_find_node_by_type( effect, fe_node_type_out );
 

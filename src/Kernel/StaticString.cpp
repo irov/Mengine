@@ -55,7 +55,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void staticStringAssign( Char * const _buffer, size_t _capacity, const Char * _value, size_t _size )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _value );
+            MENGINE_ASSERTION_MEMORY_PANIC( _value, "invalid assign value" );
 
             size_t value_size = _size;
 
@@ -101,7 +101,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void staticStringAppend( Char * const _buffer, size_t _capacity, const Char * _value, size_t _size )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _value );
+            MENGINE_ASSERTION_MEMORY_PANIC( _value, "invalid append value" );
 
             size_t value_size = _size;
 
@@ -143,7 +143,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         int32_t staticStringCompare( const Char * _buffer, size_t _capacity, const Char * _value )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _value );
+            MENGINE_ASSERTION_MEMORY_PANIC( _value, "invalid compare value" );
 
             size_t value_size = StdString::strlen( _value );
 

@@ -21,6 +21,10 @@ namespace Mengine
         ImageEncoderJPEG();
         ~ImageEncoderJPEG() override;
 
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
+
     public:
         size_t encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo ) override;
 
@@ -38,6 +42,6 @@ namespace Mengine
 
         JOCTET m_JOCTETBuffer[MENGINE_JPEG_OUTPUT_BUF_SIZE];
 
-        MENGINE_JMP_DECLARE( m_jmpBuffer );
+        MENGINE_JMPBUF * m_jmpBuffer;
     };
 }

@@ -187,15 +187,6 @@ namespace Mengine
 
         this->_finalizePlugin();
 
-        for( const ConstString & name : m_moduleFactories )
-        {
-            ModuleFactoryInterfacePtr module = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Module" ), name );
-
-            module->finalize();
-        }
-
-        m_moduleFactories.clear();
-
         LOGGER_INFO( "plugin", "plugin finalize '%s'"
             , this->getPluginName()
         );
@@ -293,13 +284,22 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginBase::addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory, const DocumentInterfacePtr & _doc )
+    bool PluginBase::addModuleFactory( const ConstString & _name, const FactoryInterfacePtr & _factory, const DocumentInterfacePtr & _doc )
     {
-        VOCABULARY_SET( ModuleFactoryInterface, STRINGIZE_STRING_LOCAL( "Module" ), _name, _factory, _doc );
-
-        m_moduleFactories.emplace_back( _name );
+        VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "Module" ), _name, _factory, _doc );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PluginBase::removeModuleFactory( const ConstString & _name )
+    {
+        FactoryInterfacePtr factory = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Module" ), _name );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, "not found module factory '%s'"
+            , _name.c_str()
+        );
+
+        MENGINE_UNUSED( factory );
     }
     //////////////////////////////////////////////////////////////////////////
 }

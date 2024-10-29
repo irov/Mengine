@@ -44,7 +44,7 @@ namespace Mengine
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoder( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( decoder );
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder" );
 
         if( decoder->prepareData( _stream ) == false )
         {
@@ -57,7 +57,9 @@ namespace Mengine
 
         MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory cache buffer [%u]"
+            , bufferSize
+        );
 
         uint8_t * buffer = memory->getBuffer();
 
@@ -80,20 +82,20 @@ namespace Mengine
         InputStreamInterfacePtr input_stream = m_options.inputContent->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( input_stream, "Image file '%s' was not found"
-            , Helper::getContentFullPath( m_options.inputContent )
+            , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoder( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "Image decoder for file '%s' was not found"
-            , Helper::getContentFullPath( m_options.inputContent )
+            , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
         if( imageDecoder->prepareData( input_stream ) == false )
         {
             LOGGER_ERROR( "image initialize for file '%s' was not found"
-                , Helper::getContentFullPath( m_options.inputContent )
+                , Helper::getContentFullPath( m_options.inputContent ).c_str()
             );
 
             return false;
@@ -127,7 +129,7 @@ namespace Mengine
         if( imageDecoder->decode( &data ) == 0 )
         {
             LOGGER_ERROR( "invalid decode '%s'"
-                , Helper::getContentFullPath( m_options.inputContent )
+                , Helper::getContentFullPath( m_options.inputContent ).c_str()
             );
 
             return false;
@@ -140,20 +142,20 @@ namespace Mengine
         OutputStreamInterfacePtr output_stream = m_options.outputContent->openOutputStreamFile( true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( output_stream, "HIT file '%s' not create (open file)"
-            , Helper::getContentFullPath( m_options.outputContent )
+            , Helper::getContentFullPath( m_options.outputContent ).c_str()
         );
 
         PickEncoderInterfacePtr encoder = CODEC_SERVICE()
             ->createEncoder( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( encoder, "HIT file '%s' not create (createEncoder hitPick)"
-            , Helper::getContentFullPath( m_options.outputContent )
+            , Helper::getContentFullPath( m_options.outputContent ).c_str()
         );
 
         if( encoder->initialize( output_stream ) == false )
         {
             LOGGER_ERROR( "HIT file '%s' not initialize (createEncoder hitPick)"
-                , Helper::getContentFullPath( m_options.outputContent )
+                , Helper::getContentFullPath( m_options.outputContent ).c_str()
             );
 
             return false;
@@ -176,7 +178,7 @@ namespace Mengine
         if( m_options.outputContent->closeOutputStreamFile( output_stream ) == false )
         {
             LOGGER_ERROR( "HIT file '%s' invalid close"
-                , Helper::getContentFullPath( m_options.outputContent )
+                , Helper::getContentFullPath( m_options.outputContent ).c_str()
             );
 
             return false;

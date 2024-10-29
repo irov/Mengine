@@ -159,7 +159,10 @@ namespace Mengine
             RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
                 ->getMaterial3( materialId, PT_TRIANGLELIST, textures, textureCount, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( material );
+            MENGINE_ASSERTION_MEMORY_PANIC( material, "window '%s' resource '%s' invalid get material"
+                , this->getName().c_str()
+                , m_resourceWindow->getName().c_str()
+            );
 
             edge.material = material;
         }

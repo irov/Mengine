@@ -34,7 +34,9 @@ namespace Mengine
     {
         OutputStreamInterfacePtr stream = _content->openOutputStreamFile( false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s'"
+            , _content->getFilePath().c_str()
+        );
 
         m_stream = stream;
 

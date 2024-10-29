@@ -259,7 +259,7 @@ namespace Mengine
     {
         Movie2DataPtr data = m_factoryMovieData->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data );
+        MENGINE_ASSERTION_MEMORY_PANIC( data, "invalid create movie data" );
 
         return data;
     }
@@ -268,7 +268,7 @@ namespace Mengine
     {
         MemoryInterfacePtr memory = Helper::readStreamArchiveMagic( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid read magic" );
 
         return memory;
     }

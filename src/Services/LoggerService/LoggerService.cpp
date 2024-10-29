@@ -208,30 +208,27 @@ namespace Mengine
 
         this->logHistory_( record );
 
-        ThreadSharedMutexInterfacePtr mutexMessage = THREAD_SYSTEM()
-            ->createSharedMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadSharedMutexInterfacePtr mutexMessage = Helper::createThreadSharedMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutexMessage );
+        MENGINE_ASSERTION_MEMORY_PANIC( mutexMessage, "invalid create shared mutex" );
 
         m_mutexMessage = mutexMessage;
 
-        ThreadSharedMutexInterfacePtr mutexLogger = THREAD_SYSTEM()
-            ->createSharedMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadSharedMutexInterfacePtr mutexLogger = Helper::createThreadSharedMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutexLogger );
+        MENGINE_ASSERTION_MEMORY_PANIC( mutexLogger, "invalid create shared mutex" );
 
         m_mutexLogger = mutexLogger;
 
-        ThreadSharedMutexInterfacePtr mutexHistory = THREAD_SYSTEM()
-            ->createSharedMutex( MENGINE_DOCUMENT_FACTORABLE );
+        ThreadSharedMutexInterfacePtr mutexHistory = Helper::createThreadSharedMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutexHistory );
+        MENGINE_ASSERTION_MEMORY_PANIC( mutexHistory, "invalid create shared mutex" );
 
         m_mutexHistory = mutexHistory;
 
         ThreadMutexInterfacePtr mutexMessageBlock = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutexMessageBlock );
+        MENGINE_ASSERTION_MEMORY_PANIC( mutexMessageBlock, "invalid create mutex" );
 
         m_mutexMessageBlock = mutexMessageBlock;
 
@@ -269,7 +266,7 @@ namespace Mengine
         ThreadConditionVariableInterfacePtr conditionLogger = THREAD_SYSTEM()
             ->createConditionVariable( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( conditionLogger );
+        MENGINE_ASSERTION_MEMORY_PANIC( conditionLogger, "invalid create condition variable" );
 
         m_conditionLogger = conditionLogger;
 

@@ -1,4 +1,4 @@
-#include "XmlToBinDecoder.h"
+#include "XmlToBinConverter.h"
 
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
@@ -14,8 +14,11 @@
 #include "Kernel/Utf8Helper.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/Data.h"
+#include "Kernel/ParamsHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/StdIntTypes.h"
 
 #include "Metacode/Metacode.h"
 
@@ -74,82 +77,47 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    XmlToBinDecoder::XmlToBinDecoder()
+    XmlToBinConverter::XmlToBinConverter()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    XmlToBinDecoder::~XmlToBinDecoder()
+    XmlToBinConverter::~XmlToBinConverter()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    const InputStreamInterfacePtr & XmlToBinDecoder::getStream() const
+    bool XmlToBinConverter::_initialize()
     {
-        return m_stream;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void XmlToBinDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
-    {
-        MENGINE_UNUSED( _dataInfo );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const XmlCodecDataInfo * XmlToBinDecoder::getCodecDataInfo() const
-    {
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool XmlToBinDecoder::initialize( const ThreadMutexInterfacePtr & _mutex )
-    {
-        MENGINE_UNUSED( _mutex );
-
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, "not found 'lz4' archivator" );
 
         m_archivator = archivator;
 
-        const FileGroupInterfacePtr & fileGroupDev = FILE_SERVICE()
-            ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroupDev );
-
-        m_fileGroupDev = fileGroupDev;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void XmlToBinDecoder::finalize()
+    void XmlToBinConverter::_finalize()
     {
         m_archivator = nullptr;
-        m_fileGroupDev = nullptr;
-
-        m_stream = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool XmlToBinDecoder::prepareData( const InputStreamInterfacePtr & _stream )
-    {
-        m_stream = _stream;
-
-        return true;
     }
     ////////////////////////////////////////////////////////////////////////////
-    size_t XmlToBinDecoder::decode( const DecoderData * _decoderData )
+    bool XmlToBinConverter::convert()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
-        MENGINE_ASSERTION_TYPE( _decoderData, const XmlDecoderData * );
+        const ConverterOptions & options = this->getOptions();
 
-        const XmlDecoderData * decoderData = static_cast<const XmlDecoderData *>(_decoderData);
+        ContentInterfacePtr protocolContent = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "protocolContent" ), FactorablePtr::none() );
+        ParamInteger useProtocolVersion = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), 0LL );
+        ParamInteger useProtocolCrc32 = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), 0LL );
 
         LOGGER_MESSAGE_RELEASE( "xml to bin:\nxml - %s\nbin - %s"
-            , decoderData->pathXml.c_str()
-            , decoderData->pathBin.c_str()
+            , Helper::getContentFullPath( options.inputContent ).c_str()
+            , Helper::getContentFullPath( options.outputContent ).c_str()
         );
 
-        InputStreamInterfacePtr protocol_stream = Helper::openInputStreamFile( m_fileGroupDev, decoderData->pathProtocol, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr protocol_stream = protocolContent->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( protocol_stream, "error open protocol '%s'"
-            , decoderData->pathProtocol.c_str()
+            , Helper::getContentFullPath( protocolContent ).c_str()
         );
 
         size_t protocol_size = protocol_stream->size();
@@ -168,10 +136,10 @@ namespace Mengine
         if( protocol_stream->read( memory_protocol_buffer, protocol_size ) != protocol_size )
         {
             LOGGER_ERROR( "error read protocol '%s' error invalid read size"
-                , decoderData->pathProtocol.c_str()
+                , Helper::getContentFullPath( protocolContent ).c_str()
             );
 
-            return 0;
+            return false;
         }
 
         protocol_stream = nullptr;
@@ -181,41 +149,41 @@ namespace Mengine
         if( xml_protocol.readProtocol( memory_protocol_buffer, protocol_size ) == false )
         {
             LOGGER_ERROR( "error read protocol '%s' error:\n%s"
-                , decoderData->pathProtocol.c_str()
+                , Helper::getContentFullPath( protocolContent ).c_str()
                 , xml_protocol.getError().c_str()
             );
 
-            return 0;
+            return false;
         }
 
-        if( decoderData->useProtocolVersion != xml_protocol.getVersion() )
+        if( useProtocolVersion != xml_protocol.getVersion() )
         {
-            LOGGER_ERROR( "protocol '%s' invalid version '%u' use '%u'"
-                , decoderData->pathProtocol.c_str()
+            LOGGER_ERROR( "protocol '%s' invalid version '%u' use '%" MENGINE_PRIu64 "'"
+                , Helper::getContentFullPath( protocolContent ).c_str()
                 , xml_protocol.getVersion()
-                , decoderData->useProtocolVersion
+                , useProtocolVersion
             );
 
-            return 0;
+            return false;
         }
 
-        if( decoderData->useProtocolCrc32 != xml_protocol.getCrc32() )
+        if( useProtocolCrc32 != xml_protocol.getCrc32() )
         {
-            LOGGER_ERROR( "protocol '%s' invalid crc32 '%u' use '%u'"
-                , decoderData->pathProtocol.c_str()
+            LOGGER_ERROR( "protocol '%s' invalid crc32 '%u' use '%" MENGINE_PRIu64 "'"
+                , Helper::getContentFullPath( protocolContent ).c_str()
                 , xml_protocol.getVersion()
-                , decoderData->useProtocolCrc32
+                , useProtocolCrc32
             );
 
-            return 0;
+            return false;
         }
 
         memory_protocol = nullptr;
 
-        InputStreamInterfacePtr xml_stream = Helper::openInputStreamFile( m_fileGroupDev, decoderData->pathXml, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr xml_stream = options.inputContent->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( xml_stream, "error open xml '%s'"
-            , decoderData->pathXml.c_str()
+            , Helper::getContentFullPath( options.inputContent ).c_str()
         );
 
         size_t xml_size = xml_stream->size();
@@ -223,10 +191,10 @@ namespace Mengine
         if( xml_size == 0 )
         {
             LOGGER_ERROR( "error open xml '%s' (file size == 0)"
-                , decoderData->pathXml.c_str()
+                , Helper::getContentFullPath( options.inputContent ).c_str()
             );
 
-            return 0;
+            return false;
         }
 
         MemoryBufferInterfacePtr memory_xml = MEMORY_SERVICE()
@@ -242,20 +210,26 @@ namespace Mengine
 
         if( xml_stream->read( memory_xml_buffer, xml_size ) != xml_size )
         {
-            return 0;
+            LOGGER_ERROR( "error read xml '%s' error invalid read size"
+                , Helper::getContentFullPath( options.inputContent ).c_str()
+            );
+
+            return false;
         }
 
         xml_stream = nullptr;
 
         const Metabuf::XmlMeta * xml_meta = xml_protocol.getMeta( "Data" );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( xml_meta );
+        MENGINE_ASSERTION_MEMORY_PANIC( xml_meta, "invalid get meta 'Data' from protocol '%s'"
+            , Helper::getContentFullPath( protocolContent ).c_str()
+        );
 
         Metabuf::Xml2Metabuf xml_metabuf( &xml_protocol, xml_meta );
 
         LOGGER_INFO( "convert", "\nxml %s\nbin %s"
-            , decoderData->pathXml.c_str()
-            , decoderData->pathBin.c_str()
+            , Helper::getContentFullPath( options.inputContent ).c_str()
+            , Helper::getContentFullPath( options.outputContent ).c_str()
         );
 
         xml_metabuf.initialize();
@@ -281,12 +255,12 @@ namespace Mengine
         if( xml_metabuf.header( memory_header_buffer, Metacode::header_size, xml_meta_version, &header_size ) == false )
         {
             LOGGER_ERROR( "error header '%s' version '%u' error:\n%s"
-                , decoderData->pathXml.c_str()
+                , Helper::getContentFullPath( options.inputContent ).c_str()
                 , xml_meta_version
                 , xml_metabuf.getError().c_str()
             );
 
-            return 0;
+            return false;
         }
 
         MemoryBufferInterfacePtr memory_bin = MEMORY_SERVICE()
@@ -304,24 +278,24 @@ namespace Mengine
         if( xml_metabuf.convert( memory_bin_buffer, xml_size * 2, memory_xml_buffer, xml_size, &bin_size ) == false )
         {
             LOGGER_ERROR( "error convert '%s' error:\n%s"
-                , decoderData->pathXml.c_str()
+                , Helper::getContentFullPath( options.inputContent ).c_str()
                 , xml_metabuf.getError().c_str()
             );
 
-            return 0;
+            return false;
         }
 
         MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE()
             ->compressBuffer( m_archivator, memory_bin_buffer, bin_size, EAC_BEST );
 
         MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, "error convert '%s' invalid compress buffer"
-            , decoderData->pathXml.c_str()
+            , Helper::getContentFullPath( options.inputContent ).c_str()
         );
 
-        OutputStreamInterfacePtr bin_stream = Helper::openOutputStreamFile( m_fileGroupDev, decoderData->pathBin, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr bin_stream = options.outputContent->openOutputStreamFile( true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( bin_stream, "error create bin '%s'"
-            , decoderData->pathBin.c_str()
+            , Helper::getContentFullPath( options.outputContent ).c_str()
         );
 
         bin_stream->write( memory_header_buffer, Metacode::header_size );
@@ -333,7 +307,7 @@ namespace Mengine
         size_t compress_size = compress_memory->getSize();
 
         MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, "error create bin '%s' invalid get memory"
-            , decoderData->pathBin.c_str()
+            , Helper::getContentFullPath( options.outputContent ).c_str()
         );
 
         uint32_t write_compress_size = (uint32_t)compress_size;
@@ -342,28 +316,9 @@ namespace Mengine
 
         bin_stream->flush();
 
-        Helper::closeOutputStreamFile( m_fileGroupDev, bin_stream );
-
-        return bin_size;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool XmlToBinDecoder::rewind()
-    {
-        m_stream->rewind();
+        options.outputContent->closeOutputStreamFile( bin_stream );
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool XmlToBinDecoder::seek( float _time )
-    {
-        MENGINE_UNUSED( _time );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float XmlToBinDecoder::tell() const
-    {
-        return 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
 }

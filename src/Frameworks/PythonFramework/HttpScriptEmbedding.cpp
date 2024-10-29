@@ -47,13 +47,13 @@ namespace Mengine
 
         PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( receiver );
+        MENGINE_ASSERTION_MEMORY_PANIC( receiver, "invalid create receiver" );
 
         receiver->initialize( _cb, _args );
 
         ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYBIND );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( content );
+        MENGINE_ASSERTION_MEMORY_PANIC( content, "invalid make file content" );
 
         uint32_t id = HTTP_SERVICE()
             ->getAsset( _url, _login, _password, content, _timeout, EHRF_NONE, receiver, MENGINE_DOCUMENT_PYBIND );
@@ -70,7 +70,7 @@ namespace Mengine
 
         PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( receiver );
+        MENGINE_ASSERTION_MEMORY_PANIC( receiver, "invalid create receiver" );
 
         receiver->initialize( _cb, _args );
 
@@ -98,7 +98,7 @@ namespace Mengine
 
         PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( receiver );
+        MENGINE_ASSERTION_MEMORY_PANIC( receiver, "invalid create receiver" );
 
         receiver->initialize( _cb, _args );
 
@@ -117,7 +117,7 @@ namespace Mengine
 
         PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_PYBIND );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( receiver );
+        MENGINE_ASSERTION_MEMORY_PANIC( receiver, "invalid create receiver" );
 
         receiver->initialize( _cb, _args );
 

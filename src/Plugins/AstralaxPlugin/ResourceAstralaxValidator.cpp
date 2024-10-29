@@ -27,14 +27,14 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( container, "resource '%s' group '%s' can't create container file '%s'"
             , _resource->getName().c_str()
             , _resource->getGroupName().c_str()
-            , Helper::getContentFullPath( _resource->getContent() )
+            , Helper::getContentFullPath( _resource->getContent() ).c_str()
         );
 
         if( container->isValid() == false )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' can't valid container '%s'"
                 , _resource->getName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
             successful = false;

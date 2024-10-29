@@ -190,8 +190,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SoundDecoderOGGVorbis::_decode( const DecoderData * _decoderData )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
-        MENGINE_ASSERTION_TYPE( _decoderData, const SoundDecoderData * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData, "invalid decoder data" );
+        MENGINE_ASSERTION_TYPE( _decoderData, const SoundDecoderData *, "invalid decoder data" );
 
         MENGINE_PROFILER_CATEGORY();
 

@@ -28,7 +28,10 @@ namespace Mengine
 
         jpp::object json = Helper::loadJSONFile( fileGroup, filePath, _doc );
 
-        MENGINE_ASSERTION_JSON_INVALID( json );
+        MENGINE_ASSERTION_JSON_INVALID( json, "invalid load '%s:%s'"
+            , fileGroup->getName().c_str()
+            , filePath.c_str()
+        );
 
         m_json = json;
 
@@ -38,7 +41,10 @@ namespace Mengine
         {
             jpp::object new_json = Helper::loadJSONFile( fileGroup, filePath, _doc );
 
-            MENGINE_ASSERTION_JSON_INVALID( new_json );
+            MENGINE_ASSERTION_JSON_INVALID( new_json, "invalid reload '%s:%s'"
+                , fileGroup->getName().c_str()
+                , filePath.c_str()
+            );
 
             m_json = new_json;
         } );

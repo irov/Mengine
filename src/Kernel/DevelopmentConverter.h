@@ -2,13 +2,10 @@
 
 #include "Interface/ConverterInterface.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     class DevelopmentConverter
         : public ConverterInterface
-        , public Factorable
     {
     public:
         DevelopmentConverter();
@@ -23,8 +20,8 @@ namespace Mengine
         virtual void _finalize() = 0;
 
     public:
-        void setOptions( const ConverterOptions * _options ) override;
-        const ConverterOptions * getOptions() const override;
+        void setOptions( const ConverterOptions & _options ) override;
+        const ConverterOptions & getOptions() const override;
 
     public:
         const ConstString & getConvertExt() const override;

@@ -88,7 +88,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Checkbox::_dispose()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_chain );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_chain, "invalid dispose checkbox '%s'"
+            , this->getName().c_str()
+        );
 
         m_pickerable = nullptr;
 

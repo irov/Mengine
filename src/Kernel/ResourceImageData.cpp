@@ -35,11 +35,11 @@ namespace Mengine
         InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "image file '%s' was not found"
-            , Helper::getContentFullPath( this->getContent() )
+            , Helper::getContentFullPath( this->getContent() ).c_str()
         );
 
         MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty file '%s' codec '%s'"
-            , Helper::getContentFullPath( this->getContent() )
+            , Helper::getContentFullPath( this->getContent() ).c_str()
             , this->getContent()->getCodecType().c_str()
         );
 
@@ -50,14 +50,14 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, "image decoder '%s' for file '%s' was not found"
             , this->getContent()->getCodecType().c_str()
-            , Helper::getContentFullPath( this->getContent() )
+            , Helper::getContentFullPath( this->getContent() ).c_str()
         );
 
         if( imageDecoder->prepareData( stream ) == false )
         {
             LOGGER_ERROR( "image decoder '%s' for file '%s' was not found"
                 , this->getContent()->getCodecType().c_str()
-                , Helper::getContentFullPath( this->getContent() )
+                , Helper::getContentFullPath( this->getContent() ).c_str()
             );
 
             return false;
@@ -85,7 +85,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "image decoder '%s' for file '%s' invalid decode"
                 , this->getContent()->getCodecType().c_str()
-                , Helper::getContentFullPath( this->getContent() )
+                , Helper::getContentFullPath( this->getContent() ).c_str()
             );
 
             return false;

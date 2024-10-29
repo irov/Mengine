@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PhysicalPlaceholder::updateLocalMatrix() const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_body );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_body, "not setup body" );
 
         //always update local matrix
         this->invalidateLocalMatrix();

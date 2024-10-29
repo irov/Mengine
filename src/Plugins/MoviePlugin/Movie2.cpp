@@ -408,7 +408,7 @@ namespace Mengine
             LOGGER_ERROR( "movie2 '%s' resource '%s' path '%s' invalid get composition name '%s' in [%s]"
                 , this->getName().c_str()
                 , this->getResourceMovie2()->getName().c_str()
-                , Helper::getContentFullPath( m_resourceMovie2->getContent() )
+                , Helper::getContentFullPath( m_resourceMovie2->getContent() ).c_str()
                 , m_compositionName.c_str()
                 , ss.str().c_str()
             );
@@ -428,7 +428,12 @@ namespace Mengine
             {
                 TextFieldPtr node = Helper::generateFactorable<Node, TextField>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node );
+                MENGINE_ASSERTION_MEMORY_PANIC( node, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'TextField'"
+                    , this->getName().c_str()
+                    , this->getResourceMovie2()->getName().c_str()
+                    , this->getCompositionName().c_str()
+                    , layer.name.c_str()
+                );
 
                 node->setName( layer.name );
 
@@ -464,7 +469,12 @@ namespace Mengine
 
                 MatrixProxyPtr matrixProxy = Helper::generateFactorable<Node, MatrixProxy>( MENGINE_DOCUMENT_FACTORABLE );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
+                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'MatrixProxy'"
+                    , this->getName().c_str()
+                    , this->getResourceMovie2()->getName().c_str()
+                    , this->getCompositionName().c_str()
+                    , layer.name.c_str()
+                );
 
                 matrixProxy->setName( layer.name );
 
@@ -483,7 +493,12 @@ namespace Mengine
             {
                 Movie2SlotPtr node = Helper::generateFactorable<Node, Movie2Slot>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node );
+                MENGINE_ASSERTION_MEMORY_PANIC( node, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Movie2Slot'"
+                    , this->getName().c_str()
+                    , this->getResourceMovie2()->getName().c_str()
+                    , this->getCompositionName().c_str()
+                    , layer.name.c_str()
+                );
 
                 node->setName( layer.name );
 
@@ -502,7 +517,12 @@ namespace Mengine
 
                 MatrixProxyPtr matrixProxy = Helper::generateFactorable<Node, MatrixProxy>( MENGINE_DOCUMENT_FACTORABLE );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
+                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'MatrixProxy'"
+                    , this->getName().c_str()
+                    , this->getResourceMovie2()->getName().c_str()
+                    , this->getCompositionName().c_str()
+                    , layer.name.c_str()
+                );
 
                 matrixProxy->setName( layer.name );
 
@@ -521,7 +541,12 @@ namespace Mengine
             {
                 HotSpotPolygonPtr node = Helper::generateFactorable<Node, HotSpotPolygon>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node );
+                MENGINE_ASSERTION_MEMORY_PANIC( node, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'HotSpotPolygon'"
+                    , this->getName().c_str()
+                    , this->getResourceMovie2()->getName().c_str()
+                    , this->getCompositionName().c_str()
+                    , layer.name.c_str()
+                );
 
                 node->setName( layer.name );
 
@@ -529,7 +554,12 @@ namespace Mengine
 
                 MatrixProxyPtr matrixProxy = Helper::generateFactorable<Node, MatrixProxy>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
+                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'MatrixProxy'"
+                    , this->getName().c_str()
+                    , this->getResourceMovie2()->getName().c_str()
+                    , this->getCompositionName().c_str()
+                    , layer.name.c_str()
+                );
 
                 matrixProxy->setName( layer.name );
 
@@ -548,7 +578,12 @@ namespace Mengine
             {
                 NodePtr node = Helper::generatePrototype( Node::getFactorableType(), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node );
+                MENGINE_ASSERTION_MEMORY_PANIC( node, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'AstralaxEmitter'"
+                    , this->getName().c_str()
+                    , this->getResourceMovie2()->getName().c_str()
+                    , this->getCompositionName().c_str()
+                    , layer.name.c_str()
+                );
 
                 node->setName( layer.name );
 
@@ -559,7 +594,12 @@ namespace Mengine
 
                 MatrixProxyPtr matrixProxy = Helper::generateFactorable<Node, MatrixProxy>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
+                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'MatrixProxy'"
+                    , this->getName().c_str()
+                    , this->getResourceMovie2()->getName().c_str()
+                    , this->getCompositionName().c_str()
+                    , layer.name.c_str()
+                );
 
                 matrixProxy->setName( layer.name );
 
@@ -589,7 +629,12 @@ namespace Mengine
 
                 SurfaceImagePtr surface = Helper::generateFactorable<Surface, SurfaceImage>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( surface );
+                MENGINE_ASSERTION_MEMORY_PANIC( surface, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'SurfaceImage'"
+                    , this->getName().c_str()
+                    , this->getResourceMovie2()->getName().c_str()
+                    , this->getCompositionName().c_str()
+                    , layer.name.c_str()
+                );
 
                 surface->setResourceImage( resourceImage );
 
@@ -614,7 +659,12 @@ namespace Mengine
 
                 MatrixProxyPtr matrixProxy = Helper::generateFactorable<Node, MatrixProxy>( MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy );
+                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'MatrixProxy'"
+                    , this->getName().c_str()
+                    , this->getResourceMovie2()->getName().c_str()
+                    , this->getCompositionName().c_str()
+                    , layer.name.c_str()
+                );
 
                 matrixProxy->setName( layer.name );
 
@@ -635,7 +685,11 @@ namespace Mengine
         {
             Movie2SubCompositionPtr node = Helper::generateFactorable<Node, Movie2SubComposition>( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( node );
+            MENGINE_ASSERTION_MEMORY_PANIC( node, "name '%s' resource '%s' composition '%s' invalid create 'Movie2SubComposition'"
+                , this->getName().c_str()
+                , this->getResourceMovie2()->getName().c_str()
+                , this->getCompositionName().c_str()
+            );
 
             node->setMovie( this );
 
@@ -1241,7 +1295,12 @@ namespace Mengine
             {
                 const TextFieldPtr & node = movie2->getText_( node_index );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node );
+                MENGINE_ASSERTION_MEMORY_PANIC( node, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'TextField'"
+                    , movie2->getName().c_str()
+                    , movie2->getResourceMovie2()->getName().c_str()
+                    , movie2->getCompositionName().c_str()
+                    , layer_name
+                );
 
                 Detail::updateMatrixProxy( movie2, node.get(), AE_FALSE, _callbackData->matrix, AE_FALSE, _callbackData->color, _callbackData->opacity );
 
@@ -1297,7 +1356,12 @@ namespace Mengine
             {
                 const Movie2SlotPtr & node = movie2->getSlot_( node_index );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node );
+                MENGINE_ASSERTION_MEMORY_PANIC( node, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Movie2Slot'"
+                    , movie2->getName().c_str()
+                    , movie2->getResourceMovie2()->getName().c_str()
+                    , movie2->getCompositionName().c_str()
+                    , layer_name
+                );
 
                 *_nd = node.get();
 
@@ -1307,7 +1371,12 @@ namespace Mengine
             {
                 const HotSpotPolygonPtr & node = movie2->getSocket_( node_index );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node );
+                MENGINE_ASSERTION_MEMORY_PANIC( node, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'HotSpotPolygon'"
+                    , movie2->getName().c_str()
+                    , movie2->getResourceMovie2()->getName().c_str()
+                    , movie2->getCompositionName().c_str()
+                    , layer_name
+                );
 
                 const ae_polygon_t * polygon;
                 if( ae_get_movie_layer_data_socket_polygon( _callbackData->layer_data, 0, &polygon ) == AE_FALSE )
@@ -1335,7 +1404,12 @@ namespace Mengine
             {
                 const NodePtr & node = movie2->getParticle_( node_index );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node );
+                MENGINE_ASSERTION_MEMORY_PANIC( node, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Node'"
+                    , movie2->getName().c_str()
+                    , movie2->getResourceMovie2()->getName().c_str()
+                    , movie2->getCompositionName().c_str()
+                    , layer_name
+                );
 
                 UnknownAstralaxEmitterInterface * unknownAstralaxEmitter = node->getUnknown();
 
@@ -1382,7 +1456,12 @@ namespace Mengine
                 {
                     SurfaceTrackMattePtr surfaceTrackMatte = Helper::generateFactorable<Surface, SurfaceTrackMatte>( MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceTrackMatte );
+                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceTrackMatte, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'SurfaceTrackMatte'"
+                        , movie2->getName().c_str()
+                        , movie2->getResourceMovie2()->getName().c_str()
+                        , movie2->getCompositionName().c_str()
+                        , layer_name
+                    );
 
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
@@ -1443,7 +1522,12 @@ namespace Mengine
                 {
                     SurfaceTrackMattePtr surfaceTrackMatte = Helper::generateFactorable<Surface, SurfaceTrackMatte>( MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceTrackMatte );
+                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceTrackMatte, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'SurfaceTrackMatte'"
+                        , movie2->getName().c_str()
+                        , movie2->getResourceMovie2()->getName().c_str()
+                        , movie2->getCompositionName().c_str()
+                        , layer_name
+                    );
 
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
@@ -1508,7 +1592,9 @@ namespace Mengine
                 {
                     SurfacePtr surfaceVideo = Helper::generatePrototype( Surface::getFactorableType(), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceVideo );
+                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceVideo, "name '%s' invalid create 'SurfaceVideo'"
+                        , movie2->getName().c_str()
+                    );
 
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceVideo->setName( c_name );
@@ -1541,7 +1627,9 @@ namespace Mengine
                 {
                     SurfaceSoundPtr surfaceSound = Helper::generateFactorable<Surface, SurfaceSound >( MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceSound );
+                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceSound, "name '%s' invalid create 'SurfaceSound'"
+                        , movie2->getName().c_str()
+                    );
 
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceSound->setName( c_name );
@@ -2129,7 +2217,10 @@ namespace Mengine
 
         const Movie2SubCompositionPtr & subcomposition = m2->getSubComposition( c_name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( subcomposition );
+        MENGINE_ASSERTION_MEMORY_PANIC( subcomposition, "movie2 '%s' not found subcomposition '%s'"
+            , m2->getName().c_str()
+            , c_name.c_str()
+        );
 
         *_scd = subcomposition.get();
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
 #include "Interface/InputStreamInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
@@ -13,7 +13,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class DecoderInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual bool initialize( const ThreadMutexInterfacePtr & _mutex ) = 0;

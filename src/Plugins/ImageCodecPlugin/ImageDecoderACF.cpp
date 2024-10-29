@@ -26,7 +26,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, "not found 'lz4' archivator" );
 
         m_archivator = archivator;
 
@@ -63,8 +63,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageDecoderACF::_decode( const DecoderData * _decoderData )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
-        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData, "invalid decode data" );
+        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData *, "invalid decode data" );
 
         const ImageDecoderData * decoderData = static_cast<const ImageDecoderData *>(_decoderData);
 
@@ -105,7 +105,7 @@ namespace Mengine
         {
             MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( streamSize, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create cache memory" );
 
             void * memory = buffer->getBuffer();
 

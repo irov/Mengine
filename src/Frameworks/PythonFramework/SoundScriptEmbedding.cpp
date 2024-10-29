@@ -185,7 +185,9 @@ namespace Mengine
                 ResourceSoundPtr resource = RESOURCE_SERVICE()
                     ->getResourceReference( ConstString::none(), _resourceName );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( resource );
+                MENGINE_ASSERTION_MEMORY_PANIC( resource, "can't get resource '%s'"
+                    , _resourceName.c_str()
+                );
 
                 if( resource->compile() == false )
                 {

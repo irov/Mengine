@@ -1,9 +1,10 @@
 #include "XmlToBinPlugin.h"
 
-#include "XmlToBinDecoder.h"
+#include "XmlToBinConverter.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/DecoderFactory.h"
+#include "Kernel/ConverterFactory.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PluginHelper.h"
 
@@ -23,14 +24,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool XmlToBinPlugin::_initializePlugin()
     {
-        Helper::registerDecoder<XmlToBinDecoder>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<XmlToBinConverter>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void XmlToBinPlugin::_finalizePlugin()
     {
-        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "xml2bin" ) );
+        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "xml2bin" ) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -3,6 +3,7 @@
 #include "Interface/DebugFileInterface.h"
 
 #include "Kernel/PathHelper.h"
+#include "Kernel/PathString.h"
 
 #if defined(MENGINE_DEBUG)
 #   include "Config/DynamicCast.h"
@@ -77,12 +78,12 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        const Char * getDebugFullPath( const T * _ptr )
+        PathString getDebugFullPath( const T * _ptr )
         {
             MENGINE_UNUSED( _ptr );
 
 #if defined(MENGINE_DEBUG)
-            static MENGINE_THREAD_LOCAL Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+            Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
 
             const FilePath & relationPath = Helper::getDebugRelationPath( _ptr );
             const FilePath & folderPath = Helper::getDebugFolderPath( _ptr );
@@ -90,9 +91,9 @@ namespace Mengine
 
             Helper::concatenateFilePath( {relationPath, folderPath, filePath}, fullPath );
 
-            return fullPath;
+            return PathString( fullPath );
 #else
-            return "";
+            return PathString();
 #endif
         }
         //////////////////////////////////////////////////////////////////////////
@@ -115,7 +116,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        const Char * getDebugFullPath( const IntrusivePtr<T> & _ptr )
+        PathString getDebugFullPath( const IntrusivePtr<T> & _ptr )
         {
             return Helper::getDebugFullPath( _ptr.get() );
         }

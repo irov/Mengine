@@ -157,7 +157,7 @@ namespace Mengine
 
         Box2DBodyPtr body = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ), _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( body );
+        MENGINE_ASSERTION_MEMORY_PANIC( body, "invalid create body" );
 
         b2BodyId bodyId = ::b2CreateBody( m_worldId, &bodyDef );
 
@@ -456,7 +456,7 @@ namespace Mengine
     {
         Box2DJointPtr join = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DJoint" ), _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( join );
+        MENGINE_ASSERTION_MEMORY_PANIC( join, "invalid create joint" );
 
         if( join->initialize( jointId ) == false )
         {

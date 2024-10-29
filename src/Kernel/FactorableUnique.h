@@ -43,7 +43,9 @@ namespace Mengine
 
             Type * factorable = Helper::newT<FactorableUnique<Type>>( std::forward<Args>( _args ) ... );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( factorable );
+            MENGINE_ASSERTION_MEMORY_PANIC( factorable, "invalid create factorable '%s'"
+                , Typename<Type>::value
+            );
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
             factorable->setDocument( _doc );

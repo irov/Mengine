@@ -185,7 +185,7 @@ namespace Mengine
             , this->getType().c_str()
             , this->getName().c_str()
             , this->getGroupName().c_str()
-            , Helper::getContentFullPath( this->getContent() )
+            , Helper::getContentFullPath( this->getContent() ).c_str()
         );
 
         if( Compilable::compile() == false )
@@ -218,7 +218,7 @@ namespace Mengine
             , this->getType().c_str()
             , this->getName().c_str()
             , this->getGroupName().c_str()
-            , Helper::getContentFullPath( this->getContent() )
+            , Helper::getContentFullPath( this->getContent() ).c_str()
         );
 
         Compilable::release();

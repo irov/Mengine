@@ -9,8 +9,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void screenToWorldPosition( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _worldPoint )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _context );
-            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context, "invalid context" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera" );
 
             const RenderCameraInterface * renderCamera = _context->camera;
 
@@ -22,8 +22,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void screenToWorldDelta( const RenderContext * _context, const mt::vec2f & _screenDelta, mt::vec2f * const _worldDelta )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _context );
-            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context, "invalid context" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera" );
 
             const RenderCameraInterface * renderCamera = _context->camera;
 
@@ -35,9 +35,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void worldToScreenPosition( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _worldPosition, mt::vec2f * const _screenPosition )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _context );
-            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera );
-            MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context, "invalid context" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport, "invalid viewport" );
 
             const RenderCameraInterface * renderCamera = _context->camera;
             const RenderViewportInterface * renderViewport = _context->viewport;
@@ -60,9 +60,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void worldToScreenDelta( const RenderContext * _context, const Resolution & _contentResolution, const mt::vec2f & _worldDelta, mt::vec2f * const _screenDelta )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _context );
-            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera );
-            MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context, "invalid context" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport, "invalid viewport" );
 
             const RenderCameraInterface * renderCamera = _context->camera;
             const RenderViewportInterface * renderViewport = _context->viewport;
@@ -98,9 +98,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void worldToScreenBox( const RenderContext * _context, const Resolution & _contentResolution, const mt::box2f & _worldBox, mt::box2f * const _screenBox )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _context );
-            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera );
-            MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context, "invalid context" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->camera, "invalid camera" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _context->viewport, "invalid viewport" );
 
             const RenderCameraInterface * renderCamera = _context->camera;
             const RenderViewportInterface * renderViewport = _context->viewport;

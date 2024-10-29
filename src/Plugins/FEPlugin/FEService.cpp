@@ -39,7 +39,9 @@ namespace Mengine
     {
         FEFontEffectFilePtr fontEffet = m_factoryFEFontEffectFile->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fontEffet );
+        MENGINE_ASSERTION_MEMORY_PANIC( fontEffet, "invalid create font effect '%s'"
+            , _name.c_str()
+        );
 
         fontEffet->setContent( _content );
 

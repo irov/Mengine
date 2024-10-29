@@ -46,12 +46,12 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( container, "resource '%s' can't create container file '%s'"
             , this->getName().c_str()
-            , Helper::getContentFullPath( this->getContent() )
+            , Helper::getContentFullPath( this->getContent() ).c_str()
         );
 
         MENGINE_ASSERTION_FATAL( container->getAtlasResourceImageCount() == m_resourceImages.size(), "resource '%s' container '%s' has different image count '%u != %zu'"
             , this->getName().c_str()
-            , Helper::getContentFullPath( this->getContent() )
+            , Helper::getContentFullPath( this->getContent() ).c_str()
             , container->getAtlasResourceImageCount()
             , m_resourceImages.size()
         );
@@ -63,7 +63,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "resource astralax '%s' file '%s' can't invalid compile resource image '%s'"
                     , this->getName().c_str()
-                    , Helper::getContentFullPath( this->getContent() )
+                    , Helper::getContentFullPath( this->getContent() ).c_str()
                     , resourceImage->getName().c_str()
                 );
 
@@ -74,7 +74,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "resource astralax '%s' file '%s' invalid set atlas resource image '%s'"
                     , this->getName().c_str()
-                    , Helper::getContentFullPath( this->getContent() )
+                    , Helper::getContentFullPath( this->getContent() ).c_str()
                     , resourceImage->getName().c_str()
                 );
 

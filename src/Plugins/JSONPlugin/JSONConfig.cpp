@@ -216,7 +216,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "invalid stream config" );
 
         LOGGER_INFO( "config", "load json config: %s"
-            , Helper::getDebugFullPath( _stream )
+            , Helper::getDebugFullPath( _stream ).c_str()
         );
 
         size_t size = _stream->size();

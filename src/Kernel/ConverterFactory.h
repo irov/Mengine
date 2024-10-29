@@ -1,82 +1,43 @@
 #pragma once
 
-#include "Interface/ConverterFactoryInterface.h"
+#include "Interface/FactoryInterface.h"
 
-#include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/VocabularyHelper.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    template<class T>
-    class ConverterFactory
-        : public ConverterFactoryInterface
-        , public Factorable
-    {
-    public:
-        ConverterFactory()
-        {
-        }
-
-        ~ConverterFactory() override
-        {
-        }
-
-    protected:
-        bool initialize() override
-        {
-            m_converterFactory = Helper::makeFactoryPool<T, 8>( MENGINE_DOCUMENT_FACTORABLE );
-
-            return true;
-        }
-
-        void finalize() override
-        {
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_converterFactory );
-
-            m_converterFactory = nullptr;
-        }
-
-    protected:
-        ConverterInterfacePtr createConverter( const DocumentInterfacePtr & _doc ) override
-        {
-            IntrusivePtr<T> converter = m_converterFactory->createObject( _doc );
-
-            return converter;
-        }
-
-    protected:
-        FactoryInterfacePtr m_converterFactory;
-    };
-    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        MENGINE_INLINE ConverterFactoryInterfacePtr registerConverter( const Char * _type, const DocumentInterfacePtr & _doc )
+        MENGINE_INLINE FactoryInterfacePtr registerConverter( const ConstString & _type, const DocumentInterfacePtr & _doc )
         {
-            ConverterFactoryInterfacePtr converter = Helper::makeFactorableUnique<ConverterFactory<T>>( _doc );
+            FactoryInterfacePtr factory = Helper::makeFactoryPool<T, 8>( _doc );
 
-            if( converter->initialize() == false )
-            {
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( factory, "invalid register converter '%s'"
+                , _type.c_str()
+            );
 
-            VOCABULARY_SET( ConverterFactoryInterface, STRINGIZE_STRING_LOCAL( "ConverterFactory" ), Helper::stringizeString( _type ), converter, _doc );
+            VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "ConverterFactory" ), _type, factory, _doc );
 
-            return converter;
+            return factory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE void unregisterConverter( const Char * _type )
+        MENGINE_INLINE void unregisterConverter( const ConstString & _type )
         {
-            ConverterFactoryInterfacePtr converter = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ConverterFactory" ), Helper::stringizeString( _type ) );
+            FactoryInterfacePtr factory = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ConverterFactory" ), _type );
 
-            converter->finalize();
+            MENGINE_ASSERTION_MEMORY_PANIC( factory, "invalid unregister decoder '%s'"
+                , _type.c_str()
+            );
+
+            MENGINE_UNUSED( factory );
         }
         //////////////////////////////////////////////////////////////////////////
     }

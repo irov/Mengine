@@ -137,7 +137,7 @@ namespace Mengine
                             if( Helper::stringalized( value, &size ) == false )
                             {
                                 LOGGER_ERROR( "bitmap glyph '%s' invalid read size '%s'"
-                                    , Helper::getContentFullPath( m_content )
+                                    , Helper::getContentFullPath( m_content ).c_str()
                                     , value
                                 );
 
@@ -161,7 +161,7 @@ namespace Mengine
                             if( Helper::stringalized( value, &ascender ) == false )
                             {
                                 LOGGER_ERROR( "bitmap glyph '%s' invalid read ascender '%s'"
-                                    , Helper::getContentFullPath( m_content )
+                                    , Helper::getContentFullPath( m_content ).c_str()
                                     , value
                                 );
 
@@ -176,7 +176,7 @@ namespace Mengine
                             if( Helper::stringalized( value, &height ) == false )
                             {
                                 LOGGER_ERROR( "bitmap glyph '%s' invalid read height '%s'"
-                                    , Helper::getContentFullPath( m_content )
+                                    , Helper::getContentFullPath( m_content ).c_str()
                                     , value
                                 );
 
@@ -191,7 +191,7 @@ namespace Mengine
                             if( Helper::stringalized( value, &descender ) == false )
                             {
                                 LOGGER_ERROR( "bitmap glyph '%s' invalid read descender '%s'"
-                                    , Helper::getContentFullPath( m_content )
+                                    , Helper::getContentFullPath( m_content ).c_str()
                                     , value
                                 );
 
@@ -215,7 +215,7 @@ namespace Mengine
                             if( Helper::stringalized( value, &width ) == false )
                             {
                                 LOGGER_ERROR( "bitmap glyph '%s' invalid read width '%s'"
-                                    , Helper::getContentFullPath( m_content )
+                                    , Helper::getContentFullPath( m_content ).c_str()
                                     , value
                                 );
 
@@ -232,7 +232,7 @@ namespace Mengine
                             if( Helper::stringalized( value, &height ) == false )
                             {
                                 LOGGER_ERROR( "bitmap glyph '%s' invalid read height '%s'"
-                                    , Helper::getContentFullPath( m_content )
+                                    , Helper::getContentFullPath( m_content ).c_str()
                                     , value
                                 );
 
@@ -262,7 +262,7 @@ namespace Mengine
                             if( Helper::stringalized( value, &advance ) == false )
                             {
                                 LOGGER_ERROR( "bitmap glyph '%s' invalid read width '%s'"
-                                    , Helper::getContentFullPath( m_content )
+                                    , Helper::getContentFullPath( m_content ).c_str()
                                     , value
                                 );
 
@@ -274,7 +274,7 @@ namespace Mengine
                             if( Helper::stringalized( value, &offset ) == false )
                             {
                                 LOGGER_ERROR( "bitmap glyph '%s' invalid read offset '%s'"
-                                    , Helper::getContentFullPath( m_content )
+                                    , Helper::getContentFullPath( m_content ).c_str()
                                     , value
                                 );
 
@@ -286,7 +286,7 @@ namespace Mengine
                             if( Helper::stringalized( value, &rect ) == false )
                             {
                                 LOGGER_ERROR( "bitmap glyph '%s' invalid read rect '%s'"
-                                    , Helper::getContentFullPath( m_content )
+                                    , Helper::getContentFullPath( m_content ).c_str()
                                     , value
                                 );
 
@@ -308,7 +308,7 @@ namespace Mengine
                     if( Helper::Utf8NextCode( &id, id + code_length, &code ) == false )
                     {
                         LOGGER_ERROR( "bitmap glyph '%s' invalid utf8 id '%s'"
-                            , Helper::getContentFullPath( m_content )
+                            , Helper::getContentFullPath( m_content ).c_str()
                             , id
                         );
 
@@ -318,7 +318,7 @@ namespace Mengine
                     if( code == 0 )
                     {
                         LOGGER_ERROR( "bitmap glyph '%s' null utf8 id '%s'"
-                            , Helper::getContentFullPath( m_content )
+                            , Helper::getContentFullPath( m_content ).c_str()
                             , id
                         );
 
@@ -348,7 +348,7 @@ namespace Mengine
                             if( Helper::stringalized( value, &advance ) == false )
                             {
                                 LOGGER_ERROR( "bitmap glyph '%s' invalid read advance '%s'"
-                                    , Helper::getContentFullPath( m_content )
+                                    , Helper::getContentFullPath( m_content ).c_str()
                                     , value
                                 );
 
@@ -365,7 +365,7 @@ namespace Mengine
                             if( Helper::Utf8NextCode( &id, id + id_length, &code ) == false )
                             {
                                 LOGGER_ERROR( "bitmap glyph '%s' invalid utf8 code '%s'"
-                                    , Helper::getContentFullPath( m_content )
+                                    , Helper::getContentFullPath( m_content ).c_str()
                                     , value
                                 );
 
@@ -375,7 +375,7 @@ namespace Mengine
                             if( code == 0 )
                             {
                                 LOGGER_ERROR( "bitmap glyph '%s' utf8 code [%s] is zero"
-                                    , Helper::getContentFullPath( m_content )
+                                    , Helper::getContentFullPath( m_content ).c_str()
                                     , value
                                 );
 
@@ -389,7 +389,7 @@ namespace Mengine
                     if( m_glyphCode == 0 )
                     {
                         LOGGER_ERROR( "bitmap glyph '%s' invalid kerning m_glyphChar is 0"
-                            , Helper::getContentFullPath( m_content )
+                            , Helper::getContentFullPath( m_content ).c_str()
                         );
 
                         this->setError();
@@ -425,14 +425,16 @@ namespace Mengine
         InputStreamInterfacePtr stream = _content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s'"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
         );
 
         size_t xml_buffer_size = stream->size();
 
         MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( xml_buffer_size + 1, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create memory cache buffer '%s'"
+            , Helper::getContentFullPath( _content ).c_str()
+        );
 
         Char * memory = buffer->getBuffer();
 
@@ -459,7 +461,7 @@ namespace Mengine
         if( xmlsax_parse( memory, &callbacks, &tmsc ) == false )
         {
             LOGGER_ERROR( "bitmap invalid parse file '%s'"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             return false;
@@ -468,7 +470,7 @@ namespace Mengine
         if( tmsc.isValid() == false )
         {
             LOGGER_ERROR( "bitmap invalid glyph format '%s'"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             return false;

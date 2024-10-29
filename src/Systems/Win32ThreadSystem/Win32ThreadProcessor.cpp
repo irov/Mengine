@@ -213,7 +213,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadProcessor::processTask( ThreadTaskInterface * _task )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _task );
+        MENGINE_ASSERTION_MEMORY_PANIC( _task, "invalid process task" );
 
         if( m_exit == true )
         {

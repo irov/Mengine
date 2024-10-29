@@ -133,7 +133,7 @@ namespace Mengine
     {
         Win32FileMappedInputStreamPtr stream = m_factoryFileMappedInputStream->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create input stream" );
 
         return stream;
     }

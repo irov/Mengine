@@ -94,7 +94,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _kernel );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_scriptWrapper );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_scriptWrapper, "scriptable not setup script wrapper" );
 
         PyObject * embedding = m_scriptWrapper->wrap( this );
 

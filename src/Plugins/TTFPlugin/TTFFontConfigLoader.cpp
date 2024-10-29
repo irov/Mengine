@@ -91,7 +91,9 @@ namespace Mengine
 
             ContentInterfacePtr content = Helper::makeFileContent( _fileGroup, FEPath, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( content );
+            MENGINE_ASSERTION_MEMORY_PANIC( content, "invalid make content '%s'"
+                , FEPath.c_str()
+            );
 
             DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 

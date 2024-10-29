@@ -267,7 +267,9 @@ namespace Mengine
 
                 MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+                MENGINE_ASSERTION_MEMORY_PANIC( buffer, "data '%s' invalid create buffer"
+                    , _name.c_str()
+                );
 
                 void * memory_buffer = buffer->getBuffer();
                 size_t memory_size = buffer->getSize();
@@ -781,7 +783,7 @@ namespace Mengine
                 MemoryInputInterfacePtr memory = MEMORY_SERVICE()
                     ->createMemoryInput( MENGINE_DOCUMENT_FACTORABLE );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( memory );
+                MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory cache" );
 
                 void * memory_buffer = memory->newBuffer( sizeof( uint32_t ) + sizeof( uint64_t ) + compressSize2 );
 
@@ -3013,7 +3015,7 @@ namespace Mengine
                 AccountInterfacePtr account = ACCOUNT_SERVICE()
                     ->createAccount( MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account );
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "invalid create account" );
 
                 const ConstString & accountId = account->getId();
 
@@ -3027,7 +3029,7 @@ namespace Mengine
                 AccountInterfacePtr account = ACCOUNT_SERVICE()
                     ->createGlobalAccount( MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( account );
+                MENGINE_ASSERTION_MEMORY_PANIC( account, "invalid create account" );
 
                 const ConstString & accountId = account->getId();
 
@@ -3883,6 +3885,10 @@ namespace Mengine
                     py_value = pybind::ptr( _kernel, _element );
                 }
                     , [_kernel, &py_value]( const ParamConstString & _element )
+                {
+                    py_value = pybind::ptr( _kernel, _element );
+                }
+                    , [_kernel, &py_value]( const ParamFactorablePtr & _element )
                 {
                     py_value = pybind::ptr( _kernel, _element );
                 } );

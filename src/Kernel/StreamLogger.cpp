@@ -31,7 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool StreamLogger::_initializeLogger()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_stream );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, "stream is nullptr" );
 
         return true;
     }

@@ -34,7 +34,7 @@ namespace Mengine
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, "not found archivator 'lz4'" );
 
         m_archivator = archivator;
 
@@ -62,7 +62,9 @@ namespace Mengine
 
         MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_devFileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data_cache );
+        MENGINE_ASSERTION_MEMORY_PANIC( data_cache, "invalid create cache memory '%s'"
+            , full_inputFilePath.c_str()
+        );
 
         const void * data_memory = data_cache->getBuffer();
         size_t data_size = data_cache->getSize();

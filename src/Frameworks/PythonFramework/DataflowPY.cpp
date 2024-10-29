@@ -55,7 +55,7 @@ namespace Mengine
     {
         ScriptCodeDataPtr data = m_factoryScriptCodeData->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data );
+        MENGINE_ASSERTION_MEMORY_PANIC( data, "invalid create data" );
 
         return data;
     }
@@ -64,11 +64,11 @@ namespace Mengine
     {
         MemoryInterfacePtr memory = Helper::createMemoryCacheStreamExtraSize( _stream, 2, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory" );
 
         Char * source_buffer = memory->getBuffer();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( source_buffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( source_buffer, "invalid get memory buffer" );
 
         size_t stream_size = _stream->size();
 

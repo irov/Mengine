@@ -261,7 +261,7 @@ namespace Mengine
     {
         SchedulerPtr sm = m_factoryScheduler->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( sm );
+        MENGINE_ASSERTION_MEMORY_PANIC( sm, "invalid create scheduler" );
 
         if( sm->initialize() == false )
         {

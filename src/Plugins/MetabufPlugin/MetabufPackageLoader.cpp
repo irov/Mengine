@@ -34,7 +34,7 @@ namespace Mengine
             LOGGER_ERROR( "invalid resource file '%s' name '%s' description '%s'"
                 , desc.path.c_str()
                 , desc.name.c_str()
-                , Helper::getContentFullPath( descriptionContent )
+                , Helper::getContentFullPath( descriptionContent ).c_str()
             );
 
             return false;

@@ -103,8 +103,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_colorable );
-        MENGINE_ASSERTION_MEMORY_PANIC( m_affectorable );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_colorable, "colorable is nullptr" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_affectorable, "affectorable is nullptr" );
     }
     //////////////////////////////////////////////////////////////////////////
     TaskColorableAlphaTime::~TaskColorableAlphaTime()

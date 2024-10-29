@@ -40,8 +40,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageDecoderArchive::_decode( const DecoderData * _data )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _data );
-        MENGINE_ASSERTION_TYPE( _data, const ImageDecoderData * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _data, "invalid decode data" );
+        MENGINE_ASSERTION_TYPE( _data, const ImageDecoderData *, "invalid decode data" );
 
         const ImageDecoderData * imageData = static_cast<const ImageDecoderData *>(_data);
 
@@ -100,7 +100,7 @@ namespace Mengine
         {
             MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( stream, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid cache memory" );
 
             const void * cache_buffer = buffer->getBuffer();
             size_t cache_size = buffer->getSize();
@@ -135,7 +135,7 @@ namespace Mengine
         {
             MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( _capacityDest, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid cache memory" );
 
             void * cache_buffer = buffer->getBuffer();
 

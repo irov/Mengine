@@ -79,7 +79,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_textureFont, "font '%s' invalid loading font image '%s'"
             , m_name.c_str()
-            , Helper::getContentFullPath( content )
+            , Helper::getContentFullPath( content ).c_str()
         );
 
         return true;

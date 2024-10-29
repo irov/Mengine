@@ -1,5 +1,9 @@
 #include "CodecService.h"
 
+#include "Interface/FactoryInterface.h"
+#include "Interface/DecoderInterface.h"
+#include "Interface/EncoderInterface.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/ConstStringHelper.h"
@@ -49,22 +53,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DecoderInterfacePointer CodecService::createDecoder( const ConstString & _type, const DocumentInterfacePtr & _doc )
     {
-        DecoderFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "DecoderFactory" ), _type );
+        FactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "DecoderFactory" ), _type );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( factory, "not found codec '%s' doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, "not found decoder '%s' doc '%s'"
             , _type.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        DecoderInterfacePtr decoder = factory->createDecoder( _doc );
+        DecoderInterfacePtr decoder = factory->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( decoder );
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s' doc '%s'"
+            , _type.c_str()
+            , MENGINE_DOCUMENT_STR( _doc )
+        );
 
         ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( _doc );
 
         if( decoder->initialize( mutex ) == false )
         {
-            LOGGER_ERROR( "invalid initialize codec '%s' doc '%s'"
+            LOGGER_ERROR( "invalid initialize decoder '%s' doc '%s'"
                 , _type.c_str()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
@@ -77,16 +84,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EncoderInterfacePointer CodecService::createEncoder( const ConstString & _type, const DocumentInterfacePtr & _doc )
     {
-        EncoderFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "EncoderFactory" ), _type );
+        FactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "EncoderFactory" ), _type );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( factory, "not found codec '%s' doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, "not found encoder '%s' doc '%s'"
             , _type.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        EncoderInterfacePtr encoder = factory->createEncoder( _doc );
+        EncoderInterfacePtr encoder = factory->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( encoder );
+        MENGINE_ASSERTION_MEMORY_PANIC( encoder, "invalid create encoder '%s' doc '%s'"
+            , _type.c_str()
+            , MENGINE_DOCUMENT_STR( _doc )
+        );
 
         return encoder;
     }

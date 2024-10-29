@@ -623,7 +623,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::updateMaterial_( const RenderMaterialInterface * _material )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _material );
+        MENGINE_ASSERTION_MEMORY_PANIC( _material, "material is nullptr" );
 
         UniqueId materialId = _material->getId();
 
@@ -681,7 +681,7 @@ namespace Mengine
             return;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material );
+        MENGINE_ASSERTION_MEMORY_PANIC( material, "material is nullptr" );
 
         this->updateMaterial_( material );
 
@@ -1109,7 +1109,7 @@ namespace Mengine
 
         RenderVertexBufferInterfacePtr vertexBuffer = m_renderSystem->createVertexBuffer( elementSize, BT_DYNAMIC, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( vertexBuffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexBuffer, "invalid create vertex buffer" );
 
         vertexBuffer->resize( MENGINE_RENDER_VERTEX_MAX_BATCH / 2 );
 
@@ -1119,7 +1119,7 @@ namespace Mengine
 
         RenderIndexBufferInterfacePtr indexBuffer = m_renderSystem->createIndexBuffer( indexSize, BT_DYNAMIC, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( indexBuffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( indexBuffer, "invalid create index buffer" );
 
         indexBuffer->resize( MENGINE_RENDER_VERTEX_MAX_BATCH / 2 );
 

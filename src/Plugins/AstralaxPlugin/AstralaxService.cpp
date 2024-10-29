@@ -37,7 +37,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, "not found 'lz4' archivator" );
 
         m_archivator = archivator;
 
@@ -355,17 +355,17 @@ namespace Mengine
                 break;
             };
 
-            MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute );
-            MENGINE_ASSERTION_MEMORY_PANIC( vertexShader );
+            MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, "invalid get vertex attribute" );
+            MENGINE_ASSERTION_MEMORY_PANIC( vertexShader, "invalid get vertex shader" );
 
             RenderFragmentShaderInterfacePtr fragmentShader = this->cacheFragmentShader_( &m );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader );
+            MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, "invalid cache fragment shader" );
 
             RenderProgramInterfacePtr program = RENDER_SYSTEM()
                 ->createProgram( STRINGIZE_STRING_LOCAL( "AstralaxProgram" ), vertexShader, fragmentShader, vertexAttribute, m.textures, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( program );
+            MENGINE_ASSERTION_MEMORY_PANIC( program, "invalid create program" );
 
             rs.program = program;
 
@@ -452,7 +452,7 @@ namespace Mengine
 
                 const ResourceImagePtr & image = this->getResourceImage( textureId );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( image );
+                MENGINE_ASSERTION_MEMORY_PANIC( image, "invalid get resource image" );
 
                 if( desc.images[index] != image )
                 {
@@ -481,13 +481,13 @@ namespace Mengine
 
             const ResourceImagePtr & image = this->getResourceImage( textureId );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( image );
+            MENGINE_ASSERTION_MEMORY_PANIC( image, "invalid get resource image" );
 
             desc.images[index] = image;
 
             const RenderTextureInterfacePtr & texture = image->getTexture();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( texture );
+            MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid get texture" );
 
             textures[index] = texture;
         }

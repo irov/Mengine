@@ -101,13 +101,19 @@ namespace Mengine
         const FilePath & filePath = content->getFilePath();
 
         MemoryInterfacePtr atlas_memory = Helper::createMemoryCacheFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ASSERTION_MEMORY_PANIC( atlas_memory );
+        
+        MENGINE_ASSERTION_MEMORY_PANIC( atlas_memory, "invalid create memory cache file '%s'"
+            , filePath.c_str()
+        );
 
         const char * atlas_memory_buffer = atlas_memory->getBuffer();
         size_t atlas_memory_size = atlas_memory->getSize();
 
         spAtlas * atlas = spAtlas_create( atlas_memory_buffer, (int)atlas_memory_size, "", this );
-        MENGINE_ASSERTION_MEMORY_PANIC( atlas );
+        
+        MENGINE_ASSERTION_MEMORY_PANIC( atlas, "invalid create atlas '%s'"
+            , filePath.c_str()
+        );
 
         atlas_memory = nullptr;
 

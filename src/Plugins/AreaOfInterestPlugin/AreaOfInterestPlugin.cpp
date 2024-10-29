@@ -4,6 +4,7 @@
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/DocumentHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AreaOfInterestService );

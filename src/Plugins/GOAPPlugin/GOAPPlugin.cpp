@@ -4,6 +4,7 @@
 
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/PluginHelper.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "GOAP/Allocator.h"
 

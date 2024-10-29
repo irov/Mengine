@@ -4,7 +4,6 @@
 #include "Interface/InputStreamInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
-#include "Kernel/Factorable.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/ThreadMutexScope.h"
@@ -16,7 +15,6 @@ namespace Mengine
     template<class T>
     class DecoderBase
         : public T
-        , public Factorable
     {
         static_assert(TypeTraits::is_base_of<DecoderInterface, T>, "T must derive from DecoderInterface");
 

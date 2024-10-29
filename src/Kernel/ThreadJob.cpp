@@ -289,13 +289,13 @@ namespace Mengine
 
             ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+            MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex" );
 
             desc.mutex = mutex;
 
             ThreadMutexInterfacePtr mutex_progress = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( mutex_progress );
+            MENGINE_ASSERTION_MEMORY_PANIC( mutex_progress, "invalid create mutex" );
 
             desc.mutex_progress = mutex_progress;
 
@@ -327,9 +327,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     UniqueId ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_UNUSED( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( _worker );
+        MENGINE_ASSERTION_MEMORY_PANIC( _worker, "worker is nullptr" );
 
         if( this->isCancel() == true )
         {

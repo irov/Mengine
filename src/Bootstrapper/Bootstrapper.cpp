@@ -672,7 +672,7 @@ namespace Mengine
                 ->loadConfig( _content, ConstString::none(), _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( applicationConfig, "invalid open application settings '%s'"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             return applicationConfig;
@@ -863,7 +863,9 @@ namespace Mengine
         {
             ContentInterfacePtr fileOldLogContent = Helper::makeFileContent( userFileGroup, logFilename, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( fileOldLogContent );
+            MENGINE_ASSERTION_MEMORY_PANIC( fileOldLogContent, "invalid make file content '%s'"
+                , logFilename.c_str()
+            );
 
             LOGGER_SERVICE()
                 ->loadOldLogMemory( fileOldLogContent );
@@ -871,11 +873,13 @@ namespace Mengine
 
         FileLoggerPtr fileLog = Helper::makeFactorableUnique<FileLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fileLog );
+        MENGINE_ASSERTION_MEMORY_PANIC( fileLog, "invalid create file logger" );
 
         ContentInterfacePtr fileLogContent = Helper::makeFileContent( userFileGroup, logFilename, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fileLogContent );
+        MENGINE_ASSERTION_MEMORY_PANIC( fileLogContent, "invalid make file content '%s'"
+            , logFilename.c_str()
+        );
 
         fileLog->setContent( fileLogContent );
 

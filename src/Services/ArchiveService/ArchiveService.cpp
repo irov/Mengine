@@ -63,7 +63,7 @@ namespace Mengine
         MemoryInputInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryInput( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory" );
 
         void * memory_buffer = memory->newBuffer( compressSize2 );
 

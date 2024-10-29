@@ -39,12 +39,12 @@ namespace Mengine
     {
         BitmapFontGlyphDescriptionPtr glyph = m_factoryBitmapFontSymbols->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( glyph );
+        MENGINE_ASSERTION_MEMORY_PANIC( glyph, "invalid create bitmap font symbols" );
 
         if( glyph->initialize( _content ) == false )
         {
             LOGGER_ERROR("invalid create bitmap font symbols '%s'"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             return nullptr;

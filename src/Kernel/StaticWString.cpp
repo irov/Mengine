@@ -55,7 +55,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void staticWStringAssign( WChar * _buffer, size_t _capacity, const WChar * _value, size_t _size )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _value );
+            MENGINE_ASSERTION_MEMORY_PANIC( _value, "invalid assign value" );
 
             size_t value_size = _size;
 
@@ -80,7 +80,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void staticWStringAppend( WChar * _buffer, size_t _capacity, const WChar * _value, size_t _size )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _value );
+            MENGINE_ASSERTION_MEMORY_PANIC( _value, "invalid append value" );
 
             size_t value_size = _size;
 
@@ -117,7 +117,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         int32_t staticWStringCompare( const WChar * _buffer, size_t _capacity, const WChar * _value )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _value );
+            MENGINE_ASSERTION_MEMORY_PANIC( _value, "invalid compare value" );
 
             int32_t result = StdString::wcsncmp( _buffer, _value, _capacity );
 

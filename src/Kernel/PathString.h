@@ -4,5 +4,5 @@
 
 namespace Mengine
 {
-    typedef ArrayString<MENGINE_MAX_PATH> PathString;
+    typedef ArrayString<MENGINE_MAX_PATH + 1> PathString;
 }

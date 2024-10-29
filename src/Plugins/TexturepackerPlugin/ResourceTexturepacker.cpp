@@ -172,7 +172,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::_initialize()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceJSON );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceJSON, "resource '%s' JSON is nullptr"
+            , this->getName().c_str()
+        );
 
         if( m_resourceJSON->compile() == false )
         {
@@ -240,7 +242,11 @@ namespace Mengine
 
             ResourceImagePtr resourceImage = resourceBank->createResource( cook, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "resource '%s' invalid create resource '%s' type '%s'"
+                , this->getName().c_str()
+                , cook.name.c_str()
+                , cook.type.c_str()
+            );
 
             const ContentInterfacePtr & json_content = m_resourceJSON->getContent();
             const FileGroupInterfacePtr & fileGroup = json_content->getFileGroup();
@@ -250,7 +256,10 @@ namespace Mengine
 
             ContentInterfacePtr resource_content = Helper::makeFileContent( fileGroup, newFilePath, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resource_content );
+            MENGINE_ASSERTION_MEMORY_PANIC( resource_content, "resource '%s' invalid create content '%s'"
+                , this->getName().c_str()
+                , newFilePath.c_str()
+            );
 
             const ConstString & codecType = CODEC_SERVICE()
                 ->findCodecType( newFilePath );
@@ -271,14 +280,17 @@ namespace Mengine
                 InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, newFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_FATAL( stream->size() != 0, "empty stream '%s' codec '%s'"
-                    , Helper::getFileGroupFullPath( fileGroup, newFilePath )
+                    , Helper::getFileGroupFullPath( fileGroup, newFilePath ).c_str()
                     , codecType.c_str()
                 );
 
                 ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
                     ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( decoder );
+                MENGINE_ASSERTION_MEMORY_PANIC( decoder, "resource '%s' invalid create decoder '%s'"
+                    , this->getName().c_str()
+                    , codecType.c_str()
+                );
 
                 if( decoder->prepareData( stream ) == false )
                 {
@@ -380,7 +392,11 @@ namespace Mengine
 
             ResourceImageSubstractPtr resourceImage = resourceBank->createResource( cook, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage );
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "resource '%s' invalid create resource '%s' type '%s'"
+                , this->getName().c_str()
+                , cook.name.c_str()
+                , cook.type.c_str()
+            );
 
             resourceImage->setName( c_name );
             resourceImage->setResourceImage( m_resourceImage );

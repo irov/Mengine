@@ -80,7 +80,7 @@ namespace Mengine
             , this->getName().c_str()
             , this->getContent()->getFileGroup()->getName().c_str()
             , this->getGroupName().c_str()
-            , Helper::getContentFullPath( this->getContent() )
+            , Helper::getContentFullPath( this->getContent() ).c_str()
         );
 
         this->setTexture( texture );

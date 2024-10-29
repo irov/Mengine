@@ -185,7 +185,7 @@ namespace Mengine
     {
         OpenALSoundSourcePtr soundSource = m_factoryOpenALSoundSource->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( soundSource );
+        MENGINE_ASSERTION_MEMORY_PANIC( soundSource, "invalid sound source create" );
 
         soundSource->setHeadMode( _isHeadMode );
         soundSource->setSoundBuffer( _buffer );
@@ -208,7 +208,7 @@ namespace Mengine
         {
             OpenALSoundBufferMemoryPtr buffer = m_factoryOpenALSoundBuffer->createObject( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create sound buffer" );
 
             base = buffer;
         }
@@ -216,7 +216,7 @@ namespace Mengine
         {
             OpenALSoundBufferStreamPtr buffer = m_factoryOpenALSoundBufferStream->createObject( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create sound buffer" );
 
             base = buffer;
         }

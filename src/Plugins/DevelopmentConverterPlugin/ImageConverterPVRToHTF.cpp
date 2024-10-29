@@ -56,20 +56,20 @@ namespace Mengine
         InputStreamInterfacePtr stream_intput = Helper::openInputStreamFile( m_devFileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, "invalid open input file '%s'"
-            , Helper::getContentFullPath(  m_options.inputContent )
+            , Helper::getContentFullPath(  m_options.inputContent ).c_str()
         );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoder( STRINGIZE_STRING_LOCAL( "pvrImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder for '%s'"
-            , Helper::getContentFullPath( m_options.inputContent )
+            , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
         if( decoder->prepareData( stream_intput ) == false )
         {
             LOGGER_ERROR( "invalid prepare decoder for '%s'"
-                , Helper::getContentFullPath( m_options.inputContent )
+                , Helper::getContentFullPath( m_options.inputContent ).c_str()
             );
 
             return false;
@@ -83,7 +83,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( data_buffer, "invalid cache memory [%u] for '%s'"
             , data_full_size
-            , Helper::getContentFullPath( m_options.inputContent )
+            , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
         void * data_memory = data_buffer->getBuffer();
@@ -95,7 +95,7 @@ namespace Mengine
             if( decoder->rewind() == false )
             {
                 LOGGER_ERROR( "invalid rewind '%s'"
-                    , Helper::getContentFullPath( m_options.inputContent )
+                    , Helper::getContentFullPath( m_options.inputContent ).c_str()
                 );
 
                 return false;
@@ -112,7 +112,7 @@ namespace Mengine
             if( decoder->decode( &data ) == 0 )
             {
                 LOGGER_ERROR( "invalid decode '%s'"
-                    , Helper::getContentFullPath( m_options.inputContent )
+                    , Helper::getContentFullPath( m_options.inputContent ).c_str()
                 );
 
                 return false;
@@ -124,7 +124,7 @@ namespace Mengine
         if( Helper::closeInputStreamFile( m_devFileGroup, stream_intput ) == false )
         {
             LOGGER_ERROR( "invalid close input file '%s'"
-                , Helper::getContentFullPath( m_options.inputContent )
+                , Helper::getContentFullPath( m_options.inputContent ).c_str()
             );
 
             return false;
@@ -133,8 +133,8 @@ namespace Mengine
         OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_devFileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_output, "invalid open output '%s' for file '%s'"
-            , Helper::getContentFullPath( m_options.outputContent )
-            , Helper::getContentFullPath( m_options.inputContent )
+            , Helper::getContentFullPath( m_options.outputContent ).c_str()
+            , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
@@ -145,7 +145,7 @@ namespace Mengine
         if( encoder->initialize( stream_output ) == false )
         {
             LOGGER_ERROR( "invalid initialize encoder '%s'"
-                , Helper::getContentFullPath( m_options.outputContent )
+                , Helper::getContentFullPath( m_options.outputContent ).c_str()
             );
 
             return false;
@@ -169,7 +169,7 @@ namespace Mengine
         if( Helper::closeOutputStreamFile( m_devFileGroup, stream_output ) == false )
         {
             LOGGER_ERROR( "invalid close output '%s'"
-                , Helper::getContentFullPath( m_options.outputContent )
+                , Helper::getContentFullPath( m_options.outputContent ).c_str()
             );
 
             return false;
@@ -178,7 +178,7 @@ namespace Mengine
         if( encode_byte == 0 )
         {
             LOGGER_ERROR( "'%s' invalid encode"
-                , Helper::getContentFullPath( m_options.inputContent )
+                , Helper::getContentFullPath( m_options.inputContent ).c_str()
             );
 
             return false;

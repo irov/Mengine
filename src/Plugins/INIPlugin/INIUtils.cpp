@@ -32,7 +32,7 @@ namespace Mengine
             InputStreamInterfacePtr stream = _content->openInputStreamFile( false, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, "open ini file '%s'"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             _ini.content = _content;
@@ -140,14 +140,14 @@ namespace Mengine
             if( StdString::strchr( ini_value, MENGINE_WIN32_PATH_DELIM ) != nullptr )
             {
                 LOGGER_ERROR( "get ini '%s' filepath section '%s' key '%s' has invalid slash '%s'"
-                    , Helper::getContentFullPath( _ini.content )
+                    , Helper::getContentFullPath( _ini.content ).c_str()
                     , _section
                     , _key
                     , ini_value
                 );
 
                 MENGINE_THROW_EXCEPTION( "get ini '%s' filepath section '%s' key '%s' has invalid slash '%s'"
-                    , Helper::getContentFullPath( _ini.content )
+                    , Helper::getContentFullPath( _ini.content ).c_str()
                     , _section
                     , _key
                     , ini_value

@@ -76,8 +76,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageDecoderPVRTC::_decode( const DecoderData * _decoderData )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
-        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData, "invalid decode data" );
+        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData *, "invalid decode data" );
 
         MENGINE_PROFILER_CATEGORY();
 

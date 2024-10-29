@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
 #include "Interface/InputStreamInterface.h"
 #include "Interface/ContentInterface.h"
 
@@ -19,15 +19,15 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class ConverterInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual bool initialize() = 0;
         virtual void finalize() = 0;
 
     public:
-        virtual void setOptions( const ConverterOptions * _options ) = 0;
-        virtual const ConverterOptions * getOptions() const = 0;
+        virtual void setOptions( const ConverterOptions & _options ) = 0;
+        virtual const ConverterOptions & getOptions() const = 0;
 
     public:
         virtual const ConstString & getConvertExt() const = 0;

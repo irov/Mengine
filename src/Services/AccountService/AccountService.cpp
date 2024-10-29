@@ -58,13 +58,13 @@ namespace Mengine
         FileGroupInterfacePtr fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup );
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, "not found file group 'user'" );
 
         m_fileGroup = fileGroup;
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, "not found 'lz4' archivator" );
 
         m_archivator = archivator;
 
@@ -120,7 +120,9 @@ namespace Mengine
 
         AccountInterfacePtr account = this->createAccount_( accountId, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( account );
+        MENGINE_ASSERTION_MEMORY_PANIC( account, "account with ID '%s' invalid create. Account not created"
+            , accountId.c_str()
+        );
 
         LOGGER_INFO( "account", "create account '%s' UID '%.20s'"
             , account->getId().c_str()
@@ -142,7 +144,9 @@ namespace Mengine
 
         AccountInterfacePtr account = this->createGlobalAccount_( accountId, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( account );
+        MENGINE_ASSERTION_MEMORY_PANIC( account, "account with ID '%s' invalid create. Account not created"
+            , accountId.c_str()
+        );
 
         LOGGER_INFO( "account", "create account '%s' UID '%.20s'"
             , account->getId().c_str()
@@ -696,7 +700,7 @@ namespace Mengine
             if( config == nullptr )
             {
                 LOGGER_ERROR( "parsing accounts failed '%s'"
-                    , Helper::getContentFullPath( settingsJSONContent )
+                    , Helper::getContentFullPath( settingsJSONContent ).c_str()
                 );
 
                 return nullptr;
@@ -717,7 +721,7 @@ namespace Mengine
             if( config == nullptr )
             {
                 LOGGER_ERROR( "parsing accounts failed '%s'"
-                    , Helper::getContentFullPath( settingsINIContent )
+                    , Helper::getContentFullPath( settingsINIContent ).c_str()
                 );
 
                 return nullptr;

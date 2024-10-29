@@ -2415,7 +2415,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HCURSOR Win32PlatformService::loadCursorICO_( const FilePath & _filePath, const MemoryInterfacePtr & _buffer ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _buffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( _buffer, "invalid load cursor ICO '%s' buffer is NULL"
+            , _filePath.c_str()
+        );
 
         if( _buffer->empty() == true )
         {
@@ -2520,7 +2522,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _content );
+        MENGINE_ASSERTION_MEMORY_PANIC( _content, "invalid setup cursor icon '%s' content is NULL"
+            , _name.c_str()
+        );
 
         const FilePath & filePath = _content->getFilePath();
 
@@ -3435,7 +3439,7 @@ namespace Mengine
 
         Win32DynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary );
+        MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, "invalid create dynamic library" );
 
         dynamicLibrary->setName( _dynamicLibraryName );
 

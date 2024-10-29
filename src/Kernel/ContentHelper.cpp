@@ -15,7 +15,7 @@ namespace Mengine
             ContentInterfacePtr content = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Content" ), STRINGIZE_STRING_LOCAL( "File" ), _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( content, "invalid create content '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
             );
 
             content->setFileGroup( _fileGroup );
@@ -24,21 +24,20 @@ namespace Mengine
             return content;
         }
         //////////////////////////////////////////////////////////////////////////
-        const Char * getContentFullPath( const ContentInterfacePtr & _content )
+        PathString getContentFullPath( const ContentInterfacePtr & _content )
         {
-            static MENGINE_THREAD_LOCAL Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
-
             if( _content == nullptr )
             {
-                return "NULL";
+                return PathString( "NULL" );
             }
 
             const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
             const FilePath & filePath = _content->getFilePath();
 
+            Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
             fileGroup->getFullPath( filePath, fullPath );
 
-            return fullPath;
+            return PathString( fullPath );
         }
         //////////////////////////////////////////////////////////////////////////
     }

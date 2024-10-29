@@ -24,7 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32UnicodeSystem::unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, Char * const _utf8, size_t _utf8Capacity, size_t * const _utf8Size )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _unicode );
+        MENGINE_ASSERTION_MEMORY_PANIC( _unicode, "unicode is nullptr" );
 
         if( _unicodeSize == MENGINE_UNKNOWN_SIZE )
         {
@@ -93,7 +93,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32UnicodeSystem::utf8ToUnicode( const Char * _utf8, size_t _utf8Size, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _sizeUnicode )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _utf8 );
+        MENGINE_ASSERTION_MEMORY_PANIC( _utf8, "utf8 is nullptr" );
 
         if( _utf8Size == MENGINE_UNKNOWN_SIZE )
         {

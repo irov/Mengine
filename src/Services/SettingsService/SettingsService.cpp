@@ -55,7 +55,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "setting '%s' file '%s' not found ext '%s' generator"
                 , _name.c_str()
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
                 , filePathExt.c_str()
             );
 
@@ -64,7 +64,11 @@ namespace Mengine
 
         SettingInterfacePtr setting = generator->generate( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( setting );
+        MENGINE_ASSERTION_MEMORY_PANIC( setting, "invalid generate setting '%s' file '%s' ext '%s' generator"
+            , _name.c_str()
+            , Helper::getContentFullPath( _content ).c_str()
+            , filePathExt.c_str()
+        );
 
         if( setting->initialize( _content, _doc ) == false )
         {
@@ -93,14 +97,14 @@ namespace Mengine
     bool SettingsService::loadSettings( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "settings", "load settings... '%s'"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
         );
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
             ->loadConfig( _content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load settings '%s'"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
         );
 
         VectorString settingSettings;
@@ -115,7 +119,7 @@ namespace Mengine
             if( config->hasSection( setting.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s' settings no found section for '%s'"
-                    , Helper::getContentFullPath( _content )
+                    , Helper::getContentFullPath( _content ).c_str()
                     , setting.c_str()
                 );
 
@@ -149,7 +153,9 @@ namespace Mengine
     {
         const SettingInterfacePtr & setting = m_settings.find( _name );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( setting );
+        MENGINE_ASSERTION_MEMORY_PANIC( setting, "invalid get setting '%s'"
+            , _name.c_str()
+        );
 
         return setting;
     }

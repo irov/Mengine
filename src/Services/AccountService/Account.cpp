@@ -280,7 +280,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "get account '%s' settings failed load '%s'"
                     , m_id.c_str()
-                    , Helper::getContentFullPath( m_settingsJSONContent )
+                    , Helper::getContentFullPath( m_settingsJSONContent ).c_str()
                 );
 
                 return nullptr;
@@ -298,7 +298,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "get account '%s' settings failed load '%s'"
                     , m_id.c_str()
-                    , Helper::getContentFullPath( m_settingsINIContent )
+                    , Helper::getContentFullPath( m_settingsINIContent ).c_str()
                 );
 
                 return nullptr;
@@ -310,8 +310,8 @@ namespace Mengine
 
         LOGGER_ERROR( "account '%s' settings not found any config '%s' or '%s'"
             , m_id.c_str()
-            , Helper::getContentFullPath( m_settingsJSONContent )
-            , Helper::getContentFullPath( m_settingsINIContent )
+            , Helper::getContentFullPath( m_settingsJSONContent ).c_str()
+            , Helper::getContentFullPath( m_settingsINIContent ).c_str()
         );
 
         return nullptr;
@@ -327,7 +327,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "can't open file for writing. Account '%s' settings not saved '%s'"
                 , m_id.c_str()
-                , Helper::getContentFullPath( m_settingsJSONContent )
+                , Helper::getContentFullPath( m_settingsJSONContent ).c_str()
             );
 
             return false;

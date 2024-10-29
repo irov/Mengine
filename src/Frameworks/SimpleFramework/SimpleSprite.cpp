@@ -19,7 +19,9 @@ namespace Mengine
 
             ContentInterfacePtr content = Helper::makeFileContent( _fileGroup, _filePath, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( content );
+            MENGINE_ASSERTION_MEMORY_PANIC( content, "invalid make content '%s'"
+                , _filePath.c_str()
+            );
 
             const ConstString & codecType = CODEC_SERVICE()
                 ->findCodecType( _filePath );

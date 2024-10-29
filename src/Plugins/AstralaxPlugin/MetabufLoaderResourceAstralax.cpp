@@ -51,7 +51,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, "resource '%s' container '%s' can't get atlas image '%s'"
                 , resource->getName().c_str()
-                , Helper::getContentFullPath( resource->getContent() )
+                , Helper::getContentFullPath( resource->getContent() ).c_str()
                 , resourceImageName.c_str()
             );
 

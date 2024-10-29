@@ -1,6 +1,6 @@
 #include "ModuleService.h"
 
-#include "Interface/ModuleFactoryInterface.h"
+#include "Interface/FactoryInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
 
 #include "Kernel/ConstStringHelper.h"
@@ -58,7 +58,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::runModule( const ConstString & _name, const DocumentInterfacePtr & _doc )
     {
-        ModuleFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Module" ), _name );
+        FactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Module" ), _name );
 
         if( factory == nullptr )
         {
@@ -69,9 +69,11 @@ namespace Mengine
             return false;
         }
 
-        ModuleInterfacePtr module = factory->createModule( _doc );
+        ModuleInterfacePtr module = factory->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( module );
+        MENGINE_ASSERTION_MEMORY_PANIC( module, "invalid create module '%s'"
+            , _name.c_str()
+        );
 
         module->setName( _name );
 

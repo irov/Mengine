@@ -267,11 +267,11 @@ namespace Mengine
 
         ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, "can't create mutex" );
 
         ThreadMutexInterfacePtr proxyMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( proxyMutex );
+        MENGINE_ASSERTION_MEMORY_PANIC( proxyMutex, "can't create proxy mutex" );
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( m_baseFileGroup, _folderPath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -593,7 +593,10 @@ namespace Mengine
             {
                 InputStreamInterfacePtr stream = mappedFile->createInputStream( _doc );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( stream );
+                MENGINE_ASSERTION_MEMORY_PANIC( stream, "zip '%s' file '%s' invalid create stream"
+                    , fi.zip->folderPath.c_str()
+                    , _filePath.c_str()
+                );
 
                 return stream;
             }
@@ -604,7 +607,10 @@ namespace Mengine
 
                 InputStreamInterfacePtr stream = m_baseFileGroup->createInputMutexFile( _filePath, proxyStream, proxyMutex, nullptr, _doc );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( stream );
+                MENGINE_ASSERTION_MEMORY_PANIC( stream, "zip '%s' file '%s' invalid create mutex stream"
+                    , fi.zip->folderPath.c_str()
+                    , _filePath.c_str()
+                );
 
                 return stream;
             }
@@ -615,14 +621,20 @@ namespace Mengine
             MemoryInputInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryInput( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "zip '%s' file '%s' invalid create memory"
+                , fi.zip->folderPath.c_str()
+                , _filePath.c_str()
+            );
 
             return memory;
         }
 
         InputStreamInterfacePtr stream = fi.zip->mappedFile->createInputStream( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "zip '%s' file '%s' invalid create stream"
+            , fi.zip->folderPath.c_str()
+            , _filePath.c_str()
+        );
 
         return stream;
     }
@@ -731,7 +743,7 @@ namespace Mengine
 
             MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( fi.file_size, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, "zip '%s' file '%s' failed cache memory %zu"
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, "zip '%s' file '%s' failed create cache memory %zu"
                 , fi.zip->folderPath.c_str()
                 , _filePath.c_str()
                 , fi.file_size
@@ -739,7 +751,11 @@ namespace Mengine
 
             void * compress_memory = compress_buffer->getBuffer();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, "zip '%s' file '%s' failed get memory buffer %zu"
+                , fi.zip->folderPath.c_str()
+                , _filePath.c_str()
+                , fi.file_size
+            );
 
             fi.zip->mutex->lock();
             fi.zip->stream->seek( file_offset );

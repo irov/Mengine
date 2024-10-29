@@ -9,14 +9,14 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/CodecServiceInterface.h"
-
-#include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
+#include "Interface/ConverterServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/UnicodeHelper.h"
+#include "Kernel/ContentHelper.h"
+#include "Kernel/ParamsHelper.h"
 
 #include "Xml2Metabuf.hpp"
 #include "Xml2Metacode.hpp"
@@ -39,36 +39,37 @@ namespace Mengine
         String utf8_binPath;
         Helper::unicodeToUtf8( _binPath, &utf8_binPath );
 
-        XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoder( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
+        ConverterInterfacePtr converter = CONVERTER_SERVICE()
+            ->createConverter( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( decoder == nullptr )
+        if( converter == nullptr )
         {
-            LOGGER_ERROR( "writeBin invalid create decoder xml2bin for %s"
+            LOGGER_ERROR( "writeBin invalid create converter xml2bin for %s"
                 , utf8_xmlPath.c_str()
             );
 
             return false;
         }
 
-        if( decoder->prepareData( nullptr ) == false )
-        {
-            LOGGER_ERROR( "writeBin invalid initialize decoder xml2bin for %s"
-                , utf8_xmlPath.c_str()
-            );
+        const FileGroupInterfacePtr & devFileGroup = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 
-            return false;
-        }
+        ConverterOptions options;
+        options.inputContent = Helper::makeFileContent( devFileGroup, Helper::stringizeFilePath( utf8_xmlPath ), MENGINE_DOCUMENT_FUNCTION );
+        options.outputContent = Helper::makeFileContent( devFileGroup, Helper::stringizeFilePath( utf8_binPath ), MENGINE_DOCUMENT_FUNCTION );
 
-        XmlDecoderData data;
-        data.pathProtocol = Helper::stringizeFilePath( utf8_protocolPath );
-        data.pathXml = Helper::stringizeFilePath( utf8_xmlPath );
-        data.pathBin = Helper::stringizeFilePath( utf8_binPath );
+        ContentInterfacePtr protocolContent = Helper::makeFileContent( devFileGroup, Helper::stringizeFilePath( utf8_protocolPath ), MENGINE_DOCUMENT_FUNCTION );
 
-        data.useProtocolVersion = Metacode::get_metacode_protocol_version();
-        data.useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();
+        uint32_t useProtocolVersion = Metacode::get_metacode_protocol_version();
+        uint32_t useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();
 
-        if( decoder->decode( &data ) == 0 )
+        Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "protocolContent" ), protocolContent );
+        Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), useProtocolVersion );
+        Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), useProtocolCrc32 );
+
+        converter->setOptions( options );
+
+        if( converter->convert() == false )
         {
             LOGGER_ERROR( "writeBin invalid decode %s"
                 , utf8_xmlPath.c_str()
@@ -81,4 +82,3 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
 }
-

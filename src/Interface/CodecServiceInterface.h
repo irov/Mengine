@@ -1,11 +1,8 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/DecoderFactoryInterface.h"
-#include "Interface/EncoderFactoryInterface.h"
 
 #include "Kernel/DocumentHelper.h"
-#include "Kernel/Factorable.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/DecoderInterfacePointer.h"
 #include "Kernel/EncoderInterfacePointer.h"

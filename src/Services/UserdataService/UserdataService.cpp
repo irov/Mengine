@@ -26,7 +26,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, "invalid get archivator 'lz4'" );
 
         m_archivator = archivator;
 
@@ -123,14 +123,14 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "data '%s' invalid open file '%s'"
             , _name.c_str()
-            , Helper::getContentFullPath( desc.content )
+            , Helper::getContentFullPath( desc.content ).c_str()
         );
 
         MemoryInterfacePtr binaryBuffer = Helper::readStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, "data '%s' invalid load stream archive '%s'"
             , _name.c_str()
-            , Helper::getContentFullPath( desc.content )
+            , Helper::getContentFullPath( desc.content ).c_str()
         );
 
         return binaryBuffer;
@@ -155,7 +155,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "data '%s' write empty file '%s'"
                 , _name.c_str()
-                , Helper::getContentFullPath( desc.content )
+                , Helper::getContentFullPath( desc.content ).c_str()
             );
 
             return false;
@@ -167,7 +167,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "data '%s' invalid open file '%s'"
             , _name.c_str()
-            , Helper::getContentFullPath( desc.content )
+            , Helper::getContentFullPath( desc.content ).c_str()
         );
 
         const void * data_memory = _data;
@@ -177,7 +177,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "data '%s' invalid write file '%s'"
                 , _name.c_str()
-                , Helper::getContentFullPath( desc.content )
+                , Helper::getContentFullPath( desc.content ).c_str()
             );
 
             return false;
@@ -187,7 +187,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "data '%s' invalid close file '%s'"
                 , _name.c_str()
-                , Helper::getContentFullPath( desc.content )
+                , Helper::getContentFullPath( desc.content ).c_str()
             );
 
             return false;

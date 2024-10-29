@@ -136,7 +136,7 @@ namespace Mengine
             ->registerCodecExt( STRINGIZE_STRING_LOCAL( "dzz" ), STRINGIZE_STRING_LOCAL( "dazzle" ) );
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
-        Helper::registerConverter<DazzleEffectConverterDZBToDZZ>( "dzb2dzz", MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<DazzleEffectConverterDZBToDZZ>( STRINGIZE_STRING_LOCAL( "dzb2dzz" ), MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         PLUGIN_SERVICE_WAIT( DataServiceInterface, [this]()
@@ -145,7 +145,7 @@ namespace Mengine
 
             ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+            MENGINE_ASSERTION_MEMORY_PANIC( archivator, "not found 'lz4' archivator" );
 
             dataflowDazzle->setArchivator( archivator );
             dataflowDazzle->setDazzleService( m_service );
@@ -172,7 +172,7 @@ namespace Mengine
     void DazzlePlugin::_finalizePlugin()
     {
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
-        Helper::unregisterConverter( "dzb2dzz" );
+        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "dzb2dzz" ) );
 #endif
 
         CODEC_SERVICE()

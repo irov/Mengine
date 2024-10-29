@@ -149,7 +149,7 @@ namespace Mengine
         if( successful == FALSE )
         {
             LOGGER_ERROR( "invalid close file '%s' handle get error %ls"
-                , Helper::getDebugFullPath( this )
+                , Helper::getDebugFullPath( this ).c_str()
                 , Helper::Win32GetLastErrorMessageW()
             );
         }
@@ -288,7 +288,7 @@ namespace Mengine
         if( ::ReadFile( m_hFile, buf_offset, static_cast<DWORD>(_size), &bytesRead, NULL ) == FALSE )
         {
             LOGGER_ERROR( "read file '%s' offset %zu size %zu:%zu get error %ls"
-                , Helper::getDebugFullPath( this )
+                , Helper::getDebugFullPath( this ).c_str()
                 , _offset
                 , _size
                 , m_size
@@ -345,7 +345,7 @@ namespace Mengine
             if( ::SetFilePointerEx( m_hFile, liDistanceToMove, &dwPtr, FILE_BEGIN ) == FALSE )
             {
                 LOGGER_ERROR( "seek file '%s' %zu:%zu get error %ls"
-                    , Helper::getDebugFullPath( this )
+                    , Helper::getDebugFullPath( this ).c_str()
                     , _pos
                     , m_size
                     , Helper::Win32GetLastErrorMessageW()
@@ -411,7 +411,7 @@ namespace Mengine
         if( ::GetFileTime( m_hFile, &creation, &access, &write ) == FALSE )
         {
             LOGGER_ERROR( "invalid get file '%s' time get error %ls"
-                , Helper::getDebugFullPath( this )
+                , Helper::getDebugFullPath( this ).c_str()
                 , Helper::Win32GetLastErrorMessageW()
             );
 

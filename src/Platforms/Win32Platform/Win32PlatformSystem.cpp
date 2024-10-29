@@ -17,6 +17,7 @@ namespace Mengine
     bool Win32PlatformSystem::_initializeService()
     {
         //Empty
+        //size_t t = __STDCPP_DEFAULT_NEW_ALIGNMENT__
 
         return true;
     }

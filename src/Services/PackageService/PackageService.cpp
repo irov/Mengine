@@ -117,14 +117,14 @@ namespace Mengine
     bool PackageService::loadPackages( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "package", "load packages... %s"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
         );
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
             ->loadConfig( _content, ConstString::none(), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid load packages '%s'"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
         );
 
         VectorString frameworkPacksSettings;
@@ -139,7 +139,7 @@ namespace Mengine
             if( config->hasSection( frameworkPack.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s' framework package no found section for '%s'"
-                    , Helper::getContentFullPath( _content )
+                    , Helper::getContentFullPath( _content ).c_str()
                     , frameworkPack.c_str()
                 );
 
@@ -171,7 +171,7 @@ namespace Mengine
             if( config->hasSection( resourcePack.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s' resource package no found section for '%s'"
-                    , Helper::getContentFullPath( _content )
+                    , Helper::getContentFullPath( _content ).c_str()
                     , resourcePack.c_str()
                 );
 
@@ -203,7 +203,7 @@ namespace Mengine
             if( config->hasSection( languagePack.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s' language package no found section for '%s'"
-                    , Helper::getContentFullPath( _content )
+                    , Helper::getContentFullPath( _content ).c_str()
                     , languagePack.c_str()
                 );
 

@@ -175,11 +175,11 @@ namespace Mengine
         {
             ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+            MENGINE_ASSERTION_MEMORY_PANIC( archivator, "not found 'lz4' archivator" );
 
             DataflowAEZPtr dataflowAEZ = Helper::makeFactorableUnique<DataflowAEZ>( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( dataflowAEZ );
+            MENGINE_ASSERTION_MEMORY_PANIC( dataflowAEZ, "invalid create 'DataflowAEZ'" );
 
             dataflowAEZ->setMovieInstance( m_movieInstance );
             dataflowAEZ->setArchivator( archivator );
@@ -237,11 +237,11 @@ namespace Mengine
         {
             ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+            MENGINE_ASSERTION_MEMORY_PANIC( archivator, "not found 'lz4' archivator" );
 
             ResourceMovie2ValidatorPtr movie2Validator = Helper::makeFactorableUnique<ResourceMovie2Validator>( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( movie2Validator );
+            MENGINE_ASSERTION_MEMORY_PANIC( movie2Validator, "invalid create 'ResourceMovie2Validator'" );
 
             movie2Validator->setMovieInstance( m_movieInstance );
             movie2Validator->setArchivator( archivator );

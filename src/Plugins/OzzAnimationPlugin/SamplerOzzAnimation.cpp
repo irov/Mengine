@@ -81,16 +81,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SamplerOzzAnimation::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceOzzAnimation );
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceOzzSkeleton );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceOzzAnimation, "resource ozz animation is nullptr" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceOzzSkeleton, "resource ozz skeleton is nullptr" );
 
         if( m_resourceOzzAnimation->compile() == false )
         {
+            LOGGER_ERROR( "sampler ozz animation '%s' invalid compile resource ozz animation '%s'"
+                , this->getName().c_str()
+                , m_resourceOzzAnimation->getName().c_str()
+            );
+
             return false;
         }
 
         if( m_resourceOzzSkeleton->compile() == false )
         {
+            LOGGER_ERROR( "sampler ozz animation '%s' invalid compile resource ozz skeleton '%s'"
+                , this->getName().c_str()
+                , m_resourceOzzSkeleton->getName().c_str()
+            );
+
             return false;
         }
 
@@ -104,6 +114,10 @@ namespace Mengine
 
         if( this->updateAnimation_() == false )
         {
+            LOGGER_ERROR( "sampler ozz animation '%s' invalid update animation"
+                , this->getName().c_str()
+            );
+
             return false;
         }
 

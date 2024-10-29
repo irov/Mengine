@@ -491,7 +491,9 @@ namespace Mengine
             {
                 const AffectorHubInterfacePtr & affectorHub = _shape->getAffectorHub();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub );
+                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub, "shape '%s' not setup affector hub"
+                    , _shape->getName().c_str()
+                );
 
                 affectorHub->stopAffectors( ETA_VISIBILITY );
             }

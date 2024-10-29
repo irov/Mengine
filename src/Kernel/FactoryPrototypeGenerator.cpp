@@ -23,7 +23,7 @@ namespace Mengine
     {
         FactoryInterfacePtr factory = this->_initializeFactory();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( factory );
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, "invalid initialize factory" );
 
         m_prototypeFactory = factory;
 

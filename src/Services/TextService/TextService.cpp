@@ -156,7 +156,7 @@ namespace Mengine
                     if( Helper::Utf8Validate( str_value, str_value_end, &str_value_invalid_utf8 ) == false )
                     {
                         LOGGER_ASSERTION( "'%s' invalid read text key '%s' value |%s| invalid utf8 char |%s|"
-                            , Helper::getContentFullPath( m_content )
+                            , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
                             , str_value_invalid_utf8
@@ -190,7 +190,7 @@ namespace Mengine
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
                         LOGGER_ERROR( "text file '%s' invalid read for text '%s' charOffset '%s'"
-                            , Helper::getContentFullPath( m_content )
+                            , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
                         );
@@ -208,7 +208,7 @@ namespace Mengine
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
                         LOGGER_ERROR( "text file '%s' invalid read for text '%s' lineOffset '%s'"
-                            , Helper::getContentFullPath( m_content )
+                            , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
                         );
@@ -229,7 +229,7 @@ namespace Mengine
                     if( MENGINE_SSCANF( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
                     {
                         LOGGER_ERROR( "text file '%s' invalid read for text '%s' lineOffset '%s'"
-                            , Helper::getContentFullPath( m_content )
+                            , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
                         );
@@ -247,7 +247,7 @@ namespace Mengine
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
                         LOGGER_ERROR( "text file '%s' invalid read for text '%s' Override '%s'"
-                            , Helper::getContentFullPath( m_content )
+                            , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
                         );
@@ -265,7 +265,7 @@ namespace Mengine
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
                         LOGGER_ERROR( "text file '%s' invalid read for text '%s' tag 'Override' '%s'"
-                            , Helper::getContentFullPath( m_content )
+                            , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
                         );
@@ -298,7 +298,7 @@ namespace Mengine
                     else
                     {
                         LOGGER_ERROR( "text file '%s' invalid read for text '%s' VerticalAlign '%s' [Bottom, Center, Top]"
-                            , Helper::getContentFullPath( m_content )
+                            , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
                         );
@@ -329,7 +329,7 @@ namespace Mengine
                     else
                     {
                         LOGGER_ERROR( "text file '%s' invalid read for text '%s' VerticalAlign '%s' [Left, Center, Right]"
-                            , Helper::getContentFullPath( m_content )
+                            , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
                         );
@@ -343,7 +343,7 @@ namespace Mengine
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
                         LOGGER_ERROR( "text file '%s' invalid read for text '%s' Scale '%s'"
-                            , Helper::getContentFullPath( m_content )
+                            , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
                         );
@@ -361,7 +361,7 @@ namespace Mengine
                     if( Helper::stringalized( str_value, &value ) == false )
                     {
                         LOGGER_ERROR( "text file '%s' invalid read for text '%s' tag 'Empty' '%s'"
-                            , Helper::getContentFullPath( m_content )
+                            , Helper::getContentFullPath( m_content ).c_str()
                             , textKey.c_str()
                             , str_value
                         );
@@ -374,7 +374,7 @@ namespace Mengine
                 else
                 {
                     LOGGER_ERROR( "text file '%s' invalid tag '%s' for text '%s'"
-                        , Helper::getContentFullPath( m_content )
+                        , Helper::getContentFullPath( m_content ).c_str()
                         , str_key
                         , textKey.c_str()
                     );
@@ -386,7 +386,7 @@ namespace Mengine
             if( text_str_size == 0 && isEmpty == false )
             {
                 LOGGER_ERROR( "text file '%s' invalid text key '%s' value is empty"
-                    , Helper::getContentFullPath( m_content )
+                    , Helper::getContentFullPath( m_content ).c_str()
                     , textKey.c_str()
                 );
 
@@ -415,7 +415,7 @@ namespace Mengine
             if( m_textService->addTextEntry( textKey, text_str_value.c_str(), text_str_size, tags, font, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, &isDublicate, MENGINE_DOCUMENT_VALUE( m_doc, nullptr ) ) == false )
             {
                 LOGGER_ERROR( "text file '%s' invalid add text key '%s'"
-                    , Helper::getContentFullPath( m_content )
+                    , Helper::getContentFullPath( m_content ).c_str()
                     , textKey.c_str()
                 );
 
@@ -456,7 +456,7 @@ namespace Mengine
         if( package->initialize( _locales, _content ) == false )
         {
             LOGGER_ERROR( "text file '%s' invalid initialize text locale package"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             return false;
@@ -490,7 +490,7 @@ namespace Mengine
             //ToDo
             
             LOGGER_ERROR( "text file '%s' invalid parse text locale package"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
                 //, _locales.c_str()
             );
 
@@ -502,7 +502,7 @@ namespace Mengine
             //ToDo
 
             LOGGER_ERROR( "text file '%s' invalid load text entry"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
                 //, _locales.c_str()
             );
 
@@ -603,7 +603,7 @@ namespace Mengine
     {
         TextEntryPtr textEntry = m_factoryTextEntry->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textEntry );
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "invalid create text entry" );
 
         if( textEntry->initialize( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
         {
@@ -675,7 +675,7 @@ namespace Mengine
 
         TextEntryInterfacePtr textEntry = this->createTextEntry( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( textEntry );
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, "invalid create text entry" );
 
         m_texts.emplace( _key, textEntry );
 

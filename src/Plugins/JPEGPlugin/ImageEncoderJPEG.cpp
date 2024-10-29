@@ -6,6 +6,7 @@
 #include "Kernel/AssertionType.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/MemoryZero.h"
+#include "Kernel/AllocatorHelper.h"
 
 namespace Mengine
 {
@@ -51,6 +52,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     ImageEncoderJPEG::ImageEncoderJPEG()
+        : m_jmpBuffer( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -58,15 +60,29 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    bool ImageEncoderJPEG::_initialize()
+    {
+        m_jmpBuffer = Helper::newMemoryT<MENGINE_JMPBUF>( "jmp" );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImageEncoderJPEG::_finalize()
+    {
+        Helper::deleteMemoryT( m_jmpBuffer, "jmp" );
+
+        m_jmpBuffer = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderJPEG::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _encoderData );
-        MENGINE_ASSERTION_TYPE( _encoderData, const ImageEncoderData * );        
+        MENGINE_ASSERTION_MEMORY_PANIC( _encoderData, "invalid encode data" );
+        MENGINE_ASSERTION_TYPE( _encoderData, const ImageEncoderData *, "invalid encode data" );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
-        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, "invalid encode data" );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo *, "invalid encode data" );
 
-        if( MENGINE_JMP_SET( m_jmpBuffer ) != 0 )
+        if( MENGINE_JMP_SET( m_jmpBuffer->value ) != 0 )
         {
             return 0;
         }
@@ -144,7 +160,7 @@ namespace Mengine
         {
             jpeg_destroy( _cinfo );
 
-            MENGINE_JMP_JUMP( m_jmpBuffer, 1 );
+            MENGINE_JMP_JUMP( m_jmpBuffer->value, 1 );
         }
     }
     //////////////////////////////////////////////////////////////////////////

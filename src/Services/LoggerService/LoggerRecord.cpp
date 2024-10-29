@@ -24,8 +24,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerRecord::initialize( const LoggerMessage & _message )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _message.category );
-        MENGINE_ASSERTION_MEMORY_PANIC( _message.data );
+        MENGINE_ASSERTION_MEMORY_PANIC( _message.category, "invalid initialize category" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _message.data, "invalid initialize data" );
 
         m_timestamp = _message.timestamp;
         StdString::strncpy( m_category, _message.category, MENGINE_LOGGER_MAX_CATEGORY );

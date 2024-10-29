@@ -20,5 +20,18 @@ namespace Mengine
             return mutex;
         }
         //////////////////////////////////////////////////////////////////////////
+        ThreadSharedMutexInterfacePtr createThreadSharedMutex( const DocumentInterfacePtr & _doc )
+        {
+            if( SERVICE_IS_INITIALIZE( ThreadSystemInterface ) == false )
+            {
+                return nullptr;
+            }
+
+            ThreadSharedMutexInterfacePtr mutex = THREAD_SYSTEM()
+                ->createSharedMutex( _doc );
+
+            return mutex;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

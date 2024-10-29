@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
 #include "Interface/OutputStreamInterface.h"
 
 #include "Kernel/EncoderData.h"
@@ -10,7 +10,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class EncoderInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual bool initialize( const OutputStreamInterfacePtr & _stream ) = 0;

@@ -45,7 +45,7 @@ namespace Mengine
         if( stream == nullptr )
         {
             LOGGER_ERROR( "invalid open file logger '%s'"
-                , Helper::getContentFullPath( m_content )
+                , Helper::getContentFullPath( m_content ).c_str()
             );
 
             return false;

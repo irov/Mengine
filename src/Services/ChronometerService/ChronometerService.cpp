@@ -50,10 +50,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ChronometerInterfacePtr ChronometerService::addChronometer( const LambdaChronometer & _lambda, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_UNUSED( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( _lambda );
-
         ChronometerPtr chronometer = m_factoryChronometer->createObject( _doc );
 
         chronometer->initialize( _lambda );

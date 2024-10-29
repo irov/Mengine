@@ -8,8 +8,17 @@
 #   pragma warning(disable : 4611)
 
 #   define MENGINE_JMP_DECLARE(Var) std::jmp_buf Var
-#   define MENGINE_JMP_SET(Var) setjmp(Var)
-#   define MENGINE_JMP_JUMP(Var, Code) longjmp(Var, Code)
+#   define MENGINE_JMP_SET(Var) setjmp((Var))
+#   define MENGINE_JMP_JUMP(Var, Code) std::longjmp((Var), (Code))
+
+namespace Mengine
+{
+    struct alignas(16) MENGINE_JMPBUF
+    {
+        MENGINE_JMP_DECLARE( value );
+    };
+}
+
 #else
 #   define MENGINE_JMP_DECLARE(Var) 
 #   define MENGINE_JMP_SET(Var) 0

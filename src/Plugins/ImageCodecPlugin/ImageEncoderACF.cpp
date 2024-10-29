@@ -24,7 +24,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, "not found 'lz4' archivator" );
 
         m_archivator = archivator;
 
@@ -38,8 +38,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderACF::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
-        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, "invalid encode" );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo *, "invalid encode" );
 
         const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
 

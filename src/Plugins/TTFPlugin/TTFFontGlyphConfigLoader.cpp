@@ -52,7 +52,7 @@ namespace Mengine
 
             DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( dataflow );
+            MENGINE_ASSERTION_MEMORY_PANIC( dataflow, "not found dataflow 'ttfFont'" );
 
             glyphContent->setDataflow( dataflow );
 
@@ -106,7 +106,7 @@ namespace Mengine
 
             DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( dataflow );
+            MENGINE_ASSERTION_MEMORY_PANIC( dataflow, "not found dataflow 'ttfFont'" );
 
             glyphContent->setDataflow( dataflow );
 

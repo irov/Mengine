@@ -1154,7 +1154,7 @@ namespace Mengine
 
         OpenGLRenderImageTargetPtr imageTarget = m_factoryRenderImageTarget->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imageTarget );
+        MENGINE_ASSERTION_MEMORY_PANIC( imageTarget, "invalid create render image target" );
 
         if( imageTarget->initialize( targetTexture ) == false )
         {

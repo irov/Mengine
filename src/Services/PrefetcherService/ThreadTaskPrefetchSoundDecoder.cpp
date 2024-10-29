@@ -45,7 +45,7 @@ namespace Mengine
         InputStreamInterfacePtr stream = fileGroup->createInputFile( filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create sound file '%s'"
-            , Helper::getContentFullPath( m_content )
+            , Helper::getContentFullPath( m_content ).c_str()
         );
 
         m_stream = stream;
@@ -74,7 +74,7 @@ namespace Mengine
     bool ThreadTaskPrefetchSoundDecoder::_onThreadTaskProcess()
     {
         LOGGER_INFO("prefetch", "prefetch sound file '%s'"
-            , Helper::getContentFullPath( m_content )
+            , Helper::getContentFullPath( m_content ).c_str()
         );
 
         const FilePath & filePath = m_content->getFilePath();
@@ -82,7 +82,7 @@ namespace Mengine
         if( m_realFileGroup->openInputFile( filePath, m_stream, 0, MENGINE_UNKNOWN_SIZE, false, false ) == false )
         {
             LOGGER_ERROR( "invalid open file '%s'"
-                , Helper::getContentFullPath( m_content )
+                , Helper::getContentFullPath( m_content ).c_str()
             );
 
             return false;
@@ -93,14 +93,14 @@ namespace Mengine
         void * memory = m_memoryInput->newBuffer( stream_size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "file '%s' invalid alloc memory '%zu'"
-            , Helper::getContentFullPath( m_content )
+            , Helper::getContentFullPath( m_content ).c_str()
             , stream_size
         );
 
         if( m_stream->read( memory, stream_size ) != stream_size )
         {
             LOGGER_ERROR( "file '%s' invalid read stream '%zu'"
-                , Helper::getContentFullPath( m_content )
+                , Helper::getContentFullPath( m_content ).c_str()
                 , stream_size
             );
 
@@ -110,7 +110,7 @@ namespace Mengine
         if( m_soundDecoder->prepareData( m_memoryInput ) == false )
         {
             LOGGER_ERROR( "decoder for file '%s' was not initialize"
-                , Helper::getContentFullPath( m_content )
+                , Helper::getContentFullPath( m_content ).c_str()
             );
 
             return false;

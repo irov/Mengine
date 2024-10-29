@@ -15,15 +15,21 @@ namespace Mengine
         {
             ScenePtr scene = Helper::generatePrototype( Scene::getFactorableType(), ConstString::none(), _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( scene );
+            MENGINE_ASSERTION_MEMORY_PANIC( scene, "invalid create scene (doc %s)"
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             EntityEventablePtr eventable = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( eventable );
+            MENGINE_ASSERTION_MEMORY_PANIC( eventable, "invalid create eventable (doc %s)"
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             EventationInterface * eventation = eventable->getEventation();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( eventation );
+            MENGINE_ASSERTION_MEMORY_PANIC( eventation, "invalid get eventation (doc %s)"
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             eventation->setReceiver( EVENTATION_RECEIVER_MASK_FULL, _eventReceiver );
 

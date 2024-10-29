@@ -2,10 +2,12 @@
 
 #include "Interface/FileGroupInterface.h"
 
+#include "Kernel/PathString.h"
+
 namespace Mengine
 {
     namespace Helper
     {
-        const Char * getFileGroupFullPath( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
+        PathString getFileGroupFullPath( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
     }
 }

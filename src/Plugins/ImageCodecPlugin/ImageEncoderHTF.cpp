@@ -42,7 +42,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, "invalid get archivator 'lz4'" );
 
         m_archivator = archivator;
 
@@ -56,11 +56,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderHTF::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _encoderData );
-        MENGINE_ASSERTION_TYPE( _encoderData, const ImageEncoderData * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _encoderData, "invalid encode data" );
+        MENGINE_ASSERTION_TYPE( _encoderData, const ImageEncoderData *, "invalid encode data" );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
-        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, "invalid encode data" );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo *, "invalid encode data" );
 
         if( Helper::writeStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_HTF ), GET_MAGIC_VERSION( MAGIC_HTF ) ) == false )
         {

@@ -509,7 +509,9 @@ namespace Mengine
 
                 NodePtr node = Helper::generatePrototype( Node::getFactorableType(), correct_type, MENGINE_DOCUMENT_PYBIND );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( node );
+                MENGINE_ASSERTION_MEMORY_PANIC( node, "can't create child node '%s'"
+                    , correct_type.c_str()
+                );
 
                 node->disable();
 
@@ -538,7 +540,7 @@ namespace Mengine
             {
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub );
+                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub, "invalid get affector hub" );
 
                 affectorHub->stopAffectors( ETA_POSITION );
             }
@@ -1601,7 +1603,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                 );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 s_Node_moveStop( _node );
 
@@ -1810,7 +1812,7 @@ namespace Mengine
                     , MENGINE_DOCUMENT_PYBIND
                 );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affector );
+                MENGINE_ASSERTION_MEMORY_PANIC( affector, "invalid create affector" );
 
                 s_Node_moveStop( _node );
 
@@ -1830,7 +1832,9 @@ namespace Mengine
             {
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub );
+                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub, "node '%s' invalid get affector hub"
+                    , _node->getName().c_str()
+                );
 
                 affectorHub->stopAffectors( ETA_ANGLE );
             }
@@ -1962,7 +1966,9 @@ namespace Mengine
             {
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub );
+                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub, "node '%s' invalid get affector hub"
+                    , _node->getName().c_str()
+                );
 
                 affectorHub->stopAffectors( ETA_SCALE );
             }
@@ -2016,7 +2022,9 @@ namespace Mengine
             {
                 const AffectorHubInterfacePtr & affectorHub = _node->getAffectorHub();
 
-                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub );
+                MENGINE_ASSERTION_MEMORY_PANIC( affectorHub, "node '%s' invalid get affector hub"
+                    , _node->getName().c_str()
+                );
 
                 affectorHub->stopAffectors( ETA_COLOR );
             }

@@ -54,14 +54,14 @@ namespace Mengine
 
         TTFAtlas * atlas = this->getAtlas_( _width + _border * 2, _height + _border * 2, _channel, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( atlas );
+        MENGINE_ASSERTION_MEMORY_PANIC( atlas, "invalid get atlas" );
 
         uint32_t index = atlas->indices.back();
         atlas->indices.pop_back();
 
         const RenderTextureInterfacePtr & texture = atlas->texture;
 
-        MENGINE_ASSERTION_MEMORY_PANIC( texture );
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid atlas texture" );
 
         Rect rect;
         rect.left = index * atlas->width;
@@ -71,14 +71,14 @@ namespace Mengine
 
         const RenderImageInterfacePtr & texture_image = texture->getImage();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( texture_image );
+        MENGINE_ASSERTION_MEMORY_PANIC( texture_image, "invalid texture image" );
 
         RenderImageLockedInterfacePtr texture_locked = texture_image->lock( 0, rect, false );
 
         size_t texture_pitch;
         uint8_t * texture_memory = texture_locked->getBuffer( &texture_pitch );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( texture_memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( texture_memory, "invalid texture memory" );
 
         EPixelFormat hwPixelFormat = texture_image->getHWPixelFormat();
 
@@ -164,7 +164,7 @@ namespace Mengine
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
             ->createTexture( 1, m_maxAtlasWidth, newAtlas.height, format, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( texture );
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create texture" );
 
         newAtlas.texture = texture;
 

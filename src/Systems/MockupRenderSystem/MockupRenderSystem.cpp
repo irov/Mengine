@@ -199,7 +199,7 @@ namespace Mengine
     {
         MockupRenderTargetTexturePtr target = m_factoryRenderTargetTexture->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( target );
+        MENGINE_ASSERTION_MEMORY_PANIC( target, "invalid create render target texture" );
 
         if( target->initialize( _width, _height, _format ) == false )
         {
@@ -225,7 +225,7 @@ namespace Mengine
     {
         MockupRenderTargetOffscreenPtr target = m_factoryRenderTargetOffscreen->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( target );
+        MENGINE_ASSERTION_MEMORY_PANIC( target, "invalid create render target offscreen" );
 
         if( target->initialize( _width, _height, _format ) == false )
         {
@@ -253,7 +253,7 @@ namespace Mengine
 
         MockupRenderImageTargetPtr imageTarget = m_factoryRenderImageTarget->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imageTarget );
+        MENGINE_ASSERTION_MEMORY_PANIC( imageTarget, "invalid create render image target" );
 
         imageTarget->initialize( targetTexture );
 
@@ -443,7 +443,7 @@ namespace Mengine
     {
         MockupRenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create vertex buffer" );
 
         if( buffer->initialize( _vertexSize, _bufferType ) == false )
         {
@@ -476,7 +476,7 @@ namespace Mengine
     {
         MockupRenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create index buffer" );
 
         if( buffer->initialize( _indexSize, _bufferType ) == false )
         {
@@ -787,7 +787,7 @@ namespace Mengine
     {
         MockupRenderImagePtr dx9RenderImage = m_factoryRenderImage->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dx9RenderImage );
+        MENGINE_ASSERTION_MEMORY_PANIC( dx9RenderImage, "invalid create render image" );
 
         dx9RenderImage->initialize( _mipmaps, _hwWidth, _hwHeight, _hwPixelFormat );
 

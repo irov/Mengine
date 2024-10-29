@@ -67,8 +67,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NotificationArea::addObserver( Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _observer );
-        MENGINE_ASSERTION_MEMORY_PANIC( _callable );
+        MENGINE_ASSERTION_MEMORY_PANIC( _observer, "invalid add observer nullptr" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _callable, "invalid add observer callable nullptr" );
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
@@ -99,7 +99,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NotificationArea::removeObserver( Observable * _observer )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _observer );
+        MENGINE_ASSERTION_MEMORY_PANIC( _observer, "invalid remove observer nullptr" );
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
@@ -152,7 +152,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NotificationArea::hasObserver( Observable * _observer ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _observer );
+        MENGINE_ASSERTION_MEMORY_PANIC( _observer, "invalid has observer nullptr" );
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 

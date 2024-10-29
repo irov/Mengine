@@ -54,17 +54,22 @@ namespace Mengine
         const FilePath & filePath = content->getFilePath();
 
         MemoryInterfacePtr skeleton_memory = Helper::createMemoryCacheFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
-        MENGINE_ASSERTION_MEMORY_PANIC( skeleton_memory );
+        
+        MENGINE_ASSERTION_MEMORY_PANIC( skeleton_memory, "invalid create memory cache file '%s'"
+            , filePath.c_str()
+        );
 
         const char * skeleton_memory_buffer = skeleton_memory->getBuffer();
 
         spAtlas * atlas = m_resourceSpineAtlas->getSpineAtlas();
 
         spSkeletonJson * skeletonJson = spSkeletonJson_create( atlas );
-        MENGINE_ASSERTION_MEMORY_PANIC( skeletonJson );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( skeletonJson, "invalid create skeleton json" );
 
         spSkeletonData * skeletonData = spSkeletonJson_readSkeletonData( skeletonJson, skeleton_memory_buffer );
-        MENGINE_ASSERTION_MEMORY_PANIC( skeletonData );
+        
+        MENGINE_ASSERTION_MEMORY_PANIC( skeletonData, "invalid read skeleton data" );
 
         skeleton_memory = nullptr;
 
@@ -74,8 +79,9 @@ namespace Mengine
         {
             LOGGER_ERROR( "resource spine skeleton '%s' invalid read skeleton data, file path '%s'"
                 , this->getName().c_str()
-                , Helper::getContentFullPath( content )
+                , Helper::getContentFullPath( content ).c_str()
             );
+
             return false;
         }
 

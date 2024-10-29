@@ -3,6 +3,7 @@
 #include "Interface/SocketSystemInterface.h"
 
 #include "Kernel/PluginHelper.h"
+#include "Kernel/DocumentHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( Win32FindPython3Service );

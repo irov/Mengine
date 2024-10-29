@@ -13,8 +13,6 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 
-#include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
@@ -72,21 +70,21 @@ namespace Mengine
         {
             LOGGER_ERROR( "writeAek can't create convert '%s'\nfrom: %s\nto: %s\n"
                 , "xmlToAekMovie"
-                , Helper::getContentFullPath( options.inputContent )
-                , Helper::getContentFullPath( options.outputContent )
+                , Helper::getContentFullPath( options.inputContent ).c_str()
+                , Helper::getContentFullPath( options.outputContent ).c_str()
             );
 
             return false;
         }
 
-        converter->setOptions( &options );
+        converter->setOptions( options );
 
         if( converter->convert() == false )
         {
             LOGGER_ERROR( "can't convert '%s'\nfrom: %s\nto: %s\n"
                 , "xmlToAekMovie"
-                , Helper::getContentFullPath( options.inputContent )
-                , Helper::getContentFullPath( options.outputContent )
+                , Helper::getContentFullPath( options.inputContent ).c_str()
+                , Helper::getContentFullPath( options.outputContent ).c_str()
             );
 
             return false;

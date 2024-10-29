@@ -112,13 +112,15 @@ namespace Mengine
 
         spAnimationStateData * animationStateData = spAnimationStateData_create( skeletonData );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( animationStateData );
+        MENGINE_ASSERTION_MEMORY_PANIC( animationStateData, "sampler '%s' invalid create animation state data"
+            , this->getName().c_str()
+        );
 
         m_animationStateData = animationStateData;
 
         spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( m_animationName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( animation, "'%s' invalid found animation '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( animation, "sampler '%s' invalid found animation '%s'"
             , this->getName().c_str()
             , m_animationName.c_str()
         );

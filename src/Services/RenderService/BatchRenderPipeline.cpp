@@ -311,7 +311,7 @@ namespace Mengine
                     {
                         LOGGER_MESSAGE_RELEASE( "index: %u texture: %s material: %s"
                             , m_debugLimitRenderObjects
-                            , Helper::getContentFullPath( texture->getContent() )
+                            , Helper::getContentFullPath( texture->getContent() ).c_str()
                             , _material->getName().c_str()
                         );
 

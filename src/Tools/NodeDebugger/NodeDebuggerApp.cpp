@@ -2361,7 +2361,7 @@ namespace Mengine
         auto uiEditorString = [_node]( const char * _caption, String & _prop )
         {
             Char testValue[2048 + 1] = {'\0'};
-            StdString::strcpy( testValue, _prop.c_str(), 2048 );
+            StdString::strncpy( testValue, _prop.c_str(), 2048 );
 
             bool input = ImGui::InputText( _caption, testValue, 2048 );
 

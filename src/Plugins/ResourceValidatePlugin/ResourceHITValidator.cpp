@@ -37,7 +37,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid open file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
             return false;
@@ -53,7 +53,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' invalid decoder '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
                 , content->getCodecType().c_str()
             );
 
@@ -65,7 +65,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' decoder initialize failed '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
                 , content->getCodecType().c_str()
             );
 

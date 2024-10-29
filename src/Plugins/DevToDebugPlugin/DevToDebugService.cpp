@@ -261,7 +261,7 @@ namespace Mengine
 
         DevToDebugLoggerPtr logger = Helper::makeFactorableUnique<DevToDebugLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( logger );
+        MENGINE_ASSERTION_MEMORY_PANIC( logger, "invalid create logger" );
 
         uint32_t loggerFilter = MAKE_LOGGER_FILTER( LFILTER_PROTECTED | LFILTER_HTTP );
         logger->setVerboseFilter( loggerFilter );

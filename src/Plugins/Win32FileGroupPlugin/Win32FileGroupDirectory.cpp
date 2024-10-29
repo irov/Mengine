@@ -204,7 +204,7 @@ namespace Mengine
 
         Win32FileInputStreamPtr stream = m_factoryInputStreamFile->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create input file" );
 
         if( _fileGroup != nullptr )
         {
@@ -259,7 +259,7 @@ namespace Mengine
 
         Win32MutexFileInputStreamPtr stream = m_factoryInputStreamMutexFile->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create input mutex file" );
 
         stream->setFileInputStream( _stream );
         stream->setThreadMutex( _mutex );
@@ -307,7 +307,7 @@ namespace Mengine
     {
         Win32FileOutputStreamPtr stream = m_factoryOutputStreamFile->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create output file" );
 
         return stream;
     }
@@ -364,7 +364,7 @@ namespace Mengine
 
         Win32FileMappedPtr mapped = m_factoryMappedFile->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mapped );
+        MENGINE_ASSERTION_MEMORY_PANIC( mapped, "invalid create mapped file" );
 
         if( _fileGroup != nullptr )
         {

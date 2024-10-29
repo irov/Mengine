@@ -51,7 +51,10 @@ namespace Mengine
         {
             FactoryInterfacePtr factory = Helper::makeFactorableUnique<FactoryPool<Type, Count, F>>( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( factory );
+            MENGINE_ASSERTION_MEMORY_PANIC( factory, "invalid create factory '%s' pool %d"
+                , Typename<Type>::value
+                , Count
+            );
 
             const ConstString & type = Type::getFactorableType();
 

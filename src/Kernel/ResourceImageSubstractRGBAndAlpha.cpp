@@ -14,8 +14,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceImageSubstractRGBAndAlpha::~ResourceImageSubstractRGBAndAlpha()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageRGB );
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageAlpha );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageRGB, "not deallocated rgb resource" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageAlpha, "not deallocated alpha resource" );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageSubstractRGBAndAlpha::setResourceImageRGB( const ResourceImagePtr & _resourceImageRGB )

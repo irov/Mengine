@@ -44,7 +44,7 @@ namespace Mengine
     {
         ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex" );
 
         m_mutex = mutex;
 
@@ -52,7 +52,7 @@ namespace Mengine
 
         MultiConfigPtr defaultConfig = Helper::makeFactorableUnique<MultiConfig>( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( defaultConfig );
+        MENGINE_ASSERTION_MEMORY_PANIC( defaultConfig, "invalid create default config" );
 
         defaultConfig->setMutex( mutex );
 
@@ -61,7 +61,7 @@ namespace Mengine
 #if !defined(MENGINE_BUILD_PUBLISH_ENABLE)
         PersistentConfigPtr persistentConfig = Helper::makeFactorableUnique<PersistentConfig>( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( persistentConfig );
+        MENGINE_ASSERTION_MEMORY_PANIC( persistentConfig, "invalid create persistent config" );
 
         persistentConfig->setMutex( mutex );
 
@@ -100,7 +100,7 @@ namespace Mengine
     {
         MemoryConfigPtr config = m_factoryMemoryConfig->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( config );
+        MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid create memory config" );
 
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();
@@ -113,14 +113,14 @@ namespace Mengine
     ConfigInterfacePtr ConfigService::loadConfig( const ContentInterfacePtr & _content, const ConstString & _configType, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "config", "load config '%s' (doc: %s)"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
         InputStreamInterfacePtr stream = _content->openInputStreamFile( false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open config '%s' (doc: %s)"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
@@ -135,7 +135,10 @@ namespace Mengine
 
         ConfigInterfacePtr config = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Config" ), configType, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( config );
+        MENGINE_ASSERTION_MEMORY_PANIC( config, "invalid generate config '%s' (doc: %s)"
+            , Helper::getContentFullPath( _content ).c_str()
+            , MENGINE_DOCUMENT_STR( _doc )
+        );
 
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();
@@ -145,7 +148,7 @@ namespace Mengine
         if( config->load( stream, _doc ) == false )
         {
             LOGGER_ERROR( "invalid load config '%s' (doc: %s)"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 
@@ -158,7 +161,7 @@ namespace Mengine
     bool ConfigService::loadDefaultConfig( const ContentInterfacePtr & _content, const ConstString & _configType, const DocumentInterfacePtr & _doc )
     {
         LOGGER_INFO( "config", "load default config '%s'"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
         );
 
         ConfigInterfacePtr config = this->loadConfig( _content, _configType, _doc );
@@ -166,7 +169,7 @@ namespace Mengine
         if( config == nullptr )
         {
             LOGGER_ERROR( "invalid load default config '%s'"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             return false;

@@ -44,7 +44,7 @@ namespace Mengine
     {
         ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex" );
 
         m_mutex = mutex;
 
@@ -146,7 +146,7 @@ namespace Mengine
 
         js_element_t * j = Helper::createJSON2();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( j );
+        MENGINE_ASSERTION_MEMORY_PANIC( j, "invalid create json" );
 
         js_element_t * jrecords;
         if( js_object_add_field_array( j, j, JS_CONST_STRING( "records" ), &jrecords ) == JS_FAILURE )

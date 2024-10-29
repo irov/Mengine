@@ -24,7 +24,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _args );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( _kwds );
+            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _node, MENGINE_DOCUMENT_PYBIND );

@@ -1,7 +1,6 @@
 #include "ResourceHIT.h"
 
 #include "Interface/PickCodecInterface.h"
-#include "Interface/ConverterInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
@@ -38,7 +37,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "name '%s' - hit file '%s' not found"
             , this->getName().c_str()
-            , Helper::getContentFullPath( this->getContent() )
+            , Helper::getContentFullPath( this->getContent() ).c_str()
         );
 
         const ConstString & codecType = content->getCodecType();
@@ -48,7 +47,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, "name '%s' - hit file '%s' invalid create decoder '%s'"
             , this->getName().c_str()
-            , Helper::getContentFullPath( this->getContent() )
+            , Helper::getContentFullPath( this->getContent() ).c_str()
             , this->getContent()->getCodecType().c_str()
         );
 
@@ -56,7 +55,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "resource HIT '%s' file '%s' invalid initialize decoder '%s'"
                 , this->getName().c_str()
-                , Helper::getContentFullPath( this->getContent() )
+                , Helper::getContentFullPath( this->getContent() ).c_str()
                 , this->getContent()->getCodecType().c_str()
             );
 
@@ -77,7 +76,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( mipmap, "name '%s' - hit file '%s' invalid create memory"
             , this->getName().c_str()
-            , Helper::getContentFullPath( this->getContent() )
+            , Helper::getContentFullPath( this->getContent() ).c_str()
         );
 
         size_t mipmapsize = (size_t)dataInfo->mipmapsize;
@@ -85,7 +84,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, "name '%s' - hit file '%s' invalid new memory '%zu'"
             , this->getName().c_str()
-            , Helper::getContentFullPath( this->getContent() )
+            , Helper::getContentFullPath( this->getContent() ).c_str()
             , mipmapsize
         );
 
@@ -99,7 +98,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "resource HIT '%s' invalid decode hit '%s' size %u (%zu)"
                 , this->getName().c_str()
-                , Helper::getContentFullPath( this->getContent() )
+                , Helper::getContentFullPath( this->getContent() ).c_str()
                 , m_mipmapsize
                 , mipmapsize
             );
@@ -205,7 +204,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( alphaBuffer, "'%s' hit file '%s' invalid get level buffer %u:%u"
             , this->getName().c_str()
-            , Helper::getContentFullPath( this->getContent() )
+            , Helper::getContentFullPath( this->getContent() ).c_str()
             , level
             , m_mipmaplevel
         );
@@ -253,7 +252,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "resource HIT '%s' file '%s' invalid get level buffer %u:%u"
                 , this->getName().c_str()
-                , Helper::getContentFullPath( this->getContent() )
+                , Helper::getContentFullPath( this->getContent() ).c_str()
                 , _level
                 , m_mipmaplevel
             );

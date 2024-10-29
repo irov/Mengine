@@ -22,14 +22,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerPlugin::_initializePlugin()
     {
-        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleNodeDebugger" )
-            , Helper::makeModuleFactory<NodeDebuggerModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleNodeDebugger" ), Helper::makeModuleFactory<NodeDebuggerModule>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerPlugin::_finalizePlugin()
     {
+        this->removeModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleNodeDebugger" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerPlugin::_destroyPlugin()

@@ -34,7 +34,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't open sound file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
             return false;
@@ -50,7 +50,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't create sound decoder for file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
             return false;
@@ -61,7 +61,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't initialize sound decoder for file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
             return false;
@@ -78,7 +78,7 @@ namespace Mengine
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
                 , Limit_MinimalStreamSoundDuration
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
             return false;
@@ -93,7 +93,7 @@ namespace Mengine
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
                 , limitNoStreamSoundDurationWarning
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
         }
 
@@ -106,7 +106,7 @@ namespace Mengine
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
                 , Limit_NoStreamSoundDurationError
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
             return false;

@@ -27,7 +27,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _args );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( _kwds );
+            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "kwds is nullptr" );
 
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
@@ -41,7 +41,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _args );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( _kwds );
+            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, "kwds is nullptr" );
 
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
@@ -53,20 +53,25 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         ShapePtr s_createVideo( const ConstString & _name, const ConstString & _shapeType, const ResourceVideoPtr & _resource )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _resource, "'%s' resource is nullptr"
+            MENGINE_ASSERTION_MEMORY_PANIC( _resource, "create video '%s' resource is nullptr"
                 , _name.c_str()
             );
 
             SurfaceVideoPtr surface = Helper::generateFactorable<Surface, SurfaceVideo>( MENGINE_DOCUMENT_PYBIND );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( surface );
+            MENGINE_ASSERTION_MEMORY_PANIC( surface, "create video '%s' invalid create surface"
+                , _name.c_str()
+            );
 
             surface->setName( _name );
             surface->setResourceVideo( _resource );
 
             ShapePtr shape = Helper::generatePrototype( Node::getFactorableType(), _shapeType, MENGINE_DOCUMENT_PYBIND );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( shape );
+            MENGINE_ASSERTION_MEMORY_PANIC( shape, "create video '%s' invalid create shape '%s'"
+                , _name.c_str()
+                , _shapeType.c_str()
+            );
 
             shape->setName( _name );
             shape->setSurface( surface );

@@ -215,7 +215,10 @@ namespace Mengine
 
         AndroidFileInputStreamPtr stream = m_factoryInputStreamFile->createObject( _doc );
         
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create input file '%s:%s'"
+            , m_folderPath.c_str()
+            , _filePath.c_str()
+        );
 
         if( _fileGroup != nullptr )
         {
@@ -270,7 +273,10 @@ namespace Mengine
 
         AndroidMutexFileInputStreamPtr stream = m_factoryInputStreamMutexFile->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create input mutex file '%s:%s'"
+            , m_folderPath.c_str()
+            , _filePath.c_str()
+        );
 
         stream->setFileInputStream( _stream );
         stream->setThreadMutex( _mutex );
@@ -318,7 +324,7 @@ namespace Mengine
     {
         AndroidFileOutputStreamPtr stream = m_factoryOutputStreamFile->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create output file" );
 
         return stream;
     }

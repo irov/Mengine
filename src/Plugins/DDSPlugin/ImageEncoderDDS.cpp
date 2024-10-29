@@ -25,8 +25,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderDDS::encode( const EncoderData * _data, const CodecDataInfo * _dataInfo )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
-        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, "invalid encode data" );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo *, "invalid encode data" );
 
         const ImageCodecDataInfo * imageInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
 

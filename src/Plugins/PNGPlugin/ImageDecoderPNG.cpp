@@ -31,7 +31,7 @@ namespace Mengine
             ImageDecoderPNG * decoder = reinterpret_cast<ImageDecoderPNG *>(error_ptr);
 
             LOGGER_ASSERTION( "png [%s] error: '%s'"
-                , Helper::getDebugFullPath( decoder->getStream() )
+                , Helper::getDebugFullPath( decoder->getStream() ).c_str()
                 , _error
             );
         }
@@ -45,7 +45,7 @@ namespace Mengine
             ImageDecoderPNG * decoder = reinterpret_cast<ImageDecoderPNG *>(error_ptr);
 
             LOGGER_WARNING( "png [%s] warning: '%s'"
-                , Helper::getDebugFullPath( decoder->getStream() )
+                , Helper::getDebugFullPath( decoder->getStream() ).c_str()
                 , _error
             );
         }
@@ -95,7 +95,7 @@ namespace Mengine
 
         png_structp png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &Detail::png_handler_error_ptr, &Detail::png_handler_warning_ptr, (png_voidp)this, &Detail::png_malloc_ptr, &Detail::png_free_ptr );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( png_ptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( png_ptr, "Can't create read structure" );
 
         m_png_ptr = png_ptr;
 
@@ -128,7 +128,7 @@ namespace Mengine
         if( stream->read( &png_check, MENGINE_DECODER_PNG_BYTES_TO_CHECK ) != MENGINE_DECODER_PNG_BYTES_TO_CHECK )
         {
             LOGGER_ERROR( "bad or not PNG file '%s' (size)"
-                , Helper::getDebugFullPath( this->getStream() )
+                , Helper::getDebugFullPath( this->getStream() ).c_str()
             );
 
             return false;
@@ -137,7 +137,7 @@ namespace Mengine
         if( png_sig_cmp( png_check, (png_size_t)0, MENGINE_DECODER_PNG_BYTES_TO_CHECK ) != 0 )
         {
             LOGGER_ERROR( "bad or not PNG file '%s' (sig)"
-                , Helper::getDebugFullPath( this->getStream() )
+                , Helper::getDebugFullPath( this->getStream() ).c_str()
             );
 
             return false;
@@ -239,7 +239,7 @@ namespace Mengine
         default:
             {
                 LOGGER_ERROR( "png file '%s' unsupport channels %u"
-                    , Helper::getDebugFullPath( this->getStream() )
+                    , Helper::getDebugFullPath( this->getStream() ).c_str()
                     , channels
                 );
 
@@ -252,10 +252,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageDecoderPNG::_decode( const DecoderData * _decoderData )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
-        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData, "invalid decoder data" );
+        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData *, "invalid decoder data type" );
 
         MENGINE_PROFILER_CATEGORY();
+
+#if defined(PNG_SETJMP_SUPPORTED)
+        if( MENGINE_JMP_SET( png_jmpbuf( m_png_ptr ) ) != 0 )
+        {
+            return false;
+        }
+#endif
 
         const ImageDecoderData * decoderData = static_cast<const ImageDecoderData *>(_decoderData);
 
@@ -350,7 +357,7 @@ namespace Mengine
                 else
                 {
                     LOGGER_ERROR( "png file '%s' DEFAULT not support chanells %u - %u"
-                        , Helper::getDebugFullPath( this->getStream() )
+                        , Helper::getDebugFullPath( this->getStream() ).c_str()
                         , dataChannels
                         , optionChannels
                     );
@@ -397,7 +404,7 @@ namespace Mengine
                 else
                 {
                     LOGGER_ERROR( "png file '%s' DF_READ_ALPHA_ONLY not support chanells %u - %u"
-                        , Helper::getDebugFullPath( this->getStream() )
+                        , Helper::getDebugFullPath( this->getStream() ).c_str()
                         , dataChannels
                         , optionChannels
                     );
@@ -454,7 +461,7 @@ namespace Mengine
                 else
                 {
                     LOGGER_ERROR( "png file '%s' DF_WRITE_ALPHA_ONLY not support chanells %u - %u"
-                        , Helper::getDebugFullPath( this->getStream() )
+                        , Helper::getDebugFullPath( this->getStream() ).c_str()
                         , dataChannels
                         , optionChannels
                     );
@@ -465,7 +472,7 @@ namespace Mengine
         default:
             {
                 LOGGER_ERROR( "png file '%s' unsupport options flag %u"
-                    , Helper::getDebugFullPath( this->getStream() )
+                    , Helper::getDebugFullPath( this->getStream() ).c_str()
                     , flags
                 );
 

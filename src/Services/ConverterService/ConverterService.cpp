@@ -1,6 +1,6 @@
 #include "ConverterService.h"
 
-#include "Interface/ConverterFactoryInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -46,13 +46,13 @@ namespace Mengine
             , _type.c_str()
         );
 
-        ConverterFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ConverterFactory" ), _type );
+        FactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ConverterFactory" ), _type );
 
         MENGINE_ASSERTION_MEMORY_PANIC( factory, "not found converter factory '%s'"
             , _type.c_str()
         );
 
-        ConverterInterfacePtr converter = factory->createConverter( _doc );
+        ConverterInterfacePtr converter = factory->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( converter, "invalid create converter '%s'"
             , _type.c_str()
@@ -116,7 +116,7 @@ namespace Mengine
 
         options.outputContent = outputContent;
 
-        converter->setOptions( &options );
+        converter->setOptions( options );
 
         if( inputFilePath.empty() == true )
         {
@@ -135,7 +135,7 @@ namespace Mengine
         if( options.inputContent->exist( true ) == false )
         {
             LOGGER_ERROR( "input file '%s' not found"
-                , Helper::getContentFullPath( _in )
+                , Helper::getContentFullPath( _in ).c_str()
             );
 
             return false;
@@ -147,7 +147,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( oldFile, "converter '%s' can't open input file '%s' (time)"
                 , _converterType.c_str()
-                , Helper::getContentFullPath( options.inputContent )
+                , Helper::getContentFullPath( options.inputContent ).c_str()
             );
 
             uint64_t fileTimeInput;
@@ -159,7 +159,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( newFile, "converter '%s' can't open output file '%s' (time)"
                 , _converterType.c_str()
-                , Helper::getContentFullPath( options.outputContent )
+                , Helper::getContentFullPath( options.outputContent ).c_str()
             );
 
             uint64_t fileTimeOutput;
@@ -175,23 +175,23 @@ namespace Mengine
                 }
 
                 LOGGER_WARNING( "file '%s' invalid version"
-                    , Helper::getContentFullPath( options.outputContent )
+                    , Helper::getContentFullPath( options.outputContent ).c_str()
                 );
             }
         }
 
         LOGGER_MESSAGE( "converter '%s'\nfrom: %s\nto: '%s'\n"
             , _converterType.c_str()
-            , Helper::getContentFullPath( options.inputContent )
-            , Helper::getContentFullPath( options.outputContent )
+            , Helper::getContentFullPath( options.inputContent ).c_str()
+            , Helper::getContentFullPath( options.outputContent ).c_str()
         );
 
         if( converter->convert() == false )
         {
             LOGGER_ERROR( "can't convert '%s'\nfrom: %s\nto: '%s'\n"
                 , _converterType.c_str()
-                , Helper::getContentFullPath( options.inputContent )
-                , Helper::getContentFullPath( options.outputContent )
+                , Helper::getContentFullPath( options.inputContent ).c_str()
+                , Helper::getContentFullPath( options.outputContent ).c_str()
             );
 
             return false;

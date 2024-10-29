@@ -18,7 +18,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "bitmap font glyph '%s' not found image file '%s'"
                 , fontGlyph->getName().c_str()
-                , Helper::getContentFullPath( imageContent )
+                , Helper::getContentFullPath( imageContent ).c_str()
             );
 
             return false;
@@ -30,7 +30,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "bitmap font glyph '%s' not found license file '%s'"
                 , fontGlyph->getName().c_str()
-                , Helper::getContentFullPath( licenseContent )
+                , Helper::getContentFullPath( licenseContent ).c_str()
             );
 
             return false;

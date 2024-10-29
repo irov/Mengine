@@ -101,6 +101,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     ImageDecoderJPEG::ImageDecoderJPEG()
+        : m_jmpBuffer( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -125,23 +126,22 @@ namespace Mengine
         m_decompressJpeg.client_data = this;
         m_decompressJpeg.src = &m_sourceMgr;
 
+        m_jmpBuffer = Helper::newMemoryT<MENGINE_JMPBUF>( "jmp" );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ImageDecoderJPEG::_finalize()
     {
         jpeg_destroy_decompress( &m_decompressJpeg );
+
+        Helper::deleteMemoryT( m_jmpBuffer, "jmp" );
+
+        m_jmpBuffer = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderJPEG::_prepareData()
     {
-        if( MENGINE_JMP_SET( m_jmpBuffer ) != 0 )
-        {
-            LOGGER_ASSERTION( "jmp" );
-
-            return false;
-        }
-
         Helper::memoryZeroPod( &m_sourceMgr );
 
         m_sourceMgr.bytes_in_buffer = 0;
@@ -178,12 +178,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageDecoderJPEG::_decode( const DecoderData * _decoderData )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
-        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData, "invalid decode data" );
+        MENGINE_ASSERTION_TYPE( _decoderData, const ImageDecoderData *, "invalid decode data" );
 
         MENGINE_PROFILER_CATEGORY();
 
-        if( MENGINE_JMP_SET( m_jmpBuffer ) != 0 )
+        if( MENGINE_JMP_SET( m_jmpBuffer->value ) != 0 )
         {
             LOGGER_ASSERTION( "jmp" );
 
@@ -323,7 +323,7 @@ namespace Mengine
         (*_cinfo->err->format_message)(_cinfo, buffer);
 
         LOGGER_ASSERTION( "jpeg '%s' error: %s"
-            , Helper::getDebugFullPath( this->getStream() )
+            , Helper::getDebugFullPath( this->getStream() ).c_str()
             , buffer
         );
 
@@ -331,7 +331,7 @@ namespace Mengine
         {
             jpeg_destroy( _cinfo );
 
-            MENGINE_JMP_JUMP( m_jmpBuffer, 1 );
+            MENGINE_JMP_JUMP( m_jmpBuffer->value, 1 );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -342,7 +342,7 @@ namespace Mengine
         (*_cinfo->err->format_message)(_cinfo, buffer);
 
         LOGGER_ASSERTION( "jpeg '%s' message: %s"
-            , Helper::getDebugFullPath( this->getStream() )
+            , Helper::getDebugFullPath( this->getStream() ).c_str()
             , buffer
         );
     }

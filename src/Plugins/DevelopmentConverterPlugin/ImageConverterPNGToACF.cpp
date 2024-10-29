@@ -56,20 +56,20 @@ namespace Mengine
         InputStreamInterfacePtr stream_intput = Helper::openInputStreamFile( m_devFileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, "invalid open input file '%s'"
-            , Helper::getContentFullPath( m_options.inputContent )
+            , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoder( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, "invalid create decoder '%s'"
-            , Helper::getContentFullPath( m_options.inputContent )
+            , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
         if( decoder->prepareData( stream_intput ) == false )
         {
             LOGGER_ERROR( "invalid prepare decoder '%s'"
-                , Helper::getContentFullPath( m_options.inputContent )
+                , Helper::getContentFullPath( m_options.inputContent ).c_str()
             );
 
             return false;
@@ -81,7 +81,9 @@ namespace Mengine
 
         MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_size, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data_buffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( data_buffer, "invalid create cache memory '%s'"
+            , Helper::getContentFullPath( m_options.inputContent ).c_str()
+        );
 
         void * data_memory = data_buffer->getBuffer();
 
@@ -94,7 +96,7 @@ namespace Mengine
         if( decoder->decode( &htfDecoderData ) == 0 )
         {
             LOGGER_ERROR( "invalid decode '%s'"
-                , Helper::getContentFullPath( m_options.inputContent )
+                , Helper::getContentFullPath( m_options.inputContent ).c_str()
             );
 
             return false;
@@ -103,21 +105,21 @@ namespace Mengine
         OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_devFileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_output, "'%s' invalid open output '%s'"
-            , Helper::getContentFullPath( m_options.inputContent )
-            , Helper::getContentFullPath( m_options.outputContent )
+            , Helper::getContentFullPath( m_options.inputContent ).c_str()
+            , Helper::getContentFullPath( m_options.outputContent ).c_str()
         );
 
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
             ->createEncoder( STRINGIZE_STRING_LOCAL( "acfImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( encoder, "'%s' invalid create encoder"
-            , Helper::getContentFullPath( m_options.inputContent )
+            , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
         if( encoder->initialize( stream_output ) == false )
         {
             LOGGER_ERROR( "%s invalid initialize encoder"
-                , Helper::getContentFullPath( m_options.inputContent )
+                , Helper::getContentFullPath( m_options.inputContent ).c_str()
             );
 
             return false;
@@ -141,8 +143,8 @@ namespace Mengine
         if( Helper::closeOutputStreamFile( m_devFileGroup, stream_output ) == false )
         {
             LOGGER_ERROR( "%s invalid close output '%s'"
-                , Helper::getContentFullPath( m_options.inputContent )
-                , Helper::getContentFullPath( m_options.outputContent )
+                , Helper::getContentFullPath( m_options.inputContent ).c_str()
+                , Helper::getContentFullPath( m_options.outputContent ).c_str()
             );
 
             return false;
@@ -151,7 +153,7 @@ namespace Mengine
         if( encode_byte == 0 )
         {
             LOGGER_ERROR( "%s invalid encode"
-                , Helper::getContentFullPath( m_options.inputContent )
+                , Helper::getContentFullPath( m_options.inputContent ).c_str()
             );
 
             return false;

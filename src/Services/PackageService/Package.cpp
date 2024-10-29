@@ -148,7 +148,9 @@ namespace Mengine
 
         PackageLoaderInterfacePtr loader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "PackageLoader" ), m_desc.format );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( loader );
+        MENGINE_ASSERTION_MEMORY_PANIC( loader, "invalid get package loader '%s'"
+            , m_desc.format.c_str()
+        );
          
         if( loader->load( PackageInterfacePtr::from( this ), _doc ) == false )
         {
@@ -196,7 +198,7 @@ namespace Mengine
                 LOGGER_ERROR( "invalid load file '%s' name '%s' resource '%s'"
                     , m_desc.path.c_str()
                     , m_desc.name.c_str()
-                    , Helper::getContentFullPath( desc.content )
+                    , Helper::getContentFullPath( desc.content ).c_str()
                 );
 
                 return false;
@@ -215,7 +217,7 @@ namespace Mengine
                 LOGGER_ERROR( "file '%s' package '%s' invalid load glyph '%s'"
                     , m_desc.path.c_str()
                     , m_desc.name.c_str()
-                    , Helper::getContentFullPath( desc.content )
+                    , Helper::getContentFullPath( desc.content ).c_str()
                 );
 
                 return false;
@@ -234,7 +236,7 @@ namespace Mengine
                 LOGGER_ERROR( "file '%s' package '%s' invalid load font '%s'"
                     , m_desc.path.c_str()
                     , m_desc.name.c_str()
-                    , Helper::getContentFullPath( desc.content )
+                    , Helper::getContentFullPath( desc.content ).c_str()
                 );
 
                 return false;
@@ -253,7 +255,7 @@ namespace Mengine
                 LOGGER_ERROR( "file '%s' package '%s' invalid load text '%s'"
                     , m_desc.path.c_str()
                     , m_desc.name.c_str()
-                    , Helper::getContentFullPath( desc.content )
+                    , Helper::getContentFullPath( desc.content ).c_str()
                 );
 
                 return false;
@@ -273,7 +275,7 @@ namespace Mengine
                     , m_desc.path.c_str()
                     , m_desc.name.c_str()
                     , desc.name.c_str()
-                    , Helper::getContentFullPath( desc.content )
+                    , Helper::getContentFullPath( desc.content ).c_str()
                 );
 
                 return false;
@@ -292,7 +294,7 @@ namespace Mengine
                 LOGGER_ERROR( "file '%s' package '%s' invalid load material '%s'"
                     , m_desc.path.c_str()
                     , m_desc.name.c_str()
-                    , Helper::getContentFullPath( desc.content )
+                    , Helper::getContentFullPath( desc.content ).c_str()
                 );
 
                 return false;
@@ -312,7 +314,7 @@ namespace Mengine
                     , m_desc.path.c_str()
                     , m_desc.name.c_str()
                     , desc.name.c_str()
-                    , Helper::getContentFullPath( desc.content )
+                    , Helper::getContentFullPath( desc.content ).c_str()
                 );
 
                 return false;
@@ -638,13 +640,13 @@ namespace Mengine
             if( exist == false )
             {
                 LOGGER_ERROR( "resource '%s' not found"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                 );
             }
             else
             {
                 LOGGER_ERROR( "invalid parse resource '%s'"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                 );
             }
 
@@ -673,7 +675,7 @@ namespace Mengine
                 }
 
                 LOGGER_ERROR( "file '%s' already exist resource name '%s' in group '%s'\nhas resource group '%s' name '%s'"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                     , name.c_str()
                     , groupName.c_str()
                     , has_resource->getGroupName().c_str()
@@ -695,7 +697,7 @@ namespace Mengine
                 ->createResource( cook, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, "file '%s' group '%s' resource '%s' type '%s' invalid create"
-                , Helper::getContentFullPath( _desc.content )
+                , Helper::getContentFullPath( _desc.content ).c_str()
                 , groupName.c_str()
                 , name.c_str()
                 , type.c_str()
@@ -710,7 +712,7 @@ namespace Mengine
             MetabufLoaderInterfacePtr loader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), type );
 
             MENGINE_ASSERTION_MEMORY_PANIC( loader, "file '%s' group '%s' resource '%s' type '%s' invalid create loader"
-                , Helper::getContentFullPath( _desc.content )
+                , Helper::getContentFullPath( _desc.content ).c_str()
                 , groupName.c_str()
                 , resource->getName().c_str()
                 , resource->getType().c_str()
@@ -719,7 +721,7 @@ namespace Mengine
             if( loader->load( resource, meta_resource ) == false )
             {
                 LOGGER_ERROR( "file '%s' group '%s' resource '%s' type '%s' invalid load"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                     , groupName.c_str()
                     , resource->getName().c_str()
                     , resource->getType().c_str()
@@ -733,7 +735,7 @@ namespace Mengine
             if( resource->initialize() == false )
             {
                 LOGGER_ERROR( "file '%s' group '%s' resource '%s' type '%s' invalid initialize"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                     , groupName.c_str()
                     , resource->getName().c_str()
                     , resource->getType().c_str()
@@ -779,7 +781,7 @@ namespace Mengine
             if( this->enableResources_( _locales, desc ) == false )
             {
                 LOGGER_ERROR( "load '%s' resource invalid load include '%s'"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                     , path.c_str()
                 );
 
@@ -801,13 +803,13 @@ namespace Mengine
             if( exist == false )
             {
                 LOGGER_ERROR( "file resources '%s' not found"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                 );
             }
             else
             {
                 LOGGER_ERROR( "invalid parse resources '%s'"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                 );
             }
 
@@ -834,7 +836,7 @@ namespace Mengine
             if( this->disableResources_( _locales, _desc ) == false )
             {
                 LOGGER_ERROR( "load '%s' resource invalid load include '%s'"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                     , path.c_str()
                 );
 
@@ -853,7 +855,7 @@ namespace Mengine
                 ->hasResource( groupName, name, false, &has_resource ) == false )
             {
                 LOGGER_ERROR( "path '%s' not found resource name '%s' in group '%s'\nhas resource group '%s' name '%s'"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                     , meta_resource->get_Name().c_str()
                     , groupName.c_str()
                     , has_resource->getGroupName().c_str()
@@ -889,13 +891,13 @@ namespace Mengine
             if( exist == false )
             {
                 LOGGER_ERROR( "materials '%s' not found"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                 );
             }
             else
             {
                 LOGGER_ERROR( "invalid parse materials '%s'"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                 );
             }
 
@@ -934,8 +936,8 @@ namespace Mengine
                 ->createFragmentShader( name, fragmentShaderContent, isCompile, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( shader, "material '%s' invalid load '%s' fragment shader '%s' compile [%u]"
-                , Helper::getContentFullPath( _desc.content )
-                , Helper::getContentFullPath( fragmentShaderContent )
+                , Helper::getContentFullPath( _desc.content ).c_str()
+                , Helper::getContentFullPath( fragmentShaderContent ).c_str()
                 , name.c_str()
                 , isCompile
             );
@@ -972,8 +974,8 @@ namespace Mengine
                 ->createVertexShader( name, vertexShaderContent, isCompile, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( shader, "material '%s' invalid load '%s' vertex shader '%s' compile [%u]"
-                , Helper::getContentFullPath( _desc.content )
-                , Helper::getContentFullPath( vertexShaderContent )
+                , Helper::getContentFullPath( _desc.content ).c_str()
+                , Helper::getContentFullPath( vertexShaderContent ).c_str()
                 , name.c_str()
                 , isCompile
             );
@@ -1039,7 +1041,7 @@ namespace Mengine
                 ->getVertexShader( vertexShaderName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( vertexShader, "material '%s' program '%s' not found vertex shader '%s'"
-                , Helper::getContentFullPath( _desc.content )
+                , Helper::getContentFullPath( _desc.content ).c_str()
                 , name.c_str()
                 , vertexShaderName.c_str()
             );
@@ -1048,7 +1050,7 @@ namespace Mengine
                 ->getFragmentShader( fragmentShaderName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, "material '%s' program '%s' not found fragment shader '%s'"
-                , Helper::getContentFullPath( _desc.content )
+                , Helper::getContentFullPath( _desc.content ).c_str()
                 , name.c_str()
                 , fragmentShaderName.c_str()
             );
@@ -1057,7 +1059,7 @@ namespace Mengine
                 ->getVertexAttribute( vertexAttributeName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, "material '%s' program '%s' not found vertex attribute '%s'"
-                , Helper::getContentFullPath( _desc.content )
+                , Helper::getContentFullPath( _desc.content ).c_str()
                 , name.c_str()
                 , vertexAttributeName.c_str()
             );
@@ -1066,7 +1068,7 @@ namespace Mengine
                 ->createProgram( name, vertexShader, fragmentShader, vertexAttribute, samplerCount, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( program, "material '%s' invalid create program vertex '%s' fragment '%s'"
-                , Helper::getContentFullPath( _desc.content )
+                , Helper::getContentFullPath( _desc.content ).c_str()
                 , vertexShaderName.c_str()
                 , fragmentShaderName.c_str()
             );
@@ -1113,7 +1115,7 @@ namespace Mengine
                     ->getProgram( programName );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( program, "material '%s' invalid get program '%s'"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                     , programName.c_str()
                 );
 
@@ -1151,7 +1153,7 @@ namespace Mengine
                 ->createMaterialStage( name, stage, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( cache_stage, "material '%s' invalid create stage group '%s'"
-                , Helper::getContentFullPath( _desc.content )
+                , Helper::getContentFullPath( _desc.content ).c_str()
                 , name.c_str()
             );
 
@@ -1190,13 +1192,13 @@ namespace Mengine
             if( exist == false )
             {
                 LOGGER_ERROR( "materials '%s' not found"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                 );
             }
             else
             {
                 LOGGER_ERROR( "invalid parse materials '%s'"
-                    , Helper::getContentFullPath( _desc.content )
+                    , Helper::getContentFullPath( _desc.content ).c_str()
                 );
             }
 

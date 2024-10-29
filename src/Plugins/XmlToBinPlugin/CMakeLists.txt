@@ -6,9 +6,8 @@ src
     XmlToBinPlugin.def
     XmlToBinPlugin.cpp
     
-    XmlToBinDecoder.h
-    XmlToBinDecoder.cpp
-    XmlToBinInterface.h
+    XmlToBinConverter.h
+    XmlToBinConverter.cpp
 )
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)

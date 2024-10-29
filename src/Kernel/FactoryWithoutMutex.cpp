@@ -24,7 +24,10 @@ namespace Mengine
 
         Factorable * object = this->_createObject();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( object );
+        MENGINE_ASSERTION_MEMORY_PANIC( object, "invalid create object '%s' doc '%s'"
+            , m_type.c_str()
+            , MENGINE_DOCUMENT_STR( _doc )
+        );
 
         m_count.incref();
 

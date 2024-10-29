@@ -309,7 +309,7 @@ namespace Mengine
             if( result < 0 )
             {
                 LOGGER_ERROR( "file '%s' error seek %zu:%zu"
-                    , Helper::getDebugFullPath( this )
+                    , Helper::getDebugFullPath( this ).c_str()
                     , _pos
                     , m_size
                 );

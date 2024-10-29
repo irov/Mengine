@@ -60,7 +60,7 @@ namespace Mengine
     {
         PathfinderMapPtr map = m_factoryPathfinderMap->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( map );
+        MENGINE_ASSERTION_MEMORY_PANIC( map, "invalid create map" );
 
         map->initialize( _width, _height );
 

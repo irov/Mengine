@@ -35,7 +35,7 @@ namespace Mengine
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, "not found 'lz4' archivator" );
 
         m_archivator = archivator;
 
@@ -63,25 +63,27 @@ namespace Mengine
 
         MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_devFileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data_cache );
+        MENGINE_ASSERTION_MEMORY_PANIC( data_cache, "invalid create cache memory '%s'"
+            , Helper::getContentFullPath( m_options.inputContent ).c_str()
+        );
 
         const void * data_memory = data_cache->getBuffer();
         size_t data_size = data_cache->getSize();
 
         MENGINE_ASSERTION_MEMORY_PANIC( data_memory, "invalid cache memory '%s'"
-            , Helper::getContentFullPath( m_options.inputContent )
+            , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
         OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_devFileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open '%s'"
-            , Helper::getContentFullPath( m_options.outputContent )
+            , Helper::getContentFullPath( m_options.outputContent ).c_str()
         );
 
         if( Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ), false, data_memory, data_size, EAC_BEST ) == false )
         {
             LOGGER_ERROR( "dazzle converter invalid write '%s'"
-                , Helper::getContentFullPath( m_options.outputContent )
+                , Helper::getContentFullPath( m_options.outputContent ).c_str()
             );
 
             return false;
@@ -90,7 +92,7 @@ namespace Mengine
         if( Helper::closeOutputStreamFile( m_devFileGroup, stream ) == false )
         {
             LOGGER_ERROR( "dazzle converter invalid close '%s'"
-                , Helper::getContentFullPath( m_options.outputContent )
+                , Helper::getContentFullPath( m_options.outputContent ).c_str()
             );
 
             return false;

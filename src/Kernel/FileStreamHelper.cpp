@@ -16,13 +16,13 @@ namespace Mengine
             InputStreamInterfacePtr stream = _fileGroup->createInputFile( _filePath, _streaming, &realFileGroup, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create input file '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
             );
 
             if( realFileGroup->openInputFile( _filePath, stream, 0, MENGINE_UNKNOWN_SIZE, _streaming, _share ) == false )
             {
                 LOGGER_ERROR( "can't open input file '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
                 );
 
                 return nullptr;
@@ -37,13 +37,13 @@ namespace Mengine
             InputStreamInterfacePtr stream = _fileGroup->createInputMutexFile( _filePath, _stream, _mutex, &realFileGroup, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create input mutex file '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
             );
 
             if( realFileGroup->openInputMutexFile( _filePath, stream, 0, MENGINE_UNKNOWN_SIZE ) == false )
             {
                 LOGGER_ERROR( "can't open input mutex file '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
                 );
 
                 return nullptr;
@@ -57,13 +57,13 @@ namespace Mengine
             OutputStreamInterfacePtr file = _fileGroup->createOutputFile( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( file, "can't create output file '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
             );
 
             if( _fileGroup->openOutputFile( _filePath, file, _withTemp ) == false )
             {
                 LOGGER_ERROR( "can't open output file '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
                 );
 
                 return nullptr;
@@ -79,7 +79,7 @@ namespace Mengine
                 const FilePath & filePath = Helper::getDebugRelationPath( _stream );
 
                 LOGGER_ERROR( "invalid close input file '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, filePath )
+                    , Helper::getFileGroupFullPath( _fileGroup, filePath ).c_str()
                 );
 
                 return false;
@@ -95,7 +95,7 @@ namespace Mengine
                 const FilePath & filePath = Helper::getDebugFilePath( _stream );
 
                 LOGGER_ERROR( "invalid close output file '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, filePath )
+                    , Helper::getFileGroupFullPath( _fileGroup, filePath ).c_str()
                 );
 
                 return false;
@@ -109,7 +109,7 @@ namespace Mengine
             OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, _withTemp, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't open output file '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
             );
 
             const void * memory_buffer = _memory->getBuffer();
@@ -118,7 +118,7 @@ namespace Mengine
             if( stream->write( memory_buffer, memory_size ) == false )
             {
                 LOGGER_ERROR( "invalid write output file '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
                 );
 
                 return false;
@@ -127,7 +127,7 @@ namespace Mengine
             if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
             {
                 LOGGER_ERROR( "invalid close output file '%s'"
-                    , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                    , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
                 );
 
                 return false;

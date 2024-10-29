@@ -86,7 +86,7 @@ namespace Mengine
     {
         DazzleDataPtr data = m_factoryDazzleData->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data );
+        MENGINE_ASSERTION_MEMORY_PANIC( data, "invalid create data" );
 
         data->setDazzleService( m_service );
 
@@ -97,7 +97,7 @@ namespace Mengine
     {
         MemoryInterfacePtr memory = Helper::readStreamArchiveMagic( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_DZZ ), GET_MAGIC_VERSION( MAGIC_DZZ ), _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid read magic data" );
 
         return memory;
     }

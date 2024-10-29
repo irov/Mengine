@@ -35,7 +35,7 @@ namespace Mengine
             LOGGER_ERROR( "resource video '%s' group '%s' path '%s' invalid width or heigth [%u:%u] need [%u:%u] maybe div [%u]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
                 , dataInfo->frameWidth
                 , dataInfo->frameHeight
                 , (dataInfo->frameWidth / Limit_VideoSizeDiv + 1) * Limit_VideoSizeDiv
@@ -54,7 +54,7 @@ namespace Mengine
             LOGGER_ERROR( "resource video '%s' group '%s' path '%s' override size [%u:%u] limit [%u:%u]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
                 , dataInfo->width
                 , dataInfo->height
                 , Limit_VideoWidth
@@ -73,7 +73,7 @@ namespace Mengine
             LOGGER_ERROR( "resource video '%s' group '%s' path '%s' override frame rate %f more that %f"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
                 , frameRate
                 , Limit_VideoFrameRate
             );
@@ -106,7 +106,7 @@ namespace Mengine
             LOGGER_ERROR( "resource video '%s' group '%s' path '%s' override fillrate %f [coeff %f]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
                 , videoFillrate / resolutionFillrate
                 , Limit_VideoContentFillrateCoeff
             );
@@ -133,7 +133,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' not exist file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
             return false;
@@ -146,7 +146,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't open video file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
             return false;
@@ -162,7 +162,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't create video decoder for file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
             return false;
@@ -173,7 +173,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' can't initialize video decoder for file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
             return false;

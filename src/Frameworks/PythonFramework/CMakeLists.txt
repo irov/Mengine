@@ -88,6 +88,8 @@ Wrapper
     GameScriptEmbedding.cpp
     HttpScriptEmbedding.h
     HttpScriptEmbedding.cpp
+    EnvironmentScriptEmbedding.h
+    EnvironmentScriptEmbedding.cpp
 )
 
 ADD_FILTER(

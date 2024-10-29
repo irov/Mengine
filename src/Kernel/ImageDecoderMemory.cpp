@@ -20,8 +20,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageDecoderMemory::_decode( const DecoderData * _data )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _data );
-        MENGINE_ASSERTION_TYPE( _data, const ImageDecoderData * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _data, "invalid decode data" );
+        MENGINE_ASSERTION_TYPE( _data, const ImageDecoderData *, "invalid decode data" );
 
         const ImageDecoderData * imageData = static_cast<const ImageDecoderData *>(_data);
 

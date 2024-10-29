@@ -49,6 +49,7 @@
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/TextureHelper.h"
+#include "Kernel/PluginHelper.h"
 
 #include "ToolUtils/ToolLogger.h"
 
@@ -99,6 +100,7 @@ SERVICE_EXTERN( DataService );
 SERVICE_EXTERN( TimeSystem );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( DateTimeSystem );
+SERVICE_EXTERN( Win32KernelService );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( TimelineService );
@@ -288,6 +290,8 @@ namespace Mengine
         SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DateTimeSystem, MENGINE_DOCUMENT_FUNCTION );
 
+        SERVICE_CREATE( Win32KernelService, MENGINE_DOCUMENT_FUNCTION );
+
         SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
@@ -404,6 +408,7 @@ namespace Mengine
         SERVICE_FINALIZE( VocabularyService );
         SERVICE_FINALIZE( NotificationService );
         SERVICE_FINALIZE( EnumeratorService );
+        SERVICE_FINALIZE( Win32KernelService );
         SERVICE_FINALIZE( DateTimeSystem );
         SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( ThreadSystem );

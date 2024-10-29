@@ -26,6 +26,12 @@ namespace Mengine
         }
 
     public:
+        explicit ArrayTString( const T * _value )
+        {
+            this->assign( _value );
+        }
+
+    public:
         const value_type * c_str() const
         {
             return m_buffer;

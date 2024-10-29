@@ -2,7 +2,7 @@
 
 #include "Interface/PluginInterface.h"
 #include "Interface/ThreadMutexInterface.h"
-#include "Interface/ModuleFactoryInterface.h"
+#include "Interface/FactoryInterface.h"
 #include "Interface/DocumentInterface.h"
 
 #include "Kernel/Factorable.h"
@@ -53,13 +53,11 @@ namespace Mengine
         virtual bool _unimportantPlugin() const;
 
     protected:
-        bool addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory, const DocumentInterfacePtr & _doc );
+        bool addModuleFactory( const ConstString & _name, const FactoryInterfacePtr & _factory, const DocumentInterfacePtr & _doc );
+        void removeModuleFactory( const ConstString & _name );
 
     protected:
         UniqueId m_uid;
-
-        typedef Vector<ConstString> VectorModuleFactory;
-        VectorModuleFactory m_moduleFactories;
 
         bool m_dynamicLoad;
         bool m_initializePlugin;

@@ -3,8 +3,6 @@
 #include "Interface/EncoderInterface.h"
 #include "Interface/OutputStreamInterface.h"
 
-#include "Kernel/Factorable.h"
-
 #include "Config/TypeTraits.h"
 
 namespace Mengine
@@ -12,7 +10,6 @@ namespace Mengine
     template<class T>
     class EncoderBase
         : public T
-        , public Factorable
     {
         static_assert(TypeTraits::is_base_of<EncoderInterface, T>, "T must derive from DecoderInterface");
 

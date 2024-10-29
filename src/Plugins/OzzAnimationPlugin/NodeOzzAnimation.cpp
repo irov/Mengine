@@ -264,12 +264,12 @@ namespace Mengine
             MemoryBufferInterfacePtr vertexMemory = MEMORY_SERVICE()
                 ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( vertexMemory );
+            MENGINE_ASSERTION_MEMORY_PANIC( vertexMemory, "invalid create memory buffer" );
 
             RenderVertexBufferInterfacePtr vertexBuffer = RENDER_SYSTEM()
                 ->createVertexBuffer( ozz_vertex_stride, BT_STREAM, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( vertexBuffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( vertexBuffer, "invalid create vertex buffer" );
 
             uint32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
@@ -278,7 +278,7 @@ namespace Mengine
             RenderIndexBufferInterfacePtr indexBuffer = RENDER_SYSTEM()
                 ->createIndexBuffer( sizeof( RenderIndex ), BT_STREAM, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( indexBuffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( indexBuffer, "invalid create index buffer" );
 
             const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
@@ -299,7 +299,7 @@ namespace Mengine
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
             ->getMaterial( STRINGIZE_STRING_LOCAL( "Ozz_Texture_Blend" ), PT_TRIANGLELIST, &texture, 1, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material );
+        MENGINE_ASSERTION_MEMORY_PANIC( material, "invalid get material" );
 
         m_material = material;
 

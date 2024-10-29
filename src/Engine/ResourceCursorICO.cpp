@@ -4,6 +4,7 @@
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryStreamHelper.h"
+#include "Kernel/ContentHelper.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -23,7 +24,9 @@ namespace Mengine
 
         MemoryInterfacePtr buffer = content->createMemoryFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create memory file '%s'"
+            , Helper::getContentFullPath( content ).c_str()
+        );
 
         m_buffer = buffer;
 

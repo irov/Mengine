@@ -87,8 +87,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Button::_dispose()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_chain );
-
         this->_updateCursorLeave();
 
         m_cursorEnterCb = nullptr;

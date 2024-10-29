@@ -31,7 +31,7 @@ namespace Mengine
         {
             FactoryInterfacePtr factory = Helper::makeFactoryDefault<Type>( MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( factory );
+            MENGINE_ASSERTION_MEMORY_PANIC( factory, "invalid create module factory" );
 
             m_factory = factory;
 
@@ -64,7 +64,9 @@ namespace Mengine
         {
             FrameworkFactoryInterfacePtr factory = Helper::makeFactorableUnique<FrameworkFactory<T>>( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( factory );
+            MENGINE_ASSERTION_MEMORY_PANIC( factory, "invalid create framework (doc %s)"
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             if( factory->initialize() == false )
             {

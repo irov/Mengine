@@ -34,7 +34,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FEFontEffectCustom::_compile()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_memory, "invalid memory" );
 
         const Char * memory_buffer = m_memory->getBuffer();
         size_t memory_size = m_memory->getSize();

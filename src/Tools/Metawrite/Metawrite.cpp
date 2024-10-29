@@ -11,11 +11,11 @@
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/CodecServiceInterface.h"
+#include "Interface/ConverterServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
-#include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
+#include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -24,6 +24,8 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/ParamsHelper.h"
+#include "Kernel/ContentHelper.h"
 
 static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
 {
@@ -33,7 +35,7 @@ static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
 #include "ToolUtils/ToolUtils.h"
 #include "ToolUtils/ToolLogger.h"
 
-#include "Environment/Windows/WindowsIncluder.h"
+#include "Metacode/Metacode.h"
 
 #include <string>
 #include <vector>
@@ -163,29 +165,17 @@ int main( int argc, char * argv[] )
 
     using namespace Mengine::Literals;
 
-    Mengine::XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
-        ->createDecoder( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
+    Mengine::ConverterInterfacePtr converter = CONVERTER_SERVICE()
+        ->createConverter( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
 
-    if( decoder == nullptr )
+    if( converter == nullptr )
     {
-        LOGGER_ERROR( "invalid create decoder xml2bin for %s"
+        LOGGER_ERROR( "invalid create converter xml2bin for %s"
             , fp_in.c_str()
         );
 
         return EXIT_FAILURE;
     }
-
-    if( decoder->prepareData( nullptr ) == false )
-    {
-        LOGGER_ERROR( "invalid initialize decoder xml2bin for %s"
-            , fp_in.c_str()
-        );
-
-        return EXIT_FAILURE;
-    }
-
-    Mengine::XmlDecoderData data;
-    data.pathProtocol = fp_protocol;
 
     Mengine::FileGroupInterfacePtr fileGroup = FILE_SERVICE()
         ->getFileGroup( Mengine::ConstString::none() );
@@ -197,13 +187,27 @@ int main( int argc, char * argv[] )
         return EXIT_FAILURE;
     }
 
-    const Mengine::FilePath & path = fileGroup->getRelationPath();
+    Mengine::ConverterOptions options;
+    options.inputContent = Mengine::Helper::makeFileContent( fileGroup, fp_in, MENGINE_DOCUMENT_FUNCTION );
+    options.outputContent = Mengine::Helper::makeFileContent( fileGroup, fp_out, MENGINE_DOCUMENT_FUNCTION );
 
-    data.pathXml = Mengine::Helper::concatenateFilePath( {path, fp_in} );
-    data.pathBin = Mengine::Helper::concatenateFilePath( {path, fp_out} );
+    Mengine::ContentInterfacePtr protocolContent = Mengine::Helper::makeFileContent( fileGroup, fp_protocol, MENGINE_DOCUMENT_FUNCTION );
 
-    if( decoder->decode( &data ) == 0 )
+    uint32_t useProtocolVersion = Metacode::get_metacode_protocol_version();
+    uint32_t useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();
+
+    Mengine::Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "protocolContent" ), protocolContent );
+    Mengine::Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), useProtocolVersion );
+    Mengine::Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), useProtocolCrc32 );
+
+    converter->setOptions( options );
+
+    if( converter->convert() == false )
     {
+        LOGGER_ERROR( "invalid convert %s"
+            , fp_in.c_str()
+        );
+
         return EXIT_FAILURE;
     }
 

@@ -392,7 +392,9 @@ namespace Mengine
 
         RenderPipelineInterfacePtr renderPipeline = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), Engine_RenderPipeline, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( renderPipeline );
+        MENGINE_ASSERTION_MEMORY_PANIC( renderPipeline, "invalid create render pipeline '%s'"
+            , Engine_RenderPipeline.c_str()
+        );
 
         if( renderPipeline->initialize() == false )
         {
@@ -829,7 +831,7 @@ namespace Mengine
                 ->loadPackages( content, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load package '%s'"
-                    , Helper::getContentFullPath( content )
+                    , Helper::getContentFullPath( content ).c_str()
                 );
 
                 return false;
@@ -862,7 +864,7 @@ namespace Mengine
                 ->loadSettings( content, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load setting '%s'"
-                    , Helper::getContentFullPath( content )
+                    , Helper::getContentFullPath( content ).c_str()
                 );
 
                 return false;

@@ -46,9 +46,9 @@ namespace Mengine
         jpeg_decompress_struct m_decompressJpeg;
         jpeg_source_mgr m_sourceMgr;
         jpeg_error_mgr m_errorMgr;
-        ;
+
         JOCTET m_JOCTETBuffer[MENGINE_DECODER_JPEG_INPUT_BUF_SIZE];
 
-        MENGINE_JMP_DECLARE( m_jmpBuffer );
+        MENGINE_JMPBUF * m_jmpBuffer;
     };
 }

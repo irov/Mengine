@@ -5,6 +5,7 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
+#include "Kernel/ContentHelper.h"
 
 #include "ozz/base/io/stream.h"
 #include "ozz/base/io/archive.h"
@@ -31,11 +32,13 @@ namespace Mengine
 
         InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open stream '%s'"
+            , Helper::getContentFullPath( content ).c_str()
+        );
 
         MemoryInterfacePtr memory = Helper::createMemoryStream( stream, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory" );
 
         const void * memory_buffer = memory->getBuffer();
         size_t memory_size = memory->getSize();

@@ -69,7 +69,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "get asset url '%s' invalid open file '%s'"
             , m_url.c_str()
-            , Helper::getContentFullPath( m_content )
+            , Helper::getContentFullPath( m_content ).c_str()
         );
 
         m_stream = stream;

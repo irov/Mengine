@@ -23,7 +23,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, "not found 'lz4' archivator" );
 
         m_archivator = archivator;
 
@@ -37,11 +37,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t PickEncoderHIT::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _encoderData );
-        MENGINE_ASSERTION_TYPE( _encoderData, const PickEncoderData * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _encoderData, "invalid encode data" );
+        MENGINE_ASSERTION_TYPE( _encoderData, const PickEncoderData *, "invalid encode data" );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
-        MENGINE_ASSERTION_TYPE( _dataInfo, const PickCodecDataInfo * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, "invalid encode data" );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const PickCodecDataInfo *, "invalid encode data" );
 
         const PickCodecDataInfo * dataInfo = static_cast<const PickCodecDataInfo *>(_dataInfo);
 

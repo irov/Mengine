@@ -39,7 +39,7 @@ namespace Mengine
     {
         ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex" );
 
         m_mutex = mutex;
 
@@ -47,7 +47,7 @@ namespace Mengine
 
         ResourceBankPtr globalBank = m_factoryResourceBank->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( globalBank );
+        MENGINE_ASSERTION_MEMORY_PANIC( globalBank, "invalid create global bank" );
 
         uint32_t Engine_ResourceHashTableSize = CONFIG_VALUE( "Engine", "ResourceHashTableSize", 1024 * 32 );
 
@@ -92,7 +92,7 @@ namespace Mengine
     {
         ResourceBankPtr bank = m_factoryResourceBank->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( bank );
+        MENGINE_ASSERTION_MEMORY_PANIC( bank, "invalid create resource bank" );
 
         if( bank->initialize( m_mutex, _reserved ) == false )
         {
@@ -163,7 +163,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceService::removeResource( const ResourcePtr & _resource )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _resource );
+        MENGINE_ASSERTION_MEMORY_PANIC( _resource, "invalid remove resource" );
 
         if( _resource->isGroupCache() == true )
         {

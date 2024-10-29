@@ -39,7 +39,7 @@ namespace Mengine
             InputStreamInterfacePtr stream = _content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't open file '%s'"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             memory = Helper::readStreamArchiveMagicMemory( stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), MENGINE_DOCUMENT_FACTORABLE );
@@ -54,14 +54,14 @@ namespace Mengine
         if( this->loadContainer_( binary_memory, binary_size, &mf ) == false )
         {
             LOGGER_ERROR( "astralax emitter container '%s' invalid initialize "
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             return false;
         }
 
         MENGINE_ASSERTION_FATAL( Magic_HasTextures( m_mf ) == false, "astralax '%s' incorrect safe 'with textures'"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
         );
 
         m_mf = mf;

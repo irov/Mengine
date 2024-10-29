@@ -46,7 +46,9 @@ namespace Mengine
 
             FactoryInterfacePtr factory = Helper::makeFactorableUnique<FactoryDefault<Type>>( _doc, std::forward<Args>( _args ) ... );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( factory );
+            MENGINE_ASSERTION_MEMORY_PANIC( factory, "invalid create factory '%s'"
+                , Typename<Type>::value
+            );
 
             const ConstString & type = Type::getFactorableType();
 

@@ -43,7 +43,7 @@ namespace Mengine
     {
         FEDataPtr data = m_factoryFEData->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data );
+        MENGINE_ASSERTION_MEMORY_PANIC( data, "invalid create data" );
 
         return data;
     }
@@ -52,7 +52,7 @@ namespace Mengine
     {
         MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory" );
 
         return memory;
     }
@@ -69,7 +69,7 @@ namespace Mengine
 
         fe_bundle * bundle = fe_bundle_load( memory_buffer, (int32_t)memory_size );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( bundle );
+        MENGINE_ASSERTION_MEMORY_PANIC( bundle, "invalid load fe bundle" );
 
         data->setFEBundle( bundle );
 

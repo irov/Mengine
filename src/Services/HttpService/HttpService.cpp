@@ -120,7 +120,7 @@ namespace Mengine
 
         ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex );
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, "invalid create mutex" );
 
         m_mutex = mutex;
 
@@ -220,7 +220,7 @@ namespace Mengine
         HttpRequestInterfacePtr request = HTTP_SYSTEM()
             ->createHttpRequestGetMessage( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( request );
+        MENGINE_ASSERTION_MEMORY_PANIC( request, "invalid create http request" );
 
         request->setURL( _url );
         request->setProxy( m_proxy );
@@ -231,7 +231,7 @@ namespace Mengine
 
         AndroidHttpResponsePtr response = m_factoryResponse->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( response );
+        MENGINE_ASSERTION_MEMORY_PANIC( response, "invalid create http response" );
 
         response->setRequest( request );
 
@@ -277,7 +277,7 @@ namespace Mengine
         HttpRequestInterfacePtr request = HTTP_SYSTEM()
             ->createHttpRequestPostMessage( _params, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( request );
+        MENGINE_ASSERTION_MEMORY_PANIC( request, "invalid create http request" );
 
         request->setURL( _url );
         request->setProxy( m_proxy );
@@ -288,7 +288,7 @@ namespace Mengine
 
         AndroidHttpResponsePtr response = m_factoryResponse->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( response );
+        MENGINE_ASSERTION_MEMORY_PANIC( response, "invalid create http response" );
 
         response->setRequest( request );
 
@@ -334,7 +334,7 @@ namespace Mengine
         HttpRequestInterfacePtr request = HTTP_SYSTEM()
             ->createHttpRequestDeleteMessage( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( request );
+        MENGINE_ASSERTION_MEMORY_PANIC( request, "invalid create http request" );
 
         request->setURL( _url );
         request->setProxy( m_proxy );
@@ -345,7 +345,7 @@ namespace Mengine
 
         AndroidHttpResponsePtr response = m_factoryResponse->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( response );
+        MENGINE_ASSERTION_MEMORY_PANIC( response, "invalid create http response" );
 
         response->setRequest( request );
 
@@ -391,7 +391,7 @@ namespace Mengine
         HttpRequestInterfacePtr request = HTTP_SYSTEM()
             ->createHttpRequestHeaderData( _data, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( request );
+        MENGINE_ASSERTION_MEMORY_PANIC( request, "invalid create http request" );
 
         request->setURL( _url );
         request->setHeaders( _headers );
@@ -401,7 +401,7 @@ namespace Mengine
 
         AndroidHttpResponsePtr response = m_factoryResponse->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( response );
+        MENGINE_ASSERTION_MEMORY_PANIC( response, "invalid create http response" );
 
         response->setRequest( request );
 
@@ -446,7 +446,7 @@ namespace Mengine
         {
             LOGGER_HTTP_ERROR( "url '%s' file already exist '%s'"
                 , _url.c_str()
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             return MENGINE_HTTP_REQUEST_INVALID;
@@ -457,7 +457,7 @@ namespace Mengine
         HttpRequestInterfacePtr request = HTTP_SYSTEM()
             ->createHttpRequestGetAsset( _login, _password, _content, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( request );
+        MENGINE_ASSERTION_MEMORY_PANIC( request, "invalid create http request" );
 
         request->setURL( _url );
         request->setProxy( m_proxy );
@@ -467,7 +467,7 @@ namespace Mengine
 
         AndroidHttpResponsePtr response = m_factoryResponse->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( response );
+        MENGINE_ASSERTION_MEMORY_PANIC( response, "invalid create http response" );
 
         response->setRequest( request );
 

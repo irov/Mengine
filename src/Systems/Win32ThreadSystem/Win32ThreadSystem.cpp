@@ -75,7 +75,9 @@ namespace Mengine
     {
         Win32ThreadIdentityPtr threadIdentity = m_factoryThreadIdentity->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( threadIdentity, "invalid create thread identity", _description.nameA );
+        MENGINE_ASSERTION_MEMORY_PANIC( threadIdentity, "invalid create thread identity '%s'"
+            , _description.nameA 
+        );
 
         if( threadIdentity->initialize( _description, _priority ) == false )
         {
@@ -94,7 +96,9 @@ namespace Mengine
     {
         Win32ThreadProcessorPtr threadProcessor = m_factoryThreadProcessor->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( threadProcessor, "invalid create thread processor '%s'", _description.nameA );
+        MENGINE_ASSERTION_MEMORY_PANIC( threadProcessor, "invalid create thread processor '%s'"
+            , _description.nameA
+        );
 
         ThreadMutexInterfacePtr mutex = this->createMutex( _doc );
 

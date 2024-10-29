@@ -258,19 +258,28 @@ namespace Mengine
         spSkeletonData * skeletonData = m_resourceSpineSkeleton->getSkeletonData();
 
         spAnimationStateData * animationStateData = spAnimationStateData_create( skeletonData );
-        MENGINE_ASSERTION_MEMORY_PANIC( animationStateData );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( animationStateData, "spine '%s' invalid create animation state data"
+            , this->getName().c_str()
+        );
 
         m_animationStateData = animationStateData;
 
         spSkeleton * skeleton = spSkeleton_create( skeletonData );
-        MENGINE_ASSERTION_MEMORY_PANIC( skeleton );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( skeleton, "spine '%s' invalid create skeleton"
+            , this->getName().c_str()
+        );
 
         m_skeleton = skeleton;
 
         spSkeleton_setToSetupPose( m_skeleton );
 
         spSkeletonClipping * skeletonClipper = spSkeletonClipping_create();
-        MENGINE_ASSERTION_MEMORY_PANIC( skeletonClipper );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( skeletonClipper, "spine '%s' invalid create skeleton clipper"
+            , this->getName().c_str()
+        );
 
         m_skeletonClipper = skeletonClipper;
 

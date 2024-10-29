@@ -70,7 +70,7 @@ namespace Mengine
             ThreadJobPtr threadJobSoundBufferUpdate = THREAD_SERVICE()
                 ->createJob( 25, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( threadJobSoundBufferUpdate );
+            MENGINE_ASSERTION_MEMORY_PANIC( threadJobSoundBufferUpdate, "invalid create thread job" );
 
             m_threadJobSoundBufferUpdate = threadJobSoundBufferUpdate;
 
@@ -325,7 +325,7 @@ namespace Mengine
 
         SoundIdentityPtr identity = m_factorySoundIdentity->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( identity );
+        MENGINE_ASSERTION_MEMORY_PANIC( identity, "create SoundIdentity invalid" );
 
         bool turn = _streamable == true ? m_turnStream : m_turnSound;
 
@@ -415,7 +415,7 @@ namespace Mengine
         InputStreamInterfacePtr stream = _content->openInputStreamFile( _streamable, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't open sound file '%s'"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
         );
 
         const ConstString & codecType = _content->getCodecType();
@@ -424,13 +424,13 @@ namespace Mengine
             ->createDecoder( codecType, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, "can't create sound decoder for file '%s'"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
         );
 
         if( soundDecoder->prepareData( stream ) == false )
         {
             LOGGER_ERROR( "can't initialize sound decoder for file '%s'"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             return nullptr;
@@ -451,7 +451,7 @@ namespace Mengine
         if( m_supportStream == false && _streamable == true )
         {
             LOGGER_WARNING( "unsupport stream sound '%s'"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             _streamable = false;
@@ -469,7 +469,7 @@ namespace Mengine
                 if( soundDecoder->rewind() == false )
                 {
                     LOGGER_ERROR( "invalid rewind decoder '%s'"
-                        , Helper::getContentFullPath( _content )
+                        , Helper::getContentFullPath( _content ).c_str()
                     );
 
                     return nullptr;
@@ -484,7 +484,7 @@ namespace Mengine
         if( soundDecoder == nullptr )
         {
             LOGGER_ERROR( "invalid create sound decoder '%s' codec '%s' streamable [%s]"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
                 , _content->getCodecType().c_str()
                 , _streamable == true ? "true" : "false"
             );
@@ -498,7 +498,7 @@ namespace Mengine
         if( buffer == nullptr )
         {
             LOGGER_ERROR( "can't create sound buffer for file '%s'"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             return nullptr;
@@ -768,7 +768,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::playEmitter( const SoundIdentityInterfacePtr & _identity )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid play identity" );
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
@@ -879,7 +879,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::pauseEmitter( const SoundIdentityInterfacePtr & _identity )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid pause identity" );
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
@@ -933,7 +933,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::resumeEmitter( const SoundIdentityInterfacePtr & _identity )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid resume identity" );
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
@@ -1000,7 +1000,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::stopEmitter( const SoundIdentityInterfacePtr & _identity )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid stop identity" );
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
@@ -1055,7 +1055,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::isEmitterStop( const SoundIdentityInterfacePtr & _identity ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid stop identity" );
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
@@ -1069,7 +1069,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::isEmitterPlay( const SoundIdentityInterfacePtr & _identity ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid play identity" );
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
@@ -1083,7 +1083,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::isEmitterPause( const SoundIdentityInterfacePtr & _identity ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid pause identity" );
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
@@ -1164,7 +1164,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::setSourceVolume( const SoundIdentityInterfacePtr & _identity, float _volume, float _from, float _speed, bool _force )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity set source volume" );
 
         const MixerValueInterfacePtr & mixerVolume = _identity->getMixerVolume();
 
@@ -1177,7 +1177,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getSourceVolume( const SoundIdentityInterfacePtr & _identity ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity get source volume" );
 
         const MixerValueInterfacePtr & mixerVolume = _identity->getMixerVolume();
 
@@ -1188,9 +1188,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::setSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer, float _volume, float _from )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "identity is nullptr (mixer '%s')"
-            , _mixer.c_str()
-        );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity set source mixer volume" );
 
         const MixerValueInterfacePtr & mixerVolume = _identity->getMixerVolume();
 
@@ -1203,9 +1201,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "identity is nullptr (mixer '%s')"
-            , _mixer.c_str()
-        );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity get source mixer volume" );
 
         const MixerValueInterfacePtr & mixerVolume = _identity->getMixerVolume();
 
@@ -1216,7 +1212,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getDuration( const SoundIdentityInterfacePtr & _identity ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "identity is nullptr" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity get duration" );
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 
@@ -1238,9 +1234,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::setPosMs( const SoundIdentityInterfacePtr & _identity, float _pos )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "identity is nullptr (pos '%f')"
-            , _pos
-        );
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity set pos ms" );
 
         SoundIdentityPtr identity = SoundIdentityPtr::from( _identity );
 

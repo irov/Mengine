@@ -121,11 +121,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderPNG::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _encoderData );
-        MENGINE_ASSERTION_TYPE( _encoderData, const ImageEncoderData * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _encoderData, "invalid encode data" );
+        MENGINE_ASSERTION_TYPE( _encoderData, const ImageEncoderData *, "invalid encode data type" );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
-        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, "invalid data info" );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo *, "invalid data info type" );
 
 #if defined(PNG_SETJMP_SUPPORTED)
         if( MENGINE_JMP_SET( png_jmpbuf( m_png_ptr ) ) != 0 )

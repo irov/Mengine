@@ -537,7 +537,9 @@ namespace Mengine
 
         RenderMaterialPtr material = m_factoryMaterial->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material );
+        MENGINE_ASSERTION_MEMORY_PANIC( material, "invalid create material '%s'"
+            , _materialName.c_str()
+        );
 
         uint32_t id = this->makeMaterialIndex_();
         material->initialize( _materialName, id, material_hash, _primitiveType, _textureCount, _textures, _stage );
@@ -585,7 +587,9 @@ namespace Mengine
 
         RenderMaterialPtr material = m_factoryMaterial->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material );
+        MENGINE_ASSERTION_MEMORY_PANIC( material, "invalid create material '%s'"
+            , materialName.c_str()
+        );
 
         uint32_t id = this->makeMaterialIndex_();
         material->initialize( materialName, id, material_hash, _primitiveType, _textureCount, _textures, stage );
@@ -710,7 +714,9 @@ namespace Mengine
         RenderVertexAttributeInterfacePtr vertexAttribute = RENDER_SYSTEM()
             ->createVertexAttribute( _name, _elementSize, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute );
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, "invalid create vertex attribute '%s'"
+            , _name.c_str()
+        );
 
         m_vertexAttributes.emplace( _name, vertexAttribute );
 
@@ -729,7 +735,7 @@ namespace Mengine
     RenderVertexShaderInterfacePtr RenderMaterialService::createVertexShader( const ConstString & _name, const ContentInterfacePtr & _content, bool _compile, const DocumentInterfacePtr & _doc )
     {
         MENGINE_ASSERTION_FATAL( m_vertexShaders.exist( _name ) == false, "material '%s' already has vertex shader '%s' (doc: %s)"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
             , _name.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
@@ -752,12 +758,16 @@ namespace Mengine
 
         MemoryInterfacePtr memory = convertContent->createMemoryFile( false, false, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory file '%s'"
+            , Helper::getContentFullPath( _content ).c_str()
+        );
 
         RenderVertexShaderInterfacePtr vertexShader = RENDER_SYSTEM()
             ->createVertexShader( _name, memory, _compile, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( vertexShader );
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexShader, "invalid create vertex shader '%s'"
+            , _name.c_str()
+        );
 
         m_vertexShaders.emplace( _name, vertexShader );
 
@@ -776,7 +786,7 @@ namespace Mengine
     RenderFragmentShaderInterfacePtr RenderMaterialService::createFragmentShader( const ConstString & _name, const ContentInterfacePtr & _content, bool _compile, const DocumentInterfacePtr & _doc )
     {
         MENGINE_ASSERTION_FATAL( m_fragmentShaders.exist( _name ) == false, "material '%s' already has fragment shader '%s' (doc: %s)"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
             , _name.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
@@ -799,12 +809,16 @@ namespace Mengine
 
         MemoryInterfacePtr memory = convertContent->createMemoryFile( false, false, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory file '%s'"
+            , Helper::getContentFullPath( _content ).c_str()
+        );
 
         RenderFragmentShaderInterfacePtr fragmentShader = RENDER_SYSTEM()
             ->createFragmentShader( _name, memory, _compile, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader );
+        MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, "invalid create fragment shader '%s'"
+            , _name.c_str()
+        );
 
         m_fragmentShaders.emplace( _name, fragmentShader );
 
@@ -830,7 +844,9 @@ namespace Mengine
         RenderProgramInterfacePtr program = RENDER_SYSTEM()
             ->createProgram( _name, _vertexShader, _fragmentShader, _vertexAttribute, _samplerCount, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( program );
+        MENGINE_ASSERTION_MEMORY_PANIC( program, "invalid create program '%s'"
+            , _name.c_str()
+        );
 
         m_programs.emplace( _name, program );
 

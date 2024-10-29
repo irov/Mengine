@@ -57,7 +57,7 @@ namespace Mengine
     public:
         const element_type_ptr & emplace( const key_type & _key, const element_type_ptr & _element )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _element );
+            MENGINE_ASSERTION_MEMORY_PANIC( _element, "invalid emplace element" );
 
             size_type test_size = (m_size + m_dummy) * 3 + 1;
             size_type test_capacity = m_capacity * 2;
@@ -76,7 +76,7 @@ namespace Mengine
 
         element_type_ptr change( const key_type & _key, const element_type_ptr & _element )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _element );
+            MENGINE_ASSERTION_MEMORY_PANIC( _element, "invalid change element" );
 
             size_type test_size = (m_size + m_dummy) * 3 + 1;
             size_type test_capacity = m_capacity * 2;
@@ -677,7 +677,7 @@ namespace Mengine
     public:
         element_type_ptr emplace( const key_type & _key, element_type_ptr _element )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _element );
+            MENGINE_ASSERTION_MEMORY_PANIC( _element, "invalid emplace element" );
 
             uint32_t test_size = (m_size + m_dummy) * 3 + 1;
             uint32_t test_capacity = m_capacity * 2;
@@ -695,7 +695,7 @@ namespace Mengine
 
         element_type_ptr change( const key_type & _key, element_type_ptr _element )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _element );
+            MENGINE_ASSERTION_MEMORY_PANIC( _element, "invalid change element" );
 
             uint32_t test_size = (m_size + m_dummy) * 3 + 1;
             uint32_t test_capacity = m_capacity * 2;

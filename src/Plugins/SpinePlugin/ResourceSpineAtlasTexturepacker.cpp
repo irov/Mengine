@@ -37,7 +37,7 @@ namespace Mengine
     {
         spAtlas * atlas = NEW( spAtlas );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( atlas );
+        MENGINE_ASSERTION_MEMORY_PANIC( atlas, "invalid create atlas" );
 
         spAtlasPage * lastPage = nullptr;
         spAtlasRegion * lastRegion = nullptr;

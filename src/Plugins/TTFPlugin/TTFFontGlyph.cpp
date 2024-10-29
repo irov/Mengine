@@ -67,7 +67,9 @@ namespace Mengine
 
         TTFDataInterfacePtr data = Helper::getDataflow( m_glyphContent, &context, MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data );
+        MENGINE_ASSERTION_MEMORY_PANIC( data, "invalid get dataflow '%s'"
+            , filePath.c_str()
+        );
 
         m_dataTTF = data;
 

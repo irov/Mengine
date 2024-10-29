@@ -65,7 +65,7 @@ namespace Mengine
     {
         ScriptCodeDataPtr data = m_factoryScriptCodeData->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( data );
+        MENGINE_ASSERTION_MEMORY_PANIC( data, "invalid create data" );
 
         return data;
     }
@@ -81,7 +81,7 @@ namespace Mengine
     {
         MemoryInterfacePtr memory = Helper::readStreamCacheArchiveMemory( _stream, m_archivator, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid read stream cache archive memory" );
 
         return memory;
     }

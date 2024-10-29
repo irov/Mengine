@@ -93,7 +93,7 @@ namespace Mengine
             LOGGER_ERROR( "resource sound '%s' group '%s' can't load sound '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
-                , Helper::getContentFullPath( this->getContent() )
+                , Helper::getContentFullPath( this->getContent() ).c_str()
             );
 
             return nullptr;

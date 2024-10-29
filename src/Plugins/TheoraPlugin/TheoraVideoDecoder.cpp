@@ -317,8 +317,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t TheoraVideoDecoder::_decode( const DecoderData * _decoderData )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
-        MENGINE_ASSERTION_TYPE( _decoderData, const VideoDecoderData * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData, "invalid decode data" );
+        MENGINE_ASSERTION_TYPE( _decoderData, const VideoDecoderData *, "invalid decode data" );
 
         MENGINE_PROFILER_CATEGORY();
 

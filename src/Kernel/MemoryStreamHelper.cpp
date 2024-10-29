@@ -17,7 +17,10 @@ namespace Mengine
 
             MemoryInterfacePtr memory = Helper::createMemoryStreamSize( _stream, stream_size, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory stream [%zu] (doc: %s)"
+                , stream_size
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             return memory;
         }
@@ -27,11 +30,16 @@ namespace Mengine
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryBuffer( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory buffer (doc: %s)"
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             void * memory_buffer = memory->newBuffer( _size );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, "invalid new buffer [%zu] (doc: %s)"
+                , _size
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             size_t read_byte = _stream->read( memory_buffer, _size );
 
@@ -49,11 +57,17 @@ namespace Mengine
 
             MemoryBufferInterfacePtr memory = Helper::createMemoryBuffer( stream_size + _extraSize, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory buffer [%zu] (doc: %s)"
+                , stream_size + _extraSize
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             void * memory_buffer = memory->getBuffer();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, "invalid get buffer [%zu] (doc: %s)"
+                , stream_size + _extraSize
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             size_t read_byte = _stream->read( memory_buffer, stream_size );
 
@@ -72,11 +86,16 @@ namespace Mengine
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryBuffer( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory buffer (doc: %s)"
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             void * memory_buffer = memory->newBuffer( stream_size + 1 );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, "invalid new buffer [%zu] (doc: %s)"
+                , stream_size + 1
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             size_t read_byte = _stream->read( memory_buffer, stream_size );
 
@@ -95,7 +114,7 @@ namespace Mengine
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create input file stream '%s' stream [%u] (doc: %s)"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
                 , _stream
                 , MENGINE_DOCUMENT_STR( _doc )
             );
@@ -110,7 +129,7 @@ namespace Mengine
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create input file stream '%s' stream [%u] (doc: %s)"
-                , Helper::getFileGroupFullPath( _fileGroup, _filePath )
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
                 , _stream
                 , MENGINE_DOCUMENT_STR( _doc )
             );
@@ -125,12 +144,18 @@ namespace Mengine
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryBuffer( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory buffer [%zu] (doc: %s)"
+                , _size
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             void * memory_buffer = memory->newBuffer( _size );
             MENGINE_UNUSED( memory_buffer );
             
-            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, "invalid new buffer [%zu] (doc: %s)"
+                , _size
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             return memory;
         }
@@ -140,12 +165,18 @@ namespace Mengine
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryCacheBuffer( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory cache buffer [%zu] (doc: %s)"
+                , _size
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             void * memory_buffer = memory->newBuffer( _size );
             MENGINE_UNUSED( memory_buffer );
             
-            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, "invalid new buffer [%zu] (doc: %s)"
+                , _size
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             return memory;
         }
@@ -154,7 +185,10 @@ namespace Mengine
         {
             MemoryInterfacePtr cache = Helper::createMemoryCacheBuffer( _size, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( cache );
+            MENGINE_ASSERTION_MEMORY_PANIC( cache, "invalid create memory cache buffer [%zu] (doc: %s)"
+                , _size
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             void * memory = cache->getBuffer();
 
@@ -174,11 +208,17 @@ namespace Mengine
 
             MemoryBufferInterfacePtr memory = Helper::createMemoryCacheBuffer( stream_size + _extraSize, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory buffer [%zu] (doc: %s)"
+                , stream_size + _extraSize
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             void * memory_buffer = memory->getBuffer();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, "invalid get buffer [%zu] (doc: %s)"
+                , stream_size + _extraSize
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             size_t read_byte = _stream->read( memory_buffer, stream_size );
 
@@ -196,7 +236,9 @@ namespace Mengine
 
             MemoryInterfacePtr memory = Helper::createMemoryCacheStreamSize( _stream, size, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid cache size [%zu]", size );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid cache size [%zu]"
+                , size
+            );
 
             return memory;
         }
@@ -205,11 +247,19 @@ namespace Mengine
         {
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream );
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open input file stream '%s' stream [%u] (doc: %s)"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
+                , _stream
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             MemoryInterfacePtr memory = Helper::createMemoryCacheStream( stream, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory cache stream '%s' stream [%u] (doc: %s)"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
+                , _stream
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             return memory;
         }
@@ -218,17 +268,27 @@ namespace Mengine
         {
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream );
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open input file stream '%s' stream [%u] (doc: %s)"
+                , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()
+                , _stream
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             size_t size = stream->size();
 
             MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( size + 1, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory cache buffer [%zu] (doc: %s)"
+                , size + 1
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             uint8_t * memory_buffer = memory->getBuffer();
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, "invalid get buffer [%zu] (doc: %s)"
+                , size + 1
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             size_t read_byte = stream->read( memory_buffer, size );
 

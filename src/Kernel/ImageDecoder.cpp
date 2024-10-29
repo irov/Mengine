@@ -21,8 +21,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ImageDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo );
-        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataInfo, "invalid set codec data info" );
+        MENGINE_ASSERTION_TYPE( _dataInfo, const ImageCodecDataInfo *, "invalid set codec data info" );
 
         m_dataInfo = *static_cast<const ImageCodecDataInfo *>(_dataInfo);
     }

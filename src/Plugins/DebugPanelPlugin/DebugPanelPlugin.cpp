@@ -35,15 +35,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DebugPanelPlugin::_initializePlugin()
     {
-        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleDebugPanel" )
-            , Helper::makeModuleFactory<ModuleDebugPanel>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleDebugPanel" ), Helper::makeModuleFactory<ModuleDebugPanel>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DebugPanelPlugin::_finalizePlugin()
     {
-        //Empty   
+        this->removeModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleDebugPanel" ) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

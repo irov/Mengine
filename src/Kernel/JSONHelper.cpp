@@ -97,7 +97,10 @@ namespace Mengine
         {
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream );
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open file '%s:%s'"
+                , _fileGroup->getName().c_str()
+                , _filePath.c_str()
+            );
 
             jpp::object j = Helper::loadJSONStream( stream, _doc );
 
@@ -106,11 +109,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         jpp::object loadJSONStream( const InputStreamInterfacePtr & _stream, const DocumentInterfacePtr & _doc )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _stream );
+            MENGINE_ASSERTION_MEMORY_PANIC( _stream, "invalid input stream" );
 
             MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory stream" );
 
             jpp::object j = Helper::loadJSONMemory( memory, _doc );
 
@@ -119,7 +122,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         jpp::object loadJSONMemory( const MemoryInterfacePtr & _memory, const DocumentInterfacePtr & _doc )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _memory );
+            MENGINE_ASSERTION_MEMORY_PANIC( _memory, "invalid memory" );
 
             const void * memory_buffer = _memory->getBuffer();
             size_t memory_size = _memory->getSize();

@@ -721,7 +721,7 @@ namespace Mengine
 
         DX9RenderTargetTexturePtr renderTargetTexture = m_factoryRenderTargetTexture->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetTexture );
+        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetTexture, "invalid create render target texture" );
 
         renderTargetTexture->setDirect3DDevice9( m_pD3DDevice );
 
@@ -770,7 +770,7 @@ namespace Mengine
 
         DX9RenderTargetOffscreenPtr renderTargetOffscreen = m_factoryRenderTargetOffscreen->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetOffscreen );
+        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetOffscreen, "invalid create render target offscreen" );
 
         renderTargetOffscreen->setDirect3DDevice9( m_pD3DDevice );
 
@@ -821,7 +821,7 @@ namespace Mengine
 
         DX9RenderImageTargetPtr renderImageTarget = m_factoryRenderImageTarget->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( renderImageTarget );
+        MENGINE_ASSERTION_MEMORY_PANIC( renderImageTarget, "invalid create render image target" );
 
         renderImageTarget->initialize( renderTargetTexture );
 
@@ -1396,7 +1396,7 @@ namespace Mengine
     {
         DX9RenderVertexBufferPtr vertexBuffer = m_factoryVertexBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( vertexBuffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexBuffer, "invalid create vertex buffer" );
 
         vertexBuffer->setDirect3DDevice9( m_pD3DDevice );
 
@@ -1448,7 +1448,7 @@ namespace Mengine
     {
         DX9RenderIndexBufferPtr indexBuffer = m_factoryIndexBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( indexBuffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( indexBuffer, "invalid create index buffer" );
 
         indexBuffer->setDirect3DDevice9( m_pD3DDevice );
 

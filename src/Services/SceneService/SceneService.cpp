@@ -371,7 +371,7 @@ namespace Mengine
 
         ScenePtr scene = Helper::generateFactorable<Node, Scene>( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( scene );
+        MENGINE_ASSERTION_MEMORY_PANIC( scene, "invalid create global scene" );
 
         m_globalScene = scene;
 

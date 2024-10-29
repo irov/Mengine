@@ -138,7 +138,7 @@ namespace Mengine
         OutputStreamInterfacePtr stream = _content->openOutputStreamFile( true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create file '%s'"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
         );
 
         const ConstString & codecType = _content->getCodecType();
@@ -147,13 +147,13 @@ namespace Mengine
             ->createEncoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageEncoder, "can't create encoder for file '%s'"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
         );
 
         if( imageEncoder->initialize( stream ) == false )
         {
             LOGGER_ERROR( "can't initialize encoder for file '%s'"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             return false;
@@ -183,7 +183,7 @@ namespace Mengine
         void * buffer = locked->getBuffer( &pitch );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, "can't lock texture '%s'"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
         );
 
         size_t bufferSize = pitch * dataInfo.height;
@@ -202,7 +202,7 @@ namespace Mengine
         if( _content->closeOutputStreamFile( stream ) == false )
         {
             LOGGER_ERROR( "can't close file '%s'"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
             );
 
             return false;
@@ -258,7 +258,7 @@ namespace Mengine
         m_textures.emplace( fileGroup, filePath, texture_ptr );
 
         LOGGER_INFO( "texture", "cache texture '%s'"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
         );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -288,7 +288,7 @@ namespace Mengine
         }
 
         LOGGER_INFO( "texture", "load texture '%s' codec '%s'"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
             , _content->getCodecType().c_str()
         );
 
@@ -318,7 +318,7 @@ namespace Mengine
         RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.format, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_texture, "create texture '%s' codec '%s'"
-            , Helper::getContentFullPath( _content )
+            , Helper::getContentFullPath( _content ).c_str()
             , _content->getCodecType().c_str()
         );
 
@@ -329,7 +329,7 @@ namespace Mengine
         if( imageLoader->load( image ) == false )
         {
             LOGGER_ERROR( "invalid decode image '%s' codec '%s'"
-                , Helper::getContentFullPath( _content )
+                , Helper::getContentFullPath( _content ).c_str()
                 , _content->getCodecType().c_str()
             );
 
@@ -357,7 +357,9 @@ namespace Mengine
                 RenderTextureInterface * erase_texture = m_textures.erase( fileGroup, filePath );
                 MENGINE_UNUSED( erase_texture );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( erase_texture );
+                MENGINE_ASSERTION_MEMORY_PANIC( erase_texture, "invalid erase texture '%s'"
+                    , Helper::getContentFullPath( content ).c_str()
+                );
 
                 NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_TEXTURE_DESTROY, _texture );
             }
@@ -374,7 +376,7 @@ namespace Mengine
 
         RenderTexturePtr texture = m_factoryRenderTexture->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( texture );
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create render texture" );
 
         texture->initialize( id, _image, _width, _height );
 

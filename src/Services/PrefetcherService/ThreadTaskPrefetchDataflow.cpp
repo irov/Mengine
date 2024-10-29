@@ -52,7 +52,7 @@ namespace Mengine
         InputStreamInterfacePtr stream = fileGroup->createInputFile( filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "can't create dataflow file '%s'"
-            , Helper::getContentFullPath( m_content )
+            , Helper::getContentFullPath( m_content ).c_str()
         );
 
         m_stream = stream;
@@ -62,7 +62,7 @@ namespace Mengine
         DataInterfacePtr data = dataflow->create( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, "dataflow file '%s' invalid create data"
-            , Helper::getContentFullPath( m_content )
+            , Helper::getContentFullPath( m_content ).c_str()
         );
 
         m_data = data;
@@ -73,7 +73,7 @@ namespace Mengine
     bool ThreadTaskPrefetchDataflow::_onThreadTaskProcess()
     {
         LOGGER_INFO( "prefetch", "prefetch dataflow file '%s'"
-            , Helper::getContentFullPath( m_content )
+            , Helper::getContentFullPath( m_content ).c_str()
         );
 
         const FilePath & filePath = m_content->getFilePath();
@@ -81,7 +81,7 @@ namespace Mengine
         if( m_realFileGroup->openInputFile( filePath, m_stream, 0, MENGINE_UNKNOWN_SIZE, false, false ) == false )
         {
             LOGGER_ERROR( "invalid open file '%s'"
-                , Helper::getContentFullPath( m_content )
+                , Helper::getContentFullPath( m_content ).c_str()
             );
 
             return false;
@@ -92,7 +92,7 @@ namespace Mengine
         MemoryInterfacePtr memory = dataflow->load( m_stream, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid load file '%s'"
-            , Helper::getContentFullPath( m_content )
+            , Helper::getContentFullPath( m_content ).c_str()
         );
 
         if( dataflow->isThreadFlow() == true )
@@ -100,7 +100,7 @@ namespace Mengine
             if( dataflow->flow( m_data, memory, &m_context, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid flow file '%s'"
-                    , Helper::getContentFullPath( m_content )
+                    , Helper::getContentFullPath( m_content ).c_str()
                 );
 
                 return false;
@@ -125,7 +125,7 @@ namespace Mengine
             if( dataflow->flow( m_data, memory, &m_context, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid flow file '%s'"
-                    , Helper::getContentFullPath( m_content )
+                    , Helper::getContentFullPath( m_content ).c_str()
                 );
 
                 return;

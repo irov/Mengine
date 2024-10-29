@@ -11,6 +11,7 @@
 #include "MathScriptEmbedding.h"
 #include "KernelScriptEmbedding.h"
 #include "HttpScriptEmbedding.h"
+#include "EnvironmentScriptEmbedding.h"
 #include "NodeScriptEmbedding.h"
 #include "ResourceScriptEmbedding.h"
 #include "SoundScriptEmbedding.h"
@@ -60,6 +61,12 @@ namespace Mengine
 
         if( SCRIPT_SERVICE()
             ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "HttpScriptEmbedding" ), Helper::makeFactorableUnique<HttpScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( SCRIPT_SERVICE()
+            ->addScriptEmbedding( STRINGIZE_STRING_LOCAL( "EnvironmentScriptEmbedding" ), Helper::makeFactorableUnique<EnvironmentScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
@@ -124,6 +131,9 @@ namespace Mengine
 
         SCRIPT_SERVICE()
             ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "HttpScriptEmbedding" ) );
+
+        SCRIPT_SERVICE()
+            ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "EnvironmentScriptEmbedding" ) );
 
         SCRIPT_SERVICE()
             ->removeScriptEmbedding( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ) );

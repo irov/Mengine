@@ -113,7 +113,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' not exist file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
             return false;
@@ -126,7 +126,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' invalid open file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
             );
 
             return false;
@@ -137,7 +137,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' codec '%s' empty"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
                 , _resource->getContent()->getCodecType().c_str()
             );
 
@@ -154,7 +154,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' invalid decoder '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
                 , _resource->getContent()->getCodecType().c_str()
             );
 
@@ -166,7 +166,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' decoder initialize failed '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
                 , _resource->getContent()->getCodecType().c_str()
             );
 
@@ -188,7 +188,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' invalid limit [%u:%u] texture size [%u:%u]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
                 , Limit_TextureWidth
                 , Limit_TextureHeight
                 , dataInfo->width
@@ -218,7 +218,7 @@ namespace Mengine
             LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' incorrect size [%f:%f] texture [%u:%u]"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , Helper::getContentFullPath( _resource->getContent() )
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
                 , test_size.x
                 , test_size.y
                 , width
@@ -238,7 +238,12 @@ namespace Mengine
 
             MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( texture_size, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( buffer );
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, "resource '%s' group '%s' file '%s' invalid create memory cache buffer '%u'"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , Helper::getContentFullPath( _resource->getContent() ).c_str()
+                , texture_size
+            );
 
             void * buffer_memory = buffer->getBuffer();
 
@@ -253,7 +258,7 @@ namespace Mengine
                 LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' invalid decode '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
-                    , Helper::getContentFullPath( _resource->getContent() )
+                    , Helper::getContentFullPath( _resource->getContent() ).c_str()
                     , _resource->getContent()->getCodecType().c_str()
                 );
 
@@ -265,7 +270,7 @@ namespace Mengine
                 LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' codec '%s' all pixels transparency!"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
-                    , Helper::getContentFullPath( _resource->getContent() )
+                    , Helper::getContentFullPath( _resource->getContent() ).c_str()
                     , _resource->getContent()->getCodecType().c_str()
                 );
 
@@ -281,7 +286,7 @@ namespace Mengine
                     LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' codec '%s' row or column pixels transparency!"
                         , _resource->getName().c_str()
                         , _resource->getGroupName().c_str()
-                        , Helper::getContentFullPath( _resource->getContent() )
+                        , Helper::getContentFullPath( _resource->getContent() ).c_str()
                         , _resource->getContent()->getCodecType().c_str()
                     );
 

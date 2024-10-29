@@ -36,7 +36,7 @@ namespace Mengine
 
         ThreadMutexInterfacePtr memoryCacheMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memoryCacheMutex );
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryCacheMutex, "invalid create memory cache mutex" );
 
         m_memoryCacheMutex = memoryCacheMutex;
 
@@ -223,7 +223,7 @@ namespace Mengine
     {
         MemoryCacheBufferPtr memoryBuffer = m_factoryMemoryCacheBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memoryBuffer );
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryBuffer, "invalid create memory cache buffer" );
 
         memoryBuffer->setMemoryService( this );
 
@@ -234,7 +234,7 @@ namespace Mengine
     {
         MemoryCacheInputPtr memoryCache = m_factoryMemoryCacheInput->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memoryCache );
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryCache, "invalid create memory cache input" );
 
         memoryCache->setMemoryService( this );
 
@@ -245,7 +245,7 @@ namespace Mengine
     {
         MemoryProxyInputPtr memoryProxy = m_factoryMemoryProxyInput->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memoryProxy );
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryProxy, "invalid create memory proxy input" );
 
         return memoryProxy;
     }
@@ -254,7 +254,7 @@ namespace Mengine
     {
         MemoryInputPtr memory = m_factoryMemoryInput->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory input" );
 
         return memory;
     }
@@ -263,7 +263,7 @@ namespace Mengine
     {
         MemoryPtr memory = m_factoryMemoryBuffer->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory buffer" );
 
         return memory;
     }
@@ -272,7 +272,7 @@ namespace Mengine
     {
         MemoryProxyPtr memory = m_factoryMemoryProxy->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid create memory proxy" );
 
         return memory;
     }

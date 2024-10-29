@@ -46,7 +46,7 @@ namespace Mengine
             return nullptr;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( service );
+        MENGINE_ASSERTION_MEMORY_PANIC( service, "invalid generate service" );
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
         service->setDocument( _doc );

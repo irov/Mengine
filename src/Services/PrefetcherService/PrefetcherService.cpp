@@ -164,7 +164,7 @@ namespace Mengine
 
         ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( task );
+        MENGINE_ASSERTION_MEMORY_PANIC( task, "invalid create task" );
 
         task->initialize( _content, _observer );
 
@@ -242,7 +242,7 @@ namespace Mengine
 
         ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( task );
+        MENGINE_ASSERTION_MEMORY_PANIC( task, "invalid create task" );
 
         task->initialize( _content, _observer );
 
@@ -320,7 +320,7 @@ namespace Mengine
 
         ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( task );
+        MENGINE_ASSERTION_MEMORY_PANIC( task, "invalid create task" );
 
         task->initialize( _content, _observer );
 
@@ -427,7 +427,7 @@ namespace Mengine
 
         ThreadTaskPrefetchStreamPtr task = m_factoryThreadTaskPrefetchStream->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( task );
+        MENGINE_ASSERTION_MEMORY_PANIC( task, "invalid create task" );
 
         task->initialize( _content, _observer );
 

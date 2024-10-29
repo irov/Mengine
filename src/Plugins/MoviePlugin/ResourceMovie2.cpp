@@ -101,7 +101,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "resource movie2 '%s' file '%s' not compile"
                 , this->getName().c_str()
-                , Helper::getContentFullPath( this->getContent() )
+                , Helper::getContentFullPath( this->getContent() ).c_str()
             );
 
             return nullptr;
@@ -115,7 +115,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "resource movie2 '%s' file '%s' not found composition data '%s'"
                 , this->getName().c_str()
-                , Helper::getContentFullPath( this->getContent() )
+                , Helper::getContentFullPath( this->getContent() ).c_str()
                 , _compositionName.c_str()
             );
 
@@ -152,7 +152,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "resource movie2 '%s' path '%s' invalid get composition name '%s'"
                 , this->getName().c_str()
-                , Helper::getContentFullPath( this->getContent() )
+                , Helper::getContentFullPath( this->getContent() ).c_str()
                 , _compositionName.c_str()
             );
 

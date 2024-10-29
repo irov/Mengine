@@ -149,8 +149,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SoundDecoderWAV::_decode( const DecoderData * _decoderData )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData );
-        MENGINE_ASSERTION_TYPE( _decoderData, const SoundDecoderData * );
+        MENGINE_ASSERTION_MEMORY_PANIC( _decoderData, "invalid decode data" );
+        MENGINE_ASSERTION_TYPE( _decoderData, const SoundDecoderData *, "invalid decode data type" );
 
         MENGINE_PROFILER_CATEGORY();
 

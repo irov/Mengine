@@ -345,7 +345,7 @@ namespace Mengine
         }
 
         const Char * buildProjectName = Helper::getBuildSolutionName();
-        this->addGlobalModuleT( "_BUILD_PROJECTNAME", buildProjectName );
+        this->addGlobalModuleT( "_BUILD_PROJECT_NAME", buildProjectName );
 
         const Char * buildDate = Helper::getBuildDate();
         this->addGlobalModuleT( "_BUILD_DATE", buildDate );
@@ -427,7 +427,7 @@ namespace Mengine
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "zip" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, "not found 'zip' archivator" );
 
         dataflowPYZ->setArchivator( archivator );
 
@@ -728,7 +728,7 @@ namespace Mengine
         for( const FilePath & filePath : pathes )
         {
             LOGGER_INFO( "script", "add module path '%s'"
-                , Helper::getFileGroupFullPath( _fileGroup, filePath )
+                , Helper::getFileGroupFullPath( _fileGroup, filePath ).c_str()
             );
         }
 
@@ -989,7 +989,9 @@ namespace Mengine
             {
                 ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, _doc );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( content );
+                MENGINE_ASSERTION_MEMORY_PANIC( content, "invalid make file content '%s'"
+                    , _filePath.c_str()
+                );
 
                 content->setDataflow( dataflowPYZ );
 
@@ -1014,7 +1016,9 @@ namespace Mengine
                 {
                     ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, _doc );
 
-                    MENGINE_ASSERTION_MEMORY_PANIC( content );
+                    MENGINE_ASSERTION_MEMORY_PANIC( content, "invalid make file content '%s'"
+                        , _filePath.c_str()
+                    );
 
                     content->setDataflow( dataflowPY );
 

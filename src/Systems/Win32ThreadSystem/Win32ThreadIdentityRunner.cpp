@@ -5,7 +5,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Win32ThreadIdentityRunner::Win32ThreadIdentityRunner( const LambdaThreadRunner & _lambda, uint32_t _sleep )
+    Win32ThreadIdentityRunner::Win32ThreadIdentityRunner( const LambdaThreadRunner & _lambda, Timestamp _sleep )
         : m_lambda( _lambda )
         , m_sleep( _sleep )
         , m_cancel( false )
@@ -27,7 +27,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentityRunner::sleep()
     {
-        Helper::Win32Sleep( m_sleep );
+        if( m_sleep != 0 )
+        {
+            uint32_t sleep = (uint32_t)m_sleep;
+
+            Helper::Win32Sleep( sleep );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentityRunner::cancel()

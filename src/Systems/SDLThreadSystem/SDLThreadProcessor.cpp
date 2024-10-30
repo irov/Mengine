@@ -71,10 +71,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadProcessor::initialize( EThreadPriority _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex )
+    bool SDLThreadProcessor::initialize( const ThreadDescription & _description, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex )
     {
         m_priority = _priority;
-        m_name = _name;
+        m_description = _description;
 
         m_mutex = _mutex;
 
@@ -82,7 +82,8 @@ namespace Mengine
 
         if( taskLock == nullptr )
         {
-            LOGGER_ERROR( "invalid create mutex error: %s"
+            LOGGER_ERROR( "invalid create thread: %s mutex error: %s"
+                , m_description.nameA
                 , SDL_GetError()
             );
 
@@ -95,7 +96,8 @@ namespace Mengine
 
         if( processLock == nullptr )
         {
-            LOGGER_ERROR( "invalid create mutex error: %s"
+            LOGGER_ERROR( "invalid create thread: %s mutex error: %s"
+                , m_description.nameA
                 , SDL_GetError()
             );
 
@@ -108,7 +110,8 @@ namespace Mengine
 
         if( conditionLock == nullptr )
         {
-            LOGGER_ERROR( "invalid create mutex error: %s"
+            LOGGER_ERROR( "invalid create thread: %s mutex error: %s"
+                , m_description.nameA
                 , SDL_GetError()
             );
 
@@ -119,7 +122,8 @@ namespace Mengine
 
         if( conditionVariable == nullptr )
         {
-            LOGGER_ERROR( "invalid create condition error: %s"
+            LOGGER_ERROR( "invalid create thread: %s condition error: %s"
+                , m_description.nameA
                 , SDL_GetError()
             );
 
@@ -129,11 +133,12 @@ namespace Mengine
         m_conditionLock = conditionLock;
         m_conditionVariable = conditionVariable;
 
-        SDL_Thread * thread = SDL_CreateThread( &Detail::s_treadJob, m_name.c_str(), reinterpret_cast<void *>(this) );
+        SDL_Thread * thread = SDL_CreateThread( &Detail::s_treadJob, m_description.nameA, reinterpret_cast<void *>(this) );
 
         if( thread == nullptr )
         {
-            LOGGER_ERROR( "invalid create thread error: %s"
+            LOGGER_ERROR( "invalid create thread: %s error: %s"
+                , m_description.nameA
                 , SDL_GetError()
             );
 
@@ -142,8 +147,8 @@ namespace Mengine
 
         m_thread = thread;
 
-        LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
-            , m_name.c_str()
+        LOGGER_INFO( "thread", "create thread: %s id: %ld priority: %d"
+            , m_description.nameA
             , m_threadId
             , m_priority
         );
@@ -404,6 +409,11 @@ namespace Mengine
     EThreadPriority SDLThreadProcessor::getPriority() const
     {
         return m_priority;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ThreadDescription & SDLThreadProcessor::getDescription() const
+    {
+        return m_description;
     }
     //////////////////////////////////////////////////////////////////////////
 }

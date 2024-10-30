@@ -78,7 +78,7 @@ namespace Mengine
         m_runner = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityRunnerInterfacePtr Win32ThreadIdentity::run( const LambdaThreadRunner & _lambda, uint32_t _sleep, const DocumentInterfacePtr & _doc )
+    ThreadIdentityRunnerInterfacePtr Win32ThreadIdentity::run( const LambdaThreadRunner & _lambda, Timestamp _sleep, const DocumentInterfacePtr & _doc )
     {
         m_runner = Helper::makeFactorableUnique<Win32ThreadIdentityRunner>( _doc, _lambda, _sleep );
 

@@ -25,7 +25,7 @@ namespace Mengine
         ~SDLThreadProcessor() override;
 
     public:
-        bool initialize( EThreadPriority _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex );
+        bool initialize( const ThreadDescription & _description, EThreadPriority _priority, const ThreadMutexInterfacePtr & _mutex );
         void finalize();
 
     public:
@@ -46,10 +46,11 @@ namespace Mengine
 
     public:
         EThreadPriority getPriority() const;
+        const ThreadDescription & getDescription() const override;
 
     protected:
         EThreadPriority m_priority;
-        ConstString m_name;
+        ThreadDescription m_description;
 
         SDL_threadID m_threadId;
 

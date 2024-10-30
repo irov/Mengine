@@ -36,7 +36,7 @@ namespace Mengine
         uint64_t getThreadId() const override;
 
     public:
-        ThreadIdentityRunnerInterfacePtr run( const LambdaThreadRunner & _lambda, uint32_t _sleep, const DocumentInterfacePtr & _doc ) override;
+        ThreadIdentityRunnerInterfacePtr run( const LambdaThreadRunner & _lambda, Timestamp _sleep, const DocumentInterfacePtr & _doc ) override;
 
     public:
         const ThreadIdentityRunnerInterfacePtr & getRunner() const override;

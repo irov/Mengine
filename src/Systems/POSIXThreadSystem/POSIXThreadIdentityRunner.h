@@ -5,6 +5,7 @@
 #include "Kernel/Factorable.h"
 
 #include "Config/Atomic.h"
+#include "Config/Timestamp.h"
 
 namespace Mengine
 {
@@ -13,7 +14,7 @@ namespace Mengine
         , public Factorable
     {
     public:
-        POSIXThreadIdentityRunner( const LambdaThreadRunner & _lambda, uint32_t _sleep );
+        POSIXThreadIdentityRunner( const LambdaThreadRunner & _lambda, Timestamp _sleep );
         ~POSIXThreadIdentityRunner() override;
 
     public:

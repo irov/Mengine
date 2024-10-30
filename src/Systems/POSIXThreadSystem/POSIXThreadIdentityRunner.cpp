@@ -5,7 +5,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    POSIXThreadIdentityRunner::POSIXThreadIdentityRunner( const LambdaThreadRunner & _lambda, uint32_t _sleep )
+    POSIXThreadIdentityRunner::POSIXThreadIdentityRunner( const LambdaThreadRunner & _lambda, Timestamp _sleep )
         : m_lambda( _lambda )
         , m_sleep( _sleep )
         , m_cancel( false )
@@ -27,7 +27,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadIdentityRunner::sleep()
     {
-        ::usleep( m_sleep * 1000 );
+        useconds_t sleep = (useconds_t)m_sleep * 1000;
+
+        ::usleep( sleep );
     }
     //////////////////////////////////////////////////////////////////////////
     void POSIXThreadIdentityRunner::cancel()

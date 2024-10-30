@@ -66,7 +66,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TDynamicLibraryFunction SDLDynamicLibrary::getSymbol( const Char * _name ) const
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_instance );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_instance, "dynamic library '%s' not loaded"
+            , this->getName()
+        );
 
         void * proc = ::SDL_LoadFunction( m_instance, _name );
 

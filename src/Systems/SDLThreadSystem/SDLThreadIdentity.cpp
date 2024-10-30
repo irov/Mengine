@@ -70,10 +70,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadIdentity::initialize( EThreadPriority _priority, const ConstString & _name )
+    bool SDLThreadIdentity::initialize( const ThreadDescription & _description, EThreadPriority _priority )
     {
-        m_priority = _priority;
-        m_name = _name;
+        m_description = _description;
+        m_priority = _priority;        
 
         return true;
     }
@@ -84,11 +84,11 @@ namespace Mengine
         m_runner = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityRunnerInterfacePtr SDLThreadIdentity::run( const LambdaThreadRunner & _lambda, const DocumentInterfacePtr & _doc )
+    ThreadIdentityRunnerInterfacePtr SDLThreadIdentity::run( const LambdaThreadRunner & _lambda, Timestamp _sleep, const DocumentInterfacePtr & _doc )
     {
-        m_runner = Helper::makeFactorableUnique<SDLThreadIdentityRunner>( _doc, _lambda );
+        m_runner = Helper::makeFactorableUnique<SDLThreadIdentityRunner>( _doc, _lambda, _sleep );
 
-        SDL_Thread * thread = SDL_CreateThread( &Detail::s_treadJob, m_name.c_str(), reinterpret_cast<void *>(this) );
+        SDL_Thread * thread = SDL_CreateThread( &Detail::s_treadJob, m_description.nameA, reinterpret_cast<void *>(this) );
 
         if( thread == nullptr )
         {
@@ -102,11 +102,16 @@ namespace Mengine
         m_thread = thread;
 
         LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
-            , m_name.c_str()
+            , m_description.nameA
             , m_threadId
             , m_priority
         );
 
+        return m_runner;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ThreadIdentityRunnerInterfacePtr & SDLThreadIdentity::getRunner() const
+    {
         return m_runner;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -117,10 +122,14 @@ namespace Mengine
         ALLOCATOR_SYSTEM()
             ->beginThread( m_threadId );
 
-        MENGINE_PROFILER_THREAD( m_name.c_str() );
+        MENGINE_PROFILER_THREAD( m_description.nameA );
         
         ThreadIdentityRunnerInterfacePtr runner = m_runner;
-        runner->run();
+        
+        while( runner->run() == true && runner->isCancel() == false )
+        {
+            runner->sleep();
+        }
 
         ALLOCATOR_SYSTEM()
             ->endThread( m_threadId );
@@ -131,14 +140,20 @@ namespace Mengine
         return (ThreadId)m_threadId;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLThreadIdentity::join()
+    void SDLThreadIdentity::join( bool _cancel )
     {
+        if( _cancel == true )
+        {
+            m_runner->cancel();
+        }
+
         int status = 0;
         SDL_WaitThread( m_thread, &status );
 
         if( status != 0 )
         {
-            LOGGER_ERROR( "invalid join thread error status [%d]"
+            LOGGER_ERROR( "invalid join thread '%s' error status [%d]"
+                , m_description.nameA
                 , status
             );
         }
@@ -161,6 +176,11 @@ namespace Mengine
     EThreadPriority SDLThreadIdentity::getPriority() const
     {
         return m_priority;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ThreadDescription & SDLThreadIdentity::getDescription() const
+    {
+        return m_description;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -106,7 +106,7 @@ namespace Mengine
         m_runner = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityRunnerInterfacePtr POSIXThreadIdentity::run( const LambdaThreadRunner & _lambda, uint32_t _sleep, const DocumentInterfacePtr & _doc )
+    ThreadIdentityRunnerInterfacePtr POSIXThreadIdentity::run( const LambdaThreadRunner & _lambda, Timestamp _sleep, const DocumentInterfacePtr & _doc )
     {
         m_runner = Helper::makeFactorableUnique<POSIXThreadIdentityRunner>( _doc, _lambda, _sleep );
 

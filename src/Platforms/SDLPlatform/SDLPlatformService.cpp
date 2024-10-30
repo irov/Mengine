@@ -881,7 +881,7 @@ namespace Mengine
             {
                 if( m_pauseUpdatingTime < 0.f )
                 {
-                    m_pauseUpdatingTime = _time;
+                    m_pauseUpdatingTime = _frameTimeF;
                 }
 
                 if( m_sleepMode == true )

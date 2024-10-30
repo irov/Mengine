@@ -171,7 +171,7 @@ namespace Mengine
         if( error != 0 )
         {
             LOGGER_ERROR( "invalid close file '%s' get error: %s"
-                , Helper::getDebugFullPath( this )
+                , Helper::getDebugFullPath( this ).c_str()
                 , SDL_GetError()
             );
 
@@ -318,7 +318,7 @@ namespace Mengine
             if( result < 0 )
             {
                 LOGGER_ERROR( "file '%s' seek %zu:%zu get [error: %s]"
-                    , Helper::getDebugFullPath( this )
+                    , Helper::getDebugFullPath( this ).c_str()
                     , _pos
                     , m_size
                     , SDL_GetError()

@@ -10,6 +10,7 @@
 
 #include "Config/Lambda.h"
 #include "Config/Thread.h"
+#include "Config/Timestamp.h"
 
 namespace Mengine
 {
@@ -25,7 +26,7 @@ namespace Mengine
         virtual ThreadId getThreadId() const = 0;
 
     public:
-        virtual ThreadIdentityRunnerInterfacePtr run( const LambdaThreadRunner & _lambda, uint32_t _sleep, const DocumentInterfacePtr & _doc ) = 0;
+        virtual ThreadIdentityRunnerInterfacePtr run( const LambdaThreadRunner & _lambda, Timestamp _sleep, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual const ThreadIdentityRunnerInterfacePtr & getRunner() const = 0;

@@ -18,7 +18,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE int32_t __mengine_VSPRINTF( Char * const _buffer, size_t const _bufferCount, Char const * const _format, MENGINE_VA_LIST_TYPE _argList )
+        MENGINE_INLINE int32_t __mengine_VSNPRINTF( Char * const _buffer, size_t const _bufferCount, Char const * const _format, MENGINE_VA_LIST_TYPE _argList )
         {
             int32_t size_vsnprintf = std::vsnprintf( _buffer, _bufferCount, _format, _argList );
 
@@ -35,7 +35,7 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_VSNPRINTF(Buffer, Capacity, Format, Args) Mengine::Detail::__mengine_VSPRINTF(Buffer, Capacity, Format, Args)
+#   define MENGINE_VSNPRINTF(Buffer, Capacity, Format, Args) Mengine::Detail::__mengine_VSNPRINTF(Buffer, Capacity, Format, Args)
 //////////////////////////////////////////////////////////////////////////
 #else
 #   error "undefined MENGINE_VSNPRINTF"

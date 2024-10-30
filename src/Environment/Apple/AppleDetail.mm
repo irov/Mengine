@@ -117,7 +117,7 @@
             if (valueTypeId == boolenTypeId) {
                 bool b = [value boolValue];
                 
-                variant = Mengine::ParamVariant(b);
+                variant = Mengine::ParamBool(b);
             } else if (valueTypeId == numberTypeId) {
                 CFNumberType numberType = CFNumberGetType((__bridge CFNumberRef)value);
                 
@@ -133,7 +133,7 @@
                     case kCFNumberLongLongType: {
                         int64_t n = [value longLongValue];
                         
-                        variant = Mengine::ParamVariant(n);
+                        variant = Mengine::ParamInteger(n);
                     }break;
                         
                     case kCFNumberFloat32Type:
@@ -142,7 +142,7 @@
                     case kCFNumberDoubleType: {
                         double d = [value doubleValue];
                         
-                        variant = Mengine::ParamVariant(d);
+                        variant = Mengine::ParamDouble(d);
                     }break;
                     
                     case kCFNumberCFIndexType:
@@ -155,13 +155,13 @@
         } else if ([value isKindOfClass:[NSString class]] == YES) {
             Mengine::ConstString s = [AppleString NSStringToConstString:value];
             
-            variant = Mengine::ParamVariant(s);
+            variant = Mengine::ParamConstString(s);
         } else if ([value isKindOfClass:[NSNull class]]) {
-            variant = Mengine::ParamVariant(nullptr);
+            variant = Mengine::ParamNull();
         } else {
             const Mengine::Char * value_str = [[NSString stringWithFormat:@"%@", value] UTF8String];
             
-            variant = Mengine::ParamVariant(value_str);
+            variant = Mengine::ParamString(value_str);
         }
         
         _out->emplace( key_cstr, variant );
@@ -172,36 +172,41 @@
     NSMutableDictionary * dictionary = [NSMutableDictionary dictionary];
     
     for( auto && [key, value] : _params ) {
-        const Mengine::Char * key_str = key.c_str();
+        NSString * ns_key = [AppleString NSStringFromConstString:key];
         
         Mengine::Helper::visit( value
-            , [dictionary, key_str]( const Mengine::ParamNull & _element ) {
+            , [dictionary, ns_key]( const Mengine::ParamNull & _element ) {
                 [dictionary setObject:[NSNull null]
-                               forKey:@(key_str)];
-            }, [dictionary, key_str]( const Mengine::ParamBool & _element ) {
+                               forKey:ns_key];
+            }, [dictionary, ns_key]( const Mengine::ParamBool & _element ) {
                 [dictionary setObject:[NSNumber numberWithBool:_element]
-                               forKey:@(key_str)];
-            }, [dictionary, key_str]( const Mengine::ParamInteger & _element ) {
+                               forKey:ns_key];
+            }, [dictionary, ns_key]( const Mengine::ParamInteger & _element ) {
                 [dictionary setObject:[NSNumber numberWithLongLong:_element]
-                               forKey:@(key_str)];
-            }, [dictionary, key_str]( const Mengine::ParamDouble & _element ) {
+                               forKey:ns_key];
+            }, [dictionary, ns_key]( const Mengine::ParamDouble & _element ) {
                 [dictionary setObject:[NSNumber numberWithDouble:_element]
-                               forKey:@(key_str)];
-            }, [dictionary, key_str]( const Mengine::ParamString & _element ) {
-                NSString * value_ns = [AppleString NSStringFromString:_element];
+                               forKey:ns_key];
+            }, [dictionary, ns_key]( const Mengine::ParamString & _element ) {
+                NSString * ns_element = [AppleString NSStringFromString:_element];
             
-                [dictionary setObject:value_ns
-                               forKey:@(key_str)];
-            }, [dictionary, key_str]( const Mengine::ParamWString & _element ) {
-                NSString * value_ns = [AppleString NSStringFromUnicode:_element];
+                [dictionary setObject:ns_element
+                               forKey:ns_key];
+            }, [dictionary, ns_key]( const Mengine::ParamWString & _element ) {
+                NSString * ns_element = [AppleString NSStringFromUnicode:_element];
             
-                [dictionary setObject:value_ns
-                               forKey:@(key_str)];
-            }, [dictionary, key_str]( const Mengine::ParamConstString & _element ) {
-                NSString * value_ns = [AppleString NSStringFromConstString:_element];
-            
-                [dictionary setObject:value_ns
-                               forKey:@(key_str)];
+                [dictionary setObject:ns_element
+                               forKey:ns_key];
+            }, [dictionary, ns_key]( const Mengine::ParamConstString & _element ) {
+                NSString * ns_element = [AppleString NSStringFromConstString:_element];
+                
+                [dictionary setObject:ns_element
+                               forKey:ns_key];
+            }, [dictionary, ns_key]( const Mengine::ParamFactorablePtr & _element ) {
+                NSValue * ns_element = [NSValue valueWithPointer:_element.get()];
+                
+                [dictionary setObject:ns_element
+                               forKey:ns_key];
             } );
     }
     

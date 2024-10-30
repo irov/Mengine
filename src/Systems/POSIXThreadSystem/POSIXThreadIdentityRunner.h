@@ -29,7 +29,7 @@ namespace Mengine
 
     protected:
         LambdaThreadRunner m_lambda;
-        uint32_t m_sleep;
+        Timestamp m_sleep;
 
         AtomicBool m_cancel;
     };

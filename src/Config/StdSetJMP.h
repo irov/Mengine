@@ -19,8 +19,16 @@ namespace Mengine
     };
 }
 
+#   define MENGINE_JMPBUF_DECLARE(Var) Mengine::MENGINE_JMPBUF * Var = nullptr
+#   define MENGINE_JMPBUF_ALLOCATE(Var) Var = Helper::newMemoryT<MENGINE_JMPBUF>( "jmp" )
+#   define MENGINE_JMPBUF_DEALLOCATE(Var) Helper::deleteMemoryT( Var, "jmp" )
+
 #else
 #   define MENGINE_JMP_DECLARE(Var) 
 #   define MENGINE_JMP_SET(Var) 0
 #   define MENGINE_JMP_JUMP(Var, Code)
+
+#   define MENGINE_JMPBUF_DECLARE(Var)
+#   define MENGINE_JMPBUF_ALLOCATE(Var)
+#   define MENGINE_JMPBUF_DEALLOCATE(Var)
 #endif

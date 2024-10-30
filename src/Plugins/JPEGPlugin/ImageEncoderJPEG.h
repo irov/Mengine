@@ -42,6 +42,6 @@ namespace Mengine
 
         JOCTET m_JOCTETBuffer[MENGINE_JPEG_OUTPUT_BUF_SIZE];
 
-        MENGINE_JMPBUF * m_jmpBuffer;
+        MENGINE_JMPBUF_DECLARE( m_jmpBuffer );
     };
 }

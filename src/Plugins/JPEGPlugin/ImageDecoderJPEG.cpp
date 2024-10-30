@@ -101,7 +101,6 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     ImageDecoderJPEG::ImageDecoderJPEG()
-        : m_jmpBuffer( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -126,7 +125,7 @@ namespace Mengine
         m_decompressJpeg.client_data = this;
         m_decompressJpeg.src = &m_sourceMgr;
 
-        m_jmpBuffer = Helper::newMemoryT<MENGINE_JMPBUF>( "jmp" );
+        MENGINE_JMPBUF_ALLOCATE( m_jmpBuffer );
 
         return true;
     }
@@ -135,9 +134,7 @@ namespace Mengine
     {
         jpeg_destroy_decompress( &m_decompressJpeg );
 
-        Helper::deleteMemoryT( m_jmpBuffer, "jmp" );
-
-        m_jmpBuffer = nullptr;
+        MENGINE_JMPBUF_DEALLOCATE( m_jmpBuffer );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderJPEG::_prepareData()

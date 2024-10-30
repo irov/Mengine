@@ -52,7 +52,6 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     ImageEncoderJPEG::ImageEncoderJPEG()
-        : m_jmpBuffer( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -62,16 +61,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageEncoderJPEG::_initialize()
     {
-        m_jmpBuffer = Helper::newMemoryT<MENGINE_JMPBUF>( "jmp" );
+        MENGINE_JMPBUF_ALLOCATE( m_jmpBuffer );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ImageEncoderJPEG::_finalize()
     {
-        Helper::deleteMemoryT( m_jmpBuffer, "jmp" );
-
-        m_jmpBuffer = nullptr;
+        MENGINE_JMPBUF_DEALLOCATE( m_jmpBuffer );        
     }
     //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderJPEG::encode( const EncoderData * _encoderData, const CodecDataInfo * _dataInfo )

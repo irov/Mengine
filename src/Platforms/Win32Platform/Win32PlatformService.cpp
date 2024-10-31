@@ -3687,6 +3687,48 @@ namespace Mengine
         return Project_ExtraPreferencesFolderNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32PlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
+    {
+        // Get ISO 639 language code Set1
+
+        WCHAR unicode_userLocaleISO639[LOCALE_NAME_MAX_LENGTH + 1] = {L'\0'};
+        if( ::GetUserDefaultLocaleName( unicode_userLocaleISO639, LOCALE_NAME_MAX_LENGTH ) == 0 )
+        {
+            LOGGER_ERROR( "invalid get user default locale name %ls"
+                , Helper::Win32GetLastErrorMessageW()
+            );
+
+            return false;
+        }
+        
+        Char utf8_userLocaleISO639[LOCALE_NAME_MAX_LENGTH * 4 + 1] = {'\0'};
+
+        size_t locale_len;
+        if( Helper::unicodeToUtf8( unicode_userLocaleISO639, utf8_userLocaleISO639, LOCALE_NAME_MAX_LENGTH * 4, &locale_len ) == false )
+        {
+            LOGGER_ERROR( "invalid convert locale '%ls' from unicode to utf8"
+                , unicode_userLocaleISO639
+            );
+
+            return false;
+        }
+
+        if( locale_len < MENGINE_LOCALE_LANGUAGE_SIZE )
+        {
+            LOGGER_ERROR( "invalid locale '%s' len %d < %d"
+                , utf8_userLocaleISO639
+                , locale_len
+                , MENGINE_LOCALE_LANGUAGE_SIZE
+            );
+
+            return false;
+        }
+
+        StdString::strncpy( _userLocaleLanguage, utf8_userLocaleISO639, MENGINE_LOCALE_LANGUAGE_SIZE );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::closeWindow()
     {
         m_close = true;

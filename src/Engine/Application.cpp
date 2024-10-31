@@ -243,9 +243,18 @@ namespace Mengine
 
             m_locale = Helper::stringizeString( option_locale );
         }
+        else if( HAS_CONFIG( "Locale", "Force" ) == true )
+        {
+            m_locale = CONFIG_VALUE( "Locale", "Force", ConstString::none() );
+        }
         else
         {
-            m_locale = CONFIG_VALUE( "Locale", "Default", STRINGIZE_STRING_LOCAL( "en" ) );
+            Char userLocaleLanguage[MENGINE_LOCALE_LANGUAGE_SIZE + 1] = {'\0'};
+            if( PLATFORM_SERVICE()
+                ->getUserLocaleLanguage( userLocaleLanguage ) == true )
+            {
+                m_locale = Helper::stringizeString( userLocaleLanguage );
+            }
         }
 
         LOGGER_INFO( "system", "setup locale '%s'"

@@ -51,6 +51,8 @@ namespace Mengine
 
         FactoryInterfacePtr m_factoryPackage;
 
+        ConstString m_defaultLocale;
+
     protected:
         bool loadLocalePacksByName_( const ConstString & _locale, const Tags & _platformTags, VectorPackages * const _packs ) const;
     };

@@ -368,7 +368,8 @@ public class MengineApplication extends Application {
     }
 
     public String getDeviceLanguage() {
-        String language = Locale.getDefault().getLanguage();
+        Locale locale = Locale.getDefault();
+        String language = locale.getLanguage();
 
         return language;
     }

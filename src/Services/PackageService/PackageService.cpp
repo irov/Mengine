@@ -17,6 +17,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/ConfigHelper.h"
 
 #include "Config/Algorithm.h"
 
@@ -94,6 +95,8 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE, &PackageService::notifyChangeLocale, MENGINE_DOCUMENT_FACTORABLE );
 
         m_factoryPackage = Helper::makeFactoryPool<Package, 8>( MENGINE_DOCUMENT_FACTORABLE );
+
+        m_defaultLocale = CONFIG_VALUE( "Locale", "Default", STRINGIZE_STRING_LOCAL( "en" ) );
 
         return true;
     }
@@ -466,9 +469,14 @@ namespace Mengine
                 , Helper::tagsToString( _platformTags ).c_str()
             );
 
-            if( _locale != STRINGIZE_STRING_LOCAL( "en" ) )
+            if( _locale != m_defaultLocale )
             {
-                this->loadLocalePacksByName_( STRINGIZE_STRING_LOCAL( "en" ), _platformTags, &packages );
+                LOGGER_MESSAGE( "try set default locale '%s' platform '%s' pack"
+                    , m_defaultLocale.c_str()
+                    , Helper::tagsToString( _platformTags ).c_str()
+                );
+
+                this->loadLocalePacksByName_( m_defaultLocale, _platformTags, &packages );
             }
         }
 

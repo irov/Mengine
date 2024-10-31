@@ -27,7 +27,7 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-#define CONFIG_EXIST( section, key )\
+#define HAS_CONFIG( section, key )\
     []() { static bool result = CONFIG_SERVICE()->getDefaultConfig()->existValue( section, key); return result;}()
 //////////////////////////////////////////////////////////////////////////
 #define CONFIG_VALUE( section, key, default )\

@@ -221,6 +221,26 @@ namespace Mengine
         return Project_ExtraPreferencesFolderNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatformService::getUserLocaleLanguage( Char * const _userLocale ) const
+    {
+        SDL_Locale * locale = SDL_GetPreferredLocales();
+        
+        if( locale == nullptr )
+        {
+            LOGGER_ERROR( "invalid get preferred locales: %s"
+                , SDL_GetError()
+            );
+
+            return false;
+        }
+
+        StdString::strncpy( _userLocale, locale->language, MENGINE_LOCALE_LANGUAGE_SIZE );
+
+        SDL_free( locale );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatformService::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const
     {
         MENGINE_UNUSED( _fontName );

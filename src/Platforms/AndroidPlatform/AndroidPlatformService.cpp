@@ -500,6 +500,36 @@ namespace Mengine
         return Project_ExtraPreferencesFolderNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::getUserLocaleLanguage( Char * const _userLocale ) const
+    {
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
+        {
+            LOGGER_ERROR( "invalid get user locale language [not exist application]" );
+
+            return false;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        jstring jlocale = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getDeviceLanguage", "()Ljava/lang/String;" );
+
+        Char deviceLanguage[128 + 1] = {'\0'};
+        size_t deviceLanguageLen = Helper::AndroidCopyStringFromJString( jenv, jlocale, deviceLanguage, 128 );
+
+        jenv->DeleteLocalRef( jlocale );
+
+        if( deviceLanguageLen < MENGINE_LOCALE_LANGUAGE_SIZE )
+        {
+            LOGGER_ERROR( "invalid get user locale language" );
+
+            return false;
+        }
+
+        StdString::strncpy( _userLocale, deviceLanguage, MENGINE_LOCALE_LANGUAGE_SIZE );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t AndroidPlatformService::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const
     {
         MENGINE_UNUSED( _fontName );

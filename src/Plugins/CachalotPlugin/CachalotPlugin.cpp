@@ -59,7 +59,7 @@ namespace Mengine
             return false;
         }
 
-        if( CONFIG_EXIST( "CachalotPlugin", "DSN" ) == false )
+        if( HAS_CONFIG( "CachalotPlugin", "DSN" ) == false )
         {
             LOGGER_MESSAGE( "Cachalot unavailable [not setup DSN]" );
 

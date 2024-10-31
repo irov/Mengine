@@ -62,7 +62,7 @@ namespace Mengine
             return false;
         }
 
-        if( CONFIG_EXIST( "DevToDebugPlugin", "DSN" ) == false )
+        if( HAS_CONFIG( "DevToDebugPlugin", "DSN" ) == false )
         {
             LOGGER_MESSAGE( "DevToDebugPlugin unavailable [not setup DSN]" );
 

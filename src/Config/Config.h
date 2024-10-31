@@ -347,6 +347,10 @@
 #   endif
 #endif
 
+#ifndef MENGINE_LOCALE_LANGUAGE_SIZE
+#define MENGINE_LOCALE_LANGUAGE_SIZE 2
+#endif
+
 #ifndef MENGINE_MAX_THREAD_NAME
 #define MENGINE_MAX_THREAD_NAME 15
 #endif

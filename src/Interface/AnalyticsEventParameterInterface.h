@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ServantInterface.h"
+#include "Interface/DocumentInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"

@@ -11,6 +11,8 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/DocumentHelper.h"
 
+#include "Config/StdIntTypes.h"
+
 #include <unistd.h>
 #include <errno.h>
 

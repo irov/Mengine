@@ -6,6 +6,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadEnum.h"
 
+#include "Config/StdIntTypes.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

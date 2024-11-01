@@ -83,7 +83,7 @@ namespace Mengine
         virtual size_t getCurrentPath( Char * const _filePath ) const = 0;
         virtual size_t getUserPath( Char * const _filePath ) const = 0;
         virtual size_t getExtraPreferencesFolderName( Char * const _folderName ) const = 0;        
-        virtual bool getUserLocaleLanguage( Char * const _locale ) const = 0;
+        virtual bool getUserLocaleLanguage( Char * const _userLocaleLanguage ) const = 0;
 
         virtual void closeWindow() = 0;
         virtual void minimizeWindow() = 0;

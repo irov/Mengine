@@ -3888,6 +3888,10 @@ namespace Mengine
                 {
                     py_value = pybind::ptr( _kernel, _element );
                 }
+                    , [_kernel, &py_value]( const ParamFilePath & _element )
+                {
+                    py_value = pybind::ptr( _kernel, _element );
+                }
                     , [_kernel, &py_value]( const ParamFactorablePtr & _element )
                 {
                     py_value = pybind::ptr( _kernel, _element );

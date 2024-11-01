@@ -61,7 +61,7 @@ namespace Mengine
         FilePath full_inputFilePath = Helper::concatenateFilePath( {inputFolderPath, inputFilePath} );
         FilePath full_outputFilePath = Helper::concatenateFilePath( {outputFolderPath, outputFilePath} );
 
-        MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_devFileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_fileGroupDev, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data_cache, "invalid create cache memory '%s'"
             , Helper::getContentFullPath( m_options.inputContent ).c_str()
@@ -74,7 +74,7 @@ namespace Mengine
             , Helper::getContentFullPath( m_options.inputContent ).c_str()
         );
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_devFileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroupDev, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open '%s'"
             , Helper::getContentFullPath( m_options.outputContent ).c_str()
@@ -89,7 +89,7 @@ namespace Mengine
             return false;
         }
 
-        if( Helper::closeOutputStreamFile( m_devFileGroup, stream ) == false )
+        if( Helper::closeOutputStreamFile( m_fileGroupDev, stream ) == false )
         {
             LOGGER_ERROR( "dazzle converter invalid close '%s'"
                 , Helper::getContentFullPath( m_options.outputContent ).c_str()

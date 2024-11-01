@@ -23,5 +23,8 @@ namespace Mengine
 
     public:
         bool convert( const ConstString & _converterType, const ContentInterfacePtr & _in, ContentInterfacePtr * const _out, const DocumentInterfacePtr & _doc ) override;
+
+    protected:
+        FileGroupInterfacePtr m_fileGroupDev;
     };
 }

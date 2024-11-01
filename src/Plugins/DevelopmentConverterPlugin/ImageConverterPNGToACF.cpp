@@ -53,7 +53,7 @@ namespace Mengine
         FilePath full_inputFilePath = Helper::concatenateFilePath( {inputFolderPath, inputFilePath} );
         FilePath full_outputFilePath = Helper::concatenateFilePath( {outputFolderPath, outputFilePath} );
 
-        InputStreamInterfacePtr stream_intput = Helper::openInputStreamFile( m_devFileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr stream_intput = Helper::openInputStreamFile( m_fileGroupDev, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, "invalid open input file '%s'"
             , Helper::getContentFullPath( m_options.inputContent ).c_str()
@@ -102,7 +102,7 @@ namespace Mengine
             return false;
         }
 
-        OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_devFileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_fileGroupDev, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_output, "'%s' invalid open output '%s'"
             , Helper::getContentFullPath( m_options.inputContent ).c_str()
@@ -140,7 +140,7 @@ namespace Mengine
 
         encoder->finalize();
 
-        if( Helper::closeOutputStreamFile( m_devFileGroup, stream_output ) == false )
+        if( Helper::closeOutputStreamFile( m_fileGroupDev, stream_output ) == false )
         {
             LOGGER_ERROR( "%s invalid close output '%s'"
                 , Helper::getContentFullPath( m_options.inputContent ).c_str()

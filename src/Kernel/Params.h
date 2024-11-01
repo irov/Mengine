@@ -2,6 +2,7 @@
 
 #include "Kernel/Map.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
 #include "Kernel/String.h"
 #include "Kernel/Factorable.h"
 
@@ -17,9 +18,10 @@ namespace Mengine
     typedef String ParamString;
     typedef WString ParamWString;
     typedef ConstString ParamConstString;
+    typedef FilePath ParamFilePath;
     typedef FactorablePtr ParamFactorablePtr;
 
-    typedef Variant<ParamNull, ParamBool, ParamInteger, ParamDouble, ParamString, ParamWString, ParamConstString, ParamFactorablePtr> ParamVariant;
+    typedef Variant<ParamNull, ParamBool, ParamInteger, ParamDouble, ParamString, ParamWString, ParamConstString, ParamFilePath, ParamFactorablePtr> ParamVariant;
 
     typedef Map<ConstString, ParamVariant> Params;
 }

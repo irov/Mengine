@@ -60,7 +60,7 @@ namespace Mengine
         FilePath full_inputFilePath = Helper::concatenateFilePath( {inputFolderPath, inputFilePath} );
         FilePath full_outputFilePath = Helper::concatenateFilePath( {outputFolderPath, outputFilePath} );
 
-        MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_devFileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_fileGroupDev, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data_cache, "invalid create cache memory '%s'"
             , full_inputFilePath.c_str()
@@ -73,7 +73,7 @@ namespace Mengine
             , full_inputFilePath.c_str()
         );
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_devFileGroup, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroupDev, full_outputFilePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open '%s'"
             , full_outputFilePath.c_str()
@@ -88,7 +88,7 @@ namespace Mengine
             return false;
         }
 
-        if( Helper::closeOutputStreamFile( m_devFileGroup, stream ) == false )
+        if( Helper::closeOutputStreamFile( m_fileGroupDev, stream ) == false )
         {
             return false;
         }

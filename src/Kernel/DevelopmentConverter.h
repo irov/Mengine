@@ -12,7 +12,7 @@ namespace Mengine
         ~DevelopmentConverter() override;
 
     private:
-        bool initialize() override;
+        bool initialize( const FileGroupInterfacePtr & _fileGroupDev ) override;
         void finalize() override;
 
     protected:
@@ -33,7 +33,7 @@ namespace Mengine
         const FileGroupInterfacePtr & getDevFileGroup() const;
 
     protected:
-        FileGroupInterfacePtr m_devFileGroup;
+        FileGroupInterfacePtr m_fileGroupDev;
 
         ConverterOptions m_options;
 

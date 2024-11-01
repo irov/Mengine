@@ -105,7 +105,7 @@ namespace Mengine
     {
         const ConverterOptions & options = this->getOptions();
 
-        ContentInterfacePtr protocolContent = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "protocolContent" ), FactorablePtr::none() );
+        FilePath protocolPath = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "protocolPath" ), FilePath::none() );
         ParamInteger useProtocolVersion = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), 0LL );
         ParamInteger useProtocolCrc32 = Helper::getParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), 0LL );
 
@@ -113,6 +113,8 @@ namespace Mengine
             , Helper::getContentFullPath( options.inputContent ).c_str()
             , Helper::getContentFullPath( options.outputContent ).c_str()
         );
+
+        ContentInterfacePtr protocolContent = Helper::makeFileContent( m_fileGroupDev, protocolPath, MENGINE_DOCUMENT_FUNCTION );
 
         InputStreamInterfacePtr protocol_stream = protocolContent->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
 

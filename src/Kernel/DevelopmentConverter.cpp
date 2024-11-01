@@ -16,14 +16,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DevelopmentConverter::initialize()
+    bool DevelopmentConverter::initialize( const FileGroupInterfacePtr & _fileGroupDev )
     {
-        const FileGroupInterfacePtr & devFileGroup = FILE_SERVICE()
-            ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( devFileGroup, "not found 'dev' file group" );
-
-        m_devFileGroup = devFileGroup;
+        m_fileGroupDev = _fileGroupDev;
 
         bool successful = this->_initialize();
 
@@ -34,7 +29,7 @@ namespace Mengine
     {
         this->_finalize();
 
-        m_devFileGroup = nullptr;
+        m_fileGroupDev = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & DevelopmentConverter::getConvertExt() const
@@ -63,7 +58,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const FileGroupInterfacePtr & DevelopmentConverter::getDevFileGroup() const
     {
-        return m_devFileGroup;
+        return m_fileGroupDev;
     }
     //////////////////////////////////////////////////////////////////////////
 }

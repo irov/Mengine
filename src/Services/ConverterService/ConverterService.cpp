@@ -1,6 +1,7 @@
 #include "ConverterService.h"
 
 #include "Interface/FactoryInterface.h"
+#include "Interface/FileServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -30,13 +31,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ConverterService::_initializeService()
     {
-        //Empty
+        const FileGroupInterfacePtr & fileGroupDev = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroupDev, "not found 'dev' file group" );
+
+        m_fileGroupDev = fileGroupDev;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ConverterService::_finalizeService()
     {
+        m_fileGroupDev = nullptr;
+
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "ConverterFactory" ) );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -58,7 +66,7 @@ namespace Mengine
             , _type.c_str()
         );
 
-        if( converter->initialize() == false )
+        if( converter->initialize( m_fileGroupDev ) == false )
         {
             LOGGER_INFO( "convert", "invalid initialize converter '%s'"
                 , _type.c_str()

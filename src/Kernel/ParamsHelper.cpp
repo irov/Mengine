@@ -22,6 +22,11 @@ namespace Mengine
             return bool_value;
         }
         //////////////////////////////////////////////////////////////////////////
+        void setParam( Params & _params, const ConstString & _key, ParamBool _value )
+        {
+            _params[_key] = _value;
+        }
+        //////////////////////////////////////////////////////////////////////////
         ParamInteger getParam( const Params & _params, const ConstString & _key, ParamInteger _default )
         {
             typename Params::const_iterator it_found = _params.find( _key );
@@ -59,6 +64,11 @@ namespace Mengine
             Helper::get( value, &double_value );
 
             return double_value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void setParam( Params & _params, const ConstString & _key, ParamDouble _value )
+        {
+            _params[_key] = _value;
         }
         //////////////////////////////////////////////////////////////////////////
         String getParam( const Params & _params, const ConstString & _key, const Char * _default )
@@ -118,6 +128,10 @@ namespace Mengine
             {
                 string_value.assign( _element.c_str(), _element.size() );
             }   
+                , [&string_value]( const ParamFilePath & _element )
+            {
+                string_value.assign( _element.c_str(), _element.size() );
+            }
                 , [&string_value, _default]( const FactorablePtr & _element )
             {
                 MENGINE_UNUSED( _element );
@@ -126,6 +140,11 @@ namespace Mengine
             } );
 
             return string_value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void setParam( Params & _params, const ConstString & _key, const String & _value )
+        {
+            _params[_key] = _value;
         }
         //////////////////////////////////////////////////////////////////////////
         WString getParam( const Params & _params, const ConstString & _key, const WChar * _default )
@@ -187,6 +206,12 @@ namespace Mengine
 
                 wstring_value.assign( _default );
             }
+                , [&wstring_value, _default]( const ParamFilePath &_element)
+            {
+                MENGINE_UNUSED( _element );
+
+                wstring_value.assign( _default );
+            }
                 , [&wstring_value, _default]( const FactorablePtr & _element )
             {
                 MENGINE_UNUSED( _element );
@@ -195,6 +220,11 @@ namespace Mengine
             } );
 
             return wstring_value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void setParam( Params & _params, const ConstString & _key, const WString & _value )
+        {
+            _params[_key] = _value;
         }
         //////////////////////////////////////////////////////////////////////////
         ConstString getParam( const Params & _params, const ConstString & _key, const ConstString & _default )
@@ -212,6 +242,33 @@ namespace Mengine
             Helper::get( value, &const_string_value );
 
             return const_string_value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void setParam( Params & _params, const ConstString & _key, const ConstString & _value )
+        {
+            _params[_key] = _value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        FilePath getParam( const Params & _params, const ConstString & _key, const FilePath & _default )
+        {
+            typename Params::const_iterator it_found = _params.find( _key );
+
+            if( it_found == _params.end() )
+            {
+                return _default;
+            }
+
+            const Params::mapped_type & value = it_found->second;
+
+            FilePath file_path_value;
+            Helper::get( value, &file_path_value );
+
+            return file_path_value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void setParam( Params & _params, const ConstString & _key, const FilePath & _value )
+        {
+            _params[_key] = _value;
         }
         //////////////////////////////////////////////////////////////////////////
         FactorablePointer getParam( const Params & _params, const ConstString & _key, const FactorablePtr & _default )

@@ -149,6 +149,22 @@ namespace Mengine
         return Project_ExtraPreferencesFolderNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool iOSPlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
+    {
+        NSString * localeLanguage = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];
+        
+        if( localeLanguage == nil )
+        {
+            return false;
+        }
+        
+        const Char * localeLanguage_str = [localeLanguage UTF8String];
+        
+        StdString::strncpy( _userLocaleLanguage, localeLanguage_str, MENGINE_LOCALE_LANGUAGE_SIZE );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t iOSPlatformService::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const
     {
         MENGINE_UNUSED( _fontName );

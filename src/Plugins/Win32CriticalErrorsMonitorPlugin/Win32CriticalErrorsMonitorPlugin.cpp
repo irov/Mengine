@@ -15,7 +15,7 @@
 #include "Config/StdIO.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( Win32CriticalErrorsMonitorPlugin, Mengine::Win32CriticalErrorsMonitorPlugin )
+PLUGIN_FACTORY( Win32CriticalErrorsMonitorPlugin, Mengine::Win32CriticalErrorsMonitorPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

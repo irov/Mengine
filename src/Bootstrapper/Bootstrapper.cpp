@@ -118,6 +118,10 @@ SERVICE_EXTERN( SilentSoundSystem );
 SERVICE_EXTERN( TimeSystem );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_SYSTEM_FILE)
+SERVICE_EXTERN( FileSystem );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_SYSTEM_SOUND)
 SERVICE_EXTERN( SoundSystem );
 #endif
@@ -371,18 +375,6 @@ PLUGIN_EXPORT( MemoryUsageMonitor );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_WIN32_ANTIFREEZEMONITOR_STATIC)
 PLUGIN_EXPORT( Win32AntifreezeMonitor );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_WIN32_FILEGROUP_STATIC)
-PLUGIN_EXPORT( Win32FileGroup );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_SDL_FILEGROUP_STATIC)
-PLUGIN_EXPORT( SDLFileGroup );
-#endif
-//////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_ANDROID_FILEGROUP_STATIC)
-PLUGIN_EXPORT( AndroidFileGroup );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC)
@@ -1011,7 +1003,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( DateTimeSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PreferencesSystem, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( CryptographySystem, MENGINE_DOCUMENT_FACTORABLE );
-
+        
 #if defined(MENGINE_PLATFORM_WINDOWS)
         MENGINE_ADD_SERVICE( Win32KernelService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -1048,17 +1040,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( FileService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( ConfigService, MENGINE_DOCUMENT_FACTORABLE );
 
-#if defined(MENGINE_PLUGIN_ANDROID_FILEGROUP_STATIC)
-        MENGINE_ADD_PLUGIN( AndroidFileGroup, "plugin AndroidFileGroup...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_SDL_FILEGROUP_STATIC)
-        MENGINE_ADD_PLUGIN( SDLFileGroup, "plugin SDLFileGroup...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_WIN32_FILEGROUP_STATIC)
-        MENGINE_ADD_PLUGIN( Win32FileGroup, "plugin Win32FileGroup...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
+        MENGINE_ADD_SERVICE( FileSystem, MENGINE_DOCUMENT_FACTORABLE );
 
         PLATFORM_SERVICE()
             ->initializeFileService();

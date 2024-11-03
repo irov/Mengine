@@ -1,10 +1,9 @@
-#include "SDLFileGroupPlugin.h"
+#include "AppleFileSystem.h"
 
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 
-#include "SDLFileGroupDirectory.h"
-#include "SDLFileGroupDirectoryFactory.h"
+#include "AppleFileGroupDirectory.h"
+#include "AppleFileGroupDirectoryFactory.h"
 
 #include "Kernel/FactoryHelper.h"
 #include "Kernel/ConstStringHelper.h"
@@ -15,20 +14,20 @@
 #include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( SDLFileGroup, Mengine::SDLFileGroupPlugin )
+SERVICE_FACTORY( FileSystem, Mengine::AppleFileSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    SDLFileGroupPlugin::SDLFileGroupPlugin()
+    AppleFileSystem::AppleFileSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    SDLFileGroupPlugin::~SDLFileGroupPlugin()
+    AppleFileSystem::~AppleFileSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupPlugin::_initializePlugin()
+    bool AppleFileSystem::_initializeService()
     {
         FactoryInterfacePtr factoryGlobalFileGroupDirectory = Helper::makeFactory<SDLFileGroupDirectoryFactory, SDLFileGroupDirectory>( MENGINE_DOCUMENT_FACTORABLE, FilePath::none() );
 
@@ -55,14 +54,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLFileGroupPlugin::_finalizePlugin()
+    void AppleFileSystem::_finalizeService()
     {
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ) );
-    }
-    ///////////////////////////////////////////////////////////////////////
-    void SDLFileGroupPlugin::_destroyPlugin()
-    {
     }
     //////////////////////////////////////////////////////////////////////////
 }

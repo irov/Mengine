@@ -42,10 +42,12 @@
 #if defined(MENGINE_PLUGIN_SHARED)
 #   define PLUGIN_FACTORY(Name, Type)\
     PLUGIN_FACTORY_STATIC(Name, Type)\
-    PLUGIN_FACTORY_DYNAMIC(Name, Type)
+    PLUGIN_FACTORY_DYNAMIC(Name, Type)\
+    struct __mengine_dummy_factory##Name{}
 #else
 #   define PLUGIN_FACTORY(Name, Type)\
-    PLUGIN_FACTORY_STATIC(Name, Type)
+    PLUGIN_FACTORY_STATIC(Name, Type)\
+    struct __mengine_dummy_factory##Name{}
 #endif
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_EXPORT(Name)\

@@ -15,7 +15,7 @@
 SERVICE_EXTERN( ScriptProviderService );
 SERVICE_EXTERN( ScriptService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( PythonFramework, Mengine::PythonFrameworkPlugin )
+PLUGIN_FACTORY( PythonFramework, Mengine::PythonFrameworkPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

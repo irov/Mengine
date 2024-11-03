@@ -5,6 +5,8 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/DebugFileHelper.h"
+#include "Kernel/ThreadGuardScope.h"
+#include "Kernel/NotificationHelper.h"
 
 namespace Mengine
 {
@@ -23,6 +25,8 @@ namespace Mengine
     bool AndroidFileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _withTemp )
     {
         MENGINE_UNUSED( _withTemp );
+
+        MENGINE_THREAD_GUARD_SCOPE( AndroidFileOutputStream, this );
 
 #if defined(MENGINE_DEBUG)
         this->setDebugRelationPath( _relationPath );
@@ -56,15 +60,37 @@ namespace Mengine
 
         m_size = 0;
 
+#if defined(MENGINE_DEBUG)
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
+        {
+            const FilePath & folderPath = this->getDebugFolderPath();
+            const FilePath & filePath = this->getDebugFilePath();
+
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, folderPath, filePath, false, false );
+        }
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileOutputStream::close()
     {
+        MENGINE_THREAD_GUARD_SCOPE( AndroidFileOutputStream, this );
+
         if( m_file == nullptr )
         {
             return false;
         }
+
+#if defined(MENGINE_DEBUG)
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
+        {
+            const FilePath & folderPath = this->getDebugFolderPath();
+            const FilePath & filePath = this->getDebugFilePath();
+
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, folderPath, filePath, false, false );
+        }
+#endif
 
         ::fclose( m_file );
         m_file = nullptr;

@@ -8,6 +8,7 @@
 
 #include "Win32ConcatenateFileHelper.h"
 
+#include "Kernel/NotificationHelper.h"
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
@@ -86,6 +87,16 @@ namespace Mengine
 
         STATISTIC_INC_INTEGER( STATISTIC_OPEN_FILE_COUNT );
 
+#if defined(MENGINE_DEBUG)
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
+        {
+            const FilePath & folderPath = this->getDebugFolderPath();
+            const FilePath & filePath = this->getDebugFilePath();
+
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, folderPath, filePath, false, false );
+        }
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -95,6 +106,16 @@ namespace Mengine
         {
             return true;
         }
+
+#if defined(MENGINE_DEBUG)
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
+        {
+            const FilePath & folderPath = this->getDebugFolderPath();
+            const FilePath & filePath = this->getDebugFilePath();
+
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, folderPath, filePath, false, false );
+        }
+#endif
 
         bool successful = this->flush();
 

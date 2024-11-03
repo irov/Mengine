@@ -4,7 +4,10 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ThreadGuard.h"
-#include "Kernel/BaseDebugFile.h"
+
+#if defined(MENGINE_DEBUG)
+#   include "Kernel/BaseDebugFile.h"
+#endif
 
 #ifndef MENGINE_FILE_STREAM_BUFFER_SIZE
 #define MENGINE_FILE_STREAM_BUFFER_SIZE 4096

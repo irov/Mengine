@@ -3,9 +3,9 @@
 #include "Interface/FileMappedInterface.h"
 #include "Interface/FactoryInterface.h"
 
-#include "Kernel/Factorable.h"
-
 #include "Environment/Windows/WindowsIncluder.h"
+
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {

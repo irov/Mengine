@@ -1478,7 +1478,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::notifyDebugOpenFile_( const Char * _folder, const Char * _filePath, bool _streaming )
+    void Application::notifyDebugOpenFile_( const FilePath & _folder, const FilePath & _filePath, bool _read, bool _streaming )
     {
         bool isMainThread = THREAD_SERVICE()
             ->isMainThread();
@@ -1487,16 +1487,18 @@ namespace Mengine
         {
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("open %s%s"
-                    , _folder
-                    , _filePath
+                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("open %s %s%s"
+                    , _read == true ? "read" : "write"
+                    , _folder.c_str()
+                    , _filePath.c_str()
                     );
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("streaming %s%s"
-                    , _folder
-                    , _filePath
+                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("streaming %s %s%s"
+                    , _read == true ? "read" : "write"
+                    , _folder.c_str()
+                    , _filePath.c_str()
                     );
             }
         }
@@ -1507,18 +1509,20 @@ namespace Mengine
 
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("open [multithread:%" MENGINE_PRIu64 "] open %s%s"
+                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("open [multithread:%" MENGINE_PRIu64 "] open %s %s%s"
                     , tid
-                    , _folder
-                    , _filePath
+                    , _read == true ? "read" : "write"
+                    , _folder.c_str()
+                    , _filePath.c_str()
                     );
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("streaming [multithread:%" MENGINE_PRIu64 "] open %s%s"
+                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, LFLAG_SHORT )("streaming [multithread:%" MENGINE_PRIu64 "] open %s %s%s"
                     , tid
-                    , _folder
-                    , _filePath
+                    , _read == true ? "read" : "write"
+                    , _folder.c_str()
+                    , _filePath.c_str()
                     );
             }
         }

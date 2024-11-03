@@ -6,7 +6,10 @@
 #include "AndroidFileInputStream.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/BaseDebugFile.h"
+
+#if defined(MENGINE_DEBUG)
+#   include "Kernel/BaseDebugFile.h"
+#endif
 
 namespace Mengine
 {

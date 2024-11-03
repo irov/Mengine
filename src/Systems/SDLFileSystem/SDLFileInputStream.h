@@ -4,7 +4,10 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ThreadGuard.h"
-#include "Kernel/BaseDebugFile.h"
+
+#if defined(MENGINE_DEBUG)
+#   include "Kernel/BaseDebugFile.h"
+#endif
 
 #include "SDL_rwops.h"
 

@@ -2,11 +2,14 @@
 
 #include "Interface/FileInputStreamInterface.h"
 
+#include "Environment/Windows/WindowsIncluder.h"
+
 #include "Kernel/Factorable.h"
 #include "Kernel/ThreadGuardScope.h"
-#include "Kernel/BaseDebugFile.h"
 
-#include "Environment/Windows/WindowsIncluder.h"
+#if defined(MENGINE_DEBUG)
+#   include "Kernel/BaseDebugFile.h"
+#endif
 
 #ifndef MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE
 #define MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE 4096

@@ -179,7 +179,7 @@ namespace Mengine
 
     protected:
         void updateDebugOpenFile_();
-        void notifyDebugOpenFile_( const Char * _folder, const Char * _filePath, bool _streaming );
+        void notifyDebugOpenFile_( const FilePath & _folder, const FilePath & _filePath, bool _read, bool _streaming );
 
     protected:
         void updateDebugResourceCompile_();

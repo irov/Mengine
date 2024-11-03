@@ -107,31 +107,48 @@ namespace Mengine
         const Char * Project_Company = CONFIG_VALUE( "Project", "Company", "UNKNOWN" );
         const Char * Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
-        Char * sdl_prefPath = SDL_GetPrefPath( Project_Company, Project_Name );
-
-        size_t sdl_prefPathLen = StdString::strlen( _userPath );
-
-        if( sdl_prefPathLen >= MENGINE_MAX_PATH )
+        NSArray * paths = NSSearchPathForDirectoriesInDomains( NSApplicationSupportDirectory, NSUserDomainMask, YES );
+        
+        if( [paths count] == 0 )
         {
-            SDL_free( sdl_prefPath );
-
-            StdString::strcpy( _userPath, "" );
+            StdString::strncpy( _userPath, "", MENGINE_MAX_PATH );
 
             return 0;
         }
 
-        Helper::pathCorrectBackslashToA( _userPath, sdl_prefPath );
+        NSString * first_path = [paths objectAtIndex:0];
 
-        SDL_free( sdl_prefPath );
+        NSString * userPath = [first_path stringByAppendingPathComponent:@(Project_Company)];
+        userPath = [userPath stringByAppendingPathComponent:@(Project_Name)];
 
         Char extraPreferencesFolderName[MENGINE_MAX_PATH + 1] = {'\0'};
         size_t ExtraPreferencesFolderNameLen = this->getExtraPreferencesFolderName( extraPreferencesFolderName );
 
         if( ExtraPreferencesFolderNameLen != 0 )
         {
-            StdString::strcat( _userPath, extraPreferencesFolderName );
-            StdString::strcat( _userPath, "/" );
+            userPath = [userPath stringByAppendingPathComponent:@(extraPreferencesFolderName)];
         }
+
+        NSError * error = nil;
+        [[NSFileManager defaultManager] createDirectoryAtPath:userPath
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                        error:&error];
+
+        if( error != nil )
+        {
+            LOGGER_ERROR( "Error creating directory: %s"
+                , [error.description UTF8String]
+            );
+
+            StdString::strncpy( _userPath, "", MENGINE_MAX_PATH );
+
+            return 0;
+        }
+
+        const Char * userPathRepresentation = [userPath fileSystemRepresentation];
+
+        Helper::pathCorrectBackslashToA( _userPath, userPathRepresentation );
 
         size_t userPathLen = StdString::strlen( _userPath );
 

@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Factorable * AppleFileGroupDirectoryFactory::_createObject()
     {
-        SDLFileGroupDirectory * t = Helper::newT<SDLFileGroupDirectory>();
+        AppleFileGroupDirectory * t = Helper::newT<AppleFileGroupDirectory>();
 
         t->setRelationPath( m_relationPath );
 
@@ -26,7 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleFileGroupDirectoryFactory::_destroyObject( Factorable * _obj )
     {
-        Helper::deleteT( static_cast<SDLFileGroupDirectory *>(_obj) );
+        Helper::deleteT( static_cast<AppleFileGroupDirectory *>(_obj) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

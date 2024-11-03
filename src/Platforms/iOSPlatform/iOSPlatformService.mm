@@ -1663,24 +1663,8 @@ namespace Mengine
         Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
-        SDL_SuppressError( SDL_TRUE );
-
-        SDL_RWops * rwops = SDL_RWFromFile( pathCorrect, "rb" );
-
-        SDL_SuppressError( SDL_FALSE );
-
-        if( rwops == nullptr )
+        if( [[NSFileManager defaultManager] fileExistsAtPath:@(pathCorrect)] == NO)
         {
-            return false;
-        }
-
-        if( SDL_RWclose( rwops ) != 0 )
-        {
-            LOGGER_ERROR( "invalid close '%s' get error: %s"
-                , pathCorrect
-                , SDL_GetError()
-            );
-
             return false;
         }
 
@@ -1692,10 +1676,14 @@ namespace Mengine
         Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
-        int result = ::remove( pathCorrect );
-
-        if( result != 0 )
+        NSError * error = nil;
+        if( [[NSFileManager defaultManager] removeItemAtPath:@(pathCorrect) error:&error] == NO )
         {
+            LOGGER_ERROR("Failed to remove file: %s error: %s"
+                , pathCorrect
+                , [error.localizedDescription UTF8String]
+            );
+            
             return false;
         }
 
@@ -1710,40 +1698,34 @@ namespace Mengine
         Char newPathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( newPathCorrect, _newFilePath );
 
-        struct stat sb;
-        if( stat( newPathCorrect, &sb ) == 0 && ((sb.st_mode) & S_IFMT) != S_IFDIR )
+        NSFileManager * fileManager = [NSFileManager defaultManager];
+        
+        if( [fileManager fileExistsAtPath:@(newPathCorrect)] == YES)
         {
-            int result_remove = ::remove( newPathCorrect );
-
-            if( result_remove != 0 )
+            NSError * remove_error = nil;
+            if( [fileManager removeItemAtPath:@(newPathCorrect) error:&remove_error] == NO )
             {
-                const char * msg = ::strerror( errno );
-
-                LOGGER_ASSERTION( "invalid remove new move file from '%s' to '%s' error '%s' [%u]"
-                    , _oldFilePath
-                    , _newFilePath
-                    , msg
-                    , errno
+                LOGGER_ERROR("Failed to remove existing file: %s error: %s"
+                    , newPathCorrect
+                    , [remove_error.localizedDescription UTF8String]
                 );
+                
+                return false;
             }
         }
-
-        int result_rename = ::rename( oldPathCorrect, newPathCorrect );
-
-        if( result_rename != 0 )
+        
+        NSError * move_error = nil;
+        if( [fileManager moveItemAtPath:@(oldPathCorrect) toPath:@(newPathCorrect) error:&move_error] == NO )
         {
-            const char * msg = ::strerror( errno );
-
-            LOGGER_ASSERTION( "invalid move file from '%s' to '%s' error '%s' [%u]"
-                , _oldFilePath
-                , _newFilePath
-                , msg
-                , errno
+            LOGGER_ERROR("Failed to move file from: %s to: %s error: %s"
+                , oldPathCorrect
+                , newPathCorrect
+                , [move_error.localizedDescription UTF8String]
             );
-
+            
             return false;
         }
-
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

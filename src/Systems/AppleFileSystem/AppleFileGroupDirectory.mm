@@ -33,9 +33,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileGroupDirectory::_initialize()
     {
-        m_factoryInputStreamFile = Helper::makeFactoryPool<SDLFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryInputStreamMutexFile = Helper::makeFactoryPool<SDLMutexFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryOutputStreamFile = Helper::makeFactoryPool<SDLFileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryInputStreamFile = Helper::makeFactoryPool<AppleFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryInputStreamMutexFile = Helper::makeFactoryPool<AppleMutexFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryOutputStreamFile = Helper::makeFactoryPool<FileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -232,7 +232,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
-        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
+        FileInputStreamInterface * file = _stream.getT<FileInputStreamInterface *>();
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming, _share );
         
@@ -248,7 +248,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
-        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
+        FileInputStreamInterface * file = _stream.getT<FileInputStreamInterface *>();
 
         bool result = file->close();
 
@@ -271,7 +271,7 @@ namespace Mengine
             }
         }
 
-        SDLMutexFileInputStreamPtr stream = m_factoryInputStreamMutexFile->createObject( _doc );
+        AppleMutexFileInputStreamPtr stream = m_factoryInputStreamMutexFile->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create input mutex file '%s:%s'"
             , m_folderPath.c_str()
@@ -292,7 +292,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
-        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
+        FileInputStreamInterface * file = _stream.getT<FileInputStreamInterface *>();
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, false, false );
 
@@ -308,7 +308,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
-        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
+        FileInputStreamInterface * file = _stream.getT<FileInputStreamInterface *>();
 
         bool result = file->close();
 
@@ -332,7 +332,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
-        FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
+        FileOutputStreamInterface * file = _stream.getT<FileOutputStreamInterface *>();
 
         bool result = file->open( m_relationPath, m_folderPath, _filePath, _withTemp );
         
@@ -348,7 +348,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
-        FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
+        FileOutputStreamInterface * file = _stream.getT<FileOutputStreamInterface *>();
 
         bool result = file->close();
 

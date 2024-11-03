@@ -15,7 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     // cppcheck-suppress uninitMemberVar
     AppleFileInputStream::AppleFileInputStream()
-        : m_rwops( nullptr )
+        : m_fileHandle( nil )
         , m_size( 0 )
         , m_offset( 0 )
         , m_carriage( 0 )
@@ -124,24 +124,25 @@ namespace Mengine
             return false;
         }
 
-        SDL_RWops * rwops = SDL_RWFromFile( _fullPath, "rb" );
+        NSError *error = nil;
+        NSFileHandle * fileHandle = [NSFileHandle fileHandleForReadingAtPath:@(_fullPath)];
 
-        if( rwops == nullptr )
+        if( fileHandle == nil )
         {
             LOGGER_ERROR( "invalid open file '%s' error '%s'"
                 , _fullPath
-                , SDL_GetError()
+                , [error.localizedDescription UTF8String]
             );
 
             return false;
         }
 
-        m_rwops = rwops;
+        m_fileHandle = fileHandle;
 
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str(), m_streaming );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath, _filePath, m_streaming );
         }
 #endif
 

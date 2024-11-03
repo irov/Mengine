@@ -49,7 +49,7 @@ namespace Mengine
         bool memory( void ** const _memory, size_t * const _size ) override;
 
     public:
-        SDL_RWops * getRWops() const;
+        m_fileHandle * getFileHandle() const;
 
     protected:
         bool openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char *  const _fullPath );
@@ -57,7 +57,7 @@ namespace Mengine
         bool seek_( size_t _pos );
 
     protected:
-        SDL_RWops * m_rwops;
+        NSFileHandle * m_fileHandle;
 
         size_t m_size;
         size_t m_offset;

@@ -29,7 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileSystem::_initializeService()
     {
-        FactoryInterfacePtr factoryGlobalFileGroupDirectory = Helper::makeFactory<SDLFileGroupDirectoryFactory, SDLFileGroupDirectory>( MENGINE_DOCUMENT_FACTORABLE, FilePath::none() );
+        FactoryInterfacePtr factoryGlobalFileGroupDirectory = Helper::makeFactory<AppleFileGroupDirectoryFactory, AppleFileGroupDirectory>( MENGINE_DOCUMENT_FACTORABLE, FilePath::none() );
 
         VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), factoryGlobalFileGroupDirectory, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -37,17 +37,13 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->getCurrentPath( utf8_currentPath );
         
-#if defined(MENGINE_PLATFORM_IOS)
         StdString::strcat( utf8_currentPath, "Data/" );
-#elif defined(MENGINE_PLATFORM_MACOS)
-        StdString::strcat( utf8_currentPath, "Data/" );
-#endif
         
         size_t utf8_currentPathLen = StdString::strlen( utf8_currentPath );
 
         FilePath relationPath = Helper::stringizeFilePathSize( utf8_currentPath, (FilePath::size_type)utf8_currentPathLen );
 
-        FactoryInterfacePtr factoryDirFileGroupDirectory = Helper::makeFactory<SDLFileGroupDirectoryFactory, SDLFileGroupDirectory>( MENGINE_DOCUMENT_FACTORABLE, relationPath );
+        FactoryInterfacePtr factoryDirFileGroupDirectory = Helper::makeFactory<AppleFileGroupDirectoryFactory, AppleFileGroupDirectory>( MENGINE_DOCUMENT_FACTORABLE, relationPath );
 
         VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ), factoryDirFileGroupDirectory, MENGINE_DOCUMENT_FACTORABLE );
 

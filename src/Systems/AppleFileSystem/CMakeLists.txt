@@ -17,8 +17,6 @@ src
     AppleFileOutputStream.h
     AppleFileMapped.h
     AppleFileMapped.mm
-    AppleFileHelper.h
-    AppleFileHelper.mm
 )
 
 ADD_MENGINE_APPLE_LIBRARY(Systems)

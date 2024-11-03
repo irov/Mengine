@@ -3,7 +3,10 @@
 #include "Interface/FileOutputStreamInterface.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/BaseDebugFile.h"
+
+#if defined(MENGINE_DEBUG)
+#   include "Kernel/BaseDebugFile.h"
+#endif
 
 #include "SDL_rwops.h"
 

@@ -5,6 +5,7 @@
 #include "Kernel/Tuple.h"
 #include "Kernel/String.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/Resolution.h"
@@ -57,8 +58,8 @@ namespace Mengine
     template<> struct Notificator<NAME> { typedef Tuple<__VA_ARGS__> args_type; static const Char * getName() { return #NAME; } }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_NOTIFICATOR_DECLARE_BEGIN();
-    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_DEBUG_OPEN_FILE, const Char *, const Char *, bool );
-    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_DEBUG_CLOSE_FILE, const Char *, const Char *, bool );
+    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_DEBUG_OPEN_FILE, const FilePath &, const FilePath &, bool, bool );
+    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_DEBUG_CLOSE_FILE, const FilePath &, const FilePath &, bool, bool );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_ASSERTION, const Char *, EAssertionLevel, const Char *, const Char *, int32_t, const Char * );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_ABORT, const Char * );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_CRASH, const Char * );

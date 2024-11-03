@@ -6,9 +6,10 @@
 #include "Win32FileInputStream.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/BaseDebugFile.h"
 
-#include "Environment/Windows/WindowsIncluder.h"
+#if defined(MENGINE_DEBUG)
+#   include "Kernel/BaseDebugFile.h"
+#endif
 
 namespace Mengine
 {

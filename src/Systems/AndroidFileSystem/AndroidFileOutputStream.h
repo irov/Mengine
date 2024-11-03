@@ -3,7 +3,11 @@
 #include "Interface/FileOutputStreamInterface.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/BaseDebugFile.h"
+#include "Kernel/ThreadGuard.h"
+
+#if defined(MENGINE_DEBUG)
+#   include "Kernel/BaseDebugFile.h"
+#endif
 
 namespace Mengine
 {
@@ -36,6 +40,8 @@ namespace Mengine
         FILE * m_file;
 
         size_t m_size;
+
+        MENGINE_THREAD_GUARD_INIT( AndroidFileOutputStream );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AndroidFileOutputStream, FileOutputStreamInterface> AndroidFileOutputStreamPtr;

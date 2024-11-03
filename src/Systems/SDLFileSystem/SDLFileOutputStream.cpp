@@ -5,6 +5,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/NotificationHelper.h"
 
 namespace Mengine
 {
@@ -84,6 +85,13 @@ namespace Mengine
 
         m_size = 0;
 
+#if defined(MENGINE_DEBUG)
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath, _filePath, false, false );
+        }
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -93,6 +101,16 @@ namespace Mengine
         {
             return true;
         }
+
+#if defined(MENGINE_DEBUG)
+        if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
+        {
+            const FilePath & folderPath = this->getDebugFolderPath();
+            const FilePath & filePath = this->getDebugFilePath();
+
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, folderPath, filePath, false, false );
+        }
+#endif
 
         SDL_RWclose( m_rwops );
         m_rwops = nullptr;

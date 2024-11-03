@@ -139,7 +139,7 @@ namespace Mengine
             const FilePath & folderPath = this->getDebugFolderPath();
             const FilePath & filePath = this->getDebugFilePath();
 
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, folderPath.c_str(), filePath.c_str(), m_streaming );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, folderPath, filePath, true, m_streaming );
         }
 #endif
 
@@ -199,7 +199,7 @@ namespace Mengine
             const FilePath & folderPath = this->getDebugFolderPath();
             const FilePath & filePath = this->getDebugFilePath();
 
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, folderPath.c_str(), filePath.c_str(), m_streaming );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, folderPath, filePath, true, m_streaming );
         }
 #endif
 

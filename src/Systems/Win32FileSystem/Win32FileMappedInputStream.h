@@ -2,10 +2,10 @@
 
 #include "Interface/InputStreamInterface.h"
 
+#include "Environment/Windows/WindowsIncluder.h"
+
 #include "Kernel/Factorable.h"
 #include "Kernel/ThreadGuard.h"
-
-#include "Environment/Windows/WindowsIncluder.h"
 
 namespace Mengine
 {

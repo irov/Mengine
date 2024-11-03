@@ -17,8 +17,6 @@ src
     SDLFileOutputStream.h
     SDLFileMapped.h
     SDLFileMapped.cpp
-    SDLFileHelper.h
-    SDLFileHelper.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL/include/include-config-$<LOWER_CASE:$<CONFIG>>)

@@ -174,13 +174,13 @@ if(MENGINE_TARGET_APPLE)
     endif()
     
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
-	
+    
     if(NOT Python3_Interpreter_FOUND)
         message(FATAL_ERROR "PythonInterp not found.")
     endif()
-	
+    
     set(MENGINE_MERGE_PLIST "${MENGINE_SOLUTIONS_CONFIG_DIR}/res/Configuration/info.plist.in")
-	
+    
     MESSAGE("APPLICATION_APPLE_PLISTS: ${APPLICATION_APPLE_PLISTS}")
     
     if(APPLICATION_APPLE_PLISTS)
@@ -198,9 +198,9 @@ if(MENGINE_TARGET_APPLE)
         else()
             message(STATUS "Python script executed successfully: ${MENGINE_MERGE_PLIST}")
         endif()
+    else()
+        file(COPY ${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_PLIST} DESTINATION ${MENGINE_MERGE_PLIST})
     endif()
-	
-
     
     get_filename_component(MENGINE_MERGE_PLIST_PATH ${MENGINE_MERGE_PLIST} PATH)
     get_filename_component(MENGINE_MERGE_PLIST_NAME ${MENGINE_MERGE_PLIST} NAME)
@@ -255,8 +255,8 @@ if(MENGINE_TARGET_APPLE)
         foreach(FILE ${FILES})
             set_source_files_properties(${FILE} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
             source_group("deploy_storyboard" FILES ${FILE})
-        	set(MENGINE_APPLE_RESOURCES ${MENGINE_APPLE_RESOURCES} ${FILE})
-    	endforeach()
+            set(MENGINE_APPLE_RESOURCES ${MENGINE_APPLE_RESOURCES} ${FILE})
+        endforeach()
     endif()
     
     if(MENGINE_APPLICATION_DEPLOY_DATA)

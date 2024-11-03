@@ -169,13 +169,17 @@ namespace Mengine
 #endif
         const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));
         MENGINE_GLERRORCHECK();
-
-        LOGGER_MESSAGE( "OpenGL version: %s"
-            , versionStr 
+        
+        MENGINE_UNUSED( versionStr );
+        
+        LOGGER_INFO( "openal", "OpenGL version: %s"
+            , versionStr
         );
 
         const Char * vendorStr = reinterpret_cast<const Char *>(glGetString( GL_VENDOR ));
         MENGINE_GLERRORCHECK();
+        
+        MENGINE_UNUSED( vendorStr );
 
         LOGGER_INFO( "openal", "OpenGL vendor: %s"
             , vendorStr 
@@ -184,13 +188,17 @@ namespace Mengine
         const Char * rendererStr = reinterpret_cast<const Char *>(glGetString( GL_RENDERER ));
         MENGINE_GLERRORCHECK();
 
+        MENGINE_UNUSED( rendererStr );
+        
         LOGGER_INFO( "openal", "OpenGL renderer: %s"
             , rendererStr 
-        );      
+        );
 
 #if defined(MENGINE_RENDER_OPENGL_ES)
         const Char * extensionsStr = reinterpret_cast<const Char *>(glGetString( GL_EXTENSIONS ));
         MENGINE_GLERRORCHECK();
+        
+        MENGINE_UNUSED( extensionsStr );
 
         LOGGER_INFO( "openal", "OpenGL extensions: %s"
             , extensionsStr 
@@ -199,6 +207,8 @@ namespace Mengine
 
         const Char * shadingLanguageVersion = reinterpret_cast<const Char *>(glGetString( GL_SHADING_LANGUAGE_VERSION ));
         MENGINE_GLERRORCHECK();
+        
+        MENGINE_UNUSED( shadingLanguageVersion );
 
         LOGGER_INFO( "openal", "OpenGL shading language version: %s"
             , shadingLanguageVersion 

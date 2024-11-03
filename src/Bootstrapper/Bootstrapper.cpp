@@ -77,7 +77,9 @@ SERVICE_EXTERN( CodecService );
 SERVICE_EXTERN( DataService );
 SERVICE_EXTERN( PrefetcherService );
 SERVICE_EXTERN( MemoryService );
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
 SERVICE_EXTERN( ConverterService );
+#endif
 SERVICE_EXTERN( InputService );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( EasingService );
@@ -1215,7 +1217,11 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( PrefetcherService, MENGINE_DOCUMENT_FACTORABLE );
+        
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         BOOTSTRAPPER_SERVICE_CREATE( ConverterService, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+        
         BOOTSTRAPPER_SERVICE_CREATE( InputService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ArrowService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ChronometerService, MENGINE_DOCUMENT_FACTORABLE );
@@ -2184,8 +2190,12 @@ namespace Mengine
         SERVICE_FINALIZE( InputService );
         SERVICE_FINALIZE( CodecService );
         SERVICE_FINALIZE( SoundService );
+        
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         SERVICE_FINALIZE( ConverterService );
-        SERVICE_FINALIZE( RenderService );        
+#endif
+        
+        SERVICE_FINALIZE( RenderService );
         SERVICE_FINALIZE( RenderMaterialService );
         SERVICE_FINALIZE( RenderTextureService );
         SERVICE_FINALIZE( ArchiveService );
@@ -2301,7 +2311,11 @@ namespace Mengine
         SERVICE_DESTROY( CodecService );
         SERVICE_DESTROY( SoundService );
         SERVICE_DESTROY( SoundSystem );
+        
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
         SERVICE_DESTROY( ConverterService );
+#endif
+        
         SERVICE_DESTROY( RenderService );
         SERVICE_DESTROY( PrototypeService );
         SERVICE_DESTROY( RenderMaterialService );

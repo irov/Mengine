@@ -341,6 +341,8 @@ namespace Mengine
         );
 
         const char * revision = SDL_GetRevision();
+        
+        MENGINE_UNUSED( revision );
 
         LOGGER_INFO( "platform", "SDL revision: %s"
             , revision
@@ -564,6 +566,8 @@ namespace Mengine
         m_sdlInput = sdlInput;
 
         uint32_t deviceSeed = Helper::generateRandomDeviceSeed();
+        
+        MENGINE_UNUSED( deviceSeed );
 
         LOGGER_INFO_PROTECTED( "plarform", "Device Seed: %u"
             , deviceSeed

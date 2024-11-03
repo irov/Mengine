@@ -8,7 +8,7 @@
 #include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( MemoryUsageMonitor, Mengine::MemoryUsageMonitorPlugin )
+PLUGIN_FACTORY( MemoryUsageMonitor, Mengine::MemoryUsageMonitorPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

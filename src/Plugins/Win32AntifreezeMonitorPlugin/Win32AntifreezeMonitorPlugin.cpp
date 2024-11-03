@@ -8,7 +8,7 @@
 #include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( Win32AntifreezeMonitorPlugin, Mengine::Win32AntifreezeMonitorPlugin )
+PLUGIN_FACTORY( Win32AntifreezeMonitorPlugin, Mengine::Win32AntifreezeMonitorPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

@@ -1,10 +1,9 @@
-MENGINE_PROJECT(SDLFileGroupPlugin)
+MENGINE_PROJECT(SDLFileSystem)
 
 ADD_FILTER(
 src
-    SDLFileGroupPlugin.h
-    SDLFileGroupPlugin.cpp
-    SDLFileGroupPlugin.def
+    SDLFileSystem.h
+    SDLFileSystem.cpp
     
     SDLFileGroupDirectory.cpp
     SDLFileGroupDirectory.h
@@ -26,4 +25,4 @@ INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL/include/include-config-$<LOWER_
 INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/SDL/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL/include)
 
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_SDL_FILEGROUP)
+ADD_MENGINE_LIBRARY(Systems)

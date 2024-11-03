@@ -10,7 +10,7 @@
 #include "Win32ConsoleLogger.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( Win32ConsoleLogger, Mengine::Win32ConsoleLoggerPlugin )
+PLUGIN_FACTORY( Win32ConsoleLogger, Mengine::Win32ConsoleLoggerPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

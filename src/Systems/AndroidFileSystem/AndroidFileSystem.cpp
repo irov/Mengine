@@ -1,7 +1,4 @@
-#include "AndroidFileGroupPlugin.h"
-
-#include "Interface/PlatformServiceInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
+#include "AndroidFileSystem.h"
 
 #include "AndroidFileGroupDirectory.h"
 #include "AndroidAssetGroupDirectory.h"
@@ -10,23 +7,22 @@
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/VocabularyHelper.h"
-#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( AndroidFileGroup, Mengine::AndroidFileGroupPlugin )
+SERVICE_FACTORY( FileSystem, Mengine::AndroidFileSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AndroidFileGroupPlugin::AndroidFileGroupPlugin()
+    AndroidFileSystem::AndroidFileSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AndroidFileGroupPlugin::~AndroidFileGroupPlugin()
+    AndroidFileSystem::~AndroidFileSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidFileGroupPlugin::_initializePlugin()
+    bool AndroidFileSystem::_initializeService()
     {
         FactoryInterfacePtr factoryGlobalDirGroupDirectory = Helper::makeFactoryDefault<AndroidFileGroupDirectory>( MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), factoryGlobalDirGroupDirectory, MENGINE_DOCUMENT_FACTORABLE );
@@ -37,14 +33,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidFileGroupPlugin::_finalizePlugin()
+    void AndroidFileSystem::_finalizeService()
     {
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ) );
-    }
-    ///////////////////////////////////////////////////////////////////////
-    void AndroidFileGroupPlugin::_destroyPlugin()
-    {
     }
     //////////////////////////////////////////////////////////////////////////
 }

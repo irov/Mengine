@@ -192,6 +192,7 @@ Sound
 ADD_FILTER(
 File
     FileServiceInterface.h
+    FileSystemInterface.h
     FileInputStreamInterface.h
     FileOutputStreamInterface.h
     FileMappedInterface.h

@@ -1,9 +1,9 @@
-MENGINE_PROJECT(AndroidFileGroupPlugin)
+MENGINE_PROJECT(AndroidFileSystem)
 
 ADD_FILTER(
 src
-    AndroidFileGroupPlugin.h
-    AndroidFileGroupPlugin.cpp
+    AndroidFileSystem.h
+    AndroidFileSystem.cpp
 
     AndroidAssetGroupDirectory.cpp
     AndroidAssetGroupDirectory.h
@@ -22,8 +22,7 @@ src
     AndroidFileOutputStream.h
 )
 
-
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_ANDROID_FILEGROUP)
+ADD_MENGINE_LIBRARY(Systems)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Android)

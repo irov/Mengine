@@ -6,6 +6,8 @@
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
+#include "stdex/memorycopy.h"
+
 #define SHA1_ROLL Detail::SHA1_rotl32
 #define SHA1_BLK0(i) (block->l[i] = (SHA1_ROLL(block->l[i],24)&0xFF00FF00) | (SHA1_ROLL(block->l[i],8)&0x00FF00FF))
 #define SHA1_BLK(i) (block->l[i&15] = SHA1_ROLL(block->l[(i+13)&15]^block->l[(i+8)&15]^block->l[(i+2)&15]^block->l[i&15],1))
@@ -105,7 +107,7 @@ namespace Mengine
 
                 if( (j + len) > 63 )
                 {
-                    StdString::memcpy( &context->buffer[j], data, (i = 64 - j) * sizeof( uint8_t ) );
+                    stdex::memorycopy( context->buffer, j, data, (i = 64 - j) * sizeof( uint8_t ) );
 
                     SHA1_Transform( context->state, context->buffer );
 
@@ -121,7 +123,7 @@ namespace Mengine
                     i = 0;
                 }
 
-                StdString::memcpy( &context->buffer[j], &data[i], (len - i) * sizeof( uint8_t ) );
+                stdex::memorycopy( context->buffer, j, &data[i], (len - i) * sizeof( uint8_t ) );
             }
             //////////////////////////////////////////////////////////////////////////
             MENGINE_INLINE void SHA1_Final( SHA1_CTX * context, uint8_t * const digest, size_t _size )

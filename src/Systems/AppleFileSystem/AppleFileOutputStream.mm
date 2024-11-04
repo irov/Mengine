@@ -10,7 +10,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AppleFileOutputStream::AppleFileOutputStream()
-        : m_rwops( nullptr )
+        : m_fileHandle( nil )
         , m_size( 0 )
         , m_withTemp( false )
     {
@@ -68,19 +68,25 @@ namespace Mengine
         }
 #endif
 
-        SDL_RWops * rwops = SDL_RWFromFile( concatenatePath, "wb" );
-
-        if( rwops == nullptr )
+        NSFileHandle * fileHandle = [NSFileHandle fileHandleForWritingAtPath:@(concatenatePath)];
+        
+        if( fileHandle == nil )
         {
-            LOGGER_ERROR( "file %s invalid open error '%s'"
+            [[NSFileManager defaultManager] createFileAtPath:@(concatenatePath) contents:nil attributes:nil];
+            
+            fileHandle = [NSFileHandle fileHandleForWritingAtPath:@(concatenatePath)];
+        }
+
+        if( fileHandle == nil )
+        {
+            LOGGER_ERROR( "file %s invalid open"
                 , concatenatePath
-                , SDL_GetError()
             );
 
             return false;
         }
 
-        m_rwops = rwops;
+        m_fileHandle = fileHandle;
 
         m_size = 0;
 
@@ -89,71 +95,39 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileOutputStream::close()
     {
-        if( m_rwops == nullptr )
+        if( m_fileHandle == nullptr )
         {
             return true;
         }
 
-        SDL_RWclose( m_rwops );
-        m_rwops = nullptr;
+        [m_fileHandle closeFile];
+        m_fileHandle = nil;
 
         m_size = 0;
-
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        if( m_withTemp == true )
-        {
-            Char fullPathTemp[MENGINE_MAX_PATH + 1] = {'\0'};
-            if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath, STRINGIZE_FILEPATH_LOCAL( ".~tmp" )}, fullPathTemp ) == false )
-            {
-                LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
-                    , m_folderPath.c_str()
-                    , m_filePath.c_str()
-                );
-
-                return false;
-            }
-
-            Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
-            if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath}, fullPath ) == false )
-            {
-                LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"
-                    , m_folderPath.c_str()
-                    , m_filePath.c_str()
-                );
-
-                return false;
-            }
-
-            if( PLATFORM_SERVICE()
-                ->moveFile( fullPathTemp, fullPath ) == false )
-            {
-                return false;
-            }
-        }
-#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AppleFileOutputStream::write( const void * _data, size_t _size )
     {
-        size_t written = SDL_RWwrite( m_rwops, _data, 1, _size );
-
-        if( written != _size )
+        NSData * data = [NSData dataWithBytes:_data length:_size];
+        
+        NSError * error = nil;
+        if( [m_fileHandle writeData:data error:&error] == NO )
         {
             LOGGER_ERROR( "invalid write file '%s:%s' size %zu [error: %s]"
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
                 , _size
-                , SDL_GetError()
+                , [error.domain UTF8String]
             );
 
             return 0;
         }
 
-        m_size += written;
+        m_size += _size;
 
-        return written;
+        return _size;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AppleFileOutputStream::size() const
@@ -168,9 +142,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    SDL_RWops * AppleFileOutputStream::getRWops() const
+    NSFileHandle * AppleFileOutputStream::getFileHandle() const
     {
-        return m_rwops;
+        return m_fileHandle;
     }
     //////////////////////////////////////////////////////////////////////////
 }

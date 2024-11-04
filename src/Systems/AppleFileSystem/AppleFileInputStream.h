@@ -6,7 +6,7 @@
 #include "Kernel/ThreadGuard.h"
 #include "Kernel/BaseDebugFile.h"
 
-#include "SDL_rwops.h"
+#import <Foundation/Foundation.h>
 
 #ifndef MENGINE_FILE_STREAM_BUFFER_SIZE
 #define MENGINE_FILE_STREAM_BUFFER_SIZE 4096
@@ -49,7 +49,7 @@ namespace Mengine
         bool memory( void ** const _memory, size_t * const _size ) override;
 
     public:
-        m_fileHandle * getFileHandle() const;
+        NSFileHandle * getFileHandle() const;
 
     protected:
         bool openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char *  const _fullPath );

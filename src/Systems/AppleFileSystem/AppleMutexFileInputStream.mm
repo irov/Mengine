@@ -1,4 +1,4 @@
-#include "SDLMutexFileInputStream.h"
+#include "AppleMutexFileInputStream.h"
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
@@ -10,6 +10,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/PathHelper.h"
+#include "Kernel/DebugFileHelper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -175,20 +176,20 @@ namespace Mengine
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
-        SDL_RWops * rwops = m_stream->getRWops();
+        NSFileHandle * fileHandle = m_stream->getFileHandle();
 
         size_t current = m_reading - m_capacity + m_carriage;
 
-        size_t pos = m_offset + current;
+        size_t seek_pos = m_offset + current;
 
-        Sint64 result = SDL_RWseek( rwops, static_cast<Sint64>(pos), RW_SEEK_SET );
-
-        if( 0 > result )
+        NSError * seek_error = nil;
+        if( [fileHandle seekToOffset:seek_pos error:&seek_error] == NO )
         {
-            LOGGER_ERROR( "seek %zu:%zu get [error: %s]"
-                , pos
+            LOGGER_ERROR( "file '%s' seek %zu:%zu get [error: %s]"
+                , Helper::getDebugFullPath( m_stream ).c_str()
+                , seek_pos
                 , m_size
-                , SDL_GetError()
+                , [seek_error.description UTF8String]
             );
 
             return false;
@@ -196,9 +197,32 @@ namespace Mengine
 
         uint8_t * buf_offset = MENGINE_PVOID_OFFSET( _buf, _offset );
 
-        size_t bytesRead = SDL_RWread( rwops, buf_offset, 1, _size );
+        NSError * read_error = nil;
+        NSData * data = [fileHandle readDataUpToLength:_size error:&read_error];
+        
+        if( read_error != nil )
+        {
+            LOGGER_ERROR( "read file '%s' offset %zu size %zu:%zu get error %s"
+                , Helper::getDebugFullPath( m_stream ).c_str()
+                , _offset
+                , _size
+                , m_size
+                , [read_error.description UTF8String]
+            );
+            
+            return false;
+        }
 
-        *_read = bytesRead;
+        if( data.length == 0 )
+        {
+            *_read = 0;
+
+            return true;
+        }
+        
+        stdex::memorycopy( buf_offset, 0, data.bytes, data.length );
+
+        *_read = data.length;
 
         return true;
     }

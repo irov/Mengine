@@ -8,8 +8,6 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/BaseDebugFile.h"
 
-#include "SDL_rwops.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

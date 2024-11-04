@@ -9,6 +9,8 @@
 
 #include "Config/StdString.h"
 
+#include "stdex/memorycopy.h"
+
 #ifndef MENGINE_THEORA_OGG_BUFFER_SIZE
 #define MENGINE_THEORA_OGG_BUFFER_SIZE 4096
 #endif
@@ -168,7 +170,7 @@ namespace Mengine
                 }
                 else
                 {
-                    StdString::memcpy( &m_oggStreamState, &oggStreamStateTest, sizeof( ogg_stream_state ) );
+                    stdex::memorycopy( &m_oggStreamState, 0, &oggStreamStateTest, sizeof( ogg_stream_state ) );
 
                     theoraHeader = true;
                 }

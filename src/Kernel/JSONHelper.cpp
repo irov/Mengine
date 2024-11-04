@@ -7,6 +7,8 @@
 
 #include "Config/StdString.h"
 
+#include "stdex/memorycopy.h"
+
 namespace Mengine
 {
     namespace Helper
@@ -58,7 +60,7 @@ namespace Mengine
                 }
 
                 const uint8_t * jd_buffer = jd->buffer + jd->carriage;
-                StdString::memcpy( _buffer, jd_buffer, _buflen );
+                stdex::memorycopy( _buffer, 0, jd_buffer, _buflen );
                 jd->carriage += _buflen;
 
                 return _buflen;

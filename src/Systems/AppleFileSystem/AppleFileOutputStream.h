@@ -3,9 +3,12 @@
 #include "Interface/FileOutputStreamInterface.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/BaseDebugFile.h"
 
-#include "SDL_rwops.h"
+#if defined(MENGINE_DEBUG)
+#   include "Kernel/BaseDebugFile.h"
+#endif
+
+#import <Foundation/Foundation.h>
 
 namespace Mengine
 {
@@ -35,10 +38,10 @@ namespace Mengine
         bool flush() override;
 
     public:
-        SDL_RWops * getRWops() const;
+        NSFileHandle * getFileHandle() const;
 
     protected:
-        SDL_RWops * m_rwops;
+        NSFileHandle * m_fileHandle;
 
         size_t m_size;
 

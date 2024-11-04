@@ -96,10 +96,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////    
     size_t iOSPlatformService::getCurrentPath( Char * const _currentPath ) const
     {
-        const Char deploy_mac_data[] = "";
-        StdString::strcpy( _currentPath, deploy_mac_data );
+        NSString * path = [[NSBundle mainBundle] resourcePath];
+        
+        StdString::strncpy( _currentPath, [path UTF8String], MENGINE_MAX_PATH );
+        StdString::strncat( _currentPath, "/", MENGINE_MAX_PATH );
 
-        return sizeof( deploy_mac_data ) - 1;
+        size_t path_length = [path length] + 1;
+        
+        return path_length;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t iOSPlatformService::getUserPath( Char * const _userPath ) const
@@ -1662,7 +1666,7 @@ namespace Mengine
     {
         Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
-
+        
         if( [[NSFileManager defaultManager] fileExistsAtPath:@(pathCorrect)] == NO)
         {
             return false;

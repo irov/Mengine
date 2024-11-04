@@ -8,6 +8,8 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/DebugFileHelper.h"
 
+#include "Config/StdString.h"
+
 #include "stdex/memorycopy.h"
 
 namespace Mengine
@@ -50,21 +52,25 @@ namespace Mengine
             return false;
         }
 
-        Sint64 size = SDL_RWsize( m_rwops );
+        NSError * error = nil;
+        NSDictionary * attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:@(fullPath) error:&error];
 
-        if( 0 > size )
+        if( attributes == nil )
         {
-            LOGGER_ERROR( "invalid file '%s' size %zu [error: %s]"
+            LOGGER_ERROR( "invalid file '%s' size [error: %s]"
                 , fullPath
-                , (size_t)size
-                , SDL_GetError()
+                , [error.description UTF8String]
             );
 
             this->close();
-
+            
             return false;
         }
-
+        
+        NSNumber * attribute_filesize = attributes[NSFileSize];
+        
+        size_t size = attribute_filesize.unsignedLongLongValue;
+        
         if( _size != ~0U )
         {
             if( _offset + _size > (size_t)size )
@@ -94,15 +100,15 @@ namespace Mengine
 
         if( m_offset != 0 )
         {
-            Sint64 result = SDL_RWseek( m_rwops, static_cast<Sint64>(m_offset), RW_SEEK_SET );
-
-            if( 0 > result )
+            
+            NSError * error = nil;
+            if( [m_fileHandle seekToOffset:m_offset error:&error] == NO )
             {
                 LOGGER_ERROR( "file '%s' seek offset %zu size %zu get [error: %s]"
                     , fullPath
                     , m_offset
                     , m_size
-                    , SDL_GetError()
+                    , [error.description UTF8String]
                 );
 
                 return false;
@@ -124,7 +130,7 @@ namespace Mengine
             return false;
         }
 
-        NSError *error = nil;
+        NSError * error = nil;
         NSFileHandle * fileHandle = [NSFileHandle fileHandleForReadingAtPath:@(_fullPath)];
 
         if( fileHandle == nil )
@@ -142,7 +148,7 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath, _filePath, m_streaming );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath, _filePath, true, m_streaming );
         }
 #endif
 
@@ -150,35 +156,35 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileInputStream::close()
-    {
-        if( m_rwops == nullptr )
+{
+        if( m_fileHandle == nullptr )
         {
             return true;
         }
-
+        
 #if defined(MENGINE_DEBUG)
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )
         {
             const FilePath & folderPath = this->getDebugFolderPath();
             const FilePath & filePath = this->getDebugFilePath();
-
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, folderPath.c_str(), filePath.c_str(), m_streaming );
+            
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, folderPath, filePath, true, m_streaming );
         }
 #endif
-
-        int error = SDL_RWclose( m_rwops );
-        m_rwops = nullptr;
-
-        if( error != 0 )
+        
+        NSError * error = nil;
+        if( [m_fileHandle closeAndReturnError:&error] == NO )
         {
             LOGGER_ERROR( "invalid close file '%s' get error: %s"
                 , Helper::getDebugFullPath( this ).c_str()
-                , SDL_GetError()
+                , [error.description UTF8String]
             );
-
+            
             return false;
         }
 
+        m_fileHandle = nil;
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -265,16 +271,32 @@ namespace Mengine
 
         uint8_t * buf_offset = MENGINE_PVOID_OFFSET( _buf, _offset );
 
-        size_t bytesRead = SDL_RWread( m_rwops, buf_offset, 1, _size );
-
-        if( bytesRead == 0 )
+        NSError * error = nil;
+        NSData * data = [m_fileHandle readDataUpToLength:_size error:&error];
+        
+        if( error != nil )
+        {
+            LOGGER_ERROR( "read file '%s' offset %zu size %zu:%zu get error %s"
+                , Helper::getDebugFullPath( this ).c_str()
+                , _offset
+                , _size
+                , m_size
+                , [error.description UTF8String]
+            );
+            
+            return false;
+        }
+        
+        if( data.length == 0 )
         {
             *_read = 0;
 
             return true;
         }
+        
+        stdex::memorycopy( buf_offset, 0, data.bytes, data.length );
 
-        *_read = bytesRead;
+        *_read = data.length;
 
         return true;
     }
@@ -312,17 +334,16 @@ namespace Mengine
         }
         else
         {
-            Sint64 seek_pos = static_cast<Sint64>(m_offset + _pos);
+            size_t seek_pos = m_offset + _pos;
 
-            Sint64 result = SDL_RWseek( m_rwops, seek_pos, RW_SEEK_SET );
-
-            if( result < 0 )
+            NSError * error = nil;
+            if( [m_fileHandle seekToOffset:seek_pos error:&error] == NO )
             {
-                LOGGER_ERROR( "file '%s' seek %zu:%zu get [error: %s]"
+                LOGGER_ERROR( "invalid file: %s seek: %zu size:%zu error: %s"
                     , Helper::getDebugFullPath( this ).c_str()
-                    , _pos
+                    , seek_pos
                     , m_size
-                    , SDL_GetError()
+                    , [error.description UTF8String]
                 );
 
                 return false;
@@ -330,8 +351,10 @@ namespace Mengine
 
             m_carriage = 0;
             m_capacity = 0;
+            
+            size_t result_seek = [m_fileHandle offsetInFile];
 
-            m_reading = static_cast<size_t>(result) - m_offset;
+            m_reading = result_seek - m_offset;
         }
 
         return true;
@@ -411,9 +434,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    SDL_RWops * AppleFileInputStream::getRWops() const
+    NSFileHandle * AppleFileInputStream::getFileHandle() const
     {
-        return m_rwops;
-    }    
+        return m_fileHandle;
+    }
     //////////////////////////////////////////////////////////////////////////
 }

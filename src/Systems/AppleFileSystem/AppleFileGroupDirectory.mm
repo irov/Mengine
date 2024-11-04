@@ -18,8 +18,6 @@
 #include "Kernel/PathString.h"
 #include "Kernel/DocumentHelper.h"
 
-#include "SDL_rwops.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -35,7 +33,7 @@ namespace Mengine
     {
         m_factoryInputStreamFile = Helper::makeFactoryPool<AppleFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryInputStreamMutexFile = Helper::makeFactoryPool<AppleMutexFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryOutputStreamFile = Helper::makeFactoryPool<FileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryOutputStreamFile = Helper::makeFactoryPool<AppleFileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -213,7 +211,7 @@ namespace Mengine
             }
         }
 
-        SDLFileInputStreamPtr stream = m_factoryInputStreamFile->createObject( _doc );
+        AppleFileInputStreamPtr stream = m_factoryInputStreamFile->createObject( _doc );
         
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create input file '%s:%s'"
             , m_folderPath.c_str()
@@ -321,7 +319,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr AppleFileGroupDirectory::createOutputFile( const DocumentInterfacePtr & _doc )
     {
-        SDLFileOutputStreamPtr stream = m_factoryOutputStreamFile->createObject( _doc );
+        AppleFileOutputStreamPtr stream = m_factoryOutputStreamFile->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create output file" );
 

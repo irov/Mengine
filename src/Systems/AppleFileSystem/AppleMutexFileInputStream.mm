@@ -1,7 +1,6 @@
 #include "AppleMutexFileInputStream.h"
 
-#include "Interface/UnicodeSystemInterface.h"
-#include "Interface/ThreadServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #if defined(MENGINE_DEBUG)
 #   include "Interface/PlatformServiceInterface.h"
@@ -315,7 +314,7 @@ namespace Mengine
             return false;
         }
 
-        uint64_t ft = PLATFORM_SERVICE()
+        uint64_t ft = FILE_SYSTEM()
             ->getFileTime( fullPath );
 
         *_time = ft;

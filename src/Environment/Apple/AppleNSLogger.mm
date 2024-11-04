@@ -26,6 +26,17 @@ namespace Mengine
         
         Char buffer[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
+        if( message.level == LM_ERROR )
+        {
+            StdString::strcat( buffer, "🔴" );
+            StdString::strcat( buffer, " " );
+        }
+        else if( message.level == LM_WARNING )
+        {
+            StdString::strcat( buffer, "🟡" );
+            StdString::strcat( buffer, " " );
+        }
+        
         if( message.flag & LFLAG_TIMESTAMP )
         {
             Char datestamp[256 + 1] = {'\0'};

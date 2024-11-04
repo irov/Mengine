@@ -1,7 +1,6 @@
 #include "AppleFileInputStream.h"
 
-#include "Interface/UnicodeSystemInterface.h"
-#include "Interface/PlatformServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadGuardScope.h"
@@ -100,7 +99,6 @@ namespace Mengine
 
         if( m_offset != 0 )
         {
-            
             NSError * error = nil;
             if( [m_fileHandle seekToOffset:m_offset error:&error] == NO )
             {
@@ -413,7 +411,7 @@ namespace Mengine
             return false;
         }
 
-        uint64_t ft = PLATFORM_SERVICE()
+        uint64_t ft = FILE_SYSTEM()
             ->getFileTime( fullPath );
 
         *_time = ft;

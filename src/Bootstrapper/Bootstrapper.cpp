@@ -2160,6 +2160,8 @@ namespace Mengine
                 ->unloadPlugins();
         }
 
+        SERVICE_FINALIZE( FileSystem );
+
         SERVICE_FINALIZE( LoaderService );
         SERVICE_FINALIZE( TimerService );
         SERVICE_FINALIZE( TimelineService );
@@ -2263,6 +2265,8 @@ namespace Mengine
 #if defined(MENGINE_SYSTEM_HTTP)
         SERVICE_DESTROY( HttpSystem );
 #endif
+
+        SERVICE_DESTROY( FileSystem );
 
         SERVICE_DESTROY( HttpService );
         SERVICE_DESTROY( SceneService );

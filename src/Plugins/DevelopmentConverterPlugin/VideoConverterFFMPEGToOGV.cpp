@@ -45,13 +45,13 @@ namespace Mengine
         const FilePath & inputFolderPath = inputFileGroup->getFolderPath();
         const FilePath & outputFolderPath = outputFileGroup->getFolderPath();
 
-        String full_input;
-        full_input.append( inputFolderPath.c_str() );
-        full_input.append( inputFilePath.c_str() );
+        PathString full_input;
+        full_input.append( inputFolderPath );
+        full_input.append( inputFilePath );
 
-        String full_output;
-        full_output.append( outputFolderPath.c_str() );
-        full_output.append( outputFilePath.c_str() );
+        PathString full_output;
+        full_output.append( outputFolderPath );
+        full_output.append( outputFilePath );
 
         String quality = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "quality" ), "" );
         String resize = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "resize" ), "None" );

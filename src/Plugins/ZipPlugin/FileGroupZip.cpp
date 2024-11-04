@@ -542,7 +542,7 @@ namespace Mengine
         MENGINE_UNUSED( _lambda );
 
         PathString mask;
-        mask.append( _filePath.c_str(), _filePath.size() );
+        mask.append( _filePath );
         mask.append( _mask );
 
         for( const FilePath & path : m_indexes )

@@ -1,6 +1,6 @@
 #include "SDLFileOutputStream.h"
 
-#include "Interface/PlatformServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/PathHelper.h"
@@ -142,7 +142,7 @@ namespace Mengine
                 return false;
             }
 
-            if( PLATFORM_SERVICE()
+            if( FILE_SYSTEM()
                 ->moveFile( fullPathTemp, fullPath ) == false )
             {
                 return false;

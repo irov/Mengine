@@ -2,14 +2,13 @@
 
 #include "Interface/ThreadProcessorInterface.h"
 
+#include "Environment/SDL/SDLIncluder.h"
+
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
 
 #include "Config/Atomic.h"
-
-#include "SDL_thread.h"
-#include "SDL_timer.h"
 
 namespace Mengine
 {

@@ -11,7 +11,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static int s_treadJob( void * _userData )
+        static int treadJob( void * _userData )
         {
             SDLThreadProcessor * thread = reinterpret_cast<SDLThreadProcessor *>(_userData);
 
@@ -133,7 +133,7 @@ namespace Mengine
         m_conditionLock = conditionLock;
         m_conditionVariable = conditionVariable;
 
-        SDL_Thread * thread = SDL_CreateThread( &Detail::s_treadJob, m_description.nameA, reinterpret_cast<void *>(this) );
+        SDL_Thread * thread = SDL_CreateThread( &Detail::treadJob, m_description.nameA, reinterpret_cast<void *>(this) );
 
         if( thread == nullptr )
         {
@@ -223,7 +223,7 @@ namespace Mengine
                 if( m_exit == false )
                 {
                     m_mutex->lock();
-                    m_task->main();
+                    m_task->process();
                     m_mutex->unlock();
                 }
 

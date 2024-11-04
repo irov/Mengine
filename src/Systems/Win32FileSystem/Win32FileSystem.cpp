@@ -3,6 +3,10 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 
+#include "Environment/Windows/WindowsIncluder.h"
+#include "Environment/Windows/Win32Helper.h"
+#include "Environment/Windows/Win32FileHelper.h"
+
 #include "Win32FileGroupDirectoryFactory.h"
 #include "Win32FileGroupDirectory.h"
 
@@ -10,7 +14,12 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/PathHelper.h"
 #include "Kernel/VocabularyHelper.h"
+#include "Kernel/UnicodeHelper.h"
+#include "Kernel/Logger.h"
+
+#include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FileSystem, Mengine::Win32FileSystem );
@@ -49,6 +58,318 @@ namespace Mengine
     {
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileSystem::existDirectory( const Char * _path, const Char * _directory ) const
+    {
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _path ) == 0
+            || (StdString::strrchr( _path, '.' ) > StdString::strrchr( _path, MENGINE_PATH_DELIM )
+                || _path[StdString::strlen( _path ) - 1] == MENGINE_PATH_DELIM
+                || _path[StdString::strlen( _path ) - 1] == MENGINE_WIN32_PATH_DELIM)
+            , "invalid path '%s'", _path
+        );
+
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _directory ) == 0
+            || (StdString::strrchr( _directory, '.' ) > StdString::strrchr( _directory, MENGINE_PATH_DELIM )
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_DELIM
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_WIN32_PATH_DELIM)
+            , "invalid directory '%s'", _directory
+        );
+
+        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar unicode_directory[MENGINE_MAX_PATH + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( _directory, unicode_directory, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar pathDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Helper::pathCorrectBackslashToW( pathDirectory, unicode_directory );
+
+        Helper::pathRemoveFileSpecW( pathDirectory );
+
+        size_t len = StdString::wcslen( pathDirectory );
+
+        if( len == 0 )
+        {
+            return true;
+        }
+
+        WChar pathFull[MENGINE_MAX_PATH + 1] = {'\0'};
+        MENGINE_SWPRINTF( pathFull, MENGINE_MAX_PATH, L"%ls%ls"
+            , unicode_path
+            , pathDirectory
+        );
+
+        if( pathFull[len - 1] == L':' )
+        {
+            return true;
+        }
+
+        DWORD attributes = ::GetFileAttributes( pathFull );
+
+        if( attributes == INVALID_FILE_ATTRIBUTES )
+        {
+            return false;
+        }
+
+        if( (attributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileSystem::createDirectory( const Char * _path, const Char * _directory )
+    {
+        LOGGER_INFO( "file", "create directory path '%s' directory '%s'"
+            , _path
+            , _directory
+        );
+
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _path ) == 0
+            || (StdString::strrchr( _path, '.' ) > StdString::strrchr( _path, MENGINE_PATH_DELIM )
+                || _path[StdString::strlen( _path ) - 1] == MENGINE_PATH_DELIM
+                || _path[StdString::strlen( _path ) - 1] == MENGINE_WIN32_PATH_DELIM)
+            , "invalid path '%s'", _path
+        );
+
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _directory ) == 0
+            || (StdString::strrchr( _directory, '.' ) > StdString::strrchr( _directory, MENGINE_PATH_DELIM )
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_DELIM
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_WIN32_PATH_DELIM)
+            , "invalid directory '%s'", _directory
+        );
+
+        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar unicode_directory[MENGINE_MAX_PATH + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( _directory, unicode_directory, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        bool result = Helper::Win32CreateDirectory( unicode_path, unicode_directory );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileSystem::existFile( const Char * _filePath )
+    {
+        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( _filePath, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        bool result = Helper::Win32ExistFile( unicode_path );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileSystem::removeFile( const Char * _filePath )
+    {
+        LOGGER_INFO( "file", "remove file '%s'"
+            , _filePath
+        );
+
+        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( _filePath, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar pathCorrect[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Helper::pathCorrectBackslashToW( pathCorrect, unicode_path );
+
+        if( ::DeleteFileW( pathCorrect ) == FALSE )
+        {
+            LOGGER_ERROR( "invalid DeleteFile '%ls' %ls"
+                , pathCorrect
+                , Helper::Win32GetLastErrorMessageW()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileSystem::moveFile( const Char * _oldFilePath, const Char * _newFilePath )
+    {
+        LOGGER_INFO( "file", "move file from '%s' to '%s'"
+            , _oldFilePath
+            , _newFilePath
+        );
+
+        WChar unicode_oldFilePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( _oldFilePath, unicode_oldFilePath, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar oldFilePathCorrect[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Helper::pathCorrectBackslashToW( oldFilePathCorrect, unicode_oldFilePath );
+
+        WChar unicode_newFilePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( _newFilePath, unicode_newFilePath, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar newFilePathCorrect[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Helper::pathCorrectBackslashToW( newFilePathCorrect, unicode_newFilePath );
+
+#if defined(MENGINE_DEBUG)
+        DWORD oldFileAttributes = ::GetFileAttributesW( oldFilePathCorrect );
+
+        if( oldFileAttributes != INVALID_FILE_ATTRIBUTES && (oldFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY )
+        {
+            LOGGER_WARNING( "invalid move old file '%ls' it's directory"
+                , newFilePathCorrect
+            );
+
+            return false;
+        }
+#endif
+
+        DWORD newFileAttributes = ::GetFileAttributesW( newFilePathCorrect );
+
+        if( newFileAttributes != INVALID_FILE_ATTRIBUTES )
+        {
+#if defined(MENGINE_DEBUG)
+            if( (newFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY )
+            {
+                LOGGER_WARNING( "invalid move file '%ls' it's directory"
+                    , newFilePathCorrect
+                );
+
+                return false;
+            }
+#endif
+
+            if( ::DeleteFileW( newFilePathCorrect ) == FALSE )
+            {
+                LOGGER_ERROR( "invalid move file '%ls' %ls"
+                    , newFilePathCorrect
+                    , Helper::Win32GetLastErrorMessageW()
+                );
+            }
+        }
+
+        if( ::MoveFileW( oldFilePathCorrect, newFilePathCorrect ) == FALSE )
+        {
+            LOGGER_ERROR( "file '%ls' move to '%ls' %ls"
+                , oldFilePathCorrect
+                , newFilePathCorrect
+                , Helper::Win32GetLastErrorMessageW()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileSystem::findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const
+    {
+        WChar unicode_base[MENGINE_MAX_PATH + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar unicode_mask[MENGINE_MAX_PATH + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( _mask, unicode_mask, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar unicode_fullbase[MENGINE_MAX_PATH + 1] = {L'\0'};
+        ::GetFullPathNameW( unicode_base, MENGINE_MAX_PATH, unicode_fullbase, NULL );
+
+        Helper::LambdaListDirectoryFilePath lambda_listdirectory = [_lambda]( const WChar * _filePath )
+        {
+            Char utf8_filepath[MENGINE_MAX_PATH + 1] = {'\0'};
+            if( Helper::unicodeToUtf8( _filePath, utf8_filepath, MENGINE_MAX_PATH ) == false )
+            {
+                return false;
+            }
+
+            FilePath fp = Helper::stringizeFilePath( utf8_filepath );
+
+            bool result = _lambda( fp );
+
+            return result;
+        };
+
+        bool stop;
+        if( Helper::Win32ListDirectory( unicode_fullbase, unicode_mask, unicode_path, lambda_listdirectory, &stop ) == false )
+        {
+            return false;
+        }
+
+        MENGINE_UNUSED( stop );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint64_t Win32FileSystem::getFileTime( const Char * _filePath ) const
+    {
+        WChar unicode_filePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH );
+
+        HANDLE handle = ::CreateFileW( unicode_filePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+
+        if( handle == INVALID_HANDLE_VALUE )
+        {
+            LOGGER_ERROR( "get file time '%ls' invalid CreateFile %ls"
+                , unicode_filePath
+                , Helper::Win32GetLastErrorMessageW()
+            );
+
+            return 0U;
+        }
+
+        FILETIME creation;
+        FILETIME access;
+        FILETIME write;
+
+        BOOL result = ::GetFileTime( handle, &creation, &access, &write );
+
+        if( result == FALSE )
+        {
+            ::CloseHandle( handle );
+
+            LOGGER_ERROR( "get file time '%ls' invalid GetFileTime %ls"
+                , unicode_filePath
+                , Helper::Win32GetLastErrorMessageW()
+            );
+
+            return 0U;
+        }
+
+        ::CloseHandle( handle );
+
+        time_t time = Helper::Win32FileTimeToUnixTime( &write );
+
+        return time;
     }
     //////////////////////////////////////////////////////////////////////////
 }

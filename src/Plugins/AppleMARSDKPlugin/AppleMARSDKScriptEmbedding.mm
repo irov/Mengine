@@ -128,7 +128,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<PythonAppleMARSDKProvider, AppleMARSDKProviderInterface> PythonAppleMARSDKProviderPtr;
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleMARSDK_setProvider( pybind::kernel_interface * _kernel, const pybind::dict & _cbs, const pybind::args & _args )
+        static void AppleMARSDK_setProvider(pybind::kernel_interface * _kernel, const pybind::dict & _cbs, const pybind::args & _args )
         {
             AppleMARSDKProviderInterfacePtr provider = Helper::makeFactorableUnique<PythonAppleMARSDKProvider>( MENGINE_DOCUMENT_PYBIND, _cbs, _args );
 
@@ -136,7 +136,7 @@ namespace Mengine
                 ->setProvider( provider );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleMARSDK_login()
+        static bool AppleMARSDK_login()
         {
             bool result = APPLE_MARSDK_SERVICE()
                 ->login();
@@ -144,7 +144,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleMARSDK_logout()
+        static bool AppleMARSDK_logout()
         {
             bool result = APPLE_MARSDK_SERVICE()
                 ->logout();
@@ -152,7 +152,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleMARSDK_switchAccount()
+        static bool AppleMARSDK_switchAccount()
         {
             bool result = APPLE_MARSDK_SERVICE()
                 ->switchAccount();
@@ -160,37 +160,37 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleMARSDK_requestNonConsumablePurchased()
+        static void AppleMARSDK_requestNonConsumablePurchased()
         {
             APPLE_MARSDK_SERVICE()
                 ->requestNonConsumablePurchased();
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleMARSDK_submitExtendedData( const Char * _data )
+        static void AppleMARSDK_submitExtendedData(const Char * _data )
         {
             APPLE_MARSDK_SERVICE()
                 ->submitExtendedData( _data );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleMARSDK_submitPaymentData( const Char * _data )
+        static void AppleMARSDK_submitPaymentData(const Char * _data )
         {
             APPLE_MARSDK_SERVICE()
                 ->submitPaymentData( _data );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleMARSDK_propComplete( const ConstString & _orderId )
+        static void AppleMARSDK_propComplete(const ConstString & _orderId )
         {
             APPLE_MARSDK_SERVICE()
                 ->propComplete( _orderId );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AppleMARSDK_showRewardVideoAd( const ConstString & _itemName, uint32_t _itemNum )
+        static void AppleMARSDK_showRewardVideoAd(const ConstString & _itemName, uint32_t _itemNum )
         {
             APPLE_MARSDK_SERVICE()
                 ->showRewardVideoAd( _itemName, _itemNum );
         }
         //////////////////////////////////////////////////////////////////////////
-        static int64_t s_AppleMARSDK_getInternetDate()
+        static int64_t AppleMARSDK_getInternetDate()
         {
             int64_t date = APPLE_MARSDK_SERVICE()
                 ->getInternetDate();
@@ -213,16 +213,16 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleMARSDK", true );
 
-        pybind::def_function_kernel_args( _kernel, "appleMARSDKSetProvider", &Detail::s_AppleMARSDK_setProvider );
-        pybind::def_function( _kernel, "appleMARSDKLogin", &Detail::s_AppleMARSDK_login );
-        pybind::def_function( _kernel, "appleMARSDKLogout", &Detail::s_AppleMARSDK_logout );
-        pybind::def_function( _kernel, "appleMARSDKSwitchAccount", &Detail::s_AppleMARSDK_switchAccount );
-        pybind::def_function( _kernel, "appleMARSDKRequestNonConsumablePurchased", &Detail::s_AppleMARSDK_requestNonConsumablePurchased );        
-        pybind::def_function( _kernel, "appleMARSDKSubmitExtendedData", &Detail::s_AppleMARSDK_submitExtendedData );
-        pybind::def_function( _kernel, "appleMARSDKSubmitPaymentData", &Detail::s_AppleMARSDK_submitPaymentData );
-        pybind::def_function( _kernel, "appleMARSDKPropComplete", &Detail::s_AppleMARSDK_propComplete );
-        pybind::def_function( _kernel, "appleMARSDKShowRewardVideoAd", &Detail::s_AppleMARSDK_showRewardVideoAd );
-        pybind::def_function( _kernel, "appleMARSDKGetInternetDate", &Detail::s_AppleMARSDK_getInternetDate );
+        pybind::def_function_kernel_args( _kernel, "appleMARSDKSetProvider", &Detail::AppleMARSDK_setProvider );
+        pybind::def_function( _kernel, "appleMARSDKLogin", &Detail::AppleMARSDK_login );
+        pybind::def_function( _kernel, "appleMARSDKLogout", &Detail::AppleMARSDK_logout );
+        pybind::def_function( _kernel, "appleMARSDKSwitchAccount", &Detail::AppleMARSDK_switchAccount );
+        pybind::def_function( _kernel, "appleMARSDKRequestNonConsumablePurchased", &Detail::AppleMARSDK_requestNonConsumablePurchased );
+        pybind::def_function( _kernel, "appleMARSDKSubmitExtendedData", &Detail::AppleMARSDK_submitExtendedData );
+        pybind::def_function( _kernel, "appleMARSDKSubmitPaymentData", &Detail::AppleMARSDK_submitPaymentData );
+        pybind::def_function( _kernel, "appleMARSDKPropComplete", &Detail::AppleMARSDK_propComplete );
+        pybind::def_function( _kernel, "appleMARSDKShowRewardVideoAd", &Detail::AppleMARSDK_showRewardVideoAd );
+        pybind::def_function( _kernel, "appleMARSDKGetInternetDate", &Detail::AppleMARSDK_getInternetDate );
         
         return true;
     }

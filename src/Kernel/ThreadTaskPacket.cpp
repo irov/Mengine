@@ -50,7 +50,7 @@ namespace Mengine
         for( const ThreadTaskPtr & task : m_tasks )
         {
             m_childMutex->lock();
-            task->main();
+            task->process();
             m_childMutex->unlock();
         }
 

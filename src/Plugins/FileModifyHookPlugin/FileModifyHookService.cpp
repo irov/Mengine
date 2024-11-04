@@ -1,8 +1,8 @@
 #include "FileModifyHookService.h"
 
-#include "Interface/PlatformServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/AssertionContainer.h"
@@ -99,7 +99,7 @@ namespace Mengine
 
         desc.lambda = _lambda;
 
-        desc.time = PLATFORM_SERVICE()
+        desc.time = FILE_SYSTEM()
             ->getFileTime( desc.fullPath );
 
         desc.modify = false;
@@ -162,7 +162,7 @@ namespace Mengine
 
         for( const FileModifyDesc & desc : m_fileModifies )
         {
-            uint64_t time = PLATFORM_SERVICE()
+            uint64_t time = FILE_SYSTEM()
                 ->getFileTime( desc.fullPath );
 
             if( desc.time == time )

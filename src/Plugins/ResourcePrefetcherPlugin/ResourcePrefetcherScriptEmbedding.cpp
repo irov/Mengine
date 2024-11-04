@@ -107,7 +107,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<PyPrefetcherObserver> PyPrefetcherObserverPtr;
         //////////////////////////////////////////////////////////////////////////
-        static bool s_prefetchResources( const ConstString & _groupName, const pybind::object & _cb, const pybind::args & _args )
+        static bool prefetchResources( const ConstString & _groupName, const pybind::object & _cb, const pybind::args & _args )
         {
             LOGGER_STATISTIC( "prefetch resources group '%s'"
                 , _groupName.c_str()
@@ -127,7 +127,7 @@ namespace Mengine
             return count != 0;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_unfetchResources( const ConstString & _groupName )
+        static void unfetchResources( const ConstString & _groupName )
         {
             LOGGER_STATISTIC( "unfetch resources category group '%s'"
                 , _groupName.c_str()
@@ -141,7 +141,7 @@ namespace Mengine
             } );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_prefetchFonts( const pybind::object & _cb, const pybind::args & _args )
+        static bool prefetchFonts( const pybind::object & _cb, const pybind::args & _args )
         {
             PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYBIND, ConstString::none(), _cb, _args );
 
@@ -162,7 +162,7 @@ namespace Mengine
             return count != 0;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_prefetchScripts( const pybind::object & _cb, const pybind::args & _args )
+        static bool prefetchScripts( const pybind::object & _cb, const pybind::args & _args )
         {
             PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYBIND, ConstString::none(), _cb, _args );
 
@@ -174,7 +174,7 @@ namespace Mengine
             return count != 0;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_unfetchFonts()
+        static void unfetchFonts()
         {
             FONT_SERVICE()
                 ->foreachGlyphs( []( const FontGlyphInterfacePtr & _glyph )
@@ -203,11 +203,11 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "ResourcePrefetcher", true );
 
-        pybind::def_function_args( _kernel, "prefetchResources", &Detail::s_prefetchResources );
-        pybind::def_function( _kernel, "unfetchResources", &Detail::s_unfetchResources );
-        pybind::def_function_args( _kernel, "prefetchFonts", &Detail::s_prefetchFonts );
-        pybind::def_function_args( _kernel, "prefetchScripts", &Detail::s_prefetchScripts );
-        pybind::def_function( _kernel, "unfetchFonts", &Detail::s_unfetchFonts );
+        pybind::def_function_args( _kernel, "prefetchResources", &Detail::prefetchResources );
+        pybind::def_function( _kernel, "unfetchResources", &Detail::unfetchResources );
+        pybind::def_function_args( _kernel, "prefetchFonts", &Detail::prefetchFonts );
+        pybind::def_function_args( _kernel, "prefetchScripts", &Detail::prefetchScripts );
+        pybind::def_function( _kernel, "unfetchFonts", &Detail::unfetchFonts );
 
         return true;
     }

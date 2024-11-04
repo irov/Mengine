@@ -51,7 +51,7 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * s_NodeAOITrigger_setEventListener( pybind::kernel_interface * _kernel, NodeAreaOfInterestTrigger * _node, PyObject * _args, PyObject * _kwds )
+        static PyObject * NodeAOITrigger_setEventListener(pybind::kernel_interface * _kernel, NodeAreaOfInterestTrigger * _node, PyObject * _args, PyObject * _kwds )
         {
             MENGINE_UNUSED( _args );
 
@@ -67,7 +67,7 @@ namespace Mengine
             return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
-        static AreaOfInterestZoneInterfacePtr s_createAreaOfInterestZone()
+        static AreaOfInterestZoneInterfacePtr createAreaOfInterestZone()
         {
             AreaOfInterestZoneInterfacePtr zone = AREAOFINTEREST_SERVICE()
                 ->createZone( MENGINE_DOCUMENT_PYBIND );
@@ -107,7 +107,7 @@ namespace Mengine
             .def( "getAreaOfInterestZone", &NodeAreaOfInterestTrigger::getAreaOfInterestZone )
             .def( "setTriggerUserData", &NodeAreaOfInterestTrigger::setTriggerUserData )
             .def( "getTriggerUserData", &NodeAreaOfInterestTrigger::getTriggerUserData )
-            .def_static_native_kernel( "setEventListener", &Detail::s_NodeAOITrigger_setEventListener )
+            .def_static_native_kernel( "setEventListener", &Detail::NodeAOITrigger_setEventListener )
             ;
 
         pybind::interface_<NodeAreaOfInterestActor, pybind::bases<Node>>( _kernel, "NodeAOIActor", false )
@@ -121,7 +121,7 @@ namespace Mengine
             .def( "getActorUserData", &NodeAreaOfInterestActor::getActorUserData )
             ;
 
-        pybind::def_function( _kernel, "createAreaOfInterestZone", &Detail::s_createAreaOfInterestZone );
+        pybind::def_function( _kernel, "createAreaOfInterestZone", &Detail::createAreaOfInterestZone );
 
         Helper::registerScriptWrapping<NodeAreaOfInterestTrigger>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<NodeAreaOfInterestActor>( _kernel, MENGINE_DOCUMENT_FACTORABLE );

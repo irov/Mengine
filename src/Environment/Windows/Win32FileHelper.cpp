@@ -105,15 +105,18 @@ namespace Mengine
             return handle;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool Win32ValidateFile( const WChar * _path )
+        bool Win32ValidateFile( const WChar * _filePath )
         {
+            WChar pathCorrect[MENGINE_MAX_PATH + 1] = {L'\0'};
+            Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
+
             WIN32_FIND_DATA wfd;
-            HANDLE hFind = ::FindFirstFile( _path, &wfd );
+            HANDLE hFind = ::FindFirstFile( pathCorrect, &wfd );
 
             if( hFind == INVALID_HANDLE_VALUE )
             {
                 LOGGER_ERROR( "file invalid find ??? (%ls) get error %ls"
-                    , _path
+                    , pathCorrect
                     , Helper::Win32GetLastErrorMessageW()
                 );
 
@@ -122,17 +125,146 @@ namespace Mengine
 
             ::FindClose( hFind );
 
-            const WChar * filename = ::PathFindFileNameW( _path );
+            const WChar * filename = ::PathFindFileNameW( pathCorrect );
 
             if( StdString::wcscmp( filename, wfd.cFileName ) != 0 )
             {
                 LOGGER_ERROR( "file invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
-                    , _path
+                    , pathCorrect
                     , filename
                     , wfd.cFileName
                 );
 
                 return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Win32ExistFile( const WChar * _filePath )
+        {
+            WChar pathCorrect[MENGINE_MAX_PATH + 1] = {L'\0'};
+            Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
+
+            size_t len = StdString::wcslen( pathCorrect );
+
+            if( len == 0 )
+            {
+                return false;
+            }
+
+            if( pathCorrect[len - 1] == L':' )
+            {
+                return true;
+            }
+
+            DWORD attributes = ::GetFileAttributesW( pathCorrect );
+
+            if( attributes == INVALID_FILE_ATTRIBUTES )
+            {
+                return false;
+            }
+
+            if( (attributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Win32CreateDirectory( const WChar * _basePath, const WChar * _directory )
+        {
+            size_t unicode_directorySize = StdString::wcslen( _directory );
+
+            if( unicode_directorySize == 0 )
+            {
+                return true;
+            }
+
+            WChar pathDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
+            Helper::pathCorrectBackslashToW( pathDirectory, _directory );
+
+            Helper::pathRemoveFileSpecW( pathDirectory );
+
+            if( StdString::wcslen( pathDirectory ) == 0 )
+            {
+                return true;
+            }
+
+            WChar pathTestDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
+            StdString::wcsncpy( pathTestDirectory, _basePath, MENGINE_MAX_PATH );
+            StdString::wcsncat( pathTestDirectory, pathDirectory, MENGINE_MAX_PATH );
+
+            if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
+            {
+                return true;
+            }
+
+            Helper::pathRemoveBackslashW( pathDirectory );
+
+            uint32_t paths_count = 0;
+            WChar paths[MENGINE_MAX_PATH + 1][16];
+
+            for( ;; )
+            {
+                StdString::wcsncpy( paths[paths_count++], pathDirectory, MENGINE_MAX_PATH );
+
+                if( Helper::pathRemoveFileSpecW( pathDirectory ) == false )
+                {
+                    break;
+                }
+
+                Helper::pathRemoveBackslashW( pathDirectory );
+
+                StdString::wcsncpy( pathTestDirectory, _basePath, MENGINE_MAX_PATH );
+                StdString::wcsncat( pathTestDirectory, pathDirectory, MENGINE_MAX_PATH );
+
+                if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
+                {
+                    break;
+                }
+            }
+
+            for( uint32_t index = paths_count; index != 0; --index )
+            {
+                const WChar * path = paths[index - 1];
+
+                WChar pathCreateDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
+                StdString::wcsncpy( pathCreateDirectory, _basePath, MENGINE_MAX_PATH );
+                StdString::wcsncat( pathCreateDirectory, path, MENGINE_MAX_PATH );
+
+                BOOL successful = ::CreateDirectory( pathCreateDirectory, NULL );
+
+                if( successful == FALSE )
+                {
+                    DWORD error = ::GetLastError();
+
+                    switch( error )
+                    {
+                    case ERROR_ALREADY_EXISTS:
+                        {
+                            continue;
+                        }break;
+                    case ERROR_PATH_NOT_FOUND:
+                        {
+                            LOGGER_ERROR( "directory '%ls' not found"
+                                , pathCreateDirectory
+                            );
+
+                            return false;
+                        }break;
+                    default:
+                        {
+                            LOGGER_ERROR( "directory '%ls' unknown %ls"
+                                , pathCreateDirectory
+                                , Helper::Win32GetLastErrorMessageW()
+                            );
+
+                            return false;
+                        }break;
+                    }
+                }
             }
 
             return true;

@@ -27,7 +27,7 @@ namespace Mengine
 
     public:
         void preparation() override;
-        void main() override;
+        void process() override;
 
     public:
         bool run( const ThreadMutexInterfacePtr & _mutex ) override;

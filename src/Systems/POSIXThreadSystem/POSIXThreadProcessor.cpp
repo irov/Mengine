@@ -160,7 +160,7 @@ namespace Mengine
                 if( m_exit == false )
                 {
                     m_mutex->lock();
-                    m_task->main();
+                    m_task->process();
                     m_mutex->unlock();
                 }
 

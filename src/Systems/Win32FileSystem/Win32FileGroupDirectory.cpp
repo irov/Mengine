@@ -1,7 +1,7 @@
 #include "Win32FileGroupDirectory.h"
 
 #include "Interface/MemoryInterface.h"
-#include "Interface/PlatformServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Win32ConcatenateFileHelper.h"
 #include "Win32FileInputStream.h"
@@ -76,7 +76,7 @@ namespace Mengine
         Char utf8_filePath[MENGINE_MAX_PATH + 1] = {'\0'};
         this->getFullPath( _filePath, utf8_filePath );
 
-        bool result = PLATFORM_SERVICE()
+        bool result = FILE_SYSTEM()
             ->existFile( utf8_filePath );
 
         if( _recursive == true && result == false && m_parentFileGroup != nullptr )
@@ -97,7 +97,7 @@ namespace Mengine
         filePathString.append( folderPath );
         filePathString.append( _filePath );
 
-        bool successful = PLATFORM_SERVICE()
+        bool successful = FILE_SYSTEM()
             ->removeFile( filePathString.c_str() );
 
         return successful;
@@ -112,7 +112,7 @@ namespace Mengine
         basePath.append( relationPath );
         basePath.append( folderPath );
 
-        if( PLATFORM_SERVICE()
+        if( FILE_SYSTEM()
             ->existDirectory( basePath.c_str(), _folderPath.c_str() ) == true )
         {
             return true;
@@ -138,13 +138,13 @@ namespace Mengine
         basePath.append( relationPath );
         basePath.append( folderPath );
 
-        if( PLATFORM_SERVICE()
+        if( FILE_SYSTEM()
             ->existDirectory( basePath.c_str(), _folderName.c_str() ) == true )
         {
             return true;
         }
 
-        if( PLATFORM_SERVICE()
+        if( FILE_SYSTEM()
             ->createDirectory( basePath.c_str(), _folderName.c_str() ) == false )
         {
             return false;
@@ -168,7 +168,7 @@ namespace Mengine
         newFilePathString.append( folderPath );
         newFilePathString.append( _newFilePath );
 
-        bool successful = PLATFORM_SERVICE()
+        bool successful = FILE_SYSTEM()
             ->moveFile( oldFilePathString.c_str(), newFilePathString.c_str() );
 
         return successful;
@@ -181,7 +181,7 @@ namespace Mengine
 
         Helper::pathCorrectForwardslashA( fullPathBase );
 
-        PLATFORM_SERVICE()
+        FILE_SYSTEM()
             ->findFiles( fullPathBase, _filePath.c_str(), _mask, _lambda );
 
         return true;

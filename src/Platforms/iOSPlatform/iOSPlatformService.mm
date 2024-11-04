@@ -1522,7 +1522,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool s_createDirectoryFullpath( const Char * _fullpath )
+        static bool createDirectoryFullpath(const Char * _fullpath )
         {
             int status = ::mkdir( _fullpath, S_IRWXU );
 
@@ -1538,7 +1538,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_isDirectoryFullpath( const Char * _fullpath )
+        static bool isDirectoryFullpath(const Char * _fullpath )
         {
             struct stat sb;
             int err = ::stat( _fullpath, &sb );
@@ -1580,7 +1580,7 @@ namespace Mengine
             return true;	// let it be
         }
 
-        bool exist = Detail::s_isDirectoryFullpath( pathFull );
+        bool exist = Detail::isDirectoryFullpath(pathFull);
 
         return exist;
     }
@@ -1607,7 +1607,7 @@ namespace Mengine
         Char pathTestDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
         MENGINE_SNPRINTF( pathTestDirectory, MENGINE_MAX_PATH, "%s%s", _path, pathDirectory );
 
-        if( Detail::s_isDirectoryFullpath( pathTestDirectory ) == true )
+        if(Detail::isDirectoryFullpath(pathTestDirectory) == true )
         {
             return true;
         }
@@ -1634,7 +1634,7 @@ namespace Mengine
 
             MENGINE_SNPRINTF( pathTestDirectory, MENGINE_MAX_PATH, "%s%s", _path, pathDirectory );
 
-            if( Detail::s_isDirectoryFullpath( pathTestDirectory ) == true )
+            if(Detail::isDirectoryFullpath( pathTestDirectory ) == true )
             {
                 break;
             }
@@ -1653,7 +1653,7 @@ namespace Mengine
             Char pathCreateDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
             MENGINE_SNPRINTF( pathCreateDirectory, MENGINE_MAX_PATH, "%s%s", _path, path_str );
 
-            if( Detail::s_createDirectoryFullpath( pathCreateDirectory ) == false )
+            if(Detail::createDirectoryFullpath(pathCreateDirectory) == false )
             {
                 return false;
             }

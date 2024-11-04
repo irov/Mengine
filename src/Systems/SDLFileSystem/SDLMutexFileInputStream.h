@@ -3,6 +3,8 @@
 #include "Interface/FileInputStreamInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
+#include "Environment/SDL/SDLIncluder.h"
+
 #include "SDLFileInputStream.h"
 
 #include "Kernel/Factorable.h"
@@ -10,8 +12,6 @@
 #if defined(MENGINE_DEBUG)
 #   include "Kernel/BaseDebugFile.h"
 #endif
-
-#include "SDL_rwops.h"
 
 namespace Mengine
 {

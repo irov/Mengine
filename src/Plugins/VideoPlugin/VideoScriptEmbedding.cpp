@@ -23,7 +23,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * s_SurfaceVideo_setEventListener( pybind::kernel_interface * _kernel, SurfaceVideo * _surface, PyObject * _args, PyObject * _kwds )
+        static PyObject * SurfaceVideo_setEventListener( pybind::kernel_interface * _kernel, SurfaceVideo * _surface, PyObject * _args, PyObject * _kwds )
         {
             MENGINE_UNUSED( _args );
 
@@ -37,7 +37,7 @@ namespace Mengine
             return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * s_SurfaceMockupVideo_setEventListener( pybind::kernel_interface * _kernel, SurfaceMockupVideo * _surface, PyObject * _args, PyObject * _kwds )
+        static PyObject * SurfaceMockupVideo_setEventListener( pybind::kernel_interface * _kernel, SurfaceMockupVideo * _surface, PyObject * _args, PyObject * _kwds )
         {
             MENGINE_UNUSED( _args );
 
@@ -51,7 +51,7 @@ namespace Mengine
             return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
-        ShapePtr s_createVideo( const ConstString & _name, const ConstString & _shapeType, const ResourceVideoPtr & _resource )
+        ShapePtr createVideo( const ConstString & _name, const ConstString & _shapeType, const ResourceVideoPtr & _resource )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _resource, "create video '%s' resource is nullptr"
                 , _name.c_str()
@@ -114,7 +114,7 @@ namespace Mengine
             .def( "getResourceVideo", &SurfaceVideo::getResourceVideo )
             .def( "getWidth", &SurfaceVideo::getWidth )
             .def( "getHeight", &SurfaceVideo::getHeight )
-            .def_static_native_kernel( "setEventListener", &Detail::s_SurfaceVideo_setEventListener )
+            .def_static_native_kernel( "setEventListener", &Detail::SurfaceVideo_setEventListener )
             ;
 
         pybind::interface_<SurfaceMockupVideo, pybind::bases<Surface>>( _kernel, "SurfaceMockupVideo", false )
@@ -122,10 +122,10 @@ namespace Mengine
             .def( "getResourceVideo", &SurfaceMockupVideo::getResourceVideo )
             .def( "getWidth", &SurfaceMockupVideo::getWidth )
             .def( "getHeight", &SurfaceMockupVideo::getHeight )
-            .def_static_native_kernel( "setEventListener", &Detail::s_SurfaceMockupVideo_setEventListener )
+            .def_static_native_kernel( "setEventListener", &Detail::SurfaceMockupVideo_setEventListener )
             ;
 
-        pybind::def_function( _kernel, "createVideo", &Detail::s_createVideo );
+        pybind::def_function( _kernel, "createVideo", &Detail::createVideo );
 
         Helper::registerScriptWrapping<ResourceVideo>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<SurfaceVideo>( _kernel, MENGINE_DOCUMENT_FACTORABLE );

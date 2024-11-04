@@ -20,7 +20,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static DWORD WINAPI s_treadJob( LPVOID lpThreadParameter )
+        static DWORD WINAPI treadJob( LPVOID lpThreadParameter )
         {
             Win32ThreadIdentity * thread = static_cast<Win32ThreadIdentity *>(lpThreadParameter);
 
@@ -82,7 +82,7 @@ namespace Mengine
     {
         m_runner = Helper::makeFactorableUnique<Win32ThreadIdentityRunner>( _doc, _lambda, _sleep );
 
-        HANDLE thread = ::CreateThread( NULL, 0, &Detail::s_treadJob, (LPVOID)this, 0, NULL );
+        HANDLE thread = ::CreateThread( NULL, 0, &Detail::treadJob, (LPVOID)this, 0, NULL );
 
         if( thread == NULL )
         {

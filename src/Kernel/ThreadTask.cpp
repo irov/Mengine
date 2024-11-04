@@ -23,7 +23,7 @@ namespace Mengine
         this->_onThreadTaskPreparation();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTask::main()
+    void ThreadTask::process()
     {
         if( m_run == false ||
             m_finish == true ||

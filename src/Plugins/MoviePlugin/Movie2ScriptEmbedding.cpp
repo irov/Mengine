@@ -34,7 +34,7 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * s_Movie2_setEventListener( pybind::kernel_interface * _kernel, Movie2 * _node, PyObject * _args, PyObject * _kwds )
+        static PyObject * Movie2_setEventListener( pybind::kernel_interface * _kernel, Movie2 * _node, PyObject * _args, PyObject * _kwds )
         {
             MENGINE_UNUSED( _args );
 
@@ -48,7 +48,7 @@ namespace Mengine
             return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
-        static mt::box2f s_Movie2_getCompositionBoundsWM( Movie2 * _movie )
+        static mt::box2f Movie2_getCompositionBoundsWM( Movie2 * _movie )
         {
             const mt::box2f & bounds = _movie->getCompositionBounds();
 
@@ -62,7 +62,7 @@ namespace Mengine
             return boundsWM;
         }
         //////////////////////////////////////////////////////////////////////////    
-        static pybind::list s_Movie2_getSockets( pybind::kernel_interface * _kernel, Movie2 * _movie )
+        static pybind::list Movie2_getSockets( pybind::kernel_interface * _kernel, Movie2 * _movie )
         {
             pybind::list py_list( _kernel );
 
@@ -85,7 +85,7 @@ namespace Mengine
             return py_list;
         }
         //////////////////////////////////////////////////////////////////////////    
-        static pybind::list s_Movie2_getSlots( pybind::kernel_interface * _kernel, Movie2 * _movie )
+        static pybind::list Movie2_getSlots( pybind::kernel_interface * _kernel, Movie2 * _movie )
         {
             pybind::list py_list( _kernel );
 
@@ -121,7 +121,7 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * s_Movie2SubComposition_setEventListener( pybind::kernel_interface * _kernel, Movie2SubComposition * _node, PyObject * _args, PyObject * _kwds )
+        static PyObject * Movie2SubComposition_setEventListener( pybind::kernel_interface * _kernel, Movie2SubComposition * _node, PyObject * _args, PyObject * _kwds )
         {
             MENGINE_UNUSED( _args );
 
@@ -135,7 +135,7 @@ namespace Mengine
             return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
-        static pybind::list s_ResourceMovie2_getCompositionResources( pybind::kernel_interface * _kernel, ResourceMovie2 * _resourceMovie2, const ConstString & _compositionName )
+        static pybind::list ResourceMovie2_getCompositionResources( pybind::kernel_interface * _kernel, ResourceMovie2 * _resourceMovie2, const ConstString & _compositionName )
         {
             const Movie2DataInterfacePtr & data = _resourceMovie2->getData();
 
@@ -167,7 +167,7 @@ namespace Mengine
             return l;
         }
         //////////////////////////////////////////////////////////////////////////
-        static pybind::list s_ResourceMovie2_getCompositionLayers( pybind::kernel_interface * _kernel, ResourceMovie2 * _resourceMovie2, const ConstString & _compositionName )
+        static pybind::list ResourceMovie2_getCompositionLayers( pybind::kernel_interface * _kernel, ResourceMovie2 * _resourceMovie2, const ConstString & _compositionName )
         {
             pybind::list l = pybind::make_list_t( _kernel );
 
@@ -221,7 +221,7 @@ namespace Mengine
             return l;
         }
         //////////////////////////////////////////////////////////////////////////
-        static pybind::list s_ResourceMovie2_getCompositions( pybind::kernel_interface * _kernel, ResourceMovie2 * _resourceMovie2 )
+        static pybind::list ResourceMovie2_getCompositions( pybind::kernel_interface * _kernel, ResourceMovie2 * _resourceMovie2 )
         {
             pybind::list l = pybind::make_list_t( _kernel );
 
@@ -321,7 +321,7 @@ namespace Mengine
             return AE_TRUE;
         }
         //////////////////////////////////////////////////////////////////////////
-        static pybind::dict s_getNullObjectsFromResourceMovie2( pybind::kernel_interface * _kernel, ResourceMovie2 * _resourceMovie2, const ConstString & _compositionName )
+        static pybind::dict getNullObjectsFromResourceMovie2( pybind::kernel_interface * _kernel, ResourceMovie2 * _resourceMovie2, const ConstString & _compositionName )
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _resourceMovie2, "resource is nullptr" );
 
@@ -368,10 +368,10 @@ namespace Mengine
             .def( "getSubComposition", &Movie2::getSubComposition )
             .def( "hasCompositionBounds", &Movie2::hasCompositionBounds )
             .def( "getCompositionBounds", &Movie2::getCompositionBounds )
-            .def_static( "getCompositionBoundsWM", &Detail::s_Movie2_getCompositionBoundsWM )
-            .def_static_native_kernel( "setEventListener", &Detail::s_Movie2_setEventListener )
-            .def_static_kernel( "getSockets", &Detail::s_Movie2_getSockets )
-            .def_static_kernel( "getSlots", &Detail::s_Movie2_getSlots )
+            .def_static( "getCompositionBoundsWM", &Detail::Movie2_getCompositionBoundsWM )
+            .def_static_native_kernel( "setEventListener", &Detail::Movie2_setEventListener )
+            .def_static_kernel( "getSockets", &Detail::Movie2_getSockets )
+            .def_static_kernel( "getSlots", &Detail::Movie2_getSlots )
             .def( "findSprite", &Movie2::findSprite )
             .def( "hasSprite", &Movie2::hasSprite )
             .def( "findParticle", &Movie2::findParticle )
@@ -398,7 +398,7 @@ namespace Mengine
         pybind::interface_<Movie2SubComposition, pybind::bases<Eventable, Animatable, Scriptable, Identity>>( _kernel, "Movie2SubComposition", false )
             .def( "setEnable", &Movie2SubComposition::setSubCompositionEnable )
             .def( "getEnable", &Movie2SubComposition::getSubCompositionEnable )
-            .def_static_native_kernel( "setEventListener", &Detail::s_Movie2SubComposition_setEventListener )
+            .def_static_native_kernel( "setEventListener", &Detail::Movie2SubComposition_setEventListener )
             ;
 
         pybind::interface_<ResourceMovie2, pybind::bases<Resource>>( _kernel, "ResourceMovie2", false )
@@ -406,12 +406,12 @@ namespace Mengine
             .def( "hasCompositionLayer", &ResourceMovie2::hasCompositionLayer )
             .def( "getCompositionDuration", &ResourceMovie2::getCompositionDuration )
             .def( "getCompositionFrameDuration", &ResourceMovie2::getCompositionFrameDuration )
-            .def_static_kernel( "getCompositionResources", &Detail::s_ResourceMovie2_getCompositionResources )
-            .def_static_kernel( "getCompositionLayers", &Detail::s_ResourceMovie2_getCompositionLayers )
-            .def_static_kernel( "getCompositions", &Detail::s_ResourceMovie2_getCompositions )
+            .def_static_kernel( "getCompositionResources", &Detail::ResourceMovie2_getCompositionResources )
+            .def_static_kernel( "getCompositionLayers", &Detail::ResourceMovie2_getCompositionLayers )
+            .def_static_kernel( "getCompositions", &Detail::ResourceMovie2_getCompositions )
             ;
 
-        pybind::def_function_kernel( _kernel, "getNullObjectsFromResourceMovie2", &Detail::s_getNullObjectsFromResourceMovie2 );
+        pybind::def_function_kernel( _kernel, "getNullObjectsFromResourceMovie2", &Detail::getNullObjectsFromResourceMovie2 );
 
         Helper::registerScriptWrapping<Movie2>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<Movie2Slot>( _kernel, MENGINE_DOCUMENT_FACTORABLE );

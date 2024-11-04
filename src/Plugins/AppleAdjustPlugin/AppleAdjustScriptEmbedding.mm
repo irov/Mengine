@@ -17,13 +17,13 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleAdjust_eventTraking( const ConstString & _token )
+        static bool AppleAdjust_eventTraking(const ConstString & _token )
         {
             APPLE_ADJUST_SERVICE()
                 ->eventTraking( _token );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_AppleAdjust_revenueTracking( const ConstString & _token, double _amount, const ConstString & _currency )
+        static bool AppleAdjust_revenueTracking(const ConstString & _token, double _amount, const ConstString & _currency )
         {
             APPLE_ADJUST_SERVICE()
                 ->revenueTracking( _token, _amount, _currency );
@@ -44,8 +44,9 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "AppleAdjust", true );
 
-        pybind::def_function( _kernel, "appleAdjustEventTraking", &Detail::s_AppleAdjust_eventTraking );
-        pybind::def_function( _kernel, "appleAdjustRevenueTracking", &Detail::s_AppleAdjust_revenueTracking );
+        pybind::def_function( _kernel, "appleAdjustEventTraking", &Detail::AppleAdjust_eventTraking );
+        pybind::def_function( _kernel, "appleAdjustRevenueTracking",
+                              &Detail::AppleAdjust_revenueTracking );
 
         return true;
     }

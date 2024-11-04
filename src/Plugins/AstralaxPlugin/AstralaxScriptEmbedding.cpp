@@ -20,7 +20,7 @@ namespace Mengine
     namespace Detail
     {
         ////////////////////////////////////////////////////////////////////////////        
-        static PyObject * s_AstralaxEmitter_setEventListener( pybind::kernel_interface * _kernel, AstralaxEmitter * _node, PyObject * _args, PyObject * _kwds )
+        static PyObject * AstralaxEmitter_setEventListener( pybind::kernel_interface * _kernel, AstralaxEmitter * _node, PyObject * _args, PyObject * _kwds )
         {
             MENGINE_UNUSED( _args );
 
@@ -34,7 +34,7 @@ namespace Mengine
             return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_AstralaxEmitter_changeEmitterImage( pybind::kernel_interface * _kernel, AstralaxEmitter * _emitter, const ConstString & _emitterImageName )
+        static void AstralaxEmitter_changeEmitterImage( pybind::kernel_interface * _kernel, AstralaxEmitter * _emitter, const ConstString & _emitterImageName )
         {
             MENGINE_UNUSED( _kernel );
 
@@ -80,14 +80,14 @@ namespace Mengine
             .def( "setEmitterCameraRelative", &AstralaxEmitter::setEmitterCameraRelative )
             .def( "setEmitterPositionProviderOriginOffset", &AstralaxEmitter::setEmitterPositionProviderOriginOffset )
 
-            .def_static_kernel( "changeEmitterImage", &Detail::s_AstralaxEmitter_changeEmitterImage )
+            .def_static_kernel( "changeEmitterImage", &Detail::AstralaxEmitter_changeEmitterImage )
             .def( "removeEmitterImage", &AstralaxEmitter::removeEmitterImage )
             .def( "changeEmitterPolygon", &AstralaxEmitter::changeEmitterPolygon )
             .def( "removeEmitterPolygon", &AstralaxEmitter::removeEmitterPolygon )
 
             .def( "setEmitterRandomMode", &AstralaxEmitter::setEmitterRandomMode )
             .def( "getEmitterRandomMode", &AstralaxEmitter::getEmitterRandomMode )
-            .def_static_native_kernel( "setEventListener", &Detail::s_AstralaxEmitter_setEventListener )
+            .def_static_native_kernel( "setEventListener", &Detail::AstralaxEmitter_setEventListener )
             ;
 
         Helper::registerScriptWrappingEx<AstralaxEmitter>( _kernel, STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), MENGINE_DOCUMENT_FACTORABLE );

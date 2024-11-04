@@ -2,7 +2,7 @@
 
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
 
-#   include "SDL_video.h"
+#include "Environment/SDL/SDLIncluder.h"
 
 // textures
 PFNGLACTIVETEXTUREPROC              glActiveTexture_ = nullptr;

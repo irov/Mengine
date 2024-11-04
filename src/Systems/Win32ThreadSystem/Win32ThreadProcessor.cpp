@@ -15,7 +15,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static DWORD WINAPI s_treadJob( LPVOID lpThreadParameter )
+        static DWORD WINAPI treadJob( LPVOID lpThreadParameter )
         {
             Win32ThreadProcessor * thread = static_cast<Win32ThreadProcessor *>(lpThreadParameter);
 
@@ -71,7 +71,7 @@ namespace Mengine
         ::InitializeConditionVariable( &m_conditionVariable );
 #endif
 
-        HANDLE thread = ::CreateThread( NULL, 0, &Detail::s_treadJob, (LPVOID)this, 0, NULL );
+        HANDLE thread = ::CreateThread( NULL, 0, &Detail::treadJob, (LPVOID)this, 0, NULL );
 
         if( thread == NULL )
         {
@@ -180,7 +180,7 @@ namespace Mengine
 
                     MENGINE_PROFILER_FRAME( "thread" );
 
-                    m_task->main();
+                    m_task->process();
                     m_mutex->unlock();
                 }
 

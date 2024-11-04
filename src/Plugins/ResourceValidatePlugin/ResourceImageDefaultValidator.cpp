@@ -19,7 +19,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool s_allPixelsTransparency( const void * _buffer, uint32_t _size )
+        static bool allPixelsTransparency( const void * _buffer, uint32_t _size )
         {
             const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer);
 
@@ -34,7 +34,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_checkColumnTransparency( const void * _buffer, uint32_t _width, uint32_t _height, uint32_t _column )
+        static bool checkColumnTransparency( const void * _buffer, uint32_t _width, uint32_t _height, uint32_t _column )
         {
             const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer);
 
@@ -49,7 +49,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_checkRowTransparency( const void * _buffer, uint32_t _width, uint32_t _height, uint32_t _row )
+        static bool checkRowTransparency( const void * _buffer, uint32_t _width, uint32_t _height, uint32_t _row )
         {
             MENGINE_UNUSED( _height );
 
@@ -66,11 +66,11 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_checkRowColumnTransparency( const void * _buffer, uint32_t _width, uint32_t _height )
+        static bool checkRowColumnTransparency( const void * _buffer, uint32_t _width, uint32_t _height )
         {
             for( uint32_t i = 0; i != _width; ++i )
             {
-                if( Detail::s_checkColumnTransparency( _buffer, _width, _height, i ) == true )
+                if( Detail::checkColumnTransparency( _buffer, _width, _height, i ) == true )
                 {
                     return true;
                 }
@@ -78,7 +78,7 @@ namespace Mengine
 
             for( uint32_t j = 0; j != _height; ++j )
             {
-                if( Detail::s_checkRowTransparency( _buffer, _width, _height, j ) == true )
+                if( Detail::checkRowTransparency( _buffer, _width, _height, j ) == true )
                 {
                     return true;
                 }
@@ -265,7 +265,7 @@ namespace Mengine
                 return false;
             }
 
-            if( Detail::s_allPixelsTransparency( buffer_memory, texture_size ) == true )
+            if( Detail::allPixelsTransparency( buffer_memory, texture_size ) == true )
             {
                 LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' codec '%s' all pixels transparency!"
                     , _resource->getName().c_str()
@@ -281,7 +281,7 @@ namespace Mengine
 
             if( Check_ImageRowColumnTransparency == true )
             {
-                if( Detail::s_checkRowColumnTransparency( buffer_memory, dataInfo->width, dataInfo->height ) == true )
+                if( Detail::checkRowColumnTransparency( buffer_memory, dataInfo->width, dataInfo->height ) == true )
                 {
                     LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' group '%s' file '%s' codec '%s' row or column pixels transparency!"
                         , _resource->getName().c_str()

@@ -27,7 +27,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static SamplerOzzAnimationPtr s_createOzzSampler()
+        static SamplerOzzAnimationPtr createOzzSampler()
         {
             SamplerOzzAnimationPtr sampler = Helper::generatePrototype( STRINGIZE_STRING_LOCAL( "Sampler" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), MENGINE_DOCUMENT_PYBIND );
 
@@ -36,7 +36,7 @@ namespace Mengine
             return sampler;
         }
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * s_SamplerOzzAnimationInterface_setEventListener( pybind::kernel_interface * _kernel, SamplerOzzAnimationInterface * _sampler, PyObject * _args, PyObject * _kwds )
+        static PyObject * SamplerOzzAnimationInterface_setEventListener(pybind::kernel_interface * _kernel, SamplerOzzAnimationInterface * _sampler, PyObject * _args, PyObject * _kwds )
         {
             MENGINE_UNUSED( _args );
 
@@ -64,7 +64,7 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "Ozz", true );
 
-        pybind::def_function( _kernel, "createOzzSampler", &Detail::s_createOzzSampler );
+        pybind::def_function( _kernel, "createOzzSampler", &Detail::createOzzSampler );
 
         pybind::interface_<ResourceOzzAnimation, pybind::bases<Resource>>( _kernel, "ResourceOzzAnimation", false )
             ;
@@ -82,7 +82,7 @@ namespace Mengine
             .def( "getResourceOzzSkeleton", &SamplerOzzAnimationInterface::getResourceOzzSkeleton )
             .def( "setWeight", &SamplerOzzAnimationInterface::setWeight )
             .def( "getWeight", &SamplerOzzAnimationInterface::getWeight )
-            .def_static_native_kernel( "setEventListener", &Detail::s_SamplerOzzAnimationInterface_setEventListener )
+            .def_static_native_kernel( "setEventListener", &Detail::SamplerOzzAnimationInterface_setEventListener )
             ;
 
         pybind::interface_<SamplerOzzAnimation, pybind::bases<SamplerOzzAnimationInterface>>( _kernel, "SamplerOzzAnimation", false )

@@ -1,7 +1,6 @@
 #include "SDLFileInputStream.h"
 
-#include "Interface/UnicodeSystemInterface.h"
-#include "Interface/PlatformServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadGuardScope.h"
@@ -389,7 +388,7 @@ namespace Mengine
             return false;
         }
 
-        uint64_t ft = PLATFORM_SERVICE()
+        uint64_t ft = FILE_SYSTEM()
             ->getFileTime( fullPath );
 
         *_time = ft;

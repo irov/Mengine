@@ -16,7 +16,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static int s_treadJob( void * _userData )
+        static int treadJob( void * _userData )
         {
             SDLThreadIdentity * thread = reinterpret_cast<SDLThreadIdentity *>(_userData);
 
@@ -88,7 +88,7 @@ namespace Mengine
     {
         m_runner = Helper::makeFactorableUnique<SDLThreadIdentityRunner>( _doc, _lambda, _sleep );
 
-        SDL_Thread * thread = SDL_CreateThread( &Detail::s_treadJob, m_description.nameA, reinterpret_cast<void *>(this) );
+        SDL_Thread * thread = SDL_CreateThread( &Detail::treadJob, m_description.nameA, reinterpret_cast<void *>(this) );
 
         if( thread == nullptr )
         {

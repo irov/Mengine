@@ -1,13 +1,12 @@
 #include "SDLDynamicLibrary.h"
 
+#include "Environment/SDL/SDLIncluder.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
-
-#include "SDL_loadso.h"
-#include "SDL_filesystem.h"
 
 namespace Mengine
 {

@@ -2,9 +2,9 @@
 
 #include "Interface/ThreadConditionVariableInterface.h"
 
-#include "Kernel/Factorable.h"
+#include "Environment/SDL/SDLIncluder.h"
 
-#include "SDL_thread.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {

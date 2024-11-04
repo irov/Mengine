@@ -19,7 +19,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool s_steamSetAchievement( const ConstString & _name )
+        static bool steamSetAchievement( const ConstString & _name )
         {
             if( SERVICE_IS_INITIALIZE( SteamServiceInterface ) == false )
             {
@@ -32,7 +32,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_steamGetAchievement( pybind::kernel_interface * _kernel, const ConstString & _name )
+        static bool steamGetAchievement( pybind::kernel_interface * _kernel, const ConstString & _name )
         {
             if( SERVICE_IS_INITIALIZE( SteamServiceInterface ) == false )
             {
@@ -51,7 +51,7 @@ namespace Mengine
             return _kernel->ret_bool( achieved );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_steamSetStateInteger( const ConstString & _name, int32_t _value )
+        static bool steamSetStateInteger( const ConstString & _name, int32_t _value )
         {
             if( SERVICE_IS_INITIALIZE( SteamServiceInterface ) == false )
             {
@@ -64,7 +64,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_steamSetStateFloat( const ConstString & _name, float _value )
+        static bool steamSetStateFloat( const ConstString & _name, float _value )
         {
             if( SERVICE_IS_INITIALIZE( SteamServiceInterface ) == false )
             {
@@ -92,10 +92,10 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->setAvailablePlugin( "Steam", true );
 
-        pybind::def_function( _kernel, "steamSetAchievement", &Detail::s_steamSetAchievement );
-        pybind::def_function_kernel( _kernel, "steamGetAchievement", &Detail::s_steamGetAchievement );
-        pybind::def_function( _kernel, "steamSetStateInteger", &Detail::s_steamSetStateInteger );
-        pybind::def_function( _kernel, "steamSetStateFloat", &Detail::s_steamSetStateFloat );
+        pybind::def_function( _kernel, "steamSetAchievement", &Detail::steamSetAchievement );
+        pybind::def_function_kernel( _kernel, "steamGetAchievement", &Detail::steamGetAchievement );
+        pybind::def_function( _kernel, "steamSetStateInteger", &Detail::steamSetStateInteger );
+        pybind::def_function( _kernel, "steamSetStateFloat", &Detail::steamSetStateFloat );
 
         return true;
     }

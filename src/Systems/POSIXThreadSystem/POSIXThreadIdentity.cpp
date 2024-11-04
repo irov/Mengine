@@ -22,7 +22,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void * s_treadJob( void * _userData )
+        static void * treadJob(void * _userData )
         {
             POSIXThreadIdentity * thread = reinterpret_cast<POSIXThreadIdentity *>(_userData);
 
@@ -113,7 +113,7 @@ namespace Mengine
         m_runner = Helper::makeFactorableUnique<POSIXThreadIdentityRunner>( _doc, _lambda, _sleep );
 
         pthread_t threadId;
-        int status = ::pthread_create( &threadId, nullptr, &Detail::s_treadJob, reinterpret_cast<void *>(this) );
+        int status = ::pthread_create(&threadId, nullptr, &Detail::treadJob, reinterpret_cast<void *>(this) );
 
         if( status != 0 )
         {

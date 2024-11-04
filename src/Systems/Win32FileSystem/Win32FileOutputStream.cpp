@@ -1,7 +1,6 @@
 #include "Win32FileOutputStream.h"
 
-#include "Interface/UnicodeSystemInterface.h"
-#include "Interface/PlatformServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Environment/Windows/Win32FileHelper.h"
 #include "Environment/Windows/Win32Helper.h"
@@ -144,7 +143,7 @@ namespace Mengine
                 , m_filePath.c_str()
             );
 
-            if( PLATFORM_SERVICE()
+            if( FILE_SYSTEM()
                 ->moveFile( fullPathTemp, fullPath ) == false )
             {
                 LOGGER_ERROR( "invalid move close file from '%s' to '%s'"

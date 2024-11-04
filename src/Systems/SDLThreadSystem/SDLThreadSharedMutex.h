@@ -2,10 +2,10 @@
 
 #include "Interface/ThreadSharedMutexInterface.h"
 
+#include "Environment/SDL/SDLIncluder.h"
+
 #include "Kernel/Factorable.h"
 #include "Kernel/String.h"
-
-#include "SDL_thread.h"
 
 namespace Mengine
 {

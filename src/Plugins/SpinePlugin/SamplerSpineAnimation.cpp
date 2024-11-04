@@ -84,7 +84,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void s_spAnimationStateListener( spAnimationState * _state, spEventType _type, spTrackEntry * _entry, spEvent * _event )
+        static void spAnimationStateListener(spAnimationState * _state, spEventType _type, spTrackEntry * _entry, spEvent * _event )
         {
             SamplerSpineAnimation * sampler = static_cast<SamplerSpineAnimation *>(_state->rendererObject);
 
@@ -128,7 +128,7 @@ namespace Mengine
         spAnimationState * animationState = spAnimationState_create( m_animationStateData );
 
         animationState->rendererObject = this;
-        animationState->listener = &Detail::s_spAnimationStateListener;
+        animationState->listener = &Detail::spAnimationStateListener;
 
         m_animationState = animationState;
 

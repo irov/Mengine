@@ -35,7 +35,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void * s_dz_malloc( dz_size_t _size, dz_userdata_t _ud )
+        static void * dz_malloc(dz_size_t _size, dz_userdata_t _ud )
         {
             DZ_UNUSED( _ud );
 
@@ -44,7 +44,7 @@ namespace Mengine
             return p;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void * s_dz_realloc( void * _ptr, dz_size_t _size, dz_userdata_t _ud )
+        static void * dz_realloc(void * _ptr, dz_size_t _size, dz_userdata_t _ud )
         {
             DZ_UNUSED( _ud );
 
@@ -53,14 +53,14 @@ namespace Mengine
             return p;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_dz_free( const void * _ptr, dz_userdata_t _ud )
+        static void dz_free(const void * _ptr, dz_userdata_t _ud )
         {
             DZ_UNUSED( _ud );
 
             Helper::deallocateMemory( (void *)_ptr, "dazzle" );
         }
         //////////////////////////////////////////////////////////////////////////
-        static float s_dz_sqrtf( float _a, dz_userdata_t _ud )
+        static float dz_sqrtf(float _a, dz_userdata_t _ud )
         {
             DZ_UNUSED( _ud );
 
@@ -69,7 +69,7 @@ namespace Mengine
             return value;
         }
         //////////////////////////////////////////////////////////////////////////
-        static float s_dz_cosf( float _a, dz_userdata_t _ud )
+        static float dz_cosf(float _a, dz_userdata_t _ud )
         {
             DZ_UNUSED( _ud );
 
@@ -78,7 +78,7 @@ namespace Mengine
             return value;
         }
         //////////////////////////////////////////////////////////////////////////
-        static float s_dz_sinf( float _a, dz_userdata_t _ud )
+        static float dz_sinf(float _a, dz_userdata_t _ud )
         {
             DZ_UNUSED( _ud );
 
@@ -101,12 +101,12 @@ namespace Mengine
     bool DazzlePlugin::_initializePlugin()
     {
         dz_service_providers_t providers;
-        providers.f_malloc = &Detail::s_dz_malloc;
-        providers.f_realloc = &Detail::s_dz_realloc;
-        providers.f_free = &Detail::s_dz_free;
-        providers.f_sqrtf = &Detail::s_dz_sqrtf;
-        providers.f_cosf = &Detail::s_dz_cosf;
-        providers.f_sinf = &Detail::s_dz_sinf;
+        providers.f_malloc = &Detail::dz_malloc;
+        providers.f_realloc = &Detail::dz_realloc;
+        providers.f_free = &Detail::dz_free;
+        providers.f_sqrtf = &Detail::dz_sqrtf;
+        providers.f_cosf = &Detail::dz_cosf;
+        providers.f_sinf = &Detail::dz_sinf;
 
         dz_service_t * service;
         if( dz_service_create( &service, &providers, DZ_NULLPTR ) == DZ_FAILURE )

@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/PlatformServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 
 #include "Kernel/FileStreamHelper.h"
@@ -131,7 +131,7 @@ namespace Mengine
             basePath.append( relationPath );
             basePath.append( folderPath );
 
-            if( PLATFORM_SERVICE()
+            if( FILE_SYSTEM()
                 ->createDirectory( "", basePath.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid create fileGroup '%s' directory '%s'"

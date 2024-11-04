@@ -39,7 +39,7 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * s_SamplerSpineAnimationInterface_setEventListener( pybind::kernel_interface * _kernel, SamplerSpineAnimationInterface * _sampler, PyObject * _args, PyObject * _kwds )
+        static PyObject * SamplerSpineAnimationInterface_setEventListener(pybind::kernel_interface * _kernel, SamplerSpineAnimationInterface * _sampler, PyObject * _args, PyObject * _kwds )
         {
             MENGINE_UNUSED( _args );
 
@@ -88,7 +88,8 @@ namespace Mengine
             .def( "getAnimationName", &SamplerSpineAnimationInterface::getAnimationName )
             .def( "setAnimationEnable", &SamplerSpineAnimationInterface::setAnimationEnable )
             .def( "getAnimationEnable", &SamplerSpineAnimationInterface::getAnimationEnable )
-            .def_static_native_kernel( "setEventListener", &Detail::s_SamplerSpineAnimationInterface_setEventListener )
+            .def_static_native_kernel( "setEventListener",
+                                       &Detail::SamplerSpineAnimationInterface_setEventListener )
             ;
 
         pybind::interface_<SamplerSpineAnimation, pybind::bases<SamplerSpineAnimationInterface>>( _kernel, "SamplerSpineAnimation", false )

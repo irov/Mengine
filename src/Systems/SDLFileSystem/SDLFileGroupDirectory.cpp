@@ -1,7 +1,8 @@
 #include "SDLFileGroupDirectory.h"
 
-#include "Interface/UnicodeSystemInterface.h"
-#include "Interface/PlatformServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
+
+#include "Environment/SDL/SDLIncluder.h"
 
 #include "SDLFileInputStream.h"
 #include "SDLMutexFileInputStream.h"
@@ -17,8 +18,6 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/PathString.h"
 #include "Kernel/DocumentHelper.h"
-
-#include "SDL_rwops.h"
 
 namespace Mengine
 {
@@ -74,7 +73,7 @@ namespace Mengine
         Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
         this->getFullPath( _filePath, fullPath );
 
-        if( PLATFORM_SERVICE()
+        if( FILE_SYSTEM()
             ->existFile( fullPath ) == true )
         {
             return true;
@@ -100,7 +99,7 @@ namespace Mengine
         filePathString.append( folderPath );
         filePathString.append( _filePath );
 
-        bool successful = PLATFORM_SERVICE()
+        bool successful = FILE_SYSTEM()
             ->removeFile( filePathString.c_str() );
 
         return successful;
@@ -115,7 +114,7 @@ namespace Mengine
         basePath.append( relationPath );
         basePath.append( folderPath );
 
-        if( PLATFORM_SERVICE()
+        if( FILE_SYSTEM()
             ->existDirectory( basePath.c_str(), _folderName.c_str() ) == true )
         {
             return true;
@@ -141,13 +140,13 @@ namespace Mengine
         basePath.append( relationPath );
         basePath.append( folderPath );
 
-        if( PLATFORM_SERVICE()
+        if( FILE_SYSTEM()
             ->existDirectory( basePath.c_str(), _folderName.c_str() ) == true )
         {
             return true;
         }
 
-        if( PLATFORM_SERVICE()
+        if( FILE_SYSTEM()
             ->createDirectory( basePath.c_str(), _folderName.c_str() ) == false )
         {
             return false;
@@ -171,7 +170,7 @@ namespace Mengine
         newFilePathString.append( folderPath );
         newFilePathString.append( _newFilePath );
 
-        bool successful = PLATFORM_SERVICE()
+        bool successful = FILE_SYSTEM()
             ->moveFile( oldFilePathString.c_str(), newFilePathString.c_str() );
 
         return successful;
@@ -192,7 +191,7 @@ namespace Mengine
 
         Helper::pathCorrectForwardslashA( utf8_base );
 
-        if( PLATFORM_SERVICE()
+        if( FILE_SYSTEM()
             ->findFiles( utf8_base, _filePath.c_str(), _mask, _lambda ) == false )
         {
             return false;

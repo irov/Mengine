@@ -2,14 +2,14 @@
 
 #include "Interface/FileInputStreamInterface.h"
 
+#include "Environment/SDL/SDLIncluder.h"
+
 #include "Kernel/Factorable.h"
 #include "Kernel/ThreadGuard.h"
 
 #if defined(MENGINE_DEBUG)
 #   include "Kernel/BaseDebugFile.h"
 #endif
-
-#include "SDL_rwops.h"
 
 #ifndef MENGINE_FILE_STREAM_BUFFER_SIZE
 #define MENGINE_FILE_STREAM_BUFFER_SIZE 4096

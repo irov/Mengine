@@ -1,7 +1,6 @@
 #include "ShaderConverterTextToPSO11.h"
 
-#include "Interface/UnicodeSystemInterface.h"
-#include "Interface/PlatformServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Environment/Windows/Win32Register.h"
 #include "Environment/Windows/Win32CreateProcess.h"
@@ -53,7 +52,7 @@ namespace Mengine
             }
 
             bool successful = false;
-            PLATFORM_SERVICE()
+            FILE_SYSTEM()
                 ->findFiles( "", WindowsKitsInstallationFolder, "x64\\fxc.exe", [&fxcPath, &successful]( const FilePath & _fp )
             {
                 fxcPath = _fp;

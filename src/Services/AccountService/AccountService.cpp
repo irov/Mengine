@@ -242,7 +242,7 @@ namespace Mengine
     AccountInterfacePtr AccountService::newAccount_( const ConstString & _accountId, const DocumentInterfacePtr & _doc )
     {
         PathString accountString;
-        accountString.append( _accountId );
+        accountString.append( _accountId.c_str(), _accountId.size() );
         accountString.append( MENGINE_PATH_DELIM );
 
         FilePath accountPath = Helper::stringizeFilePath( accountString );

@@ -112,7 +112,8 @@ namespace Mengine
         }
 
         Char pathFull[MENGINE_MAX_PATH + 1] = {'\0'};
-        MENGINE_SNPRINTF( pathFull, MENGINE_MAX_PATH, "%s%s", _basePath, pathDirectory );
+        StdString::strncpy( pathFull, _basePath, MENGINE_MAX_PATH );
+        StdString::strncat( pathFull, pathDirectory, MENGINE_MAX_PATH );
 
         if( pathFull[len - 1] == ':' )    // root dir
         {

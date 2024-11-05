@@ -24,6 +24,6 @@ namespace Mengine
         bool generateRandomHexadecimal( uint32_t _length, Char * const _hexadecimal, bool _lowercase ) const override;
 
     protected:
-        HCRYPTPROV m_hCryptProv;
+        HCRYPTPROV m_hCryptProvider;
     };
 };

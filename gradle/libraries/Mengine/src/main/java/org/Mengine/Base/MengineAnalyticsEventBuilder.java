@@ -4,11 +4,11 @@ import java.util.Locale;
 import java.util.Map;
 
 public class MengineAnalyticsEventBuilder {
-    private MengineApplication m_application;
+    private final MengineApplication m_application;
 
-    private String m_name;
-    private Map<String, Object> m_bases;
-    private Map<String, Object> m_parameters;
+    private final String m_name;
+    private final Map<String, Object> m_bases;
+    private final Map<String, Object> m_parameters;
 
     MengineAnalyticsEventBuilder(MengineApplication application, Map<String, Object> bases, Map<String, Object> parameters, String name) {
         m_application = application;

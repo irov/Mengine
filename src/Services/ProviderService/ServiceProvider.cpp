@@ -378,7 +378,9 @@ namespace Mengine
             return true;
         }
 
-        WaitDesc & desc = m_waits[m_waitsCount++];
+        uint32_t id = m_waitsCount++;
+
+        WaitDesc & desc = m_waits[id];
 
         desc.owner.assign( _owner );
         desc.name.assign( _name );
@@ -396,7 +398,9 @@ namespace Mengine
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
-        LeaveDesc & desc = m_leaving[m_leaveCount++];
+        uint32_t id = m_leaveCount++;
+
+        LeaveDesc & desc = m_leaving[id];
 
         desc.owner.assign( _owner );
         desc.name.assign( _name );
@@ -597,7 +601,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_EXCEPTION( m_servicesCount != MENGINE_SERVICE_PROVIDER_COUNT, "overflow service count [exist]" );
 
-        ServiceDesc & desc = m_services[m_servicesCount++];
+        uint32_t id = m_servicesCount++;
+
+        ServiceDesc & desc = m_services[id];
 
         desc.name.assign( _name );
         desc.exist = false;
@@ -632,7 +638,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_EXCEPTION( m_servicesCount != MENGINE_SERVICE_PROVIDER_COUNT, "overflow service count [available]" );
 
-        ServiceDesc & desc = m_services[m_servicesCount++];
+        uint32_t id = m_servicesCount++;
+
+        ServiceDesc & desc = m_services[id];
 
         desc.name.assign( _name );
         desc.exist = false;
@@ -667,7 +675,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_EXCEPTION( m_servicesCount != MENGINE_SERVICE_PROVIDER_COUNT, "overflow service count [initialize]" );
 
-        ServiceDesc & desc = m_services[m_servicesCount++];
+        uint32_t id = m_servicesCount++;
+
+        ServiceDesc & desc = m_services[id];
 
         desc.name.assign( _name );
         desc.exist = false;

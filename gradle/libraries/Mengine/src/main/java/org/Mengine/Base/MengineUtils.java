@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.Notification;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -40,14 +39,12 @@ import org.xml.sax.SAXException;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
@@ -237,7 +234,7 @@ public class MengineUtils {
 
     public static String getSecureRandomHexString(int num) {
         SecureRandom r = new SecureRandom();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         while(sb.length() < num) {
             int n = r.nextInt();
             String h = Integer.toHexString(n);
@@ -429,7 +426,7 @@ public class MengineUtils {
     public static File createTempFile(Context context, String prefix, String suffix) {
         File cacheDir = context.getCacheDir();
 
-        File tempFile = null;
+        File tempFile;
 
         try {
             tempFile = File.createTempFile(prefix, suffix, cacheDir);
@@ -571,14 +568,11 @@ public class MengineUtils {
             builder.setTitle(title);
             builder.setMessage(message);
             builder.setCancelable(false);
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    MengineLog.logMessage(TAG, "show OK alert dialog OK clicked");
+            builder.setPositiveButton("OK", (dialog, which) -> {
+                MengineLog.logMessage(TAG, "show OK alert dialog OK clicked");
 
-                    ok.run();
-                    dialog.dismiss();
-                }
+                ok.run();
+                dialog.dismiss();
             });
 
             AlertDialog alert = builder.create();
@@ -608,23 +602,17 @@ public class MengineUtils {
             builder.setTitle(title);
             builder.setMessage(spannableMessage);
             builder.setCancelable(false);
-            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog YES clicked");
+            builder.setPositiveButton("YES", (dialog, which) -> {
+                MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog YES clicked");
 
-                    yes.run();
-                    dialog.dismiss();
-                }
+                yes.run();
+                dialog.dismiss();
             });
-            builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog CANCEL clicked");
+            builder.setNegativeButton("CANCEL", (dialog, id) -> {
+                MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog CANCEL clicked");
 
-                    cancel.run();
-                    dialog.dismiss();
-                }
+                cancel.run();
+                dialog.dismiss();
             });
 
             AlertDialog alert = builder.create();
@@ -706,7 +694,11 @@ public class MengineUtils {
         }
         out.close();
 
-        return out.toString("UTF-8");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return out.toString(StandardCharsets.UTF_8);
+        } else {
+            return new String(out.toByteArray(), StandardCharsets.UTF_8);
+        }
     }
 
     public static Map<String, Object> parseJSONMap(String json) {
@@ -787,6 +779,9 @@ public class MengineUtils {
             }
             catch (final SecurityException e2) {
                 throw e2;
+            }
+            catch (final NullPointerException e3) {
+                throw e3;
             }
         }
     }

@@ -76,11 +76,8 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
 
         if (mediationAmazon != null) {
-            mediationAmazon.initializeMediatorBanner(activity, plugin, adView, new MengineAppLovinMediationLoadAdCallback() {
-                @Override
-                public void onLoadAd() {
-                    MengineAppLovinBanner.this.loadAd();
-                }
+            mediationAmazon.initializeMediatorBanner(activity, plugin, adView, () -> {
+                MengineAppLovinBanner.this.loadAd();
             });
         } else {
             // Load the ad

@@ -9,10 +9,10 @@ public class MengineMain implements Runnable {
 
     private static native boolean AndroidMain_main(Object application);
 
-    MengineActivity m_activity;
+    protected final MengineActivity m_activity;
 
-    Object m_nativeApplication;
-    CountDownLatch m_runLatch;
+    protected final Object m_nativeApplication;
+    protected final CountDownLatch m_runLatch;
 
     public MengineMain(MengineActivity activity, Object nativeApplication, CountDownLatch runLatch) {
         m_activity = activity;

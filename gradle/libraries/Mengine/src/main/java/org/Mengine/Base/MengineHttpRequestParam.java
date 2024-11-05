@@ -11,9 +11,9 @@ public class MengineHttpRequestParam {
         this.HTTP_TIMEOUT = timeout;
     }
 
-    public String HTTP_URL;
-    public String HTTP_PROXY;
-    public List<String> HTTP_HEADERS;
-    public String HTTP_COOKIES;
-    public int HTTP_TIMEOUT;
+    public final String HTTP_URL;
+    public final String HTTP_PROXY;
+    public final List<String> HTTP_HEADERS;
+    public final String HTTP_COOKIES;
+    public final int HTTP_TIMEOUT;
 }

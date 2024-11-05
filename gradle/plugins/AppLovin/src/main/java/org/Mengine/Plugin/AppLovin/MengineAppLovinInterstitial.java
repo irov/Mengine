@@ -46,11 +46,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
 
         if (mediationAmazon != null) {
-            mediationAmazon.loadMediatorInterstitial(activity, plugin, m_interstitialAd, new MengineAppLovinMediationLoadAdCallback() {
-                @Override
-                public void onLoadAd() {
-                    MengineAppLovinInterstitial.this.loadAd();
-                }
+            mediationAmazon.loadMediatorInterstitial(activity, plugin, m_interstitialAd, () -> {
+                MengineAppLovinInterstitial.this.loadAd();
             });
         } else {
             this.loadAd();

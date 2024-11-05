@@ -92,7 +92,7 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
         } else {
             String adInfoAdvertisingId = adInfo.getId();
 
-            if (adInfoAdvertisingId.equals(LIMIT_ADVERTISING_ID) == true) {
+            if (adInfoAdvertisingId == null || adInfoAdvertisingId.equals(LIMIT_ADVERTISING_ID) == true) {
                 advertisingId = LIMIT_ADVERTISING_ID;
                 advertisingLimitTrackingEnabled = true;
             } else {

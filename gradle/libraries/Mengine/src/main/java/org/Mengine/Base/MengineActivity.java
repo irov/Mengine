@@ -22,6 +22,7 @@ import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -83,7 +84,9 @@ public class MengineActivity extends AppCompatActivity {
 
     private Object m_nativeApplication;
 
-    private static Map<String, Integer> m_requestCodes = new HashMap<>();
+    private static final Map<String, Integer> m_requestCodes = new HashMap<>();
+
+    private static final Object m_syncronizationSemaphores = new Object();
     private Map<String, MengineSemaphore> m_semaphores;
 
     private Thread m_threadMain;
@@ -260,7 +263,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public ViewGroup getContentViewGroup() {
-        ViewGroup viewGroup = (ViewGroup)m_contentView;
+        ViewGroup viewGroup = m_contentView;
 
         return viewGroup;
     }
@@ -513,7 +516,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         this.setState("activity.lifecycle", "save_instance_state");
@@ -522,7 +525,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
         this.setState("activity.lifecycle", "restore_instance_state");
@@ -869,7 +872,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
         this.setState("configuration.orientation", newConfig.orientation);
@@ -892,7 +895,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         MengineLog.logMessage(TAG, "onRequestPermissionsResult request: %d permissions: %s grantResults: %s"
@@ -1054,9 +1057,9 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("python.semaphore", name);
 
-        ArrayList<MengineSemaphoreListener> activate_listeners = null;
+        ArrayList<MengineSemaphoreListener> activate_listeners;
 
-        synchronized (m_semaphores) {
+        synchronized (m_syncronizationSemaphores) {
             MengineSemaphore semaphore = m_semaphores.get(name);
 
             if (semaphore == null) {
@@ -1092,7 +1095,7 @@ public class MengineActivity extends AppCompatActivity {
             , name
         );
 
-        synchronized (m_semaphores) {
+        synchronized (m_syncronizationSemaphores) {
             m_semaphores.remove(name);
         }
     }
@@ -1106,7 +1109,7 @@ public class MengineActivity extends AppCompatActivity {
             , name
         );
 
-        synchronized (m_semaphores) {
+        synchronized (m_syncronizationSemaphores) {
             MengineSemaphore semaphore = m_semaphores.get(name);
 
             if (semaphore == null) {
@@ -1346,7 +1349,7 @@ public class MengineActivity extends AppCompatActivity {
 
                 File oldLogZipFile = MengineUtils.createTempFile(context, "mng_old_log_", ".zip");
 
-                if (MengineUtils.zipFiles(oldLogFile, oldLogZipFile) == true) {
+                if (oldLogZipFile != null && MengineUtils.zipFiles(oldLogFile, oldLogZipFile) == true) {
                     Uri oldLogZipFileUri = MengineUtils.getUriForFile(context, oldLogZipFile);
 
                     if (oldLogZipFileUri == null) {

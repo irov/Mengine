@@ -8,7 +8,7 @@ import android.view.View;
 public class MengineClipboard extends View implements ClipboardManager.OnPrimaryClipChangedListener {
     public static final String TAG = "MengineClipboard";
 
-    ClipboardManager m_cm;
+    protected final ClipboardManager m_cm;
 
     public MengineClipboard(Context context) {
         super(context);

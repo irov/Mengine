@@ -4,10 +4,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import androidx.annotation.NonNull;
+
 public class MengineCommandHandler extends Handler {
     public static final String TAG = "MengineCommandHandler";
 
-    MengineActivity m_activity;
+    protected final MengineActivity m_activity;
 
     public MengineCommandHandler(Looper looper, MengineActivity activity) {
         super(looper);
@@ -15,7 +17,7 @@ public class MengineCommandHandler extends Handler {
         m_activity = activity;
     }
 
-    public void handleMessage(Message msg) {
+    public void handleMessage(@NonNull Message msg) {
         // ToDo
     }
 }

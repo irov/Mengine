@@ -1,7 +1,7 @@
 package org.Mengine.Base;
 
 public class MengineChainActivityNotFoundException extends Exception {
-    protected String m_className;
+    protected final String m_className;
 
     public MengineChainActivityNotFoundException(String className, String message) {
         super(message);

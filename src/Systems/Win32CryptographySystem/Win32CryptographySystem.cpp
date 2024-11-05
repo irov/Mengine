@@ -16,6 +16,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32CryptographySystem::Win32CryptographySystem()
+        : m_hCryptProvider( NULL )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -25,8 +26,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32CryptographySystem::_initializeService()
     {
-        HCRYPTPROV hCryptProv;
-        if( ::CryptAcquireContext( &hCryptProv
+        HCRYPTPROV hCryptProvider;
+        if( ::CryptAcquireContext( &hCryptProvider
             , NULL
             , (LPCWSTR)L"Microsoft Base Cryptographic Provider v1.0"
             , PROV_RSA_FULL
@@ -35,27 +36,27 @@ namespace Mengine
             return false;
         }
 
-        m_hCryptProv = hCryptProv;
+        m_hCryptProvider = hCryptProvider;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32CryptographySystem::_finalizeService()
     {
-        if( ::CryptReleaseContext( m_hCryptProv, 0 ) == FALSE )
+        if( ::CryptReleaseContext( m_hCryptProvider, 0 ) == FALSE )
         {
             LOGGER_ERROR( "CryptReleaseContext invalid %ls"
                 , Helper::Win32GetLastErrorMessageW()
             );
         }
 
-        m_hCryptProv = NULL;
+        m_hCryptProvider = NULL;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32CryptographySystem::generateRandomSeed( uint64_t * const _seed ) const
     {
         BYTE pbData[sizeof( uint64_t )];
-        if( ::CryptGenRandom( m_hCryptProv, sizeof( pbData ), pbData ) == FALSE )
+        if( ::CryptGenRandom( m_hCryptProvider, sizeof( pbData ), pbData ) == FALSE )
         {
             LOGGER_ERROR( "CryptGenRandom invalid %ls"
                 , Helper::Win32GetLastErrorMessageW()
@@ -83,7 +84,7 @@ namespace Mengine
         );
 
         BYTE pbData[512];
-        if( ::CryptGenRandom( m_hCryptProv, _length / 2, pbData ) == FALSE )
+        if( ::CryptGenRandom( m_hCryptProvider, _length / 2, pbData ) == FALSE )
         {
             LOGGER_ERROR( "CryptGenRandom invalid %ls"
                 , Helper::Win32GetLastErrorMessageW()

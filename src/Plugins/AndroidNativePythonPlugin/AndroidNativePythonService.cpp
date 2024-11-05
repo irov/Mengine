@@ -785,7 +785,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_FATAL( jmethodID_List_constructor != nullptr, "invalid get android method 'java/lang/ArrayList [<init>] (I)V'" );
 
-                jobject jlist = _jenv->NewObject( jclass_ArrayList, jmethodID_List_constructor, (jint)s);
+                jobject jlist = _jenv->NewObject( jclass_ArrayList, jmethodID_List_constructor, (jsize)s );
 
                 uint32_t index = 0;
                 for( const pybind::object & o : l )

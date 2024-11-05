@@ -22,9 +22,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class MengineAppLovinBase {
-    protected MaxAdFormat m_adFormat;
+    protected final MaxAdFormat m_adFormat;
     protected MengineAppLovinPlugin m_plugin;
-    protected String m_adUnitId;
+    protected final String m_adUnitId;
 
     protected int m_retryAttempt;
 

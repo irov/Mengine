@@ -73,23 +73,23 @@ public class MengineApplication extends Application {
 
     private ConnectivityManager.NetworkCallback m_networkCallback;
 
-    private ArrayList<MenginePlugin> m_plugins = new ArrayList<>();
-    private Map<String, MenginePlugin> m_dictionaryPlugins = new HashMap<>();
-    private Map<String, Object> m_states = new ConcurrentHashMap<>();
+    private final ArrayList<MenginePlugin> m_plugins = new ArrayList<>();
+    private final Map<String, MenginePlugin> m_dictionaryPlugins = new HashMap<>();
+    private final Map<String, Object> m_states = new ConcurrentHashMap<>();
 
-    private ArrayList<MenginePluginLoggerListener> m_loggerListeners = new ArrayList<>();
-    private ArrayList<MenginePluginAnalyticsListener> m_analyticsListeners = new ArrayList<>();
-    private ArrayList<MenginePluginAdRevenueListener> m_adRevenueListeners = new ArrayList<>();
-    private ArrayList<MenginePluginTransparencyConsentListener> m_transparencyConsentListeners = new ArrayList<>();
-    private ArrayList<MenginePluginInAppPurchaseListener> m_inAppPurchaseListeners = new ArrayList<>();
-    private ArrayList<MenginePluginRemoteMessageListener> m_removeMessageListeners = new ArrayList<>();
-    private ArrayList<MenginePluginKeyListener> m_keyListeners = new ArrayList<>();
-    private ArrayList<MenginePluginApplicationListener> m_applicationListeners = new ArrayList<>();
-    private ArrayList<MenginePluginActivityListener> m_activityListeners = new ArrayList<>();
-    private ArrayList<MenginePluginEngineListener> m_engineListeners = new ArrayList<>();
-    private ArrayList<MenginePluginPushTokenListener> m_pushTokenListeners = new ArrayList<>();
-    private ArrayList<MenginePluginAdvertisingIdListener> m_advertisingIdListeners = new ArrayList<>();
-    private ArrayList<MenginePluginSessionIdListener> m_sessionIdListeners = new ArrayList<>();
+    private final ArrayList<MenginePluginLoggerListener> m_loggerListeners = new ArrayList<>();
+    private final ArrayList<MenginePluginAnalyticsListener> m_analyticsListeners = new ArrayList<>();
+    private final ArrayList<MenginePluginAdRevenueListener> m_adRevenueListeners = new ArrayList<>();
+    private final ArrayList<MenginePluginTransparencyConsentListener> m_transparencyConsentListeners = new ArrayList<>();
+    private final ArrayList<MenginePluginInAppPurchaseListener> m_inAppPurchaseListeners = new ArrayList<>();
+    private final ArrayList<MenginePluginRemoteMessageListener> m_removeMessageListeners = new ArrayList<>();
+    private final ArrayList<MenginePluginKeyListener> m_keyListeners = new ArrayList<>();
+    private final ArrayList<MenginePluginApplicationListener> m_applicationListeners = new ArrayList<>();
+    private final ArrayList<MenginePluginActivityListener> m_activityListeners = new ArrayList<>();
+    private final ArrayList<MenginePluginEngineListener> m_engineListeners = new ArrayList<>();
+    private final ArrayList<MenginePluginPushTokenListener> m_pushTokenListeners = new ArrayList<>();
+    private final ArrayList<MenginePluginAdvertisingIdListener> m_advertisingIdListeners = new ArrayList<>();
+    private final ArrayList<MenginePluginSessionIdListener> m_sessionIdListeners = new ArrayList<>();
 
     private final Object m_syncEvent = new Object();
     private final Object m_syncState = new Object();
@@ -398,15 +398,15 @@ public class MengineApplication extends Application {
     public void setState(String name, Object value) {
         m_states.put(name, value);
 
-        synchronized (m_syncState) {
-            List<MenginePlugin> plugins = this.getPlugins();
+        List<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
-            for (MenginePlugin p : plugins) {
-                if (p.onAvailable(this) == false) {
+        synchronized (m_syncState) {
+            for (MenginePluginApplicationListener listener : applicationListeners) {
+                if (listener.onAvailable(this) == false) {
                     continue;
                 }
 
-                p.onState(this, name, value);
+                listener.onAppState(this, name, value);
             }
         }
     }
@@ -531,6 +531,14 @@ public class MengineApplication extends Application {
             return false;
         } catch (IllegalAccessException ex) {
             MengineLog.logError(TAG, "[ERROR] plugin [%s] invalid field PLUGIN_NAME"
+                , type
+            );
+
+            return false;
+        }
+
+        if (name == null) {
+            MengineLog.logError(TAG, "[ERROR] plugin [%s] invalid name"
                 , type
             );
 
@@ -709,15 +717,15 @@ public class MengineApplication extends Application {
     }
 
     public void sendEvent(MengineEvent event, Object ... args) {
-        List<MenginePlugin> plugins = this.getPlugins();
+        List<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
         synchronized (m_syncEvent) {
-            for (MenginePlugin p : plugins) {
-                if (p.onAvailable(this) == false) {
+            for (MenginePluginApplicationListener listener : applicationListeners) {
+                if (listener.onAvailable(this) == false) {
                     continue;
                 }
 
-                p.onEvent(this, event, args);
+                listener.onAppEvent(this, event, args);
             }
         }
     }
@@ -725,9 +733,9 @@ public class MengineApplication extends Application {
     private boolean isMainProcess() {
         String packageName = this.getPackageName();
 
-        String processName = null;
+        String processName;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-            processName = this.getProcessName();
+            processName = Application.getProcessName();
         } else {
             Context context = this.getApplicationContext();
             processName = MengineUtils.getProcessNameBeforeVersionP(context);
@@ -834,7 +842,7 @@ public class MengineApplication extends Application {
 
         Context context = this.getApplicationContext();
 
-        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(ConnectivityManager.class);
+        ConnectivityManager connectivityManager = context.getSystemService(ConnectivityManager.class);
         connectivityManager.registerDefaultNetworkCallback(networkCallback);
 
         m_networkCallback = networkCallback;
@@ -851,7 +859,7 @@ public class MengineApplication extends Application {
 
         Context context = this.getApplicationContext();
 
-        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(ConnectivityManager.class);
+        ConnectivityManager connectivityManager = context.getSystemService(ConnectivityManager.class);
         connectivityManager.registerDefaultNetworkCallback(m_networkCallback);
 
         m_networkCallback = null;
@@ -1014,55 +1022,52 @@ public class MengineApplication extends Application {
         MengineAnalytics.addContextParameterLong("session_timestamp", m_sessionTimestamp);
         MengineAnalytics.addContextParameterLong("purchases_timestamp", m_purchasesTimestamp);
 
-        MengineAnalytics.addContextGetterParameterLong("connection", new MengineAnalyticsGetter<Long>() {
-            @Override
-            public Long get() {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                    return -3L;
-                }
-
-                boolean networkAvailable = MengineNetwork.isNetworkAvailable();
-
-                if (networkAvailable == false) {
-                    return -2L;
-                }
-
-                MengineNetworkTransport networkTransport = MengineNetwork.getNetworkTransport();
-
-                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_CELLULAR) {
-                    return 1L;
-                }
-
-                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_WIFI) {
-                    return 2L;
-                }
-
-                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_BLUETOOTH) {
-                    return 3L;
-                }
-
-                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_ETHERNET) {
-                    return 4L;
-                }
-
-                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_VPN) {
-                    return 5L;
-                }
-
-                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_WIFI_AWARE) {
-                    return 6L;
-                }
-
-                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_LOWPAN) {
-                    return 7L;
-                }
-
-                if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_USB) {
-                    return 8L;
-                }
-
-                return -1L;
+        MengineAnalytics.addContextGetterParameterLong("connection", () -> {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                return -3L;
             }
+
+            boolean networkAvailable = MengineNetwork.isNetworkAvailable();
+
+            if (networkAvailable == false) {
+                return -2L;
+            }
+
+            MengineNetworkTransport networkTransport = MengineNetwork.getNetworkTransport();
+
+            if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_CELLULAR) {
+                return 1L;
+            }
+
+            if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_WIFI) {
+                return 2L;
+            }
+
+            if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_BLUETOOTH) {
+                return 3L;
+            }
+
+            if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_ETHERNET) {
+                return 4L;
+            }
+
+            if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_VPN) {
+                return 5L;
+            }
+
+            if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_WIFI_AWARE) {
+                return 6L;
+            }
+
+            if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_LOWPAN) {
+                return 7L;
+            }
+
+            if (networkTransport == MengineNetworkTransport.NETWORKTRANSPORT_USB) {
+                return 8L;
+            }
+
+            return -1L;
         });
 
         this.setState("application.init", "get_android_id");

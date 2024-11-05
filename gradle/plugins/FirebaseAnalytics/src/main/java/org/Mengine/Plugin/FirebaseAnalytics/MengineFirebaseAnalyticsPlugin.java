@@ -93,15 +93,13 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
             String key = entry.getKey();
             Object value = entry.getValue();
 
-            if (value instanceof Boolean) {
-                params.putBoolean(key, (Boolean)value);
-            } else if (value instanceof Long) {
-                params.putLong(key, (Long)value);
-            } else if (value instanceof Double) {
-                params.putDouble(key, (Double)value);
-            } else if (value instanceof String) {
-                String stringValue = (String)value;
-
+            if (value instanceof Boolean boolValue) {
+                params.putBoolean(key, boolValue);
+            } else if (value instanceof Long longValue) {
+                params.putLong(key, longValue);
+            } else if (value instanceof Double doubleValue) {
+                params.putDouble(key, doubleValue);
+            } else if (value instanceof String stringValue) {
                 if (stringValue.length() > 100) {
                     String stringValue100 = stringValue.substring(0, 100);
 
@@ -123,15 +121,13 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
             String key = entry.getKey();
             Object value = entry.getValue();
 
-            if (value instanceof Boolean) {
-                params.putBoolean(key, (Boolean)value);
-            } else if (value instanceof Long) {
-                params.putLong(key, (Long)value);
-            } else if (value instanceof Double) {
-                params.putDouble(key, (Double)value);
-            } else if (value instanceof String) {
-                String stringValue = (String)value;
-
+            if (value instanceof Boolean boolValue) {
+                params.putBoolean(key, boolValue);
+            } else if (value instanceof Long longValue) {
+                params.putLong(key, longValue);
+            } else if (value instanceof Double doubleValue) {
+                params.putDouble(key, doubleValue);
+            } else if (value instanceof String stringValue) {
                 if (stringValue.length() > 100) {
                     String stringValue100 = stringValue.substring(0, 100);
 
@@ -202,7 +198,7 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
             return;
         }
 
-        String adFirebaseMediation = this.getAdMediation(revenue.ADREVENUE_MEDIATION);
+        String adFirebaseMediation = MengineFirebaseAnalyticsPlugin.getAdMediation(revenue.ADREVENUE_MEDIATION);
         String networkName = revenue.ADREVENUE_NETWORK;
         MengineAdFormat adFormat = revenue.ADREVENUE_FORMAT;
         String format = MengineFirebaseAnalyticsPlugin.getAdFormat(adFormat);

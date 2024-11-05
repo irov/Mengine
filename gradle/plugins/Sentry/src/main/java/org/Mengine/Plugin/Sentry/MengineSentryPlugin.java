@@ -24,7 +24,7 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
     public static boolean m_passGDPR = false;
 
     @Override
-    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
+    public void onAppEvent(MengineApplication application, MengineEvent event, Object ... args) {
         if (event == MengineEvent.EVENT_GDPR_PASS) {
             boolean passGDPR = (boolean)args[0];
 
@@ -150,7 +150,7 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onState(MengineApplication application, String name, Object value) {
+    public void onAppState(MengineApplication application, String name, Object value) {
         this.setCustomKey("." + name, value);
     }
 

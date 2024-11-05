@@ -42,7 +42,7 @@ public class MengineLog {
         public MengineApplication application;
     }
 
-    private static ArrayList<HistoryRecord> m_history = new ArrayList<>();
+    private static final ArrayList<HistoryRecord> m_history = new ArrayList<>();
 
     public static void setMengineApplication(MengineApplication application) {
         MengineLog.m_application = application;

@@ -47,11 +47,8 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
 
         if (mediationAmazon != null) {
-            mediationAmazon.loadMediatorRewarded(activity, plugin, m_rewardedAd, new MengineAppLovinMediationLoadAdCallback() {
-                @Override
-                public void onLoadAd() {
-                    MengineAppLovinRewarded.this.loadAd();
-                }
+            mediationAmazon.loadMediatorRewarded(activity, plugin, m_rewardedAd, () -> {
+                MengineAppLovinRewarded.this.loadAd();
             });
         } else {
             this.loadAd();

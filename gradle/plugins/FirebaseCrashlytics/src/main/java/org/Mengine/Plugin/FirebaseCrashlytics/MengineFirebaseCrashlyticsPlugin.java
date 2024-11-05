@@ -56,7 +56,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     @Override
-    public void onState(MengineApplication application, String name, Object value) {
+    public void onAppState(MengineApplication application, String name, Object value) {
         this.setCustomKey(name, value);
     }
 

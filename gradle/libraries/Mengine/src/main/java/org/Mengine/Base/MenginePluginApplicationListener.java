@@ -29,4 +29,12 @@ public interface MenginePluginApplicationListener extends MenginePluginInterface
     default void onAppConfigurationChanged(MengineApplication application, @NonNull Configuration newConfig) {
         //Empty
     }
+
+    default void onAppEvent(MengineApplication application, MengineEvent event, Object ... args) {
+        //Empty
+    }
+
+    default void onAppState(MengineApplication application, String name, Object value) {
+        //Empty
+    }
 }

@@ -155,7 +155,7 @@ namespace Mengine
 
             MENGINE_ASSERTION( Integer_constructor != nullptr, "invalid get android method 'Integer <init> (I)V'" );
 
-            jobject value_jobject = _jenv->NewObject( jclass_Integer, Integer_constructor, _value );
+            jobject value_jobject = _jenv->NewObject( jclass_Integer, Integer_constructor, (jint)_value );
 
             MENGINE_ASSERTION( value_jobject != nullptr, "invalid create Integer '%d'"
                 , _value
@@ -174,7 +174,7 @@ namespace Mengine
 
             MENGINE_ASSERTION( Long_constructor != nullptr, "invalid get android method 'Long <init> (J)V'" );
 
-            jobject value_jobject = _jenv->NewObject( jclass_Long, Long_constructor, _value );
+            jobject value_jobject = _jenv->NewObject( jclass_Long, Long_constructor, (jlong)_value );
 
             MENGINE_ASSERTION( value_jobject != nullptr, "invalid create Long '%" MENGINE_PRId64 "'"
                 , _value
@@ -271,7 +271,7 @@ namespace Mengine
 
             MENGINE_ASSERTION( ArrayList_constructor != nullptr, "invalid get android method 'ArrayList <init> (I)V'" );
 
-            jobject value_jobject = _jenv->NewObject( jclass_ArrayList, ArrayList_constructor, _count );
+            jobject value_jobject = _jenv->NewObject( jclass_ArrayList, ArrayList_constructor, (jint)_count );
 
             MENGINE_ASSERTION( value_jobject != nullptr, "invalid create ArrayList '%d'"
                 , _count
@@ -290,7 +290,7 @@ namespace Mengine
 
             MENGINE_ASSERTION( HashMap_constructor != nullptr, "invalid get android method 'HashMap <init> (I)V'" );
 
-            jobject value_jobject = _jenv->NewObject( jclass_HashMap, HashMap_constructor, _count );
+            jobject value_jobject = _jenv->NewObject( jclass_HashMap, HashMap_constructor, (jint)_count );
 
             MENGINE_ASSERTION( value_jobject != nullptr, "invalid create HashMap '%d'"
                 , _count
@@ -582,7 +582,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_FATAL( List_get != nullptr, "invalid get android method 'java/lang/List [get] (I)Ljava/lang/Object;'" );
 
-            int list_size = _jenv->CallIntMethod( _jlist, List_size );
+            jsize list_size = _jenv->CallIntMethod( _jlist, List_size );
             Helper::AndroidEnvExceptionCheck( _jenv );
 
             for( jsize index = 0; index != list_size; ++index )

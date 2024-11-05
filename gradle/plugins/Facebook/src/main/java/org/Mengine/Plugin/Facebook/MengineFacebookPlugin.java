@@ -13,7 +13,6 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.LoggingBehavior;
 import com.facebook.LoginStatusCallback;
@@ -371,15 +370,12 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
         String token = accessToken.getToken();
 
-        new GraphRequest(accessToken, "/me/permissions/", null, HttpMethod.DELETE, new GraphRequest.Callback() {
-            @Override
-            public void onCompleted(GraphResponse graphResponse) {
-                MengineFacebookPlugin.this.logMessage("GraphRequest DELETE onCompleted");
+        new GraphRequest(accessToken, "/me/permissions/", null, HttpMethod.DELETE, graphResponse -> {
+            MengineFacebookPlugin.this.logMessage("GraphRequest DELETE onCompleted");
 
-                LoginManager.getInstance().logOut();
+            LoginManager.getInstance().logOut();
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookLogoutSuccess", token);
-            }
+            MengineFacebookPlugin.this.pythonCall("onFacebookLogoutSuccess", token);
         }).executeAsync();
     }
     
@@ -404,20 +400,17 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             return;
         }
 
-        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-                @Override
-                public void onCompleted(JSONObject object, GraphResponse response) {
-                    MengineFacebookPlugin.this.logMessage("GraphRequest new Me request completed object: %s response: %s"
-                        , object
-                        , response
-                    );
+        GraphRequest request = GraphRequest.newMeRequest(accessToken, (object, response) -> {
+            MengineFacebookPlugin.this.logMessage("GraphRequest new Me request completed object: %s response: %s"
+                , object
+                , response
+            );
 
-                    String objectString = object != null ? object.toString() : "";
-                    String responseString = response != null ? response.toString() : "";
+            String objectString = object != null ? object.toString() : "";
+            String responseString = response != null ? response.toString() : "";
 
-                    MengineFacebookPlugin.this.pythonCall("onFacebookUserFetchSuccess", objectString, responseString);
-                }
-            });
+            MengineFacebookPlugin.this.pythonCall("onFacebookUserFetchSuccess", objectString, responseString);
+        });
                 
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id, name, picture");
@@ -447,7 +440,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         MengineActivity activity = this.getMengineActivity();
 
         ShareDialog shareDialog = new ShareDialog(activity);
-        shareDialog.registerCallback(m_facebookCallbackManager, new FacebookCallback<Sharer.Result>() {
+        shareDialog.registerCallback(m_facebookCallbackManager, new FacebookCallback<>() {
             @Override
             public void onSuccess(Sharer.Result result) {
                 String postId = result.getPostId() != null ? result.getPostId() : "";
@@ -544,54 +537,51 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     protected void getProfileUserPictureLinkWithAccessToken(AccessToken accessToken, final String user_id, final String typeParameter) {
         String graphPath = "/" + user_id + "/picture" + typeParameter;
 
-        GraphRequest request = GraphRequest.newGraphPathRequest(accessToken, graphPath, new GraphRequest.Callback() {
-            @Override
-            public void onCompleted(@NonNull GraphResponse response) {
-                if (response.getError() != null) {
-                    MengineFacebookPlugin.this.logError("[ERROR] profile user picture link [%s] get error: %s"
-                            , graphPath
-                            , response.getError().getErrorMessage()
-                    );
-
-                    MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
-
-                    return;
-                }
-
-                JSONObject responseObject = response.getJSONObject();
-
-                if (responseObject == null) {
-                    MengineFacebookPlugin.this.logError("[ERROR] profile user picture link [%s] invalid response: %s"
-                            , graphPath
-                            , response
-                    );
-
-                    MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
-
-                    return;
-                }
-
-                String pictureURL = "";
-                try {
-                    pictureURL = responseObject.getJSONObject("data").getString("url");
-                } catch (final JSONException e) {
-                    MengineFacebookPlugin.this.logError("[ERROR] profile user picture link [%s] catch JSONException: %s"
-                            , graphPath
-                            , e.getMessage()
-                    );
-
-                    MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
-
-                    return;
-                }
-
-                MengineFacebookPlugin.this.logMessage("request profile user [%s] picture link completed: %s"
-                        , user_id
-                        , pictureURL
+        GraphRequest request = GraphRequest.newGraphPathRequest(accessToken, graphPath, response -> {
+            if (response.getError() != null) {
+                MengineFacebookPlugin.this.logError("[ERROR] profile user picture link [%s] get error: %s"
+                    , graphPath
+                    , response.getError().getErrorMessage()
                 );
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, true, pictureURL);
+                MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
+
+                return;
             }
+
+            JSONObject responseObject = response.getJSONObject();
+
+            if (responseObject == null) {
+                MengineFacebookPlugin.this.logError("[ERROR] profile user picture link [%s] invalid response: %s"
+                    , graphPath
+                    , response
+                );
+
+                MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
+
+                return;
+            }
+
+            String pictureURL = "";
+            try {
+                pictureURL = responseObject.getJSONObject("data").getString("url");
+            } catch (final JSONException e) {
+                MengineFacebookPlugin.this.logError("[ERROR] profile user picture link [%s] catch JSONException: %s"
+                    , graphPath
+                    , e.getMessage()
+                );
+
+                MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
+
+                return;
+            }
+
+            MengineFacebookPlugin.this.logMessage("request profile user [%s] picture link completed: %s"
+                , user_id
+                , pictureURL
+            );
+
+            MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, true, pictureURL);
         });
 
         Bundle parameters = new Bundle();

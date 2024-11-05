@@ -1,7 +1,5 @@
 package org.Mengine.Base;
 
-import java.util.List;
-
 public class MengineHttpResponseParam {
     public int HTTP_RESPONSE_CODE;
     public int HTTP_CONTENT_LENGTH;

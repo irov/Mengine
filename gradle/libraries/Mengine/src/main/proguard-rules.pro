@@ -1,13 +1,3 @@
--keep public class extends org.Mengine.Base.MengineSemaphoreListener {
-    native <methods>;
-    public <methods>;
-}
-
--keep public class extends org.Mengine.Base.MengineHttpRequestParam {
-    native <methods>;
-    public <methods>;
-}
-
 -keep public class * extends org.Mengine.Base.MenginePluginExtension {
     native <methods>;
     public <methods>;

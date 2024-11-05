@@ -82,6 +82,8 @@ namespace Mengine
                                 MENGINE_STRNCPY_STATIC( _osVersion, "Server 2016", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
                             }
                         }break;
+                    default:
+                        MENGINE_STRNCPY_STATIC( _osVersion, "Unknown", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
                     }
                 }break;
             case 6:
@@ -96,6 +98,8 @@ namespace Mengine
                         MENGINE_STRNCPY_STATIC( _osVersion, "7", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
                     case 0:
                         MENGINE_STRNCPY_STATIC( _osVersion, "Vista", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                    default:
+                        MENGINE_STRNCPY_STATIC( _osVersion, "Unknown", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
                     }
                 }break;
             case 5:
@@ -106,6 +110,8 @@ namespace Mengine
                         MENGINE_STRNCPY_STATIC( _osVersion, "XP64", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
                     case 1:
                         MENGINE_STRNCPY_STATIC( _osVersion, "XP", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
+                    default:
+                        MENGINE_STRNCPY_STATIC( _osVersion, "Unknown", MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME );
                     }
                 }break;
             default:

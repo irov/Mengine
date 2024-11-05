@@ -243,12 +243,4 @@ public class MenginePlugin implements MenginePluginInterface {
 
         return null;
     }
-
-    public void onEvent(MengineApplication application, MengineEvent event, Object ... args) {
-        //Empty
-    }
-
-    public void onState(MengineApplication application, String name, Object value) {
-        //Empty
-    }
 }

@@ -350,7 +350,7 @@ android {
 }
 
 if (ANDROID_APP_SPLIT_ENABLE == true) {
-    android.applicationVariants.all  { variant ->
+    android.applicationVariants.configureEach { variant ->
         variant.outputs.each { output ->
             def abiCodes = ["arm64-v8a": 1, "armeabi-v7a": 2, "x86": 3, "x86_64": 4]
 
@@ -800,7 +800,7 @@ android {
 }
 
 if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
-    task checkDebugUnstrippedNativeLibsDir {
+    tasks.register('checkDebugUnstrippedNativeLibsDir') {
         doLast {
             println "[TASK] checkDebugUnstrippedNativeLibsDir"
 
@@ -811,7 +811,7 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
         }
     }
 
-    task checkReleaseUnstrippedNativeLibsDir {
+    tasks.register('checkReleaseUnstrippedNativeLibsDir') {
         doLast {
             println "[TASK] checkReleaseUnstrippedNativeLibsDir"
 
@@ -822,7 +822,7 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
         }
     }
 
-    tasks.whenTaskAdded { task ->
+    tasks.configureEach { task ->
         if (task.name == 'assembleRelease') {
             task.finalizedBy checkReleaseUnstrippedNativeLibsDir
         } else if(task.name == 'assembleDebug') {
@@ -842,7 +842,7 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
         }
     }
 
-    tasks.whenTaskAdded { task ->
+    tasks.configureEach { task ->
         if (task.name == "bundleRelease") {
             task.finalizedBy 'uploadCrashlyticsSymbolFileRelease'
         }

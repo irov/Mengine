@@ -1,7 +1,5 @@
 package org.Mengine.Base;
 
-import java.util.Map;
-
 public interface MenginePluginRemoteMessageListener extends MenginePluginInterface {
     default boolean onMengineRemoteMessageReceived(MengineApplication application, MengineRemoteMessageParam message) {
         //Empty

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxMediatedNetworkInfo;
-import com.applovin.sdk.AppLovinCmpError;
 import com.applovin.sdk.AppLovinCmpService;
 import com.applovin.sdk.AppLovinMediationProvider;
 import com.applovin.sdk.AppLovinPrivacySettings;
@@ -135,46 +134,43 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             .setMediationProvider( AppLovinMediationProvider.MAX )
             .build();
 
-        appLovinSdk.initialize(config, new AppLovinSdk.SdkInitializationListener() {
-            @Override
-            public void onSdkInitialized(final AppLovinSdkConfiguration configuration) {
-                AppLovinCmpService cmpService = appLovinSdk.getCmpService();
-                boolean supportedCmp = cmpService.hasSupportedCmp();
-                boolean testModeEnabled = configuration.isTestModeEnabled();
-                String countryCode = configuration.getCountryCode();
-                List<String> enabledAmazonAdUnitIds = configuration.getEnabledAmazonAdUnitIds();
-                AppLovinSdkConfiguration.ConsentFlowUserGeography consentFlowUserGeography = configuration.getConsentFlowUserGeography();
+        appLovinSdk.initialize(config, configuration -> {
+            AppLovinCmpService cmpService = appLovinSdk.getCmpService();
+            boolean supportedCmp = cmpService.hasSupportedCmp();
+            boolean testModeEnabled = configuration.isTestModeEnabled();
+            String countryCode = configuration.getCountryCode();
+            List<String> enabledAmazonAdUnitIds = configuration.getEnabledAmazonAdUnitIds();
+            AppLovinSdkConfiguration.ConsentFlowUserGeography consentFlowUserGeography = configuration.getConsentFlowUserGeography();
 
-                MengineAppLovinPlugin.this.logMessage("initialized CMP: %b TestMode: %b CountryCode: %s AmazonAdUnitIds: %s ConsentFlowUserGeography: %s"
-                    , supportedCmp
-                    , testModeEnabled
-                    , countryCode
-                    , enabledAmazonAdUnitIds
-                    , consentFlowUserGeography.toString()
+            MengineAppLovinPlugin.this.logMessage("initialized CMP: %b TestMode: %b CountryCode: %s AmazonAdUnitIds: %s ConsentFlowUserGeography: %s"
+                , supportedCmp
+                , testModeEnabled
+                , countryCode
+                , enabledAmazonAdUnitIds
+                , consentFlowUserGeography.toString()
+            );
+
+            List<MaxMediatedNetworkInfo> availableMediatedNetworks = appLovinSdk.getAvailableMediatedNetworks();
+
+            for (MaxMediatedNetworkInfo networkInfo : availableMediatedNetworks) {
+                String name = networkInfo.getName();
+                String adapterVersion = networkInfo.getAdapterVersion();
+
+                MengineAppLovinPlugin.this.logMessage("available mediated network: %s [%s]"
+                    , name
+                    , adapterVersion
                 );
-
-                List<MaxMediatedNetworkInfo> availableMediatedNetworks = appLovinSdk.getAvailableMediatedNetworks();
-
-                for (MaxMediatedNetworkInfo networkInfo : availableMediatedNetworks) {
-                    String name = networkInfo.getName();
-                    String adapterVersion = networkInfo.getAdapterVersion();
-
-                    MengineAppLovinPlugin.this.logMessage("available mediated network: %s [%s]"
-                        , name
-                        , adapterVersion
-                    );
-                }
-
-                MengineTransparencyConsentParam consent = activity.makeTransparencyConsentParam();
-
-                application.onMengineTransparencyConsent(consent);
-
-                if (MengineAppLovinPlugin.this.hasOption("applovin.show_mediation_debugger") == true) {
-                    MengineAppLovinPlugin.this.showMediationDebugger();
-                }
-
-                MengineAppLovinPlugin.this.activateSemaphore("AppLovinSdkInitialized");
             }
+
+            MengineTransparencyConsentParam consent = activity.makeTransparencyConsentParam();
+
+            application.onMengineTransparencyConsent(consent);
+
+            if (MengineAppLovinPlugin.this.hasOption("applovin.show_mediation_debugger") == true) {
+                MengineAppLovinPlugin.this.showMediationDebugger();
+            }
+
+            MengineAppLovinPlugin.this.activateSemaphore("AppLovinSdkInitialized");
         });
 
         m_appLovinSdk = appLovinSdk;
@@ -528,27 +524,24 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         AppLovinCmpService cmpService = m_appLovinSdk.getCmpService();
 
-        cmpService.showCmpForExistingUser(activity, new AppLovinCmpService.OnCompletedListener() {
-            @Override
-            public void onCompleted(final AppLovinCmpError error) {
-                if (error != null) {
-                    MengineAppLovinPlugin.this.logError("Failed to show consent dialog error: %s [%s] cmp: %s [%d]"
-                        , error.getMessage()
-                        , error.getCode().toString()
-                        , error.getCmpMessage()
-                        , error.getCmpCode()
-                    );
+        cmpService.showCmpForExistingUser(activity, error -> {
+            if (error != null) {
+                MengineAppLovinPlugin.this.logError("Failed to show consent dialog error: %s [%s] cmp: %s [%d]"
+                    , error.getMessage()
+                    , error.getCode().toString()
+                    , error.getCmpMessage()
+                    , error.getCmpCode()
+                );
 
-                    MengineAppLovinPlugin.this.pythonCall("onAppLovinConsentFlowError");
+                MengineAppLovinPlugin.this.pythonCall("onAppLovinConsentFlowError");
 
-                    return;
-                }
-
-                MengineAppLovinPlugin.this.logMessage("Consent dialog was shown");
-
-                MengineAppLovinPlugin.this.pythonCall("onAppLovinConsentFlowCompleted");
+                return;
             }
-        } );
+
+            MengineAppLovinPlugin.this.logMessage("Consent dialog was shown");
+
+            MengineAppLovinPlugin.this.pythonCall("onAppLovinConsentFlowCompleted");
+        });
     }
 
     public void showCreativeDebugger() {

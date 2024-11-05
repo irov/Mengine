@@ -18,8 +18,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool existDirectory( const Char * _directoryPath, const Char * _directory ) const override;
-        bool createDirectory( const Char * _directoryPath, const Char * _directory ) override;
+        bool existDirectory( const Char * _basePath, const Char * _directory ) const override;
+        bool createDirectory( const Char * _basePath, const Char * _directory ) override;
 
     public:
         bool existFile( const Char * _filePath ) override;

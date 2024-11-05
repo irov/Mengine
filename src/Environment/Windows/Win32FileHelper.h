@@ -17,6 +17,7 @@ namespace Mengine
         bool Win32ValidateFile( const WChar * _filePath );
         bool Win32ExistFile( const WChar * _filePath );
 
+        bool Win32ExistDirectory( const WChar * _basePath, const WChar * _directory );
         bool Win32CreateDirectory( const WChar * _basePath, const WChar * _directory );
 
         typedef Lambda<bool(const WChar *)> LambdaListDirectoryFilePath;

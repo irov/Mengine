@@ -173,6 +173,44 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool Win32ExistDirectory( const WChar * _basePath, const WChar * _directory )
+        {
+            WChar pathDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
+            Helper::pathCorrectBackslashToW( pathDirectory, _directory );
+
+            Helper::pathRemoveFileSpecW( pathDirectory );
+
+            size_t len = StdString::wcslen( pathDirectory );
+
+            if( len == 0 )
+            {
+                return true;
+            }
+
+            WChar pathFull[MENGINE_MAX_PATH + 1] = {'\0'};
+            StdString::wcsncpy( pathFull, _basePath, MENGINE_MAX_PATH );
+            StdString::wcsncat( pathFull, pathDirectory, MENGINE_MAX_PATH );
+
+            if( pathFull[len - 1] == L':' )
+            {
+                return true;
+            }
+
+            DWORD attributes = ::GetFileAttributes( pathFull );
+
+            if( attributes == INVALID_FILE_ATTRIBUTES )
+            {
+                return false;
+            }
+
+            if( (attributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool Win32CreateDirectory( const WChar * _basePath, const WChar * _directory )
         {
             size_t unicode_directorySize = StdString::wcslen( _directory );

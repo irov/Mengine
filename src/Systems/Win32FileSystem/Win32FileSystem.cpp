@@ -60,13 +60,13 @@ namespace Mengine
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileSystem::existDirectory( const Char * _path, const Char * _directory ) const
+    bool Win32FileSystem::existDirectory( const Char * _basePath, const Char * _directory ) const
     {
-        MENGINE_ASSERTION_FATAL( StdString::strlen( _path ) == 0
-            || (StdString::strrchr( _path, '.' ) > StdString::strrchr( _path, MENGINE_PATH_DELIM )
-                || _path[StdString::strlen( _path ) - 1] == MENGINE_PATH_DELIM
-                || _path[StdString::strlen( _path ) - 1] == MENGINE_WIN32_PATH_DELIM)
-            , "invalid path '%s'", _path
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _basePath ) == 0
+            || (StdString::strrchr( _basePath, '.' ) > StdString::strrchr( _basePath, MENGINE_PATH_DELIM )
+                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_DELIM
+                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_WIN32_PATH_DELIM)
+            , "invalid path '%s'", _basePath
         );
 
         MENGINE_ASSERTION_FATAL( StdString::strlen( _directory ) == 0
@@ -76,8 +76,8 @@ namespace Mengine
             , "invalid directory '%s'", _directory
         );
 
-        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        WChar unicode_basePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( _basePath, unicode_basePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -88,56 +88,23 @@ namespace Mengine
             return false;
         }
 
-        WChar pathDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
-        Helper::pathCorrectBackslashToW( pathDirectory, unicode_directory );
+        bool result = Helper::Win32ExistDirectory( unicode_basePath, unicode_directory );
 
-        Helper::pathRemoveFileSpecW( pathDirectory );
-
-        size_t len = StdString::wcslen( pathDirectory );
-
-        if( len == 0 )
-        {
-            return true;
-        }
-
-        WChar pathFull[MENGINE_MAX_PATH + 1] = {'\0'};
-        MENGINE_SWPRINTF( pathFull, MENGINE_MAX_PATH, L"%ls%ls"
-            , unicode_path
-            , pathDirectory
-        );
-
-        if( pathFull[len - 1] == L':' )
-        {
-            return true;
-        }
-
-        DWORD attributes = ::GetFileAttributes( pathFull );
-
-        if( attributes == INVALID_FILE_ATTRIBUTES )
-        {
-            return false;
-        }
-
-        if( (attributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
-        {
-            return false;
-        }
-
-        return true;
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileSystem::createDirectory( const Char * _path, const Char * _directory )
+    bool Win32FileSystem::createDirectory( const Char * _basePath, const Char * _directory )
     {
         LOGGER_INFO( "file", "create directory path '%s' directory '%s'"
-            , _path
+            , _basePath
             , _directory
         );
 
-        MENGINE_ASSERTION_FATAL( StdString::strlen( _path ) == 0
-            || (StdString::strrchr( _path, '.' ) > StdString::strrchr( _path, MENGINE_PATH_DELIM )
-                || _path[StdString::strlen( _path ) - 1] == MENGINE_PATH_DELIM
-                || _path[StdString::strlen( _path ) - 1] == MENGINE_WIN32_PATH_DELIM)
-            , "invalid path '%s'", _path
+        MENGINE_ASSERTION_FATAL( StdString::strlen( _basePath ) == 0
+            || (StdString::strrchr( _basePath, '.' ) > StdString::strrchr( _basePath, MENGINE_PATH_DELIM )
+                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_DELIM
+                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_WIN32_PATH_DELIM)
+            , "invalid path '%s'", _basePath
         );
 
         MENGINE_ASSERTION_FATAL( StdString::strlen( _directory ) == 0
@@ -147,8 +114,8 @@ namespace Mengine
             , "invalid directory '%s'", _directory
         );
 
-        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        WChar unicode_basePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( _basePath, unicode_basePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -159,7 +126,7 @@ namespace Mengine
             return false;
         }
 
-        bool result = Helper::Win32CreateDirectory( unicode_path, unicode_directory );
+        bool result = Helper::Win32CreateDirectory( unicode_basePath, unicode_directory );
 
         return result;
     }

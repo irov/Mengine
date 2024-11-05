@@ -76,7 +76,6 @@ PLUGIN_EXPORT( Theora );
 PLUGIN_EXPORT( OggVorbis );
 PLUGIN_EXPORT( Metabuf );
 PLUGIN_EXPORT( Win32FindPython3 );
-PLUGIN_EXPORT( Win32FileGroup );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
@@ -100,6 +99,7 @@ SERVICE_EXTERN( DataService );
 SERVICE_EXTERN( TimeSystem );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( DateTimeSystem );
+SERVICE_EXTERN( FileSystem );
 SERVICE_EXTERN( Win32KernelService );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
@@ -330,6 +330,8 @@ namespace Mengine
         SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( LoaderService, MENGINE_DOCUMENT_FUNCTION );
 
+        SERVICE_CREATE( FileSystem, MENGINE_DOCUMENT_FUNCTION );
+
         PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( JPEG, MENGINE_DOCUMENT_FUNCTION );
@@ -342,7 +344,6 @@ namespace Mengine
         PLUGIN_CREATE( Movie, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( Metabuf, MENGINE_DOCUMENT_FUNCTION );
         PLUGIN_CREATE( Win32FindPython3, MENGINE_DOCUMENT_FUNCTION );
-        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
 
         if( PLUGIN_SERVICE()
             ->loadPlugin( "DevelopmentConverterPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )

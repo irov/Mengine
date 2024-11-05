@@ -64,8 +64,8 @@ namespace Mengine
         uint32_t useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();
 
         Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "protocolContent" ), protocolContent );
-        Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), useProtocolVersion );
-        Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), useProtocolCrc32 );
+        Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), (ParamInteger)useProtocolVersion );
+        Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), (ParamInteger)useProtocolCrc32 );
 
         converter->setOptions( options );
 

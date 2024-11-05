@@ -197,8 +197,8 @@ int main( int argc, char * argv[] )
     uint32_t useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();
 
     Mengine::Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "protocolContent" ), protocolContent );
-    Mengine::Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), useProtocolVersion );
-    Mengine::Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), useProtocolCrc32 );
+    Mengine::Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), (Mengine::ParamInteger)useProtocolVersion );
+    Mengine::Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), (Mengine::ParamInteger)useProtocolCrc32 );
 
     converter->setOptions( options );
 

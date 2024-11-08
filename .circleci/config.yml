@@ -17,7 +17,7 @@ jobs:
       - android/accept-licenses
       
       - android/install-ndk:
-          version: 26.2.11394342
+          version: 27.1.12297006
           
       - run:
           name: install OpenJDK 17
@@ -48,7 +48,7 @@ jobs:
       - run:
           name: sdkmanager cmake
           command: |
-            yes | sdkmanager "cmake;3.22.1"
+            yes | sdkmanager "cmake;3.30.5"
           shell: /bin/bash -e
           
       - run:

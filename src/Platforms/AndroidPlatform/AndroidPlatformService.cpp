@@ -289,7 +289,7 @@ extern "C"
             , msg_str
             );
 
-        env->ReleaseStringUTFChars( _msg, tag_str );
+        env->ReleaseStringUTFChars( _tag, tag_str );
         env->ReleaseStringUTFChars( _msg, msg_str );
     }
     ///////////////////////////////////////////////////////////////////////
@@ -417,6 +417,18 @@ extern "C"
             ->getUnknown();
 
         platformExtension->androidNativeLowMemoryEvent();
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1changeLocale )(JNIEnv * env, jclass cls, jstring _language)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        const Mengine::Char * language_str = env->GetStringUTFChars( _language, nullptr );
+
+        platformExtension->androidNativeChangeLocale( language_str );
+
+        env->ReleaseStringUTFChars( _language, language_str );
     }
     ///////////////////////////////////////////////////////////////////////
 }
@@ -1387,11 +1399,11 @@ namespace Mengine
             return false;
         }
 
-        const Char * text = jenv->GetStringUTFChars( j_text, nullptr );
+        const Char * text_str = jenv->GetStringUTFChars( j_text, nullptr );
 
-        StdString::strncpy( _value, text, _capacity );
+        StdString::strncpy( _value, text_str, _capacity );
 
-        jenv->ReleaseStringUTFChars( j_text, text );
+        jenv->ReleaseStringUTFChars( j_text, text_str );
 
         jenv->DeleteLocalRef( j_text );
 
@@ -1474,6 +1486,10 @@ namespace Mengine
             case PlatformUnionEvent::PET_LOW_MEMORY:
                 {
                     this->lowMemoryEvent_( ev.data.lowMemory );
+                }break;
+            case PlatformUnionEvent::PET_CHANGE_LOCALE:
+                {
+                    this->changeLocaleEvent_( ev.data.changeLocale );
                 }break;
             default:
                 break;
@@ -2227,6 +2243,8 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
 
+        LOGGER_INFO( "platform", "quit event" );
+
         this->pushQuitEvent_();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2238,6 +2256,20 @@ namespace Mengine
         event.type = PlatformUnionEvent::PET_LOW_MEMORY;
 
         LOGGER_INFO( "platform", "low memory event" );
+
+        this->pushEvent( event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeChangeLocale( const Mengine::Char * _language )
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
+        PlatformUnionEvent event;
+        event.type = PlatformUnionEvent::PET_CHANGE_LOCALE;
+
+        StdString::strncpy( event.data.changeLocale.language, _language, MENGINE_LOCALE_LANGUAGE_SIZE );
+
+        LOGGER_INFO( "platform", "change locale event: %s", _language );
 
         this->pushEvent( event );
     }
@@ -2476,6 +2508,13 @@ namespace Mengine
         MENGINE_UNUSED( _event );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::changeLocaleEvent_( const PlatformUnionEvent::PlatformChangeLocale & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::pushEvent( const PlatformUnionEvent & _event )

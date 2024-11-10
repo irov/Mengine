@@ -177,6 +177,7 @@ namespace Mengine
         void androidNativeWindowFocusChangedEvent( jboolean _focus ) override;
         void androidNativeQuitEvent() override;
         void androidNativeLowMemoryEvent() override;
+        void androidNativeChangeLocale( const Mengine::Char * _language ) override;
 
     protected:
         bool createWindow_( const Resolution & _resolution, bool _fullscreen );
@@ -208,6 +209,7 @@ namespace Mengine
                 PET_CLIPBOARD_CHANGED,
                 PET_WINDOW_FOCUS_CHANGED,
                 PET_LOW_MEMORY,
+                PET_CHANGE_LOCALE,
             } type;
 
             struct PlatformQuitEvent
@@ -272,6 +274,11 @@ namespace Mengine
                 int32_t dummy;
             };
 
+            struct PlatformChangeLocale
+            {
+                Char language[MENGINE_LOCALE_LANGUAGE_SIZE + 1];
+            };
+
             union
             {
                 PlatformQuitEvent quit;
@@ -285,6 +292,7 @@ namespace Mengine
                 PlatformClipboardChangedEvent clipboardChanged;
                 PlatformWindowFocusChangedEvent windowFocusChanged;
                 PlatformLowMemoryEvent lowMemory;
+                PlatformChangeLocale changeLocale;
             } data;
         };
 
@@ -299,6 +307,7 @@ namespace Mengine
         void clipboardChangedEvent_( const PlatformUnionEvent::PlatformClipboardChangedEvent & _event );
         void windowFocusChangedEvent_( const PlatformUnionEvent::PlatformWindowFocusChangedEvent & _event );
         void lowMemoryEvent_( const PlatformUnionEvent::PlatformLowMemoryEvent & _event );
+        void changeLocaleEvent_( const PlatformUnionEvent::PlatformChangeLocale & _event );
 
     protected:
         void pushEvent( const PlatformUnionEvent & _event );

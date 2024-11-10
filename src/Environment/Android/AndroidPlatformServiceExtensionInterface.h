@@ -32,5 +32,6 @@ namespace Mengine
     public:
         virtual void androidNativeQuitEvent() = 0;
         virtual void androidNativeLowMemoryEvent() = 0;
+        virtual void androidNativeChangeLocale( const Mengine::Char * _language ) = 0;
     };
 }

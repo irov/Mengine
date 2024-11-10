@@ -3,6 +3,7 @@ package org.Mengine.Base;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -10,6 +11,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.LocaleList;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.view.KeyEvent;
@@ -36,6 +38,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -75,14 +78,16 @@ public class MengineActivity extends AppCompatActivity {
     public static native void AndroidPlatform_stopEvent();
     public static native void AndroidPlatform_startEvent();
     public static native void AndroidPlatform_clipboardChangedEvent();
-    public static native void AndroidPlatform_windowFocusChangedEvent( boolean focus );
+    public static native void AndroidPlatform_windowFocusChangedEvent(boolean focus);
     public static native void AndroidPlatform_quitEvent();
     public static native void AndroidPlatform_lowMemory();
+    public static native void AndroidPlatform_changeLocale(String locale);
 
     private boolean m_initializePython;
     private boolean m_destroy;
 
     private Object m_nativeApplication;
+    private Locale m_currentLocale;
 
     private static final Map<String, Integer> m_requestCodes = new HashMap<>();
 
@@ -325,7 +330,7 @@ public class MengineActivity extends AppCompatActivity {
             return;
         }
 
-        MengineLog.logMessageRelease(TAG, "onCreate");
+        MengineLog.logMessageRelease(TAG, "onCreate: %s", savedInstanceState);
 
         this.setState("activity.lifecycle", "create");
         this.setState("activity.init", "begin");
@@ -341,6 +346,57 @@ public class MengineActivity extends AppCompatActivity {
 
         Resources resources = this.getResources();
         int orientation = resources.getInteger(R.integer.app_screen_orientation);
+
+        switch(orientation) {
+            case ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_LANDSCAPE");
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_PORTRAIT:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_PORTRAIT");
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_USER:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_USER");
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_BEHIND:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_BEHIND");
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_SENSOR:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_SENSOR");
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_NOSENSOR:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_NOSENSOR");
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_SENSOR_LANDSCAPE");
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_SENSOR_PORTRAIT");
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_REVERSE_LANDSCAPE");
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_REVERSE_PORTRAIT");
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_FULL_SENSOR");
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_USER_LANDSCAPE");
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_USER_PORTRAIT");
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_FULL_USER:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_FULL_USER");
+                break;
+            case ActivityInfo.SCREEN_ORIENTATION_LOCKED:
+                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_LOCKED");
+                break;
+            default:
+                MengineLog.logWarning(TAG, "setRequestedOrientation UNKNOWN: %d", orientation);
+                break;
+        }
 
         this.setRequestedOrientation(orientation);
 
@@ -386,9 +442,9 @@ public class MengineActivity extends AppCompatActivity {
         String nativeLibraryDir = applicationInfo.nativeLibraryDir;
         String options = application.getApplicationOptions();
 
-        String[] optinsArgs = options.split(" ");
+        String[] optionsArgs = options.split(" ");
 
-        m_nativeApplication = AndroidMain_bootstrap(nativeLibraryDir, optinsArgs);
+        m_nativeApplication = AndroidMain_bootstrap(nativeLibraryDir, optionsArgs);
 
         this.setState("activity.init", "plugin_create");
 
@@ -468,7 +524,7 @@ public class MengineActivity extends AppCompatActivity {
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.INVISIBLE;
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 
             View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(flags);
@@ -891,6 +947,23 @@ public class MengineActivity extends AppCompatActivity {
             }
 
             l.onConfigurationChanged(this, newConfig);
+        }
+
+        Locale newLocale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            LocaleList locales = newConfig.getLocales();
+
+            newLocale = locales.get(0);
+        } else {
+            newLocale = newConfig.locale;
+        }
+
+        if (m_currentLocale == null || m_currentLocale.equals(newLocale) == false) {
+            m_currentLocale = newLocale;
+
+            String language = m_currentLocale.getLanguage();
+
+            MengineActivity.AndroidPlatform_changeLocale(language);
         }
     }
 

@@ -186,7 +186,7 @@ public class MengineApplication extends Application {
         return true;
     }
 
-    private Bundle assertMetaDataBundle(String name) {
+    private Bundle assertMetaDataBundle(String name) throws RuntimeException{
         Bundle bundle = this.getMetaDataBundle();
 
         if (bundle == null) {
@@ -391,6 +391,10 @@ public class MengineApplication extends Application {
 
         ContentResolver resolver = context.getContentResolver();
         String androidId = Settings.Secure.getString(resolver, Settings.Secure.ANDROID_ID);
+
+        if (androidId == null) {
+            return "0000000000000000";
+        }
 
         return androidId;
     }
@@ -860,7 +864,7 @@ public class MengineApplication extends Application {
         Context context = this.getApplicationContext();
 
         ConnectivityManager connectivityManager = context.getSystemService(ConnectivityManager.class);
-        connectivityManager.registerDefaultNetworkCallback(m_networkCallback);
+        connectivityManager.unregisterNetworkCallback(m_networkCallback);
 
         m_networkCallback = null;
     }

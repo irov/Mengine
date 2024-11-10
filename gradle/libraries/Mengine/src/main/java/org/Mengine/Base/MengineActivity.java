@@ -949,14 +949,7 @@ public class MengineActivity extends AppCompatActivity {
             l.onConfigurationChanged(this, newConfig);
         }
 
-        Locale newLocale;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            LocaleList locales = newConfig.getLocales();
-
-            newLocale = locales.get(0);
-        } else {
-            newLocale = newConfig.locale;
-        }
+        Locale newLocale = MengineUtils.getConfigurationLocale(newConfig);
 
         if (m_currentLocale == null || m_currentLocale.equals(newLocale) == false) {
             m_currentLocale = newLocale;

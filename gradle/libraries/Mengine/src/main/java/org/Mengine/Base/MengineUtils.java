@@ -10,12 +10,14 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Handler;
+import android.os.LocaleList;
 import android.os.Looper;
 import android.text.Layout;
 import android.text.Spannable;
@@ -28,6 +30,7 @@ import android.view.WindowManager;
 import android.view.WindowMetrics;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
@@ -783,6 +786,21 @@ public class MengineUtils {
             catch (final NullPointerException e3) {
                 throw e3;
             }
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    public static Locale getConfigurationLocale(@NonNull Configuration configuration) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            LocaleList locales = configuration.getLocales();
+
+            Locale locale = locales.get(0);
+
+            return locale;
+        } else {
+            Locale locale = configuration.locale;
+
+            return locale;
         }
     }
 

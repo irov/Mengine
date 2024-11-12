@@ -58,7 +58,7 @@ namespace Mengine
         ESoundSourceState getState() const override;
 
     public:
-        void setTimeLeft( float _time ) override;
+        void setTimeLeft( float _timeLeft ) override;
         float getTimeLeft() const override;
 
     public:

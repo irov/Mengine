@@ -81,7 +81,7 @@ namespace Mengine
         virtual ESoundSourceState getState() const = 0;
 
     public:
-        virtual void setTimeLeft( float _time ) = 0;
+        virtual void setTimeLeft( float _timeLeft ) = 0;
         virtual float getTimeLeft() const = 0;
 
     public:

@@ -675,6 +675,7 @@ namespace Mengine
             const ThreadWorkerSoundBufferUpdatePtr & worker = identity->getWorkerUpdateBuffer();
 
             float time_left = identity->getTimeLeft();
+            float time_new = time_left - _context->time;
 
             if( worker != nullptr )
             {
@@ -700,14 +701,19 @@ namespace Mengine
                 }
                 else
                 {
-                    float timeLeft = identity->getTimeLeft();
-                    float newTimeLeft = timeLeft - _context->time;
-                    identity->setTimeLeft( newTimeLeft );
+                    if( time_new <= 0.f )
+                    {
+                        identity->setTimeLeft( 0.f );
+                    }
+                    else
+                    {
+                        identity->setTimeLeft( time_new );
+                    }
                 }
             }
             else
             {
-                if( time_left - _context->time <= 0.f )
+                if( time_new <= 0.f )
                 {
                     identity->setState( ESS_STOP );
 
@@ -727,9 +733,7 @@ namespace Mengine
                 }
                 else
                 {
-                    float timeLeft = identity->getTimeLeft();
-                    float newTimeLeft = timeLeft - _context->time;
-                    identity->setTimeLeft( newTimeLeft );
+                    identity->setTimeLeft( time_new );
                 }
             }
         }

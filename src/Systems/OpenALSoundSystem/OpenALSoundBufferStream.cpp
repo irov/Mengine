@@ -404,7 +404,7 @@ namespace Mengine
 
                 MENGINE_IF_OPENAL_CALL( alSourcePlay, (m_sourceId) )
                 {
-                    return  false;
+                    return false;
                 }
             }break;
         }

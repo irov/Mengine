@@ -77,16 +77,16 @@ public class MengineLog {
             case LM_SILENT:
                 break;
             case LM_FATAL:
-                Log.wtf(tag, msg);
+                Log.wtf(tag, "\uD83D\uDFE5 " + msg);
                 break;
             case LM_MESSAGE_RELEASE:
                 Log.w(tag, msg);
                 break;
             case LM_ERROR:
-                Log.e(tag, msg);
+                Log.e(tag, "\uD83D\uDD34 " + msg);
                 break;
             case LM_WARNING:
-                Log.w(tag, msg);
+                Log.w(tag, "\uD83D\uDFE1 " + msg);
                 break;
             case LM_MESSAGE:
                 Log.i(tag, msg);

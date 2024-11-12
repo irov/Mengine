@@ -181,9 +181,14 @@ namespace Mengine
         return m_state;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundIdentity::setTimeLeft( float _time )
+    void SoundIdentity::setTimeLeft( float _timeLeft )
     {
-        m_timeLeft = _time;
+        MENGINE_ASSERTION_FATAL( _timeLeft >= 0.f, "sound identity '%d' set time left '%f' invalid"
+            , m_id
+            , _timeLeft
+        );
+         
+        m_timeLeft = _timeLeft;
     }
     //////////////////////////////////////////////////////////////////////////
     float SoundIdentity::getTimeLeft() const

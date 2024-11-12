@@ -6,7 +6,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.AttributeSet;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -33,26 +32,6 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     private int m_surfaceWidth;
     private int m_surfaceHeight;
 
-    public MengineSurfaceView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-
-        m_runLatch = null;
-
-        this.getHolder().addCallback(this);
-
-        m_display = MengineUtils.getDefaultDisplay(context);
-
-        m_sensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
-
-        if (m_sensorManager != null) {
-            m_accelerometer = m_sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            m_linearAccelerometer = m_sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        }
-
-        m_surfaceWidth = 1;
-        m_surfaceHeight = 1;
-    }
-
     public MengineSurfaceView(Context context, CountDownLatch runLatch) {
         super(context);
 
@@ -71,10 +50,6 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         m_surfaceWidth = 1;
         m_surfaceHeight = 1;
-    }
-
-    private void setup(Context context, CountDownLatch runLatch) {
-
     }
 
     public void handlePause() {
@@ -308,6 +283,11 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        MengineLog.logMessage(TAG, "onAccuracyChanged sensor: %s accuracy: %d"
+            , sensor.getName()
+            , accuracy
+        );
+
         //ToDo
     }
 }

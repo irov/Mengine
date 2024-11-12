@@ -199,38 +199,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::getMaxClientResolution( Resolution * const _resolution ) const
     {
-        int displayIndex = -1;
+        UIScreen * mainScreen = [UIScreen mainScreen];
         
-        if( m_sdlWindow == nullptr )
+        if( mainScreen == nil )
         {
-            displayIndex = 0;
-        }
-        else
-        {
-            displayIndex = SDL_GetWindowDisplayIndex( m_sdlWindow );
-
-            if( displayIndex == -1 )
-            {
-                LOGGER_ERROR( "invalid get window display: %s"
-                    , SDL_GetError()
-                );
-
-                return false;
-            }
-        }
-
-        SDL_Rect rect;
-        if( SDL_GetDisplayUsableBounds( displayIndex, &rect ) != 0 )
-        {
-            LOGGER_ERROR( "invalid get max client resolution: %s"
-                , SDL_GetError()
-            );
-
+            LOGGER_ERROR( "unable to access main screen" );
+            
             return false;
         }
 
-        *_resolution = Resolution( (uint32_t)rect.w, (uint32_t)rect.h );
-
+        CGRect screenRect = mainScreen.bounds;
+        
+        *_resolution = Resolution( screenRect.size.width, screenRect.size.height );
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

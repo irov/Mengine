@@ -47,11 +47,11 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRequestGetMessage );
 
         m_factoryRequestPing = nullptr;
-        m_factoryTaskGetAsset = nullptr;
-        m_factoryTaskPostMessage = nullptr;
-        m_factoryTaskDeleteMessage = nullptr;
-        m_factoryTaskHeaderData = nullptr;
-        m_factoryTaskGetMessage = nullptr;
+        m_factoryRequestGetAsset = nullptr;
+        m_factoryRequestPostMessage = nullptr;
+        m_factoryRequestDeleteMessage = nullptr;
+        m_factoryRequestHeaderData = nullptr;
+        m_factoryRequestGetMessage = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     HttpRequestInterfacePtr AppleHttpSystem::createHttpRequestPing( const DocumentInterfacePtr & _doc )
@@ -63,14 +63,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestInterfacePtr AppleHttpSystem::createHttpRequestGetMessage( const DocumentInterfacePtr & _doc )
     {
-        AppleHttpRequestGetMessagePtr task = m_factoryTaskGetMessage->createObject( _doc );
+        AppleHttpRequestGetMessagePtr task = m_factoryRequestGetMessage->createObject( _doc );
 
         return task;
     }
     //////////////////////////////////////////////////////////////////////////
     HttpRequestInterfacePtr AppleHttpSystem::createHttpRequestPostMessage( const HttpRequestPostProperties & _params, const DocumentInterfacePtr & _doc )
     {
-        AppleHttpRequestPostMessagePtr task = m_factoryTaskPostMessage->createObject( _doc );
+        AppleHttpRequestPostMessagePtr task = m_factoryRequestPostMessage->createObject( _doc );
 
         task->setPostProperties( _params );
 
@@ -79,7 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestInterfacePtr AppleHttpSystem::createHttpRequestHeaderData( const Data & _data, const DocumentInterfacePtr & _doc )
     {
-        AppleHttpRequestHeaderDataPtr task = m_factoryTaskHeaderData->createObject( _doc );
+        AppleHttpRequestHeaderDataPtr task = m_factoryRequestHeaderData->createObject( _doc );
 
         task->setData( _data );
 
@@ -88,7 +88,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestInterfacePtr AppleHttpSystem::createHttpRequestGetAsset( const String & _login, const String & _password, const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc )
     {
-        AppleHttpRequestGetAssetPtr task = m_factoryTaskGetAsset->createObject( _doc );
+        AppleHttpRequestGetAssetPtr task = m_factoryRequestGetAsset->createObject( _doc );
 
         task->setLogin( _login );
         task->setPassword( _password );
@@ -99,7 +99,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestInterfacePtr AppleHttpSystem::createHttpRequestDeleteMessage( const DocumentInterfacePtr & _doc )
     {
-        AppleHttpRequestDeleteMessagePtr task = m_factoryTaskDeleteMessage->createObject( _doc );
+        AppleHttpRequestDeleteMessagePtr task = m_factoryRequestDeleteMessage->createObject( _doc );
 
         return task;
     }

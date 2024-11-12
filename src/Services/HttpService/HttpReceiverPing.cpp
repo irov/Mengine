@@ -24,8 +24,24 @@ namespace Mengine
     void HttpReceiverPing::onHttpRequestComplete( const HttpResponseInterfacePtr & _response )
     {
         bool successful = _response->isSuccessful();
+        
+        if( successful == false )
+        {
+            m_lambda( false );
+            
+            return;
+        }
+        
+        EHttpCode code = _response->getCode();
+        
+        if( code != HTTP_OK )
+        {
+            m_lambda( false );
+            
+            return;
+        }
 
-        m_lambda( successful );
+        m_lambda( true );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -54,7 +54,14 @@ namespace Mengine
         for( ;; )
         {
             ::pthread_mutex_lock( &m_conditionLock );
-            ::pthread_cond_wait( &m_conditionVariable, &m_conditionLock );
+            
+            struct timespec ts;
+            ::clock_gettime(CLOCK_REALTIME, &ts);
+            
+            ts.tv_sec += 1;
+            
+            ::pthread_cond_timedwait( &m_conditionVariable, &m_conditionLock, &ts );
+            
             ::pthread_mutex_unlock( &m_conditionLock );
 
             if( _condition() == true )

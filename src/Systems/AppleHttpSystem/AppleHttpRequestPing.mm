@@ -1,19 +1,19 @@
-#include "AppleHttpRequestGetMessage.h"
+#include "AppleHttpRequestPing.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleHttpRequestGetMessage::AppleHttpRequestGetMessage()
+    AppleHttpRequestPing::AppleHttpRequestPing()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AppleHttpRequestGetMessage::~AppleHttpRequestGetMessage()
+    AppleHttpRequestPing::~AppleHttpRequestPing()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    MengineHttpResponseParam * AppleHttpRequestGetMessage::_onHttp( MengineHttpRequestParam * _request )
+    MengineHttpResponseParam * AppleHttpRequestPing::_onHttp( MengineHttpRequestParam * _request )
     {
-        MengineHttpResponseParam * response = [MengineHttpNetwork httpRequestGetMessage:_request];
+        MengineHttpResponseParam * response = [MengineHttpNetwork httpRequestPing:_request];
         
         return response;
     }

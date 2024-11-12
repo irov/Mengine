@@ -84,7 +84,7 @@ namespace Mengine
         }
 
         HttpRequestId id = HTTP_SERVICE()
-            ->postMessage( _url, {}, _timeout, false, params, receiver, MENGINE_DOCUMENT_PYBIND );
+            ->postMessage( _url, {}, _timeout, EHRF_NONE, params, receiver, MENGINE_DOCUMENT_PYBIND );
 
         return id;
     }
@@ -122,7 +122,7 @@ namespace Mengine
         receiver->initialize( _cb, _args );
 
         HttpRequestId id = HTTP_SERVICE()
-            ->getMessage( _url, {}, _timeout, false, receiver, MENGINE_DOCUMENT_PYBIND );
+            ->getMessage( _url, {}, _timeout, EHRF_NONE, receiver, MENGINE_DOCUMENT_PYBIND );
 
         return id;
     }

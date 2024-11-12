@@ -10,6 +10,7 @@ namespace Mengine
 {
     namespace Helper
     {
+        bool httpRequestPing( const Win32HttpRequest * _request, const HttpResponseInterfacePtr & _response );
         bool httpRequestPostMessage( const Win32HttpRequest * _request, const HttpResponseInterfacePtr & _response, const HttpRequestPostProperties & _properties );
         bool httpRequestHeaderData( const Win32HttpRequest * _request, const HttpResponseInterfacePtr & _response, const Data & _data );
         bool httpRequestGetMessage( const Win32HttpRequest * _request, const HttpResponseInterfacePtr & _response );

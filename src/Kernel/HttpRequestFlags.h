@@ -8,6 +8,6 @@ namespace Mengine
     {
         EHRF_NONE = 0,
         EHRF_RECEIVE_HEADERS = 1 << 0,
-        EHRE_LOW_PRIORITY = 1 << 1,
+        EHRF_LOW_PRIORITY = 1 << 1,
     };
 }

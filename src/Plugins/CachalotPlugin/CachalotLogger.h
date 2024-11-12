@@ -29,6 +29,7 @@ namespace Mengine
         void _log( const LoggerRecordInterfacePtr & _record ) override;
 
     protected:
+        void start();
         void process( const ThreadIdentityRunnerInterfacePtr & _runner );
         void stop();
 
@@ -41,6 +42,7 @@ namespace Mengine
         enum ECachalotStatus
         {
             ECS_NONE,
+            ECS_CONNECT,
             ECS_READY,
             ECS_DISCONNECT,
         };

@@ -6,6 +6,7 @@
 #include "Interface/ThreadSystemInterface.h"
 
 #include "HttpResponse.h"
+#include "HttpReceiverPing.h"
 
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/ConfigHelper.h"
@@ -130,6 +131,7 @@ namespace Mengine
         m_applicationJSONHeaders = applicationJSONHeaders;
 
         m_factoryResponse = Helper::makeFactoryPool<HttpResponse, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryReceiverPing = Helper::makeFactoryPool<HttpReceiverPing, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE, &HttpService::notifyEnginePrepareFinalize_, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -145,8 +147,10 @@ namespace Mengine
         m_receiverDescs.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryResponse );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryReceiverPing );
 
         m_factoryResponse = nullptr;
+        m_factoryReceiverPing = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void HttpService::notifyEnginePrepareFinalize_()
@@ -204,6 +208,68 @@ namespace Mengine
     const HttpHeaders & HttpService::getApplicationJSONHeaders() const
     {
         return m_applicationJSONHeaders;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HttpRequestId HttpService::ping( const String & _url, int32_t _timeout, const HttpLambdaPing & _lambda, const DocumentInterfacePtr & _doc )
+    {
+        if( this->isStopService() == true )
+        {
+            LOGGER_HTTP_ERROR( "service is stop" );
+
+            _lambda( false );
+
+            return MENGINE_HTTP_REQUEST_INVALID;
+        }
+
+        UniqueId requestId = Helper::generateUniqueIdentity();
+
+        HttpRequestInterfacePtr request = HTTP_SYSTEM()
+            ->createHttpRequestPing( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( request, "invalid create http request" );
+
+        request->setURL( _url );
+        request->setProxy( m_proxy );
+        request->setRequestId( requestId );
+        request->setTimeout( _timeout );
+        request->setFlags( EHRF_LOW_PRIORITY );
+
+        AndroidHttpResponsePtr response = m_factoryResponse->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( response, "invalid create http response" );
+
+        response->setRequest( request );
+
+        request->setReponse( response );
+
+        request->setReceiver( HttpReceiverInterfacePtr::from( this ) );
+
+        ThreadTaskInterfacePtr task = request->getThreadTask();
+
+        HttpReceiverPingPtr receiver = m_factoryReceiverPing->createObject( _doc );
+
+        receiver->setLambda( _lambda );
+
+        ReceiverDesc desc;
+        desc.id = requestId;
+        desc.type = ERT_PING;
+        desc.timestamp = Helper::getSystemTimestamp();
+        desc.task = task;
+        desc.receiver = receiver;
+
+#if defined(MENGINE_DOCUMENT_ENABLE)
+        desc.doc = _doc;
+#endif
+
+        m_mutex->lock();
+        m_receiverDescs.push_back( desc );
+        m_mutex->unlock();
+
+        this->addRequestToQueue( EHRF_LOW_PRIORITY, task );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_HTTP_REQUEST, requestId, _url );
+
+        return requestId;
     }
     //////////////////////////////////////////////////////////////////////////
     HttpRequestId HttpService::getMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc )
@@ -587,7 +653,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HttpService::addRequestToQueue( uint32_t _flags, const ThreadTaskInterfacePtr & _task )
     {
-        if( _flags & EHRE_LOW_PRIORITY )
+        if( _flags & EHRF_LOW_PRIORITY )
         {
             m_threadQueueLow->addTask( _task );
         }

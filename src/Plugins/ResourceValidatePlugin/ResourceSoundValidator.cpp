@@ -69,7 +69,7 @@ namespace Mengine
 
         const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
-        float Limit_MinimalStreamSoundDuration = CONFIG_VALUE( "Limit", "MinimalStreamSoundDuration", 500.f ); //4kb
+        float Limit_MinimalStreamSoundDuration = CONFIG_VALUE( "Limit", "MinimalStreamSoundDuration", 2000.f ); //4kb
 
         if( (dataInfo->length <= Limit_MinimalStreamSoundDuration && Limit_MinimalStreamSoundDuration != 0.f) && streamable == true )
         {

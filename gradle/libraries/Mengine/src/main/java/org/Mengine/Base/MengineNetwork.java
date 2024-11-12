@@ -48,6 +48,49 @@ public class MengineNetwork {
         return m_networkTransport;
     }
 
+    protected static HttpURLConnection openConnection(MengineHttpRequestParam request, String method, boolean output) throws IOException {
+        URL httpUrl = new URL(request.HTTP_URL);
+
+        HttpURLConnection connection = (HttpURLConnection)httpUrl.openConnection();
+        connection.setRequestMethod(method);
+
+        connection.setDoOutput(output);
+
+        MengineNetwork.setTimeout(connection, request.HTTP_TIMEOUT);
+        MengineNetwork.setHeaders(connection, request.HTTP_HEADERS);
+
+        return connection;
+    }
+
+    protected static MengineHttpResponseParam processConnection(HttpURLConnection connection) throws IOException {
+        connection.connect();
+
+        MengineHttpResponseParam response = MengineNetwork.makeResponse(connection);
+
+        connection.disconnect();
+
+        return response;
+    }
+
+    @Nullable
+    public static MengineHttpResponseParam httpRequestPing(MengineHttpRequestParam request) {
+        if (m_networkAvailable == false) {
+            return null;
+        }
+
+        try {
+            HttpURLConnection connection = MengineNetwork.openConnection(request, "HEAD", false);
+
+            MengineHttpResponseParam response = MengineNetwork.processConnection(connection);
+
+            return response;
+        } catch (final Exception e) {
+            MengineHttpResponseParam response = MengineNetwork.catchException(request, e);
+
+            return response;
+        }
+    }
+
     @Nullable
     public static MengineHttpResponseParam httpRequestPostMessage(MengineHttpRequestParam request, Map<String, String> properties) {
         if (m_networkAvailable == false) {
@@ -55,22 +98,11 @@ public class MengineNetwork {
         }
 
         try {
-            URL url = new URL(request.HTTP_URL);
+            HttpURLConnection connection = MengineNetwork.openConnection(request, "POST", true);
 
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.setRequestMethod("POST");
-
-            connection.setDoOutput(true);
-
-            MengineNetwork.setTimeout(connection, request.HTTP_TIMEOUT);
-            MengineNetwork.setHeaders(connection, request.HTTP_HEADERS);
             MengineNetwork.setMultipartFormData(connection, properties);
 
-            connection.connect();
-
-            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection);
-
-            connection.disconnect();
+            MengineHttpResponseParam response = MengineNetwork.processConnection(connection);
 
             return response;
         } catch (final Exception e) {
@@ -87,22 +119,11 @@ public class MengineNetwork {
         }
 
         try {
-            URL url = new URL(request.HTTP_URL);
+            HttpURLConnection connection = MengineNetwork.openConnection(request, "POST", true);
 
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-
-            connection.setDoOutput(true);
-
-            MengineNetwork.setTimeout(connection, request.HTTP_TIMEOUT);
-            MengineNetwork.setHeaders(connection, request.HTTP_HEADERS);
             MengineNetwork.setData(connection, data);
 
-            connection.connect();
-
-            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection);
-
-            connection.disconnect();
+            MengineHttpResponseParam response = MengineNetwork.processConnection(connection);
 
             return response;
         } catch (final Exception e) {
@@ -119,19 +140,9 @@ public class MengineNetwork {
         }
 
         try {
-            URL url = new URL(request.HTTP_URL);
+            HttpURLConnection connection = MengineNetwork.openConnection(request, "GET", false);
 
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.setRequestMethod("GET");
-
-            MengineNetwork.setTimeout(connection, request.HTTP_TIMEOUT);
-            MengineNetwork.setHeaders(connection, request.HTTP_HEADERS);
-
-            connection.connect();
-
-            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection);
-
-            connection.disconnect();
+            MengineHttpResponseParam response = MengineNetwork.processConnection(connection);
 
             return response;
         } catch (final Exception e) {
@@ -148,19 +159,9 @@ public class MengineNetwork {
         }
 
         try {
-            URL url = new URL(request.HTTP_URL);
+            HttpURLConnection connection = MengineNetwork.openConnection(request, "DELETE", false);
 
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.setRequestMethod("DELETE");
-
-            MengineNetwork.setTimeout(connection, request.HTTP_TIMEOUT);
-            MengineNetwork.setHeaders(connection, request.HTTP_HEADERS);
-
-            connection.connect();
-
-            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection);
-
-            connection.disconnect();
+            MengineHttpResponseParam response = MengineNetwork.processConnection(connection);
 
             return response;
         } catch (final Exception e) {
@@ -177,20 +178,11 @@ public class MengineNetwork {
         }
 
         try {
-            URL url = new URL(request.HTTP_URL);
+            HttpURLConnection connection = MengineNetwork.openConnection(request, "GET", false);
 
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.setRequestMethod("GET");
-
-            MengineNetwork.setTimeout(connection, request.HTTP_TIMEOUT);
             MengineNetwork.setBasicAuthorization(connection, login, password);
-            MengineNetwork.setHeaders(connection, request.HTTP_HEADERS);
 
-            connection.connect();
-
-            MengineHttpResponseParam response = MengineNetwork.makeResponse(connection);
-
-            connection.disconnect();
+            MengineHttpResponseParam response = MengineNetwork.processConnection(connection);
 
             return response;
         } catch (final Exception e) {

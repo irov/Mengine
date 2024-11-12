@@ -7,6 +7,9 @@ src
     
     HttpResponse.h
     HttpResponse.cpp
+    
+    HttpReceiverPing.h
+    HttpReceiverPing.cpp
 )
 
 ADD_MENGINE_LIBRARY(Services)

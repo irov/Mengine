@@ -11,7 +11,7 @@ namespace Mengine
     class AndroidHttpRequestGetAsset
         : public AndroidHttpRequest
     {
-        DECLARE_FACTORABLE(AndroidHttpRequestGetAsset );
+        DECLARE_FACTORABLE( AndroidHttpRequestGetAsset );
 
     public:
         AndroidHttpRequestGetAsset();

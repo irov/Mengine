@@ -22,6 +22,7 @@
 
 @interface MengineHttpNetwork : NSObject
 
++ (nullable MengineHttpResponseParam *)httpRequestPing:(MengineHttpRequestParam * _Nonnull)request;
 + (nullable MengineHttpResponseParam *)httpRequestPostMessage:(MengineHttpRequestParam * _Nonnull)request properties:(NSDictionary<NSString *, NSString *> * _Nonnull)properties;
 + (nullable MengineHttpResponseParam *)httpRequestHeaderData:(MengineHttpRequestParam * _Nonnull)request data:(NSData * _Nonnull)data;
 + (nullable MengineHttpResponseParam *)httpRequestGetMessage:(MengineHttpRequestParam * _Nonnull)request;

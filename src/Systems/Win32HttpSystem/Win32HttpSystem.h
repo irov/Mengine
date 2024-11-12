@@ -21,6 +21,9 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
+        HttpRequestInterfacePtr createHttpRequestPing( const DocumentInterfacePtr & _doc ) override;
+
+    public:
         HttpRequestInterfacePtr createHttpRequestGetMessage( const DocumentInterfacePtr & _doc ) override;
         HttpRequestInterfacePtr createHttpRequestPostMessage( const HttpRequestPostProperties & _params, const DocumentInterfacePtr & _doc ) override;
         HttpRequestInterfacePtr createHttpRequestHeaderData( const Data & _data, const DocumentInterfacePtr & _doc ) override;
@@ -30,6 +33,7 @@ namespace Mengine
     protected:
         HINTERNET m_hInternet;
 
+        FactoryInterfacePtr m_factoryTaskPing;
         FactoryInterfacePtr m_factoryTaskGetMessage;
         FactoryInterfacePtr m_factoryTaskPostMessage;
         FactoryInterfacePtr m_factoryTaskDeleteMessage;

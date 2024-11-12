@@ -48,6 +48,43 @@ namespace Mengine
 
         m_mutex = mutex;
 
+        m_status = ECS_CONNECT;
+
+        HTTP_SERVICE()
+            ->ping( m_dsn, 1000, [this]( bool _successful )
+        {
+            if( _successful == false )
+            {
+                this->stop();
+
+                return;
+            }
+
+            this->start();
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void CachalotLogger::_finalizeLogger()
+    {
+        this->stop();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void CachalotLogger::_log( const LoggerRecordInterfacePtr & _record )
+    {
+        if( m_status == ECS_DISCONNECT )
+        {
+            return;
+        }
+
+        m_mutex->lock();
+        m_messages.emplace_back( _record );
+        m_mutex->unlock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void CachalotLogger::start()
+    {
         m_status = ECS_READY;
 
         uint32_t CachalotPlugin_LoggerTime = CONFIG_VALUE( "CachalotPlugin", "Time", 2000 );
@@ -60,25 +97,6 @@ namespace Mengine
         }, CachalotPlugin_LoggerTime, MENGINE_DOCUMENT_FACTORABLE );
 
         m_thread = thread;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void CachalotLogger::_finalizeLogger()
-    {
-        this->stop();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void CachalotLogger::_log( const LoggerRecordInterfacePtr & _record )
-    {
-        if( m_status != ECS_READY )
-        {
-            return;
-        }
-
-        m_mutex->lock();
-        m_messages.emplace_back( _record );
-        m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     void CachalotLogger::process( const ThreadIdentityRunnerInterfacePtr & _runner )
@@ -251,14 +269,14 @@ namespace Mengine
             ->getApplicationJSONHeaders();
 
         HttpRequestId id = HTTP_SERVICE()
-            ->headerData( m_dsn, headers, m_dataAux, 2000, EHRE_LOW_PRIORITY, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+            ->headerData( m_dsn, headers, m_dataAux, 2000, EHRF_LOW_PRIORITY, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_UNUSED( id );
     }
     //////////////////////////////////////////////////////////////////////////
     void CachalotLogger::stop()
     {
-        if( m_status != ECS_READY )
+        if( m_status == ECS_DISCONNECT )
         {
             return;
         }

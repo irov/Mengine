@@ -8,7 +8,7 @@ namespace Mengine
     class AndroidHttpRequestDeleteMessage
         : public AndroidHttpRequest
     {
-        DECLARE_FACTORABLE(AndroidHttpRequestDeleteMessage );
+        DECLARE_FACTORABLE( AndroidHttpRequestDeleteMessage );
 
     public:
         AndroidHttpRequestDeleteMessage();

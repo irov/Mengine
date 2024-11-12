@@ -10,6 +10,8 @@ src
     
     AppleHttpRequest.mm
     AppleHttpRequest.h
+    AppleHttpRequestPing.mm
+    AppleHttpRequestPing.h
     AppleHttpRequestGetAsset.mm
     AppleHttpRequestGetAsset.h
     AppleHttpRequestGetMessage.mm

@@ -1,4 +1,4 @@
-#include "AndroidHttpRequestGetMessage.h"
+#include "AndroidHttpRequestPing.h"
 
 #include "Environment/Android/AndroidHelper.h"
 
@@ -8,17 +8,17 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AndroidHttpRequestGetMessage::AndroidHttpRequestGetMessage()
+    AndroidHttpRequestPing::AndroidHttpRequestPing()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AndroidHttpRequestGetMessage::~AndroidHttpRequestGetMessage()
+    AndroidHttpRequestPing::~AndroidHttpRequestPing()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidHttpRequestGetMessage::_onHttp( JNIEnv * _jenv, jobject _jrequest )
+    jobject AndroidHttpRequestPing::_onHttp( JNIEnv * _jenv, jobject _jrequest )
     {
-        jobject jresponse = Helper::AndroidCallObjectStaticClassMethod( _jenv, "org/Mengine/Base/MengineNetwork", "httpRequestGetMessage", "(Lorg/Mengine/Base/MengineHttpRequestParam;)Lorg/Mengine/Base/MengineHttpResponseParam;"
+        jobject jresponse = Helper::AndroidCallObjectStaticClassMethod( _jenv, "org/Mengine/Base/MengineNetwork", "httpRequestPing", "(Lorg/Mengine/Base/MengineHttpRequestParam;)Lorg/Mengine/Base/MengineHttpResponseParam;"
             , _jrequest
         );
 

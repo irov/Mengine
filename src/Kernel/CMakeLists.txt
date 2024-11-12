@@ -826,6 +826,7 @@ Core
     HttpLogger.h
     HttpRequestFlags.h
     HttpRequestId.h
+    HttpLambdaPing.h
     
     BaseHttpRequest.h
     BaseHttpRequest.cpp

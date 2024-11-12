@@ -6,6 +6,7 @@
 #include "Interface/HttpReceiverInterface.h"
 
 #include "Kernel/HttpRequestFlags.h"
+#include "Kernel/HttpLambdaPing.h"
 #include "Kernel/Data.h"
 
 namespace Mengine
@@ -21,6 +22,9 @@ namespace Mengine
 
     public:
         virtual const HttpHeaders & getApplicationJSONHeaders() const = 0;
+
+    public:
+        virtual HttpRequestId ping( const String & _url, int32_t _timeout, const HttpLambdaPing & _lambda, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual HttpRequestId getMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) = 0;

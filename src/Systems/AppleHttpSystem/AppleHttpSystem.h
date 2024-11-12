@@ -19,6 +19,9 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
+        HttpRequestInterfacePtr createHttpRequestPing( const DocumentInterfacePtr & _doc ) override;
+
+    public:
         HttpRequestInterfacePtr createHttpRequestGetMessage( const DocumentInterfacePtr & _doc ) override;
         HttpRequestInterfacePtr createHttpRequestPostMessage( const HttpRequestPostProperties & _params, const DocumentInterfacePtr & _doc ) override;
         HttpRequestInterfacePtr createHttpRequestHeaderData( const Data & _data, const DocumentInterfacePtr & _doc ) override;
@@ -26,10 +29,11 @@ namespace Mengine
         HttpRequestInterfacePtr createHttpRequestDeleteMessage( const DocumentInterfacePtr & _doc ) override;
 
     protected:
-        FactoryInterfacePtr m_factoryTaskGetMessage;
-        FactoryInterfacePtr m_factoryTaskPostMessage;
-        FactoryInterfacePtr m_factoryTaskDeleteMessage;
-        FactoryInterfacePtr m_factoryTaskHeaderData;
-        FactoryInterfacePtr m_factoryTaskGetAsset;
+        FactoryInterfacePtr m_factoryRequestPing;
+        FactoryInterfacePtr m_factoryRequestGetMessage;
+        FactoryInterfacePtr m_factoryRequestPostMessage;
+        FactoryInterfacePtr m_factoryRequestDeleteMessage;
+        FactoryInterfacePtr m_factoryRequestHeaderData;
+        FactoryInterfacePtr m_factoryRequestGetAsset;
     };
 }

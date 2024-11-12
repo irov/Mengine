@@ -10,6 +10,8 @@ src
     
     Win32HttpRequest.cpp
     Win32HttpRequest.h
+    Win32HttpRequestPing.cpp
+    Win32HttpRequestPing.h
     Win32HttpRequestGetAsset.cpp
     Win32HttpRequestGetAsset.h
     Win32HttpRequestGetMessage.cpp

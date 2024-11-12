@@ -1,5 +1,6 @@
 #include "AppleHttpSystem.h"
 
+#include "AppleHttpRequestPing.h"
 #include "AppleHttpRequestGetMessage.h"
 #include "AppleHttpRequestPostMessage.h"
 #include "AppleHttpRequestHeaderData.h"
@@ -26,29 +27,39 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleHttpSystem::_initializeService()
     {
-        m_factoryTaskGetMessage = Helper::makeFactoryPool<AppleHttpRequestGetMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskPostMessage = Helper::makeFactoryPool<AppleHttpRequestPostMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskDeleteMessage = Helper::makeFactoryPool<AppleHttpRequestDeleteMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskHeaderData = Helper::makeFactoryPool<AppleHttpRequestHeaderData, 16>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryTaskGetAsset = Helper::makeFactoryPool<AppleHttpRequestGetAsset, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestPing = Helper::makeFactoryPool<AppleHttpRequestPing, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestGetMessage = Helper::makeFactoryPool<AppleHttpRequestGetMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestPostMessage = Helper::makeFactoryPool<AppleHttpRequestPostMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestDeleteMessage = Helper::makeFactoryPool<AppleHttpRequestDeleteMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestHeaderData = Helper::makeFactoryPool<AppleHttpRequestHeaderData, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRequestGetAsset = Helper::makeFactoryPool<AppleHttpRequestGetAsset, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleHttpSystem::_finalizeService()
     {
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetAsset );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDeleteMessage );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskHeaderData );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetMessage );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRequestPing );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRequestGetAsset );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRequestPostMessage );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRequestDeleteMessage );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRequestHeaderData );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRequestGetMessage );
 
+        m_factoryRequestPing = nullptr;
         m_factoryTaskGetAsset = nullptr;
         m_factoryTaskPostMessage = nullptr;
         m_factoryTaskDeleteMessage = nullptr;
         m_factoryTaskHeaderData = nullptr;
         m_factoryTaskGetMessage = nullptr;
-    }    
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HttpRequestInterfacePtr AppleHttpSystem::createHttpRequestPing( const DocumentInterfacePtr & _doc )
+    {
+        AppleHttpRequestPingPtr task = m_factoryRequestPing->createObject( _doc );
+
+        return task;
+    }
     //////////////////////////////////////////////////////////////////////////
     HttpRequestInterfacePtr AppleHttpSystem::createHttpRequestGetMessage( const DocumentInterfacePtr & _doc )
     {

@@ -21,7 +21,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DevToDebugLogger::DevToDebugLogger()
-        : m_timerId( INVALID_UNIQUE_ID )
+        : m_status( EDTDS_NONE )
+        , m_timerId( INVALID_UNIQUE_ID )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -31,9 +32,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugLogger::setWorkerURL( const String & _workerURL )
     {
-        m_mutex->lock();
         m_workerURL = _workerURL;
-        m_mutex->unlock();
+
+        m_status = EDTDS_CONNECT;
+
+        HTTP_SERVICE()
+            ->ping( m_workerURL, 1000, [this]( bool _successful )
+        {
+            if( _successful == false )
+            {
+                this->stop();
+
+                return;
+            }
+
+            this->start();
+        }, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
     const String & DevToDebugLogger::getWorkerURL() const
@@ -49,42 +63,25 @@ namespace Mengine
 
         m_mutex = mutex;
 
-        uint32_t DevToDebug_LoggerTime = CONFIG_VALUE( "DevToDebugPlugin", "LoggerTime", 2000 );
-
-        ThreadIdentityInterfacePtr thread = Helper::createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGD2DLogger" ), ETP_BELOW_NORMAL, [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
-        {
-            this->process( _runner );
-
-            return true;
-        }, DevToDebug_LoggerTime, MENGINE_DOCUMENT_FACTORABLE );
-
-        m_thread = thread;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugLogger::_finalizeLogger()
     {   
-        if( m_thread != nullptr )
-        {
-            m_thread->join( true );
-            m_thread = nullptr;
-        }
+        this->stop();
 
         m_mutex = nullptr;
-
-        m_messages.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void DevToDebugLogger::_log( const LoggerRecordInterfacePtr & _record )
     {
-        m_mutex->lock();
-
-        if( m_workerURL.empty() == false )
+        if( m_status == EDTDS_DISCONNECT )
         {
-            m_messages.emplace_back( _record );
+            return;
         }
 
+        m_mutex->lock();
+        m_messages.emplace_back( _record );
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -102,15 +99,47 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    void DevToDebugLogger::start()
+    {
+        m_status = EDTDS_READY;
+
+        uint32_t DevToDebug_LoggerTime = CONFIG_VALUE( "DevToDebugPlugin", "LoggerTime", 2000 );
+
+        ThreadIdentityInterfacePtr thread = Helper::createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGD2DLogger" ), ETP_BELOW_NORMAL, [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
+        {
+            this->process( _runner );
+
+            return true;
+        }, DevToDebug_LoggerTime, MENGINE_DOCUMENT_FACTORABLE );
+
+        m_thread = thread;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevToDebugLogger::stop()
+    {
+        if( m_status == EDTDS_DISCONNECT )
+        {
+            return;
+        }
+
+        m_status = EDTDS_DISCONNECT;
+
+        m_mutex->lock();
+        m_messages.clear();
+        m_mutex->unlock();
+
+        if( m_thread != nullptr )
+        {
+            m_thread->join( true );
+            m_thread = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DevToDebugLogger::process( const ThreadIdentityRunnerInterfacePtr & _runner )
     {
         MENGINE_UNUSED( _runner );
 
-        m_mutex->lock();
-        bool wait = m_workerURL.empty();
-        m_mutex->unlock();
-
-        if( wait == true )
+        if( m_status != EDTDS_READY )
         {
             return;
         }
@@ -192,7 +221,7 @@ namespace Mengine
         Helper::writeJSONDataCompact( j, &data );
 
         HttpRequestId id = HTTP_SERVICE()
-            ->headerData( m_workerURL, headers, data, 2000, EHRE_LOW_PRIORITY, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+            ->headerData( m_workerURL, headers, data, 2000, EHRF_LOW_PRIORITY, HttpReceiverInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_UNUSED( id );
     }

@@ -5,26 +5,19 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class AndroidHttpRequestHeaderData
+    class AndroidHttpRequestPing
         : public AndroidHttpRequest
     {
-        DECLARE_FACTORABLE( AndroidHttpRequestHeaderData );
+        DECLARE_FACTORABLE( AndroidHttpRequestPing );
 
     public:
-        AndroidHttpRequestHeaderData();
-        ~AndroidHttpRequestHeaderData() override;
-
-    public:
-        void setData( const Data & _data );
-        const Data & getData() const;
+        AndroidHttpRequestPing();
+        ~AndroidHttpRequestPing() override;
 
     protected:
         jobject _onHttp( JNIEnv * _jenv, jobject _basses ) override;
-
-    protected:
-        Data m_data;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AndroidHttpRequestHeaderData, HttpRequestInterface> AndroidHttpRequestHeaderDataPtr;
+    typedef IntrusivePtr<AndroidHttpRequestPing, HttpRequestInterface> AndroidHttpRequestPingPtr;
     //////////////////////////////////////////////////////////////////////////
 }

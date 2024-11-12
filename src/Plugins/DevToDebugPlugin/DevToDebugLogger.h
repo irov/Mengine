@@ -43,13 +43,25 @@ namespace Mengine
         void _flush() override;
 
     protected:
+        void start();
         void process( const ThreadIdentityRunnerInterfacePtr & _runner );
+        void stop();
 
     protected:
         void onHttpRequestComplete( const HttpResponseInterfacePtr & _response ) override;
 
     protected:
         String m_workerURL;
+
+        enum EDevToDebugStatus
+        {
+            EDTDS_NONE,
+            EDTDS_CONNECT,
+            EDTDS_READY,
+            EDTDS_DISCONNECT,
+        };
+
+        EDevToDebugStatus m_status;
 
         ThreadMutexInterfacePtr m_mutex;
 

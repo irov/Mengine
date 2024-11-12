@@ -342,6 +342,46 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
+        bool httpRequestPing( const Win32HttpRequest * _request, const HttpResponseInterfacePtr & _response )
+        {
+            LOGGER_HTTP_INFO( "ping url: %s [%u]"
+                , _request->getURL().c_str()
+                , _request->getRequestId()
+            );
+
+            HINTERNET hConnect = NULL;
+            HINTERNET hRequest = NULL;
+            if( Detail::openRequest( _request, _response, "GET", &hConnect, &hRequest ) == false )
+            {
+                return false;
+            }
+
+            if( Detail::sendRequest( hRequest ) == false )
+            {
+                Detail::errorRequest( _response );
+
+                ::InternetCloseHandle( hRequest );
+                ::InternetCloseHandle( hConnect );
+
+                return false;
+            }
+
+            if( Detail::makeResponseData( hRequest, _response ) == false )
+            {
+                Detail::errorRequest( _response );
+
+                ::InternetCloseHandle( hRequest );
+                ::InternetCloseHandle( hConnect );
+
+                return false;
+            }
+
+            ::InternetCloseHandle( hRequest );
+            ::InternetCloseHandle( hConnect );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool httpRequestPostMessage( const Win32HttpRequest * _request, const HttpResponseInterfacePtr & _response, const HttpRequestPostProperties & _properties )
         {
             LOGGER_HTTP_INFO( "post message url: %s [%u]"
@@ -526,7 +566,7 @@ namespace Mengine
 
             HINTERNET hConnect = NULL;
             HINTERNET hRequest = NULL;
-            if( Detail::openRequest( _request, _response, "GET", &hConnect, &hRequest ) == false )
+            if( Detail::openRequest( _request, _response, "HEAD", &hConnect, &hRequest ) == false )
             {
                 return false;
             }

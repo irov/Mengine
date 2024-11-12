@@ -2,6 +2,7 @@
 
 #include "Interface/EnvironmentServiceInterface.h"
 
+#include "Win32HttpRequestPing.h"
 #include "Win32HttpRequestGetMessage.h"
 #include "Win32HttpRequestPostMessage.h"
 #include "Win32HttpRequestHeaderData.h"
@@ -70,6 +71,7 @@ namespace Mengine
 
         m_hInternet = hInternet;
 
+        m_factoryTaskPing = Helper::makeFactoryPool<Win32HttpRequestPing, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskGetMessage = Helper::makeFactoryPool<Win32HttpRequestGetMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskPostMessage = Helper::makeFactoryPool<Win32HttpRequestPostMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskDeleteMessage = Helper::makeFactoryPool<Win32HttpRequestDeleteMessage, 16>( MENGINE_DOCUMENT_FACTORABLE );
@@ -84,18 +86,29 @@ namespace Mengine
         ::InternetCloseHandle( m_hInternet );
         m_hInternet = NULL;
 
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPing );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetAsset );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDeleteMessage );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskHeaderData );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetMessage );
 
+        m_factoryTaskPing = nullptr;
         m_factoryTaskGetAsset = nullptr;
         m_factoryTaskPostMessage = nullptr;
         m_factoryTaskDeleteMessage = nullptr;
         m_factoryTaskHeaderData = nullptr;
         m_factoryTaskGetMessage = nullptr;
-    }    
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HttpRequestInterfacePtr Win32HttpSystem::createHttpRequestPing( const DocumentInterfacePtr & _doc )
+    {
+        Win32HttpRequestPingPtr task = m_factoryTaskPing->createObject( _doc );
+
+        task->setHInternet( m_hInternet );
+
+        return task;
+    }
     //////////////////////////////////////////////////////////////////////////
     HttpRequestInterfacePtr Win32HttpSystem::createHttpRequestGetMessage( const DocumentInterfacePtr & _doc )
     {

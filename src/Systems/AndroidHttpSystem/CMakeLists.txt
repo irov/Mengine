@@ -7,6 +7,8 @@ src
 
     AndroidHttpRequest.cpp
     AndroidHttpRequest.h
+    AndroidHttpRequestPing.cpp
+    AndroidHttpRequestPing.h
     AndroidHttpRequestGetAsset.cpp
     AndroidHttpRequestGetAsset.h
     AndroidHttpRequestGetMessage.cpp

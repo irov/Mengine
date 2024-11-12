@@ -15,6 +15,9 @@ namespace Mengine
         SERVICE_DECLARE( "HttpSystem" );
 
     public:
+        virtual HttpRequestInterfacePtr createHttpRequestPing( const DocumentInterfacePtr & _doc ) = 0;
+
+    public:
         virtual HttpRequestInterfacePtr createHttpRequestGetMessage( const DocumentInterfacePtr & _doc ) = 0;
         virtual HttpRequestInterfacePtr createHttpRequestPostMessage( const HttpRequestPostProperties & _params, const DocumentInterfacePtr & _doc ) = 0;
         virtual HttpRequestInterfacePtr createHttpRequestHeaderData( const Data & _data, const DocumentInterfacePtr & _doc ) = 0;

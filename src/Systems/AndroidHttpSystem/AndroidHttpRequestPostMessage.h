@@ -8,7 +8,7 @@ namespace Mengine
     class AndroidHttpRequestPostMessage
         : public AndroidHttpRequest
     {
-        DECLARE_FACTORABLE(AndroidHttpRequestPostMessage );
+        DECLARE_FACTORABLE( AndroidHttpRequestPostMessage );
 
     public:
         AndroidHttpRequestPostMessage();

@@ -1,8 +1,5 @@
 #include "AppleHttpRequestDeleteMessage.h"
 
-#include "Kernel/OptionHelper.h"
-#include "Kernel/Logger.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

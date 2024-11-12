@@ -162,7 +162,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidHttpRequest::_onThreadTaskComplete(bool _successful )
+    void AndroidHttpRequest::_onThreadTaskComplete( bool _successful )
     {
         m_response->setSuccessful( _successful );
 

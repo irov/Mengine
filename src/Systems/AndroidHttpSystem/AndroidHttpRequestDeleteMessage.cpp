@@ -16,7 +16,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidHttpRequestDeleteMessage::_onHttp(JNIEnv * _jenv, jobject _jrequest )
+    jobject AndroidHttpRequestDeleteMessage::_onHttp( JNIEnv * _jenv, jobject _jrequest )
     {
         jobject jresponse = Helper::AndroidCallObjectStaticClassMethod( _jenv, "org/Mengine/Base/MengineNetwork", "httpRequestDeleteMessage", "(Lorg/Mengine/Base/MengineHttpRequestParam;)Lorg/Mengine/Base/MengineHttpResponseParam;"
             , _jrequest

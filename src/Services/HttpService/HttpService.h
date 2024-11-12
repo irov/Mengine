@@ -35,6 +35,9 @@ namespace Mengine
         const HttpHeaders & getApplicationJSONHeaders() const override;
 
     protected:
+        HttpRequestId ping( const String & _url, int32_t _timeout, const HttpLambdaPing & _lambda, const DocumentInterfacePtr & _doc ) override;
+
+    protected:
         HttpRequestId getMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
         HttpRequestId postMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpRequestPostProperties & _params, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
         HttpRequestId deleteMessage( const String & _url, const HttpHeaders & _headers, int32_t _timeout, uint32_t _flags, const HttpReceiverInterfacePtr & _receiver, const DocumentInterfacePtr & _doc ) override;
@@ -66,6 +69,7 @@ namespace Mengine
 
         enum EReceiverType
         {
+            ERT_PING,
             ERT_GET_MESSAGE,
             ERT_POST_MESSAGE,
             ERT_HEADER_DATA,
@@ -91,5 +95,6 @@ namespace Mengine
         HttpHeaders m_applicationJSONHeaders;
 
         FactoryInterfacePtr m_factoryResponse;
+        FactoryInterfacePtr m_factoryReceiverPing;
     };
 }

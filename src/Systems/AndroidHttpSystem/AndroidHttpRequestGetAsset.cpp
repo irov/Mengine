@@ -23,7 +23,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidHttpRequestGetAsset::setLogin(const String & _login )
+    void AndroidHttpRequestGetAsset::setLogin( const String & _login )
     {
         m_login = _login;
     }
@@ -33,7 +33,7 @@ namespace Mengine
         return m_login;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidHttpRequestGetAsset::setPassword(const String & _password )
+    void AndroidHttpRequestGetAsset::setPassword( const String & _password )
     {
         m_password = _password;
     }
@@ -43,7 +43,7 @@ namespace Mengine
         return m_password;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidHttpRequestGetAsset::setContent(const ContentInterfacePtr & _content )
+    void AndroidHttpRequestGetAsset::setContent( const ContentInterfacePtr & _content )
     {
         m_content = _content;
     }
@@ -77,7 +77,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    jobject AndroidHttpRequestGetAsset::_onHttp(JNIEnv * _jenv, jobject _jrequest )
+    jobject AndroidHttpRequestGetAsset::_onHttp( JNIEnv * _jenv, jobject _jrequest )
     {
         jobject jkey_login = Helper::AndroidMakeJObjectString( _jenv, m_login );
         jobject jkey_password = Helper::AndroidMakeJObjectString( _jenv, m_password );
@@ -94,7 +94,7 @@ namespace Mengine
         return jresponse;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidHttpRequestGetAsset::_onThreadTaskComplete(bool _successful )
+    void AndroidHttpRequestGetAsset::_onThreadTaskComplete( bool _successful )
     {
         const HttpResponseInterfacePtr & response = this->getReponse();
 

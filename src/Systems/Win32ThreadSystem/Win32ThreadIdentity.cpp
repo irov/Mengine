@@ -1,6 +1,7 @@
 #include "Win32ThreadIdentity.h"
 
 #include "Interface/AllocatorSystemInterface.h"
+#include "Interface/PlatformSystemInterface.h"
 #include "Interface/Win32KernelServiceInterface.h"
 
 #include "Environment/Windows/Win32Helper.h"
@@ -140,7 +141,10 @@ namespace Mengine
         m_threadId = ::GetCurrentThreadId();
 
         ALLOCATOR_SYSTEM()
-            ->beginThread( m_threadId );
+            ->beginThread( (ThreadId)m_threadId );
+
+        PLATFORM_SYSTEM()
+            ->beginThread( (ThreadId)m_threadId );
 
         LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
             , m_description.nameA
@@ -157,8 +161,11 @@ namespace Mengine
             runner->sleep();
         }
 
+        PLATFORM_SYSTEM()
+            ->endThread( (ThreadId)m_threadId );
+
         ALLOCATOR_SYSTEM()
-            ->endThread( m_threadId );
+            ->endThread( (ThreadId)m_threadId );
     }
     //////////////////////////////////////////////////////////////////////////
     uint64_t Win32ThreadIdentity::getThreadId() const

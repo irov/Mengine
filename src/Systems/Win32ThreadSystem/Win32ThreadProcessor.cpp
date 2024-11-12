@@ -1,6 +1,7 @@
 #include "Win32ThreadProcessor.h"
 
 #include "Interface/AllocatorSystemInterface.h"
+#include "Interface/PlatformSystemInterface.h"
 #include "Interface/Win32KernelServiceInterface.h"
 
 #include "Environment/Windows/Win32Helper.h"
@@ -147,7 +148,10 @@ namespace Mengine
         m_threadId = ::GetCurrentThreadId();
 
         ALLOCATOR_SYSTEM()
-            ->beginThread( m_threadId );
+            ->beginThread( (ThreadId)m_threadId );
+
+        PLATFORM_SYSTEM()
+            ->beginThread( (ThreadId)m_threadId );
 
         LOGGER_INFO( "thread", "create thread name: %s id: %ld priority: %d"
             , m_description.nameA
@@ -202,8 +206,11 @@ namespace Mengine
 #endif
         }
 
+        PLATFORM_SYSTEM()
+            ->endThread( (ThreadId)m_threadId );
+
         ALLOCATOR_SYSTEM()
-            ->endThread( m_threadId );
+            ->endThread( (ThreadId)m_threadId );
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadId Win32ThreadProcessor::getThreadId() const
@@ -234,17 +241,17 @@ namespace Mengine
                 ::EnterCriticalSection( &m_taskLock );
                 m_task = _task;
                 ::LeaveCriticalSection( &m_taskLock );
+
+#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
+                ::WakeConditionVariable( &m_conditionVariable );
+#endif
+
+                successful = true;
             }
             else
             {
                 LOGGER_ASSERTION( "invalid run" );
             }
-
-#if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
-            ::WakeConditionVariable( &m_conditionVariable );
-#endif
-
-            successful = true;
         }
 
         ::LeaveCriticalSection( &m_processLock );

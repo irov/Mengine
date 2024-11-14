@@ -12,6 +12,7 @@
 - (BOOL)didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions;
 
 - (void)setSessionId:(NSString * _Nonnull)sessionId;
+- (void)removeSessionData;
 
 - (NSString * _Nonnull)getInstallKey;
 - (NSInteger)getInstallTimestamp;

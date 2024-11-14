@@ -82,6 +82,12 @@
     [iOSDetail setSessionId:param];
 }
 
+- (void)removeSessionData {
+    [AppleUserDefaults clear];
+    
+    [iOSDetail removeSessionData];
+}
+
 - (NSString * _Nonnull)getInstallKey {
     return self.m_installKey;
 }

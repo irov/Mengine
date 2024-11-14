@@ -122,4 +122,19 @@
     return YES;
 }
 
++ (BOOL)clear {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if (defaults == nil) {
+        return NO;
+    }
+
+    NSString * appDomain = [[NSBundle mainBundle] bundleIdentifier];
+    
+    [defaults removePersistentDomainForName:appDomain];
+    [defaults synchronize];
+    
+    return YES;
+}
+
 @end

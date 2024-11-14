@@ -19,4 +19,6 @@
 + (BOOL)hasKey:(NSString *)key;
 + (BOOL)removeKey:(NSString *)key;
 
++ (BOOL)clear;
+
 @end

@@ -13,8 +13,10 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/iOSKernelServiceInterface.h"
+#include "Interface/AccountServiceInterface.h"
 
-#include "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSApplication.h"
+#import "Environment/iOS/iOSDetail.h"
 
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
@@ -900,7 +902,7 @@ namespace Mengine
 
         if( [MFMailComposeViewController canSendMail] == NO )
         {
-            [iOSDetail alertWithViewController:viewController
+            [iOSDetail showOkAlertWithViewController:viewController
                                          title:@"Yikes."
                                        message:@"Log into your mailbox using the standard Mail app"
                                             ok:^{}];
@@ -941,6 +943,17 @@ namespace Mengine
                                                   yes:^() {
             LOGGER_MESSAGE("delete account [YES]");
             
+            [[iOSApplication sharedInstance] removeSessionData];
+            
+            ACCOUNT_SERVICE()
+                ->deleteCurrentAccount();
+            
+            [iOSDetail showOkAlertWithTitle:@"Account Deleted"
+                                    message:@"Account data has been deleted. The application will now close."
+                                         ok:^() {
+                APPLICATION_SERVICE()
+                    ->quit();
+            }];
         }
                                                cancel: ^() {
             LOGGER_MESSAGE("delete account [CANCEL]");

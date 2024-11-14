@@ -1,5 +1,7 @@
 #import "iOSDetail.h"
 
+#include "Kernel/ThreadHelper.h"
+
 #import <AdSupport/ASIdentifierManager.h>
 
 @implementation iOSDetail
@@ -161,16 +163,16 @@
     return result;
 }
 
-+ (void)alertWithTitle:(NSString *)title message:(NSString *)message ok:(void (^)(void) _Nonnull)ok {
++ (void)showOkAlertWithTitle:(NSString *)title message:(NSString *)message ok:(void (^)(void) _Nonnull)ok {
     UIViewController * viewController = [iOSDetail getRootViewController];
     
-    [iOSDetail alertWithViewController:viewController
+    [iOSDetail showOkAlertWithViewController:viewController
                                  title:title
                                message:message
                                     ok:ok];
 }
 
-+ (void)alertWithViewController:(UIViewController *)viewController
++ (void)showOkAlertWithViewController:(UIViewController *)viewController
                           title:(NSString *)title
                         message:(NSString *)message
                              ok:(void (^)(void) _Nonnull)ok {
@@ -180,7 +182,9 @@
 
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        ok();
+        Mengine::Helper::dispatchMainThreadEvent([ok]() {
+            ok();
+        });
     }];
 
     [alertController addAction:okAction];
@@ -221,13 +225,17 @@
     UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"YES"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * _Nonnull action) {
-        yes();
+        Mengine::Helper::dispatchMainThreadEvent([yes]() {
+            yes();
+        });
     }];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"CANCEL"
                                                            style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction * _Nonnull action) {
-        cancel();
+        Mengine::Helper::dispatchMainThreadEvent([cancel]() {
+            cancel();
+        });
     }];
     
     [alert addAction:cancelAction];

@@ -303,7 +303,7 @@ char ** MENGINE_MAIN_argv = nullptr;
         
         SDL_iPhoneSetEventPump( SDL_FALSE );
         
-        [iOSDetail alertWithTitle:@"Failed..."
+        [iOSDetail showOkAlertWithTitle:@"Failed..."
                           message:@"Mengine bootstraped application"
                                ok:^{
             ::exit( EXIT_FAILURE );
@@ -321,7 +321,7 @@ char ** MENGINE_MAIN_argv = nullptr;
         
         SDL_iPhoneSetEventPump( SDL_FALSE );
         
-        [iOSDetail alertWithTitle:@"Failed..."
+        [iOSDetail showOkAlertWithTitle:@"Failed..."
                           message:@"Mengine initialized application"
                                ok:^{
             ::exit( EXIT_FAILURE );

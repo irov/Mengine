@@ -36,10 +36,10 @@
 + (void)log:(iOSLogRecordParam *)record;
 + (NSString *)pathForTemporaryFileWithPrefix:(NSString *)prefix ext:(NSString *)ext;
 
-+ (void)alertWithTitle:(NSString *)title
++ (void)showOkAlertWithTitle:(NSString *)title
                message:(NSString *)message
                     ok:(void (^)(void) _Nonnull)ok;
-+ (void)alertWithViewController:(UIViewController *)viewController
++ (void)showOkAlertWithViewController:(UIViewController *)viewController
                           title:(NSString *)title
                         message:(NSString *)message
                              ok:(void (^)(void))ok;

@@ -1487,7 +1487,7 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineUtils.showAreYouSureAlertDialog(this
             , () -> { //Yes
-                MengineLog.logMessage(TAG, "delete account [OK]");
+                MengineLog.logMessage(TAG, "delete account [YES]");
 
                 MengineApplication application = (MengineApplication)this.getApplication();
 

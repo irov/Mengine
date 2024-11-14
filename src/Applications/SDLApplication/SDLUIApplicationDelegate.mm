@@ -25,6 +25,7 @@ char ** MENGINE_MAIN_argv = nullptr;
 
     self.m_pluginApplicationDelegates = [NSMutableArray<iOSPluginApplicationDelegateInterface> array];
     self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
+    self.m_pluginSessionIdDelegates = [NSMutableArray<iOSPluginSessionIdDelegateInterface> array];
     self.m_pluginAdRevenueDelegates = [NSMutableArray<iOSPluginAdRevenueDelegateInterface> array];
     self.m_pluginTransparencyConsentDelegates = [NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> array];
     
@@ -43,6 +44,10 @@ char ** MENGINE_MAIN_argv = nullptr;
         
         if ([delegate conformsToProtocol:@protocol(iOSPluginLoggerDelegateInterface)] == YES) {
             [self.m_pluginLoggerDelegates addObject:delegate];
+        }
+        
+        if ([delegate conformsToProtocol:@protocol(iOSPluginSessionIdDelegateInterface)] == YES) {
+            [self.m_pluginSessionIdDelegates addObject:delegate];
         }
 
         if ([delegate conformsToProtocol:@protocol(iOSPluginAdRevenueDelegateInterface)] == YES) {
@@ -65,6 +70,10 @@ char ** MENGINE_MAIN_argv = nullptr;
 
 - (NSArray<iOSPluginLoggerDelegateInterface> *)getPluginLoggerDelegates {
     return self.m_pluginLoggerDelegates;
+}
+
+- (NSArray<iOSPluginSessionIdDelegateInterface> *)getPluginSessionIdDelegates {
+    return self.m_pluginSessionIdDelegates;
 }
 
 - (NSArray<iOSPluginAdRevenueDelegateInterface> *)getPluginAdRevenueDelegates {
@@ -101,6 +110,18 @@ char ** MENGINE_MAIN_argv = nullptr;
 - (void)log:(iOSLogRecordParam *)record {
     for (NSObject<iOSPluginLoggerDelegateInterface> * delegate in self.m_pluginLoggerDelegates) {
         [delegate onLogger:record];
+    }
+}
+
+- (void)setSessionId:(iOSSessionIdParam *)sessionId {
+    for (NSObject<iOSPluginSessionIdDelegateInterface> * delegate in self.m_pluginSessionIdDelegates) {
+        [delegate onSessionId:sessionId];
+    }
+}
+
+- (void)removeSessionData {
+    for (NSObject<iOSPluginSessionIdDelegateInterface> * delegate in self.m_pluginSessionIdDelegates) {
+        [delegate onRemoveSessionData];
     }
 }
 
@@ -282,8 +303,10 @@ char ** MENGINE_MAIN_argv = nullptr;
         
         SDL_iPhoneSetEventPump( SDL_FALSE );
         
-        [iOSDetail alertWithTitle:@"Failed..." message:@"Mengine bootstraped application" callback:^{
-            ::exit( EXIT_SUCCESS );
+        [iOSDetail alertWithTitle:@"Failed..."
+                          message:@"Mengine bootstraped application"
+                               ok:^{
+            ::exit( EXIT_FAILURE );
         }];
         
         return;
@@ -298,8 +321,10 @@ char ** MENGINE_MAIN_argv = nullptr;
         
         SDL_iPhoneSetEventPump( SDL_FALSE );
         
-        [iOSDetail alertWithTitle:@"Failed..." message:@"Mengine initialized application" callback:^{
-            ::exit( EXIT_SUCCESS );
+        [iOSDetail alertWithTitle:@"Failed..."
+                          message:@"Mengine initialized application"
+                               ok:^{
+            ::exit( EXIT_FAILURE );
         }];
         
         return;

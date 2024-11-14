@@ -135,7 +135,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid open file '%s' error '%s'"
                 , _fullPath
-                , [error.localizedDescription UTF8String]
+                , [error.description UTF8String]
             );
 
             return false;

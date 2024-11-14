@@ -29,12 +29,31 @@
 + (id)getUIProxyApplicationDelegate:(Class)delegateClass;
 
 + (void)eventNotify:(AppleEvent *)event args:(NSArray<id> *)args;
++ (void)setSessionId:(iOSSessionIdParam *)sessionId;
++ (void)removeSessionData;
 + (void)adRevenue:(iOSAdRevenueParam *)revenue;
 + (void)transparencyConsent:(iOSTransparencyConsentParam *)consent;
 + (void)log:(iOSLogRecordParam *)record;
 + (NSString *)pathForTemporaryFileWithPrefix:(NSString *)prefix ext:(NSString *)ext;
 
-+ (void)alertWithTitle:(NSString *)title message:(NSString *)message callback:(void (^)(void))callback;
-+ (void)alertWithViewController:(UIViewController *)viewController title:(NSString *)title message:(NSString *)message callback:(void (^)(void))callback;
++ (void)alertWithTitle:(NSString *)title
+               message:(NSString *)message
+                    ok:(void (^)(void) _Nonnull)ok;
++ (void)alertWithViewController:(UIViewController *)viewController
+                          title:(NSString *)title
+                        message:(NSString *)message
+                             ok:(void (^)(void))ok;
+
++ (void)showAreYouSureAlertDialogWithTitle:(NSString *)title
+                                   message:(NSString *)message
+                                     delay:(NSTimeInterval)delayMillis
+                                       yes:(void (^)(void) _Nonnull)yes
+                                    cancel:(void (^)(void) _Nonnull)cancel;
++ (void)showAreYouSureAlertDialogWithContext:(UIViewController *)viewController
+                                       title:(NSString *)title
+                                     message:(NSString *)message
+                                        delay:(NSTimeInterval)delayMillis
+                                          yes:(void (^)(void) _Nonnull)yes
+                                      cancel:(void (^)(void) _Nonnull)cancel;
 
 @end

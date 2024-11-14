@@ -874,12 +874,14 @@ namespace Mengine
 
         NSURL * ns_url = [NSURL URLWithString:@(_url)];
 
-        if( [[UIApplication sharedApplication]canOpenURL:ns_url] == NO ) 
+        if( [[UIApplication sharedApplication] canOpenURL:ns_url] == NO )
         {
             return false;
         }
 
-        [[UIApplication sharedApplication]openURL:ns_url options:@{} completionHandler:^(BOOL success) {
+        [[UIApplication sharedApplication] openURL:ns_url
+                                           options:@{}
+                                 completionHandler:^(BOOL success) {
             //ToDo callback
         }];
 
@@ -898,7 +900,10 @@ namespace Mengine
 
         if( [MFMailComposeViewController canSendMail] == NO )
         {
-            [iOSDetail alertWithViewController:viewController title:@"Yikes." message:@"Log into your mailbox using the standard Mail app" callback:^{}];
+            [iOSDetail alertWithViewController:viewController
+                                         title:@"Yikes."
+                                       message:@"Log into your mailbox using the standard Mail app"
+                                            ok:^{}];
 
             return false;
         }
@@ -917,7 +922,9 @@ namespace Mengine
         [mailCompose setSubject:@(_subject)];
         [mailCompose setMessageBody:@(_body) isHTML:NO];
 
-        [viewController presentViewController:mailCompose animated:YES completion:^ {
+        [viewController presentViewController:mailCompose
+                                     animated:YES
+                                   completion:^ {
             //ToDo callback
         }] ;
 
@@ -927,10 +934,20 @@ namespace Mengine
     bool iOSPlatformService::openDeleteAccount()
     {
         LOGGER_INFO( "platform", "open delete account" );
+        
+        [iOSDetail showAreYouSureAlertDialogWithTitle:@"Delete Account"
+                                              message:@"Click 'YES' will delete all account data. All game progress, virtual goods, and currency will be permanently removed and unrecoverable."
+                                                delay:3000
+                                                  yes:^() {
+            LOGGER_MESSAGE("delete account [YES]");
+            
+        }
+                                               cancel: ^() {
+            LOGGER_MESSAGE("delete account [CANCEL]");
+            
+        }];
 
-        //Empty
-
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::stopPlatform()

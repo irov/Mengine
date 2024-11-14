@@ -13,6 +13,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     FIRRemoteConfigSettings *remoteConfigSettings = [[FIRRemoteConfigSettings alloc] init];
     remoteConfigSettings.minimumFetchInterval = MENGINE_DEBUG_VALUE(0, 3600);
+    
     [[FIRRemoteConfig remoteConfig] setConfigSettings:remoteConfigSettings];
     
     [[FIRRemoteConfig remoteConfig] setDefaultsFromPlistFileName:@MENGINE_FIREBASE_REMOTECONFIG_PLIST_NAME];
@@ -21,7 +22,7 @@
         switch (status) {
             case FIRRemoteConfigFetchStatusNoFetchYet:
                 NSLog( @"FIRRemoteConfigFetchStatusNoFetchYet: %@"
-                    , [error localizedDescription]
+                    , [error description]
                 );
                 
                 break;
@@ -32,7 +33,7 @@
                     if (error != nil)
                     {
                         NSLog( @"FIRRemoteConfigFetchStatusSuccess activate error: %@"
-                            , [error localizedDescription]
+                            , [error description]
                         );
                         
                         return;
@@ -45,13 +46,13 @@
                 break;
             case FIRRemoteConfigFetchStatusFailure:
                 NSLog( @"FIRRemoteConfigFetchStatusFailure: %@"
-                    , [error localizedDescription]
+                    , [error description]
                 );
                 
                 break;
             case FIRRemoteConfigFetchStatusThrottled:
                 NSLog( @"FIRRemoteConfigFetchStatusThrottled: %@"
-                    , [error localizedDescription]
+                    , [error description]
                 );
                 
                 break;

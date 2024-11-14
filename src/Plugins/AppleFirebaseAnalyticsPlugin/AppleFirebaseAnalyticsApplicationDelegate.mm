@@ -19,12 +19,13 @@
     return YES;
 }
 
-- (void)onEvent:(AppleEvent *)event args:(NSArray *)args {
-    if (event == AppleEvent.EVENT_SESSION_ID) {
-        NSString * sessionId = args[0];
-        
-        [FIRAnalytics setUserID:sessionId];
-    }
+- (void)onSessionId:(iOSSessionIdParam *)session {
+    [FIRAnalytics setUserID:session.SESSION_ID];
+}
+
+- (void)onRemoveSessionData {
+    [FIRAnalytics resetAnalyticsData];
+    [FIRAnalytics setUserID:nil];
 }
 
 #pragma mark - iOSPluginAdRevenueDelegateInterface

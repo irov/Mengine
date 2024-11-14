@@ -56,14 +56,14 @@
 }
 
 + (UIView *)getRootView {
-    UIWindow *window = [self getRootWindow];
+    UIWindow *window = [iOSDetail getRootWindow];
     UIView *view = [window.subviews objectAtIndex:0];
     
     return view;
 }
 
 + (UIViewController *)getRootViewController {
-    UIWindow *window = [self getRootWindow];
+    UIWindow *window = [iOSDetail getRootWindow];
     UIViewController *viewController = window.rootViewController;
     
     return viewController;
@@ -102,15 +102,31 @@
 
 + (void)eventNotify:(AppleEvent *)event args:(NSArray<id> *)args {
     [iOSDetail addMainQueueOperation:^{
-        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [self getUIMainApplicationDelegate];
+        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
         
         [delegate notify:event arrayArgs:args];
     }];
 }
 
++ (void)setSessionId:(iOSSessionIdParam *)sessionId {
+    [iOSDetail addMainQueueOperation:^{
+        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
+    
+        [delegate setSessionId:sessionId];
+    }];
+}
+
++ (void)removeSessionData {
+    [iOSDetail addMainQueueOperation:^{
+        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
+    
+        [delegate removeSessionData];
+    }];
+}
+
 + (void)adRevenue:(iOSAdRevenueParam *)revenue {
     [iOSDetail addMainQueueOperation:^{
-        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [self getUIMainApplicationDelegate];
+        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
         [delegate eventAdRevenue:revenue];
     }];
@@ -118,7 +134,7 @@
 
 + (void)transparencyConsent:(iOSTransparencyConsentParam *)consent {
     [iOSDetail addMainQueueOperation:^{
-        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [self getUIMainApplicationDelegate];
+        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
         [delegate eventTransparencyConsent:consent];
     }];
@@ -126,7 +142,7 @@
 
 + (void)log:(iOSLogRecordParam *)record {
     [iOSDetail addMainQueueOperation:^{
-        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [self getUIMainApplicationDelegate];
+        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
     
         [delegate log:record];
     }];
@@ -145,27 +161,90 @@
     return result;
 }
 
-+ (void)alertWithTitle:(NSString *)title message:(NSString *)message callback:(void (^)(void))callback {
-    UIViewController *rootViewController = [self getRootViewController];
-    [self alertWithViewController:rootViewController title:title message:message callback:callback];
++ (void)alertWithTitle:(NSString *)title message:(NSString *)message ok:(void (^)(void) _Nonnull)ok {
+    UIViewController * viewController = [iOSDetail getRootViewController];
+    
+    [iOSDetail alertWithViewController:viewController
+                                 title:title
+                               message:message
+                                    ok:ok];
 }
 
-+ (void)alertWithViewController:(UIViewController *)viewController title:(NSString *)title message:(NSString *)message callback:(void (^)(void))callback {
++ (void)alertWithViewController:(UIViewController *)viewController
+                          title:(NSString *)title
+                        message:(NSString *)message
+                             ok:(void (^)(void) _Nonnull)ok {
     if (viewController == nil) {
         return;
     }
 
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        if (callback) {
-            callback();
-        }
+        ok();
     }];
 
     [alertController addAction:okAction];
 
     dispatch_async(dispatch_get_main_queue(), ^{
         [viewController presentViewController:alertController animated:YES completion:nil];
+    });
+}
+
++ (void)showAreYouSureAlertDialogWithTitle:(NSString *)title
+                                   message:(NSString *)message
+                                     delay:(NSTimeInterval)delayMillis
+                                       yes:(void (^)(void) _Nonnull)yes
+                                    cancel:(void (^)(void) _Nonnull)cancel {
+    UIViewController * viewController = [iOSDetail getRootViewController];
+    
+    [iOSDetail showAreYouSureAlertDialogWithContext:viewController
+                                              title:title
+                                            message:message
+                                              delay:delayMillis
+                                                yes:yes
+                                             cancel:cancel];
+}
+
++ (void)showAreYouSureAlertDialogWithContext:(UIViewController *)viewController
+                                       title:(NSString *)title
+                                     message:(NSString *)message
+                                        delay:(NSTimeInterval)delayMillis
+                                          yes:(void (^)(void) _Nonnull)yes
+                                      cancel:(void (^)(void) _Nonnull)cancel {
+    NSString * areYouSureText = @"\n\nAre you sure?";
+    NSString * fullMessage = [message stringByAppendingString:areYouSureText];
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:fullMessage
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"YES"
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+        yes();
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"CANCEL"
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * _Nonnull action) {
+        cancel();
+    }];
+    
+    [alert addAction:cancelAction];
+    [alert addAction:yesAction];
+    
+    if (delayMillis > 0) {
+        yesAction.enabled = NO;
+        yesAction.accessibilityHint = @"Disabled temporarily";
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayMillis * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
+            yesAction.enabled = YES;
+            yesAction.accessibilityHint = nil;
+        });
+    }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [viewController presentViewController:alert animated:YES completion:nil];
     });
 }
 

@@ -29,7 +29,7 @@
             break;
         case MFMailComposeResultFailed:
             LOGGER_ERROR( "MFMailComposeResultFailed: The email message was not saved or queued, possibly due to an error [%s]"
-                , [[error localizedDescription] UTF8String]
+                , [[error description] UTF8String]
             );
             break;
         default:

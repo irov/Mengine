@@ -12,7 +12,7 @@
 + (NSErrorMessage)getMessageFromNSError:(NSError *) _error {
     NSString * message = [NSString stringWithFormat:@"[Error %ld Description: %@ Failure reason: %@ Recovery suggestion: %@"
         , [_error code]
-        , [_error localizedDescription]
+        , [_error description]
         , [_error localizedFailureReason]
         , [_error localizedRecoverySuggestion]
         ];

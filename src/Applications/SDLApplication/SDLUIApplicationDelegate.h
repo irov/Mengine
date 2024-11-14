@@ -15,6 +15,7 @@
 
 @property (nonatomic, strong) NSMutableArray<iOSPluginApplicationDelegateInterface> * m_pluginApplicationDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginLoggerDelegateInterface> * m_pluginLoggerDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginSessionIdDelegateInterface> * m_pluginSessionIdDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginAdRevenueDelegateInterface> * m_pluginAdRevenueDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> * m_pluginTransparencyConsentDelegates;
 

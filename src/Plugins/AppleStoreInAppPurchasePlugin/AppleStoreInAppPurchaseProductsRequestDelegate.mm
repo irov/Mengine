@@ -69,7 +69,7 @@
 //////////////////////////////////////////////////////////////////////////
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
     LOGGER_MESSAGE( "[SKProductsRequestDelegate] request didFailWithError: %s"
-        , [error.localizedDescription UTF8String]
+        , [error.description UTF8String]
     );
     
     Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;

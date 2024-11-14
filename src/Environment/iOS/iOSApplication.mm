@@ -76,7 +76,10 @@
     
     [AppleUserDefaults setStringForKey:@"mengine.session_id" value:self.m_sessionId];
     
-    [iOSDetail eventNotify:AppleEvent.EVENT_SESSION_ID args:@[self.m_sessionId]];
+    iOSSessionIdParam * param = [iOSSessionIdParam alloc];
+    param.SESSION_ID = self.m_sessionId;
+    
+    [iOSDetail setSessionId:param];
 }
 
 - (NSString * _Nonnull)getInstallKey {

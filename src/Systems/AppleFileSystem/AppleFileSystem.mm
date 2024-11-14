@@ -223,7 +223,7 @@ namespace Mengine
         {
             LOGGER_ERROR("Failed to remove file: %s error: %s"
                 , pathCorrect
-                , [error.localizedDescription UTF8String]
+                , [error.description UTF8String]
             );
             
             return false;
@@ -249,7 +249,7 @@ namespace Mengine
             {
                 LOGGER_ERROR("Failed to remove existing file: %s error: %s"
                     , newPathCorrect
-                    , [remove_error.localizedDescription UTF8String]
+                    , [remove_error.description UTF8String]
                 );
                 
                 return false;
@@ -262,7 +262,7 @@ namespace Mengine
             LOGGER_ERROR("Failed to move file from: %s to: %s error: %s"
                 , oldPathCorrect
                 , newPathCorrect
-                , [move_error.localizedDescription UTF8String]
+                , [move_error.description UTF8String]
             );
             
             return false;

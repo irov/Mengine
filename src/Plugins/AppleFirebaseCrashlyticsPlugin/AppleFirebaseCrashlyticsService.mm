@@ -78,7 +78,7 @@ namespace Mengine
         );
 
         NSDictionary *userInfo = @{
-          NSLocalizedDescriptionKey: @(_name.c_str())
+          NSLocalizedDescriptionKey:@(_name.c_str())
         };
         
         NSError * error = [NSError errorWithDomain:@("com.mengine.firebase")

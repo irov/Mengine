@@ -19,6 +19,9 @@ src
     iOSTransparencyConsentParam.h
     iOSTransparencyConsentParam.mm
 
+    iOSSessionIdParam.h
+    iOSSessionIdParam.mm
+
     iOSAdRevenueParam.h
     iOSAdRevenueParam.mm
 
@@ -27,6 +30,7 @@ src
     
     iOSUIMainApplicationDelegateInterface.h
     
+    iOSPluginSessionIdDelegateInterface.h
     iOSPluginAdRevenueDelegateInterface.h
     iOSPluginApplicationDelegateInterface.h
     iOSPluginTransparencyConsentDelegateInterface.h

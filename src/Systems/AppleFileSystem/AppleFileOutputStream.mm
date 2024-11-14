@@ -2,6 +2,8 @@
 
 #include "Interface/PlatformServiceInterface.h"
 
+#import "Environment/Apple/AppleDetail.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/FilePathHelper.h"
@@ -119,7 +121,7 @@ namespace Mengine
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
                 , _size
-                , [error.domain UTF8String]
+                , [[AppleDetail getMessageFromNSError:error] UTF8String]
             );
 
             return 0;

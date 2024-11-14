@@ -3,13 +3,13 @@
 
 @implementation AppleDetail
 
-+ (NSIDMessage)NSIdToString:(id _Nonnull) _value {
-    const Mengine::Char * message_str = [[NSString stringWithFormat:@"%@", _value] UTF8String];
++ (NSString * _Nonnull)NSIdToString:(id _Nonnull) _value {
+    NSString * value_string = [NSString stringWithFormat:@"%@", _value];
 
-    return NSIDMessage( message_str );
+    return value_string;
 }
 
-+ (NSErrorMessage)getMessageFromNSError:(NSError *) _error {
++ (NSString * _Nonnull)getMessageFromNSError:(NSError *) _error {
     NSString * message = [NSString stringWithFormat:@"[Error %ld Description: %@ Failure reason: %@ Recovery suggestion: %@"
         , [_error code]
         , [_error description]
@@ -17,9 +17,7 @@
         , [_error localizedRecoverySuggestion]
         ];
 
-    const Mengine::Char * message_str = [message UTF8String];
-
-    return NSErrorMessage( message_str );
+    return message;
 }
 
 + (NSInteger)getCurrentTimeMillis {
@@ -41,7 +39,7 @@
     return randomNumber;
 }
 
-+ (NSString *)getRandomHexString:(NSInteger) _length {
++ (NSString * _Nonnull)getRandomHexString:(NSInteger) _length {
     NSInteger lengthBytes = (_length + 1) / 2;
     uint8_t randomBytes[lengthBytes];
     if (SecRandomCopyBytes(kSecRandomDefault, lengthBytes, randomBytes) != 0) {

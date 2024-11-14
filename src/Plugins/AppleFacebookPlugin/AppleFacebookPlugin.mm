@@ -10,11 +10,12 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AppleFacebookService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( AppleFacebook, Mengine::AppleFacebookPlugin )
+PLUGIN_FACTORY( AppleFacebook, Mengine::AppleFacebookPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

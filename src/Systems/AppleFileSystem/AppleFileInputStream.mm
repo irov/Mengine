@@ -2,6 +2,8 @@
 
 #include "Interface/FileSystemInterface.h"
 
+#import "Environment/Apple/AppleDetail.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadGuardScope.h"
 #include "Kernel/NotificationHelper.h"
@@ -58,7 +60,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid file '%s' size [error: %s]"
                 , fullPath
-                , [error.description UTF8String]
+                , [[AppleDetail getMessageFromNSError:error] UTF8String]
             );
 
             this->close();
@@ -106,7 +108,7 @@ namespace Mengine
                     , fullPath
                     , m_offset
                     , m_size
-                    , [error.description UTF8String]
+                    , [[AppleDetail getMessageFromNSError:error] UTF8String]
                 );
 
                 return false;
@@ -135,7 +137,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid open file '%s' error '%s'"
                 , _fullPath
-                , [error.description UTF8String]
+                , [[AppleDetail getMessageFromNSError:error] UTF8String]
             );
 
             return false;
@@ -175,7 +177,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid close file '%s' get error: %s"
                 , Helper::getDebugFullPath( this ).c_str()
-                , [error.description UTF8String]
+                , [[AppleDetail getMessageFromNSError:error] UTF8String]
             );
             
             return false;
@@ -279,7 +281,7 @@ namespace Mengine
                 , _offset
                 , _size
                 , m_size
-                , [error.description UTF8String]
+                , [[AppleDetail getMessageFromNSError:error] UTF8String]
             );
             
             return false;
@@ -341,7 +343,7 @@ namespace Mengine
                     , Helper::getDebugFullPath( this ).c_str()
                     , seek_pos
                     , m_size
-                    , [error.description UTF8String]
+                    , [[AppleDetail getMessageFromNSError:error] UTF8String]
                 );
 
                 return false;

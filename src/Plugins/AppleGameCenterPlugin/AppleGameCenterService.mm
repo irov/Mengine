@@ -61,7 +61,7 @@ namespace Mengine
                 m_achievementsComplete.clear();
                 
                 LOGGER_ERROR( "login error: '%s'"
-                   , [AppleDetail getMessageFromNSError:_error].c_str()
+                    , [[AppleDetail getMessageFromNSError:_error] UTF8String]
                 );
                 
                 if( copy_provider != nullptr )
@@ -106,7 +106,7 @@ namespace Mengine
                     m_achievementsSynchronization = false;
                     
                     LOGGER_ERROR("load completed achievements error: '%s'"
-                       , [AppleDetail getMessageFromNSError:_error].c_str()
+                        , [[AppleDetail getMessageFromNSError:_error] UTF8String]
                     );
                     
                     if( provider != nullptr )
@@ -175,7 +175,7 @@ namespace Mengine
                 LOGGER_ERROR( "response achievement '%s' [%lf] error: %s"
                    , copy_achievementName.c_str()
                    , _percentComplete
-                   , [AppleDetail getMessageFromNSError:_error].c_str()
+                   , [[AppleDetail getMessageFromNSError:_error] UTF8String]
                 );
                 
                 Mengine::Helper::dispatchMainThreadEvent([copy_response]() {
@@ -231,7 +231,7 @@ namespace Mengine
             if( _error != nil )
             {
                 LOGGER_ERROR( "reset achievemnts error: '%s'"
-                   , [AppleDetail getMessageFromNSError:_error].c_str()
+                    , [[AppleDetail getMessageFromNSError:_error] UTF8String]
                 );
                 
                 return;
@@ -268,7 +268,7 @@ namespace Mengine
                 LOGGER_ERROR( "response score '%s' [%lld] error: %s"
                    , copy_key.c_str()
                    , _score
-                   , [AppleDetail getMessageFromNSError:_error].c_str()
+                   , [[AppleDetail getMessageFromNSError:_error] UTF8String]
                 );
                 
                 Mengine::Helper::dispatchMainThreadEvent([copy_response]() {

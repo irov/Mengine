@@ -91,7 +91,7 @@ namespace Mengine
     void AppleFirebaseCrashlyticsService::recordError( NSError * _error )
     {
         LOGGER_MESSAGE( "record error: %s"
-           , [AppleDetail getMessageFromNSError:_error].c_str()
+            , [[AppleDetail getMessageFromNSError:_error] UTF8String]
         );
 
         [[FIRCrashlytics crashlytics] recordError:_error];

@@ -15,6 +15,7 @@
 #include "Interface/iOSKernelServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
 
+#import "Environment/Apple/AppleDetail.h"
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
 
@@ -144,7 +145,7 @@ namespace Mengine
         if( error != nil )
         {
             LOGGER_ERROR( "Error creating directory: %s"
-                , [error.description UTF8String]
+                 , [[AppleDetail getMessageFromNSError:error] UTF8String]
             );
 
             StdString::strncpy( _userPath, "", MENGINE_MAX_PATH );
@@ -943,7 +944,7 @@ namespace Mengine
                                                   yes:^() {
             LOGGER_MESSAGE("delete account [YES]");
             
-            [[iOSApplication sharedInstance] removeSessionData];
+            [iOSApplication.sharedInstance removeSessionData];
             
             ACCOUNT_SERVICE()
                 ->deleteCurrentAccount();

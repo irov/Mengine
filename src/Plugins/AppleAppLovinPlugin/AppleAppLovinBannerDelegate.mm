@@ -45,8 +45,8 @@
     adView.frame = rect;
     adView.backgroundColor = UIColor.clearColor;
 
-    UIViewController * rootViewController = [iOSDetail getRootViewController];
-    [rootViewController.view addSubview:adView];
+    UIViewController * viewController = [iOSDetail getRootViewController];
+    [viewController.view addSubview:adView];
     adView.hidden = YES;
     
     self.m_adView = adView;

@@ -148,7 +148,7 @@
     }
     
     LOGGER_MESSAGE( "SKPaymentTransactionObserver paymentQueue restoreCompletedTransactionsFailedWithError: %s"
-        , [AppleDetail getMessageFromNSError:error].c_str()
+        , [[AppleDetail getMessageFromNSError:error] UTF8String]
     );
     
     //ToDo
@@ -195,7 +195,7 @@
     }
     
     LOGGER_MESSAGE( "SKPaymentTransactionObserver didRevokeEntitlementsForProductIdentifiers: %s"
-        , [AppleDetail NSIdToString:productIdentifiers].c_str()
+        , [[AppleDetail NSIdToString:productIdentifiers] UTF8String]
     );
     
     //ToDo

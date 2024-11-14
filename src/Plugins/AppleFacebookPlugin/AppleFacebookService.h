@@ -41,8 +41,8 @@ namespace Mengine
 
     protected:
         AppleFacebookProviderInterfacePtr m_provider;
+        
         FBSDKLoginManager * m_loginManager;
-
         AppleFacebookShareDelegate * m_shareDelegate;
     };
 }

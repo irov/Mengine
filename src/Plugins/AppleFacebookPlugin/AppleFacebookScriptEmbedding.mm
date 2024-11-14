@@ -58,9 +58,9 @@ namespace Mengine
                 this->call_cbs( "onAppleFacebookShareError", _code, _errorMessage );
             }
 
-            void onFacebookProfilePictureLinkGetSuccess( const Char * _userId, bool _success, const Char * _pictureURL ) override
+            void onFacebookProfilePictureLinkGetSuccess( const Char * _userId, const Char * _pictureURL ) override
             {
-                this->call_cbs( "onAppleFacebookProfilePictureLinkGetSuccess", _userId, _success, _pictureURL );
+                this->call_cbs( "onAppleFacebookProfilePictureLinkGetSuccess", _userId, _pictureURL );
             }
             
             void onFacebookProfilePictureLinkGetError( int32_t _code, const Char * _errorMessage ) override

@@ -31,7 +31,7 @@
     
     Mengine::Helper::dispatchMainThreadEvent([copy_provider, error](){
         NSInteger code = error.code;
-        const char * message = error.localizedDescription.UTF8String;
+        const char * message = [error.description UTF8String];
         
         copy_provider->onFacebookShareError( (int32_t)code, message );
     });

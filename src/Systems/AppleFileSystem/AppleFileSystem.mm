@@ -2,6 +2,8 @@
 
 #include "Interface/PlatformServiceInterface.h"
 
+#import "Environment/Apple/AppleDetail.h"
+
 #include "AppleFileGroupDirectory.h"
 #include "AppleFileGroupDirectoryFactory.h"
 
@@ -38,7 +40,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "invalid create directory: %s error: %s"
                     , _fullpath
-                    , [error.description UTF8String]
+                    , [[AppleDetail getMessageFromNSError:error] UTF8String]
                 );
 
                 return false;
@@ -223,7 +225,7 @@ namespace Mengine
         {
             LOGGER_ERROR("Failed to remove file: %s error: %s"
                 , pathCorrect
-                , [error.description UTF8String]
+                , [[AppleDetail getMessageFromNSError:error] UTF8String]
             );
             
             return false;
@@ -249,7 +251,7 @@ namespace Mengine
             {
                 LOGGER_ERROR("Failed to remove existing file: %s error: %s"
                     , newPathCorrect
-                    , [remove_error.description UTF8String]
+                    , [[AppleDetail getMessageFromNSError:remove_error] UTF8String]
                 );
                 
                 return false;
@@ -262,7 +264,7 @@ namespace Mengine
             LOGGER_ERROR("Failed to move file from: %s to: %s error: %s"
                 , oldPathCorrect
                 , newPathCorrect
-                , [move_error.description UTF8String]
+                , [[AppleDetail getMessageFromNSError:move_error] UTF8String]
             );
             
             return false;

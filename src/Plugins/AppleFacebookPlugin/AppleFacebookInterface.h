@@ -6,8 +6,6 @@
 #include "Kernel/VectorConstString.h"
 #include "Kernel/Params.h"
 
-#include "Config/Lambda.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -24,7 +22,7 @@ namespace Mengine
         virtual void onFacebookShareCancel() = 0;
         virtual void onFacebookShareError( int32_t _code, const Char * _errorMessage ) = 0;
 
-        virtual void onFacebookProfilePictureLinkGetSuccess( const Char * _userId, bool _success, const Char * _pictureURL ) = 0;
+        virtual void onFacebookProfilePictureLinkGetSuccess( const Char * _userId, const Char * _pictureURL ) = 0;
         virtual void onFacebookProfilePictureLinkGetError( int32_t _code, const Char * _errorMessage ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////

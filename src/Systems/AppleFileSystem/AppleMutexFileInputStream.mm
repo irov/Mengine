@@ -6,6 +6,8 @@
 #   include "Interface/PlatformServiceInterface.h"
 #endif
 
+#import "Environment/Apple/AppleDetail.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/PathHelper.h"
@@ -188,7 +190,7 @@ namespace Mengine
                 , Helper::getDebugFullPath( m_stream ).c_str()
                 , seek_pos
                 , m_size
-                , [seek_error.description UTF8String]
+                , [[AppleDetail getMessageFromNSError:seek_error] UTF8String]
             );
 
             return false;
@@ -206,7 +208,7 @@ namespace Mengine
                 , _offset
                 , _size
                 , m_size
-                , [read_error.description UTF8String]
+                , [[AppleDetail getMessageFromNSError:read_error] UTF8String]
             );
             
             return false;

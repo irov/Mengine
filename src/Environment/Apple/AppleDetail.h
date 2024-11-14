@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Kernel/StaticString.h"
 #include "Kernel/Params.h"
 #include "Kernel/Data.h"
 #include "Kernel/VectorString.h"
@@ -18,11 +17,8 @@
 
 @interface AppleDetail : NSObject
 
-typedef Mengine::StaticString<MENGINE_APPLE_MESSAGE_NSID> NSIDMessage;
-+ (NSIDMessage)NSIdToString:(id _Nonnull) _value;
-
-typedef Mengine::StaticString<MENGINE_APPLE_MESSAGE_NSERROR> NSErrorMessage;
-+ (NSErrorMessage)getMessageFromNSError:(NSError * _Nonnull) _error;
++ (NSString * _Nonnull)NSIdToString:(id _Nonnull) _value;
++ (NSString * _Nonnull)getMessageFromNSError:(NSError * _Nonnull) _error;
 
 + (NSInteger)getCurrentTimeMillis;
 + (NSInteger)getSecureRandomInteger;

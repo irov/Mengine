@@ -1,5 +1,7 @@
 #import "AppleStoreInAppPurchaseProductsRequestDelegate.h"
 
+#import "Environment/Apple/AppleDetail.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadHelper.h"
 
@@ -69,7 +71,7 @@
 //////////////////////////////////////////////////////////////////////////
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
     LOGGER_MESSAGE( "[SKProductsRequestDelegate] request didFailWithError: %s"
-        , [error.description UTF8String]
+        , [[AppleDetail getMessageFromNSError:error] UTF8String]
     );
     
     Mengine::AppleStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;

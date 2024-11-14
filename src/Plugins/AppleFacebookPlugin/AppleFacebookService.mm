@@ -1,6 +1,5 @@
 #include "AppleFacebookService.h"
 
-#import "Environment/Apple/AppleErrorHelper.h"
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
@@ -29,7 +28,7 @@ namespace Mengine
     bool AppleFacebookService::_initializeService()
     {
         m_loginManager = [[FBSDKLoginManager alloc] init];
-        m_shareDelegate = [[AppleFacebookShareDelegate alloc]initWithService: this];
+        m_shareDelegate = [[AppleFacebookShareDelegate alloc] initWithService: this];
         
         return true;
     }
@@ -54,9 +53,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFacebookService::login( const VectorConstString & _permissions )
     {        
-        UIViewController * rootViewController = Helper::iOSGetRootViewController();
+        UIViewController * viewController = [iOSDetail getRootViewController];
         
-        NSArray<NSString *> * permissions_ns = Helper::AppleGetNSArrayFromVectorConstString( _permissions );
+        NSArray<NSString *> * permissions_ns = [AppleDetail getNSArrayFromVectorConstString:_permissions];
         
         NSString * sessionId = [iOSApplication.sharedInstance getSessionId];
         
@@ -64,19 +63,19 @@ namespace Mengine
                                                                                               tracking:FBSDKLoginTrackingLimited
                                                                                                  nonce:sessionId];
         
-        [m_loginManager logInFromViewController:rootViewController configuration:configuration completion:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
+        [m_loginManager logInFromViewController:viewController configuration:configuration completion:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
             AppleFacebookProviderInterfacePtr copy_provider = m_provider;
             
             if( error != nullptr )
             {
                 LOGGER_ERROR( "login error: '%s'"
-                   , Helper::AppleGetMessageFromNSError(error).c_str()
+                     , [[AppleDetail getMessageFromNSError:error] UTF8String]
                 );
                 
                 if( copy_provider != nullptr )
                 {
                     Helper::dispatchMainThreadEvent( [copy_provider, error]() {
-                        copy_provider->onFacebookError( -2, [NSString stringWithFormat:@"%@", error].UTF8String);
+                        copy_provider->onFacebookError( -2, [[AppleDetail getMessageFromNSError:error] UTF8String]);
                     });
                 }
                 
@@ -89,7 +88,7 @@ namespace Mengine
                 
                 if( copy_provider != nullptr )
                 {
-                    Helper::dispatchMainThreadEvent( [copy_provider, error]() {
+                    Helper::dispatchMainThreadEvent( [copy_provider]() {
                         copy_provider->onFacebookLoginCancel();
                     });
                 }
@@ -111,7 +110,7 @@ namespace Mengine
                         NSString * userID = profile.userID;
                         const Char * userID_str = [userID UTF8String];
                         
-                        params.emplace( STRINGIZE_STRING_LOCAL("profile.userID"), userID_str );
+                        params.emplace( STRINGIZE_STRING_LOCAL("profile.userID"), ParamString(userID_str) );
                         
                         if( profile.imageURL != nil )
                         {
@@ -121,7 +120,7 @@ namespace Mengine
                             {
                                 const Char * imageURL_str = [imageURL.absoluteString UTF8String];
                                 
-                                params.emplace( STRINGIZE_STRING_LOCAL("profile.imageURL"), imageURL_str );
+                                params.emplace( STRINGIZE_STRING_LOCAL("profile.imageURL"), ParamString(imageURL_str) );
                             }
                         }
                     }
@@ -133,7 +132,7 @@ namespace Mengine
                         NSString * authenticationTokenString = authenticationToken.tokenString;
                         const Char * authenticationTokenString_str = [authenticationTokenString UTF8String];
                         
-                        params.emplace( STRINGIZE_STRING_LOCAL("authentication.token"), authenticationTokenString_str );
+                        params.emplace( STRINGIZE_STRING_LOCAL("authentication.token"), ParamString(authenticationTokenString_str) );
                     }
                                                              
                     copy_provider->onFacebookLoginSuccess( params );
@@ -175,7 +174,7 @@ namespace Mengine
         
         const Char * token_str = authenticationToken.tokenString.UTF8String;
         
-        MENGINE_STRNCPY( _token, token_str, _capacity );
+        StdString::strncpy( _token, token_str, _capacity );
         
         return true;
     }
@@ -193,7 +192,7 @@ namespace Mengine
         
         const Char * userId_str = userId.UTF8String;
         
-        MENGINE_STRNCPY( _userId, userId_str, _capacity );
+        StdString::strncpy( _userId, userId_str, _capacity );
         
         return true;
     }
@@ -239,9 +238,11 @@ namespace Mengine
                 FBSDKShareLinkContent* content = [FBSDKShareLinkContent alloc];
                 content.contentURL = [NSURL URLWithString:strlink];
                 
-                UIViewController * rootViewController = Helper::iOSGetRootViewController();
+                UIViewController * viewController = [iOSDetail getRootViewController];
                 
-                FBSDKShareDialog * dialog = [FBSDKShareDialog dialogWithViewController:rootViewController withContent:content delegate:m_shareDelegate];
+                FBSDKShareDialog * dialog = [FBSDKShareDialog dialogWithViewController:viewController
+                                                                           withContent:content
+                                                                              delegate:m_shareDelegate];
                 
                 [dialog show];
             });
@@ -304,9 +305,11 @@ namespace Mengine
             content.contentURL = [NSURL URLWithString:strlink];
             content.media =  @[sharePhoto];
 
-            UIViewController * rootViewController = Helper::iOSGetRootViewController();
+            UIViewController * viewController = [iOSDetail getRootViewController];
                 
-            FBSDKShareDialog * const dialog = [FBSDKShareDialog dialogWithViewController:rootViewController withContent:content delegate:m_shareDelegate];
+            FBSDKShareDialog * const dialog = [FBSDKShareDialog dialogWithViewController:viewController
+                                                                             withContent:content
+                                                                                delegate:m_shareDelegate];
                 
             [dialog show];
         });
@@ -338,7 +341,7 @@ namespace Mengine
                         }
                     }
                 
-                    copy_provider->onFacebookProfilePictureLinkGetSuccess( userID_str, true, imageURL_str );
+                    copy_provider->onFacebookProfilePictureLinkGetSuccess( userID_str, imageURL_str );
                 });
             }
             
@@ -349,14 +352,14 @@ namespace Mengine
             if( _error != nil )
             {
                 LOGGER_ERROR( "get picture error: %s"
-                   , Helper::AppleGetMessageFromNSError(_error).c_str()
+                     , [[AppleDetail getMessageFromNSError:_error] UTF8String]
                 );
                 
                 if( copy_provider != nullptr )
                 {
                     Helper::dispatchMainThreadEvent( [copy_provider, _error]() {
                         NSInteger error_code = _error.code;
-                        const Char * error_message = _error.localizedDescription.UTF8String;
+                        const Char * error_message = [_error.description UTF8String];
                     
                         copy_provider->onFacebookProfilePictureLinkGetError( (int32_t)error_code, error_message );
                     });
@@ -415,7 +418,7 @@ namespace Mengine
                     NSString * imageURL = _profile.imageURL.absoluteURL.absoluteString;
                     const Char * imageURL_str = imageURL.UTF8String;
                 
-                    copy_provider->onFacebookProfilePictureLinkGetSuccess( userID_str, true, imageURL_str );
+                    copy_provider->onFacebookProfilePictureLinkGetSuccess( userID_str, imageURL_str );
                 });
             }
         }];

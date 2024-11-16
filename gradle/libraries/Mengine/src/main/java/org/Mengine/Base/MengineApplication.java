@@ -327,16 +327,7 @@ public class MengineApplication extends Application {
     }
 
     public void removeSessionData() {
-        String installKey = MengineApplication.generateInstallKey();
-
-        m_installKey = installKey;
-        m_sessionId = installKey;
-
-        this.removePreference("install_key");
-        this.removePreference("session_id");
-
-        this.setState("user.install_key", m_installKey);
-        this.setState("user.session_id", m_sessionId);
+        this.clearPreferences();
 
         List<MenginePluginSessionIdListener> listeners = this.getSessionIdListeners();
 
@@ -720,6 +711,14 @@ public class MengineApplication extends Application {
         editor.apply();
     }
 
+    public void clearPreferences() {
+        SharedPreferences settings = this.getPrivateSharedPreferences(TAG);
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.clear();
+        editor.apply();
+    }
+
     public void sendEvent(MengineEvent event, Object ... args) {
         List<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
 
@@ -1008,14 +1007,6 @@ public class MengineApplication extends Application {
         this.setState("user.session_id", m_sessionId);
         this.setState("user.session_timestamp", m_sessionTimestamp);
         this.setState("user.purchases_timestamp", m_purchasesTimestamp);
-
-        if (BuildConfig.DEBUG == true) {
-            String installDate = MengineUtils.getDateFormat(m_installTimestamp, "d MMM yyyy HH:mm:ss");
-            this.setState("user.install_date", installDate);
-
-            String sessionDate = MengineUtils.getDateFormat(m_sessionTimestamp, "d MMM yyyy HH:mm:ss");
-            this.setState("user.session_date", sessionDate);
-        }
 
         MengineAnalytics.addContextParameterBoolean("is_dev", BuildConfig.DEBUG);
         MengineAnalytics.addContextParameterString("install_key", m_installKey);

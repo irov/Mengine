@@ -11,6 +11,7 @@ import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookRequestError;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.HttpMethod;
@@ -46,6 +47,12 @@ import java.util.Map;
 public class MengineFacebookPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener, MenginePluginRemoteMessageListener, MenginePluginActivityListener, MenginePluginPushTokenListener, MenginePluginSessionIdListener {
     public static final String PLUGIN_NAME = "MengineFacebook";
     public static final boolean PLUGIN_EMBEDDING = true;
+
+    private static final int ERROR_CODE_UNKNOWN = 0;
+    private static final int ERROR_CODE_LOGGED_OUT = 1;
+    private static final int ERROR_CODE_EXPIRED = 2;
+    private static final int ERROR_CODE_INVALID_PARAMETER = 3;
+
 
     private CallbackManager m_facebookCallbackManager;
     private AccessTokenTracker m_accessTokenTracker;
@@ -173,7 +180,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
                 AccessToken.setCurrentAccessToken(null);
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookLoginError", message);
+                MengineFacebookPlugin.this.pythonCall("onFacebookLoginError", ERROR_CODE_UNKNOWN, message);
             }
         });
 
@@ -355,28 +362,36 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         this.logMessage("logout");
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        
+
         // user already logged out
         if (accessToken == null) {
             this.logWarning("user already logged out");
 
-            this.pythonCall("onFacebookLogoutCancel");
+            this.pythonCall("onFacebookLogoutError", ERROR_CODE_LOGGED_OUT, "user already logged out");
             
+            return;
+        }
+
+        if (accessToken.isExpired() == true) {
+            this.logMessage("is expired");
+
+            this.pythonCall("onFacebookLogoutError", ERROR_CODE_EXPIRED, "is expired");
+
             return;
         }
 
         this.buildEvent("mng_fb_logout")
             .log();
 
-        String token = accessToken.getToken();
-
-        new GraphRequest(accessToken, "/me/permissions/", null, HttpMethod.DELETE, graphResponse -> {
+        GraphRequest request = new GraphRequest(accessToken, "/me/permissions/", null, HttpMethod.DELETE, graphResponse -> {
             MengineFacebookPlugin.this.logMessage("GraphRequest DELETE onCompleted");
 
             LoginManager.getInstance().logOut();
 
-            MengineFacebookPlugin.this.pythonCall("onFacebookLogoutSuccess", token);
-        }).executeAsync();
+            MengineFacebookPlugin.this.pythonCall("onFacebookLogoutSuccess");
+        });
+
+        request.executeAsync();
     }
     
     public void getUser() {
@@ -387,7 +402,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         if (accessToken == null) {
             this.logWarning("is not logged in");
 
-            this.pythonCall("onFacebookUserFetchSuccess", "", "");
+            this.pythonCall("onFacebookUserFetchError", ERROR_CODE_LOGGED_OUT, "is not logged in");
 
             return;
         }
@@ -395,7 +410,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         if (accessToken.isExpired() == true) {
             this.logWarning("is expired");
 
-            this.pythonCall("onFacebookUserFetchSuccess", "", "");
+            this.pythonCall("onFacebookUserFetchError", ERROR_CODE_EXPIRED, "is expired");
 
             return;
         }
@@ -487,7 +502,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                     .addParameterString("error", error_message)
                     .log();
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookShareError", error_message);
+                MengineFacebookPlugin.this.pythonCall("onFacebookShareError", ERROR_CODE_UNKNOWN, error_message);
             }
         });
 
@@ -516,7 +531,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         if (accessToken == null) {
             this.logWarning("is not logged in");
 
-            this.pythonCall("onFacebookProfilePictureLinkGet", "", false, "");
+            this.pythonCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_LOGGED_OUT, "is not logged in");
 
             return;
         }
@@ -524,7 +539,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         if (accessToken.isExpired() == true) {
             this.logWarning("is expired");
 
-            this.pythonCall("onFacebookProfilePictureLinkGet", "", false, "");
+            this.pythonCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_EXPIRED, "is expired");
 
             return;
         }
@@ -535,16 +550,18 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
 
     protected void getProfileUserPictureLinkWithAccessToken(AccessToken accessToken, final String user_id, final String typeParameter) {
-        String graphPath = "/" + user_id + "/picture" + typeParameter;
+        String graphPath = "/" + user_id + "/picture";
 
         GraphRequest request = GraphRequest.newGraphPathRequest(accessToken, graphPath, response -> {
-            if (response.getError() != null) {
+            FacebookRequestError error = response.getError();
+
+            if (error != null) {
                 MengineFacebookPlugin.this.logError("[ERROR] profile user picture link [%s] get error: %s"
                     , graphPath
-                    , response.getError().getErrorMessage()
+                    , error.getErrorMessage()
                 );
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
+                MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_UNKNOWN, error.getErrorMessage());
 
                 return;
             }
@@ -557,7 +574,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                     , response
                 );
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
+                MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_UNKNOWN, "invalid response");
 
                 return;
             }
@@ -571,7 +588,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                     , e.getMessage()
                 );
 
-                MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, false, "");
+                MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_UNKNOWN, e.getMessage());
 
                 return;
             }
@@ -581,11 +598,12 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 , pictureURL
             );
 
-            MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGet", user_id, true, pictureURL);
+            MengineFacebookPlugin.this.pythonCall("onFacebookProfilePictureLinkGetSuccess", user_id, pictureURL);
         });
 
         Bundle parameters = new Bundle();
         parameters.putBoolean("redirect", false);
+        parameters.putString("type", typeParameter);
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -596,10 +614,10 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             , typeParameter
         );
 
-        if( user_id.isEmpty() == true ) {
+        if (user_id.isEmpty() == true) {
             this.logWarning("user_id is empty");
 
-            this.pythonCall("onFacebookProfilePictureLinkGet", "", false, "");
+            this.pythonCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_INVALID_PARAMETER, "user_id is empty");
 
             return;
         }
@@ -609,7 +627,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         if (accessToken == null) {
             this.logWarning("is not logged in");
 
-            this.pythonCall("onFacebookProfilePictureLinkGet", "", false, "");
+            this.pythonCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_LOGGED_OUT, "is not logged in");
 
             return;
         }
@@ -617,7 +635,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         if (accessToken.isExpired() == true) {
             this.logWarning("is expired");
 
-            this.pythonCall("onFacebookProfilePictureLinkGet", "", false, "");
+            this.pythonCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_EXPIRED, "is expired");
 
             return;
         }

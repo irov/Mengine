@@ -115,6 +115,48 @@ namespace Mengine
             return fp;
         }
         //////////////////////////////////////////////////////////////////////////
+        void pathCombineW( WChar * const _out, const WChar * _base, const WChar * _path )
+        {
+            size_t base_lenght = StdString::wcslen( _base );
+
+            if( base_lenght == 0 )
+            {
+                StdString::wcscpy( _out, _path );
+
+                return;
+            }
+            
+            StdString::wcscpy( _out, _base );            
+
+            if( _base[base_lenght - 1] != MENGINE_PATH_WDELIM )
+            {
+                StdString::wcscat( _out, L"/" );
+            }
+
+            StdString::wcscat( _out, _path );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pathCombineA( Char * const _out, const Char * _base, const Char * _path )
+        {
+            size_t base_lenght = StdString::strlen( _base );
+
+            if( base_lenght == 0 )
+            {
+                StdString::strcpy( _out, _path );
+
+                return;
+            }
+            
+            StdString::strcpy( _out, _base );
+
+            if( _base[base_lenght - 1] != MENGINE_PATH_WDELIM )
+            {
+                StdString::strcat( _out, "/" );
+            }
+
+            StdString::strcat( _out, _path );
+        }
+        //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashW( WChar * const _filePath )
         {
             WChar * pch = StdString::wcschr( _filePath, MENGINE_WIN32_PATH_WDELIM );

@@ -151,8 +151,7 @@ namespace Mengine
         }
 
         Char pathTestDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
-        StdString::strncpy( pathTestDirectory, _basePath, MENGINE_MAX_PATH );
-        StdString::strncat( pathTestDirectory, pathDirectory, MENGINE_MAX_PATH );
+        Helper::pathCombineA( pathTestDirectory, _basePath, pathDirectory );
 
         if( Detail::isDirectoryFullpath(pathTestDirectory) == true )
         {
@@ -162,7 +161,7 @@ namespace Mengine
         Helper::pathRemoveBackslashA( pathDirectory );
 
         uint32_t paths_count = 0;
-        Char paths[MENGINE_MAX_PATH + 1][16];
+        Char paths[16][MENGINE_MAX_PATH + 1];
 
         for( ;; )
         {
@@ -180,8 +179,7 @@ namespace Mengine
 
             Helper::pathRemoveBackslashA( pathDirectory );
 
-            StdString::strncpy( pathTestDirectory, _basePath, MENGINE_MAX_PATH );
-            StdString::strncat( pathTestDirectory, pathDirectory, MENGINE_MAX_PATH );
+            Helper::pathCombineA( pathTestDirectory, _basePath, pathDirectory );
 
             if( Detail::isDirectoryFullpath(pathTestDirectory) == true )
             {
@@ -194,8 +192,7 @@ namespace Mengine
             const Char * path = paths[index - 1];
 
             Char pathCreateDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
-            StdString::strncpy( pathCreateDirectory, _basePath, MENGINE_MAX_PATH );
-            StdString::strncat( pathCreateDirectory, path, MENGINE_MAX_PATH );
+            Helper::pathCombineA( pathCreateDirectory, _basePath, path );
 
             if( Detail::createDirectoryFullpath(pathCreateDirectory) == false )
             {
@@ -290,9 +287,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint64_t AndroidFileSystem::getFileTime( const Char * _filePath ) const
     {
-        MENGINE_UNUSED( _filePath );
+        struct stat fs;
+        if( stat( _filePath, &fs ) != 0 )
+        {
+            return 0U;
+        }
 
-        return 0U;
+        return fs.st_mtime;
     }
     //////////////////////////////////////////////////////////////////////////
 }

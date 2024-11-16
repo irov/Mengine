@@ -188,8 +188,7 @@ namespace Mengine
             }
 
             WChar pathFull[MENGINE_MAX_PATH + 1] = {'\0'};
-            StdString::wcsncpy( pathFull, _basePath, MENGINE_MAX_PATH );
-            StdString::wcsncat( pathFull, pathDirectory, MENGINE_MAX_PATH );
+            ::PathCombineW( pathFull, _basePath, pathDirectory );
 
             if( pathFull[len - 1] == L':' )
             {
@@ -231,8 +230,7 @@ namespace Mengine
             }
 
             WChar pathTestDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
-            StdString::wcsncpy( pathTestDirectory, _basePath, MENGINE_MAX_PATH );
-            StdString::wcsncat( pathTestDirectory, pathDirectory, MENGINE_MAX_PATH );
+            ::PathCombineW( pathTestDirectory, _basePath, pathDirectory );
 
             if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
             {
@@ -242,7 +240,7 @@ namespace Mengine
             Helper::pathRemoveBackslashW( pathDirectory );
 
             uint32_t paths_count = 0;
-            WChar paths[MENGINE_MAX_PATH + 1][16];
+            WChar paths[16][MENGINE_MAX_PATH + 1];
 
             for( ;; )
             {
@@ -255,8 +253,7 @@ namespace Mengine
 
                 Helper::pathRemoveBackslashW( pathDirectory );
 
-                StdString::wcsncpy( pathTestDirectory, _basePath, MENGINE_MAX_PATH );
-                StdString::wcsncat( pathTestDirectory, pathDirectory, MENGINE_MAX_PATH );
+                ::PathCombineW( pathTestDirectory, _basePath, pathDirectory );
 
                 if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
                 {
@@ -269,8 +266,7 @@ namespace Mengine
                 const WChar * path = paths[index - 1];
 
                 WChar pathCreateDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
-                StdString::wcsncpy( pathCreateDirectory, _basePath, MENGINE_MAX_PATH );
-                StdString::wcsncat( pathCreateDirectory, path, MENGINE_MAX_PATH );
+                ::PathCombineW( pathCreateDirectory, _basePath, path );
 
                 BOOL successful = ::CreateDirectory( pathCreateDirectory, NULL );
 

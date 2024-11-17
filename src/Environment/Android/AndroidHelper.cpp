@@ -10,6 +10,7 @@
 #include "Kernel/StringCopy.h"
 #include "Kernel/StringSlice.h"
 #include "Kernel/Logger.h"
+#include "Kernel/PathHelper.h"
 
 #include "Config/StdIntTypes.h"
 #include "Config/StdString.h"
@@ -677,11 +678,18 @@ namespace Mengine
 
             _jenv->DeleteLocalRef( filesDir );
 
+            if( canonicalPath == nullptr )
+            {
+                return false;
+            }
+
             const Char * canonicalPath_str = _jenv->GetStringUTFChars( canonicalPath, NULL );
             StdString::strcpy( _path, canonicalPath_str );
             _jenv->ReleaseStringUTFChars( canonicalPath, canonicalPath_str );
 
             _jenv->DeleteLocalRef( canonicalPath );
+
+            Helper::pathCorrectFolderPathA( _path, MENGINE_PATH_DELIM_BACKSLASH );
 
             return true;
         }

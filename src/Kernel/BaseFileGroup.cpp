@@ -61,7 +61,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseFileGroup::setRelationPath( const FilePath & _relationPath )
     {
-        MENGINE_ASSERTION_FATAL( Helper::isCorrectPathFolder( _relationPath ) == true, "file group '%s' relation path '%s' invalid correct"
+        MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( _relationPath.c_str() ) == true, "file group '%s' relation path '%s' invalid correct"
             , this->getName().c_str()
             , _relationPath.c_str()
         );
@@ -76,7 +76,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseFileGroup::setFolderPath( const FilePath & _folderPath )
     {
-        MENGINE_ASSERTION_FATAL( Helper::isCorrectPathFolder( _folderPath ) == true, "file group '%s' folder path '%s' invalid correct"
+        MENGINE_ASSERTION_FATAL( this->isPacked() == true || Helper::isCorrectFolderPathA( _folderPath.c_str() ) == true, "file group '%s' folder path '%s' invalid correct"
             , this->getName().c_str()
             , _folderPath.c_str()
         );

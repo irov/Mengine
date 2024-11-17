@@ -52,7 +52,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceConvertPlugin::_initializePlugin()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_INITIALIZE, &ResourceConvertPlugin::convertResource_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_INITIALIZE, &ResourceConvertPlugin::notifyDevelopmentResourceInitialize_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -64,7 +64,7 @@ namespace Mengine
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Converter" ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceConvertPlugin::convertResource_( Resource * _resource )
+    void ResourceConvertPlugin::notifyDevelopmentResourceInitialize_( Resource * _resource )
     {
         const ContentInterfacePtr & content = _resource->getContent();
 

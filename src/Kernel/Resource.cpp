@@ -10,6 +10,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionReferenceCount.h"
 #include "Kernel/ContentHelper.h"
+#include "Kernel/BuildMode.h"
 
 namespace Mengine
 {
@@ -117,7 +118,7 @@ namespace Mengine
         }
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
-        if( m_ignored == false )
+        if( m_ignored == false && Helper::isDevelopmentMode() == true )
         {
             if( NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_INITIALIZE, this ) == false )
             {
@@ -196,7 +197,10 @@ namespace Mengine
         }
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
+        if( Helper::isDevelopmentMode() == true )
+        {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, this );
+        }
 #endif
 
         return true;
@@ -224,7 +228,10 @@ namespace Mengine
         Compilable::release();
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
-        NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, this );
+        if( Helper::isDevelopmentMode() == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, this );
+        }
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

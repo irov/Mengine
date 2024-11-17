@@ -492,8 +492,7 @@ namespace Mengine
 
         if( ExtraPreferencesFolderNameLen != 0 )
         {
-            StdString::strcat( _userPath, extraPreferencesFolderName );
-            StdString::strchrcat( _userPath, MENGINE_PATH_DELIM_BACKSLASH );
+            Helper::pathAppendA( _userPath, extraPreferencesFolderName, MENGINE_PATH_DELIM_BACKSLASH );
         }
 
         size_t userPathLen = StdString::strlen( _userPath );
@@ -504,6 +503,10 @@ namespace Mengine
     size_t AndroidPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
         const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE( "Project", "ExtraPreferencesFolderName", "" );
+
+        MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( Project_ExtraPreferencesFolderName ) == true, "invalid extra preferences folder name '%s'"
+            , Project_ExtraPreferencesFolderName
+        );
 
         StdString::strcpy( _folderName, Project_ExtraPreferencesFolderName );
         

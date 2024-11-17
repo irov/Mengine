@@ -56,7 +56,7 @@ namespace Mengine
             return fp;
         }
         //////////////////////////////////////////////////////////////////////////
-        FilePath getPathFolder( const FilePath & _fullpath )
+        FilePath getFolderPath( const FilePath & _fullpath )
         {
             const Char * str_fullpath = _fullpath.c_str();
 
@@ -115,18 +115,36 @@ namespace Mengine
             return fp;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool isCorrectPathFolder( const FilePath & _path )
+        bool isCorrectFolderPathW( const WChar * _path )
         {
-            FilePath::size_type path_size = _path.size();
+            size_t path_size = StdString::wcslen( _path );
 
             if( path_size == 0 )
             {
                 return true;
             }
 
-            const Char * path_str = _path.c_str();
+            WChar delim = _path[path_size - 1];
 
-            FilePath::value_type delim = path_str[path_size - 1];
+            if( delim == MENGINE_PATH_WDELIM_FORWARDSLASH ||
+                delim == MENGINE_PATH_WDELIM_BACKSLASH )
+            {
+                return true;
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool isCorrectFolderPathA( const Char * _path )
+        {
+            size_t path_size = StdString::strlen( _path );
+
+            if( path_size == 0 )
+            {
+                return true;
+            }
+
+            Char delim = _path[path_size - 1];
 
             if( delim == MENGINE_PATH_DELIM_FORWARDSLASH ||
                 delim == MENGINE_PATH_DELIM_BACKSLASH )
@@ -215,6 +233,44 @@ namespace Mengine
             }
 
             StdString::strcat( _base, _path );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pathCorrectFolderPathW( WChar * const _folderPath, WChar _delim )
+        {
+            size_t len = StdString::wcslen( _folderPath );
+
+            if( len == 0 )
+            {
+                return;
+            }
+
+            WChar * pch = _folderPath + len - 1;
+
+            if( *pch == _delim )
+            {
+                return;
+            }
+
+            StdString::wcsnchrcat( _folderPath, _delim, MENGINE_MAX_PATH );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pathCorrectFolderPathA( Char * const _folderPath, Char _delim )
+        {
+            size_t len = StdString::strlen( _folderPath );
+
+            if( len == 0 )
+            {
+                return;
+            }
+
+            Char * pch = _folderPath + len - 1;
+
+            if( *pch == _delim )
+            {
+                return;
+            }
+
+            StdString::strnchrcat( _folderPath, _delim, MENGINE_MAX_PATH );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashW( WChar * const _filePath )

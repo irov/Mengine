@@ -3237,6 +3237,10 @@ namespace Mengine
     {
         const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE( "Project", "ExtraPreferencesFolderName", "" );
 
+        MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( Project_ExtraPreferencesFolderName ) == true, "invalid extra preferences folder name '%s'"
+            , Project_ExtraPreferencesFolderName
+        );
+
         StdString::strcpy( _folderName, Project_ExtraPreferencesFolderName );
 
         size_t Project_ExtraPreferencesFolderNameLen = StdString::strlen( Project_ExtraPreferencesFolderName );

@@ -109,17 +109,17 @@ namespace Mengine
     {
 #if defined(MENGINE_PLATFORM_WINDOWS)
         WChar unicode_currentPath[MENGINE_MAX_PATH + 1] = {L'\0'};
-        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH - 2, unicode_currentPath );
+        DWORD unicode_currentPathLen = ::GetCurrentDirectory( MENGINE_MAX_PATH - 2, unicode_currentPath );
 
-        if( len == 0 )
+        if( unicode_currentPathLen == 0 )
         {
             StdString::strcpy( _currentPath, "" );
 
             return 0;
         }
 
-        unicode_currentPath[len] = MENGINE_PATH_WDELIM_FORWARDSLASH;
-        unicode_currentPath[len + 1] = L'\0';
+        ::PathRemoveBackslashW( unicode_currentPath );
+        ::PathAddBackslashW( unicode_currentPath );
 
         Helper::pathCorrectBackslashW( unicode_currentPath );
 
@@ -201,8 +201,7 @@ namespace Mengine
 
         if( ExtraPreferencesFolderNameLen != 0 )
         {
-            StdString::strcat( _userPath, extraPreferencesFolderName );
-            StdString::strchrcat( _userPath, MENGINE_PATH_DELIM_BACKSLASH );
+            Helper::pathAppendA( _userPath, extraPreferencesFolderName, MENGINE_PATH_DELIM_BACKSLASH );
         }
 
         size_t userPathLen = StdString::strlen( _userPath );
@@ -213,6 +212,10 @@ namespace Mengine
     size_t SDLPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
         const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE( "Project", "ExtraPreferencesFolderName", "" );
+
+        MENGINE_ASSERTION_FATAL( Helper::isCorrectPathFolderA( Project_ExtraPreferencesFolderName ) == true, "invalid extra preferences folder name '%s'"
+            , Project_ExtraPreferencesFolderName
+        );
 
         StdString::strcpy( _folderName, Project_ExtraPreferencesFolderName );
         

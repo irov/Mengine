@@ -20,6 +20,6 @@ namespace Mengine
         void _finalizePlugin() override;
 
     protected:
-        void convertResource_( Resource * _resource );
+        void notifyDevelopmentResourceInitialize_( Resource * _resource );
     };
 }

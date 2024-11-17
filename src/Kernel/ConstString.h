@@ -123,6 +123,7 @@ namespace Mengine
             return m_holder >= _right.m_holder;
         }
 
+    public:
         struct less_type
         {
             bool operator () ( const ConstString & _left, const ConstString & _right ) const noexcept

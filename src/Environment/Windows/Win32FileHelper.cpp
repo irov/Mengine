@@ -191,7 +191,9 @@ namespace Mengine
             WChar pathFull[MENGINE_MAX_PATH + 1] = {'\0'};
             ::PathCombineW( pathFull, correctBasePath, correctDirectory );
 
-            if( pathFull[correctDirectoryLen - 1] == L':' )
+            size_t pathFullLen = StdString::wcslen( pathFull );
+
+            if( pathFull[pathFullLen - 1] == L':' )
             {
                 return true;
             }
@@ -222,11 +224,6 @@ namespace Mengine
             size_t correctDirectoryLen = StdString::wcslen( correctDirectory );
 
             if( correctDirectoryLen == 0 )
-            {
-                return true;
-            }
-
-            if( StdString::wcslen( correctDirectory ) == 0 )
             {
                 return true;
             }

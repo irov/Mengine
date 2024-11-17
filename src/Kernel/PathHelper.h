@@ -11,12 +11,15 @@ namespace Mengine
     {
         bool concatenateFilePath( InitializerList<FilePath> && _paths, Char * const _concatenatePath );
         FilePath concatenateFilePath( InitializerList<FilePath> && _paths );
-        FilePath getPathFolder( const FilePath & _fullpath );
-        FilePath replaceFileSpec( const FilePath & _fullpath, const Char * _fileSpec );
-        FilePath unicodeToFilePath( const WString & _unicode );
+        FilePath getPathFolder( const FilePath & _path );
+        FilePath replaceFileSpec( const FilePath & _path, const Char * _fileSpec );
+        FilePath unicodeToFilePath( const WString & _unicode );        
+        bool isCorrectPathFolder( const FilePath & _path );
 
         void pathCombineW( WChar * const _out, const WChar * _base, const WChar * _path, WChar _delim );
         void pathCombineA( Char * const _out, const Char * _base, const Char * _path, Char _delim );
+        void pathAppendW( WChar * const _base, const WChar * _path, WChar _delim );
+        void pathAppendA( Char * const _base, const Char * _path, Char _delim );
         void pathCorrectBackslashW( WChar * const _filePath );
         void pathCorrectBackslashA( Char * const _filePath );
         void pathCorrectBackslashToW( WChar * const _out, const WChar * _filePath );

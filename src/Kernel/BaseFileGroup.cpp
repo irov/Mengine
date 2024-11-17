@@ -1,5 +1,8 @@
 #include "BaseFileGroup.h"
 
+#include "Kernel/Assertion.h"
+#include "Kernel/PathHelper.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -58,6 +61,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseFileGroup::setRelationPath( const FilePath & _relationPath )
     {
+        MENGINE_ASSERTION_FATAL( Helper::isCorrectPathFolder( _relationPath ) == true, "file group '%s' relation path '%s' invalid correct"
+            , this->getName().c_str()
+            , _relationPath.c_str()
+        );
+
         m_relationPath = _relationPath;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -68,6 +76,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseFileGroup::setFolderPath( const FilePath & _folderPath )
     {
+        MENGINE_ASSERTION_FATAL( Helper::isCorrectPathFolder( _folderPath ) == true, "file group '%s' folder path '%s' invalid correct"
+            , this->getName().c_str()
+            , _folderPath.c_str()
+        );
+
         m_folderPath = _folderPath;
     }
     //////////////////////////////////////////////////////////////////////////

@@ -81,8 +81,8 @@ namespace Mengine
         {
             const Char * str_fullpath = _fullpath.c_str();
 
-            const Char * folder_delimiter_1 = StdString::strrchr( str_fullpath, '\\' );
-            const Char * folder_delimiter_2 = StdString::strrchr( str_fullpath, '/' );
+            const Char * folder_delimiter_1 = StdString::strrchr( str_fullpath, MENGINE_PATH_DELIM_FORWARDSLASH );
+            const Char * folder_delimiter_2 = StdString::strrchr( str_fullpath, MENGINE_PATH_DELIM_BACKSLASH );
 
             const Char * folder_delimiter = (folder_delimiter_1 > folder_delimiter_2) ? folder_delimiter_1 : folder_delimiter_2;
 
@@ -113,6 +113,28 @@ namespace Mengine
             FilePath fp = Helper::stringizeFilePath( utf8 );
 
             return fp;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool isCorrectPathFolder( const FilePath & _path )
+        {
+            FilePath::size_type path_size = _path.size();
+
+            if( path_size == 0 )
+            {
+                return true;
+            }
+
+            const Char * path_str = _path.c_str();
+
+            FilePath::value_type delim = path_str[path_size - 1];
+
+            if( delim == MENGINE_PATH_DELIM_FORWARDSLASH ||
+                delim == MENGINE_PATH_DELIM_BACKSLASH )
+            {
+                return true;
+            }
+
+            return false;
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCombineW( WChar * const _out, const WChar * _base, const WChar * _path, WChar _slash )
@@ -155,6 +177,44 @@ namespace Mengine
             }
 
             StdString::strcat( _out, _path );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pathAppendW( WChar * const _base, const WChar * _path, WChar _slash )
+        {
+            size_t base_lenght = StdString::wcslen( _base );
+
+            if( base_lenght == 0 )
+            {
+                StdString::wcscpy( _base, _path );
+
+                return;
+            }
+
+            if( _base[base_lenght - 1] != _slash )
+            {
+                StdString::wcschrcat( _base, _slash );
+            }
+
+            StdString::wcscat( _base, _path );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pathAppendA( Char * const _base, const Char * _path, Char _slash )
+        {
+            size_t base_lenght = StdString::strlen( _base );
+
+            if( base_lenght == 0 )
+            {
+                StdString::strcpy( _base, _path );
+
+                return;
+            }
+
+            if( _base[base_lenght - 1] != _slash )
+            {
+                StdString::strchrcat( _base, _slash );
+            }
+
+            StdString::strcat( _base, _path );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashW( WChar * const _filePath )

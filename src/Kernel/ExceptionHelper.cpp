@@ -2,6 +2,7 @@
 
 #include "Kernel/DebugBreak.h"
 #include "Kernel/LoggerMessage.h"
+#include "Kernel/Stringalized.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdArg.h"
@@ -43,11 +44,11 @@ namespace Mengine
         StdString::strcat( exception_msg, m_file );
         StdString::strcat( exception_msg, "\n" );
 
-        Char format_line[32 + 1] = {'\0'};
-        MENGINE_SNPRINTF( format_line, 32, "%u", m_line );
+        Char lineBuffer[32 + 1] = {'\0'};
+        Helper::stringalized( m_line, lineBuffer, 32 );
 
         StdString::strcat( exception_msg, "line: " );
-        StdString::strcat( exception_msg, format_line );
+        StdString::strcat( exception_msg, lineBuffer );
         StdString::strcat( exception_msg, "\n" );
 
         Helper::debuggerBreak();

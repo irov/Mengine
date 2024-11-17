@@ -58,7 +58,7 @@ namespace Mengine
         template<>
         MENGINE_INLINE void setXmlValue<mt::vec2f>( pugi::xml_attribute & _attrib, const mt::vec2f & _value )
         {
-            std::string str = std::to_string( _value.x ) + MENGINE_PATH_DELIM + std::to_string( _value.y );
+            std::string str = std::to_string( _value.x ) + MENGINE_PATH_DELIM_BACKSLASH + std::to_string( _value.y );
 
             _attrib.set_value( str.c_str() );
         }
@@ -66,7 +66,7 @@ namespace Mengine
         template<>
         MENGINE_INLINE void setXmlValue<mt::vec3f>( pugi::xml_attribute & _attrib, const mt::vec3f & _value )
         {
-            std::string str = std::to_string( _value.x ) + MENGINE_PATH_DELIM + std::to_string( _value.y ) + MENGINE_PATH_DELIM + std::to_string( _value.z );
+            std::string str = std::to_string( _value.x ) + MENGINE_PATH_DELIM_BACKSLASH + std::to_string( _value.y ) + MENGINE_PATH_DELIM_BACKSLASH + std::to_string( _value.z );
 
             _attrib.set_value( str.c_str() );
         }
@@ -75,10 +75,10 @@ namespace Mengine
         MENGINE_INLINE void setXmlValue<mt::uv4f>( pugi::xml_attribute & _attrib, const mt::uv4f & _value )
         {
             std::string str 
-                = std::to_string( _value.p0.x ) + MENGINE_PATH_DELIM + std::to_string( _value.p0.y ) + MENGINE_PATH_DELIM
-                + std::to_string( _value.p1.x ) + MENGINE_PATH_DELIM + std::to_string( _value.p1.y ) + MENGINE_PATH_DELIM
-                + std::to_string( _value.p2.x ) + MENGINE_PATH_DELIM + std::to_string( _value.p2.y ) + MENGINE_PATH_DELIM
-                + std::to_string( _value.p3.x ) + MENGINE_PATH_DELIM + std::to_string( _value.p3.y );
+                = std::to_string( _value.p0.x ) + MENGINE_PATH_DELIM_BACKSLASH + std::to_string( _value.p0.y ) + MENGINE_PATH_DELIM_BACKSLASH
+                + std::to_string( _value.p1.x ) + MENGINE_PATH_DELIM_BACKSLASH + std::to_string( _value.p1.y ) + MENGINE_PATH_DELIM_BACKSLASH
+                + std::to_string( _value.p2.x ) + MENGINE_PATH_DELIM_BACKSLASH + std::to_string( _value.p2.y ) + MENGINE_PATH_DELIM_BACKSLASH
+                + std::to_string( _value.p3.x ) + MENGINE_PATH_DELIM_BACKSLASH + std::to_string( _value.p3.y );
 
             _attrib.set_value( str.c_str() );
         }
@@ -146,7 +146,7 @@ namespace Mengine
             std::string::size_type lastPos = 0;
             for( size_t i = 0; i < _numFloats; ++i )
             {
-                std::string::size_type endPos = strValue.find( MENGINE_PATH_DELIM, lastPos );
+                std::string::size_type endPos = strValue.find( MENGINE_PATH_DELIM_BACKSLASH, lastPos );
                 if( endPos == std::string::npos )
                 {
                     endPos = strValue.length();

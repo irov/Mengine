@@ -2071,7 +2071,7 @@ namespace Mengine
             uint32_t uid = 0;
             while( *ptr )
             {
-                if( *ptr == MENGINE_PATH_DELIM )
+                if( *ptr == MENGINE_PATH_DELIM_BACKSLASH )
                 {
                     _path->push_back( uid );
                     uid = 0;

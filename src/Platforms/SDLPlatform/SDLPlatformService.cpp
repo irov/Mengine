@@ -108,8 +108,8 @@ namespace Mengine
     size_t SDLPlatformService::getCurrentPath( Char * const _currentPath ) const
     {
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
-        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH - 2, unicode_path );
+        WChar unicode_currentPath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH - 2, unicode_currentPath );
 
         if( len == 0 )
         {
@@ -118,13 +118,13 @@ namespace Mengine
             return 0;
         }
 
-        unicode_path[len] = MENGINE_PATH_WDELIM;
-        unicode_path[len + 1] = L'\0';
+        unicode_currentPath[len] = MENGINE_PATH_WDELIM_FORWARDSLASH;
+        unicode_currentPath[len + 1] = L'\0';
 
-        Helper::pathCorrectBackslashToW( unicode_path, unicode_path );
+        Helper::pathCorrectBackslashW( unicode_currentPath );
 
         size_t pathLen;
-        if( Helper::unicodeToUtf8( unicode_path, _currentPath, MENGINE_MAX_PATH, &pathLen ) == false )
+        if( Helper::unicodeToUtf8( unicode_currentPath, _currentPath, MENGINE_MAX_PATH, &pathLen ) == false )
         {
             StdString::strcpy( _currentPath, "" );
 
@@ -168,7 +168,7 @@ namespace Mengine
 
             StdString::strcpy( _userPath, currentPath );
             StdString::strcat( _userPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
-            StdString::strcat( _userPath, "/" );
+            StdString::strchrcat( _userPath, MENGINE_PATH_DELIM_BACKSLASH );
 
             size_t pathLen = StdString::strlen( _userPath );
 
@@ -202,7 +202,7 @@ namespace Mengine
         if( ExtraPreferencesFolderNameLen != 0 )
         {
             StdString::strcat( _userPath, extraPreferencesFolderName );
-            StdString::strcat( _userPath, "/" );
+            StdString::strchrcat( _userPath, MENGINE_PATH_DELIM_BACKSLASH );
         }
 
         size_t userPathLen = StdString::strlen( _userPath );

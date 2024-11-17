@@ -4,6 +4,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/SHA1.h"
+#include "Kernel/Stringalized.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -209,7 +210,7 @@ namespace Mengine
             );
 
             Char VolumeSerialNumberBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
-            MENGINE_SNPRINTF( VolumeSerialNumberBuffer, MENGINE_MAX_PATH, "%u", VolumeSerialNumber );
+            Helper::stringalized( (uint32_t)VolumeSerialNumber, VolumeSerialNumberBuffer, MENGINE_MAX_PATH );
 
             fingerprintGarbage.append( "_" );
             fingerprintGarbage.append( VolumeSerialNumberBuffer );

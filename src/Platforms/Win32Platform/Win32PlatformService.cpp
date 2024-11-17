@@ -2433,7 +2433,7 @@ namespace Mengine
 
         PathString icoFile;
         icoFile += MENGINE_WINDOW_ICON_CACHE;
-        icoFile += "/";
+        icoFile += MENGINE_PATH_DELIM_BACKSLASH;
         icoFile += _filePath;
         icoFile += ".ico";
 
@@ -2731,13 +2731,13 @@ namespace Mengine
     bool Win32PlatformService::createDirectoryUser_( const WChar * _userPath, const WChar * _directoryPath, const WChar * _file, const void * _data, size_t _size )
     {
         WChar szPath[MENGINE_MAX_PATH + 1] = {L'\0'};
-        Helper::pathCorrectBackslashToW( szPath, _userPath );
+        Helper::pathCorrectForwardslashToW( szPath, _userPath );
 
         WChar pathCorrect[MENGINE_MAX_PATH + 1] = {L'\0'};
-        Helper::pathCorrectBackslashToW( pathCorrect, _directoryPath );
+        Helper::pathCorrectForwardslashToW( pathCorrect, _directoryPath );
 
         WChar fileCorrect[MENGINE_MAX_PATH + 1] = {L'\0'};
-        Helper::pathCorrectBackslashToW( fileCorrect, _file );
+        Helper::pathCorrectForwardslashToW( fileCorrect, _file );
 
         StdString::wcscat( szPath, pathCorrect );
 
@@ -2806,7 +2806,7 @@ namespace Mengine
 
         ::PathAddBackslashW( _path );
 
-        Helper::pathCorrectBackslashW( _path );
+        Helper::pathCorrectForwardslashW( _path );
 
         return true;
     }
@@ -2841,15 +2841,15 @@ namespace Mengine
             return false;
         }
 
-        WChar unicode_directoryPath_correct[MENGINE_MAX_PATH + 1] = {L'\0'};
-        Helper::pathCorrectBackslashToW( unicode_directoryPath_correct, unicode_directoryPath );
+        WChar unicode_correctDirectoryPath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Helper::pathCorrectForwardslashToW( unicode_correctDirectoryPath, unicode_directoryPath );
 
-        StdString::wcscat( szPath, unicode_directoryPath_correct );
+        StdString::wcscat( szPath, unicode_correctDirectoryPath );
 
-        WChar unicode_filePath_correct[MENGINE_MAX_PATH + 1] = {L'\0'};
-        Helper::pathCorrectBackslashToW( unicode_filePath_correct, unicode_filePath );
+        WChar unicode_correctFilePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Helper::pathCorrectForwardslashToW( unicode_correctFilePath, unicode_filePath );
 
-        StdString::wcscat( szPath, unicode_filePath_correct );
+        StdString::wcscat( szPath, unicode_correctFilePath );
 
         if( Helper::Win32ExistFile( szPath ) == false )
         {
@@ -3066,10 +3066,10 @@ namespace Mengine
             return option_workdir_len;
         }
 
-        WChar currentPath[MENGINE_MAX_PATH + 1] = {L'\0'};
-        DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
+        WChar currentDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
+        DWORD currentDirectoryLen = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentDirectory );
 
-        if( len == 0 )
+        if( currentDirectoryLen == 0 )
         {
             LOGGER_ERROR( "GetCurrentDirectory invalid %ls"
                 , Helper::Win32GetLastErrorMessageW()
@@ -3080,20 +3080,20 @@ namespace Mengine
             return 0;
         }
 
-        Helper::pathCorrectBackslashW( currentPath );
+        ::PathRemoveBackslashW( currentDirectory );
+        ::PathAddBackslashW( currentDirectory );
 
-        currentPath[len] = MENGINE_PATH_WDELIM;
-        currentPath[len + 1] = L'\0';
+        Helper::pathCorrectBackslashW( currentDirectory );
 
-        size_t path_len;
-        if( Helper::unicodeToUtf8( currentPath, _currentPath, MENGINE_MAX_PATH, &path_len ) == false )
+        size_t currentPathLen;
+        if( Helper::unicodeToUtf8( currentDirectory, _currentPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
         {
             _currentPath[0] = '\0';
 
             return 0;
         }
 
-        return path_len;
+        return currentPathLen;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32PlatformService::getUserPath( Char * const _userPath ) const
@@ -3104,22 +3104,20 @@ namespace Mengine
 
         if( (developmentMode == true && OPTION_roamingMode == false) || OPTION_noroamingMode == true )
         {
-            WChar currentPath[MENGINE_MAX_PATH + 1] = {L'\0'};
-            DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
+            WChar currentDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
+            DWORD currentDirectoryLen = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentDirectory );
 
-            if( len == 0 )
+            if( currentDirectoryLen == 0 )
             {
                 LOGGER_ERROR( "failed to get current directory" );
 
                 return 0;
             }
 
-            Helper::pathCorrectBackslashW( currentPath );
+            ::PathRemoveBackslashW( currentDirectory );
+            ::PathAddBackslashW( currentDirectory );
 
-            ::PathRemoveBackslashW( currentPath );
-            ::PathAddBackslashW( currentPath );
-
-            StdString::wcscat( currentPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
+            StdString::wcscat( currentDirectory, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
 
             uint32_t Engine_BotId = CONFIG_VALUE( "Engine", "BotId", ~0U );
 
@@ -3127,25 +3125,27 @@ namespace Mengine
             {
                 uint32_t botId = GET_OPTION_VALUE_UINT32( "bot", Engine_BotId );
 
-                WChar botId_suffix[16];
-                MENGINE_SWPRINTF( botId_suffix, 16, L"%u", botId );
+                WChar suffixBuffer[16];
+                Helper::stringalized( botId, suffixBuffer, 32 );
 
-                StdString::wcscat( currentPath, botId_suffix );
+                StdString::wcscat( currentDirectory, suffixBuffer );
             }
 
-            ::PathAddBackslashW( currentPath );
+            ::PathAddBackslashW( currentDirectory );
 
-            size_t currentPathLen;
-            if( Helper::unicodeToUtf8( currentPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
+            Helper::pathCorrectBackslashW( currentDirectory );
+
+            size_t userPathLen;
+            if( Helper::unicodeToUtf8( currentDirectory, _userPath, MENGINE_MAX_PATH, &userPathLen ) == false )
             {
                 LOGGER_ERROR( "invalid convert path from unicode to utf8 '%ls'"
-                    , currentPath
+                    , currentDirectory
                 );
 
                 return 0;
             }
 
-            return currentPathLen;
+            return userPathLen;
         }
 
         LPITEMIDLIST itemIDList;
@@ -3702,7 +3702,6 @@ namespace Mengine
             return false;
         }
 
-        Helper::pathCorrectBackslashW( winDir );
         ::PathRemoveBackslashW( winDir );
         ::PathAddBackslashW( winDir );
 

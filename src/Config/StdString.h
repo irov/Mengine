@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config/Config.h"
+#include "Config/Char.h"
 
 #include <cstring>
 #include <cwchar>
@@ -11,24 +11,73 @@ namespace Mengine
     {
         using std::strlen;
         using std::strcmp;
+        using std::strncmp;
         using std::strcpy;
         using std::strncpy;
         using std::strcat;
         using std::strncat;
         using std::strchr;
         using std::strrchr;
-        using std::strncmp;
         using std::strstr;
 
         using std::wcslen;
         using std::wcscmp;
-        using std::wcschr;
+        using std::wcsncmp;
         using std::wcscpy;
         using std::wcsncpy;
         using std::wcscat;
         using std::wcsncat;
+        using std::wcschr;
         using std::wcsrchr;
-        using std::wcsncmp;
+        using std::wcsstr;
+
+        MENGINE_INLINE Char * strchrcat( Char * const _out, Char _ch )
+        {
+            size_t len = StdString::strlen( _out );
+            _out[len] = _ch;
+            _out[len + 1] = '\0';
+
+            return _out;
+        }
+
+        MENGINE_INLINE WChar * wcschrcat( WChar * const _out, WChar _ch )
+        {
+            size_t len = StdString::wcslen( _out );
+            _out[len] = _ch;
+            _out[len + 1] = L'\0';
+
+            return _out;
+        }
+
+        MENGINE_INLINE Char * strnchrcat( Char * const _out, Char _ch, size_t _count )
+        {
+            size_t len = StdString::strlen( _out );
+
+            if( len + 1 >= _count )
+            {
+                return _out;
+            }
+
+            _out[len] = _ch;
+            _out[len + 1] = '\0';
+
+            return _out;
+        }
+
+        MENGINE_INLINE WChar * wcsnchrcat( WChar * const _out, WChar _ch, size_t _count )
+        {
+            size_t len = StdString::wcslen( _out );
+
+            if( len + 1 >= _count )
+            {
+                return _out;
+            }
+
+            _out[len] = _ch;
+            _out[len + 1] = L'\0';
+
+            return _out;
+        }
 
         using std::memcpy;
         using std::memset;

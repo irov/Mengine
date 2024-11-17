@@ -40,7 +40,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool isDirectoryFullpath(const Char * _fullpath )
+        static bool isDirectoryFullpath( const Char * _fullpath )
         {
             struct stat sb;
             int err = ::stat( _fullpath, &sb );
@@ -58,7 +58,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool isFileFullpath(const Char * _fullpath )
+        static bool isFileFullpath( const Char * _fullpath )
         {
             struct stat sb;
             int err = ::stat( _fullpath, &sb );
@@ -105,83 +105,83 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileSystem::existDirectory( const Char * _basePath, const Char * _directory ) const
     {
-        Char pathDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
-        Helper::pathCorrectBackslashToA( pathDirectory, _directory );
+        Char correctBasePath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Helper::pathCorrectBackslashToA( correctBasePath, _basePath );
 
-        Helper::pathRemoveFileSpecA( pathDirectory );
+        Char correctDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
+        Helper::pathCorrectBackslashToA( correctDirectory, _directory );
 
-        size_t len = StdString::strlen( pathDirectory );
+        Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
-        if( len == 0 )	// current dir
+        size_t correctDirectoryLen = StdString::strlen( correctDirectory );
+
+        if( correctDirectoryLen == 0 )
+        {
+            return true;
+        }
+
+        if( correctDirectory[correctDirectoryLen - 1] == ':' )
         {
             return true;
         }
 
         Char pathFull[MENGINE_MAX_PATH + 1] = {'\0'};
-        StdString::strncpy( pathFull, _basePath, MENGINE_MAX_PATH );
-        StdString::strncat( pathFull, pathDirectory, MENGINE_MAX_PATH );
+        Helper::pathCombineA( pathFull, correctBasePath, correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
-        if( pathFull[len - 1] == ':' )	// root dir
-        {
-            return true;	// let it be
-        }
-
-        bool exist = Detail::isDirectoryFullpath(pathFull);
+        bool exist = Detail::isDirectoryFullpath( pathFull );
 
         return exist;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileSystem::createDirectory( const Char * _basePath, const Char * _directory )
     {
-        size_t directorySize = StdString::strlen( _directory );
+        Char correctBasePath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Helper::pathCorrectBackslashToA( correctBasePath, _basePath );
 
-        if( directorySize == 0 )
+        Char correctDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
+        Helper::pathCorrectBackslashToA( correctDirectory, _directory );
+
+        size_t correctDirectoryLen = StdString::strlen( correctDirectory );
+
+        if( correctDirectoryLen == 0 )
         {
             return true;
         }
 
-        Char pathDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
-        Helper::pathCorrectBackslashToA( pathDirectory, _directory );
+        Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
-        Helper::pathRemoveFileSpecA( pathDirectory );
-
-        if( StdString::strlen( pathDirectory ) == 0 )
+        if( StdString::strlen( correctDirectory ) == 0 )
         {
             return true;
         }
 
         Char pathTestDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
-        Helper::pathCombineA( pathTestDirectory, _basePath, pathDirectory );
+        Helper::pathCombineA( pathTestDirectory, correctBasePath, correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
-        if( Detail::isDirectoryFullpath(pathTestDirectory) == true )
+        if( Detail::isDirectoryFullpath( pathTestDirectory ) == true )
         {
             return true;
         }
 
-        Helper::pathRemoveBackslashA( pathDirectory );
+        Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
         uint32_t paths_count = 0;
         Char paths[16][MENGINE_MAX_PATH + 1];
 
         for( ;; )
         {
-            StdString::strncpy( paths[paths_count++], pathDirectory, MENGINE_MAX_PATH );
+            StdString::strncpy( paths[paths_count++], correctDirectory, MENGINE_MAX_PATH );
 
-            if( Helper::pathRemoveFileSpecA( pathDirectory ) == false )
+            if( Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH ) == false )
             {
                 break;
             }
 
-            if( StdString::strlen( _basePath ) == 0 )
-            {
-                break;
-            }
+            Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
-            Helper::pathRemoveBackslashA( pathDirectory );
+            Helper::pathCombineA( pathTestDirectory, correctBasePath, correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
-            Helper::pathCombineA( pathTestDirectory, _basePath, pathDirectory );
-
-            if( Detail::isDirectoryFullpath(pathTestDirectory) == true )
+            if( Detail::isDirectoryFullpath( pathTestDirectory ) == true )
             {
                 break;
             }
@@ -192,9 +192,9 @@ namespace Mengine
             const Char * path = paths[index - 1];
 
             Char pathCreateDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
-            Helper::pathCombineA( pathCreateDirectory, _basePath, path );
+            Helper::pathCombineA( pathCreateDirectory, correctBasePath, path, MENGINE_PATH_DELIM_BACKSLASH );
 
-            if( Detail::createDirectoryFullpath(pathCreateDirectory) == false )
+            if( Detail::createDirectoryFullpath( pathCreateDirectory ) == false )
             {
                 return false;
             }
@@ -208,7 +208,7 @@ namespace Mengine
         Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
-        bool exist = Detail::isFileFullpath(pathCorrect);
+        bool exist = Detail::isFileFullpath( pathCorrect );
 
         return exist;
     }
@@ -280,7 +280,7 @@ namespace Mengine
         MENGINE_UNUSED( _mask );
         MENGINE_UNUSED( _lambda );
 
-        LOGGER_WARNING("AndroidPlatformService::findFiles not support");
+        LOGGER_WARNING( "AndroidPlatformService::findFiles not support" );
 
         return false;
     }

@@ -493,7 +493,7 @@ namespace Mengine
         if( ExtraPreferencesFolderNameLen != 0 )
         {
             StdString::strcat( _userPath, extraPreferencesFolderName );
-            StdString::strcat( _userPath, "/" );
+            StdString::strchrcat( _userPath, MENGINE_PATH_DELIM_BACKSLASH );
         }
 
         size_t userPathLen = StdString::strlen( _userPath );

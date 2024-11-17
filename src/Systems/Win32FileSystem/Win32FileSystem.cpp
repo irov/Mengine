@@ -63,16 +63,16 @@ namespace Mengine
     bool Win32FileSystem::existDirectory( const Char * _basePath, const Char * _directory ) const
     {
         MENGINE_ASSERTION_FATAL( StdString::strlen( _basePath ) == 0
-            || (StdString::strrchr( _basePath, '.' ) > StdString::strrchr( _basePath, MENGINE_PATH_DELIM )
-                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_DELIM
-                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_WIN32_PATH_DELIM)
+            || (StdString::strrchr( _basePath, '.' ) > StdString::strrchr( _basePath, MENGINE_PATH_DELIM_BACKSLASH )
+                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_DELIM_BACKSLASH
+                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_DELIM_FORWARDSLASH)
             , "invalid path '%s'", _basePath
         );
 
         MENGINE_ASSERTION_FATAL( StdString::strlen( _directory ) == 0
-            || (StdString::strrchr( _directory, '.' ) > StdString::strrchr( _directory, MENGINE_PATH_DELIM )
-                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_DELIM
-                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_WIN32_PATH_DELIM)
+            || (StdString::strrchr( _directory, '.' ) > StdString::strrchr( _directory, MENGINE_PATH_DELIM_BACKSLASH )
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_DELIM_BACKSLASH
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_DELIM_FORWARDSLASH)
             , "invalid directory '%s'", _directory
         );
 
@@ -101,16 +101,16 @@ namespace Mengine
         );
 
         MENGINE_ASSERTION_FATAL( StdString::strlen( _basePath ) == 0
-            || (StdString::strrchr( _basePath, '.' ) > StdString::strrchr( _basePath, MENGINE_PATH_DELIM )
-                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_DELIM
-                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_WIN32_PATH_DELIM)
+            || (StdString::strrchr( _basePath, '.' ) > StdString::strrchr( _basePath, MENGINE_PATH_DELIM_BACKSLASH )
+                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_DELIM_BACKSLASH
+                || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_DELIM_FORWARDSLASH)
             , "invalid path '%s'", _basePath
         );
 
         MENGINE_ASSERTION_FATAL( StdString::strlen( _directory ) == 0
-            || (StdString::strrchr( _directory, '.' ) > StdString::strrchr( _directory, MENGINE_PATH_DELIM )
-                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_DELIM
-                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_WIN32_PATH_DELIM)
+            || (StdString::strrchr( _directory, '.' ) > StdString::strrchr( _directory, MENGINE_PATH_DELIM_BACKSLASH )
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_DELIM_BACKSLASH
+                || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_DELIM_FORWARDSLASH)
             , "invalid directory '%s'", _directory
         );
 
@@ -150,19 +150,19 @@ namespace Mengine
             , _filePath
         );
 
-        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
-        if( Helper::utf8ToUnicode( _filePath, unicode_path, MENGINE_MAX_PATH ) == false )
+        WChar unicode_filePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar pathCorrect[MENGINE_MAX_PATH + 1] = {L'\0'};
-        Helper::pathCorrectBackslashToW( pathCorrect, unicode_path );
+        WChar unicode_correctFilePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Helper::pathCorrectForwardslashToW( unicode_correctFilePath, unicode_filePath );
 
-        if( ::DeleteFileW( pathCorrect ) == FALSE )
+        if( ::DeleteFileW( unicode_correctFilePath ) == FALSE )
         {
             LOGGER_ERROR( "invalid DeleteFile '%ls' %ls"
-                , pathCorrect
+                , unicode_correctFilePath
                 , Helper::Win32GetLastErrorMessageW()
             );
 
@@ -185,8 +185,8 @@ namespace Mengine
             return false;
         }
 
-        WChar oldFilePathCorrect[MENGINE_MAX_PATH + 1] = {L'\0'};
-        Helper::pathCorrectBackslashToW( oldFilePathCorrect, unicode_oldFilePath );
+        WChar unicode_correctOldFilePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Helper::pathCorrectForwardslashToW( unicode_correctOldFilePath, unicode_oldFilePath );
 
         WChar unicode_newFilePath[MENGINE_MAX_PATH + 1] = {L'\0'};
         if( Helper::utf8ToUnicode( _newFilePath, unicode_newFilePath, MENGINE_MAX_PATH ) == false )
@@ -194,23 +194,23 @@ namespace Mengine
             return false;
         }
 
-        WChar newFilePathCorrect[MENGINE_MAX_PATH + 1] = {L'\0'};
-        Helper::pathCorrectBackslashToW( newFilePathCorrect, unicode_newFilePath );
+        WChar unicode_correctNewFilePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Helper::pathCorrectForwardslashToW( unicode_correctNewFilePath, unicode_newFilePath );
 
 #if defined(MENGINE_DEBUG)
-        DWORD oldFileAttributes = ::GetFileAttributesW( oldFilePathCorrect );
+        DWORD oldFileAttributes = ::GetFileAttributesW( unicode_correctOldFilePath );
 
         if( oldFileAttributes != INVALID_FILE_ATTRIBUTES && (oldFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY )
         {
             LOGGER_WARNING( "invalid move old file '%ls' it's directory"
-                , newFilePathCorrect
+                , unicode_correctNewFilePath
             );
 
             return false;
         }
 #endif
 
-        DWORD newFileAttributes = ::GetFileAttributesW( newFilePathCorrect );
+        DWORD newFileAttributes = ::GetFileAttributesW( unicode_correctNewFilePath );
 
         if( newFileAttributes != INVALID_FILE_ATTRIBUTES )
         {
@@ -218,27 +218,27 @@ namespace Mengine
             if( (newFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY )
             {
                 LOGGER_WARNING( "invalid move file '%ls' it's directory"
-                    , newFilePathCorrect
+                    , unicode_correctNewFilePath
                 );
 
                 return false;
             }
 #endif
 
-            if( ::DeleteFileW( newFilePathCorrect ) == FALSE )
+            if( ::DeleteFileW( unicode_correctNewFilePath ) == FALSE )
             {
                 LOGGER_ERROR( "invalid move file '%ls' %ls"
-                    , newFilePathCorrect
+                    , unicode_correctNewFilePath
                     , Helper::Win32GetLastErrorMessageW()
                 );
             }
         }
 
-        if( ::MoveFileW( oldFilePathCorrect, newFilePathCorrect ) == FALSE )
+        if( ::MoveFileW( unicode_correctOldFilePath, unicode_correctNewFilePath ) == FALSE )
         {
             LOGGER_ERROR( "file '%ls' move to '%ls' %ls"
-                , oldFilePathCorrect
-                , newFilePathCorrect
+                , unicode_correctOldFilePath
+                , unicode_correctNewFilePath
                 , Helper::Win32GetLastErrorMessageW()
             );
 

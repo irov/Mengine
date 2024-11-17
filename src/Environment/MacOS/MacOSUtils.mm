@@ -65,7 +65,7 @@ namespace Mengine
             const Char * path_str = [path UTF8String];
     
             MENGINE_STRCPY( _directory, path_str );
-            MENGINE_STRCAT( _directory, "/" );
+            MENGINE_STRCAT( _directory, MENGINE_PATH_DELIM_BACKSLASH );
     
             return true;
         }
@@ -89,7 +89,7 @@ namespace Mengine
             const Char * path_str = [path UTF8String];
         
             MENGINE_STRCPY( _directory, path_str );
-            MENGINE_STRCAT( _directory, "/" );
+            MENGINE_STRCAT( _directory, MENGINE_PATH_DELIM_BACKSLASH );
     
             return true;
         }

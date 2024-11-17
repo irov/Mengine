@@ -168,7 +168,7 @@ namespace Mengine
         Char pathDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathDirectory, _directory );
 
-        Helper::pathRemoveFileSpecA( pathDirectory );
+        Helper::pathRemoveFileSpecA( pathDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
         size_t len = StdString::strlen( pathDirectory );
 
@@ -208,7 +208,7 @@ namespace Mengine
         Char pathDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
         Helper::pathCorrectBackslashToA( pathDirectory, _directory );
 
-        Helper::pathRemoveFileSpecA( pathDirectory );
+        Helper::pathRemoveFileSpecA( pathDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
         if( StdString::strlen( pathDirectory ) == 0 )
         {
@@ -224,7 +224,7 @@ namespace Mengine
             return true;
         }
 
-        Helper::pathRemoveBackslashA( pathDirectory );
+        Helper::pathRemoveSlashA( pathDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
         uint32_t paths_count = 0;
         Char paths[MENGINE_MAX_PATH + 1][16];
@@ -233,7 +233,7 @@ namespace Mengine
         {
             StdString::strncpy( paths[paths_count++], pathDirectory, MENGINE_MAX_PATH );
 
-            if( Helper::pathRemoveFileSpecA( pathDirectory ) == false )
+            if( Helper::pathRemoveFileSpecA( pathDirectory, MENGINE_PATH_DELIM_BACKSLASH ) == false )
             {
                 break;
             }
@@ -243,7 +243,7 @@ namespace Mengine
                 break;
             }
 
-            Helper::pathRemoveBackslashA( pathDirectory );
+            Helper::pathRemoveSlashA( pathDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
             StdString::strncpy( pathTestDirectory, _basePath, MENGINE_MAX_PATH );
             StdString::strncat( pathTestDirectory, pathDirectory, MENGINE_MAX_PATH );

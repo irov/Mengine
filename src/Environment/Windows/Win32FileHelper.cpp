@@ -71,7 +71,7 @@ namespace Mengine
         HANDLE Win32CreateFile( const WChar * _filePath, DWORD _desiredAccess, DWORD _sharedMode, DWORD _creationDisposition )
         {
             WChar pathCorrect[MENGINE_MAX_PATH + 1] = {L'\0'};
-            Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
+            Helper::pathCorrectForwardslashToW( pathCorrect, _filePath );
 
             HANDLE handle = ::CreateFileW(
                 pathCorrect, //lpFileName
@@ -108,7 +108,7 @@ namespace Mengine
         bool Win32ValidateFile( const WChar * _filePath )
         {
             WChar pathCorrect[MENGINE_MAX_PATH + 1] = {L'\0'};
-            Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
+            Helper::pathCorrectForwardslashToW( pathCorrect, _filePath );
 
             WIN32_FIND_DATA wfd;
             HANDLE hFind = ::FindFirstFile( pathCorrect, &wfd );
@@ -143,22 +143,22 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool Win32ExistFile( const WChar * _filePath )
         {
-            WChar pathCorrect[MENGINE_MAX_PATH + 1] = {L'\0'};
-            Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
+            WChar correctFilePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+            Helper::pathCorrectForwardslashToW( correctFilePath, _filePath );
 
-            size_t len = StdString::wcslen( pathCorrect );
+            size_t len = StdString::wcslen( correctFilePath );
 
             if( len == 0 )
             {
                 return false;
             }
 
-            if( pathCorrect[len - 1] == L':' )
+            if( correctFilePath[len - 1] == L':' )
             {
                 return true;
             }
 
-            DWORD attributes = ::GetFileAttributesW( pathCorrect );
+            DWORD attributes = ::GetFileAttributesW( correctFilePath );
 
             if( attributes == INVALID_FILE_ATTRIBUTES )
             {
@@ -175,22 +175,23 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool Win32ExistDirectory( const WChar * _basePath, const WChar * _directory )
         {
-            WChar pathDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
-            Helper::pathCorrectBackslashToW( pathDirectory, _directory );
+            WChar correctBasePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+            Helper::pathCorrectForwardslashToW( correctBasePath, _basePath );
 
-            Helper::pathRemoveFileSpecW( pathDirectory );
+            WChar correctDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
+            Helper::pathCorrectForwardslashToW( correctDirectory, _directory );
 
-            size_t len = StdString::wcslen( pathDirectory );
+            size_t correctDirectoryLen = StdString::wcslen( correctDirectory );
 
-            if( len == 0 )
+            if( correctDirectoryLen == 0 )
             {
                 return true;
             }
 
             WChar pathFull[MENGINE_MAX_PATH + 1] = {'\0'};
-            ::PathCombineW( pathFull, _basePath, pathDirectory );
+            ::PathCombineW( pathFull, correctBasePath, correctDirectory );
 
-            if( pathFull[len - 1] == L':' )
+            if( pathFull[correctDirectoryLen - 1] == L':' )
             {
                 return true;
             }
@@ -212,48 +213,49 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool Win32CreateDirectory( const WChar * _basePath, const WChar * _directory )
         {
-            size_t unicode_directorySize = StdString::wcslen( _directory );
+            WChar correctBasePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+            Helper::pathCorrectForwardslashToW( correctBasePath, _basePath );
 
-            if( unicode_directorySize == 0 )
+            WChar correctDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
+            Helper::pathCorrectForwardslashToW( correctDirectory, _directory );
+
+            size_t correctDirectoryLen = StdString::wcslen( correctDirectory );
+
+            if( correctDirectoryLen == 0 )
             {
                 return true;
             }
 
-            WChar pathDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
-            Helper::pathCorrectBackslashToW( pathDirectory, _directory );
-
-            Helper::pathRemoveFileSpecW( pathDirectory );
-
-            if( StdString::wcslen( pathDirectory ) == 0 )
+            if( StdString::wcslen( correctDirectory ) == 0 )
             {
                 return true;
             }
 
             WChar pathTestDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
-            ::PathCombineW( pathTestDirectory, _basePath, pathDirectory );
+            ::PathCombineW( pathTestDirectory, correctBasePath, correctDirectory );
 
             if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
             {
                 return true;
             }
 
-            Helper::pathRemoveBackslashW( pathDirectory );
+            Helper::pathRemoveSlashW( correctDirectory, MENGINE_PATH_DELIM_FORWARDSLASH );
 
             uint32_t paths_count = 0;
             WChar paths[16][MENGINE_MAX_PATH + 1];
 
             for( ;; )
             {
-                StdString::wcsncpy( paths[paths_count++], pathDirectory, MENGINE_MAX_PATH );
+                StdString::wcsncpy( paths[paths_count++], correctDirectory, MENGINE_MAX_PATH );
 
-                if( Helper::pathRemoveFileSpecW( pathDirectory ) == false )
+                if( Helper::pathRemoveFileSpecW( correctDirectory, MENGINE_PATH_DELIM_FORWARDSLASH ) == false )
                 {
                     break;
                 }
 
-                Helper::pathRemoveBackslashW( pathDirectory );
+                Helper::pathRemoveSlashW( correctDirectory, MENGINE_PATH_DELIM_FORWARDSLASH );
 
-                ::PathCombineW( pathTestDirectory, _basePath, pathDirectory );
+                ::PathCombineW( pathTestDirectory, correctBasePath, correctDirectory );
 
                 if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
                 {
@@ -266,7 +268,7 @@ namespace Mengine
                 const WChar * path = paths[index - 1];
 
                 WChar pathCreateDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
-                ::PathCombineW( pathCreateDirectory, _basePath, path );
+                ::PathCombineW( pathCreateDirectory, correctBasePath, path );
 
                 BOOL successful = ::CreateDirectory( pathCreateDirectory, NULL );
 

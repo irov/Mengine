@@ -1,12 +1,19 @@
 #import "AppleUserDefaults.h"
 
-#if defined(MENGINE_PLATFORM_MACOS)
-#   import <AppKit/AppKit.h>
-#else
-#   import <UIKit/UIKit.h>
-#endif
-
 @implementation AppleUserDefaults
+
++ (BOOL)setStringForKey:(NSString *)key value:(NSString *)value {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if (defaults == nil) {
+        return NO;
+    }
+    
+    [defaults setObject:value forKey:key];
+    [defaults synchronize];
+    
+    return YES;
+}
 
 + (NSString *)getStringForKey:(NSString *)key defaultValue:(NSString *)defaultValue {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -19,19 +26,19 @@
         return defaultValue;
     }
     
-    NSString *value = [defaults stringForKey:key];
+    NSString * value = [defaults stringForKey:key];
     
     return value;
 }
 
-+ (BOOL)setStringForKey:(NSString *)key value:(NSString *)value {
++ (BOOL)setBooleanForKey:(NSString *)key value:(BOOL)value {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     if (defaults == nil) {
         return NO;
     }
     
-    [defaults setObject:value forKey:key];
+    [defaults setBool:value forKey:key];
     [defaults synchronize];
     
     return YES;
@@ -53,14 +60,14 @@
     return value;
 }
 
-+ (BOOL)setBooleanForKey:(NSString *)key value:(BOOL)value {
++ (BOOL)setIntegerForKey:(NSString *)key value:(NSInteger)value {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     if (defaults == nil) {
         return NO;
     }
     
-    [defaults setBool:value forKey:key];
+    [defaults setInteger:value forKey:key];
     [defaults synchronize];
     
     return YES;
@@ -80,19 +87,6 @@
     NSInteger value = [defaults integerForKey:key];
     
     return value;
-}
-
-+ (BOOL)setIntegerForKey:(NSString *)key value:(NSInteger)value {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    if (defaults == nil) {
-        return NO;
-    }
-    
-    [defaults setInteger:value forKey:key];
-    [defaults synchronize];
-    
-    return YES;
 }
 
 + (BOOL)hasKey:(NSString *)key {

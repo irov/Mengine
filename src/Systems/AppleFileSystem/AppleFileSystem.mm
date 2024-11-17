@@ -80,7 +80,8 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->getCurrentPath( utf8_currentPath );
         
-        StdString::strcat( utf8_currentPath, "Data/" );
+        StdString::strncat( utf8_currentPath, "Data", MENGINE_MAX_PATH );
+        StdString::strnchrcat( utf8_currentPath, MENGINE_PATH_DELIM_BACKSLASH, MENGINE_MAX_PATH );
         
         size_t utf8_currentPathLen = StdString::strlen( utf8_currentPath );
 
@@ -101,25 +102,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileSystem::existDirectory( const Char * _basePath, const Char * _directory ) const
     {
-        Char pathDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
-        Helper::pathCorrectBackslashToA( pathDirectory, _directory );
+        Char correctBasePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Helper::pathCorrectBackslashToA( correctBasePath, _basePath );
 
-        Helper::pathRemoveFileSpecA( pathDirectory );
+        Char correctDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Helper::pathCorrectBackslashToA( correctDirectory, _directory );
 
-        size_t len = StdString::strlen( pathDirectory );
+        size_t correctDirectoryLen = StdString::strlen( correctDirectory );
 
-        if( len == 0 )    // current dir
+        if( correctDirectoryLen == 0 )
         {
             return true;
         }
-
+        
         Char pathFull[MENGINE_MAX_PATH + 1] = {'\0'};
-        StdString::strncpy( pathFull, _basePath, MENGINE_MAX_PATH );
-        StdString::strncat( pathFull, pathDirectory, MENGINE_MAX_PATH );
+        Helper::pathCombineA( pathFull, correctBasePath, correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
-        if( pathFull[len - 1] == ':' )    // root dir
+        size_t pathFullLen = StdString::strlen( pathFull );
+        
+        if( pathFull[pathFullLen - 1] == ':' )
         {
-            return true;    // let it be
+            return true;
         }
 
         bool exist = Detail::isDirectoryFullpath( pathFull );
@@ -129,55 +132,44 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileSystem::createDirectory( const Char * _basePath, const Char * _directory )
     {
-        size_t directorySize = StdString::strlen( _directory );
+        Char correctBasePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Helper::pathCorrectBackslashToA( correctBasePath, _basePath );
 
-        if( directorySize == 0 )
+        Char correctDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Helper::pathCorrectBackslashToA( correctDirectory, _directory );
+
+        size_t correctDirectoryLen = StdString::strlen( correctDirectory );
+
+        if( correctDirectoryLen == 0 )
         {
             return true;
         }
-
-        Char pathDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
-        Helper::pathCorrectBackslashToA( pathDirectory, _directory );
-
-        Helper::pathRemoveFileSpecA( pathDirectory );
-
-        if( StdString::strlen( pathDirectory ) == 0 )
-        {
-            return true;
-        }
-
+        
         Char pathTestDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
-        StdString::strncpy( pathTestDirectory, _basePath, MENGINE_MAX_PATH );
-        StdString::strncat( pathTestDirectory, pathDirectory, MENGINE_MAX_PATH );
+        Helper::pathCombineA( pathTestDirectory, correctBasePath, correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
-        if( Detail::isDirectoryFullpath(pathTestDirectory) == true )
+        if( Detail::isDirectoryFullpath( pathTestDirectory ) == true )
         {
             return true;
         }
-
-        Helper::pathRemoveBackslashA( pathDirectory );
+        
+        Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
         uint32_t paths_count = 0;
-        Char paths[MENGINE_MAX_PATH + 1][16];
+        Char paths[16][MENGINE_MAX_PATH + 1];
 
         for( ;; )
         {
-            StdString::strncpy( paths[paths_count++], pathDirectory, MENGINE_MAX_PATH );
+            StdString::strncpy( paths[paths_count++], correctDirectory, MENGINE_MAX_PATH );
 
-            if( Helper::pathRemoveFileSpecA( pathDirectory ) == false )
+            if( Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH ) == false )
             {
                 break;
             }
 
-            if( StdString::strlen( _basePath ) == 0 )
-            {
-                break;
-            }
+            Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
-            Helper::pathRemoveBackslashA( pathDirectory );
-
-            StdString::strncpy( pathTestDirectory, _basePath, MENGINE_MAX_PATH );
-            StdString::strncat( pathTestDirectory, pathDirectory, MENGINE_MAX_PATH );
+            Helper::pathCombineA( pathTestDirectory, correctBasePath, correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
             if( Detail::isDirectoryFullpath( pathTestDirectory ) == true )
             {
@@ -190,10 +182,9 @@ namespace Mengine
             const Char * path = paths[index - 1];
 
             Char pathCreateDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
-            StdString::strncpy( pathCreateDirectory, _basePath, MENGINE_MAX_PATH );
-            StdString::strncat( pathCreateDirectory, path, MENGINE_MAX_PATH );
+            Helper::pathCombineA( pathCreateDirectory, correctBasePath, path, MENGINE_PATH_DELIM_BACKSLASH );
 
-            if( Detail::createDirectoryFullpath(pathCreateDirectory) == false )
+            if( Detail::createDirectoryFullpath( pathCreateDirectory ) == false )
             {
                 return false;
             }
@@ -287,9 +278,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint64_t AppleFileSystem::getFileTime( const Char * _filePath ) const
     {
-        MENGINE_UNUSED( _filePath );
+        Char correctFilePath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Helper::pathCorrectBackslashToA( correctFilePath, _filePath );
 
-        return 0U;
+        NSFileManager * fileManager = [NSFileManager defaultManager];
+        
+        NSDictionary<NSFileAttributeKey, id> * attributes = [fileManager attributesOfItemAtPath:@(correctFilePath) error:nil];
+
+        if (attributes == nil) {
+            return 0U;
+        }
+        
+        NSDate * modificationDate = attributes[NSFileModificationDate];
+        
+        if (modificationDate == nil) {
+            return 0U;
+        }
+        
+        NSTimeInterval time = [modificationDate timeIntervalSince1970];
+        
+        return time;
     }
     //////////////////////////////////////////////////////////////////////////
 }

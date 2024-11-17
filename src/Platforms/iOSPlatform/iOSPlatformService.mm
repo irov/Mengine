@@ -127,7 +127,7 @@ namespace Mengine
 
         NSString * userPath = [first_path stringByAppendingPathComponent:@(Project_Company)];
         userPath = [userPath stringByAppendingPathComponent:@(Project_Name)];
-
+        
         Char extraPreferencesFolderName[MENGINE_MAX_PATH + 1] = {'\0'};
         size_t ExtraPreferencesFolderNameLen = this->getExtraPreferencesFolderName( extraPreferencesFolderName );
 
@@ -154,8 +154,10 @@ namespace Mengine
         }
 
         const Char * userPathRepresentation = [userPath fileSystemRepresentation];
-
-        Helper::pathCorrectBackslashToA( _userPath, userPathRepresentation );
+        
+        StdString::strncpy( _userPath, userPathRepresentation, MENGINE_MAX_PATH );
+        Helper::pathCorrectFolderPathA( _userPath, MENGINE_PATH_DELIM_BACKSLASH );
+        Helper::pathCorrectBackslashA( _userPath );
 
         size_t userPathLen = StdString::strlen( _userPath );
 
@@ -166,7 +168,7 @@ namespace Mengine
     {
         const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE( "Project", "ExtraPreferencesFolderName", "" );
 
-        MENGINE_ASSERTION_FATAL( Helper::isCorrectPathFolderA( Project_ExtraPreferencesFolderName ) == true, "invalid extra preferences folder name '%s'"
+        MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( Project_ExtraPreferencesFolderName ) == true, "invalid extra preferences folder name '%s'"
             , Project_ExtraPreferencesFolderName
         );
 

@@ -16,6 +16,9 @@ src
 
     AppleUserDefaults.h
     AppleUserDefaults.mm
+
+    AppleKeyChain.h
+    AppleKeyChain.mm
     
     AppleAnalytics.h
     AppleAnalytics.mm

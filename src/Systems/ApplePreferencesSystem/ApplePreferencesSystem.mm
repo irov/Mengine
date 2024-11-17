@@ -31,6 +31,19 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    bool ApplePreferencesSystem::setPreferenceInteger( const Char * _key, int64_t _value )
+    {
+        NSString * apple_key = [@("mengine.") stringByAppendingString:@(_key)];
+        NSInteger apple_value = (NSInteger)_value;
+
+        if( [AppleUserDefaults setIntegerForKey:apple_key value:apple_value] == NO )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     int64_t ApplePreferencesSystem::getPreferenceInteger( const Char * _key, int64_t _default ) const
     {
         NSString * apple_key = [@("mengine.") stringByAppendingString:@(_key)];
@@ -43,12 +56,12 @@ namespace Mengine
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ApplePreferencesSystem::setPreferenceInteger( const Char * _key, int64_t _value )
+    bool ApplePreferencesSystem::setPreferenceString( const Char * _key, const Char * _value )
     {
         NSString * apple_key = [@("mengine.") stringByAppendingString:@(_key)];
-        NSInteger apple_value = (NSInteger)_value;
+        NSString * apple_value = @(_value);
 
-        if( [AppleUserDefaults setIntegerForKey:apple_key value:apple_value] == NO )
+        if( [AppleUserDefaults setStringForKey:apple_key value:apple_value] == NO )
         {
             return false;
         }
@@ -79,10 +92,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ApplePreferencesSystem::setPreferenceString( const Char * _key, const Char * _value )
+    bool ApplePreferencesSystem::setPreferenceConstString( const Char * _key, const ConstString & _value )
     {
         NSString * apple_key = [@("mengine.") stringByAppendingString:@(_key)];
-        NSString * apple_value = @(_value);
+        NSString * apple_value = @(_value.c_str());
 
         if( [AppleUserDefaults setStringForKey:apple_key value:apple_value] == NO )
         {
@@ -102,19 +115,6 @@ namespace Mengine
         ConstString value = [AppleString NSStringToConstString:apple_value];
 
         return value;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ApplePreferencesSystem::setPreferenceConstString( const Char * _key, const ConstString & _value )
-    {
-        NSString * apple_key = [@("mengine.") stringByAppendingString:@(_key)];
-        NSString * apple_value = @(_value.c_str());
-
-        if( [AppleUserDefaults setStringForKey:apple_key value:apple_value] == NO )
-        {
-            return false;
-        }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ApplePreferencesSystem::hasPreference( const Char * _key ) const

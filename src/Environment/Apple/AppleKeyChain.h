@@ -4,7 +4,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AppleUserDefaults : NSObject
+@interface AppleKeyChain : NSObject
+
++ (BOOL)setDataForKey:(NSString *)key data:(NSData *)data;
++ (NSData *)getDataForKey:(NSString *)key;
 
 + (BOOL)setStringForKey:(NSString *)key value:(NSString *)value;
 + (NSString *)getStringForKey:(NSString *)key defaultValue:(NSString *)defaultValue;

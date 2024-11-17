@@ -11,7 +11,7 @@
     MENGINE_VA_LIST_START( args, _format );
             
     [AppleLog withFormatV:_format arguments:args];
-            
+    
     MENGINE_VA_LIST_END( args );
 }
 

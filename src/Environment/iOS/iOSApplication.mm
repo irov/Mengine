@@ -80,7 +80,9 @@
         [AppleKeyChain setStringForKey:@"mengine.session_id" value:session_id];
     }
     
-    [AppleKeyChain setIntegerForKey:@"mengine.session_index" value:session_index + 1];
+    NSInteger next_session_index = session_index + 1;
+    
+    [AppleKeyChain setIntegerForKey:@"mengine.session_index" value:next_session_index];
     
     self.m_installKey = install_key;
     self.m_installTimestamp = install_timestamp;

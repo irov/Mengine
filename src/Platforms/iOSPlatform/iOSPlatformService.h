@@ -155,10 +155,8 @@ namespace Mengine
     public:
         UIWindow * getUIWindow() const override;
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
     public:
         SDL_GLContext getGLContext() const override;
-#endif
 
     public:
         UniqueId addSDLEventHandler( const LambdaSDLEventHandler & _handler ) override;
@@ -201,13 +199,9 @@ namespace Mengine
         typedef Vector<SDLEventHandlerDesc> VectorSDLEventHandlers;
         VectorSDLEventHandlers m_sdlEventHandlers;
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         SDL_GLContext m_glContext;
-#endif
 
-#if defined(MENGINE_PLATFORM_IOS)
         iOSProxyLoggerPtr m_proxyLogger;
-#endif
 
         iOSInputPtr m_sdlInput;
 

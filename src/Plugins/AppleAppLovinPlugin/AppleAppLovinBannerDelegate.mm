@@ -41,7 +41,9 @@
     adView.revenueDelegate = self;
     adView.requestDelegate = self;
     adView.adReviewDelegate = self;
-
+    
+    [adView setExtraParameterForKey: @"adaptive_banner" value: @"true"];
+    
     adView.frame = rect;
     adView.backgroundColor = UIColor.clearColor;
 
@@ -62,13 +64,21 @@
 
 - (void) dealloc {
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
-    if( self.m_amazonLoader != nil ) {
+    if (self.m_amazonLoader != nil) {
         [self.m_amazonLoader release];
         self.m_amazonLoader = nil;
     }
 #endif
     
-    self.m_adView = nil;
+    if (self.m_adView != nil) {
+        self.m_adView.delegate = nil;
+        self.m_adView.revenueDelegate = nil;
+        self.m_adView.requestDelegate = nil;
+        self.m_adView.adReviewDelegate = nil;
+        
+        [self.m_adView removeFromSuperview];
+        self.m_adView = nil;
+    }
 }
 
 - (void) show {

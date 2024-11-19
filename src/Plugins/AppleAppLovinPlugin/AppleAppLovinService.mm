@@ -69,12 +69,12 @@ namespace Mengine
         NSString * adUnitId = [AppleString NSStringFromConstString:_adUnitId];
         NSString * placement = [AppleString NSStringFromConstString:_placement];
         
-        // Banner height on iPhone and iPad is 50 and 90, respectively
-        CGFloat banner_height = (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) ? 90 : 50;
-        // Stretch to the width of the screen for banners to be fully functional
+        CGFloat banner_height = MAAdFormat.banner.adaptiveSize.height;
+        
         CGFloat screen_width = CGRectGetWidth(UIScreen.mainScreen.bounds);
         CGFloat screen_height = CGRectGetHeight(UIScreen.mainScreen.bounds);
-        CGRect bannerRect = CGRectMake(0, screen_height - banner_height, screen_width, banner_height);
+        
+        CGRect banner_rect = CGRectMake(0, screen_height - banner_height, screen_width, banner_height);
 
         NSString * amazonBannerSlotId = nil;
         
@@ -85,7 +85,7 @@ namespace Mengine
         AppleAppLovinBannerDelegate * banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:adUnitId
                                                                                                    placement:placement
                                                                                                 amazonSlotId:amazonBannerSlotId
-                                                                                                        rect:bannerRect
+                                                                                                        rect:banner_rect
                                                                                                     provider:_provider];
         
         if( banner == nil )
@@ -143,11 +143,13 @@ namespace Mengine
         
         CGRect rect = [banner getRect];
         
-        _viewport->begin.x = rect.origin.x;
-        _viewport->begin.y = rect.origin.y;
+        CGFloat screen_scale = UIScreen.mainScreen.scale;
         
-        _viewport->end.x = rect.origin.x + rect.size.width;
-        _viewport->end.y = rect.origin.y + rect.size.height;
+        _viewport->begin.x = rect.origin.x * screen_scale;
+        _viewport->begin.y = rect.origin.y * screen_scale;
+        
+        _viewport->end.x = rect.origin.x * screen_scale + rect.size.width * screen_scale;
+        _viewport->end.y = rect.origin.y * screen_scale + rect.size.height * screen_scale;
         
         return true;
     }

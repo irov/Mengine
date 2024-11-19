@@ -87,9 +87,7 @@ namespace Mengine
         , m_sleepMode( true )
         , m_desktop( false )
         , m_touchpad( false )
-#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         , m_glContext( nullptr )
-#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -451,14 +449,6 @@ namespace Mengine
                 m_touchpad = false;
 
                 m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
-
-#if defined(MENGINE_PLATFORM_WINDOWS32)
-                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
-#endif
-
-#if defined(MENGINE_PLATFORM_WINDOWS64)
-                m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
-#endif
             }
             else if( StdString::strcmp( sdlPlatform, "WinRT" ) == 0 )
             {
@@ -1644,14 +1634,10 @@ namespace Mengine
         return uiwindow;
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-    //////////////////////////////////////////////////////////////////////////
     SDL_GLContext iOSPlatformService::getGLContext() const
     {
         return m_glContext;
     }
-    //////////////////////////////////////////////////////////////////////////
-#endif
     //////////////////////////////////////////////////////////////////////////
     UniqueId iOSPlatformService::addSDLEventHandler( const LambdaSDLEventHandler & _handler )
     {
@@ -1870,13 +1856,11 @@ namespace Mengine
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
 
-#if defined( MENGINE_ENVIRONMENT_RENDER_OPENGL )
         if( m_glContext != nullptr )
         {
             SDL_GL_DeleteContext( m_glContext );
             m_glContext = nullptr;
         }
-#endif
 
         if( m_sdlWindow != nullptr )
         {

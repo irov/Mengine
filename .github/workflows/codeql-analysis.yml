@@ -15,9 +15,9 @@ on:
   push:
     branches: [ master ]
     paths:
-      - '**.cpp'
-      - '**.c'
-      - '**.h'
+      - 'src/**/**.cpp'
+      - 'src/**/**.c'
+      - 'src/**/**.h'
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ master ]

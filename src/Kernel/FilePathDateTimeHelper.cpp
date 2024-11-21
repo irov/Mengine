@@ -3,7 +3,6 @@
 #include "Interface/DateTimeSystemInterface.h"
 
 #include "Kernel/Stringstream.h"
-#include "Kernel/StringCopy.h"
 #include "Kernel/String.h"
 
 #include "Config/StdString.h"

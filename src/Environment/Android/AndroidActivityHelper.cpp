@@ -5,7 +5,6 @@
 
 #include "Kernel/Assertion.h"
 #include "Kernel/Error.h"
-#include "Kernel/StringCopy.h"
 
 #include "Config/StdArg.h"
 

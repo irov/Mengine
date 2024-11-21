@@ -7,7 +7,6 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Error.h"
-#include "Kernel/StringCopy.h"
 #include "Kernel/StringSlice.h"
 #include "Kernel/Logger.h"
 #include "Kernel/PathHelper.h"

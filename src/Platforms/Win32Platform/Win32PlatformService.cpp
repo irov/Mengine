@@ -45,7 +45,6 @@
 #include "Kernel/SHA1.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/RandomDevice.h"
-#include "Kernel/StringCopy.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/ExecutorHelper.h"

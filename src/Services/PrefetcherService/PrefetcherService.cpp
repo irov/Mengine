@@ -618,7 +618,10 @@ namespace Mengine
 
         *_prefetch = prefetcher;
 
-        receiver->release();
+        if( receiver->release() == false )
+        {
+            return true;
+        }
 
         m_prefetchReceivers.erase( fileGroup, filePath );
 

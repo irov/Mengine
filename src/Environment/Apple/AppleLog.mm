@@ -1,7 +1,5 @@
 #import "AppleLog.h"
 
-#include "Kernel/StringCopy.h"
-
 #include "Config/StdString.h"
 
 @implementation AppleLog

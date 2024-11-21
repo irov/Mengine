@@ -187,7 +187,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
 
         return builder.setContentTitle(title)
             .setContentText(content)
-            .setSmallIcon(R.drawable.mengine_local_notification_small_icon)
+            .setSmallIcon(R.mipmap.ic_notification)
             .setColor(ContextCompat.getColor(context, R.color.mengine_local_notification_color))  // <color name="mengine_local_notification_color">#422b00</color>
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setContentIntent(pendingIntent)

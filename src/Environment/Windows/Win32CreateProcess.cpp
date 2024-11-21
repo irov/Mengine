@@ -7,6 +7,7 @@
 #include "Kernel/UnicodeHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -20,7 +21,7 @@ namespace Mengine
                 , _command
             );
 
-            WChar unicode_process[MENGINE_MAX_PATH + 1] = {L'\0'};
+            WPath unicode_process = {L'\0'};
             Helper::utf8ToUnicode( _process, unicode_process, MENGINE_MAX_PATH );
 
             WChar unicode_command[MENGINE_MAX_COMMAND_LENGTH + 1] = {L'\0'};
@@ -36,10 +37,10 @@ namespace Mengine
                 sa.lpSecurityDescriptor = NULL;
                 sa.bInheritHandle = TRUE;
 
-                WChar tempPathBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
+                WPath tempPathBuffer = {L'\0'};
                 ::GetTempPathW( MENGINE_MAX_PATH, tempPathBuffer );
 
-                WChar tempFileNameBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
+                WPath tempFileNameBuffer = {L'\0'};
                 ::GetTempFileNameW( tempPathBuffer
                     , L"Process"
                     , 0

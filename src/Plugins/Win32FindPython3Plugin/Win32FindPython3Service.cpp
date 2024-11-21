@@ -48,7 +48,7 @@ namespace Mengine
         int32_t minorVersion = 0;
         int32_t majorVersion = 0;
 
-        WChar Python3PathW[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath Python3PathW = {L'\0'};
         HKEY hBases[] = {HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE};
 
         BOOL bPythonFound = FALSE;
@@ -65,7 +65,7 @@ namespace Mengine
 
             for( DWORD index = 0;; ++index )
             {
-                WChar subKeyName[MENGINE_MAX_PATH + 1] = {L'\0'};
+                WPath subKeyName = {L'\0'};
                 DWORD subKeyNameSize = sizeof( subKeyName ) / sizeof( TCHAR );
                 FILETIME lastWriteTime;
                 if( ::RegEnumKeyEx( hKey, index, subKeyName, &subKeyNameSize, NULL, NULL, NULL, &lastWriteTime ) != ERROR_SUCCESS )
@@ -73,7 +73,7 @@ namespace Mengine
                     break;
                 }
 
-                WChar KeySysVersionPath[MENGINE_MAX_PATH + 1] = {L'\0'};
+                WPath KeySysVersionPath = {L'\0'};
                 MENGINE_SWPRINTF( KeySysVersionPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s", subKeyName );
 
                 HKEY hKeySysVersion;
@@ -83,7 +83,7 @@ namespace Mengine
                 }
 
                 DWORD SysArchitectureType;
-                WChar SysArchitecture[MENGINE_MAX_PATH + 1] = {L'\0'};
+                WPath SysArchitecture = {L'\0'};
                 DWORD SysArchitectureSize = MENGINE_MAX_PATH;
                 if( ::RegQueryValueExW( hKeySysVersion, L"SysArchitecture", NULL, &SysArchitectureType, (LPBYTE)SysArchitecture, &SysArchitectureSize ) != ERROR_SUCCESS )
                 {
@@ -96,7 +96,7 @@ namespace Mengine
                 }
 
                 DWORD SysVersionType;
-                WChar SysVersion[MENGINE_MAX_PATH + 1] = {L'\0'};
+                WPath SysVersion = {L'\0'};
                 DWORD SysVersionSize = MENGINE_MAX_PATH;
                 if( ::RegQueryValueExW( hKeySysVersion, L"SysVersion", NULL, &SysVersionType, (LPBYTE)SysVersion, &SysVersionSize ) != ERROR_SUCCESS )
                 {
@@ -112,7 +112,7 @@ namespace Mengine
 
                 if( Detail::isVersionGreater( major, minor, majorVersion, minorVersion ) == true )
                 {
-                    WChar subKeyPython3InstallPath[MENGINE_MAX_PATH + 1] = {L'\0'};
+                    WPath subKeyPython3InstallPath = {L'\0'};
                     MENGINE_SWPRINTF( subKeyPython3InstallPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s\\InstallPath", subKeyName );
 
                     HKEY hInstallPathKey;
@@ -126,7 +126,7 @@ namespace Mengine
                         return false;
                     }
 
-                    WChar subKeyPython3PythonPath[MENGINE_MAX_PATH + 1] = {L'\0'};
+                    WPath subKeyPython3PythonPath = {L'\0'};
                     MENGINE_SWPRINTF( subKeyPython3PythonPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s\\PythonPath", subKeyName );
 
                     HKEY hPythonPathKey;
@@ -157,7 +157,7 @@ namespace Mengine
             return false;
         }
 
-        WChar Python3PathInstallPathValue[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath Python3PathInstallPathValue = {L'\0'};
         DWORD Python3PathInstallPathLen = MENGINE_MAX_PATH;
         LSTATUS nPython3PathInstallPathError = ::RegQueryValueExW( hInstallPathKeyFound, NULL, 0, NULL, (LPBYTE)Python3PathInstallPathValue, &Python3PathInstallPathLen );
 
@@ -174,7 +174,7 @@ namespace Mengine
 
         StdString::wcscpy( Python3PathW, Python3PathInstallPathValue );
 
-        WChar Python3PathPythonPathValue[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath Python3PathPythonPathValue = {L'\0'};
         DWORD Python3PathPythonPathLen = MENGINE_MAX_PATH;
         LSTATUS nPython3PathPythonPathError = ::RegQueryValueExW( hPythonPathKeyFound, NULL, 0, NULL, (LPBYTE)Python3PathPythonPathValue, &Python3PathPythonPathLen );
 
@@ -202,7 +202,7 @@ namespace Mengine
             return false;
         }
 
-        WCHAR Python3DllNameW[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath Python3DllNameW = {L'\0'};
         MENGINE_SWPRINTF( Python3DllNameW, MENGINE_MAX_PATH, L"python%d%d.dll", majorVersion, minorVersion );
 
         ::PathCombineW( m_python3DllPathW, Python3PathW, Python3DllNameW );
@@ -257,17 +257,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32FindPython3Service::getPython3ExecutablePathA( Char * const _path ) const
     {
-        StdString::strcpy( _path, m_python3ExecutablePathA );
+        StdString::strcpy_safe( _path, m_python3ExecutablePathA, MENGINE_MAX_PATH );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32FindPython3Service::getPython3LibraryPathA( Char * const _path ) const
     {
-        StdString::strcpy( _path, m_python3LibraryPathA );
+        StdString::strcpy_safe( _path, m_python3LibraryPathA, MENGINE_MAX_PATH );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32FindPython3Service::getPython3DllPathA( Char * const _path ) const
     {
-        StdString::strcpy( _path, m_python3DllPathA );
+        StdString::strcpy_safe( _path, m_python3DllPathA, MENGINE_MAX_PATH );
     }
     //////////////////////////////////////////////////////////////////////////
 }

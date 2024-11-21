@@ -497,7 +497,7 @@ namespace Mengine
             const Char * value_str = _jenv->GetStringUTFChars( _value, nullptr );
             jsize value_size = _jenv->GetStringLength( _value );
 
-            Helper::stringCopy( _str, value_str, _capacity );
+            StdString::strcpy_safe( _str, value_str, _capacity );
 
             _jenv->ReleaseStringUTFChars( _value, value_str );
 

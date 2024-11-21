@@ -21,6 +21,7 @@
 #include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdIO.h"
+#include "Config/Path.h"
 
 #include "zlib.h"
 
@@ -201,7 +202,7 @@ namespace Mengine
             uint32_t enumerator = 0;
             for( ;; ++enumerator )
             {
-                Char folderPathSplit[MENGINE_MAX_PATH + 1] = {'\0'};
+                Path folderPathSplit = {'\0'};
                 int32_t size_sprintf = MENGINE_SNPRINTF( folderPathSplit, MENGINE_MAX_PATH, m_folderPath.c_str(), enumerator );
 
                 if( size_sprintf < 0 )

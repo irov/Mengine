@@ -19,6 +19,8 @@
 #include "Kernel/PathString.h"
 #include "Kernel/DocumentHelper.h"
 
+#include "Config/Path.h"
+
 #include <sys/stat.h>
 
 namespace Mengine
@@ -72,7 +74,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileGroupDirectory::existFile( const FilePath & _filePath, bool _recursive ) const
     {
-        Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path fullPath = {'\0'};
         this->getFullPath( _filePath, fullPath );
 
         struct stat fi;
@@ -93,7 +95,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileGroupDirectory::removeFile( const FilePath & _filePath ) const
     {
-        Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path fullPath = {'\0'};
         this->getFullPath( _filePath, fullPath );
 
         if( ::remove( fullPath ) != 0 )
@@ -111,7 +113,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileGroupDirectory::existDirectory( const FilePath & _folderName, bool _recursive ) const
     {
-        Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path fullPath = {'\0'};
         this->getFullPath( _folderName, fullPath );
 
         struct stat fi;
@@ -178,7 +180,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
-        Char utf8_base[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path utf8_base = {'\0'};
         if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, FilePath::none()}, utf8_base ) == false )
         {
             LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"

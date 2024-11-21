@@ -17,6 +17,7 @@
 #include "Kernel/ContentHelper.h"
 
 #include "Config/Algorithm.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -212,7 +213,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptModuleFinder::find_module_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader, const Char * _ext, size_t _extN, const Char * _init, size_t _extI )
     {
-        Char modulePathCache[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path modulePathCache = {'\0'};
 
         size_t modulePathCacheLen;
         if( this->convertDotToSlash_( _kernel, modulePathCache, MENGINE_MAX_PATH, _module, &modulePathCacheLen ) == false )

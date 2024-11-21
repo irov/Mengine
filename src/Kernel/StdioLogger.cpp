@@ -4,6 +4,8 @@
 
 #include "Config/StdString.h"
 
+#include "Config/Path.h"
+
 #include <iostream>
 
 namespace Mengine
@@ -59,7 +61,7 @@ namespace Mengine
 
         if( message.flag & LFLAG_FUNCTIONSTAMP )
         {
-            Char functionstamp[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path functionstamp = {'\0'};
             size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
             std::cout.write( functionstamp, functionstampSize );
             std::cout.write( " ", 1 );

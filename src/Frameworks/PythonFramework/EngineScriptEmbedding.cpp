@@ -111,7 +111,6 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Identity.h"
 #include "Kernel/Affector.h"
-#include "Kernel/ThreadTask.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/ScriptablePrototypeGenerator.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -119,8 +118,6 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ValueFollower.h"
 #include "Kernel/Rect.h"
-#include "Kernel/Polygon.h"
-#include "Kernel/ValueFollower.h"
 #include "Kernel/RenderContextHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -134,6 +131,7 @@
 #include "Config/Lambda.h"
 #include "Config/StdMath.h"
 #include "Config/DynamicCast.h"
+#include "Config/Path.h"
 
 #include "math/angle.h"
 #include "math/vec4.h"
@@ -292,7 +290,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_loadPlugin( const WString & _pluginName )
             {
-                Char utf8_pluginName[MENGINE_MAX_PATH + 1] = {'\0'};
+                Path utf8_pluginName = {'\0'};
                 if( Helper::unicodeToUtf8( _pluginName, utf8_pluginName, MENGINE_MAX_PATH ) == false )
                 {
                     return false;

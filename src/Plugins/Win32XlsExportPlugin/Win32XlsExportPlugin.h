@@ -3,6 +3,8 @@
 #include "Kernel/PluginBase.h"
 #include "Kernel/ConstString.h"
 
+#include "Config/Path.h"
+
 namespace Mengine
 {
     class Win32XlsExportPlugin
@@ -30,6 +32,6 @@ namespace Mengine
         bool findPython3Path_();
 
     protected:
-        Char m_python3Path[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Path m_python3Path = {'\0'};
     };
 }

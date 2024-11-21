@@ -64,6 +64,7 @@
 #include "Config/Algorithm.h"
 #include "Config/Iterator.h"
 #include "Config/DynamicCast.h"
+#include "Config/Path.h"
 
 #define NODEDEBUGGERLISTEN_THREAD_NAME "NodeDebuggerListen"
 
@@ -1170,7 +1171,7 @@ namespace Mengine
 
         const FilePath & filePath = _content->getFilePath();
 
-        Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path fullPath = {'\0'};
         fileGroup->getFullPath( filePath, fullPath );
 
         Detail::serializeNodeProp( fullPath, "FilePath", xmlNode );
@@ -1400,7 +1401,7 @@ namespace Mengine
             const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
             const FilePath & filePath = content->getFilePath();
 
-            Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path fullPath = {'\0'};
             fileGroup->getFullPath( filePath, fullPath );
 
             pugi::xml_node xml_setting = payloadNode.append_child( "Setting" );

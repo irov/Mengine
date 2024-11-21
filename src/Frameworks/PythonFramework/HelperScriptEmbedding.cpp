@@ -82,6 +82,7 @@
 #include "Config/StdString.h"
 #include "Config/StdMath.h"
 #include "Config/Variant.h"
+#include "Config/Path.h"
 
 #include "math/angle.h"
 #include "math/vec2.h"
@@ -944,7 +945,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logInfo( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Char function[MENGINE_MAX_PATH + 1] = {'\0'};
+                Path function = {'\0'};
                 uint32_t lineno = 0;
                 _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
@@ -968,7 +969,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logMessage( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Char function[MENGINE_MAX_PATH + 1] = {'\0'};
+                Path function = {'\0'};
                 uint32_t lineno = 0;
                 _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
@@ -992,7 +993,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logWarning( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Char function[MENGINE_MAX_PATH + 1] = {'\0'};
+                Path function = {'\0'};
                 uint32_t lineno = 0;
                 _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
@@ -1016,7 +1017,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logError( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Char function[MENGINE_MAX_PATH + 1] = {'\0'};
+                Path function = {'\0'};
                 uint32_t lineno = 0;
                 _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
@@ -1040,7 +1041,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logMessageRelease( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Char function[MENGINE_MAX_PATH + 1] = {'\0'};
+                Path function = {'\0'};
                 uint32_t lineno = 0;
                 _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
@@ -1064,7 +1065,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             void s_logFatal( pybind::kernel_interface * _kernel, const StringView & _message )
             {
-                Char function[MENGINE_MAX_PATH + 1] = {'\0'};
+                Path function = {'\0'};
                 uint32_t lineno = 0;
                 _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 

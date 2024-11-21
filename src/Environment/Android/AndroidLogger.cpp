@@ -8,6 +8,7 @@
 #include "Kernel/LoggerHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -32,8 +33,6 @@ namespace Mengine
         {
             return;
         }
-
-        ELoggerLevel level = message.level;
 
         Char buffer[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
@@ -70,12 +69,11 @@ namespace Mengine
 
         if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
-            Char functionstamp[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path functionstamp = {'\0'};
 
             const Char * function = message.function;
             int32_t line = message.line;
-            size_t functionstampSize = Helper::makeLoggerFunctionStamp( function, line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
-            MENGINE_UNUSED( functionstampSize );
+            Helper::makeLoggerFunctionStamp( function, line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
 
             StdString::strcat( buffer, functionstamp );
             StdString::strcat( buffer, " " );
@@ -104,14 +102,16 @@ namespace Mengine
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        jclass jclass_MengineLog = jenv->FindClass( "android/util/Log" );
+        jclass jclass_UtilLog = jenv->FindClass("android/util/Log" );
 
-        if( jclass_MengineLog == nullptr )
+        if( jclass_UtilLog == nullptr )
         {
             return;
         }
 
         const Char * method = nullptr;
+
+        ELoggerLevel level = message.level;
 
         switch( level )
         {
@@ -145,9 +145,9 @@ namespace Mengine
             return;
         }
 
-        jmethodID jclass_Log_method = jenv->GetStaticMethodID( jclass_MengineLog, method, "(Ljava/lang/String;Ljava/lang/String;)I" );
+        jmethodID jclass_UtilLog_method = jenv->GetStaticMethodID( jclass_UtilLog, method, "(Ljava/lang/String;Ljava/lang/String;)I" );
 
-        if( jclass_Log_method == nullptr )
+        if( jclass_UtilLog_method == nullptr )
         {
             return;
         }
@@ -155,13 +155,13 @@ namespace Mengine
         jstring jstring_Mengine = jenv->NewStringUTF( "Mengine" );
         jstring jstring_buffer = jenv->NewStringUTF( buffer );
 
-        jint result = jenv->CallStaticIntMethod( jclass_MengineLog, jclass_Log_method, jstring_Mengine, jstring_buffer );
+        jint result = jenv->CallStaticIntMethod( jclass_UtilLog, jclass_UtilLog_method, jstring_Mengine, jstring_buffer );
         MENGINE_UNUSED( result );
 
         jenv->DeleteLocalRef( jstring_Mengine );
         jenv->DeleteLocalRef( jstring_buffer );
 
-        jenv->DeleteLocalRef( jclass_MengineLog );
+        jenv->DeleteLocalRef( jclass_UtilLog );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -57,6 +57,7 @@
 #include "Config/StdIO.h"
 #include "Config/Algorithm.h"
 #include "Config/Switch.h"
+#include "Config/Path.h"
 
 #include <clocale>
 #include <ctime>
@@ -105,7 +106,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jstring JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnvironmentService_1getExtraPreferencesFolderName )(JNIEnv * env, jclass cls)
     {
-        Mengine::Char extraPreferencesFolderName[MENGINE_MAX_PATH + 1] = {'\0'};
+        Mengine::Path extraPreferencesFolderName = {'\0'};
         PLATFORM_SERVICE()
             ->getExtraPreferencesFolderName( extraPreferencesFolderName );
 
@@ -487,7 +488,7 @@ namespace Mengine
             return 0;
         }
 
-        Char extraPreferencesFolderName[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path extraPreferencesFolderName = {'\0'};
         size_t ExtraPreferencesFolderNameLen = this->getExtraPreferencesFolderName( extraPreferencesFolderName );
 
         if( ExtraPreferencesFolderNameLen != 0 )

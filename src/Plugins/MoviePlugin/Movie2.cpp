@@ -448,7 +448,7 @@ namespace Mengine
                 else
                 {
                     Char layer_name[512 + 1] = {'\0'};
-                    StdString::strcpy( layer_name, layer.name.c_str() );
+                    StdString::strcpy_safe( layer_name, layer.name.c_str(), 512 );
 
                     Char * delim_aliasEnvironment = StdString::strchr( layer_name, '#' );
 

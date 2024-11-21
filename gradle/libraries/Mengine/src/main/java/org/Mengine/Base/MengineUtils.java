@@ -63,6 +63,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -178,6 +180,21 @@ public class MengineUtils {
         handler.postDelayed(runnable, delayMillis);
 
         return handler;
+    }
+
+    public static Timer scheduleAtFixedRate(Activity activity, long period, Runnable runnable) {
+        Timer timer = new Timer();
+
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                activity.runOnUiThread(runnable);
+            }
+        };
+
+        timer.scheduleAtFixedRate(task, 0, period);
+
+        return timer;
     }
 
     public static void makeToastDelayed(Context context, String text, long delayed) {

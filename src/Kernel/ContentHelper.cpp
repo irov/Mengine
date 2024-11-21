@@ -5,6 +5,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/PrototypeHelper.h"
 
+#include "Config/Path.h"
+
 namespace Mengine
 {
     namespace Helper
@@ -34,7 +36,7 @@ namespace Mengine
             const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
             const FilePath & filePath = _content->getFilePath();
 
-            Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path fullPath = {'\0'};
             fileGroup->getFullPath( filePath, fullPath );
 
             return PathString( fullPath );

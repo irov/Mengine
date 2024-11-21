@@ -20,6 +20,8 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/StatisticHelper.h"
 
+#include "Config/Path.h"
+
 #define WIN32ANTIFREEZEMONITOR_THREAD_NAME "Win32AntifreezeMonitor"
 
 namespace Mengine
@@ -184,7 +186,7 @@ namespace Mengine
             );
         }
 
-        Char userPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path userPath = {'\0'};
         PLATFORM_SERVICE()
             ->getUserPath( userPath );
 

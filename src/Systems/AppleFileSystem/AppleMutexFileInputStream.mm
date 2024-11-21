@@ -305,7 +305,7 @@ namespace Mengine
         const FilePath & folderPath = this->getDebugFolderPath();
         const FilePath & filePath = this->getDebugFilePath();
 
-        Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path fullPath = {'\0'};
         if( Helper::concatenateFilePath( {relationPath, folderPath, filePath}, fullPath ) == false )
         {
             LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"

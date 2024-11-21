@@ -1,5 +1,7 @@
 #include "FileGroupHelper.h"
 
+#include "Config/Path.h"
+
 namespace Mengine
 {
     namespace Helper
@@ -7,7 +9,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         PathString getFileGroupFullPath( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
         {
-            Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path fullPath = {'\0'};
 
             _fileGroup->getFullPath( _filePath, fullPath );
 

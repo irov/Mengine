@@ -61,28 +61,6 @@ public class MenginePlugin implements MenginePluginInterface {
         return value;
     }
 
-    public SharedPreferences getPrivateSharedPreferences() {
-        SharedPreferences settings = m_application.getPrivateSharedPreferences(m_pluginName);
-
-        return settings;
-    }
-
-    public void setPrivateSettingString(String name, String value) {
-        SharedPreferences settings = this.getPrivateSharedPreferences();
-
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(name, value);
-        editor.apply();
-    }
-
-    public String getPrivateSettingString(String name, String defaultValue) {
-        SharedPreferences settings = this.getPrivateSharedPreferences();
-
-        String value = settings.getString(name, defaultValue);
-
-        return value;
-    }
-
     protected void invalidInitialize(String format, Object ... args) throws MenginePluginInvalidInitializeException {
         String message = MengineLog.buildTotalMsg(format, args);
 
@@ -109,21 +87,6 @@ public class MenginePlugin implements MenginePluginInterface {
         }
 
         m_activity.runOnUiThread(action);
-    }
-
-    public Timer scheduleAtFixedRate(long period, Runnable runnable) {
-        Timer timer = new Timer();
-
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                MenginePlugin.this.runOnUiThread(runnable);
-            }
-        };
-
-        timer.scheduleAtFixedRate(task, 0, period);
-
-        return timer;
     }
 
     public void setState(String name, Object value) {

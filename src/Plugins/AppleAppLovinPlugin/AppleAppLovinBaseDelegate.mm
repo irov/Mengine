@@ -149,8 +149,6 @@
     
     NSTimeInterval delaySec = pow(2, MIN(6, self.m_retryAttempt));
     
-    __weak NSObject<iOSUIMainApplicationDelegateInterface> * delegate = [iOSDetail getUIMainApplicationDelegate];
-    
     [iOSDetail addMainQueueOperation:^{
         [NSThread sleepForTimeInterval:delaySec];
         

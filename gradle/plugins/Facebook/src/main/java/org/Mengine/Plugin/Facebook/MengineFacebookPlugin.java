@@ -355,7 +355,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
         MengineActivity activity = this.getMengineActivity();
 
-        LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
+        LoginManager.getInstance().logInWithReadPermissions(activity, List.of("gaming_profile", "gaming_user_picture"));
     }
     
     public void logout() {

@@ -36,20 +36,20 @@ namespace Mengine
 
         Char exception_msg[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
-        StdString::strcat( exception_msg, "message: " );
-        StdString::strcat( exception_msg, foramt_msg );
-        StdString::strcat( exception_msg, "\n" );
+        StdString::strcpy_safe( exception_msg, "message: ", MENGINE_LOGGER_MAX_MESSAGE );
+        StdString::strcat_safe( exception_msg, foramt_msg, MENGINE_LOGGER_MAX_MESSAGE );
+        StdString::strcat_safe( exception_msg, "\n", MENGINE_LOGGER_MAX_MESSAGE );
 
-        StdString::strcat( exception_msg, "file: " );
-        StdString::strcat( exception_msg, m_file );
-        StdString::strcat( exception_msg, "\n" );
+        StdString::strcat_safe( exception_msg, "file: ", MENGINE_LOGGER_MAX_MESSAGE );
+        StdString::strcat_safe( exception_msg, m_file, MENGINE_LOGGER_MAX_MESSAGE );
+        StdString::strcat_safe( exception_msg, "\n", MENGINE_LOGGER_MAX_MESSAGE );
 
         Char lineBuffer[32 + 1] = {'\0'};
         Helper::stringalized( m_line, lineBuffer, 32 );
 
-        StdString::strcat( exception_msg, "line: " );
-        StdString::strcat( exception_msg, lineBuffer );
-        StdString::strcat( exception_msg, "\n" );
+        StdString::strcat_safe( exception_msg, "line: ", MENGINE_LOGGER_MAX_MESSAGE );
+        StdString::strcat_safe( exception_msg, lineBuffer, MENGINE_LOGGER_MAX_MESSAGE );
+        StdString::strcat_safe( exception_msg, "\n", MENGINE_LOGGER_MAX_MESSAGE );
 
         Helper::debuggerBreak();
 

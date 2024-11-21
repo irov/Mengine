@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Kernel/PathString.h"
+
 #include "Config/Char.h"
 #include "Config/Thread.h"
 
@@ -9,7 +11,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         void Win32Sleep( uint32_t _ms );
-        const Char * Win32GetCurrentDllPath();
+        PathString Win32GetCurrentDllPath();
         ThreadId Win32GetCurrentThreadId();
         void Win32ReadErrorMessageA( uint32_t _id, Char * const _message, size_t _capacity );
         void Win32ReadErrorMessageW( uint32_t _id, WChar * const _message, size_t _capacity );

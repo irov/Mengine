@@ -6,6 +6,7 @@
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -29,7 +30,7 @@ namespace Mengine
                     return false;
                 }
 
-                WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
+                WPath unicode_path = {L'\0'};
                 if( ::GetModuleFileName( hm, unicode_path, MENGINE_MAX_PATH ) == 0 )
                 {
                     return false;
@@ -69,19 +70,19 @@ namespace Mengine
             ::Sleep( _ms );
         }
         //////////////////////////////////////////////////////////////////////////
-        const Char * Win32GetCurrentDllPath()
+        PathString Win32GetCurrentDllPath()
         {
-            static MENGINE_THREAD_LOCAL Char dllPath[MENGINE_MAX_PATH + 1] = {'\0'};
+            static MENGINE_THREAD_LOCAL Path dllPath = {'\0'};
 
             if( dllPath[0] == '\0' )
             {
                 if( Detail::__Win32GetCurrentDllPath( dllPath ) == false )
                 {
-                    StdString::strcpy( dllPath, "Unsupport" );
+                    StdString::strcpy_safe( dllPath, "Unsupport", MENGINE_MAX_PATH );
                 }
             }
 
-            return dllPath;
+            return PathString( dllPath );
         }
         //////////////////////////////////////////////////////////////////////////
         ThreadId Win32GetCurrentThreadId()

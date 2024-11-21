@@ -31,7 +31,7 @@ namespace Mengine
 
         m_withTemp = _withTemp;
 
-        Char concatenatePath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path concatenatePath = {'\0'};
 
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
         if( m_withTemp == true )

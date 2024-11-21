@@ -628,9 +628,6 @@ Core
     
     DecimalDigitsHelper.h
     
-    StringCopy.h
-    StringCopy.cpp
-    
     StringSplit.h
     StringSplit.cpp
     

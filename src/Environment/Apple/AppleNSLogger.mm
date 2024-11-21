@@ -81,13 +81,11 @@ namespace Mengine
 
         if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
-            Char functionstamp[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path functionstamp = {'\0'};
 
             const Char * function = message.function;
             int32_t line = message.line;
-            size_t functionstampSize = Helper::makeLoggerFunctionStamp( function, line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
-            
-            MENGINE_UNUSED( functionstampSize );
+            Helper::makeLoggerFunctionStamp( function, line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
 
             StdString::strcat( buffer, functionstamp );
             StdString::strcat( buffer, " " );

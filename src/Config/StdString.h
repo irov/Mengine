@@ -40,6 +40,21 @@ namespace Mengine
             return _out;
         }
 
+        MENGINE_INLINE Char * strchrcat_safe( Char * const _out, Char _ch, size_t _capacity )
+        {
+            size_t len = StdString::strlen( _out );
+
+            if( len >= _capacity )
+            {
+                return _out;
+            }
+
+            _out[len] = _ch;
+            _out[len + 1] = '\0';
+
+            return _out;
+        }
+
         MENGINE_INLINE WChar * wcschrcat( WChar * const _out, WChar _ch )
         {
             size_t len = StdString::wcslen( _out );
@@ -79,6 +94,55 @@ namespace Mengine
             return _out;
         }
 
+        MENGINE_INLINE Char * strcpy_safe( Char * const _out, const Char * _in, size_t _capacity )
+        {
+            if( _capacity == 0 )
+            {
+                return _out;
+            }
+
+            StdString::strncpy( _out, _in, _capacity );
+
+            _out[_capacity] = '\0';
+
+            return _out;
+        }
+
+        MENGINE_INLINE Char * strzcpy_safe( Char * const _out, const Char * _in, size_t _size, size_t _capacity )
+        {
+            if( _capacity == 0 )
+            {
+                return _out;
+            }
+
+            if( _size >= _capacity )
+            {
+                _size = _capacity;
+            }
+
+            StdString::strncpy( _out, _in, _size );
+
+            _out[_size] = '\0';
+
+            return _out;
+        }
+
+        MENGINE_INLINE Char * strcat_safe( Char * const _out, const Char * _in, size_t _capacity )
+        {
+            size_t len = StdString::strlen( _out );
+
+            if( len >= _capacity )
+            {
+                return _out;
+            }
+
+            StdString::strncpy( _out + len, _in, _capacity - len );
+
+            _out[_capacity] = '\0';
+
+            return _out;
+        }
+
         using std::memcpy;
         using std::memset;
         using std::memmove;
@@ -88,7 +152,7 @@ namespace Mengine
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_STRNCPY_STATIC
-#define MENGINE_STRNCPY_STATIC(a, b, n) (Mengine::StdString::strncpy((a), (b), (n)), MENGINE_STATIC_STRING_LENGTH(b))
+#define MENGINE_STRNCPY_STATIC(a, b, n) (Mengine::StdString::strcpy_safe((a), (b), (n)), MENGINE_STATIC_STRING_LENGTH(b))
 #endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WCSICMP

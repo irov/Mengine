@@ -182,19 +182,19 @@ namespace Mengine
 
             if( base_lenght == 0 )
             {
-                StdString::strcpy( _out, _path );
+                StdString::strcpy_safe( _out, _path, MENGINE_MAX_PATH );
 
                 return;
             }
 
-            StdString::strcpy( _out, _base );
+            StdString::strcpy_safe( _out, _base, MENGINE_MAX_PATH );
 
             if( _base[base_lenght - 1] != _slash )
             {
                 StdString::strchrcat( _out, _slash );
             }
 
-            StdString::strcat( _out, _path );
+            StdString::strcat_safe( _out, _path, MENGINE_MAX_PATH );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathAppendW( WChar * const _base, const WChar * _path, WChar _slash )
@@ -222,7 +222,7 @@ namespace Mengine
 
             if( base_lenght == 0 )
             {
-                StdString::strcpy( _base, _path );
+                StdString::strcpy_safe( _base, _path, MENGINE_MAX_PATH );
 
                 return;
             }
@@ -232,7 +232,7 @@ namespace Mengine
                 StdString::strchrcat( _base, _slash );
             }
 
-            StdString::strcat( _base, _path );
+            StdString::strcat_safe( _base, _path, MENGINE_MAX_PATH );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectFolderPathW( WChar * const _folderPath, WChar _delim )
@@ -306,7 +306,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashToA( Char * const _out, const Char * _filePath )
         {
-            StdString::strcpy( _out, _filePath );
+            StdString::strcpy_safe( _out, _filePath, MENGINE_MAX_PATH );
 
             Helper::pathCorrectBackslashA( _out );
         }
@@ -344,7 +344,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectForwardslashToA( Char * const _out, const Char * _filePath )
         {
-            StdString::strcpy( _out, _filePath );
+            StdString::strcpy_safe( _out, _filePath, MENGINE_MAX_PATH );
 
             Helper::pathCorrectForwardslashA( _out );
         }

@@ -26,6 +26,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
+#include "Config/Path.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FileSystem, Mengine::SDLFileSystem );
@@ -63,7 +64,7 @@ namespace Mengine
             }
 
 #elif defined(MENGINE_PLATFORM_WINDOWS)
-            WChar unicode_fullpath[MENGINE_MAX_PATH + 1] = {L'\0'};
+            WPath unicode_fullpath = {L'\0'};
             Helper::utf8ToUnicode( _fullpath, unicode_fullpath, MENGINE_MAX_PATH - 1 );
 
             BOOL successful = ::CreateDirectoryW( unicode_fullpath, NULL );
@@ -136,14 +137,14 @@ namespace Mengine
 
         VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), factoryGlobalFileGroupDirectory, MENGINE_DOCUMENT_FACTORABLE );
 
-        Char utf8_currentPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path utf8_currentPath = {'\0'};
         PLATFORM_SERVICE()
             ->getCurrentPath( utf8_currentPath );
         
 #if defined(MENGINE_PLATFORM_IOS)
-        StdString::strcat( utf8_currentPath, "Data/" );
+        Helper::pathAppendA( utf8_currentPath, "Data/", MENGINE_PATH_DELIM_BACKSLASH );
 #elif defined(MENGINE_PLATFORM_MACOS)
-        StdString::strcat( utf8_currentPath, "Data/" );
+        Helper::pathAppendA( utf8_currentPath, "Data/", MENGINE_PATH_DELIM_BACKSLASH );
 #endif
         
         size_t utf8_currentPathLen = StdString::strlen( utf8_currentPath );
@@ -165,7 +166,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileSystem::existDirectory( const Char * _basePath, const Char * _directory ) const
     {
-        Char pathDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path pathDirectory = {'\0'};
         Helper::pathCorrectBackslashToA( pathDirectory, _directory );
 
         Helper::pathRemoveFileSpecA( pathDirectory, MENGINE_PATH_DELIM_BACKSLASH );
@@ -177,7 +178,7 @@ namespace Mengine
             return true;
         }
 
-        Char pathFull[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path pathFull = {'\0'};
         MENGINE_SNPRINTF( pathFull, MENGINE_MAX_PATH, "%s%s", _basePath, pathDirectory );
 
         if( pathFull[len - 1] == ':' )	// root dir
@@ -205,7 +206,7 @@ namespace Mengine
             return true;
         }
 
-        Char pathDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path pathDirectory = {'\0'};
         Helper::pathCorrectBackslashToA( pathDirectory, _directory );
 
         Helper::pathRemoveFileSpecA( pathDirectory, MENGINE_PATH_DELIM_BACKSLASH );
@@ -215,9 +216,8 @@ namespace Mengine
             return true;
         }
 
-        Char pathTestDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
-        StdString::strncpy( pathTestDirectory, _basePath, MENGINE_MAX_PATH );
-        StdString::strncat( pathTestDirectory, pathDirectory, MENGINE_MAX_PATH );
+        Path pathTestDirectory = {'\0'};
+        Helper::pathCombineA( pathTestDirectory, _basePath, pathDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
         if( Detail::isDirectoryFullpath( pathTestDirectory ) == true )
         {
@@ -227,11 +227,11 @@ namespace Mengine
         Helper::pathRemoveSlashA( pathDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
         uint32_t paths_count = 0;
-        Char paths[MENGINE_MAX_PATH + 1][16];
+        Path paths[16];
 
         for( ;; )
         {
-            StdString::strncpy( paths[paths_count++], pathDirectory, MENGINE_MAX_PATH );
+            StdString::strcpy_safe( paths[paths_count++], pathDirectory, MENGINE_MAX_PATH );
 
             if( Helper::pathRemoveFileSpecA( pathDirectory, MENGINE_PATH_DELIM_BACKSLASH ) == false )
             {
@@ -245,8 +245,7 @@ namespace Mengine
 
             Helper::pathRemoveSlashA( pathDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
-            StdString::strncpy( pathTestDirectory, _basePath, MENGINE_MAX_PATH );
-            StdString::strncat( pathTestDirectory, pathDirectory, MENGINE_MAX_PATH );
+            Helper::pathCombineA( pathTestDirectory, _basePath, pathDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
             if( Detail::isDirectoryFullpath( pathTestDirectory ) == true )
             {
@@ -258,9 +257,8 @@ namespace Mengine
         {
             const Char * path = paths[index - 1];
 
-            Char pathCreateDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
-            StdString::strncpy( pathCreateDirectory, _basePath, MENGINE_MAX_PATH );
-            StdString::strncat( pathCreateDirectory, path, MENGINE_MAX_PATH );
+            Path pathCreateDirectory = {'\0'};
+            Helper::pathCombineA( pathCreateDirectory, _basePath, path, MENGINE_PATH_DELIM_BACKSLASH );
 
             if( Detail::createDirectoryFullpath( pathCreateDirectory ) == false )
             {
@@ -273,7 +271,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileSystem::existFile( const Char * _filePath )
     {
-        Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path pathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
         SDL_SuppressError( SDL_TRUE );
@@ -302,7 +300,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileSystem::removeFile( const Char * _filePath )
     {
-        Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path pathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
         int result = ::remove( pathCorrect );
@@ -317,10 +315,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileSystem::moveFile( const Char * _oldFilePath, const Char * _newFilePath )
     {
-        Char oldPathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path oldPathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( oldPathCorrect, _oldFilePath );
 
-        Char newPathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path newPathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( newPathCorrect, _newFilePath );
 
         struct stat sb;
@@ -367,11 +365,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * const _stop )
         {
-            WChar sDir[MENGINE_MAX_PATH + 1] = {L'\0'};
+            WPath sDir = {L'\0'};
             ::PathCanonicalizeW( sDir, _dir );
 
             {
-                WChar sPath[MENGINE_MAX_PATH + 1] = {L'\0'};
+                WPath sPath = {L'\0'};
                 StdString::wcscpy( sPath, sDir );
                 StdString::wcscat( sPath, _path );
                 StdString::wcscat( sPath, _mask );
@@ -394,7 +392,7 @@ namespace Mengine
                             continue;
                         }
 
-                        WChar sPath2[MENGINE_MAX_PATH + 1] = {L'\0'};
+                        WPath sPath2 = {L'\0'};
                         StdString::wcscpy( sPath2, sPath );
                         StdString::wcscat( sPath2, L"\0" );
 
@@ -402,10 +400,10 @@ namespace Mengine
 
                         ::PathRemoveFileSpec( sPath2 );
 
-                        WChar unicode_filepath[MENGINE_MAX_PATH + 1] = {L'\0'};
+                        WPath unicode_filepath = {L'\0'};
                         ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
 
-                        WChar unicode_out[MENGINE_MAX_PATH + 1] = {L'\0'};
+                        WPath unicode_out = {L'\0'};
                         if( StdString::wcslen( sDir ) != 0 )
                         {
                             ::PathRelativePathTo( unicode_out
@@ -419,7 +417,7 @@ namespace Mengine
                             StdString::wcscpy( unicode_out, unicode_filepath );
                         }
 
-                        Char utf8_filepath[MENGINE_MAX_PATH + 1] = {'\0'};
+                        Path utf8_filepath = {'\0'};
                         if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH ) == false )
                         {
                             ::FindClose( hFind );
@@ -445,7 +443,7 @@ namespace Mengine
             }
 
             {
-                WChar sPath[MENGINE_MAX_PATH + 1] = {L'\0'};
+                WPath sPath = {L'\0'};
                 StdString::wcscpy( sPath, sDir );
                 StdString::wcscat( sPath, _path );
                 StdString::wcscat( sPath, L"*.*" );
@@ -471,13 +469,13 @@ namespace Mengine
                         continue;
                     }
 
-                    WChar currentPath[MENGINE_MAX_PATH + 1] = {L'\0'};
+                    WPath currentPath = {L'\0'};
                     StdString::wcscpy( currentPath, sPath );
                     StdString::wcscat( currentPath, L"\0" );
 
                     ::PathRemoveFileSpec( currentPath );
 
-                    WChar nextPath[MENGINE_MAX_PATH + 1] = {L'\0'};
+                    WPath nextPath = {L'\0'};
                     ::PathCombine( nextPath, currentPath, fdFile.cFileName );
 
                     StdString::wcscat( nextPath, L"\\" );
@@ -518,30 +516,30 @@ namespace Mengine
         MENGINE_UNUSED( _lambda );
 
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        WChar unicode_base[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_base = {L'\0'};
         if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH - 1 ) == false )
         {
             return false;
         }
 
-        WChar unicode_mask[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_mask = {L'\0'};
         if( Helper::utf8ToUnicode( _mask, unicode_mask, MENGINE_MAX_PATH - 1 ) == false )
         {
             return false;
         }
 
-        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_path = {L'\0'};
         if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH - 1 ) == false )
         {
             return false;
         }
 
-        WChar unicode_fullbase[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_fullbase = {L'\0'};
         ::GetFullPathName( unicode_base, MENGINE_MAX_PATH, unicode_fullbase, NULL );
 
         Helper::LambdaListDirectoryFilePath lambda_listdirectory = [_lambda]( const WChar * _filePath )
         {
-            Char utf8_filepath[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path utf8_filepath = {'\0'};
             if( Helper::unicodeToUtf8( _filePath, utf8_filepath, MENGINE_MAX_PATH ) == false )
             {
                 return false;
@@ -575,7 +573,7 @@ namespace Mengine
         MENGINE_UNUSED( _filePath );
 
 #if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        WChar unicode_filePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_filePath = {L'\0'};
         if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH - 1 ) == false )
         {
             return 0U;

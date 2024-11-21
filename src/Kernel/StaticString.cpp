@@ -70,13 +70,7 @@ namespace Mengine
                 , _capacity
             );
 
-            if( value_size >= _capacity )
-            {
-                value_size = _capacity - 1;
-            }
-
-            StdString::strncpy( _buffer, _value, value_size );
-            _buffer[value_size] = '\0';
+            StdString::strcpy_safe( _buffer, _value, _capacity );
         }
         //////////////////////////////////////////////////////////////////////////
         void staticStringAppendChar( Char * const _buffer, size_t _capacity, Char _value )
@@ -84,10 +78,10 @@ namespace Mengine
             size_t buffer_size = StdString::strlen( _buffer );
 
             MENGINE_ASSERTION_FATAL( buffer_size + 1 < _capacity, "static string buffer '%s' [size %zu] append char '%c' > [capacity %zu]"
-            , _buffer
-            , buffer_size
-            , _value
-            , _capacity
+                , _buffer
+                , buffer_size
+                , _value
+                , _capacity
             );
 
             if( buffer_size + 1 >= _capacity )
@@ -138,7 +132,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void staticStringCopy( const Char * _buffer, size_t _capacity, Char * const _value )
         {
-            StdString::strncpy( _value, _buffer, _capacity );
+            StdString::strcpy_safe( _value, _buffer, _capacity );
         }
         //////////////////////////////////////////////////////////////////////////
         int32_t staticStringCompare( const Char * _buffer, size_t _capacity, const Char * _value )

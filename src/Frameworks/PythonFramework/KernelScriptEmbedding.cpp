@@ -1,6 +1,5 @@
 #include "KernelScriptEmbedding.h"
 
-#include "Interface/ApplicationInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/InputServiceInterface.h"
@@ -13,7 +12,6 @@
 #include "Interface/AccountInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/AnimationInterface.h"
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ChronometerInterface.h"
 #include "Interface/ArrowServiceInterface.h"
@@ -50,15 +48,12 @@
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/ValueFollower.h"
 #include "Kernel/Rect.h"
-#include "Kernel/Polygon.h"
-#include "Kernel/ValueFollower.h"
 #include "Kernel/ValueInterpolatorParabolic.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/Identity.h"
 #include "Kernel/Affector.h"
 #include "Kernel/AffectorHelper.h"
-#include "Kernel/ThreadTask.h"
 #include "Kernel/Interender.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
@@ -90,6 +85,7 @@
 #include "Config/StdIO.h"
 #include "Config/StdMath.h"
 #include "Config/DynamicCast.h"
+#include "Config/Path.h"
 
 #include "math/angle.h"
 #include "math/vec4.h"
@@ -258,7 +254,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             const Char * s_FileGroupInterface_getFullPath( FileGroupInterface * _fileGroup, const FilePath & _path )
             {
-                static Char fullpath[MENGINE_MAX_PATH + 1] = {'\0'};
+                static Path fullpath = {'\0'};
                 _fileGroup->getFullPath( _path, fullpath );
 
                 return fullpath;

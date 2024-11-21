@@ -20,6 +20,8 @@
 #include "Kernel/PathString.h"
 #include "Kernel/DocumentHelper.h"
 
+#include "Config/Path.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -68,7 +70,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidAssetGroupDirectory::existFile( const FilePath & _filePath, bool _recursive ) const
     {
-        Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path fullPath = {'\0'};
         this->getFullPath( _filePath, fullPath );
 
         if( ANDROID_ASSET_SERVICE()

@@ -12,6 +12,7 @@
 #include "Kernel/ConfigHelper.h"
 
 #include "Config/StdIO.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -42,7 +43,7 @@ namespace Mengine
 
         if( fxcPath == STRINGIZE_FILEPATH_LOCAL( "REGISTER" ) )
         {
-            Char WindowsKitsInstallationFolder[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path WindowsKitsInstallationFolder = {'\0'};
             if( Helper::Win32GetLocalMachineRegValue( L"SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots", L"KitsRoot10", WindowsKitsInstallationFolder, MENGINE_MAX_PATH ) == false )
             {
                 LOGGER_ERROR( "not found REGISTER Windows Kits installed roots" );

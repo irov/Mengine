@@ -47,6 +47,7 @@
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 #include "Config/Algorithm.h"
+#include "Config/Path.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ScriptService, Mengine::PythonScriptService );
@@ -1251,7 +1252,7 @@ namespace Mengine
             PyObject * trace_line = m_kernel->tuple_getitem( item, 1 );
             PyObject * trace_function = m_kernel->tuple_getitem( item, 2 );
 
-            Char trace_str[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path trace_str = {'\0'};
             MENGINE_SNPRINTF( trace_str, MENGINE_MAX_PATH, "File \"%s\", line %d, in %s"
                 , m_kernel->string_to_char( trace_file )
                 , pybind::extract<int32_t>( m_kernel, trace_line )
@@ -1356,7 +1357,7 @@ namespace Mengine
 
             for( const FilePath & path : _desc.pathes )
             {
-                Char fullpath[MENGINE_MAX_PATH + 1] = {'\0'};
+                Path fullpath = {'\0'};
                 fileGroup->getFullPath( path, fullpath );
 
                 l.append( fullpath );

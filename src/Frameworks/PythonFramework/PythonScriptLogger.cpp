@@ -6,6 +6,7 @@
 #include "Kernel/OptionHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -96,7 +97,7 @@ namespace Mengine
 
         if( HAS_OPTION( "tracescriptlog" ) == true )
         {
-            Char function[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path function = {'\0'};
             uint32_t lineno = 0;
             _kernel->get_traceback_function( function, MENGINE_MAX_PATH, &lineno );
 
@@ -107,7 +108,7 @@ namespace Mengine
             LOGGER_VERBOSE_LEVEL( "python", m_level, LFILTER_NONE, color, nullptr, 0, LFLAG_SHORT )("%s", m_message);
         }
 
-        StdString::strcpy( m_message, "" );
+        StdString::strcpy_safe( m_message, "", MENGINE_LOGGER_MAX_MESSAGE );
 
         return _kernel->ret_none();
     }

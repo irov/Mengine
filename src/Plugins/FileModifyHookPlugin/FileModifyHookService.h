@@ -9,6 +9,7 @@
 #include "Kernel/Vector.h"
 
 #include "Config/UniqueId.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -43,7 +44,7 @@ namespace Mengine
 
         struct FileModifyDesc
         {
-            Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path fullPath = {'\0'};
 
             LambdaFileModifyHook lambda;
 

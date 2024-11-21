@@ -163,12 +163,12 @@ namespace Mengine
             typedef struct _CallstackEntry
             {
                 DWORD64 offset;
-                CHAR name[MENGINE_STACKWALK_MAX_NAMELEN];
-                CHAR undName[MENGINE_STACKWALK_MAX_NAMELEN];
-                CHAR undFullName[MENGINE_STACKWALK_MAX_NAMELEN];
+                CHAR name[MENGINE_STACKWALK_MAX_NAMELEN + 1];
+                CHAR undName[MENGINE_STACKWALK_MAX_NAMELEN + 1];
+                CHAR undFullName[MENGINE_STACKWALK_MAX_NAMELEN + 1];
                 DWORD lineNumber;
-                CHAR lineFileName[MENGINE_STACKWALK_MAX_NAMELEN];
-                CHAR moduleName[MENGINE_STACKWALK_MAX_NAMELEN];
+                CHAR lineFileName[MENGINE_STACKWALK_MAX_NAMELEN + 1];
+                CHAR moduleName[MENGINE_STACKWALK_MAX_NAMELEN + 1];
             } CallstackEntry;
             //////////////////////////////////////////////////////////////////////////
             enum CallstackEntryType
@@ -187,26 +187,26 @@ namespace Mengine
 
                 if( _entry->name[0] == 0 )
                 {
-                    StdString::strcpy( _entry->name, "(function-name not available)" );
+                    StdString::strcpy_safe( _entry->name, "(function-name not available)", MENGINE_STACKWALK_MAX_NAMELEN );
                 }
 
                 if( _entry->undName[0] != 0 )
                 {
-                    StdString::strcpy( _entry->name, _entry->undName );
+                    StdString::strcpy_safe( _entry->name, _entry->undName, MENGINE_STACKWALK_MAX_NAMELEN );
                 }
 
                 if( _entry->undFullName[0] != 0 )
                 {
-                    StdString::strcpy( _entry->name, _entry->undFullName );
+                    StdString::strcpy_safe( _entry->name, _entry->undFullName, MENGINE_STACKWALK_MAX_NAMELEN );
                 }
 
                 if( _entry->lineFileName[0] == 0 )
                 {
-                    StdString::strcpy( _entry->lineFileName, "(filename not available)" );
+                    StdString::strcpy_safe( _entry->lineFileName, "(filename not available)", MENGINE_STACKWALK_MAX_NAMELEN );
 
                     if( _entry->moduleName[0] == 0 )
                     {
-                        StdString::strcpy( _entry->moduleName, "(module-name not available)" );
+                        StdString::strcpy_safe( _entry->moduleName, "(module-name not available)", MENGINE_STACKWALK_MAX_NAMELEN );
                     }
 
                     MENGINE_SNPRINTF( buffer, MENGINE_STACKWALK_MAX_NAMELEN, "%p (%s): %s (%d): %s\n"
@@ -233,7 +233,7 @@ namespace Mengine
                     return 0;
                 }
 
-                StdString::strcat( _stack, buffer );
+                StdString::strcat_safe( _stack, buffer, _capacity );
 
                 return buffer_len;
             }
@@ -400,7 +400,7 @@ namespace Mengine
                         DWORD64 offsetFromSmybol;
                         if( (*pSymGetSymFromAddr64)(hProcess, frame.AddrPC.Offset, &offsetFromSmybol, pSymbol) == TRUE )
                         {
-                            StdString::strcpy( csEntry.name, pSymbol->Name );
+                            StdString::strcpy_safe( csEntry.name, pSymbol->Name, MENGINE_STACKWALK_MAX_NAMELEN );
                             (*pUnDecorateSymbolName)(pSymbol->Name, csEntry.undName, MENGINE_STACKWALK_MAX_NAMELEN, UNDNAME_NAME_ONLY);
                             (*pUnDecorateSymbolName)(pSymbol->Name, csEntry.undFullName, MENGINE_STACKWALK_MAX_NAMELEN, UNDNAME_COMPLETE);
                         }
@@ -411,13 +411,13 @@ namespace Mengine
                             if( (*pSymGetLineFromAddr64)(hProcess, frame.AddrPC.Offset, &offsetFromLine, &Line) == TRUE )
                             {
                                 csEntry.lineNumber = Line.LineNumber;
-                                StdString::strcpy( csEntry.lineFileName, Line.FileName );
+                                StdString::strcpy_safe( csEntry.lineFileName, Line.FileName, MENGINE_STACKWALK_MAX_NAMELEN );
                             }
                         }
 
                         if( Detail::GetModuleInfo( pSymGetModuleInfo64, hProcess, frame.AddrPC.Offset, &Module ) == TRUE )
                         {
-                            StdString::strcpy( csEntry.moduleName, Module.ModuleName );
+                            StdString::strcpy_safe( csEntry.moduleName, Module.ModuleName, MENGINE_STACKWALK_MAX_NAMELEN );
                         }
                     }
 

@@ -29,11 +29,11 @@ namespace Mengine
         {
             static MENGINE_THREAD_LOCAL Char message[4096 + 1] = {'\0'};
             Detail::getDocumentableMessage( _documentable, _identity, message, 4096 );
-            StdString::strcat( message, " [" );
-            StdString::strcat( message, _message );
-            StdString::strcat( message, "]" );
+            StdString::strcat_safe( message, " [", 4096 );
+            StdString::strcat_safe( message, _message, 4096 );
+            StdString::strcat_safe( message, "]", 4096 );
             return message;
-        
+
         }
         //////////////////////////////////////////////////////////////////////////
     }

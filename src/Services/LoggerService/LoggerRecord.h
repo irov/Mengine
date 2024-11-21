@@ -2,6 +2,8 @@
 
 #include "Interface/LoggerRecordInterface.h"
 
+#include "Config/Path.h"
+
 namespace Mengine
 {
     class LoggerRecord
@@ -27,7 +29,7 @@ namespace Mengine
         uint32_t m_flag;
         uint32_t m_filter;
         uint32_t m_color;
-        Char m_function[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path m_function = {'\0'};
         int32_t m_line;
         Char m_data[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
         size_t m_size;

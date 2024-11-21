@@ -13,6 +13,7 @@
 #include "Kernel/PluginHelper.h"
 
 #include "Config/StdIO.h"
+#include "Config/Path.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Win32CriticalErrorsMonitorPlugin, Mengine::Win32CriticalErrorsMonitorPlugin );
@@ -106,7 +107,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32CriticalErrorsMonitorPlugin::_initializePlugin()
     {
-        Char userPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path userPath = {'\0'};
         PLATFORM_SERVICE()
             ->getUserPath( userPath );
 

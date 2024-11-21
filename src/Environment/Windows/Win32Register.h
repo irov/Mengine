@@ -7,6 +7,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        bool Win32GetLocalMachineRegValue( const WChar * _path, const WChar * _key, Char * const _value, size_t _size );
+        bool Win32GetLocalMachineRegValue( const WChar * _path, const WChar * _key, Char * const _value, size_t _capacity );
     }
 }

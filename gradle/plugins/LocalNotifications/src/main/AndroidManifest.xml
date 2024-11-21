@@ -2,10 +2,10 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application>
-        <receiver android:name="org.Mengine.Plugin.LocalNotifications.NotificationPublisher" />
+        <receiver android:name="org.Mengine.Plugin.LocalNotifications.MengineLocalNotificationPublisher" />
 
         <service
-            android:name="org.Mengine.Plugin.LocalNotifications.NotificationJobService"
+            android:name="org.Mengine.Plugin.LocalNotifications.MengineLocalNotificationJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 </manifest>

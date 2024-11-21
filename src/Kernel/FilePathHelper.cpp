@@ -6,6 +6,7 @@
 #include "Config/StdIO.h"
 #include "Config/StdArg.h"
 #include "Config/StdString.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -36,7 +37,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FilePath stringizeFilePathFormat( const Char * _format, ... )
         {
-            Char str[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path str = {'\0'};
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );

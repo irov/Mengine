@@ -108,7 +108,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             return;
         }
 
-        Timer refreshTimer = m_plugin.scheduleAtFixedRate(m_showBannerDurationTime, () -> {
+        Timer refreshTimer = MengineUtils.scheduleAtFixedRate(activity, m_showBannerDurationTime, () -> {
             int refreshRequestId;
             String oldBanenrUrl;
             String newBannerUrl;

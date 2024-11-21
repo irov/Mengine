@@ -15,7 +15,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        size_t makeLoggerDateTimestamp( Char * const _timestamp, size_t _capacity )
+        void makeLoggerDateTimestamp( Char * const _timestamp, size_t _capacity )
         {
             PlatformDateTime dateTime;
             DATETIME_SYSTEM()
@@ -28,12 +28,10 @@ namespace Mengine
 
             String str_date = ss_date.str();
 
-            size_t copy_size = Helper::stringCopy( _timestamp, str_date.c_str(), _capacity );
-
-            return copy_size;
+            StdString::strcpy_safe( _timestamp, str_date.c_str(), _capacity );
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t makeFilePathDateTimestamp( Char * const _timestamp, size_t _capacity )
+        void makeFilePathDateTimestamp( Char * const _timestamp, size_t _capacity )
         {
             PlatformDateTime dateTime;
             DATETIME_SYSTEM()
@@ -49,9 +47,7 @@ namespace Mengine
 
             String str_date = ss_date.str();
             
-            size_t copy_size = Helper::stringCopy( _timestamp, str_date.c_str(), _capacity );
-
-            return copy_size;
+            StdString::strcpy_safe( _timestamp, str_date.c_str(), _capacity );
         }
         //////////////////////////////////////////////////////////////////////////
     }

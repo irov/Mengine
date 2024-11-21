@@ -23,7 +23,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/Stringalized.h"
-#include "Kernel/FilePathHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/VectorString.h"
 #include "Kernel/Stringstream.h"
@@ -43,6 +42,8 @@
 #include "Kernel/MT19937Randomizer.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/PluginHelper.h"
+
+#include "Config/Path.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_BOOTSTRAPPER_LOAD_CONFIG
@@ -765,7 +766,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::mountUserFileGroup_()
     {
-        Char userPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path userPath = {'\0'};
         size_t userPathLen = PLATFORM_SERVICE()
             ->getUserPath( userPath );
 
@@ -811,7 +812,7 @@ namespace Mengine
             return true;
         }
 
-        Char filePathDate[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path filePathDate = {'\0'};
         Helper::makeFilePathDateTimestamp( filePathDate, MENGINE_MAX_PATH );
 
         WString unicode_date;
@@ -890,7 +891,7 @@ namespace Mengine
         {
             m_loggerFile = fileLog;
 
-            Char fullLogFilename[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path fullLogFilename = {'\0'};
             userFileGroup->getFullPath( logFilename, fullLogFilename );
 
             LOGGER_INFO_PROTECTED( "bootstrapper", "write file log to: %s"
@@ -1087,7 +1088,7 @@ namespace Mengine
             return false;
         }
 
-        Char currentPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path currentPath = {'\0'};
         PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 

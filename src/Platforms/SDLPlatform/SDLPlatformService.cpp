@@ -56,6 +56,7 @@
 #include "Config/StdIO.h"
 #include "Config/Algorithm.h"
 #include "Config/Switch.h"
+#include "Config/Path.h"
 
 #include <clocale>
 #include <ctime>
@@ -108,7 +109,7 @@ namespace Mengine
     size_t SDLPlatformService::getCurrentPath( Char * const _currentPath ) const
     {
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        WChar unicode_currentPath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_currentPath = {L'\0'};
         DWORD unicode_currentPathLen = ::GetCurrentDirectory( MENGINE_MAX_PATH - 2, unicode_currentPath );
 
         if( unicode_currentPathLen == 0 )
@@ -156,7 +157,7 @@ namespace Mengine
 
         if( (developmentMode == true && OPTION_roaming == false) || OPTION_noroaming == true )
         {
-            Char currentPath[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path currentPath = {'\0'};
             size_t currentPathLen = this->getCurrentPath( currentPath );
 
             if( MENGINE_MAX_PATH <= currentPathLen + 5 )
@@ -166,9 +167,9 @@ namespace Mengine
                 return 0;
             }
 
-            StdString::strcpy( _userPath, currentPath );
-            StdString::strcat( _userPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME );
-            StdString::strchrcat( _userPath, MENGINE_PATH_DELIM_BACKSLASH );
+            StdString::strcpy_safe( _userPath, currentPath, MENGINE_MAX_PATH );
+            StdString::strcat_safe( _userPath, MENGINE_DEVELOPMENT_USER_FOLDER_NAME, MENGINE_MAX_PATH );
+            StdString::strchrcat_safe( _userPath, MENGINE_PATH_DELIM_BACKSLASH, MENGINE_MAX_PATH );
 
             size_t pathLen = StdString::strlen( _userPath );
 
@@ -196,7 +197,7 @@ namespace Mengine
 
         SDL_free( sdl_prefPath );
 
-        Char extraPreferencesFolderName[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path extraPreferencesFolderName = {'\0'};
         size_t ExtraPreferencesFolderNameLen = this->getExtraPreferencesFolderName( extraPreferencesFolderName );
 
         if( ExtraPreferencesFolderNameLen != 0 )
@@ -213,7 +214,7 @@ namespace Mengine
     {
         const Char * Project_ExtraPreferencesFolderName = CONFIG_VALUE( "Project", "ExtraPreferencesFolderName", "" );
 
-        MENGINE_ASSERTION_FATAL( Helper::isCorrectPathFolderA( Project_ExtraPreferencesFolderName ) == true, "invalid extra preferences folder name '%s'"
+        MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( Project_ExtraPreferencesFolderName ) == true, "invalid extra preferences folder name '%s'"
             , Project_ExtraPreferencesFolderName
         );
 
@@ -237,7 +238,7 @@ namespace Mengine
             return false;
         }
 
-        StdString::strncpy( _userLocale, locale->language, MENGINE_LOCALE_LANGUAGE_SIZE );
+        StdString::strcpy_safe( _userLocale, locale->language, MENGINE_LOCALE_LANGUAGE_SIZE );
 
         SDL_free( locale );
 
@@ -604,11 +605,12 @@ namespace Mengine
         }
 
         Char platformTags[1024 + 1] = {'\0'};
+        StdString::strcpy_safe( platformTags, "", 1024 );
 
         for( const ConstString & tag : m_platformTags.getValues() )
         {
-            StdString::strcat( platformTags, tag.c_str() );
-            StdString::strcat( platformTags, "-" );
+            StdString::strcat_safe( platformTags, tag.c_str(), 1024 );
+            StdString::strcat_safe( platformTags, "-", 1024 );
         }
 
         LOGGER_INFO( "platform", "platform tags: %s"
@@ -1648,7 +1650,7 @@ namespace Mengine
         MENGINE_UNUSED( _filePath );
 
 #if defined(MENGINE_PLATFORM_MACOS)
-        Char path_pictures[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path path_pictures = {'\0'};
         if( Helper::MacOSGetPicturesDirectory( path_pictures ) == false )
         {
             LOGGER_ERROR( "invalid get pictures directory" );
@@ -1656,7 +1658,7 @@ namespace Mengine
             return false;
         }
         
-        Char path_file[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path path_file = {'\0'};
         MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_pictures, _directoryPath, _filePath );
 
         if( Helper::MacOSSetDesktopWallpaper( path_file ) == false )
@@ -1682,7 +1684,7 @@ namespace Mengine
     bool SDLPlatformService::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
 #if defined(MENGINE_PLATFORM_MACOS)
-        Char path_pictures[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path path_pictures = {'\0'};
         if( Helper::MacOSGetPicturesDirectory( path_pictures ) == false )
         {
             LOGGER_ERROR( "invalid get pictures directory" );
@@ -1700,7 +1702,7 @@ namespace Mengine
             return false;
         };
 
-        Char path_file[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path path_file = {'\0'};
         MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_pictures, _directoryPath, _filePath );
 
         SDL_RWops * rwops = SDL_RWFromFile( path_file, "wb" );
@@ -1745,7 +1747,7 @@ namespace Mengine
     bool SDLPlatformService::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
 #if defined(MENGINE_PLATFORM_MACOS)
-        Char path_music[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path path_music = {'\0'};
         if( Helper::MacOSGetMusicDirectory( path_music ) == false )
         {
             LOGGER_ERROR( "invalid get music directory" );
@@ -1763,7 +1765,7 @@ namespace Mengine
             return false;
         };
 
-        Char path_file[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path path_file = {'\0'};
         MENGINE_SNPRINTF( path_file, MENGINE_MAX_PATH, "%s%s%s", path_music, _directoryPath, _filePath );
 
         SDL_RWops * rwops = SDL_RWFromFile( path_file, "wb" );

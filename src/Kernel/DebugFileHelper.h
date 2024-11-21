@@ -6,6 +6,7 @@
 #include "Kernel/PathString.h"
 
 #if defined(MENGINE_DEBUG)
+#   include "Config/Path.h"
 #   include "Config/DynamicCast.h"
 #endif
 
@@ -83,7 +84,7 @@ namespace Mengine
             MENGINE_UNUSED( _ptr );
 
 #if defined(MENGINE_DEBUG)
-            Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path fullPath = {'\0'};
 
             const FilePath & relationPath = Helper::getDebugRelationPath( _ptr );
             const FilePath & folderPath = Helper::getDebugFolderPath( _ptr );

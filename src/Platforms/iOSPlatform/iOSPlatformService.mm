@@ -94,7 +94,7 @@ namespace Mengine
     iOSPlatformService::~iOSPlatformService()
     {
     }
-    //////////////////////////////////////////////////////////////////////////    
+    //////////////////////////////////////////////////////////////////////////
     size_t iOSPlatformService::getCurrentPath( Char * const _currentPath ) const
     {
         NSString * path = [[NSBundle mainBundle] resourcePath];
@@ -126,7 +126,7 @@ namespace Mengine
         NSString * userPath = [first_path stringByAppendingPathComponent:@(Project_Company)];
         userPath = [userPath stringByAppendingPathComponent:@(Project_Name)];
         
-        Char extraPreferencesFolderName[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path extraPreferencesFolderName = {'\0'};
         size_t ExtraPreferencesFolderNameLen = this->getExtraPreferencesFolderName( extraPreferencesFolderName );
 
         if( ExtraPreferencesFolderNameLen != 0 )

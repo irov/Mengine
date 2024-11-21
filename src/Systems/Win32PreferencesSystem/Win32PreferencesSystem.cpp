@@ -160,7 +160,7 @@ namespace Mengine
         const Char * memory_buffer = preferenceMemory->getBuffer();
         size_t memory_size = preferenceMemory->getSize();
 
-        StdString::strncpy( _value, memory_buffer, _capacity );
+        StdString::strzcpy_safe( _value, memory_buffer, memory_size, _capacity );
 
         if( _size != nullptr )
         {

@@ -16,6 +16,8 @@
 #include "Kernel/ContentHelper.h"
 #include "Kernel/VocabularyHelper.h"
 
+#include "Config/Path.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -85,7 +87,7 @@ namespace Mengine
             }
 
             ConstString groupName;
-            Char utf8_ttfPath[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path utf8_ttfPath = {'\0'};
             if( PLATFORM_SERVICE()
                 ->getSystemFontPath( &groupName, ttfName, utf8_ttfPath ) == MENGINE_UNKNOWN_SIZE )
             {

@@ -112,11 +112,11 @@ namespace Mengine
         MENGINE_UNUSED( _nativeLibraryDir );
 
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-        Char mengineLibraryPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path mengineLibraryPath = {'\0'};
         Mengine::StdString::strcpy( mengineLibraryPath, _nativeLibraryDir );
         Mengine::StdString::strcat( mengineLibraryPath, "/libMengine.so" );
 
-        void * handleLibrary = ::dlopen(mengineLibraryPath, RTLD_GLOBAL);
+        void * handleLibrary = ::dlopen( mengineLibraryPath, RTLD_GLOBAL );
 
         if( handleLibrary == nullptr )
         {

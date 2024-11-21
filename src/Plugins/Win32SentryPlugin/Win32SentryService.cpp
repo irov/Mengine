@@ -24,6 +24,7 @@
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
+#include "Config/Path.h"
 
 #include "sentry.h"
 
@@ -153,7 +154,7 @@ namespace Mengine
 
         sentry_options_set_logger( options, &Detail::sentry_logger_func, nullptr );
 
-        Char userPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path userPath = {'\0'};
         size_t userPathLen = PLATFORM_SERVICE()
             ->getUserPath( userPath );
 
@@ -166,7 +167,7 @@ namespace Mengine
         );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        WChar unicode_sentryDatabasePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_sentryDatabasePath = {L'\0'};
         Helper::utf8ToUnicode( sentryDatabasePath, unicode_sentryDatabasePath, MENGINE_MAX_PATH, nullptr );
 
         sentry_options_set_database_pathw( options, unicode_sentryDatabasePath );
@@ -176,7 +177,7 @@ namespace Mengine
         sentry_options_set_database_path( options, str_sentryDatabasePath );
 #endif
 
-        Char currentPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path currentPath = {'\0'};
         size_t currentPathLen = PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 
@@ -196,7 +197,7 @@ namespace Mengine
         sentryHandlerPath.append( Win32SentryPlugin_Handler );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        WChar unicode_sentryHandlerPath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_sentryHandlerPath = {L'\0'};
         Helper::utf8ToUnicode( sentryHandlerPath, unicode_sentryHandlerPath, MENGINE_MAX_PATH, nullptr );
 
         sentry_options_set_handler_pathw( options, unicode_sentryHandlerPath );
@@ -217,18 +218,20 @@ namespace Mengine
 
         Char environment[128 + 1] = {'\0'};
 
+        StdString::strcpy_safe( environment, "", 128 );
+
 #if defined(MENGINE_BUILD_PUBLISH_ENABLE)
-        StdString::strcat( environment, "publish_" );
+        StdString::strcat_safe( environment, "publish_", 128 );
 #endif
 
 #if defined(MENGINE_MASTER_RELEASE_ENABLE)
-        StdString::strcat( environment, "master_" );
+        StdString::strcat_safe( environment, "master_", 128 );
 #endif
 
 #if defined(MENGINE_DEBUG)
-        StdString::strcat( environment, "debug" );
+        StdString::strcat_safe( environment, "debug", 128 );
 #else
-        StdString::strcat( environment, "release" );
+        StdString::strcat_safe( environment, "release", 128 );
 #endif
         
         sentry_options_set_environment( options, environment );

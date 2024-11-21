@@ -16,9 +16,7 @@ public class MengineGeneralDataProtectionRegulationPlugin extends MenginePlugin 
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        SharedPreferences settings = this.getPrivateSharedPreferences();
-
-        boolean GDPRPass = settings.getBoolean("gdpr_pass", false);
+        boolean GDPRPass = application.getPreferenceBoolean("gdpr_pass", false);
 
         m_passGDPR = GDPRPass;
 

@@ -4,10 +4,14 @@ import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePluginActivityListener;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -18,6 +22,7 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.PersistableBundle;
@@ -35,13 +40,11 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
-        this.cancelAll();
-
-        m_notificationPermission = activity.checkNotificationPermission();
-
-        if (m_notificationPermission == false) {
-            return;
-        }
+        activity.checkPermission(Manifest.permission.POST_NOTIFICATIONS, () -> {
+            MengineLocalNotificationsPlugin.this.startLocalNotifications(activity);
+        }, () -> {
+            MengineLocalNotificationsPlugin.this.logMessage("[POST_NOTIFICATIONS] permission denied");
+        });
     }
 
     @Override
@@ -50,11 +53,15 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
             return;
         }
 
-        if (intent.hasExtra(NotificationPublisher.NOTIFICATION_ID) == false) {
+        if (intent.hasExtra(MengineLocalNotificationPublisher.NOTIFICATION_ID) == false) {
             return;
         }
 
-        int id = intent.getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0);
+        int id = intent.getIntExtra(MengineLocalNotificationPublisher.NOTIFICATION_ID, 0);
+
+        this.logMessage("onNewIntent has notification: %d"
+            , id
+        );
 
         this.pythonCall("onLocalNotificationsPress", id);
     }
@@ -71,7 +78,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
             return;
         }
 
-        PersistableBundle bundle = NotificationJobService.notificationBundle(id, title, content);
+        PersistableBundle bundle = MengineLocalNotificationJobService.notificationBundle(id, title, content);
 
         this.scheduleJobNotification(delay, bundle);
     }
@@ -88,10 +95,10 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
 
         MengineActivity activity = this.getMengineActivity();
         
-        Intent notificationIntent = new Intent(activity, NotificationPublisher.class);
+        Intent notificationIntent = new Intent(activity, MengineLocalNotificationPublisher.class);
 
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, id);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        notificationIntent.putExtra(MengineLocalNotificationPublisher.NOTIFICATION_ID, id);
+        notificationIntent.putExtra(MengineLocalNotificationPublisher.NOTIFICATION, notification);
 
         int pendingFlags = PendingIntent.FLAG_UPDATE_CURRENT;
 
@@ -121,15 +128,11 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
         notificationManager.notify(id, notification);
     }
     
-    public void run() {
-        this.logMessage("run");
+    public void startLocalNotifications(MengineActivity activity) {
+        this.cancelAll();
 
-        if (m_notificationPermission == false) {
-            return;
-        }
+        m_notificationPermission = true;
 
-        MengineActivity activity = this.getMengineActivity();
-        
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -143,14 +146,14 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
         }
 
         Intent intent = activity.getIntent();
-        
-        if (intent.hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
-            int id = intent.getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0);
 
-            this.logMessage("run has notification: %d"
+        if (intent.hasExtra(MengineLocalNotificationPublisher.NOTIFICATION_ID)) {
+            int id = intent.getIntExtra(MengineLocalNotificationPublisher.NOTIFICATION_ID, 0);
+
+            this.logMessage("start with notification: %d"
                 , id
             );
-        
+
             this.pythonCall("onLocalNotificationsPress", id);
         }
     }
@@ -171,7 +174,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
     public static Notification getNotification(Context context, int id, String title, String content) {
         Intent intent = new Intent(context, MengineActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.putExtra(NotificationPublisher.NOTIFICATION_ID, id);
+        intent.putExtra(MengineLocalNotificationPublisher.NOTIFICATION_ID, id);
 
         int pendingFlags = PendingIntent.FLAG_UPDATE_CURRENT;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -202,7 +205,7 @@ public class MengineLocalNotificationsPlugin extends MenginePlugin implements Me
         MengineActivity activity = this.getMengineActivity();
 
         int jobId = (int)SystemClock.elapsedRealtime();
-        ComponentName jobService = new ComponentName(activity, NotificationJobService.class);
+        ComponentName jobService = new ComponentName(activity, MengineLocalNotificationJobService.class);
 
         JobInfo.Builder builder = new JobInfo.Builder(jobId, jobService);
         JobInfo jobInfo = builder

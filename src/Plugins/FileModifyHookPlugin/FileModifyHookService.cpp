@@ -11,6 +11,7 @@
 #include "Kernel/ConfigHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/Path.h"
 
 #define FILEMODIFYHOOK_THREAD_NAME "FileModifyHook"
 
@@ -113,7 +114,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileModifyHookService::removeFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
-        Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path fullPath = {'\0'};
         _fileGroup->getFullPath( _filePath, fullPath );
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );

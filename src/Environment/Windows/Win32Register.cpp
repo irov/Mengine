@@ -9,7 +9,7 @@ namespace Mengine
 {
     namespace Helper
     {
-        bool Win32GetLocalMachineRegValue( const WChar * _path, const WChar * _key, Char * const _value, size_t _size )
+        bool Win32GetLocalMachineRegValue( const WChar * _path, const WChar * _key, Char * const _value, size_t _capacity )
         {
             HKEY hKey;
             LSTATUS lRes = ::RegOpenKeyExW( HKEY_LOCAL_MACHINE, _path, 0, KEY_READ, &hKey );
@@ -45,7 +45,7 @@ namespace Mengine
                 return false;
             }
 
-            Helper::unicodeToUtf8( unicode_value, _value, _size );
+            Helper::unicodeToUtf8( unicode_value, _value, _capacity );
 
             return true;
         }

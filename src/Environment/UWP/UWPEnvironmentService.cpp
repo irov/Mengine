@@ -186,8 +186,8 @@ namespace Mengine
         DWORD VolumeSerialNumber = 0;
         DWORD VolumeMaxComponentLen = 0;
         DWORD VolumeFileSystemFlags = 0;
-        CHAR VolumeFileSystemNameBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
-        CHAR VolumeNameBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
+        CHAR VolumeFileSystemNameBuffer[MENGINE_MAX_PATH + 1] = {'\0'};
+        CHAR VolumeNameBuffer[MENGINE_MAX_PATH + 1] = {'\0'};
 
         if( ::GetVolumeInformationA( NULL
             , VolumeNameBuffer
@@ -202,7 +202,7 @@ namespace Mengine
                 , VolumeSerialNumber
             );
 
-            Char VolumeSerialNumberBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
+            Path VolumeSerialNumberBuffer = {'\0'};
             MENGINE_SNPRINTF( VolumeSerialNumberBuffer, MENGINE_MAX_PATH, "%u", VolumeSerialNumber );
 
             fingerprintGarbage.append( "_" );

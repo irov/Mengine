@@ -20,6 +20,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
+#include "Config/Path.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FileSystem, Mengine::Win32FileSystem );
@@ -41,7 +42,7 @@ namespace Mengine
 
         VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), factoryGlobalFileGroupDirectory, MENGINE_DOCUMENT_FACTORABLE );
 
-        Char currentPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path currentPath = {'\0'};
         size_t currentPathLen = PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 
@@ -76,13 +77,13 @@ namespace Mengine
             , "invalid directory '%s'", _directory
         );
 
-        WChar unicode_basePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_basePath = {L'\0'};
         if( Helper::utf8ToUnicode( _basePath, unicode_basePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_directory[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_directory = {L'\0'};
         if( Helper::utf8ToUnicode( _directory, unicode_directory, MENGINE_MAX_PATH ) == false )
         {
             return false;
@@ -114,13 +115,13 @@ namespace Mengine
             , "invalid directory '%s'", _directory
         );
 
-        WChar unicode_basePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_basePath = {L'\0'};
         if( Helper::utf8ToUnicode( _basePath, unicode_basePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_directory[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_directory = {L'\0'};
         if( Helper::utf8ToUnicode( _directory, unicode_directory, MENGINE_MAX_PATH ) == false )
         {
             return false;
@@ -133,7 +134,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileSystem::existFile( const Char * _filePath )
     {
-        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_path = {L'\0'};
         if( Helper::utf8ToUnicode( _filePath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
@@ -150,13 +151,13 @@ namespace Mengine
             , _filePath
         );
 
-        WChar unicode_filePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_filePath = {L'\0'};
         if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_correctFilePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_correctFilePath = {L'\0'};
         Helper::pathCorrectForwardslashToW( unicode_correctFilePath, unicode_filePath );
 
         if( ::DeleteFileW( unicode_correctFilePath ) == FALSE )
@@ -179,22 +180,22 @@ namespace Mengine
             , _newFilePath
         );
 
-        WChar unicode_oldFilePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_oldFilePath = {L'\0'};
         if( Helper::utf8ToUnicode( _oldFilePath, unicode_oldFilePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_correctOldFilePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_correctOldFilePath = {L'\0'};
         Helper::pathCorrectForwardslashToW( unicode_correctOldFilePath, unicode_oldFilePath );
 
-        WChar unicode_newFilePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_newFilePath = {L'\0'};
         if( Helper::utf8ToUnicode( _newFilePath, unicode_newFilePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_correctNewFilePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_correctNewFilePath = {L'\0'};
         Helper::pathCorrectForwardslashToW( unicode_correctNewFilePath, unicode_newFilePath );
 
 #if defined(MENGINE_DEBUG)
@@ -250,30 +251,30 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileSystem::findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
-        WChar unicode_base[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_base = {L'\0'};
         if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_mask[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_mask = {L'\0'};
         if( Helper::utf8ToUnicode( _mask, unicode_mask, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_path[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_path = {L'\0'};
         if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_fullbase[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_fullbase = {L'\0'};
         ::GetFullPathNameW( unicode_base, MENGINE_MAX_PATH, unicode_fullbase, NULL );
 
         Helper::LambdaListDirectoryFilePath lambda_listdirectory = [_lambda]( const WChar * _filePath )
         {
-            Char utf8_filepath[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path utf8_filepath = {'\0'};
             if( Helper::unicodeToUtf8( _filePath, utf8_filepath, MENGINE_MAX_PATH ) == false )
             {
                 return false;
@@ -299,7 +300,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint64_t Win32FileSystem::getFileTime( const Char * _filePath ) const
     {
-        WChar unicode_filePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath unicode_filePath = {L'\0'};
         Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH );
 
         HANDLE handle = ::CreateFileW( unicode_filePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );

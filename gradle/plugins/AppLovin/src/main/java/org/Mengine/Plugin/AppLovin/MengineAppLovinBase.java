@@ -192,7 +192,7 @@ public class MengineAppLovinBase {
 
         String message = sb.toString();
 
-        m_plugin.logError(message);
+        m_plugin.logMessage(message);
     }
 
     protected void logMaxAd(String callback, @NonNull MaxAd ad) {
@@ -269,7 +269,7 @@ public class MengineAppLovinBase {
 
         String message = sb.toString();
 
-        m_plugin.logWarning(message);
+        m_plugin.logMessage(message);
     }
 
     protected void writeParams(StringBuilder sb, Map<String, Object> params) {

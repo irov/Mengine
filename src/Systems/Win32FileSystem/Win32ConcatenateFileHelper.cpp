@@ -7,6 +7,7 @@
 #include "Kernel/MemoryCopy.h"
 
 #include "Config/StdString.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -47,7 +48,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         size_t Win32ConcatenateFilePathW( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * const _concatenatePath, size_t _capacity )
         {
-            Char utf8_filePath[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path utf8_filePath = {'\0'};
             size_t utf8_filePathLen = Helper::Win32ConcatenateFilePathA( _relationPath, _folderPath, _filePath, utf8_filePath, MENGINE_MAX_PATH );
 
             if( utf8_filePathLen == MENGINE_PATH_INVALID_LENGTH )
@@ -103,7 +104,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         size_t Win32ConcatenateFilePathTempW( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * const _concatenatePath, size_t _capacity )
         {
-            Char utf8_filePath[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path utf8_filePath = {'\0'};
             size_t utf8_filePathLen = Helper::Win32ConcatenateFilePathTempA( _relationPath, _folderPath, _filePath, utf8_filePath, MENGINE_MAX_PATH );
 
             if( utf8_filePathLen == MENGINE_PATH_INVALID_LENGTH )

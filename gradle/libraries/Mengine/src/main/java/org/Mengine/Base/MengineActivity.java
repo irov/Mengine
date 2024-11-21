@@ -23,6 +23,8 @@ import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -298,15 +300,29 @@ public class MengineActivity extends AppCompatActivity {
         return consent;
     }
 
-    public boolean checkNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED;
-        } else {
-            return true;
+    public void checkPermission(String permission, Runnable onSuccess, Runnable onFailure) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            onSuccess.run();
+
+            return;
         }
+
+        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
+            onSuccess.run();
+
+            return;
+        }
+
+        ActivityResultLauncher<String> requestPermissionLauncher =
+            this.registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted == true) {
+                    onSuccess.run();
+                } else {
+                    onFailure.run();
+                }
+            });
+
+        requestPermissionLauncher.launch(permission);
     }
 
     @Override

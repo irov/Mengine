@@ -76,7 +76,7 @@ namespace Mengine
 
         VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), factoryGlobalFileGroupDirectory, MENGINE_DOCUMENT_FACTORABLE );
 
-        Char utf8_currentPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path utf8_currentPath = {'\0'};
         PLATFORM_SERVICE()
             ->getCurrentPath( utf8_currentPath );
         
@@ -102,10 +102,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileSystem::existDirectory( const Char * _basePath, const Char * _directory ) const
     {
-        Char correctBasePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Path correctBasePath = {'\0'};
         Helper::pathCorrectBackslashToA( correctBasePath, _basePath );
 
-        Char correctDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Path correctDirectory = {'\0'};
         Helper::pathCorrectBackslashToA( correctDirectory, _directory );
 
         size_t correctDirectoryLen = StdString::strlen( correctDirectory );
@@ -114,8 +114,8 @@ namespace Mengine
         {
             return true;
         }
-        
-        Char pathFull[MENGINE_MAX_PATH + 1] = {'\0'};
+
+        Path pathFull = {'\0'};
         Helper::pathCombineA( pathFull, correctBasePath, correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
         size_t pathFullLen = StdString::strlen( pathFull );
@@ -132,10 +132,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileSystem::createDirectory( const Char * _basePath, const Char * _directory )
     {
-        Char correctBasePath[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Path correctBasePath = {'\0'};
         Helper::pathCorrectBackslashToA( correctBasePath, _basePath );
 
-        Char correctDirectory[MENGINE_MAX_PATH + 1] = {L'\0'};
+        Path correctDirectory = {'\0'};
         Helper::pathCorrectBackslashToA( correctDirectory, _directory );
 
         size_t correctDirectoryLen = StdString::strlen( correctDirectory );
@@ -144,8 +144,8 @@ namespace Mengine
         {
             return true;
         }
-        
-        Char pathTestDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
+
+        Path pathTestDirectory = {'\0'};
         Helper::pathCombineA( pathTestDirectory, correctBasePath, correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
         if( Detail::isDirectoryFullpath( pathTestDirectory ) == true )
@@ -156,7 +156,7 @@ namespace Mengine
         Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
         uint32_t paths_count = 0;
-        Char paths[16][MENGINE_MAX_PATH + 1];
+        Path paths[16];
 
         for( ;; )
         {
@@ -181,7 +181,7 @@ namespace Mengine
         {
             const Char * path = paths[index - 1];
 
-            Char pathCreateDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path pathCreateDirectory = {'\0'};
             Helper::pathCombineA( pathCreateDirectory, correctBasePath, path, MENGINE_PATH_DELIM_BACKSLASH );
 
             if( Detail::createDirectoryFullpath( pathCreateDirectory ) == false )
@@ -195,7 +195,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileSystem::existFile( const Char * _filePath )
     {
-        Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path pathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
         
         if( [[NSFileManager defaultManager] fileExistsAtPath:@(pathCorrect)] == NO )
@@ -208,7 +208,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileSystem::removeFile( const Char * _filePath )
     {
-        Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path pathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
         NSError * error = nil;
@@ -227,10 +227,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileSystem::moveFile( const Char * _oldFilePath, const Char * _newFilePath )
     {
-        Char oldPathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path oldPathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( oldPathCorrect, _oldFilePath );
 
-        Char newPathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path newPathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( newPathCorrect, _newFilePath );
 
         NSFileManager * fileManager = [NSFileManager defaultManager];
@@ -278,7 +278,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint64_t AppleFileSystem::getFileTime( const Char * _filePath ) const
     {
-        Char correctFilePath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path correctFilePath = {'\0'};
         Helper::pathCorrectBackslashToA( correctFilePath, _filePath );
 
         NSFileManager * fileManager = [NSFileManager defaultManager];

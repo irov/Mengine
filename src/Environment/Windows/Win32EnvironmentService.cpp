@@ -8,6 +8,7 @@
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
+#include "Config/Path.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( EnvironmentService, Mengine::Win32EnvironmentService );
@@ -193,8 +194,8 @@ namespace Mengine
         DWORD VolumeSerialNumber = 0;
         DWORD VolumeMaxComponentLen = 0;
         DWORD VolumeFileSystemFlags = 0;
-        CHAR VolumeFileSystemNameBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
-        CHAR VolumeNameBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
+        CHAR VolumeFileSystemNameBuffer[MENGINE_MAX_PATH + 1] = {'\0'};
+        CHAR VolumeNameBuffer[MENGINE_MAX_PATH + 1] = {'\0'};
 
         if( ::GetVolumeInformationA( NULL
             , VolumeNameBuffer
@@ -209,7 +210,7 @@ namespace Mengine
                 , VolumeSerialNumber
             );
 
-            Char VolumeSerialNumberBuffer[MENGINE_MAX_PATH + 1] = {L'\0'};
+            Path VolumeSerialNumberBuffer = {'\0'};
             Helper::stringalized( (uint32_t)VolumeSerialNumber, VolumeSerialNumberBuffer, MENGINE_MAX_PATH );
 
             fingerprintGarbage.append( "_" );

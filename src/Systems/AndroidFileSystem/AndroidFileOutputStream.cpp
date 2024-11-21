@@ -34,7 +34,7 @@ namespace Mengine
         this->setDebugFilePath( _filePath );
 #endif
 
-        Char fullPath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path fullPath = {'\0'};
         if( Helper::concatenateFilePath( {_relationPath, _folderPath, _filePath}, fullPath ) == false )
         {
             LOGGER_ERROR( "invalid concatenate filePath '%s:%s'"

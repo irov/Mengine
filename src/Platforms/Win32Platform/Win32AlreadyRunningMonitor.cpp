@@ -4,6 +4,7 @@
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -21,7 +22,7 @@ namespace Mengine
     bool Win32AlreadyRunningMonitor::initialize( EAlreadyRunningPolicy _policy, const WChar * _windowClassName, const WChar * _projectTitle, bool * const _stop )
     {
         // try to create mutex to sure that we are not running already
-        WChar mutexName[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath mutexName = {L'\0'};
         StdString::wcscpy( mutexName, L"Mengine_ARM_Mutex_" );
         StdString::wcscat( mutexName, _windowClassName );
         StdString::wcscat( mutexName, _projectTitle );

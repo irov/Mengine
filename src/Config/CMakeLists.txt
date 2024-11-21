@@ -92,6 +92,7 @@ src
     Utf8.h
     Utf16.h
     Utf32.h
+    Path.h
     Stringz.h
     Typedef.h
     Typeinfo.h

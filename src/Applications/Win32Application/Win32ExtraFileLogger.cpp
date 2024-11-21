@@ -10,6 +10,7 @@
 
 #include "Config/StdIO.h"
 #include "Config/StdString.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -27,7 +28,7 @@ namespace Mengine
     {
         const Char * OPTION_extralog = GET_OPTION_VALUE( "extralog", "" );
 
-        WChar UNICODE_setuplog[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath UNICODE_setuplog = {L'\0'};
         Helper::utf8ToUnicode( OPTION_extralog, UNICODE_setuplog, MENGINE_MAX_PATH );
 
         HANDLE hLogFile = Helper::Win32CreateFile( UNICODE_setuplog, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, CREATE_ALWAYS );
@@ -93,7 +94,7 @@ namespace Mengine
 
         if( message.flag & LFLAG_FUNCTIONSTAMP )
         {
-            Char functionstamp[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path functionstamp = {'\0'};
             Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
             this->writeMessage_( functionstamp );
             this->writeMessage_( " " );

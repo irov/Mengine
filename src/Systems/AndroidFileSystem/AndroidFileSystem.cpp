@@ -11,6 +11,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
+#include "Config/Path.h"
 
 #include <sys/stat.h>
 #include <dlfcn.h>
@@ -105,10 +106,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileSystem::existDirectory( const Char * _basePath, const Char * _directory ) const
     {
-        Char correctBasePath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path correctBasePath = {'\0'};
         Helper::pathCorrectBackslashToA( correctBasePath, _basePath );
 
-        Char correctDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path correctDirectory = {'\0'};
         Helper::pathCorrectBackslashToA( correctDirectory, _directory );
 
         Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
@@ -125,7 +126,7 @@ namespace Mengine
             return true;
         }
 
-        Char pathFull[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path pathFull = {'\0'};
         Helper::pathCombineA( pathFull, correctBasePath, correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
         bool exist = Detail::isDirectoryFullpath( pathFull );
@@ -135,10 +136,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileSystem::createDirectory( const Char * _basePath, const Char * _directory )
     {
-        Char correctBasePath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path correctBasePath = {'\0'};
         Helper::pathCorrectBackslashToA( correctBasePath, _basePath );
 
-        Char correctDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path correctDirectory = {'\0'};
         Helper::pathCorrectBackslashToA( correctDirectory, _directory );
 
         size_t correctDirectoryLen = StdString::strlen( correctDirectory );
@@ -155,7 +156,7 @@ namespace Mengine
             return true;
         }
 
-        Char pathTestDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path pathTestDirectory = {'\0'};
         Helper::pathCombineA( pathTestDirectory, correctBasePath, correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
         if( Detail::isDirectoryFullpath( pathTestDirectory ) == true )
@@ -166,7 +167,7 @@ namespace Mengine
         Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
 
         uint32_t paths_count = 0;
-        Char paths[16][MENGINE_MAX_PATH + 1];
+        Path paths[16];
 
         for( ;; )
         {
@@ -191,7 +192,7 @@ namespace Mengine
         {
             const Char * path = paths[index - 1];
 
-            Char pathCreateDirectory[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path pathCreateDirectory = {'\0'};
             Helper::pathCombineA( pathCreateDirectory, correctBasePath, path, MENGINE_PATH_DELIM_BACKSLASH );
 
             if( Detail::createDirectoryFullpath( pathCreateDirectory ) == false )
@@ -205,7 +206,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileSystem::existFile( const Char * _filePath )
     {
-        Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path pathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
         bool exist = Detail::isFileFullpath( pathCorrect );
@@ -215,7 +216,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileSystem::removeFile( const Char * _filePath )
     {
-        Char pathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path pathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( pathCorrect, _filePath );
 
         int result = ::remove( pathCorrect );
@@ -230,10 +231,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileSystem::moveFile( const Char * _oldFilePath, const Char * _newFilePath )
     {
-        Char oldPathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path oldPathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( oldPathCorrect, _oldFilePath );
 
-        Char newPathCorrect[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path newPathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( newPathCorrect, _newFilePath );
 
         struct stat sb;

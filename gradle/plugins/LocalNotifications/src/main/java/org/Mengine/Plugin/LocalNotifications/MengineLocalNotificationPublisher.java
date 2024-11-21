@@ -8,7 +8,7 @@ import android.content.Intent;
 
 import org.Mengine.Base.MengineUtils;
 
-public class NotificationPublisher extends BroadcastReceiver {
+public class MengineLocalNotificationPublisher extends BroadcastReceiver {
     public static String NOTIFICATION_ID = "NOTIFICATION_ID";
     public static String NOTIFICATION = "notification";
 

@@ -39,7 +39,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void getDocumentableMessage( const Documentable * _documentable, const Identity * _identity, Char * const _message, size_t _capacity )
         {
-            StdString::strncpy( _message, "", _capacity );
+            StdString::strcpy_safe( _message, "", _capacity );
 
             const DocumentInterfacePtr & document = _documentable->getDocument();
 

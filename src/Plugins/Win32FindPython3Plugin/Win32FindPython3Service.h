@@ -4,6 +4,8 @@
 
 #include "Kernel/ServiceBase.h"
 
+#include "Config/Path.h"
+
 namespace Mengine
 {
     class Win32FindPython3Service
@@ -27,12 +29,12 @@ namespace Mengine
         void getPython3DllPathA( Char * const _path ) const override;
 
     protected:
-        Char m_python3ExecutablePathA[MENGINE_MAX_PATH + 1] = {'\0'};
-        Char m_python3LibraryPathA[MENGINE_MAX_PATH + 1] = {'\0'};
-        Char m_python3DllPathA[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path m_python3ExecutablePathA = {'\0'};
+        Path m_python3LibraryPathA = {'\0'};
+        Path m_python3DllPathA = {'\0'};
 
-        WChar m_python3ExecutablePathW[MENGINE_MAX_PATH + 1] = {L'\0'};
-        WChar m_python3LibraryPathW[MENGINE_MAX_PATH + 1] = {L'\0'};
-        WChar m_python3DllPathW[MENGINE_MAX_PATH + 1] = {L'\0'};
+        WPath m_python3ExecutablePathW = {L'\0'};
+        WPath m_python3LibraryPathW = {L'\0'};
+        WPath m_python3DllPathW = {L'\0'};
     };
 }

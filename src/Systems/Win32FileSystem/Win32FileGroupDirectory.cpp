@@ -3,6 +3,8 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileSystemInterface.h"
 
+#include "Environment/Windows/WindowsIncluder.h"
+
 #include "Win32ConcatenateFileHelper.h"
 #include "Win32FileInputStream.h"
 #include "Win32FileOutputStream.h"
@@ -18,7 +20,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Stringalized.h"
 
-#include "Environment/Windows/WindowsIncluder.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -73,7 +75,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::existFile( const FilePath & _filePath, bool _recursive ) const
     {
-        Char utf8_filePath[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path utf8_filePath = {'\0'};
         this->getFullPath( _filePath, utf8_filePath );
 
         bool result = FILE_SYSTEM()
@@ -176,7 +178,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
-        Char fullPathBase[MENGINE_MAX_PATH + 1] = {'\0'};
+        Path fullPathBase = {'\0'};
         this->getFullPath( FilePath::none(), fullPathBase );
 
         Helper::pathCorrectForwardslashA( fullPathBase );

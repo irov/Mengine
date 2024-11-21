@@ -6,6 +6,7 @@
 #include "Kernel/LoggerHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -87,7 +88,7 @@ namespace Mengine
 
         if( message.flag & ELoggerFlag::LFLAG_FUNCTIONSTAMP )
         {
-            Char functionstamp[MENGINE_MAX_PATH + 1] = {'\0'};
+            Path functionstamp = {'\0'};
             size_t functionstampSize = Helper::makeLoggerFunctionStamp( message.function, message.line, "%s[%d]", functionstamp, 0, MENGINE_MAX_PATH );
             m_stream->write( functionstamp, functionstampSize );
             m_stream->write( " ", 1 );

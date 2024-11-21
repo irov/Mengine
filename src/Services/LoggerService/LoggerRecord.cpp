@@ -28,7 +28,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( _message.data, "invalid initialize data" );
 
         m_timestamp = _message.timestamp;
-        StdString::strncpy( m_category, _message.category, MENGINE_LOGGER_MAX_CATEGORY );
+        StdString::strcpy_safe( m_category, _message.category, MENGINE_LOGGER_MAX_CATEGORY );
         m_threadName = _message.threadName;
         m_level = _message.level;
         m_flag = _message.flag;
@@ -37,7 +37,7 @@ namespace Mengine
 
         if( _message.function != nullptr )
         {
-            StdString::strncpy( m_function, _message.function, MENGINE_MAX_PATH );
+            StdString::strcpy_safe( m_function, _message.function, MENGINE_MAX_PATH );
         }
         else
         {
@@ -46,7 +46,7 @@ namespace Mengine
 
         m_line = _message.line;
 
-        StdString::strncpy( m_data, _message.data, _message.size );
+        StdString::strzcpy_safe( m_data, _message.data, _message.size, MENGINE_LOGGER_MAX_MESSAGE );
 
         m_size = _message.size;
     }

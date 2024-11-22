@@ -1,6 +1,5 @@
 package org.Mengine.Plugin.Facebook;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -253,8 +252,6 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                     , value
                     , value == null ? "null" : value.getClass()
                 );
-
-                continue;
             }
         }
     }

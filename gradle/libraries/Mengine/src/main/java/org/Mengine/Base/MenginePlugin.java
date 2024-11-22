@@ -1,12 +1,8 @@
 package org.Mengine.Base;
 
-import android.content.SharedPreferences;
-
 import androidx.annotation.Size;
 
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MenginePlugin implements MenginePluginInterface {
     private MengineApplication m_application;

@@ -81,19 +81,17 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     public void setCustomKey(String key, Object value) {
         if (value == null) {
             FirebaseCrashlytics.getInstance().setCustomKey(key, "null");
-        } else if (value instanceof Boolean) {
-            FirebaseCrashlytics.getInstance().setCustomKey(key, (Boolean)value);
-        } else if (value instanceof Integer) {
-            FirebaseCrashlytics.getInstance().setCustomKey(key, (Integer)value);
-        } else if (value instanceof Long) {
-            FirebaseCrashlytics.getInstance().setCustomKey(key, (Long)value);
-        } else if (value instanceof Float) {
-            FirebaseCrashlytics.getInstance().setCustomKey(key, (Float)value);
-        } else if (value instanceof Double) {
-            FirebaseCrashlytics.getInstance().setCustomKey(key, (Double)value);
-        } else if (value instanceof String) {
-            String stringValue = (String)value;
-
+        } else if (value instanceof Boolean booleanValue) {
+            FirebaseCrashlytics.getInstance().setCustomKey(key, booleanValue);
+        } else if (value instanceof Integer integerValue) {
+            FirebaseCrashlytics.getInstance().setCustomKey(key, integerValue);
+        } else if (value instanceof Long longValue) {
+            FirebaseCrashlytics.getInstance().setCustomKey(key, longValue);
+        } else if (value instanceof Float floatValue) {
+            FirebaseCrashlytics.getInstance().setCustomKey(key, floatValue);
+        } else if (value instanceof Double doubleValue) {
+            FirebaseCrashlytics.getInstance().setCustomKey(key, doubleValue);
+        } else if (value instanceof String stringValue) {
             if (stringValue.length() > 1024) {
                 String stringValue1024 = stringValue.substring(0, 1024);
 

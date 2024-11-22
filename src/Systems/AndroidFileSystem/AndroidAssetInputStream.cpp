@@ -11,6 +11,8 @@
 #include "Kernel/DebugFileHelper.h"
 #include "Kernel/AssertionNotImplemented.h"
 
+#include "Config/Path.h"
+
 #include "stdex/memorycopy.h"
 
 namespace Mengine

@@ -9,6 +9,8 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/DebugFileHelper.h"
 
+#include "Config/Path.h"
+
 #include "stdex/memorycopy.h"
 
 #include <sys/stat.h>

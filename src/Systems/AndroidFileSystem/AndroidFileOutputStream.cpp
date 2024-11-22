@@ -8,6 +8,8 @@
 #include "Kernel/ThreadGuardScope.h"
 #include "Kernel/NotificationHelper.h"
 
+#include "Config/Path.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

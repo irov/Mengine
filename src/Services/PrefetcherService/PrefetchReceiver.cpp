@@ -37,10 +37,10 @@ namespace Mengine
     {
         if( m_prefetchRefcount.decref() != 0 )
         {
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

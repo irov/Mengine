@@ -498,7 +498,7 @@ namespace Mengine
             return false;
         }
 
-        if( receiver->release() == true )
+        if( receiver->release() == false )
         {
             return true;
         }

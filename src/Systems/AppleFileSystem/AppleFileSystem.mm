@@ -15,6 +15,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
+#include "Config/Path.h"
 
 #import <Foundation/Foundation.h>
 

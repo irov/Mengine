@@ -3,6 +3,8 @@
 #import "Environment/Apple/AppleUserDefaults.h"
 #import "Environment/Apple/AppleString.h"
 
+#include "Config/StdString.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PreferencesSystem, Mengine::ApplePreferencesSystem );
 //////////////////////////////////////////////////////////////////////////
@@ -80,7 +82,7 @@ namespace Mengine
 
         const Char * value_str = [apple_value UTF8String];
 
-        Helper::stringCopy( _value, value_str, _capacity );
+        StdString::strcpy_safe( _value, value_str, _capacity );
         
         if( _size != nullptr )
         {

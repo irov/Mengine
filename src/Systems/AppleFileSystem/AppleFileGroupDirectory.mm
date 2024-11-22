@@ -17,6 +17,8 @@
 #include "Kernel/PathString.h"
 #include "Kernel/DocumentHelper.h"
 
+#include "Config/Path.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

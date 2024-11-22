@@ -3,6 +3,7 @@
 #include "Kernel/LoggerHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/Path.h"
 
 #import <Foundation/Foundation.h>
 
@@ -26,6 +27,7 @@ namespace Mengine
         
         Char buffer[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
 
+#ifdef MENGINE_DEBUG
         if( message.level == LM_ERROR )
         {
             StdString::strcat( buffer, "🔴" );
@@ -36,6 +38,7 @@ namespace Mengine
             StdString::strcat( buffer, "🟡" );
             StdString::strcat( buffer, " " );
         }
+#endif
         
         if( message.flag & LFLAG_TIMESTAMP )
         {

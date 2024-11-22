@@ -8,6 +8,8 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/FilePathHelper.h"
 
+#include "Config/Path.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

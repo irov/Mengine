@@ -47,6 +47,7 @@
 #include "Config/StdIO.h"
 #include "Config/Algorithm.h"
 #include "Config/Switch.h"
+#include "Config/Path.h"
 
 #include <clocale>
 #include <ctime>

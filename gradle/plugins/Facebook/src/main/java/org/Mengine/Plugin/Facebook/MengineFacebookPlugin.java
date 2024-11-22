@@ -38,6 +38,7 @@ import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginPushTokenListener;
 import org.Mengine.Base.MenginePluginRemoteMessageListener;
 import org.Mengine.Base.MenginePluginSessionIdListener;
+import org.Mengine.Base.MengineUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -82,14 +83,10 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         LoginManager.getInstance().retrieveLoginStatus(activity, new LoginStatusCallback() {
             @Override
             public void onCompleted(@NonNull AccessToken accessToken) {
-                // User was previously logged in, can log them in directly here.
-                // If this callback is called, a popup notification appears that says
-                // "Logged in as <User Name>"
-
                 MengineFacebookPlugin.this.logMessage("retrieve login [onCompleted] application: %s user: %s token: %s"
                     , accessToken.getApplicationId()
                     , accessToken.getUserId()
-                    , accessToken.getToken()
+                    , MengineUtils.getDebugValue(accessToken.getToken(), "[REDACTED]")
                 );
 
                 MengineFacebookPlugin.this.activateSemaphore("FacebookRetrieveLoginCompleted");
@@ -112,8 +109,8 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
                 MengineFacebookPlugin.this.logMessage("onCurrentAccessTokenChanged old token: %s new token: %s"
-                    , oldToken
-                    , newToken
+                    , MengineUtils.getDebugValue(oldToken, "[REDACTED]")
+                    , MengineUtils.getDebugValue(newToken, "[REDACTED]")
                 );
 
                 String oldTokenString = oldToken != null ? oldToken.getToken() : "";
@@ -155,7 +152,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 MengineFacebookPlugin.this.logMessage("login [onSuccess] application: %s user: %s token: %s"
                     , applicationId
                     , userId
-                    , token
+                    , MengineUtils.getDebugValue(token, "[REDACTED]")
                 );
 
                 MengineFacebookPlugin.this.pythonCall("onFacebookLoginSuccess", token);
@@ -214,13 +211,6 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onActivityResultBefore(MengineActivity activity, int requestCode, int resultCode, Intent data) {
-        if (m_facebookCallbackManager != null) {
-            m_facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    @Override
     public void onMengineSetSessionId(MengineApplication application, String sessionId) {
         AppEventsLogger.setUserID(sessionId);
     }
@@ -241,6 +231,34 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
         AppEventsLogger.setPushNotificationsRegistrationId(token);
     }
 
+    private void updateBundle(Bundle bundle, Map<String, Object> parameters) {
+        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+            String name = entry.getKey();
+            Object value = entry.getValue();
+
+            if (value instanceof Boolean) {
+                if ((Boolean)value == true) {
+                    bundle.putLong(name, 1);
+                } else {
+                    bundle.putLong(name, 0);
+                }
+            } else if (value instanceof Long) {
+                bundle.putLong(name, (Long)value);
+            } else if (value instanceof Double) {
+                bundle.putDouble(name, (Double)value);
+            } else if (value instanceof String) {
+                bundle.putString(name, (String)value);
+            } else {
+                this.logError("[ERROR] unsupported parameter: %s class: %s"
+                    , value
+                    , value == null ? "null" : value.getClass()
+                );
+
+                continue;
+            }
+        }
+    }
+
     @Override
     public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         if (m_logger == null) {
@@ -249,57 +267,8 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
         Bundle params = new Bundle();
 
-        for (Map.Entry<String, Object> entry : bases.entrySet()) {
-            String name = entry.getKey();
-            Object value = entry.getValue();
-
-            if (value instanceof Boolean) {
-                if ((Boolean)value == true) {
-                    params.putLong(name, 1);
-                } else {
-                    params.putLong(name, 0);
-                }
-            } else if (value instanceof Long) {
-                params.putLong(name, (Long)value);
-            } else if (value instanceof Double) {
-                params.putDouble(name, (Double)value);
-            } else if (value instanceof String) {
-                params.putString(name, (String)value);
-            } else {
-                this.logError("[ERROR] unsupported parameter: %s class: %s"
-                    , value
-                    , value == null ? "null" : value.getClass()
-                );
-
-                return;
-            }
-        }
-
-        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-            String name = entry.getKey();
-            Object value = entry.getValue();
-
-            if (value instanceof Boolean) {
-                if ((Boolean)value == true) {
-                    params.putLong(name, 1);
-                } else {
-                    params.putLong(name, 0);
-                }
-            } else if (value instanceof Long) {
-                params.putLong(name, (Long)value);
-            } else if (value instanceof Double) {
-                params.putDouble(name, (Double)value);
-            } else if (value instanceof String) {
-                params.putString(name, (String)value);
-            } else {
-                this.logError("[ERROR] unsupported parameter: %s class: %s"
-                    , value
-                    , value == null ? "null" : value.getClass()
-                );
-
-                return;
-            }
-        }
+        this.updateBundle(params, bases);
+        this.updateBundle(params, parameters);
 
         m_logger.logEvent(eventName, params);
     }
@@ -355,7 +324,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
         MengineActivity activity = this.getMengineActivity();
 
-        LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
+        LoginManager.getInstance().logInWithReadPermissions(activity, m_facebookCallbackManager, permissions);
     }
     
     public void logout() {
@@ -363,7 +332,6 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
 
-        // user already logged out
         if (accessToken == null) {
             this.logWarning("user already logged out");
 

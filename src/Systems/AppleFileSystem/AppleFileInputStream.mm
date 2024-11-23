@@ -10,6 +10,7 @@
 #include "Kernel/DebugFileHelper.h"
 
 #include "Config/StdString.h"
+#include "Config/Path.h"
 
 #include "stdex/memorycopy.h"
 

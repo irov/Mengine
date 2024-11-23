@@ -108,6 +108,10 @@
         
         [iOSDetail transparencyConsent:consent];
         
+#ifdef MENGINE_DEBUG
+        [[ALSdk shared] showMediationDebugger];
+#endif
+        
         [AppleSemaphoreService.sharedInstance activateSemaphore:@"AppLovinSdkInitialized"];
     }];
     

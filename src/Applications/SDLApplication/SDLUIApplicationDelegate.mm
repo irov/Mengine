@@ -15,9 +15,6 @@
 
 #include "SDLApplication.h"
 
-int MENGINE_MAIN_argc = 0;
-char ** MENGINE_MAIN_argv = nullptr;
-
 @implementation SDLUIApplicationDelegate
 
 - (id)init {
@@ -293,8 +290,18 @@ char ** MENGINE_MAIN_argv = nullptr;
     SDL_iPhoneSetEventPump( SDL_TRUE );
     
     Mengine::SDLApplication application;
+    
+    NSArray<NSString *> * arguments = [[NSProcessInfo processInfo] arguments];
+    
+    int32_t argc = 0;
+    const Mengine::Char * argv[32];
+    
+    for( NSString * arg : arguments )
+    {
+        argv[argc++] = [arg UTF8String];
+    }
         
-    if( application.bootstrap( MENGINE_MAIN_argc, MENGINE_MAIN_argv ) == false ) {
+    if( application.bootstrap( argc, argv ) == false ) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application bootstrap [Failed]"];
         
         [[NSOperationQueue mainQueue] cancelAllOperations];

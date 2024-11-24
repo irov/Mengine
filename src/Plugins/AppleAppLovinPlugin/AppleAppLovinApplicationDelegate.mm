@@ -108,9 +108,9 @@
         
         [iOSDetail transparencyConsent:consent];
         
-#ifdef MENGINE_DEBUG
-        [[ALSdk shared] showMediationDebugger];
-#endif
+        if ([[[NSProcessInfo processInfo] arguments] containsObject:@"-applovin.show_mediation_debugger"] == YES) {
+            [[ALSdk shared] showMediationDebugger];
+        }
         
         [AppleSemaphoreService.sharedInstance activateSemaphore:@"AppLovinSdkInitialized"];
     }];

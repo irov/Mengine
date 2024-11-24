@@ -763,7 +763,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::runPlatform()
-    {
+    {        
         this->setActive_( true );
 
         if( this->updatePlatform() == false )
@@ -2030,28 +2030,6 @@ namespace Mengine
 
             switch( sdlEvent.type )
             {
-            case SDL_KEYDOWN:
-                {
-                    SDL_Keycode keyCode = sdlEvent.key.keysym.sym;
-                    Uint16 keyMod = sdlEvent.key.keysym.mod;
-
-                    switch( keyCode )
-                    {
-                    case SDLK_RETURN:
-                        {
-                            if( keyMod & KMOD_ALT )
-                            {
-                                bool fullscreen = APPLICATION_SERVICE()
-                                    ->getFullscreenMode();
-
-                                APPLICATION_SERVICE()
-                                    ->setFullscreenMode( !fullscreen );
-                            }
-                        }break;
-                    default:
-                        break;
-                    }
-                }break;
             case SDL_WINDOWEVENT:
                 {
                     Uint32 windowID = SDL_GetWindowID( m_sdlWindow );

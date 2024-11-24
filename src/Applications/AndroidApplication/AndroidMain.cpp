@@ -9,8 +9,19 @@
 extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
+    static bool already_bootstrapped = false;
+    //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jobject JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidMain_1bootstrap )(JNIEnv * _env, jclass _cls, jstring _nativeLibraryDir, jobjectArray _args)
     {
+        if( already_bootstrapped == true )
+        {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "Android bootstrap already bootstrapped" );
+
+            return nullptr;
+        }
+        
+        already_bootstrapped = true;
+
         if( Mengine::Mengine_JNI_Initialize( _env ) == JNI_FALSE )
         {
             __android_log_print( ANDROID_LOG_ERROR, "Mengine", "Android bootstrap JNI initialize failed" );
@@ -56,6 +67,15 @@ extern "C"
         }
 
         jobject j_application = _env->NewDirectByteBuffer( application, sizeof(Mengine::AndroidApplication) );
+
+        if ( j_application == nullptr)
+        {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "Android bootstrap failed to create direct buffer" );
+
+            delete application;
+
+            return nullptr;
+        }
 
         return j_application;
     }

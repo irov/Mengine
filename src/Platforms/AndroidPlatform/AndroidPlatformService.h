@@ -177,6 +177,7 @@ namespace Mengine
         void androidNativeWindowFocusChangedEvent( jboolean _focus ) override;
         void androidNativeQuitEvent() override;
         void androidNativeLowMemoryEvent() override;
+        void androidNativeTrimMemoryEvent( jint _level ) override;
         void androidNativeChangeLocale( const Mengine::Char * _language ) override;
 
     protected:
@@ -209,6 +210,7 @@ namespace Mengine
                 PET_CLIPBOARD_CHANGED,
                 PET_WINDOW_FOCUS_CHANGED,
                 PET_LOW_MEMORY,
+                PET_TRIM_MEMORY,
                 PET_CHANGE_LOCALE,
             } type;
 
@@ -274,6 +276,11 @@ namespace Mengine
                 int32_t dummy;
             };
 
+            struct PlatformTrimMemoryEvent
+            {
+                jint level;
+            };
+
             struct PlatformChangeLocale
             {
                 Char language[MENGINE_LOCALE_LANGUAGE_SIZE + 1];
@@ -292,6 +299,7 @@ namespace Mengine
                 PlatformClipboardChangedEvent clipboardChanged;
                 PlatformWindowFocusChangedEvent windowFocusChanged;
                 PlatformLowMemoryEvent lowMemory;
+                PlatformTrimMemoryEvent trimMemory;
                 PlatformChangeLocale changeLocale;
             } data;
         };
@@ -307,6 +315,7 @@ namespace Mengine
         void clipboardChangedEvent_( const PlatformUnionEvent::PlatformClipboardChangedEvent & _event );
         void windowFocusChangedEvent_( const PlatformUnionEvent::PlatformWindowFocusChangedEvent & _event );
         void lowMemoryEvent_( const PlatformUnionEvent::PlatformLowMemoryEvent & _event );
+        void trimMemoryEvent_( const PlatformUnionEvent::PlatformTrimMemoryEvent & _event );
         void changeLocaleEvent_( const PlatformUnionEvent::PlatformChangeLocale & _event );
 
     protected:

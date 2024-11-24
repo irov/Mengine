@@ -420,6 +420,14 @@ extern "C"
         platformExtension->androidNativeLowMemoryEvent();
     }
     ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1trimMemory )(JNIEnv * env, jclass cls, jint level)
+    {
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeTrimMemoryEvent( level );
+    }
+    ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidPlatform_1changeLocale )(JNIEnv * env, jclass cls, jstring _language)
     {
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
@@ -1491,6 +1499,10 @@ namespace Mengine
                 {
                     this->lowMemoryEvent_( ev.data.lowMemory );
                 }break;
+            case PlatformUnionEvent::PET_TRIM_MEMORY:
+                {
+                    this->trimMemoryEvent_( ev.data.trimMemory );
+                }break;
             case PlatformUnionEvent::PET_CHANGE_LOCALE:
                 {
                     this->changeLocaleEvent_( ev.data.changeLocale );
@@ -2264,6 +2276,22 @@ namespace Mengine
         this->pushEvent( event );
     }
     //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeTrimMemoryEvent(jint _level)
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
+
+        PlatformUnionEvent event;
+        event.type = PlatformUnionEvent::PET_TRIM_MEMORY;
+
+        event.data.trimMemory.level = _level;
+
+        LOGGER_INFO( "platform", "trim memory event: %d"
+            , _level
+        );
+
+        this->pushEvent( event );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeChangeLocale( const Mengine::Char * _language )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_nativeMutex );
@@ -2512,6 +2540,13 @@ namespace Mengine
         MENGINE_UNUSED( _event );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::trimMemoryEvent_( const PlatformUnionEvent::PlatformTrimMemoryEvent & _event )
+    {
+        jint level = _event.level;
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_TRIM_MEMORY, level );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::changeLocaleEvent_( const PlatformUnionEvent::PlatformChangeLocale & _event )

@@ -9,6 +9,10 @@ def merge_plists(base, patches, output_path):
     
     with open(base, 'rb') as f:
         plist_base = plistlib.load(f)
+        
+    if 'SKAdNetworkItems' not in plist_base:
+        print(f"Base plist file not exist 'SKAdNetworkItems': {base}")        
+        sys.exit(1)
     
     for patch in patches:
         if not os.path.exists(patch):
@@ -18,13 +22,14 @@ def merge_plists(base, patches, output_path):
         with open(patch, 'rb') as f:
             plist_patch = plistlib.load(f)
         
-        plist_base = {**plist_base, **plist_patch}
-
-        if 'SKAdNetworkItems' in plist_base and 'SKAdNetworkItems' in plist_patch:
-            plist_base['SKAdNetworkItems'] = plist_base['SKAdNetworkItems'] + [
-                item for item in plist_patch['SKAdNetworkItems']
-                if item not in plist_base['SKAdNetworkItems']
-            ]
+        if isinstance(plist_patch, dict):
+            if 'SKAdNetworkItems' not in plist_patch:
+                print(f"Patch plist file not exist 'SKAdNetworkItems': {patch}")
+                sys.exit(1)
+        
+            plist_base['SKAdNetworkItems'] = plist_base['SKAdNetworkItems'] + [item for item in plist_patch['SKAdNetworkItems'] if item not in plist_base['SKAdNetworkItems']]
+        elif isinstance(plist_patch, list):
+            plist_base['SKAdNetworkItems'] = plist_base['SKAdNetworkItems'] + [item for item in plist_patch if item not in plist_base['SKAdNetworkItems']]
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 

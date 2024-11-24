@@ -156,6 +156,7 @@ namespace Mengine
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
+    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_DID_RECEIVE_TRIM_MEMORY, int32_t );
     //////////////////////////////////////////////////////////////////////////
 #endif
     //////////////////////////////////////////////////////////////////////////

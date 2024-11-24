@@ -81,10 +81,13 @@ public class MengineActivity extends AppCompatActivity {
     public static native void AndroidPlatform_windowFocusChangedEvent(boolean focus);
     public static native void AndroidPlatform_quitEvent();
     public static native void AndroidPlatform_lowMemory();
+    public static native void AndroidPlatform_trimMemory(int level);
     public static native void AndroidPlatform_changeLocale(String locale);
 
-    private boolean m_initializePython;
-    private boolean m_destroy;
+    private static boolean ACTIVITY_CREATED = false;
+    private static boolean ACTIVITY_DESTROY = false;
+
+    private boolean m_initializePython = false;
 
     private Object m_nativeApplication;
     private Locale m_currentLocale;
@@ -174,7 +177,7 @@ public class MengineActivity extends AppCompatActivity {
 
     @SuppressWarnings("unchecked")
     public <T> T getPlugin(Class<T> cls) {
-        if (m_destroy == true) {
+        if (MengineActivity.ACTIVITY_DESTROY == true) {
             return null;
         }
 
@@ -186,7 +189,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public String getSessionId() {
-        if (m_destroy == true) {
+        if (MengineActivity.ACTIVITY_DESTROY == true) {
             return "";
         }
 
@@ -198,7 +201,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public String getVersionName() {
-        if (m_destroy == true) {
+        if (MengineActivity.ACTIVITY_DESTROY == true) {
             return "";
         }
 
@@ -210,7 +213,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public void setState(String name, Object value) {
-        if (m_destroy == true) {
+        if (MengineActivity.ACTIVITY_DESTROY == true) {
             return;
         }
 
@@ -220,7 +223,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public boolean hasMetaData(String name) {
-        if (m_destroy == true) {
+        if (MengineActivity.ACTIVITY_DESTROY == true) {
             return false;
         }
 
@@ -232,7 +235,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public String getMetaDataString(String name) {
-        if (m_destroy == true) {
+        if (MengineActivity.ACTIVITY_DESTROY == true) {
             return null;
         }
 
@@ -244,7 +247,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public boolean getMetaDataBoolean(String name) {
-        if (m_destroy == true) {
+        if (MengineActivity.ACTIVITY_DESTROY == true) {
             return false;
         }
 
@@ -256,7 +259,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public int getMetaDataInteger(String name) {
-        if (m_destroy == true) {
+        if (MengineActivity.ACTIVITY_DESTROY == true) {
             return 0;
         }
 
@@ -328,6 +331,20 @@ public class MengineActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        MengineLog.logMessageRelease(TAG, "onCreate: %s", savedInstanceState);
+
+        if (MengineActivity.ACTIVITY_CREATED == true) {
+            MengineAnalytics.buildEvent("mng_activity_create_failed")
+                .addParameterString("reason", "application already created")
+                .logAndFlush();
+
+            this.finishWithAlertDialog("[ERROR] Application already created");
+
+            return;
+        }
+
+        MengineActivity.ACTIVITY_CREATED = true;
+
         try {
             Thread.currentThread().setName("MengineActivity");
         } catch (final Exception e) {
@@ -339,18 +356,19 @@ public class MengineActivity extends AppCompatActivity {
         MengineApplication application = (MengineApplication)this.getApplication();
 
         if (application.isInvalidInitialize() == true) {
+            MengineAnalytics.buildEvent("mng_activity_create_failed")
+                .addParameterString("reason", "application invalid initialize")
+                .logAndFlush();
+
             this.finishWithAlertDialog("[ERROR] Application invalid initialize");
 
             return;
         }
 
-        MengineLog.logMessageRelease(TAG, "onCreate: %s", savedInstanceState);
-
         this.setState("activity.lifecycle", "create");
         this.setState("activity.init", "begin");
 
         m_initializePython = false;
-        m_destroy = false;
 
         Looper mainLooper = Looper.getMainLooper();
         m_commandHandler = new MengineCommandHandler(mainLooper, this);
@@ -458,7 +476,19 @@ public class MengineActivity extends AppCompatActivity {
 
         String[] optionsArgs = options.split(" ");
 
-        m_nativeApplication = AndroidMain_bootstrap(nativeLibraryDir, optionsArgs);
+        Object nativeApplication = AndroidMain_bootstrap(nativeLibraryDir, optionsArgs);
+
+        if (nativeApplication == null) {
+            MengineAnalytics.buildEvent("mng_activity_create_failed")
+                .addParameterString("reason", "bootstrap failed")
+                .logAndFlush();
+
+            this.finishWithAlertDialog("[ERROR] bootstrap failed");
+
+            return;
+        }
+
+        m_nativeApplication = nativeApplication;
 
         this.setState("activity.init", "plugin_create");
 
@@ -484,11 +514,11 @@ public class MengineActivity extends AppCompatActivity {
             } catch (final MenginePluginInvalidInitializeException e) {
                 this.setState("activity.init", "plugin_create_exception." + l.getPluginName());
 
-                MengineAnalytics.buildEvent("mng_activity_init_failed")
+                MengineAnalytics.buildEvent("mng_activity_create_failed")
                     .addParameterException("reason", e)
                     .logAndFlush();
 
-                this.finishWithAlertDialog("[ERROR] onCreate plugin: %s exception: %s"
+                this.finishWithAlertDialog("[ERROR] create plugin: %s exception: %s"
                     , l.getPluginName()
                     , e.getMessage()
                 );
@@ -844,7 +874,7 @@ public class MengineActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        if (m_destroy == true) {
+        if (MengineActivity.ACTIVITY_DESTROY == true) {
             MengineLog.logWarning(TAG, "onDestroy: already destroyed");
 
             super.onDestroy();
@@ -852,7 +882,7 @@ public class MengineActivity extends AppCompatActivity {
             return;
         }
 
-        m_destroy = true;
+        MengineActivity.ACTIVITY_DESTROY = true;
 
         this.setState("activity.lifecycle", "destroy");
 
@@ -871,7 +901,7 @@ public class MengineActivity extends AppCompatActivity {
         }
 
         try {
-            m_threadMain.join();
+            m_threadMain.join(1000);
         } catch (final InterruptedException e) {
             MengineLog.logError(TAG, "thread main join exception: %s"
                 , e.getMessage()
@@ -939,6 +969,19 @@ public class MengineActivity extends AppCompatActivity {
         MengineLog.logMessage(TAG, "onLowMemory");
 
         MengineActivity.AndroidPlatform_lowMemory();
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+
+        this.setState("activity.trim_memory", level);
+
+        MengineLog.logMessage(TAG, "onTrimMemory level: %d"
+            , level
+        );
+
+        MengineActivity.AndroidPlatform_trimMemory(level);
     }
 
     @Override
@@ -1110,7 +1153,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public void addPythonPlugin(String name, Object plugin) {
-        if (m_destroy == true) {
+        if (MengineActivity.ACTIVITY_DESTROY == true) {
             return;
         }
 
@@ -1127,7 +1170,7 @@ public class MengineActivity extends AppCompatActivity {
      **********************************************************************************************/
 
     public void activateSemaphore(String name) {
-        if (m_destroy == true) {
+        if (MengineActivity.ACTIVITY_DESTROY == true) {
             return;
         }
 
@@ -1167,7 +1210,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public void deactivateSemaphore(String name) {
-        if (m_destroy == true) {
+        if (MengineActivity.ACTIVITY_DESTROY == true) {
             return;
         }
 
@@ -1181,7 +1224,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public void waitSemaphore(String name, MengineSemaphoreListener cb) {
-        if (m_destroy == true) {
+        if (MengineActivity.ACTIVITY_DESTROY == true) {
             return;
         }
 

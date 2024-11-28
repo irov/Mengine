@@ -294,11 +294,11 @@
     NSArray<NSString *> * arguments = [[NSProcessInfo processInfo] arguments];
     
     int32_t argc = 0;
-    const Mengine::Char * argv[32];
+    Mengine::Char * argv[32];
     
     for( NSString * arg : arguments )
     {
-        argv[argc++] = [arg UTF8String];
+        argv[argc++] = (Mengine::Char *)[arg UTF8String];
     }
         
     if( application.bootstrap( argc, argv ) == false ) {

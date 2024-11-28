@@ -92,7 +92,7 @@ namespace Mengine
     bool VideoScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "Video", true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("Video"), true );
 
         pybind::interface_<ResourceVideo, pybind::bases<Resource>>( _kernel, "ResourceVideo", false )
             .def( "setFrameRate", &ResourceVideo::setFrameRate )

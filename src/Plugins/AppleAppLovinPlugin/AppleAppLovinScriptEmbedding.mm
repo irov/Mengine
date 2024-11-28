@@ -289,7 +289,7 @@ namespace Mengine
     bool AppleAppLovinScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "AppleAppLovin", true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleAppLovin"), true );
         
         AppleAppLovinServiceInterface * service = APPLE_APPLOVIN_SERVICE();
         

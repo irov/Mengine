@@ -6,7 +6,6 @@ src
     AndroidNativePythonPlugin.cpp
     
     AndroidNativePythonInterface.h
-    AndroidNativePythonEventHandlerInterface.h
     
     AndroidNativePythonService.h
     AndroidNativePythonService.cpp

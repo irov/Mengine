@@ -11,6 +11,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -182,7 +183,7 @@ public class MengineUtils {
         return handler;
     }
 
-    public static Timer scheduleAtFixedRate(Activity activity, long period, Runnable runnable) {
+    public static Timer scheduleOnUiAtFixedRate(Activity activity, long period, Runnable runnable) {
         Timer timer = new Timer();
 
         TimerTask task = new TimerTask() {
@@ -894,5 +895,29 @@ public class MengineUtils {
 
             return new Rect(0, 0, width, height);
         }
+    }
+
+    public static int getDeviceScreenSize(Context context) {
+        Resources resources = context.getResources();
+        Configuration configuration = resources.getConfiguration();
+        int screenLayout = configuration.screenLayout;
+
+        int screenLayoutSize = screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
+
+        return screenLayoutSize;
+    }
+
+    public static boolean isDeviceTablet(Context context) {
+        int screenLayoutSize = MengineUtils.getDeviceScreenSize(context);
+
+        if (screenLayoutSize == Configuration.SCREENLAYOUT_SIZE_LARGE || screenLayoutSize == Configuration.SCREENLAYOUT_SIZE_XLARGE) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isDebuggerConnected() {
+        return android.os.Debug.isDebuggerConnected();
     }
 }

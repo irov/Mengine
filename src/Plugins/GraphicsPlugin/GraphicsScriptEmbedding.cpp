@@ -28,7 +28,7 @@ namespace Mengine
     bool GraphicsScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "Graphics", true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("Graphics"), true );
 
         pybind::interface_<Graphics, pybind::bases<Node>>( _kernel, "Graphics", false )
             .def( "setLineWidth", &Graphics::setLineWidth )

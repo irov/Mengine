@@ -62,7 +62,7 @@ namespace Mengine
     bool AstralaxScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "Astralax", true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("Astralax"), true );
 
         pybind::interface_<ResourceAstralax, pybind::bases<Resource>>( _kernel, "ResourceAstralax", false )
             .def( "getResourceImageCount", &ResourceAstralax::getResourceImageCount )

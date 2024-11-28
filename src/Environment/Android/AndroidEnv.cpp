@@ -9,27 +9,21 @@
 
 static JavaVM * g_androidEnvJavaVM;
 
-static jclass g_jclass_MengineApplication;
 static jobject g_jobject_MengineApplication;
 static jobject g_jobject_MengineClassLoader;
-static jclass g_jclass_MengineActivity;
 static jobject g_jobject_MengineActivity;
 
 extern "C" 
 {
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidApplicationJNI )(JNIEnv * env, jclass cls, jobject obj, jobject cl)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidApplicationJNI )(JNIEnv * env, jclass cls, jobject obj, jobject cl)
     {
-        g_jclass_MengineApplication = (jclass)env->NewGlobalRef( cls );
         g_jobject_MengineApplication = (jobject)env->NewGlobalRef( obj );
         g_jobject_MengineClassLoader = (jobject)env->NewGlobalRef( cl );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidApplicationJNI )(JNIEnv * env, jclass cls)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidApplicationJNI )(JNIEnv * env, jclass cls)
     {
-        env->DeleteGlobalRef( g_jclass_MengineApplication );
-        g_jclass_MengineApplication = nullptr;
-
         env->DeleteGlobalRef( g_jobject_MengineApplication );
         g_jobject_MengineApplication = nullptr;
 
@@ -37,22 +31,18 @@ extern "C"
         g_jobject_MengineClassLoader = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidActivityJNI )(JNIEnv * env, jclass cls, jobject obj)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidActivityJNI )(JNIEnv * env, jclass cls, jobject obj)
     {
-        g_jclass_MengineActivity = (jclass)env->NewGlobalRef( cls );
         g_jobject_MengineActivity = (jobject)env->NewGlobalRef( obj );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidActivityJNI )(JNIEnv * env, jclass cls)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidActivityJNI )(JNIEnv * env, jclass cls)
     {
-        env->DeleteGlobalRef( g_jclass_MengineActivity );
-        g_jclass_MengineActivity = nullptr;
-
         env->DeleteGlobalRef( g_jobject_MengineActivity );
         g_jobject_MengineActivity = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jboolean JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1isMasterRelease )(JNIEnv * env, jclass cls)
+    JNIEXPORT jboolean JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1isMasterRelease )(JNIEnv * env, jclass cls)
     {
         bool mode = Mengine::Helper::isMasterRelease();
 
@@ -61,7 +51,7 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1getEngineGITSHA1 )(JNIEnv * env, jclass cls)
+    JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1getEngineGITSHA1 )(JNIEnv * env, jclass cls)
     {
         const Mengine::Char * ENGINE_GIT_SHA1 = Mengine::Helper::getEngineGITSHA1();
 
@@ -70,7 +60,7 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1getEngineVersion )(JNIEnv * env, jclass cls)
+    JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1getEngineVersion )(JNIEnv * env, jclass cls)
     {
         const Mengine::Char * ENGINE_VERSION = Mengine::Helper::getEngineVersion();
 
@@ -79,7 +69,7 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1getBuildDate )(JNIEnv * env, jclass cls)
+    JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1getBuildDate )(JNIEnv * env, jclass cls)
     {
         const Mengine::Char * BUILD_DATE = Mengine::Helper::getBuildDate();
 
@@ -88,7 +78,7 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL MENGINE_APPLICATION_JAVA_INTERFACE( AndroidEnv_1getBuildUsername )(JNIEnv * env, jclass cls)
+    JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1getBuildUsername )(JNIEnv * env, jclass cls)
     {
         const Mengine::Char * BUILD_USERNAME = Mengine::Helper::getBuildUsername();
 
@@ -123,7 +113,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jboolean Mengine_JNI_ExistMengineApplication()
     {
-        if( g_jclass_MengineApplication == nullptr )
+        if( g_jobject_MengineApplication == nullptr )
         {
             return JNI_FALSE;
         }
@@ -131,9 +121,11 @@ namespace Mengine
         return JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetJClassMengineApplication()
+    jclass Mengine_JNI_GetJClassMengineApplication( JNIEnv * _jenv )
     {
-        return g_jclass_MengineApplication;
+        jclass jclass_MengineApplication = _jenv->GetObjectClass( g_jobject_MengineApplication );
+
+        return jclass_MengineApplication;
     }
     //////////////////////////////////////////////////////////////////////////
     jobject Mengine_JNI_GetJObjectMengineApplication()
@@ -143,7 +135,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     jboolean Mengine_JNI_ExistMengineActivity()
     {
-        if( g_jclass_MengineActivity == nullptr )
+        if( g_jobject_MengineActivity == nullptr )
         {
             return JNI_FALSE;
         }
@@ -151,9 +143,11 @@ namespace Mengine
         return JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    jclass Mengine_JNI_GetJClassMengineActivity()
+    jclass Mengine_JNI_GetJClassMengineActivity( JNIEnv * _jenv )
     {
-        return g_jclass_MengineActivity;
+        jclass jclass_MengineActivity = _jenv->GetObjectClass( g_jobject_MengineActivity );
+
+        return jclass_MengineActivity;
     }
     //////////////////////////////////////////////////////////////////////////
     jobject Mengine_JNI_GetJObjectMengineActivity()

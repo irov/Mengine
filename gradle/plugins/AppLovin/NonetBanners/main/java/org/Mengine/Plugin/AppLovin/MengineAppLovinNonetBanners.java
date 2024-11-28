@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import androidx.core.content.res.ResourcesCompat;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 import org.xmlpull.v1.XmlPullParser;
@@ -44,7 +45,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     protected Timer m_refreshTimer;
 
     @Override
-    public void initializeNonetBanners(MengineActivity activity, MengineAppLovinPlugin plugin) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(MengineApplication application, MengineAppLovinPlugin plugin) throws MenginePluginInvalidInitializeException {
         m_plugin = plugin;
 
         m_banners = new ArrayList<>();
@@ -52,9 +53,9 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         m_visible = false;
         m_requestId = 0;
 
-        this.m_plugin.logMessage("[NONET_BANNER] initialize");
+        m_plugin.logMessage("[NONET_BANNER] initialize");
 
-        Resources resources = activity.getResources();
+        Resources resources = application.getResources();
 
         int MengineAppLovinPlugin_NonetBannerDurationTime = resources.getInteger(R.integer.mengine_applovin_nonet_banner_duration_time);
 
@@ -78,7 +79,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
                 Map<String, String> attributes = new HashMap<>();
 
-                for(int index = 0; index != attributeCount; ++index) {
+                for (int index = 0; index != attributeCount; ++index) {
                     String key = parser.getAttributeName(index);
                     String value = parser.getAttributeValue(index);
 
@@ -88,7 +89,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
                 String image = attributes.get("image");
                 String url = attributes.get("url");
 
-                this.addNonetBanner(activity, image, url);
+                this.addNonetBanner(application, image, url);
             }
         } catch (final XmlPullParserException e) {
             m_plugin.logError("[NONET_BANNER] XmlPullParserException: %s"
@@ -103,12 +104,22 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
             return;
         }
+    }
 
+    @Override
+    public void onAppTerminate(MengineApplication application, MengineAppLovinPlugin plugin) {
+        m_banners = null;
+
+        m_plugin = null;
+    }
+
+    @Override
+    public void onCreate(MengineActivity activity) throws MenginePluginInvalidInitializeException {
         if (m_banners.isEmpty() == true) {
             return;
         }
 
-        Timer refreshTimer = MengineUtils.scheduleAtFixedRate(activity, m_showBannerDurationTime, () -> {
+        Timer refreshTimer = MengineUtils.scheduleOnUiAtFixedRate(activity, m_showBannerDurationTime, () -> {
             int refreshRequestId;
             String oldBanenrUrl;
             String newBannerUrl;
@@ -153,12 +164,35 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         });
 
         m_refreshTimer = refreshTimer;
+
+        if (m_visible == true) {
+            this.show();
+        }
     }
 
-    protected void addNonetBanner(MengineActivity activity, String image, String url) {
-        Resources resources = activity.getResources();
-        Context context = activity.getBaseContext();
-        String packageName = activity.getPackageName();
+    @Override
+    public void onDestroy() {
+        if (m_refreshTimer != null) {
+            m_refreshTimer.cancel();
+            m_refreshTimer = null;
+        }
+
+        synchronized (this) {
+            if (m_showBanner != null) {
+                MengineActivity activity = m_plugin.getMengineActivity();
+
+                ViewGroup viewGroup = activity.getContentViewGroup();
+                viewGroup.removeView(m_showBanner.view);
+
+                m_showBanner = null;
+            }
+        }
+    }
+
+    protected void addNonetBanner(MengineApplication application, String image, String url) {
+        Resources resources = application.getResources();
+        Context context = application.getBaseContext();
+        String packageName = application.getPackageName();
 
         int resId = resources.getIdentifier(image, "drawable", packageName);
 
@@ -208,26 +242,6 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         banner.url = url;
 
         m_banners.add(banner);
-    }
-
-    @Override
-    public void finalizeNonetBanners(MengineActivity activity, MengineAppLovinPlugin plugin) {
-        if (m_refreshTimer != null) {
-            m_refreshTimer.cancel();
-            m_refreshTimer = null;
-        }
-
-        synchronized (this) {
-            if (m_showBanner != null) {
-                ViewGroup viewGroup = activity.getContentViewGroup();
-                viewGroup.removeView(m_showBanner.view);
-
-                m_showBanner = null;
-            }
-        }
-
-        m_plugin = null;
-        m_banners = null;
     }
 
     protected NonetBanner getCurrentBanner() {

@@ -3,6 +3,8 @@
 
 #include "AndroidApplication.h"
 
+#include "Kernel/Crash.h"
+
 #include "Config/StdLib.h"
 #include "Config/New.h"
 
@@ -11,7 +13,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     static bool already_bootstrapped = false;
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jobject JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidMain_1bootstrap )(JNIEnv * _env, jclass _cls, jstring _nativeLibraryDir, jobjectArray _args)
+    JNIEXPORT jobject JNICALL MENGINE_JAVA_INTERFACE( AndroidMain_1bootstrap )(JNIEnv * _env, jclass _cls, jstring _nativeLibraryDir, jobjectArray _args)
     {
         if( already_bootstrapped == true )
         {
@@ -66,7 +68,7 @@ extern "C"
             return nullptr;
         }
 
-        jobject j_application = _env->NewDirectByteBuffer( application, sizeof(Mengine::AndroidApplication) );
+        jobject j_application = _env->NewDirectByteBuffer( application, sizeof(void *) );
 
         if ( j_application == nullptr)
         {
@@ -80,7 +82,7 @@ extern "C"
         return j_application;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jboolean JNICALL MENGINE_MAIN_JAVA_INTERFACE( AndroidMain_1main )(JNIEnv * _env, jclass _cls, jobject _application)
+    JNIEXPORT jboolean JNICALL MENGINE_JAVA_INTERFACE( AndroidMain_1main )(JNIEnv * _env, jclass _cls, jobject _application)
     {
         if( Mengine::Mengine_JNI_SetupThread() == JNI_FALSE )
         {
@@ -105,11 +107,20 @@ extern "C"
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidMain_1destroy )(JNIEnv * _env, jclass _cls, jobject _application)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidMain_1destroy )(JNIEnv * _env, jclass _cls, jobject _application)
     {
         Mengine::AndroidApplication * application = (Mengine::AndroidApplication *)_env->GetDirectBufferAddress( _application );
 
         delete application;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidMain_1crash )(JNIEnv * _env, jclass _cls, jstring _reason)
+    {
+        const Mengine::Char * reason_str = _env->GetStringUTFChars( _reason, nullptr );
+
+        Mengine::Helper::crash( reason_str );
+
+        _env->ReleaseStringUTFChars( _reason, reason_str );
     }
     //////////////////////////////////////////////////////////////////////////
 }

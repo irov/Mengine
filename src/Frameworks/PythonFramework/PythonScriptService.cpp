@@ -43,6 +43,7 @@
 #include "Kernel/ContentHelper.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/PrefetcherHelper.h"
+#include "Kernel/ThreadMutexScope.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -372,10 +373,6 @@ namespace Mengine
         uint64_t buildNumber = Helper::getBuildNumber();
         this->addGlobalModuleT( "_BUILD_NUMBER", buildNumber );
 
-        m_availablePlugins = pybind::make_dict_t( kernel );
-
-        this->addGlobalModule( "_PLUGINS", m_availablePlugins.ptr() );
-
         pybind::def_functor( m_kernel, "setAvailablePlugin", this, &PythonScriptService::setAvailablePlugin );
         pybind::def_functor( m_kernel, "isAvailablePlugin", this, &PythonScriptService::isAvailablePlugin );
 
@@ -606,12 +603,16 @@ namespace Mengine
 #endif
         }
 
+        m_pluginsMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::_finalizeService()
     {
-        m_availablePlugins = nullptr;
+        m_pluginsMutex = nullptr;
+
+        m_availablePlugins.clear();
 
 #if defined(MENGINE_DEBUG)
         pybind::observer_bind_call * observer = m_kernel->get_observer_bind_call();
@@ -1137,19 +1138,25 @@ namespace Mengine
         pybind::dict_remove_t( m_kernel, dir_bltin, _name );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptService::setAvailablePlugin( const Char * _name, bool _available )
+    void PythonScriptService::setAvailablePlugin( const ConstString & _name, bool _available )
     {
-        m_availablePlugins[_name] = _available;
+        MENGINE_THREAD_MUTEX_SCOPE( m_pluginsMutex );
+
+        m_availablePlugins.emplace( _name, _available );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptService::isAvailablePlugin( const Char * _name ) const
+    bool PythonScriptService::isAvailablePlugin( const ConstString & _name ) const
     {
-        if( m_availablePlugins.exist( _name ) == false )
+        MENGINE_THREAD_MUTEX_SCOPE( m_pluginsMutex );
+
+        MapAvailablePlugins::const_iterator it_found = m_availablePlugins.find( _name );
+
+        if( it_found == m_availablePlugins.end() )
         {
             return false;
         }
 
-        bool available = m_availablePlugins.get( _name );
+        bool available = it_found->second;
 
         return available;
     }

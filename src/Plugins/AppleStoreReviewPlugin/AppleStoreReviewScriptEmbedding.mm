@@ -26,7 +26,7 @@ namespace Mengine
     bool AppleStoreReviewScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "AppleStoreReview", true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleStoreReview"), true );
         
         AppleStoreReviewServiceInterface * service = APPLE_STOREREVIEW_SERVICE();
 

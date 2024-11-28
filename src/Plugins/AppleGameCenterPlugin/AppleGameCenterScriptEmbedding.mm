@@ -88,7 +88,7 @@ namespace Mengine
     bool AppleGameCenterScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "AppleGameCenter", true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleGameCenter"), true );
         
         AppleGameCenterServiceInterface * service = APPLE_GAMECENTER_SERVICE();
 

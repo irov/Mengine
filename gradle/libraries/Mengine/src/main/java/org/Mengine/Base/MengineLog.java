@@ -10,8 +10,6 @@ import java.util.Formatter;
 import java.util.IllegalFormatException;
 
 public class MengineLog {
-    private static native void AndroidEnvironmentService_log(int level, String tag, String msg);
-
     public final static int LM_SILENT = 0;
     public final static int LM_FATAL = 1;
     public final static int LM_MESSAGE_RELEASE = 2;
@@ -48,12 +46,12 @@ public class MengineLog {
         MengineLog.m_application = application;
     }
 
-    public static void initialize(MengineActivity activity) {
+    public static void initializeBaseServices() {
         MengineLog.m_initializeBaseServices = true;
 
         synchronized (MengineLog.m_lock) {
             for (HistoryRecord record : MengineLog.m_history) {
-                AndroidEnvironmentService_log(record.level, record.tag, record.message);
+                MengineNative.AndroidEnvironmentService_log(record.level, record.tag, record.message);
 
                 if (record.application == null) {
                     MengineLog.m_application.onMengineLogger(record.level, record.filter, record.tag, record.message);
@@ -64,7 +62,7 @@ public class MengineLog {
         }
     }
 
-    public static void finalize(MengineActivity activity) {
+    public static void finalizeBaseServices() {
         MengineLog.m_initializeBaseServices = false;
     }
 
@@ -110,7 +108,7 @@ public class MengineLog {
 
         synchronized (MengineLog.m_lock) {
             if (MengineLog.m_initializeBaseServices == true) {
-                AndroidEnvironmentService_log(level, tag, totalMsg);
+                MengineNative.AndroidEnvironmentService_log(level, tag, totalMsg);
             } else {
                 HistoryRecord record = new HistoryRecord();
                 record.level = level;

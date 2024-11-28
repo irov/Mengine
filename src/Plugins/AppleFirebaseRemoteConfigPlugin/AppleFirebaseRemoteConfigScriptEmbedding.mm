@@ -27,7 +27,7 @@ namespace Mengine
     bool AppleFirebaseRemoteConfigScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "AppleFirebaseRemoteConfig", true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleFirebaseRemoteConfig"), true );
         
         AppleFirebaseRemoteConfigServiceInterface * service = APPLE_FIREBASE_REMOTECONFIG_SERVICE();
 

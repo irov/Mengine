@@ -1,27 +1,27 @@
 package org.Mengine.Base;
 
 public interface MenginePluginEngineListener extends MenginePluginInterface {
-    default void onMengineInitializeBaseServices(MengineActivity activity) {
+    default void onMengineInitializeBaseServices(MengineApplication application) {
         //Empty
     }
 
-    default void onMengineCreateApplication(MengineActivity activity) {
+    default void onMengineCreateApplication(MengineApplication application) {
         //Empty
     }
 
-    default void onMenginePlatformRun(MengineActivity activity) {
+    default void onMenginePlatformRun(MengineApplication application) {
         //Empty
     }
 
-    default void onMenginePlatformStop(MengineActivity activity) {
+    default void onMenginePlatformStop(MengineApplication application) {
         //Empty
     }
 
-    default void onMengineCurrentSceneChange(MengineActivity activity, String name) {
+    default void onMengineCurrentSceneChange(MengineApplication application, String name) {
         //Empty
     }
 
-    default void onMengineCaughtException(MengineApplication activity, Throwable e) {
+    default void onMengineCaughtException(MengineApplication application, Throwable e) {
         //Empty
     }
 }

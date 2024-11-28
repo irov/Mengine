@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
+import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.GamesSignInClient;
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.PlayGamesSdk;
@@ -16,11 +17,12 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
+import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
-public class MengineGoogleGameSocialPlugin extends MenginePlugin implements MenginePluginActivityListener {
+public class MengineGoogleGameSocialPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "MengineGGameSocial";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -36,9 +38,12 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        PlayGamesSdk.initialize(activity);
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+        PlayGamesSdk.initialize(application);
+    }
 
+    @Override
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         GamesSignInClient gamesSignInClient = PlayGames.getGamesSignInClient(activity);
 
         gamesSignInClient.isAuthenticated().addOnCompleteListener(isAuthenticatedTask -> {
@@ -70,14 +75,24 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
         m_achievementLauncher = achievementLauncher;
     }
 
+    @Override
+    public void onDestroy(MengineActivity activity) {
+        if (m_achievementLauncher != null) {
+            m_achievementLauncher.unregister();
+
+            m_achievementLauncher = null;
+        }
+    }
+
     public boolean showAchievements() {
         this.logMessage("showAchievements");
 
         this.runOnUiThread(() -> {
             MengineActivity activity = this.getMengineActivity();
 
-            PlayGames.getAchievementsClient(activity)
-                .getAchievementsIntent()
+            AchievementsClient achievementsClient = PlayGames.getAchievementsClient(activity);
+
+            achievementsClient.getAchievementsIntent()
                 .addOnSuccessListener(intent -> {
                     MengineGoogleGameSocialPlugin.this.logMessageRelease("get achievements successful");
 
@@ -105,7 +120,9 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
         this.runOnUiThread(() -> {
             MengineActivity activity = this.getMengineActivity();
 
-            PlayGames.getAchievementsClient(activity).unlockImmediate(achievementId)
+            AchievementsClient achievementsClient = PlayGames.getAchievementsClient(activity);
+
+            achievementsClient.unlockImmediate(achievementId)
                 .addOnSuccessListener(unused -> {
                     MengineGoogleGameSocialPlugin.this.logMessage("unlockAchievement complete achievementId: %s"
                         , achievementId
@@ -135,7 +152,9 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
         this.runOnUiThread(() -> {
             MengineActivity activity = this.getMengineActivity();
 
-            PlayGames.getAchievementsClient(activity).incrementImmediate(achievementId, numSteps)
+            AchievementsClient achievementsClient = PlayGames.getAchievementsClient(activity);
+
+            achievementsClient.incrementImmediate(achievementId, numSteps)
                 .addOnSuccessListener(aBoolean -> {
                     MengineGoogleGameSocialPlugin.this.logMessage("incrementAchievement complete achievementId: %s numSteps: %d"
                         , achievementId
@@ -165,7 +184,9 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
         this.runOnUiThread(() -> {
             MengineActivity activity = this.getMengineActivity();
 
-            PlayGames.getAchievementsClient(activity).revealImmediate(achievementId)
+            AchievementsClient achievementsClient = PlayGames.getAchievementsClient(activity);
+
+            achievementsClient.revealImmediate(achievementId)
                 .addOnSuccessListener(unused -> {
                     MengineGoogleGameSocialPlugin.this.logMessage("revealAchievement complete achievementId: %s"
                         , achievementId

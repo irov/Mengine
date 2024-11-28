@@ -2238,6 +2238,8 @@ namespace Mengine
         SERVICE_FINALIZE( iOSKernelService );
 #endif
 
+        SERVICE_FINALIZE( PlatformService );
+
         SERVICE_FINALIZE( EnvironmentService );
 
         this->unregisterBaseTypes_();
@@ -2245,7 +2247,6 @@ namespace Mengine
         SERVICE_FINALIZE( AnalyticsService );
         SERVICE_FINALIZE( StatisticService );
 
-        SERVICE_FINALIZE( PlatformService );
         SERVICE_FINALIZE( LoggerService );
         SERVICE_FINALIZE( MemoryService );
         SERVICE_FINALIZE( OptionsService );

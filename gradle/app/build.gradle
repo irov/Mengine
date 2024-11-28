@@ -16,6 +16,7 @@ def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_SP
 def ANDROID_APP_BUNDLE_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_BUNDLE_ENABLE", false)
 def ANDROID_APP_DELIVERY_PACKAGES = Utils.getStringProperty(project, "ANDROID_APP_DELIVERY_PACKAGES", null)
 def ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty(project, "ANDROID_APP_BUILD_NUMBER", 0)
+def ANDROID_APP_SCREEN_ORIENTATION = Utils.getStringProperty(project, "ANDROID_APP_SCREEN_ORIENTATION", "portrait")
 
 def MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_MENGINE")
 def MENGINE_APP_LIBRARY_OPENAL32 = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_OPENAL32")
@@ -168,6 +169,10 @@ android {
     }
 
     defaultConfig {
+        manifestPlaceholders = [ANDROID_APP_SCREEN_ORIENTATION: ANDROID_APP_SCREEN_ORIENTATION]
+
+        println "ANDROID_APP_SCREEN_ORIENTATION: $ANDROID_APP_SCREEN_ORIENTATION"
+
         if (project.hasProperty("ANDROID_APP_ID")) {
             applicationId ANDROID_APP_ID
 

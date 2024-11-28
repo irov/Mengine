@@ -653,14 +653,14 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool AndroidGetActivityFilesDirCanonicalPath( JNIEnv * _jenv, Char * const _path )
+        bool AndroidGetApplicationFilesDirCanonicalPath( JNIEnv * _jenv, Char * const _path )
         {
-            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
-            jobject jobjectMengineActivity = Mengine_JNI_GetJObjectMengineActivity();
+            jclass jclassMengineApplication = Mengine_JNI_GetJClassMengineApplication( _jenv );
+            jobject jobjectMengineApplication = Mengine_JNI_GetJObjectMengineApplication();
 
-            jmethodID midContext_GetFilesDir = _jenv->GetMethodID( jclassMengineActivity, "getFilesDir", "()Ljava/io/File;" );
+            jmethodID midContext_GetFilesDir = _jenv->GetMethodID( jclassMengineApplication, "getFilesDir", "()Ljava/io/File;" );
 
-            jobject filesDir = _jenv->CallObjectMethod( jobjectMengineActivity, midContext_GetFilesDir );
+            jobject filesDir = _jenv->CallObjectMethod( jobjectMengineApplication, midContext_GetFilesDir );
 
             if( filesDir == nullptr )
             {
@@ -695,7 +695,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         jobject AndroidGetActivitySurface( JNIEnv * _jenv )
         {
-            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity( _jenv );
             jobject jobjectMengineActivity = Mengine_JNI_GetJObjectMengineActivity();
 
             jmethodID midMengineActivity_getNativeSurface = _jenv->GetMethodID( jclassMengineActivity, "getSurface", "()Landroid/view/Surface;" );
@@ -717,7 +717,7 @@ namespace Mengine
 
             _jenv->ExceptionClear();
 
-            jclass jclassMengineApplication = Mengine_JNI_GetJClassMengineApplication();
+            jclass jclassMengineApplication = Mengine_JNI_GetJClassMengineApplication( _jenv );
 
             if( jclassMengineApplication == nullptr )
             {

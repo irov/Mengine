@@ -7,17 +7,33 @@ import java.util.concurrent.CountDownLatch;
 public class MengineMain implements Runnable {
     public static final String TAG = "MengineMain";
 
-    private static native boolean AndroidMain_main(Object application);
-
-    protected final MengineActivity m_activity;
+    protected static CountDownLatch m_runLatch = new CountDownLatch(1);
 
     protected final Object m_nativeApplication;
-    protected final CountDownLatch m_runLatch;
 
-    public MengineMain(MengineActivity activity, Object nativeApplication, CountDownLatch runLatch) {
-        m_activity = activity;
+    protected Thread m_thread;
+
+    public MengineMain(Object nativeApplication) {
         m_nativeApplication = nativeApplication;
-        m_runLatch = runLatch;
+    }
+
+    public static void runLatch() {
+        m_runLatch.countDown();
+    }
+
+    public void start() {
+        m_thread = new Thread(this);
+        m_thread.start();
+    }
+
+    public void stop() {
+        try {
+            m_thread.join();
+        } catch (final InterruptedException e) {
+            MengineLog.logError(TAG, "thread main join exception: %s"
+                , e.getMessage()
+            );
+        }
     }
 
     @Override
@@ -48,8 +64,8 @@ public class MengineMain implements Runnable {
             return;
         }
 
-        if (AndroidMain_main(m_nativeApplication) == false) {
-            MengineUtils.finishActivityWithAlertDialog(m_activity, "main finish with failed");
+        if (MengineNative.AndroidMain_main(m_nativeApplication) == false) {
+            MengineLog.logMessage(TAG, "main finish with failed" );
 
             return;
         }

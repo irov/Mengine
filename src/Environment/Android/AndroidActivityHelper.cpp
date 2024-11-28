@@ -15,7 +15,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         jmethodID AndroidGetActivityMethodID( JNIEnv * _jenv, const Char * _name, const Char * _signature )
         {
-            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity( _jenv );
 
             jmethodID jmethodID_function = _jenv->GetMethodID( jclassMengineActivity, _name, _signature );
 
@@ -119,7 +119,7 @@ namespace Mengine
         {
             jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
 
-            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity( _jenv );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );
@@ -135,7 +135,7 @@ namespace Mengine
         {
             jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
 
-            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity( _jenv );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );
@@ -153,7 +153,7 @@ namespace Mengine
         {
             jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
 
-            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity( _jenv );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );
@@ -171,7 +171,7 @@ namespace Mengine
         {
             jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
 
-            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity( _jenv );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );
@@ -189,7 +189,7 @@ namespace Mengine
         {
             jmethodID jmethodId = Helper::AndroidGetActivityMethodID( _jenv, _name, _signature );
 
-            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity();
+            jclass jclassMengineActivity = Mengine_JNI_GetJClassMengineActivity( _jenv );
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _signature );

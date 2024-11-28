@@ -20,18 +20,20 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
+import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginActivityListener, MenginePluginEngineListener {
+public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginEngineListener {
     public static final String PLUGIN_NAME = "MengineAppLovin";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -52,12 +54,13 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     private MengineAppLovinNonetBannersInterface m_nonetBanners;
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         m_banners = new HashMap<>();
         m_interstitials = new HashMap<>();
         m_rewardeds = new HashMap<>();
 
-        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(activity);
+        AppLovinSdk appLovinSdk = AppLovinSdk.getInstance(application);
+
         AppLovinSdkSettings settings = appLovinSdk.getSettings();
 
         String MengineAppLovinPlugin_CCPA = this.getMetaDataString(PLUGIN_METADATA_CCPA);
@@ -68,9 +71,9 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         );
 
         if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("YES") == true) {
-            AppLovinPrivacySettings.setDoNotSell(true, activity);
+            AppLovinPrivacySettings.setDoNotSell(true, application);
         } else if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("NO") == true) {
-            AppLovinPrivacySettings.setDoNotSell(false, activity);
+            AppLovinPrivacySettings.setDoNotSell(false, application);
         } else if (MengineAppLovinPlugin_CCPA.equalsIgnoreCase("UNKNOWN") == true) {
             // Nothing
         } else {
@@ -118,8 +121,6 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             settings.setCreativeDebuggerEnabled(false);
         }
 
-        MengineApplication application = this.getMengineApplication();
-
         String sessionId = application.getSessionId();
         settings.setUserIdentifier(sessionId);
 
@@ -127,10 +128,10 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         this.logMessage("%s: %s"
             , PLUGIN_METADATA_SDK_KEY
-            , MengineAppLovinPlugin_SdkKey
+            , MengineUtils.getDebugValue(MengineAppLovinPlugin_SdkKey, "[REDACTED]")
         );
 
-        AppLovinSdkInitializationConfiguration config = AppLovinSdkInitializationConfiguration.builder(MengineAppLovinPlugin_SdkKey, activity)
+        AppLovinSdkInitializationConfiguration config = AppLovinSdkInitializationConfiguration.builder(MengineAppLovinPlugin_SdkKey, application)
             .setMediationProvider( AppLovinMediationProvider.MAX )
             .build();
 
@@ -162,7 +163,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
                 );
             }
 
-            MengineTransparencyConsentParam consent = activity.makeTransparencyConsentParam();
+            MengineTransparencyConsentParam consent = application.makeTransparencyConsentParam();
 
             application.onMengineTransparencyConsent(consent);
 
@@ -178,7 +179,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         MengineAppLovinMediationInterface mediationAmazon = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinMediationAmazon", false);
 
         if (mediationAmazon != null) {
-            mediationAmazon.initializeMediator(activity, this);
+            mediationAmazon.initializeMediator(application, this);
 
             m_mediationAmazon = mediationAmazon;
         } else {
@@ -188,7 +189,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         MengineAppLovinNonetBannersInterface nonetBanners = this.newInstance("org.Mengine.Plugin.AppLovin.MengineAppLovinNonetBanners", false);
 
         if (nonetBanners != null) {
-            nonetBanners.initializeNonetBanners(activity, this);
+            nonetBanners.onAppCreate(application, this);
 
             m_nonetBanners = nonetBanners;
         } else {
@@ -197,41 +198,72 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onDestroy(MengineActivity activity) {
+    public void onAppTerminate(MengineApplication application) {
         if (m_mediationAmazon != null) {
-            m_mediationAmazon.finalizeMediator(activity, this);
+            m_mediationAmazon.finalizeMediator(application, this);
             m_mediationAmazon = null;
+        }
+
+        m_banners = null;
+        m_interstitials = null;
+        m_rewardeds = null;
+
+        if (m_nonetBanners != null) {
+            m_nonetBanners.onAppTerminate(application, this);
+            m_nonetBanners = null;
+        }
+    }
+
+    @Override
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+        if (m_nonetBanners != null) {
+            m_nonetBanners.onCreate(activity);
         }
 
         if (m_banners != null) {
             for (MengineAppLovinBanner banner : m_banners.values()) {
-                banner.destroy();
+                banner.onCreate(activity);
             }
-
-            m_banners = null;
         }
 
         if (m_interstitials != null) {
             for (MengineAppLovinInterstitial interstitial : m_interstitials.values()) {
-                interstitial.destroy();
+                interstitial.onCreate(activity);
             }
-
-            m_interstitials = null;
         }
 
         if (m_rewardeds != null) {
             for (MengineAppLovinRewarded rewarded : m_rewardeds.values()) {
-                rewarded.destroy();
+                rewarded.onCreate(activity);
             }
+        }
+    }
 
-            m_rewardeds = null;
+    @Override
+    public void onDestroy(MengineActivity activity) {
+        if (m_banners != null) {
+            for (MengineAppLovinBanner banner : m_banners.values()) {
+                banner.onDestroy();
+            }
+        }
+
+        if (m_interstitials != null) {
+            for (MengineAppLovinInterstitial interstitial : m_interstitials.values()) {
+                interstitial.onDestroy();
+            }
+        }
+
+        if (m_rewardeds != null) {
+            for (MengineAppLovinRewarded rewarded : m_rewardeds.values()) {
+                rewarded.onDestroy();
+            }
         }
 
         if (m_nonetBanners != null) {
-            m_nonetBanners.finalizeNonetBanners(activity, this);
-            m_nonetBanners = null;
+            m_nonetBanners.onDestroy();
         }
     }
+
 
     public MengineAppLovinMediationInterface getMediationAmazon() {
         return m_mediationAmazon;
@@ -255,6 +287,12 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         try {
             MengineAppLovinBanner banner = new MengineAppLovinBanner(this, adUnitId, placement);
+
+            MengineActivity activity = this.getMengineActivity();
+
+            if (activity != null) {
+                banner.onCreate(activity);
+            }
 
             m_banners.put(adUnitId, banner);
         } catch (final Exception e) {
@@ -318,6 +356,12 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         try {
             MengineAppLovinInterstitial interstitial = new MengineAppLovinInterstitial(this, adUnitId);
+
+            MengineActivity activity = this.getMengineActivity();
+
+            if (activity != null) {
+                interstitial.onCreate(activity);
+            }
 
             m_interstitials.put(adUnitId, interstitial);
         } catch (final Exception e) {
@@ -384,6 +428,12 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         try {
             MengineAppLovinRewarded rewarded = new MengineAppLovinRewarded(this, adUnitId);
+
+            MengineActivity activity = this.getMengineActivity();
+
+            if (activity != null) {
+                rewarded.onCreate(activity);
+            }
 
             m_rewardeds.put(adUnitId, rewarded);
         } catch (final Exception e) {

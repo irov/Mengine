@@ -25,9 +25,14 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     public MengineAppLovinRewarded(MengineAppLovinPlugin plugin, String adUnitId) {
         super(MaxAdFormat.REWARDED, plugin, adUnitId);
 
-        MengineActivity activity = m_plugin.getMengineActivity();
+        //Empty
+    }
 
-        MaxRewardedAd rewardedAd = MaxRewardedAd.getInstance(adUnitId, activity);
+    @Override
+    public void onCreate(MengineActivity activity) {
+        super.onCreate(activity);
+
+        MaxRewardedAd rewardedAd = MaxRewardedAd.getInstance(m_adUnitId, activity);
 
         rewardedAd.setListener(this);
         rewardedAd.setRequestListener(this);
@@ -39,7 +44,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_plugin.logMessage("[%s] create adUnitId: %s"
             , m_adFormat.getLabel()
-            , adUnitId
+            , m_adUnitId
         );
 
         m_plugin.setState("applovin.rewarded.state." + m_adUnitId, "init");
@@ -47,7 +52,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
 
         if (mediationAmazon != null) {
-            mediationAmazon.loadMediatorRewarded(activity, plugin, m_rewardedAd, () -> {
+            mediationAmazon.loadMediatorRewarded(activity, m_plugin, m_rewardedAd, () -> {
                 MengineAppLovinRewarded.this.loadAd();
             });
         } else {
@@ -56,8 +61,8 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
     }
 
     @Override
-    public void destroy() {
-        super.destroy();
+    public void onDestroy() {
+        super.onDestroy();
 
         if (m_rewardedAd != null) {
             m_rewardedAd.destroy();

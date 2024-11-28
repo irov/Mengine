@@ -44,7 +44,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Map;
 
-public class MengineFacebookPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener, MenginePluginRemoteMessageListener, MenginePluginActivityListener, MenginePluginPushTokenListener, MenginePluginSessionIdListener {
+public class MengineFacebookPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener, MenginePluginRemoteMessageListener, MenginePluginPushTokenListener, MenginePluginSessionIdListener {
     public static final String PLUGIN_NAME = "MengineFacebook";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -68,10 +68,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
                 , e.getMessage()
             );
         }
-    }
 
-    @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
         if (BuildConfig.DEBUG == true) {
             FacebookSdk.setIsDebugEnabled(true);
 
@@ -79,7 +76,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             FacebookSdk.addLoggingBehavior(LoggingBehavior.DEVELOPER_ERRORS);
         }
 
-        LoginManager.getInstance().retrieveLoginStatus(activity, new LoginStatusCallback() {
+        LoginManager.getInstance().retrieveLoginStatus(application, new LoginStatusCallback() {
             @Override
             public void onCompleted(@NonNull AccessToken accessToken) {
                 MengineFacebookPlugin.this.logMessage("retrieve login [onCompleted] application: %s user: %s token: %s"
@@ -180,14 +177,15 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
             }
         });
 
-        String sessionId = activity.getSessionId();
+        String sessionId = application.getSessionId();
         AppEventsLogger.setUserID(sessionId);
 
-        m_logger = AppEventsLogger.newLogger(activity);
+        AppEventsLogger logger = AppEventsLogger.newLogger(application);
+        m_logger = logger;
     }
 
     @Override
-    public void onDestroy(MengineActivity activity) {
+    public void onAppTerminate(MengineApplication application) {
         if (m_logger != null) {
             m_logger.flush();
             m_logger = null;

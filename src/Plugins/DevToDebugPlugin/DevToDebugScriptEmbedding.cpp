@@ -404,7 +404,7 @@ namespace Mengine
     bool DevToDebugScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "DevToDebug", true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("DevToDebug"), true );
 
         pybind::def_function( _kernel, "addDevToDebugTab", &Detail::addDevToDebugTab );
         pybind::def_function( _kernel, "getDevToDebugTab", &Detail::getDevToDebugTab );

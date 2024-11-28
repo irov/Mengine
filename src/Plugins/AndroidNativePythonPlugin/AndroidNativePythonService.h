@@ -6,7 +6,6 @@
 #include "Environment/Python/PythonIncluder.h"
 
 #include "AndroidNativePythonInterface.h"
-#include "AndroidNativePythonEventHandlerInterface.h"
 
 #include "Kernel/Scene.h"
 #include "Kernel/ServiceBase.h"
@@ -17,7 +16,6 @@ namespace Mengine
 {
     class AndroidNativePythonService
         : public ServiceBase<AndroidNativePythonServiceInterface>
-        , public AndroidNativePythonEventHandlerInterface
     {
     public:
         AndroidNativePythonService();
@@ -30,7 +28,8 @@ namespace Mengine
     public:
         bool hasPythonMethod( const ConstString & _plugin, const ConstString & _method ) const override;
         void callPythonMethod( const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const override;
-        void addPlugin( const ConstString & _name, jobject _plugin ) override;
+        void addPlugin( const ConstString & _name, jobject _jplugin ) override;
+        jobject removePlugin( const ConstString & _name ) override;
 
     public:
         pybind::object addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args ) override;
@@ -50,6 +49,7 @@ namespace Mengine
         void waitSemaphore( const ConstString & _name, const AndroidSemaphoreListenerInterfacePtr & _listener ) override;
 
     protected:
+        jobject getAndroidPlugin( const ConstString & _plugin ) const;
         bool getAndroidMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const;
 
     protected:
@@ -74,6 +74,7 @@ namespace Mengine
         MapAndroidCallbacks m_callbacks;
 
         ThreadMutexInterfacePtr m_callbacksMutex;
+        ThreadMutexInterfacePtr m_pluginsMutex;
 
         typedef Map<ConstString, jobject> MapAndroidPlugins;
         MapAndroidPlugins m_plugins;

@@ -62,7 +62,7 @@ namespace Mengine
     bool OzzScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "Ozz", true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("Ozz"), true );
 
         pybind::def_function( _kernel, "createOzzSampler", &Detail::createOzzSampler );
 

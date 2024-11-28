@@ -26,7 +26,7 @@ namespace Mengine
     bool AppleGeneralDataProtectionRegulationScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "AppleGeneralDataProtectionRegulation", true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleGeneralDataProtectionRegulation"), true );
         
         AppleGeneralDataProtectionRegulationServiceInterface * service = APPLE_GENERALDATAPROTECTIONREGULATION_SERVICE();
 
@@ -39,7 +39,7 @@ namespace Mengine
     void AppleGeneralDataProtectionRegulationScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "AppleGeneralDataProtectionRegulation", false );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleGeneralDataProtectionRegulation"), false );
             
         _kernel->remove_from_module( "appleSetGDPRPass", nullptr );
         _kernel->remove_from_module( "appleIsGDPRPass", nullptr );

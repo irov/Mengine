@@ -18,6 +18,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineNative;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginEngineListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
@@ -34,7 +36,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
     private Drawable getDrawableSplashScreen(Context context) {
         Resources resources = context.getResources();
         Resources.Theme theme = context.getTheme();
-        Drawable drawable = ResourcesCompat.getDrawable(resources, R.drawable.mengine_splashscreen, theme);
+        Drawable drawable = ResourcesCompat.getDrawable(resources, R.drawable.mengine_launchscreen, theme);
 
         return drawable;
     }
@@ -43,7 +45,14 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
         ImageView image = new ImageView(context);
         Drawable mengine_splashscreen = this.getDrawableSplashScreen(context);
         image.setBackground(mengine_splashscreen);
-        image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        boolean mengine_splashscreen_background_inside = context.getResources().getBoolean(R.bool.mengine_splashscreen_background_inside);
+
+        if (mengine_splashscreen_background_inside == true) {
+            image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        } else {
+            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        }
 
         ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         image.setLayoutParams(params);
@@ -76,6 +85,14 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+        MengineApplication application = activity.getMengineApplication();
+
+        if (application.isMenginePlatformRun() == true) {
+            this.setState("splashscreen.state", "skip");
+
+            return;
+        }
+
         this.setState("splashscreen.state", "init");
 
         ViewGroup viewGroup = activity.getContentViewGroup();
@@ -111,8 +128,27 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
     }
 
     @Override
-    public void onMenginePlatformRun(MengineActivity activity) {
+    public void onDestroy(MengineActivity activity) {
+        if (m_image != null) {
+            m_image.clearAnimation();
+            m_image = null;
+        }
+
+        if (m_text != null) {
+            m_text.clearAnimation();
+            m_text = null;
+        }
+    }
+
+    @Override
+    public void onMenginePlatformRun(MengineApplication application) {
         MengineUtils.performOnMainThread(() -> {
+            MengineActivity activity = application.getMengineActivity();
+
+            if (activity == null) {
+                return;
+            }
+
             this.hideSplash(activity);
         });
     }

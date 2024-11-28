@@ -2,6 +2,7 @@ package org.Mengine.Base;
 
 import androidx.annotation.Size;
 
+import java.lang.reflect.Field;
 import java.util.Locale;
 
 public class MenginePlugin implements MenginePluginInterface {
@@ -9,14 +10,6 @@ public class MenginePlugin implements MenginePluginInterface {
     private MengineActivity m_activity;
     private String m_pluginName;
     private Boolean m_availableStatus = null;
-
-    public MengineApplication getMengineApplication() {
-        return m_application;
-    }
-
-    public MengineActivity getMengineActivity() {
-        return m_activity;
-    }
 
     public boolean onInitialize(MengineApplication application, String pluginName) {
         m_application = application;
@@ -29,8 +22,16 @@ public class MenginePlugin implements MenginePluginInterface {
         m_application = null;
     }
 
-    public void setActivity(MengineActivity activity) {
+    public MengineApplication getMengineApplication() {
+        return m_application;
+    }
+
+    public void setMengineActivity(MengineActivity activity) {
         m_activity = activity;
+    }
+
+    public MengineActivity getMengineActivity() {
+        return m_activity;
     }
 
     public String getPluginName() {
@@ -49,6 +50,24 @@ public class MenginePlugin implements MenginePluginInterface {
         }
 
         return m_availableStatus;
+    }
+
+    public boolean isEmbedding() {
+        try {
+            Class<?> cls = this.getClass();
+
+            Field PLUGIN_EMBEDDING = cls.getField("PLUGIN_EMBEDDING");
+
+            if( PLUGIN_EMBEDDING.getBoolean(null) == false ) {
+                return false;
+            }
+        } catch (final NoSuchFieldException e) {
+            return false;
+        } catch (final IllegalAccessException e) {
+            return false;
+        }
+
+        return true;
     }
 
     public boolean hasOption(String option) {

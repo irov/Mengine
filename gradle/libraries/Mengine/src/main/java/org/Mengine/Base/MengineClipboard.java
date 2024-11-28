@@ -8,7 +8,7 @@ import android.view.View;
 public class MengineClipboard extends View implements ClipboardManager.OnPrimaryClipChangedListener {
     public static final String TAG = "MengineClipboard";
 
-    protected final ClipboardManager m_cm;
+    protected ClipboardManager m_cm;
 
     public MengineClipboard(Context context) {
         super(context);
@@ -19,6 +19,13 @@ public class MengineClipboard extends View implements ClipboardManager.OnPrimary
 
         if (m_cm != null) {
             m_cm.addPrimaryClipChangedListener(this);
+        }
+    }
+
+    public void handleDestroy() {
+        if (m_cm != null) {
+            m_cm.removePrimaryClipChangedListener(this);
+            m_cm = null;
         }
     }
 
@@ -95,6 +102,6 @@ public class MengineClipboard extends View implements ClipboardManager.OnPrimary
     public void onPrimaryClipChanged() {
         MengineLog.logMessage(TAG, "clipboard changed");
 
-        MengineActivity.AndroidPlatform_clipboardChangedEvent();
+        MengineNative.AndroidPlatform_clipboardChangedEvent();
     }
 }

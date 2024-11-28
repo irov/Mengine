@@ -30,7 +30,7 @@ namespace Mengine
     bool ImGUIScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "ImGUI", true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("ImGUI"), true );
 
         pybind::interface_<ImGUIScriptRender, pybind::bases<Factorable>>( _kernel, "ImGUIScriptRender", false )
             ;

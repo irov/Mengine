@@ -55,7 +55,7 @@ namespace Mengine
         void finalizeFileService() override;
 
     public:
-        bool runPlatform()	override;
+        bool runPlatform() override;
         void loopPlatform() override;
         bool updatePlatform() override;
         bool tickPlatform( Timestamp _frameTime, float _frameTimeF, bool _render, bool _flush, bool _pause ) override;

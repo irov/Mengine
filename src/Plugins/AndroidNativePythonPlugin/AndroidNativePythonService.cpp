@@ -7,15 +7,6 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/AndroidKernelServiceInterface.h"
 
-#include "Kernel/FactorableUnique.h"
-#include "Kernel/Logger.h"
-#include "Kernel/NotificationHelper.h"
-#include "Kernel/Error.h"
-#include "Kernel/AssertionFactory.h"
-#include "Kernel/FactoryPool.h"
-#include "Kernel/ThreadMutexScope.h"
-#include "Kernel/ThreadHelper.h"
-
 #include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidDeclaration.h"
@@ -28,31 +19,29 @@
 #include "AndroidNativePythonFunctorBoolean.h"
 #include "AndroidNativePythonScriptEmbedding.h"
 
+#include "Kernel/FactorableUnique.h"
+#include "Kernel/Logger.h"
+#include "Kernel/NotificationHelper.h"
+#include "Kernel/Error.h"
+#include "Kernel/AssertionFactory.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/ThreadMutexScope.h"
+#include "Kernel/ThreadHelper.h"
+
 #include "Config/StdString.h"
 #include "Config/Utility.h"
 
 //////////////////////////////////////////////////////////////////////////
-static Mengine::AndroidNativePythonService * s_androidNativePythonService = nullptr;
-//////////////////////////////////////////////////////////////////////////
 extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, jobjectArray _args)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidNativePython_1call )(JNIEnv * env, jclass cls, jstring _plugin, jstring _method, jobjectArray _args)
     {
         Mengine::ConstString plugin = Mengine::Helper::AndroidMakeConstStringFromJString( env, _plugin );
         Mengine::ConstString method = Mengine::Helper::AndroidMakeConstStringFromJString( env, _method );
 
-        if( s_androidNativePythonService == nullptr )
-        {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "invalid android call plugin '%s' method '%s'"
-                , plugin.c_str()
-                , method.c_str()
-            );
-
-            return;
-        }
-
-        if( s_androidNativePythonService->hasPythonMethod( plugin, method ) == false )
+        if( ANDROID_NATIVEPYTHON_SERVICE()
+            ->hasPythonMethod( plugin, method ) == false )
         {
             return;
         }
@@ -61,29 +50,29 @@ extern "C"
 
         Mengine::Helper::dispatchMainThreadEvent( [plugin, method, new_args]()
         {
-            s_androidNativePythonService->callPythonMethod( plugin, method, new_args );
+            ANDROID_NATIVEPYTHON_SERVICE()
+                ->callPythonMethod( plugin, method, new_args );
         } );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativePython_1addPlugin )(JNIEnv * env, jclass cls, jstring _name, jobject _plugin)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidNativePython_1addPlugin )(JNIEnv * env, jclass cls, jstring _name, jobject _plugin)
     {
         Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString(env, _name);
 
-        if( s_androidNativePythonService == nullptr )
-        {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "invalid android add plugin '%s'"
-                , name.c_str()
-            );
-
-            return;
-        }
-
         jobject new_plugin = env->NewGlobalRef( _plugin );
 
-        Mengine::Helper::dispatchMainThreadEvent([name, new_plugin]()
-        {
-            s_androidNativePythonService->addPlugin( name, new_plugin );
-        } );
+        ANDROID_NATIVEPYTHON_SERVICE()
+            ->addPlugin( name, new_plugin );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidNativePython_1removePlugin )(JNIEnv * env, jclass cls, jstring _name)
+    {
+        Mengine::ConstString name = Mengine::Helper::AndroidMakeConstStringFromJString(env, _name);
+
+        jobject jplugin = ANDROID_NATIVEPYTHON_SERVICE()
+            ->removePlugin( name );
+
+        env->DeleteGlobalRef( jplugin );
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
@@ -127,21 +116,8 @@ namespace Mengine
         m_factoryAndroidNativePythonFunctorVoid = Helper::makeFactoryPool<AndroidNativePythonFunctorVoid, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryAndroidNativePythonFunctorBoolean = Helper::makeFactoryPool<AndroidNativePythonFunctorBoolean, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
-        ThreadMutexInterfacePtr callbacksMutex = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
-
-        m_callbacksMutex = callbacksMutex;
-
-        s_androidNativePythonService = this;
-
-        if( Mengine_JNI_ExistMengineActivity() == JNI_TRUE )
-        {
-            JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-            MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-            Helper::AndroidCallVoidActivityMethod( jenv, "onPythonEmbeddedInitialize", "()V" );
-        }
+        m_callbacksMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
+        m_pluginsMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -157,14 +133,8 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        if( Mengine_JNI_ExistMengineActivity() == JNI_TRUE )
-        {
-            Helper::AndroidCallVoidActivityMethod( jenv, "onPythonEmbeddedFinalize", "()V" );
-        }
-
-        s_androidNativePythonService = nullptr;
-
         m_callbacksMutex = nullptr;
+        m_pluginsMutex = nullptr;
 
         m_callbacks.clear();
 
@@ -270,16 +240,38 @@ namespace Mengine
         jenv->DeleteGlobalRef( _args );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonService::addPlugin( const ConstString & _name, jobject _plugin )
+    void AndroidNativePythonService::addPlugin( const ConstString & _name, jobject _jplugin )
     {
-        MENGINE_ASSERTION_FATAL( m_plugins.find( Helper::stringizeString( _name ) ) == m_plugins.end(), "invalid add plugin '%s' [double]"
+        SCRIPT_SERVICE()
+            ->setAvailablePlugin( _name, true );
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_pluginsMutex );
+
+        MENGINE_ASSERTION_FATAL( m_plugins.find( _name ) == m_plugins.end(), "invalid add plugin '%s' [double]"
             , _name.c_str()
         );
 
+        m_plugins.emplace( _name, _jplugin );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jobject AndroidNativePythonService::removePlugin( const ConstString & _name )
+    {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( _name.c_str(), true );
+            ->setAvailablePlugin( _name, false );
 
-        m_plugins.emplace( _name, _plugin );
+        MENGINE_THREAD_MUTEX_SCOPE( m_pluginsMutex );
+
+        MapAndroidPlugins::iterator it_found = m_plugins.find( _name );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_plugins.end(), "invalid remove plugin '%s' [empty]"
+            , _name.c_str()
+        );
+
+        jobject jplugin = it_found->second;
+
+        m_plugins.erase( it_found );
+
+        return jplugin;
     }
     //////////////////////////////////////////////////////////////////////////
     pybind::object AndroidNativePythonService::addAndroidCallback( const ConstString & _plugin, const ConstString & _method, const pybind::object & _cb, const pybind::args & _args )
@@ -664,7 +656,7 @@ namespace Mengine
 
         AndroidSemaphoreListenerInterface * listener_ptr = _listener.get();
         AndroidSemaphoreListenerInterface::intrusive_ptr_add_ref( listener_ptr );
-        jobject jpoint_listener = jenv->NewDirectByteBuffer( listener_ptr, sizeof(AndroidSemaphoreListenerInterface) );
+        jobject jpoint_listener = jenv->NewDirectByteBuffer( listener_ptr, sizeof(void *) );
 
         jobject jfunctor = jenv->NewObject( jclass_MengineSemaphoreListener, jmethodID_MengineSemaphoreListener_constructor, jpoint_listener );
 
@@ -678,6 +670,22 @@ namespace Mengine
         jenv->DeleteLocalRef( jclass_MengineSemaphoreListener );
     }
     //////////////////////////////////////////////////////////////////////////
+    jobject AndroidNativePythonService::getAndroidPlugin( const ConstString & _plugin ) const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_pluginsMutex );
+
+        MapAndroidPlugins::const_iterator it_found = m_plugins.find( _plugin );
+
+        if( it_found == m_plugins.end() )
+        {
+            return nullptr;
+        }
+
+        jobject jplugin = it_found->second;
+
+        return jplugin;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonService::getAndroidMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, const pybind::args & _args, const Char * _retType, jvalue * const _jargs, jobject * const _jfree, uint32_t * const _freeCount, jobject * const _jplugin, jmethodID * const _jmethodId ) const
     {
         MENGINE_ASSERTION_FATAL( _args.size() <= 32, "android method plugin '%s' method '%s' max args [32 < %u]"
@@ -686,9 +694,9 @@ namespace Mengine
             , _args.size()
         );
 
-        MapAndroidPlugins::const_iterator it_found = m_plugins.find( _plugin );
+        jobject jplugin = this->getAndroidPlugin( _plugin );
 
-        if( it_found == m_plugins.end() )
+        if( jplugin == nullptr )
         {
             LOGGER_ERROR( "android not register plugin '%s' (call method '%s' args '%s')"
                 , _plugin.c_str()
@@ -699,22 +707,7 @@ namespace Mengine
             return false;
         }
 
-        jobject jplugin = it_found->second;
-
         jclass plugin_class = _jenv->GetObjectClass( jplugin );
-
-        if( jplugin == nullptr )
-        {
-            Helper::AndroidEnvExceptionCheck( _jenv );
-
-            LOGGER_ERROR( "android not found java plugin '%s' (call method '%s' args '%s')"
-                , _plugin.c_str()
-                , _method.c_str()
-                , _args.repr().c_str()
-            );
-
-            return false;
-        }
 
         Char signature[1024 + 1] = {'\0'};
 
@@ -854,7 +847,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::notifyChangeSceneComplete_( const ScenePtr & _scene )
     {
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {
             return;
         }
@@ -869,14 +862,14 @@ namespace Mengine
 
         jstring sceneName_jvalue = jenv->NewStringUTF( sceneName_str );
 
-        Helper::AndroidCallVoidActivityMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
+        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
 
         jenv->DeleteLocalRef( sceneName_jvalue );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::notifyRemoveSceneComplete_()
     {
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {
             return;
         }
@@ -887,7 +880,7 @@ namespace Mengine
 
         jstring sceneName_jvalue = jenv->NewStringUTF( "" );
 
-        Helper::AndroidCallVoidActivityMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
+        Helper::AndroidCallVoidApplicationMethod( jenv, "onMengineCurrentSceneChange", "(Ljava/lang/String;)V", sceneName_jvalue );
 
         jenv->DeleteLocalRef( sceneName_jvalue );
     }

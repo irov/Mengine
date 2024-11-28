@@ -47,7 +47,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeOptionsService_( int32_t _argc, const Char ** const _argv )
+    bool SDLApplication::initializeOptionsService_( int32_t _argc, Char ** const _argv )
     {
         ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
 
@@ -155,7 +155,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::bootstrap( int32_t _argc, const Char ** const _argv )
+    bool SDLApplication::bootstrap( int32_t _argc, Char ** const _argv )
     {
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
 #   error "MENGINE_PLUGIN_MENGINE_SHARED for SDL not implemented"

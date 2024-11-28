@@ -174,7 +174,7 @@ namespace Mengine
     bool AppleStoreInAppPurchaseScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "AppleStoreInAppPurchase", true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleStoreInAppPurchase"), true );
         
         AppleStoreInAppPurchaseServiceInterface * service = APPLE_STOREINAPPPURCHASE_SERVICE();
 

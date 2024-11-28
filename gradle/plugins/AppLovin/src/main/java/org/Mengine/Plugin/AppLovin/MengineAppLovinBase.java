@@ -13,6 +13,7 @@ import com.applovin.mediation.MaxNetworkResponseInfo;
 import com.applovin.mediation.MaxReward;
 import com.applovin.sdk.AppLovinSdkUtils;
 
+import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAnalyticsEventBuilder;
 import org.Mengine.Base.MengineUtils;
 
@@ -41,8 +42,11 @@ public class MengineAppLovinBase {
         m_requestId = 0;
     }
 
-    public void destroy() {
-        m_plugin = null;
+    public void onCreate(MengineActivity activity) {
+        //Empty
+    }
+
+    public void onDestroy() {
     }
 
     public void loadAd() {

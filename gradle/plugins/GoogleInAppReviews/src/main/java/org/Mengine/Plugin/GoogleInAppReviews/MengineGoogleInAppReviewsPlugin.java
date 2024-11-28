@@ -44,6 +44,12 @@ public class MengineGoogleInAppReviewsPlugin extends MenginePlugin implements Me
         });
     }
 
+    @Override
+    public void onDestroy(MengineActivity activity) {
+        m_manager = null;
+        m_reviewInfo = null;
+    }
+
     public void launchTheInAppReview() {
         if (m_reviewInfo == null) {
             this.logError("[ERROR] reviewInfo == null");

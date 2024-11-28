@@ -28,33 +28,24 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MengineApplication extends Application {
     private static final String TAG = "MengineApplication";
 
-    private static native void AndroidEnv_setMengineAndroidApplicationJNI(Object activity, ClassLoader cl);
-    private static native void AndroidEnv_removeMengineAndroidApplicationJNI();
-
-    private static native boolean AndroidEnv_isMasterRelease();
-    private static native String AndroidEnv_getEngineGITSHA1();
-    private static native String AndroidEnv_getEngineVersion();
-    private static native String AndroidEnv_getBuildDate();
-    private static native String AndroidEnv_getBuildUsername();
-
     public boolean isMasterRelease() {
-        return AndroidEnv_isMasterRelease();
+        return MengineNative.AndroidEnv_isMasterRelease();
     }
 
     public String getEngineGITSHA1() {
-        return AndroidEnv_getEngineGITSHA1();
+        return MengineNative.AndroidEnv_getEngineGITSHA1();
     }
 
     public String getEngineVersion() {
-        return AndroidEnv_getEngineVersion();
+        return MengineNative.AndroidEnv_getEngineVersion();
     }
 
     public String getBuildDate() {
-        return AndroidEnv_getBuildDate();
+        return MengineNative.AndroidEnv_getBuildDate();
     }
 
     public String getBuildUsername() {
-        return AndroidEnv_getBuildUsername();
+        return MengineNative.AndroidEnv_getBuildUsername();
     }
 
     private String m_androidId;
@@ -70,6 +61,16 @@ public class MengineApplication extends Application {
 
     private boolean m_invalidInitialize = false;
     private String m_invalidInitializeReason = null;
+
+    private MengineActivity m_activity;
+
+    private MengineMain m_main;
+
+    private Object m_nativeApplication;
+
+    private boolean m_isMengineInitializeBaseServices = false;
+    private boolean m_isMengineCreateApplication = false;
+    private boolean m_isMenginePlatformRun = false;
 
     private ConnectivityManager.NetworkCallback m_networkCallback;
 
@@ -388,6 +389,26 @@ public class MengineApplication extends Application {
         }
 
         return androidId;
+    }
+
+    public void setMengineActivity(MengineActivity activity) {
+        m_activity = activity;
+    }
+
+    public MengineActivity getMengineActivity() {
+        return m_activity;
+    }
+
+    public boolean isMengineInitializeBaseServices() {
+        return m_isMengineInitializeBaseServices;
+    }
+
+    public boolean isMengineCreateApplication() {
+        return m_isMengineCreateApplication;
+    }
+
+    public boolean isMenginePlatformRun() {
+        return m_isMenginePlatformRun;
     }
 
     public void setState(String name, Object value) {
@@ -891,6 +912,10 @@ public class MengineApplication extends Application {
         return installKey;
     }
 
+    public Object getNativeApplication() {
+        return m_nativeApplication;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -1093,7 +1118,7 @@ public class MengineApplication extends Application {
 
         ClassLoader cl = MengineApplication.class.getClassLoader();
 
-        AndroidEnv_setMengineAndroidApplicationJNI(this, cl);
+        MengineNative.AndroidEnv_setMengineAndroidApplicationJNI(this, cl);
 
         String engine_gitsha1 = this.getEngineGITSHA1();
         this.setState("engine.gitsha1", engine_gitsha1);
@@ -1114,7 +1139,7 @@ public class MengineApplication extends Application {
 
                 l.onAppPrepare(this);
             } catch (final MenginePluginInvalidInitializeException e) {
-                MengineAnalytics.buildEvent("mng_app_init_failed")
+                MengineAnalytics.buildEvent("mng_app_create_failed")
                     .addParameterException("exception", e)
                     .logAndFlush();
 
@@ -1141,7 +1166,7 @@ public class MengineApplication extends Application {
 
                 l.onAppCreate(this);
             } catch (MenginePluginInvalidInitializeException e) {
-                MengineAnalytics.buildEvent("mng_app_init_failed")
+                MengineAnalytics.buildEvent("mng_app_create_failed")
                     .addParameterException("exception", e)
                     .logAndFlush();
 
@@ -1153,6 +1178,47 @@ public class MengineApplication extends Application {
                 return;
             }
         }
+
+        ApplicationInfo applicationInfo = this.getApplicationInfo();
+        String nativeLibraryDir = applicationInfo.nativeLibraryDir;
+        String options = this.getApplicationOptions();
+
+        String[] optionsArgs = options.split(" ");
+
+        Object nativeApplication = MengineNative.AndroidMain_bootstrap(nativeLibraryDir, optionsArgs);
+
+        if (nativeApplication == null) {
+            MengineAnalytics.buildEvent("mng_activity_create_failed")
+                .addParameterString("reason", "bootstrap failed")
+                .logAndFlush();
+
+            this.invalidInitialize("[ERROR] bootstrap failed");
+
+            return;
+        }
+
+        m_nativeApplication = nativeApplication;
+
+        for (MenginePlugin p : m_plugins) {
+            if (p.onAvailable(this) == false) {
+                continue;
+            }
+
+            if (p.isEmbedding() == false) {
+                continue;
+            }
+
+            String name = p.getPluginName();
+
+            MengineNative.AndroidNativePython_addPlugin(name, p);
+        }
+
+        this.setState("application.init", "run_main");
+
+        MengineNative.AndroidNativePython_addPlugin("Application", this);
+
+        m_main = new MengineMain(m_nativeApplication);
+        m_main.start();
 
         this.setState("application.init", "completed");
     }
@@ -1171,6 +1237,20 @@ public class MengineApplication extends Application {
             l.onAppTerminate(this);
         }
 
+        for (MenginePlugin p : m_plugins) {
+            if (p.onAvailable(this) == false) {
+                continue;
+            }
+
+            if (p.isEmbedding() == false) {
+                continue;
+            }
+
+            String name = p.getPluginName();
+
+            MengineNative.AndroidNativePython_removePlugin(name);
+        }
+
         for (MenginePlugin plugin : m_plugins) {
             plugin.onFinalize(this);
         }
@@ -1180,7 +1260,15 @@ public class MengineApplication extends Application {
         MengineLog.setMengineApplication(null);
         MengineAnalytics.setMengineApplication(null);
 
-        AndroidEnv_removeMengineAndroidApplicationJNI();
+        MengineNative.AndroidNativePython_removePlugin("Application");
+
+        m_main.stop();
+        m_main = null;
+
+        MengineNative.AndroidMain_destroy(m_nativeApplication);
+        m_nativeApplication = null;
+
+        MengineNative.AndroidEnv_removeMengineAndroidApplicationJNI();
 
         super.onTerminate();
     }
@@ -1217,6 +1305,82 @@ public class MengineApplication extends Application {
 
             l.onAppConfigurationChanged(this, newConfig);
         }
+    }
+
+    public void onMengineInitializeBaseServices() {
+        MengineLog.logInfo(TAG, "onMengineInitializeBaseServices");
+
+        m_isMengineInitializeBaseServices = true;
+
+        MengineLog.initializeBaseServices();
+
+        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
+
+        for (MenginePluginEngineListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
+            l.onMengineInitializeBaseServices(this);
+        }
+    }
+
+    public void onMengineCreateApplication() {
+        MengineLog.logInfo(TAG, "onMengineCreateApplication");
+
+        m_isMengineCreateApplication = true;
+
+        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
+
+        for (MenginePluginEngineListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
+            l.onMengineCreateApplication(this);
+        }
+    }
+
+    public void onMenginePlatformRun() {
+        MengineLog.logInfo(TAG, "onMenginePlatformRun");
+
+        m_isMenginePlatformRun = true;
+
+        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
+
+        for (MenginePluginEngineListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
+            l.onMenginePlatformRun(this);
+        }
+    }
+
+    public void onMenginePlatformStop() {
+        MengineLog.logInfo(TAG, "onMenginePlatformStop");
+
+        m_isMenginePlatformRun = false;
+
+        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
+
+        for (MenginePluginEngineListener l : listeners) {
+            if (l.onAvailable(this) == false) {
+                continue;
+            }
+
+            l.onMenginePlatformStop(this);
+        }
+
+        MengineLog.finalizeBaseServices();
+    }
+
+    public void onMengineCurrentSceneChange(String name) {
+        MengineLog.logInfo(TAG, "onMengineCurrentSceneChange: %s"
+            , name
+        );
+
+        this.setState("current.scene", name);
     }
 
     public void onMengineLogger(int level, int filter, String category, String msg) {

@@ -13,7 +13,7 @@ namespace Mengine
         ~SDLApplication();
 
     public:
-        bool bootstrap( int32_t _argc, const Char ** const _argv );
+        bool bootstrap( int32_t _argc, Char ** const _argv );
 
     public:
         bool initialize();
@@ -23,7 +23,7 @@ namespace Mengine
         void loop();
 
     protected:
-        bool initializeOptionsService_( int32_t argc, const Char ** const _argv );
+        bool initializeOptionsService_( int32_t argc, Char ** const _argv );
         bool initializeLoggerService_();
 
     protected:

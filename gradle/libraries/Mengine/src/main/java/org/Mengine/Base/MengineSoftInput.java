@@ -15,22 +15,8 @@ import androidx.annotation.NonNull;
 public class MengineSoftInput extends View implements View.OnKeyListener {
     public static final String TAG = "MengineSoftInput";
 
-    protected final InputMethodManager m_imm;
-    protected final View m_prevView;
-
-    public MengineSoftInput(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-
-        InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        m_imm = imm;
-
-        m_prevView = null;
-
-        this.setFocusableInTouchMode(true);
-        this.setFocusable(true);
-        this.setOnKeyListener(this);
-    }
+    protected InputMethodManager m_imm;
+    protected View m_prevView;
 
     public MengineSoftInput(Context context, View prevView) {
         super(context);
@@ -44,6 +30,15 @@ public class MengineSoftInput extends View implements View.OnKeyListener {
         this.setFocusableInTouchMode(true);
         this.setFocusable(true);
         this.setOnKeyListener(this);
+    }
+
+    public void handleDestroy() {
+        m_imm = null;
+        m_prevView = null;
+
+        this.setFocusable(false);
+        this.setFocusableInTouchMode(false);
+        this.setOnKeyListener(null);
     }
 
     @Override

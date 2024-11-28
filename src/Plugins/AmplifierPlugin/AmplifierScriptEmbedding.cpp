@@ -369,7 +369,7 @@ namespace Mengine
         }
 
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "Amplifier", true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("Amplifier"), true );
 
         pybind::def_functor_args( _kernel, "musicPlay", scriptMethod, &AmplifierScriptMethod::musicPlay );
         pybind::def_functor( _kernel, "musicSetVolume", scriptMethod, &AmplifierScriptMethod::musicSetVolume );

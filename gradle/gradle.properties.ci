@@ -14,4 +14,4 @@
 org.gradle.jvmargs=-Xms4096M -Xmx4096M -Dkotlin.daemon.jvm.options\="-Xmx4096M"
 android.useAndroidX=true
 android.useFullClasspathForDexingTransform=true
-android.enableJetifier=true
+android.enableJetifier=false

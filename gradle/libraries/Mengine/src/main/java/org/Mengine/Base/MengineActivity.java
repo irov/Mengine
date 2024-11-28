@@ -2,11 +2,8 @@ package org.Mengine.Base;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,76 +25,29 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 public class MengineActivity extends AppCompatActivity {
     public static final String TAG = "MengineActivity";
 
-    private static native Object AndroidMain_bootstrap(String nativeLibraryDir, String[] _args);
-    private static native void AndroidMain_destroy(Object application);
-
-    private static native void AndroidEnv_setMengineAndroidActivityJNI(Object activity);
-    private static native void AndroidEnv_removeMengineAndroidActivityJNI();
-
-    private static native boolean AndroidEnvironmentService_isDevelopmentMode();
-    private static native String AndroidEnvironmentService_getCompanyName();
-    private static native String AndroidEnvironmentService_getProjectName();
-    private static native String AndroidEnvironmentService_getExtraPreferencesFolderName();
-    private static native boolean AndroidEnvironmentService_hasCurrentAccount();
-    private static native void AndroidEnvironmentService_deleteCurrentAccount();
-    private static native String AndroidEnvironmentService_getCurrentAccountFolderName();
-    private static native boolean AndroidEnvironmentService_writeCurrentLogToFile(Writer writer);
-    private static native boolean AndroidEnvironmentService_writeOldLogToFile(Writer writer);
-    private static native int AndroidEnvironmentService_getProjectVersion();
-
-    private static native void AndroidNativePython_addPlugin(String name, Object plugin);
-    private static native void AndroidNativePython_call(String plugin, String method, Object []args);
-
-    public static native void AndroidPlatform_surfaceCreatedEvent(Surface surface);
-    public static native void AndroidPlatform_surfaceDestroyedEvent(Surface surface);
-    public static native void AndroidPlatform_surfaceChangedEvent(Surface surface, int surfaceWidth, int surfaceHeight, int deviceWidth, int deviceHeight, float rate);
-    public static native void AndroidPlatform_keyEvent(boolean isDown, int keyCode, int repeatCount);
-    public static native void AndroidPlatform_textEvent(int unicode);
-    public static native void AndroidPlatform_touchEvent(int action, int pointerId, float x, float y, float pressure);
-    public static native void AndroidPlatform_accelerationEvent(float x, float y, float z);
-    public static native void AndroidPlatform_pauseEvent();
-    public static native void AndroidPlatform_resumeEvent();
-    public static native void AndroidPlatform_stopEvent();
-    public static native void AndroidPlatform_startEvent();
-    public static native void AndroidPlatform_clipboardChangedEvent();
-    public static native void AndroidPlatform_windowFocusChangedEvent(boolean focus);
-    public static native void AndroidPlatform_quitEvent();
-    public static native void AndroidPlatform_lowMemory();
-    public static native void AndroidPlatform_trimMemory(int level);
-    public static native void AndroidPlatform_changeLocale(String locale);
-
-    private static boolean ACTIVITY_CREATED = false;
-    private static boolean ACTIVITY_DESTROY = false;
-
-    private boolean m_initializePython = false;
-
-    private Object m_nativeApplication;
     private Locale m_currentLocale;
 
     private static final Map<String, Integer> m_requestCodes = new HashMap<>();
 
     private static final Object m_syncronizationSemaphores = new Object();
     private Map<String, MengineSemaphore> m_semaphores;
-
-    private Thread m_threadMain;
 
     private MengineCommandHandler m_commandHandler;
 
@@ -114,19 +64,19 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public boolean isDevelopmentMode() {
-        return AndroidEnvironmentService_isDevelopmentMode();
+        return MengineNative.AndroidEnvironmentService_isDevelopmentMode();
     }
 
     public String getCompanyName() {
-       return AndroidEnvironmentService_getCompanyName();
+       return MengineNative.AndroidEnvironmentService_getCompanyName();
     }
 
     public String getProjectName() {
-        return AndroidEnvironmentService_getProjectName();
+        return MengineNative.AndroidEnvironmentService_getProjectName();
     }
 
     public int getProjectVersion() {
-        return AndroidEnvironmentService_getProjectVersion();
+        return MengineNative.AndroidEnvironmentService_getProjectVersion();
     }
 
     public MengineApplication getMengineApplication() {
@@ -177,10 +127,6 @@ public class MengineActivity extends AppCompatActivity {
 
     @SuppressWarnings("unchecked")
     public <T> T getPlugin(Class<T> cls) {
-        if (MengineActivity.ACTIVITY_DESTROY == true) {
-            return null;
-        }
-
         MengineApplication application = this.getMengineApplication();
 
         T plugin = application.getPlugin(cls);
@@ -189,10 +135,6 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public String getSessionId() {
-        if (MengineActivity.ACTIVITY_DESTROY == true) {
-            return "";
-        }
-
         MengineApplication application = this.getMengineApplication();
 
         String sessionId = application.getSessionId();
@@ -201,10 +143,6 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public String getVersionName() {
-        if (MengineActivity.ACTIVITY_DESTROY == true) {
-            return "";
-        }
-
         MengineApplication application = this.getMengineApplication();
 
         String versionName = application.getVersionName();
@@ -213,20 +151,12 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public void setState(String name, Object value) {
-        if (MengineActivity.ACTIVITY_DESTROY == true) {
-            return;
-        }
-
         MengineApplication application = this.getMengineApplication();
 
         application.setState(name, value);
     }
 
     public boolean hasMetaData(String name) {
-        if (MengineActivity.ACTIVITY_DESTROY == true) {
-            return false;
-        }
-
         MengineApplication application = this.getMengineApplication();
 
         boolean result = application.hasMetaData(name);
@@ -235,10 +165,6 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public String getMetaDataString(String name) {
-        if (MengineActivity.ACTIVITY_DESTROY == true) {
-            return null;
-        }
-
         MengineApplication application = this.getMengineApplication();
 
         String value = application.getMetaDataString(name);
@@ -247,10 +173,6 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public boolean getMetaDataBoolean(String name) {
-        if (MengineActivity.ACTIVITY_DESTROY == true) {
-            return false;
-        }
-
         MengineApplication application = this.getMengineApplication();
 
         boolean value = application.getMetaDataBoolean(name);
@@ -259,10 +181,6 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public int getMetaDataInteger(String name) {
-        if (MengineActivity.ACTIVITY_DESTROY == true) {
-            return 0;
-        }
-
         MengineApplication application = this.getMengineApplication();
 
         int value = application.getMetaDataInteger(name);
@@ -333,18 +251,6 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessageRelease(TAG, "onCreate: %s", savedInstanceState);
 
-        if (MengineActivity.ACTIVITY_CREATED == true) {
-            MengineAnalytics.buildEvent("mng_activity_create_failed")
-                .addParameterString("reason", "application already created")
-                .logAndFlush();
-
-            this.finishWithAlertDialog("[ERROR] Application already created");
-
-            return;
-        }
-
-        MengineActivity.ACTIVITY_CREATED = true;
-
         try {
             Thread.currentThread().setName("MengineActivity");
         } catch (final Exception e) {
@@ -365,72 +271,14 @@ public class MengineActivity extends AppCompatActivity {
             return;
         }
 
+        application.setMengineActivity(this);
+
         this.setState("activity.lifecycle", "create");
         this.setState("activity.init", "begin");
-
-        m_initializePython = false;
 
         Looper mainLooper = Looper.getMainLooper();
         m_commandHandler = new MengineCommandHandler(mainLooper, this);
         m_semaphores = new HashMap<>();
-
-        this.setState("activity.init", "setup_orientation");
-
-        Resources resources = this.getResources();
-        int orientation = resources.getInteger(R.integer.app_screen_orientation);
-
-        switch(orientation) {
-            case ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_LANDSCAPE");
-                break;
-            case ActivityInfo.SCREEN_ORIENTATION_PORTRAIT:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_PORTRAIT");
-                break;
-            case ActivityInfo.SCREEN_ORIENTATION_USER:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_USER");
-                break;
-            case ActivityInfo.SCREEN_ORIENTATION_BEHIND:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_BEHIND");
-                break;
-            case ActivityInfo.SCREEN_ORIENTATION_SENSOR:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_SENSOR");
-                break;
-            case ActivityInfo.SCREEN_ORIENTATION_NOSENSOR:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_NOSENSOR");
-                break;
-            case ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_SENSOR_LANDSCAPE");
-                break;
-            case ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_SENSOR_PORTRAIT");
-                break;
-            case ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_REVERSE_LANDSCAPE");
-                break;
-            case ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_REVERSE_PORTRAIT");
-                break;
-            case ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_FULL_SENSOR");
-                break;
-            case ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_USER_LANDSCAPE");
-                break;
-            case ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_USER_PORTRAIT");
-                break;
-            case ActivityInfo.SCREEN_ORIENTATION_FULL_USER:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_FULL_USER");
-                break;
-            case ActivityInfo.SCREEN_ORIENTATION_LOCKED:
-                MengineLog.logMessage(TAG, "setRequestedOrientation SCREEN_ORIENTATION_LOCKED");
-                break;
-            default:
-                MengineLog.logWarning(TAG, "setRequestedOrientation UNKNOWN: %d", orientation);
-                break;
-        }
-
-        this.setRequestedOrientation(orientation);
 
         this.setState("activity.init", "setup_relativelayout");
 
@@ -440,9 +288,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.init", "setup_surface");
 
-        CountDownLatch runLatch = new CountDownLatch(1);
-
-        MengineSurfaceView surface = new MengineSurfaceView(this, runLatch);
+        MengineSurfaceView surface = new MengineSurfaceView(this);
 
         m_surfaceView = surface;
 
@@ -468,34 +314,16 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.init", "bootstrap");
 
-        AndroidEnv_setMengineAndroidActivityJNI(this);
+        MengineNative.AndroidEnv_setMengineAndroidActivityJNI(this);
 
-        ApplicationInfo applicationInfo = application.getApplicationInfo();
-        String nativeLibraryDir = applicationInfo.nativeLibraryDir;
-        String options = application.getApplicationOptions();
-
-        String[] optionsArgs = options.split(" ");
-
-        Object nativeApplication = AndroidMain_bootstrap(nativeLibraryDir, optionsArgs);
-
-        if (nativeApplication == null) {
-            MengineAnalytics.buildEvent("mng_activity_create_failed")
-                .addParameterString("reason", "bootstrap failed")
-                .logAndFlush();
-
-            this.finishWithAlertDialog("[ERROR] bootstrap failed");
-
-            return;
-        }
-
-        m_nativeApplication = nativeApplication;
+        MengineNative.AndroidNativePython_addPlugin("Activity", this);
 
         this.setState("activity.init", "plugin_create");
 
         List<MenginePlugin> plugins = this.getPlugins();
 
         for (MenginePlugin p : plugins) {
-            p.setActivity(this);
+            p.setMengineActivity(this);
         }
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
@@ -527,13 +355,6 @@ public class MengineActivity extends AppCompatActivity {
             }
         }
 
-        this.setState("activity.init", "setup_main");
-
-        MengineMain main = new MengineMain(this, m_nativeApplication, runLatch);
-
-        m_threadMain = new Thread(main);
-        m_threadMain.start();
-
         this.setState("activity.init", "end");
 
         this.setState("activity.lifecycle", "created");
@@ -549,32 +370,86 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     @SuppressWarnings("deprecation")
+    private void setupFullscreenModeListener() {
+        Window window = this.getWindow();
+        View decorView = window.getDecorView();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            decorView.setOnApplyWindowInsetsListener((v, insets) -> {
+                boolean isSystemBarsVisible = insets.isVisible(WindowInsets.Type.systemBars());
+
+                if (isSystemBarsVisible == true) {
+                    MengineActivity.this.syncFullscreenWindow();
+                }
+
+                return insets;
+            });
+        } else {
+            decorView.setOnSystemUiVisibilityChangeListener(visibility -> {
+                boolean isFullscreenEnable = (visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0;
+                boolean isNavigationHidden = (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0;
+
+                if (isFullscreenEnable == false || isNavigationHidden == false) {
+                    MengineActivity.this.syncFullscreenWindow();
+                }
+            });
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void releaseFullscreenModeListener() {
+        Window window = this.getWindow();
+        View decorView = window.getDecorView();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            decorView.setOnApplyWindowInsetsListener(null);
+        } else {
+            decorView.setOnSystemUiVisibilityChangeListener(null);
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void syncFullscreenWindowR(Window window) {
+        int flags = View.SYSTEM_UI_FLAG_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+
+        View decorView = window.getDecorView();
+        decorView.setSystemUiVisibility(flags);
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+    }
+
+    @SuppressWarnings("deprecation")
     private void syncFullscreenWindow() {
+        MengineLog.logMessage(TAG, "sync fullscreen mode");
+
         Window window = this.getWindow();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false);
+
             WindowInsetsController insetsController = window.getInsetsController();
+
             if (insetsController == null) {
-                MengineLog.logError(TAG, "insets controller is null");
-
-                return;
+                this.syncFullscreenWindowR(window);
+            } else {
+                insetsController.hide(WindowInsets.Type.systemBars());
+                insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
             }
-
-            insetsController.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-            insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
         } else {
-            int flags = View.SYSTEM_UI_FLAG_FULLSCREEN |
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            this.syncFullscreenWindowR(window);
+        }
 
-            View decorView = window.getDecorView();
-            decorView.setSystemUiVisibility(flags);
-
-            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            window.setAttributes(params);
         }
     }
 
@@ -592,7 +467,7 @@ public class MengineActivity extends AppCompatActivity {
             this.syncFullscreenWindow();
         }
 
-        MengineActivity.AndroidPlatform_windowFocusChangedEvent(hasFocus);
+        MengineNative.AndroidPlatform_windowFocusChangedEvent(hasFocus);
     }
 
     @Override
@@ -603,7 +478,7 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessage(TAG, "onAttachedToWindow");
 
-        this.syncFullscreenWindow();
+        this.setupFullscreenModeListener();
     }
 
     @Override
@@ -613,6 +488,8 @@ public class MengineActivity extends AppCompatActivity {
         this.setState("activity.lifecycle", "detached_from_window");
 
         MengineLog.logMessage(TAG, "onDetachedFromWindow");
+
+        this.releaseFullscreenModeListener();
     }
 
     @Override
@@ -635,86 +512,10 @@ public class MengineActivity extends AppCompatActivity {
         );
     }
 
-    public void onMengineInitializeBaseServices() {
-        MengineLog.logInfo(TAG, "onMengineInitializeBaseServices");
-
-        MengineLog.initialize(this);
-
-        MengineApplication application = (MengineApplication)this.getApplication();
-
-        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
-
-        for (MenginePluginEngineListener l : listeners) {
-            if (l.onAvailable(application) == false) {
-                continue;
-            }
-
-            l.onMengineInitializeBaseServices(this);
-        }
-    }
-
-    public void onMengineCreateApplication() {
-        MengineLog.logInfo(TAG, "onMengineCreateApplication");
-
-        MengineApplication application = (MengineApplication)this.getApplication();
-
-        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
-
-        for (MenginePluginEngineListener l : listeners) {
-            if (l.onAvailable(application) == false) {
-                continue;
-            }
-
-            l.onMengineCreateApplication(this);
-        }
-    }
-
-    public void onMenginePlatformRun() {
-        MengineLog.logInfo(TAG, "onMenginePlatformRun");
-
-        MengineApplication application = (MengineApplication)this.getApplication();
-
-        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
-
-        for (MenginePluginEngineListener l : listeners) {
-            if (l.onAvailable(application) == false) {
-                continue;
-            }
-
-            l.onMenginePlatformRun(this);
-        }
-    }
-
-    public void onMenginePlatformStop() {
-        MengineLog.logInfo(TAG, "onMenginePlatformStop");
-
-        MengineApplication application = (MengineApplication)this.getApplication();
-
-        List<MenginePluginEngineListener> listeners = this.getEngineListeners();
-
-        for (MenginePluginEngineListener l : listeners) {
-            if (l.onAvailable(application) == false) {
-                continue;
-            }
-
-            l.onMenginePlatformStop(this);
-        }
-
-        MengineLog.finalize(this);
-    }
-
-    public void onMengineCurrentSceneChange(String name) {
-        MengineLog.logInfo(TAG, "onMengineCurrentSceneChange: %s"
-            , name
-        );
-
-        this.setState("current.scene", name);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
     	this.setState("activity.result", "request: " + requestCode + "result: " + resultCode );
-    	
+
         MengineLog.logMessageRelease(TAG, "onActivityResult request: %d result: %d"
             , requestCode
             , resultCode
@@ -765,7 +566,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "started");
 
-        MengineActivity.AndroidPlatform_startEvent();
+        MengineNative.AndroidPlatform_startEvent();
     }
 
     @Override
@@ -790,7 +591,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "stoped");
 
-        MengineActivity.AndroidPlatform_stopEvent();
+        MengineNative.AndroidPlatform_stopEvent();
     }
 
     @Override
@@ -819,7 +620,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "paused");
 
-        MengineActivity.AndroidPlatform_pauseEvent();
+        MengineNative.AndroidPlatform_pauseEvent();
     }
 
     @Override
@@ -848,7 +649,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.lifecycle", "resumed");
 
-        MengineActivity.AndroidPlatform_resumeEvent();
+        MengineNative.AndroidPlatform_resumeEvent();
     }
 
     @Override
@@ -874,21 +675,9 @@ public class MengineActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        if (MengineActivity.ACTIVITY_DESTROY == true) {
-            MengineLog.logWarning(TAG, "onDestroy: already destroyed");
-
-            super.onDestroy();
-
-            return;
-        }
-
-        MengineActivity.ACTIVITY_DESTROY = true;
-
         this.setState("activity.lifecycle", "destroy");
 
         MengineLog.logMessageRelease(TAG, "onDestroy");
-
-        AndroidPlatform_quitEvent();
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
@@ -900,20 +689,29 @@ public class MengineActivity extends AppCompatActivity {
             return;
         }
 
-        try {
-            m_threadMain.join(1000);
-        } catch (final InterruptedException e) {
-            MengineLog.logError(TAG, "thread main join exception: %s"
-                , e.getMessage()
-            );
+        MengineNative.AndroidNativePython_removePlugin("Activity");
+
+        MengineNative.AndroidEnv_removeMengineAndroidActivityJNI();
+
+        if (m_clipboard != null) {
+            m_clipboard.handleDestroy();
+            m_clipboard = null;
         }
 
-        m_threadMain = null;
+        if (m_surfaceView != null) {
+            m_surfaceView.handleDestroy();
+            m_surfaceView = null;
+        }
 
-        AndroidMain_destroy(m_nativeApplication);
-        m_nativeApplication = null;
+        if (m_softInput != null) {
+            m_softInput.handleDestroy();
+            m_softInput = null;
+        }
 
-        AndroidEnv_removeMengineAndroidActivityJNI();
+        if (m_contentView != null) {
+            m_contentView.removeAllViews();
+            m_contentView = null;
+        }
 
         m_semaphores = null;
         m_commandHandler = null;
@@ -931,8 +729,10 @@ public class MengineActivity extends AppCompatActivity {
         List<MenginePlugin> plugins = this.getPlugins();
 
         for (MenginePlugin p : plugins) {
-            p.setActivity(null);
+            p.setMengineActivity(null);
         }
+
+        application.setMengineActivity(null);
 
         super.onDestroy();
     }
@@ -968,7 +768,7 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessage(TAG, "onLowMemory");
 
-        MengineActivity.AndroidPlatform_lowMemory();
+        MengineNative.AndroidPlatform_lowMemory();
     }
 
     @Override
@@ -981,7 +781,7 @@ public class MengineActivity extends AppCompatActivity {
             , level
         );
 
-        MengineActivity.AndroidPlatform_trimMemory(level);
+        MengineNative.AndroidPlatform_trimMemory(level);
     }
 
     @Override
@@ -1013,7 +813,7 @@ public class MengineActivity extends AppCompatActivity {
 
             String language = m_currentLocale.getLanguage();
 
-            MengineActivity.AndroidPlatform_changeLocale(language);
+            MengineNative.AndroidPlatform_changeLocale(language);
         }
     }
 
@@ -1087,58 +887,7 @@ public class MengineActivity extends AppCompatActivity {
      * Python Methods
      **********************************************************************************************/
 
-    public void onPythonEmbeddedInitialize() {
-        MengineLog.logInfo(TAG, "onPythonEmbeddedInitialize");
-
-        m_initializePython = true;
-
-        AndroidNativePython_addPlugin("Activity", this);
-
-        MengineApplication application = (MengineApplication)this.getApplication();
-        AndroidNativePython_addPlugin("Application", application);
-
-        List<MenginePlugin> plugins = this.getPlugins();
-
-        for (MenginePlugin p : plugins) {
-            if (p.onAvailable(application) == false) {
-                continue;
-            }
-
-            try {
-                Class<?> cls = p.getClass();
-
-                Field PLUGIN_EMBEDDING = cls.getField("PLUGIN_EMBEDDING");
-
-                if( PLUGIN_EMBEDDING.getBoolean(null) == false ) {
-                    continue;
-                }
-            } catch (final NoSuchFieldException e) {
-                continue;
-            } catch (final IllegalAccessException e) {
-                continue;
-            }
-
-            String name = p.getPluginName();
-
-            this.addPythonPlugin(name, p);
-        }
-    }
-
-    public void onPythonEmbeddedFinalize() {
-        m_initializePython = false;
-    }
-
     public void pythonCall(String plugin, String method, Object ... args) {
-        if (m_initializePython == false) {
-            MengineLog.logWarning(TAG,"pythonCall call before embedding plugin: %s method: %s args: %s"
-                , plugin
-                , method
-                , Arrays.toString(args)
-            );
-
-            return;
-        }
-
         if (BuildConfig.DEBUG == true) {
             MengineLog.logInfo(TAG, "pythonCall plugin [%s] method [%s] args [%s]"
                 , plugin
@@ -1149,20 +898,7 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("python.call", plugin + "." + method);
 
-        AndroidNativePython_call(plugin, method, args);
-    }
-
-    public void addPythonPlugin(String name, Object plugin) {
-        if (MengineActivity.ACTIVITY_DESTROY == true) {
-            return;
-        }
-
-        MengineLog.logMessage(TAG, "addPythonPlugin name: %s plugin: %s"
-            , name
-            , plugin
-        );
-
-        AndroidNativePython_addPlugin(name, plugin);
+        MengineNative.AndroidNativePython_call(plugin, method, args);
     }
 
     /***********************************************************************************************
@@ -1170,10 +906,6 @@ public class MengineActivity extends AppCompatActivity {
      **********************************************************************************************/
 
     public void activateSemaphore(String name) {
-        if (MengineActivity.ACTIVITY_DESTROY == true) {
-            return;
-        }
-
         MengineLog.logMessage(TAG, "activateSemaphore semaphore: %s"
             , name
         );
@@ -1210,10 +942,6 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public void deactivateSemaphore(String name) {
-        if (MengineActivity.ACTIVITY_DESTROY == true) {
-            return;
-        }
-
         MengineLog.logMessage(TAG, "deactivateSemaphore semaphore: %s"
             , name
         );
@@ -1224,10 +952,6 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public void waitSemaphore(String name, MengineSemaphoreListener cb) {
-        if (MengineActivity.ACTIVITY_DESTROY == true) {
-            return;
-        }
-
         MengineLog.logMessage(TAG, "waitSemaphore semaphore: %s"
             , name
         );
@@ -1342,11 +1066,11 @@ public class MengineActivity extends AppCompatActivity {
         try {
             ArrayList<Parcelable> fileUris = new ArrayList<>();
 
-            boolean hasAccount = AndroidEnvironmentService_hasCurrentAccount();
+            boolean hasAccount = MengineNative.AndroidEnvironmentService_hasCurrentAccount();
 
             if (hasAccount == true) {
-                String extraPreferencesFolderName = AndroidEnvironmentService_getExtraPreferencesFolderName();
-                String accountFolderName = AndroidEnvironmentService_getCurrentAccountFolderName();
+                String extraPreferencesFolderName = MengineNative.AndroidEnvironmentService_getExtraPreferencesFolderName();
+                String accountFolderName = MengineNative.AndroidEnvironmentService_getCurrentAccountFolderName();
 
                 File filesDir = context.getFilesDir();
 
@@ -1403,7 +1127,7 @@ public class MengineActivity extends AppCompatActivity {
 
             logFileStream.write("[BEGIN CURRENT LOG]\n\n");
 
-            if (AndroidEnvironmentService_writeCurrentLogToFile(logFileStream) == true) {
+            if (MengineNative.AndroidEnvironmentService_writeCurrentLogToFile(logFileStream) == true) {
                 logFileStream.write("\n\n[END CURRENT LOG]");
                 logFileStream.flush();
                 logFileStream.close();
@@ -1465,7 +1189,7 @@ public class MengineActivity extends AppCompatActivity {
 
             oldLogFileStream.write("[BEGIN OLD LOG]\n\n");
 
-            if (AndroidEnvironmentService_writeOldLogToFile(oldLogFileStream) == true) {
+            if (MengineNative.AndroidEnvironmentService_writeOldLogToFile(oldLogFileStream) == true) {
                 oldLogFileStream.write("\n\n[END OLD LOG]");
                 oldLogFileStream.flush();
                 oldLogFileStream.close();
@@ -1551,7 +1275,7 @@ public class MengineActivity extends AppCompatActivity {
 
                 application.removeSessionData();
 
-                MengineActivity.AndroidEnvironmentService_deleteCurrentAccount();
+                MengineNative.AndroidEnvironmentService_deleteCurrentAccount();
 
                 MengineUtils.showOkAlertDialog(this, () -> {
                     this.finishAndRemoveTask();

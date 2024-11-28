@@ -9,6 +9,7 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFatalErrorException;
 import org.Mengine.Base.MengineLog;
+import org.Mengine.Base.MengineNative;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginApplicationListener;
@@ -27,8 +28,9 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
         FirebaseCrashlytics.getInstance().setCustomKey("is_dev", BuildConfig.DEBUG);
 
         boolean isBuildPublish = application.isBuildPublish();
+        boolean isDebuggerConnected = MengineUtils.isDebuggerConnected();
 
-        if (isBuildPublish == false && android.os.Debug.isDebuggerConnected() == false) {
+        if (isBuildPublish == false && isDebuggerConnected == false) {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
         }
     }
@@ -45,6 +47,14 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
             if (FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution() == true) {
                 MengineUtils.makeToastDelayed(activity, "Last launch ended in a crash", 10000L);
             }
+        }
+
+        boolean isFirebaseCrashlyticsForceCrash = this.hasOption("firebase.crashlytics.forcecrash");
+
+        if (isFirebaseCrashlyticsForceCrash == true) {
+            MengineUtils.performOnMainThreadDelayed(() -> {
+                MengineFirebaseCrashlyticsPlugin.this.testCrash();
+            }, 5000L);
         }
     }
 
@@ -121,7 +131,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
 
         this.setCustomKey("test.crash", true);
 
-        throw new RuntimeException("Firebase Crashlytics Test Crash");
+        MengineNative.AndroidMain_crash("Android test crash");
     }
 
     @Override

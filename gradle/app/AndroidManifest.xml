@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:installLocation="preferExternal">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:installLocation="auto"
+    >
 
     <!-- OpenGL ES 2.0 -->
     <uses-feature android:glEsVersion="0x00020000" />
@@ -19,18 +18,21 @@
         android:label="@string/app_name"
         android:name="org.Mengine.Project.FinalApplication"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:allowBackup="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:theme="@style/MengineApplicationTheme"
         android:networkSecurityConfig="@xml/network_security_config"
         android:hardwareAccelerated="true">
 
         <activity
             android:name="org.Mengine.Base.MengineActivity"
+            android:alwaysRetainTaskState="true"
+            android:preferMinimalPostProcessing="true"
             android:clearTaskOnLaunch="false"
             android:exported="true"
             android:launchMode="singleTop"
             android:keepScreenOn="true"
+            android:screenOrientation="${ANDROID_APP_SCREEN_ORIENTATION}">
             android:configChanges="mcc|mnc|fontScale|touchscreen|density|layoutDirection|locale|orientation|uiMode|screenLayout|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation">
 
             <intent-filter>

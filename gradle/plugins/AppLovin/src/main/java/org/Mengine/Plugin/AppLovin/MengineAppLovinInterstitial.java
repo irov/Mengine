@@ -24,9 +24,14 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     public MengineAppLovinInterstitial(MengineAppLovinPlugin plugin, String adUnitId) {
         super(MaxAdFormat.INTERSTITIAL, plugin, adUnitId);
 
-        MengineActivity activity = m_plugin.getMengineActivity();
+        //Empty
+    }
 
-        MaxInterstitialAd interstitialAd = new MaxInterstitialAd(adUnitId, activity);
+    @Override
+    public void onCreate(MengineActivity activity) {
+        super.onCreate(activity);
+
+        MaxInterstitialAd interstitialAd = new MaxInterstitialAd(m_adUnitId, activity);
 
         interstitialAd.setListener(this);
         interstitialAd.setRequestListener(this);
@@ -38,7 +43,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_plugin.logMessage("[%s] create adUnitId: %s"
             , m_adFormat.getLabel()
-            , adUnitId
+            , m_adUnitId
         );
 
         m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "init");
@@ -46,7 +51,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         MengineAppLovinMediationInterface mediationAmazon = m_plugin.getMediationAmazon();
 
         if (mediationAmazon != null) {
-            mediationAmazon.loadMediatorInterstitial(activity, plugin, m_interstitialAd, () -> {
+            mediationAmazon.loadMediatorInterstitial(activity, m_plugin, m_interstitialAd, () -> {
                 MengineAppLovinInterstitial.this.loadAd();
             });
         } else {
@@ -55,8 +60,8 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
     }
 
     @Override
-    public void destroy() {
-        super.destroy();
+    public void onDestroy() {
+        super.onDestroy();
 
         if (m_interstitialAd != null) {
             m_interstitialAd.destroy();

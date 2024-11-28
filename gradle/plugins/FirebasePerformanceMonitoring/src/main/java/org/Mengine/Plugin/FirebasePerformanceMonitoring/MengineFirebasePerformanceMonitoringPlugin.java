@@ -32,7 +32,7 @@ public class MengineFirebasePerformanceMonitoringPlugin extends MenginePlugin im
     }
 
     @Override
-    public void onMenginePlatformRun(MengineActivity activity) {
+    public void onMenginePlatformRun(MengineApplication activity) {
         m_startupTrace.stop();
     }
 }

@@ -26,6 +26,7 @@ import org.Mengine.Base.MengineInAppProductParam;
 import org.Mengine.Base.MengineInAppPurchaseParam;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
+import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MengineGooglePlayBillingPlugin extends MenginePlugin implements MenginePluginActivityListener {
+public class MengineGooglePlayBillingPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener {
     public static final String PLUGIN_NAME = "MengineGPlayBilling";
     public static final boolean PLUGIN_EMBEDDING = true;
 
@@ -41,7 +42,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
     private BillingClient m_billingClient;
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
         m_productsDetails = new ArrayList<>();
 
         PurchasesUpdatedListener purchasesUpdatedListener = (billingResult, purchases) -> {
@@ -145,20 +146,18 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
             }
         };
 
-        Context context = activity.getApplicationContext();
-
         PendingPurchasesParams pendingPurchasesParams = PendingPurchasesParams.newBuilder()
                 .enableOneTimeProducts()
                 .build();
 
-        m_billingClient = BillingClient.newBuilder(context)
+        m_billingClient = BillingClient.newBuilder(application)
             .setListener(purchasesUpdatedListener)
             .enablePendingPurchases(pendingPurchasesParams)
             .build();
     }
 
     @Override
-    public void onDestroy(MengineActivity activity) {
+    public void onAppTerminate(MengineApplication application) {
         m_productsDetails = null;
 
         if (m_billingClient != null) {

@@ -1,7 +1,7 @@
 #include "AndroidAssetService.h"
 
 #include "Environment/Android/AndroidEnv.h"
-#include "Environment/Android/AndroidActivityHelper.h"
+#include "Environment/Android/AndroidApplicationHelper.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
@@ -24,7 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidAssetService::_initializeService()
     {
-        if( Mengine_JNI_ExistMengineActivity() == JNI_FALSE )
+        if( Mengine_JNI_ExistMengineApplication() == JNI_FALSE )
         {
             LOGGER_ERROR( "invalid get asset manager" );
 
@@ -35,7 +35,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        jobject jAssetManager = Helper::AndroidCallObjectActivityMethod( jenv, "getAssets", "()Landroid/content/res/AssetManager;" );
+        jobject jAssetManager = Helper::AndroidCallObjectApplicationMethod( jenv, "getAssets", "()Landroid/content/res/AssetManager;" );
 
         if( jAssetManager == nullptr )
         {

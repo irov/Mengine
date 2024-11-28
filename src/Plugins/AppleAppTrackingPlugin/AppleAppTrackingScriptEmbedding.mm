@@ -39,7 +39,7 @@ namespace Mengine
     bool AppleAppTrackingScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         SCRIPT_SERVICE()
-            ->setAvailablePlugin( "AppleAppTracking", true );
+            ->setAvailablePlugin( STRINGIZE_STRING_LOCAL("AppleAppTracking"), true );
 
         pybind::enum_<EAppleAppTrackingAuthorization>( _kernel, "AppleAppTrackingAuthorization" )
             .def( "EAATA_NONE", EAATA_NONE )

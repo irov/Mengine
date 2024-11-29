@@ -370,8 +370,13 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     @SuppressWarnings("deprecation")
-    private void setupFullscreenModeListener() {
-        Window window = this.getWindow();
+    private void setupFullscreenModeListener(Window window) {
+        if (window == null) {
+            MengineLog.logError(TAG, "setupFullscreenModeListener invalid window");
+
+            return;
+        }
+
         View decorView = window.getDecorView();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -379,7 +384,7 @@ public class MengineActivity extends AppCompatActivity {
                 boolean isSystemBarsVisible = insets.isVisible(WindowInsets.Type.systemBars());
 
                 if (isSystemBarsVisible == true) {
-                    MengineActivity.this.syncFullscreenWindow();
+                    MengineActivity.this.syncFullscreenWindow(window);
                 }
 
                 return insets;
@@ -390,15 +395,20 @@ public class MengineActivity extends AppCompatActivity {
                 boolean isNavigationHidden = (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0;
 
                 if (isFullscreenEnable == false || isNavigationHidden == false) {
-                    MengineActivity.this.syncFullscreenWindow();
+                    MengineActivity.this.syncFullscreenWindow(window);
                 }
             });
         }
     }
 
     @SuppressWarnings("deprecation")
-    private void releaseFullscreenModeListener() {
-        Window window = this.getWindow();
+    private void releaseFullscreenModeListener(Window window) {
+        if (window == null) {
+            MengineLog.logError(TAG, "releaseFullscreenModeListener invalid window");
+
+            return;
+        }
+
         View decorView = window.getDecorView();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -426,10 +436,14 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     @SuppressWarnings("deprecation")
-    private void syncFullscreenWindow() {
-        MengineLog.logMessage(TAG, "sync fullscreen mode");
+    private void syncFullscreenWindow(Window window) {
+        if (window == null) {
+            MengineLog.logError(TAG, "syncFullscreenWindow invalid window");
 
-        Window window = this.getWindow();
+            return;
+        }
+
+        MengineLog.logMessage(TAG, "sync fullscreen mode");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false);
@@ -464,7 +478,9 @@ public class MengineActivity extends AppCompatActivity {
         );
 
         if (hasFocus == true) {
-            this.syncFullscreenWindow();
+            Window window = this.getWindow();
+
+            this.syncFullscreenWindow(window);
         }
 
         MengineNative.AndroidPlatform_windowFocusChangedEvent(hasFocus);
@@ -478,7 +494,11 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessage(TAG, "onAttachedToWindow");
 
-        this.setupFullscreenModeListener();
+        Window window = this.getWindow();
+
+        this.setupFullscreenModeListener(window);
+
+        this.syncFullscreenWindowR(window);
     }
 
     @Override
@@ -489,7 +509,9 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessage(TAG, "onDetachedFromWindow");
 
-        this.releaseFullscreenModeListener();
+        Window window = this.getWindow();
+
+        this.releaseFullscreenModeListener(window);
     }
 
     @Override

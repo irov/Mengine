@@ -1825,6 +1825,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::render()
     {
+        if( m_focus == false )
+        {
+            m_renderPipeline->clear();
+
+            return false;
+        }
+
         if( RENDER_SERVICE()
             ->beginScene( m_renderPipeline ) == false )
         {

@@ -30,10 +30,6 @@ namespace Mengine
         void finalizeLoggerService_();
 
     protected:
-        LoggerInterfacePtr m_loggerStdio;
-
-#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-        void * m_handleLibrary;
-#endif
+        LoggerInterfacePtr m_loggerAndroid;
     };
 }

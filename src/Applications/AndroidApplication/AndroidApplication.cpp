@@ -25,10 +25,6 @@
 #include "Config/Algorithm.h"
 #include "Config/StdString.h"
 
-#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-#   include <dlfcn.h>
-#endif
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
@@ -36,9 +32,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AndroidApplication::AndroidApplication()
-#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-        : m_handleLibrary( nullptr )
-#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -83,14 +76,14 @@ namespace Mengine
             return true;
         }
 
-        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<AndroidLogger>( MENGINE_DOCUMENT_FUNCTION );
+        LoggerInterfacePtr loggerAndroid = Helper::makeFactorableUnique<AndroidLogger>(MENGINE_DOCUMENT_FUNCTION );
 
-        loggerStdio->setWriteHistory( true );
+        loggerAndroid->setWriteHistory(true );
 
-        if( LOGGER_SERVICE()
-            ->registerLogger( loggerStdio ) == true )
+        if(LOGGER_SERVICE()
+            ->registerLogger(loggerAndroid ) == true )
         {
-            m_loggerStdio = loggerStdio;
+            m_loggerAndroid = loggerAndroid;
         }
 
         return true;
@@ -98,44 +91,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidApplication::finalizeLoggerService_()
     {
-        if( m_loggerStdio != nullptr )
+        if(m_loggerAndroid != nullptr )
         {
             LOGGER_SERVICE()
-                ->unregisterLogger( m_loggerStdio );
+                ->unregisterLogger(m_loggerAndroid );
 
-            m_loggerStdio = nullptr;
+            m_loggerAndroid = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidApplication::bootstrap( const Mengine::Char * _nativeLibraryDir, int32_t _argc, Char ** const _argv )
     {
         MENGINE_UNUSED( _nativeLibraryDir );
-
-#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-        Path mengineLibraryPath = {'\0'};
-        Mengine::StdString::strcpy( mengineLibraryPath, _nativeLibraryDir );
-        Mengine::StdString::strcat( mengineLibraryPath, "/libMengine.so" );
-
-        void * handleLibrary = ::dlopen( mengineLibraryPath, RTLD_GLOBAL );
-
-        if( handleLibrary == nullptr )
-        {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "dlopen 'libMengine.so' failed" );
-
-            return false;
-        }
-
-        m_handleLibrary = handleLibrary;
-#endif
-
-#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-        FAPI_MengineCreate API_MengineCreate = (FAPI_MengineCreate)::dlsym( m_handleLibrary, "API_MengineCreate" );
-
-        if( API_MengineCreate == nullptr )
-        {
-            return false;
-        }
-#endif
 
         ServiceProviderInterface * serviceProvider = API_MengineCreate();
 
@@ -172,15 +139,6 @@ namespace Mengine
             this->finalizeLoggerService_();
         } );
 
-#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-        FAPI_MengineBootstrap API_MengineBootstrap = (FAPI_MengineBootstrap)::dlsym( m_handleLibrary, "API_MengineBootstrap" );
-
-        if( API_MengineBootstrap == nullptr )
-        {
-            return false;
-        }
-#endif
-
         if( API_MengineBootstrap() == false )
         {
             return false;
@@ -191,15 +149,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidApplication::initialize()
     {
-#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-        FAPI_MengineRun API_MengineRun = (FAPI_MengineRun)::dlsym( m_handleLibrary, "API_MengineRun" );
-
-        if( API_MengineRun == nullptr )
-        {
-            return false;
-        }
-#endif
-
         if( API_MengineRun() == false )
         {
             return false;
@@ -281,21 +230,7 @@ namespace Mengine
                 ->stop();
         }
 
-#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-        FAPI_MengineFinalize API_MengineFinalize = (FAPI_MengineFinalize)::dlsym( m_handleLibrary, "API_MengineFinalize" );
-
-        if( API_MengineFinalize != nullptr )
-        {
-            API_MengineFinalize();
-        }
-#else
         API_MengineFinalize();
-#endif
-
-#if defined(MENGINE_PLUGIN_MENGINE_SHARED)
-        ::dlclose( m_handleLibrary );
-        m_handleLibrary = nullptr;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

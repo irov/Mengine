@@ -358,7 +358,6 @@ namespace Mengine
         float m_pauseUpdatingTime;
 
         bool m_active;
-        bool m_sleepMode;
 
         bool m_desktop;
         bool m_touchpad;

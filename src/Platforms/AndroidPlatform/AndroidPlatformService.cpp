@@ -456,7 +456,6 @@ namespace Mengine
         , m_prevTime( 0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
-        , m_sleepMode( true )
         , m_desktop( false )
         , m_touchpad( false )
     {
@@ -846,23 +845,6 @@ namespace Mengine
             {
                 break;
             }
-
-            if( m_sleepMode == true )
-            {
-                Timestamp endTime = Helper::getSystemTimestamp();
-
-                Timestamp deltaTime = endTime - currentTime;
-
-                const Timestamp frameTime60Ms = 1000 / 60;
-
-                if( deltaTime < frameTime60Ms )
-                {
-                    Timestamp sleepTime = frameTime60Ms - deltaTime;
-
-                    THREAD_SYSTEM()
-                        ->sleep( sleepTime );
-                }
-            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1000,12 +982,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::setSleepMode( bool _sleepMode )
     {
-        m_sleepMode = _sleepMode;
+        MENGINE_UNUSED( _sleepMode );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getSleepMode() const
     {
-        return m_sleepMode;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     Timestamp AndroidPlatformService::getPlatfomTime() const

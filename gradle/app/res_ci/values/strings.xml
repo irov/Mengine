@@ -1,6 +1,4 @@
 <resources>
-    <integer name="app_screen_orientation">7</integer>
-
     <string name="privacy_policy_url" translatable="false">https://en.wikipedia.org/wiki/Privacy_policy</string>
     <string name="terms_of_service_url" translatable="false">https://en.wikipedia.org/wiki/Terms_of_service</string>
     

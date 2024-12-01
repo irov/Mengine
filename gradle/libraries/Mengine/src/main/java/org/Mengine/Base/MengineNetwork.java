@@ -62,10 +62,20 @@ public class MengineNetwork {
         return connection;
     }
 
-    protected static MengineHttpResponseParam processConnection(HttpURLConnection connection) throws IOException {
+    protected static MengineHttpResponseParam processConnectionJSON(HttpURLConnection connection) throws IOException {
         connection.connect();
 
-        MengineHttpResponseParam response = MengineNetwork.makeResponse(connection);
+        MengineHttpResponseParam response = MengineNetwork.makeResponseJSON(connection);
+
+        connection.disconnect();
+
+        return response;
+    }
+
+    protected static MengineHttpResponseParam processConnectionData(HttpURLConnection connection) throws IOException {
+        connection.connect();
+
+        MengineHttpResponseParam response = MengineNetwork.makeResponseData(connection);
 
         connection.disconnect();
 
@@ -81,7 +91,7 @@ public class MengineNetwork {
         try {
             HttpURLConnection connection = MengineNetwork.openConnection(request, "HEAD", false);
 
-            MengineHttpResponseParam response = MengineNetwork.processConnection(connection);
+            MengineHttpResponseParam response = MengineNetwork.processConnectionJSON(connection);
 
             return response;
         } catch (final Exception e) {
@@ -102,7 +112,7 @@ public class MengineNetwork {
 
             MengineNetwork.setMultipartFormData(connection, properties);
 
-            MengineHttpResponseParam response = MengineNetwork.processConnection(connection);
+            MengineHttpResponseParam response = MengineNetwork.processConnectionJSON(connection);
 
             return response;
         } catch (final Exception e) {
@@ -123,7 +133,7 @@ public class MengineNetwork {
 
             MengineNetwork.setData(connection, data);
 
-            MengineHttpResponseParam response = MengineNetwork.processConnection(connection);
+            MengineHttpResponseParam response = MengineNetwork.processConnectionJSON(connection);
 
             return response;
         } catch (final Exception e) {
@@ -142,7 +152,7 @@ public class MengineNetwork {
         try {
             HttpURLConnection connection = MengineNetwork.openConnection(request, "GET", false);
 
-            MengineHttpResponseParam response = MengineNetwork.processConnection(connection);
+            MengineHttpResponseParam response = MengineNetwork.processConnectionJSON(connection);
 
             return response;
         } catch (final Exception e) {
@@ -161,7 +171,7 @@ public class MengineNetwork {
         try {
             HttpURLConnection connection = MengineNetwork.openConnection(request, "DELETE", false);
 
-            MengineHttpResponseParam response = MengineNetwork.processConnection(connection);
+            MengineHttpResponseParam response = MengineNetwork.processConnectionJSON(connection);
 
             return response;
         } catch (final Exception e) {
@@ -182,7 +192,7 @@ public class MengineNetwork {
 
             MengineNetwork.setBasicAuthorization(connection, login, password);
 
-            MengineHttpResponseParam response = MengineNetwork.processConnection(connection);
+            MengineHttpResponseParam response = MengineNetwork.processConnectionData(connection);
 
             return response;
         } catch (final Exception e) {
@@ -200,6 +210,7 @@ public class MengineNetwork {
 
             response.HTTP_RESPONSE_CODE = HttpURLConnection.HTTP_NOT_FOUND;
             response.HTTP_CONTENT_LENGTH = 0;
+            response.HTTP_CONTENT_JSON = null;
             response.HTTP_CONTENT_DATA = null;
             response.HTTP_ERROR_MESSAGE = e.getMessage();
 
@@ -291,7 +302,29 @@ public class MengineNetwork {
         response.HTTP_RESPONSE_CODE = responseCode;
     }
 
-    protected static MengineHttpResponseParam makeResponse(@NonNull HttpURLConnection connection) throws IOException {
+    protected static MengineHttpResponseParam makeResponseJSON(@NonNull HttpURLConnection connection) throws IOException {
+        MengineHttpResponseParam response = new MengineHttpResponseParam();
+
+        MengineNetwork.setResponseCode(connection, response);
+
+        switch (response.HTTP_RESPONSE_CODE) {
+            case HttpURLConnection.HTTP_OK:
+            case HttpURLConnection.HTTP_CREATED:
+            case HttpURLConnection.HTTP_ACCEPTED:
+            case HttpURLConnection.HTTP_NOT_AUTHORITATIVE:
+            case HttpURLConnection.HTTP_NO_CONTENT:
+            case HttpURLConnection.HTTP_RESET:
+            case HttpURLConnection.HTTP_PARTIAL: {
+                MengineNetwork.getResponseContentJSON(connection, response);
+            }break;
+            default: {
+                MengineNetwork.getResponseErrorMessage(connection, response);
+            }break;
+        }
+
+        return response;
+    }
+    protected static MengineHttpResponseParam makeResponseData(@NonNull HttpURLConnection connection) throws IOException {
         MengineHttpResponseParam response = new MengineHttpResponseParam();
 
         MengineNetwork.setResponseCode(connection, response);
@@ -312,6 +345,17 @@ public class MengineNetwork {
         }
 
         return response;
+    }
+
+    protected static void getResponseContentJSON(@NonNull HttpURLConnection connection, @NonNull MengineHttpResponseParam response) throws IOException {
+        InputStream is = connection.getInputStream();
+
+        String json = MengineUtils.inputStreamToString(is);
+
+        response.HTTP_CONTENT_JSON = json;
+        response.HTTP_CONTENT_LENGTH = json.length();
+
+        is.close();
     }
 
     protected static void getResponseContentData(@NonNull HttpURLConnection connection, @NonNull MengineHttpResponseParam response) throws IOException {

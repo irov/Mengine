@@ -229,8 +229,10 @@ namespace Mengine
                 return true;
             }
 
+            Helper::pathRemoveFileSpecW( correctDirectory, MENGINE_PATH_DELIM_FORWARDSLASH );
+
             WPath pathTestDirectory = {L'\0'};
-            ::PathCombineW( pathTestDirectory, correctBasePath, correctDirectory );
+            ::PathCombineW( pathTestDirectory, correctBasePath, correctDirectory );            
 
             if( ::PathIsDirectoryW( pathTestDirectory ) == FILE_ATTRIBUTE_DIRECTORY )
             {

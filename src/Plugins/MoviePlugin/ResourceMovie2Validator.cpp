@@ -213,7 +213,7 @@ namespace Mengine
                         break;
                     }
 
-                    LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' image layer '%s' scale [%f - %f - %f] limit %f"
+                    LOGGER_MESSAGE_RELEASE_ERROR( "resource '%s' composition '%s' image layer '%s' scale [%f - %f - %f] limit %f (Limit.Movie2ImageImmutableScale)"
                         , desc->resource->getName().c_str()
                         , compositionDataName
                         , layerDataName

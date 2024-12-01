@@ -77,8 +77,6 @@ public class MengineGoogleConsentPlugin extends MenginePlugin implements Mengine
     }
 
     public void loadForm(MengineActivity activity) {
-        MengineTransparencyConsentParam beforeTcParam = activity.makeTransparencyConsentParam();
-
         UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity
             , (loadAndShowError) -> {
                 if (loadAndShowError != null) {

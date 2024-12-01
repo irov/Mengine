@@ -518,15 +518,12 @@ namespace Mengine
         const HttpRequestInterfacePtr & request = _response->getRequest();
         HttpRequestId requestId = request->getRequestId();
 
-        bool responseSuccessful = _response->isSuccessful();        
+        bool responseSuccessful = _response->isSuccessful();
         EHttpCode responseCode = _response->getCode();
         const String & responseErrorMessage = _response->getErrorMessage();
         int32_t responseErrorCode = _response->getErrorCode();
-        
-        const Data & responseData = _response->getData();
 
-        String responseJson;
-        Helper::stringFromData( responseData, &responseJson );
+        const String & responseJson = _response->getJSON();
 
         switch( m_status )
         {

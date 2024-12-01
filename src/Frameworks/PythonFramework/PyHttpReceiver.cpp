@@ -33,13 +33,10 @@ namespace Mengine
         int32_t errorCode = _response->getErrorCode();
         MENGINE_UNUSED( errorCode );
 
-        const Data & data = _response->getData();
+        const String & json = _response->getJSON();
         EHttpCode code = _response->getCode();
         bool successful = _response->isSuccessful();
-
-        String json;
-        Helper::stringFromData( data, &json );
-
+                
         m_cb.call_args( requestId, status, errorMessage, json, code, successful, m_args );
     }
     //////////////////////////////////////////////////////////////////////////

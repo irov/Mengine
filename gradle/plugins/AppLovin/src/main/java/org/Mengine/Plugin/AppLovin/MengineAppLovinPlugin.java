@@ -163,9 +163,9 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
                 );
             }
 
-            MengineTransparencyConsentParam consent = application.makeTransparencyConsentParam();
+            MengineTransparencyConsentParam tcParam = application.makeTransparencyConsentParam();
 
-            application.onMengineTransparencyConsent(consent);
+            application.onMengineTransparencyConsent(tcParam);
 
             if (MengineAppLovinPlugin.this.hasOption("applovin.show_mediation_debugger") == true) {
                 MengineAppLovinPlugin.this.showMediationDebugger();

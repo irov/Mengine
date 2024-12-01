@@ -217,15 +217,15 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params);
     }
 
-    public void onMengineTransparencyConsent(MengineApplication application, MengineTransparencyConsentParam consent) {
+    public void onMengineTransparencyConsent(MengineApplication application, MengineTransparencyConsentParam tcParam) {
         if (m_firebaseAnalytics == null) {
             return;
         }
 
-        boolean AD_STORAGE = consent.getConsentAdStorage();
-        boolean ANALYTICS_STORAGE =  consent.getConsentAnalyticsStorage();
-        boolean AD_USER_DATA = consent.getConsentAdUserData();
-        boolean AD_PERSONALIZATION = consent.getConsentAdPersonalization();
+        boolean AD_STORAGE = tcParam.getConsentAdStorage();
+        boolean ANALYTICS_STORAGE =  tcParam.getConsentAnalyticsStorage();
+        boolean AD_USER_DATA = tcParam.getConsentAdUserData();
+        boolean AD_PERSONALIZATION = tcParam.getConsentAdPersonalization();
 
         Map<FirebaseAnalytics.ConsentType, FirebaseAnalytics.ConsentStatus> consentMap = new EnumMap<>(FirebaseAnalytics.ConsentType.class);
         consentMap.put(FirebaseAnalytics.ConsentType.AD_STORAGE, AD_STORAGE ? FirebaseAnalytics.ConsentStatus.GRANTED : FirebaseAnalytics.ConsentStatus.DENIED);

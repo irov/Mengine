@@ -25,8 +25,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -113,14 +111,6 @@ public class MengineActivity extends AppCompatActivity {
         MengineApplication application = this.getMengineApplication();
 
         List<MenginePluginActivityListener> listeners = application.getActivityListeners();
-
-        return listeners;
-    }
-
-    protected List<MenginePluginEngineListener> getEngineListeners() {
-        MengineApplication application = this.getMengineApplication();
-
-        List<MenginePluginEngineListener> listeners = application.getEngineListeners();
 
         return listeners;
     }
@@ -215,9 +205,15 @@ public class MengineActivity extends AppCompatActivity {
     public MengineTransparencyConsentParam makeTransparencyConsentParam() {
         MengineApplication application = this.getMengineApplication();
 
-        MengineTransparencyConsentParam consent = application.makeTransparencyConsentParam();
+        MengineTransparencyConsentParam tcParam = application.makeTransparencyConsentParam();
 
-        return consent;
+        return tcParam;
+    }
+
+    public void onMengineTransparencyConsent(MengineTransparencyConsentParam tcParam) {
+        MengineApplication application = this.getMengineApplication();
+
+        application.onMengineTransparencyConsent(tcParam);
     }
 
     public void checkPermission(String permission, Runnable onSuccess, Runnable onFailure) {

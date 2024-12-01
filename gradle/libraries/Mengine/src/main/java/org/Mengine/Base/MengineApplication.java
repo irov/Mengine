@@ -890,12 +890,12 @@ public class MengineApplication extends Application {
     }
 
     public MengineTransparencyConsentParam makeTransparencyConsentParam() {
-        MengineTransparencyConsentParam consent = new MengineTransparencyConsentParam();
+        MengineTransparencyConsentParam tcParam = new MengineTransparencyConsentParam();
 
         Context context = this.getApplicationContext();
-        consent.initFromDefaultSharedPreferences(context);
+        tcParam.initFromDefaultSharedPreferences(context);
 
-        return consent;
+        return tcParam;
     }
 
     public boolean isInvalidInitialize() {
@@ -1443,7 +1443,7 @@ public class MengineApplication extends Application {
         }
     }
 
-    public void onMengineTransparencyConsent(MengineTransparencyConsentParam consent) {
+    public void onMengineTransparencyConsent(MengineTransparencyConsentParam tcParam) {
         List<MenginePluginTransparencyConsentListener> listeners = this.getTransparencyConsentListeners();
 
         for (MenginePluginTransparencyConsentListener l : listeners) {
@@ -1451,7 +1451,7 @@ public class MengineApplication extends Application {
                 continue;
             }
 
-            l.onMengineTransparencyConsent(this, consent);
+            l.onMengineTransparencyConsent(this, tcParam);
         }
     }
 

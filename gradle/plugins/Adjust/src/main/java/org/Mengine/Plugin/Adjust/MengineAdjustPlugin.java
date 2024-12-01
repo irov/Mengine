@@ -139,10 +139,10 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onMengineTransparencyConsent(MengineApplication application, MengineTransparencyConsentParam consent) {
-        boolean EEA = consent.isEEA();
-        boolean AD_PERSONALIZATION = consent.getConsentAdPersonalization();
-        boolean AD_USER_DATA = consent.getConsentAdUserData();
+    public void onMengineTransparencyConsent(MengineApplication application, MengineTransparencyConsentParam tcParam) {
+        boolean EEA = tcParam.isEEA();
+        boolean AD_PERSONALIZATION = tcParam.getConsentAdPersonalization();
+        boolean AD_USER_DATA = tcParam.getConsentAdUserData();
 
         AdjustThirdPartySharing adjustThirdPartySharing = new AdjustThirdPartySharing(null);
         adjustThirdPartySharing.addGranularOption("google_dma", "eea", EEA ? "1" : "0");

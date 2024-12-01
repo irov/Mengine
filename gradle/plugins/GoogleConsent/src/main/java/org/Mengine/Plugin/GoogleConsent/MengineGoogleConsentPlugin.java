@@ -4,15 +4,14 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MenginePlugin;
 import org.Mengine.Base.MenginePluginActivityListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineTransparencyConsentParam;
 
 import android.content.Context;
 import android.os.Bundle;
 
 import com.google.android.ump.ConsentDebugSettings;
-import com.google.android.ump.ConsentForm;
 import com.google.android.ump.ConsentInformation;
 import com.google.android.ump.ConsentRequestParameters;
-import com.google.android.ump.FormError;
 import com.google.android.ump.UserMessagingPlatform;
 
 public class MengineGoogleConsentPlugin extends MenginePlugin implements MenginePluginActivityListener {
@@ -20,15 +19,14 @@ public class MengineGoogleConsentPlugin extends MenginePlugin implements Mengine
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
-        final Context context = activity.getBaseContext();
-
         ConsentRequestParameters.Builder builder = new ConsentRequestParameters.Builder();
 
         if (BuildConfig.DEBUG == true) {
-            ConsentDebugSettings debugSettings = new ConsentDebugSettings.Builder(context)
+            ConsentDebugSettings debugSettings = new ConsentDebugSettings.Builder(activity)
                 .setDebugGeography(ConsentDebugSettings
                     .DebugGeography
                     .DEBUG_GEOGRAPHY_EEA)
+                .addTestDeviceHashedId("9203703DF2B7213315680FD6966D3CDB")
                 .build();
 
             builder.setConsentDebugSettings(debugSettings);
@@ -38,62 +36,65 @@ public class MengineGoogleConsentPlugin extends MenginePlugin implements Mengine
 
         ConsentRequestParameters params = builder.build();
 
-        ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(context);
+        ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(activity);
+
         consentInformation.requestConsentInfoUpdate(activity, params
-            , new ConsentInformation.OnConsentInfoUpdateSuccessListener() {
-                @Override
-                public void onConsentInfoUpdateSuccess() {
-                    int consentStatus = consentInformation.getConsentStatus();
-                    boolean formAvailable = consentInformation.isConsentFormAvailable();
+            , () -> {
+                boolean formAvailable = consentInformation.isConsentFormAvailable();
+                int consentStatus = consentInformation.getConsentStatus();
+                ConsentInformation.PrivacyOptionsRequirementStatus privacyOptionsRequirementStatus = consentInformation.getPrivacyOptionsRequirementStatus();
 
-                    MengineGoogleConsentPlugin.this.logMessage("updated consent info update successful status: %d formAvailable: %b"
-                        , consentStatus
-                        , formAvailable
-                    );
+                MengineGoogleConsentPlugin.this.logMessage("updated consent info update successful status: %d formAvailable: %b privacyOptionsRequirementStatus: %s"
+                    , consentStatus
+                    , formAvailable
+                    , privacyOptionsRequirementStatus
+                );
 
-                    if (formAvailable == true && consentStatus == ConsentInformation.ConsentStatus.REQUIRED) {
-                        MengineGoogleConsentPlugin.this.loadForm(activity, context);
-                    }
+                if (formAvailable == false) {
+                    return;
                 }
+
+                if (privacyOptionsRequirementStatus == ConsentInformation.PrivacyOptionsRequirementStatus.NOT_REQUIRED) {
+                    MengineTransparencyConsentParam tcParam = activity.makeTransparencyConsentParam();
+
+                    activity.onMengineTransparencyConsent(tcParam);
+
+                    return;
+                }
+
+                if (consentStatus != ConsentInformation.ConsentStatus.REQUIRED) {
+                    return;
+                }
+
+                MengineGoogleConsentPlugin.this.loadForm(activity);
             }
-            , new ConsentInformation.OnConsentInfoUpdateFailureListener() {
-                @Override
-                public void onConsentInfoUpdateFailure(FormError formError) {
-                    MengineGoogleConsentPlugin.this.logError("consent info update failure: %s [%d]"
-                        , formError.getMessage()
-                        , formError.getErrorCode()
-                    );
-                }
+            , (formError) -> {
+                MengineGoogleConsentPlugin.this.logError("consent info update failure: %s [%d]"
+                    , formError.getMessage()
+                    , formError.getErrorCode()
+                );
             });
     }
 
-    public void loadForm(MengineActivity activity, Context context) {
-        UserMessagingPlatform.loadConsentForm(context
-            , new UserMessagingPlatform.OnConsentFormLoadSuccessListener() {
-                @Override
-                public void onConsentFormLoadSuccess(ConsentForm consentForm) {
-                    consentForm.show(activity
-                        , new ConsentForm.OnConsentFormDismissedListener() {
-                            @Override
-                            public void onConsentFormDismissed(FormError formError) {
-                                MengineGoogleConsentPlugin.this.logError("consent form dismissed: %s [%d]"
-                                        , formError.getMessage()
-                                        , formError.getErrorCode()
-                                );
+    public void loadForm(MengineActivity activity) {
+        MengineTransparencyConsentParam beforeTcParam = activity.makeTransparencyConsentParam();
 
-                                MengineGoogleConsentPlugin.this.loadForm(activity, context);
-                            }
-                        });
-                }
-            }
-            , new UserMessagingPlatform.OnConsentFormLoadFailureListener() {
-                @Override
-                public void onConsentFormLoadFailure(FormError formError) {
-                    MengineGoogleConsentPlugin.this.logError("consent form load failure: %s [%d]"
-                            , formError.getMessage()
-                            , formError.getErrorCode()
+        UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity
+            , (loadAndShowError) -> {
+                if (loadAndShowError != null) {
+                    MengineGoogleConsentPlugin.this.logError("consent form load and show failure: %s [%d]"
+                        , loadAndShowError.getMessage()
+                        , loadAndShowError.getErrorCode()
                     );
+
+                    return;
                 }
+
+                MengineGoogleConsentPlugin.this.logMessage("consent form load and show successful");
+
+                MengineTransparencyConsentParam consent = activity.makeTransparencyConsentParam();
+
+                activity.onMengineTransparencyConsent(consent);
             });
     }
 

@@ -172,7 +172,7 @@ namespace Mengine
         
         MENGINE_UNUSED( versionStr );
         
-        LOGGER_INFO( "openal", "OpenGL version: %s"
+        LOGGER_INFO( "opengl", "OpenGL version: %s"
             , versionStr
         );
 
@@ -181,7 +181,7 @@ namespace Mengine
         
         MENGINE_UNUSED( vendorStr );
 
-        LOGGER_INFO( "openal", "OpenGL vendor: %s"
+        LOGGER_INFO( "opengl", "OpenGL vendor: %s"
             , vendorStr 
         );
 
@@ -190,7 +190,7 @@ namespace Mengine
 
         MENGINE_UNUSED( rendererStr );
         
-        LOGGER_INFO( "openal", "OpenGL renderer: %s"
+        LOGGER_INFO( "opengl", "OpenGL renderer: %s"
             , rendererStr 
         );
 
@@ -200,7 +200,7 @@ namespace Mengine
         
         MENGINE_UNUSED( extensionsStr );
 
-        LOGGER_INFO( "openal", "OpenGL extensions: %s"
+        LOGGER_INFO( "opengl", "OpenGL extensions: %s"
             , extensionsStr 
         );
 #endif
@@ -210,7 +210,7 @@ namespace Mengine
         
         MENGINE_UNUSED( shadingLanguageVersion );
 
-        LOGGER_INFO( "openal", "OpenGL shading language version: %s"
+        LOGGER_INFO( "opengl", "OpenGL shading language version: %s"
             , shadingLanguageVersion 
         );
 
@@ -690,6 +690,10 @@ namespace Mengine
     {
         MENGINE_UNUSED( _program );
 
+        MENGINE_ASSERTION_FATAL( _stageId < MENGINE_MAX_TEXTURE_STAGES, "invalid stage id %u"
+            , _stageId
+        );
+
         TextureStage & tStage = m_textureStage[_stageId];
 
         IntrusivePtrBase::intrusive_ptr_release( tStage.texture );
@@ -704,14 +708,18 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
+    void OpenGLRenderSystem::setTextureAddressing( uint32_t _stageId, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
     {
+        MENGINE_ASSERTION_FATAL( _stageId < MENGINE_MAX_TEXTURE_STAGES, "invalid stage id %u"
+            , _stageId
+        );
+
         GLenum modeUGL = Helper::toGLAddressMode( _modeU );
         GLenum modeVGL = Helper::toGLAddressMode( _modeV );
 
-        m_textureStage[_stage].wrapS = modeUGL;
-        m_textureStage[_stage].wrapT = modeVGL;
-        m_textureStage[_stage].border = _border;
+        m_textureStage[_stageId].wrapS = modeUGL;
+        m_textureStage[_stageId].wrapT = modeVGL;
+        m_textureStage[_stageId].border = _border;
     }
     //////////////////////////////////////////L////////////////////////////////
     void OpenGLRenderSystem::setTextureFactor( uint32_t _color )
@@ -849,9 +857,13 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
+    void OpenGLRenderSystem::setTextureStageFilter( uint32_t _stageId, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
     {
-        TextureStage & tStage = m_textureStage[_stage];
+        MENGINE_ASSERTION_FATAL( _stageId < MENGINE_MAX_TEXTURE_STAGES, "invalid stage id %u"
+            , _stageId
+        );
+
+        TextureStage & tStage = m_textureStage[_stageId];
 
         tStage.minFilter = Helper::toGLMinFilter( _minification, _mipmap );
         tStage.magFilter = Helper::toGLMagFilter( _magnification );

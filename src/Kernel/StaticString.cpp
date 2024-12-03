@@ -70,7 +70,7 @@ namespace Mengine
                 , _capacity
             );
 
-            StdString::strcpy_safe( _buffer, _value, _capacity );
+            StdString::strzcpy_safe( _buffer, _value, _size, _capacity );
         }
         //////////////////////////////////////////////////////////////////////////
         void staticStringAppendChar( Char * const _buffer, size_t _capacity, Char _value )
@@ -119,8 +119,7 @@ namespace Mengine
                 value_size = _capacity - buffer_size - 1;
             }
 
-            StdString::strncat( _buffer, _value, value_size );
-            _buffer[buffer_size + value_size] = '\0';
+            StdString::strzcat_safe( _buffer, _value, _size, value_size );            
         }
         //////////////////////////////////////////////////////////////////////////
         void staticStringFormat( Char * const _buffer, size_t _capacity, const Char * _format, MENGINE_VA_LIST_TYPE _args )

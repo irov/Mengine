@@ -143,6 +143,29 @@ namespace Mengine
             return _out;
         }
 
+        MENGINE_INLINE Char * strzcat_safe( Char * const _out, const Char * _in, size_t _size, size_t _capacity )
+        {
+            size_t len = StdString::strlen( _out );
+
+            if( len >= _capacity )
+            {
+                return _out;
+            }
+
+            size_t capacity_len = _capacity - len;
+
+            if( _size >= capacity_len )
+            {
+                _size = capacity_len;
+            }
+
+            StdString::strncpy( _out + len, _in, _size );
+
+            _out[_capacity] = '\0';
+
+            return _out;
+        }
+
         using std::memcpy;
         using std::memset;
         using std::memmove;

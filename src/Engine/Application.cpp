@@ -1825,7 +1825,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::render()
     {
-        if( m_focus == false )
+        if( m_nopause == false && m_focus == false )
         {
             m_renderPipeline->clear();
 

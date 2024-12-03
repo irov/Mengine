@@ -11,7 +11,7 @@ namespace Mengine
         : public BaseHttpRequest
     {
     public:
-        AndroidHttpRequest();
+        AndroidHttpRequest( bool _isJSON );
         ~AndroidHttpRequest() override;
 
     protected:
@@ -26,6 +26,8 @@ namespace Mengine
         void _onThreadTaskComplete( bool _successful ) override;
 
     protected:
+        bool m_isJSON;
+
         ThreadMutexInterfacePtr m_mutex;
     };
     //////////////////////////////////////////////////////////////////////////

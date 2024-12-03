@@ -16,7 +16,8 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AndroidHttpRequest::AndroidHttpRequest()
+    AndroidHttpRequest::AndroidHttpRequest( bool _isJSON )
+        : m_isJSON( _isJSON )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -114,7 +115,6 @@ namespace Mengine
 
         jfieldID jfieldiD_HTTP_RESPONSE_CODE = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_RESPONSE_CODE", "I" );
         jfieldID jfieldiD_HTTP_CONTENT_LENGTH = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_CONTENT_LENGTH", "I" );
-        jfieldID jfieldiD_HTTP_CONTENT_JSON = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_CONTENT_JSON", "Ljava/lang/String;" );
         jfieldID jfieldiD_HTTP_CONTENT_DATA = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_CONTENT_DATA", "[B" );
         jfieldID jfieldiD_HTTP_ERROR_MESSAGE = jenv->GetFieldID( jclass_MengineHttpResponseParam, "HTTP_ERROR_MESSAGE", "Ljava/lang/String;" );
 
@@ -122,7 +122,6 @@ namespace Mengine
 
         int HTTP_RESPONSE_CODE = jenv->GetIntField( jresponse, jfieldiD_HTTP_RESPONSE_CODE );
         int HTTP_CONTENT_LENGTH = jenv->GetIntField( jresponse, jfieldiD_HTTP_CONTENT_LENGTH );
-        jstring HTTP_CONTENT_JSON = (jstring)jenv->GetObjectField( jresponse, jfieldiD_HTTP_CONTENT_JSON );
         jbyteArray HTTP_CONTENT_DATA = (jbyteArray)jenv->GetObjectField( jresponse, jfieldiD_HTTP_CONTENT_DATA );
         jstring HTTP_ERROR_MESSAGE = (jstring)jenv->GetObjectField( jresponse, jfieldiD_HTTP_ERROR_MESSAGE );
 
@@ -136,33 +135,31 @@ namespace Mengine
 
             m_response->setCode( (EHttpCode)HTTP_RESPONSE_CODE );
 
-            if( HTTP_CONTENT_JSON != nullptr )
-            {
-                const Char * str = jenv->GetStringUTFChars( HTTP_CONTENT_JSON, nullptr );
-                m_response->appendJSON( str, HTTP_CONTENT_LENGTH );
-                jenv->ReleaseStringUTFChars( HTTP_CONTENT_JSON, str );
-            }
-
             if( HTTP_CONTENT_DATA != nullptr )
             {
-                jbyte * elements = jenv->GetByteArrayElements( HTTP_CONTENT_DATA, NULL );
-                m_response->appendData( elements, HTTP_CONTENT_LENGTH );
-                jenv->ReleaseByteArrayElements( HTTP_CONTENT_DATA, elements, 0 );
+                jbyte * bytes = jenv->GetByteArrayElements( HTTP_CONTENT_DATA, NULL );
+
+                if( m_isJSON == true )
+                {
+                    m_response->appendJSON( bytes, HTTP_CONTENT_LENGTH );
+                }
+                else
+                {
+                    m_response->appendData( bytes, HTTP_CONTENT_LENGTH );
+                }
+
+                jenv->ReleaseByteArrayElements( HTTP_CONTENT_DATA, bytes, 0 );
             }
 
             if( HTTP_ERROR_MESSAGE != nullptr )
             {
                 String error_message = Helper::AndroidMakeStringFromJString( jenv, HTTP_ERROR_MESSAGE );
+
                 m_response->setError( error_message, 0 );
             }
         }
 
         m_mutex->unlock();
-
-        if( HTTP_CONTENT_JSON != nullptr )
-        {
-            jenv->DeleteLocalRef( HTTP_CONTENT_JSON );
-        }
 
         if( HTTP_CONTENT_DATA != nullptr )
         {

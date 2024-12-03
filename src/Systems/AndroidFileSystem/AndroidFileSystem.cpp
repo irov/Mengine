@@ -142,16 +142,11 @@ namespace Mengine
         Path correctDirectory = {'\0'};
         Helper::pathCorrectBackslashToA( correctDirectory, _directory );
 
+        Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
+
         size_t correctDirectoryLen = StdString::strlen( correctDirectory );
 
         if( correctDirectoryLen == 0 )
-        {
-            return true;
-        }
-
-        Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_DELIM_BACKSLASH );
-
-        if( StdString::strlen( correctDirectory ) == 0 )
         {
             return true;
         }

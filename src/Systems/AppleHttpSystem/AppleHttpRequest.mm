@@ -16,7 +16,8 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AppleHttpRequest::AppleHttpRequest()
+    AppleHttpRequest::AppleHttpRequest( bool _isJSON )
+        : m_isJSON( _isJSON )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -81,9 +82,16 @@ namespace Mengine
 
             if( response.HTTP_CONTENT_DATA != nullptr )
             {
-                const Char * bytes = (const Char *)[response.HTTP_CONTENT_DATA bytes];
+                const void * bytes = [response.HTTP_CONTENT_DATA bytes];
                 
-                m_response->appendData( bytes, response.HTTP_CONTENT_LENGTH );
+                if( m_isJSON == true )
+                {
+                    m_response->appendJSON( bytes, response.HTTP_CONTENT_LENGTH );
+                }
+                else
+                {
+                    m_response->appendData( bytes, response.HTTP_CONTENT_LENGTH );
+                }
             }
 
             if( response.HTTP_ERROR_MESSAGE != nullptr )

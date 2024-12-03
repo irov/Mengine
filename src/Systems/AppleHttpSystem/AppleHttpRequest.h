@@ -11,14 +11,14 @@ namespace Mengine
         : public BaseHttpRequest
     {
     public:
-        AppleHttpRequest();
+        AppleHttpRequest( bool _isJSON );
         ~AppleHttpRequest() override;
 
     protected:
         void _onThreadTaskPreparation() override;
         bool _onThreadTaskRun() override;
         bool _onThreadTaskProcess() override;
-
+        
     protected:
         virtual MengineHttpResponseParam * _onHttp( MengineHttpRequestParam * request ) = 0;
 
@@ -26,6 +26,8 @@ namespace Mengine
         void _onThreadTaskComplete( bool _successful ) override;
 
     protected:
+        bool m_isJSON;
+        
         ThreadMutexInterfacePtr m_mutex;
     };
     //////////////////////////////////////////////////////////////////////////

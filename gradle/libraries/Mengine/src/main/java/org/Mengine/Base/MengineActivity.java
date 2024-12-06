@@ -264,7 +264,7 @@ public class MengineActivity extends AppCompatActivity {
                 .addParameterString("reason", invalidInitializeReason)
                 .logAndFlush();
 
-            this.finishWithAlertDialog("[ERROR] %s", invalidInitializeReason);
+            this.finishWithAlertDialog(invalidInitializeReason);
 
             return;
         }

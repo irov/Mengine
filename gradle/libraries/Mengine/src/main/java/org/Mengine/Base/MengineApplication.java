@@ -144,7 +144,7 @@ public class MengineApplication extends Application {
 
         for (String namePlugin : plugins) {
             if (this.createPlugin(namePlugin) == false) {
-                this.invalidInitialize("[ERROR] invalid create plugin: %s"
+                this.invalidInitialize("invalid create plugin: %s"
                     , namePlugin
                 );
 
@@ -948,7 +948,7 @@ public class MengineApplication extends Application {
 
                 l.onAppInit(this, isMainProcess);
             } catch (final MenginePluginInvalidInitializeException e) {
-                this.invalidInitialize("[ERROR] onAppInit plugin: %s exception: %s"
+                this.invalidInitialize("onAppInit plugin: %s exception: %s"
                     , l.getPluginName()
                     , e.getMessage()
                 );
@@ -1103,13 +1103,13 @@ public class MengineApplication extends Application {
 
             MengineUtils.loadLibrary(context, "AndroidApplication");
         } catch(final UnsatisfiedLinkError e) {
-            this.invalidInitialize("[ERROR] loadLibrary AndroidApplication UnsatisfiedLinkError: %s"
+            this.invalidInitialize("loadLibrary AndroidApplication UnsatisfiedLinkError: %s"
                 , e.getMessage()
             );
 
             return;
         } catch(final SecurityException e) {
-            this.invalidInitialize("[ERROR] loadLibrary AndroidApplication SecurityException: %s"
+            this.invalidInitialize("loadLibrary AndroidApplication SecurityException: %s"
                 , e.getMessage()
             );
 
@@ -1143,7 +1143,7 @@ public class MengineApplication extends Application {
                     .addParameterException("exception", e)
                     .logAndFlush();
 
-                this.invalidInitialize("[ERROR] onAppPrepare plugin: %s exception: %s"
+                this.invalidInitialize("onAppPrepare plugin: %s exception: %s"
                     , l.getPluginName()
                     , e.getMessage()
                 );
@@ -1170,7 +1170,7 @@ public class MengineApplication extends Application {
                     .addParameterException("exception", e)
                     .logAndFlush();
 
-                this.invalidInitialize("[ERROR] onAppCreate plugin: %s exception: %s"
+                this.invalidInitialize("onAppCreate plugin: %s exception: %s"
                     , l.getPluginName()
                     , e.getMessage()
                 );
@@ -1188,11 +1188,11 @@ public class MengineApplication extends Application {
         Object nativeApplication = MengineNative.AndroidMain_bootstrap(nativeLibraryDir, optionsArgs);
 
         if (nativeApplication == null) {
-            MengineAnalytics.buildEvent("mng_activity_create_failed")
+            MengineAnalytics.buildEvent("mng_app_create_failed")
                 .addParameterString("reason", "bootstrap failed")
                 .logAndFlush();
 
-            this.invalidInitialize("[ERROR] bootstrap failed");
+            this.invalidInitialize("bootstrap failed");
 
             return;
         }

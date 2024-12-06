@@ -565,18 +565,18 @@ public class MengineUtils {
         return true;
     }
 
-    public static void showToast(Context context, String format, Object ... args) {
-        MengineUtils.performOnMainThread(() -> {
+    public static void showToast(Activity activity, String format, Object ... args) {
+        activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
 
-            Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(activity, message, Toast.LENGTH_SHORT);
 
             toast.show();
         });
     }
 
-    public static void showOkAlertDialog(Context context, Runnable ok, String title, String format, Object ... args) {
-        MengineUtils.performOnMainThread(() -> {
+    public static void showOkAlertDialog(Activity activity, Runnable ok, String title, String format, Object ... args) {
+        activity.runOnUiThread(() -> {
             String message = MengineLog.buildTotalMsg(format, args);
 
             MengineLog.logMessage(TAG, "show OK alert dialog title: %s message: %s"
@@ -584,7 +584,7 @@ public class MengineUtils {
                 , message
             );
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
             builder.setTitle(title);
             builder.setMessage(message);
@@ -602,8 +602,8 @@ public class MengineUtils {
         });
     }
 
-    public static void showAreYouSureAlertDialog(Context context, Runnable yes, Runnable cancel, long delayMillis, String title, String format, Object ... args) {
-        MengineUtils.performOnMainThread(() -> {
+    public static void showAreYouSureAlertDialog(Activity activity, Runnable yes, Runnable cancel, long delayMillis, String title, String format, Object ... args) {
+        activity.runOnUiThread(() -> {
             String messageText = MengineLog.buildTotalMsg(format, args);
 
             MengineLog.logMessage(TAG, "show YES|CANCEL alert dialog title: %s message: %s"
@@ -618,7 +618,7 @@ public class MengineUtils {
             spannableMessage.setSpan(new StyleSpan(Typeface.BOLD), messageText.length(), (messageText + AreYouSureText).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannableMessage.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), messageText.length(), spannableMessage.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
             builder.setTitle(title);
             builder.setMessage(spannableMessage);
@@ -640,8 +640,8 @@ public class MengineUtils {
 
             alert.show();
 
-            int darker_gray = ContextCompat.getColor(context, android.R.color.darker_gray);
-            int holo_red_light = ContextCompat.getColor(context, android.R.color.holo_red_light);
+            int darker_gray = ContextCompat.getColor(activity, android.R.color.darker_gray);
+            int holo_red_light = ContextCompat.getColor(activity, android.R.color.holo_red_light);
 
             if (delayMillis > 0) {
                 alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(darker_gray);

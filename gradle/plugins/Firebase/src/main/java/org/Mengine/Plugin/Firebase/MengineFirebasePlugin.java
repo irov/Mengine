@@ -15,7 +15,7 @@ public class MengineFirebasePlugin extends MenginePlugin implements MenginePlugi
         FirebaseApp firebaseApp = FirebaseApp.initializeApp(application);
 
         if (firebaseApp == null) {
-            this.invalidInitialize("Failed to initialize FirebaseApp");
+            this.invalidInitialize("failed to initialize FirebaseApp");
         }
     }
 }

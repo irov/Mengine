@@ -1,10 +1,6 @@
-*.iml
 /data*
 /data_delivery*
 /res*
 /key*
-/build
-/release
-/captures
-.externalNativeBuild
 google-services.json
+mengine_prepare.cmake

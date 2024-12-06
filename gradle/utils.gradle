@@ -1,0 +1,93 @@
+ext.Utils = [:]
+
+Utils.getBooleanProperty = { String name, Boolean d ->
+    def p = project.findProperty(name)
+
+    if (p == null) {
+        return d
+    }
+
+    if (p as Integer == 0) {
+        return false
+    }
+
+    return true
+}
+
+Utils.getStringProperty = { String name, String d ->
+    def p = project.findProperty(name)
+
+    if (p == null) {
+        return d
+    }
+
+    return p
+}
+
+Utils.getIntegerProperty = { String name, Integer d ->
+    def p = project.findProperty(name)
+
+    if (p == null) {
+        return d
+    }
+
+    def v = p as Integer
+
+    return v
+}
+
+Utils.existAppLibrary = { String name ->
+    def pall = project.findProperty("MENGINE_APP_LIBRARY_ALL")
+
+    if (pall != null && (pall as Integer) == 1) {
+        return true
+    }
+
+    def p = project.findProperty(name)
+
+    if (p == null) {
+        return true
+    }
+
+    if (p as Integer == 0) {
+        return false
+    }
+
+    return true
+}
+
+Utils.existAppPlugin = { String name ->
+    def enableAll = project.findProperty("MENGINE_APP_PLUGIN_ENABLE_ALL")
+
+    if (enableAll != null && (enableAll as Integer) == 1) {
+        return true
+    }
+
+    def p = project.findProperty(name)
+
+    if (p == null) {
+        return false
+    }
+
+    if (p as Integer == 0) {
+        return false
+    }
+
+    return true
+}
+
+Utils.logAvailable = { String name, boolean value ->
+    if (value == false) {
+        println "\u001b[31m${name}: ${value}\u001b[0m"
+    } else {
+        println "\u001b[32m${name}: ${value}\u001b[0m"
+    }
+}
+
+Utils.logString = { String name, String value ->
+    println "\u001b[33m${name}: ${value}\u001b[0m"
+}
+
+Utils.logInteger = { String name, int value ->
+    println "\u001b[33m${name}: ${value}\u001b[0m"
+}

@@ -258,11 +258,13 @@ public class MengineActivity extends AppCompatActivity {
         MengineApplication application = (MengineApplication)this.getApplication();
 
         if (application.isInvalidInitialize() == true) {
+            String invalidInitializeReason = application.getInvalidInitializeReason();
+
             MengineAnalytics.buildEvent("mng_activity_create_failed")
-                .addParameterString("reason", "application invalid initialize")
+                .addParameterString("reason", invalidInitializeReason)
                 .logAndFlush();
 
-            this.finishWithAlertDialog("[ERROR] Application invalid initialize");
+            this.finishWithAlertDialog("[ERROR] %s", invalidInitializeReason);
 
             return;
         }
@@ -359,6 +361,14 @@ public class MengineActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onPostCreate: application invalid initialize");
+
+            return;
+        }
 
         this.setState("activity.lifecycle", "post_create");
 
@@ -467,6 +477,14 @@ public class MengineActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onWindowFocusChanged: application invalid initialize");
+
+            return;
+        }
+
         this.setState("activity.lifecycle", "window_focus_changed:" + (hasFocus == true ? "true" : "false"));
 
         MengineLog.logMessage(TAG, "onWindowFocusChanged focus: %s"
@@ -486,6 +504,14 @@ public class MengineActivity extends AppCompatActivity {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onAttachedToWindow: application invalid initialize");
+
+            return;
+        }
+
         this.setState("activity.lifecycle", "attached_to_window");
 
         MengineLog.logMessage(TAG, "onAttachedToWindow");
@@ -501,6 +527,14 @@ public class MengineActivity extends AppCompatActivity {
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onDetachedFromWindow: application invalid initialize");
+
+            return;
+        }
+
         this.setState("activity.lifecycle", "detached_from_window");
 
         MengineLog.logMessage(TAG, "onDetachedFromWindow");
@@ -514,6 +548,14 @@ public class MengineActivity extends AppCompatActivity {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onSaveInstanceState: application invalid initialize");
+
+            return;
+        }
+
         this.setState("activity.lifecycle", "save_instance_state");
 
         MengineLog.logMessage(TAG, "onSaveInstanceState");
@@ -522,6 +564,14 @@ public class MengineActivity extends AppCompatActivity {
     @Override
     public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onRestoreInstanceState: application invalid initialize");
+
+            return;
+        }
 
         this.setState("activity.lifecycle", "restore_instance_state");
 
@@ -534,12 +584,18 @@ public class MengineActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
     	this.setState("activity.result", "request: " + requestCode + "result: " + resultCode );
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onActivityResult: application invalid initialize");
+
+            return;
+        }
+
         MengineLog.logMessageRelease(TAG, "onActivityResult request: %d result: %d"
             , requestCode
             , resultCode
         );
-
-        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -566,11 +622,17 @@ public class MengineActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onStart: application invalid initialize");
+
+            return;
+        }
+
         this.setState("activity.lifecycle", "start");
 
         MengineLog.logMessageRelease(TAG, "onStart");
-
-        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -591,11 +653,17 @@ public class MengineActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onStop: application invalid initialize");
+
+            return;
+        }
+
         this.setState("activity.lifecycle", "stop");
 
         MengineLog.logMessageRelease(TAG, "onStop");
-
-        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -616,6 +684,14 @@ public class MengineActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onPause: application invalid initialize");
+
+            return;
+        }
+
         this.setState("activity.lifecycle", "pause");
 
         MengineLog.logMessageRelease(TAG, "onPause");
@@ -623,8 +699,6 @@ public class MengineActivity extends AppCompatActivity {
         if (m_surfaceView != null) {
             m_surfaceView.handlePause();
         }
-
-        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -645,6 +719,14 @@ public class MengineActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onResume: application invalid initialize");
+
+            return;
+        }
+
         this.setState("activity.lifecycle", "resume");
 
         MengineLog.logMessageRelease(TAG, "onResume");
@@ -652,8 +734,6 @@ public class MengineActivity extends AppCompatActivity {
         if (m_surfaceView != null) {
             m_surfaceView.handleResume();
         }
-
-        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -674,11 +754,17 @@ public class MengineActivity extends AppCompatActivity {
     public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onNewIntent: application invalid initialize");
+
+            return;
+        }
+
         this.setState("activity.intent_action", intent.getAction() );
 
         MengineLog.logMessageRelease(TAG, "onNewIntent intent: %s", intent);
-
-        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -693,10 +779,6 @@ public class MengineActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        this.setState("activity.lifecycle", "destroy");
-
-        MengineLog.logMessageRelease(TAG, "onDestroy");
-
         MengineApplication application = (MengineApplication)this.getApplication();
 
         if (application.isInvalidInitialize() == true) {
@@ -706,6 +788,10 @@ public class MengineActivity extends AppCompatActivity {
 
             return;
         }
+
+        this.setState("activity.lifecycle", "destroy");
+
+        MengineLog.logMessageRelease(TAG, "onDestroy");
 
         MengineNative.AndroidNativePython_removePlugin("Activity");
 
@@ -759,11 +845,17 @@ public class MengineActivity extends AppCompatActivity {
     public void onRestart() {
         super.onRestart();
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onRestart: application invalid initialize");
+
+            return;
+        }
+
         this.setState("activity.lifecycle", "restart");
 
         MengineLog.logMessage(TAG, "onRestart");
-
-        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -782,6 +874,14 @@ public class MengineActivity extends AppCompatActivity {
     public void onLowMemory() {
         super.onLowMemory();
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onLowMemory: application invalid initialize");
+
+            return;
+        }
+
         this.setState("activity.low_memory", true);
 
         MengineLog.logMessage(TAG, "onLowMemory");
@@ -792,6 +892,14 @@ public class MengineActivity extends AppCompatActivity {
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
+
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onTrimMemory: application invalid initialize");
+
+            return;
+        }
 
         this.setState("activity.trim_memory", level);
 
@@ -806,13 +914,19 @@ public class MengineActivity extends AppCompatActivity {
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onConfigurationChanged: application invalid initialize");
+
+            return;
+        }
+
         this.setState("configuration.orientation", newConfig.orientation);
 
         MengineLog.logMessage(TAG, "onConfigurationChanged config: %s"
             , newConfig.toString()
         );
-
-        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -839,13 +953,19 @@ public class MengineActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "onRequestPermissionsResult: application invalid initialize");
+
+            return;
+        }
+
         MengineLog.logMessage(TAG, "onRequestPermissionsResult request: %d permissions: %s grantResults: %s"
             , requestCode
             , Arrays.toString(permissions)
             , Arrays.toString(grantResults)
         );
-
-        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginActivityListener> listeners = this.getActivityListeners();
 
@@ -860,13 +980,19 @@ public class MengineActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        MengineApplication application = (MengineApplication)this.getApplication();
+
+        if (application.isInvalidInitialize() == true) {
+            MengineLog.logMessage(TAG, "dispatchKeyEvent: application invalid initialize");
+
+            return super.dispatchKeyEvent(event);
+        }
+
         MengineLog.logInfo(TAG, "dispatchKeyEvent action: %d key: %d scan: %d"
             , event.getAction()
             , event.getKeyCode()
             , event.getScanCode()
         );
-
-        MengineApplication application = (MengineApplication)this.getApplication();
 
         List<MenginePluginKeyListener> listeners = this.getKeyListeners();
 

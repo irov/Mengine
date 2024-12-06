@@ -1,14 +1,12 @@
-import com.Mengine.Utils
-
 apply plugin: 'com.android.library'
 
 apply from: rootProject.projectDir.getAbsolutePath() + '/base.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/androidx.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/minify.gradle'
 
-def ANDROID_APP_ASSETS_RES_CI = Utils.getBooleanProperty(project, "ANDROID_APP_ASSETS_RES_CI", false)
+def ANDROID_APP_ASSETS_RES_CI = Utils.getBooleanProperty("ANDROID_APP_ASSETS_RES_CI", false)
 
-def MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary(project, "MENGINE_APP_LIBRARY_MENGINE")
+def MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary("MENGINE_APP_LIBRARY_MENGINE")
 
 android {
     ext.extensions = []

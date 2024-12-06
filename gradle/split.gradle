@@ -1,6 +1,4 @@
-import com.Mengine.Utils
-
-def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_SPLIT_ENABLE", false)
+def ANDROID_APP_SPLIT_ENABLE = Utils.getBooleanProperty("ANDROID_APP_SPLIT_ENABLE", false)
 
 android {
     defaultConfig {

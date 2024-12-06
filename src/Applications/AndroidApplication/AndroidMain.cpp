@@ -37,6 +37,15 @@ extern "C"
 
         jsize argc = _env->GetArrayLength( _args );
 
+        if( argc >= 256 )
+        {
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "Android bootstrap too many arguments" );
+
+            delete application;
+
+            return nullptr;
+        }
+
         Mengine::Char * argv[256];
 
         for( jsize i = 0; i != argc; ++i )

@@ -924,6 +924,9 @@ public class MengineApplication extends Application {
             return;
         }
 
+        MengineLog.setMengineApplication(this);
+        MengineAnalytics.setMengineApplication(this);
+
         boolean isMainProcess = this.isMainProcess();
 
         MengineLog.logMessageRelease(TAG, "onCreate isMainProcess: %b "
@@ -957,9 +960,6 @@ public class MengineApplication extends Application {
         if (isMainProcess == false) {
             return;
         }
-
-        MengineLog.setMengineApplication(this);
-        MengineAnalytics.setMengineApplication(this);
 
         this.setState("build.debug", BuildConfig.DEBUG);
 
@@ -1104,13 +1104,13 @@ public class MengineApplication extends Application {
             MengineUtils.loadLibrary(context, "AndroidApplication");
         } catch(final UnsatisfiedLinkError e) {
             this.invalidInitialize("[ERROR] loadLibrary AndroidApplication UnsatisfiedLinkError: %s"
-                    , e.getMessage()
+                , e.getMessage()
             );
 
             return;
         } catch(final SecurityException e) {
             this.invalidInitialize("[ERROR] loadLibrary AndroidApplication SecurityException: %s"
-                    , e.getMessage()
+                , e.getMessage()
             );
 
             return;

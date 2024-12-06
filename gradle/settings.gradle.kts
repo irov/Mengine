@@ -41,9 +41,11 @@ fun includePlugin(name: String, path: String) {
     include(path)
 }
 
+val ANDROID_APP_MAIN_PROJECT = extra["ANDROID_APP_MAIN_PROJECT"].toString();
+
 println("\u001b[32m" + "=== Start configure ===" + "\u001b[0m")
-println("\u001b[32m" + "[+] Include :app" + "\u001b[0m")
-include(":app")
+println("\u001b[32m" + "[+] Include :$ANDROID_APP_MAIN_PROJECT" + "\u001b[0m")
+include(":$ANDROID_APP_MAIN_PROJECT")
 
 if (extra.has("ANDROID_APP_DELIVERY_PACKAGES") == true) {
     val PACKAGES = extra["ANDROID_APP_DELIVERY_PACKAGES"].toString().split(",")
@@ -53,12 +55,12 @@ if (extra.has("ANDROID_APP_DELIVERY_PACKAGES") == true) {
         val PACKAGE_PATH = PACKAGE_DESC.split(";").getOrNull(1)
 
         if (PACKAGE_PATH == null || PACKAGE_PATH == "NO-PATH") {
-            println("\u001b[32m" + "[+] Include delivery: :app:$PACKAGE_NAME" + "\u001b[0m")
+            println("\u001b[32m" + "[+] Include delivery: :$ANDROID_APP_MAIN_PROJECT:$PACKAGE_NAME" + "\u001b[0m")
         } else {
-            println("\u001b[32m" + "[+] Include delivery: :app:$PACKAGE_NAME extra path $PACKAGE_PATH" + "\u001b[0m")
+            println("\u001b[32m" + "[+] Include delivery: :$ANDROID_APP_MAIN_PROJECT:$PACKAGE_NAME extra path $PACKAGE_PATH" + "\u001b[0m")
         }
 
-        include(":app:$PACKAGE_NAME")
+        include(":$ANDROID_APP_MAIN_PROJECT:$PACKAGE_NAME")
 
         if (PACKAGE_PATH != null && PACKAGE_PATH != "NO-PATH") {
             val f = File(PACKAGE_PATH)
@@ -68,7 +70,7 @@ if (extra.has("ANDROID_APP_DELIVERY_PACKAGES") == true) {
                 throw kotlin.Exception("package $PACKAGE_NAME not exist delivery directory: $PACKAGE_PATH")
             }
 
-            project(":app:$PACKAGE_NAME").projectDir = File(PACKAGE_PATH)
+            project(":$ANDROID_APP_MAIN_PROJECT:$PACKAGE_NAME").projectDir = File(PACKAGE_PATH)
         }
     }
 }

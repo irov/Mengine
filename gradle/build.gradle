@@ -1,13 +1,13 @@
-import com.Mengine.Utils
-
 buildscript {
+    apply from: rootProject.projectDir.getAbsolutePath() + '/utils.gradle'
+
     repositories {
         google()
         mavenLocal()
         mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
 
-        if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN") == true) {
+        if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN") == true) {
             maven { url 'https://artifacts.applovin.com/android' }
         }
     }
@@ -15,35 +15,35 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:8.7.3'
 
-        if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_GOOGLE_SERVICE") == true) {
+        if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_GOOGLE_SERVICE") == true) {
             classpath 'com.google.gms:google-services:4.4.2'
         }
 
-        if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_SENTRY") == true) {
+        if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_SENTRY") == true) {
             classpath 'io.sentry:sentry-android-gradle-plugin:4.11.0'
         }
 
-        if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS") == true) {
+        if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS") == true) {
             classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'
         }
 
-        if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING") == true) {
+        if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_FIREBASE_PERFORMANCEMONITORING") == true) {
             classpath 'com.google.firebase:perf-plugin:1.4.2'
         }
 
-        if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN") == true) {
+        if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN") == true) {
             classpath 'com.applovin.quality:AppLovinQualityServiceGradlePlugin:5.6.4'
         }
     }
 }
 
-def ANDROID_APP_NDK_VERSION = Utils.getStringProperty(project, "ANDROID_APP_NDK_VERSION", null)
-def ANDROID_APP_BUILD_TOOLS_VERSION = Utils.getStringProperty(project, "ANDROID_APP_BUILD_TOOLS_VERSION", null)
-def ANDROID_APP_CMAKE_VERSION = Utils.getStringProperty(project, "ANDROID_APP_CMAKE_VERSION", null)
-def ANDROID_APP_MULTIDEX_ENABLE = Utils.getBooleanProperty(project, "ANDROID_APP_MULTIDEX_ENABLE", null)
-def ANDROID_APP_MIN_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_MIN_SDK_VERSION", null)
-def ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_TARGET_SDK_VERSION", null)
-def ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty(project, "ANDROID_APP_COMPILE_SDK_VERSION", null)
+def ANDROID_APP_NDK_VERSION = Utils.getStringProperty("ANDROID_APP_NDK_VERSION", null)
+def ANDROID_APP_BUILD_TOOLS_VERSION = Utils.getStringProperty("ANDROID_APP_BUILD_TOOLS_VERSION", null)
+def ANDROID_APP_CMAKE_VERSION = Utils.getStringProperty("ANDROID_APP_CMAKE_VERSION", null)
+def ANDROID_APP_MULTIDEX_ENABLE = Utils.getBooleanProperty("ANDROID_APP_MULTIDEX_ENABLE", null)
+def ANDROID_APP_MIN_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_MIN_SDK_VERSION", null)
+def ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_TARGET_SDK_VERSION", null)
+def ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_COMPILE_SDK_VERSION", null)
 
 allprojects {
     layout.buildDirectory.set(layout.projectDirectory.dir(rootProject.projectDir.getAbsolutePath() + "/../outputs/gradle/build/${rootProject.name}/${project.name}"))
@@ -109,44 +109,44 @@ allprojects {
         mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
 
-        if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN") == true) {
-            if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE") == true) {
+        if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN") == true) {
+            if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE") == true) {
                 maven { url "https://artifactory.bidmachine.io/bidmachine" }
             }
 
-            if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CHARTBOOST") == true) {
+            if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_CHARTBOOST") == true) {
                 maven { url "https://cboost.jfrog.io/artifactory/chartboost-ads/" }
             }
 
-            if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE") == true) {
+            if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE") == true) {
                 maven { url "https://android-sdk.is.com" }
             }
 
-            if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MAIO") == true) {
+            if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MAIO") == true) {
                 maven { url "https://imobile-maio.github.io/maven" }
             }
 
-            if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL") == true) {
+            if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL") == true) {
                 maven { url "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea" }
             }
 
-            if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY") == true) {
+            if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY") == true) {
                 maven { url "https://maven.ogury.co" }
             }
 
-            if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE") == true) {
+            if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE") == true) {
                 maven { url "https://artifact.bytedance.com/repository/pangle" }
             }
 
-            if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO") == true) {
+            if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO") == true) {
                 maven { url "https://s3.amazonaws.com/smaato-sdk-releases/" }
             }
 
-            if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE") == true) {
+            if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE") == true) {
                 maven { url "https://verve.jfrog.io/artifactory/verve-gradle-release" }
             }
 
-            if (Utils.existAppPlugin(project, "MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YSO") == true) {
+            if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YSO") == true) {
                 maven { url "https://ysonetwork.s3.eu-west-3.amazonaws.com/sdk/android" }
             }
         }

@@ -1,12 +1,10 @@
-import com.Mengine.Utils
-
 apply plugin: 'com.android.library'
 
 apply from: rootProject.projectDir.getAbsolutePath() + '/base.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/androidx.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/split.gradle'
 
-def ANDROID_APP_ASSETS_RES_CI = Utils.getBooleanProperty(project, "ANDROID_APP_ASSETS_RES_CI", false)
+def ANDROID_APP_ASSETS_RES_CI = Utils.getBooleanProperty("ANDROID_APP_ASSETS_RES_CI", false)
 
 android {
     sourceSets {

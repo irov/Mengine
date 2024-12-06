@@ -17,6 +17,14 @@ fun getBooleanProperty(name: String, d: Boolean): Boolean {
     return d
 }
 
+fun getStringProperty(name: String, d: String): String {
+    if (extra.has(name) == false) {
+        return d
+    }
+
+    return extra[name].toString()
+}
+
 fun includeLibrary(name: String, path: String) {
     if (getBooleanProperty("MENGINE_APP_LIBRARY_ALL", false) == false && getBooleanProperty(name, true) == false) {
         println("\u001b[31m" + "[-] Exclude library: $path" + "\u001b[0m")
@@ -41,7 +49,7 @@ fun includePlugin(name: String, path: String) {
     include(path)
 }
 
-val ANDROID_APP_MAIN_PROJECT = extra["ANDROID_APP_MAIN_PROJECT"].toString();
+val ANDROID_APP_MAIN_PROJECT = getStringProperty("ANDROID_APP_MAIN_PROJECT", "app");
 
 println("\u001b[32m" + "=== Start configure ===" + "\u001b[0m")
 println("\u001b[32m" + "[+] Include :$ANDROID_APP_MAIN_PROJECT" + "\u001b[0m")

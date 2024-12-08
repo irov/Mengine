@@ -329,6 +329,8 @@ namespace Mengine
 
         AnalyticsEventProviderInterfacePtr m_androidAnalyticsEventProvider;
 
+        FactoryInterfacePtr m_factoryDynamicLibraries;
+
         LoggerInterfacePtr m_proxyLogger;
 
         ThreadMutexInterfacePtr m_nativeMutex;

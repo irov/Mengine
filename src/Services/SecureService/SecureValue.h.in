@@ -1,0 +1,7 @@
+#pragma once
+
+#include "Config/Config.h"
+
+#ifndef MENGINE_SECURE_VALUE
+#define MENGINE_SECURE_VALUE "@MENGINE_SECURE_VALUE@"
+#endif

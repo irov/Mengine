@@ -26,6 +26,7 @@
 
 #include "AndroidAnalyticsEventProvider.h"
 #include "AndroidProxyLogger.h"
+#include "AndroidDynamicLibrary.h"
 
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
@@ -659,6 +660,8 @@ namespace Mengine
 
         m_eglDisplay = eglDisplay;
 
+        m_factoryDynamicLibraries = Helper::makeFactoryPool<AndroidDynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
+
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES, &AndroidPlatformService::notifyBootstrapperInitializeBaseServices_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, &AndroidPlatformService::notifyBootstrapperCreateApplication_, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -721,6 +724,10 @@ namespace Mengine
         }
 
         m_active = false;
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
+
+        m_factoryDynamicLibraries = nullptr;
 
         this->destroyWindow_();
 
@@ -1089,9 +1096,24 @@ namespace Mengine
             , _dynamicLibraryName
         );
 
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        AndroidDynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject( _doc );
 
-        return nullptr;
+        MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, "can't create dynamic library '%s'"
+            , _dynamicLibraryName
+        );
+
+        dynamicLibrary->setName( _dynamicLibraryName );
+
+        if( dynamicLibrary->load() == false )
+        {
+            LOGGER_ERROR( "can't load '%s' plugin [invalid load]"
+                , _dynamicLibraryName
+            );
+
+            return nullptr;
+        }
+
+        return dynamicLibrary;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::getDesktopResolution( Resolution * const _resolution ) const

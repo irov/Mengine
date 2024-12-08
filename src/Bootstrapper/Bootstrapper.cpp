@@ -45,6 +45,8 @@
 
 #include "Config/Path.h"
 
+#include "Configuration/Configurations.h"
+
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_BOOTSTRAPPER_LOAD_CONFIG
 #define MENGINE_BOOTSTRAPPER_LOAD_CONFIG 1

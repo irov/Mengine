@@ -13,6 +13,9 @@ src
     
     AndroidProxyLogger.h
     AndroidProxyLogger.cpp
+    
+    AndroidDynamicLibrary.h
+    AndroidDynamicLibrary.cpp
 )
 
 ADD_MENGINE_LIBRARY(Platforms)

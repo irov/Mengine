@@ -13,9 +13,7 @@
 
 #include "Config/StdString.h"
 
-#ifndef MENGINE_SECURE_VALUE
-#define MENGINE_SECURE_VALUE 0123456789A
-#endif
+#include "Configuration/SecureValue.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SecureService, Mengine::SecureService );
@@ -33,7 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SecureService::_initializeService()
     {
-        const Char * secure = GET_OPTION_VALUE( "secure", MENGINE_PP_STRINGIZE( MENGINE_SECURE_VALUE ) );
+        const Char * secure = GET_OPTION_VALUE( "secure", MENGINE_SECURE_VALUE );
 
         size_t secure_len = StdString::strlen( secure );
 

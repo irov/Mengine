@@ -52,7 +52,7 @@ allprojects {
         if (ANDROID_APP_NDK_VERSION != null) {
             ndkVersion = ANDROID_APP_NDK_VERSION
         } else {
-            ndkVersion = "27.1.12297006"
+            ndkVersion = "27.2.12479018"
         }
 
         if (ANDROID_APP_BUILD_TOOLS_VERSION != null) {

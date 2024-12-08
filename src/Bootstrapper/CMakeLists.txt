@@ -6,6 +6,8 @@ Bootstrapper
     Bootstrapper.h
 )
 
+INCLUDE_DIRECTORIES(${MENGINE_SOLUTIONS_CONFIG_DIR}/include)
+
 ADD_MENGINE_LIBRARY(Bootstrapper)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)

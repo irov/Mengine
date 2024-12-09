@@ -63,7 +63,6 @@ namespace Mengine
     {
         const char * version = Magic_GetVersion();
 
-        //MING64 use 3.55 version...
 #if !defined(MENGINE_TOOLCHAIN_MINGW64) && !defined(MENGINE_PLATFORM_APPLE)
         if( StdString::strstr( version, MAGIC_API ) == nullptr )
         {

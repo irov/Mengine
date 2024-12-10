@@ -3,6 +3,7 @@ package org.Mengine.Plugin.AppLovin;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Size;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
@@ -27,19 +28,20 @@ public class MengineAppLovinBase {
     protected MengineAppLovinPlugin m_plugin;
     protected final String m_adUnitId;
 
-    protected int m_retryAttempt;
-
     protected int m_enumeratorRequest;
     protected int m_requestId;
+    protected int m_requestAttempt;
+    protected long m_requestTimestamp;
 
     public MengineAppLovinBase(MaxAdFormat adFormat, MengineAppLovinPlugin plugin, String adUnitId) {
         m_adFormat = adFormat;
         m_plugin = plugin;
         m_adUnitId = adUnitId;
 
-        m_retryAttempt = 0;
         m_enumeratorRequest = 0;
         m_requestId = 0;
+        m_requestAttempt = 0;
+        m_requestTimestamp = 0;
     }
 
     public void onCreate(MengineActivity activity) {
@@ -54,9 +56,9 @@ public class MengineAppLovinBase {
     }
 
     protected void retryLoadAd() {
-        this.m_retryAttempt++;
+        m_requestAttempt++;
 
-        long duration = (long) Math.pow(2, Math.min(6, m_retryAttempt));
+        long duration = (long) Math.pow(2, Math.min(6, m_requestAttempt));
         long delayMillis = TimeUnit.SECONDS.toMillis(duration);
 
         MengineUtils.performOnMainThreadDelayed(() -> {
@@ -65,9 +67,17 @@ public class MengineAppLovinBase {
     }
 
     protected int increaseRequestId() {
-        this.m_requestId = this.m_enumeratorRequest++;
+        m_requestId = m_enumeratorRequest++;
+        m_requestTimestamp = MengineUtils.getTimestamp();
 
-        return this.m_requestId;
+        return m_requestId;
+    }
+
+    protected long getRequestTime() {
+        long timestamp = MengineUtils.getTimestamp();
+        long requestTime = timestamp - m_requestTimestamp;
+
+        return requestTime;
     }
 
     protected String getMAAdParams(@NonNull MaxAd ad) {
@@ -152,12 +162,15 @@ public class MengineAppLovinBase {
         return params;
     }
 
-    protected MengineAnalyticsEventBuilder buildAdEvent(String name) {
+    protected MengineAnalyticsEventBuilder buildAdEvent(@Size(min = 1L,max = 40L) String name) {
+        long requestTime = this.getRequestTime();
+
         MengineAnalyticsEventBuilder eventBuilder = m_plugin.buildEvent(name);
 
         eventBuilder.addParameterString("ad_unit_id", m_adUnitId);
         eventBuilder.addParameterLong("request_id", m_requestId);
-        eventBuilder.addParameterLong("attempt", m_retryAttempt);
+        eventBuilder.addParameterLong("request_time", requestTime);
+        eventBuilder.addParameterLong("request_attempt", m_requestAttempt);
 
         return eventBuilder;
     }
@@ -285,9 +298,12 @@ public class MengineAppLovinBase {
     }
 
     protected void writeBaseInfo(StringBuilder sb) {
+        long requestTime = this.getRequestTime();
+
         sb.append(String.format(Locale.US, "AdUnitId: %s ", m_adUnitId));
         sb.append(String.format(Locale.US, "RequestId: %d ", m_requestId));
-        sb.append(String.format(Locale.US, "RetryAttempt: %d ", m_retryAttempt));
+        sb.append(String.format(Locale.US, "RequestTime: %d ", requestTime));
+        sb.append(String.format(Locale.US, "RetryAttempt: %d ", m_requestAttempt));
     }
 
     protected void writeMaxAdBaseInfo(StringBuilder sb, @NonNull MaxAd ad) {

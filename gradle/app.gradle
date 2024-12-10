@@ -228,13 +228,15 @@ android {
 
     if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
         buildTypes {
+            var buildDirectory = getLayout().getBuildDirectory();
+
             debug {
                 firebaseCrashlytics {
                     mappingFileUploadEnabled true
 
                     nativeSymbolUploadEnabled true
 
-                    unstrippedNativeLibsDir "$buildDir/intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib"
+                    unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib")
 
                     println "unstrippedNativeLibsDir debug: $unstrippedNativeLibsDir"
                 }
@@ -250,7 +252,7 @@ android {
 
                     nativeSymbolUploadEnabled true
 
-                    unstrippedNativeLibsDir "$buildDir/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib"
+                    unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib")
 
                     println "unstrippedNativeLibsDir release: $unstrippedNativeLibsDir"
                 }
@@ -808,9 +810,12 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
         doLast {
             println "[TASK] checkDebugUnstrippedNativeLibsDir"
 
-            def f = new File(android.buildTypes.debug.firebaseCrashlytics.unstrippedNativeLibsDir)
-            if (!f.exists()) {
-                throw new GradleException("unstrippedNativeLibsDir not found folder: $android.buildTypes.debug.firebaseCrashlytics.unstrippedNativeLibsDir")
+            def f = android.buildTypes.debug.firebaseCrashlytics.unstrippedNativeLibsDir.get().getAsFile()
+
+            if (f.exists() == false) {
+                var fname = f.getCanonicalPath()
+
+                throw new GradleException("unstrippedNativeLibsDir not found folder: $fname")
             }
         }
     }
@@ -819,9 +824,12 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
         doLast {
             println "[TASK] checkReleaseUnstrippedNativeLibsDir"
 
-            def f = new File(android.buildTypes.release.firebaseCrashlytics.unstrippedNativeLibsDir)
-            if (!f.exists()) {
-                throw new GradleException("unstrippedNativeLibsDir not found folder: $android.buildTypes.release.firebaseCrashlytics.unstrippedNativeLibsDir")
+            def f = android.buildTypes.release.firebaseCrashlytics.unstrippedNativeLibsDir.get().getAsFile()
+
+            if (f.exists() == false) {
+                var fname = f.getCanonicalPath()
+
+                throw new GradleException("unstrippedNativeLibsDir not found folder: $fname")
             }
         }
     }

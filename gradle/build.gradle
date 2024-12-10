@@ -138,6 +138,10 @@ allprojects {
                 maven { url "https://artifact.bytedance.com/repository/pangle" }
             }
 
+            if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PUBMATIC") == true) {
+                maven { url "https://repo.pubmatic.com/artifactory/public-repos" }
+            }
+
             if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_SMAATO") == true) {
                 maven { url "https://s3.amazonaws.com/smaato-sdk-releases/" }
             }

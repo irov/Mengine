@@ -219,7 +219,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         m_plugin.setState("applovin.rewarded.state." + m_adUnitId, "loaded." + ad.getNetworkName());
 
-        m_retryAttempt = 0;
+        m_requestAttempt = 0;
 
         m_plugin.pythonCall("onAppLovinRewardedOnAdLoaded", m_adUnitId);
     }

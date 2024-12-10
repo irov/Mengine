@@ -136,6 +136,8 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             return;
         }
 
+        this.increaseRequestId();
+
         this.log("loadAd");
 
         String placement = m_adView.getPlacement();
@@ -272,7 +274,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             .addParameterJSON("ad", this.getMAAdParams(ad))
             .log();
 
-        m_retryAttempt = 0;
+        m_requestAttempt = 0;
 
         m_plugin.setState("applovin.banner.state." + m_adUnitId, "loaded." + ad.getNetworkName());
 
@@ -350,7 +352,7 @@ public class MengineAppLovinBanner extends MengineAppLovinBase implements MaxAdR
             .addParameterJSON("error", this.getMaxErrorParams(error))
             .log();
 
-        m_retryAttempt++;
+        m_requestAttempt++;
 
         m_plugin.setState("applovin.banner.state." + m_adUnitId, "load_failed");
 

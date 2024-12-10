@@ -20,6 +20,7 @@ import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import org.Mengine.Base.MenginePluginSessionIdListener;
 import org.Mengine.Base.MenginePluginTransparencyConsentListener;
 import org.Mengine.Base.MengineTransparencyConsentParam;
+import org.Mengine.Base.MengineUtils;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -54,8 +55,8 @@ public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements Men
         firebaseAnalytics.setUserProperty("session_timestamp", String.valueOf(sessionTimestamp));
         firebaseAnalytics.setUserProperty("purchases_timestamp", String.valueOf(purchasesTimestamp));
 
-        long currentTime = System.currentTimeMillis();
-        long lifeTime = currentTime - installTimestamp;
+        long currentTimestamp = MengineUtils.getTimestamp();
+        long lifeTime = currentTimestamp - installTimestamp;
 
         firebaseAnalytics.setUserProperty("life_time", String.valueOf(lifeTime));
 

@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Size;
 import androidx.multidex.MultiDex;
 
 import java.lang.reflect.Field;
@@ -27,6 +28,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MengineApplication extends Application {
     private static final String TAG = "MengineApplication";
+
+    static {
+        System.loadLibrary("AndroidApplication");
+    }
 
     public boolean isMasterRelease() {
         return MengineNative.AndroidEnv_isMasterRelease();
@@ -411,7 +416,7 @@ public class MengineApplication extends Application {
         return m_isMenginePlatformRun;
     }
 
-    public void setState(String name, Object value) {
+    public void setState(@NonNull @Size(min = 1L,max = 1024L) String name, Object value) {
         m_states.put(name, value);
 
         List<MenginePluginApplicationListener> applicationListeners = this.getApplicationListeners();
@@ -1098,24 +1103,6 @@ public class MengineApplication extends Application {
             m_androidId = "0000000000000000";
         }
 
-        try {
-            Context context = this.getApplicationContext();
-
-            MengineUtils.loadLibrary(context, "AndroidApplication");
-        } catch(final UnsatisfiedLinkError e) {
-            this.invalidInitialize("loadLibrary AndroidApplication UnsatisfiedLinkError: %s"
-                , e.getMessage()
-            );
-
-            return;
-        } catch(final SecurityException e) {
-            this.invalidInitialize("loadLibrary AndroidApplication SecurityException: %s"
-                , e.getMessage()
-            );
-
-            return;
-        }
-
         ClassLoader cl = MengineApplication.class.getClassLoader();
 
         MengineNative.AndroidEnv_setMengineAndroidApplicationJNI(this, cl);
@@ -1395,7 +1382,7 @@ public class MengineApplication extends Application {
         }
     }
 
-    public void onMengineAnalyticsEvent(String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(@NonNull @Size(min = 1L,max = 40L) String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         List<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
 
         for (MenginePluginAnalyticsListener l : listeners) {
@@ -1407,7 +1394,7 @@ public class MengineApplication extends Application {
         }
     }
 
-    public void onMengineAnalyticsScreenView(String screenType, String screenName) {
+    public void onMengineAnalyticsScreenView(@NonNull @Size(min = 1L,max = 40L) String screenType, @NonNull @Size(min = 0L,max = 100L) String screenName) {
         List<MenginePluginAnalyticsListener> listeners = this.getAnalyticsListeners();
 
         for (MenginePluginAnalyticsListener l : listeners) {

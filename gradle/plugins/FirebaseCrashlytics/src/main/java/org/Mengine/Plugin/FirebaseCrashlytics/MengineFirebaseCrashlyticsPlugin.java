@@ -2,6 +2,9 @@ package org.Mengine.Plugin.FirebaseCrashlytics;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Size;
+
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import org.Mengine.Base.BuildConfig;
@@ -88,7 +91,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
         FirebaseCrashlytics.getInstance().recordException(throwable);
     }
 
-    public void setCustomKey(String key, Object value) {
+    public void setCustomKey(@NonNull @Size(min = 1L,max = 1024L) String key, Object value) {
         if (value == null) {
             FirebaseCrashlytics.getInstance().setCustomKey(key, "null");
         } else if (value instanceof Boolean booleanValue) {

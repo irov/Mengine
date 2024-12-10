@@ -176,7 +176,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         m_plugin.setState("applovin.interstitial.state." + m_adUnitId, "loaded." + ad.getNetworkName());
 
-        m_retryAttempt = 0;
+        m_requestAttempt = 0;
 
         m_plugin.pythonCall("onAppLovinInterstitialOnAdLoaded", m_adUnitId);
     }

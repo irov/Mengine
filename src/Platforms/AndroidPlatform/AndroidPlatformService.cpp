@@ -53,6 +53,7 @@
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ThreadHelper.h"
+#include "Kernel/StatisticHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -439,6 +440,13 @@ extern "C"
         platformExtension->androidNativeChangeLocale( language_str );
 
         env->ReleaseStringUTFChars( _language, language_str );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT jlong JNICALL MENGINE_JAVA_INTERFACE( AndroidStatistic_1getRenderFrameCount )(JNIEnv * env, jclass cls)
+    {
+        int64_t Statistic_RenderFrameCount = STATISTIC_GET_INTEGER( Mengine::STATISTIC_RENDER_FRAME_COUNT );
+
+        return Statistic_RenderFrameCount;
     }
     ///////////////////////////////////////////////////////////////////////
 }

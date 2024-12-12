@@ -29,14 +29,13 @@ import com.facebook.share.widget.ShareDialog;
 import org.Mengine.Base.BuildConfig;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginAnalyticsListener;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MenginePluginPushTokenListener;
-import org.Mengine.Base.MenginePluginRemoteMessageListener;
-import org.Mengine.Base.MenginePluginSessionIdListener;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineListenerAnalytics;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineListenerPushToken;
+import org.Mengine.Base.MengineListenerRemoteMessage;
+import org.Mengine.Base.MengineListenerSessionId;
 import org.Mengine.Base.MengineUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,9 +43,9 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Map;
 
-public class MengineFacebookPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener, MenginePluginRemoteMessageListener, MenginePluginPushTokenListener, MenginePluginSessionIdListener {
-    public static final String PLUGIN_NAME = "MengineFacebook";
-    public static final boolean PLUGIN_EMBEDDING = true;
+public class MengineFacebookPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerApplication, MengineListenerRemoteMessage, MengineListenerPushToken, MengineListenerSessionId {
+    public static final String SERVICE_NAME = "MengineFacebook";
+    public static final boolean SERVICE_EMBEDDING = true;
 
     private static final int ERROR_CODE_UNKNOWN = 0;
     private static final int ERROR_CODE_LOGGED_OUT = 1;
@@ -60,7 +59,7 @@ public class MengineFacebookPlugin extends MenginePlugin implements MenginePlugi
     private AppEventsLogger m_logger;
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
         try {
             AppEventsLogger.activateApp(application);
         } catch (final Exception e) {

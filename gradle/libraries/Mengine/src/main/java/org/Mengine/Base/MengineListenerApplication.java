@@ -5,16 +5,16 @@ import android.content.res.Configuration;
 
 import androidx.annotation.NonNull;
 
-public interface MenginePluginApplicationListener extends MenginePluginInterface {
-    default void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
+public interface MengineListenerApplication extends MengineServiceInterface {
+    default void onAppInit(MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
         //Empty
     }
     
-    default void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    default void onAppPrepare(MengineApplication application) throws MengineServiceInvalidInitializeException {
         //Empty
     }
 
-    default void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    default void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
         //Empty
     }
 

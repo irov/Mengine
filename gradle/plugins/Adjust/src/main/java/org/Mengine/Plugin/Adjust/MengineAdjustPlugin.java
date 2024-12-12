@@ -29,10 +29,10 @@ import org.Mengine.Base.MenginePluginRemoteMessageListener;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 
 public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginAdRevenueListener, MenginePluginTransparencyConsentListener, MenginePluginRemoteMessageListener, MenginePluginPushTokenListener {
-    public static final String PLUGIN_NAME = "MengineAdjust";
-    public static final boolean PLUGIN_EMBEDDING = true;
+    public static final String SERVICE_NAME = "MengineAdjust";
+    public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String PLUGIN_METADATA_APP_TOKEN = "mengine.adjust.app_token";
+    public static final String METADATA_APP_TOKEN = "mengine.adjust.app_token";
 
     private static final class AdjustLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
         @Override
@@ -79,10 +79,10 @@ public class MengineAdjustPlugin extends MenginePlugin implements MenginePluginA
             environment = AdjustConfig.ENVIRONMENT_SANDBOX;
         }
 
-        String MengineAdjustPlugin_AppToken = this.getMetaDataString(PLUGIN_METADATA_APP_TOKEN);
+        String MengineAdjustPlugin_AppToken = this.getMetaDataString(METADATA_APP_TOKEN);
 
         this.logInfo("%s: %s"
-            , PLUGIN_METADATA_APP_TOKEN
+            , METADATA_APP_TOKEN
             , MengineAdjustPlugin_AppToken
         );
 

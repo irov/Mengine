@@ -3,7 +3,7 @@
     public <methods>;
 }
 
--keep public class * extends org.Mengine.Base.MenginePlugin {
+-keep public class * extends org.Mengine.Base.MengineService {
     native <methods>;
     public <methods>;
 }

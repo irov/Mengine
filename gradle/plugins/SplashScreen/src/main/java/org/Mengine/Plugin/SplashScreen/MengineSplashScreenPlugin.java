@@ -19,16 +19,15 @@ import androidx.core.content.res.ResourcesCompat;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineNative;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginEngineListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MenginePluginActivityListener;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineListenerEngine;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineUtils;
 
-public class MengineSplashScreenPlugin extends MenginePlugin implements MenginePluginEngineListener, MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "MengineSplashScreen";
-    public static final boolean PLUGIN_EMBEDDING = false;
+public class MengineSplashScreenPlugin extends MengineService implements MengineListenerEngine, MengineListenerActivity {
+    public static final String SERVICE_NAME = "MengineSplashScreen";
+    public static final boolean SERVICE_EMBEDDING = false;
 
     protected ImageView m_image;
     protected TextView m_text;
@@ -84,7 +83,7 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         MengineApplication application = activity.getMengineApplication();
 
         if (application.isMenginePlatformRun() == true) {
@@ -100,7 +99,9 @@ public class MengineSplashScreenPlugin extends MenginePlugin implements MengineP
         ImageView image = this.createBackground(activity);
 
         if (image == null) {
-            throw new MenginePluginInvalidInitializeException("splash screen image is null");
+            this.invalidInitialize("splash screen image is null");
+
+            return;
         }
 
         viewGroup.addView(image);

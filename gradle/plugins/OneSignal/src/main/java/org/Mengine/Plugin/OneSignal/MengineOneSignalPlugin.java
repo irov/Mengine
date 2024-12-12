@@ -8,16 +8,16 @@ import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineOneSignalPlugin extends MenginePlugin implements MenginePluginApplicationListener {
-    public static final String PLUGIN_NAME = "MengineOneSignal";
+    public static final String SERVICE_NAME = "MengineOneSignal";
 
-    public static final String PLUGIN_METADATA_APP_ID = "mengine.onesignal.app_id";
+    public static final String METADATA_APP_ID = "mengine.onesignal.app_id";
 
     @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String MengineOneSignalPlugin_AppId = this.getMetaDataString(PLUGIN_METADATA_APP_ID);
+        String MengineOneSignalPlugin_AppId = this.getMetaDataString(METADATA_APP_ID);
 
         this.logInfo("%s: %s"
-            , PLUGIN_METADATA_APP_ID
+            , METADATA_APP_ID
             , MengineOneSignalPlugin_AppId
         );
 

@@ -183,7 +183,22 @@ public class MengineUtils {
         return handler;
     }
 
-    public static Timer scheduleOnUiAtFixedRate(Activity activity, long period, Runnable runnable) {
+    public static Timer scheduleAtFixedRate(long delay, long period, Runnable runnable) {
+        Timer timer = new Timer();
+
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                runnable.run();
+            }
+        };
+
+        timer.scheduleAtFixedRate(task, delay, period);
+
+        return timer;
+    }
+
+    public static Timer scheduleOnUiAtFixedRate(Activity activity, long delay, long period, Runnable runnable) {
         Timer timer = new Timer();
 
         TimerTask task = new TimerTask() {
@@ -193,7 +208,7 @@ public class MengineUtils {
             }
         };
 
-        timer.scheduleAtFixedRate(task, 0, period);
+        timer.scheduleAtFixedRate(task, delay, period);
 
         return timer;
     }

@@ -20,28 +20,28 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
-import org.Mengine.Base.MenginePluginApplicationListener;
+import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginEngineListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineListenerEngine;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MengineAppLovinPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginEngineListener {
-    public static final String PLUGIN_NAME = "MengineAppLovin";
-    public static final boolean PLUGIN_EMBEDDING = true;
+public class MengineAppLovinPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity, MengineListenerEngine {
+    public static final String SERVICE_NAME = "MengineAppLovin";
+    public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String PLUGIN_METADATA_SDK_KEY = "mengine.applovin.sdk_key";
-    public static final String PLUGIN_METADATA_CCPA = "mengine.applovin.CCPA";
-    public static final String PLUGIN_METADATA_ENABLE_PRIVACY_POLICY_FLOW = "mengine.applovin.enable_privacy_policy_flow";
-    public static final String PLUGIN_METADATA_PRIVACY_POLICY_URL = "mengine.privacy.privacy_policy_url";
-    public static final String PLUGIN_METADATA_TERMS_OF_SERVICE_URL = "mengine.privacy.terms_of_service_url";
+    public static final String METADATA_SDK_KEY = "mengine.applovin.sdk_key";
+    public static final String METADATA_CCPA = "mengine.applovin.CCPA";
+    public static final String METADATA_ENABLE_PRIVACY_POLICY_FLOW = "mengine.applovin.enable_privacy_policy_flow";
+    public static final String METADATA_PRIVACY_POLICY_URL = "mengine.applovin.privacy_policy_url";
+    public static final String METADATA_TERMS_OF_SERVICE_URL = "mengine.applovin.terms_of_service_url";
 
     private AppLovinSdk m_appLovinSdk;
 
@@ -54,7 +54,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     private MengineAppLovinNonetBannersInterface m_nonetBanners;
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
         m_banners = new HashMap<>();
         m_interstitials = new HashMap<>();
         m_rewardeds = new HashMap<>();
@@ -63,10 +63,10 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
 
         AppLovinSdkSettings settings = appLovinSdk.getSettings();
 
-        String MengineAppLovinPlugin_CCPA = this.getMetaDataString(PLUGIN_METADATA_CCPA);
+        String MengineAppLovinPlugin_CCPA = this.getMetaDataString(METADATA_CCPA);
 
         this.logMessage("%s: %s"
-            , PLUGIN_METADATA_CCPA
+            , METADATA_CCPA
             , MengineAppLovinPlugin_CCPA
         );
 
@@ -78,22 +78,22 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
             // Nothing
         } else {
             this.invalidInitialize("invalid %s: %s [YES|NO|UNKNOWN]"
-                , PLUGIN_METADATA_CCPA
+                , METADATA_CCPA
                 , MengineAppLovinPlugin_CCPA
             );
         }
 
-        boolean MengineAppLovinPlugin_EnablePrivacyPolicyFlow = this.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_PRIVACY_POLICY_FLOW);
+        boolean MengineAppLovinPlugin_EnablePrivacyPolicyFlow = this.getMetaDataBoolean(METADATA_ENABLE_PRIVACY_POLICY_FLOW);
 
         if (MengineAppLovinPlugin_EnablePrivacyPolicyFlow == true) {
             AppLovinTermsAndPrivacyPolicyFlowSettings termsAndPrivacyPolicyFlowSettings = settings.getTermsAndPrivacyPolicyFlowSettings();
 
             termsAndPrivacyPolicyFlowSettings.setEnabled(true);
 
-            String MengineAppLovinPlugin_PrivacyPolicyUrl = this.getMetaDataString(PLUGIN_METADATA_PRIVACY_POLICY_URL);
+            String MengineAppLovinPlugin_PrivacyPolicyUrl = this.getMetaDataString(METADATA_PRIVACY_POLICY_URL);
             termsAndPrivacyPolicyFlowSettings.setPrivacyPolicyUri(Uri.parse(MengineAppLovinPlugin_PrivacyPolicyUrl));
 
-            String MengineAppLovinPlugin_TermsOfServiceUrl = this.getMetaDataString(PLUGIN_METADATA_TERMS_OF_SERVICE_URL);
+            String MengineAppLovinPlugin_TermsOfServiceUrl = this.getMetaDataString(METADATA_TERMS_OF_SERVICE_URL);
             termsAndPrivacyPolicyFlowSettings.setTermsOfServiceUri(Uri.parse(MengineAppLovinPlugin_TermsOfServiceUrl));
 
             this.logMessage("privacy policy: %s"
@@ -124,10 +124,10 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
         String sessionId = application.getSessionId();
         settings.setUserIdentifier(sessionId);
 
-        String MengineAppLovinPlugin_SdkKey = this.getMetaDataString(PLUGIN_METADATA_SDK_KEY);
+        String MengineAppLovinPlugin_SdkKey = this.getMetaDataString(METADATA_SDK_KEY);
 
         this.logMessage("%s: %s"
-            , PLUGIN_METADATA_SDK_KEY
+            , METADATA_SDK_KEY
             , MengineUtils.getDebugValue(MengineAppLovinPlugin_SdkKey, "[REDACTED]")
         );
 
@@ -215,7 +215,7 @@ public class MengineAppLovinPlugin extends MenginePlugin implements MenginePlugi
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         if (m_nonetBanners != null) {
             m_nonetBanners.onCreate(activity);
         }

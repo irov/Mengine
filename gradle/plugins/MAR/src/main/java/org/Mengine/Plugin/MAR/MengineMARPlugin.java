@@ -39,8 +39,8 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class MengineMARPlugin extends MenginePlugin implements MARInitListener, MenginePluginApplicationListener, MenginePluginKeyListener, MenginePluginEngineListener, MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "MengineMAR";
-    public static final boolean PLUGIN_EMBEDDING = true;
+    public static final String SERVICE_NAME = "MengineMAR";
+    public static final boolean SERVICE_EMBEDDING = true;
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {

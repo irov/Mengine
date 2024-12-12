@@ -1,6 +1,6 @@
 package org.Mengine.Base;
 
-public interface MenginePluginRemoteMessageListener extends MenginePluginInterface {
+public interface MengineListenerRemoteMessage extends MengineServiceInterface {
     default boolean onMengineRemoteMessageReceived(MengineApplication application, MengineRemoteMessageParam message) {
         //Empty
 

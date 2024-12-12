@@ -7,9 +7,9 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
 import java.io.IOException;
@@ -17,8 +17,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePluginApplicationListener {
-    public static final String PLUGIN_NAME = "MengineAdvertising";
+public class MengineAdvertisingPlugin extends MengineService implements MengineListenerApplication {
+    public static final String SERVICE_NAME = "MengineAdvertising";
 
     private static final String LIMIT_ADVERTISING_ID = "00000000-0000-0000-0000-000000000000";
 
@@ -34,7 +34,7 @@ public class MengineAdvertisingPlugin extends MenginePlugin implements MenginePl
     }
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         Future<AdvertisingIdClient.Info> future = executor.submit(() -> {

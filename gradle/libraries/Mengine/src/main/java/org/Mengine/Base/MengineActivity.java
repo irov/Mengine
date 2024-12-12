@@ -91,26 +91,26 @@ public class MengineActivity extends AppCompatActivity {
         return applicationId;
     }
 
-    protected List<MenginePlugin> getPlugins() {
+    protected List<MengineService> getPlugins() {
         MengineApplication application = this.getMengineApplication();
 
-        List<MenginePlugin> plugins = application.getPlugins();
+        List<MengineService> plugins = application.getServices();
 
         return plugins;
     }
 
-    protected List<MenginePluginKeyListener> getKeyListeners() {
+    protected List<MengineListenerKeyEvent> getKeyListeners() {
         MengineApplication application = this.getMengineApplication();
 
-        List<MenginePluginKeyListener> listeners = application.getKeyListeners();
+        List<MengineListenerKeyEvent> listeners = application.getKeyListeners();
 
         return listeners;
     }
 
-    protected List<MenginePluginActivityListener> getActivityListeners() {
+    protected List<MengineListenerActivity> getActivityListeners() {
         MengineApplication application = this.getMengineApplication();
 
-        List<MenginePluginActivityListener> listeners = application.getActivityListeners();
+        List<MengineListenerActivity> listeners = application.getActivityListeners();
 
         return listeners;
     }
@@ -119,7 +119,7 @@ public class MengineActivity extends AppCompatActivity {
     public <T> T getPlugin(Class<T> cls) {
         MengineApplication application = this.getMengineApplication();
 
-        T plugin = application.getPlugin(cls);
+        T plugin = application.getService(cls);
 
         return plugin;
     }
@@ -318,34 +318,34 @@ public class MengineActivity extends AppCompatActivity {
 
         this.setState("activity.init", "plugin_create");
 
-        List<MenginePlugin> plugins = this.getPlugins();
+        List<MengineService> plugins = this.getPlugins();
 
-        for (MenginePlugin p : plugins) {
+        for (MengineService p : plugins) {
             p.setMengineActivity(this);
         }
 
-        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MengineListenerActivity> listeners = this.getActivityListeners();
 
-        for (MenginePluginActivityListener l : listeners) {
+        for (MengineListenerActivity l : listeners) {
             if (l.onAvailable(application) == false) {
                 continue;
             }
 
             MengineLog.logMessage(TAG, "onCreate plugin: %s"
-                , l.getPluginName()
+                , l.getServiceName()
             );
 
             try {
                 l.onCreate(this, savedInstanceState);
-            } catch (final MenginePluginInvalidInitializeException e) {
-                this.setState("activity.init", "plugin_create_exception." + l.getPluginName());
+            } catch (final MengineServiceInvalidInitializeException e) {
+                this.setState("activity.init", "plugin_create_exception." + l.getServiceName());
 
                 MengineAnalytics.buildEvent("mng_activity_create_failed")
                     .addParameterException("reason", e)
                     .logAndFlush();
 
                 this.finishWithAlertDialog("[ERROR] create plugin: %s exception: %s"
-                    , l.getPluginName()
+                    , l.getServiceName()
                     , e.getMessage()
                 );
 
@@ -597,9 +597,9 @@ public class MengineActivity extends AppCompatActivity {
             , resultCode
         );
 
-        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MengineListenerActivity> listeners = this.getActivityListeners();
 
-        for (MenginePluginActivityListener l : listeners) {
+        for (MengineListenerActivity l : listeners) {
             if (l.onAvailable(application) == false) {
                 continue;
             }
@@ -609,7 +609,7 @@ public class MengineActivity extends AppCompatActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        for (MenginePluginActivityListener l : listeners) {
+        for (MengineListenerActivity l : listeners) {
             if (l.onAvailable(application) == false) {
                 continue;
             }
@@ -634,9 +634,9 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessageRelease(TAG, "onStart");
 
-        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MengineListenerActivity> listeners = this.getActivityListeners();
 
-        for (MenginePluginActivityListener l : listeners) {
+        for (MengineListenerActivity l : listeners) {
             if (l.onAvailable(application) == false) {
                 continue;
             }
@@ -665,9 +665,9 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessageRelease(TAG, "onStop");
 
-        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MengineListenerActivity> listeners = this.getActivityListeners();
 
-        for (MenginePluginActivityListener l : listeners) {
+        for (MengineListenerActivity l : listeners) {
             if (l.onAvailable(application) == false) {
                 continue;
             }
@@ -700,9 +700,9 @@ public class MengineActivity extends AppCompatActivity {
             m_surfaceView.handlePause();
         }
 
-        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MengineListenerActivity> listeners = this.getActivityListeners();
 
-        for (MenginePluginActivityListener l : listeners) {
+        for (MengineListenerActivity l : listeners) {
             if (l.onAvailable(application) == false) {
                 continue;
             }
@@ -735,9 +735,9 @@ public class MengineActivity extends AppCompatActivity {
             m_surfaceView.handleResume();
         }
 
-        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MengineListenerActivity> listeners = this.getActivityListeners();
 
-        for (MenginePluginActivityListener l : listeners) {
+        for (MengineListenerActivity l : listeners) {
             if (l.onAvailable(application) == false) {
                 continue;
             }
@@ -766,9 +766,9 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessageRelease(TAG, "onNewIntent intent: %s", intent);
 
-        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MengineListenerActivity> listeners = this.getActivityListeners();
 
-        for (MenginePluginActivityListener l : listeners) {
+        for (MengineListenerActivity l : listeners) {
             if (l.onAvailable(application) == false) {
                 continue;
             }
@@ -820,9 +820,9 @@ public class MengineActivity extends AppCompatActivity {
         m_semaphores = null;
         m_commandHandler = null;
 
-        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MengineListenerActivity> listeners = this.getActivityListeners();
 
-        for (MenginePluginActivityListener l : listeners) {
+        for (MengineListenerActivity l : listeners) {
             if (l.onAvailable(application) == false) {
                 continue;
             }
@@ -830,9 +830,9 @@ public class MengineActivity extends AppCompatActivity {
             l.onDestroy(this);
         }
 
-        List<MenginePlugin> plugins = this.getPlugins();
+        List<MengineService> plugins = this.getPlugins();
 
-        for (MenginePlugin p : plugins) {
+        for (MengineService p : plugins) {
             p.setMengineActivity(null);
         }
 
@@ -857,9 +857,9 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessage(TAG, "onRestart");
 
-        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MengineListenerActivity> listeners = this.getActivityListeners();
 
-        for (MenginePluginActivityListener l : listeners) {
+        for (MengineListenerActivity l : listeners) {
             if (l.onAvailable(application) == false) {
                 continue;
             }
@@ -928,9 +928,9 @@ public class MengineActivity extends AppCompatActivity {
             , newConfig.toString()
         );
 
-        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MengineListenerActivity> listeners = this.getActivityListeners();
 
-        for (MenginePluginActivityListener l : listeners) {
+        for (MengineListenerActivity l : listeners) {
             if (l.onAvailable(application) == false) {
                 continue;
             }
@@ -967,9 +967,9 @@ public class MengineActivity extends AppCompatActivity {
             , Arrays.toString(grantResults)
         );
 
-        List<MenginePluginActivityListener> listeners = this.getActivityListeners();
+        List<MengineListenerActivity> listeners = this.getActivityListeners();
 
-        for (MenginePluginActivityListener l : listeners) {
+        for (MengineListenerActivity l : listeners) {
             if (l.onAvailable(application) == false) {
                 continue;
             }
@@ -994,9 +994,9 @@ public class MengineActivity extends AppCompatActivity {
             , event.getScanCode()
         );
 
-        List<MenginePluginKeyListener> listeners = this.getKeyListeners();
+        List<MengineListenerKeyEvent> listeners = this.getKeyListeners();
 
-        for (MenginePluginKeyListener l : listeners) {
+        for (MengineListenerKeyEvent l : listeners) {
             if (l.onAvailable(application) == false) {
                 continue;
             }

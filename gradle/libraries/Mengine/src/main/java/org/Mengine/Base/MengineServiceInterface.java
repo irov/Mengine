@@ -1,11 +1,11 @@
 package org.Mengine.Base;
 
-public interface MenginePluginInterface {
+public interface MengineServiceInterface {
     default boolean onAvailable(MengineApplication application) {
         //Override
 
         return true;
     }
 
-    String getPluginName();
+    String getServiceName();
 }

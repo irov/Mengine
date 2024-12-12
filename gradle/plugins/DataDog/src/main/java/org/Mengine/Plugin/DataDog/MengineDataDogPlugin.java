@@ -24,21 +24,21 @@ import org.Mengine.Base.MenginePluginLoggerListener;
 import java.util.Map;
 
 public class MengineDataDogPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginSessionIdListener {
-    public static final String PLUGIN_NAME = "MengineDataDog";
-    public static final boolean PLUGIN_EMBEDDING = true;
+    public static final String SERVICE_NAME = "MengineDataDog";
+    public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String PLUGIN_METADATA_SITE = "mengine.datadog.site";
-    public static final String PLUGIN_METADATA_CLIENT_TOKEN = "mengine.datadog.client_token";
-    public static final String PLUGIN_METADATA_SERVICE_NAME = "mengine.datadog.service_name";
+    public static final String METADATA_SITE = "mengine.datadog.site";
+    public static final String METADATA_CLIENT_TOKEN = "mengine.datadog.client_token";
+    public static final String METADATA_SERVICE_NAME = "mengine.datadog.service_name";
 
     private Logger m_loggerDataDog;
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String MengineDataDogPlugin_Site = this.getMetaDataString(PLUGIN_METADATA_SITE);
+        String MengineDataDogPlugin_Site = this.getMetaDataString(METADATA_SITE);
 
         this.logInfo("%s: %s"
-            , PLUGIN_METADATA_SITE
+            , METADATA_SITE
             , MengineDataDogPlugin_Site
         );
 
@@ -62,10 +62,10 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
             return;
         }
 
-        String MengineDataDogPlugin_ClientToken = this.getMetaDataString(PLUGIN_METADATA_CLIENT_TOKEN);
+        String MengineDataDogPlugin_ClientToken = this.getMetaDataString(METADATA_CLIENT_TOKEN);
 
         this.logInfo("%s: %s"
-            , PLUGIN_METADATA_CLIENT_TOKEN
+            , METADATA_CLIENT_TOKEN
             , MengineDataDogPlugin_ClientToken
         );
 
@@ -78,10 +78,10 @@ public class MengineDataDogPlugin extends MenginePlugin implements MenginePlugin
             .useSite(site)
             .build();
 
-        String MengineDataDogPlugin_ServiceName = this.getMetaDataString(PLUGIN_METADATA_SERVICE_NAME);
+        String MengineDataDogPlugin_ServiceName = this.getMetaDataString(METADATA_SERVICE_NAME);
 
         this.logInfo("%s: %s"
-            , PLUGIN_METADATA_SERVICE_NAME
+            , METADATA_SERVICE_NAME
             , MengineDataDogPlugin_ServiceName
         );
 

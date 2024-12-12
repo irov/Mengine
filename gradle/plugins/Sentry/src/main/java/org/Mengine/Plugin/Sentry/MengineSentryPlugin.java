@@ -15,11 +15,11 @@ import io.sentry.android.core.SentryAndroid;
 import io.sentry.protocol.User;
 
 public class MengineSentryPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginEngineListener, MenginePluginSessionIdListener {
-    public static final String PLUGIN_NAME = "MengineSentry";
-    public static final boolean PLUGIN_EMBEDDING = true;
+    public static final String SERVICE_NAME = "MengineSentry";
+    public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String PLUGIN_METADATA_DSN = "mengine.sentry.dsn";
-    public static final String PLUGIN_METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER = "mengine.sentry.enable_uncaught_exception_handler";
+    public static final String METADATA_DSN = "mengine.sentry.dsn";
+    public static final String METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER = "mengine.sentry.enable_uncaught_exception_handler";
 
     public static boolean m_passGDPR = false;
 
@@ -38,17 +38,17 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
             return;
         }
 
-        String MengineSentryPlugin_DSN = this.getMetaDataString(PLUGIN_METADATA_DSN);
+        String MengineSentryPlugin_DSN = this.getMetaDataString(METADATA_DSN);
 
         this.logInfo("%s: %s"
-            , PLUGIN_METADATA_DSN
+            , METADATA_DSN
             , MengineSentryPlugin_DSN
         );
 
-        boolean MengineSentryPlugin_EnableUncaughtExceptionHandler = this.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER);
+        boolean MengineSentryPlugin_EnableUncaughtExceptionHandler = this.getMetaDataBoolean(METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER);
 
         this.logInfo("%s: %b"
-            , PLUGIN_METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER
+            , METADATA_ENABLE_UNCAUGHT_EXCEPTION_HANDLER
             , MengineSentryPlugin_EnableUncaughtExceptionHandler
         );
 
@@ -145,7 +145,7 @@ public class MengineSentryPlugin extends MenginePlugin implements MenginePluginA
     }
 
     @Override
-    public void onMengineCaughtException(MengineApplication activity, Throwable throwable) {
+    public void onMengineCaughtException(MengineApplication application, Throwable throwable) {
         this.recordException(throwable);
     }
 

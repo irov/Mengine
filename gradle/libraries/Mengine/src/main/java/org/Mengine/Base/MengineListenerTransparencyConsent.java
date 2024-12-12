@@ -1,5 +1,5 @@
 package org.Mengine.Base;
 
-public interface MenginePluginTransparencyConsentListener extends MenginePluginInterface {
+public interface MengineListenerTransparencyConsent extends MengineServiceInterface {
     void onMengineTransparencyConsent(MengineApplication application, MengineTransparencyConsentParam tcParam);
 }

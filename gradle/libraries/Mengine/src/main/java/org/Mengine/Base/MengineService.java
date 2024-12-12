@@ -5,15 +5,17 @@ import androidx.annotation.Size;
 import java.lang.reflect.Field;
 import java.util.Locale;
 
-public class MenginePlugin implements MenginePluginInterface {
+public class MengineService implements MengineServiceInterface {
     private MengineApplication m_application;
     private MengineActivity m_activity;
-    private String m_pluginName;
+    private String m_serviceName;
+    private boolean m_embedding;
     private Boolean m_availableStatus = null;
 
-    public boolean onInitialize(MengineApplication application, String pluginName) {
+    public boolean onInitialize(MengineApplication application, String serviceName, boolean embedding) {
         m_application = application;
-        m_pluginName = pluginName;
+        m_serviceName = serviceName;
+        m_embedding = embedding;
 
         return true;
     }
@@ -34,12 +36,12 @@ public class MenginePlugin implements MenginePluginInterface {
         return m_activity;
     }
 
-    public String getPluginName() {
-        return m_pluginName;
+    public String getServiceName() {
+        return m_serviceName;
     }
 
     public <T> T newInstance(String name, boolean exist) {
-        T instance = MengineUtils.newInstance(m_pluginName, name, exist);
+        T instance = MengineUtils.newInstance(m_serviceName, name, exist);
 
         return instance;
     }
@@ -53,21 +55,7 @@ public class MenginePlugin implements MenginePluginInterface {
     }
 
     public boolean isEmbedding() {
-        try {
-            Class<?> cls = this.getClass();
-
-            Field PLUGIN_EMBEDDING = cls.getField("PLUGIN_EMBEDDING");
-
-            if( PLUGIN_EMBEDDING.getBoolean(null) == false ) {
-                return false;
-            }
-        } catch (final NoSuchFieldException e) {
-            return false;
-        } catch (final IllegalAccessException e) {
-            return false;
-        }
-
-        return true;
+        return m_embedding;
     }
 
     public boolean hasOption(String option) {
@@ -76,10 +64,10 @@ public class MenginePlugin implements MenginePluginInterface {
         return value;
     }
 
-    protected void invalidInitialize(String format, Object ... args) throws MenginePluginInvalidInitializeException {
+    protected void invalidInitialize(String format, Object ... args) throws MengineServiceInvalidInitializeException {
         String message = MengineLog.buildTotalMsg(format, args);
 
-        throw new MenginePluginInvalidInitializeException(message);
+        throw new MengineServiceInvalidInitializeException(message);
     }
 
     public void makeToastLong(String text, long delayed) {
@@ -109,31 +97,31 @@ public class MenginePlugin implements MenginePluginInterface {
     }
 
     public String logInfo(String format, Object ... args) {
-        String m = MengineLog.logInfo(m_pluginName, format, args);
+        String m = MengineLog.logInfo(m_serviceName, format, args);
 
         return m;
     }
 
     public String logMessage(String format, Object ... args) {
-        String m = MengineLog.logMessage(m_pluginName, format, args);
+        String m = MengineLog.logMessage(m_serviceName, format, args);
 
         return m;
     }
 
     public String logMessageRelease(String format, Object ... args) {
-        String m = MengineLog.logMessageRelease(m_pluginName, format, args);
+        String m = MengineLog.logMessageRelease(m_serviceName, format, args);
 
         return m;
     }
 
     public String logWarning(String format, Object ... args) {
-        String m = MengineLog.logWarning(m_pluginName, format, args);
+        String m = MengineLog.logWarning(m_serviceName, format, args);
 
         return m;
     }
 
     public String logError(String format, Object ... args) {
-        String m = MengineLog.logError(m_pluginName, format, args);
+        String m = MengineLog.logError(m_serviceName, format, args);
 
         return m;
     }
@@ -141,7 +129,7 @@ public class MenginePlugin implements MenginePluginInterface {
     public void assertionError(String format, Object ... args) {
         String msg = String.format(Locale.US, format, args);
 
-        throw new AssertionError("[" + m_pluginName + "] " + msg);
+        throw new AssertionError("[" + m_serviceName + "] " + msg);
     }
 
     public MengineAnalyticsEventBuilder buildEvent(@Size(min = 1L,max = 40L) String name) {
@@ -155,7 +143,7 @@ public class MenginePlugin implements MenginePluginInterface {
             return;
         }
 
-        m_activity.pythonCall(m_pluginName, method, args);
+        m_activity.pythonCall(m_serviceName, method, args);
     }
 
     public void activateSemaphore(String name) {
@@ -174,7 +162,7 @@ public class MenginePlugin implements MenginePluginInterface {
         m_activity.deactivateSemaphore(name);
     }
 
-    public boolean getMetaDataBoolean(String name) throws MenginePluginInvalidInitializeException {
+    public boolean getMetaDataBoolean(String name) throws MengineServiceInvalidInitializeException {
         try {
             boolean value = m_application.getMetaDataBoolean(name);
 
@@ -186,7 +174,7 @@ public class MenginePlugin implements MenginePluginInterface {
         return false;
     }
 
-    public int getMetaDataInteger(String name) throws MenginePluginInvalidInitializeException {
+    public int getMetaDataInteger(String name) throws MengineServiceInvalidInitializeException {
         try {
             int value = m_application.getMetaDataInteger(name);
 
@@ -198,7 +186,7 @@ public class MenginePlugin implements MenginePluginInterface {
         return 0;
     }
 
-    public long getMetaDataLong(String name) throws MenginePluginInvalidInitializeException {
+    public long getMetaDataLong(String name) throws MengineServiceInvalidInitializeException {
         try {
             long value = m_application.getMetaDataInteger(name);
 
@@ -210,7 +198,7 @@ public class MenginePlugin implements MenginePluginInterface {
         return 0;
     }
 
-    public String getMetaDataString(String name) throws MenginePluginInvalidInitializeException {
+    public String getMetaDataString(String name) throws MengineServiceInvalidInitializeException {
         try {
             String value = m_application.getMetaDataString(name);
 

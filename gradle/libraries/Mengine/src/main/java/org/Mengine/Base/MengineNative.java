@@ -60,4 +60,6 @@ public class MengineNative {
     public static native String AndroidEnv_getEngineVersion();
     public static native String AndroidEnv_getBuildDate();
     public static native String AndroidEnv_getBuildUsername();
+
+    public static native long AndroidStatistic_getRenderFrameCount();
 }

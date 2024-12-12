@@ -6,10 +6,10 @@ public class MengineChainActivityNotFoundException extends Exception {
     public MengineChainActivityNotFoundException(String className, String message) {
         super(message);
 
-        this.m_className = className;
+        m_className = className;
     }
 
     public String getClassName() {
-        return this.m_className;
+        return m_className;
     }
 }

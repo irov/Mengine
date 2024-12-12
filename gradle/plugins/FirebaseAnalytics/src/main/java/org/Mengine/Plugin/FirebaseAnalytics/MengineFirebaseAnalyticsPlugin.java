@@ -12,27 +12,27 @@ import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdRevenueParam;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginAdRevenueListener;
-import org.Mengine.Base.MenginePluginAnalyticsListener;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MenginePluginSessionIdListener;
-import org.Mengine.Base.MenginePluginTransparencyConsentListener;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineListenerAdRevenue;
+import org.Mengine.Base.MengineListenerAnalytics;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineListenerSessionId;
+import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineTransparencyConsentParam;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.EnumMap;
 import java.util.Map;
 
-public class MengineFirebaseAnalyticsPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginTransparencyConsentListener, MenginePluginApplicationListener, MenginePluginSessionIdListener {
-    public static final String PLUGIN_NAME = "MengineFBAnalytics";
-    public static final boolean PLUGIN_EMBEDDING = true;
+public class MengineFirebaseAnalyticsPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerTransparencyConsent, MengineListenerApplication, MengineListenerSessionId {
+    public static final String SERVICE_NAME = "MengineFBAnalytics";
+    public static final boolean SERVICE_EMBEDDING = true;
 
     FirebaseAnalytics m_firebaseAnalytics;
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppPrepare(MengineApplication application) throws MengineServiceInvalidInitializeException {
         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(application);
 
         String sessionId = application.getSessionId();

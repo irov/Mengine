@@ -20,14 +20,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MengineFlurryPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginApplicationListener, MenginePluginSessionIdListener, FlurryAgentListener {
-    public static final String PLUGIN_NAME = "MengineFlurry";
-    public static final boolean PLUGIN_EMBEDDING = true;
+    public static final String SERVICE_NAME = "MengineFlurry";
+    public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String PLUGIN_METADATA_API_KEY = "mengine.flurry.api_key";
+    public static final String METADATA_API_KEY = "mengine.flurry.api_key";
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String MengineFlurryPlugin_ApiKey = this.getMetaDataString(PLUGIN_METADATA_API_KEY);
+        String MengineFlurryPlugin_ApiKey = this.getMetaDataString(METADATA_API_KEY);
 
         String sessionId = application.getSessionId();
         FlurryAgent.setUserId(sessionId);

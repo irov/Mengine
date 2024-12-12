@@ -21,10 +21,10 @@ import org.Mengine.Base.MenginePluginInvalidInitializeException;
 import java.util.Map;
 
 public class MengineDevToDevPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginSessionIdListener {
-    public static final String PLUGIN_NAME = "MengineDevToDev";
-    public static final boolean PLUGIN_EMBEDDING = true;
+    public static final String SERVICE_NAME = "MengineDevToDev";
+    public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String PLUGIN_METADATA_APP_ID = "mengine.devtodev.app_id";
+    public static final String METADATA_APP_ID = "mengine.devtodev.app_id";
 
     private boolean m_initializeSuccessful;
 
@@ -32,10 +32,10 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
         m_initializeSuccessful = false;
 
-        String MengineDevToDevPlugin_AppId = this.getMetaDataString(PLUGIN_METADATA_APP_ID);
+        String MengineDevToDevPlugin_AppId = this.getMetaDataString(METADATA_APP_ID);
 
         this.logInfo("%s: %s"
-            , PLUGIN_METADATA_APP_ID
+            , METADATA_APP_ID
             , MengineDevToDevPlugin_AppId
         );
 

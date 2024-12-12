@@ -12,39 +12,39 @@ import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineLeanplumPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginSessionIdListener {
-    public static final String PLUGIN_NAME = "MengineLeanplum";
+    public static final String SERVICE_NAME = "MengineLeanplum";
 
-    public static final String PLUGIN_METADATA_APP_ID = "mengine.leanplum.app_id";
-    public static final String PLUGIN_METADATA_DEV_KEY = "mengine.leanplum.dev_key";
-    public static final String PLUGIN_METADATA_PROD_KEY = "mengine.leanplum.prod_key";
-    public static final String PLUGIN_METADATA_ENVIRONMENT = "mengine.leanplum.environment";
+    public static final String METADATA_APP_ID = "mengine.leanplum.app_id";
+    public static final String METADATA_DEV_KEY = "mengine.leanplum.dev_key";
+    public static final String METADATA_PROD_KEY = "mengine.leanplum.prod_key";
+    public static final String METADATA_ENVIRONMENT = "mengine.leanplum.environment";
 
     @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String AppId = this.getMetaDataString(PLUGIN_METADATA_APP_ID);
-        String DevKey = this.getMetaDataString(PLUGIN_METADATA_DEV_KEY);
-        String ProdKey = this.getMetaDataString(PLUGIN_METADATA_PROD_KEY);
-        String Environment = this.getMetaDataString(PLUGIN_METADATA_ENVIRONMENT);
+        String AppId = this.getMetaDataString(METADATA_APP_ID);
+        String DevKey = this.getMetaDataString(METADATA_DEV_KEY);
+        String ProdKey = this.getMetaDataString(METADATA_PROD_KEY);
+        String Environment = this.getMetaDataString(METADATA_ENVIRONMENT);
 
         this.logInfo("%s: %s"
-            , PLUGIN_METADATA_APP_ID
+            , METADATA_APP_ID
             , AppId
         );
 
         if (BuildConfig.DEBUG) {
             this.logInfo("%s: %s"
-                , PLUGIN_METADATA_DEV_KEY
+                , METADATA_DEV_KEY
                 , DevKey
             );
         } else {
             this.logInfo("%s: %s"
-                , PLUGIN_METADATA_PROD_KEY
+                , METADATA_PROD_KEY
                 , ProdKey
             );
         }
 
         this.logInfo("%s: %s"
-            , PLUGIN_METADATA_ENVIRONMENT
+            , METADATA_ENVIRONMENT
             , Environment
         );
 

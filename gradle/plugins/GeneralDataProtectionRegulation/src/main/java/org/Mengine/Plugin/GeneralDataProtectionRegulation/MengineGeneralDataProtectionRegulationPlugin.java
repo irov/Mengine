@@ -2,18 +2,18 @@ package org.Mengine.Plugin.GeneralDataProtectionRegulation;
 
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
-public class MengineGeneralDataProtectionRegulationPlugin extends MenginePlugin implements MenginePluginApplicationListener {
-    public static final String PLUGIN_NAME = "MengineGDPR";
-    public static final boolean PLUGIN_EMBEDDING = true;
+public class MengineGeneralDataProtectionRegulationPlugin extends MengineService implements MengineListenerApplication {
+    public static final String SERVICE_NAME = "MengineGDPR";
+    public static final boolean SERVICE_EMBEDDING = true;
 
     private boolean m_passGDPR;
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppPrepare(MengineApplication application) throws MengineServiceInvalidInitializeException {
         boolean GDPRPass = application.getPreferenceBoolean("gdpr_pass", false);
 
         m_passGDPR = GDPRPass;

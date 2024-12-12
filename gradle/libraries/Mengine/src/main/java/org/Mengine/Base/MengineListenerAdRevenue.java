@@ -1,5 +1,5 @@
 package org.Mengine.Base;
 
-public interface MenginePluginAdRevenueListener extends MenginePluginInterface {
+public interface MengineListenerAdRevenue extends MengineServiceInterface {
     void onMengineAdRevenue(MengineApplication application, MengineAdRevenueParam revenue);
 }

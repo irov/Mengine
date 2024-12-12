@@ -13,21 +13,21 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFatalErrorException;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MengineNative;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginEngineListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
-import org.Mengine.Base.MenginePluginLoggerListener;
-import org.Mengine.Base.MenginePluginSessionIdListener;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerEngine;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineListenerLogger;
+import org.Mengine.Base.MengineListenerSessionId;
 import org.Mengine.Base.MengineUtils;
 
-public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements MenginePluginLoggerListener, MenginePluginApplicationListener, MenginePluginActivityListener, MenginePluginEngineListener, MenginePluginSessionIdListener {
-    public static final String PLUGIN_NAME = "MengineFBCrashlytics";
-    public static final boolean PLUGIN_EMBEDDING = true;
+public class MengineFirebaseCrashlyticsPlugin extends MengineService implements MengineListenerLogger, MengineListenerApplication, MengineListenerActivity, MengineListenerEngine, MengineListenerSessionId {
+    public static final String SERVICE_NAME = "MengineFBCrashlytics";
+    public static final boolean SERVICE_EMBEDDING = true;
 
     @Override
-    public void onAppInit(MengineApplication application, boolean isMainProcess) throws MenginePluginInvalidInitializeException {
+    public void onAppInit(MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
         FirebaseCrashlytics.getInstance().setCustomKey("is_dev", BuildConfig.DEBUG);
 
         boolean isBuildPublish = application.isBuildPublish();
@@ -39,13 +39,13 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppPrepare(MengineApplication application) throws MengineServiceInvalidInitializeException {
         String sessionId = application.getSessionId();
         FirebaseCrashlytics.getInstance().setUserId(sessionId);
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         if (BuildConfig.DEBUG == true) {
             if (FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution() == true) {
                 MengineUtils.makeToastDelayed(activity, "Last launch ended in a crash", 10000L);
@@ -62,7 +62,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MenginePlugin implements M
     }
 
     @Override
-    public void onMengineCaughtException(MengineApplication activity, Throwable throwable) {
+    public void onMengineCaughtException(MengineApplication application, Throwable throwable) {
         throwable.printStackTrace(System.err);
 
         this.recordException(throwable);

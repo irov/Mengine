@@ -15,16 +15,16 @@ import com.google.android.gms.games.PlayGamesSdk;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
-public class MengineGoogleGameSocialPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "MengineGGameSocial";
-    public static final boolean PLUGIN_EMBEDDING = true;
+public class MengineGoogleGameSocialPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
+    public static final String SERVICE_NAME = "MengineGGameSocial";
+    public static final boolean SERVICE_EMBEDDING = true;
 
     private ActivityResultLauncher<Intent> m_achievementLauncher;
 
@@ -38,12 +38,12 @@ public class MengineGoogleGameSocialPlugin extends MenginePlugin implements Meng
     }
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
         PlayGamesSdk.initialize(application);
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         GamesSignInClient gamesSignInClient = PlayGames.getGamesSignInClient(activity);
 
         gamesSignInClient.isAuthenticated().addOnCompleteListener(isAuthenticatedTask -> {

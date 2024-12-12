@@ -7,19 +7,19 @@ import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 
 import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
-public class MengineGoogleInAppReviewsPlugin extends MenginePlugin implements MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "MengineGInAppReviews";
-    public static final boolean PLUGIN_EMBEDDING = true;
+public class MengineGoogleInAppReviewsPlugin extends MengineService implements MengineListenerActivity {
+    public static final String SERVICE_NAME = "MengineGInAppReviews";
+    public static final boolean SERVICE_EMBEDDING = true;
 
     private ReviewManager m_manager;
     private ReviewInfo m_reviewInfo;
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         m_manager = ReviewManagerFactory.create(activity);
 
         m_manager.requestReviewFlow().addOnCompleteListener(task -> {

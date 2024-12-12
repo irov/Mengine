@@ -13,7 +13,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -45,7 +45,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     protected Timer m_refreshTimer;
 
     @Override
-    public void onAppCreate(MengineApplication application, MengineAppLovinPlugin plugin) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(MengineApplication application, MengineAppLovinPlugin plugin) throws MengineServiceInvalidInitializeException {
         m_plugin = plugin;
 
         m_banners = new ArrayList<>();
@@ -114,12 +114,12 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
     }
 
     @Override
-    public void onCreate(MengineActivity activity) throws MenginePluginInvalidInitializeException {
+    public void onCreate(MengineActivity activity) throws MengineServiceInvalidInitializeException {
         if (m_banners.isEmpty() == true) {
             return;
         }
 
-        Timer refreshTimer = MengineUtils.scheduleOnUiAtFixedRate(activity, m_showBannerDurationTime, () -> {
+        Timer refreshTimer = MengineUtils.scheduleOnUiAtFixedRate(activity, 0, m_showBannerDurationTime, () -> {
             int refreshRequestId;
             String oldBanenrUrl;
             String newBannerUrl;

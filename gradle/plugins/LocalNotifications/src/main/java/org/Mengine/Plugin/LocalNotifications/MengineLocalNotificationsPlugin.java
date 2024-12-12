@@ -1,8 +1,8 @@
 package org.Mengine.Plugin.LocalNotifications;
 
-import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineActivity;
-import org.Mengine.Base.MenginePluginActivityListener;
+import org.Mengine.Base.MengineListenerActivity;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
@@ -25,9 +25,9 @@ import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.os.Bundle;
 
-public class MengineLocalNotificationsPlugin extends MenginePlugin implements MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "MengineLNotifications";
-    public static final boolean PLUGIN_EMBEDDING = true;
+public class MengineLocalNotificationsPlugin extends MengineService implements MengineListenerActivity {
+    public static final String SERVICE_NAME = "MengineLNotifications";
+    public static final boolean SERVICE_EMBEDDING = true;
 
     private static final String CHANNEL_ID = "mengine_channel_id";
     private static final CharSequence CHANNEL_NAME = "Mengine Channel";

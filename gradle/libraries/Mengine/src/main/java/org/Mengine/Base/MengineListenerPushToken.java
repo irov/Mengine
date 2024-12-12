@@ -1,5 +1,5 @@
 package org.Mengine.Base;
 
-public interface MenginePluginPushTokenListener extends MenginePluginInterface {
+public interface MengineListenerPushToken extends MengineServiceInterface {
     void onMenginePushToken(MengineApplication application, String token);
 }

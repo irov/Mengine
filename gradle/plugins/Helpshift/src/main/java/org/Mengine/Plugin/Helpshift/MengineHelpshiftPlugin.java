@@ -25,11 +25,11 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 
 public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEventsListener, MenginePluginRemoteMessageListener, MenginePluginActivityListener, MenginePluginPushTokenListener {
-    public static final String PLUGIN_NAME = "MengineHelpshift";
-    public static final boolean PLUGIN_EMBEDDING = true;
+    public static final String SERVICE_NAME = "MengineHelpshift";
+    public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String PLUGIN_METADATA_PLATFORM_ID = "mengine.helpshift.platform_id";
-    public static final String PLUGIN_METADATA_DOMAIN = "mengine.helpshift.domain";
+    public static final String METADATA_PLATFORM_ID = "mengine.helpshift.platform_id";
+    public static final String METADATA_DOMAIN = "mengine.helpshift.domain";
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
@@ -46,17 +46,17 @@ public class MengineHelpshiftPlugin extends MenginePlugin implements HelpshiftEv
         config.put("screenOrientation", screenOrientation);
         config.put("notificationIcon", R.drawable.mengine_helpshift_notification_icon);
 
-        String MengineHelpshiftPlugin_PlatformId = this.getMetaDataString(PLUGIN_METADATA_PLATFORM_ID);
+        String MengineHelpshiftPlugin_PlatformId = this.getMetaDataString(METADATA_PLATFORM_ID);
 
         this.logInfo("%s: %s"
-            , PLUGIN_METADATA_PLATFORM_ID
+            , METADATA_PLATFORM_ID
             , MengineHelpshiftPlugin_PlatformId
         );
 
-        String MengineHelpshiftPlugin_Domain = this.getMetaDataString(PLUGIN_METADATA_DOMAIN);
+        String MengineHelpshiftPlugin_Domain = this.getMetaDataString(METADATA_DOMAIN);
 
         this.logInfo("%s: %s"
-            , PLUGIN_METADATA_DOMAIN
+            , METADATA_DOMAIN
             , MengineHelpshiftPlugin_Domain
         );
 

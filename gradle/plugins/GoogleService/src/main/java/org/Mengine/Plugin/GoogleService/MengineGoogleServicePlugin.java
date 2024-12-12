@@ -6,11 +6,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MenginePlugin;
+import org.Mengine.Base.MengineService;
 
-public class MengineGoogleServicePlugin extends MenginePlugin {
-    public static final String PLUGIN_NAME = "MengineGService";
-    public static final boolean PLUGIN_EMBEDDING = false;
+public class MengineGoogleServicePlugin extends MengineService {
+    public static final String SERVICE_NAME = "MengineGService";
+    public static final boolean SERVICE_EMBEDDING = false;
 
     private static int m_cacheIsGooglePlayServicesResultCode = ConnectionResult.UNKNOWN;
 

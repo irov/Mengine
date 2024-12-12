@@ -1,6 +1,6 @@
 package org.Mengine.Base;
 
-public interface MenginePluginEngineListener extends MenginePluginInterface {
+public interface MengineListenerEngine extends MengineServiceInterface {
     default void onMengineInitializeBaseServices(MengineApplication application) {
         //Empty
     }
@@ -14,10 +14,6 @@ public interface MenginePluginEngineListener extends MenginePluginInterface {
     }
 
     default void onMenginePlatformStop(MengineApplication application) {
-        //Empty
-    }
-
-    default void onMengineCurrentSceneChange(MengineApplication application, String name) {
         //Empty
     }
 

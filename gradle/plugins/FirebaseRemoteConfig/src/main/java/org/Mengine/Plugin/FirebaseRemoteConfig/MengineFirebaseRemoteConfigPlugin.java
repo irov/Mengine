@@ -13,28 +13,28 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "MengineFBRemoteConfig";
-    public static final boolean PLUGIN_EMBEDDING = true;
+public class MengineFirebaseRemoteConfigPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
+    public static final String SERVICE_NAME = "MengineFBRemoteConfig";
+    public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String PLUGIN_METADATA_MINIMUM_FETCH_INTERVAL = "mengine.firebase_remote_config.minimum_fetch_interval";
+    private static final String METADATA_MINIMUM_FETCH_INTERVAL = "mengine.firebase_remote_config.minimum_fetch_interval";
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        long MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval = this.getMetaDataLong(PLUGIN_METADATA_MINIMUM_FETCH_INTERVAL);
+    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
+        long MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval = this.getMetaDataLong(METADATA_MINIMUM_FETCH_INTERVAL);
 
         this.logMessage("%s: %d"
-            , PLUGIN_METADATA_MINIMUM_FETCH_INTERVAL
+            , METADATA_MINIMUM_FETCH_INTERVAL
             , MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval
         );
 
@@ -49,7 +49,7 @@ public class MengineFirebaseRemoteConfigPlugin extends MenginePlugin implements 
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
         remoteConfig.fetchAndActivate()

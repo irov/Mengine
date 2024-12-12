@@ -15,18 +15,18 @@ import org.Mengine.Base.MenginePluginApplicationListener;
 import org.Mengine.Base.MenginePluginInvalidInitializeException;
 
 public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginApplicationListener {
-    public static final String PLUGIN_NAME = "MengineAmazon";
+    public static final String SERVICE_NAME = "MengineAmazon";
 
-    public static final String PLUGIN_METADATA_APP_ID = "mengine.amazon.app_id";
-    public static final String PLUGIN_METADATA_ENABLE_TESTING = "mengine.amazon.enable_testing";
-    public static final String PLUGIN_METADATA_ENABLE_LOGGING = "mengine.amazon.enable_logging";
+    public static final String METADATA_APP_ID = "mengine.amazon.app_id";
+    public static final String METADATA_ENABLE_TESTING = "mengine.amazon.enable_testing";
+    public static final String METADATA_ENABLE_LOGGING = "mengine.amazon.enable_logging";
 
     @Override
     public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String MengineAmazonPlugin_AppId = this.getMetaDataString(PLUGIN_METADATA_APP_ID);
+        String MengineAmazonPlugin_AppId = this.getMetaDataString(METADATA_APP_ID);
 
         this.logInfo("%s: %s"
-            , PLUGIN_METADATA_APP_ID
+            , METADATA_APP_ID
             , MengineAmazonPlugin_AppId
         );
 
@@ -45,25 +45,25 @@ public class MengineAmazonPlugin extends MenginePlugin implements MenginePluginA
         AdRegistration.setMRAIDSupportedVersions(new String[]{"1.0", "2.0", "3.0"});
         AdRegistration.setMRAIDPolicy(MRAIDPolicy.CUSTOM);
 
-        boolean MengineAmazonPlugin_EnableTesting = this.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_TESTING);
+        boolean MengineAmazonPlugin_EnableTesting = this.getMetaDataBoolean(METADATA_ENABLE_TESTING);
 
         if (MengineAmazonPlugin_EnableTesting == true) {
             AdRegistration.enableTesting(true);
         }
 
         this.logInfo("%s: %b"
-            , PLUGIN_METADATA_ENABLE_TESTING
+            , METADATA_ENABLE_TESTING
             , MengineAmazonPlugin_EnableTesting
         );
 
-        boolean MengineAmazonPlugin_EnableLogging = this.getMetaDataBoolean(PLUGIN_METADATA_ENABLE_LOGGING);
+        boolean MengineAmazonPlugin_EnableLogging = this.getMetaDataBoolean(METADATA_ENABLE_LOGGING);
 
         if (MengineAmazonPlugin_EnableLogging == true) {
             AdRegistration.enableLogging(true);
         }
 
         this.logInfo("%s: %b"
-            , PLUGIN_METADATA_ENABLE_LOGGING
+            , METADATA_ENABLE_LOGGING
             , MengineAmazonPlugin_EnableLogging
         );
     }

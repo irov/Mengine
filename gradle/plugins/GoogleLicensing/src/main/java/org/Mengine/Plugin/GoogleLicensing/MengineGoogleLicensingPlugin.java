@@ -11,7 +11,7 @@ import com.google.android.vending.licensing.LicenseChecker;
 import com.google.android.vending.licensing.LicenseCheckerCallback;
 
 public class MengineGoogleLicensingPlugin extends MenginePlugin implements MenginePluginActivityListener {
-    public static final S tring PLUGIN_NAME = "MengineGLicensing";
+    public static final S tring SERVICE_NAME = "MengineGLicensing";
 
     @Override
     public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {

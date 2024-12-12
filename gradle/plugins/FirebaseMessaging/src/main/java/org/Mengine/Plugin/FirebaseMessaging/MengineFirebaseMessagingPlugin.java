@@ -18,8 +18,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 public class MengineFirebaseMessagingPlugin extends MenginePlugin implements MenginePluginActivityListener {
-    public static final String PLUGIN_NAME = "MengineFBMessaging";
-    public static final boolean PLUGIN_EMBEDDING = true;
+    public static final String SERVICE_NAME = "MengineFBMessaging";
+    public static final boolean SERVICE_EMBEDDING = true;
 
     @Override
     public boolean onAvailable(MengineApplication application) {

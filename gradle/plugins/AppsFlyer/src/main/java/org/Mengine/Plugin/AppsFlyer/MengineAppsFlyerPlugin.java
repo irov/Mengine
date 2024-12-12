@@ -27,14 +27,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MengineAppsFlyerPlugin extends MenginePlugin implements MenginePluginAnalyticsListener, MenginePluginAdRevenueListener, MenginePluginApplicationListener, MenginePluginSessionIdListener {
-    public static final String PLUGIN_NAME = "MengineAppsFlyer";
-    public static final boolean PLUGIN_EMBEDDING = true;
+    public static final String SERVICE_NAME = "MengineAppsFlyer";
+    public static final boolean SERVICE_EMBEDDING = true;
 
-    public static final String PLUGIN_METADATA_API_KEY = "mengine.appsflyer.api_key";
+    public static final String METADATA_API_KEY = "mengine.appsflyer.api_key";
 
     @Override
     public void onAppPrepare(MengineApplication application) throws MenginePluginInvalidInitializeException {
-        String MengineAppsFlyerPlugin_ApiKey = this.getMetaDataString(PLUGIN_METADATA_API_KEY);
+        String MengineAppsFlyerPlugin_ApiKey = this.getMetaDataString(METADATA_API_KEY);
 
         Context context = application.getApplicationContext();
 

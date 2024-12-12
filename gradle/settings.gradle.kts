@@ -108,7 +108,6 @@ includeLibrary("MENGINE_APP_LIBRARY_OPENAL32", ":libraries:OpenAL32")
 / * - MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL [https://developers.google.com/games/services]
 / * - MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS [https://developer.android.com/guide/playcore/in-app-review]
 / * - MENGINE_APP_PLUGIN_GOOGLE_CONSENT [https://developers.google.com]
-/ * - MENGINE_APP_PLUGIN_GOOGLE_LICENSING [https://developer.android.com/google/play/licensing]
 / * - MENGINE_APP_PLUGIN_MAR [http://doc.martianyun.com/en]
 / * - MENGINE_APP_PLUGIN_ADJUST [https://www.adjust.com]
 / * - MENGINE_APP_PLUGIN_HELPSHIFT [https://www.helpshift.com]
@@ -126,7 +125,6 @@ includePlugin("MENGINE_APP_PLUGIN_GOOGLE_PLAY_BILLING", ":plugins:GooglePlayBill
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_GAME_SOCIAL", ":plugins:GoogleGameSocial")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_INAPP_REVIEWS", ":plugins:GoogleInAppReviews")
 includePlugin("MENGINE_APP_PLUGIN_GOOGLE_CONSENT", ":plugins:GoogleConsent")
-includePlugin("MENGINE_APP_PLUGIN_GOOGLE_LICENSING", ":plugins:GoogleLicensing")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE", ":plugins:Firebase")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_APPCHECK", ":plugins:FirebaseAppCheck")
 includePlugin("MENGINE_APP_PLUGIN_FIREBASE_ANALYTICS", ":plugins:FirebaseAnalytics")

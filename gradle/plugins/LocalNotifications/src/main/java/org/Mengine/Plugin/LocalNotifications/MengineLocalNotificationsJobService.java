@@ -7,7 +7,7 @@ import android.app.job.JobService;
 import android.content.Context;
 import android.os.PersistableBundle;
 
-public class MengineLocalNotificationJobService extends JobService {
+public class MengineLocalNotificationsJobService extends JobService {
     private static final String KEY_TITLE = "title";
     private static final String KEY_CONTENT = "content";
     private static final String KEY_ID = "id";

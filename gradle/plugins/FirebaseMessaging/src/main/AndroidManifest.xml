@@ -10,7 +10,7 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/mengine_firebase_messaging_notification_icon" />
+            android:resource="@mipmap/ic_notification" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/mengine_firebase_messaging_notification_color" />

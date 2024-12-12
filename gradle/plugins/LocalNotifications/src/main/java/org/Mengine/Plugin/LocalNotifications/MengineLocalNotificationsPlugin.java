@@ -49,11 +49,11 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
-        if (intent.hasExtra(MengineLocalNotificationPublisher.NOTIFICATION_ID) == false) {
+        if (intent.hasExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID) == false) {
             return;
         }
 
-        int id = intent.getIntExtra(MengineLocalNotificationPublisher.NOTIFICATION_ID, 0);
+        int id = intent.getIntExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID, 0);
 
         this.logMessage("onNewIntent has notification: %d"
             , id
@@ -74,7 +74,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
-        PersistableBundle bundle = MengineLocalNotificationJobService.notificationBundle(id, title, content);
+        PersistableBundle bundle = MengineLocalNotificationsJobService.notificationBundle(id, title, content);
 
         this.scheduleJobNotification(delay, bundle);
     }
@@ -91,10 +91,10 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
         MengineActivity activity = this.getMengineActivity();
         
-        Intent notificationIntent = new Intent(activity, MengineLocalNotificationPublisher.class);
+        Intent notificationIntent = new Intent(activity, MengineLocalNotificationsPublisher.class);
 
-        notificationIntent.putExtra(MengineLocalNotificationPublisher.NOTIFICATION_ID, id);
-        notificationIntent.putExtra(MengineLocalNotificationPublisher.NOTIFICATION, notification);
+        notificationIntent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID, id);
+        notificationIntent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION, notification);
 
         int pendingFlags = PendingIntent.FLAG_UPDATE_CURRENT;
 
@@ -143,8 +143,8 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
         Intent intent = activity.getIntent();
 
-        if (intent.hasExtra(MengineLocalNotificationPublisher.NOTIFICATION_ID)) {
-            int id = intent.getIntExtra(MengineLocalNotificationPublisher.NOTIFICATION_ID, 0);
+        if (intent.hasExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID)) {
+            int id = intent.getIntExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID, 0);
 
             this.logMessage("start with notification: %d"
                 , id
@@ -170,7 +170,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     public static Notification getNotification(Context context, int id, String title, String content) {
         Intent intent = new Intent(context, MengineActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.putExtra(MengineLocalNotificationPublisher.NOTIFICATION_ID, id);
+        intent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID, id);
 
         int pendingFlags = PendingIntent.FLAG_UPDATE_CURRENT;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -201,7 +201,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         MengineActivity activity = this.getMengineActivity();
 
         int jobId = (int)SystemClock.elapsedRealtime();
-        ComponentName jobService = new ComponentName(activity, MengineLocalNotificationJobService.class);
+        ComponentName jobService = new ComponentName(activity, MengineLocalNotificationsJobService.class);
 
         JobInfo.Builder builder = new JobInfo.Builder(jobId, jobService);
         JobInfo jobInfo = builder

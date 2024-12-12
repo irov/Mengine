@@ -24,17 +24,17 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFunctorBoolean;
 import org.Mengine.Base.MengineInAppProductParam;
 import org.Mengine.Base.MengineInAppPurchaseParam;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginApplicationListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MengineGooglePlayBillingPlugin extends MenginePlugin implements MenginePluginApplicationListener, MenginePluginActivityListener {
+public class MengineGooglePlayBillingPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
     public static final String SERVICE_NAME = "MengineGPlayBilling";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -42,7 +42,7 @@ public class MengineGooglePlayBillingPlugin extends MenginePlugin implements Men
     private BillingClient m_billingClient;
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MenginePluginInvalidInitializeException {
+    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
         m_productsDetails = new ArrayList<>();
 
         PurchasesUpdatedListener purchasesUpdatedListener = (billingResult, purchases) -> {

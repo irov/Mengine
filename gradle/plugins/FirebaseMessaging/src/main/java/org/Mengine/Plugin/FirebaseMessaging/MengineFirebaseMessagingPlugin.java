@@ -8,16 +8,16 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MenginePlugin;
-import org.Mengine.Base.MenginePluginActivityListener;
-import org.Mengine.Base.MenginePluginInvalidInitializeException;
+import org.Mengine.Base.MengineService;
+import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
-public class MengineFirebaseMessagingPlugin extends MenginePlugin implements MenginePluginActivityListener {
+public class MengineFirebaseMessagingPlugin extends MengineService implements MengineListenerActivity {
     public static final String SERVICE_NAME = "MengineFBMessaging";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -36,7 +36,7 @@ public class MengineFirebaseMessagingPlugin extends MenginePlugin implements Men
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MenginePluginInvalidInitializeException {
+    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         FirebaseMessaging.getInstance().getToken()
             .addOnCompleteListener(new OnCompleteListener<String>() {
                 @Override

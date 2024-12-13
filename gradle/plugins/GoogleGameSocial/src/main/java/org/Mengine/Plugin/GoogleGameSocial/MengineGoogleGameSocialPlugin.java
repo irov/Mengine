@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.GamesSignInClient;
@@ -29,7 +30,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     private ActivityResultLauncher<Intent> m_achievementLauncher;
 
     @Override
-    public boolean onAvailable(MengineApplication application) {
+    public boolean onAvailable(@NonNull MengineApplication application) {
         if (MengineGoogleServicePlugin.isGooglePlayServicesAvailable(application) == false) {
             return false;
         }
@@ -38,12 +39,12 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     }
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         PlayGamesSdk.initialize(application);
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         GamesSignInClient gamesSignInClient = PlayGames.getGamesSignInClient(activity);
 
         gamesSignInClient.isAuthenticated().addOnCompleteListener(isAuthenticatedTask -> {
@@ -76,7 +77,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     }
 
     @Override
-    public void onDestroy(MengineActivity activity) {
+    public void onDestroy(@NonNull MengineActivity activity) {
         if (m_achievementLauncher != null) {
             m_achievementLauncher.unregister();
 

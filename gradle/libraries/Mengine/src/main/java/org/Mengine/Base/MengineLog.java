@@ -87,13 +87,13 @@ public class MengineLog {
                 Log.w(tag, "\uD83D\uDFE1 " + msg);
                 break;
             case LM_MESSAGE:
-                Log.i(tag, msg);
+                Log.i(tag, "\uD83D\uDCDD " + msg);
                 break;
             case LM_INFO:
-                Log.i(tag, msg);
+                Log.i(tag, "\uD83D\uDFE2 " + msg);
                 break;
             case LM_DEBUG:
-                Log.d(tag, msg);
+                Log.d(tag, "\uD83D\uDD0D " + msg);
                 break;
             case LM_VERBOSE:
                 Log.v(tag, msg);
@@ -105,6 +105,10 @@ public class MengineLog {
         String totalMsg = MengineLog.buildTotalMsg(format, args);
 
         MengineLog.logLevel(level, tag, totalMsg);
+
+        if (level >= LM_INFO) {
+            return totalMsg;
+        }
 
         synchronized (MengineLog.m_lock) {
             if (MengineLog.m_initializeBaseServices == true) {

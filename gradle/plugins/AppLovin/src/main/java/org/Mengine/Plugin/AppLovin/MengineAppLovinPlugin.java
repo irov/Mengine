@@ -4,6 +4,8 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
 import com.applovin.mediation.MaxMediatedNetworkInfo;
@@ -54,7 +56,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
     private MengineAppLovinNonetBannersInterface m_nonetBanners;
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         m_banners = new HashMap<>();
         m_interstitials = new HashMap<>();
         m_rewardeds = new HashMap<>();
@@ -198,7 +200,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onAppTerminate(MengineApplication application) {
+    public void onAppTerminate(@NonNull MengineApplication application) {
         if (m_mediationAmazon != null) {
             m_mediationAmazon.finalizeMediator(application, this);
             m_mediationAmazon = null;
@@ -215,7 +217,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         if (m_nonetBanners != null) {
             m_nonetBanners.onCreate(activity);
         }
@@ -240,7 +242,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onDestroy(MengineActivity activity) {
+    public void onDestroy(@NonNull MengineActivity activity) {
         if (m_banners != null) {
             for (MengineAppLovinBanner banner : m_banners.values()) {
                 banner.onDestroy();

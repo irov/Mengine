@@ -59,7 +59,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     private AppEventsLogger m_logger;
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         try {
             AppEventsLogger.activateApp(application);
         } catch (final Exception e) {
@@ -184,7 +184,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onAppTerminate(MengineApplication application) {
+    public void onAppTerminate(@NonNull MengineApplication application) {
         if (m_logger != null) {
             m_logger.flush();
             m_logger = null;
@@ -207,12 +207,12 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineSetSessionId(MengineApplication application, String sessionId) {
+    public void onMengineSetSessionId(@NonNull MengineApplication application, String sessionId) {
         AppEventsLogger.setUserID(sessionId);
     }
 
     @Override
-    public void onMengineRemoveSessionData(MengineApplication application) {
+    public void onMengineRemoveSessionData(@NonNull MengineApplication application) {
         LoginManager.getInstance().logOut();
 
         AccessToken.setCurrentAccessToken(null);
@@ -223,7 +223,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMenginePushToken(MengineApplication application, String token) {
+    public void onMenginePushToken(@NonNull MengineApplication application, String token) {
         AppEventsLogger.setPushNotificationsRegistrationId(token);
     }
 
@@ -254,7 +254,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         if (m_logger == null) {
             return;
         }
@@ -268,7 +268,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineAnalyticsFlush(MengineApplication application) {
+    public void onMengineAnalyticsFlush(@NonNull MengineApplication application) {
         if (m_logger == null) {
             return;
         }
@@ -277,7 +277,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onMengineRemoteMessageNewToken(MengineApplication application, String token) {
+    public void onMengineRemoteMessageNewToken(@NonNull MengineApplication application, String token) {
         AppEventsLogger.setPushNotificationsRegistrationId(token);
     }
 

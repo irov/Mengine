@@ -53,11 +53,11 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         m_visible = false;
         m_requestId = 0;
 
-        m_plugin.logMessage("[NONET_BANNER] initialize");
+        m_plugin.logMessage("[NONET_BANNERS] initialize");
 
         Resources resources = application.getResources();
 
-        int MengineAppLovinPlugin_NonetBannerDurationTime = resources.getInteger(R.integer.mengine_applovin_nonet_banner_duration_time);
+        int MengineAppLovinPlugin_NonetBannerDurationTime = resources.getInteger(R.integer.mengine_applovin_nonet_banners_duration_time);
 
         m_showBannerDurationTime = MengineAppLovinPlugin_NonetBannerDurationTime;
 
@@ -65,17 +65,17 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             XmlResourceParser parser = resources.getXml(R.xml.nonet_banners);
 
             while (parser.next() != XmlPullParser.END_DOCUMENT) {
-                String name = parser.getName();
-
-                int attributeCount = parser.getAttributeCount();
-
-                if (attributeCount == -1) {
+                if (parser.getEventType() != XmlResourceParser.START_TAG) {
                     continue;
                 }
+
+                String name = parser.getName();
 
                 if (name.equals("banner") == false) {
                     continue;
                 }
+
+                int attributeCount = parser.getAttributeCount();
 
                 Map<String, String> attributes = new HashMap<>();
 
@@ -91,14 +91,16 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
 
                 this.addNonetBanner(application, image, url);
             }
+
+            parser.close();
         } catch (final XmlPullParserException e) {
-            m_plugin.logError("[NONET_BANNER] XmlPullParserException: %s"
+            m_plugin.logError("[NONET_BANNERS] XmlPullParserException: %s"
                 , e.getMessage()
             );
 
             return;
         } catch (final IOException e) {
-            m_plugin.logError("[NONET_BANNER] IOException: %s"
+            m_plugin.logError("[NONET_BANNERS] IOException: %s"
                 , e.getMessage()
             );
 
@@ -151,13 +153,13 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
                 newBannerUrl = newBanner.url;
             }
 
-            MengineAppLovinNonetBanners.this.m_plugin.logMessage("[NONET_BANNER] refresh banner request: %d old: %s new: %s"
+            MengineAppLovinNonetBanners.this.m_plugin.logMessage("[NONET_BANNERS] refresh banner request: %d old: %s new: %s"
                 , refreshRequestId
                 , oldBanenrUrl
                 , newBannerUrl
             );
 
-            MengineAppLovinNonetBanners.this.m_plugin.buildEvent("mng_ad_nonet_banner_displayed")
+            MengineAppLovinNonetBanners.this.m_plugin.buildEvent("mng_ad_nonet_banners_displayed")
                 .addParameterString("url", newBannerUrl)
                 .addParameterLong("request_id", refreshRequestId)
                 .log();
@@ -197,7 +199,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         int resId = resources.getIdentifier(image, "drawable", packageName);
 
         if (resId == 0) {
-            m_plugin.logError("[NONET_BANNER] not found image: %s"
+            m_plugin.logError("[NONET_BANNERS] not found image: %s"
                 , image
             );
 
@@ -217,12 +219,12 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                m_plugin.logMessage("[NONET_BANNER] click banner request: %d url: %s"
+                m_plugin.logMessage("[NONET_BANNERS] click banner request: %d url: %s"
                     , m_requestId
                     , url
                 );
 
-                m_plugin.buildEvent("mng_ad_nonet_banner_clicked")
+                m_plugin.buildEvent("mng_ad_nonet_banners_clicked")
                     .addParameterString("url", url)
                     .addParameterLong("request_id", m_requestId)
                     .log();
@@ -233,7 +235,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             }
         });
 
-        m_plugin.logMessage("[NONET_BANNER] add banner url: %s"
+        m_plugin.logMessage("[NONET_BANNERS] add banner url: %s"
             , url
         );
 
@@ -289,12 +291,12 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             showUrl = banner.url;
         }
 
-        m_plugin.logMessage("[NONET_BANNER] show banner request: %d url: %s"
+        m_plugin.logMessage("[NONET_BANNERS] show banner request: %d url: %s"
             , showRequestId
             , showUrl
         );
 
-        m_plugin.buildEvent("mng_ad_nonet_banner_displayed")
+        m_plugin.buildEvent("mng_ad_nonet_banners_displayed")
             .addParameterString("url", showUrl)
             .addParameterLong("request_id", showRequestId)
             .log();
@@ -333,7 +335,7 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             hideUrl = oldBanner.url;
         }
 
-        m_plugin.logMessage("[NONET_BANNER] hide banner request: %d url: %s"
+        m_plugin.logMessage("[NONET_BANNERS] hide banner request: %d url: %s"
             , hideRequestId
             , hideUrl
         );

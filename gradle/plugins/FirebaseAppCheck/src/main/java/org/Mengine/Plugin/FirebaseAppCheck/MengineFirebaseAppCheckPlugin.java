@@ -1,5 +1,7 @@
 package org.Mengine.Plugin.FirebaseAppCheck;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 
@@ -15,7 +17,7 @@ public class MengineFirebaseAppCheckPlugin extends MengineService implements Men
     FirebaseAppCheck m_firebaseAppCheck;
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
 
         PlayIntegrityAppCheckProviderFactory factory = PlayIntegrityAppCheckProviderFactory.getInstance();

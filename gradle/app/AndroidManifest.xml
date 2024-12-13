@@ -30,7 +30,7 @@
             android:preferMinimalPostProcessing="true"
             android:clearTaskOnLaunch="false"
             android:exported="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:keepScreenOn="true"
             android:screenOrientation="${ANDROID_APP_SCREEN_ORIENTATION}"
             android:configChanges="mcc|mnc|fontScale|touchscreen|density|layoutDirection|locale|orientation|uiMode|screenLayout|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation">

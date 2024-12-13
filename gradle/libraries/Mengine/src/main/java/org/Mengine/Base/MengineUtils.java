@@ -935,4 +935,29 @@ public class MengineUtils {
     public static boolean isDebuggerConnected() {
         return android.os.Debug.isDebuggerConnected();
     }
+
+    public static boolean isAppInForeground(Context context) {
+        ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+
+        if (appProcesses == null) {
+            return false;
+        }
+
+        String packageName = context.getPackageName();
+
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (appProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                continue;
+            }
+
+            if (appProcess.processName.equals(packageName) == false) {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 }

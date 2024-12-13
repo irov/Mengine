@@ -14,7 +14,7 @@ public class MengineMonitorConnectivityStatus extends MengineService implements 
     private ConnectivityManager.NetworkCallback m_networkCallback;
 
     @Override
-    public void onAppCreate(MengineApplication application) {
+    public void onAppCreate(@NonNull MengineApplication application) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             return;
         }
@@ -111,7 +111,7 @@ public class MengineMonitorConnectivityStatus extends MengineService implements 
     }
 
     @Override
-    public void onAppTerminate(MengineApplication application) {
+    public void onAppTerminate(@NonNull MengineApplication application) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             return;
         }

@@ -1,5 +1,7 @@
 package org.Mengine.Base;
 
+import androidx.annotation.NonNull;
+
 import java.util.Map;
 import java.util.Timer;
 
@@ -25,7 +27,7 @@ public class MengineMonitorPerformance extends MengineService implements Mengine
     private long m_totalUsedMemory = 0;
 
     @Override
-    public void onAppInit(MengineApplication application, boolean isMainProcess) {
+    public void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) {
         if (isMainProcess == false) {
             return;
         }
@@ -37,7 +39,7 @@ public class MengineMonitorPerformance extends MengineService implements Mengine
     }
 
     @Override
-    public void onAppTerminate(MengineApplication application) {
+    public void onAppTerminate(@NonNull MengineApplication application) {
         if (m_timerFPS != null) {
             m_timerFPS.cancel();
             m_timerFPS = null;
@@ -103,7 +105,7 @@ public class MengineMonitorPerformance extends MengineService implements Mengine
             m_lastRenderFrameCount = renderFrameCount;
             m_lastRenderFrameTimestamp = renderFrameTimestamp;
 
-            this.logMessage("FPS: %d", fps);
+            this.logDebug("FPS: %d", fps);
         }
     }
 
@@ -138,12 +140,12 @@ public class MengineMonitorPerformance extends MengineService implements Mengine
 
             m_traceMemory.putMetric("used_memory", averageUsedMemoryMB);
 
-            this.logMessage("Memory: %d", averageUsedMemory);
+            this.logDebug("Memory: %dMb %dKb", averageUsedMemoryMB, averageUsedMemory / 1024);
         }
     }
 
     @Override
-    public void onMenginePlatformRun(MengineApplication application) {
+    public void onMenginePlatformRun(@NonNull MengineApplication application) {
         m_traceStartup.stop();
         m_traceStartup = null;
 
@@ -157,7 +159,7 @@ public class MengineMonitorPerformance extends MengineService implements Mengine
     }
 
     @Override
-    public void onMengineAnalyticsScreenView(MengineApplication application, String screenType, String screenName) {
+    public void onMengineAnalyticsScreenView(@NonNull MengineApplication application, String screenType, String screenName) {
         synchronized (this) {
             this.createTraceFPS(application, screenType, screenName);
             this.createTraceMemory(application, screenType, screenName);

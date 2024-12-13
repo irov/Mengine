@@ -1,23 +1,25 @@
 package org.Mengine.Base;
 
+import androidx.annotation.NonNull;
+
 public interface MengineListenerEngine extends MengineServiceInterface {
-    default void onMengineInitializeBaseServices(MengineApplication application) {
+    default void onMengineInitializeBaseServices(@NonNull MengineApplication application) {
         //Empty
     }
 
-    default void onMengineCreateApplication(MengineApplication application) {
+    default void onMengineCreateApplication(@NonNull MengineApplication application) {
         //Empty
     }
 
-    default void onMenginePlatformRun(MengineApplication application) {
+    default void onMenginePlatformRun(@NonNull MengineApplication application) {
         //Empty
     }
 
-    default void onMenginePlatformStop(MengineApplication application) {
+    default void onMenginePlatformStop(@NonNull MengineApplication application) {
         //Empty
     }
 
-    default void onMengineCaughtException(MengineApplication application, Throwable e) {
+    default void onMengineCaughtException(@NonNull MengineApplication application, Throwable e) {
         //Empty
     }
 }

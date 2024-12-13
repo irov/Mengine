@@ -2,6 +2,8 @@ package org.Mengine.Plugin.Advertising;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -25,7 +27,7 @@ public class MengineAdvertisingPlugin extends MengineService implements MengineL
     private Future<AdvertisingIdClient.Info> m_advertisingFuture;
 
     @Override
-    public boolean onAvailable(MengineApplication application) {
+    public boolean onAvailable(@NonNull MengineApplication application) {
         if (MengineGoogleServicePlugin.isGooglePlayServicesAvailable(application) == false) {
             return false;
         }
@@ -34,7 +36,7 @@ public class MengineAdvertisingPlugin extends MengineService implements MengineL
     }
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         Future<AdvertisingIdClient.Info> future = executor.submit(() -> {
@@ -70,7 +72,7 @@ public class MengineAdvertisingPlugin extends MengineService implements MengineL
     }
 
     @Override
-    public void onAppTerminate(MengineApplication application) {
+    public void onAppTerminate(@NonNull MengineApplication application) {
         if (m_advertisingFuture == null) {
             return;
         }

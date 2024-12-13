@@ -1,5 +1,7 @@
 package org.Mengine.Plugin.GeneralDataProtectionRegulation;
 
+import androidx.annotation.NonNull;
+
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineEvent;
 import org.Mengine.Base.MengineService;
@@ -13,7 +15,7 @@ public class MengineGeneralDataProtectionRegulationPlugin extends MengineService
     private boolean m_passGDPR;
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         boolean GDPRPass = application.getPreferenceBoolean("gdpr_pass", false);
 
         m_passGDPR = GDPRPass;

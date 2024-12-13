@@ -83,7 +83,7 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         MengineApplication application = activity.getMengineApplication();
 
         if (application.isMenginePlatformRun() == true) {
@@ -129,7 +129,7 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
     }
 
     @Override
-    public void onDestroy(MengineActivity activity) {
+    public void onDestroy(@NonNull MengineActivity activity) {
         if (m_image != null) {
             m_image.clearAnimation();
             m_image = null;
@@ -142,7 +142,7 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
     }
 
     @Override
-    public void onMenginePlatformRun(MengineApplication application) {
+    public void onMenginePlatformRun(@NonNull MengineApplication application) {
         MengineUtils.performOnMainThread(() -> {
             MengineActivity activity = application.getMengineActivity();
 

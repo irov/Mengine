@@ -27,7 +27,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     public static final boolean SERVICE_EMBEDDING = true;
 
     @Override
-    public void onAppInit(MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
+    public void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
         FirebaseCrashlytics.getInstance().setCustomKey("is_dev", BuildConfig.DEBUG);
 
         boolean isBuildPublish = application.isBuildPublish();
@@ -39,13 +39,13 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     }
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         String sessionId = application.getSessionId();
         FirebaseCrashlytics.getInstance().setUserId(sessionId);
     }
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         if (BuildConfig.DEBUG == true) {
             if (FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution() == true) {
                 MengineUtils.makeToastDelayed(activity, "Last launch ended in a crash", 10000L);
@@ -62,24 +62,24 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     }
 
     @Override
-    public void onMengineCaughtException(MengineApplication application, Throwable throwable) {
+    public void onMengineCaughtException(@NonNull MengineApplication application, Throwable throwable) {
         throwable.printStackTrace(System.err);
 
         this.recordException(throwable);
     }
 
     @Override
-    public void onAppState(MengineApplication application, String name, Object value) {
+    public void onAppState(@NonNull MengineApplication application, String name, Object value) {
         this.setCustomKey(name, value);
     }
 
     @Override
-    public void onMengineSetSessionId(MengineApplication application, String sessionId) {
+    public void onMengineSetSessionId(@NonNull MengineApplication application, String sessionId) {
         FirebaseCrashlytics.getInstance().setUserId(sessionId);
     }
 
     @Override
-    public void onMengineRemoveSessionData(MengineApplication application) {
+    public void onMengineRemoveSessionData(@NonNull MengineApplication application) {
         FirebaseCrashlytics.getInstance().setUserId("");
     }
 
@@ -138,7 +138,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     }
 
     @Override
-    public void onMengineLogger(MengineApplication application, int level, int filter, String category, String msg) {
+    public void onMengineLogger(@NonNull MengineApplication application, int level, int filter, String category, String msg) {
         if (BuildConfig.DEBUG == true) {
             return;
         }

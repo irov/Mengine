@@ -3,7 +3,10 @@ package org.Mengine.Plugin.LocalNotifications;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineUtils;
+import org.xmlpull.v1.XmlPullParserException;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
@@ -19,11 +22,17 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.os.Bundle;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MengineLocalNotificationsPlugin extends MengineService implements MengineListenerActivity {
     public static final String SERVICE_NAME = "MengineLNotifications";
@@ -32,10 +41,19 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     private static final String CHANNEL_ID = "mengine_channel_id";
     private static final CharSequence CHANNEL_NAME = "Mengine Channel";
 
+    class LocalNotificationDesc {
+        public int id;
+        public String title;
+        public String content;
+        public long delay;
+    }
+
+    private List<LocalNotificationDesc> m_internalLocalNotifications = new ArrayList<>();
+
     private boolean m_notificationPermission = false;
 
     @Override
-    public void onCreate(MengineActivity activity, Bundle savedInstanceState) {
+    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) {
         activity.checkPermission(Manifest.permission.POST_NOTIFICATIONS, () -> {
             MengineLocalNotificationsPlugin.this.startLocalNotifications(activity);
         }, () -> {
@@ -44,7 +62,31 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     }
 
     @Override
-    public void onNewIntent(MengineActivity activity, Intent intent) {
+    public void onStart(@NonNull MengineActivity activity) {
+        if (m_notificationPermission == false) {
+            return;
+        }
+
+        this.cancelAll();
+    }
+
+    @Override
+    public void onStop(@NonNull MengineActivity activity) {
+        if (m_notificationPermission == false) {
+            return;
+        }
+
+        if (MengineUtils.isAppInForeground(activity) == true) {
+            return;
+        }
+
+        for (LocalNotificationDesc desc : m_internalLocalNotifications) {
+            this.scheduleJobServiceNotification(desc.id, desc.title, desc.content, desc.delay);
+        }
+    }
+
+    @Override
+    public void onNewIntent(@NonNull MengineActivity activity, Intent intent) {
         if (m_notificationPermission == false) {
             return;
         }
@@ -152,6 +194,8 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
             this.pythonCall("onLocalNotificationsPress", id);
         }
+
+        this.parseInternalLocalNotifications(activity);
     }
     
     public void cancelAll() {
@@ -164,6 +208,114 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
         JobScheduler jobScheduler = (JobScheduler)activity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.cancelAll();
+    }
+
+    protected void parseInternalLocalNotifications(MengineActivity activity) {
+        String packageName = activity.getPackageName();
+        Resources resources = activity.getResources();
+
+        try {
+            XmlResourceParser parser = resources.getXml(R.xml.local_notifications);
+
+            while (parser.next() != XmlResourceParser.END_DOCUMENT) {
+                if (parser.getEventType() != XmlResourceParser.START_TAG) {
+                    continue;
+                }
+
+                String name = parser.getName();
+
+                if (name.equals("notification") == false) {
+                    continue;
+                }
+
+                int attributeCount = parser.getAttributeCount();
+
+                int id = 0;
+                long delay = 0;
+                String title = null;
+                String content = null;
+
+                for (int index = 0; index != attributeCount; index++) {
+                    String attributeName = parser.getAttributeName(index);
+                    String attributeValue = parser.getAttributeValue(index);
+
+                    switch (attributeName) {
+                        case "id":
+                            id = Integer.parseInt(attributeValue);
+                            break;
+                        case "delay":
+                            delay = Long.parseLong(attributeValue);
+                            break;
+                        case "title":
+                            title = attributeValue;
+                            break;
+                        case "content":
+                            content = attributeValue;
+                            break;
+                    }
+                }
+
+                if (id <= 0) {
+                    this.logWarning("[LOCAL_NOTIFICATIOINS] invalid id: %d"
+                        , id
+                    );
+
+                    continue;
+                }
+
+                if (delay <= 0) {
+                    this.logWarning("[LOCAL_NOTIFICATIOINS] invalid delay: %d"
+                        , delay
+                    );
+
+                    continue;
+                }
+
+                if (title == null) {
+                    this.logWarning("[LOCAL_NOTIFICATIOINS] invalid title");
+
+                    continue;
+                }
+
+                if (content == null) {
+                    this.logWarning("[LOCAL_NOTIFICATIOINS] invalid content");
+
+                    continue;
+                }
+
+                if (BuildConfig.DEBUG == true) {
+                    delay /= 1000;
+                }
+
+                int title_id = resources.getIdentifier(title, "string", packageName);
+                int content_id = resources.getIdentifier(content, "string", packageName);
+
+                String title_text = resources.getString(title_id);
+                String content_text = resources.getString(content_id);
+
+                LocalNotificationDesc desc = new LocalNotificationDesc();
+                desc.id = id;
+                desc.title = title_text;
+                desc.content = content_text;
+                desc.delay = delay * 1000;
+
+                m_internalLocalNotifications.add(desc);
+            }
+
+            parser.close();
+        } catch (final XmlPullParserException e) {
+            this.logError("[LOCAL_NOTIFICATIOINS] XmlPullParserException: %s"
+                , e.getMessage()
+            );
+
+            return;
+        } catch (final IOException e) {
+            this.logError("[LOCAL_NOTIFICATIOINS] XmlPullParserException: %s"
+                , e.getMessage()
+            );
+
+            return;
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -179,16 +331,20 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, pendingFlags);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
-
-        return builder.setContentTitle(title)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+            .setContentTitle(title)
             .setContentText(content)
-            .setSmallIcon(R.mipmap.ic_notification)
+            .setStyle(new NotificationCompat.BigTextStyle().bigText(content))
+            .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, R.color.mengine_local_notification_color))  // <color name="mengine_local_notification_color">#422b00</color>
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setContentIntent(pendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_MAX)
-            .build();
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        Notification notification = builder.build();
+
+        return notification;
     }
 
     private void scheduleJobNotification(long delayMillis, PersistableBundle bundle){

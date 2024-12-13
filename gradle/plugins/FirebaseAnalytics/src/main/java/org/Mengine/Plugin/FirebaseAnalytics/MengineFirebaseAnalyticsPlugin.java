@@ -32,7 +32,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     FirebaseAnalytics m_firebaseAnalytics;
 
     @Override
-    public void onAppPrepare(MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(application);
 
         String sessionId = application.getSessionId();
@@ -64,7 +64,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineSetSessionId(MengineApplication application, String sessionId) {
+    public void onMengineSetSessionId(@NonNull MengineApplication application, String sessionId) {
         if (m_firebaseAnalytics == null) {
             return;
         }
@@ -73,7 +73,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineRemoveSessionData(MengineApplication application) {
+    public void onMengineRemoveSessionData(@NonNull MengineApplication application) {
         if (m_firebaseAnalytics == null) {
             return;
         }
@@ -83,7 +83,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineAnalyticsEvent(MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
+    public void onMengineAnalyticsEvent(@NonNull MengineApplication application, String eventName, long timestamp, Map<String, Object> bases, Map<String, Object> parameters) {
         if (m_firebaseAnalytics == null) {
             return;
         }
@@ -150,7 +150,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineAnalyticsScreenView(MengineApplication application, String screenType, String screenName) {
+    public void onMengineAnalyticsScreenView(@NonNull MengineApplication application, String screenType, String screenName) {
         if (m_firebaseAnalytics == null) {
             return;
         }
@@ -194,7 +194,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onMengineAdRevenue(MengineApplication application, MengineAdRevenueParam revenue) {
+    public void onMengineAdRevenue(@NonNull MengineApplication application, @NonNull MengineAdRevenueParam revenue) {
         if (m_firebaseAnalytics == null) {
             return;
         }
@@ -218,7 +218,7 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         m_firebaseAnalytics.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params);
     }
 
-    public void onMengineTransparencyConsent(MengineApplication application, MengineTransparencyConsentParam tcParam) {
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, MengineTransparencyConsentParam tcParam) {
         if (m_firebaseAnalytics == null) {
             return;
         }

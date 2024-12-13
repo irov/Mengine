@@ -42,7 +42,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
     private BillingClient m_billingClient;
 
     @Override
-    public void onAppCreate(MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         m_productsDetails = new ArrayList<>();
 
         PurchasesUpdatedListener purchasesUpdatedListener = (billingResult, purchases) -> {
@@ -157,7 +157,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onAppTerminate(MengineApplication application) {
+    public void onAppTerminate(@NonNull MengineApplication application) {
         m_productsDetails = null;
 
         if (m_billingClient != null) {

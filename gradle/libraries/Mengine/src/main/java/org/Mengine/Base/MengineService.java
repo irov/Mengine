@@ -96,6 +96,18 @@ public class MengineService implements MengineServiceInterface {
         m_application.setState(name, value);
     }
 
+    public String logVerbose(String format, Object ... args) {
+        String m = MengineLog.logVerbose(m_serviceName, format, args);
+
+        return m;
+    }
+
+    public String logDebug(String format, Object ... args) {
+        String m = MengineLog.logDebug(m_serviceName, format, args);
+
+        return m;
+    }
+
     public String logInfo(String format, Object ... args) {
         String m = MengineLog.logInfo(m_serviceName, format, args);
 

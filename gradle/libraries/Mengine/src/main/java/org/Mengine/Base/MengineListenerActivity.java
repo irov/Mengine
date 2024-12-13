@@ -4,52 +4,54 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+
 public interface MengineListenerActivity extends MengineServiceInterface {
-    default void onCreate(MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+    default void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         //Empty
     }
 
-    default void onActivityResultBefore(MengineActivity activity, int requestCode, int resultCode, Intent data) {
+    default void onActivityResultBefore(@NonNull MengineActivity activity, int requestCode, int resultCode, Intent data) {
         //Empty
     }
 
-    default void onActivityResult(MengineActivity activity, int requestCode, int resultCode, Intent data) {
+    default void onActivityResult(@NonNull MengineActivity activity, int requestCode, int resultCode, Intent data) {
         //Empty
     }
 
-    default void onStart(MengineActivity activity) {
+    default void onStart(@NonNull MengineActivity activity) {
         //Empty
     }
 
-    default void onStop(MengineActivity activity) {
+    default void onStop(@NonNull MengineActivity activity) {
         //Empty
     }
 
-    default void onPause(MengineActivity activity) {
+    default void onPause(@NonNull MengineActivity activity) {
         //Empty
     }
 
-    default void onResume(MengineActivity activity) {
+    default void onResume(@NonNull MengineActivity activity) {
         //Empty
     }
 
-    default void onNewIntent(MengineActivity activity, Intent intent) {
+    default void onNewIntent(@NonNull MengineActivity activity, Intent intent) {
         //Empty
     }
 
-    default void onDestroy(MengineActivity activity) {
+    default void onDestroy(@NonNull MengineActivity activity) {
         //Empty
     }
 
-    default void onRestart(MengineActivity activity) {
+    default void onRestart(@NonNull MengineActivity activity) {
         //Empty
     }
 
-    default void onConfigurationChanged(MengineActivity activity, Configuration newConfig) {
+    default void onConfigurationChanged(@NonNull MengineActivity activity, Configuration newConfig) {
         //Empty
     }
 
-    default void onRequestPermissionsResult(MengineActivity activity, int requestCode, String[] permissions, int[] grantResults) {
+    default void onRequestPermissionsResult(@NonNull MengineActivity activity, int requestCode, String[] permissions, int[] grantResults) {
         //Empty
     }
 }

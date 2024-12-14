@@ -207,7 +207,7 @@ int UIKit_CreateWindow(_THIS, SDL_Window *window)
 
         UIApplication * application = [UIApplication sharedApplication];
         id<UIApplicationDelegate> delegate = application.delegate;
-        UIWindow * uiwindow = delegate.window;
+        uiwindow = delegate.window;
 
         if (uiwindow == nil) {
             /* ignore the size user requested, and make a fullscreen window */

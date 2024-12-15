@@ -793,9 +793,21 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logMessageRelease(TAG, "onDestroy");
 
-        MengineNative.AndroidNativePython_removePlugin("Activity");
+        List<MengineListenerActivity> listeners = this.getActivityListeners();
 
-        MengineNative.AndroidEnv_removeMengineAndroidActivityJNI();
+        for (MengineListenerActivity l : listeners) {
+            if (l.onAvailable(application) == false) {
+                continue;
+            }
+
+            l.onDestroy(this);
+        }
+
+        List<MengineService> plugins = this.getPlugins();
+
+        for (MengineService p : plugins) {
+            p.setMengineActivity(null);
+        }
 
         if (m_clipboard != null) {
             m_clipboard.handleDestroy();
@@ -820,21 +832,9 @@ public class MengineActivity extends AppCompatActivity {
         m_semaphores = null;
         m_commandHandler = null;
 
-        List<MengineListenerActivity> listeners = this.getActivityListeners();
+        MengineNative.AndroidNativePython_removePlugin("Activity");
 
-        for (MengineListenerActivity l : listeners) {
-            if (l.onAvailable(application) == false) {
-                continue;
-            }
-
-            l.onDestroy(this);
-        }
-
-        List<MengineService> plugins = this.getPlugins();
-
-        for (MengineService p : plugins) {
-            p.setMengineActivity(null);
-        }
+        MengineNative.AndroidEnv_removeMengineAndroidActivityJNI();
 
         application.setMengineActivity(null);
 

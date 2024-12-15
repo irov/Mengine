@@ -50,7 +50,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
     private List<LocalNotificationDesc> m_internalLocalNotifications = new ArrayList<>();
 
-    private boolean m_notificationPermission = false;
+    private boolean m_notificationPermissionGranted = false;
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
     @Override
     public void onStart(@NonNull MengineActivity activity) {
-        if (m_notificationPermission == false) {
+        if (m_notificationPermissionGranted == false) {
             return;
         }
 
@@ -72,7 +72,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
     @Override
     public void onStop(@NonNull MengineActivity activity) {
-        if (m_notificationPermission == false) {
+        if (m_notificationPermissionGranted == false) {
             return;
         }
 
@@ -87,7 +87,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
     @Override
     public void onNewIntent(@NonNull MengineActivity activity, Intent intent) {
-        if (m_notificationPermission == false) {
+        if (m_notificationPermissionGranted == false) {
             return;
         }
 
@@ -112,7 +112,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             , delay
         );
 
-        if (m_notificationPermission == false) {
+        if (m_notificationPermissionGranted == false) {
             return;
         }
 
@@ -127,7 +127,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             , delay
         );
 
-        if (m_notificationPermission == false) {
+        if (m_notificationPermissionGranted == false) {
             return;
         }
 
@@ -156,7 +156,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             , id
         );
 
-        if (m_notificationPermission == false) {
+        if (m_notificationPermissionGranted == false) {
             return;
         }
 
@@ -169,7 +169,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     public void startLocalNotifications(MengineActivity activity) {
         this.cancelAll();
 
-        m_notificationPermission = true;
+        m_notificationPermissionGranted = true;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager = (NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -350,7 +350,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     private void scheduleJobNotification(long delayMillis, PersistableBundle bundle){
         this.logMessage("schedule notification with delay: %d", delayMillis);
 
-        if (m_notificationPermission == false) {
+        if (m_notificationPermissionGranted == false) {
             return;
         }
         

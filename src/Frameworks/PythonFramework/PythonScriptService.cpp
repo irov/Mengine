@@ -643,7 +643,6 @@ namespace Mengine
         m_kernel->remove_module_finder();
 
         this->removeGlobalModule( "Mengine" );
-        this->removeGlobalModule( "_PLUGINS" );
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "ScriptWrapping" ) );
 

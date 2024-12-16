@@ -71,13 +71,6 @@ namespace Mengine
         NSString * adUnitId = [AppleString NSStringFromConstString:_adUnitId];
         NSString * placement = [AppleString NSStringFromConstString:_placement];
         
-        CGFloat banner_height = MAAdFormat.banner.adaptiveSize.height;
-        
-        CGFloat screen_width = CGRectGetWidth(UIScreen.mainScreen.bounds);
-        CGFloat screen_height = CGRectGetHeight(UIScreen.mainScreen.bounds);
-        
-        CGRect banner_rect = CGRectMake(0, screen_height - banner_height, screen_width, banner_height);
-
         NSString * amazonBannerSlotId = nil;
         
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
@@ -87,7 +80,6 @@ namespace Mengine
         AppleAppLovinBannerDelegate * banner = [[AppleAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:adUnitId
                                                                                                    placement:placement
                                                                                                 amazonSlotId:amazonBannerSlotId
-                                                                                                        rect:banner_rect
                                                                                                     provider:_provider];
         
         if( banner == nil )

@@ -15,7 +15,6 @@
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                           placement:(NSString * _Nonnull) placement
                                        amazonSlotId:(NSString * _Nullable) amazonSlotId
-                                               rect:(CGRect) rect
                                            provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider {
     self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.banner];
     
@@ -42,9 +41,8 @@
     adView.requestDelegate = self;
     adView.adReviewDelegate = self;
     
-    [adView setExtraParameterForKey: @"adaptive_banner" value: @"true"];
+    [adView setExtraParameterForKey:@"adaptive_banner" value:@"true"];
     
-    adView.frame = rect;
     adView.backgroundColor = UIColor.clearColor;
 
     UIViewController * viewController = [iOSDetail getRootViewController];
@@ -119,6 +117,19 @@
     return frame;
 }
 
+- (void) repositionAdView:(MAAd *) ad {
+    MAAdFormat * adFormat = ad.format;
+    
+    CGFloat banner_height = adFormat.adaptiveSize.height;
+    
+    CGFloat screen_width = CGRectGetWidth(UIScreen.mainScreen.bounds);
+    CGFloat screen_height = CGRectGetHeight(UIScreen.mainScreen.bounds);
+    
+    CGRect rect = CGRectMake(0, screen_height - banner_height, screen_width, banner_height);
+    
+    self.m_adView.frame = rect;
+}
+
 #pragma mark - MAAdRequestDelegate Protocol
 
 - (void)didStartAdRequestForAdUnitIdentifier:(NSString *)adUnitIdentifier {
@@ -146,6 +157,8 @@
     }];
     
     self.m_retryAttempt = 0;
+    
+    [self repositionAdView:ad];
     
     self.m_provider->onAppleAppLovinBannerDidLoadAd();
 }

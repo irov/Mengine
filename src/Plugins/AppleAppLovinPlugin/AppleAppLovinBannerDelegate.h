@@ -16,7 +16,6 @@
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                           placement:(NSString * _Nonnull) placement
                                        amazonSlotId:(NSString * _Nullable) amazonSlotId
-                                               rect:(CGRect) rect
                                            provider:(const Mengine::AppleAppLovinBannerProviderInterfacePtr &) provider;
 
 - (void) show;

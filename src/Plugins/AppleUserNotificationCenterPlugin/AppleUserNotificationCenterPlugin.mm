@@ -4,11 +4,12 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/PluginHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AppleUserNotificationCenterService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( AppleUserNotificationCenter, Mengine::AppleUserNotificationCenterPlugin )
+PLUGIN_FACTORY( AppleUserNotificationCenter, Mengine::AppleUserNotificationCenterPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

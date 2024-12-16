@@ -2,6 +2,8 @@
 
 #include "Config/Export.h"
 
+#include "Configuration/Configurations.h"
+
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
     typedef Mengine::ServiceProviderInterface * (*FAPI_MengineCreate)(void);
     typedef bool (*FAPI_MengineBootstrap)(void);

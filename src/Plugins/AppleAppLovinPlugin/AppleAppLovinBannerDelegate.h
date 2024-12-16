@@ -2,12 +2,14 @@
 
 #import "AppleAppLovinBaseDelegate.h"
 
-#import <Foundation/Foundation.h>
-#import <AppLovinSDK/AppLovinSDK.h>
+#include "Configuration/Configurations.h"
 
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
 #import "AppleAppLovinBannerAmazonLoader.h"
 #endif
+
+#import <Foundation/Foundation.h>
+#import <AppLovinSDK/AppLovinSDK.h>
 
 @interface AppleAppLovinBannerDelegate : AppleAppLovinBaseDelegate<MAAdRequestDelegate, MAAdViewAdDelegate, MAAdRevenueDelegate, MAAdReviewDelegate>
 

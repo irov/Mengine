@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Configuration/Configurations.h"
+
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
 #   include "Environment/Windows/WindowsIncluder.h"
 #endif

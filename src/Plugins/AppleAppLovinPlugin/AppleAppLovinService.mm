@@ -2,6 +2,8 @@
 
 #import "Environment/Apple/AppleString.h"
 
+#include "Configuration/Configurations.h"
+
 #if defined(MENGINE_PLUGIN_APPLE_APPTRACKING)
 #   include "Plugins/AppleAppTrackingPlugin/AppleAppTrackingInterface.h"
 #endif

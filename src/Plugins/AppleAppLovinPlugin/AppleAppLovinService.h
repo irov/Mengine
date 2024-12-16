@@ -8,6 +8,8 @@
 #import "AppleAppLovinRewardedDelegate.h"
 #import "AppleAppLovinBannerDelegate.h"
 
+#include "Configuration/Configurations.h"
+
 #if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_AMAZON)
 #import "AppleAppLovinAmazonService.h"
 #endif

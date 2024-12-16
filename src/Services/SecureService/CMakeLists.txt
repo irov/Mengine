@@ -19,6 +19,4 @@ configuration
     ${MENGINE_SOLUTIONS_CONFIG_DIR}/include/Configuration/SecureValue.h
 )
 
-INCLUDE_DIRECTORIES(${MENGINE_SOLUTIONS_CONFIG_DIR}/include)
-
 ADD_MENGINE_LIBRARY(Services)

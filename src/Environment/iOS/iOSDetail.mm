@@ -18,6 +18,20 @@
     return deviceName;
 }
 
++ (BOOL)isAppTrackingTransparencyAllowed {
+    if (@available(iOS 14.5, *)) {
+        if (ATTrackingManager.trackingAuthorizationStatus == ATTrackingManagerAuthorizationStatusAuthorized) {
+            return YES;
+        }
+    } else {
+        if ([iOSDetail isValidIDFA] == YES) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
 + (NSString *)getIDFA {
     NSUUID * idfa_uuid = [iOSDetail getAdIdentifier];
 
@@ -50,29 +64,29 @@
 }
 
 + (UIWindow *)getRootWindow {
-    UIApplication *application = [UIApplication sharedApplication];
+    UIApplication * application = [UIApplication sharedApplication];
     id<UIApplicationDelegate> delegate = application.delegate;
-    UIWindow *window = delegate.window;
+    UIWindow * window = delegate.window;
     
     return window;
 }
 
 + (UIView *)getRootView {
-    UIWindow *window = [iOSDetail getRootWindow];
-    UIView *view = [window.subviews objectAtIndex:0];
+    UIWindow * window = [iOSDetail getRootWindow];
+    UIView * view = [window.subviews objectAtIndex:0];
     
     return view;
 }
 
 + (UIViewController *)getRootViewController {
-    UIWindow *window = [iOSDetail getRootWindow];
+    UIWindow * window = [iOSDetail getRootWindow];
     UIViewController *viewController = window.rootViewController;
     
     return viewController;
 }
 
 + (NSUUID *)getAdIdentifier {
-    NSUUID *idfa_uuid = [[ASIdentifierManager sharedManager] advertisingIdentifier];
+    NSUUID * idfa_uuid = [[ASIdentifierManager sharedManager] advertisingIdentifier];
     
     return idfa_uuid;
 }
@@ -136,7 +150,7 @@
 
 + (void)transparencyConsent:(iOSTransparencyConsentParam *)consent {
     [iOSDetail addMainQueueOperation:^{
-        NSObject<iOSUIMainApplicationDelegateInterface> *delegate = [iOSDetail getUIMainApplicationDelegate];
+        NSObject<iOSUIMainApplicationDelegateInterface> * delegate = [iOSDetail getUIMainApplicationDelegate];
     
         [delegate eventTransparencyConsent:consent];
     }];
@@ -151,7 +165,7 @@
 }
 
 + (NSString *)pathForTemporaryFileWithPrefix:(NSString *)prefix ext:(NSString *)ext {
-    NSString *result;
+    NSString * result;
     CFUUIDRef uuid = CFUUIDCreate(NULL);
     CFStringRef uuidStr = CFUUIDCreateString(NULL, uuid);
 
@@ -180,8 +194,8 @@
         return;
     }
 
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    UIAlertController * alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction * okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         Mengine::Helper::dispatchMainThreadEvent([ok]() {
             ok();
         });
@@ -218,11 +232,11 @@
     NSString * areYouSureText = @"\n\nAre you sure?";
     NSString * fullMessage = [message stringByAppendingString:areYouSureText];
     
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+    UIAlertController * alert = [UIAlertController alertControllerWithTitle:title
                                                                    message:fullMessage
                                                             preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"YES"
+    UIAlertAction * yesAction = [UIAlertAction actionWithTitle:@"YES"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * _Nonnull action) {
         Mengine::Helper::dispatchMainThreadEvent([yes]() {
@@ -230,7 +244,7 @@
         });
     }];
     
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"CANCEL"
+    UIAlertAction * cancelAction = [UIAlertAction actionWithTitle:@"CANCEL"
                                                            style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction * _Nonnull action) {
         Mengine::Helper::dispatchMainThreadEvent([cancel]() {

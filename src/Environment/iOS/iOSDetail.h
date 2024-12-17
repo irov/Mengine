@@ -15,6 +15,7 @@
 
 + (NSString *)getDeviceId;
 + (NSString *)getDeviceName;
++ (BOOL)isAppTrackingTransparencyAllowed;
 + (NSString *)getIDFA;
 + (BOOL)isValidIDFA;
 

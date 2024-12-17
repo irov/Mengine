@@ -179,7 +179,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadId POSIXThreadSystem::getCurrentThreadId() const
     {
-        pthread_t threadId = pthread_self();
+        pthread_t threadId = ::pthread_self();
 
         return (ThreadId)threadId;
     }

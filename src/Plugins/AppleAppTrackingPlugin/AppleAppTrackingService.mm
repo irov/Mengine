@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AppleAppTrackingService::AppleAppTrackingService()
         : m_status( EAATA_NONE )
-        , m_idfa( nil )
+        , m_idfa( @"00000000-0000-0000-0000-000000000000" )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -28,19 +28,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppTrackingService::_initializeService()
     {
-        m_idfa = @"00000000-0000-0000-0000-000000000000";
+        //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::_finalizeService()
     {
-        m_idfa = nil;
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::authorization( const LambdaAuthorizationResponse & _response )
     {
-        if(@available(iOS 14.0, *))
+        if( @available(iOS 14.0, *) )
         {
             LambdaAuthorizationResponse copy_response = _response;
             
@@ -76,17 +76,17 @@ namespace Mengine
                     copy_response( status_copy, idfa_str );
                 });
             }];
-        }
-        else
-        {
-            m_status = EAATA_AUTHORIZED;
             
-            this->makeIDFA_();
+            return;
+        }
 
-            const Char * idfa_str = [m_idfa UTF8String];
-            
-            _response( m_status, idfa_str );
-        }
+        m_status = EAATA_AUTHORIZED;
+
+        this->makeIDFA_();
+
+        const Char * idfa_str = [m_idfa UTF8String];
+
+        _response( m_status, idfa_str );
     }
     //////////////////////////////////////////////////////////////////////////
     void AppleAppTrackingService::getIDFA( EAppleAppTrackingAuthorization * const _status, Char * const _idfa ) const
@@ -114,21 +114,36 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AppleAppTrackingService::isTrackingAllowed() const
     {
-        if(@available(iOS 14.5, *))
+        if( @available(iOS 14.5, *) )
         {
-            if( ATTrackingManager.trackingAuthorizationStatus == ATTrackingManagerAuthorizationStatusDenied )
+            switch( ATTrackingManager.trackingAuthorizationStatus )
             {
-                return false;
+                case ATTrackingManagerAuthorizationStatusAuthorized:
+                {
+                    return true;
+                }break;
+                case ATTrackingManagerAuthorizationStatusDenied:
+                {
+                    return false;
+                }break;
+                case ATTrackingManagerAuthorizationStatusNotDetermined:
+                {
+                    return false;
+                }break;
+                case ATTrackingManagerAuthorizationStatusRestricted:
+                {
+                    return false;
+                }break;
             }
-        }
-        else
-        {
-            if( [iOSDetail isValidIDFA] == NO )
-            {
-                return false;
-            }
+            
+            return false;
         }
 
+        if( [iOSDetail isValidIDFA] == NO )
+        {
+            return false;
+        }
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

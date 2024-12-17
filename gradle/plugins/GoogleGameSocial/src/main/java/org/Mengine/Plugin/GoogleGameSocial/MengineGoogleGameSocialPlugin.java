@@ -5,12 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.AuthenticationResult;
+import com.google.android.gms.games.EventsClient;
 import com.google.android.gms.games.GamesSignInClient;
+import com.google.android.gms.games.LeaderboardsClient;
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.PlayGamesSdk;
 
@@ -21,6 +22,7 @@ import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 
+import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 
 public class MengineGoogleGameSocialPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
@@ -74,8 +76,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             this.pythonCall("onGoogleGameSocialOnAuthenticatedSuccess", "authenticated");
         });
 
-        ActivityResultLauncher<Intent> achievementLauncher = activity.registerForActivityResult(new ActivityResultContracts.StartActivityForResult()
-            , result -> {
+        ActivityResultLauncher<Intent> achievementLauncher = activity.registerForActivityResult(result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
 
@@ -85,13 +86,11 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                     //ToDo
                 }
-            }
-        );
+            });
 
         m_achievementLauncher = achievementLauncher;
 
-        ActivityResultLauncher<Intent> leaderboardLauncher = activity.registerForActivityResult(new ActivityResultContracts.StartActivityForResult()
-            , result -> {
+        ActivityResultLauncher<Intent> leaderboardLauncher = activity.registerForActivityResult(result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
 
@@ -101,8 +100,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                     //ToDo
                 }
-            }
-        );
+            });
 
         m_leaderboardLauncher = leaderboardLauncher;
     }
@@ -114,32 +112,36 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
             m_achievementLauncher = null;
         }
+
+        if (m_leaderboardLauncher != null) {
+            m_leaderboardLauncher.unregister();
+
+            m_leaderboardLauncher = null;
+        }
     }
 
     public boolean showAchievements() {
         this.logMessage("showAchievements");
 
-        this.runOnUiThread(() -> {
-            MengineActivity activity = this.getMengineActivity();
+        MengineActivity activity = this.getMengineActivity();
 
-            AchievementsClient achievementsClient = PlayGames.getAchievementsClient(activity);
+        AchievementsClient achievementsClient = PlayGames.getAchievementsClient(activity);
 
-            achievementsClient.getAchievementsIntent()
-                .addOnSuccessListener(intent -> {
-                    this.logMessageRelease("get achievements successful");
+        achievementsClient.getAchievementsIntent()
+            .addOnSuccessListener(intent -> {
+                this.logMessageRelease("get achievements successful");
 
-                    this.pythonCall("onGoogleGameSocialShowAchievementSuccess");
+                this.pythonCall("onGoogleGameSocialShowAchievementSuccess");
 
-                    m_achievementLauncher.launch(intent);
-                })
-                .addOnFailureListener(e -> {
-                    this.logError("[ERROR] get achievements error: %s"
-                        , e.getMessage()
-                    );
+                m_achievementLauncher.launch(intent);
+            })
+            .addOnFailureListener(e -> {
+                this.logError("[ERROR] get achievements error: %s"
+                    , e.getMessage()
+                );
 
-                    this.pythonCall("onGoogleGameSocialShowAchievementError");
-                });
-        });
+                this.pythonCall("onGoogleGameSocialShowAchievementError");
+            });
 
         return true;
     }
@@ -149,28 +151,26 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             , achievementId
         );
 
-        this.runOnUiThread(() -> {
-            MengineActivity activity = this.getMengineActivity();
+        MengineActivity activity = this.getMengineActivity();
 
-            AchievementsClient achievementsClient = PlayGames.getAchievementsClient(activity);
+        AchievementsClient achievementsClient = PlayGames.getAchievementsClient(activity);
 
-            achievementsClient.unlockImmediate(achievementId)
-                .addOnSuccessListener(unused -> {
-                    this.logMessage("unlockAchievement complete achievementId: %s"
-                        , achievementId
-                    );
+        achievementsClient.unlockImmediate(achievementId)
+            .addOnSuccessListener(unused -> {
+                this.logMessage("unlockAchievement complete achievementId: %s"
+                    , achievementId
+                );
 
-                    this.pythonCall("onGoogleGameSocialUnlockAchievementSuccess", achievementId);
+                this.pythonCall("onGoogleGameSocialUnlockAchievementSuccess", achievementId);
 
-                }).addOnFailureListener(e -> {
-                    this.logError("[ERROR] unlockAchievement achievementId: %s error: %s"
-                        , achievementId
-                        , e.getMessage()
-                    );
+            }).addOnFailureListener(e -> {
+                this.logError("[ERROR] unlockAchievement achievementId: %s error: %s"
+                    , achievementId
+                    , e.getMessage()
+                );
 
-                    this.pythonCall("onGoogleGameSocialUnlockAchievementError", achievementId);
-                });
-        });
+                this.pythonCall("onGoogleGameSocialUnlockAchievementError", achievementId);
+            });
 
         return true;
     }
@@ -181,29 +181,27 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             , numSteps
         );
 
-        this.runOnUiThread(() -> {
-            MengineActivity activity = this.getMengineActivity();
+        MengineActivity activity = this.getMengineActivity();
 
-            AchievementsClient achievementsClient = PlayGames.getAchievementsClient(activity);
+        AchievementsClient achievementsClient = PlayGames.getAchievementsClient(activity);
 
-            achievementsClient.incrementImmediate(achievementId, numSteps)
-                .addOnSuccessListener(aBoolean -> {
-                    this.logMessage("incrementAchievement complete achievementId: %s numSteps: %d"
-                        , achievementId
-                        , numSteps
-                    );
+        achievementsClient.incrementImmediate(achievementId, numSteps)
+            .addOnSuccessListener(aBoolean -> {
+                this.logMessage("incrementAchievement complete achievementId: %s numSteps: %d"
+                    , achievementId
+                    , numSteps
+                );
 
-                    this.pythonCall("onGoogleGameSocialIncrementAchievementSuccess", achievementId);
-                }).addOnFailureListener(e -> {
-                    this.logError("[ERROR] incrementAchievement achievementId: %s numSteps: %d error: %s"
-                        , achievementId
-                        , numSteps
-                        , e.getMessage()
-                    );
+                this.pythonCall("onGoogleGameSocialIncrementAchievementSuccess", achievementId);
+            }).addOnFailureListener(e -> {
+                this.logError("[ERROR] incrementAchievement achievementId: %s numSteps: %d error: %s"
+                    , achievementId
+                    , numSteps
+                    , e.getMessage()
+                );
 
-                    this.pythonCall("onGoogleGameSocialIncrementAchievementError", achievementId);
-                });
-        });
+                this.pythonCall("onGoogleGameSocialIncrementAchievementError", achievementId);
+            });
 
         return true;
     }
@@ -213,54 +211,53 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             , achievementId
         );
 
-        this.runOnUiThread(() -> {
-            MengineActivity activity = this.getMengineActivity();
+        MengineActivity activity = this.getMengineActivity();
 
-            AchievementsClient achievementsClient = PlayGames.getAchievementsClient(activity);
+        AchievementsClient achievementsClient = PlayGames.getAchievementsClient(activity);
 
-            achievementsClient.revealImmediate(achievementId)
-                .addOnSuccessListener(unused -> {
-                    this.logMessage("revealAchievement complete achievementId: %s"
-                        , achievementId
-                    );
+        achievementsClient.revealImmediate(achievementId)
+            .addOnSuccessListener(unused -> {
+                this.logMessage("revealAchievement complete achievementId: %s"
+                    , achievementId
+                );
 
-                    this.pythonCall("onGoogleGameSocialAchievementRevealSuccess", achievementId);
-                }).addOnFailureListener(e -> {
-                    this.logError("[ERROR] revealAchievement achievementId: %s error: %s"
-                        , achievementId
-                        , e.getMessage()
-                    );
+                this.pythonCall("onGoogleGameSocialAchievementRevealSuccess", achievementId);
+            }).addOnFailureListener(e -> {
+                this.logError("[ERROR] revealAchievement achievementId: %s error: %s"
+                    , achievementId
+                    , e.getMessage()
+                );
 
-                    this.pythonCall("onGoogleGameSocialAchievementRevealError", achievementId);
-                });
-        });
+                this.pythonCall("onGoogleGameSocialAchievementRevealError", achievementId);
+            });
 
         return true;
     }
 
     public void submitLeaderboardScore(String leaderboardId, long value) {
-        this.logMessage("updateLeaderboards: %d"
+        this.logMessage("updateLeaderboards: %s value: %d"
+            , leaderboardId
             , value
         );
 
-        this.runOnUiThread(() -> {
-            MengineActivity activity = this.getMengineActivity();
+        MengineActivity activity = this.getMengineActivity();
 
-            PlayGames.getLeaderboardsClient(activity).submitScoreImmediate(leaderboardId, value)
-                .addOnSuccessListener(result -> {
-                    this.logMessage("submitLeaderboardScore complete leaderboardId: %s value: %d"
-                        , leaderboardId
-                        , value
-                    );
-                })
-                .addOnFailureListener(e -> {
-                    this.logError("[ERROR] submitLeaderboardScore leaderboardId: %s value: %d error: %s"
-                        , leaderboardId
-                        , value
-                        , e.getMessage()
-                    );
-                });
-        });
+        LeaderboardsClient leaderboardsClient = PlayGames.getLeaderboardsClient(activity);
+
+        leaderboardsClient.submitScoreImmediate(leaderboardId, value)
+            .addOnSuccessListener(result -> {
+                this.logMessage("submitLeaderboardScore complete leaderboardId: %s value: %d"
+                    , leaderboardId
+                    , value
+                );
+            })
+            .addOnFailureListener(e -> {
+                this.logError("[ERROR] submitLeaderboardScore leaderboardId: %s value: %d error: %s"
+                    , leaderboardId
+                    , value
+                    , e.getMessage()
+                );
+            });
     }
 
     public void showLeaderboard(String leaderboardId) {
@@ -268,23 +265,36 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             , leaderboardId
         );
 
-        this.runOnUiThread(() -> {
-            MengineActivity activity = this.getMengineActivity();
+        MengineActivity activity = this.getMengineActivity();
 
-            PlayGames.getLeaderboardsClient(activity).getLeaderboardIntent(leaderboardId)
-                .addOnSuccessListener(intent -> {
-                    this.logMessage("showLeaderboard complete leaderboardId: %s"
-                        , leaderboardId
-                    );
+        LeaderboardsClient leaderboardsClient = PlayGames.getLeaderboardsClient(activity);
 
-                    m_leaderboardLauncher.launch(intent);
-                })
-                .addOnFailureListener(e -> {
-                    this.logError("[ERROR] showLeaderboard leaderboardId: %s error: %s"
-                        , leaderboardId
-                        , e.getMessage()
-                    );
-                });
-        });
+        leaderboardsClient.getLeaderboardIntent(leaderboardId)
+            .addOnSuccessListener(intent -> {
+                this.logMessage("showLeaderboard complete leaderboardId: %s"
+                    , leaderboardId
+                );
+
+                m_leaderboardLauncher.launch(intent);
+            })
+            .addOnFailureListener(e -> {
+                this.logError("[ERROR] showLeaderboard leaderboardId: %s error: %s"
+                    , leaderboardId
+                    , e.getMessage()
+                );
+            });
+    }
+
+    public void incrementEvent(String eventId, int value) {
+        this.logMessage("incrementEvent: %s value: %d"
+            , eventId
+            , value
+        );
+
+        MengineActivity activity = this.getMengineActivity();
+
+        EventsClient eventsClient = PlayGames.getEventsClient(activity);
+
+        eventsClient.increment(eventId, value);
     }
 }

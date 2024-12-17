@@ -19,7 +19,10 @@ import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -237,6 +240,14 @@ public class MengineActivity extends AppCompatActivity {
             });
 
         requestPermissionLauncher.launch(permission);
+    }
+
+    public ActivityResultLauncher<Intent> registerForActivityResult(@NonNull ActivityResultCallback<ActivityResult> callback) {
+        ActivityResultContract<Intent, ActivityResult> contract = new ActivityResultContracts.StartActivityForResult();
+
+        ActivityResultLauncher<Intent> launcher = this.registerForActivityResult(contract, callback);
+
+        return launcher;
     }
 
     @Override

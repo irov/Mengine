@@ -104,8 +104,6 @@ public class MengineMonitorPerformance extends MengineService implements Mengine
 
             m_lastRenderFrameCount = renderFrameCount;
             m_lastRenderFrameTimestamp = renderFrameTimestamp;
-
-            this.logDebug("FPS: %d", fps);
         }
     }
 
@@ -139,8 +137,6 @@ public class MengineMonitorPerformance extends MengineService implements Mengine
             long averageUsedMemoryMB = averageUsedMemory / 1024 / 1024;
 
             m_traceMemory.putMetric("used_memory", averageUsedMemoryMB);
-
-            this.logDebug("Memory: %dMb %dKb", averageUsedMemoryMB, averageUsedMemory / 1024);
         }
     }
 
@@ -150,11 +146,11 @@ public class MengineMonitorPerformance extends MengineService implements Mengine
         m_traceStartup = null;
 
         m_timerFPS = MengineUtils.scheduleAtFixedRate(0, 1000, () -> {
-            MengineMonitorPerformance.this.traceFPS();
+            this.traceFPS();
         });
 
         m_timerMemory = MengineUtils.scheduleAtFixedRate(0, 1000, () -> {
-            MengineMonitorPerformance.this.traceMemory();
+            this.traceMemory();
         });
     }
 

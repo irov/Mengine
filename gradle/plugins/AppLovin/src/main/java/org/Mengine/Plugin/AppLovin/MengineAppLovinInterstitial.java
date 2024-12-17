@@ -52,7 +52,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
 
         if (mediationAmazon != null) {
             mediationAmazon.loadMediatorInterstitial(activity, m_plugin, m_interstitialAd, () -> {
-                MengineAppLovinInterstitial.this.loadAd();
+                this.loadAd();
             });
         } else {
             this.loadAd();
@@ -213,7 +213,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         m_plugin.pythonCall("onAppLovinInterstitialOnAdHidden", m_adUnitId);
 
         MengineUtils.performOnMainThread(() -> {
-            MengineAppLovinInterstitial.this.loadAd();
+            this.loadAd();
         });
     }
 
@@ -271,7 +271,7 @@ public class MengineAppLovinInterstitial extends MengineAppLovinBase implements 
         m_plugin.pythonCall("onAppLovinInterstitialOnAdDisplayFailed", m_adUnitId);
 
         MengineUtils.performOnMainThread(() -> {
-            MengineAppLovinInterstitial.this.loadAd();
+            this.loadAd();
         });
     }
 

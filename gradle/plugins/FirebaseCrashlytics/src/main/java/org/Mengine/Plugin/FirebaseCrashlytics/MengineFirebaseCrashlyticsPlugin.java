@@ -56,7 +56,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
 
         if (isFirebaseCrashlyticsForceCrash == true) {
             MengineUtils.performOnMainThreadDelayed(() -> {
-                MengineFirebaseCrashlyticsPlugin.this.testCrash();
+                this.testCrash();
             }, 5000L);
         }
     }

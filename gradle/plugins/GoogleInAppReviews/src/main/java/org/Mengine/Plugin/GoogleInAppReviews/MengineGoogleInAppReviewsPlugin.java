@@ -25,24 +25,26 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
         m_manager = ReviewManagerFactory.create(activity);
 
         m_manager.requestReviewFlow().addOnCompleteListener(task -> {
-            if (task.isSuccessful() == true) {
-                MengineGoogleInAppReviewsPlugin.this.logMessage("requestReviewFlow successful");
-
-                m_reviewInfo = task.getResult();
-
-                MengineGoogleInAppReviewsPlugin.this.activateSemaphore("onGoogleInAppReviewsGettingReviewObject");
-            } else {
+            if (task.isSuccessful() == false) {
                 Exception exception = task.getException();
 
                 if (exception != null) {
-                    MengineGoogleInAppReviewsPlugin.this.logWarning("requestReviewFlow error message: %s trace: %s"
+                    this.logWarning("requestReviewFlow error message: %s trace: %s"
                         , exception.getMessage()
                         , exception.fillInStackTrace()
                     );
                 } else {
-                    MengineGoogleInAppReviewsPlugin.this.logWarning("requestReviewFlow unknown error");
+                    this.logWarning("requestReviewFlow unknown error");
                 }
+
+                return;
             }
+
+            this.logMessage("requestReviewFlow successful");
+
+            m_reviewInfo = task.getResult();
+
+            this.activateSemaphore("onGoogleInAppReviewsGettingReviewObject");
         });
     }
 
@@ -67,12 +69,12 @@ public class MengineGoogleInAppReviewsPlugin extends MengineService implements M
         MengineActivity activity = this.getMengineActivity();
 
         m_manager.launchReviewFlow(activity, m_reviewInfo).addOnCompleteListener(task -> {
-            MengineGoogleInAppReviewsPlugin.this.logMessage("Launching the review completed");
+            this.logMessage("Launching the review completed");
 
-            MengineGoogleInAppReviewsPlugin.this.buildEvent("mng_inapp_review_completed")
+            this.buildEvent("mng_inapp_review_completed")
                 .log();
 
-            MengineGoogleInAppReviewsPlugin.this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewCompleted");
+            this.pythonCall("onGoogleInAppReviewsLaunchingTheReviewCompleted");
         });
     }
 }

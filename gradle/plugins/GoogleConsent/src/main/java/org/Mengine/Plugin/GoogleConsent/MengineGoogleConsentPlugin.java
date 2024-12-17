@@ -44,7 +44,7 @@ public class MengineGoogleConsentPlugin extends MenginePlugin implements Mengine
                 int consentStatus = consentInformation.getConsentStatus();
                 ConsentInformation.PrivacyOptionsRequirementStatus privacyOptionsRequirementStatus = consentInformation.getPrivacyOptionsRequirementStatus();
 
-                MengineGoogleConsentPlugin.this.logMessage("updated consent info update successful status: %d formAvailable: %b privacyOptionsRequirementStatus: %s"
+                this.logMessage("updated consent info update successful status: %d formAvailable: %b privacyOptionsRequirementStatus: %s"
                     , consentStatus
                     , formAvailable
                     , privacyOptionsRequirementStatus
@@ -66,10 +66,10 @@ public class MengineGoogleConsentPlugin extends MenginePlugin implements Mengine
                     return;
                 }
 
-                MengineGoogleConsentPlugin.this.loadForm(activity);
+                this.loadForm(activity);
             }
             , (formError) -> {
-                MengineGoogleConsentPlugin.this.logError("consent info update failure: %s [%d]"
+                this.logError("consent info update failure: %s [%d]"
                     , formError.getMessage()
                     , formError.getErrorCode()
                 );
@@ -80,7 +80,7 @@ public class MengineGoogleConsentPlugin extends MenginePlugin implements Mengine
         UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity
             , (loadAndShowError) -> {
                 if (loadAndShowError != null) {
-                    MengineGoogleConsentPlugin.this.logError("consent form load and show failure: %s [%d]"
+                    this.logError("consent form load and show failure: %s [%d]"
                         , loadAndShowError.getMessage()
                         , loadAndShowError.getErrorCode()
                     );
@@ -88,7 +88,7 @@ public class MengineGoogleConsentPlugin extends MenginePlugin implements Mengine
                     return;
                 }
 
-                MengineGoogleConsentPlugin.this.logMessage("consent form load and show successful");
+                this.logMessage("consent form load and show successful");
 
                 MengineTransparencyConsentParam consent = activity.makeTransparencyConsentParam();
 

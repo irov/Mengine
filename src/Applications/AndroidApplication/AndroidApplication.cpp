@@ -76,7 +76,7 @@ namespace Mengine
             return true;
         }
 
-        LoggerInterfacePtr loggerAndroid = Helper::makeFactorableUnique<AndroidLogger>(MENGINE_DOCUMENT_FUNCTION );
+        LoggerInterfacePtr loggerAndroid = Helper::makeFactorableUnique<AndroidLogger>( MENGINE_DOCUMENT_FUNCTION );
 
         loggerAndroid->setWriteHistory(true );
 

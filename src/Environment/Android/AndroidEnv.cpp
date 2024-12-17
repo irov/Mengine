@@ -16,13 +16,13 @@ static jobject g_jobject_MengineActivity;
 extern "C" 
 {
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidApplicationJNI )(JNIEnv * env, jclass cls, jobject obj, jobject cl)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidApplicationJNI )( JNIEnv * env, jclass cls, jobject obj, jobject cl )
     {
         g_jobject_MengineApplication = (jobject)env->NewGlobalRef( obj );
         g_jobject_MengineClassLoader = (jobject)env->NewGlobalRef( cl );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidApplicationJNI )(JNIEnv * env, jclass cls)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidApplicationJNI )( JNIEnv * env, jclass cls )
     {
         env->DeleteGlobalRef( g_jobject_MengineApplication );
         g_jobject_MengineApplication = nullptr;
@@ -31,18 +31,18 @@ extern "C"
         g_jobject_MengineClassLoader = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidActivityJNI )(JNIEnv * env, jclass cls, jobject obj)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidActivityJNI )( JNIEnv * env, jclass cls, jobject obj )
     {
         g_jobject_MengineActivity = (jobject)env->NewGlobalRef( obj );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidActivityJNI )(JNIEnv * env, jclass cls)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1removeMengineAndroidActivityJNI )( JNIEnv * env, jclass cls )
     {
         env->DeleteGlobalRef( g_jobject_MengineActivity );
         g_jobject_MengineActivity = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jboolean JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1isMasterRelease )(JNIEnv * env, jclass cls)
+    JNIEXPORT jboolean JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1isMasterRelease )( JNIEnv * env, jclass cls )
     {
         bool mode = Mengine::Helper::isMasterRelease();
 
@@ -51,7 +51,7 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1getEngineGITSHA1 )(JNIEnv * env, jclass cls)
+    JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1getEngineGITSHA1 )( JNIEnv * env, jclass cls )
     {
         const Mengine::Char * ENGINE_GIT_SHA1 = Mengine::Helper::getEngineGITSHA1();
 
@@ -60,7 +60,7 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1getEngineVersion )(JNIEnv * env, jclass cls)
+    JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1getEngineVersion )( JNIEnv * env, jclass cls )
     {
         const Mengine::Char * ENGINE_VERSION = Mengine::Helper::getEngineVersion();
 
@@ -69,7 +69,7 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1getBuildDate )(JNIEnv * env, jclass cls)
+    JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1getBuildDate )( JNIEnv * env, jclass cls )
     {
         const Mengine::Char * BUILD_DATE = Mengine::Helper::getBuildDate();
 
@@ -78,7 +78,7 @@ extern "C"
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1getBuildUsername )(JNIEnv * env, jclass cls)
+    JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1getBuildUsername )( JNIEnv * env, jclass cls )
     {
         const Mengine::Char * BUILD_USERNAME = Mengine::Helper::getBuildUsername();
 
@@ -98,7 +98,7 @@ extern "C"
 
         if( get_status != JNI_OK )
         {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "JNI_OnLoad failed to get JNI Env" );
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_OnLoad failed to get JNI Env" );
 
             return JNI_ERR;
         }
@@ -171,7 +171,7 @@ namespace Mengine
         ::pthread_setspecific( g_androidEnvThreadKey, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    static int Mengine_JNI_SetEnv(JNIEnv * _env )
+    static int Mengine_JNI_SetEnv( JNIEnv * _env )
     {
         MENGINE_ASSERTION_FATAL( g_androidEnvThreadKey != 0, "android ENV thread key not initialized" );
         MENGINE_ASSERTION_FATAL( pthread_getspecific( g_androidEnvThreadKey ) == nullptr, "ENV thread key already set" );
@@ -180,7 +180,7 @@ namespace Mengine
 
         if( status != JNI_OK )
         {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "JNI_SetEnv failed to set pthread key" );
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetEnv failed to set pthread key" );
 
             return JNI_FALSE;
         }
@@ -196,7 +196,7 @@ namespace Mengine
 
         if( status < JNI_OK )
         {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "JNI_SetEnv failed to create pthread key" );
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetEnv failed to create pthread key" );
 
             return JNI_FALSE;
         }
@@ -222,7 +222,7 @@ namespace Mengine
 
         if( g_androidEnvJavaVM == nullptr )
         {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "JNI_GetEnv failed to get JavaVM" );
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_GetEnv failed to get JavaVM" );
 
             return nullptr;
         }
@@ -232,7 +232,7 @@ namespace Mengine
 
         if( attach_status != JNI_OK )
         {
-            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "JNI_GetEnv failed to attach current thread" );
+            __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_GetEnv failed to attach current thread" );
 
             return nullptr;
         }
@@ -249,7 +249,7 @@ namespace Mengine
     {
         if( g_androidEnvJavaVM == nullptr )
         {
-            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "JNI_SetupThread failed to get JavaVM");
+            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetupThread failed to get JavaVM");
 
             return JNI_FALSE;
         }
@@ -259,7 +259,7 @@ namespace Mengine
 
         if( attach_status != JNI_OK )
         {
-            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "JNI_SetupThread failed to attach current thread");
+            __android_log_print(ANDROID_LOG_ERROR, "Mengine", "[ERROR] JNI_SetupThread failed to attach current thread");
 
             return JNI_FALSE;
         }

@@ -126,40 +126,40 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
             String oldBanenrUrl;
             String newBannerUrl;
 
-            if (MengineAppLovinNonetBanners.this.m_visible == false) {
+            if (this.m_visible == false) {
                 return;
             }
 
-            synchronized (MengineAppLovinNonetBanners.this) {
-                if (MengineAppLovinNonetBanners.this.m_showBanner == null) {
+            synchronized (this) {
+                if (m_showBanner == null) {
                     return;
                 }
 
-                MengineAppLovinNonetBanners.this.m_requestId++;
+                m_requestId++;
 
                 ViewGroup viewGroup = activity.getContentViewGroup();
 
-                NonetBanner oldBanner = MengineAppLovinNonetBanners.this.m_showBanner;
+                NonetBanner oldBanner = m_showBanner;
 
                 viewGroup.removeView(oldBanner.view);
 
-                NonetBanner newBanner = MengineAppLovinNonetBanners.this.getCurrentBanner();
+                NonetBanner newBanner = this.getCurrentBanner();
                 viewGroup.addView(newBanner.view);
 
-                MengineAppLovinNonetBanners.this.m_showBanner = newBanner;
+                m_showBanner = newBanner;
 
-                refreshRequestId = MengineAppLovinNonetBanners.this.m_requestId;
+                refreshRequestId = m_requestId;
                 oldBanenrUrl = oldBanner.url;
                 newBannerUrl = newBanner.url;
             }
 
-            MengineAppLovinNonetBanners.this.m_plugin.logMessage("[NONET_BANNERS] refresh banner request: %d old: %s new: %s"
+            m_plugin.logMessage("[NONET_BANNERS] refresh banner request: %d old: %s new: %s"
                 , refreshRequestId
                 , oldBanenrUrl
                 , newBannerUrl
             );
 
-            MengineAppLovinNonetBanners.this.m_plugin.buildEvent("mng_ad_nonet_banners_displayed")
+            m_plugin.buildEvent("mng_ad_nonet_banners_displayed")
                 .addParameterString("url", newBannerUrl)
                 .addParameterLong("request_id", refreshRequestId)
                 .log();

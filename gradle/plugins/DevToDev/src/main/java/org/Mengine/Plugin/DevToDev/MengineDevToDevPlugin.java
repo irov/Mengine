@@ -43,7 +43,7 @@ public class MengineDevToDevPlugin extends MenginePlugin implements MenginePlugi
         DTDAnalytics.INSTANCE.setUserId(sessionId);
 
         DTDAnalytics.INSTANCE.setInitializationCompleteCallback(() -> {
-            MengineDevToDevPlugin.this.logMessage("Initialized DevToDev has been finished");
+            this.logMessage("Initialized DevToDev has been finished");
 
             m_initializeSuccessful = true;
 

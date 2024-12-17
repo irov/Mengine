@@ -53,7 +53,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
 
         if (mediationAmazon != null) {
             mediationAmazon.loadMediatorRewarded(activity, m_plugin, m_rewardedAd, () -> {
-                MengineAppLovinRewarded.this.loadAd();
+                this.loadAd();
             });
         } else {
             this.loadAd();
@@ -256,7 +256,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         m_plugin.pythonCall("onAppLovinRewardedOnAdHidden", m_adUnitId);
 
         MengineUtils.performOnMainThread(() -> {
-            MengineAppLovinRewarded.this.loadAd();
+            this.loadAd();
         });
     }
 
@@ -314,7 +314,7 @@ public class MengineAppLovinRewarded extends MengineAppLovinBase implements MaxA
         m_plugin.pythonCall("onAppLovinRewardedOnAdDisplayFailed", m_adUnitId);
 
         MengineUtils.performOnMainThread(() -> {
-            MengineAppLovinRewarded.this.loadAd();
+            this.loadAd();
         });
     }
 

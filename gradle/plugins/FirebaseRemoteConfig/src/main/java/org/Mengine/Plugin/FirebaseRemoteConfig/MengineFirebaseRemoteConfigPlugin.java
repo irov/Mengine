@@ -53,39 +53,38 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
         remoteConfig.fetchAndActivate()
-            .addOnCompleteListener(activity, new OnCompleteListener<Boolean>() {
-                @Override
-                public void onComplete(@NonNull Task<Boolean> task) {
-                    if (task.isSuccessful() == true) {
-                        boolean updated = task.getResult();
+            .addOnCompleteListener(activity, task -> {
+                if (task.isSuccessful() == false) {
+                    Exception e = task.getException();
 
-                        Map<String, FirebaseRemoteConfigValue> allValues = remoteConfig.getAll();
+                    this.logError("[ERROR] remote config invalid fetch and activate params: %s"
+                        , e == null ? "No Exception" : e.getMessage()
+                    );
 
-                        Map<String, String> allValueString = new HashMap<>();
-                        for (Map.Entry<String, FirebaseRemoteConfigValue> entry : allValues.entrySet()) {
-                            String key = entry.getKey();
-                            FirebaseRemoteConfigValue value = entry.getValue();
-                            String valueString = value.asString();
-
-                            allValueString.put(key, valueString);
-                        }
-
-                        MengineFirebaseRemoteConfigPlugin.this.logMessage("remote config successful fetch and activate params: %s [%s]"
-                            , allValueString
-                            , updated == true ? "updated" : "not updated"
-                        );
-
-                        MengineFirebaseRemoteConfigPlugin.this.activateSemaphore("FirebaseRemoteConfigFetchSuccessful");
-
-                        MengineFirebaseRemoteConfigPlugin.this.sendEvent(MengineEvent.EVENT_REMOTE_CONFIG_FETCH, updated);
-                    } else {
-                        Exception e = task.getException();
-
-                        MengineFirebaseRemoteConfigPlugin.this.logError("[ERROR] remote config invalid fetch and activate params: %s"
-                            , e == null ? "No Exception" : e.getMessage()
-                        );
-                    }
+                    return;
                 }
+
+                boolean updated = task.getResult();
+
+                Map<String, FirebaseRemoteConfigValue> allValues = remoteConfig.getAll();
+
+                Map<String, String> allValueString = new HashMap<>();
+                for (Map.Entry<String, FirebaseRemoteConfigValue> entry : allValues.entrySet()) {
+                    String key = entry.getKey();
+                    FirebaseRemoteConfigValue value = entry.getValue();
+                    String valueString = value.asString();
+
+                    allValueString.put(key, valueString);
+                }
+
+                this.logMessage("remote config successful fetch and activate params: %s [%s]"
+                    , allValueString
+                    , updated == true ? "updated" : "not updated"
+                );
+
+                this.activateSemaphore("FirebaseRemoteConfigFetchSuccessful");
+
+                this.sendEvent(MengineEvent.EVENT_REMOTE_CONFIG_FETCH, updated);
             });
     }
 

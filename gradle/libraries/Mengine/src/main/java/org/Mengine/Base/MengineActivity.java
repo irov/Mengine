@@ -42,8 +42,6 @@ public class MengineActivity extends AppCompatActivity {
 
     private Locale m_currentLocale;
 
-    private static final Map<String, Integer> m_requestCodes = new HashMap<>();
-
     private static final Object m_syncronizationSemaphores = new Object();
     private Map<String, MengineSemaphore> m_semaphores;
 
@@ -390,7 +388,7 @@ public class MengineActivity extends AppCompatActivity {
                 boolean isSystemBarsVisible = insets.isVisible(WindowInsets.Type.systemBars());
 
                 if (isSystemBarsVisible == true) {
-                    MengineActivity.this.syncFullscreenWindow(window);
+                    this.syncFullscreenWindow(window);
                 }
 
                 return insets;
@@ -401,7 +399,7 @@ public class MengineActivity extends AppCompatActivity {
                 boolean isNavigationHidden = (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0;
 
                 if (isFullscreenEnable == false || isNavigationHidden == false) {
-                    MengineActivity.this.syncFullscreenWindow(window);
+                    this.syncFullscreenWindow(window);
                 }
             });
         }
@@ -1007,24 +1005,6 @@ public class MengineActivity extends AppCompatActivity {
         }
 
         return super.dispatchKeyEvent(event);
-    }
-
-    /***********************************************************************************************
-     * Kernel Methods
-     **********************************************************************************************/
-
-    public static int genRequestCode(String name) {
-        if (m_requestCodes.containsKey(name) == false) {
-            int new_code = m_requestCodes.size();
-
-            m_requestCodes.put(name, new_code);
-
-            return new_code;
-        }
-
-        int code = m_requestCodes.get(name);
-
-        return code;
     }
 
     /***********************************************************************************************

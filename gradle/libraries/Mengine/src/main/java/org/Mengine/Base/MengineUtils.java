@@ -758,7 +758,7 @@ public class MengineUtils {
         Map<String, Object> map = new HashMap<>();
 
         Iterator<String> keys = obj.keys();
-        while (keys.hasNext()) {
+        while (keys.hasNext() == true) {
             String key = keys.next();
             Object value = obj.get(key);
             Object parsedValue = MengineUtils.parseJsonValue(value);
@@ -771,8 +771,10 @@ public class MengineUtils {
     private static List<Object> jsonArrayToList(JSONArray array) throws JSONException {
         List<Object> list = new ArrayList<>();
 
-        for (int i = 0; i < array.length(); i++) {
-            Object value = array.get(i);
+        int array_length = array.length();
+
+        for (int index = 0; index != array_length; index++) {
+            Object value = array.get(index);
             Object parsedValue = MengineUtils.parseJsonValue(value);
             list.add(parsedValue);
         }
@@ -785,7 +787,7 @@ public class MengineUtils {
             return MengineUtils.jsonArrayToList((JSONArray) value);
         } else if (value instanceof JSONObject) {
             return MengineUtils.jsonObjectToMap((JSONObject) value);
-        } else if (value == JSONObject.NULL ) {
+        } else if (value == JSONObject.NULL) {
             return null;
         } else {
             return value;
@@ -809,14 +811,11 @@ public class MengineUtils {
         catch (final Throwable e) {
             try {
                 System.loadLibrary(libraryName);
-            }
-            catch (final UnsatisfiedLinkError e2) {
+            } catch (final UnsatisfiedLinkError e2) {
                 throw e2;
-            }
-            catch (final SecurityException e2) {
+            } catch (final SecurityException e2) {
                 throw e2;
-            }
-            catch (final NullPointerException e3) {
+            } catch (final NullPointerException e3) {
                 throw e3;
             }
         }

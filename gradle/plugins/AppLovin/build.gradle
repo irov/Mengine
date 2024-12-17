@@ -216,3 +216,17 @@ dependencies {
         implementation 'com.applovin.mediation:yso-network-adapter:1.2.7.0'
     }
 }
+
+
+android {
+    defaultConfig {
+        buildConfigField "boolean", "MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW", "${MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW}"
+        buildConfigField "boolean", "MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS", "${MENGINE_APP_PLUGIN_APPLOVIN_NONET_BANNERS}"
+
+        project.properties.each { key, value ->
+            if (key.startsWith("MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_")) {
+                buildConfigField "boolean", key, value ? "true" : "false"
+            }
+        }
+    }
+}

@@ -48,19 +48,19 @@ public class MengineAdvertisingPlugin extends MengineService implements MengineL
 
                 return adInfo;
             } catch (final IOException e) {
-                MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info IOException: %s"
+                this.logError("[ERROR] invalid get advertising id info IOException: %s"
                     , e.getMessage()
                 );
             } catch (final IllegalStateException e) {
-                MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info IllegalStateException: %s"
+                this.logError("[ERROR] invalid get advertising id info IllegalStateException: %s"
                     , e.getMessage()
                 );
             } catch (final GooglePlayServicesNotAvailableException e) {
-                MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info GooglePlayServicesNotAvailableException: %s"
+                this.logError("[ERROR] invalid get advertising id info GooglePlayServicesNotAvailableException: %s"
                     , e.getMessage()
                 );
             } catch (final GooglePlayServicesRepairableException e) {
-                MengineAdvertisingPlugin.this.logError("[ERROR] invalid get advertising id info GooglePlayServicesRepairableException: %s"
+                this.logError("[ERROR] invalid get advertising id info GooglePlayServicesRepairableException: %s"
                     , e.getMessage()
                 );
             }

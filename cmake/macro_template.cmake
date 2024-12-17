@@ -634,7 +634,7 @@ MACRO(ADD_PLUGIN_OPTION Plugin Option Toggle MSG)
         ENDIF()
         
         IF(${Plugin}_${Option})
-            SET(MENGINE_LOCAL_CONFIG_CONFIGURATIONS ${MENGINE_LOCAL_CONFIG_CONFIGURATIONS} ${Definition} "NO-VALUE")
+            LIST(APPEND MENGINE_LOCAL_CONFIG_CONFIGURATIONS ${Plugin}_${Option} "NO-VALUE")
         ENDIF()
         
         MESSAGE("PLUGIN OPTION: ${Plugin}_${Option} = ${${Plugin}_${Option}}")

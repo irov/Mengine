@@ -11,6 +11,12 @@
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/ConstStringHelper.h"
 
+#include "Configuration/Configurations.h"
+
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_META)
+#   import <FBAudienceNetwork/FBAdSettings.h>
+#endif
+
 #define PLUGIN_BUNDLE_NAME "MengineAppleAppLovinPlugin"
 
 @implementation AppleAppLovinApplicationDelegate
@@ -23,6 +29,10 @@
         
         return NO;
     }
+    
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_META)
+    [FBAdSettings setDataProcessingOptions: @[]];
+#endif
     
     [AppleLog withFormat:@"AppLovin: %@", ALSdk.version];
     
@@ -108,6 +118,13 @@
         iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
         
         [iOSDetail transparencyConsent:consent];
+        
+#if defined(MENGINE_PLUGIN_APPLE_APPLOVIN_MEDIATION_META)
+        BOOL ATTAllowed = [iOSDetail isAppTrackingTransparencyAllowed];
+        [FBAdSettings setAdvertiserTrackingEnabled:ATTAllowed];
+        
+        [AppleLog withFormat:@"FBAdSettings setAdvertiserTrackingEnabled:%d", ATTAllowed];
+#endif
         
         if ([[[NSProcessInfo processInfo] arguments] containsObject:@"-applovin.show_mediation_debugger"] == YES) {
             [[ALSdk shared] showMediationDebugger];

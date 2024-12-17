@@ -3,6 +3,7 @@
 #include "Kernel/ThreadHelper.h"
 
 #import <AdSupport/ASIdentifierManager.h>
+#import <AppTrackingTransparency/AppTrackingTransparency.h>
 
 @implementation iOSDetail
 

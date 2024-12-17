@@ -821,8 +821,8 @@ MACRO(ADD_MENGINE_SHARED)
             )
         else()
             set_target_properties (${PROJECT_NAME} PROPERTIES
-                    FOLDER ${MENGINE_SUBFOLDER_NAME}
-                )
+                FOLDER ${MENGINE_SUBFOLDER_NAME}
+            )
         endif()
     else()
         if(${num_extra_args} GREATER 0)

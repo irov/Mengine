@@ -49,9 +49,30 @@ fun includePlugin(name: String, path: String) {
     include(path)
 }
 
+println("\u001b[32m" + "=== Start configure ===" + "\u001b[0m")
+
 val ANDROID_APP_MAIN_PROJECT = getStringProperty("ANDROID_APP_MAIN_PROJECT", "app");
 
-println("\u001b[32m" + "=== Start configure ===" + "\u001b[0m")
+val fileAppProperties = file("$ANDROID_APP_MAIN_PROJECT/app.properties")
+
+if (fileAppProperties.exists() == false) {
+    throw GradleException("ANDROID_APP_PROPERTIES is not defined. Please provide a valid path.")
+}
+
+val appProperties = java.util.Properties()
+
+fileAppProperties.reader().use { reader -> appProperties.load(reader) }
+
+gradle.beforeProject {
+    appProperties.forEach { (key, value) ->
+        extensions.extraProperties[key.toString()] = value
+    }
+}
+
+appProperties.forEach { (key, value) ->
+    extra[key.toString()] = value
+}
+
 println("\u001b[32m" + "[+] Include :$ANDROID_APP_MAIN_PROJECT" + "\u001b[0m")
 include(":$ANDROID_APP_MAIN_PROJECT")
 

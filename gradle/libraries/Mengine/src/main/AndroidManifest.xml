@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application>
         <meta-data android:name="mengine.session.use_install_key" android:value="@bool/mengine_session_use_install_key"/>

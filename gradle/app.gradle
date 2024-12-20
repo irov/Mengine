@@ -236,8 +236,6 @@ android {
                     nativeSymbolUploadEnabled true
 
                     unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib")
-
-                    println "unstrippedNativeLibsDir debug: $unstrippedNativeLibsDir"
                 }
 
                 ndk {
@@ -252,8 +250,6 @@ android {
                     nativeSymbolUploadEnabled true
 
                     unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib")
-
-                    println "unstrippedNativeLibsDir release: $unstrippedNativeLibsDir"
                 }
 
                 ndk {
@@ -280,7 +276,7 @@ android {
             if (ANDROID_APP_MANIFEST_CI == true) {
                 println 'ANDROID_APP_MANIFEST_SRC_FILE: AndroidManifestCI.xml [CI]'
 
-                manifest.srcFile 'AndroidManifestCI.xml'
+                manifest.srcFile 'src/main/AndroidManifestCI.xml'
             } else if (project.hasProperty("ANDROID_APP_MANIFEST_SRC_FILE")) {
                 println "ANDROID_APP_MANIFEST_SRC_FILE: $ANDROID_APP_MANIFEST_SRC_FILE"
 
@@ -294,7 +290,7 @@ android {
             } else {
                 println 'ANDROID_APP_MANIFEST_SRC_FILE: AndroidManifest.xml [Default]'
 
-                manifest.srcFile 'AndroidManifest.xml'
+                manifest.srcFile 'src/main/AndroidManifest.xml'
             }
 
             java.srcDirs += ['src']
@@ -802,6 +798,8 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
 
                 throw new GradleException("unstrippedNativeLibsDir not found folder: $fname")
             }
+
+            println "unstrippedNativeLibsDir debug: " + f.getCanonicalPath()
         }
     }
 
@@ -816,6 +814,8 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
 
                 throw new GradleException("unstrippedNativeLibsDir not found folder: $fname")
             }
+
+            println "unstrippedNativeLibsDir release: " + f.getCanonicalPath()
         }
     }
 

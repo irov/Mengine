@@ -15,4 +15,4 @@
 /native
 .externalNativeBuild
 **/build/**
-app_*
+app__*

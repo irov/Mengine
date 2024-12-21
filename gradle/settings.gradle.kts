@@ -55,22 +55,23 @@ val ANDROID_APP_MAIN_PROJECT = getStringProperty("ANDROID_APP_MAIN_PROJECT", "ap
 
 val fileAppProperties = file("$ANDROID_APP_MAIN_PROJECT/app.properties")
 
-if (fileAppProperties.exists() == false) {
-    throw GradleException("properties $ANDROID_APP_MAIN_PROJECT/app.properties is not defined. Please provide a valid path.")
-}
+if (fileAppProperties.exists() == true) {
+    println("\u001b[32m" + "[+] Load $ANDROID_APP_MAIN_PROJECT" + "/app.properties" + "\u001b[0m")
+    val appProperties = java.util.Properties()
 
-val appProperties = java.util.Properties()
+    fileAppProperties.reader().use { reader -> appProperties.load(reader) }
 
-fileAppProperties.reader().use { reader -> appProperties.load(reader) }
-
-gradle.beforeProject {
-    appProperties.forEach { (key, value) ->
-        extensions.extraProperties[key.toString()] = value
+    gradle.beforeProject {
+        appProperties.forEach { (key, value) ->
+            extensions.extraProperties[key.toString()] = value
+        }
     }
-}
 
-appProperties.forEach { (key, value) ->
-    extra[key.toString()] = value
+    appProperties.forEach { (key, value) ->
+        extra[key.toString()] = value
+    }
+} else {
+    println("\u001b[31m" + "[-] Not found $ANDROID_APP_MAIN_PROJECT" + "/app.properties" + "\u001b[0m")
 }
 
 println("\u001b[32m" + "[+] Include :$ANDROID_APP_MAIN_PROJECT" + "\u001b[0m")

@@ -56,7 +56,7 @@ val ANDROID_APP_MAIN_PROJECT = getStringProperty("ANDROID_APP_MAIN_PROJECT", "ap
 val fileAppProperties = file("$ANDROID_APP_MAIN_PROJECT/app.properties")
 
 if (fileAppProperties.exists() == false) {
-    throw GradleException("ANDROID_APP_PROPERTIES is not defined. Please provide a valid path.")
+    throw GradleException("properties $ANDROID_APP_MAIN_PROJECT/app.properties is not defined. Please provide a valid path.")
 }
 
 val appProperties = java.util.Properties()

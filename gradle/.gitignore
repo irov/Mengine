@@ -1,6 +1,3 @@
-*.iml
-**/.cxx
-**/.transforms
 .idea
 .gradle
 .safedk
@@ -13,6 +10,5 @@
 /captures
 /daemon
 /native
-.externalNativeBuild
 **/build/**
 app__*

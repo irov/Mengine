@@ -2,6 +2,6 @@
 /data_delivery*
 /res*
 /key*
-app.properties
-google-services.json
-mengine_prepare.cmake
+/app.properties
+/google-services.json
+/mengine_prepare.cmake
